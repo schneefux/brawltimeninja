@@ -1,0 +1,36 @@
+<template>
+  <div class="flex flex-col justify-center items-center">
+    <div class="text-center font-sans">
+      <h1>How much time on Brawl Stars?</h1>
+    </div>
+
+    <div class="my-6 mx-4">
+      <form class="flex items-center py-2 border-2 rounded-lg border-blue-dark">
+        <input id="userid" v-model="userid" type="text" placeholder="Enter your tag" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+        <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-yellow hover:bg-yellow-light border-yellow hover:border-yellow-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
+          Search
+        </router-link>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      userid: undefined
+    }
+  },
+  computed: {
+    playerRoute() {
+      return {
+        name: 'player-userid',
+        params: {
+          userid: this.userid
+        }
+      }
+    }
+  }
+}
+</script>
