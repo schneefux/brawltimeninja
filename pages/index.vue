@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col items-center">
     <div class="text-center font-sans">
       <h1>How much time on Brawl Stars?</h1>
     </div>
