@@ -11,87 +11,73 @@ const router = express.Router();
 router.options('*', cors());
 
 router.get('/player/:tag', cors(), async (req, res) => {
-  // TODO mock data for testing
-  res.json({
-    tag: req.params.tag,
-    name: 'TestPlayer1',
-    modes: {
-      '3v3': {
-        label: '3v3',
-        icon: '/images/brawlstars/mode/icon/gemgrab.png',
-        background: '/images/brawlstars/mode/background/gemgrab.png',
-        stats: {
-          victories: {
-            label: 'Victories',
-            value: 1234,
-          }
-        }
-      },
-      'soloShowdown': {
-        label: 'Solo Showdown',
-        icon: '/images/brawlstars/mode/icon/showdown.png',
-        background: '/images/brawlstars/mode/background/showdown.png',
-        stats: {
-          victories: {
-            label: 'Victories',
-            value: 34,
-          }
-        }
-      },
-      'duoShowdown': {
-        label: 'Duo Showdown',
-        icon: '/images/brawlstars/mode/icon/duoshowdown.png',
-        background: '/images/brawlstars/mode/background/showdown.png',
-        stats: {
-          victories: {
-            label: 'Victories',
-            value: 12,
-          }
-        }
-      },
-    },
-    heroes: {
-      'spike': {
-        label: 'Spike',
-        icon: '/images/brawlstars/heroes/icon/spike.png',
+  try {
+    const player = await client.getPlayer(req.params.tag);
+    const heroes = {};
+    player.brawlers.forEach((brawler) => {
+      const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
+      heroes[brawlerId] = {
+        label: brawler.name,
+        icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
         stats: {
           trophies: {
             label: 'Current',
-            value: 432,
+            value: brawler.trophies,
             icon: '/images/brawlstars/icon/trophy.png'
           },
           maxTrophies: {
             label: 'Max',
-            value: 500,
+            value: brawler.highestTrophies,
             icon: '/images/brawlstars/icon/trophy.png'
-          }
-        }
-      },
-      'barley': {
-        label: 'Barley',
-        icon: '/images/brawlstars/heroes/icon/barley.png',
-        stats: {
-          trophies: {
-            label: 'Current',
-            value: 321,
-            icon: '/images/brawlstars/icon/trophy.png'
+          },
+          level: {
+            label: 'Power',
+            value: brawler.level,
+            icon: '/images/brawlstars/icon/powerpoint.png'
           }
         }
       }
-    }
-  });
-  return;
+    });
 
-  try {
-    const player = await client.getPlayer(req.params.tag);
     res.json({
       tag: player.tag,
       name: player.name,
-      victoriesByMode: {
-        '3v3': player.victories,
-        soloShowdown: player.soloShowdownVictories,
-        duoShowdown: player.duoShowdownVictories
-      }
+      heroes,
+      modes: {
+        '3v3': {
+          label: '3v3',
+          icon: '/images/brawlstars/mode/icon/gemgrab.png',
+          background: '/images/brawlstars/mode/background/gemgrab.png',
+          stats: {
+            victories: {
+              label: 'Victories',
+              value: player.victories,
+            }
+          }
+        },
+        'soloShowdown': {
+          label: 'Solo Showdown',
+          icon: '/images/brawlstars/mode/icon/showdown.png',
+          background: '/images/brawlstars/mode/background/showdown.png',
+          stats: {
+            victories: {
+              label: 'Victories',
+              value: player.soloShowdownVictories,
+            }
+          }
+        },
+        'duoShowdown': {
+          label: 'Duo Showdown',
+          icon: '/images/brawlstars/mode/icon/duoshowdown.png',
+          background: '/images/brawlstars/mode/background/showdown.png',
+          stats: {
+            victories: {
+              label: 'Victories',
+              value: player.duoShowdownVictories,
+            }
+          }
+        },
+      },
     });
   } catch (error) {
     if (error.response != undefined) {

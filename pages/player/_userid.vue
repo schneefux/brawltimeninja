@@ -50,9 +50,9 @@
               v-for="(data, hero, index) in player.heroes"
               :key="hero"
               @click="heroHighlightIndex = index"
-              class="m-1 hover:border-yellow-light border-8 rounded-full"
+              class="m-1 hover:border-blue border-4 rounded-full"
               :class="{
-                'border-yellow-light': heroHighlightIndex == index,
+                'border-blue-darker': heroHighlightIndex == index,
                 'border-yellow-dark': heroHighlightIndex != index,
               }"
               type="button"></button>
