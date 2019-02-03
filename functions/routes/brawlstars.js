@@ -90,9 +90,16 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
         };
       }
 
+      const minutesSpent =
+        player.victories * 2 * 3 + // 50% win rate * 3mins
+        player.soloShowdownVictories * 10 * 3 + // 1/10 win rate * 3mins
+        player.duoShowdownVictories * 5 * 3 // 1/5 win rate * 3mins
+      ;
+
       return {
         tag: player.tag,
         name: player.name,
+        minutesSpent,
         heroes,
         stats,
         modes: {

@@ -5,6 +5,27 @@
     </div>
 
     <div class="md:mx-6 my-6">
+      <div class="mx-8 my-6 text-center items-center justify-between flex flex-wrap">
+        <div class="mx-auto md:mx-0 my-2">
+          <p class="text-5xl text-yellow font-bold">{{ hoursSpent }}</p>
+          <p class="text-3xl text-white">hours spent</p>
+        </div>
+
+        <p class="w-full md:w-auto text-xl my-1 mx-auto">
+          which equals to
+        </p>
+
+        <div class="flex flex-wrap justify-between">
+          <div
+            v-for="(stat, statName) in funStats"
+            :key="statName"
+            class="mx-auto md:mx-2 my-2">
+            <p class="text-3xl text-yellow-light font-bold">{{ stat.value }}</p>
+            <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
+          </div>
+        </div>
+      </div>
+
       <div class="mx-8 flex flex-wrap">
         <p
           v-for="(stat, statName) in player.stats"
@@ -84,20 +105,62 @@ export default {
     },
     heroHighlightKey() {
       return Object.keys(this.player.heroes)[this.heroHighlightIndex]
+    },
+    funStats() {
+      return {
+        kwh: {
+          // https://www.quora.com/How-many-watts-an-hour-does-a-phone-use
+          label: 'kWh battery',
+          value: Math.floor(this.hoursSpent * 2.5)
+        },
+        toiletBreaks: {
+          // https://www.bladderandbowel.org/bladder/bladder-conditions-and-symptoms/frequency/
+          label: 'toilet breaks',
+          value: Math.floor(this.hoursSpent / 7)
+        },
+        pizzaKg: {
+          // https://www.reference.com/food/much-large-pizza-weigh-7eb566c27f4ddc14
+          // assuming a person eats every 6h
+          label: 'kg pizza',
+          value: Math.floor(this.hoursSpent / 6 * 0.500)
+        },
+        distanceWalked: {
+          // assuming a person walks 7km/h
+          label: 'km walked',
+          value: Math.floor(this.hoursSpent / 7)
+        }
+      }
     }
   },
   mounted() {
-    const timer = () => setTimeout(() => {
+    const highlightTimer = () => setTimeout(() => {
       this.nextHighlight()
-      timer()
+      highlightTimer()
     }, 5000)
-    timer()
+    highlightTimer()
+
+    this.hoursSpent = 0
+    const playerHours = Math.floor(this.player.minutesSpent / 60)
+    const hoursTimer = () => setTimeout(() => {
+      if (this.hoursSpent < playerHours * Math.random() * 10) {
+        const step = Math.ceil(Math.sqrt(playerHours - this.hoursSpent))
+        this.hoursSpent += step
+      }
+      if (this.hoursSpent < playerHours) {
+        hoursTimer()
+      }
+    }, 50)
+    hoursTimer()
   },
   async asyncData({ params, $axios }) {
     const player = await $axios.$get('/api/brawlstars/player/' + params.userid)
     return {
       player,
       heroHighlightIndex: 0,
+      hoursSpent: 0,
+      kwhSpent: 0,
+      toiletBreaks: 0,
+      pizzaKg: 0,
       error: ''
     }
   },
