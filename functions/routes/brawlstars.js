@@ -44,12 +44,14 @@ router.get('/player/:tag', cors(), async (req, res) => {
             icon: '/images/brawlstars/icon/trophy.png'
           },
           level: {
-            label: 'Power',
+            label: 'Power Level',
             value: brawler.level,
-            icon: '/images/brawlstars/icon/powerpoint.png'
+            icon: brawler.level == 10?
+              '/images/brawlstars/icon/starpower.png'
+              :'/images/brawlstars/icon/powerpoint.png'
           }
         }
-      }
+      };
     });
 
     res.json({
