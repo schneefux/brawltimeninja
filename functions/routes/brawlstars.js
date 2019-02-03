@@ -35,16 +35,33 @@ router.get('/player/:tag', cors(), async (req, res) => {
         background: '/images/brawlstars/mode/background/showdown.png',
       },
     },
-    heroStats: {
+    heroes: {
       'spike': {
         label: 'Spike',
-        trophies: 432,
-        icon: '/images/brawlstars/heroes/icon/spike.png'
+        icon: '/images/brawlstars/heroes/icon/spike.png',
+        stats: {
+          trophies: {
+            label: 'Current',
+            value: 432,
+            icon: '/images/brawlstars/icon/trophy.png'
+          },
+          maxTrophies: {
+            label: 'Max',
+            value: 500,
+            icon: '/images/brawlstars/icon/trophy.png'
+          }
+        }
       },
       'barley': {
         label: 'Barley',
-        trophies: 321,
-        icon: '/images/brawlstars/heroes/icon/barley.png'
+        icon: '/images/brawlstars/heroes/icon/barley.png',
+        stats: {
+          trophies: {
+            label: 'Current',
+            value: 321,
+            icon: '/images/brawlstars/icon/trophy.png'
+          }
+        }
       }
     }
   });

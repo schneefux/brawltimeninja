@@ -12,11 +12,12 @@
           :key="mode">
           <div
             :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${stats.background}')`"
-            class="mx-auto bg-center bg-cover md:mx-2 my-4 text-white max-w-sm flex flex-wrap justify-between card">
+            class="card mx-auto md:mx-2 my-4 bg-center bg-cover flex flex-wrap justify-between">
             <div class="card-content">
-              <div class="font-bold text-xl mb-2">{{ stats.label }}</div>
-              <p class="text-grey-lighter">
-                {{ stats.victories }} victories
+              <div class="card-header">{{ stats.label }}</div>
+              <p class="card-props mt-2">
+                <span class="card-prop-value">{{ stats.victories }}</span>
+                <span class="card-prop-label">victories</span>
               </p>
             </div>
             <img
@@ -26,26 +27,30 @@
         </div>
       </div>
 
-      <div class="flex-shrink w-full md:w-auto md:mx-4 my-4 text-grey-lightest">
+      <div class="flex-0 w-full md:w-auto md:mx-4 my-4">
         <div
-          :style="`background-image: url('${heroHighlightStats.icon}')`"
-          class="card h-full flex flex-wrap flex-col md:flex-row bg-blue bg-contain bg-no-repeat bg-right-bottom">
-          <div class="card-content">
-            <div class="font-bold text-xl">{{ heroHighlightStats.label }}</div>
-            <p class="text-grey-lighter text-lg font-semibold mt-2 flex">
-              <img class="h-5" src="/images/brawlstars/icons/trophy.png">
-              <span class="ml-1">{{ heroHighlightStats.trophies }}</span>
+          :style="`background-image: url('${heroHighlight.icon}')`"
+          class="card h-full flex flex-wrap flex-col justify-between bg-blue bg-contain bg-no-repeat bg-left-bottom">
+          <div class="card-content self-end">
+            <div class="card-header">{{ heroHighlight.label }}</div>
+            <p
+              v-for="(stat, statName) in heroHighlight.stats"
+              :key="statName"
+              class="card-props">
+              <img class="card-prop-icon" :src="stat.icon">
+              <span class="card-prop-value">{{ stat.value }}</span>
+              <span class="card-prop-label">{{ stat.label }}</span>
             </p>
           </div>
-          <div class="w-full self-center flex justify-center">
+          <div class="flex justify-center">
             <button
-              v-for="(stats, hero) in player.heroStats"
+              v-for="(data, hero) in player.heroes"
               :key="hero"
-              @click="heroHighlight = hero"
+              @click="heroHighlightKey = hero"
               class="m-1 hover:border-yellow-light border-8 rounded-full"
               :class="{
-                'border-yellow-light': heroHighlight == hero,
-                'border-yellow-dark': heroHighlight != hero,
+                'border-yellow-light': heroHighlightKey == hero,
+                'border-yellow-dark': heroHighlightKey != hero,
               }"
               type="button"></button>
           </div>
@@ -57,6 +62,11 @@
 
 <script>
 export default {
+  computed: {
+    heroHighlight() {
+      return this.player.heroes[this.heroHighlightKey]
+    }
+  },
   mounted() {
     const timer = () => setTimeout(() => {
       this.nextHighlight()
@@ -64,27 +74,22 @@ export default {
     }, 5000)
     timer()
   },
-  computed: {
-    heroHighlightStats() {
-      return this.player.heroStats[this.heroHighlight]
-    }
-  },
   async asyncData({ params, $axios }) {
     const player = await $axios.$get('/api/brawlstars/player/' + params.userid)
     return {
       player,
-      heroHighlight: Object.keys(player.heroStats)[0],
+      heroHighlightKey: Object.keys(player.heroes)[0],
       error: ''
     }
   },
   methods: {
     nextHighlight() {
-      const heroes = Object.keys(this.player.heroStats)
-      let index = heroes.indexOf(this.heroHighlight) + 1
+      const heroes = Object.keys(this.player.heroes)
+      let index = heroes.indexOf(this.heroHighlightKey) + 1
       if (index >= heroes.length) {
         index = 0
       }
-      this.heroHighlight = heroes[index]
+      this.heroHighlightKey = heroes[index]
     }
   }
 }
@@ -97,5 +102,24 @@ export default {
 
 .card-content {
   @apply mx-6 my-4;
+}
+
+.card-header {
+  @apply font-semibold text-xl text-white;
+}
+
+.card-props {
+  @apply mt-2 text-grey-lighter;
+}
+
+.card-prop-icon {
+  @apply h-5 align-middle mr-1;
+}
+
+.card-prop-label {
+}
+
+.card-prop-value {
+  @apply font-medium;
 }
 </style>
