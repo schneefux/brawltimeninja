@@ -906,6 +906,13 @@ module.exports = {
       alpha: {
         '75': 0.75,
       }
+    }),
+    require('tailwindcss-typography')({
+      variants: ['responsive'],
+      textShadows: {
+        'default': '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black',
+        '0': 'none'
+      }
     })
   ],
 

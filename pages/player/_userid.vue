@@ -16,62 +16,63 @@
       </div>
 
       <div class="flex flex-wrap justify-center">
-      <div class="flex-1 flex flex-wrap">
-        <div
-          class="w-full lg:w-1/2"
-          v-for="(mode, modeName) in player.modes"
-          :key="modeName">
+        <div class="flex-1 flex flex-wrap">
           <div
-            :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
-            class="card mx-auto md:mx-2 my-4 bg-center bg-cover flex flex-wrap justify-between">
-            <div class="card-content">
-              <div class="card-header">{{ mode.label }}</div>
+            class="w-full lg:w-1/2"
+            v-for="(mode, modeName) in player.modes"
+            :key="modeName">
+            <div
+              :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
+              class="card mx-auto md:mx-2 my-4 bg-center bg-cover flex flex-wrap justify-between">
+              <div class="card-content">
+                <div class="card-header">{{ mode.label }}</div>
+                <p
+                  v-for="(stat, statName) in mode.stats"
+                  :key="statName"
+                  class="card-props mt-2">
+                  <span class="card-prop-value">{{ stat.value }}</span>
+                  <span class="card-prop-label">{{ stat.label }}</span>
+                </p>
+              </div>
+              <img
+                class="h-12 self-center mx-6 my-4"
+                :src="mode.icon">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-0 w-full md:w-auto md:mx-4 my-4">
+          <div
+            :style="`background-image: url('${heroHighlight.icon}')`"
+            class="card h-full flex flex-wrap md:flex-col justify-center bg-blue bg-contain bg-no-repeat bg-left-bottom">
+            <span class="text-shadow md:text-shadow-0 flex-grow md:flex-initial card-header px-4 pt-4 pb-2 md:bg-blue">{{ heroHighlight.label }}</span>
+            <div class="pl-2 pr-4 pb-2 mb-2 md:px-4 md:m-0 bg-blue-75 md:bg-blue rounded-bl md:rounded-none">
               <p
-                v-for="(stat, statName) in mode.stats"
+                v-for="(stat, statName) in heroHighlight.stats"
                 :key="statName"
-                class="card-props mt-2">
+                class="card-props">
+                <img class="card-prop-icon" :src="stat.icon">
                 <span class="card-prop-value">{{ stat.value }}</span>
                 <span class="card-prop-label">{{ stat.label }}</span>
               </p>
             </div>
-            <img
-              class="h-12 self-center mx-6 my-4"
-              :src="mode.icon">
-          </div>
-        </div>
-      </div>
-
-      <div class="flex-0 w-full md:w-auto md:mx-4 my-4">
-        <div
-          :style="`background-image: url('${heroHighlight.icon}')`"
-          class="card h-full flex flex-wrap flex-col justify-between bg-blue bg-contain bg-no-repeat bg-left-bottom">
-          <div class="card-content self-end">
-            <div class="card-header">{{ heroHighlight.label }}</div>
-            <p
-              v-for="(stat, statName) in heroHighlight.stats"
-              :key="statName"
-              class="card-props">
-              <img class="card-prop-icon" :src="stat.icon">
-              <span class="card-prop-value">{{ stat.value }}</span>
-              <span class="card-prop-label">{{ stat.label }}</span>
-            </p>
-          </div>
-          <div class="w-48 md:w-24 mb-2 self-center flex flex-wrap justify-center">
-            <button
-              v-for="(data, hero, index) in player.heroes"
-              :key="hero"
-              @click="heroHighlightIndex = index"
-              class="p-1 mr-1 mb-1 hover:border-blue hover:bg-blue border-2 rounded-full"
-              :class="{
-                'border-blue-darker bg-blue-darker': heroHighlightIndex == index,
-                'border-yellow-dark bg-yellow-dark': heroHighlightIndex != index,
-              }"
-              type="button"></button>
+            <div class="md:flex-grow"></div>
+            <div class="w-48 md:w-24 my-2 mx-auto flex flex-wrap justify-center">
+              <button
+                v-for="(data, hero, index) in player.heroes"
+                :key="hero"
+                @click="heroHighlightIndex = index"
+                class="p-1 mr-1 mb-1 hover:border-blue hover:bg-blue border-2 rounded-full"
+                :class="{
+                  'border-blue-darker bg-blue-darker': heroHighlightIndex == index,
+                  'border-yellow-dark bg-yellow-dark': heroHighlightIndex != index,
+                }"
+                type="button"></button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -132,9 +133,6 @@ export default {
 
 .card-prop-icon {
   @apply h-5 align-middle mr-1;
-}
-
-.card-prop-label {
 }
 
 .card-prop-value {
