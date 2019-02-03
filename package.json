@@ -39,6 +39,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "nodemon": "^1.18.9",
     "tailwindcss": "^0.7.0",
+    "tailwindcss-alpha": "^0.1.4",
     "webpack-cli": "^3.2.1"
   }
 }

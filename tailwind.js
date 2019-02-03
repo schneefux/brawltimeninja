@@ -898,6 +898,14 @@ module.exports = {
     require('tailwindcss/plugins/container')({
       // center: true,
       // padding: '1rem',
+    }),
+    require('tailwindcss-alpha')({
+      modules: {
+        backgroundColors: true
+      },
+      alpha: {
+        '75': 0.75,
+      }
     })
   ],
 

@@ -4,7 +4,18 @@
       <h1>Statistics for <span class="text-yellow">{{ player.name }}</span></h1>
     </div>
 
-    <div class="md:mx-6 my-4 flex flex-wrap justify-center">
+    <div class="md:mx-6 my-6">
+      <div class="mx-8 flex flex-wrap">
+        <h2
+          v-for="(stat, statName) in player.stats"
+          :key="statName"
+          class="my-1 w-full md:w-auto md:mx-auto border-blue border-0 rounded">
+          <span>{{ stat.label }}</span>
+          <span class="text-blue-lighter float-right md:float-none">{{ stat.value }}</span>
+        </h2>
+      </div>
+
+      <div class="flex flex-wrap justify-center">
       <div class="flex-1 flex flex-wrap">
         <div
           class="w-full lg:w-1/2"
@@ -60,6 +71,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

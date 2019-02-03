@@ -34,12 +34,12 @@ router.get('/player/:tag', cors(), async (req, res) => {
         icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
         stats: {
           trophies: {
-            label: 'Current',
+            label: 'Current Trophies',
             value: brawler.trophies,
             icon: '/images/brawlstars/icon/trophy.png'
           },
           maxTrophies: {
-            label: 'Max',
+            label: 'Max Trophies',
             value: brawler.highestTrophies,
             icon: '/images/brawlstars/icon/trophy.png'
           },
@@ -57,6 +57,20 @@ router.get('/player/:tag', cors(), async (req, res) => {
     res.json({
       tag: player.tag,
       name: player.name,
+      stats: {
+        trophies: {
+          label: 'Current Trophies',
+          value: player.trophies
+        },
+        highestTrophies: {
+          label: 'Max Trophies',
+          value: player.highestTrophies
+        },
+        expLevel: {
+          label: 'Experience Level',
+          value: player.expLevel
+        }
+      },
       heroes,
       modes: {
         '3v3': {
