@@ -45,15 +45,15 @@
               <span class="card-prop-label">{{ stat.label }}</span>
             </p>
           </div>
-          <div class="flex justify-center">
+          <div class="w-48 md:w-24 mb-2 self-center flex flex-wrap justify-center">
             <button
               v-for="(data, hero, index) in player.heroes"
               :key="hero"
               @click="heroHighlightIndex = index"
-              class="m-1 hover:border-blue border-4 rounded-full"
+              class="p-1 mr-1 mb-1 hover:border-blue hover:bg-blue border-2 rounded-full"
               :class="{
-                'border-blue-darker': heroHighlightIndex == index,
-                'border-yellow-dark': heroHighlightIndex != index,
+                'border-blue-darker bg-blue-darker': heroHighlightIndex == index,
+                'border-yellow-dark bg-yellow-dark': heroHighlightIndex != index,
               }"
               type="button"></button>
           </div>
