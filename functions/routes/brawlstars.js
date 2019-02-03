@@ -68,24 +68,33 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
         };
       });
 
+      const stats = {
+        trophies: {
+          label: 'Current Trophies',
+          value: player.trophies
+        },
+        highestTrophies: {
+          label: 'Max Trophies',
+          value: player.highestTrophies
+        },
+        expLevel: {
+          label: 'Experience Level',
+          value: player.expLevel
+        },
+      };
+
+      if (player.club != undefined) {
+        stats.clubName = {
+          label: 'Club',
+          value: player.club.name
+        };
+      }
+
       return {
         tag: player.tag,
         name: player.name,
-        stats: {
-          trophies: {
-            label: 'Current Trophies',
-            value: player.trophies
-          },
-          highestTrophies: {
-            label: 'Max Trophies',
-            value: player.highestTrophies
-          },
-          expLevel: {
-            label: 'Experience Level',
-            value: player.expLevel
-          }
-        },
         heroes,
+        stats,
         modes: {
           '3v3': {
             label: '3v3',

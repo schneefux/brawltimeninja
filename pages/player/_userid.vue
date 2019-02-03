@@ -6,13 +6,13 @@
 
     <div class="md:mx-6 my-6">
       <div class="mx-8 flex flex-wrap">
-        <h2
+        <p
           v-for="(stat, statName) in player.stats"
           :key="statName"
-          class="my-1 w-full md:w-auto md:mx-auto border-blue border-0 rounded">
+          class="text-xl my-1 w-full md:w-auto md:mx-auto">
           <span>{{ stat.label }}</span>
           <span class="text-blue-lighter float-right md:float-none">{{ stat.value }}</span>
-        </h2>
+        </p>
       </div>
 
       <div class="flex flex-wrap justify-center">
