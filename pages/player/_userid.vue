@@ -12,7 +12,7 @@
           :key="mode">
           <div
             :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${stats.background}')`"
-            class="bg-center bg-cover md:mx-2 my-4 text-white max-w-sm flex flex-wrap justify-between card">
+            class="mx-auto bg-center bg-cover md:mx-2 my-4 text-white max-w-sm flex flex-wrap justify-between card">
             <div class="card-content">
               <div class="font-bold text-xl mb-2">{{ stats.label }}</div>
               <p class="text-grey-lighter">
