@@ -106,6 +106,28 @@ router.get('/player/:tag', cors(), async (req, res) => {
             }
           }
         },
+        'bossfight': {
+          label: 'bossfight',
+          icon: '/images/brawlstars/mode/icon/bossfight.png',
+          background: '/images/brawlstars/mode/background/bossfight.png',
+          stats: {
+            minutes: {
+              label: 'survived',
+              value: player.bestTimeAsBoss,
+            }
+          }
+        },
+        'roborumble': {
+          label: 'Robo Rumble',
+          icon: '/images/brawlstars/mode/icon/roborumble.png',
+          background: '/images/brawlstars/mode/background/roborumble.png',
+          stats: {
+            minutes: {
+              label: 'survived',
+              value: player.bestRoboRumbleTime,
+            }
+          }
+        },
       },
     });
   } catch (error) {
