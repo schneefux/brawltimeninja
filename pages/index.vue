@@ -12,6 +12,20 @@
         </router-link>
       </form>
     </div>
+
+    <div class="my-2 text-center">
+      <p class="text-grey">Or check one of these profiles:</p>
+      <p class="mt-2">
+        <router-link
+          v-for="player in demoPlayers"
+          :key="player.tag"
+          tag="button"
+          :to="{ name: 'player-userid', params: { userid: player.tag } }"
+          class="ml-2 text-yellow border-blue border-b-2 rounded">
+          {{ player.name }}
+        </router-link>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -30,6 +44,12 @@ export default {
           userid: this.userid
         }
       }
+    }
+  },
+  async asyncData({ $axios }) {
+    const demoPlayers = await $axios.$get('/api/brawlstars/featured-players')
+    return {
+      demoPlayers
     }
   }
 }

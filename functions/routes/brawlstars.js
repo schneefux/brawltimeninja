@@ -10,6 +10,19 @@ const router = express.Router();
 
 router.options('*', cors());
 
+router.get('/featured-players', cors(), async (req, res) => {
+  res.json([{
+    name: 'xXcuzMePlisThXx',
+    tag: 'V8LLPPC'
+  }, {
+    name: 'Keith',
+    tag: '2Y02L28'
+  }, {
+    name: 'Landi',
+    tag: 'V9QGJY9'
+  }]);
+});
+
 router.get('/player/:tag', cors(), async (req, res) => {
   try {
     const player = await client.getPlayer(req.params.tag);
