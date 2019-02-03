@@ -8,21 +8,24 @@
       <div class="flex-1 flex flex-wrap">
         <div
           class="w-full lg:w-1/2"
-          v-for="(stats, mode) in player.modeStats"
-          :key="mode">
+          v-for="(mode, modeName) in player.modes"
+          :key="modeName">
           <div
-            :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${stats.background}')`"
+            :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
             class="card mx-auto md:mx-2 my-4 bg-center bg-cover flex flex-wrap justify-between">
             <div class="card-content">
-              <div class="card-header">{{ stats.label }}</div>
-              <p class="card-props mt-2">
-                <span class="card-prop-value">{{ stats.victories }}</span>
-                <span class="card-prop-label">victories</span>
+              <div class="card-header">{{ mode.label }}</div>
+              <p
+                v-for="(stat, statName) in mode.stats"
+                :key="statName"
+                class="card-props mt-2">
+                <span class="card-prop-value">{{ stat.value }}</span>
+                <span class="card-prop-label">{{ stat.label }}</span>
               </p>
             </div>
             <img
               class="h-12 self-center mx-6 my-4"
-              :src="stats.icon">
+              :src="mode.icon">
           </div>
         </div>
       </div>

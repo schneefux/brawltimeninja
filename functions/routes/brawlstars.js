@@ -15,24 +15,39 @@ router.get('/player/:tag', cors(), async (req, res) => {
   res.json({
     tag: req.params.tag,
     name: 'TestPlayer1',
-    modeStats: {
+    modes: {
       '3v3': {
         label: '3v3',
-        victories: 1234,
         icon: '/images/brawlstars/mode/icon/gemgrab.png',
         background: '/images/brawlstars/mode/background/gemgrab.png',
+        stats: {
+          victories: {
+            label: 'Victories',
+            value: 1234,
+          }
+        }
       },
       'soloShowdown': {
         label: 'Solo Showdown',
-        victories: 12,
         icon: '/images/brawlstars/mode/icon/showdown.png',
         background: '/images/brawlstars/mode/background/showdown.png',
+        stats: {
+          victories: {
+            label: 'Victories',
+            value: 34,
+          }
+        }
       },
       'duoShowdown': {
         label: 'Duo Showdown',
-        victories: 34,
         icon: '/images/brawlstars/mode/icon/duoshowdown.png',
         background: '/images/brawlstars/mode/background/showdown.png',
+        stats: {
+          victories: {
+            label: 'Victories',
+            value: 12,
+          }
+        }
       },
     },
     heroes: {
