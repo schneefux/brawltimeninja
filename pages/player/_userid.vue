@@ -47,13 +47,13 @@
           </div>
           <div class="flex justify-center">
             <button
-              v-for="(data, hero) in player.heroes"
+              v-for="(data, hero, index) in player.heroes"
               :key="hero"
-              @click="heroHighlightKey = hero"
+              @click="heroHighlightIndex = index"
               class="m-1 hover:border-yellow-light border-8 rounded-full"
               :class="{
-                'border-yellow-light': heroHighlightKey == hero,
-                'border-yellow-dark': heroHighlightKey != hero,
+                'border-yellow-light': heroHighlightIndex == index,
+                'border-yellow-dark': heroHighlightIndex != index,
               }"
               type="button"></button>
           </div>
@@ -68,6 +68,9 @@ export default {
   computed: {
     heroHighlight() {
       return this.player.heroes[this.heroHighlightKey]
+    },
+    heroHighlightKey() {
+      return Object.keys(this.player.heroes)[this.heroHighlightIndex]
     }
   },
   mounted() {
@@ -81,18 +84,18 @@ export default {
     const player = await $axios.$get('/api/brawlstars/player/' + params.userid)
     return {
       player,
-      heroHighlightKey: Object.keys(player.heroes)[0],
+      heroHighlightIndex: 0,
       error: ''
     }
   },
   methods: {
     nextHighlight() {
       const heroes = Object.keys(this.player.heroes)
-      let index = heroes.indexOf(this.heroHighlightKey) + 1
-      if (index >= heroes.length) {
-        index = 0
+      if (this.heroHighlightIndex === heroes.length - 1) {
+        this.heroHighlightIndex = 0
+      } else {
+        this.heroHighlightIndex += 1
       }
-      this.heroHighlightKey = heroes[index]
     }
   }
 }
