@@ -137,7 +137,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
             }
           },
           'bossfight': {
-            label: 'bossfight',
+            label: 'Bossfight',
             icon: '/images/brawlstars/mode/icon/bossfight.png',
             background: '/images/brawlstars/mode/background/bossfight.png',
             stats: {
