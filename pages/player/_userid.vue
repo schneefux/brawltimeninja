@@ -20,7 +20,7 @@
             v-for="(stat, statName) in funStats"
             :key="statName"
             class="mx-auto md:mx-2 my-2">
-            <p class="text-3xl text-yellow-light font-bold">{{ stat.value }}</p>
+            <p class="text-3xl text-yellow font-bold">{{ stat.value }}</p>
             <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
           </div>
         </div>
