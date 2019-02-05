@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-between bg-blue-darkest text-grey-lighter">
-    <nav class="bg-blue-dark p-6">
+  <div class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between">
+    <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
         Brawl Stars Time Ninja
       </nuxt-link>
@@ -8,7 +8,7 @@
 
     <nuxt />
 
-    <footer class="bg-blue-darker py-2 text-sm text-center">
+    <footer class="bg-primary-darker py-2 text-sm text-center">
       <span>
         &#169; 2019 Online Time Ninja Project
       </span>

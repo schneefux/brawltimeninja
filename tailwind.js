@@ -124,7 +124,23 @@ const colors = {
   'pink': '#f66d9b',
   'pink-light': '#fa7ea8',
   'pink-lighter': '#ffbbca',
-  'pink-lightest': '#ffebef'
+  'pink-lightest': '#ffebef',
+
+  'primary-darkest': '#12283a',
+  'primary-darker': '#1c3d5a',
+  'primary-dark': '#2779bd',
+  'primary': '#3490dc',
+  'primary-light': '#6cb2eb',
+  'primary-lighter': '#bcdefa',
+  'primary-lightest': '#eff8ff',
+
+  'secondary-darkest': '#453411',
+  'secondary-darker': '#684f1d',
+  'secondary-dark': '#f2d024',
+  'secondary': '#ffed4a',
+  'secondary-light': '#fff382',
+  'secondary-lighter': '#fff9c2',
+  'secondary-lightest': '#fcfbeb',
 }
 
 module.exports = {

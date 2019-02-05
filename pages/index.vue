@@ -5,9 +5,9 @@
     </div>
 
     <div class="my-6 mx-4">
-      <form class="flex items-center py-2 border-2 rounded-lg border-blue-dark">
+      <form class="flex items-center py-2 border-2 rounded-lg border-primary-dark">
         <input id="userid" v-model="userid" type="text" placeholder="Enter your tag" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
-        <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-yellow hover:bg-yellow-light border-yellow hover:border-yellow-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
+        <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
           Search
         </router-link>
       </form>
@@ -21,7 +21,7 @@
           :key="player.tag"
           tag="button"
           :to="{ name: 'player-userid', params: { userid: player.tag } }"
-          class="ml-2 text-yellow border-blue border-b-2 rounded">
+          class="ml-2 text-secondary border-primary border-b-2 rounded">
           {{ player.name }}
         </router-link>
       </p>
