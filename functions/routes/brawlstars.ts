@@ -1,8 +1,9 @@
-const cors = require('cors');
-const express = require('express');
-const BrawlStars = require('brawlstars');
-const cacheManager = require('cache-manager');
-const fsStore = require('cache-manager-fs-hash');
+import * as cors from 'cors';
+import * as express from 'express';
+import * as BrawlStars from 'brawlstars';
+import * as cacheManager from 'cache-manager';
+import * as fsStore from 'cache-manager-fs-hash';
+import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 
 const cacheSeconds = 60*5;
 const cachePath = process.env.CACHE_PATH || 'cache';
@@ -11,8 +12,12 @@ const token = process.env.BRAWLSTARS_TOKEN;
 if (token == undefined) throw new Error('Please set $BRAWLSTARS_TOKEN!');
 
 const cache = cacheDisable ?
-  cacheManager.caching({ store: 'memory', max: 0 }) :
   cacheManager.caching({
+    store: 'memory',
+    max: 0,
+    ttl: cacheSeconds
+  }) :
+  cacheManager.caching(<any>{
     store: fsStore,
     options: { path: cachePath, subdirs: true, },
   });
@@ -40,7 +45,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
     const data = await cache.wrap(`brawlstars-player-${tag}`, async () => {
       const player = await client.getPlayer(tag);
 
-      const heroes = {};
+      const heroes = {} as { [id: string]: Hero };
       player.brawlers.forEach((brawler) => {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         heroes[brawlerId] = {
@@ -65,7 +70,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 :'/images/brawlstars/icon/powerpoint.png'
             }
           }
-        };
+        } as Hero;
       });
 
       const stats = {
@@ -81,7 +86,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
           label: 'Experience Level',
           value: player.expLevel
         },
-      };
+      } as { [id: string]: PlayerStatistic };
 
       if (player.club != undefined) {
         stats.clubName = {
@@ -97,7 +102,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
       ;
 
       return {
-        tag: player.tag,
+        id: player.tag,
         name: player.name,
         minutesSpent,
         heroes,
@@ -113,7 +118,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 value: player.victories,
               }
             }
-          },
+          } as Mode,
           'soloShowdown': {
             label: 'Solo Showdown',
             icon: '/images/brawlstars/mode/icon/showdown.png',
@@ -124,7 +129,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 value: player.soloShowdownVictories,
               }
             }
-          },
+          } as Mode,
           'duoShowdown': {
             label: 'Duo Showdown',
             icon: '/images/brawlstars/mode/icon/duoshowdown.png',
@@ -135,7 +140,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 value: player.duoShowdownVictories,
               }
             }
-          },
+          } as Mode,
           'bossfight': {
             label: 'Bossfight',
             icon: '/images/brawlstars/mode/icon/bossfight.png',
@@ -146,7 +151,7 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 value: player.bestTimeAsBoss,
               }
             }
-          },
+          } as Mode,
           'roborumble': {
             label: 'Robo Rumble',
             icon: '/images/brawlstars/mode/icon/roborumble.png',
@@ -157,9 +162,9 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
                 value: player.bestRoboRumbleTime,
               }
             }
-          },
+          } as Mode,
         },
-      };
+      } as Player;
     }, { ttl: cacheSeconds });
 
     res.set('Cache-Control', `public, max-age=${cacheSeconds}`);
@@ -182,4 +187,4 @@ router.get('/player/:tag', cors(), async (req, res, next) => {
   });
 });
 
-module.exports = router;
+export default router;

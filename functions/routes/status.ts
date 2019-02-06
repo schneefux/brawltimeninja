@@ -1,5 +1,5 @@
-const cors = require('cors');
-const express = require('express');
+import * as cors from 'cors';
+import * as express from 'express';
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get('/', cors(), async (req, res) => {
   res.json({ 'status': 'ok' });
 });
 
-module.exports = router;
+export default router;

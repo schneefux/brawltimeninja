@@ -5,7 +5,7 @@ module.exports = {
   target: 'node',
   devtool: false,
   entry: {
-    api: './functions/serverless.js',
+    api: './functions/serverless.ts',
   },
   output: {
     filename: '[name].js',
@@ -13,8 +13,13 @@ module.exports = {
     libraryTarget: 'commonjs',
   },
   module: {
+    rules: [ {
+      test: /\.ts$/,
+      use: [ { loader: 'ts-loader', } ],
+      exclude: /node_modules/
+    } ],
   },
   resolve: {
-    extensions: [ '.js' ],
+    extensions: [ '.ts', '.js' ],
   },
 };

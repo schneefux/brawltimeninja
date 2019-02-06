@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev:api": "nodemon functions/server.js",
+    "dev:api": "nodemon --watch 'functions/**/*.ts' --exec ts-node functions/server.ts",
     "build": "nuxt build",
     "build:api": "webpack --mode production --config functions/webpack.config.js",
     "start": "nuxt start",
@@ -23,11 +23,18 @@
     "cache-manager-fs-hash": "0.0.7",
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
+    "dts-gen": "^0.5.7",
     "express": "^4.16.4",
-    "nuxt": "^2.3.4"
+    "nuxt": "^2.3.4",
+    "typescript": "^3.3.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",
+    "@types/aws-serverless-express": "^3.3.0",
+    "@types/cache-manager": "^1.2.6",
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.1",
+    "@types/node": "^10.12.21",
     "autoprefixer": "^8.6.4",
     "babel-eslint": "^8.2.1",
     "eslint": "^5.0.1",
@@ -43,6 +50,8 @@
     "tailwindcss": "^0.7.0",
     "tailwindcss-alpha": "^0.1.4",
     "tailwindcss-typography": "^1.0.2",
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.0.2",
     "webpack-cli": "^3.2.1"
   }
 }
