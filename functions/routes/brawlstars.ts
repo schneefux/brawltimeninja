@@ -1,8 +1,8 @@
-import * as cors from 'cors';
-import * as express from 'express';
-import * as BrawlStars from 'brawlstars';
-import * as cacheManager from 'cache-manager';
-import * as fsStore from 'cache-manager-fs-hash';
+import cors from 'cors';
+import express from 'express';
+import BrawlStars from 'brawlstars';
+import cacheManager from 'cache-manager';
+import fsStore from 'cache-manager-fs-hash';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 
 const cacheSeconds = 60*5;

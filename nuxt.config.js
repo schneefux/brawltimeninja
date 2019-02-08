@@ -26,6 +26,11 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/pwa'
   ],
+
+  router: {
+    middleware: 'ninja'
+  },
+
   axios: {
   },
 

@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <div class="flex-0 w-full md:w-auto md:mx-4 my-4">
+        <div class="flex-0 w-full md:w-auto md:mx-4 my-4" v-if="hasHeroes">
           <div
             :style="`background-image: url('${heroHighlight.icon}')`"
             class="card h-full flex flex-wrap md:flex-col justify-center bg-primary bg-contain bg-no-repeat bg-left-bottom">
@@ -100,6 +100,9 @@
 <script>
 export default {
   computed: {
+    hasHeroes() {
+      return this.player.heroes.length > 0
+    },
     heroHighlight() {
       return this.player.heroes[this.heroHighlightKey]
     },
@@ -153,7 +156,7 @@ export default {
     hoursTimer()
   },
   async asyncData({ params, $axios }) {
-    const player = await $axios.$get('/api/brawlstars/player/' + params.userid)
+    const player = await $axios.$get('/api/player/' + params.userid)
     return {
       player,
       heroHighlightIndex: 0,
