@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import statusRoute from './routes/status';
 import brawlstarsRoute from './routes/brawlstars';
-import vaingloryRoute from './routes/vainglory';
+//import vaingloryRoute from './routes/vainglory';
 
 function ninjaReroute(prefix: string) {
   return function(
@@ -21,6 +21,6 @@ export default function createApp(path: string = '/api'): express.Application {
   app.options('*', cors());
   app.use(ninjaReroute(path));
   app.use('/brawlstars' + path, brawlstarsRoute);
-  app.use('/vainglory' + path, vaingloryRoute);
+  //app.use('/vainglory' + path, vaingloryRoute);
   return app;
 }
