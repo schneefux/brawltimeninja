@@ -13,7 +13,7 @@ export default function createApp(path: string = '/api') {
   router.use(path + '/brawlstars', brawlstarsRouter.routes());
   router.use(path + '/vainglory', vaingloryRouter.routes());
 
-  app.use(cors());
+  app.use(cors({ origin: '*' })); // TODO for development only
   app.use(router.routes());
   return app;
 }
