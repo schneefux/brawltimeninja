@@ -1,6 +1,6 @@
 import Router from 'koa-router';
-import { Player as VaingloryPlayer } from '../VaingloryPlayer';
-import { Hero, PlayerStatistic, Mode, Player } from '../Player';
+import { Player as VaingloryPlayer } from '../model/VaingloryPlayer';
+import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
 const token = process.env.VAINGLORY_TOKEN || '';

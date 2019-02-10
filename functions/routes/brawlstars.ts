@@ -1,6 +1,6 @@
 import Router from 'koa-router';
-import { Player as BrawlstarsPlayer } from '../BrawlstarsPlayer';
-import { Hero, PlayerStatistic, Mode, Player } from '../Player';
+import { Player as BrawlstarsPlayer } from '../model/BrawlstarsPlayer';
+import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
 const token = process.env.BRAWLSTARS_TOKEN || '';
