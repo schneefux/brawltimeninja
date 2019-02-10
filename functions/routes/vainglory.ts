@@ -1,12 +1,15 @@
 import cors from 'cors';
 import express from 'express';
-import Vainglory from 'vainglory';
+import fetch from 'node-fetch';
+import { strict as assert } from 'assert';
+import { URLSearchParams, URL } from 'url';
+import { VaingloryPlayer } from '../VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 
 const token = process.env.VAINGLORY_TOKEN;
-if (token == undefined) throw new Error('Please set $VAINGLORY_TOKEN!');
+assert(token != undefined);
+const apiBase = 'https://api.dc01.gamelockerapp.com';
 
-const client = new Vainglory(token, { region: 'eu' });
 const router = express.Router();
 
 router.options('*', cors());
@@ -20,9 +23,19 @@ router.get('/featured-players', cors(), async (req, res) => {
 
 router.get('/player/:name', cors(), async (req, res, next) => {
   Promise.resolve().then(async function() {
-    const name = req.params.name;
-    const players = await client.players.getByName([name]);
-    const player = players.data[0];
+    const url = new URL('/shards/eu/players', apiBase);
+    const params = new URLSearchParams({
+      'filter[playerNames]': req.params.name,
+    });
+    url.search = params.toString();
+    const player = await fetch(url.toString(), {
+      headers: {
+        'X-Title-Id': 'semc-vainglory',
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.api+json',
+      }
+    }).then((res) => res.json())
+      .then((res) => res.data[0] as VaingloryPlayer);
 
     const heroes = {} as { [id: string]: Hero };
 
