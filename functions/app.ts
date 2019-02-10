@@ -10,9 +10,9 @@ export default function createApp(path: string = '/api') {
   const app = new Koa();
   const router = new Router();
 
-  router.use('/status', statusRouter.routes());
-  router.use('/brawlstars' + path, brawlstarsRouter.routes());
-  router.use('/vainglory' + path, vaingloryRouter.routes());
+  router.use(path + '/status', statusRouter.routes());
+  router.use(path + '/brawlstars', brawlstarsRouter.routes());
+  router.use(path + '/vainglory', vaingloryRouter.routes());
 
   app.use(cors());
   app.use(compress());
