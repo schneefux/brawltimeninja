@@ -4,6 +4,7 @@ import { strict as assert } from 'assert';
 import { URLSearchParams, URL } from 'url';
 import { Player as VaingloryPlayer } from '../VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
+import { request } from '../util';
 
 const token = process.env.VAINGLORY_TOKEN || '';
 assert(token != '');
@@ -20,19 +21,15 @@ router.get('/featured-players', async (ctx, next) => {
 });
 
 router.get('/player/:name', async (ctx, next) => {
-  const url = new URL('/shards/eu/players', apiBase);
-  const params = new URLSearchParams({
-    'filter[playerNames]': ctx.params.name,
-  });
-  url.search = params.toString();
-  const player = await fetch(url.toString(), {
-    headers: {
+  const players = await request('/shards/eu/players', apiBase,
+    { 'filter[playerNames]': ctx.params.name },
+    {
       'X-Title-Id': 'semc-vainglory',
       'Authorization': 'Bearer ' + token,
       'Accept': 'application/vnd.api+json',
     }
-  }).then((res) => res.json())
-    .then((res) => res.data[0]) as VaingloryPlayer;
+  ).then((json) => json.data) as VaingloryPlayer[];
+  const player = players[0];
 
   const heroes = {} as { [id: string]: Hero };
 

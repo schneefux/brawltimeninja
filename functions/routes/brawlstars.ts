@@ -1,9 +1,8 @@
 import Router from 'koa-router';
-import fetch from 'node-fetch';
 import { strict as assert } from 'assert';
-import { URLSearchParams, URL } from 'url';
 import { Player as BrawlstarsPlayer } from '../BrawlstarsPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
+import { request } from '../util';
 
 const token = process.env.BRAWLSTARS_TOKEN || '';
 assert(token != '');
@@ -27,16 +26,10 @@ router.get('/featured-players', async (ctx, next) => {
 });
 
 router.get('/player/:tag', async (ctx, next) => {
-  const url = new URL('player', apiBase);
-  const params = new URLSearchParams({
-    'tag': ctx.params.tag,
-  });
-  url.search = params.toString();
-  const player = await fetch(url.toString(), {
-    headers: {
-      'Authorization': token,
-    }
-  }).then((res) => res.json()) as BrawlstarsPlayer;
+  const player = await request('player', apiBase,
+    { 'tag': ctx.params.tag },
+    { 'Authorization': token }
+  ) as BrawlstarsPlayer;
 
   const heroes = {} as { [id: string]: Hero };
   player.brawlers.forEach((brawler) => {
