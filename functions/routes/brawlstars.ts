@@ -1,11 +1,10 @@
 import Router from 'koa-router';
-import { strict as assert } from 'assert';
 import { Player as BrawlstarsPlayer } from '../BrawlstarsPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 import { request } from '../util';
 
 const token = process.env.BRAWLSTARS_TOKEN || '';
-assert(token != '');
+if (token == '') throw new Error('Please set $BRAWLSTARS_TOKEN!');
 const apiBase = 'https://brawlapi.cf/api/';
 
 const router = new Router();

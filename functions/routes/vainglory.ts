@@ -1,13 +1,10 @@
 import Router from 'koa-router';
-import fetch from 'node-fetch';
-import { strict as assert } from 'assert';
-import { URLSearchParams, URL } from 'url';
 import { Player as VaingloryPlayer } from '../VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 import { request } from '../util';
 
 const token = process.env.VAINGLORY_TOKEN || '';
-assert(token != '');
+if (token == '') throw new Error('Please set $VAINGLORY_TOKEN!');
 const apiBase = 'https://api.dc01.gamelockerapp.com';
 
 const router = new Router();
