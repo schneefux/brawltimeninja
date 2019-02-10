@@ -101,7 +101,7 @@
 export default {
   computed: {
     hasHeroes() {
-      return this.player.heroes.length > 0
+      return Object.keys(this.player.heroes).length > 0
     },
     heroHighlight() {
       return this.player.heroes[this.heroHighlightKey]
