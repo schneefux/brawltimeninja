@@ -28,7 +28,6 @@ module.exports = {
   ],
 
   router: {
-    middleware: 'ninja'
   },
 
   axios: {
@@ -46,5 +45,9 @@ module.exports = {
         })
       }
     }
-  }
+  },
+
+  env: {
+    app: process.env.NINJA_APP || 'brawlstars',
+  },
 }

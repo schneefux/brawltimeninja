@@ -155,8 +155,8 @@ export default {
     }, 50)
     hoursTimer()
   },
-  async asyncData({ params, $axios }) {
-    const player = await $axios.$get('/api/brawlstars/player/' + params.userid)
+  async asyncData({ params, $axios, env }) {
+    const player = await $axios.$get(`/api/${env.app}/player/${params.userid}`)
     return {
       player,
       heroHighlightIndex: 0,

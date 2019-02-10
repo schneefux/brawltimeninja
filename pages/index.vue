@@ -46,8 +46,8 @@ export default {
       }
     }
   },
-  async asyncData({ $axios }) {
-    const demoPlayers = await $axios.$get('/api/brawlstars/featured-players')
+  async asyncData({ $axios, env }) {
+    const demoPlayers = await $axios.$get(`/api/${env.app}/featured-players`)
     return {
       demoPlayers
     }
