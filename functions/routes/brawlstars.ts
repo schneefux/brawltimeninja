@@ -1,12 +1,15 @@
 import cors from 'cors';
 import express from 'express';
-import BrawlStars from 'brawlstars';
+import fetch from 'node-fetch';
+import { strict as assert } from 'assert';
+import { URLSearchParams, URL } from 'url';
+import { Player as BrawlstarsPlayer } from '../BrawlstarsPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 
-const token = process.env.BRAWLSTARS_TOKEN;
-if (token == undefined) throw new Error('Please set $BRAWLSTARS_TOKEN!');
+const token = process.env.BRAWLSTARS_TOKEN || '';
+assert(token != '');
+const apiBase = 'https://brawlapi.cf/api/';
 
-const client = new BrawlStars.Client({ token });
 const router = express.Router();
 
 router.options('*', cors());
@@ -26,8 +29,16 @@ router.get('/featured-players', cors(), async (req, res) => {
 
 router.get('/player/:tag', cors(), async (req, res, next) => {
   Promise.resolve().then(async function() {
-    const tag = req.params.tag;
-    const player = await client.getPlayer(tag);
+    const url = new URL('player', apiBase);
+    const params = new URLSearchParams({
+      'tag': req.params.tag,
+    });
+    url.search = params.toString();
+    const player = await fetch(url.toString(), {
+      headers: {
+        'Authorization': token,
+      }
+    }).then((res) => res.json()) as BrawlstarsPlayer;
 
     const heroes = {} as { [id: string]: Hero };
     player.brawlers.forEach((brawler) => {

@@ -3,11 +3,11 @@ import express from 'express';
 import fetch from 'node-fetch';
 import { strict as assert } from 'assert';
 import { URLSearchParams, URL } from 'url';
-import { VaingloryPlayer } from '../VaingloryPlayer';
+import { Player as VaingloryPlayer } from '../VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../Player';
 
-const token = process.env.VAINGLORY_TOKEN;
-assert(token != undefined);
+const token = process.env.VAINGLORY_TOKEN || '';
+assert(token != '');
 const apiBase = 'https://api.dc01.gamelockerapp.com';
 
 const router = express.Router();
@@ -35,7 +35,7 @@ router.get('/player/:name', cors(), async (req, res, next) => {
         'Accept': 'application/vnd.api+json',
       }
     }).then((res) => res.json())
-      .then((res) => res.data[0] as VaingloryPlayer);
+      .then((res) => res.data[0]) as VaingloryPlayer;
 
     const heroes = {} as { [id: string]: Hero };
 

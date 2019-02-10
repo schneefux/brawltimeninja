@@ -1,6 +1,12 @@
-export interface VaingloryPlayer {
+interface Entity {
   type: string;
   id: string;
+  attributes: {
+    [attribute: string]: any;
+  }
+}
+
+export interface Player extends Entity {
   attributes: {
     createdAt: string;
     name: string;
