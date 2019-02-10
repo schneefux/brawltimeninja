@@ -1,12 +1,10 @@
-import cors from 'cors';
-import express from 'express';
+import Router from 'koa-router';
 
-const router = express.Router();
+const router = new Router();
 
-router.options('*', cors());
-
-router.get('/', cors(), async (req, res) => {
-  res.json({ 'status': 'ok' });
+router.get('/', async (ctx, next) => {
+  ctx.body = ({ 'status': 'ok' });
+  await next();
 });
 
 export default router;

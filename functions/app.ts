@@ -1,29 +1,19 @@
-import cors from 'cors';
-import express from 'express';
-import statusRoute from './routes/status';
-import brawlstarsRoute from './routes/brawlstars';
-import vaingloryRoute from './routes/vainglory';
+import Koa from 'koa';
+import cors from '@koa/cors';
+import Router from 'koa-router';
+import statusRouter from './routes/status';
+import brawlstarsRouter from './routes/brawlstars';
+import vaingloryRouter from './routes/vainglory';
 
-function ninjaReroute(prefix: string) {
-  return function(
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction) {
-    const ninjaApp = req.get('Ninja-App');
-    if (ninjaApp != undefined) {
-      req.url = '/' + ninjaApp + req.path;
-    }
-    next();
-  }
-}
+export default function createApp(path: string = '/api') {
+  const app = new Koa();
+  const router = new Router();
 
-export default function createApp(path: string = '/api'): express.Application {
-  const app = express();
-  app.use(path + '/status', statusRoute);
+  router.use('/status', statusRouter.routes());
+  router.use('/brawlstars' + path, brawlstarsRouter.routes());
+  router.use('/vainglory' + path, vaingloryRouter.routes());
 
-  app.options('*', cors());
-  app.use(ninjaReroute(path));
-  app.use('/brawlstars' + path, brawlstarsRoute);
-  app.use('/vainglory' + path, vaingloryRoute);
+  app.use(cors());
+  app.use(router.routes());
   return app;
 }
