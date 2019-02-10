@@ -9,6 +9,13 @@ const apiBase = 'https://api.dc01.gamelockerapp.com';
 
 const router = new Router();
 
+router.get('/labels', async (ctx, next) => {
+  ctx.body = {
+    'appTitle': 'Vainglory',
+  };
+  await next();
+});
+
 router.get('/featured-players', async (ctx, next) => {
   ctx.body = [{
     name: 'shutterfly',

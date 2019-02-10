@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="text-center font-sans">
-      <h1>How much time on Brawl Stars?</h1>
+      <h1>How much time on {{ labels.appTitle }}?</h1>
     </div>
 
     <div class="my-6 mx-4">
@@ -48,9 +48,11 @@ export default {
   },
   async asyncData({ $axios, env }) {
     const demoPlayers = await $axios.$get(`/api/${env.app}/featured-players`)
+    const labels = await $axios.$get(`/api/${env.app}/labels`)
     return {
-      demoPlayers
+      demoPlayers,
+      labels,
     }
-  }
+  },
 }
 </script>

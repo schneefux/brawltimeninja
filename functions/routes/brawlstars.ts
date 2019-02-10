@@ -9,8 +9,15 @@ const apiBase = 'https://brawlapi.cf/api/';
 
 const router = new Router();
 
+router.get('/labels', async (ctx, next) => {
+  ctx.body = {
+    'appTitle': 'Brawl Stars',
+  };
+  await next();
+});
+
 router.get('/featured-players', async (ctx, next) => {
-  ctx.body = ([{
+  ctx.body = [{
     name: 'xXcuzMePlisThXx',
     tag: 'V8LLPPC'
   }, {
@@ -19,7 +26,7 @@ router.get('/featured-players', async (ctx, next) => {
   }, {
     name: 'Landi',
     tag: 'V9QGJY9'
-  }]);
+  }];
 
   await next();
 });

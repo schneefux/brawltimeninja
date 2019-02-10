@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between">
     <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
-        Brawl Stars Time Ninja
+        {{ labels.appTitle }} Time Ninja
       </nuxt-link>
     </nav>
 
@@ -15,3 +15,20 @@
     </footer>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      labels: {
+        appTitle: 'Online',
+      },
+    }
+  },
+  mounted() {
+    this.$axios.$get(`/api/${process.env.app}/labels`).then((labels) => {
+      this.labels = labels
+    })
+  },
+}
+</script>
