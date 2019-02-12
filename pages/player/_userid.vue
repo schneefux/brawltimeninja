@@ -93,6 +93,29 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-4 flex flex-wrap justify-center">
+        <div
+          class="md:mx-2 my-4"
+          v-for="(hero, heroId) in player.heroes"
+          :key="heroId">
+          <div
+            :style="`background-image: url('${hero.icon}')`"
+            class="card flex justify-between md:justify-end bg-primary bg-contain bg-no-repeat bg-left-bottom">
+            <span class="w-32 text-shadow card-header py-2 px-4">{{ hero.label }}</span>
+            <div class="py-2 px-4">
+              <p
+                v-for="(stat, statName) in hero.stats"
+                :key="statName"
+                class="card-props">
+                <img class="card-prop-icon" :src="stat.icon">
+                <span class="card-prop-value">{{ stat.value }}</span>
+                <span class="card-prop-label">{{ stat.label }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
