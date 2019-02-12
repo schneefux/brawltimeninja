@@ -6,10 +6,11 @@ export interface Id {
 export interface Brawler {
     name: string;
     hasSkin: boolean;
-    skin: string;
+    skin: string|null;
     trophies: number;
     highestTrophies: number;
-    level: number;
+    power: number;
+    rank: number;
 }
 
 export interface Club {
@@ -41,8 +42,8 @@ export interface Player {
     highestTrophies: number;
     avatarId: number;
     avatarUrl: string;
-    bestTimeAsBoss: string;
+    bestTimeAsBigBrawler: string;
     bestRoboRumbleTime: string;
     hasSkins: boolean;
-    club: Club;
+    club: Club|null;
 }

@@ -56,8 +56,8 @@ router.get('/player/:tag', async (ctx, next) => {
         },
         level: {
           label: 'Power Level',
-          value: brawler.level,
-          icon: brawler.level == 10?
+          value: brawler.power,
+          icon: brawler.power == 10?
             '/images/brawlstars/icon/starpower.png'
             :'/images/brawlstars/icon/powerpoint.png'
         }
@@ -140,7 +140,7 @@ router.get('/player/:tag', async (ctx, next) => {
         stats: {
           minutes: {
             label: 'survived',
-            value: player.bestTimeAsBoss,
+            value: player.bestTimeAsBigBrawler,
           }
         }
       } as Mode,
