@@ -45,12 +45,12 @@ router.get('/player/:tag', async (ctx, next) => {
       icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
       stats: {
         trophies: {
-          label: 'Current Trophies',
+          label: 'Trophies',
           value: brawler.trophies,
           icon: '/images/brawlstars/icon/trophy.png'
         },
         maxTrophies: {
-          label: 'Max Trophies',
+          label: 'Trophies Max',
           value: brawler.highestTrophies,
           icon: '/images/brawlstars/icon/trophy.png'
         },
