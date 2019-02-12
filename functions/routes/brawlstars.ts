@@ -44,6 +44,11 @@ router.get('/player/:tag', async (ctx, next) => {
       label: brawler.name,
       icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
       stats: {
+        rank: {
+          label: 'Rank',
+          value: brawler.rank,
+          icon: '/images/brawlstars/icon/leaderboards.png'
+        },
         trophies: {
           label: 'Trophies',
           value: brawler.trophies,
