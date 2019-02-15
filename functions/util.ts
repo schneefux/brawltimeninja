@@ -24,10 +24,10 @@ const agent = new Agent({
   keepAliveMsecs: 90*60,
 });
 
-export function request(path: string,
+export function request<T>(path: string,
     base: string,
     params: { [key: string]: string },
-    headers: { [header: string]: string }) {
+    headers: { [header: string]: string }): Promise<T> {
 
   const url = new URL(path, base);
   const urlParams = new URLSearchParams(params);

@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { Player as VaingloryPlayer } from '../model/VaingloryPlayer';
+import { Player as VaingloryPlayer, ResponseCollection } from '../model/VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
@@ -25,15 +25,17 @@ router.get('/featured-players', async (ctx, next) => {
 });
 
 router.get('/player/:name', async (ctx, next) => {
-  const players = await request('/shards/eu/players', apiBase,
+  const players = await request<ResponseCollection<VaingloryPlayer>>(
+    '/shards/eu/players',
+    apiBase,
     { 'filter[playerNames]': ctx.params.name },
     {
       'X-Title-Id': 'semc-vainglory',
       'Authorization': 'Bearer ' + token,
       'Accept': 'application/vnd.api+json',
     }
-  ).then((json) => json.data) as VaingloryPlayer[];
-  const player = players[0];
+  );
+  const player = players.data[0];
 
   const heroes = {} as { [id: string]: Hero };
 

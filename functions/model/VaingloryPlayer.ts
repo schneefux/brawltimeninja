@@ -1,3 +1,7 @@
+export interface ResponseCollection<T> {
+  data: T[];
+}
+
 interface Entity {
   type: string;
   id: string;

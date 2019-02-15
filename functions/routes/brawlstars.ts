@@ -32,10 +32,12 @@ router.get('/featured-players', async (ctx, next) => {
 });
 
 router.get('/player/:tag', async (ctx, next) => {
-  const player = await request('player', apiBase,
+  const player = await request<BrawlstarsPlayer>(
+    'player',
+    apiBase,
     { 'tag': ctx.params.tag },
     { 'Authorization': token }
-  ) as BrawlstarsPlayer;
+  );
 
   const heroes = {} as { [id: string]: Hero };
   player.brawlers.forEach((brawler) => {
