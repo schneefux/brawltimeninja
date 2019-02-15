@@ -1,6 +1,6 @@
 export interface HeroStatistic {
     label: string;
-    value: number;
+    value: number | string;
     icon: string;
 }
 
