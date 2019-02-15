@@ -38,6 +38,11 @@ export function request(path: string,
       headers,
       agent,
       compress: true,
-    }).then((response) => response.json())
+    }).then((response) => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response.json();
+    })
   );
 }
