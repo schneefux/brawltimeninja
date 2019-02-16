@@ -39,7 +39,7 @@
       <div class="mt-2 flex flex-wrap justify-center">
         <div class="flex-1 flex flex-wrap">
           <div
-            class="w-full lg:w-1/2"
+            class="w-full lg:w-1/2 mx-auto"
             v-for="(mode, modeName) in player.modes"
             :key="modeName">
             <div
