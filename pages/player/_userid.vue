@@ -1,10 +1,10 @@
 <template>
   <div class="container mx-auto p-4">
-    <div class="font-sans">
+    <div class="font-sans py-2">
       <h1>Statistics for <span class="text-secondary">{{ player.name }}</span></h1>
     </div>
 
-    <div class="md:mx-6 my-6">
+    <div class="md:mx-6">
       <div class="mx-8 my-6 text-center items-center justify-between flex flex-wrap">
         <div class="mx-auto md:mx-0 my-2">
           <p class="text-5xl text-secondary font-bold">{{ hoursSpent }}</p>
@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="mt-2 md:mx-2 flex flex-wrap border border-grey rounded py-4 px-6">
+      <div class="my-4 md:mx-2 flex flex-wrap border border-grey rounded py-4 px-6">
         <p
           v-for="(stat, statName) in player.stats"
           :key="statName"
@@ -36,7 +36,7 @@
         </p>
       </div>
 
-      <div class="mt-2 flex flex-wrap justify-center">
+      <div class="my-4 flex flex-wrap justify-center">
         <div class="flex-1 flex flex-wrap">
           <div
             class="w-full lg:w-1/2 mx-auto"
@@ -44,7 +44,7 @@
             :key="modeName">
             <div
               :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
-              class="card mx-auto md:mx-2 my-4 bg-center bg-cover flex flex-wrap justify-between">
+              class="card mx-auto md:mx-4 my-4 bg-center bg-cover flex flex-wrap justify-between">
               <div class="card-content">
                 <div class="card-header">{{ mode.label }}</div>
                 <p
@@ -63,9 +63,9 @@
         </div>
       </div>
 
-      <div class="mt-4 flex flex-wrap justify-center">
+      <div class="my-4 flex flex-wrap justify-center">
         <div
-          class="md:mx-2 my-4 w-full md:w-auto"
+          class="md:mx-4 my-4 w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
