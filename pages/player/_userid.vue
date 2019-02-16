@@ -109,25 +109,14 @@ export default {
       return {
         kwh: {
           // https://www.quora.com/How-many-watts-an-hour-does-a-phone-use
-          label: 'kWh battery',
+          label: 'kWh battery spent',
           value: Math.floor(this.hoursSpent * 2.5)
         },
         toiletBreaks: {
           // https://www.bladderandbowel.org/bladder/bladder-conditions-and-symptoms/frequency/
-          label: 'toilet breaks',
+          label: 'toilet breaks taken',
           value: Math.floor(this.hoursSpent / 7)
         },
-        pizzaKg: {
-          // https://www.reference.com/food/much-large-pizza-weigh-7eb566c27f4ddc14
-          // assuming a person eats every 6h
-          label: 'kg pizza',
-          value: Math.floor(this.hoursSpent / 6 * 0.500)
-        },
-        distanceWalked: {
-          // assuming a person walks 7km/h
-          label: 'km walked',
-          value: Math.floor(this.hoursSpent / 7)
-        }
       }
     }
   },
