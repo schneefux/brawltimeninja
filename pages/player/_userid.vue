@@ -65,13 +65,13 @@
 
       <div class="mt-4 flex flex-wrap justify-center">
         <div
-          class="md:mx-2 my-4"
+          class="md:mx-2 my-4 w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
             :style="`background-image: url('${hero.icon}')`"
             class="card flex justify-between md:justify-end bg-primary-dark bg-contain bg-no-repeat bg-left-bottom">
-            <span class="w-32 text-shadow card-header py-2 px-4">{{ hero.label }}</span>
+            <span class="w-32 font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
             <div class="py-2 px-4">
               <table>
                 <tr
