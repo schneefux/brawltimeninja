@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="mx-8 flex flex-wrap">
+      <div class="mt-2 md:mx-2 flex flex-wrap border border-grey rounded py-4 px-6">
         <p
           v-for="(stat, statName) in player.stats"
           :key="statName"
@@ -36,7 +36,7 @@
         </p>
       </div>
 
-      <div class="flex flex-wrap justify-center">
+      <div class="mt-2 flex flex-wrap justify-center">
         <div class="flex-1 flex flex-wrap">
           <div
             class="w-full lg:w-1/2"
