@@ -61,37 +61,6 @@
             </div>
           </div>
         </div>
-
-        <div class="flex-0 w-full md:w-auto md:mx-4 my-4" v-if="hasHeroes">
-          <div
-            :style="`background-image: url('${heroHighlight.icon}')`"
-            class="card h-full flex flex-wrap md:flex-col justify-center bg-primary bg-contain bg-no-repeat bg-left-bottom">
-            <span class="text-shadow md:text-shadow-0 flex-grow md:flex-initial card-header px-4 pt-4 pb-2 md:bg-primary">{{ heroHighlight.label }}</span>
-            <div class="pl-2 pr-4 pb-2 mb-2 md:px-4 md:m-0 bg-primary-75 md:bg-primary rounded-bl md:rounded-none">
-              <p
-                v-for="(stat, statName) in heroHighlight.stats"
-                :key="statName"
-                class="card-props">
-                <img class="card-prop-icon" :src="stat.icon">
-                <span class="card-prop-value">{{ stat.value }}</span>
-                <span class="card-prop-label">{{ stat.label }}</span>
-              </p>
-            </div>
-            <div class="md:flex-grow"></div>
-            <div class="w-48 md:w-24 my-2 mx-auto flex flex-wrap justify-center">
-              <button
-                v-for="(data, hero, index) in player.heroes"
-                :key="hero"
-                @click="heroHighlightIndex = index"
-                class="p-1 mr-1 mb-1 hover:border-primary hover:bg-primary border-2 rounded-full"
-                :class="{
-                  'border-primary-darker bg-primary-darker': heroHighlightIndex == index,
-                  'border-secondary-dark bg-secondary-dark': heroHighlightIndex != index,
-                }"
-                type="button"></button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="mt-4 flex flex-wrap justify-center">
