@@ -73,14 +73,18 @@
             class="card flex justify-between md:justify-end bg-primary-dark bg-contain bg-no-repeat bg-left-bottom">
             <span class="w-32 text-shadow card-header py-2 px-4">{{ hero.label }}</span>
             <div class="py-2 px-4">
-              <p
-                v-for="(stat, statName) in hero.stats"
-                :key="statName"
-                class="card-props">
-                <img class="card-prop-icon" :src="stat.icon">
-                <span class="card-prop-value">{{ stat.value }}</span>
-                <span class="card-prop-label">{{ stat.label }}</span>
-              </p>
+              <table>
+                <tr
+                  v-for="(stat, statName) in hero.stats"
+                  :key="statName"
+                  class="card-props">
+                  <td class="text-center">
+                    <img class="card-prop-icon" :src="stat.icon">
+                  </td>
+                  <td class="card-prop-value text-right pr-1">{{ stat.value }}</td>
+                  <td class="card-prop-label">{{ stat.label }}</td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
