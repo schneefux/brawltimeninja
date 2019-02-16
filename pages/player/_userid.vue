@@ -70,7 +70,7 @@
           :key="heroId">
           <div
             :style="`background-image: url('${hero.icon}')`"
-            class="card flex justify-between md:justify-end bg-primary bg-contain bg-no-repeat bg-left-bottom">
+            class="card flex justify-between md:justify-end bg-primary-dark bg-contain bg-no-repeat bg-left-bottom">
             <span class="w-32 text-shadow card-header py-2 px-4">{{ hero.label }}</span>
             <div class="py-2 px-4">
               <p
