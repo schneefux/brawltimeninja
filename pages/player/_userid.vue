@@ -1,17 +1,17 @@
 <template>
   <div class="container mx-auto p-4">
-    <div class="font-sans py-2">
+    <div class="section-heading">
       <h1>Statistics for <span class="text-secondary">{{ player.name }}</span></h1>
     </div>
 
-    <div class="md:mx-6">
-      <div class="mx-8 my-6 text-center items-center justify-between flex flex-wrap">
-        <div class="mx-auto md:mx-0 my-2">
+    <div class="section">
+      <div class="section text-center items-center flex flex-wrap">
+        <div class="mx-auto md:mx-0">
           <p class="text-5xl text-secondary font-bold">{{ hoursSpent }}</p>
           <p class="text-3xl text-white">hours spent</p>
         </div>
 
-        <p class="w-full md:w-auto text-xl my-1 mx-auto">
+        <p class="w-full md:w-auto text-xl my-4 mx-auto">
           which equals to
         </p>
 
@@ -19,14 +19,16 @@
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
-            class="mx-auto md:mx-2 my-2">
+            class="mx-auto md:mx-2 my-3">
             <p class="text-3xl text-secondary font-bold">{{ stat.value }}</p>
             <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="my-4 md:mx-2 flex flex-wrap border border-grey rounded py-4 px-6">
+    <div class="section">
+      <div class="md:mx-4 flex flex-wrap border border-grey rounded py-4 px-6">
         <p
           v-for="(stat, statName) in player.stats"
           :key="statName"
@@ -35,37 +37,47 @@
           <span class="text-primary-lighter float-right md:float-none">{{ stat.value }}</span>
         </p>
       </div>
+    </div>
 
-      <div class="my-4 flex flex-wrap justify-center">
-        <div class="flex-1 flex flex-wrap">
+    <div class="section-heading">
+      <h2>Game Modes</h2>
+    </div>
+
+    <div class="section">
+      <div class="flex flex-wrap">
+        <div
+          class="w-full md:w-1/2 card-wrapper mx-auto"
+          v-for="(mode, modeName) in player.modes"
+          :key="modeName">
           <div
-            class="w-full lg:w-1/2 mx-auto"
-            v-for="(mode, modeName) in player.modes"
-            :key="modeName">
-            <div
-              :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
-              class="card mx-auto md:mx-4 my-4 bg-center bg-cover flex flex-wrap justify-between">
-              <div class="card-content">
-                <div class="card-header">{{ mode.label }}</div>
-                <p
-                  v-for="(stat, statName) in mode.stats"
-                  :key="statName"
-                  class="card-props mt-2">
-                  <span class="card-prop-value">{{ stat.value }}</span>
-                  <span class="card-prop-label">{{ stat.label }}</span>
-                </p>
-              </div>
-              <img
-                class="h-12 self-center mx-6 my-4"
-                :src="mode.icon">
+            :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
+            class="card bg-center bg-cover flex flex-wrap justify-between">
+            <div class="card-content">
+              <div class="card-header">{{ mode.label }}</div>
+              <p
+                v-for="(stat, statName) in mode.stats"
+                :key="statName"
+                class="card-props mt-2">
+                <span class="card-prop-value">{{ stat.value }}</span>
+                <span class="card-prop-label">{{ stat.label }}</span>
+              </p>
             </div>
+            <img
+              class="h-12 self-center mx-6 my-4"
+              :src="mode.icon">
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="my-4 flex flex-wrap justify-center">
+    <div class="section-heading">
+      <h2>Brawlers</h2>
+    </div>
+
+    <div class="section">
+      <div class="flex flex-wrap justify-center">
         <div
-          class="md:mx-4 my-4 w-full md:w-auto"
+          class="card-wrapper w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
@@ -166,6 +178,15 @@ export default {
 </script>
 
 <style>
+.card-wrapper {
+  @apply my-3;
+}
+@screen md {
+  .card-wrapper {
+    @apply px-4;
+  }
+}
+
 .card {
   @apply rounded overflow-hidden shadow-lg;
 }
@@ -188,5 +209,18 @@ export default {
 
 .card-prop-value {
   @apply font-medium;
+}
+
+.section-heading {
+  @apply font-sans mt-8;
+}
+
+.section {
+  @apply mt-4;
+}
+@screen md {
+  .section {
+    @apply mx-8;
+  }
 }
 </style>
