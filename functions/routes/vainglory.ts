@@ -122,7 +122,11 @@ router.get('/player/:name', async (ctx, next) => {
     },
   } as { [id: string]: PlayerStatistic };
 
-  const minutesSpent = 1;
+  const pasgp = player.attributes.stats.gamesPlayed;
+  const minutesSpent = (pasgp['ranked'] + pasgp['casual']) * 20
+    + (pasgp['casual_5v5'] + pasgp['ranked_5v5']) * 25
+    + (pasgp['blitz'] + pasgp['blitz_rounds']) * 5
+    + pasgp['aral'] * 15;
 
   const data = {
     id: player.id,
