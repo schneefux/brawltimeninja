@@ -152,7 +152,7 @@ router.get('/player/:name', async (ctx, next) => {
       casual: {
         label: '3v3 Casual',
         icon: '',
-        background: '',
+        background: '/images/vainglory/mode/background/halcyon_fold.png',
         stats: {
           played: {
             label: 'Games',
@@ -163,11 +163,55 @@ router.get('/player/:name', async (ctx, next) => {
       ranked: {
         label: '3v3 Ranked',
         icon: '',
-        background: '',
+        background: '/images/vainglory/mode/background/halcyon_fold.png',
         stats: {
           played: {
             label: 'Games',
             value: player.attributes.stats.gamesPlayed.ranked,
+          }
+        }
+      } as Mode,
+      casual5v5: {
+        label: '5v5 Casual',
+        icon: '',
+        background: '/images/vainglory/mode/background/sovereigns_rise.png',
+        stats: {
+          played: {
+            label: 'Games',
+            value: player.attributes.stats.gamesPlayed.casual_5v5,
+          }
+        }
+      } as Mode,
+      ranked5v5: {
+        label: '5v5 Ranked',
+        icon: '',
+        background: '/images/vainglory/mode/background/sovereigns_rise.png',
+        stats: {
+          played: {
+            label: 'Games',
+            value: player.attributes.stats.gamesPlayed.ranked_5v5,
+          }
+        }
+      } as Mode,
+      blitz: {
+        label: 'Blitz',
+        icon: '/images/vainglory/mode/icon/blitz.png',
+        background: '/images/vainglory/mode/background/halcyon_fold.png',
+        stats: {
+          played: {
+            label: 'Games',
+            value: player.attributes.stats.gamesPlayed.blitz,
+          }
+        }
+      } as Mode,
+      aral: {
+        label: 'ARAL',
+        icon: '',
+        background: '/images/vainglory/mode/background/halcyon_fold.png',
+        stats: {
+          played: {
+            label: 'Games',
+            value: player.attributes.stats.gamesPlayed.aral,
           }
         }
       } as Mode,
