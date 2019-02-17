@@ -83,7 +83,7 @@ async function getMatchStatistics(id: string) {
     });
 
     return [...lastMatchStatsByHero.entries()];
-  });
+  }).catch(() => []);
 }
 
 router.get('/player/:name', async (ctx, next) => {
