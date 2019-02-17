@@ -40,37 +40,39 @@ router.get('/player/:tag', async (ctx, next) => {
   );
 
   const heroes = {} as { [id: string]: Hero };
-  player.brawlers.forEach((brawler) => {
-    const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
-    heroes[brawlerId] = {
-      label: brawler.name,
-      icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
-      stats: {
-        rank: {
-          label: 'Rank',
-          value: brawler.rank,
-          icon: '/images/brawlstars/icon/leaderboards.png'
-        },
-        trophies: {
-          label: 'Trophies',
-          value: brawler.trophies,
-          icon: '/images/brawlstars/icon/trophy.png'
-        },
-        maxTrophies: {
-          label: 'Max Trophies',
-          value: brawler.highestTrophies,
-          icon: '/images/brawlstars/icon/trophy.png'
-        },
-        level: {
-          label: 'Power Level',
-          value: brawler.power,
-          icon: brawler.power == 10?
-            '/images/brawlstars/icon/starpower.png'
-            :'/images/brawlstars/icon/powerpoint.png'
+  player.brawlers
+    .sort((b1, b2) => b2.highestTrophies - b1.highestTrophies)
+    .forEach((brawler) => {
+      const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
+      heroes[brawlerId] = {
+        label: brawler.name,
+        icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
+        stats: {
+          rank: {
+            label: 'Rank',
+            value: brawler.rank,
+            icon: '/images/brawlstars/icon/leaderboards.png'
+          },
+          trophies: {
+            label: 'Trophies',
+            value: brawler.trophies,
+            icon: '/images/brawlstars/icon/trophy.png'
+          },
+          maxTrophies: {
+            label: 'Max Trophies',
+            value: brawler.highestTrophies,
+            icon: '/images/brawlstars/icon/trophy.png'
+          },
+          level: {
+            label: 'Power Level',
+            value: brawler.power,
+            icon: brawler.power == 10?
+              '/images/brawlstars/icon/starpower.png'
+              :'/images/brawlstars/icon/powerpoint.png'
+          }
         }
-      }
-    } as Hero;
-  });
+      } as Hero;
+    });
 
   const stats = {
     trophies: {
