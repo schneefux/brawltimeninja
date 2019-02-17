@@ -5,7 +5,7 @@
     </div>
 
     <div class="section">
-      <div class="section text-center items-center flex flex-wrap">
+      <div class="section text-center items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0">
           <p class="text-5xl text-secondary font-bold">{{ hoursSpent }}</p>
           <p class="text-3xl text-white">hours spent</p>
