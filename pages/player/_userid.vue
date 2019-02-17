@@ -109,7 +109,7 @@ export default {
       return {
         kwh: {
           // https://www.quora.com/How-many-watts-an-hour-does-a-phone-use
-          label: 'kWh battery spent',
+          label: 'kWh battery used',
           value: Math.floor(this.hoursSpent * 2.5)
         },
         toiletBreaks: {
