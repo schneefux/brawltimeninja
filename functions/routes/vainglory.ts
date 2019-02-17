@@ -220,6 +220,7 @@ router.get('/player/:name', async (ctx, next) => {
 
   ctx.set('Cache-Control', 'public, max-age=300');
   ctx.body = data;
+  await next();
 });
 
 export default router;

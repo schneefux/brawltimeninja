@@ -195,6 +195,7 @@ router.get('/player/:tag', async (ctx, next) => {
 
   ctx.set('Cache-Control', 'public, max-age=300');
   ctx.body = data;
+  await next();
 });
 
 export default router;
