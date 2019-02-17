@@ -102,11 +102,32 @@ router.get('/player/:tag', async (ctx, next) => {
     player.duoShowdownVictories * 5 * 3 // 1/5 win rate * 3mins
   ;
 
+  const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
+    .map((o) => o[prop])
+    .reduce((agg, cur) => agg + cur, 0)
+    / arr.length;
+
+  const heroStats = {
+    averageTrophies: {
+      label: 'Average Trophies',
+      value: Math.floor(avgProp('trophies')(player.brawlers))
+    },
+    averageRank: {
+      label: 'Average Rank',
+      value: Math.floor(avgProp('rank')(player.brawlers))
+    },
+    averagePower: {
+      label: 'Average Power',
+      value: Math.floor(avgProp('power')(player.brawlers))
+    },
+  } as { [id: string]: PlayerStatistic };
+
   const data = {
     id: player.tag,
     name: player.name,
     minutesSpent,
     heroes,
+    heroStats,
     stats,
     modes: {
       '3v3': {

@@ -27,16 +27,8 @@
       </div>
     </div>
 
-    <div class="section">
-      <div class="md:mx-4 flex flex-wrap border border-grey rounded py-4 px-6">
-        <p
-          v-for="(stat, statName) in player.stats"
-          :key="statName"
-          class="text-xl my-1 w-full md:w-auto md:mx-auto">
-          <span>{{ stat.label }}</span>
-          <span class="text-primary-lighter float-right md:float-none">{{ stat.value }}</span>
-        </p>
-      </div>
+    <div class="section" v-if="player.stats">
+      <player-statistics :stats="player.stats" />
     </div>
 
     <div class="section-heading">
@@ -74,6 +66,10 @@
       <h2>Brawlers</h2>
     </div>
 
+    <div class="section" v-if="player.heroStats">
+      <player-statistics :stats="player.heroStats" />
+    </div>
+
     <div class="section">
       <div class="flex flex-wrap justify-center">
         <div
@@ -106,7 +102,13 @@
 </template>
 
 <script>
+import PlayerStatistics from '~/components/player-statistics'
+
 export default {
+  name: 'ProfilePage',
+  components: {
+    PlayerStatistics,
+  },
   computed: {
     hasHeroes() {
       return Object.keys(this.player.heroes).length > 0

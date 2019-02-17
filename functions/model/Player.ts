@@ -1,17 +1,16 @@
-export interface HeroStatistic {
+export interface Statistic {
     label: string;
     value: number | string;
+}
+
+export interface HeroStatistic extends Statistic {
     icon: string;
 }
 
-export interface PlayerStatistic {
-    label: string;
-    value: number | string;
+export interface PlayerStatistic extends Statistic {
 }
 
-export interface ModeStatistic {
-    label: string;
-    value: number | string;
+export interface ModeStatistic extends Statistic {
 }
 
 export interface Mode {
@@ -38,6 +37,9 @@ export interface Player {
     heroes: {
         [id: string]: Hero;
     };
+    heroStats?: {
+        [id: string]: PlayerStatistic;
+    }
     modes: {
         [id: string]: Mode;
     };
