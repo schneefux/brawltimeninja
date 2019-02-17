@@ -109,6 +109,10 @@ router.get('/player/:tag', async (ctx, next) => {
     / arr.length;
 
   const heroStats = {
+    averageVictories: {
+      label: 'Average 3v3 Victories',
+      value: Math.floor(player.victories / player.brawlers.length)
+    },
     averageTrophies: {
       label: 'Average Trophies',
       value: Math.floor(avgProp('trophies')(player.brawlers))
@@ -118,7 +122,7 @@ router.get('/player/:tag', async (ctx, next) => {
       value: Math.floor(avgProp('rank')(player.brawlers))
     },
     averagePower: {
-      label: 'Average Power',
+      label: 'Average Power Level',
       value: Math.floor(avgProp('power')(player.brawlers))
     },
   } as { [id: string]: PlayerStatistic };
