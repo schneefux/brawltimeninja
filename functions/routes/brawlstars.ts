@@ -12,6 +12,7 @@ const router = new Router();
 router.get('/labels', async (ctx, next) => {
   ctx.body = {
     'appTitle': 'Brawl Stars',
+    'heroes': 'Brawlers',
   };
   await next();
 });

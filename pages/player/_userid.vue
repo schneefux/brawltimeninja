@@ -63,7 +63,7 @@
     </div>
 
     <div class="section-heading">
-      <h2>Brawlers</h2>
+      <h2>{{ labels.heroes }}</h2>
     </div>
 
     <div class="section" v-if="player.heroStats">
@@ -156,7 +156,9 @@ export default {
   },
   async asyncData({ params, $axios, env }) {
     const player = await $axios.$get(`/api/${env.app}/player/${params.userid}`)
+    const labels = await $axios.$get(`/api/${env.app}/labels`)
     return {
+      labels,
       player,
       heroHighlightIndex: 0,
       hoursSpent: 0,
