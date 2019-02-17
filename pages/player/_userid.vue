@@ -62,7 +62,7 @@
       </div>
     </div>
 
-    <div class="section-heading" v-if="player.heroStats">
+    <div class="section-heading" v-if="hasHeroes">
       <h2>{{ labels.heroes }}</h2>
     </div>
 
