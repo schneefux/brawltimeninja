@@ -115,10 +115,24 @@ router.get('/player/:name', async (ctx, next) => {
     } as Hero;
   });
 
+  const tierToName = (tier: number) => {
+    if (tier == -1) return 'Unranked';
+    if (tier <= 2) return 'Just Beginning';
+    if (tier <= 5) return 'Getting There';
+    if (tier <= 8) return 'Rock Solid';
+    if (tier <= 11) return 'Worthy Foe';
+    if (tier <= 14) return 'Got Swagger';
+    if (tier <= 17) return 'Credible Threat';
+    if (tier <= 20) return 'The Hotness';
+    if (tier <= 23) return 'Simply Amazing';
+    if (tier <= 26) return 'Pinnacle Of Awesome';
+    return 'Vainglorious';
+  };
+
   const stats = {
     skillTier: {
       label: 'Skill Tier',
-      value: player.attributes.stats.skillTier
+      value: tierToName(player.attributes.stats.skillTier)
     },
   } as { [id: string]: PlayerStatistic };
 
