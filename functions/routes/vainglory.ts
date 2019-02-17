@@ -33,24 +33,30 @@ router.get('/featured-players', async (ctx, next) => {
   await next();
 });
 
+const shards = ['na', 'eu', 'sg', 'sa', 'ea', 'cn'];
+const flatten2d = <T>(arr: T[][]) => arr.reduce((agg, cur) => agg.concat(cur), []);
 function getPlayerStatistics(name: string) {
-  return request<ResponseCollection<VaingloryPlayer, null>>(
-    '/shards/eu/players',
-    apiBase,
-    { 'filter[playerNames]': name },
-    {
-      'X-Title-Id': 'semc-vainglory',
-      'Authorization': 'Bearer ' + token,
-      'Accept': 'application/vnd.api+json',
-    }
-  ).then((response) => response.data[0]);
+  return Promise.all(shards.map((shard) =>
+    request<ResponseCollection<VaingloryPlayer, null>>(
+      `/shards/${shard}/players`,
+      apiBase,
+      { 'filter[playerNames]': name },
+      {
+        'X-Title-Id': 'semc-vainglory',
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.api+json',
+      }
+    ).then((response) => response.data)
+     .catch(() => [] as VaingloryPlayer[])
+  )).then(flatten2d)
+    .then((players) => players.length > 0 ? players[0] : null);
 }
 
-async function getMatchStatistics(id: string) {
+async function getMatchStatistics(player: VaingloryPlayer) {
   return request<ResponseCollection<VaingloryMatch, VaingloryParticipant|VaingloryRoster>>(
-    '/shards/eu/matches',
+    `/shards/${player.attributes.shardId}/matches`,
     apiBase,
-    { 'filter[playerIds]': id },
+    { 'filter[playerIds]': player.id },
     {
       'X-Title-Id': 'semc-vainglory',
       'Authorization': 'Bearer ' + token,
@@ -59,7 +65,7 @@ async function getMatchStatistics(id: string) {
   ).then((response) => {
     const participants = (response.included
       .filter((entityLike: EntityRelation) => entityLike.type == 'participant') as VaingloryParticipant[])
-      .filter((participant: VaingloryParticipant) => participant.relationships.player.data.id == id);
+      .filter((participant: VaingloryParticipant) => participant.relationships.player.data.id == player.id);
 
     const lastMatchStatsByHero = new Map<string, {
       win: boolean;
@@ -88,7 +94,11 @@ async function getMatchStatistics(id: string) {
 
 router.get('/player/:name', async (ctx, next) => {
   const player = await getPlayerStatistics(ctx.params.name);
-  const matchStatistics = await getMatchStatistics(player.id);
+  if (player == null) {
+    await next();
+    return;
+  }
+  const matchStatistics = await getMatchStatistics(player);
 
   const heroes = {} as { [id: string]: Hero };
   matchStatistics.forEach(([hero, last]) => {

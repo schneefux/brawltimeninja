@@ -17,6 +17,7 @@ export interface Player extends Entity {
   attributes: {
     createdAt: string;
     patchVersion: string;
+    shardId: string;
 
     name: string;
     stats: {
