@@ -21,6 +21,7 @@ router.get('/labels', async (ctx, next) => {
   ctx.body = {
     'appTitle': 'Vainglory',
     'heroes': 'Heroes',
+    'userId': 'name',
   };
   await next();
 });

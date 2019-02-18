@@ -6,7 +6,7 @@
 
     <div class="my-6 mx-4">
       <form class="flex items-center py-2 border-2 rounded-lg border-primary-dark">
-        <input id="userid" v-model="userid" type="text" placeholder="Enter your tag" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+        <input id="userid" v-model="userid" type="text" :placeholder="`Enter your ${labels.userId}`" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
         <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
           Search
         </router-link>

@@ -13,6 +13,7 @@ router.get('/labels', async (ctx, next) => {
   ctx.body = {
     'appTitle': 'Brawl Stars',
     'heroes': 'Brawlers',
+    'userId': 'tag',
   };
   await next();
 });
