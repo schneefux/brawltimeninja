@@ -2,6 +2,8 @@
 
 > onlinetimeninja
 
+https://brawlstarstime.ninja
+
 ## Build Setup
 
 ``` bash
