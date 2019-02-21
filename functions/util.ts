@@ -46,3 +46,9 @@ export function request<T>(path: string,
     })
   );
 }
+
+export const flatten2d = <T>(arr: T[][]) =>
+  arr.reduce((agg, cur) => agg.concat(cur), []);
+
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
