@@ -61,6 +61,8 @@ router.get('/player/:name', async (ctx, next) => {
     { }
   );
 
+  const statProps = ['kills', 'headshots', 'matches', 'damage'];
+
   const heroes = {} as { [id: string]: Hero };
   ApexlegendsCharacters.forEach((character) => {
     const hero = {
@@ -69,7 +71,7 @@ router.get('/player/:name', async (ctx, next) => {
       stats: {},
 
     } as Hero;
-    ['kills', 'headshots', 'matches', 'damage'].forEach((statProp) => {
+    statProps.forEach((statProp) => {
       const value = player[<keyof ApexlegendsPlayer>`${statProp}_${character}`];
       if (! (value != null && (typeof value == 'number' || typeof value == 'string'))) {
           return;
@@ -85,7 +87,29 @@ router.get('/player/:name', async (ctx, next) => {
   });
 
   const stats = {
+    skillRatio: {
+      label: 'Skill Ratio',
+      value: player.skillratio
+    },
+    level: {
+      label: 'Level',
+      value: player.level
+    },
+    globalRank: {
+      label: 'Global Rank',
+      value: `#${player.globalrank}`
+    },
   } as { [id: string]: PlayerStatistic };
+  statProps.forEach((statProp) => {
+    const value = player[<keyof ApexlegendsPlayer>statProp];
+    if (! (value != null && (typeof value == 'number' || typeof value == 'string'))) {
+        return;
+    }
+    stats[statProp] = {
+      label: capitalize(statProp),
+      value
+    };
+  });
 
   const minutesSpent = 0;
 
