@@ -115,21 +115,20 @@ export default class ApexlegendsService implements AppService {
         value: `#${player.globalrank}`
       },
     } as { [id: string]: PlayerStatistic };
+
+    const minutesSpent = 0;
+
+    const heroStats = {} as { [id: string]: PlayerStatistic };
     statProps.forEach((statProp) => {
       const value = player[<keyof ApexlegendsPlayer>statProp];
       if (! (value != null && (typeof value == 'number' || typeof value == 'string'))) {
           return;
       }
-      stats[statProp] = {
-        label: capitalize(statProp),
+      heroStats[statProp] = {
+        label: `Total ${capitalize(statProp)}`,
         value
       };
     });
-
-    const minutesSpent = 0;
-
-    const heroStats = {
-    } as { [id: string]: PlayerStatistic };
 
     const data = {
       id: player.aid,
