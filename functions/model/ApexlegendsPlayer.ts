@@ -1,5 +1,5 @@
 export const Characters = [
-  'Bloodhunt',
+  'Bloodhound',
   'Gibraltar',
   'Lifeline',
   'Pathfinder',
@@ -44,7 +44,7 @@ export interface Player extends PlayerStub {
   kills_Caustic: string;
   kills_Mirage: string;
 
-  headshots_Bloodhunt: string;
+  headshots_Bloodhound: string;
   headshots_Gibraltar: string;
   headshots_Lifeline: string;
   headshots_Pathfinder: string;
@@ -53,7 +53,7 @@ export interface Player extends PlayerStub {
   headshots_Caustic: string;
   headshots_Mirage: string;
 
-  matches_Bloodhunt: string;
+  matches_Bloodhound: string;
   matches_Gibraltar: string;
   matches_Lifeline: string;
   matches_Pathfinder: string;
@@ -62,7 +62,7 @@ export interface Player extends PlayerStub {
   matches_Caustic: string;
   matches_Mirage: string;
 
-  damage_Bloodhunt: string;
+  damage_Bloodhound: string;
   damage_Gibraltar: string;
   damage_Lifeline: string;
   damage_Pathfinder: string;
