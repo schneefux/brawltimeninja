@@ -155,7 +155,7 @@ export default {
     hoursTimer()
   },
   async asyncData({ params, $axios, env }) {
-    const player = await $axios.$get(`/api/${env.app}/player/${params.userid}`)
+    const player = await $axios.$get(`/api/${env.app}/player/${params.shard}/${params.name}`)
     const labels = await $axios.$get(`/api/${env.app}/labels`)
     return {
       labels,

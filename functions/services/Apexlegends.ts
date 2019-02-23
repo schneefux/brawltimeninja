@@ -9,7 +9,19 @@ import AppService from './AppService';
 
 export default class ApexlegendsService implements AppService {
   private readonly apiBase = 'https://apextab.com/api/';
-  private readonly platforms = ['pc', 'psn', 'xbl'];
+
+  public getShards() {
+    return [ {
+      'id': 'pc',
+      'label': 'PC'
+    }, {
+      'id': 'psn',
+      'label': 'PlayStation'
+    }, {
+      'id': 'xbl',
+      'label': 'Xbox'
+    } ];
+  }
 
   public getLabels() {
     return {
@@ -20,31 +32,31 @@ export default class ApexlegendsService implements AppService {
   }
 
   public getFeaturedPlayers() {
-    return [{
+    return [ {
+      id: 'Ballabriggsx',
+      shard: 'pc',
       name: 'Ballabriggsx',
-      id: 'Ballabriggsx'
     }, {
+      id: 'BallerInGame',
+      shard: 'pc',
       name: 'BallerInGame',
-      id: 'BallerInGame'
-    }];
+    } ];
   }
 
-  private getPlayer(name: string) {
-    return Promise.all(this.platforms.map((platform) =>
-      request<{ results: ApexlegendsPlayerStub[] }>(
-        'search.php',
-        this.apiBase,
-        { search: name, platform },
-        { }
-      ).then((response) =>
-          response.results.filter((player) => player.name == name))
-      .catch(() => [] as ApexlegendsPlayerStub[])
-    )).then(flatten2d)
-      .then((players) => players.length > 0 ? players[0] : null);
+  private getPlayer(platform: string, name: string) {
+    return request<{ results: ApexlegendsPlayerStub[] }>(
+      'search.php',
+      this.apiBase,
+      { search: name, platform },
+      { }
+    ).then((response) => {
+      const players = response.results.filter((player) => player.name == name);
+      return players.length == 0 ? null : players[0]
+    }).catch(() => null)
   }
 
-  public async getPlayerStatistics(name: string) {
-    const playerStub = await this.getPlayer(name);
+  public async getPlayerStatistics(platform: string, name: string) {
+    const playerStub = await this.getPlayer(platform, name);
     if (playerStub == null) {
       return null;
     }

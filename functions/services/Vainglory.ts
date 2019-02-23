@@ -9,12 +9,34 @@ import {
 } from '../model/VaingloryPlayer';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, flatten2d } from '../util';
+import Shard from '../model/Shard';
 
 export default class VaingloryService implements AppService {
   private readonly apiBase = 'https://api.dc01.gamelockerapp.com';
-  private readonly shards = ['na', 'eu', 'sg', 'sa', 'ea', 'cn'];
 
   constructor(private token: string) {};
+
+  public getShards() {
+    return [ {
+      'id': 'na',
+      'label': 'North America'
+    }, {
+      'id': 'eu',
+      'label': 'Europe'
+    }, {
+      'id': 'sg',
+      'label': 'South East Asia'
+    }, {
+      'id': 'sa',
+      'label': 'South Africa'
+    }, {
+      'id': 'ea',
+      'label': 'East Asia'
+    }, {
+      'id': 'cn',
+      'label': 'China'
+    } ] as Shard[];
+  }
 
   public getLabels() {
     return {
@@ -25,27 +47,25 @@ export default class VaingloryService implements AppService {
   }
 
   public getFeaturedPlayers() {
-    return [{
+    return [ {
+      id: 'shutterfly',
+      shard: 'eu',
       name: 'shutterfly',
-      id: 'shutterfly'
-    }];
+    } ];
   }
 
-  private getPlayer(name: string) {
-    return Promise.all(this.shards.map((shard) =>
-      request<ResponseCollection<VaingloryPlayer, null>>(
-        `/shards/${shard}/players`,
-        this.apiBase,
-        { 'filter[playerNames]': name },
-        {
-          'X-Title-Id': 'semc-vainglory',
-          'Authorization': 'Bearer ' + this.token,
-          'Accept': 'application/vnd.api+json',
-        }
-      ).then((response) => response.data)
-      .catch(() => [] as VaingloryPlayer[])
-    )).then(flatten2d)
-      .then((players) => players.length > 0 ? players[0] : null);
+  private getPlayer(shard: string, name: string) {
+    return request<ResponseCollection<VaingloryPlayer, null>>(
+      `/shards/${shard}/players`,
+      this.apiBase,
+      { 'filter[playerNames]': name },
+      {
+        'X-Title-Id': 'semc-vainglory',
+        'Authorization': 'Bearer ' + this.token,
+        'Accept': 'application/vnd.api+json',
+      }
+    ).then((response) => response.data[0])
+     .catch(() => null);
   }
 
   private async getMatchStatistics(player: VaingloryPlayer) {
@@ -88,8 +108,8 @@ export default class VaingloryService implements AppService {
     }).catch(() => []);
   }
 
-  public async getPlayerStatistics(name: string) {
-    const player = await this.getPlayer(name);
+  public async getPlayerStatistics(shard: string, name: string) {
+    const player = await this.getPlayer(shard, name);
     if (player == null) {
       return null;
     }
@@ -150,6 +170,7 @@ export default class VaingloryService implements AppService {
     const data = {
       id: player.id,
       name: player.attributes.name,
+      shard: player.attributes.shardId,
       minutesSpent,
       heroes,
       stats,

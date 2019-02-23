@@ -9,6 +9,10 @@ export default class BrawlstarsService implements AppService {
 
   constructor(private token: string) {}
 
+  public getShards() {
+    return [];
+  }
+
   public getLabels() {
     return {
       'appTitle': 'Brawl Stars',
@@ -18,19 +22,22 @@ export default class BrawlstarsService implements AppService {
   }
 
   public getFeaturedPlayers() {
-    return [{
+    return [ {
+      id: 'V8LLPPC',
+      shard: 'global',
       name: 'xXcuzMePlisThXx',
-      id: 'V8LLPPC'
     }, {
+      id: '2Y02L28',
+      shard: 'global',
       name: 'Keith',
-      id: '2Y02L28'
     }, {
+      id: 'V9QGJY9',
+      shard: 'global',
       name: 'Landi',
-      id: 'V9QGJY9'
-    }];
+    } ];
   }
 
-  public async getPlayerStatistics(tag: string) {
+  public async getPlayerStatistics(shard: string, tag: string) {
     const player = await request<BrawlstarsPlayer>(
       'player',
       this.apiBase,
@@ -127,6 +134,7 @@ export default class BrawlstarsService implements AppService {
 
     const data = {
       id: player.tag,
+      shard,
       name: player.name,
       minutesSpent,
       heroes,
