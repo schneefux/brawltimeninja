@@ -33,13 +33,21 @@ export default class ApexlegendsService implements AppService {
 
   public getFeaturedPlayers() {
     return [ {
-      id: 'Ballabriggsx',
+      id: 'DiegosaursTTV',
       shard: 'pc',
-      name: 'Ballabriggsx',
+      name: 'DiegosaursTTV',
     }, {
-      id: 'BallerInGame',
+      id: 'NRG_dizzy',
       shard: 'pc',
-      name: 'BallerInGame',
+      name: 'NRG_dizzy',
+    }, {
+      id: 'basedgodfearless',
+      shard: 'psn',
+      name: 'basedgodfearless',
+    }, {
+      id: 'Aotsuki_tv',
+      shard: 'pc',
+      name: 'Aotsuki_tv',
     } ];
   }
 
