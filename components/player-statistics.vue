@@ -15,7 +15,7 @@ export default {
   name: 'PlayerStatistics',
   props: {
     stats: {
-      type: Array,
+      type: Object,
       required: true
     },
   },
