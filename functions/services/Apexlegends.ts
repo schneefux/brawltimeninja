@@ -3,8 +3,8 @@ import {
   PlayerStub as ApexlegendsPlayerStub,
   Characters as ApexlegendsCharacters,
 } from '../model/ApexlegendsPlayer';
-import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
-import { request, flatten2d, capitalize } from '../util';
+import { Hero, PlayerStatistic, Player } from '../model/Player';
+import { request, capitalize } from '../util';
 import AppService from './AppService';
 
 export default class ApexlegendsService implements AppService {
