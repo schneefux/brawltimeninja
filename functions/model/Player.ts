@@ -30,9 +30,12 @@ export interface Hero {
     };
 }
 
-export interface Player {
+export interface PlayerIdentifier {
     id: string;
     name: string;
+}
+
+export interface Player extends PlayerIdentifier {
     minutesSpent: number;
     heroes: {
         [id: string]: Hero;

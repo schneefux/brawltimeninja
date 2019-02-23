@@ -18,9 +18,9 @@
       <p class="mt-2">
         <router-link
           v-for="player in demoPlayers"
-          :key="player.tag"
+          :key="player.id"
           tag="button"
-          :to="{ name: 'player-userid', params: { userid: player.tag } }"
+          :to="{ name: 'player-userid', params: { userid: player.id } }"
           class="ml-2 text-secondary border-primary border-b-2 rounded">
           {{ player.name }}
         </router-link>
