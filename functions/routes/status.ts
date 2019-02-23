@@ -7,4 +7,4 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
-export default router;
+export default router.routes();
