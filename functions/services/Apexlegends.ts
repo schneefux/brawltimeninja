@@ -83,7 +83,7 @@ export default class ApexlegendsService implements AppService {
     ApexlegendsCharacters.forEach((character) => {
       const hero = {
         label: character,
-        icon: '',
+        icon: `/images/apexlegends/hero/${character}.png`,
         stats: {},
       } as Hero;
       statProps.forEach((statProp) => {
@@ -94,7 +94,7 @@ export default class ApexlegendsService implements AppService {
         hero.stats[statProp] = {
           label: capitalize(statProp),
           value,
-          icon: ''
+          icon: '',
         };
       });
 

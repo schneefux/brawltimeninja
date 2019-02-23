@@ -71,16 +71,18 @@
     </div>
 
     <div class="section">
-      <div class="flex flex-wrap justify-center">
+      <div class="flex flex-wrap justify-between">
         <div
           class="card-wrapper w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
-            :style="`background-image: url('${hero.icon}')`"
-            class="card flex justify-between md:justify-end bg-primary-dark bg-contain bg-no-repeat bg-left-bottom">
-            <span class="w-32 font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
-            <div class="py-2 px-4">
+            class="card bg-primary-dark flex justify-between">
+            <div class="flex flex-col w-32">
+              <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
+              <img :src="hero.icon" class="w-24">
+            </div>
+            <div class="py-2 px-4 flex-grow w-48 self-center flex justify-end">
               <table>
                 <tr
                   v-for="(stat, statName) in hero.stats"
