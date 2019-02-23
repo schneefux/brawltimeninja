@@ -6,25 +6,27 @@
 
     <div class="mt-8 mx-4">
       <form class="flex flex-wrap justify-center">
-        <div class="w-full flex flex-wrap justify-center">
+        <div class="text-center w-3/4 md:w-auto bg-primary rounded">
           <button
-            v-for="shardOption in shards"
+            v-for="(shardOption) in shards"
             :key="shardOption.id"
             @click="shard = shardOption.id"
             type="button"
             name="shard"
-            :class="['m-1 py-1 px-2 rounded-full ', {
-              'bg-secondary hover:bg-secondary-light': shard == shardOption.id,
-              'bg-primary hover:bg-primary-light': shard != shardOption.id
+            :class="['py-1 px-3 border rounded border-primary whitespace-no-wrap font-medium w-1/2 md:w-auto', {
+              'bg-primary-light': shard == shardOption.id,
+              'bg-primary-darker text-grey-lighter hover:bg-primary-light hover:text-black': shard != shardOption.id,
             }]">
             {{ shardOption.label }}
           </button>
         </div>
-        <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
-          <input v-model="name" type="text" :placeholder="`Enter your ${labels.userId}`" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
-          <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
-            Search
-          </router-link>
+        <div class="w-full flex justify-center">
+          <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
+            <input v-model="name" type="text" :placeholder="`Enter your ${labels.userId}`" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+            <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
+              Search
+            </router-link>
+          </div>
         </div>
       </form>
     </div>
