@@ -119,7 +119,7 @@ export default class VaingloryService implements AppService {
     matchStatistics.forEach(([hero, last]) => {
       heroes[hero] = {
         label: hero,
-        icon: `/images/vainglory/heroes/icon/${hero}.jpg`,
+        icon: `/images/vainglory/hero/icon/${hero}.jpg`,
         stats: {
           lastResult: {
             label: 'last result',

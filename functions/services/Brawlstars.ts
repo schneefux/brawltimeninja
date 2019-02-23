@@ -52,7 +52,7 @@ export default class BrawlstarsService implements AppService {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         heroes[brawlerId] = {
           label: brawler.name,
-          icon: `/images/brawlstars/heroes/icon/${brawlerId}.png`,
+          icon: `/images/brawlstars/hero/icon/${brawlerId}.png`,
           stats: {
             rank: {
               label: 'Rank',
