@@ -76,7 +76,8 @@ export default class ApexlegendsService implements AppService {
       { }
     );
 
-    const statProps = ['kills', 'headshots', 'matches', 'damage'];
+    const statProps = ['kills', 'headshots', 'damage', 'matches']
+      .filter((prop) => player[<keyof ApexlegendsPlayer>prop] != '0');
 
     const heroes = {} as { [id: string]: Hero };
     ApexlegendsCharacters.forEach((character) => {
@@ -84,7 +85,6 @@ export default class ApexlegendsService implements AppService {
         label: character,
         icon: '',
         stats: {},
-
       } as Hero;
       statProps.forEach((statProp) => {
         const value = player[<keyof ApexlegendsPlayer>`${statProp}_${character}`];
