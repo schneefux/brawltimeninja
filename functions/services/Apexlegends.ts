@@ -41,10 +41,6 @@ export default class ApexlegendsService implements AppService {
       shard: 'pc',
       name: 'NRG_dizzy',
     }, {
-      id: 'basedgodfearless',
-      shard: 'psn',
-      name: 'basedgodfearless',
-    }, {
       id: 'Aotsuki_tv',
       shard: 'pc',
       name: 'Aotsuki_tv',
