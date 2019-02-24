@@ -102,10 +102,6 @@ export default class ApexlegendsService implements AppService {
     });
 
     const stats = {
-      skillRatio: {
-        label: 'Skill Ratio',
-        value: player.skillratio
-      },
       level: {
         label: 'Level',
         value: player.level
@@ -115,6 +111,12 @@ export default class ApexlegendsService implements AppService {
         value: `#${player.globalrank}`
       },
     } as { [id: string]: PlayerStatistic };
+    if (player.skillratio != 0) {
+      stats.skillRatio = {
+        label: 'Skill Ratio',
+        value: player.skillratio
+      };
+    }
 
     const minutesSpent = 0;
 
