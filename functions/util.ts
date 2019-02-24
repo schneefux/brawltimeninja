@@ -28,8 +28,7 @@ export function request<T>(path: string,
     base: string,
     params: { [key: string]: string },
     headers: { [header: string]: string }): Promise<T> {
-
-  const url = new URL(path, base);
+  const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
   const urlStr = url.toString();
@@ -52,3 +51,6 @@ export const flatten2d = <T>(arr: T[][]) =>
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
+
+export const fixedPercent = (n1: number, n2: number) =>
+  (n1 / n2 * 100).toFixed(0) + '%';
