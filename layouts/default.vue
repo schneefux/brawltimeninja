@@ -25,10 +25,5 @@ export default {
       },
     }
   },
-  mounted() {
-    this.$axios.$get(`/api/${process.env.app}/labels`).then((labels) => {
-      this.labels = labels
-    })
-  },
 }
 </script>

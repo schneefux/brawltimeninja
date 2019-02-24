@@ -10,6 +10,13 @@ export default function createApp(path: string = '/api') {
   const router = new Router();
 
   router.use(path + '/status', statusRoutes);
+  router.get(path + '/services', async (ctx, next) => {
+    ctx.body = Object.keys(Service).map((service) => ({
+      label: Service[<keyof typeof Service>service],
+      id: service,
+    }));
+    await next();
+  });
 
   // iterate through enum https://github.com/Microsoft/TypeScript/issues/17198
   Object.keys(Service).forEach((name) => {

@@ -5,10 +5,10 @@ import ApexlegendsService from './Apexlegends';
 import WorldOfTanksService from './WorldOfTanks';
 
 export enum Service {
-  apexlegends = 'apexlegends',
-  brawlstars = 'brawlstars',
-  vainglory = 'vainglory',
-  worldoftanks = 'worldoftanks',
+  apexlegends = 'Apex Legends',
+  brawlstars = 'Brawlstars',
+  vainglory = 'Vainglory',
+  worldoftanks = 'World Of Tanks',
 };
 
 const cache = {} as { [service: string]: AppService };
