@@ -31,11 +31,11 @@
       <player-statistics :stats="player.stats" />
     </div>
 
-    <div class="section-heading">
+    <div class="section-heading" v-if="hasModes">
       <h2>Game Modes</h2>
     </div>
 
-    <div class="section">
+    <div class="section" v-if="hasModes">
       <div class="flex flex-wrap">
         <div
           class="w-full md:w-1/2 card-wrapper mx-auto"
@@ -112,6 +112,9 @@ export default {
     PlayerStatistics,
   },
   computed: {
+    hasModes() {
+      return Object.keys(this.player.modes).length > 0
+    },
     hasHeroes() {
       return Object.keys(this.player.heroes).length > 0
     },
