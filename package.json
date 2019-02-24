@@ -12,7 +12,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "test": "jest"
   },
   "dependencies": {
     "@koa/cors": "^2.2.3",
@@ -22,6 +23,7 @@
     "cache-manager": "^2.9.0",
     "cache-manager-fs-hash": "0.0.7",
     "cross-env": "^5.2.0",
+    "dotenv": "^6.2.0",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "node-fetch": "^2.3.0",
@@ -32,6 +34,7 @@
     "@nuxtjs/eslint-config": "^0.0.1",
     "@types/aws-serverless-express": "^3.3.0",
     "@types/cache-manager": "^1.2.6",
+    "@types/dotenv": "^6.1.0",
     "@types/jest": "^24.0.6",
     "@types/koa": "^2.0.48",
     "@types/koa-json": "^2.0.18",

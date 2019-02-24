@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 process.env.CACHE_DISABLE = '1';
 
-import createService, { Service } from "../AppServiceFactory";
+import createService, { Service } from '../AppServiceFactory';
 
 Object.keys(Service).forEach((serviceName) => {
   describe(`Test service ${serviceName}`, () => {
