@@ -20,7 +20,12 @@ export default function createRoutes(service: AppService) {
   });
 
   router.get('/player/:shard/:name', async (ctx, next) => {
-    ctx.body = await service.getPlayerStatistics(ctx.params.shard, ctx.params.name);
+    const data = await service.getPlayerStatistics(ctx.params.shard, ctx.params.name);
+    if (data == null) {
+      ctx.throw(404, 'not found');
+    } else {
+      ctx.body = data;
+    }
     ctx.set('Cache-Control', 'public, max-age=300');
     await next();
   });
