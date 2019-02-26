@@ -9,6 +9,10 @@ export default class BrawlstarsService implements AppService {
 
   constructor(private token: string) {}
 
+  public getNameRegex() {
+    return '#?[0289PYLQGRJCUV]{3,}';
+  }
+
   public getShards() {
     return [];
   }

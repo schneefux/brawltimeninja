@@ -10,6 +10,10 @@ import AppService from './AppService';
 export default class ApexlegendsService implements AppService {
   private readonly apiBase = 'https://apextab.com/api/';
 
+  public getNameRegex() {
+    return '.*';
+  }
+
   public getShards() {
     return [ {
       'id': 'pc',

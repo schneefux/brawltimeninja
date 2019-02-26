@@ -9,6 +9,11 @@ export class WargamingWrapper {
     private applicationId: string,
     private getBase: (region: string) => string) {}
 
+  public getNameRegex() {
+    // https://worldoftanks.com/en/content/guide/general/nickname-change-guide/
+    return '[A-Za-z0-9_]{3,24}';
+  }
+
   public getPlayerId(region: string, name: string) {
     return request<WargamingResponse<WargamingPlayerIdentifier[]>>(
       '/account/list/',

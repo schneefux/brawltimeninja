@@ -5,7 +5,9 @@
     </div>
 
     <div class="mt-8 mx-4">
-      <form class="flex flex-wrap justify-center">
+      <form
+        @submit.prevent="submitName"
+        class="flex flex-wrap justify-center">
         <div class="text-center w-3/4 md:w-auto bg-primary rounded">
           <button
             v-for="(shardOption) in shards"
@@ -22,10 +24,15 @@
         </div>
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
-            <input v-model="name" type="text" :placeholder="`Enter your ${labels.userId}`" class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
-            <router-link tag="button" :to="playerRoute" class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded" type="button">
-              Search
-            </router-link>
+            <input
+              v-model="name"
+              :placeholder="`Enter your ${labels.userId}`"
+              type="text"
+              class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+            <input
+              type="submit"
+              class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
+              value="Search">
           </div>
         </div>
       </form>
@@ -78,12 +85,23 @@ export default {
       }
     },
   },
+  methods: {
+    submitName() {
+      if (this.nameRegex.test(this.name)) {
+        this.$router.push(this.playerRoute)
+      } else {
+        throw new Error('invalid name')
+      }
+    },
+  },
   async asyncData({ $axios, params }) {
     const featuredPlayers = await $axios.$get(`/api/${params.app}/featured-players`)
+    const nameRegex = await $axios.$get(`/api/${params.app}/name-regex`)
     const shards = await $axios.$get(`/api/${params.app}/shards`)
     const labels = await $axios.$get(`/api/${params.app}/labels`)
     return {
       featuredPlayers,
+      nameRegex: new RegExp(nameRegex),
       app: params.app,
       shards,
       labels,

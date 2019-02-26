@@ -16,6 +16,10 @@ export default class VaingloryService implements AppService {
 
   constructor(private token: string) {};
 
+  public getNameRegex() {
+    return '.{1,16}';
+  }
+
   public getShards() {
     return [ {
       'id': 'na',

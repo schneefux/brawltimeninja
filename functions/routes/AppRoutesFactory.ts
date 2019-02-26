@@ -9,6 +9,11 @@ export default function createRoutes(service: AppService) {
     await next();
   });
 
+  router.get('/name-regex', async (ctx, next) => {
+    ctx.body = service.getNameRegex();
+    await next();
+  });
+
   router.get('/labels', async (ctx, next) => {
     ctx.body = service.getLabels();
     await next();

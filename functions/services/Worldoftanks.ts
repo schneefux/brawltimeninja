@@ -15,6 +15,10 @@ export default class WorldOfTanksService implements AppService {
     this.wrapper = new WargamingWrapper(applicationId, this.getBase);
   }
 
+  public getNameRegex() {
+    return this.wrapper.getNameRegex();
+  }
+
   private getBase(region: string) {
     return `https://api.worldoftanks.${region}/wot`;
   }
