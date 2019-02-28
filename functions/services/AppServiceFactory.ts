@@ -1,6 +1,6 @@
 import AppService from './AppService';
 import BrawlstarsService from './Brawlstars';
-import VaingloryService from './vainglory';
+import VaingloryService from './Vainglory';
 import ApexlegendsService from './Apexlegends';
 import WorldOfTanksService from './WorldOfTanks';
 
