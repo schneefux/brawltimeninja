@@ -6,7 +6,7 @@ import createService, { Service } from '../AppServiceFactory';
 
 Object.keys(Service).forEach((serviceName) => {
   describe(`Test service ${serviceName}`, () => {
-    const service = createService(Service[<keyof typeof Service>serviceName]);
+    const service = createService(<keyof typeof Service>serviceName);
 
     const featuredPlayers = service.getFeaturedPlayers();
     featuredPlayers.forEach((featuredPlayer) => {
