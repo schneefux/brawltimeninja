@@ -35,6 +35,9 @@
               value="Search">
           </div>
         </div>
+        <p class="mt-2 text-red-lighter" v-if="nameLoading">
+          Searching…
+        </p>
         <p class="mt-2 text-red-lighter" v-if="nameNotFound">
           Not found, please check again
         </p>
@@ -62,6 +65,7 @@ export default {
   data() {
     return {
       name: undefined,
+      nameLoading: false,
       nameNotFound: false,
     }
   },
@@ -90,12 +94,25 @@ export default {
     },
   },
   methods: {
-    submitName() {
-      if (this.nameRegex.test(this.name)) {
-        this.$router.push(this.playerRoute)
-      } else {
+    async submitName() {
+      this.nameNotFound = false
+
+      if (!this.nameRegex.test(this.name)) {
         this.nameNotFound = true
+        return
       }
+
+      try {
+        this.nameLoading = true
+        await this.$axios.$get(`/api/${this.app}/player/${this.shard}/${this.name}`)
+      } catch (error) {
+        this.nameNotFound = true
+        return
+      } finally {
+        this.nameLoading = false
+      }
+
+      this.$router.push(this.playerRoute)
     },
   },
   async asyncData({ $axios, params }) {
