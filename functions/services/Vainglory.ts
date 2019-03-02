@@ -6,9 +6,9 @@ import {
   Participant as VaingloryParticipant,
   ResponseCollection,
   EntityRelation,
-} from '../model/VaingloryPlayer';
+} from '../model/Vainglory';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
-import { request, flatten2d } from '../util';
+import { request } from '../util';
 import Shard from '../model/Shard';
 
 export default class VaingloryService implements AppService {

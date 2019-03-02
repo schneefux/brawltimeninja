@@ -2,7 +2,7 @@ import {
   Player as ApexlegendsPlayer,
   PlayerStub as ApexlegendsPlayerStub,
   Characters as ApexlegendsCharacters,
-} from '../model/ApexlegendsPlayer';
+} from '../model/Apexlegends';
 import { Hero, PlayerStatistic, Player } from '../model/Player';
 import { request, capitalize } from '../util';
 import AppService from './AppService';
