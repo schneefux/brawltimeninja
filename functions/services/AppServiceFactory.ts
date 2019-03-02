@@ -8,7 +8,7 @@ export enum Service {
   apexlegends = 'Apex Legends',
   brawlstars = 'Brawlstars',
   vainglory = 'Vainglory',
-  worldoftanks = 'World Of Tanks',
+  // worldoftanks = 'World Of Tanks',
 };
 
 const cache = {} as { [service: string]: AppService };
@@ -27,9 +27,11 @@ export default function createService(name: keyof typeof Service) {
       case Service.vainglory:
         service = new VaingloryService(process.env.VAINGLORY_TOKEN || '');
         break;
+      /*
       case Service.worldoftanks:
         service = new WorldOfTanksService(process.env.WARGAMING_ID || '');
         break;
+      */
       default:
         throw new Error('Missing service factory mapping for ' + name);
     }
