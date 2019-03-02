@@ -3,10 +3,12 @@ import BrawlstarsService from './Brawlstars';
 import VaingloryService from './Vainglory';
 import ApexlegendsService from './Apexlegends';
 import WorldOfTanksService from './WorldOfTanks';
+import FortniteService from './Fortnite';
 
 export enum Service {
   apexlegends = 'Apex Legends',
   brawlstars = 'Brawlstars',
+  fortnite = 'Fortnite',
   vainglory = 'Vainglory',
   // worldoftanks = 'World Of Tanks',
 };
@@ -23,6 +25,9 @@ export default function createService(name: keyof typeof Service) {
         break;
       case Service.brawlstars:
         service = new BrawlstarsService(process.env.BRAWLSTARS_TOKEN || '');
+        break;
+      case Service.fortnite:
+        service = new FortniteService();
         break;
       case Service.vainglory:
         service = new VaingloryService(process.env.VAINGLORY_TOKEN || '');
