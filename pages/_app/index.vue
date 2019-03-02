@@ -35,6 +35,9 @@
               value="Search">
           </div>
         </div>
+        <p class="mt-2 text-red-lighter" v-if="nameNotFound">
+          Not found, please check again
+        </p>
       </form>
     </div>
 
@@ -59,6 +62,7 @@ export default {
   data() {
     return {
       name: undefined,
+      nameNotFound: false,
     }
   },
   computed: {
@@ -90,7 +94,7 @@ export default {
       if (this.nameRegex.test(this.name)) {
         this.$router.push(this.playerRoute)
       } else {
-        throw new Error('invalid name')
+        this.nameNotFound = true
       }
     },
   },
