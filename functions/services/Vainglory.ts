@@ -47,6 +47,9 @@ export default class VaingloryService implements AppService {
       'appTitle': 'Vainglory',
       'heroes': 'Heroes',
       'userId': 'name',
+      'disclaimer': `
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by Super Evil Mega Corp and Super Evil Mega Corp is not responsible for it.
+      `,
     };
   }
 

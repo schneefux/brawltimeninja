@@ -22,6 +22,9 @@ export default class BrawlstarsService implements AppService {
       'appTitle': 'Brawl Stars',
       'heroes': 'Brawlers',
       'userId': 'tag',
+      'disclaimer': `
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
+      `,
     };
   }
 

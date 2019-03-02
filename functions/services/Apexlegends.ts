@@ -32,6 +32,9 @@ export default class ApexlegendsService implements AppService {
       'appTitle': 'Apex Legends',
       'heroes': 'Characters',
       'userId': 'name',
+      'disclaimer': `
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by EA and EA is not responsible for it.
+      `,
     };
   }
 

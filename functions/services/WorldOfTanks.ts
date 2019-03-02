@@ -44,6 +44,9 @@ export default class WorldOfTanksService implements AppService {
       'appTitle': 'World Of Tanks',
       'heroes': 'Tanks',
       'userId': 'nickname',
+      'disclaimer': `
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
+      `,
     };
   }
 
