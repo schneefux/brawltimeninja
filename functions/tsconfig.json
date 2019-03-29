@@ -3,12 +3,7 @@
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
-    "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
-      "es2018"
-    ],
+    "lib": ["es2015", "es2016", "es2017", "es2018"],
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
@@ -16,21 +11,9 @@
     "paths": {
       "~/*": [
         "./*"
-      ],
-      "@/*": [
-        "./*"
       ]
     },
     "strict": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "allowJs": true,
-    "noImplicitAny": false,
-    "noEmit": true,
-    "types": [
-      "@types/node",
-      "@nuxt/vue-app"
-    ]
   },
   "exclude": [
     "node_modules"
