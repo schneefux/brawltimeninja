@@ -1,11 +1,11 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   mode: process.env.NODE_ENV,
   target: 'node',
   devtool: false,
   entry: {
-    api: './functions/serverless.ts',
+    api: './serverless.ts',
   },
   output: {
     filename: '[name].js',
@@ -15,11 +15,11 @@ module.exports = {
   module: {
     rules: [ {
       test: /\.ts$/,
-      use: [ { loader: 'ts-loader', } ],
+      use: [ { loader: 'ts-loader' } ],
       exclude: /node_modules/
     } ],
   },
   resolve: {
     extensions: [ '.ts', '.js', '.json' ],
   },
-};
+}

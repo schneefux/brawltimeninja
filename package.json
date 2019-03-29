@@ -8,7 +8,7 @@
     "dev": "nuxt",
     "dev:api": "cd functions/ && nodemon -e ts -x ts-node server.ts",
     "build": "nuxt build",
-    "build:api": "cd functions/ && webpack --mode production",
+    "build:api": "cd functions/ && webpack --mode production --config webpack.config.js",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
