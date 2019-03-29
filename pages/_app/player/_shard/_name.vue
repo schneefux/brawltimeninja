@@ -31,6 +31,13 @@
       <player-statistics :stats="player.stats" />
     </div>
 
+    <div class="my-4 text-center">
+      <adsense
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="7575144361">
+      </adsense>
+    </div>
+
     <div class="section-heading" v-if="hasModes">
       <h2>Game Modes</h2>
     </div>
@@ -60,6 +67,13 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="my-4 text-center">
+      <adsense
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1005866586">
+      </adsense>
     </div>
 
     <div class="section-heading" v-if="hasHeroes">
@@ -99,6 +113,13 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="my-4 text-center">
+      <adsense
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="5875049882">
+      </adsense>
     </div>
   </div>
 </template>

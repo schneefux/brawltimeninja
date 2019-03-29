@@ -20,6 +20,8 @@ module.exports = {
   ],
 
   plugins: [
+    { src: '~/plugins/adsense', mode: 'client' },
+    { src: '~/plugins/analytics', mode: 'client' },
   ],
 
   modules: [
