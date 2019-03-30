@@ -6,16 +6,19 @@ export default function createRoutes(service: AppService) {
 
   router.get('/shards', async (ctx, next) => {
     ctx.body = service.getShards();
+    ctx.set('Cache-Control', 'public, max-age=3600');
     await next();
   });
 
   router.get('/labels', async (ctx, next) => {
     ctx.body = service.getLabels();
+    ctx.set('Cache-Control', 'public, max-age=3600');
     await next();
   });
 
   router.get('/featured-players', async (ctx, next) => {
     ctx.body = service.getFeaturedPlayers();
+    ctx.set('Cache-Control', 'public, max-age=3600');
     await next();
   });
 
