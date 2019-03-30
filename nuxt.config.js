@@ -1,4 +1,14 @@
-module.exports = {
+import path from 'path'
+import PurgecssPlugin from 'purgecss-webpack-plugin'
+import glob from 'glob-all'
+
+class TaiwindExtractor {
+  static extract(content) {
+    return content.match(/[A-z0-9-:/]+/g) || []
+  }
+}
+
+export default {
   mode: 'spa',
 
   head: {
@@ -46,7 +56,30 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
+      if (!ctx.isDev) {
+        config.plugins.push(
+          new PurgecssPlugin({
+            paths: glob.sync([
+              path.join(__dirname, './pages/**/*.vue'),
+              path.join(__dirname, './layouts/**/*.vue'),
+              path.join(__dirname, './components/**/*.vue'),
+            ]),
+            extractors: [ {
+              extractor: TaiwindExtractor,
+              extensions: ['vue'],
+            } ],
+            whitelist: ['html', 'body', 'nuxt-progress'],
+          })
+        )
+      }
+    },
+    extractCSS: true,
+    postcss: {
+      plugins: {
+        tailwindcss: path.resolve('./tailwind.js')
+      },
+      preset: { autoprefixer: { grid: true } },
+    },
   },
 
   env: {
