@@ -62,6 +62,11 @@ export default class WorldOfTanksService implements AppService {
     }
 
     const player = await this.wrapper.getPlayerData<WorldOfTanksPlayer>(region, id);
+
+    if (player == null) {
+      return null;
+    }
+
     const vehicles = await this.wrapper.getVehicles<WorldOfTanksVehicle>(region, id);
 
     const heroes = {} as { [id: string]: Hero };

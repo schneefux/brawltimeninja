@@ -68,7 +68,7 @@ export default class VaingloryService implements AppService {
         'Authorization': 'Bearer ' + this.token,
         'Accept': 'application/vnd.api+json',
       }
-    ).then((response) => response.data[0])
+    ).then((response) => response != null ? response.data[0] : null)
      .catch(() => null);
   }
 
@@ -83,6 +83,10 @@ export default class VaingloryService implements AppService {
         'Accept': 'application/vnd.api+json',
       }
     ).then((response) => {
+      if (response == null) {
+        return [];
+      }
+
       const participants = (response.included
         .filter((entityLike: EntityRelation) => entityLike.type == 'participant') as VaingloryParticipant[])
         .filter((participant: VaingloryParticipant) => participant.relationships.player.data.id == player.id);

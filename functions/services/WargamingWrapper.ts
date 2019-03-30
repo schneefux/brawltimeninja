@@ -23,7 +23,7 @@ export class WargamingWrapper {
         'limit': '1',
         'search': name,
       }, { }
-    ).then((res) => res.meta.count > 0 ? res.data[0].account_id : null);
+    ).then((res) => res != null && res.meta.count > 0 ? res.data[0].account_id : null);
   }
 
   public getPlayerData<Player>(region: string, id: number) {
@@ -36,7 +36,7 @@ export class WargamingWrapper {
         'extra': '',
         'language': '',
       }, { }
-    ).then((res) => res.data[id]);
+    ).then((res) => res != null ? res.data[id] : null);
   }
 
   public getAchievements<Achievement>(region: string, id: number) {
@@ -48,7 +48,7 @@ export class WargamingWrapper {
         'fields': '',
         'language': '',
       }, { }
-    ).then((res) => res.data[id]);
+    ).then((res) => res != null ? res.data[id] : []);
   }
 
   public getVehicles<Vehicle>(region: string, id: number) {
@@ -61,6 +61,6 @@ export class WargamingWrapper {
         'tank_id': '',
         'language': '',
       }, { }
-    ).then((res) => res.data[id]);
+    ).then((res) => res != null ? res.data[id] : []);
   }
 }

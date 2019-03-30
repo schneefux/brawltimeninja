@@ -27,7 +27,7 @@ const agent = new Agent({
 export function request<T>(path: string,
     base: string,
     params: { [key: string]: string },
-    headers: { [header: string]: string }): Promise<T> {
+    headers: { [header: string]: string }): Promise<T|null> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
@@ -38,8 +38,11 @@ export function request<T>(path: string,
       agent,
       compress: true,
     }).then((response) => {
-      if (!response.ok) {
+      if (response.status >= 500 || response.status == 429) {
         throw Error(response.statusText);
+      }
+      if (response.status == 404) {
+        return null;
       }
       return response.json();
     })

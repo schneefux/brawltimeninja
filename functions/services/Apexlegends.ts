@@ -58,6 +58,9 @@ export default class ApexlegendsService implements AppService {
       { search: name, platform },
       { }
     ).then((response) => {
+      if (response == null) {
+        return null;
+      }
       const players = response.results.filter((player) => player.name == name);
       return players.length == 0 ? null : players[0]
     }).catch(() => null)
@@ -75,6 +78,10 @@ export default class ApexlegendsService implements AppService {
       { aid: playerStub.aid },
       { }
     );
+
+    if (player == null) {
+      return null;
+    }
 
     const statProps = ['kills', 'headshots', 'damage', 'matches']
       .filter((prop) => player[<keyof ApexlegendsPlayer>prop] != '0');

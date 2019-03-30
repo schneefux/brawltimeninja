@@ -46,6 +46,10 @@ export default class FortniteService implements AppService {
       { }
     );
 
+    if (player == null || player.accountId == 'undefined') {
+      return null;
+    }
+
     const stats = {
       kills: {
         label: 'Kills',

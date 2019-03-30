@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: '../.env' });
 process.env.CACHE_DISABLE = '1';
 
 import createService, { Service } from '../AppServiceFactory';
@@ -15,5 +15,10 @@ Object.keys(Service).forEach((serviceName) => {
         expect(data).not.toBeNull();
       });
     });
+
+    it(`should return no data for an invalid name`, async() => {
+      const data = await service.getPlayerStatistics('', '');
+      expect(data).toBeNull();
+    })
   });
 });

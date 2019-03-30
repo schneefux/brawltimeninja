@@ -49,7 +49,11 @@ export default class BrawlstarsService implements AppService {
       this.apiBase,
       { tag },
       { 'Authorization': this.token }
-    );
+    ).catch(() => null);
+
+    if (player == null || player.id == undefined) {
+      return null;
+    }
 
     const heroes = {} as { [id: string]: Hero };
     player.brawlers
