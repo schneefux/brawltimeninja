@@ -180,9 +180,10 @@ export default {
     }, 50)
     hoursTimer()
   },
-  async asyncData({ params, $axios, env }) {
-    const player = await $axios.$get(`/api/${params.app}/player/${params.shard}/${params.name}`)
-    const labels = await $axios.$get(`/api/${params.app}/labels`)
+  async asyncData({ $axios, params, env }) {
+    const app = env.app
+    const player = await $axios.$get(`/api/${app}/player/${params.shard}/${params.name}`)
+    const labels = await $axios.$get(`/api/${app}/labels`)
     return {
       labels,
       player,

@@ -48,4 +48,8 @@ module.exports = {
       }
     }
   },
+
+  env: {
+    app: process.env.NINJA_APP || 'brawlstars',
+  },
 }
