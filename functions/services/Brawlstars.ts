@@ -26,6 +26,7 @@ export default class BrawlstarsService implements AppService {
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       `,
       'background': '/images/brawlstars/background/blue.jpg',
+      'nameHelpVideo': 'https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ',
     };
   }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center">
-    <div class="text-center font-sans">
+    <div class="mt-10 text-center font-sans">
       <h1>How much time on {{ labels.appTitle }}?</h1>
     </div>
 
@@ -44,7 +44,21 @@
       </form>
     </div>
 
-    <div class="my-6 text-center">
+    <div class="mt-3 text-center" v-if="labels.nameHelpVideo">
+      <details>
+        <summary>Need help?</summary>
+        <iframe
+          class="mt-3"
+          width="480"
+          height="271"
+          frameborder="0"
+          allow="encrypted-media; picture-in-picture"
+          :src="labels.nameHelpVideo + '&version=3&rel=0&fs=0&loop=1&playsinline=1'">
+        </iframe>
+      </details>
+    </div>
+
+    <div class="mt-4 text-center">
       <p class="text-grey">Or check one of these profiles:</p>
       <p class="mt-2">
         <router-link

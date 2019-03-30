@@ -4,4 +4,5 @@ export default interface Labels {
   userId: string;
   disclaimer: string;
   background?: string;
+  nameHelp?: string;
 }
