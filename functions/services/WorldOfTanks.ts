@@ -15,10 +15,6 @@ export default class WorldOfTanksService implements AppService {
     this.wrapper = new WargamingWrapper(applicationId, this.getBase);
   }
 
-  public getNameRegex() {
-    return this.wrapper.getNameRegex();
-  }
-
   private getBase(region: string) {
     return `https://api.worldoftanks.${region}/wot`;
   }
@@ -44,6 +40,7 @@ export default class WorldOfTanksService implements AppService {
       'appTitle': 'World Of Tanks',
       'heroes': 'Tanks',
       'userId': 'nickname',
+      'nameRegex': this.wrapper.getNameRegex(),
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
       `,

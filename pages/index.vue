@@ -137,12 +137,11 @@ export default {
   async asyncData({ $axios, env }) {
     const app = env.app
     const featuredPlayers = await $axios.$get(`/api/${app}/featured-players`)
-    const nameRegex = await $axios.$get(`/api/${app}/name-regex`)
     const shards = await $axios.$get(`/api/${app}/shards`)
     const labels = await $axios.$get(`/api/${app}/labels`)
     return {
       featuredPlayers,
-      nameRegex: new RegExp(nameRegex),
+      nameRegex: new RegExp(labels.nameRegex),
       app,
       shards,
       labels,

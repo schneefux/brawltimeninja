@@ -3,6 +3,7 @@ export default interface Labels {
   heroes: string;
   userId: string;
   disclaimer: string;
+  nameRegex: string;
   background?: string;
   nameHelp?: string;
 }

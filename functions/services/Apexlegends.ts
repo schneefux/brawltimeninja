@@ -10,10 +10,6 @@ import AppService from './AppService';
 export default class ApexlegendsService implements AppService {
   private readonly apiBase = 'https://apextab.com/api/';
 
-  public getNameRegex() {
-    return '.*';
-  }
-
   public getShards() {
     return [ {
       'id': 'pc',
@@ -32,6 +28,7 @@ export default class ApexlegendsService implements AppService {
       'appTitle': 'Apex Legends',
       'heroes': 'Characters',
       'userId': 'name',
+      'nameRegex': '.*',
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by EA and EA is not responsible for it.
       `,

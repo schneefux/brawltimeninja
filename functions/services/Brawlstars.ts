@@ -9,10 +9,6 @@ export default class BrawlstarsService implements AppService {
 
   constructor(private token: string) {}
 
-  public getNameRegex() {
-    return '#?[0289PYLQGRJCUV]{3,}';
-  }
-
   public getShards() {
     return [];
   }
@@ -22,6 +18,7 @@ export default class BrawlstarsService implements AppService {
       'appTitle': 'Brawl Stars',
       'heroes': 'Brawlers',
       'userId': 'tag',
+      'nameRegex': '#?[0289PYLQGRJCUV]{3,}',
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       `,

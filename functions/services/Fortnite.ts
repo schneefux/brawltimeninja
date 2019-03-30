@@ -9,10 +9,6 @@ import AppService from './AppService';
 export default class FortniteService implements AppService {
   private readonly apiBase = 'https://fortnite-public-api.theapinetwork.com/';
 
-  public getNameRegex() {
-    return '.*';
-  }
-
   public getShards() {
     return [];
   }
@@ -22,6 +18,7 @@ export default class FortniteService implements AppService {
       'appTitle': 'Fortnite',
       'heroes': '',
       'userId': 'name',
+      'nameRegex': '.*',
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Epic Games and Epic Games is not responsible for it.
       `,

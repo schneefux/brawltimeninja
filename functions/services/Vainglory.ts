@@ -16,10 +16,6 @@ export default class VaingloryService implements AppService {
 
   constructor(private token: string) {};
 
-  public getNameRegex() {
-    return '.{1,16}';
-  }
-
   public getShards() {
     return [ {
       'id': 'na',
@@ -47,6 +43,7 @@ export default class VaingloryService implements AppService {
       'appTitle': 'Vainglory',
       'heroes': 'Heroes',
       'userId': 'name',
+      'nameRegex': '.{1,16}',
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Super Evil Mega Corp and Super Evil Mega Corp is not responsible for it.
       `,
