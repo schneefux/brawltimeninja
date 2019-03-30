@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between">
+  <div
+    class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between bg-center bg-cover"
+    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${labels.background}')`">
     <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
         {{ labels.appTitle }} Time Ninja
@@ -39,8 +41,9 @@ export default {
   },
   methods: {
     updateLabels() {
-      if (this.$route.params.app !== undefined) {
-        this.$axios.$get(`/api/${this.$route.params.app}/labels`).then((labels) => { this.labels = labels })
+      const app = process.env.app
+      if (app !== undefined) {
+        this.$axios.$get(`/api/${app}/labels`).then((labels) => { this.labels = labels })
       } else {
         this.labels = defaultLabels
       }
