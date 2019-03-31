@@ -1,7 +1,7 @@
 <template>
   <div
     class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between bg-center bg-cover"
-    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${labels.background}')`">
+    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${this.background}'`">
     <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
         {{ labels.appTitle }} Time Ninja
@@ -23,6 +23,8 @@
 const defaultLabels = {
   appTitle: 'Online',
   disclaimer: '',
+  backgroundMobile: '',
+  backgroundDesktop: '',
 }
 
 export default {
@@ -34,6 +36,15 @@ export default {
   watch: {
     '$route'() {
       this.updateLabels()
+    },
+  },
+  computed: {
+    background() {
+      if (screen !== undefined && screen.width > 720) {
+        return this.labels.backgroundDesktop
+      } else {
+        return this.labels.backgroundMobile
+      }
     },
   },
   mounted() {

@@ -2,3 +2,6 @@
   command = "export API_PREFIX=/.netlify/functions/ && export API_URL_BROWSER=$API_PREFIX && npm run generate && npm run build:api"
   publish = "dist"
   functions = "functions/dist"
+
+[build.environment]
+  GIT_LFS_ENABLED = "1"

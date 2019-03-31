@@ -21,7 +21,8 @@ export default class BrawlstarsService implements AppService {
       'disclaimer': `
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       `,
-      'background': '/images/brawlstars/background/blue.jpg',
+      'backgroundMobile': '/images/brawlstars/background/blue_mobile.jpg',
+      'backgroundDesktop': '/images/brawlstars/background/blue_desktop.jpg',
       'nameHelpVideo': 'https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ',
     };
   }
@@ -61,29 +62,29 @@ export default class BrawlstarsService implements AppService {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         heroes[brawlerId] = {
           label: brawler.name,
-          icon: `/images/brawlstars/hero/icon/${brawlerId}.png`,
+          icon: `/images/brawlstars/hero/icon/${brawlerId}_optimized.png`,
           stats: {
             rank: {
               label: 'Rank',
               value: brawler.rank,
-              icon: '/images/brawlstars/icon/leaderboards.png'
+              icon: '/images/brawlstars/icon/leaderboards_optimized.png'
             },
             trophies: {
               label: 'Trophies',
               value: brawler.trophies,
-              icon: '/images/brawlstars/icon/trophy.png'
+              icon: '/images/brawlstars/icon/trophy_optimized.png'
             },
             maxTrophies: {
               label: 'Max Trophies',
               value: brawler.highestTrophies,
-              icon: '/images/brawlstars/icon/trophy.png'
+              icon: '/images/brawlstars/icon/trophy_optimized.png'
             },
             level: {
               label: 'Power Level',
               value: brawler.power,
               icon: brawler.power == 10?
-                '/images/brawlstars/icon/starpower.png'
-                :'/images/brawlstars/icon/powerpoint.png'
+                '/images/brawlstars/icon/starpower_optimized.png'
+                :'/images/brawlstars/icon/powerpoint_optimized.png'
             }
           }
         } as Hero;
@@ -152,8 +153,8 @@ export default class BrawlstarsService implements AppService {
       modes: {
         '3v3': {
           label: '3v3',
-          icon: '/images/brawlstars/mode/icon/gemgrab.png',
-          background: '/images/brawlstars/mode/background/gemgrab.png',
+          icon: '/images/brawlstars/mode/icon/gemgrab_optimized.png',
+          background: '/images/brawlstars/mode/background/gemgrab.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -163,8 +164,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'soloShowdown': {
           label: 'Solo Showdown',
-          icon: '/images/brawlstars/mode/icon/showdown.png',
-          background: '/images/brawlstars/mode/background/showdown.png',
+          icon: '/images/brawlstars/mode/icon/showdown_optimized.png',
+          background: '/images/brawlstars/mode/background/showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -174,8 +175,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'duoShowdown': {
           label: 'Duo Showdown',
-          icon: '/images/brawlstars/mode/icon/duoshowdown.png',
-          background: '/images/brawlstars/mode/background/showdown.png',
+          icon: '/images/brawlstars/mode/icon/duoshowdown_optimized.png',
+          background: '/images/brawlstars/mode/background/showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -185,8 +186,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'bossfight': {
           label: 'Bossfight',
-          icon: '/images/brawlstars/mode/icon/bossfight.png',
-          background: '/images/brawlstars/mode/background/bossfight.png',
+          icon: '/images/brawlstars/mode/icon/bossfight_optimized.png',
+          background: '/images/brawlstars/mode/background/bossfight.jpg',
           stats: {
             minutes: {
               label: 'survived',
@@ -196,8 +197,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'roborumble': {
           label: 'Robo Rumble',
-          icon: '/images/brawlstars/mode/icon/roborumble.png',
-          background: '/images/brawlstars/mode/background/roborumble.png',
+          icon: '/images/brawlstars/mode/icon/roborumble_optimized.png',
+          background: '/images/brawlstars/mode/background/roborumble.jpg',
           stats: {
             minutes: {
               label: 'survived',
