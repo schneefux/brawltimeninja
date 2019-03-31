@@ -59,7 +59,7 @@
       </details>
     </div>
 
-    <div class="mt-4 text-center">
+    <div class="my-4 text-center">
       <p class="text-grey">Or check one of these profiles:</p>
       <p class="mt-2">
         <router-link
