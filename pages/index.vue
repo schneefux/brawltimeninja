@@ -46,8 +46,9 @@
 
     <div class="mt-3 text-center" v-if="labels.nameHelpVideo">
       <details>
-        <summary>Need help?</summary>
+        <summary @click="loadNameHelpVideo = true">Need help?</summary>
         <iframe
+          v-if="loadNameHelpVideo"
           class="mt-3"
           width="480"
           height="271"
@@ -88,6 +89,7 @@ export default {
       name: undefined,
       nameLoading: false,
       nameNotFound: false,
+      loadNameHelpVideo: false,
     }
   },
   computed: {
