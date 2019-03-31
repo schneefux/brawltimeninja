@@ -85,4 +85,8 @@ export default {
   env: {
     app: process.env.NINJA_APP || 'brawlstars',
   },
+
+  generate: {
+    fallback: true,
+  },
 }
