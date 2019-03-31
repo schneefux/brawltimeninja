@@ -1,7 +1,7 @@
 <template>
   <div
     class="min-h-screen bg-primary-darkest text-grey-lighter flex flex-col justify-between bg-center bg-cover"
-    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${this.background}'`">
+    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${background}'`">
     <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
         {{ labels.appTitle }} Time Ninja
@@ -20,24 +20,9 @@
 </template>
 
 <script>
-const defaultLabels = {
-  appTitle: 'Online',
-  disclaimer: '',
-  backgroundMobile: '',
-  backgroundDesktop: '',
-}
+import { mapState } from 'vuex'
 
 export default {
-  data() {
-    return {
-      labels: defaultLabels,
-    }
-  },
-  watch: {
-    '$route'() {
-      this.updateLabels()
-    },
-  },
   computed: {
     background() {
       if (screen !== undefined && screen.width > 720) {
@@ -46,19 +31,9 @@ export default {
         return this.labels.backgroundMobile
       }
     },
-  },
-  mounted() {
-    this.updateLabels()
-  },
-  methods: {
-    updateLabels() {
-      const app = process.env.app
-      if (app !== undefined) {
-        this.$axios.$get(`/api/${app}/labels`).then((labels) => { this.labels = labels })
-      } else {
-        this.labels = defaultLabels
-      }
-    },
+    ...mapState({
+      labels: state => state.labels,
+    }),
   },
 }
 </script>

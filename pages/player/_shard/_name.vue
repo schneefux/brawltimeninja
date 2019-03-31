@@ -126,11 +126,22 @@
 
 <script>
 import PlayerStatistics from '~/components/player-statistics'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ProfilePage',
   components: {
     PlayerStatistics,
+  },
+  data() {
+    return {
+      heroHighlightIndex: 0,
+      hoursSpent: 0,
+      kwhSpent: 0,
+      toiletBreaks: 0,
+      pizzaKg: 0,
+      error: ''
+    }
   },
   computed: {
     hasModes() {
@@ -158,7 +169,21 @@ export default {
           value: Math.floor(this.hoursSpent / 7)
         },
       }
-    }
+    },
+    ...mapState({
+      player: state => state.player,
+      labels: state => state.labels,
+    }),
+  },
+  async fetch({ store, params }) {
+    store.commit('setPlayerId', {
+      id: params.name,
+      shard: params.shard,
+    })
+    await Promise.all([
+      store.dispatch('loadLabels'),
+      store.dispatch('loadPlayer'),
+    ])
   },
   mounted() {
     const highlightTimer = () => setTimeout(() => {
@@ -180,21 +205,6 @@ export default {
     }, 50)
     hoursTimer()
   },
-  async asyncData({ $axios, params, env }) {
-    const app = env.app
-    const player = await $axios.$get(`/api/${app}/player/${params.shard}/${params.name}`)
-    const labels = await $axios.$get(`/api/${app}/labels`)
-    return {
-      labels,
-      player,
-      heroHighlightIndex: 0,
-      hoursSpent: 0,
-      kwhSpent: 0,
-      toiletBreaks: 0,
-      pizzaKg: 0,
-      error: ''
-    }
-  },
   methods: {
     nextHighlight() {
       const heroes = Object.keys(this.player.heroes)
@@ -203,8 +213,8 @@ export default {
       } else {
         this.heroHighlightIndex += 1
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

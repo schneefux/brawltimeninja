@@ -83,6 +83,18 @@
 </template>
 
 <script>
+import { mapState, mapMutations, mapActions } from 'vuex'
+
+function playerToRoute(player) {
+  return {
+    name: 'player-shard-name',
+    params: {
+      name: player.id,
+      shard: player.shard,
+    }
+  }
+}
+
 export default {
   data() {
     return {
@@ -90,29 +102,35 @@ export default {
       nameLoading: false,
       nameNotFound: false,
       loadNameHelpVideo: false,
+      playerToRoute,
     }
   },
   computed: {
     playerRoute() {
-      return {
-        name: 'player-shard-name',
-        params: {
-          name: this.name,
-          shard: this.shard,
-        }
-      }
+      return playerToRoute({ id: this.name, shard: this.shard })
     },
-    playerToRoute() {
-      return (player) => {
-        return {
-          name: 'player-shard-name',
-          params: {
-            name: player.id,
-            shard: player.shard,
-          }
-        }
-      }
+    nameRegex() {
+      return new RegExp(this.labels.nameRegex)
     },
+    ...mapState({
+      labels: state => state.labels,
+      featuredPlayers: state => state.featuredPlayers,
+      shards: state => state.shards,
+    }),
+  },
+  async asyncData({ store }) {
+    await store.dispatch('loadShards')
+    const shards = store.state.shards
+
+    return {
+      shard: shards.length > 0 ? shards[0].id : 'global',
+    }
+  },
+  async fetch({ store }) {
+    await Promise.all([
+      store.dispatch('loadLabels'),
+      store.dispatch('loadFeaturedPlayers'),
+    ])
   },
   methods: {
     async submitName() {
@@ -125,7 +143,11 @@ export default {
 
       try {
         this.nameLoading = true
-        await this.$axios.$get(`/api/${this.app}/player/${this.shard}/${this.name}`)
+        this.setPlayerId({
+          id: this.name,
+          shard: this.shard,
+        })
+        await this.loadPlayer()
       } catch (error) {
         this.nameNotFound = true
         return
@@ -135,20 +157,12 @@ export default {
 
       this.$router.push(this.playerRoute)
     },
-  },
-  async asyncData({ $axios, env }) {
-    const app = env.app
-    const featuredPlayers = await $axios.$get(`/api/${app}/featured-players`)
-    const shards = await $axios.$get(`/api/${app}/shards`)
-    const labels = await $axios.$get(`/api/${app}/labels`)
-    return {
-      featuredPlayers,
-      nameRegex: new RegExp(labels.nameRegex),
-      app,
-      shards,
-      labels,
-      shard: shards.length > 0 ? shards[0].id : 'global',
-    }
+    ...mapMutations({
+      setPlayerId: 'setPlayerId',
+    }),
+    ...mapActions({
+      loadPlayer: 'loadPlayer',
+    }),
   },
 }
 </script>
