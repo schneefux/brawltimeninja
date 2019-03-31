@@ -1,4 +1,3 @@
-import Router from 'koa-router';
 import { Player as BrawlstarsPlayer } from '../model/Brawlstars';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
