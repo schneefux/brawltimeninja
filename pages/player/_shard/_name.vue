@@ -62,7 +62,7 @@
               </p>
             </div>
             <img
-              class="h-12 self-center mx-6 my-4"
+              class="h-12 self-center mr-6 my-4"
               :src="mode.icon">
           </div>
         </div>
@@ -91,8 +91,8 @@
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
-            class="card bg-primary-dark flex justify-between">
-            <div class="flex flex-col w-32">
+            class="card bg-primary-dark flex">
+            <div class="flex flex-col w-32 justify-between">
               <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
               <img :src="hero.icon" class="w-24">
             </div>

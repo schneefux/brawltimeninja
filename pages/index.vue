@@ -28,7 +28,7 @@
               v-model="name"
               :placeholder="`Enter your ${labels.userId}`"
               type="text"
-              class="w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+              class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
             <input
               type="submit"
               class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
