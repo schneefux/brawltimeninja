@@ -1,6 +1,7 @@
 const app = process.env.app
 
 export const state = () => ({
+  app,
   labels: {
     appTitle: 'Online',
     disclaimer: '',
@@ -9,6 +10,7 @@ export const state = () => ({
   },
   shards: [],
   featuredPlayers: [],
+  lastPlayers: [],
   player: {
     loaded: false,
     id: '',
@@ -43,6 +45,18 @@ export const mutations = {
       loaded: true,
     }
   },
+  addLastPlayer(state, player) {
+    const existsIn = arr => arr.some(({ id }) => player.id === id)
+
+    if (existsIn(state.lastPlayers)) {
+      return
+    }
+    if (existsIn(state.featuredPlayers)) {
+      return
+    }
+
+    state.lastPlayers = [player, ...state.lastPlayers.slice(0, 4)]
+  },
 }
 
 export const actions = {
@@ -51,7 +65,7 @@ export const actions = {
       return
     }
 
-    const labels = await this.$axios.$get(`/api/${app}/labels`)
+    const labels = await this.$axios.$get(`/api/${state.app}/labels`)
     commit('setLabels', labels)
   },
   async loadShards({ state, commit }) {
@@ -60,7 +74,7 @@ export const actions = {
       return
     }
 
-    const shards = await this.$axios.$get(`/api/${app}/shards`)
+    const shards = await this.$axios.$get(`/api/${state.app}/shards`)
     commit('setShards', shards)
   },
   async loadFeaturedPlayers({ state, commit }) {
@@ -68,7 +82,7 @@ export const actions = {
       return
     }
 
-    const featuredPlayers = await this.$axios.$get(`/api/${app}/featured-players`)
+    const featuredPlayers = await this.$axios.$get(`/api/${state.app}/featured-players`)
     commit('setFeaturedPlayers', featuredPlayers)
   },
   async loadPlayer({ state, commit }) {
@@ -76,7 +90,8 @@ export const actions = {
       return
     }
 
-    const player = await this.$axios.$get(`/api/${app}/player/${state.player.shard}/${state.player.id}`)
+    const player = await this.$axios.$get(`/api/${state.app}/player/${state.player.shard}/${state.player.id}`)
     commit('setPlayer', player)
+    commit('addLastPlayer', player)
   },
 }

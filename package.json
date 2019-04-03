@@ -30,7 +30,8 @@
     "nuxt": "^2.5.1",
     "typescript": "^3.4.1",
     "vue-analytics": "^5.16.4",
-    "vue-google-adsense": "^1.5.1"
+    "vue-google-adsense": "^1.5.1",
+    "vuex-persist": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

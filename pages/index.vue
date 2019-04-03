@@ -8,7 +8,7 @@
       <form
         @submit.prevent="submitName"
         class="flex flex-wrap justify-center">
-        <div class="text-center w-3/4 md:w-auto bg-primary rounded">
+        <div class="text-center bg-primary rounded">
           <button
             v-for="(shardOption) in shards"
             :key="shardOption.id"
@@ -59,11 +59,11 @@
       </details>
     </div>
 
-    <div class="my-4 text-center">
+    <div class="my-4 text-center w-80">
       <p class="text-grey">Or check one of these profiles:</p>
-      <p class="mt-2">
+      <p class="mt-2 mx-auto">
         <router-link
-          v-for="player in featuredPlayers"
+          v-for="player in players"
           :key="player.id"
           :to="playerToRoute(player)"
           tag="button"
@@ -114,7 +114,7 @@ export default {
     },
     ...mapState({
       labels: state => state.labels,
-      featuredPlayers: state => state.featuredPlayers,
+      players: state => [...state.lastPlayers, ...state.featuredPlayers],
       shards: state => state.shards,
     }),
   },
