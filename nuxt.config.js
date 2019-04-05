@@ -16,7 +16,8 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Online Time Ninja - Check time spent on Brawl Stars and player statistics' }
+      { hid: 'description', name: 'description', content: 'Brawl Stars Time Ninja - Check time spent on Brawl Stars and player statistics' },
+      { hid: 'og:description', name: 'og:description', content: 'Brawl Stars Time Ninja - Check time spent on Brawl Stars and player statistics' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
