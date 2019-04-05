@@ -25,7 +25,7 @@ import { mapState } from 'vuex'
 export default {
   computed: {
     background() {
-      if (screen !== undefined && screen.width > 720) {
+      if (global.screen !== undefined && screen.width > 720) {
         return this.labels.backgroundDesktop
       } else {
         return this.labels.backgroundMobile
