@@ -9,7 +9,7 @@ class TaiwindExtractor {
 }
 
 export default {
-  mode: 'spa',
+  mode: 'universal',
 
   head: {
     title: 'Online Time Ninja',
