@@ -1,10 +1,12 @@
 <template>
   <div class="flex flex-col items-center">
-    <div class="mt-10 text-center font-sans">
+    <div class="mt-10 text-center font-sans mx-2">
       <h1>How much time on {{ labels.appTitle }}?</h1>
     </div>
 
-    <div class="mt-8 mx-4">
+    <p class="mt-3 text-center text-lg mx-2">See how much you play, statistics for your {{ labels.heroes }} and more.</p>
+
+    <div class="mt-4 mx-4">
       <form
         @submit.prevent="submitName"
         class="flex flex-wrap justify-center">
