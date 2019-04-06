@@ -69,7 +69,7 @@
           :key="player.id"
           :to="playerToRoute(player)"
           tag="button"
-          class="ml-2 text-secondary border-primary border-b-2 rounded">
+          class="ml-2 text-secondary border-primary border-b-2">
           {{ player.name }}
         </router-link>
       </p>
