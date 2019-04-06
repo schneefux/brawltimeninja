@@ -61,7 +61,7 @@
       </details>
     </div>
 
-    <div class="my-4 text-center w-80">
+    <div class="my-4 text-center max-w-sm">
       <p class="text-grey">Or check one of these profiles:</p>
       <p class="mt-2 mx-auto">
         <router-link
