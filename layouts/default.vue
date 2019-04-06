@@ -15,6 +15,7 @@
         &#169; 2019 Online Time Ninja Project
       </p>
       <p class="text-xs leading-tight">{{ labels.disclaimer }}</p>
+      <p class="text-xs leading-tight">Send questions or feedback to dev (at) {{ domain }}.</p>
     </footer>
   </div>
 </template>
@@ -30,6 +31,13 @@ export default {
       } else {
         return this.labels.backgroundMobile
       }
+    },
+    domain() {
+      if (global.window !== undefined) {
+        return window.location.hostname
+      }
+
+      return ''
     },
     ...mapState({
       labels: state => state.labels,
