@@ -9,6 +9,7 @@ export const state = () => ({
     backgroundDesktop: '',
   },
   shards: [],
+  shardsLoaded: false,
   featuredPlayers: [],
   lastPlayers: [],
   player: {
@@ -26,6 +27,7 @@ export const mutations = {
   },
   setShards(state, shards) {
     state.shards = shards
+    state.shardsLoaded = true
   },
   setFeaturedPlayers(state, featuredPlayers) {
     state.featuredPlayers = featuredPlayers
@@ -60,6 +62,15 @@ export const mutations = {
 }
 
 export const actions = {
+  nuxtServerInit({ commit }, { payload }) {
+    if (payload !== undefined) {
+      // fill the store so that nuxt generate does not
+      // require an API connection for meta data
+      commit('setLabels', payload.labels)
+      commit('setShards', payload.shards)
+      commit('setFeaturedPlayers', payload.featuredPlayers)
+    }
+  },
   async loadLabels({ state, commit }) {
     if (state.labels.disclaimer.length > 0) {
       return
@@ -69,8 +80,7 @@ export const actions = {
     commit('setLabels', labels)
   },
   async loadShards({ state, commit }) {
-    if (state.shards.length > 0) {
-      // TODO brawlstars has 0
+    if (state.shardsLoaded) {
       return
     }
 

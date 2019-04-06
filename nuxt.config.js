@@ -57,6 +57,10 @@ export default {
           exclude: /(node_modules)/
         })
       }
+
+      // required for nuxtServerInit lambda bypass
+      config.externals = ['fs', 'net', 'encoding']
+
       if (!ctx.isDev) {
         config.plugins.push(
           new PurgecssPlugin({
@@ -89,5 +93,30 @@ export default {
 
   generate: {
     fallback: true,
+    async routes() {
+      const lambda = require('./functions/dist/api.js')
+      // bypass any server setup and call the lambda directly
+      const $get = requestPath => new Promise((resolve, reject) => lambda.handler({
+        path: '/.netlify/functions' + requestPath,
+        httpMethod: 'GET',
+        headers: {},
+        queryStringParameters: {},
+        body: '',
+        isBase64Encoded: false,
+      }, {
+        succeed: response => resolve(JSON.parse(response.body)),
+        fail: reject,
+      }, () => {}))
+
+      const app = process.env.NINJA_APP || 'brawlstars'
+      const labels = await $get(`/api/${app}/labels`)
+      const shards = await $get(`/api/${app}/shards`)
+      const featuredPlayers = await $get(`/api/${app}/featured-players`)
+
+      return [{
+        route: '/',
+        payload: { labels, shards, featuredPlayers },
+      }]
+    },
   },
 }

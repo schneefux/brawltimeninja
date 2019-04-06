@@ -1,5 +1,5 @@
 [build]
-  command = "export API_PREFIX=/.netlify/functions/ && export API_URL_BROWSER=$API_PREFIX && npm run generate && npm run build:api"
+  command = "export API_PREFIX=/.netlify/functions/ && export API_URL_BROWSER=$API_PREFIX && npm run build:api && npm run generate"
   publish = "dist"
   functions = "functions/dist"
 
