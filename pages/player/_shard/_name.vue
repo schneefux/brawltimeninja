@@ -34,7 +34,7 @@
     <div class="my-4 text-center">
       <adsense
         data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="7575144361">
+        data-ad-slot="9335862290">
       </adsense>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="my-4 text-center">
       <adsense
         data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1005866586">
+        data-ad-slot="4606279792">
       </adsense>
     </div>
 
@@ -118,7 +118,7 @@
     <div class="my-4 text-center">
       <adsense
         data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="5875049882">
+        data-ad-slot="7563615625">
       </adsense>
     </div>
   </div>
