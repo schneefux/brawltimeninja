@@ -74,13 +74,6 @@
         </router-link>
       </p>
     </div>
-
-    <div class="absolute pin-b mb-24">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4384684878">
-      </adsense>
-    </div>
   </div>
 </template>
 
