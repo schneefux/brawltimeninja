@@ -62,14 +62,13 @@
     </div>
 
     <div class="my-4 text-center max-w-sm">
-      <p
-        v-if="lastPlayers.length === 0"
-        class="text-grey"
-      >
-        Or check one of these profiles:
-      </p>
-      <p v-else>
-        Recently viewed:
+      <p class="text-grey">
+        <span v-show="lastPlayers.length === 0">
+          Or check one of these profiles:
+        </span>
+        <span v-show="lastPlayers.length > 0">
+          Recently viewed:
+        </span>
       </p>
       <p class="mt-2 mx-auto">
         <router-link

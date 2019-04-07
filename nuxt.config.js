@@ -31,6 +31,7 @@ export default {
   ],
 
   plugins: [
+    { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/analytics', mode: 'client' },
   ],
