@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex flex-col justify-between min-h-screen bg-primary-darkest text-grey-lighter bg-center"
-    :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${background}'`">
+    :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${background}')`">
     <nav class="bg-primary-dark p-6">
       <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
         {{ labels.appTitle }} Time Ninja
@@ -23,12 +23,11 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
+    isDesktop() {
+      return global.screen !== undefined && screen.width > 720
+    },
     background() {
-      if (global.screen !== undefined && screen.width > 720) {
-        return this.labels.backgroundDesktop
-      } else {
-        return this.labels.backgroundMobile
-      }
+      return this.isDesktop ? this.labels.backgroundDesktop : this.labels.backgroundMobile
     },
     domain() {
       if (global.window !== undefined) {
