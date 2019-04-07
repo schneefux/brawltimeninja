@@ -48,12 +48,7 @@ export const mutations = {
     }
   },
   addLastPlayer(state, player) {
-    const existsIn = arr => arr.some(({ id }) => player.id === id)
-
-    if (existsIn(state.lastPlayers)) {
-      return
-    }
-    if (existsIn(state.featuredPlayers)) {
+    if (state.lastPlayers.some(({ id }) => player.id === id)) {
       return
     }
 

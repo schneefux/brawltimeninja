@@ -62,10 +62,18 @@
     </div>
 
     <div class="my-4 text-center max-w-sm">
-      <p class="text-grey">Or check one of these profiles:</p>
+      <p
+        v-if="lastPlayers.length === 0"
+        class="text-grey"
+      >
+        Or check one of these profiles:
+      </p>
+      <p v-else>
+        Recently viewed:
+      </p>
       <p class="mt-2 mx-auto">
         <router-link
-          v-for="player in players"
+          v-for="player in (lastPlayers.length === 0 ? featuredPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
           tag="button"
@@ -109,7 +117,8 @@ export default {
     },
     ...mapState({
       labels: state => state.labels,
-      players: state => [...state.lastPlayers, ...state.featuredPlayers],
+      lastPlayers: state => state.lastPlayers,
+      featuredPlayers: state => state.featuredPlayers,
       shards: state => state.shards,
     }),
   },
