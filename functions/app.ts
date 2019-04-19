@@ -23,7 +23,7 @@ export default function createApp(path: string = '/api') {
     const serviceName = name as keyof typeof Service;
 
     const service = createService(serviceName);
-    const routes = createRoutes(service);
+    const routes = createRoutes(service, serviceName);
     router.use(path + '/' + serviceName, routes);
   });
 

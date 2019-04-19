@@ -1,7 +1,40 @@
-import Router from 'koa-router';
-import AppService from '../services/AppService';
+import { readFile } from 'fs';
+import { promisify } from 'util';
 
-export default function createRoutes(service: AppService) {
+import glob from 'tiny-glob';
+import Router from 'koa-router';
+import marked from 'marked';
+
+import AppService from '../services/AppService';
+import Blog, { Post } from '../model/Blog';
+import { Service } from '../services/AppServiceFactory';
+
+const readFileP = promisify(readFile);
+
+async function getBlog(name: string): Promise<Blog> {
+  if (!Object.keys(Service).includes(name)) {
+    return {};
+  }
+
+  const guideFiles = await glob(`blog/${name}/guides/*.md`).catch(() => <string[]>[]);
+
+  const guides = await Promise.all(guideFiles.map(async (file) => {
+    const content = (await readFileP(file)).toString();
+    const split = content.indexOf('\n');
+    const meta = JSON.parse(content.substring(0, split));
+    const text = content.substring(split + 1);
+    return {
+      ...meta,
+      content: marked(text),
+    } as Post;
+  }));
+
+  return {
+    guides,
+  };
+}
+
+export default function createRoutes(service: AppService, name: string) {
   const router = new Router();
 
   router.get('/shards', async (ctx, next) => {
@@ -18,6 +51,12 @@ export default function createRoutes(service: AppService) {
 
   router.get('/featured-players', async (ctx, next) => {
     ctx.body = service.getFeaturedPlayers();
+    ctx.set('Cache-Control', 'public, max-age=3600');
+    await next();
+  });
+
+  router.get('/blog', async (ctx, next) => {
+    ctx.body = await getBlog(name);
     ctx.set('Cache-Control', 'public, max-age=3600');
     await next();
   });
