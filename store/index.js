@@ -9,6 +9,7 @@ export const state = () => ({
     backgroundDesktop: '',
   },
   blog: {},
+  blogLoaded: false,
   shards: [],
   shardsLoaded: false,
   featuredPlayers: [],
@@ -28,6 +29,7 @@ export const mutations = {
   },
   setBlog(state, blog) {
     state.blog = blog
+    state.blogLoaded = true
   },
   setShards(state, shards) {
     state.shards = shards
@@ -87,7 +89,7 @@ export const actions = {
     commit('setLabels', labels)
   },
   async loadBlog({ state, commit }) {
-    if (state.blog.loaded) {
+    if (state.blogLoaded) {
       return
     }
 
