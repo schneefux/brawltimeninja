@@ -18,7 +18,7 @@
 
       <div
         class="w-full md:w-auto"
-        :class="{ 'hidden': menuOpen }"
+        :class="{ 'hidden': !menuOpen }"
       >
         <div class="text-lg capitalize font-medium">
           <nuxt-link
