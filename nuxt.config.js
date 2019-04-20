@@ -2,7 +2,7 @@ import path from 'path'
 import PurgecssPlugin from 'purgecss-webpack-plugin'
 import glob from 'glob-all'
 
-class TaiwindExtractor {
+class TailwindExtractor {
   static extract(content) {
     return content.match(/[A-z0-9-:/]+/g) || []
   }
@@ -80,7 +80,7 @@ export default {
               path.join(__dirname, './components/**/*.vue'),
             ]),
             extractors: [ {
-              extractor: TaiwindExtractor,
+              extractor: TailwindExtractor,
               extensions: ['vue'],
             } ],
             whitelist: ['html', 'body', 'nuxt-progress'],
