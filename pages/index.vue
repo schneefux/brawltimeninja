@@ -114,26 +114,15 @@ export default {
     nameRegex() {
       return new RegExp(this.labels.nameRegex)
     },
+    shard() {
+      return this.shards.length > 0 ? this.shards[0].id : 'global'
+    },
     ...mapState({
       labels: state => state.labels,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
       shards: state => state.shards,
     }),
-  },
-  async asyncData({ store }) {
-    await store.dispatch('loadShards')
-    const shards = store.state.shards
-
-    return {
-      shard: shards.length > 0 ? shards[0].id : 'global',
-    }
-  },
-  async fetch({ store }) {
-    await Promise.all([
-      store.dispatch('loadLabels'),
-      store.dispatch('loadFeaturedPlayers'),
-    ])
   },
   methods: {
     async submitName() {

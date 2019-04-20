@@ -120,12 +120,13 @@ export default {
 
       const app = process.env.NINJA_APP || 'brawlstars'
       const labels = await $get(`/api/${app}/labels`)
+      const blog = await $get(`/api/${app}/blog`)
       const shards = await $get(`/api/${app}/shards`)
       const featuredPlayers = await $get(`/api/${app}/featured-players`)
 
       return [{
         route: '/',
-        payload: { labels, shards, featuredPlayers },
+        payload: { labels, blog, shards, featuredPlayers },
       }]
     },
   },

@@ -2,10 +2,35 @@
   <div
     class="flex flex-col justify-between min-h-screen bg-primary-darkest text-grey-lighter bg-center"
     :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${background}')`">
-    <nav class="bg-primary-dark p-6">
-      <nuxt-link to="/" class="no-underline font-semibold text-xl text-white tracking-tight">
+    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky pin-t md:static">
+      <nuxt-link to="/" class="no-underline flex-no-shrink font-semibold text-xl text-white tracking-tight">
         {{ labels.appTitle }} Time Ninja
       </nuxt-link>
+
+      <div class="md:hidden">
+        <button
+          class="flex px-3 py-2 border rounded text-primary-light border-primary-light"
+          @click="menuOpen = !menuOpen"
+        >
+          <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+        </button>
+      </div>
+
+      <div
+        class="w-full md:w-auto"
+        :class="{ 'hidden': menuOpen }"
+      >
+        <div class="text-lg capitalize font-medium">
+          <nuxt-link
+            v-for="topic in topics"
+            :key="topic"
+            :to="`/blog/${topic}`"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+          >
+            {{ topic }}
+          </nuxt-link>
+        </div>
+      </div>
     </nav>
 
     <nuxt />
@@ -22,7 +47,16 @@
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      menuOpen: false,
+    }
+  },
   computed: {
+    topics() {
+      return Object.keys(this.blog)
+        .map(topic => topic.replace('_', ' '))
+    },
     isDesktop() {
       return global.screen !== undefined && screen.width > 720
     },
@@ -38,6 +72,7 @@ export default {
     },
     ...mapState({
       labels: state => state.labels,
+      blog: state => state.blog,
     }),
   },
 }

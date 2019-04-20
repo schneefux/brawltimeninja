@@ -8,6 +8,7 @@ export const state = () => ({
     backgroundMobile: '',
     backgroundDesktop: '',
   },
+  blog: {},
   shards: [],
   shardsLoaded: false,
   featuredPlayers: [],
@@ -24,6 +25,9 @@ export const state = () => ({
 export const mutations = {
   setLabels(state, labels) {
     state.labels = labels
+  },
+  setBlog(state, blog) {
+    state.blog = blog
   },
   setShards(state, shards) {
     state.shards = shards
@@ -57,13 +61,21 @@ export const mutations = {
 }
 
 export const actions = {
-  nuxtServerInit({ commit }, { payload }) {
+  async nuxtServerInit({ commit, dispatch }, { payload }) {
     if (payload !== undefined) {
       // fill the store so that nuxt generate does not
       // require an API connection for meta data
       commit('setLabels', payload.labels)
+      commit('setBlog', payload.blog)
       commit('setShards', payload.shards)
       commit('setFeaturedPlayers', payload.featuredPlayers)
+    } else {
+      await Promise.all([
+        await dispatch('loadLabels'),
+        await dispatch('loadBlog'),
+        await dispatch('loadShards'),
+        await dispatch('loadFeaturedPlayers'),
+      ])
     }
   },
   async loadLabels({ state, commit }) {
@@ -73,6 +85,14 @@ export const actions = {
 
     const labels = await this.$axios.$get(`/api/${state.app}/labels`)
     commit('setLabels', labels)
+  },
+  async loadBlog({ state, commit }) {
+    if (state.blog.loaded) {
+      return
+    }
+
+    const blog = await this.$axios.$get(`/api/${state.app}/blog`)
+    commit('setBlog', blog)
   },
   async loadShards({ state, commit }) {
     if (state.shardsLoaded) {

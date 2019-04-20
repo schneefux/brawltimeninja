@@ -180,10 +180,7 @@ export default {
       id: params.name,
       shard: params.shard,
     })
-    await Promise.all([
-      store.dispatch('loadLabels'),
-      store.dispatch('loadPlayer'),
-    ])
+    await store.dispatch('loadPlayer')
   },
   mounted() {
     const highlightTimer = () => setTimeout(() => {
