@@ -124,10 +124,19 @@ export default {
       const shards = await $get(`/api/${app}/shards`)
       const featuredPlayers = await $get(`/api/${app}/featured-players`)
 
-      return [{
+      const payload = { labels, blog, shards, featuredPlayers }
+      const routes = []
+
+      routes.push({
         route: '/',
-        payload: { labels, blog, shards, featuredPlayers },
-      }]
+        payload,
+      });
+      [...Object.entries(blog)].forEach(([topic, posts]) => routes.push({
+        route: `/blog/${topic}`,
+        payload,
+      }))
+
+      return routes
     },
   },
 }
