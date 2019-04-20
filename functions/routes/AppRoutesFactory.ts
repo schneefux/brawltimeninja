@@ -8,9 +8,53 @@ import marked from 'marked';
 import AppService from '../services/AppService';
 import Blog, { Post } from '../model/Blog';
 import { Service } from '../services/AppServiceFactory';
+import { stringLiteral } from '@babel/types';
 
 const readFileP = promisify(readFile);
 
+/**
+ * Add support for resizing and styling via ![alt](src.png=class1,class2)
+ */
+const renderer = new marked.Renderer();
+renderer.image = (src, title, alt) => {
+  let classes;
+  if (src.includes('=')) {
+    classes = src.substring(src.lastIndexOf('=') + 1).split(',');
+    src = src.substring(0, src.lastIndexOf('='));
+  }
+
+  let res = `<img src="${src}" alt="${alt}"`;
+
+  if (classes != undefined) {
+    res += ` class="${classes.join(' ')}"`;
+  }
+
+  return res + '>';
+};
+marked.setOptions({
+  renderer,
+  gfm: true,
+  breaks: true,
+  tables: true,
+  smartLists: true,
+  smartypants: true,
+});
+
+/**
+ * Expand macros
+ */
+function expandMacros(markdown: string, app: string) {
+  // expand ![~folder/path/icon.png]
+  markdown = markdown.replace(/!\[~([\w\/.-]+)\]/g, `![$1](/images/${app}/$1)`);
+  // expand ![~folder/path/icon.png class1,class2]
+  markdown = markdown.replace(/!\[~([\w\/.-]+) (([\w:-]+)(,[\w:-]+)*)\]/g, `![$1](/images/${app}/$1=$2)`);
+
+  return markdown;
+}
+
+/**
+ * Read and render blog posts
+ */
 async function getBlog(name: string): Promise<Blog> {
   if (!Object.keys(Service).includes(name)) {
     return {};
@@ -25,7 +69,7 @@ async function getBlog(name: string): Promise<Blog> {
     const text = content.substring(split + 1);
     return {
       ...meta,
-      content: marked(text),
+      content: marked(expandMacros(text, name)),
     } as Post;
   }));
 
