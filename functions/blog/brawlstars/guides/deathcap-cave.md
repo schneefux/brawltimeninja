@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/deathcap-cave/map.jpg" }
+{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/deathcap-cave.jpg" }
 
 Deathcap Cave
 ===
@@ -57,4 +57,4 @@ Barly should try to regain control of the area south-east to the mine if an enem
 Graphic
 ---
 
-![~blog/guides/deathcap-cave/full.jpg]
+![~blog/guides/deathcap-cave.jpg]

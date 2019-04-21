@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/four-squared/map.jpg" }
+{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/four-squared.jpg" }
 
 Four Squared
 ===
@@ -47,4 +47,4 @@ Left to the mine: General area for Mortis to control. He should fall back to her
 Graphic
 ---
 
-![~blog/guides/four-squared/full.jpg]
+![~blog/guides/four-squared.jpg]
