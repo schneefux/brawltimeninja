@@ -17,7 +17,7 @@
       </div>
 
       <div
-        class="w-full md:w-auto"
+        class="w-full md:w-auto md:block"
         :class="{ 'hidden': !menuOpen }"
       >
         <div class="text-lg capitalize font-medium">
