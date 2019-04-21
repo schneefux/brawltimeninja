@@ -78,10 +78,11 @@ export default {
               path.join(__dirname, './pages/**/*.vue'),
               path.join(__dirname, './layouts/**/*.vue'),
               path.join(__dirname, './components/**/*.vue'),
+              path.join(__dirname, './functions/blog/*/blog.json')
             ]),
             extractors: [ {
               extractor: TailwindExtractor,
-              extensions: ['vue'],
+              extensions: ['vue', 'json'],
             } ],
             whitelist: ['html', 'body', 'nuxt-progress'],
           })
@@ -127,6 +128,7 @@ export default {
       const payload = { labels, blog, shards, featuredPlayers }
       const routes = []
 
+      console.log(blog);
       routes.push({
         route: '/',
         payload,

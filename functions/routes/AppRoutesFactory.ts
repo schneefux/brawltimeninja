@@ -1,4 +1,4 @@
-import { readFile } from 'fs';
+import { readFile, writeFile } from 'fs';
 import { promisify } from 'util';
 
 import glob from 'tiny-glob';
@@ -8,9 +8,11 @@ import marked from 'marked';
 import AppService from '../services/AppService';
 import Blog, { Post } from '../model/Blog';
 import { Service } from '../services/AppServiceFactory';
-import { stringLiteral } from '@babel/types';
+
+const GENERATE_BLOG = !!process.env.GENERATE_BLOG;
 
 const readFileP = promisify(readFile);
+const writeFileP = promisify(writeFile);
 
 /**
  * Add support for resizing and styling via ![alt](src.png=class1,class2)
@@ -55,7 +57,7 @@ function expandMacros(markdown: string, app: string) {
 /**
  * Read and render blog posts
  */
-async function getBlog(name: string): Promise<Blog> {
+export async function renderBlog(name: string): Promise<Blog> {
   if (!Object.keys(Service).includes(name)) {
     return {};
   }
@@ -73,9 +75,32 @@ async function getBlog(name: string): Promise<Blog> {
     } as Post;
   }));
 
-  return {
-    guides,
-  };
+  const blog = { guides };
+
+  await writeFileP(`blog/${name}/blog.json`, JSON.stringify(blog, null, 2));
+  return blog;
+}
+
+/**
+ * Get blog from cache or render
+ */
+async function getBlog(name: string): Promise<Blog> {
+  let blog;
+
+  if (!GENERATE_BLOG) {
+    try {
+      blog = (await import(`../blog/${name}/blog.json`)).default;
+    } catch (err) {
+      console.log('blog cache is empty!');
+    }
+  }
+
+  if (blog == undefined) {
+    // not available in serverless setup because files don't exist
+    blog = await renderBlog(name);
+  }
+
+  return blog;
 }
 
 export default function createRoutes(service: AppService, name: string) {
