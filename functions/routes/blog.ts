@@ -7,6 +7,7 @@ import Router from 'koa-router';
 import marked from 'marked';
 
 import Blog, { Post } from '../model/Blog';
+import renderedBlog from '../blog/blog.json';
 
 const GENERATE_BLOG = !!process.env.GENERATE_BLOG;
 
@@ -57,7 +58,7 @@ function expandMacros(markdown: string) {
  * Read and render blog posts
  */
 export async function renderBlog(): Promise<Blog> {
-  const guideFiles = await glob(`blog/guides/*.md`).catch(() => <string[]>[]);
+  const guideFiles = await glob('blog/guides/*.md').catch(() => <string[]>[]);
 
   const guides = await Promise.all(guideFiles.map(async (file) => {
     const content = (await readFileP(file)).toString();
@@ -74,7 +75,8 @@ export async function renderBlog(): Promise<Blog> {
 
   const blog = { guides };
 
-  await writeFileP(`blog/blog.json`, JSON.stringify(blog, null, 2));
+  // TODO use __dirname
+  await writeFileP('./blog/blog.json', JSON.stringify(blog, null, 2));
   return blog;
 }
 
@@ -86,7 +88,8 @@ async function getBlog(): Promise<Blog> {
 
   if (!GENERATE_BLOG) {
     try {
-      blog = (await import(`../blog/blog.json`)).default;
+      // TODO a dynamic import would be cooler
+      blog = renderedBlog;
     } catch (err) {
       console.log('blog cache is empty!');
     }
