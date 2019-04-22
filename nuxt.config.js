@@ -12,7 +12,7 @@ export default {
   mode: 'universal',
 
   head: {
-    title: 'Online Time Ninja',
+    title: 'Brawl Stars Time Ninja',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
