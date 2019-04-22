@@ -1,11 +1,6 @@
 <template>
   <div class="container mx-auto py-4 px-2">
-    <h1 class="mx-2 mt-2 capitalize">{{ topic }}</h1>
-    <article
-      v-for="post in posts"
-      :key="post.title"
-      class="bg-grey-lighter py-8 px-6 my-8 text-black"
-    >
+    <article class="bg-grey-lighter py-8 px-6 my-8 text-black">
       <div
         v-if="post.image"
         :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
@@ -27,22 +22,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   name: 'TopicPage',
-  asyncData({ params }) {
-    return {
-      topic: params.topic,
+  asyncData({ params, store, error }) {
+    const posts = store.state.blog[params.topic]
+    if (posts === undefined) {
+      error({ statusCode: 404, message: 'Category does not exist' })
     }
-  },
-  computed: {
-    posts() {
-      return this.blog[this.topic]
-    },
-    ...mapState({
-      blog: state => state.blog,
-    }),
+
+    const post = posts.filter(({ id }) => id === params.post)
+    if (post.length === 0) {
+      error({ statusCode: 404, message: 'Post does not exist' })
+    }
+
+    return {
+      post: post[0],
+    }
   },
 }
 </script>

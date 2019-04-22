@@ -43,34 +43,22 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { payload }) {
+  async nuxtServerInit({ commit }, { payload }) {
+    let blog
+    let featuredPlayers
+
     if (payload !== undefined) {
       // fill the store so that nuxt generate does not
       // require an API connection for meta data
-      commit('setBlog', payload.blog)
-      commit('setFeaturedPlayers', payload.featuredPlayers)
+      blog = payload.blog
+      featuredPlayers = payload.featuredPlayers
     } else {
-      await Promise.all([
-        await dispatch('loadBlog'),
-        await dispatch('loadFeaturedPlayers'),
-      ])
-    }
-  },
-  async loadBlog({ state, commit }) {
-    if (state.blogLoaded) {
-      return
+      featuredPlayers = await this.$axios.$get(`/api/featured-players`)
+      blog = await this.$axios.$get(`/api/blog`)
     }
 
-    const blog = await this.$axios.$get(`/api/blog`)
-    commit('setBlog', blog)
-  },
-  async loadFeaturedPlayers({ state, commit }) {
-    if (state.featuredPlayers.length > 0) {
-      return
-    }
-
-    const featuredPlayers = await this.$axios.$get(`/api/featured-players`)
     commit('setFeaturedPlayers', featuredPlayers)
+    commit('setBlog', blog)
   },
   async loadPlayer({ state, commit }) {
     if (state.player.loaded) {

@@ -125,10 +125,16 @@ export default {
         route: '/',
         payload,
       });
-      [...Object.entries(blog)].forEach(([topic, posts]) => routes.push({
-        route: `/blog/${topic}`,
-        payload,
-      }))
+      [...Object.entries(blog)].forEach(([topic, posts]) => {
+        routes.push({
+          route: `/blog/${topic}`,
+          payload,
+        })
+        posts.forEach(post => routes.push({
+          route: `/blog/${topic}/${post.id}`,
+          payload,
+        }))
+      })
 
       return routes
     },

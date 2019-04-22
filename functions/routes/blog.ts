@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'fs';
+import { parse } from 'path';
 import { promisify } from 'util';
 
 import glob from 'tiny-glob';
@@ -63,8 +64,10 @@ export async function renderBlog(): Promise<Blog> {
     const split = content.indexOf('\n');
     const meta = JSON.parse(content.substring(0, split));
     const text = content.substring(split + 1);
+    const id = parse(file).name;
     return {
       ...meta,
+      id,
       content: marked(expandMacros(text)),
     } as Post;
   }));
