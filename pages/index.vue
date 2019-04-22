@@ -1,34 +1,20 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="mt-10 text-center font-sans mx-2">
-      <h1>How much time on {{ labels.appTitle }}?</h1>
+      <h1>How much time on Brawlstars?</h1>
     </div>
 
-    <p class="mt-3 text-center text-lg mx-2">See how much you play, statistics for your {{ labels.heroes }} and more.</p>
+    <p class="mt-3 text-center text-lg mx-2">See how much you play, statistics for your Brawlers and more.</p>
 
     <div class="mt-4 mx-4">
       <form
         @submit.prevent="submitName"
         class="flex flex-wrap justify-center">
-        <div class="text-center bg-primary rounded">
-          <button
-            v-for="(shardOption) in shards"
-            :key="shardOption.id"
-            @click="shard = shardOption.id"
-            type="button"
-            name="shard"
-            :class="['py-1 px-3 border rounded border-primary whitespace-no-wrap font-medium w-1/2 md:w-auto', {
-              'bg-primary-light': shard == shardOption.id,
-              'bg-primary-darker text-grey-lighter hover:bg-primary-light hover:text-black': shard != shardOption.id,
-            }]">
-            {{ shardOption.label }}
-          </button>
-        </div>
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
             <input
               v-model="name"
-              :placeholder="`Enter your ${labels.userId}`"
+              placeholder="Enter your Tag"
               type="text"
               class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
             <input
@@ -46,7 +32,7 @@
       </form>
     </div>
 
-    <div class="mt-3 text-center" v-if="labels.nameHelpVideo">
+    <div class="mt-3 text-center">
       <details>
         <summary @click="loadNameHelpVideo = true">Need help?</summary>
         <iframe
@@ -56,7 +42,7 @@
           height="271"
           frameborder="0"
           allow="encrypted-media; picture-in-picture"
-          :src="labels.nameHelpVideo + '&version=3&rel=0&fs=0&loop=1&playsinline=1'">
+          src="https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ&version=3&rel=0&fs=0&loop=1&playsinline=1">
         </iframe>
       </details>
     </div>
@@ -89,10 +75,9 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 
 function playerToRoute(player) {
   return {
-    name: 'player-shard-name',
+    name: 'player-name',
     params: {
       name: player.id,
-      shard: player.shard,
     }
   }
 }
@@ -109,19 +94,14 @@ export default {
   },
   computed: {
     playerRoute() {
-      return playerToRoute({ id: this.name, shard: this.shard })
+      return playerToRoute({ id: this.name })
     },
     nameRegex() {
-      return new RegExp(this.labels.nameRegex)
-    },
-    shard() {
-      return this.shards.length > 0 ? this.shards[0].id : 'global'
+      return new RegExp('#?[0289PYLQGRJCUV]{3,}')
     },
     ...mapState({
-      labels: state => state.labels,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
-      shards: state => state.shards,
     }),
   },
   methods: {
@@ -137,7 +117,6 @@ export default {
         this.nameLoading = true
         this.setPlayerId({
           id: this.name,
-          shard: this.shard,
         })
         await this.loadPlayer()
       } catch (error) {

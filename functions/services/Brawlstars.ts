@@ -1,49 +1,26 @@
 import { Player as BrawlstarsPlayer } from '../model/Brawlstars';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
-import AppService from './AppService';
 
-export default class BrawlstarsService implements AppService {
+export default class BrawlstarsService {
   private readonly apiBase = 'https://brawlapi.cf/api/';
 
   constructor(private token: string) {}
 
-  public getShards() {
-    return [];
-  }
-
-  public getLabels() {
-    return {
-      'appTitle': 'Brawl Stars',
-      'heroes': 'Brawlers',
-      'userId': 'tag',
-      'nameRegex': '#?[0289PYLQGRJCUV]{3,}',
-      'disclaimer': `
-        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
-      `,
-      'backgroundMobile': '/images/brawlstars/background/blue_mobile.jpg',
-      'backgroundDesktop': '/images/brawlstars/background/blue_desktop.jpg',
-      'nameHelpVideo': 'https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ',
-    };
-  }
-
   public getFeaturedPlayers() {
     return [ {
       id: 'V8LLPPC',
-      shard: 'global',
       name: 'xXcuzMePlisThXx',
     }, {
       id: '2Y02L28',
-      shard: 'global',
       name: 'Keith',
     }, {
       id: 'V9QGJY9',
-      shard: 'global',
       name: 'Landi',
     } ];
   }
 
-  public async getPlayerStatistics(shard: string, tag: string) {
+  public async getPlayerStatistics(tag: string) {
     const player = await request<BrawlstarsPlayer>(
       'player',
       this.apiBase,
@@ -62,29 +39,29 @@ export default class BrawlstarsService implements AppService {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         heroes[brawlerId] = {
           label: brawler.name,
-          icon: `/images/brawlstars/hero/icon/${brawlerId}_optimized.png`,
+          icon: `/images/hero/icon/${brawlerId}_optimized.png`,
           stats: {
             rank: {
               label: 'Rank',
               value: brawler.rank,
-              icon: '/images/brawlstars/icon/leaderboards_optimized.png'
+              icon: '/images/icon/leaderboards_optimized.png'
             },
             trophies: {
               label: 'Trophies',
               value: brawler.trophies,
-              icon: '/images/brawlstars/icon/trophy_optimized.png'
+              icon: '/images/icon/trophy_optimized.png'
             },
             maxTrophies: {
               label: 'Max Trophies',
               value: brawler.highestTrophies,
-              icon: '/images/brawlstars/icon/trophy_optimized.png'
+              icon: '/images/icon/trophy_optimized.png'
             },
             level: {
               label: 'Power Level',
               value: brawler.power,
               icon: brawler.power == 10?
-                '/images/brawlstars/icon/starpower_optimized.png'
-                :'/images/brawlstars/icon/powerpoint_optimized.png'
+                '/images/icon/starpower_optimized.png'
+                :'/images/icon/powerpoint_optimized.png'
             }
           }
         } as Hero;
@@ -144,7 +121,6 @@ export default class BrawlstarsService implements AppService {
 
     const data = {
       id: player.tag,
-      shard,
       name: player.name,
       minutesSpent,
       heroes,
@@ -153,8 +129,8 @@ export default class BrawlstarsService implements AppService {
       modes: {
         '3v3': {
           label: '3v3',
-          icon: '/images/brawlstars/mode/icon/gemgrab_optimized.png',
-          background: '/images/brawlstars/mode/background/gemgrab.jpg',
+          icon: '/images/mode/icon/gemgrab_optimized.png',
+          background: '/images/mode/background/gemgrab.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -164,8 +140,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'soloShowdown': {
           label: 'Solo Showdown',
-          icon: '/images/brawlstars/mode/icon/showdown_optimized.png',
-          background: '/images/brawlstars/mode/background/showdown.jpg',
+          icon: '/images/mode/icon/showdown_optimized.png',
+          background: '/images/mode/background/showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -175,8 +151,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'duoShowdown': {
           label: 'Duo Showdown',
-          icon: '/images/brawlstars/mode/icon/duoshowdown_optimized.png',
-          background: '/images/brawlstars/mode/background/showdown.jpg',
+          icon: '/images/mode/icon/duoshowdown_optimized.png',
+          background: '/images/mode/background/showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -186,8 +162,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'bossfight': {
           label: 'Bossfight',
-          icon: '/images/brawlstars/mode/icon/bossfight_optimized.png',
-          background: '/images/brawlstars/mode/background/bossfight.jpg',
+          icon: '/images/mode/icon/bossfight_optimized.png',
+          background: '/images/mode/background/bossfight.jpg',
           stats: {
             minutes: {
               label: 'survived',
@@ -197,8 +173,8 @@ export default class BrawlstarsService implements AppService {
         } as Mode,
         'roborumble': {
           label: 'Robo Rumble',
-          icon: '/images/brawlstars/mode/icon/roborumble_optimized.png',
-          background: '/images/brawlstars/mode/background/roborumble.jpg',
+          icon: '/images/mode/icon/roborumble_optimized.png',
+          background: '/images/mode/background/roborumble.jpg',
           stats: {
             minutes: {
               label: 'survived',

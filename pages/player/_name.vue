@@ -38,11 +38,11 @@
       </adsense>
     </div>
 
-    <div class="section-heading" v-if="hasModes">
+    <div class="section-heading">
       <h2>Game Modes</h2>
     </div>
 
-    <div class="section" v-if="hasModes">
+    <div class="section">
       <div class="flex flex-wrap">
         <div
           class="w-full md:w-1/2 card-wrapper mx-auto"
@@ -76,11 +76,11 @@
       </adsense>
     </div>
 
-    <div class="section-heading" v-if="hasHeroes">
-      <h2>{{ labels.heroes }}</h2>
+    <div class="section-heading">
+      <h2>Brawlers</h2>
     </div>
 
-    <div class="section" v-if="player.heroStats">
+    <div class="section">
       <player-statistics :stats="player.heroStats" />
     </div>
 
@@ -144,12 +144,6 @@ export default {
     }
   },
   computed: {
-    hasModes() {
-      return Object.keys(this.player.modes).length > 0
-    },
-    hasHeroes() {
-      return Object.keys(this.player.heroes).length > 0
-    },
     heroHighlight() {
       return this.player.heroes[this.heroHighlightKey]
     },
@@ -172,13 +166,11 @@ export default {
     },
     ...mapState({
       player: state => state.player,
-      labels: state => state.labels,
     }),
   },
   async fetch({ store, params }) {
     store.commit('setPlayerId', {
       id: params.name,
-      shard: params.shard,
     })
     await store.dispatch('loadPlayer')
   },

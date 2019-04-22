@@ -1,9 +1,7 @@
-import { renderBlog } from './routes/AppRoutesFactory';
-
-const APP = process.env['NINJA_APP'] || 'brawlstars';
+import { renderBlog } from './routes/blog';
 
 async function main() {
-  await renderBlog(APP);
+  await renderBlog();
 }
 
 main().catch(console.error);

@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/deathcap-cave.jpg" }
+{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave.jpg" }
 
 Deathcap Cave
 ===

@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/stone-fort.jpg" }
+{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
 
 Stone Fort
 ===

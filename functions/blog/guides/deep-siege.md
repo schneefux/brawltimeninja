@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/brawlstars/blog/guides/stone-fort.jpg" }
+{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
 
 Deep Siege
 ===

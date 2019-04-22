@@ -98,10 +98,6 @@ export default {
     },
   },
 
-  env: {
-    app: process.env.NINJA_APP || 'brawlstars',
-  },
-
   generate: {
     fallback: true,
     async routes() {
@@ -119,16 +115,12 @@ export default {
         fail: reject,
       }, () => {}))
 
-      const app = process.env.NINJA_APP || 'brawlstars'
-      const labels = await $get(`/api/${app}/labels`)
-      const blog = await $get(`/api/${app}/blog`)
-      const shards = await $get(`/api/${app}/shards`)
-      const featuredPlayers = await $get(`/api/${app}/featured-players`)
+      const blog = await $get(`/api/blog`)
+      const featuredPlayers = await $get(`/api/featured-players`)
 
-      const payload = { labels, blog, shards, featuredPlayers }
+      const payload = { blog, featuredPlayers }
       const routes = []
 
-      console.log(blog);
       routes.push({
         route: '/',
         payload,

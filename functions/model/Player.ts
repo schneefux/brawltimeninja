@@ -32,7 +32,6 @@ export interface Hero {
 
 export interface PlayerIdentifier {
     id: string;
-    shard: string;
     name: string;
 }
 

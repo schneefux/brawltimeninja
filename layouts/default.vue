@@ -4,7 +4,7 @@
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`">
     <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky pin-t md:static">
       <nuxt-link to="/" class="no-underline flex-no-shrink font-semibold text-xl text-white tracking-tight">
-        {{ labels.appTitle }} Time Ninja
+        Brawlstars Time Ninja
       </nuxt-link>
 
       <div class="md:hidden">
@@ -37,7 +37,9 @@
 
     <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
       <p>&#169; 2019 Online Time Ninja Project</p>
-      <p class="text-xs leading-tight">{{ labels.disclaimer }}</p>
+      <p class="text-xs leading-tight">
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
+      </p>
       <p class="text-xs leading-tight">Send questions or feedback to dev (at) {{ domain }}.</p>
     </footer>
   </div>
@@ -61,7 +63,9 @@ export default {
       return global.screen !== undefined && screen.width > 720
     },
     background() {
-      return this.isDesktop ? this.labels.backgroundDesktop : this.labels.backgroundMobile
+      return this.isDesktop
+        ? '/images/background/blue_desktop.jpg'
+        : '/images/background/blue_mobile.jpg'
     },
     domain() {
       if (global.window !== undefined) {
@@ -71,7 +75,6 @@ export default {
       return ''
     },
     ...mapState({
-      labels: state => state.labels,
       blog: state => state.blog,
     }),
   },

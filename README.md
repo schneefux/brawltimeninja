@@ -29,3 +29,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 * `for f in static/images/brawlstars/icon/*.png; do magick.exe "$f" -strip -resize x40 "${f%.png}_optimized.png"; done`
 * `for f in static/images/brawlstars/mode/background/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -resize x256 "${f%.png}.jpg"; done`
 * `for f in static/images/brawlstars/mode/icon/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -resize x96 "${f%.png}_optimized.png"; done`
+
+## Assets
+
+https://www.dropbox.com/sh/mhed0l7szljxvgv/AAAf-YPn4nXS_cuozHX09URoa
