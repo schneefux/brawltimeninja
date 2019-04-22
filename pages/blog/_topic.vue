@@ -56,17 +56,7 @@ export default {
   @apply mt-3 mb-2;
 }
 
-.markdown .icon {
-  @apply mx-1 align-middle;
-}
-
-.markdown .sm-float {
-  @apply float-left mr-2;
-}
-
-@screen md {
-  .markdown .sm-float {
-    @apply float-none;
-  }
+.markdown h3 {
+  @apply mt-2 mb-1;
 }
 </style>
