@@ -7,10 +7,10 @@
         class="h-48 bg-cover bg-center mb-6"
       >
       </div>
-      <h2>
+      <h1>
         <span class="text-primary-dark">{{ post.title }}</span>
-        <span class="text-sm block mt-1 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
-      </h2>
+        <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
+      </h1>
       <div class="mt-2">
         <p
           v-html="post.content"

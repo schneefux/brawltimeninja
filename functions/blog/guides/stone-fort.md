@@ -1,8 +1,5 @@
 { "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
 
-Stone Fort
-===
-
 Recommended Comp
 ---
 

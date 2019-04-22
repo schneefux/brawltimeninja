@@ -1,8 +1,5 @@
 { "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave.jpg" }
 
-Deathcap Cave
-===
-
 Recommended Comp
 ---
 

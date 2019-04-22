@@ -1,8 +1,5 @@
 { "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
 
-Deep Siege
-===
-
 Recommended Comp
 ---
 

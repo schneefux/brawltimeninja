@@ -1,8 +1,5 @@
 { "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/blog/guides/four-squared.jpg" }
 
-Four Squared
-===
-
 Recommended Comp
 ---
 

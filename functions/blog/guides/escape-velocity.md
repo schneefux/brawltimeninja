@@ -1,8 +1,5 @@
 { "title": "Gem Grab: Escape Velocity", "author": "kinglionleo", "image": "/images/blog/guides/escape-velocity.jpg" }
 
-Escape Velocity
-===
-
 Recommended Comp
 ---
 
