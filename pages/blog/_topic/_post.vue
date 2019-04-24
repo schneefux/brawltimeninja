@@ -20,7 +20,6 @@
 
         <div
           v-show="lightboxOpen"
-          ref="lightbox"
           class="fixed pin"
           style="background-color: rgba(0, 0, 0, 0.75)"
         >
