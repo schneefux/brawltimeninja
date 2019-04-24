@@ -1,5 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
+    <img class="h-32 md:h-48 lg:h-64" :src="randomHero">
+
     <div class="mt-10 text-center font-sans mx-2">
       <h1>How much time on Brawlstars?</h1>
     </div>
@@ -98,6 +100,11 @@ export default {
     },
     nameRegex() {
       return new RegExp('#?[0289PYLQGRJCUV]{3,}')
+    },
+    randomHero() {
+      const heroes = ['crow1', 'crow2', 'crow3']
+      const hero = heroes[Math.floor(Math.random() * heroes.length)]
+      return `/images/hero/model/${hero}.png`
     },
     ...mapState({
       lastPlayers: state => state.lastPlayers,
