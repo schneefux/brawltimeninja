@@ -102,7 +102,7 @@ export default {
       return new RegExp('#?[0289PYLQGRJCUV]{3,}')
     },
     randomHero() {
-      const heroes = ['crow1', 'crow2', 'crow3']
+      const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
       return `/images/hero/model/${hero}.png`
     },
