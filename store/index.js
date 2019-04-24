@@ -3,11 +3,11 @@ export const state = () => ({
   featuredPlayers: [],
   lastPlayers: [],
   player: {
-    loaded: false,
     id: '',
     modes: [],
     heroes: [],
   },
+  playerLoaded: false,
 })
 
 export const mutations = {
@@ -23,13 +23,11 @@ export const mutations = {
     }
 
     this._vm.$set(state.player, 'id', id)
-    this._vm.$set(state.player, 'loaded', false)
+    state.playerLoaded = false
   },
   setPlayer(state, player) {
-    state.player = {
-      ...player,
-      loaded: true,
-    }
+    state.player = player
+    state.playerLoaded = true
   },
   addLastPlayer(state, player) {
     if (state.lastPlayers.some(({ id }) => player.id === id)) {
@@ -51,15 +49,15 @@ export const actions = {
       blog = payload.blog
       featuredPlayers = payload.featuredPlayers
     } else {
-      featuredPlayers = await this.$axios.$get(`/api/featured-players`)
-      blog = await this.$axios.$get(`/api/blog`)
+      featuredPlayers = await this.$axios.$get('/api/featured-players')
+      blog = await this.$axios.$get('/api/blog')
     }
 
     commit('setFeaturedPlayers', featuredPlayers)
     commit('setBlog', blog)
   },
   async loadPlayer({ state, commit }) {
-    if (state.player.loaded) {
+    if (state.playerLoaded) {
       return
     }
 
