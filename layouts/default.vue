@@ -29,6 +29,12 @@
           >
             {{ topic }}
           </nuxt-link>
+          <nuxt-link
+            to="/about"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+          >
+            Privacy
+          </nuxt-link>
         </div>
       </div>
     </nav>
