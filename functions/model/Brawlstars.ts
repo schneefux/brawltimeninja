@@ -47,3 +47,20 @@ export interface Player {
     hasSkins: boolean;
     club: Club|null;
 }
+
+export interface Event {
+  slot: number;
+  slotName: string;
+  startTimeInSeconds: number;
+  startTime: string;
+  endTimeInSeconds: number;
+  endTime: string;
+  freeKeys: number;
+  mapId: number;
+  mapName: string;
+  mapImageUrl: string;
+  gameMode: string;
+  hasModifier: boolean;
+  modifierId: number;
+  modifierName: string;
+}

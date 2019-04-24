@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Undermine", "author": "kinglionleo", "image": "/images/blog/guides/undermine.jpg", "description": "Hide in the bushes and protect the Undermine with Pam, Nita and Leon." }
+{ "title": "Gem Grab: Undermine", "author": "kinglionleo", "image": "/images/blog/guides/undermine.jpg", "description": "Hide in the bushes and protect the Undermine with Pam, Nita and Leon.", "mode": "Gem Grab", "map": "Undermine" }
 
 Recommended Comp
 ---

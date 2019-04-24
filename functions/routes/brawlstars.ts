@@ -23,4 +23,10 @@ router.get('/player/:name', async (ctx, next) => {
   await next();
 });
 
+router.get('/current-events', async (ctx, next) => {
+  ctx.body = await service.getEvents();
+  ctx.set('Cache-Control', 'public, max-age=600');
+  await next();
+});
+
 export default router.routes();

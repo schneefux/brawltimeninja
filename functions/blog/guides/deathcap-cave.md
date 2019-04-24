@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave.jpg", "description": "Keep control of Deathcap Cave with Pam, Nita and Barley." }
+{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave.jpg", "description": "Keep control of Deathcap Cave with Pam, Nita and Barley.", "mode": "gemgrab", "map": "Deathcap Cave" }
 
 Recommended Comp
 ---

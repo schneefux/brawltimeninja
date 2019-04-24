@@ -1,4 +1,4 @@
-import { Player as BrawlstarsPlayer } from '../model/Brawlstars';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/Brawlstars';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
@@ -18,6 +18,22 @@ export default class BrawlstarsService {
       id: 'V9QGJY9',
       name: 'Landi',
     } ];
+  }
+
+  public async getEvents() {
+    const response = await request<{ current: BrawlstarsEvent[] }>(
+      'events',
+      this.apiBase,
+      { type: 'current' },
+      { 'Authorization': this.token }
+    ).catch(() => null);
+
+    if (response == null) {
+      return [];
+    }
+
+    const events = response.current;
+    return events.map(({ mapName }) => mapName);
   }
 
   public async getPlayerStatistics(tag: string) {

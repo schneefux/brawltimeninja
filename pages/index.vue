@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center">
-    <img class="h-32 md:h-48 lg:h-64" :src="randomHero">
+    <img class="mt-16 lg:mt-8 h-32 md:h-48 lg:h-64" :src="randomHero">
 
-    <div class="mt-10 text-center font-sans mx-2">
+    <div class="mt-10 lg:mt-6 text-center font-sans mx-2">
       <h1>How much time on Brawlstars?</h1>
     </div>
 
@@ -69,11 +69,36 @@
         </nuxt-link>
       </p>
     </div>
+
+    <div
+      v-show="relevantGuides.length > 0"
+      class="mt-10 lg:mt-6 mb-6 text-center"
+    >
+      <h2 class="mb-2">Current Map Guides</h2>
+      <nuxt-link
+        v-for="post in relevantGuides"
+        :key="post.id"
+        :to="`/blog/guides/${post.id}`"
+        tag="button"
+        class="mx-3 my-2 p-3 border-primary-dark rounded-lg border-2"
+      >
+        <img
+          :src="`/images/mode/icon/${post.mode.toLowerCase().replace(' ', '')}_optimized.png`"
+          class="w-5 float-left mx-2"
+        >
+        <span class="text-secondary border-primary border-b-2">
+          {{ post.title }}
+        </span>
+        <p class="text-grey mt-2 text-justify w-64">
+          {{ post.description }}
+        </p>
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 function playerToRoute(player) {
   return {
@@ -94,6 +119,9 @@ export default {
       playerToRoute,
     }
   },
+  async fetch({ store }) {
+    await store.dispatch('loadCurrentEvents')
+  },
   computed: {
     playerRoute() {
       return playerToRoute({ id: this.name })
@@ -109,6 +137,9 @@ export default {
     ...mapState({
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
+    }),
+    ...mapGetters({
+      relevantGuides: 'guidesForCurrentEvents',
     }),
   },
   methods: {
