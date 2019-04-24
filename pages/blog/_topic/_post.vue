@@ -31,6 +31,7 @@
           </button>
           <div
             class="h-full flex justify-center items-center"
+            @click.self="lightboxOpen = false"
           >
             <img
               class="max-h-full max-w-full"
