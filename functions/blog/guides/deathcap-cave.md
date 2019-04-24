@@ -44,7 +44,7 @@ Jessie's tankiness and medium-long range attack makes her a great mid player. Sh
 
 Frank's presence and powerful attack can keep enemies back. He effectively controls an entire area by simply "being there". Shelly pushed up can hold enemies away because of her powerful super.
 
-### Barley
+### Alternative to Barley
 
 ![~hero/icon/dynamike_optimized.png h-10,p-1,float-right]
 
@@ -71,7 +71,7 @@ South to the mine behind the wall is the main healing station spot. It helps Pam
 
 South-east tot the mine is the healing spot if Barley is pushed back or the right lane is lost. Pam should also be positioned there if this happens.
 
-Barly should try to regain control of the area south-east to the mine if an enemy has put themselves there!
+Barley should try to regain control of the area south-east to the mine if an enemy has put themselves there!
 
 ---
 
