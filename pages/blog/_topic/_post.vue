@@ -14,8 +14,31 @@
       <div class="mt-2">
         <p
           v-html="post.content"
+          ref="markdown"
           class="markdown"
         ></p>
+
+        <div
+          v-show="lightboxOpen"
+          ref="lightbox"
+          class="fixed pin"
+          style="background-color: rgba(0, 0, 0, 0.75)"
+        >
+          <button
+            class="absolute pin-t pin-r mr-10 mt-4 text-white text-5xl"
+            @click="lightboxOpen = false"
+          >
+            &times;
+          </button>
+          <div
+            class="flex justify-center h-full"
+          >
+            <img
+              class="max-h-full max-w-full"
+              :src="lightboxImage"
+            >
+          </div>
+        </div>
       </div>
     </article>
   </div>
@@ -24,6 +47,12 @@
 <script>
 export default {
   name: 'TopicPage',
+  data() {
+    return {
+      lightboxOpen: false,
+      lightboxImage: '',
+    }
+  },
   asyncData({ params, store, error }) {
     const posts = store.state.blog[params.topic]
     if (posts === undefined) {
@@ -38,6 +67,14 @@ export default {
     return {
       post: post[0],
     }
+  },
+  mounted() {
+    this.$refs.markdown.querySelectorAll('img.lightbox').forEach((img) => {
+      img.addEventListener('click', () => {
+        this.lightboxImage = img.src
+        this.lightboxOpen = true
+      })
+    })
   },
 }
 </script>

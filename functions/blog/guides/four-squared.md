@@ -60,4 +60,6 @@ West of the mine: General area for Mortis to control. He should fall back to her
 Graphic
 ---
 
-![~blog/guides/four-squared.jpg]
+![~blog/guides/four-squared.jpg lightbox]
+
+Click to enlarge

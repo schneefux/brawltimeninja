@@ -64,4 +64,6 @@ Dynamike can control an entire area aronud him. He should push up when the enemy
 Graphic
 ---
 
-![~blog/guides/deep-siege.jpg]
+![~blog/guides/deep-siege.jpg lightbox]
+
+Click to enlarge

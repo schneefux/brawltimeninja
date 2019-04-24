@@ -77,4 +77,6 @@ Sometimes the enemy will "double up" on mid. This means that one lane will be fr
 Graphic
 ---
 
-![~blog/guides/stone-fort.jpg]
+![~blog/guides/stone-fort.jpg lightbox]
+
+Click to enlarge

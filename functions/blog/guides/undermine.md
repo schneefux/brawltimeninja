@@ -78,4 +78,6 @@ Generally speaking, one lane will usually be lost. Pam needs to play around this
 Graphic
 ---
 
-![~blog/guides/undermine.jpg]
+![~blog/guides/undermine.jpg lightbox]
+
+Click to enlarge

@@ -71,4 +71,6 @@ Gene can assist either lane by positioning himself in mid. However, he should fo
 Graphic
 ---
 
-![~blog/guides/escape-velocity.jpg]
+![~blog/guides/escape-velocity.jpg lightbox]
+
+Click to enlarge

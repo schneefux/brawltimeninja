@@ -80,4 +80,6 @@ Barley should try to regain control of the area south-east to the mine if an ene
 Graphic
 ---
 
-![~blog/guides/deathcap-cave.jpg]
+![~blog/guides/deathcap-cave.jpg lightbox]
+
+Click to enlarge

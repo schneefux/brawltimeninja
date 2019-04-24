@@ -70,4 +70,6 @@ The more you play this map, the better you will get with recognizing opportuniti
 Graphic
 ---
 
-![~blog/guides/minecart-madness.jpg]
+![~blog/guides/minecart-madness.jpg lightbox]
+
+Click to enlarge
