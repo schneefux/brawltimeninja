@@ -1,6 +1,5 @@
 export const state = () => ({
   blog: {},
-  blogLoaded: false,
   featuredPlayers: [],
   lastPlayers: [],
   player: {
@@ -14,7 +13,6 @@ export const state = () => ({
 export const mutations = {
   setBlog(state, blog) {
     state.blog = blog
-    state.blogLoaded = true
   },
   setFeaturedPlayers(state, featuredPlayers) {
     state.featuredPlayers = featuredPlayers
