@@ -30,7 +30,7 @@
             &times;
           </button>
           <div
-            class="flex justify-center h-full"
+            class="h-full flex justify-center items-center"
           >
             <img
               class="max-h-full max-w-full"
