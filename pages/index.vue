@@ -59,14 +59,14 @@
         </span>
       </p>
       <p class="mt-2 mx-auto">
-        <router-link
+        <nuxt-link
           v-for="player in (lastPlayers.length === 0 ? featuredPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
           tag="button"
           class="ml-2 text-secondary border-primary border-b-2">
           {{ player.name }}
-        </router-link>
+        </nuxt-link>
       </p>
     </div>
   </div>
