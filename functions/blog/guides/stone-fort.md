@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
+{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg", "description": "Hold the Stone Fort with long range attacks and Frank, Carl and Rico." }
 
 Recommended Comp
 ---

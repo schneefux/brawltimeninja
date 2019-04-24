@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg" }
+{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort.jpg", "description": "Use walls to your advantage in Deep Siege with Jessie, Mortis and Dynamike." }
 
 Recommended Comp
 ---

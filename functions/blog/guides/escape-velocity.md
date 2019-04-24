@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Escape Velocity", "author": "kinglionleo", "image": "/images/blog/guides/escape-velocity.jpg" }
+{ "title": "Gem Grab: Escape Velocity", "author": "kinglionleo", "image": "/images/blog/guides/escape-velocity.jpg", "description": "How to poke your enemy team in Escape Velocity with Gene, Shelly and Carl." }
 
 Recommended Comp
 ---

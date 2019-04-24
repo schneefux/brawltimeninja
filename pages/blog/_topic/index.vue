@@ -15,6 +15,9 @@
           <span class="text-sm block mt-1 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
         </h2>
       </nuxt-link>
+      <p class="mt-3">
+        {{ post.description }}
+      </p>
       <div
         v-if="post.image"
         :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
