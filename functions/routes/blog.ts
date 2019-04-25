@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs';
+import { readFile } from 'fs';
 import { parse } from 'path';
 import { promisify } from 'util';
 
@@ -7,12 +7,8 @@ import Router from 'koa-router';
 import marked from 'marked';
 
 import Blog, { Post } from '../model/Blog';
-import renderedBlog from '../blog/blog.json';
-
-const GENERATE_BLOG = !!process.env.GENERATE_BLOG;
 
 const readFileP = promisify(readFile);
-const writeFileP = promisify(writeFile);
 
 /**
  * Add support for resizing and styling via ![alt](src.png=class1,class2)
@@ -75,38 +71,13 @@ export async function renderBlog(): Promise<Blog> {
 
   const blog = { guides };
 
-  // TODO use __dirname
-  await writeFileP('./blog/blog.json', JSON.stringify(blog, null, 2));
-  return blog;
-}
-
-/**
- * Get blog from cache or render
- */
-async function getBlog(): Promise<Blog> {
-  let blog;
-
-  if (!GENERATE_BLOG) {
-    try {
-      // TODO a dynamic import would be cooler
-      blog = renderedBlog;
-    } catch (err) {
-      console.log('blog cache is empty!');
-    }
-  }
-
-  if (blog == undefined) {
-    // not available in serverless setup because files don't exist
-    blog = await renderBlog();
-  }
-
   return blog;
 }
 
 const router = new Router();
 
 router.get('/', async (ctx, next) => {
-  ctx.body = await getBlog();
+  ctx.body = await renderBlog();
   ctx.set('Cache-Control', 'public, max-age=3600');
   await next();
 });

@@ -1,6 +1,9 @@
+import payload from './payload.json'
+
 export const state = () => ({
-  blog: {},
-  featuredPlayers: [],
+  // fill the store from the payload in static build
+  blog: payload.blog,
+  featuredPlayers: payload.featuredPlayers,
   lastPlayers: [],
   player: {
     id: '',
@@ -54,19 +57,11 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit }, { payload }) {
-    let blog
-    let featuredPlayers
-
-    if (payload !== undefined) {
-      // fill the store so that nuxt generate does not
-      // require an API connection for meta data
-      blog = payload.blog
-      featuredPlayers = payload.featuredPlayers
-    } else {
-      featuredPlayers = await this.$axios.$get('/api/featured-players')
-      blog = await this.$axios.$get('/api/blog')
-    }
+  async nuxtServerInit({ commit }) {
+    // overwrite generated (possibly empty) payload
+    // with current API data when running on server
+    const blog = await this.$axios.$get('/api/blog')
+    const featuredPlayers = await this.$axios.$get('/api/featured-players')
 
     commit('setFeaturedPlayers', featuredPlayers)
     commit('setBlog', blog)

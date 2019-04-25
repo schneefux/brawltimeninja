@@ -2,6 +2,8 @@ import path from 'path'
 import PurgecssPlugin from 'purgecss-webpack-plugin'
 import glob from 'glob-all'
 
+import payload from './store/payload.json'
+
 class TailwindExtractor {
   static extract(content) {
     return content.match(/[A-z0-9-:/]+/g) || []
@@ -69,9 +71,6 @@ export default {
         })
       }
 
-      // required for nuxtServerInit lambda bypass
-      config.externals = ['fs', 'net', 'encoding']
-
       if (!ctx.isDev) {
         config.plugins.push(
           new PurgecssPlugin({
@@ -79,7 +78,7 @@ export default {
               path.join(__dirname, './pages/**/*.vue'),
               path.join(__dirname, './layouts/**/*.vue'),
               path.join(__dirname, './components/**/*.vue'),
-              path.join(__dirname, './functions/blog/blog.json')
+              path.join(__dirname, './store/payload.json'),
             ]),
             extractors: [ {
               extractor: TailwindExtractor,
@@ -101,39 +100,18 @@ export default {
 
   generate: {
     fallback: true,
-    async routes() {
-      const lambda = require('./functions/dist/api.js')
-      // bypass any server setup and call the lambda directly
-      const $get = requestPath => new Promise((resolve, reject) => lambda.handler({
-        path: '/.netlify/functions' + requestPath,
-        httpMethod: 'GET',
-        headers: {},
-        queryStringParameters: {},
-        body: '',
-        isBase64Encoded: false,
-      }, {
-        succeed: response => resolve(JSON.parse(response.body)),
-        fail: reject,
-      }, () => {}))
-
-      const blog = await $get(`/api/blog`)
-      const featuredPlayers = await $get(`/api/featured-players`)
-
-      const payload = { blog, featuredPlayers }
+    routes() {
       const routes = []
 
       routes.push({
         route: '/',
-        payload,
       });
-      [...Object.entries(blog)].forEach(([topic, posts]) => {
+      [...Object.entries(payload.blog)].forEach(([topic, posts]) => {
         routes.push({
           route: `/blog/${topic}`,
-          payload,
         })
         posts.forEach(post => routes.push({
           route: `/blog/${topic}/${post.id}`,
-          payload,
         }))
       })
 
