@@ -109,7 +109,9 @@ export default {
     }
   },
   async fetch({ store }) {
-    await store.dispatch('loadCurrentEvents')
+    if (!process.static) {
+      await store.dispatch('loadCurrentEvents')
+    }
   },
   computed: {
     playerRoute() {
