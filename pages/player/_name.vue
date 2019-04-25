@@ -52,7 +52,7 @@
             :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
             class="card bg-center bg-cover flex flex-wrap justify-between">
             <div class="card-content">
-              <div class="card-header">{{ mode.label }}</div>
+              <div class="card-header text-white">{{ mode.label }}</div>
               <p
                 v-for="(stat, statName) in mode.stats"
                 :key="statName"
@@ -121,6 +121,42 @@
         data-ad-slot="7563615625">
       </adsense>
     </div>
+
+    <div
+      v-show="relevantGuides.length > 0"
+      class="section-heading"
+    >
+      <h2>Recommended for you</h2>
+    </div>
+
+    <div
+      v-show="relevantGuides.length > 0"
+      class="section"
+    >
+      <div class="flex flex-wrap justify-between">
+        <article
+          class="card-wrapper w-full md:w-1/2"
+          v-for="post in relevantGuides"
+          :key="post.id"
+        >
+          <div class="card bg-white h-full">
+            <div class="card-content">
+              <nuxt-link
+                :to="`/blog/guides/${post.id}`"
+                class="no-underline"
+              >
+                <h3 class="card-header text-primary-dark">
+                  {{ post.title }}
+                </h3>
+              </nuxt-link>
+              <p class="mt-2 text-grey-darkest">
+                {{ post.description }}
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -164,8 +200,14 @@ export default {
         },
       }
     },
+    relevantGuides() {
+      // shuffle posts
+      const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
+      return posts.slice(0, 4)
+    },
     ...mapState({
       player: state => state.player,
+      blog: state => state.blog,
     }),
   },
   async fetch({ store, params }) {
@@ -226,7 +268,7 @@ export default {
 }
 
 .card-header {
-  @apply font-semibold text-xl text-white;
+  @apply font-semibold text-xl;
 }
 
 .card-props {
