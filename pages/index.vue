@@ -75,7 +75,7 @@
     >
       <blogroll
         :posts="relevantGuides"
-        topic="guide"
+        topic="guides"
         class="mx-6"
       ></blogroll>
     </div>

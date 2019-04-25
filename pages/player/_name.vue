@@ -134,7 +134,7 @@
       class="section"
     >
       <blogroll
-        topic="guide"
+        topic="guides"
         :posts="relevantGuides"
       ></blogroll>
     </div>
