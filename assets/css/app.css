@@ -1,0 +1,36 @@
+.card-wrapper {
+  @apply my-3;
+}
+@screen md {
+  .card-wrapper {
+    @apply px-4;
+  }
+}
+
+.card {
+  @apply rounded overflow-hidden shadow-lg;
+}
+
+.card-content {
+  @apply mx-6 my-4;
+}
+
+.card-header {
+  @apply font-semibold text-xl;
+}
+
+.card-props {
+  @apply mt-2 text-grey-lighter;
+}
+
+.card-prop-icon {
+  @apply h-5 align-middle mr-1;
+}
+
+.card-prop-value {
+  @apply font-medium;
+}
+
+.section-heading {
+  @apply font-sans mt-8;
+}

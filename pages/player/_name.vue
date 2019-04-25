@@ -133,41 +133,24 @@
       v-show="relevantGuides.length > 0"
       class="section"
     >
-      <div class="flex flex-wrap justify-between">
-        <article
-          class="card-wrapper w-full md:w-1/2"
-          v-for="post in relevantGuides"
-          :key="post.id"
-        >
-          <div class="card bg-white h-full">
-            <div class="card-content">
-              <nuxt-link
-                :to="`/blog/guides/${post.id}`"
-                class="no-underline"
-              >
-                <h3 class="card-header text-primary-dark">
-                  {{ post.title }}
-                </h3>
-              </nuxt-link>
-              <p class="mt-2 text-grey-darkest">
-                {{ post.description }}
-              </p>
-            </div>
-          </div>
-        </article>
-      </div>
+      <blogroll
+        topic="guide"
+        :posts="relevantGuides"
+      ></blogroll>
     </div>
   </div>
 </template>
 
 <script>
 import PlayerStatistics from '~/components/player-statistics'
+import Blogroll from '~/components/blogroll'
 import { mapState } from 'vuex'
 
 export default {
   name: 'ProfilePage',
   components: {
     PlayerStatistics,
+    Blogroll,
   },
   data() {
     return {
@@ -203,7 +186,7 @@ export default {
     relevantGuides() {
       // shuffle posts
       const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
-      return posts.slice(0, 4)
+      return posts.slice(0, 3)
     },
     ...mapState({
       player: state => state.player,
@@ -250,43 +233,6 @@ export default {
 </script>
 
 <style>
-.card-wrapper {
-  @apply my-3;
-}
-@screen md {
-  .card-wrapper {
-    @apply px-4;
-  }
-}
-
-.card {
-  @apply rounded overflow-hidden shadow-lg;
-}
-
-.card-content {
-  @apply mx-6 my-4;
-}
-
-.card-header {
-  @apply font-semibold text-xl;
-}
-
-.card-props {
-  @apply mt-2 text-grey-lighter;
-}
-
-.card-prop-icon {
-  @apply h-5 align-middle mr-1;
-}
-
-.card-prop-value {
-  @apply font-medium;
-}
-
-.section-heading {
-  @apply font-sans mt-8;
-}
-
 .section {
   @apply mt-4;
 }

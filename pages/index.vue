@@ -71,32 +71,19 @@
 
     <div
       v-show="relevantGuides.length > 0"
-      class="mt-10 lg:mt-6 mb-6 text-center"
+      class="mt-10 lg:mt-6 mb-6 container"
     >
-      <h2 class="mb-2">Current Map Guides</h2>
-      <nuxt-link
-        v-for="post in relevantGuides"
-        :key="post.id"
-        :to="`/blog/guides/${post.id}`"
-        tag="button"
-        class="mx-3 my-2 p-3 border-primary-dark rounded-lg border-2"
-      >
-        <img
-          :src="`/images/mode/icon/${post.mode.toLowerCase().replace(' ', '')}_optimized.png`"
-          class="w-5 float-left mx-2"
-        >
-        <span class="text-secondary border-primary border-b-2">
-          {{ post.title }}
-        </span>
-        <p class="text-grey mt-2 text-justify w-64">
-          {{ post.description }}
-        </p>
-      </nuxt-link>
+      <blogroll
+        :posts="relevantGuides"
+        topic="guide"
+        class="mx-6"
+      ></blogroll>
     </div>
   </div>
 </template>
 
 <script>
+import Blogroll from '~/components/blogroll'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 function playerToRoute(player) {
@@ -109,6 +96,9 @@ function playerToRoute(player) {
 }
 
 export default {
+  components: {
+    Blogroll,
+  },
   data() {
     return {
       name: undefined,

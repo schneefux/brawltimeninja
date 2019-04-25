@@ -36,7 +36,8 @@ export default {
   loading: { color: '#fff' },
 
   css: [
-    '~/assets/css/tailwind.css'
+    '~/assets/css/tailwind.css',
+    '~/assets/css/app.css',
   ],
 
   plugins: [
