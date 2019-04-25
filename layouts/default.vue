@@ -46,7 +46,6 @@
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       </p>
-      <p class="text-xs leading-tight">Send questions or feedback to dev (at) {{ domain }}.</p>
     </footer>
   </div>
 </template>
@@ -72,13 +71,6 @@ export default {
       return this.isDesktop
         ? '/images/background/blue_desktop.jpg'
         : '/images/background/blue_mobile.jpg'
-    },
-    domain() {
-      if (global.window !== undefined) {
-        return window.location.hostname
-      }
-
-      return ''
     },
     ...mapState({
       blog: state => state.blog,

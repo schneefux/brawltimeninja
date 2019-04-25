@@ -9,6 +9,9 @@
         Brawlstars Time Ninja uses the unofficial Brawlstars API. The service may be unreliable at times.
       </p>
       <p class="mt-2">
+        Send questions or feedback to dev (at) {{ domain }}.
+      </p>
+      <p class="mt-2">
         This site shares visitor data with Google Analytics and Google AdSense which store cookies.
       </p>
 
@@ -47,6 +50,15 @@
 <script>
 export default {
   name: 'AboutPage',
+  computed: {
+    domain() {
+      if (global.window !== undefined) {
+        return window.location.hostname
+      }
+
+      return ''
+    },
+  },
 }
 </script>
 
