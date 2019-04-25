@@ -63,8 +63,7 @@
           v-for="player in (lastPlayers.length === 0 ? featuredPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
-          tag="button"
-          class="ml-2 text-secondary border-primary border-b-2">
+          class="no-underline ml-2 text-secondary border-primary border-b-2">
           {{ player.name }}
         </nuxt-link>
       </p>
