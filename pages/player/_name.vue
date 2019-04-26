@@ -154,18 +154,11 @@ export default {
   },
   data() {
     return {
-      heroHighlightIndex: 0,
       hoursSpent: 0,
       error: '',
     }
   },
   computed: {
-    heroHighlight() {
-      return this.player.heroes[this.heroHighlightKey]
-    },
-    heroHighlightKey() {
-      return Object.keys(this.player.heroes)[this.heroHighlightIndex]
-    },
     funStats() {
       return {
         books: {
@@ -206,12 +199,6 @@ export default {
     await store.dispatch('loadPlayer')
   },
   mounted() {
-    const highlightTimer = () => setTimeout(() => {
-      this.nextHighlight()
-      highlightTimer()
-    }, 5000)
-    highlightTimer()
-
     this.hoursSpent = 0
     const playerHours = Math.floor(this.player.minutesSpent / 60)
     const hoursTimer = () => setTimeout(() => {
@@ -224,16 +211,6 @@ export default {
       }
     }, 50)
     hoursTimer()
-  },
-  methods: {
-    nextHighlight() {
-      const heroes = Object.keys(this.player.heroes)
-      if (this.heroHighlightIndex === heroes.length - 1) {
-        this.heroHighlightIndex = 0
-      } else {
-        this.heroHighlightIndex += 1
-      }
-    },
   },
 }
 </script>
