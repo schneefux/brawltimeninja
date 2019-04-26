@@ -1,6 +1,6 @@
-# onlinetimeninja
+# brawlstarstimeninja
 
-Universal game statistics site for Brawlstars, Vainglory, Fortnite, Apex Legends and more.
+Fun game statistics site for Brawlstars.
 
 https://brawlstarstime.ninja
 
