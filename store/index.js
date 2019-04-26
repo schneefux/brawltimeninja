@@ -58,6 +58,10 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({ commit }) {
+    if (process.static) {
+      return
+    }
+
     // overwrite generated (possibly empty) payload
     // with current API data when running on server
     const blog = await this.$axios.$get('/api/blog')
