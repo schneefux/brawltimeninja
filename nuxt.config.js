@@ -35,7 +35,13 @@ export default {
     __dangerouslyDisableSanitizers: ['script'],
   },
 
-  loading: { color: '#fff' },
+  meta: {
+    viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
+    name: 'Brawlstars Time Ninja',
+    author: 'schneefux',
+  },
+
+  loading: { color: '#3490dc' }, // primary
 
   css: [
     '~/assets/css/tailwind.css',
