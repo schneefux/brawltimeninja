@@ -76,5 +76,10 @@ export default {
       blog: state => state.blog,
     }),
   },
+  watch: {
+    '$route'() {
+      this.menuOpen = false
+    },
+  },
 }
 </script>
