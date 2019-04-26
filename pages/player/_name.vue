@@ -12,14 +12,14 @@
         </div>
 
         <p class="w-full md:w-auto text-xl my-4 mx-auto">
-          which equals to
+          that is about
         </p>
 
         <div class="flex flex-wrap justify-between">
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
-            class="mx-auto px-1 md:mx-1 my-3">
+            class="mx-auto px-2 my-3">
             <p class="text-3xl text-secondary font-bold">{{ stat.value }}</p>
             <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
           </div>
@@ -156,10 +156,7 @@ export default {
     return {
       heroHighlightIndex: 0,
       hoursSpent: 0,
-      kwhSpent: 0,
-      toiletBreaks: 0,
-      pizzaKg: 0,
-      error: ''
+      error: '',
     }
   },
   computed: {
@@ -171,15 +168,24 @@ export default {
     },
     funStats() {
       return {
-        kwh: {
-          // https://www.quora.com/How-many-watts-an-hour-does-a-phone-use
-          label: 'kWh battery used',
-          value: Math.floor(this.hoursSpent * 2.5)
+        books: {
+          // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
+          label: 'books read',
+          value: Math.floor(this.hoursSpent / 7.72)
         },
         toiletBreaks: {
           // https://www.bladderandbowel.org/bladder/bladder-conditions-and-symptoms/frequency/
-          label: 'toilet breaks taken',
+          label: 'toilet breaks',
           value: Math.floor(this.hoursSpent / 7)
+        },
+        songs: {
+          // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
+          label: 'songs heard',
+          value: Math.floor(this.hoursSpent / (3.7 / 60))
+        },
+        charges: {
+          label: 'phone charges',
+          value: Math.floor(this.hoursSpent / 4)
         },
       }
     },
