@@ -12,7 +12,7 @@
         </div>
 
         <p class="w-full md:w-auto text-xl my-4 mx-auto">
-          that is about
+          which is about
         </p>
 
         <div class="flex flex-wrap justify-between">
@@ -161,24 +161,26 @@ export default {
   computed: {
     funStats() {
       return {
-        books: {
-          // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
-          label: 'books read',
-          value: Math.floor(this.hoursSpent / 7.72)
+        recharges: {
+          // measured with AccuBattery on my phone
+          label: 'empty batteries',
+          value: Math.floor(this.hoursSpent / 4.27)
         },
         toiletBreaks: {
-          // https://www.bladderandbowel.org/bladder/bladder-conditions-and-symptoms/frequency/
+          // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
+          // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
           label: 'toilet breaks',
-          value: Math.floor(this.hoursSpent / 7)
+          value: Math.floor(this.hoursSpent / (102 / 7 / 60))
+        },
+        books: {
+          // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
+          label: 'books unread',
+          value: Math.floor(this.hoursSpent / 7.72)
         },
         songs: {
           // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
-          label: 'songs heard',
+          label: 'songs unheard',
           value: Math.floor(this.hoursSpent / (3.7 / 60))
-        },
-        charges: {
-          label: 'phone charges',
-          value: Math.floor(this.hoursSpent / 4)
         },
       }
     },
