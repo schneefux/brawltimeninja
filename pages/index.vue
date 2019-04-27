@@ -144,7 +144,7 @@ export default {
       const id = this.name.toUpperCase()
       this.nameNotFound = false
 
-      if (!this.nameRegex.test(this.name)) {
+      if (!this.nameRegex.test(id)) {
         this.nameNotFound = true
         return
       }
