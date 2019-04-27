@@ -36,11 +36,11 @@
     </div>
 
     <div class="mt-3 text-center">
-      <details>
+      <details class="mx-6">
         <summary @click="loadHelpVideo = true">Need help?</summary>
         <iframe
           v-if="loadHelpVideo"
-          class="mt-3"
+          class="mt-3 max-w-full"
           width="480"
           height="271"
           frameborder="0"
