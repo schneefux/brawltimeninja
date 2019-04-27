@@ -10,12 +10,13 @@
 
     <div class="mt-4 mx-4">
       <form
-        @submit.prevent="submitName"
-        class="flex flex-wrap justify-center">
+        @submit.prevent="search"
+        class="flex flex-wrap justify-center"
+      >
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
             <input
-              v-model="name"
+              v-model="tag"
               placeholder="Enter your Tag"
               type="text"
               class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
@@ -25,10 +26,10 @@
               value="Search">
           </div>
         </div>
-        <p class="mt-2 text-red-lighter" v-if="nameLoading">
+        <p class="mt-2 text-red-lighter" v-if="loading">
           Searching…
         </p>
-        <p class="mt-2 text-red-lighter" v-if="nameNotFound">
+        <p class="mt-2 text-red-lighter" v-if="notFound">
           Not found, please check again
         </p>
       </form>
@@ -36,9 +37,9 @@
 
     <div class="mt-3 text-center">
       <details>
-        <summary @click="loadNameHelpVideo = true">Need help?</summary>
+        <summary @click="loadHelpVideo = true">Need help?</summary>
         <iframe
-          v-if="loadNameHelpVideo"
+          v-if="loadHelpVideo"
           class="mt-3"
           width="480"
           height="271"
@@ -101,10 +102,10 @@ export default {
   },
   data() {
     return {
-      name: undefined,
-      nameLoading: false,
-      nameNotFound: false,
-      loadNameHelpVideo: false,
+      tag: undefined,
+      loading: false,
+      notFound: false,
+      loadHelpVideo: false,
       playerToRoute,
     }
   },
@@ -120,11 +121,17 @@ export default {
   },
   computed: {
     playerRoute() {
-      const id = this.name.toUpperCase()
-      return playerToRoute({ id })
+      return playerToRoute({
+        id: this.cleanedTag,
+      })
     },
-    nameRegex() {
+    tagRegex() {
       return new RegExp('#?[0289PYLQGRJCUV]{3,}')
+    },
+    cleanedTag() {
+      return this.tag
+        .replace('#', '')
+        .toUpperCase()
     },
     randomHero() {
       const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
@@ -140,24 +147,25 @@ export default {
     }),
   },
   methods: {
-    async submitName() {
-      const id = this.name.toUpperCase()
-      this.nameNotFound = false
+    async search() {
+      this.notFound = false
 
-      if (!this.nameRegex.test(id)) {
-        this.nameNotFound = true
+      if (!this.tagRegex.test(this.cleanedTag)) {
+        this.notFound = true
         return
       }
 
       try {
-        this.nameLoading = true
-        this.setPlayerId({ id })
+        this.loading = true
+        this.setPlayerId({
+          id: this.cleanedTag,
+        })
         await this.loadPlayer()
       } catch (error) {
-        this.nameNotFound = true
+        this.notFound = true
         return
       } finally {
-        this.nameLoading = false
+        this.loading = false
       }
 
       this.$router.push(this.playerRoute)
