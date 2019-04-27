@@ -115,7 +115,8 @@ export default {
   },
   computed: {
     playerRoute() {
-      return playerToRoute({ id: this.name })
+      const id = this.name.toUpperCase()
+      return playerToRoute({ id })
     },
     nameRegex() {
       return new RegExp('#?[0289PYLQGRJCUV]{3,}')
@@ -135,6 +136,7 @@ export default {
   },
   methods: {
     async submitName() {
+      const id = this.name.toUpperCase()
       this.nameNotFound = false
 
       if (!this.nameRegex.test(this.name)) {
@@ -144,9 +146,7 @@ export default {
 
       try {
         this.nameLoading = true
-        this.setPlayerId({
-          id: this.name,
-        })
+        this.setPlayerId({ id })
         await this.loadPlayer()
       } catch (error) {
         this.nameNotFound = true
