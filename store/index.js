@@ -47,8 +47,9 @@ export const mutations = {
     if (state.lastPlayers.some(({ id }) => player.id === id)) {
       return
     }
+    const clone = obj => JSON.parse(JSON.stringify(obj))
 
-    state.lastPlayers = [player, ...state.lastPlayers.slice(0, 4)]
+    state.lastPlayers = [clone(player), ...state.lastPlayers.slice(0, 4)]
   },
   setCurrentEvents(state, currentEvents) {
     state.currentEvents = currentEvents
