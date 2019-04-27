@@ -31,13 +31,6 @@
       <player-statistics :stats="player.stats" />
     </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="9335862290">
-      </adsense>
-    </div>
-
     <div class="section-heading">
       <h2>Game Modes</h2>
     </div>
@@ -67,13 +60,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4606279792">
-      </adsense>
     </div>
 
     <div class="section-heading">
@@ -113,13 +99,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="7563615625">
-      </adsense>
     </div>
 
     <div
