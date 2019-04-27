@@ -113,6 +113,11 @@ export default {
       await store.dispatch('loadCurrentEvents')
     }
   },
+  mounted() {
+    if (process.static) {
+      this.loadCurrentEvents()
+    }
+  },
   computed: {
     playerRoute() {
       const id = this.name.toUpperCase()
@@ -162,6 +167,7 @@ export default {
     }),
     ...mapActions({
       loadPlayer: 'loadPlayer',
+      loadCurrentEvents: 'loadCurrentEvents',
     }),
   },
 }
