@@ -42,7 +42,7 @@
     <nuxt />
 
     <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
-      <p>&#169; 2019 Online Time Ninja Project</p>
+      <p>&#169; 2019 Brawlstars Time Ninja</p>
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       </p>
