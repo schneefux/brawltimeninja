@@ -77,7 +77,7 @@
           v-for="(hero, heroId) in player.heroes"
           :key="heroId">
           <div
-            class="card bg-primary-dark flex">
+            class="card bg-primary-dark flex h-full">
             <div class="flex flex-col w-32 justify-between">
               <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
               <img :src="hero.icon" class="w-24">
