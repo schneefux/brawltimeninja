@@ -22,6 +22,12 @@
       >
         <div class="text-lg capitalize font-medium">
           <nuxt-link
+            to="/"
+            class="md:hidden block mt-4 no-underline text-primary-lighter"
+          >
+            Home
+          </nuxt-link>
+          <nuxt-link
             v-for="topic in topics"
             :key="topic"
             :to="`/blog/${topic}`"

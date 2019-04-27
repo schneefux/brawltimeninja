@@ -126,7 +126,7 @@ export default {
       })
     },
     tagRegex() {
-      return new RegExp('#?[0289PYLQGRJCUV]{3,}')
+      return new RegExp('[0289PYLQGRJCUV]{3,}')
     },
     cleanedTag() {
       return this.tag
