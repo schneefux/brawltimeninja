@@ -82,7 +82,7 @@
               <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
               <img :src="hero.icon" class="w-24">
             </div>
-            <div class="py-2 px-4 flex-grow w-48 self-center flex justify-end">
+            <div class="py-2 pl-2 pr-4 flex-grow w-48 self-center flex justify-end">
               <table>
                 <tr
                   v-for="(stat, statName) in hero.stats"
