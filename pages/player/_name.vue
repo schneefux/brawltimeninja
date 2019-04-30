@@ -33,6 +33,7 @@
 
     <div class="my-4 text-center">
       <adsense
+        ins-class="h-16"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188">
       </adsense>
@@ -71,6 +72,7 @@
 
     <div class="my-4 text-center">
       <adsense
+        ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4939381313">
       </adsense>
@@ -117,6 +119,7 @@
 
     <div class="my-4 text-center">
       <adsense
+        ins-class="h-24"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1491090899">
       </adsense>
