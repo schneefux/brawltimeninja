@@ -18,15 +18,6 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ],
-    script: [
-      { async: true, src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js' },
-      { innerHTML: `
-        (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "ca-pub-6856963757796636",
-              enable_page_level_ads: true
-        });` }
-    ],
-    __dangerouslyDisableSanitizers: ['script'],
   },
 
   meta: {
