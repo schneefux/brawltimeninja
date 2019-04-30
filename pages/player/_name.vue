@@ -31,13 +31,6 @@
       <player-statistics :stats="player.stats" />
     </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3933066188">
-      </adsense>
-    </div>
-
     <div class="section-heading">
       <h2>Game Modes</h2>
     </div>
@@ -66,14 +59,14 @@
               :src="mode.icon">
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4939381313">
-      </adsense>
+        <div class="w-full md:w-1/2 mt-1 mx-auto h-24">
+          <adsense
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="3933066188">
+          </adsense>
+        </div>
+      </div>
     </div>
 
     <div class="section-heading">
@@ -86,6 +79,13 @@
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
+        <div class="w-full md:w-80 my-2 md:mx-4 h-32 md:h-28 bg-blue">
+          <adsense
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="4939381313">
+          </adsense>
+        </div>
+
         <div
           class="card-wrapper w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
@@ -112,14 +112,14 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1491090899">
-      </adsense>
+        <div class="w-full md:w-80 my-2 md:mx-4 h-32 md:h-28 bg-blue">
+          <adsense
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="1491090899">
+          </adsense>
+        </div>
+      </div>
     </div>
 
     <div
