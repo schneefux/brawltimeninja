@@ -13,19 +13,22 @@ router.get('/featured-players', async (ctx, next) => {
 });
 
 router.get('/player/:name', async (ctx, next) => {
-  const data = await service.getPlayerStatistics(ctx.params.name);
-  if (data == null) {
-    ctx.throw(404, 'not found');
-  } else {
-    ctx.body = data;
+  try {
+    ctx.body = await service.getPlayerStatistics(ctx.params.name);
+    ctx.set('Cache-Control', 'public, max-age=300');
+  } catch (error) {
+    ctx.throw(error.status, error.reason);
   }
-  ctx.set('Cache-Control', 'public, max-age=300');
   await next();
 });
 
 router.get('/current-events', async (ctx, next) => {
-  ctx.body = await service.getEvents();
-  ctx.set('Cache-Control', 'public, max-age=600');
+  try {
+    ctx.body = await service.getEvents();
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    ctx.throw(error.status, error.reason);
+  }
   await next();
 });
 

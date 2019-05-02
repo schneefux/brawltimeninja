@@ -85,7 +85,12 @@ export const actions = {
       return
     }
 
-    const currentEvents = await this.$axios.$get('/api/current-events')
-    commit('setCurrentEvents', currentEvents)
+    try {
+      const currentEvents = await this.$axios.$get('/api/current-events')
+      commit('setCurrentEvents', currentEvents)
+    } catch (error) {
+      // not critical, ignore
+      console.error('cannot get current events:', error.message)
+    }
   },
 }

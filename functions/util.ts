@@ -24,29 +24,44 @@ const agent = new Agent({
   keepAliveMsecs: 90*60,
 });
 
-export function request<T>(path: string,
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function request<T>(
+    path: string,
     base: string,
     params: { [key: string]: string },
-    headers: { [header: string]: string }): Promise<T|null> {
+    headers: { [header: string]: string },
+    timeout: number = 3000): Promise<T> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
   const urlStr = url.toString();
 
-  return cache.wrap(urlStr, () => fetch(urlStr, {
-      headers,
-      agent,
-      compress: true,
-    }).then((response) => {
-      if (response.status >= 500 || response.status == 429 || response.status == 401) {
-        throw Error(response.statusText);
-      }
-      if (response.status == 404) {
-        return null;
-      }
-      return response.json();
-    })
-  );
+  return Promise.race([
+    sleep(timeout).then(() => {
+      throw {
+        status: 429,
+        reason: 'API took too long to respond',
+      };
+    }),
+    cache.wrap(urlStr, () => fetch(urlStr, {
+        headers,
+        agent,
+        compress: true,
+      }).then(response => {
+        if (!response.ok) {
+          throw {
+            status: response.status,
+            reason: response.statusText,
+          };
+        }
+
+        return response.json();
+      })
+    ),
+  ]);
 }
 
 export const flatten2d = <T>(arr: T[][]) =>

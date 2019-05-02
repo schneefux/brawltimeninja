@@ -26,11 +26,7 @@ export default class BrawlstarsService {
       this.apiBase,
       { type: 'current' },
       { 'Authorization': this.token }
-    ).catch(() => null);
-
-    if (response == null) {
-      return [];
-    }
+    );
 
     const events = response.current;
     return events.map(({ mapName }) => mapName);
@@ -42,7 +38,7 @@ export default class BrawlstarsService {
       this.apiBase,
       { tag },
       { 'Authorization': this.token }
-    ).catch(() => null);
+    );
 
     if (player == null || player.id == undefined) {
       return null;
