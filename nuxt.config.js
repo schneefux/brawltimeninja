@@ -15,9 +15,6 @@ export default {
 
   head: {
     title: 'Brawlstars Time Ninja',
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ],
   },
 
   meta: {
