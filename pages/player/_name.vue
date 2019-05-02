@@ -31,14 +31,6 @@
       <player-statistics :stats="player.stats" />
     </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        ins-class="h-16"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3933066188">
-      </adsense>
-    </div>
-
     <div class="section-heading">
       <h2>Game Modes</h2>
     </div>
@@ -67,15 +59,15 @@
               :src="mode.icon">
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        ins-class="h-32"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4939381313">
-      </adsense>
+        <adsense
+          v-show="ads"
+          root-class="w-full md:w-1/2 mt-1 mx-auto"
+          ins-class="mx-4 h-24"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="3933066188">
+        </adsense>
+      </div>
     </div>
 
     <div class="section-heading">
@@ -88,6 +80,14 @@
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
+        <adsense
+          v-show="ads"
+          root-class="w-full md:w-80 my-2 md:mx-4"
+          ins-class="h-32"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="4939381313">
+        </adsense>
+
         <div
           class="card-wrapper w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
@@ -114,15 +114,15 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="my-4 text-center">
-      <adsense
-        ins-class="h-24"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1491090899">
-      </adsense>
+        <adsense
+          v-show="ads"
+          root-class="w-full md:w-80 my-2 md:mx-4"
+          ins-class="h-32"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="1491090899">
+        </adsense>
+      </div>
     </div>
 
     <div
@@ -159,6 +159,7 @@ export default {
     return {
       hoursSpent: 0,
       error: '',
+      ads: true,
     }
   },
   computed: {
@@ -216,6 +217,12 @@ export default {
       }
     }, 50)
     hoursTimer()
+
+    if (global.window !== undefined) {
+      global.window.addEventListener('load', () => {
+        this.ads = global.adsbygoogle.loaded === true
+      })
+    }
   },
 }
 </script>
