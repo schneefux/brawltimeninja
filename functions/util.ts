@@ -38,7 +38,7 @@ export function request<T>(path: string,
       agent,
       compress: true,
     }).then((response) => {
-      if (response.status >= 500 || response.status == 429) {
+      if (response.status >= 500 || response.status == 429 || response.status == 401) {
         throw Error(response.statusText);
       }
       if (response.status == 404) {
