@@ -55,29 +55,28 @@ export default class BrawlstarsService {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         heroes[brawlerId] = {
           label: brawler.name,
-          icon: `/images/hero/icon/${brawlerId}_optimized.png`,
           stats: {
             rank: {
               label: 'Rank',
               value: brawler.rank,
-              icon: '/images/icon/leaderboards_optimized.png'
+              icon: 'leaderboards_optimized.png'
             },
             trophies: {
               label: 'Trophies',
               value: brawler.trophies,
-              icon: '/images/icon/trophy_optimized.png'
+              icon: 'trophy_optimized.png'
             },
             maxTrophies: {
               label: 'Max Trophies',
               value: brawler.highestTrophies,
-              icon: '/images/icon/trophy_optimized.png'
+              icon: 'trophy_optimized.png'
             },
             level: {
               label: 'Power Level',
               value: brawler.power,
               icon: brawler.power == 10?
-                '/images/icon/starpower_optimized.png'
-                :'/images/icon/powerpoint_optimized.png'
+                'starpower_optimized.png'
+                :'powerpoint_optimized.png'
             }
           }
         } as Hero;
@@ -145,8 +144,8 @@ export default class BrawlstarsService {
       modes: {
         '3v3': {
           label: '3v3',
-          icon: '/images/mode/icon/gemgrab_optimized.png',
-          background: '/images/mode/background/gemgrab.jpg',
+          icon: 'gemgrab_optimized.png',
+          background: 'gemgrab.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -156,8 +155,8 @@ export default class BrawlstarsService {
         } as Mode,
         'soloShowdown': {
           label: 'Solo Showdown',
-          icon: '/images/mode/icon/showdown_optimized.png',
-          background: '/images/mode/background/showdown.jpg',
+          icon: 'showdown_optimized.png',
+          background: 'showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -167,8 +166,8 @@ export default class BrawlstarsService {
         } as Mode,
         'duoShowdown': {
           label: 'Duo Showdown',
-          icon: '/images/mode/icon/duoshowdown_optimized.png',
-          background: '/images/mode/background/showdown.jpg',
+          icon: 'duoshowdown_optimized.png',
+          background: 'showdown.jpg',
           stats: {
             victories: {
               label: 'Victories',
@@ -178,8 +177,8 @@ export default class BrawlstarsService {
         } as Mode,
         'bossfight': {
           label: 'Bossfight',
-          icon: '/images/mode/icon/bossfight_optimized.png',
-          background: '/images/mode/background/bossfight.jpg',
+          icon: 'bossfight_optimized.png',
+          background: 'bossfight.jpg',
           stats: {
             minutes: {
               label: 'survived',
@@ -189,8 +188,8 @@ export default class BrawlstarsService {
         } as Mode,
         'roborumble': {
           label: 'Robo Rumble',
-          icon: '/images/mode/icon/roborumble_optimized.png',
-          background: '/images/mode/background/roborumble.jpg',
+          icon: 'roborumble_optimized.png',
+          background: 'roborumble.jpg',
           stats: {
             minutes: {
               label: 'survived',

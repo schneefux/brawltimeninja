@@ -42,8 +42,9 @@
           v-for="(mode, modeName) in player.modes"
           :key="modeName">
           <div
-            :style="`background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${mode.background}')`"
-            class="card bg-center bg-cover flex flex-wrap justify-between">
+            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
+            class="card bg-center bg-cover flex flex-wrap justify-between"
+          >
             <div class="card-content">
               <div class="card-header text-white">{{ mode.label }}</div>
               <p
@@ -56,7 +57,7 @@
             </div>
             <img
               class="h-12 self-center mr-6 my-4"
-              :src="mode.icon">
+              :src="require(`~/assets/images/mode/icon/${mode.icon}`)">
           </div>
         </div>
 
@@ -96,7 +97,7 @@
             class="card bg-primary-dark flex h-full">
             <div class="flex flex-col w-32 justify-between">
               <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
-              <img :src="hero.icon" class="w-24">
+              <img :src="require(`~/assets/images/hero/icon/${heroId}_optimized.png`)" class="w-24">
             </div>
             <div class="py-2 pl-2 pr-4 flex-grow w-48 self-center flex justify-end">
               <table>
@@ -105,7 +106,9 @@
                   :key="statName"
                   class="card-props">
                   <td class="text-center">
-                    <img class="card-prop-icon" :src="stat.icon">
+                    <img
+                      :src="require(`~/assets/images/icon/${stat.icon}`)"
+                      class="card-prop-icon">
                   </td>
                   <td class="card-prop-value text-right pr-1">{{ stat.value }}</td>
                   <td class="card-prop-label">{{ stat.label }}</td>

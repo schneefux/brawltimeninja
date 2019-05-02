@@ -75,8 +75,8 @@ export default {
     },
     background() {
       return this.isDesktop
-        ? '/images/background/blue_desktop.jpg'
-        : '/images/background/blue_mobile.jpg'
+        ? require('~/assets/images/background/blue_desktop.jpg')
+        : require('~/assets/images/background/blue_mobile.jpg')
     },
     ...mapState({
       blog: state => state.blog,

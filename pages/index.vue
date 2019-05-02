@@ -136,7 +136,7 @@ export default {
     randomHero() {
       const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
-      return `/images/hero/model/${hero}.png`
+      return require(`~/assets/images/hero/model/${hero}.png`)
     },
     ...mapState({
       lastPlayers: state => state.lastPlayers,

@@ -24,7 +24,6 @@ export interface Mode {
 
 export interface Hero {
     label: string;
-    icon: string;
     stats: {
         [id: string]: HeroStatistic;
     };
