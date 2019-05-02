@@ -7,7 +7,7 @@
     <div class="section">
       <div class="section text-center items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0">
-          <p class="text-5xl text-secondary font-bold">{{ hoursSpent }}</p>
+          <p class="text-5xl text-secondary font-bold">{{ Math.floor(hoursSpent) }}</p>
           <p class="text-3xl text-white">hours spent</p>
         </div>
 
@@ -20,7 +20,7 @@
             v-for="(stat, statName) in funStats"
             :key="statName"
             class="mx-auto px-2 my-3">
-            <p class="text-3xl text-secondary font-bold">{{ stat.value }}</p>
+            <p class="text-3xl text-secondary font-bold">{{ Math.floor(stat.value) }}</p>
             <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
           </div>
         </div>
@@ -171,23 +171,23 @@ export default {
         recharges: {
           // measured with AccuBattery on my phone
           label: 'empty batteries',
-          value: Math.floor(this.hoursSpent / 4.27)
+          value: this.hoursSpent / 4.27
         },
         toiletBreaks: {
           // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
           // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
           label: 'toilet breaks',
-          value: Math.floor(this.hoursSpent / (102 / 7 / 60))
+          value: this.hoursSpent / (102 / 7 / 60)
         },
         books: {
           // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
           label: 'books unread',
-          value: Math.floor(this.hoursSpent / 7.72)
+          value: this.hoursSpent / 7.72
         },
         songs: {
           // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
           label: 'songs unheard',
-          value: Math.floor(this.hoursSpent / (3.7 / 60))
+          value: this.hoursSpent / (3.7 / 60)
         },
       }
     },
@@ -208,17 +208,18 @@ export default {
     await store.dispatch('loadPlayer')
   },
   mounted() {
-    this.hoursSpent = 0
     const playerHours = Math.floor(this.player.minutesSpent / 60)
+    const animationDuration = 5000
+    const frameDuration = 15
+    const k = Math.log(playerHours) / (animationDuration / frameDuration)
+
+    this.hoursSpent = 0
     const hoursTimer = () => setTimeout(() => {
-      if (this.hoursSpent < playerHours * Math.random() * 10) {
-        const step = Math.ceil(Math.sqrt(playerHours - this.hoursSpent))
-        this.hoursSpent += step
-      }
-      if (this.hoursSpent < playerHours) {
+      this.hoursSpent += k * (playerHours - this.hoursSpent)
+      if (Math.floor(this.hoursSpent) < playerHours) {
         hoursTimer()
       }
-    }, 50)
+    }, frameDuration)
     hoursTimer()
 
     if (global.window !== undefined) {
