@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Flooded Mines", "author": "kinglionleo", "image": "/images/blog/guides/flooded-mines.jpg", "description": "Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.", "mode": "gemgrab", "map": "Flooded Mines" }
+{ "title": "Gem Grab: Flooded Mines", "author": "kinglionleo", "image": "/images/blog/guides/flooded-mines_small.jpg", "description": "Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.", "mode": "gemgrab", "map": "Flooded Mines" }
 
 Recommended Comp
 ---

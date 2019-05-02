@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/blog/guides/four-squared.jpg", "description": "Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Four Squared" }
+{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/blog/guides/four-squared_small.jpg", "description": "Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Four Squared" }
 
 Recommended Comp
 ---
