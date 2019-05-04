@@ -40,10 +40,6 @@ export default class BrawlstarsService {
       { 'Authorization': this.token }
     );
 
-    if (player == null || player.id == undefined) {
-      return null;
-    }
-
     const heroes = {} as { [id: string]: Hero };
     player.brawlers
       .sort((b1, b2) => b2.highestTrophies - b1.highestTrophies)
