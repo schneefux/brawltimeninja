@@ -223,9 +223,15 @@ export default {
     hoursTimer()
 
     if (global.window !== undefined) {
-      global.window.addEventListener('load', () => {
+      const checkAdblock = () => {
         this.ads = global.adsbygoogle.loaded === true
-      })
+      }
+
+      if (global.document.readyState === 'complete') {
+        setTimeout(checkAdblock, animationDuration) // TODO make this smarter
+      } else {
+        global.window.addEventListener('load', checkAdblock)
+      }
     }
   },
 }
