@@ -33,7 +33,7 @@ export function request<T>(
     base: string,
     params: { [key: string]: string },
     headers: { [header: string]: string },
-    timeout: number = 3000): Promise<T> {
+    timeout: number = 5000): Promise<T> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
