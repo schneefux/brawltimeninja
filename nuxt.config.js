@@ -24,7 +24,7 @@ export default {
     author: 'schneefux',
   },
 
-  loading: { color: '#3490dc' }, // primary
+  loading: { color: '#ffed4a' }, // secondary
 
   css: [
     '~/assets/css/tailwind.css',
