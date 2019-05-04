@@ -22,6 +22,7 @@ export default {
     name: 'Brawlstars Time Ninja',
     description: 'Brawlstars Time Ninja - Check time spent on Brawlstars and player statistics',
     author: 'schneefux',
+    theme_color: '#3490dc', // primary
   },
 
   loading: { color: '#ffed4a' }, // secondary
