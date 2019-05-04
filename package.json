@@ -1,7 +1,7 @@
 {
-  "name": "onlinetimeninja",
+  "name": "brawlstarstimeninja",
   "version": "1.0.0",
-  "description": "onlinetimeninja",
+  "description": "Brawlstars player statistics website",
   "author": "schneefux",
   "private": true,
   "scripts": {

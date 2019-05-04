@@ -25,6 +25,13 @@ export default {
     theme_color: '#3490dc', // primary
   },
 
+  manifest: {
+    name: 'Brawlstars Time Ninja',
+    short_name: 'Brawlstars Time',
+    description: 'Check time spent on Brawlstars and player statistics',
+    theme_color: '#3490dc', // primary
+  },
+
   loading: { color: '#ffed4a' }, // secondary
 
   css: [
