@@ -3,7 +3,7 @@ import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
 export default class BrawlstarsService {
-  private readonly apiBase = 'https://api.brawlapi.cf/v1/';
+  private readonly apiBase = 'https://brawlapi.cf/api/' // 'https://api.brawlapi.cf/v1/';
 
   constructor(private token: string) {}
 
