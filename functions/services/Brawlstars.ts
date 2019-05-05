@@ -2,6 +2,8 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/B
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request } from '../util';
 
+const logStats = !!process.env.LOG_STATS;
+
 export default class BrawlstarsService {
   private readonly apiBase = 'https://brawlapi.cf/api/' // 'https://api.brawlapi.cf/v1/';
 
@@ -39,6 +41,10 @@ export default class BrawlstarsService {
       { tag },
       { 'Authorization': this.token }
     );
+
+    if (logStats) {
+      console.log(JSON.stringify(player))
+    }
 
     const heroes = {} as { [id: string]: Hero };
     player.brawlers
