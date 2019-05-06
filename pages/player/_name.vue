@@ -248,7 +248,7 @@ export default {
     await store.dispatch('loadPlayer')
   },
   mounted() {
-    const playerHours = Math.floor(this.player.minutesSpent / 60)
+    const playerHours = this.player.hoursSpent
     const animationDuration = 5000
     const frameDuration = 15
     const k = Math.log(playerHours) / (animationDuration / frameDuration)

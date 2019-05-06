@@ -35,7 +35,7 @@ export interface PlayerIdentifier {
 }
 
 export interface Player extends PlayerIdentifier {
-    minutesSpent: number;
+    hoursSpent: number;
     trophies: number;
     clubName: string;
     heroes: {

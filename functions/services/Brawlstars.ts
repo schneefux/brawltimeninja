@@ -102,11 +102,7 @@ export default class BrawlstarsService {
       };
     }
 
-    const minutesSpent =
-      player.victories * 2 * 3 + // 50% win rate * 3mins
-      player.soloShowdownVictories * 10 * 3 + // 1/10 win rate * 3mins
-      player.duoShowdownVictories * 5 * 3 // 1/5 win rate * 3mins
-    ;
+    const hoursSpent = player.totalExp / 210; // 145h for 30300 XP as measured by @schneefux
 
     const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
       .map((o) => o[prop])
@@ -135,7 +131,7 @@ export default class BrawlstarsService {
     const data = {
       id: player.tag,
       name: player.name,
-      minutesSpent,
+      hoursSpent,
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club.name,
       heroes,
