@@ -36,6 +36,8 @@ export interface PlayerIdentifier {
 
 export interface Player extends PlayerIdentifier {
     minutesSpent: number;
+    trophies: number;
+    clubName: string;
     heroes: {
         [id: string]: Hero;
     };
@@ -44,8 +46,5 @@ export interface Player extends PlayerIdentifier {
     }
     modes: {
         [id: string]: Mode;
-    };
-    stats: {
-        [id: string]: PlayerStatistic;
     };
 }

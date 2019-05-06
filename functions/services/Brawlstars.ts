@@ -136,9 +136,10 @@ export default class BrawlstarsService {
       id: player.tag,
       name: player.name,
       minutesSpent,
+      trophies: player.trophies,
+      clubName: player.club === null ? '' : player.club.name,
       heroes,
       heroStats,
-      stats,
       modes: {
         '3v3': {
           label: '3v3',

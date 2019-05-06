@@ -4,8 +4,8 @@
       <h1>Statistics for <span class="text-secondary">{{ player.name }}</span></h1>
     </div>
 
-    <div class="section">
-      <div class="section text-center items-center justify-center flex flex-wrap">
+    <div class="section leading-tight text-center">
+      <div class="section items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0">
           <p class="text-5xl text-secondary font-bold">{{ Math.floor(hoursSpent) }}</p>
           <p class="text-3xl text-white">hours spent</p>
@@ -25,10 +25,40 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="section" v-if="player.stats">
-      <player-statistics :stats="player.stats" />
+      <div class="section flex flex-wrap justify-left md:justify-center mx-auto md:mx-0">
+        <div
+          v-if="player.clubName != ''"
+          class="bigstat-container"
+        >
+          <div class="bigstat-left text-4xl">
+            <div class="" style="margin-top: -0.125em">[</div>
+            <div class="mx-2 text-primary-light font-bold">{{ player.clubName }}</div>
+            <div class="" style="margin-top: -0.125em">]</div>
+          </div>
+          <div class="bigstat-right bigstat-label text-4xl">
+            Club
+          </div>
+        </div>
+
+        <div class="bigstat-container">
+          <div class="bigstat-left bigstat-number">
+            {{ player.trophies.toLocaleString() }}
+          </div>
+          <div class="bigstat-right bigstat-label text-3xl">
+            Trophies
+          </div>
+        </div>
+
+        <div class="bigstat-container">
+          <div class="bigstat-left bigstat-number">
+            {{ Math.floor(trophiesPerHour) }}
+          </div>
+          <div class="bigstat-right bigstat-label text-xl">
+            Trophies per&nbsp;hour
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="section-heading">
@@ -191,6 +221,12 @@ export default {
         },
       }
     },
+    trophiesPerHour() {
+      if (this.hoursSpent === 0) {
+        return 0
+      }
+      return this.player.trophies / this.hoursSpent
+    },
     relevantGuides() {
       // shuffle posts
       const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
@@ -245,5 +281,31 @@ export default {
   .section {
     @apply mx-8;
   }
+}
+
+.bigstat-container {
+  @apply flex justify-center items-center mt-2 w-full;
+}
+
+@screen md {
+  .bigstat-container {
+    @apply mx-6 w-auto;
+  }
+}
+
+.bigstat-left {
+  @apply w-1/2 text-right flex justify-end items-center mr-2;
+}
+
+.bigstat-right {
+  @apply w-1/2 text-left flex justify-start items-center ml-2;
+}
+
+.bigstat-label {
+  @apply leading-none text-white;
+}
+
+.bigstat-number {
+  @apply text-5xl font-bold text-secondary;
 }
 </style>

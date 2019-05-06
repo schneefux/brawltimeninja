@@ -1,5 +1,5 @@
 <template>
-  <div class="md:mx-4 flex flex-wrap py-4 px-6">
+  <div class="leading-tight md:mx-4 flex flex-wrap py-4 px-6">
     <p
         v-for="(stat, statName) in stats"
         :key="statName"
