@@ -14,7 +14,7 @@ export default {
   mode: 'universal',
 
   head: {
-    title: 'Brawlstars Time Ninja',
+    titleTemplate: '%s - Brawlstars Time Ninja',
   },
 
   meta: {

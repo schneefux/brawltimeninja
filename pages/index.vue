@@ -119,6 +119,12 @@ export default {
   components: {
     Blogroll,
   },
+  head() {
+    return {
+      titleTemplate: null,
+      title: 'Brawlstars Time Ninja',
+    }
+  },
   data() {
     return {
       tag: undefined,

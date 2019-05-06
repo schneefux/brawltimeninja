@@ -42,6 +42,11 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'TopicPage',
+  head() {
+    return {
+      title: this.topic.charAt(0).toUpperCase() + this.topic.slice(1),
+    }
+  },
   computed: {
     posts() {
       return this.blog[this.topic]

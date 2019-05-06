@@ -46,6 +46,11 @@
 <script>
 export default {
   name: 'TopicPage',
+  head() {
+    return {
+      title: this.post.title,
+    }
+  },
   data() {
     return {
       lightboxOpen: false,

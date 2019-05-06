@@ -222,6 +222,11 @@ export default {
   components: {
     Blogroll,
   },
+  head() {
+    return {
+      title: this.player.name,
+    }
+  },
   data() {
     return {
       hoursSpent: 0,
