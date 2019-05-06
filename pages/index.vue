@@ -36,7 +36,10 @@
     </div>
 
     <div class="mt-3 text-center">
-      <details class="mx-6">
+      <details
+        ref="videoHelpDropdown"
+        class="mx-6"
+      >
         <summary @click="loadHelpVideo = true">Need help?</summary>
         <iframe
           v-if="loadHelpVideo"
@@ -105,6 +108,7 @@ export default {
       tag: undefined,
       loading: false,
       error: undefined,
+      invalidTagAttempts: 0,
       loadHelpVideo: false,
       playerToRoute,
     }
@@ -152,6 +156,12 @@ export default {
 
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.error = 'This is not a tag'
+
+        this.invalidTagAttempts++
+        if (this.invalidTagAttempts === 2) {
+          this.$refs.videoHelpDropdown.setAttribute('open', '')
+          this.loadHelpVideo = true
+        }
 
         return
       }
