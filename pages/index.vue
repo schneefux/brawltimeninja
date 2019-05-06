@@ -171,6 +171,7 @@ export default {
       this.error = undefined
 
       if (!this.tagRegex.test(this.cleanedTag)) {
+        this.$ga.event('player', 'search', 'error_invalid')
         this.error = 'This is not a tag'
 
         this.invalidTagAttempts++
@@ -190,8 +191,10 @@ export default {
         await this.loadPlayer()
       } catch (error) {
         if (error.response.status === 404) {
+          this.$ga.event('player', 'search', 'error_notfound')
           this.error = 'This tag does not exist'
         } else {
+          this.$ga.event('player', 'search', 'error_api')
           this.error = 'Could not communicate with the Brawlstars API, try again later'
         }
         return
@@ -199,6 +202,7 @@ export default {
         this.loading = false
       }
 
+      this.$ga.event('player', 'search', 'success')
       this.$router.push(this.playerRoute)
     },
     ...mapMutations({
