@@ -1,11 +1,11 @@
 const path = require('path')
 
-const serverlessConfig = {
+const lambdaConfig = {
   mode: process.env.NODE_ENV,
   target: 'node',
   devtool: false,
   entry: {
-    api: './serverless.ts',
+    api: './lambdas/netlify.ts',
   },
   output: {
     filename: '[name].js',
@@ -67,4 +67,4 @@ const serverConfig = {
   },
 }
 
-module.exports = [serverlessConfig, serverConfig]
+module.exports = [lambdaConfig, serverConfig]
