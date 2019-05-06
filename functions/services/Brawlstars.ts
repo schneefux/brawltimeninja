@@ -14,11 +14,17 @@ export default class BrawlstarsService {
       id: 'V8LLPPC',
       name: 'xXcuzMePlisThXx',
     }, {
-      id: '2Y02L28',
-      name: 'Keith',
+      id: '8PJRRG2C',
+      name: 'TQ|GuilleVGX',
     }, {
       id: 'V9QGJY9',
       name: 'Landi',
+    }, {
+      id: '2L892GP',
+      name: 'YAPIMARU_YT',
+    }, {
+      id: '2Y02L28',
+      name: 'Keith ツ',
     } ];
   }
 

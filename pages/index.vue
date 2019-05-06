@@ -79,7 +79,7 @@
       </p>
       <p class="mt-2 mx-auto">
         <nuxt-link
-          v-for="player in (lastPlayers.length === 0 ? featuredPlayers : lastPlayers)"
+          v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
           class="no-underline ml-2 text-secondary border-primary border-b-2"
@@ -153,6 +153,10 @@ export default {
       const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
       return require(`~/assets/images/hero/model/${hero}.png`)
+    },
+    randomPlayers() {
+      const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
+      return players.slice(0, 3)
     },
     ...mapState({
       lastPlayers: state => state.lastPlayers,
