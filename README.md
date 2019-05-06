@@ -25,11 +25,11 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 
 ## Processing images
 
-* `for f in static/images/hero/icon/*.png; do magick.exe "$f" -strip -resize x192 "${f%.png}_optimized.png"; done` 
-* `for f in static/images/icon/*.png; do magick.exe "$f" -strip -resize x40 "${f%.png}_optimized.png"; done`
-* `for f in static/images/mode/background/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -resize x256 "${f%.png}.jpg"; done`
-* `for f in static/images/mode/icon/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -resize x96 "${f%.png}_optimized.png"; done`
-* `for f in static/images/blog/guides/*.jpg; do magick.exe "$f" -strip -resize 800x "${f%.jpg}_small.jpg"; done`
+* `for f in assets/images/hero/icon/*.png; do magick.exe "$f" -strip -resize x192 "${f%.png}_optimized.png"; done` 
+* `for f in assets/images/icon/*.png; do magick.exe "$f" -strip -resize x40 "${f%.png}_optimized.png"; done`
+* `for f in assets/images/mode/background/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -resize x256 "${f%.png}.jpg"; done`
+* `for f in assets/images/mode/icon/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -resize x96 "${f%.png}_optimized.png"; done`
+* `for f in assets/images/blog/guides/*.jpg; do magick.exe "$f" -strip -resize 800x "${f%.jpg}_small.jpg"; done`
 
 ## Assets
 
