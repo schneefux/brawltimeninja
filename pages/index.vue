@@ -29,8 +29,8 @@
         <p class="mt-2 text-red-lighter" v-if="loading">
           Searching…
         </p>
-        <p class="mt-2 text-red-lighter" v-if="notFound">
-          Not found, please check again
+        <p class="mt-2 text-red-lighter" v-if="error">
+          {{ error }}
         </p>
       </form>
     </div>
@@ -104,7 +104,7 @@ export default {
     return {
       tag: undefined,
       loading: false,
-      notFound: false,
+      error: undefined,
       loadHelpVideo: false,
       playerToRoute,
     }
@@ -148,10 +148,11 @@ export default {
   },
   methods: {
     async search() {
-      this.notFound = false
+      this.error = undefined
 
       if (!this.tagRegex.test(this.cleanedTag)) {
-        this.notFound = true
+        this.error = 'This is not a tag'
+
         return
       }
 
@@ -162,7 +163,11 @@ export default {
         })
         await this.loadPlayer()
       } catch (error) {
-        this.notFound = true
+        if (error.response.status === 404) {
+          this.error = 'This tag does not exist'
+        } else {
+          this.error = 'Could not communicate with the Brawlstars API, try again later'
+        }
         return
       } finally {
         this.loading = false
