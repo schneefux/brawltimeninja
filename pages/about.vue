@@ -18,7 +18,7 @@
       <h1>Privacy Policy</h1>
 
       <p>If you choose to use our Service, then you agree to the collection and use of information in relation with this policy. The Personal Information that we collect are used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy.</p>
-      <p>Our Privacy Policy was created with the help of the Privacy Policy Template (privacypolicytemplate.net)</a>.
+      <p>Our Privacy Policy was created with the help of the Privacy Policy Template (privacypolicytemplate.net).</p>
       <h2>Information Collection and Use</h2>
       <p>No personally identifiable information is collected.</p>
       <h2>Cookies</h2>
@@ -27,10 +27,10 @@
       <h2>Service Providers</h2>
       <p>We may employ third-party companies and individuals due to the following reasons:</p>
       <ul>
-          <li>To facilitate our Service;</li>
-          <li>To provide the Service on our behalf;</li>
-          <li>To perform Service-related services; or</li>
-          <li>To assist us in analyzing how our Service is used.</li>
+        <li>To facilitate our Service;</li>
+        <li>To provide the Service on our behalf;</li>
+        <li>To perform Service-related services; or</li>
+        <li>To assist us in analyzing how our Service is used.</li>
       </ul>
       <p>We want to inform our Service users that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.</p>
       <h2>Security</h2>

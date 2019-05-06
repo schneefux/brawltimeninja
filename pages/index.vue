@@ -1,17 +1,22 @@
 <template>
   <div class="flex flex-col items-center">
-    <img class="mt-16 lg:mt-8 h-32 md:h-48 lg:h-64" :src="randomHero">
+    <img
+      :src="randomHero"
+      class="mt-16 lg:mt-8 h-32 md:h-48 lg:h-64"
+    >
 
     <div class="mt-10 lg:mt-6 text-center font-sans mx-2">
       <h1>How much time on Brawlstars?</h1>
     </div>
 
-    <p class="mt-3 text-center text-lg mx-2">See how much you play, statistics for your Brawlers and more.</p>
+    <p class="mt-3 text-center text-lg mx-2">
+      See how much you play, statistics for your Brawlers and more.
+    </p>
 
     <div class="mt-4 mx-4">
       <form
-        @submit.prevent="search"
         class="flex flex-wrap justify-center"
+        @submit.prevent="search"
       >
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
@@ -19,17 +24,25 @@
               v-model="tag"
               placeholder="Enter your Tag"
               type="text"
-              class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2">
+              class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
+            >
             <input
               type="submit"
               class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
-              value="Search">
+              value="Search"
+            >
           </div>
         </div>
-        <p class="mt-2 text-red-lighter" v-if="loading">
+        <p
+          v-if="loading"
+          class="mt-2 text-red-lighter"
+        >
           Searching…
         </p>
-        <p class="mt-2 text-red-lighter" v-if="error">
+        <p
+          v-if="error"
+          class="mt-2 text-red-lighter"
+        >
           {{ error }}
         </p>
       </form>
@@ -40,7 +53,9 @@
         ref="videoHelpDropdown"
         class="mx-6"
       >
-        <summary @click="loadHelpVideo = true">Need help?</summary>
+        <summary @click="loadHelpVideo = true">
+          Need help?
+        </summary>
         <iframe
           v-if="loadHelpVideo"
           class="mt-3 max-w-full"
@@ -48,8 +63,8 @@
           height="271"
           frameborder="0"
           allow="encrypted-media; picture-in-picture"
-          src="https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ&version=3&rel=0&fs=0&loop=1&playsinline=1">
-        </iframe>
+          src="https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ&version=3&rel=0&fs=0&loop=1&playsinline=1"
+        />
       </details>
     </div>
 
@@ -67,7 +82,8 @@
           v-for="player in (lastPlayers.length === 0 ? featuredPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
-          class="no-underline ml-2 text-secondary border-primary border-b-2">
+          class="no-underline ml-2 text-secondary border-primary border-b-2"
+        >
           {{ player.name }}
         </nuxt-link>
       </p>
@@ -81,7 +97,7 @@
         :posts="relevantGuides"
         topic="guides"
         class="mx-6"
-      ></blogroll>
+      />
     </div>
   </div>
 </template>
@@ -113,16 +129,6 @@ export default {
       playerToRoute,
     }
   },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadCurrentEvents')
-    }
-  },
-  mounted() {
-    if (process.static) {
-      this.loadCurrentEvents()
-    }
-  },
   computed: {
     playerRoute() {
       return playerToRoute({
@@ -149,6 +155,16 @@ export default {
     ...mapGetters({
       relevantGuides: 'guidesForCurrentEvents',
     }),
+  },
+  async fetch({ store }) {
+    if (!process.static) {
+      await store.dispatch('loadCurrentEvents')
+    }
+  },
+  mounted() {
+    if (process.static) {
+      this.loadCurrentEvents()
+    }
   },
   methods: {
     async search() {

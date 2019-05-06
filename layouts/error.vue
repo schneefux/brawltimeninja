@@ -6,12 +6,16 @@
     <h3
       v-if="error.statusCode == 429 || error.statusCode >= 500"
       class="mt-2"
-    >Could not communicate with the Brawlstars API! Try again later.</h3>
+    >
+      Could not communicate with the Brawlstars API! Try again later.
+    </h3>
     <p class="mt-4">
       <nuxt-link
         to="/"
         class="no-underline text-secondary border-primary border-b-2"
-      >Return to home</nuxt-link>
+      >
+        Return to home
+      </nuxt-link>
     </p>
   </div>
 </template>

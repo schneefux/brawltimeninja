@@ -5,18 +5,17 @@
         v-if="post.image"
         :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
         class="h-48 bg-cover bg-center mb-6"
-      >
-      </div>
+      />
       <h1>
         <span class="text-primary-dark">{{ post.title }}</span>
         <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
       </h1>
       <div class="mt-2">
         <p
-          v-html="post.content"
           ref="markdown"
           class="markdown"
-        ></p>
+          v-html="post.content"
+        />
 
         <div
           v-show="lightboxOpen"

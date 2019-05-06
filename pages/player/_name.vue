@@ -7,8 +7,12 @@
     <div class="section leading-tight text-center">
       <div class="section items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0">
-          <p class="text-5xl text-secondary font-bold">{{ Math.floor(hoursSpent) }}</p>
-          <p class="text-3xl text-white">hours spent</p>
+          <p class="text-5xl text-secondary font-bold">
+            {{ Math.floor(hoursSpent) }}
+          </p>
+          <p class="text-3xl text-white">
+            hours spent
+          </p>
         </div>
 
         <p class="w-full md:w-auto text-xl my-4 mx-auto">
@@ -19,9 +23,14 @@
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
-            class="mx-auto px-2 my-3">
-            <p class="text-3xl text-secondary font-bold">{{ Math.floor(stat.value) }}</p>
-            <p class="text-2xl text-grey-lighter">{{ stat.label }}</p>
+            class="mx-auto px-2 my-3"
+          >
+            <p class="text-3xl text-secondary font-bold">
+              {{ Math.floor(stat.value) }}
+            </p>
+            <p class="text-2xl text-grey-lighter">
+              {{ stat.label }}
+            </p>
           </div>
         </div>
       </div>
@@ -32,9 +41,15 @@
           class="bigstat-container"
         >
           <div class="bigstat-left text-4xl">
-            <div class="" style="margin-top: -0.125em">[</div>
-            <div class="mx-2 text-primary-light font-bold">{{ player.clubName }}</div>
-            <div class="" style="margin-top: -0.125em">]</div>
+            <div class="" style="margin-top: -0.125em">
+              [
+            </div>
+            <div class="mx-2 text-primary-light font-bold">
+              {{ player.clubName }}
+            </div>
+            <div class="" style="margin-top: -0.125em">
+              ]
+            </div>
           </div>
           <div class="bigstat-right bigstat-label text-4xl">
             Club
@@ -68,26 +83,31 @@
     <div class="section">
       <div class="flex flex-wrap">
         <div
-          class="w-full md:w-1/2 card-wrapper mx-auto"
           v-for="(mode, modeName) in player.modes"
-          :key="modeName">
+          :key="modeName"
+          class="w-full md:w-1/2 card-wrapper mx-auto"
+        >
           <div
-            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
             class="card bg-center bg-cover flex flex-wrap justify-between"
+            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
           >
             <div class="card-content">
-              <div class="card-header text-white">{{ mode.label }}</div>
+              <div class="card-header text-white">
+                {{ mode.label }}
+              </div>
               <p
                 v-for="(stat, statName) in mode.stats"
                 :key="statName"
-                class="card-props mt-2">
+                class="card-props mt-2"
+              >
                 <span class="card-prop-value">{{ stat.value }}</span>
                 <span class="card-prop-label">{{ stat.label }}</span>
               </p>
             </div>
             <img
+              :src="require(`~/assets/images/mode/icon/${mode.icon}`)"
               class="h-12 self-center mr-6 my-4"
-              :src="require(`~/assets/images/mode/icon/${mode.icon}`)">
+            >
           </div>
         </div>
 
@@ -96,8 +116,8 @@
           root-class="w-full md:w-1/2 mt-1 mx-auto"
           ins-class="mx-4 h-24"
           data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="3933066188">
-        </adsense>
+          data-ad-slot="3933066188"
+        />
       </div>
     </div>
 
@@ -107,11 +127,12 @@
 
     <div class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
       <p
-          v-for="(stat, heroName) in player.heroStats"
-          :key="heroName"
-          class="md:text-center text-xl font-semibold my-1 w-full md:w-auto md:mx-auto">
-          <span class="md:block md:text-2xl">{{ stat.label }}</span>
-          <span class="md:block float-right md:float-none text-primary-lighter md:mt-1">{{ stat.value }}</span>
+        v-for="(stat, heroName) in player.heroStats"
+        :key="heroName"
+        class="md:text-center text-xl font-semibold my-1 w-full md:w-auto md:mx-auto"
+      >
+        <span class="md:block md:text-2xl">{{ stat.label }}</span>
+        <span class="md:block float-right md:float-none text-primary-lighter md:mt-1">{{ stat.value }}</span>
       </p>
     </div>
 
@@ -122,32 +143,41 @@
           root-class="w-full md:w-80 my-2 md:mx-4"
           ins-class="h-32"
           data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="4939381313">
-        </adsense>
+          data-ad-slot="4939381313"
+        />
 
         <div
-          class="card-wrapper w-full md:w-auto"
           v-for="(hero, heroId) in player.heroes"
-          :key="heroId">
-          <div
-            class="card bg-primary-dark flex h-full">
+          :key="heroId"
+          class="card-wrapper w-full md:w-auto"
+        >
+          <div class="card bg-primary-dark flex h-full">
             <div class="flex flex-col w-32 justify-between">
               <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
-              <img :src="require(`~/assets/images/hero/icon/${heroId}_optimized.png`)" class="w-24">
+              <img
+                :src="require(`~/assets/images/hero/icon/${heroId}_optimized.png`)"
+                class="w-24"
+              >
             </div>
             <div class="py-2 pl-2 pr-4 flex-grow w-48 self-center flex justify-end">
               <table>
                 <tr
                   v-for="(stat, statName) in hero.stats"
                   :key="statName"
-                  class="card-props">
+                  class="card-props"
+                >
                   <td class="text-center">
                     <img
                       :src="require(`~/assets/images/icon/${stat.icon}`)"
-                      class="card-prop-icon">
+                      class="card-prop-icon"
+                    >
                   </td>
-                  <td class="card-prop-value text-right pr-1">{{ stat.value }}</td>
-                  <td class="card-prop-label">{{ stat.label }}</td>
+                  <td class="card-prop-value text-right pr-1">
+                    {{ stat.value }}
+                  </td>
+                  <td class="card-prop-label">
+                    {{ stat.label }}
+                  </td>
                 </tr>
               </table>
             </div>
@@ -159,8 +189,8 @@
           root-class="w-full md:w-80 my-2 md:mx-4"
           ins-class="h-32"
           data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="1491090899">
-        </adsense>
+          data-ad-slot="1491090899"
+        />
       </div>
     </div>
 
@@ -176,9 +206,9 @@
       class="section"
     >
       <blogroll
-        topic="guides"
         :posts="relevantGuides"
-      ></blogroll>
+        topic="guides"
+      />
     </div>
   </div>
 </template>

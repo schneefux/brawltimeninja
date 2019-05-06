@@ -1,6 +1,8 @@
 <template>
   <div class="container mx-auto py-4 px-2">
-    <h1 class="mx-2 mt-2 capitalize">{{ topic }}</h1>
+    <h1 class="mx-2 mt-2 capitalize">
+      {{ topic }}
+    </h1>
     <div
       v-for="(post, index) in posts"
       :key="post.title"
@@ -10,8 +12,7 @@
         data-ad-layout-key="-6f+dk+1s-h+2d"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6887845661"
-      >
-      </InFeedAdsense>
+      />
 
       <article class="bg-grey-lighter py-8 px-6 my-8 text-black">
         <nuxt-link
@@ -30,8 +31,7 @@
           v-if="post.image"
           :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
           class="h-48 bg-cover bg-center mt-6"
-        >
-        </div>
+        />
       </article>
     </div>
   </div>
@@ -42,11 +42,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'TopicPage',
-  asyncData({ params }) {
-    return {
-      topic: params.topic,
-    }
-  },
   computed: {
     posts() {
       return this.blog[this.topic]
@@ -54,6 +49,11 @@ export default {
     ...mapState({
       blog: state => state.blog,
     }),
+  },
+  asyncData({ params }) {
+    return {
+      topic: params.topic,
+    }
   },
 }
 </script>
