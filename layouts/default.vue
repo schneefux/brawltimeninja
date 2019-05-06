@@ -86,10 +86,25 @@ export default {
       blog: state => state.blog,
     }),
   },
+  methods: {
+    installed() {
+      this.$ga.event('app', 'install')
+    },
+  },
   watch: {
     '$route'() {
       this.menuOpen = false
     },
+  },
+  created() {
+    if (global.window !== undefined) {
+      global.window.addEventListener('appinstalled', this.installed)
+    }
+  },
+  destroyed() {
+    if (global.window !== undefined) {
+      global.window.addEventListener('appinstalled', this.installed)
+    }
   },
 }
 </script>
