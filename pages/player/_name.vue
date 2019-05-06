@@ -105,8 +105,14 @@
       <h2>Brawlers</h2>
     </div>
 
-    <div class="section">
-      <player-statistics :stats="player.heroStats" />
+    <div class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
+      <p
+          v-for="(stat, heroName) in player.heroStats"
+          :key="heroName"
+          class="md:text-center text-xl font-semibold my-1 w-full md:w-auto md:mx-auto">
+          <span class="md:block md:text-2xl">{{ stat.label }}</span>
+          <span class="md:block float-right md:float-none text-primary-lighter md:mt-1">{{ stat.value }}</span>
+      </p>
     </div>
 
     <div class="section">
@@ -178,14 +184,12 @@
 </template>
 
 <script>
-import PlayerStatistics from '~/components/player-statistics'
 import Blogroll from '~/components/blogroll'
 import { mapState } from 'vuex'
 
 export default {
   name: 'ProfilePage',
   components: {
-    PlayerStatistics,
     Blogroll,
   },
   data() {
