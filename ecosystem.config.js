@@ -40,5 +40,21 @@ module.exports = {
       'NODE_ENV': 'production',
       'DATABASE_URI': process.env.DATABASE_URI,
     },
-  }]
+  }],
+  deploy: {
+    production: {
+      key: process.env.PROD_SSHKEY,
+      user: process.env.PROD_USER,
+      host: process.env.PROD_HOST,
+      ref: 'origin/dev',
+      repo: 'https://github.com/schneefux/brawlstarstimeninja',
+      path: process.env.PROD_PATH,
+      'post-deploy':
+        'npm install && ' +
+        'export API_URL_BROWSER="' + process.env.PROD_APIURL + '" && ' +
+        'npm run generate:api && ' +
+        'npm run build:apps && ' +
+        'npm run build',
+    },
+  },
 }
