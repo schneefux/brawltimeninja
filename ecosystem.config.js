@@ -3,30 +3,42 @@ dotenv.config()
 
 module.exports = {
   apps: [{
-    name: 'api',
+    name: 'web',
     port: 9990,
+    script: './node_modules/nuxt/bin/nuxt.js',
+    args: 'start',
+    cwd: './',
+    watch: false,
+    exec_mode: 'cluster',
+    instances: 'max',
+    env: {
+      'NODE_ENV': 'production',
+      /* server to server calls - frontend configuration is set during build */
+      'API_PORT': 9991,
+    },
+  }, {
+    name: 'api',
+    port: 9991,
     script: './functions/dist/server.js',
     watch: false,
     exec_mode: 'cluster',
     instances: 'max',
     env: {
       'NODE_ENV': 'production',
-      'CACHE_PATH': 'cache/',
+      'CACHE_PATH': process.env.CACHE_PATH || 'cache/',
       'BRAWLSTARS_TOKEN': process.env.BRAWLSTARS_TOKEN,
+      'TRACKER_URL': 'http://localhost:9992/track',
     },
   }, {
-    name: 'web',
-    port: 9991,
-    script: './node_modules/nuxt/bin/nuxt.js',
-    args: 'start',
-    cwd: './',
-    watch: 'false',
+    name: 'tracker',
+    port: 9992,
+    script: './functions/dist/tracker.js',
+    watch: false,
     exec_mode: 'cluster',
     instances: 'max',
     env: {
       'NODE_ENV': 'production',
-      'API_PORT': 9990, /* server to server calls */
-      'API_URL_BROWSER': 'https://api01.brawlstarstime.ninja',
+      'DATABASE_URI': process.env.DATABASE_URI,
     },
   }]
 }

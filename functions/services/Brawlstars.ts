@@ -1,13 +1,13 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/Brawlstars';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
-import { request } from '../util';
+import { request, post } from '../lib/request';
 
 const logStats = !!process.env.LOG_STATS;
+const trackerUrl = process.env.TRACKER_URL || '';
+const token = process.env.BRAWLSTARS_TOKEN || '';
 
 export default class BrawlstarsService {
   private readonly apiBase = 'https://brawlapi.cf/api/' // 'https://api.brawlapi.cf/v1/';
-
-  constructor(private token: string) {}
 
   public getFeaturedPlayers() {
     return [ {
@@ -33,7 +33,7 @@ export default class BrawlstarsService {
       'events',
       this.apiBase,
       { type: 'current' },
-      { 'Authorization': this.token }
+      { 'Authorization': token }
     );
 
     const events = response.current;
@@ -45,8 +45,12 @@ export default class BrawlstarsService {
       'player',
       this.apiBase,
       { tag },
-      { 'Authorization': this.token }
+      { 'Authorization': token }
     );
+
+    if (trackerUrl != '') {
+      await post<null>(trackerUrl, player).catch(console.error);
+    }
 
     if (logStats) {
       console.log(JSON.stringify(player))

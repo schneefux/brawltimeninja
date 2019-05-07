@@ -5,7 +5,7 @@ const lambdaConfig = {
   target: 'node',
   devtool: false,
   entry: {
-    api: './lambdas/netlify.ts',
+    api: './apps/api.ts',
   },
   output: {
     filename: '[name].js',
@@ -47,7 +47,8 @@ const serverConfig = {
   target: 'node',
   devtool: false,
   entry: {
-    server: './server.ts',
+    api: './apps/api.ts',
+    tracker: './apps/tracker.ts',
   },
   output: {
     filename: '[name].js',
@@ -64,6 +65,9 @@ const serverConfig = {
   },
   resolve: {
     extensions: [ '.ts', '.js', '.json' ],
+  },
+  externals: {
+    knex: 'commonjs knex',
   },
 }
 

@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { URLSearchParams, URL } from 'url';
-import { Agent } from 'https';
+import { Agent as HttpAgent } from 'http';
+import { Agent as HttpsAgent } from 'https';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 
@@ -19,7 +20,12 @@ const cache = cacheDisable ?
     options: { path: cachePath, subdirs: true, },
   });
 
-const agent = new Agent({
+const httpAgent = new HttpAgent({
+  keepAlive: true,
+  keepAliveMsecs: 90*60,
+});
+
+const httpsAgent = new HttpsAgent({
   keepAlive: true,
   keepAliveMsecs: 90*60,
 });
@@ -38,6 +44,7 @@ export function request<T>(
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
   const urlStr = url.toString();
+  const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent;
 
   return Promise.race([
     sleep(timeout).then(() => {
@@ -64,11 +71,35 @@ export function request<T>(
   ]);
 }
 
-export const flatten2d = <T>(arr: T[][]) =>
-  arr.reduce((agg, cur) => agg.concat(cur), []);
+export function post<T>(
+    url: string,
+    data: any,
+    timeout: number = 500): Promise<T> {
+  const agent = url.startsWith('https') ? httpsAgent : httpAgent;
 
-export const capitalize = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
+  return Promise.race([
+    sleep(timeout).then(() => {
+      throw {
+        status: 429,
+        reason: 'API took too long to respond',
+      };
+    }),
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      agent,
+      compress: true,
+    }).then(response => {
+      console.log(response)
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          reason: response.statusText,
+        };
+      }
 
-export const fixedPercent = (n1: number, n2: number) =>
-  (n1 / n2 * 100).toFixed(0) + '%';
+      return response.json();
+    })
+  ]);
+}

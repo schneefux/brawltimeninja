@@ -12,10 +12,12 @@ $ npm install
 
 # serve with hot reload at localhost:3000
 $ npm run dev:api
+$ npm run dev:tracker
 $ npm run dev
 
 # build for production and launch server
-$ npm run build
+$ API_URL_BROWSER="..." npm run build
+$ npm run build:backend
 $ npm start
 $ npm start:api
 

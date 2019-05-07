@@ -2,7 +2,7 @@ import Router from 'koa-router';
 
 import BrawlstarsService from '../services/Brawlstars';
 
-const service = new BrawlstarsService(process.env.BRAWLSTARS_TOKEN || '');
+const service = new BrawlstarsService();
 
 const router = new Router();
 

@@ -1,11 +1,9 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
 process.env.CACHE_DISABLE = '1';
 
 import BrawlstarsService from '../Brawlstars';
 
 describe(`Test BrawlstarsService`, () => {
-  const service = new BrawlstarsService(process.env.BRAWLSTARS_TOKEN || '');
+  const service = new BrawlstarsService();
   const featuredPlayers = service.getFeaturedPlayers();
   featuredPlayers.forEach((featuredPlayer) => {
     it(`should return data for featured player ${featuredPlayer.name}`, async () => {

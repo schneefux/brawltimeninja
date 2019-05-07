@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs';
+import { writeFile } from 'fs';
 import { promisify } from 'util';
 
 import { renderBlog } from './routes/blog';
@@ -8,7 +8,7 @@ const writeFileP = promisify(writeFile);
 
 async function main() {
   const blog = await renderBlog();
-  const featuredPlayers = await new BrawlstarsService('').getFeaturedPlayers();
+  const featuredPlayers = await new BrawlstarsService().getFeaturedPlayers();
   const payload = { blog, featuredPlayers };
 
   await writeFileP('../store/payload.json', JSON.stringify(payload, null, 2));
