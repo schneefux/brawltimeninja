@@ -1,7 +1,13 @@
 <template>
   <div class="container mx-auto p-4">
     <div class="section-heading">
-      <h1>Statistics for <span class="text-secondary">{{ player.name }}</span></h1>
+      <h1>Statistics for
+        <span class="text-secondary">{{ player.name }}</span>
+        <span
+          v-if="player.id == 'V8LLPPC'"
+          class="align-top text-xs text-secondary-dark border-2 border-secondary-dark rounded-lg px-1 font-black"
+        >DEV</span>
+      </h1>
     </div>
 
     <div class="section leading-tight text-center">
