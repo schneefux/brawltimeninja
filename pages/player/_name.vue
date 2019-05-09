@@ -124,6 +124,21 @@
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3933066188"
         />
+        <div
+          v-show="!ads"
+          class="w-full md:w-1/2 mt-3 mx-auto text-center leading-normal"
+        >
+          <div class="md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
+            <p class="text-xl italic">
+              This site runs on Gems...
+            </p>
+            <p>
+              Support me
+              <a class="link" href="https://paypal.me/schneefux">on PayPal</a>
+              and help me unlock my first Legendary?
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
