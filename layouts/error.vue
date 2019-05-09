@@ -12,7 +12,7 @@
     <p class="mt-4">
       <nuxt-link
         :to="localePath('index')"
-        class="no-underline text-secondary border-primary border-b-2"
+        class="link"
       >
         Return to home
       </nuxt-link>

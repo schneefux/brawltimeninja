@@ -34,3 +34,7 @@
 .section-heading {
   @apply font-sans mt-8;
 }
+
+.link {
+  @apply no-underline text-secondary border-primary border-b-2;
+}

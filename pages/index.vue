@@ -98,7 +98,7 @@ en:
           :key="player.id"
           :to="localePath(playerToRoute(player))"
           rel="nofollow"
-          class="no-underline ml-2 text-secondary border-primary border-b-2"
+          class="ml-2 link"
         >
           {{ player.name }}
         </nuxt-link>
