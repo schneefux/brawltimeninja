@@ -19,7 +19,7 @@ module.exports = {
   }, {
     name: 'api',
     port: 9991,
-    script: './functions/dist/server.js',
+    script: './functions/dist/apps/api.js',
     watch: false,
     exec_mode: 'cluster',
     instances: 'max',
@@ -32,7 +32,7 @@ module.exports = {
   }, {
     name: 'tracker',
     port: 9992,
-    script: './functions/dist/tracker.js',
+    script: './functions/dist/apps/tracker.js',
     watch: false,
     exec_mode: 'cluster',
     instances: 'max',
@@ -53,7 +53,7 @@ module.exports = {
         'npm install && ' +
         'export API_URL_BROWSER="' + process.env.PROD_APIURL + '" && ' +
         'npm run generate:api && ' +
-        'npm run build:apps && ' +
+        'npm run build:functions && ' +
         'npm run build',
     },
   },

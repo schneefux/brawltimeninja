@@ -5,11 +5,11 @@ const lambdaConfig = {
   target: 'node',
   devtool: false,
   entry: {
-    api: './apps/api.ts',
+    api: './lambdas/api.ts',
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './dist/lambdas'),
     libraryTarget: 'commonjs',
   },
   module: {
@@ -52,7 +52,7 @@ const serverConfig = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './dist/apps'),
   },
   module: {
     rules: [ {

@@ -9,7 +9,7 @@
     "dev:api": "cd functions/ && nodemon -e ts -x ts-node apps/api.ts",
     "dev:tracker": "cd functions/ && nodemon -e ts -x ts-node apps/tracker.ts",
     "build": "nuxt build",
-    "build:apps": "cd functions/ && webpack --mode production --config webpack.config.js",
+    "build:functions": "cd functions/ && webpack --mode production --config webpack.config.js",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "generate:api": "cd functions/ && ts-node generate.ts",
