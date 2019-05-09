@@ -82,6 +82,7 @@
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.id"
           :to="playerToRoute(player)"
+          rel="nofollow"
           class="no-underline ml-2 text-secondary border-primary border-b-2"
         >
           {{ player.name }}
