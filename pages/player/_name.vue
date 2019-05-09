@@ -127,6 +127,16 @@
       </div>
     </div>
 
+    <div class="section">
+      <adsense
+        v-show="ads"
+        root-class="w-full mt-6 mx-auto"
+        ins-class="h-32"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1752268168"
+      />
+    </div>
+
     <div class="section-heading">
       <h2>Brawlers</h2>
     </div>
