@@ -4,7 +4,10 @@
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
     <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky pin-t md:static">
-      <nuxt-link to="/" class="no-underline flex-no-shrink font-semibold text-xl text-white tracking-tight">
+      <nuxt-link
+        :to="localePath('index')"
+        class="no-underline flex-no-shrink font-semibold text-xl text-white tracking-tight"
+      >
         Brawlstars Time Ninja
       </nuxt-link>
 
@@ -26,7 +29,7 @@
       >
         <div class="text-lg capitalize font-medium">
           <nuxt-link
-            to="/"
+            :to="localePath('index')"
             class="md:hidden block mt-4 no-underline text-primary-lighter"
           >
             Home
@@ -45,6 +48,24 @@
           >
             Privacy
           </nuxt-link>
+          <details
+            ref="localeDropdown"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-0 text-primary-lighter"
+          >
+            <summary class="w-4 md:ml-4">
+              {{ locale.emoji }}
+            </summary>
+            <div class="absolute -ml-4 md:ml-0 mt-1 leading-normal bg-primary-dark">
+              <nuxt-link
+                v-for="locale in locales"
+                :key="locale.code"
+                :to="switchLocalePath(locale.code)"
+                class="block mx-4 no-underline text-primary-lighter"
+              >
+                {{ locale.emoji }}
+              </nuxt-link>
+            </div>
+          </details>
         </div>
       </div>
     </nav>
@@ -70,6 +91,12 @@ export default {
     }
   },
   computed: {
+    locale() {
+      return this.$i18n.locales.filter(({ code }) => code === this.$i18n.locale)[0]
+    },
+    locales() {
+      return this.$i18n.locales.filter(locale => locale !== this.locale)
+    },
     topics() {
       return Object.keys(this.blog)
         .map(topic => topic.replace('_', ' '))
@@ -94,6 +121,7 @@ export default {
   watch: {
     '$route'() {
       this.menuOpen = false
+      this.$refs.localeDropdown.removeAttribute('open')
     },
   },
   created() {
@@ -109,8 +137,16 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .bg-top-y {
   background-position-y: top;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
 }
 </style>

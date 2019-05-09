@@ -11,7 +11,7 @@
     </h3>
     <p class="mt-4">
       <nuxt-link
-        to="/"
+        :to="localePath('index')"
         class="no-underline text-secondary border-primary border-b-2"
       >
         Return to home

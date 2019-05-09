@@ -47,7 +47,22 @@ export default {
 
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    ['nuxt-i18n', {
+      seo: false,
+      locales: [{
+        code: 'en',
+        emoji: '🇬🇧',
+      }, {
+        code: 'fr',
+        emoji: '🇫🇷',
+      }],
+      defaultLocale: 'en',
+      vueI18nLoader: true,
+      vueI18n: {
+        fallbackLocale: 'en',
+      }
+    }],
   ],
 
   router: {
@@ -85,6 +100,12 @@ export default {
           })
         )
       }
+
+      config.module.rules.push({
+        resourceQuery: /blockType=i18n/,
+        type: 'javascript/auto',
+        loader: ['@kazupon/vue-i18n-loader', 'yaml-loader'],
+      })
     },
     extractCSS: true,
     postcss: {

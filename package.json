@@ -33,6 +33,7 @@
     "mysql2": "^1.6.5",
     "node-fetch": "^2.3.0",
     "nuxt": "^2.6.1",
+    "nuxt-i18n": "^5.12.1",
     "tiny-glob": "^0.2.6",
     "typescript": "^3.4.1",
     "vue-analytics": "^5.16.4",
@@ -79,6 +80,7 @@
     "ts-jest": "^24.0.1",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.0.3",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.0",
+    "yaml-loader": "^0.5.0"
   }
 }

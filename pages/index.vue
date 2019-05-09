@@ -1,3 +1,18 @@
+<i18n>
+en:
+  title: How much time on Brawlstars?
+  description: See how much you play, statistics for your Brawlers and more.
+  enter-tag: Enter your Tag
+  searching: Searching...
+  need-help: Need help?
+  suggested-profiles: "Or check one of these profiles:"
+  recent-profiles: "Recently viewed:"
+  error:
+    tag-invalid: This is not a tag
+    tag-notfound: This tag does not exist
+    api-unavailable: Could not communicate with the Brawlstars API, try again later
+</i18n>
+
 <template>
   <div class="flex flex-col items-center">
     <img
@@ -6,11 +21,11 @@
     >
 
     <div class="mt-10 lg:mt-6 text-center font-sans mx-2">
-      <h1>How much time on Brawlstars?</h1>
+      <h1>{{ $t('title') }}</h1>
     </div>
 
     <p class="mt-3 text-center text-lg mx-2">
-      See how much you play, statistics for your Brawlers and more.
+      {{ $t('description') }}
     </p>
 
     <div class="mt-4 mx-4">
@@ -22,7 +37,7 @@
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
             <input
               v-model="tag"
-              placeholder="Enter your Tag"
+              :placeholder="$t('enter-tag')"
               type="text"
               class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
             >
@@ -37,7 +52,7 @@
           v-if="loading"
           class="mt-2 text-red-lighter"
         >
-          Searching…
+          {{ $t('searching') }}
         </p>
         <p
           v-if="error"
@@ -54,7 +69,7 @@
         class="mx-6"
       >
         <summary @click="loadHelpVideo = true">
-          Need help?
+          {{ $t('need-help') }}
         </summary>
         <iframe
           v-if="loadHelpVideo"
@@ -71,17 +86,17 @@
     <div class="my-4 text-center max-w-sm">
       <p class="text-grey">
         <span v-show="lastPlayers.length === 0">
-          Or check one of these profiles:
+          {{ $t('suggested-profiles') }}
         </span>
         <span v-show="lastPlayers.length > 0">
-          Recently viewed:
+          {{ $t('recent-profiles') }}
         </span>
       </p>
       <p class="mt-2 mx-auto">
         <nuxt-link
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.id"
-          :to="playerToRoute(player)"
+          :to="localePath(playerToRoute(player))"
           rel="nofollow"
           class="no-underline ml-2 text-secondary border-primary border-b-2"
         >
@@ -183,7 +198,7 @@ export default {
 
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.$ga.event('player', 'search', 'error_invalid')
-        this.error = 'This is not a tag'
+        this.error = this.$t('error.tag-invalid')
 
         this.invalidTagAttempts++
         if (this.invalidTagAttempts === 2) {
@@ -203,10 +218,10 @@ export default {
       } catch (error) {
         if (error.response.status === 404) {
           this.$ga.event('player', 'search', 'error_notfound')
-          this.error = 'This tag does not exist'
+          this.error = this.$t('error.tag-notfound')
         } else {
           this.$ga.event('player', 'search', 'error_api')
-          this.error = 'Could not communicate with the Brawlstars API, try again later'
+          this.error = this.$t('error.api-unavailable')
         }
         return
       } finally {
@@ -214,7 +229,7 @@ export default {
       }
 
       this.$ga.event('player', 'search', 'success')
-      this.$router.push(this.playerRoute)
+      this.$router.push(this.localePath(this.playerRoute))
     },
     ...mapMutations({
       setPlayerId: 'setPlayerId',
