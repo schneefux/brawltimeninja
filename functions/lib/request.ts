@@ -91,7 +91,6 @@ export function post<T>(
       agent,
       compress: true,
     }).then(response => {
-      console.log(response)
       if (!response.ok) {
         throw {
           status: response.status,
