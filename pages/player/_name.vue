@@ -50,7 +50,7 @@
             <div class="" style="margin-top: -0.125em">
               [
             </div>
-            <div class="mx-2 text-primary-light font-bold">
+            <div class="mx-2 text-primary-light font-bold text-center">
               {{ player.clubName }}
             </div>
             <div class="" style="margin-top: -0.125em">
