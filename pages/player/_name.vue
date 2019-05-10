@@ -316,7 +316,7 @@ export default {
   mounted() {
     const playerHours = this.player.hoursSpent
     const animationDuration = 5000
-    const frameDuration = 15
+    const frameDuration = 50
     const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
     this.hoursSpent = 0
