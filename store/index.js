@@ -80,7 +80,7 @@ export const actions = {
     commit('setPlayer', player)
     commit('addLastPlayer', player)
   },
-  async loadCurrentEvents({ state, commit }) {
+  async loadCurrentEvents({ state, commit, $ga }) {
     if (state.currentEventsLoaded) {
       return
     }
@@ -90,6 +90,7 @@ export const actions = {
       commit('setCurrentEvents', currentEvents)
     } catch (error) {
       // not critical, ignore
+      $ga.exception('cannot get events: ' + error.message)
       console.error('cannot get current events:', error.message)
     }
   },

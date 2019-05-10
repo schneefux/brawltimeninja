@@ -220,6 +220,7 @@ export default {
           this.$ga.event('player', 'search', 'error_notfound')
           this.error = this.$t('error.tag-notfound')
         } else {
+          this.$ga.exception('cannot get player: ' + error.message)
           this.$ga.event('player', 'search', 'error_api')
           this.error = this.$t('error.api-unavailable')
         }
