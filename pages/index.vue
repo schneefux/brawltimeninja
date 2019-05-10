@@ -161,7 +161,7 @@ export default {
       return new RegExp('[0289PYLQGRJCUV]{3,}')
     },
     cleanedTag() {
-      return this.tag
+      return (this.tag || '')
         .replace('#', '')
         .toUpperCase()
     },
