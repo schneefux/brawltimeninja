@@ -180,7 +180,7 @@
         <div
           v-for="(hero, heroId) in player.heroes"
           :key="heroId"
-          class="card-wrapper w-full md:w-auto"
+          class="card-wrapper w-full md:w-auto mx-auto"
         >
           <div class="card bg-primary-dark flex h-full">
             <div class="flex flex-col w-32 justify-between">
