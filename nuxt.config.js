@@ -71,6 +71,10 @@ export default {
   axios: {
   },
 
+  env: {
+    branch: process.env.BRANCH || '',
+  },
+
   build: {
     extend(config, ctx) {
       // Run ESLint on save
