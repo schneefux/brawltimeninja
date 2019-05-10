@@ -48,7 +48,9 @@
           >
             Privacy
           </nuxt-link>
+
           <details
+            v-show="false"
             ref="localeDropdown"
             class="block md:inline-block mt-4 md:mt-0 md:ml-0 text-primary-lighter"
           >
