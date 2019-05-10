@@ -10,6 +10,7 @@ const router = new Router();
 router.post('/track', async (ctx, next) => {
   // fire and forget - do not await
   service.storeBrawlstarsRecord(<Player> ((<any> ctx.request).body));
+  ctx.body = {};
   await next();
 });
 
