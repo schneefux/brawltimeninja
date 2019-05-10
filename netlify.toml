@@ -1,5 +1,5 @@
 [build]
-  command = "export TRACKER_URL='https://api01.brawlstarstime.ninja/tracker' && export API_PREFIX=/.netlify/functions/ && export API_URL_BROWSER=$API_PREFIX && npm run generate:api && npm run build:functions && npm run generate"
+  command = "export TRACKER_URL='https://api01.brawlstarstime.ninja/track' && export API_PREFIX=/.netlify/functions/ && export API_URL_BROWSER=$API_PREFIX && npm run generate:api && npm run build:functions && npm run generate"
   publish = "dist"
   functions = "functions/dist/lambdas"
 
