@@ -49,15 +49,16 @@ module.exports = {
       ref: 'origin/dev',
       repo: 'https://github.com/schneefux/brawlstarstimeninja',
       path: process.env.PROD_PATH,
-      'post-setup': 'echo "' + process.env.PROD_DATABASE_URI + '" >> .env && ' +
-        'echo "' + process.env.PROD_BRAWLSTARS_TOKEN + '" >> .env',
+      'post-setup':
+        'echo DATABASE_URI=\'' + process.env.PROD_DATABASE_URI + '\' >> .env && ' +
+        'echo BRAWLSTARS_TOKEN=\'' + process.env.PROD_BRAWLSTARS_TOKEN + '\' >> .env',
       'post-deploy':
         'npm install && ' +
-        'export API_URL_BROWSER="' + process.env.PROD_APIURL + '" && ' +
+        'export API_URL_BROWSER=\'' + process.env.PROD_APIURL + '\' && ' +
         'npm run generate:api && ' +
         'npm run build:functions && ' +
         'npm run build && ' +
-        'pm2 startOrRestart ecosystem.json --env production',
+        'pm2 startOrRestart ecosystem.config.js --env production',
     },
   },
 }
