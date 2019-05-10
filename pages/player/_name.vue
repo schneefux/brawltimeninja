@@ -126,9 +126,9 @@
         />
         <div
           v-show="!ads"
-          class="w-full md:w-1/2 mt-3 mx-auto text-center leading-normal"
+          class="w-full md:w-1/2 mt-3 mx-auto text-center leading-tight"
         >
-          <div class="md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
+          <div class="flex flex-wrap justify-center items-center md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
             <p class="text-xl italic">
               This site runs on Gems...
             </p>
