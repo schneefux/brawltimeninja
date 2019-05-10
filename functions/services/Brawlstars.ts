@@ -112,7 +112,7 @@ export default class BrawlstarsService {
       };
     }
 
-    const hoursSpent = player.totalExp / 200; // 145h for 30300 XP as measured by @schneefux
+    const hoursSpent = player.totalExp / 220; // 145h for 30300 XP as measured by @schneefux
 
     const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
       .map((o) => o[prop])
