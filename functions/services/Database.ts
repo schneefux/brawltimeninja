@@ -79,7 +79,7 @@ export default class DatabaseService {
 
         table.timestamp('timestamp').notNullable();
         table.string('name').notNullable();
-        table.string('player_tag').references('player.tag');
+        table.string('player_tag');
 
         table.integer('trophies').unsigned().notNullable();
         table.integer('power').unsigned().notNullable();
