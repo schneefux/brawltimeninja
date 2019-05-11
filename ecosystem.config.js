@@ -46,7 +46,7 @@ module.exports = {
       key: process.env.PROD_SSHKEY,
       user: process.env.PROD_USER,
       host: process.env.PROD_HOST,
-      ref: 'origin/dev',
+      ref: 'origin/master',
       repo: 'https://github.com/schneefux/brawlstarstimeninja',
       path: process.env.PROD_PATH,
       'post-setup':
