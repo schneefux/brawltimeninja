@@ -10,6 +10,7 @@ en:
   error:
     tag-invalid: This is not a tag
     tag-notfound: This tag does not exist
+    api-timeout: Either there was an error with the Brawlstars API, or this tag does not exist. Check it and try again
     api-unavailable: Could not communicate with the Brawlstars API, try again later
 </i18n>
 
@@ -220,6 +221,9 @@ export default {
         if (error.response.status === 404) {
           this.$ga.event('player', 'search', 'error_notfound')
           this.error = this.$t('error.tag-notfound')
+        } else if (error.response.status === 429) {
+          this.$ga.event('player', 'search', 'error_timeout')
+          this.error = this.$t('error.api-timeout')
         } else {
           this.$ga.exception('cannot get player: ' + error.message)
           this.$ga.event('player', 'search', 'error_api')
