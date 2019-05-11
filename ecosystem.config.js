@@ -9,7 +9,7 @@ module.exports = {
     args: 'start',
     cwd: './',
     watch: false,
-    exec_mode: 'cluster',
+    exec_mode: 'cluster_mode',
     instances: 'max',
     env: {
       'NODE_ENV': 'production',
@@ -21,7 +21,7 @@ module.exports = {
     port: 9991,
     script: './functions/dist/apps/api.js',
     watch: false,
-    exec_mode: 'cluster',
+    exec_mode: 'cluster_mode',
     instances: 'max',
     env: {
       'NODE_ENV': 'production',
@@ -34,7 +34,7 @@ module.exports = {
     port: 9992,
     script: './functions/dist/apps/tracker.js',
     watch: false,
-    exec_mode: 'cluster',
+    exec_mode: 'cluster_mode',
     instances: 'max',
     env: {
       'NODE_ENV': 'production',
@@ -58,7 +58,7 @@ module.exports = {
         'npm run generate:api && ' +
         'npm run build:functions && ' +
         'npm run build && ' +
-        'pm2 startOrRestart ecosystem.config.js --env production',
+        'pm2 startOrRestart ecosystem.config.js',
     },
   },
 }
