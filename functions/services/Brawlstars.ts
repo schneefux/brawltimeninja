@@ -49,7 +49,7 @@ export default class BrawlstarsService {
     );
 
     if (trackerUrl != '') {
-      await post<null>(trackerUrl, player).catch(console.error);
+      await post<null>(trackerUrl + '/track', player).catch(console.error);
     }
 
     if (logStats) {

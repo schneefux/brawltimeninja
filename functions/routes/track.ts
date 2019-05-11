@@ -7,7 +7,12 @@ const service = new DatabaseService();
 
 const router = new Router();
 
-router.post('/track', async (ctx, next) => {
+router.get('/tracker/status', async (ctx, next) => {
+  ctx.body = ({ 'status': 'ok' });
+  await next();
+});
+
+router.post('/tracker/track', async (ctx, next) => {
   await service.storeBrawlstarsRecord(<Player> ((<any> ctx.request).body));
   ctx.body = {};
   await next();

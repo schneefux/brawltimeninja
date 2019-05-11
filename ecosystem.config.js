@@ -27,7 +27,7 @@ module.exports = {
       'NODE_ENV': 'production',
       'CACHE_PATH': process.env.CACHE_PATH || 'cache/',
       'BRAWLSTARS_TOKEN': process.env.BRAWLSTARS_TOKEN,
-      'TRACKER_URL': 'http://localhost:9992/track',
+      'TRACKER_URL': 'http://localhost:9992/tracker',
     },
   }, {
     name: 'tracker',
