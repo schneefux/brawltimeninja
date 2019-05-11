@@ -1,5 +1,6 @@
 import Knex from 'knex';
 import { Player } from '~/model/Brawlstars';
+import { LeaderboardEntry } from '~/model/Leaderboard';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -50,6 +51,16 @@ export default class DatabaseService {
     ));
 
     console.log(player.tag, 'added record');
+  }
+
+  public async getTopByExp(n: number) {
+    return await this.knex
+      .select('name', 'tag')
+      .max('total_exp as total_exp')
+      .from('player')
+      .groupBy('tag')
+      .orderBy('total_exp', 'desc')
+      .limit(n) as LeaderboardEntry[];
   }
 
   public async migrate() {

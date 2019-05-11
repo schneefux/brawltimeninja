@@ -18,4 +18,9 @@ router.post('/tracker/track', async (ctx, next) => {
   await next();
 });
 
+router.get('/tracker/top/exp', async (ctx, next) => {
+  ctx.body = await service.getTopByExp(50);
+  await next();
+});
+
 export default router.routes();

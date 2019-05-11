@@ -1,10 +1,15 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/Brawlstars';
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
+import { LeaderboardEntry } from '~/model/Leaderboard';
 
 const logStats = !!process.env.LOG_STATS;
 const trackerUrl = process.env.TRACKER_URL || '';
 const token = process.env.BRAWLSTARS_TOKEN || '';
+
+function xpToHours(xp: number) {
+  return xp / 220; // 145h for 30300 XP as measured by @schneefux
+}
 
 export default class BrawlstarsService {
   private readonly apiBase = 'https://brawlapi.cf/api/' // 'https://api.brawlapi.cf/v1/';
@@ -38,6 +43,25 @@ export default class BrawlstarsService {
 
     const events = response.current;
     return events.map(({ mapName }) => mapName);
+  }
+
+  public async getHoursLeaderboard() {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    const response = await request<LeaderboardEntry[]>(
+      '/top/exp',
+      trackerUrl,
+      {},
+      {}
+    );
+
+    return response.map(entry => ({
+      name: entry.name,
+      tag: entry.tag,
+      hours: xpToHours(entry.total_exp),
+    }));
   }
 
   public async getPlayerStatistics(tag: string) {
@@ -112,7 +136,7 @@ export default class BrawlstarsService {
       };
     }
 
-    const hoursSpent = player.totalExp / 220; // 145h for 30300 XP as measured by @schneefux
+    const hoursSpent = xpToHours(player.totalExp);
 
     const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
       .map((o) => o[prop])
