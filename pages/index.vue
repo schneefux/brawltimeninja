@@ -162,6 +162,7 @@ export default {
     },
     cleanedTag() {
       return (this.tag || '')
+        .trim()
         .replace('#', '')
         .toUpperCase()
     },
