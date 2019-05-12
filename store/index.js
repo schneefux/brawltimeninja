@@ -13,6 +13,8 @@ export const state = () => ({
   playerLoaded: false,
   currentEvents: [],
   currentEventsLoaded: false,
+  leaderboard: [],
+  leaderboardLoaded: false,
 })
 
 export const getters = {
@@ -55,6 +57,10 @@ export const mutations = {
     state.currentEvents = currentEvents
     state.currentEventsLoaded = true
   },
+  setLeaderboard(state, leaderboard) {
+    state.leaderboard = leaderboard
+    state.leaderboardLoaded = true
+  },
 }
 
 export const actions = {
@@ -92,6 +98,20 @@ export const actions = {
       // not critical, ignore
       $ga.exception('cannot get events: ' + error.message)
       console.error('cannot get current events:', error.message)
+    }
+  },
+  async loadLeaderboard({ state, commit, $ga }) {
+    if (state.leaderboardLoaded) {
+      return
+    }
+
+    try {
+      const leaderboard = await this.$axios.$get('/api/leaderboard/hours')
+      commit('setLeaderboard', leaderboard)
+    } catch (error) {
+      // not critical, ignore
+      $ga.exception('cannot get leaderboard: ' + error.message)
+      console.error('cannot get leaderboard:', error.message)
     }
   },
 }

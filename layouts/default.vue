@@ -35,6 +35,12 @@
             Home
           </nuxt-link>
           <nuxt-link
+            to="/leaderboard"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+          >
+            Leaderboard
+          </nuxt-link>
+          <nuxt-link
             v-for="topic in topics"
             :key="topic"
             :to="`/blog/${topic}`"

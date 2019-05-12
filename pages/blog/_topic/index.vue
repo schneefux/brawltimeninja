@@ -17,10 +17,10 @@
       <article class="bg-grey-lighter py-8 px-6 my-8 text-black">
         <nuxt-link
           :to="`/blog/${topic}/${post.id}`"
-          class="no-underline"
+          class="link-light"
         >
           <h2>
-            <span class="text-primary-dark">{{ post.title }}</span>
+            <span class="">{{ post.title }}</span>
             <span class="text-sm block mt-1 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
           </h2>
         </nuxt-link>
