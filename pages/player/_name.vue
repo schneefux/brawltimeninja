@@ -55,12 +55,12 @@
           v-if="player.clubName != ''"
           class="bigstat-container"
         >
-          <div class="bigstat-left text-4xl">
+          <div class="bigstat-left text-5vw md:text-4xl!">
             <div class="" style="margin-top: -0.125em">
               [
             </div>
             <div class="mx-2 text-primary-light font-bold text-center">
-              {{ player.clubName }}
+              {{ player.clubName.replace(/ /g, '&nbsp;') }}
             </div>
             <div class="" style="margin-top: -0.125em">
               ]
@@ -390,6 +390,16 @@ export default {
 
 .bigstat-left {
   @apply w-1/2 text-right flex justify-end items-center mr-2;
+}
+
+.text-5vw {
+  font-size: 5vw;
+}
+
+@responsive {
+  .text-4xl\! {
+    @apply text-4xl;
+  }
 }
 
 .bigstat-right {
