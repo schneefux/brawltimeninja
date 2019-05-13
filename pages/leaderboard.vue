@@ -13,6 +13,9 @@
       />
 
       <table class="mt-8 mx-auto w-64 max-w-full table">
+        <caption class="mb-1">
+          Top {{ leaderboard.length }} players, updated hourly
+        </caption>
         <thead>
           <tr>
             <th scope="col" class="text-right">
