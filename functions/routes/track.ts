@@ -19,7 +19,7 @@ router.post('/tracker/track', async (ctx, next) => {
 });
 
 router.get('/tracker/top/exp', async (ctx, next) => {
-  ctx.body = await service.getTopByExp(50);
+  ctx.body = await service.getTopByExp(100);
   await next();
 });
 
