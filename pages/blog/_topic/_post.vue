@@ -88,11 +88,11 @@ export default {
   @apply leading-normal;
 }
 
-.markdown h2 {
+.markdown /deep/ h2 {
   @apply mt-3 mb-2;
 }
 
-.markdown h3 {
+.markdown /deep/ h3 {
   @apply mt-2 mb-1;
 }
 </style>
