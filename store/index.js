@@ -24,6 +24,15 @@ export const getters = {
     const matchesAnyEvent = ({ map }) => events.includes(map)
     return guides.filter(matchesAnyEvent)
   },
+  playerRank(state) {
+    if (!state.playerLoaded || !state.leaderboardLoaded) {
+      return 0
+    }
+
+    return state.leaderboard
+      .map(({ tag }) => tag)
+      .indexOf(state.player.id) + 1
+  },
 }
 
 export const mutations = {

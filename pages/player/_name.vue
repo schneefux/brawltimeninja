@@ -12,13 +12,22 @@
 
     <div class="section leading-tight text-center">
       <div class="section items-center justify-center flex flex-wrap">
-        <div class="mx-auto md:mx-0">
-          <p class="text-5xl text-secondary font-bold">
-            {{ Math.floor(hoursSpent) }}
-          </p>
-          <p class="text-3xl text-white">
-            hours spent
-          </p>
+        <div class="mx-auto md:mx-0 flex">
+          <div>
+            <p class="text-5xl text-secondary font-bold">
+              {{ Math.floor(hoursSpent) }}
+            </p>
+            <p class="text-3xl text-white">
+              hours spent
+            </p>
+          </div>
+          <nuxt-link
+            v-if="rank !== 0"
+            to="/leaderboard"
+            class="no-underline text-4xl -ml-4 text-primary-light font-bold"
+          >
+            #{{ rank }}
+          </nuxt-link>
         </div>
 
         <p class="w-full md:w-auto text-xl my-4 mx-auto">
@@ -246,7 +255,7 @@
 
 <script>
 import Blogroll from '~/components/blogroll'
-import { mapState } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'ProfilePage',
@@ -306,12 +315,19 @@ export default {
       player: state => state.player,
       blog: state => state.blog,
     }),
+    ...mapGetters({
+      rank: 'playerRank',
+    }),
   },
   async fetch({ store, params }) {
     store.commit('setPlayerId', {
       id: params.name,
     })
     await store.dispatch('loadPlayer')
+
+    if (!process.static) {
+      await store.dispatch('loadLeaderboard')
+    }
   },
   mounted() {
     const playerHours = this.player.hoursSpent
@@ -339,6 +355,15 @@ export default {
         global.window.addEventListener('load', checkAdblock)
       }
     }
+
+    if (process.static) {
+      this.loadLeaderboard()
+    }
+  },
+  methods: {
+    ...mapActions({
+      loadLeaderboard: 'loadLeaderboard',
+    }),
   },
 }
 </script>
