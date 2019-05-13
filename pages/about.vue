@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 h1 {
   @apply mt-4 mb-2;
 }

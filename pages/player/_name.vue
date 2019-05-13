@@ -368,7 +368,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .section {
   @apply mt-4;
 }
