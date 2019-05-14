@@ -9,7 +9,6 @@
         <div class="card-content">
           <nuxt-link
             :to="`/blog/${topic}/${post.id}`"
-            class="no-underline"
           >
             <img
               v-if="post.mode != undefined"

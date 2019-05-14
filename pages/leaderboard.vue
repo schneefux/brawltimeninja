@@ -1,7 +1,7 @@
 <template>
   <div class="w-120 max-w-full mx-auto py-4 px-2">
     <div class="bg-grey-lighter py-8 px-6 my-8 text-black">
-      <h1 class="md:text-center mt-2">
+      <h1 class="text-4xl md:text-center mt-2 font-semibold">
         Leaderboard
       </h1>
 

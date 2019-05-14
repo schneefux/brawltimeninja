@@ -1,7 +1,8 @@
 <template>
   <div class="container mx-auto p-4">
     <div class="section-heading">
-      <h1>Statistics for
+      <h1 class="text-4xl font-semibold">
+        Statistics for
         <span class="text-secondary">{{ player.name }}</span>
         <span
           v-if="player.id == 'V8LLPPC'"
@@ -24,7 +25,7 @@
           <nuxt-link
             v-if="rank !== 0"
             to="/leaderboard"
-            class="no-underline text-4xl -ml-4 text-primary-light font-bold"
+            class="text-4xl -ml-4 text-primary-light font-bold"
           >
             #{{ rank }}
           </nuxt-link>
@@ -40,7 +41,7 @@
             :key="statName"
             class="mx-auto px-2 my-3"
           >
-            <p class="text-3xl text-secondary font-bold">
+            <p class="text-3xl text-secondary font-semibold">
               {{ Math.floor(stat.value) }}
             </p>
             <p class="text-2xl text-grey-lighter">
@@ -55,11 +56,11 @@
           v-if="player.clubName != ''"
           class="bigstat-container"
         >
-          <div class="bigstat-left text-5vw md:text-4xl!">
+          <div class="bigstat-left text-6vw md:text-4xl!">
             <div class="" style="margin-top: -0.125em">
               [
             </div>
-            <div class="mx-2 text-primary-light font-bold text-center">
+            <div class="mx-2 text-primary-light font-semibold text-center">
               {{ player.clubName.replace(/ /g, '&nbsp;') }}
             </div>
             <div class="" style="margin-top: -0.125em">
@@ -92,7 +93,9 @@
     </div>
 
     <div class="section-heading">
-      <h2>Game Modes</h2>
+      <h2 class="text-2xl font-semibold">
+        Game Modes
+      </h2>
     </div>
 
     <div class="section">
@@ -162,17 +165,19 @@
     </div>
 
     <div class="section-heading">
-      <h2>Brawlers</h2>
+      <h2 class="text-2xl font-semibold">
+        Brawlers
+      </h2>
     </div>
 
     <div class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
       <p
         v-for="(stat, heroName) in player.heroStats"
         :key="heroName"
-        class="md:text-center text-xl font-semibold my-1 w-full md:w-auto md:mx-auto"
+        class="md:text-center text-xl my-1 w-full md:w-auto md:mx-auto"
       >
-        <span class="md:block md:text-2xl">{{ stat.label }}</span>
-        <span class="md:block float-right md:float-none text-primary-lighter md:mt-1">{{ stat.value }}</span>
+        <span class="md:block md:text-2xl font-semibold">{{ stat.label }}</span>
+        <span class="md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</span>
       </p>
     </div>
 
@@ -238,7 +243,9 @@
       v-show="relevantGuides.length > 0"
       class="section-heading"
     >
-      <h2>Recommended for you</h2>
+      <h2 class="text-2xl font-semibold">
+        Recommended for you
+      </h2>
     </div>
 
     <div
@@ -392,8 +399,8 @@ export default {
   @apply w-1/2 text-right flex justify-end items-center mr-2;
 }
 
-.text-5vw {
-  font-size: 5vw;
+.text-6vw {
+  font-size: 6vw;
 }
 
 @responsive {

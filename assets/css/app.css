@@ -28,7 +28,7 @@
 }
 
 .card-prop-value {
-  @apply font-medium;
+  @apply font-semibold;
 }
 
 .section-heading {
@@ -36,9 +36,9 @@
 }
 
 .link {
-  @apply no-underline text-secondary border-primary border-b-2;
+  @apply text-secondary border-primary border-b-2;
 }
 
 .link-light {
-  @apply no-underline text-primary-dark;
+  @apply text-primary-dark;
 }

@@ -64,10 +64,10 @@ export default {
 
 <style scoped>
 h1 {
-  @apply mt-4 mb-2;
+  @apply text-3xl mt-4 mb-2;
 }
 
 h2 {
-  @apply mt-3 mb-1;
+  @apply text-2xl mt-3 mb-1;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto py-4 px-2">
-    <h1 class="mx-2 mt-2 capitalize">
+    <h1 class="text-4xl font-semibold mx-2 mt-2 capitalize">
       {{ topic }}
     </h1>
     <div
@@ -19,7 +19,7 @@
           :to="`/blog/${topic}/${post.id}`"
           class="link-light"
         >
-          <h2>
+          <h2 class="text-2xl font-semibold">
             <span class="">{{ post.title }}</span>
             <span class="text-sm block mt-1 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
           </h2>

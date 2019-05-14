@@ -3,10 +3,10 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky pin-t md:static">
+    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky top-0 md:static">
       <nuxt-link
         :to="localePath('index')"
-        class="no-underline flex-no-shrink font-semibold text-xl text-white tracking-tight"
+        class="flex-shrink-0 font-semibold text-xl text-white tracking-tighter"
       >
         Brawlstars Time Ninja
       </nuxt-link>
@@ -30,13 +30,13 @@
         <div class="text-lg capitalize font-medium">
           <nuxt-link
             :to="localePath('index')"
-            class="md:hidden block mt-4 no-underline text-primary-lighter"
+            class="md:hidden block mt-4 text-primary-lighter"
           >
             Home
           </nuxt-link>
           <nuxt-link
             to="/leaderboard"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
           >
             Leaderboard
           </nuxt-link>
@@ -44,13 +44,13 @@
             v-for="topic in topics"
             :key="topic"
             :to="`/blog/${topic}`"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
           >
             {{ topic }}
           </nuxt-link>
           <nuxt-link
             to="/about"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 no-underline text-primary-lighter"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
           >
             Privacy
           </nuxt-link>
@@ -65,12 +65,12 @@
             </summary>
             <div class="absolute -ml-4 md:ml-0 mt-1 leading-normal bg-primary-dark">
               <nuxt-link
-                v-for="locale in locales"
-                :key="locale.code"
-                :to="switchLocalePath(locale.code)"
-                class="block mx-4 no-underline text-primary-lighter"
+                v-for="l in locales"
+                :key="l.code"
+                :to="switchLocalePath(l.code)"
+                class="block mx-4 text-primary-lighter"
               >
-                {{ locale.emoji }}
+                {{ l.emoji }}
               </nuxt-link>
             </div>
           </details>
@@ -121,11 +121,6 @@ export default {
       blog: state => state.blog,
     }),
   },
-  methods: {
-    installed() {
-      this.$ga.event('app', 'install')
-    },
-  },
   watch: {
     '$route'() {
       this.menuOpen = false
@@ -141,6 +136,11 @@ export default {
     if (global.window !== undefined) {
       global.window.addEventListener('appinstalled', this.installed)
     }
+  },
+  methods: {
+    installed() {
+      this.$ga.event('app', 'install')
+    },
   },
 }
 </script>

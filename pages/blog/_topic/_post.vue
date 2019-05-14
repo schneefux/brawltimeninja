@@ -6,7 +6,7 @@
         :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
         class="h-48 bg-cover bg-center mb-6"
       />
-      <h1>
+      <h1 class="text-4xl font-semibold">
         <span class="text-primary-dark">{{ post.title }}</span>
         <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
       </h1>
@@ -23,7 +23,7 @@
           style="background-color: rgba(0, 0, 0, 0.75)"
         >
           <button
-            class="absolute pin-t pin-r mr-10 mt-4 text-white text-5xl"
+            class="absolute top-0 right-0 mr-10 mt-4 text-white text-5xl"
             @click="lightboxOpen = false"
           >
             &times;
@@ -89,10 +89,10 @@ export default {
 }
 
 .markdown /deep/ h2 {
-  @apply mt-3 mb-2;
+  @apply text-3xl mt-3 mb-2;
 }
 
 .markdown /deep/ h3 {
-  @apply mt-2 mb-1;
+  @apply text-2xl mt-2 mb-1;
 }
 </style>

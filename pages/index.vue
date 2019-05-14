@@ -21,8 +21,10 @@ en:
       class="mt-16 lg:mt-8 h-32 md:h-48 lg:h-64"
     >
 
-    <div class="mt-10 lg:mt-6 text-center font-sans mx-2">
-      <h1>{{ $t('title') }}</h1>
+    <div class="mt-10 lg:mt-6 text-center mx-2">
+      <h1 class="text-4xl font-bold">
+        {{ $t('title') }}
+      </h1>
     </div>
 
     <p class="mt-3 text-center text-lg mx-2">
@@ -40,11 +42,11 @@ en:
               v-model="tag"
               :placeholder="$t('enter-tag')"
               type="text"
-              class="w-40 md:w-48 tracking-wide font-black appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
+              class="w-40 md:w-48 tracking-wider font-semibold appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
             >
             <input
               type="submit"
-              class="text-black font-semibold flex-no-shrink bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
+              class="text-black font-semibold flex-shrink-0 bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
               value="Search"
             >
           </div>
