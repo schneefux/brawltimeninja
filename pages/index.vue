@@ -167,6 +167,7 @@ export default {
       return (this.tag || '')
         .trim()
         .replace('#', '')
+        .replace(/O/g, '0')
         .toUpperCase()
     },
     randomHero() {
