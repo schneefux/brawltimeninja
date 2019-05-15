@@ -327,12 +327,34 @@ export default {
     }),
   },
   async fetch({ store, params }) {
-    store.commit('setPlayerTag', params.tag)
-    await store.dispatch('loadPlayer')
-
     if (!process.static) {
       await store.dispatch('loadLeaderboard')
     }
+  },
+  async validate({ store, params }) {
+    const { tag } = params
+    const tagRegex = RegExp(store.state.tagPattern)
+
+    if (!tagRegex.test(tag)) {
+      return false
+    }
+
+    store.commit('setPlayerTag', tag)
+
+    let lastError
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await store.dispatch('loadPlayer')
+        return true
+      } catch (error) {
+        if (error.response.status === 404) {
+          return false
+        }
+        lastError = error
+      }
+    }
+
+    throw lastError
   },
   mounted() {
     const playerHours = this.player.hoursSpent

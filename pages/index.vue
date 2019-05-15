@@ -161,7 +161,7 @@ export default {
       })
     },
     tagRegex() {
-      return new RegExp('[0289PYLQGRJCUV]{3,}')
+      return new RegExp(this.tagPattern)
     },
     cleanedTag() {
       return (this.tag || '')
@@ -180,6 +180,7 @@ export default {
       return players.slice(0, 3)
     },
     ...mapState({
+      tagPattern: state => state.tagPattern,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
     }),
