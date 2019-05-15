@@ -1,6 +1,7 @@
 import payload from './payload.json'
 
 export const state = () => ({
+  version: 1,
   // fill the store from the payload in static build
   blog: payload.blog,
   featuredPlayers: payload.featuredPlayers,
