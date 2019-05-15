@@ -6,7 +6,7 @@ export const state = () => ({
   featuredPlayers: payload.featuredPlayers,
   lastPlayers: [],
   player: {
-    id: '',
+    tag: '',
     modes: [],
     heroes: [],
   },
@@ -31,7 +31,7 @@ export const getters = {
 
     return state.leaderboard
       .map(({ tag }) => tag)
-      .indexOf(state.player.id) + 1
+      .indexOf(state.player.tag) + 1
   },
 }
 
@@ -42,12 +42,12 @@ export const mutations = {
   setFeaturedPlayers(state, featuredPlayers) {
     state.featuredPlayers = featuredPlayers
   },
-  setPlayerId(state, { id }) {
-    if (state.player.id === id) {
+  setPlayerTag(state, tag) {
+    if (state.player.tag === tag) {
       return
     }
 
-    this._vm.$set(state.player, 'id', id)
+    this._vm.$set(state.player, 'tag', tag)
     state.playerLoaded = false
   },
   setPlayer(state, player) {
@@ -55,7 +55,7 @@ export const mutations = {
     state.playerLoaded = true
   },
   addLastPlayer(state, player) {
-    if (state.lastPlayers.some(({ id }) => player.id === id)) {
+    if (state.lastPlayers.some(({ tag }) => player.tag === tag)) {
       return
     }
     const clone = obj => JSON.parse(JSON.stringify(obj))
@@ -91,7 +91,7 @@ export const actions = {
       return
     }
 
-    const player = await this.$axios.$get(`/api/player/${state.player.id}`)
+    const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
     commit('setPlayer', player)
     commit('addLastPlayer', player)
   },

@@ -30,7 +30,7 @@ export interface Hero {
 }
 
 export interface PlayerIdentifier {
-    id: string;
+    tag: string;
     name: string;
 }
 
@@ -41,7 +41,7 @@ export interface Player extends PlayerIdentifier {
     heroes: {
         [id: string]: Hero;
     };
-    heroStats?: {
+    heroStats: {
         [id: string]: PlayerStatistic;
     }
     modes: {

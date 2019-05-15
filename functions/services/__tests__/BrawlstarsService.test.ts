@@ -7,7 +7,7 @@ describe(`Test BrawlstarsService`, () => {
   const featuredPlayers = service.getFeaturedPlayers();
   featuredPlayers.forEach((featuredPlayer) => {
     it(`should return data for featured player ${featuredPlayer.name}`, async () => {
-      const data = await service.getPlayerStatistics(featuredPlayer.id);
+      const data = await service.getPlayerStatistics(featuredPlayer.tag);
       expect(data).not.toBeNull();
     });
   });

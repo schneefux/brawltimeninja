@@ -98,7 +98,7 @@ en:
       <p class="mt-2 mx-auto">
         <nuxt-link
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
-          :key="player.id"
+          :key="player.tag"
           :to="localePath(playerToRoute(player))"
           rel="nofollow"
           class="ml-2 link"
@@ -127,9 +127,9 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 function playerToRoute(player) {
   return {
-    name: 'player-name',
+    name: 'player-tag',
     params: {
-      name: player.id,
+      tag: player.tag,
     }
   }
 }
@@ -157,7 +157,7 @@ export default {
   computed: {
     playerRoute() {
       return playerToRoute({
-        id: this.cleanedTag,
+        tag: this.cleanedTag,
       })
     },
     tagRegex() {
@@ -167,8 +167,8 @@ export default {
       return (this.tag || '')
         .trim()
         .replace('#', '')
-        .replace(/O/g, '0')
         .toUpperCase()
+        .replace(/O/g, '0')
     },
     randomHero() {
       const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
@@ -216,9 +216,7 @@ export default {
 
       try {
         this.loading = true
-        this.setPlayerId({
-          id: this.cleanedTag,
-        })
+        this.setPlayerTag(this.cleanedTag)
         await this.loadPlayer()
       } catch (error) {
         if (error.response.status === 404) {
@@ -241,7 +239,7 @@ export default {
       this.$router.push(this.localePath(this.playerRoute))
     },
     ...mapMutations({
-      setPlayerId: 'setPlayerId',
+      setPlayerTag: 'setPlayerTag',
     }),
     ...mapActions({
       loadPlayer: 'loadPlayer',

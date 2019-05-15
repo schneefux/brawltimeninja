@@ -16,19 +16,19 @@ export default class BrawlstarsService {
 
   public getFeaturedPlayers() {
     return [ {
-      id: 'V8LLPPC',
+      tag: 'V8LLPPC',
       name: 'xXcuzMePlisThXx',
     }, {
-      id: '8PJRRG2C',
+      tag: '8PJRRG2C',
       name: 'TQ|GuilleVGX',
     }, {
-      id: 'V9QGJY9',
+      tag: 'V9QGJY9',
       name: 'Landi',
     }, {
-      id: '2L892GP',
+      tag: '2L892GP',
       name: 'YAPIMARU_YT',
     }, {
-      id: '2Y02L28',
+      tag: '2Y02L28',
       name: 'Keith ツ',
     } ];
   }
@@ -163,7 +163,7 @@ export default class BrawlstarsService {
     } as { [id: string]: PlayerStatistic };
 
     const data = {
-      id: player.tag,
+      tag: player.tag,
       name: player.name,
       hoursSpent,
       trophies: player.trophies,

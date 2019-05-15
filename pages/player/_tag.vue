@@ -5,7 +5,7 @@
         Statistics for
         <span class="text-secondary">{{ player.name }}</span>
         <span
-          v-if="player.id == 'V8LLPPC'"
+          v-if="player.tag == 'V8LLPPC'"
           class="align-top text-xs text-secondary-dark border-2 border-secondary-dark rounded-lg px-1 font-black"
         >DEV</span>
       </h1>
@@ -265,7 +265,7 @@ import Blogroll from '~/components/blogroll'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'ProfilePage',
+  name: 'PlayerProfile',
   components: {
     Blogroll,
   },
@@ -327,9 +327,7 @@ export default {
     }),
   },
   async fetch({ store, params }) {
-    store.commit('setPlayerId', {
-      id: params.name,
-    })
+    store.commit('setPlayerTag', params.tag)
     await store.dispatch('loadPlayer')
 
     if (!process.static) {
