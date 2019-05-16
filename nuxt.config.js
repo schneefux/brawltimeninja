@@ -27,7 +27,7 @@ export default {
 
   manifest: {
     name: 'Brawlstars Time Ninja',
-    short_name: 'Brawlstars Time',
+    short_name: 'Brawlstars Time Ninja',
     description: 'Check time spent on Brawlstars and player statistics',
     theme_color: '#3490dc', // primary
   },
