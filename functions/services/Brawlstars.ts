@@ -2,6 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/B
 import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
+import History from '~/model/History';
 
 const logStats = !!process.env.LOG_STATS;
 const trackerUrl = process.env.TRACKER_URL || '';
@@ -72,8 +73,19 @@ export default class BrawlstarsService {
       { 'Authorization': token }
     );
 
+    let history: History = { playerHistory: [], brawlerHistory: [] };
     if (trackerUrl != '') {
-      await post<null>(trackerUrl + '/track', player).catch(console.error);
+      try {
+        history = await request<History>(
+          `/history/${tag}`,
+          trackerUrl,
+          {},
+          {}
+        );
+        await post<null>(trackerUrl + '/track', player);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     if (logStats) {
@@ -110,7 +122,8 @@ export default class BrawlstarsService {
                 'starpower_optimized.png'
                 :'powerpoint_optimized.png'
             }
-          }
+          },
+          history: history.brawlerHistory.filter(({ name }) => name == brawler.name),
         } as Hero;
       });
 
@@ -168,6 +181,7 @@ export default class BrawlstarsService {
       hoursSpent,
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club.name,
+      history: history.playerHistory,
       heroes,
       heroStats,
       modes: {

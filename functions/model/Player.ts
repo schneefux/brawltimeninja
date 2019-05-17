@@ -1,3 +1,5 @@
+import { BrawlerHistoryEntry, PlayerHistoryEntry } from "./History";
+
 export interface Statistic {
     label: string;
     value: number | string;
@@ -27,6 +29,7 @@ export interface Hero {
     stats: {
         [id: string]: HeroStatistic;
     };
+    history: BrawlerHistoryEntry[];
 }
 
 export interface PlayerIdentifier {
@@ -38,6 +41,7 @@ export interface Player extends PlayerIdentifier {
     hoursSpent: number;
     trophies: number;
     clubName: string;
+    history: PlayerHistoryEntry[];
     heroes: {
         [id: string]: Hero;
     };
