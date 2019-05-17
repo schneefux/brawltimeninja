@@ -122,28 +122,6 @@ export default class BrawlstarsService {
         } as Hero;
       });
 
-    const stats = {
-      trophies: {
-        label: 'Current Trophies',
-        value: player.trophies
-      },
-      highestTrophies: {
-        label: 'Max Trophies',
-        value: player.highestTrophies
-      },
-      expLevel: {
-        label: 'Experience Level',
-        value: player.expLevel
-      },
-    } as { [id: string]: PlayerStatistic };
-
-    if (player.club != undefined) {
-      stats.clubName = {
-        label: 'Club',
-        value: player.club.name
-      };
-    }
-
     const hoursSpent = xpToHours(player.totalExp);
 
     const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
