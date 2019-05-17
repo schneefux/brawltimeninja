@@ -13,8 +13,7 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "generate:api": "cd functions/ && ts-node generate.ts",
-    "migrate": "cd functions/ && ts-node migrate.ts",
-    "test": "cd functions/ && jest"
+    "migrate": "cd functions/ && ts-node migrate.ts"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
@@ -48,7 +47,6 @@
     "@nuxtjs/eslint-config": "^0.0.1",
     "@types/aws-serverless-express": "^3.3.1",
     "@types/cache-manager": "^1.2.7",
-    "@types/jest": "^24.0.13",
     "@types/knex": "^0.16.1",
     "@types/koa": "^2.0.48",
     "@types/koa-bodyparser": "^4.2.2",
@@ -71,13 +69,11 @@
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^5.2.2",
     "glob-all": "^3.1.0",
-    "jest": "^24.8.0",
     "nodemon": "^1.19.0",
     "purgecss-webpack-plugin": "^1.5.0",
     "tailwindcss": "^1.0.1",
     "tailwindcss-alpha": "^0.1.4",
     "tailwindcss-typography": "^2.0.0",
-    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.0",
     "ts-node": "^8.1.0",
     "webpack-cli": "^3.3.2",
