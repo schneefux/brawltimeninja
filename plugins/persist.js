@@ -4,7 +4,7 @@ export default ({ store }) => {
   window.onNuxtReady(() => new VuexPersistence({
     key: `brawlstars-ninja`,
     reducer: state => ({
-      version: 2,
+      version: 4,
       lastPlayers: state.lastPlayers,
     }),
     restoreState: (key, storage) => {
@@ -12,17 +12,15 @@ export default ({ store }) => {
       let value = (storage).getItem(key)
       value = typeof value === 'string' ? JSON.parse(value || '{}') : (value || {})
 
-      if (value.version === undefined || value.version === 1) {
-        if (value.lastPlayers !== undefined) {
-          // 0 -> 1: rename player.id -> player.tag
-          // 1 -> 2: it broke for some reason so just do it again
-          value.lastPlayers.forEach((player) => {
-            if (player.id !== undefined) {
-              player.tag = player.id
-              delete player.id
-            }
-          })
-        }
+      if (value.lastPlayers !== undefined) {
+        // 0 -> 1: rename player.id -> player.tag
+        // 1 -> 4: it broke for some reason, trying to fix it…
+        value.lastPlayers.forEach((player) => {
+          if (player.tag === undefined && player.id !== undefined) {
+            player.tag = player.id
+            delete player.id
+          }
+        })
       }
 
       return value
