@@ -73,11 +73,37 @@
         </div>
 
         <div class="bigstat-container">
-          <div class="bigstat-left bigstat-number">
-            {{ player.trophies.toLocaleString() }}
+          <div class="flex flex-wrap">
+            <div class="bigstat-left bigstat-number">
+              {{ player.trophies.toLocaleString() }}
+            </div>
+            <div class="bigstat-right bigstat-label text-3xl">
+              Trophies
+            </div>
           </div>
-          <div class="bigstat-right bigstat-label text-3xl">
-            Trophies
+
+          <div
+            v-if="player.history.length > 1"
+            class="w-full max-w-xs mx-12 my-3 md:ml-4 md:w-40 relative h-12"
+          >
+            <span class="absolute text-primary-light text-lg font-semibold left-0 top-0">
+              {{ player.trophies >= player.history[0].trophies ? '+' : '-' }}{{ player.trophies - player.history[0].trophies }}
+            </span>
+            <span class="absolute text-sm text-grey-light -mb-2 right-0 bottom-0">
+              since {{ daysSinceHistoryStart }}d ago
+            </span>
+            <svg
+              viewBox="0 0 240 32"
+              preserveAspectRatio="none"
+              class="absolute left-0 bottom-0 w-full h-8 overflow-visible"
+            >
+              <polyline
+                :points="relativeTrophyHistory.map(([y, x]) => `${x*240},${(1-y)*32} `)"
+                fill="none"
+                stroke="#f2d024"
+                stroke-width="4"
+              /> <!-- stroke: secondary-dark -->
+            </svg>
           </div>
         </div>
 
@@ -313,6 +339,25 @@ export default {
       }
       return this.player.trophies / this.hoursSpent
     },
+    relativeTrophyHistory() {
+      const trophies = this.player.history.map(({ trophies }) => trophies)
+      const dates = this.player.history.map(({ timestamp }) => Date.parse(timestamp))
+
+      const trophyMin = Math.min.apply(Math, trophies)
+      const trophyMax = Math.max.apply(Math, trophies)
+      const dateMin = Math.min.apply(Math, dates)
+      const dateMax = Math.max.apply(Math, dates)
+
+      return this.player.history.map(({ trophies, timestamp }) => ([
+        (trophies - trophyMin) / (trophyMax - trophyMin),
+        (Date.parse(timestamp) - dateMin) / (dateMax - dateMin),
+      ]))
+    },
+    daysSinceHistoryStart() {
+      const start = Date.parse(this.player.history[0].timestamp)
+      const now = (new Date()).getTime()
+      return Math.floor((now - start) / 1000 / 3600 / 24)
+    },
     relevantGuides() {
       // shuffle posts
       const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
@@ -406,7 +451,7 @@ export default {
 }
 
 .bigstat-container {
-  @apply flex justify-center items-center mt-2 w-full;
+  @apply flex flex-wrap justify-center items-center mt-2 w-full;
 }
 
 @screen md {
@@ -416,7 +461,7 @@ export default {
 }
 
 .bigstat-left {
-  @apply w-1/2 text-right flex justify-end items-center mr-2;
+  @apply w-1/2 text-right flex justify-end items-center pr-2;
 }
 
 .text-6vw {
@@ -430,7 +475,7 @@ export default {
 }
 
 .bigstat-right {
-  @apply w-1/2 text-left flex justify-start items-center ml-2;
+  @apply w-1/2 text-left flex justify-start items-center pl-2;
 }
 
 .bigstat-label {
