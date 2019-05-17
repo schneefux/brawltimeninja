@@ -4,7 +4,6 @@ import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
 
-const logStats = !!process.env.LOG_STATS;
 const trackerUrl = process.env.TRACKER_URL || '';
 const token = process.env.BRAWLSTARS_TOKEN || '';
 
@@ -86,10 +85,6 @@ export default class BrawlstarsService {
       } catch (error) {
         console.error(error);
       }
-    }
-
-    if (logStats) {
-      console.log(JSON.stringify(player))
     }
 
     const heroes = {} as { [id: string]: Hero };
