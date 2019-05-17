@@ -75,13 +75,13 @@ export default class BrawlstarsService {
     let history: History = { playerHistory: [], brawlerHistory: [] };
     if (trackerUrl != '') {
       try {
+        await post<null>(trackerUrl + '/track', player);
         history = await request<History>(
           `/history/${tag}`,
           trackerUrl,
           {},
           {}
         );
-        await post<null>(trackerUrl + '/track', player);
       } catch (error) {
         console.error(error);
       }
