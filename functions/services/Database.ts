@@ -71,14 +71,14 @@ export default class DatabaseService {
       .from('player')
       .where('tag', tag)
       .groupBy('trophies', 'total_exp')
-      .orderBy('timestamp', 'desc') as PlayerHistoryEntry[];
+      .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
     const brawlerHistory = await this.knex
       .select('name', 'trophies')
       .min('timestamp as timestamp')
       .from('player_brawler')
       .where('player_tag', tag)
       .groupBy('name', 'trophies')
-      .orderBy('timestamp', 'desc') as BrawlerHistoryEntry[];
+      .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
     return { playerHistory, brawlerHistory } as History;
   }
 
