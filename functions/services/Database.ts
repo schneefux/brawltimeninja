@@ -1,6 +1,7 @@
 import Knex from 'knex';
 import { Player } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
+import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -15,7 +16,7 @@ export default class DatabaseService {
     this.knex.destroy();
   }
 
-  public async storeBrawlstarsRecord(player: Player) {
+  public async store(player: Player) {
     const lastRecords = await this.knex
       .select('timestamp')
       .from('player')
@@ -61,6 +62,24 @@ export default class DatabaseService {
       .groupBy('tag')
       .orderBy('total_exp', 'desc')
       .limit(n) as LeaderboardEntry[];
+  }
+
+  public async getHistory(tag: string) {
+    const playerHistory = await this.knex
+      .select('trophies', 'total_exp')
+      .min('timestamp as timestamp')
+      .from('player')
+      .where('tag', tag)
+      .groupBy('trophies', 'total_exp')
+      .orderBy('timestamp', 'desc') as PlayerHistoryEntry[];
+    const brawlerHistory = await this.knex
+      .select('name', 'trophies')
+      .min('timestamp as timestamp')
+      .from('player_brawler')
+      .where('player_tag', tag)
+      .groupBy('name', 'trophies')
+      .orderBy('timestamp', 'desc') as BrawlerHistoryEntry[];
+    return { playerHistory, brawlerHistory } as History;
   }
 
   public async migrate() {
