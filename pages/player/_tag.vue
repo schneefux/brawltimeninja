@@ -77,7 +77,7 @@
             <div class="bigstat-left bigstat-number">
               {{ player.trophies.toLocaleString() }}
             </div>
-            <div class="bigstat-right bigstat-label text-3xl">
+            <div class="bigstat-right bigstat-label text-4xl">
               Trophies
             </div>
           </div>
