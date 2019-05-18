@@ -15,6 +15,14 @@ export default {
 
   head: {
     titleTemplate: '%s - Brawlstars Time Ninja',
+    script: [
+      { async: true, src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js' },
+      { innerHTML: `
+        (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: 'ca-pub-6856963757796636',
+        });` },
+    ],
+    __dangerouslyDisableSanitizers: ['script'],
   },
 
   meta: {
