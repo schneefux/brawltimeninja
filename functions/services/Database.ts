@@ -31,25 +31,30 @@ export default class DatabaseService {
       }
     }
 
-    await this.knex('player').insert({
-      name: player.name,
-      tag: player.tag,
-      club_name: player.club === null ? null : player.club.name,
-      victories: player.victories,
-      solo_showdown_victories: player.soloShowdownVictories,
-      duo_showdown_victories: player.duoShowdownVictories,
-      total_exp: player.totalExp,
-      trophies: player.trophies,
-    });
+    await this.knex.transaction(async (trx) => {
+      const lastInsert = await trx('player').insert({
+        name: player.name,
+        tag: player.tag,
+        club_name: player.club === null ? null : player.club.name,
+        victories: player.victories,
+        solo_showdown_victories: player.soloShowdownVictories,
+        duo_showdown_victories: player.duoShowdownVictories,
+        total_exp: player.totalExp,
+        trophies: player.trophies,
+        brawlers_unlocked: player.brawlersUnlocked,
+      });
+      const playerId = lastInsert[0];
 
-    await Promise.all(player.brawlers.map((brawler) =>
-      this.knex('player_brawler').insert({
-        name: brawler.name,
-        player_tag: player.tag,
-        trophies: brawler.trophies,
-        power: brawler.power,
-      })
-    ));
+      await Promise.all(player.brawlers.map((brawler) =>
+        trx('player_brawler').insert({
+          player_id: playerId,
+          name: brawler.name,
+          player_tag: player.tag,
+          trophies: brawler.trophies,
+          power: brawler.power,
+        })
+      ));
+    });
 
     console.log(player.tag, 'added record');
   }
@@ -97,6 +102,7 @@ export default class DatabaseService {
         table.integer('duo_showdown_victories').unsigned().notNullable();
         table.integer('total_exp').unsigned().notNullable();
         table.integer('trophies').unsigned().notNullable();
+        table.integer('brawlers_unlocked').unsigned().notNullable();
 
         table.index(['tag']);
       });
@@ -106,15 +112,65 @@ export default class DatabaseService {
     if (!await this.knex.schema.hasTable('player_brawler')) {
       await this.knex.schema.createTable('player_brawler', (table) => {
         table.bigIncrements('id');
+        table.bigInteger('player_id').unsigned().notNullable();
 
-        table.timestamp('timestamp').notNullable();
         table.string('name').notNullable();
-        table.string('player_tag');
+        table.string('player_tag').notNullable();
 
         table.integer('trophies').unsigned().notNullable();
         table.integer('power').unsigned().notNullable();
-      })
+
+        table.index(['player_id']);
+        table.index(['player_tag']);
+        table.foreign('player_id').references('player.id');
+      });
       console.log('created player_brawler table');
+    }
+
+    if (!await this.knex.schema.hasColumn('player', 'brawlers_unlocked')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player', (table) => {
+          table.integer('brawlers_unlocked').unsigned();
+        });
+        console.log('updated player');
+
+        await txn.schema.table('player_brawler', (table) => {
+          table.string('player_tag').notNullable().alter();
+          table.bigInteger('player_id').unsigned();
+          table.index(['player_id']);
+          table.index(['player_tag']);
+        });
+        console.log('updated player_brawler');
+
+        await txn.schema.raw(`
+          update player_brawler pb
+          join player p on pb.player_tag=p.tag
+          and abs(timestampdiff(minute, p.timestamp, pb.timestamp)) < 1
+          set pb.player_id=p.id, pb.timestamp=p.timestamp
+        `);
+        console.log('added player_brawler references');
+
+        await txn.schema.raw(`
+          update player p
+          set brawlers_unlocked=(
+            select count(*)
+            from player_brawler pb
+            where pb.player_id=p.id
+          )
+        `);
+        console.log(`filled player.brawlers_unlocked`);
+
+        await txn.schema.table('player', (table) => {
+          table.integer('brawlers_unlocked').unsigned().notNullable().alter();
+        });
+        console.log('updated player');
+
+        await txn.schema.table('player_brawler', (table) => {
+          table.bigInteger('player_id').unsigned().notNullable().alter();
+          table.foreign('player_id').references('player.id');
+        });
+        console.log('updated player_brawler');
+      });
     }
 
     console.log('all migrations done');
