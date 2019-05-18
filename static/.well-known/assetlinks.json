@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "xyz.schneefux.brawlstarstimeninja",
+    "package_name": "xyz.schneefux.brawltimeninja",
     "sha256_cert_fingerprints":
     ["88:E5:B1:BB:55:02:A7:01:FF:5D:45:AD:BA:13:E4:AC:CC:95:01:E5:E2:90:32:6D:76:5C:21:2F:01:BC:34:95"]
   }

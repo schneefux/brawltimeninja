@@ -141,7 +141,7 @@ export default {
   head() {
     return {
       titleTemplate: null,
-      title: 'Brawlstars Time Ninja',
+      title: 'Brawl Time Ninja',
     }
   },
   data() {

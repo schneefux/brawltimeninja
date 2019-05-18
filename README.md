@@ -1,8 +1,8 @@
-# brawlstarstimeninja
+# brawltimeninja
 
 Fun game statistics site for Brawlstars.
 
-https://brawlstarstime.ninja
+https://brawltime.ninja
 
 ## Build Setup
 

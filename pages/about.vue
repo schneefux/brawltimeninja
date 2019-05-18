@@ -5,8 +5,8 @@
         About
       </h1>
       <p>
-        Brawlstars Time Ninja allows you to check competitive and fun statistics for your Brawlstars account. Read guides written by the community to improve your gameplay.
-        Brawlstars Time Ninja uses the unofficial Brawlstars API. The service may be unreliable at times.
+        Brawl Time Ninja allows you to check competitive and fun statistics for your Brawlstars account. Read guides written by the community to improve your gameplay.
+        Brawl Time Ninja uses the unofficial Brawlstars API. The service may be unreliable at times.
       </p>
       <p class="mt-2">
         Send questions or feedback to dev (at) {{ domain }}.

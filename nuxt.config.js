@@ -14,7 +14,7 @@ export default {
   mode: 'universal',
 
   head: {
-    titleTemplate: '%s - Brawlstars Time Ninja',
+    titleTemplate: '%s - Brawl Time Ninja',
     script: [
       { async: true, src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js' },
       { innerHTML: `
@@ -27,15 +27,15 @@ export default {
 
   meta: {
     viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
-    name: 'Brawlstars Time Ninja',
-    description: 'Brawlstars Time Ninja - Check time spent on Brawlstars and player statistics',
+    name: 'Brawl Time Ninja',
+    description: 'Brawl Time Ninja - Check time spent on Brawlstars and player statistics',
     author: 'schneefux',
     theme_color: '#3490dc', // primary
   },
 
   manifest: {
-    name: 'Brawlstars Time Ninja',
-    short_name: 'Brawlstars Time Ninja',
+    name: 'Brawl Time Ninja',
+    short_name: 'Brawl Time Ninja',
     description: 'Check time spent on Brawlstars and player statistics',
     theme_color: '#3490dc', // primary
   },
