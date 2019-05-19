@@ -18,15 +18,15 @@ export default class DatabaseService {
 
   public async store(player: Player) {
     const lastRecords = await this.knex
-      .select('timestamp')
+      .select('total_exp')
       .from('player')
       .where('tag', player.tag)
       .orderBy('timestamp', 'desc')
       .limit(1);
 
     if (lastRecords.length == 1) {
-      if ((new Date().valueOf() - new Date(lastRecords[0].timestamp).valueOf()) / 36e5 < 1) {
-        console.log(player.tag, 'most recent record is less than 1h old, skipping');
+      if (player.totalExp == lastRecords[0].total_exp) {
+        console.log(player.tag, 'most recent record is the same as submitted record, skipping');
         return;
       }
     }
