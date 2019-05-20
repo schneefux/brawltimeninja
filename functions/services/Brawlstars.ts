@@ -1,5 +1,5 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/Brawlstars';
-import { Hero, PlayerStatistic, Mode, Player } from '../model/Player';
+import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
@@ -87,39 +87,19 @@ export default class BrawlstarsService {
       }
     }
 
-    const heroes = {} as { [id: string]: Hero };
+    const brawlers = {} as { [id: string]: Brawler };
     player.brawlers
       .sort((b1, b2) => b2.highestTrophies - b1.highestTrophies)
       .forEach((brawler) => {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
-        heroes[brawlerId] = {
-          label: brawler.name,
-          stats: {
-            rank: {
-              label: 'Rank',
-              value: brawler.rank,
-              icon: 'leaderboards_optimized.png'
-            },
-            trophies: {
-              label: 'Trophies',
-              value: brawler.trophies,
-              icon: 'trophy_optimized.png'
-            },
-            maxTrophies: {
-              label: 'Max Trophies',
-              value: brawler.highestTrophies,
-              icon: 'trophy_optimized.png'
-            },
-            level: {
-              label: 'Power Level',
-              value: brawler.power,
-              icon: brawler.power == 10?
-                'starpower_optimized.png'
-                :'powerpoint_optimized.png'
-            }
-          },
+        brawlers[brawlerId] = {
+          name: brawler.name,
+          rank: brawler.rank,
+          trophies: brawler.trophies,
+          highestTrophies: brawler.highestTrophies,
+          power: brawler.power,
           history: history.brawlerHistory.filter(({ name }) => name == brawler.name),
-        } as Hero;
+        } as Brawler;
       });
 
     const hoursSpent = xpToHours(player.totalExp);
@@ -155,7 +135,7 @@ export default class BrawlstarsService {
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club.name,
       history: history.playerHistory,
-      heroes,
+      brawlers,
       heroStats,
       modes: {
         '3v3': {

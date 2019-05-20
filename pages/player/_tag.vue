@@ -198,8 +198,8 @@
 
     <div class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
       <p
-        v-for="(stat, heroName) in player.heroStats"
-        :key="heroName"
+        v-for="(stat, brawlerName) in player.heroStats"
+        :key="brawlerName"
         class="md:text-center text-xl my-1 w-full md:w-auto md:mx-auto"
       >
         <span class="md:block md:text-2xl font-semibold">{{ stat.label }}</span>
@@ -218,36 +218,82 @@
         />
 
         <div
-          v-for="(hero, heroId) in player.heroes"
-          :key="heroId"
+          v-for="(brawler, brawlerId) in player.brawlers"
+          :key="brawlerId"
           class="card-wrapper w-full md:w-auto mx-auto"
         >
           <div class="card bg-primary-dark flex h-full">
             <div class="flex flex-col w-32 justify-between">
-              <span class="font-bold text-white text-2xl text-shadow py-2 px-3">{{ hero.label }}</span>
+              <span class="font-semibold text-white text-2xl text-shadow py-2 px-3">
+                {{ brawler.name }}
+              </span>
               <img
-                :src="require(`~/assets/images/hero/icon/${heroId}_optimized.png`)"
+                :src="require(`~/assets/images/hero/icon/${brawlerId}_optimized.png`)"
                 class="w-24"
               >
             </div>
             <div class="py-2 pl-2 pr-4 flex-grow w-48 self-center flex justify-end">
               <table>
-                <tr
-                  v-for="(stat, statName) in hero.stats"
-                  :key="statName"
-                  class="card-props"
-                >
+                <tr class="card-props">
                   <td class="text-center">
                     <img
-                      :src="require(`~/assets/images/icon/${stat.icon}`)"
+                      src="~/assets/images/icon/leaderboards_optimized.png"
                       class="card-prop-icon"
                     >
                   </td>
                   <td class="card-prop-value text-right pr-1">
-                    {{ stat.value }}
+                    {{ brawler.rank }}
                   </td>
                   <td class="card-prop-label">
-                    {{ stat.label }}
+                    Rank
+                  </td>
+                </tr>
+                <tr class="card-props">
+                  <td class="text-center">
+                    <img
+                      src="~/assets/images/icon/trophy_optimized.png"
+                      class="card-prop-icon"
+                    >
+                  </td>
+                  <td class="card-prop-value text-right pr-1">
+                    {{ brawler.trophies }}
+                  </td>
+                  <td class="card-prop-label">
+                    Trophies
+                  </td>
+                </tr>
+                <tr class="card-props">
+                  <td class="text-center">
+                    <img
+                      src="~/assets/images/icon/trophy_optimized.png"
+                      class="card-prop-icon"
+                    >
+                  </td>
+                  <td class="card-prop-value text-right pr-1">
+                    {{ brawler.highestTrophies }}
+                  </td>
+                  <td class="card-prop-label">
+                    Max Trophies
+                  </td>
+                </tr>
+                <tr class="card-props">
+                  <td class="text-center">
+                    <img
+                      v-if="brawler.power < 10"
+                      src="~/assets/images/icon/powerpoint_optimized.png"
+                      class="card-prop-icon"
+                    >
+                    <img
+                      v-else
+                      src="~/assets/images/icon/starpower_optimized.png"
+                      class="card-prop-icon"
+                    >
+                  </td>
+                  <td class="card-prop-value text-right pr-1">
+                    {{ brawler.rank }}
+                  </td>
+                  <td class="card-prop-label">
+                    Power Level
                   </td>
                 </tr>
               </table>

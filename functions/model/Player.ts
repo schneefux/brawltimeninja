@@ -5,10 +5,6 @@ export interface Statistic {
     value: number | string;
 }
 
-export interface HeroStatistic extends Statistic {
-    icon: string;
-}
-
 export interface PlayerStatistic extends Statistic {
 }
 
@@ -24,11 +20,12 @@ export interface Mode {
     };
 }
 
-export interface Hero {
-    label: string;
-    stats: {
-        [id: string]: HeroStatistic;
-    };
+export interface Brawler {
+    name: string;
+    trophies: number;
+    highestTrophies: number;
+    power: number;
+    rank: number;
     history: BrawlerHistoryEntry[];
 }
 
@@ -42,8 +39,8 @@ export interface Player extends PlayerIdentifier {
     trophies: number;
     clubName: string;
     history: PlayerHistoryEntry[];
-    heroes: {
-        [id: string]: Hero;
+    brawlers: {
+        [id: string]: Brawler;
     };
     heroStats: {
         [id: string]: PlayerStatistic;
