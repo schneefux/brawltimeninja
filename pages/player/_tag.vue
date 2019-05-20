@@ -356,7 +356,7 @@ export default {
     daysSinceHistoryStart() {
       const start = Date.parse(this.player.history[0].timestamp)
       const now = (new Date()).getTime()
-      return Math.floor((now - start) / 1000 / 3600 / 24)
+      return Math.ceil((now - start) / 1000 / 3600 / 24)
     },
     relevantGuides() {
       // shuffle posts

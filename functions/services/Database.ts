@@ -75,6 +75,7 @@ export default class DatabaseService {
       .min('timestamp as timestamp')
       .from('player')
       .where('tag', tag)
+      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
       .groupBy('trophies', 'total_exp')
       .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
     const brawlerHistory = await this.knex
@@ -82,6 +83,7 @@ export default class DatabaseService {
       .min('timestamp as timestamp')
       .from('player_brawler')
       .where('player_tag', tag)
+      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
       .groupBy('name', 'trophies')
       .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
     return { playerHistory, brawlerHistory } as History;
