@@ -83,7 +83,7 @@ export default class DatabaseService {
       .max('trophies as trophies')
       .from('player_brawler')
       .where('player_tag', tag)
-      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
+      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 month'))
       .groupBy('name', 'timestamp')
       .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
     return { playerHistory, brawlerHistory } as History;
