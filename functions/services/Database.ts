@@ -71,20 +71,20 @@ export default class DatabaseService {
 
   public async getHistory(tag: string) {
     const playerHistory = await this.knex
-      .select('trophies', 'total_exp')
-      .min('timestamp as timestamp')
+      .select('timestamp')
+      .max('trophies as trophies', 'total_exp as total_exp')
       .from('player')
       .where('tag', tag)
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
-      .groupBy('trophies', 'total_exp')
+      .groupBy('trophies', 'timestamp')
       .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
     const brawlerHistory = await this.knex
-      .select('name', 'trophies')
-      .min('timestamp as timestamp')
+      .select('name', 'timestamp')
+      .max('trophies as trophies')
       .from('player_brawler')
       .where('player_tag', tag)
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
-      .groupBy('name', 'trophies')
+      .groupBy('name', 'timestamp')
       .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
     return { playerHistory, brawlerHistory } as History;
   }
