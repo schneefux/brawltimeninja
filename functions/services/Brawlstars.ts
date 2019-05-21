@@ -98,7 +98,9 @@ export default class BrawlstarsService {
           trophies: brawler.trophies,
           highestTrophies: brawler.highestTrophies,
           power: brawler.power,
-          history: history.brawlerHistory.filter(({ name }) => name == brawler.name),
+          history: history.brawlerHistory
+            .filter(({ name }) => name == brawler.name)
+            .map(({ timestamp, trophies }) => ({ timestamp, trophies })),
         } as Brawler;
       });
 
