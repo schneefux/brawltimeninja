@@ -90,7 +90,7 @@
               {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
             </span>
             <span class="absolute text-sm text-grey-light -mb-2 right-0 bottom-0">
-              since {{ daysSinceHistoryStart }}d ago
+              since {{ daysSincePlayerHistoryStart }}d ago
             </span>
             <svg
               viewBox="0 0 240 32"
@@ -98,7 +98,7 @@
               class="absolute left-0 bottom-0 w-full h-8 overflow-visible"
             >
               <polyline
-                :points="relativeTrophyHistory.map(([y, x]) => `${x*240},${(1-y)*32} `)"
+                :points="playerHistoryPoints.map(([x, y]) => `${x*240},${(1-y)*32} `)"
                 fill="none"
                 stroke="#f2d024"
                 stroke-width="4"
@@ -222,81 +222,109 @@
           :key="brawlerId"
           class="card-wrapper w-full md:w-auto mx-auto"
         >
-          <div class="card bg-primary-dark flex h-full">
-            <div class="flex flex-col w-32 justify-between">
-              <span class="font-semibold text-white text-2xl text-shadow py-2 px-3">
+          <div class="card w-80 h-32 bg-primary-dark flex justify-between">
+            <div class="w-32 relative">
+              <span class="z-10 absolute ml-3 mt-2 font-semibold text-white text-2xl text-shadow">
                 {{ brawler.name }}
               </span>
               <img
                 :src="require(`~/assets/images/hero/icon/${brawlerId}_optimized.png`)"
-                class="w-24"
+                class="z-0 absolute bottom-0 h-20"
               >
             </div>
-            <div class="py-2 pl-2 pr-4 flex-grow w-48 self-center flex justify-end">
-              <table>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/leaderboards_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.rank }}
-                  </td>
-                  <td class="card-prop-label">
-                    Rank
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.trophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.highestTrophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Max Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      v-if="brawler.power < 10"
-                      src="~/assets/images/icon/powerpoint_optimized.png"
-                      class="card-prop-icon"
-                    >
-                    <img
-                      v-else
-                      src="~/assets/images/icon/starpower_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.rank }}
-                  </td>
-                  <td class="card-prop-label">
-                    Power Level
-                  </td>
-                </tr>
-              </table>
+            <div class="py-2 pr-3 flex flex-col justify-center items-end">
+              <div
+                v-if="brawler.history.length > 1"
+                class="w-32 relative mx-auto my-2"
+              >
+                <span class="absolute text-sm text-grey-light font-semibold left-0 top-0 -mt-2 -ml-1">
+                  {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
+                </span>
+                <span class="absolute text-xs text-grey-light -mb-2 right-0 bottom-0">
+                  since {{ daysSinceBrawlerHistoryStart[brawlerId] }}d ago
+                </span>
+                <svg
+                  viewBox="0 0 128 32"
+                  preserveAspectRatio="none"
+                  class="w-full h-8 overflow-visible"
+                >
+                  <polyline
+                    :points="brawlerHistoryPoints[brawlerId].map(([x, y]) => `${x*128},${(1-y)*32} `)"
+                    fill="none"
+                    stroke="#f2d024"
+                    stroke-width="4"
+                  /> <!-- stroke: secondary-dark -->
+                </svg>
+              </div>
+              <div>
+                <table>
+                  <tr
+                    v-if="brawler.history.length <= 1"
+                    class="card-props"
+                  >
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/leaderboards_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.rank }}
+                    </td>
+                    <td class="card-prop-label">
+                      Rank
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.trophies }}
+                    </td>
+                    <td class="card-prop-label">
+                      Trophies
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.highestTrophies }}
+                    </td>
+                    <td class="card-prop-label">
+                      Max Trophies
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        v-if="brawler.power < 10"
+                        src="~/assets/images/icon/powerpoint_optimized.png"
+                        class="card-prop-icon"
+                      >
+                      <img
+                        v-else
+                        src="~/assets/images/icon/starpower_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.power }}
+                    </td>
+                    <td class="card-prop-label">
+                      Power Level
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -335,6 +363,21 @@
 <script>
 import Blogroll from '~/components/blogroll'
 import { mapState, mapGetters, mapActions } from 'vuex'
+
+function scaleMinMax(values) {
+  const min = Math.min.apply(Math, values)
+  const max = Math.max.apply(Math, values)
+
+  if (min === max) {
+    return values.map(value => 0.5)
+  }
+
+  return values.map(value => (value - min) / (max - min))
+}
+
+function zip(arr1, arr2) {
+  return arr1.map((value, index) => [value, arr2[index]])
+}
 
 export default {
   name: 'PlayerProfile',
@@ -385,24 +428,41 @@ export default {
       }
       return this.player.trophies / this.hoursSpent
     },
-    relativeTrophyHistory() {
-      const trophies = this.player.history.map(({ trophies }) => trophies)
+    playerHistoryPoints() {
       const dates = this.player.history.map(({ timestamp }) => Date.parse(timestamp))
-
-      const trophyMin = Math.min.apply(Math, trophies)
-      const trophyMax = Math.max.apply(Math, trophies)
-      const dateMin = Math.min.apply(Math, dates)
-      const dateMax = Math.max.apply(Math, dates)
-
-      return this.player.history.map(({ trophies, timestamp }) => ([
-        (trophies - trophyMin) / (trophyMax - trophyMin),
-        (Date.parse(timestamp) - dateMin) / (dateMax - dateMin),
-      ]))
+      const datesS = scaleMinMax(dates)
+      const trophies = this.player.history.map(({ trophies }) => trophies)
+      const trophiesS = scaleMinMax(trophies)
+      return zip(datesS, trophiesS)
     },
-    daysSinceHistoryStart() {
+    brawlerHistoryPoints() {
+      const brawlersS = {}
+      Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
+        if (brawler.history.length <= 1) {
+          brawlersS[brawlerId] = []
+          return
+        }
+        const dates = brawler.history.map(({ timestamp }) => Date.parse(timestamp))
+        const datesS = scaleMinMax(dates)
+        const trophies = brawler.history.map(({ trophies }) => trophies)
+        const trophiesS = scaleMinMax(trophies)
+        brawlersS[brawlerId] = zip(datesS, trophiesS)
+      })
+      return brawlersS
+    },
+    daysSincePlayerHistoryStart() {
       const start = Date.parse(this.player.history[0].timestamp)
       const now = (new Date()).getTime()
       return Math.ceil((now - start) / 1000 / 3600 / 24)
+    },
+    daysSinceBrawlerHistoryStart() {
+      const brawlersMin = {}
+      Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
+        const start = Date.parse(this.player.history[0].timestamp)
+        const now = (new Date()).getTime()
+        brawlersMin[brawlerId] = Math.ceil((now - start) / 1000 / 3600 / 24)
+      })
+      return brawlersMin
     },
     relevantGuides() {
       // shuffle posts
