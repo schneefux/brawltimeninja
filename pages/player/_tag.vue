@@ -87,7 +87,7 @@
             class="w-full max-w-xs mx-12 my-3 md:ml-4 md:w-40 relative h-12"
           >
             <span class="absolute text-primary-light text-lg font-semibold left-0 top-0">
-              {{ player.trophies >= player.history[0].trophies ? '+' : '-' }}{{ player.trophies - player.history[0].trophies }}
+              {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
             </span>
             <span class="absolute text-sm text-grey-light -mb-2 right-0 bottom-0">
               since {{ daysSinceHistoryStart }}d ago
