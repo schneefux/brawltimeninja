@@ -86,10 +86,10 @@
             v-if="player.history.length > 1"
             class="w-full max-w-xs mx-12 my-3 md:ml-4 md:w-40 relative h-12"
           >
-            <span class="absolute text-primary-light text-lg font-semibold left-0 top-0">
+            <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
               {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
             </span>
-            <span class="absolute text-sm text-grey-light -mb-2 right-0 bottom-0">
+            <span class="absolute text-sm text-grey-light text-shadow-grey-darkest -mb-2 right-0 bottom-0">
               since {{ daysSincePlayerHistoryStart }}d ago
             </span>
             <svg
@@ -237,10 +237,10 @@
                 v-if="brawler.history.length > 1"
                 class="w-32 relative mx-auto my-2"
               >
-                <span class="absolute text-sm text-grey-light font-semibold left-0 top-0 -mt-2 -ml-1">
+                <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
                   {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
                 </span>
-                <span class="absolute text-xs text-grey-light -mb-2 right-0 bottom-0">
+                <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
                   since {{ daysSinceBrawlerHistoryStart[brawlerId] }}d ago
                 </span>
                 <svg

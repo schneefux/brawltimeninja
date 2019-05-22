@@ -4,7 +4,12 @@ module.exports = {
   separator: ':',
   theme: {
     textShadow: {
-      'default': '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black',
+      'default': '-1px 0 #22292f, 0 1px #22292f, 1px 0 #22292f, 0 -1px #22292f',
+      'primary-dark': '-1px 0 #2779bd, 0 1px #2779bd, 1px 0 #2779bd, 0 -1px #2779bd',
+      'primary-darker': '-1px 0 #1c3d5a, 0 1px #1c3d5a, 1px 0 #1c3d5a, 0 -1px #1c3d5a',
+      'grey-dark': '-1px 0 #8795a1, 0 1px #8795a1, 1px 0 #8795a1, 0 -1px #8795a1',
+      'grey-darker': '-1px 0 #606f7b, 0 1px #606f7b, 1px 0 #606f7b, 0 -1px #606f7b',
+      'grey-darkest': '-1px 0 #3d4852, 0 1px #3d4852, 1px 0 #3d4852, 0 -1px #3d4852',
       '0': 'none'
     },
     colors: {
