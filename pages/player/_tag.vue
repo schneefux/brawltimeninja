@@ -220,7 +220,7 @@
         <div
           v-for="(brawler, brawlerId) in player.brawlers"
           :key="brawlerId"
-          class="card-wrapper w-full md:w-auto mx-auto"
+          class="card-wrapper md:w-auto mx-auto"
         >
           <div class="card w-80 h-32 bg-primary-dark flex justify-between">
             <div class="w-32 relative">
