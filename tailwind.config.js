@@ -3,6 +3,10 @@ module.exports = {
   important: false,
   separator: ':',
   theme: {
+    textShadow: {
+      'default': '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black',
+      '0': 'none'
+    },
     colors: {
       transparent: 'transparent',
 
@@ -506,6 +510,7 @@ module.exports = {
     fontStyle: ['responsive'],
     textTransform: ['responsive'],
     textDecoration: ['responsive', 'hover', 'focus'],
+    textShadow: ['responsive'],
     fontSmoothing: ['responsive'],
     letterSpacing: ['responsive'],
     userSelect: ['responsive'],
@@ -526,12 +531,6 @@ module.exports = {
         '75': 0.75,
       }
     }),
-    require('tailwindcss-typography')({
-      variants: ['responsive'],
-      textShadows: {
-        'default': '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black',
-        '0': 'none'
-      }
-    })
+    require('tailwindcss-typography')({ })
   ],
 }
