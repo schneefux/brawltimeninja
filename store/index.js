@@ -1,3 +1,4 @@
+import { exception } from 'vue-analytics'
 import payload from './payload.json'
 
 export const state = () => ({
@@ -96,7 +97,7 @@ export const actions = {
     commit('setPlayer', player)
     commit('addLastPlayer', player)
   },
-  async loadCurrentEvents({ state, commit, $ga }) {
+  async loadCurrentEvents({ state, commit }) {
     if (state.currentEventsLoaded) {
       return
     }
@@ -106,11 +107,11 @@ export const actions = {
       commit('setCurrentEvents', currentEvents)
     } catch (error) {
       // not critical, ignore
-      $ga.exception('cannot get events: ' + error.message)
+      exception('cannot get events: ' + error.message)
       console.error('cannot get current events:', error.message)
     }
   },
-  async loadLeaderboard({ state, commit, $ga }) {
+  async loadLeaderboard({ state, commit }) {
     if (state.leaderboardLoaded) {
       return
     }
@@ -120,7 +121,7 @@ export const actions = {
       commit('setLeaderboard', leaderboard)
     } catch (error) {
       // not critical, ignore
-      $ga.exception('cannot get leaderboard: ' + error.message)
+      exception('cannot get leaderboard: ' + error.message)
       console.error('cannot get leaderboard:', error.message)
     }
   },
