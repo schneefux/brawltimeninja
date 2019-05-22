@@ -72,7 +72,6 @@
     "nodemon": "^1.19.0",
     "purgecss-webpack-plugin": "^1.5.0",
     "tailwindcss": "^1.0.1",
-    "tailwindcss-alpha": "^0.1.4",
     "tailwindcss-typography": "^2.0.0",
     "ts-loader": "^6.0.0",
     "ts-node": "^8.1.0",

@@ -523,14 +523,6 @@ module.exports = {
   },
   corePlugins: {},
   plugins: [
-    require('tailwindcss-alpha')({
-      modules: {
-        backgroundColors: true
-      },
-      alpha: {
-        '75': 0.75,
-      }
-    }),
     require('tailwindcss-typography')({ })
   ],
 }
