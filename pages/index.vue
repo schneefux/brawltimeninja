@@ -42,6 +42,7 @@ en:
               v-model="tag"
               :placeholder="$t('enter-tag')"
               type="text"
+              autocomplete="off"
               class="w-40 md:w-48 tracking-wider uppercase font-semibold appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
             >
             <input
