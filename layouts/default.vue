@@ -3,7 +3,7 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-100 top-0 md:static">
+    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-50 top-0 md:static">
       <nuxt-link
         :to="localePath('index')"
         class="flex-shrink-0 font-semibold text-xl text-white tracking-tighter"
