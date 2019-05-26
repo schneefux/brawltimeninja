@@ -32,7 +32,6 @@
     "mysql2": "^1.6.5",
     "node-fetch": "^2.6.0",
     "nuxt": "^2.7.1",
-    "nuxt-i18n": "^5.12.3",
     "tiny-glob": "^0.2.6",
     "typescript": "^3.4.5",
     "vue-analytics": "^5.16.4",

@@ -5,7 +5,7 @@
   >
     <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-50 top-0 md:static">
       <nuxt-link
-        :to="localePath('index')"
+        to="/"
         class="flex-shrink-0 font-semibold text-xl text-white tracking-tighter"
       >
         Brawl Time Ninja
@@ -29,7 +29,7 @@
       >
         <div class="text-lg capitalize font-medium">
           <nuxt-link
-            :to="localePath('index')"
+            to="/"
             class="md:hidden block mt-4 text-primary-lighter"
           >
             Home
@@ -54,26 +54,6 @@
           >
             Privacy
           </nuxt-link>
-
-          <details
-            v-show="false"
-            ref="localeDropdown"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-0 text-primary-lighter"
-          >
-            <summary class="w-4 md:ml-4">
-              {{ locale.emoji }}
-            </summary>
-            <div class="absolute -ml-4 md:ml-0 mt-1 leading-normal bg-primary-dark">
-              <nuxt-link
-                v-for="l in locales"
-                :key="l.code"
-                :to="switchLocalePath(l.code)"
-                class="block mx-4 text-primary-lighter"
-              >
-                {{ l.emoji }}
-              </nuxt-link>
-            </div>
-          </details>
         </div>
       </div>
     </nav>
@@ -99,12 +79,6 @@ export default {
     }
   },
   computed: {
-    locale() {
-      return this.$i18n.locales.filter(({ code }) => code === this.$i18n.locale)[0]
-    },
-    locales() {
-      return this.$i18n.locales.filter(locale => locale !== this.locale)
-    },
     topics() {
       return Object.keys(this.blog)
         .map(topic => topic.replace('_', ' '))
@@ -124,7 +98,6 @@ export default {
   watch: {
     '$route'() {
       this.menuOpen = false
-      this.$refs.localeDropdown.removeAttribute('open')
     },
   },
   created() {
@@ -145,16 +118,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .bg-top-y {
   background-position-y: top;
-}
-
-details > summary {
-  list-style: none;
-}
-
-details > summary::-webkit-details-marker {
-  display: none;
 }
 </style>

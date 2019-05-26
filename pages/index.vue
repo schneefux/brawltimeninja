@@ -1,19 +1,3 @@
-<i18n>
-en:
-  title: How much time on Brawlstars?
-  description: See how much you play, statistics for your Brawlers and more.
-  enter-tag: Enter your Tag
-  searching: Searching...
-  need-help: Need help?
-  suggested-profiles: "Or check one of these profiles:"
-  recent-profiles: "Recently viewed:"
-  error:
-    tag-invalid: This is not a tag
-    tag-notfound: This tag does not exist
-    api-timeout: Either there was an error with the Brawlstars API, or this tag does not exist. Check it and try again
-    api-unavailable: Could not communicate with the Brawlstars API, try again later
-</i18n>
-
 <template>
   <div class="flex flex-col items-center">
     <img
@@ -23,12 +7,12 @@ en:
 
     <div class="mt-10 lg:mt-6 text-center mx-2">
       <h1 class="text-4xl font-bold">
-        {{ $t('title') }}
+        How much time on Brawlstars?
       </h1>
     </div>
 
     <p class="mt-3 text-center text-lg mx-2">
-      {{ $t('description') }}
+      See how much you play, statistics for your Brawlers and more.
     </p>
 
     <div class="mt-4 mx-4">
@@ -40,7 +24,7 @@ en:
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
             <input
               v-model="tag"
-              :placeholder="$t('enter-tag')"
+              placeholder="Enter your Tag"
               type="text"
               autocomplete="off"
               class="w-40 md:w-48 tracking-wider uppercase font-semibold appearance-none text-grey-lighter bg-transparent border-none focus:outline-none ml-3 mr-2"
@@ -56,7 +40,7 @@ en:
           v-if="loading"
           class="mt-2 text-red-lighter"
         >
-          {{ $t('searching') }}
+          Searching…
         </p>
         <p
           v-if="error"
@@ -73,7 +57,7 @@ en:
         class="mx-6"
       >
         <summary @click="loadHelpVideo = true">
-          {{ $t('need-help') }}
+          Need help?
         </summary>
         <iframe
           v-if="loadHelpVideo"
@@ -90,17 +74,17 @@ en:
     <div class="my-4 text-center max-w-sm">
       <p class="text-grey">
         <span v-show="lastPlayers.length === 0">
-          {{ $t('suggested-profiles') }}
+          Or check one of these profiles:
         </span>
         <span v-show="lastPlayers.length > 0">
-          {{ $t('recent-profiles') }}
+          Recently viewed:
         </span>
       </p>
       <p class="mt-2 mx-auto">
         <nuxt-link
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
-          :to="localePath(playerToRoute(player))"
+          :to="playerToRoute(player)"
           rel="nofollow"
           class="ml-2 link"
         >
@@ -205,7 +189,7 @@ export default {
 
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.$ga.event('player', 'search', 'error_invalid')
-        this.error = this.$t('error.tag-invalid')
+        this.error = 'This is not a tag'
 
         this.invalidTagAttempts++
         if (this.invalidTagAttempts === 2) {
@@ -223,14 +207,14 @@ export default {
       } catch (error) {
         if (error.response.status === 404) {
           this.$ga.event('player', 'search', 'error_notfound')
-          this.error = this.$t('error.tag-notfound')
+          this.error = 'This tag does not exist'
         } else if (error.response.status === 429) {
           this.$ga.event('player', 'search', 'error_timeout')
-          this.error = this.$t('error.api-timeout')
+          this.error = 'Either there was an error with the Brawlstars API, or this tag does not exist. Check it and try again'
         } else {
           this.$ga.exception('cannot get player: ' + error.message)
           this.$ga.event('player', 'search', 'error_api')
-          this.error = this.$t('error.api-unavailable')
+          this.error = 'Could not communicate with the Brawlstars API, try again later'
         }
         return
       } finally {
@@ -238,7 +222,7 @@ export default {
       }
 
       this.$ga.event('player', 'search', 'success')
-      this.$router.push(this.localePath(this.playerRoute))
+      this.$router.push(this.playerRoute)
     },
     ...mapMutations({
       setPlayerTag: 'setPlayerTag',

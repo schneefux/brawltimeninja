@@ -14,8 +14,5 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'comma-dangle': [ 2, 'only-multiline' ],
-  },
-  globals: {
-    '$t': 'readonly',
-  },
+  }
 }
