@@ -537,9 +537,16 @@ export default {
     if (process.static) {
       this.loadLeaderboard()
     }
+
+    const refreshTimer = () => setTimeout(async () => {
+      await this.refreshPlayer()
+      refreshTimer()
+    }, 5 * 60 * 1000)
+    refreshTimer()
   },
   methods: {
     ...mapActions({
+      refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
     }),
   },

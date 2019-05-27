@@ -88,6 +88,10 @@ export const actions = {
     commit('setFeaturedPlayers', featuredPlayers)
     commit('setBlog', blog)
   },
+  async refreshPlayer({ state, commit }) {
+    const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
+    commit('setPlayer', player)
+  },
   async loadPlayer({ state, commit }) {
     if (state.playerLoaded) {
       return
