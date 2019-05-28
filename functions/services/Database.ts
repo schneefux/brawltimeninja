@@ -78,7 +78,7 @@ export default class DatabaseService {
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
       .groupBy('trophies', 'timestamp')
       .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
-    const brawlerHistory = await this.knex
+    const brawlerHistoryEntries = await this.knex
       .select('name', 'timestamp')
       .max('trophies as trophies')
       .from('player_brawler')
@@ -86,6 +86,18 @@ export default class DatabaseService {
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 month'))
       .groupBy('name', 'timestamp')
       .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
+
+    // filter duplicates by trophies in brawler history grouped by name
+    const entriesAreSame =
+      ({ name: nameA, trophies: trophiesA }: BrawlerHistoryEntry, { name: nameB, trophies: trophiesB }: BrawlerHistoryEntry) =>
+        nameA == nameB && trophiesA == trophiesB
+    const brawlerHistory = brawlerHistoryEntries.filter(
+      (entryA, indexA, self) =>
+        indexA == self.findIndex(
+          (entryB) => entriesAreSame(entryA, entryB)
+        )
+    )
+
     return { playerHistory, brawlerHistory } as History;
   }
 
