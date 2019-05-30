@@ -84,7 +84,7 @@
 
           <div
             v-if="player.history.length > 1"
-            class="w-full max-w-xs mx-12 my-3 md:ml-4 md:w-40 relative h-12"
+            class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative h-12"
           >
             <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
               {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
@@ -107,12 +107,33 @@
           </div>
         </div>
 
+        <div
+          v-if="brawlersUnlocked != totalBrawlers"
+          class="bigstat-container"
+        >
+          <div class="bigstat-left bigstat-number">
+            {{ Math.floor(trophiesGoal).toLocaleString() }}
+          </div>
+          <div class="bigstat-right">
+            <p class="bigstat-label w-48 pt-1">
+              <span class="text-xl">
+                Potential&nbsp;Trophies
+              </span>
+              <span class="text-sm">
+                (with&nbsp;all&nbsp;Brawlers&nbsp;unlocked)
+              </span>
+            </p>
+          </div>
+        </div>
+
         <div class="bigstat-container">
           <div class="bigstat-left bigstat-number">
             {{ Math.floor(trophiesPerHour) }}
           </div>
           <div class="bigstat-right bigstat-label text-xl">
-            Trophies per&nbsp;hour
+            <p class="w-24">
+              Trophies per&nbsp;hour
+            </p>
           </div>
         </div>
       </div>
@@ -394,6 +415,7 @@ export default {
       hoursSpent: 0,
       error: '',
       ads: true,
+      totalBrawlers: 26,
     }
   },
   computed: {
@@ -422,11 +444,21 @@ export default {
         },
       }
     },
+    brawlersUnlocked() {
+      return Object.keys(this.player.brawlers).length
+    },
     trophiesPerHour() {
       if (this.hoursSpent === 0) {
         return 0
       }
       return this.player.trophies / this.hoursSpent
+    },
+    trophiesGoal() {
+      const brawlerTrophies = [...Object.values(this.player.brawlers)]
+        .map(({ trophies }) => trophies)
+      brawlerTrophies.sort()
+      const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
+      return medBrawlerTrophies * this.totalBrawlers
     },
     playerHistoryPoints() {
       const dates = this.player.history.map(({ timestamp }) => Date.parse(timestamp))
@@ -567,7 +599,7 @@ export default {
   @apply flex flex-wrap justify-center items-center mt-2 w-full;
 }
 
-@screen md {
+@screen xl {
   .bigstat-container {
     @apply mx-6 w-auto;
   }
