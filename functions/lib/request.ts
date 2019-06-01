@@ -5,7 +5,7 @@ import { Agent as HttpsAgent } from 'https';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 
-const cacheSeconds = 60*5;
+const cacheSeconds = 60*3;
 const cachePath = process.env.CACHE_PATH || 'cache';
 const cacheDisable = !!process.env.CACHE_DISABLE;
 

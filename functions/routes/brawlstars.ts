@@ -15,7 +15,7 @@ router.get('/featured-players', async (ctx, next) => {
 router.get('/player/:tag', async (ctx, next) => {
   try {
     ctx.body = await service.getPlayerStatistics(ctx.params.tag);
-    ctx.set('Cache-Control', 'public, max-age=300');
+    ctx.set('Cache-Control', 'public, max-age=180');
   } catch (error) {
     ctx.throw(error.status, error.reason);
   }
