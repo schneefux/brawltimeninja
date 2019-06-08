@@ -490,7 +490,7 @@ export default {
     daysSinceBrawlerHistoryStart() {
       const brawlersMin = {}
       Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
-        const start = Date.parse(this.player.history[0].timestamp)
+        const start = Date.parse(brawler.history[0].timestamp)
         const now = (new Date()).getTime()
         brawlersMin[brawlerId] = Math.ceil((now - start) / 1000 / 3600 / 24)
       })
