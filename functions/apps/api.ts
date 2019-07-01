@@ -14,11 +14,11 @@ router.use(path + '/status', statusRoutes);
 router.use(path + '/blog', blogRoutes);
 router.use(path, brawlstarsRoutes);
 
+app.use(cors({ origin: '*' })); // TODO for development only
 app.use(router.routes());
 
 const port = parseInt(process.env.PORT || '') || 3001;
 
-app.use(cors({ origin: '*' })); // TODO for development only
 app.listen(port, 'localhost', () => {
   console.log(`listening on port ${port}`)
 });
