@@ -378,8 +378,8 @@
 </template>
 
 <script>
-import Blogroll from '~/components/blogroll'
 import { mapState, mapGetters, mapActions } from 'vuex'
+import Blogroll from '~/components/blogroll'
 
 function scaleMinMax(values) {
   const min = Math.min.apply(Math, values)

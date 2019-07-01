@@ -107,8 +107,8 @@
 </template>
 
 <script>
-import Blogroll from '~/components/blogroll'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import Blogroll from '~/components/blogroll'
 
 function playerToRoute(player) {
   return {
