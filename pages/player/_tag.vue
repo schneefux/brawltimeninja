@@ -415,7 +415,7 @@ export default {
       hoursSpent: 0,
       error: '',
       ads: true,
-      totalBrawlers: 26,
+      totalBrawlers: 27,
     }
   },
   computed: {
