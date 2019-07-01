@@ -230,26 +230,30 @@
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
-        <adsense
-          v-show="ads"
-          root-class="w-full md:w-80 my-2 md:mx-4"
-          ins-class="h-32"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="4939381313"
-        />
-
         <div
-          v-for="(brawler, brawlerId) in player.brawlers"
-          :key="brawlerId"
-          class="card-wrapper md:w-auto mx-auto"
+          v-for="brawler in brawlersAndAds"
+          v-show="ads || brawler.name !== undefined"
+          :key="brawler.id"
+          class="card-wrapper w-full md:flex-1"
         >
-          <div class="card w-80 h-32 bg-primary-dark flex justify-between">
+          <adsense
+            v-if="brawler.name == undefined"
+            root-class=""
+            ins-class="h-32 md:w-80 mx-auto"
+            data-ad-client="ca-pub-6856963757796636"
+            :data-ad-slot="brawler.id"
+          />
+
+          <div
+            v-else
+            class="card w-80 h-32 bg-primary-dark flex justify-between mx-auto"
+          >
             <div class="w-32 relative">
               <span class="z-10 absolute ml-3 mt-2 font-semibold text-white text-2xl text-shadow">
                 {{ brawler.name }}
               </span>
               <img
-                :src="require(`~/assets/images/hero/icon/${brawlerId}_optimized.png`)"
+                :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
                 class="z-0 absolute bottom-0 h-20"
               >
             </div>
@@ -262,7 +266,7 @@
                   {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
                 </span>
                 <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
-                  since {{ daysSinceBrawlerHistoryStart[brawlerId] }}d ago
+                  since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
                 </span>
                 <svg
                   viewBox="0 0 128 32"
@@ -270,7 +274,7 @@
                   class="w-full h-8 overflow-visible"
                 >
                   <polyline
-                    :points="brawlerHistoryPoints[brawlerId].map(([x, y]) => `${x*128},${(1-y)*32} `)"
+                    :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
                     fill="none"
                     stroke="#f2d024"
                     stroke-width="4"
@@ -349,14 +353,6 @@
             </div>
           </div>
         </div>
-
-        <adsense
-          v-show="ads"
-          root-class="w-full md:w-80 my-2 md:mx-4"
-          ins-class="h-32"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="1491090899"
-        />
       </div>
     </div>
 
@@ -500,6 +496,26 @@ export default {
       // shuffle posts
       const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
       return posts.slice(0, 3)
+    },
+    brawlersAndAds() {
+      const adSlots = ['4939381313', '1491090899', '2180482263', '2451945008', '8597130071']
+      const adFrequency = 9
+
+      const brawlers = [...Object.entries(this.player.brawlers)]
+      return brawlers.reduce((agg, [brawlerId, brawler], index, self) => {
+        const brawlerWithId = { id: brawlerId, ...brawler }
+        if (index === self.length - 1) {
+          const ad = { id: adSlots[index / adFrequency + 1] }
+          return agg.concat(brawlerWithId, ad)
+        }
+
+        if (index % adFrequency === 0) {
+          const ad = { id: adSlots[index / adFrequency] }
+          return agg.concat(ad, brawlerWithId)
+        }
+
+        return agg.concat(brawlerWithId)
+      }, [])
     },
     ...mapState({
       player: state => state.player,
