@@ -18,7 +18,10 @@
     <div class="mt-4 mx-4">
       <form
         class="flex flex-wrap justify-center"
-        @submit.prevent="search"
+        @submit="search"
+        :action="`/player/${cleanedTag}`"
+        :target="isInIframe ? '_parent' : ''"
+        :onSubmit="isInIframe ? '' : 'return false;'"
       >
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
@@ -115,7 +118,7 @@ function playerToRoute(player) {
     name: 'player-tag',
     params: {
       tag: player.tag,
-    }
+    },
   }
 }
 
@@ -163,6 +166,13 @@ export default {
     randomPlayers() {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
       return players.slice(0, 3)
+    },
+    isInIframe() {
+      try {
+        return global.window === undefined || global.window.self !== global.window.top
+      } catch (e) {
+        return true
+      }
     },
     ...mapState({
       tagPattern: state => state.tagPattern,
