@@ -5,7 +5,7 @@ export const state = () => ({
   // fill the store from the payload in static build
   blog: payload.blog,
   featuredPlayers: payload.featuredPlayers,
-  tagPattern: '[0289PYLQGRJCUV]{3,}',
+  tagPattern: '^[0289PYLQGRJCUV]{3,}$',
   lastPlayers: [],
   player: {
     tag: '',
