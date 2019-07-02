@@ -72,7 +72,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    return await request<MetaEntry[]>(
+    const response = await request<MetaEntry[]>(
       '/meta',
       trackerUrl,
       {},
@@ -80,6 +80,11 @@ export default class BrawlstarsService {
       15000,
       10800,
     );
+
+    return response.map(entry => ({
+      id: entry.name.replace(/ /g, '_').toLowerCase(),
+      ...entry
+    }))
   }
 
   public async getPlayerStatistics(tag: string) {

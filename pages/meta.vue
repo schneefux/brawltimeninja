@@ -43,6 +43,10 @@
             </th>
             <td class="font-semibold">
               {{ entry.name }}
+              <img
+                class="w-12 mt-1"
+                :src="require(`~/assets/images/hero/icon/${entry.id}_optimized.png`)"
+              >
             </td>
             <td
               v-for="(label, id) in statLabels"
