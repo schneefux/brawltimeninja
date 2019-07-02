@@ -17,6 +17,8 @@ export const state = () => ({
   currentEventsLoaded: false,
   leaderboard: [],
   leaderboardLoaded: false,
+  meta: [],
+  metaLoaded: false,
 })
 
 export const getters = {
@@ -71,6 +73,10 @@ export const mutations = {
   setLeaderboard(state, leaderboard) {
     state.leaderboard = leaderboard
     state.leaderboardLoaded = true
+  },
+  setMeta(state, meta) {
+    state.meta = meta
+    state.metaLoaded = true
   },
 }
 
@@ -127,6 +133,20 @@ export const actions = {
       // not critical, ignore
       exception('cannot get leaderboard: ' + error.message)
       console.error('cannot get leaderboard:', error.message)
+    }
+  },
+  async loadMeta({ state, commit }) {
+    if (state.metaLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta')
+      commit('setMeta', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get meta: ' + error.message)
+      console.error('cannot get meta:', error.message)
     }
   },
 }

@@ -2,6 +2,7 @@ import Knex from 'knex';
 import { Player } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
+import { MetaEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -101,8 +102,86 @@ export default class DatabaseService {
     return { playerHistory, brawlerHistory } as History;
   }
 
-  public async migrate() {
-    if (!await this.knex.schema.hasTable('player')) {
+  public async getMeta() {
+    return await this.knex.raw(`
+      with brawler_history as (
+        select
+          *,
+          row_number() over (partition by player_tag, name order by timestamp desc) as number,
+          row_number() over (partition by player_tag, name order by timestamp asc) as number_rev
+        from player_brawler
+        where timestamp > now() - interval 1 week
+      ),
+      brawler_oldest as (
+        select * from brawler_history where number = 1
+      ),
+      brawler_newest as (
+        select * from brawler_history where number_rev = 1
+      ),
+      trophies_no_star_power as (
+        select
+          name,
+          avg(trophies) as trophies,
+          count(*) as sample
+        from brawler_newest where power in (8, 9)
+        group by name
+      ),
+      trophies_with_star_power as (
+        select
+          name,
+          avg(trophies) as trophies,
+          count(*) as sample
+        from brawler_newest where power = 10
+        group by name
+      ),
+      trophies_sum_old as (
+        select
+          name,
+          sum(trophies) as trophies,
+          sum(timestampdiff(hour, now(), timestamp)) as age_hours,
+          count(*) as sample
+        from brawler_newest
+        where number <> 1
+        group by name
+      ),
+      trophies_sum_new as (
+        select
+          name,
+          sum(trophies) as trophies,
+          sum(timestampdiff(hour, now(), timestamp)) as age_hours,
+          count(*) as sample
+        from brawler_oldest
+        where number_rev <> 1
+        group by name
+      ),
+      trophies_diff as (
+        select
+          n.name,
+          (n.trophies - o.trophies) / n.sample as trophies,
+          (n.age_hours - o.age_hours) / n.sample as age_hours,
+          n.sample
+        from trophies_sum_old o, trophies_sum_new n
+        where o.name = n.name
+      )
+      select
+        w.name,
+        wo.trophies as trophies,
+        w.trophies as sp_trophies,
+        diff.trophies / diff.age_hours * 24 * 7 as trophies_diff_week
+      from trophies_with_star_power w, trophies_no_star_power wo, trophies_diff diff
+      where w.name = wo.name and w.name = diff.name
+        `).then((response) => response[0].map(
+          (entry: any) => (<MetaEntry> {
+            name: entry.name,
+            trophies: parseFloat(entry.trophies),
+            spTrophies: parseFloat(entry.sp_trophies),
+            trophyChange: parseFloat(entry.trophies_diff_week),
+          })
+        ));
+      }
+
+      public async migrate() {
+      if (!await this.knex.schema.hasTable('player')) {
       await this.knex.schema.createTable('player', (table) => {
         table.bigIncrements('id');
 

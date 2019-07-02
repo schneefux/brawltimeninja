@@ -28,4 +28,9 @@ router.get('/tracker/history/:tag', async (ctx, next) => {
   await next();
 });
 
+router.get('/tracker/meta', async (ctx, next) => {
+  ctx.body = await service.getMeta();
+  await next();
+});
+
 export default router.routes();

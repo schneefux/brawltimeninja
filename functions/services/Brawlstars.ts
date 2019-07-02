@@ -3,6 +3,7 @@ import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
+import { MetaEntry } from '~/model/MetaEntry';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const token = process.env.BRAWLSTARS_TOKEN || '';
@@ -54,7 +55,9 @@ export default class BrawlstarsService {
       '/top/exp',
       trackerUrl,
       {},
-      {}
+      {},
+      15000,
+      3600,
     );
 
     return response.map(entry => ({
@@ -62,6 +65,21 @@ export default class BrawlstarsService {
       tag: entry.tag,
       hours: xpToHours(entry.total_exp),
     }));
+  }
+
+  public async getMeta() {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    return await request<MetaEntry[]>(
+      '/meta',
+      trackerUrl,
+      {},
+      {},
+      15000,
+      10800,
+    );
   }
 
   public async getPlayerStatistics(tag: string) {
