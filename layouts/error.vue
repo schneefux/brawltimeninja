@@ -20,18 +20,18 @@
       >
         Return to home
       </nuxt-link>
-
-      <youtube
-        v-if="error.statusCode == 404"
-        ref="helpVideo"
-        class="mt-6 mx-auto max-w-full"
-        width="480"
-        height="271"
-        video-id="LuUmyorhSIQ"
-        @ready="startVideo"
-        @ended="$refs.helpVideo.player.playVideo()"
-      />
     </p>
+
+    <youtube
+      v-if="error.statusCode == 404"
+      ref="helpVideo"
+      class="mt-6 mx-auto max-w-full"
+      width="480"
+      height="271"
+      video-id="LuUmyorhSIQ"
+      @ready="startVideo"
+      @ended="$refs.helpVideo.player.playVideo()"
+    />
   </div>
 </template>
 
