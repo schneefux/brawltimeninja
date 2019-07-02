@@ -1,11 +1,11 @@
 <template>
   <div class="mx-auto py-4 px-2">
-    <div class="bg-grey-lighter py-8 px-6 my-8 text-black">
-      <h1 class="text-4xl md:text-center mt-2 font-semibold">
+    <div class="md:bg-grey-lighter py-8 px-6 my-8 md:text-black">
+      <h1 class="text-4xl md:text-center mt-2 mb-8 font-semibold">
         Meta
       </h1>
 
-      <table class="mt-8 table">
+      <table class="table hidden md:block">
         <caption class="mb-1">
           Average Trophy statistics from Pros on Brawl Time Ninja this week
         </caption>
@@ -39,38 +39,93 @@
         </thead>
         <tbody>
           <tr
-            v-for="(entry, index) in sortedMeta"
-            :key="entry.name"
+            v-for="(brawler, index) in sortedMeta"
+            :key="brawler.id"
           >
             <th scope="row" class="text-right">
               {{ index + 1 }}
             </th>
             <td class="font-semibold">
-              {{ entry.name }}
+              {{ brawler.name }}
               <img
                 class="w-12 mt-1"
-                :src="require(`~/assets/images/hero/icon/${entry.id}_optimized.png`)"
+                :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
               >
             </td>
             <td
-              v-for="(label, id) in statLabels"
-              :key="id"
+              v-for="(label, prop) in statLabels"
+              :key="prop"
               class="text-center"
             >
-              {{ Math.round(entry[id]) }}
+              {{ Math.round(brawler[prop]) }}
             </td>
           </tr>
         </tbody>
       </table>
+
+      <div class="flex flex-wrap justify-between md:hidden">
+        <div class="mb-4 text-center">
+          <button
+            v-for="(label, id) in statLabels"
+            :key="id"
+            class="mr-4"
+            @click="sortBy(id)"
+          >
+            <span v-if="comparator === id">
+              <template v-if="order < 0">▲</template>
+              <template v-else>▼</template>
+            </span>
+            <span class="underline">{{ statLabels[id] }}</span>
+          </button>
+        </div>
+
+        <div
+          v-for="(brawler, index) in sortedMeta"
+          :key="brawler.id"
+          class="card-wrapper w-full md:flex-1"
+        >
+          <brawler-card
+            :id="brawler.id"
+            :name="`#${index + 1} ${brawler.name}`"
+          >
+            <template v-slot:stats>
+              <table>
+                <tr
+                  v-for="(label, prop) in statLabels"
+                  :key="prop"
+                  class="card-props"
+                >
+                  <td class="text-center">
+                    <img
+                      :src="require(`~/assets/images/icon/${statIcons[prop]}.png`)"
+                      class="card-prop-icon"
+                    >
+                  </td>
+                  <td class="card-prop-value text-right pr-1">
+                    {{ Math.round(brawler[prop]) }}
+                  </td>
+                  <td class="card-prop-label">
+                    {{ statLabels[prop] }}
+                  </td>
+                </tr>
+              </table>
+            </template>
+          </brawler-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import BrawlerCard from '~/components/brawler-card'
 
 export default {
   name: 'MetaPage',
+  components: {
+    BrawlerCard,
+  },
   head() {
     return {
       title: 'Meta',
@@ -90,12 +145,18 @@ export default {
       spTrophies: 'With Star Power',
       trophyChange: '1 week +/-',
     }
+    const statIcons = {
+      trophies: 'trophy_optimized',
+      spTrophies: 'starpower_optimized',
+      trophyChange: 'trophy_optimized', // TODO
+    }
 
     return {
       comparator: 'trophies',
       order: +1,
       comparators,
       statLabels,
+      statIcons,
     }
   },
   computed: {
