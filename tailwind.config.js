@@ -344,6 +344,7 @@ module.exports = {
     }),
     minWidth: {
       '0': '0',
+      '80': '20rem',
       full: '100%',
     },
     minHeight: {
