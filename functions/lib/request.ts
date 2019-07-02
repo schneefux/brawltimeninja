@@ -5,7 +5,6 @@ import { Agent as HttpsAgent } from 'https';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 
-const cacheSeconds = 60*3;
 const cachePath = process.env.CACHE_PATH || 'cache';
 const cacheDisable = !!process.env.CACHE_DISABLE;
 
@@ -13,7 +12,7 @@ const cache = cacheDisable ?
   cacheManager.caching({
     store: 'memory',
     max: 0,
-    ttl: cacheSeconds
+    ttl: 180,
   }) :
   cacheManager.caching(<any>{
     store: fsStore,
@@ -39,7 +38,8 @@ export function request<T>(
     base: string,
     params: { [key: string]: string },
     headers: { [header: string]: string },
-    timeout: number = 5000): Promise<T> {
+    timeoutMs: number = 5000,
+    ttlS: number = 180): Promise<T> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
@@ -47,7 +47,7 @@ export function request<T>(
   const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent;
 
   return Promise.race([
-    sleep(timeout).then(() => {
+    sleep(timeoutMs).then(() => {
       throw {
         status: 429,
         reason: 'API took too long to respond',
@@ -67,7 +67,7 @@ export function request<T>(
 
         return response.json();
       })
-    ),
+    , { ttl: ttlS }),
   ]);
 }
 

@@ -42,4 +42,14 @@ router.get('/leaderboard/hours', async (ctx, next) => {
   await next();
 });
 
+router.get('/meta', async (ctx, next) => {
+  try {
+    ctx.body = await service.getMeta();
+    ctx.set('Cache-Control', 'public, max-age=6000');
+  } catch (error) {
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 export default router.routes();

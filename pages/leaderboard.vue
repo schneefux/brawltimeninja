@@ -72,9 +72,6 @@ export default {
       title: 'Leaderboard',
     }
   },
-  data() {
-    return {}
-  },
   computed: {
     ...mapState({
       leaderboard: state => state.leaderboard,
