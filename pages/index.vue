@@ -18,10 +18,10 @@
     <div class="mt-4 mx-4">
       <form
         class="flex flex-wrap justify-center"
-        @submit="search"
         :action="`/player/${cleanedTag}`"
         :target="isInIframe ? '_parent' : ''"
         :onSubmit="isInIframe ? '' : 'return false;'"
+        @submit="search"
       >
         <div class="w-full flex justify-center">
           <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
@@ -62,14 +62,15 @@
         <summary @click="loadHelpVideo = true">
           Need help?
         </summary>
-        <iframe
+        <youtube
           v-if="loadHelpVideo"
+          ref="helpVideo"
           class="mt-3 max-w-full"
           width="480"
           height="271"
-          frameborder="0"
-          allow="encrypted-media; picture-in-picture"
-          src="https://www.youtube-nocookie.com/embed/LuUmyorhSIQ?playlist=LuUmyorhSIQ&version=3&rel=0&fs=0&loop=1&playsinline=1"
+          video-id="LuUmyorhSIQ"
+          @ready="$ga.event('player', 'search', 'play_video'); $refs.helpVideo.player.playVideo()"
+          @ended="$refs.helpVideo.player.playVideo()"
         />
       </details>
     </div>
@@ -202,7 +203,7 @@ export default {
         this.error = 'This is not a tag'
 
         this.invalidTagAttempts++
-        if (this.invalidTagAttempts === 2) {
+        if (this.invalidTagAttempts === 1) {
           this.$refs.videoHelpDropdown.setAttribute('open', '')
           this.loadHelpVideo = true
         }

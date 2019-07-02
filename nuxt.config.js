@@ -47,6 +47,7 @@ export default {
     { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/analytics', mode: 'client' },
+    { src: '~/plugins/youtube', mode: 'client' },
   ],
 
   modules: [
