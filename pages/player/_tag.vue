@@ -239,7 +239,7 @@
           <adsense
             v-if="brawler.name == undefined"
             root-class=""
-            ins-class="h-32 md:w-80 mx-auto"
+            ins-class="h-32 md:min-w-80 mx-auto"
             data-ad-client="ca-pub-6856963757796636"
             :data-ad-slot="brawler.id"
           />
