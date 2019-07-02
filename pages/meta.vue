@@ -22,14 +22,18 @@
               :key="id"
               scope="col"
               class="text-right whitespace-no-wrap"
-              @click="sortBy(id)"
             >
-              <span v-if="comparator === id">
-                <template v-if="order < 0">▲</template>
-                <template v-else>▼</template>
-              </span>
-              <span v-else>&nbsp;&nbsp;&nbsp;</span>
-              <span class="underline">{{ statLabels[id] }}</span>
+              <button
+                class="font-bold"
+                @click="sortBy(id)"
+              >
+                <span v-if="comparator === id">
+                  <template v-if="order < 0">▲</template>
+                  <template v-else>▼</template>
+                </span>
+                <span v-else>&nbsp;&nbsp;&nbsp;</span>
+                <span class="underline">{{ statLabels[id] }}</span>
+              </button>
             </th>
           </tr>
         </thead>
