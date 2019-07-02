@@ -20,6 +20,17 @@
       >
         Return to home
       </nuxt-link>
+
+      <youtube
+        v-if="error.statusCode == 404"
+        ref="helpVideo"
+        class="mt-6 mx-auto max-w-full"
+        width="480"
+        height="271"
+        video-id="LuUmyorhSIQ"
+        @ready="startVideo"
+        @ended="$refs.helpVideo.player.playVideo()"
+      />
     </p>
   </div>
 </template>
@@ -28,5 +39,12 @@
 export default {
   layout: 'default',
   props: ['error'],
+  methods: {
+    startVideo() {
+      this.$ga.event('player', 'search', '404_play_video')
+      this.$refs.helpVideo.player.mute()
+      this.$refs.helpVideo.player.playVideo()
+    }
+  },
 }
 </script>

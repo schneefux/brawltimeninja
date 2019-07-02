@@ -69,7 +69,7 @@
           width="480"
           height="271"
           video-id="LuUmyorhSIQ"
-          @ready="$ga.event('player', 'search', 'play_video'); $refs.helpVideo.player.playVideo()"
+          @ready="startVideo"
           @ended="$refs.helpVideo.player.playVideo()"
         />
       </details>
@@ -195,6 +195,11 @@ export default {
     }
   },
   methods: {
+    startVideo() {
+      this.$ga.event('player', 'search', 'play_video')
+      this.$refs.helpVideo.player.mute()
+      this.$refs.helpVideo.player.playVideo()
+    },
     async search() {
       this.error = undefined
 
