@@ -83,27 +83,37 @@
           </div>
 
           <div
-            v-if="player.history.length > 1"
-            class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative h-12"
+            class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative"
           >
-            <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
-              {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
-            </span>
-            <span class="absolute text-sm text-grey-light text-shadow-grey-darkest -mb-2 right-0 bottom-0">
-              since {{ daysSincePlayerHistoryStart }}d ago
-            </span>
-            <svg
-              viewBox="0 0 240 32"
-              preserveAspectRatio="none"
-              class="absolute left-0 bottom-0 w-full h-8 overflow-visible"
+            <div
+              v-if="player.history.length > 1 && false"
+              class="h-12"
             >
-              <polyline
-                :points="playerHistoryPoints.map(([x, y]) => `${x*240},${(1-y)*32} `)"
-                fill="none"
-                stroke="#f2d024"
-                stroke-width="4"
-              /> <!-- stroke: secondary-dark -->
-            </svg>
+              <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
+                {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
+              </span>
+              <span class="absolute text-sm text-grey-light text-shadow-grey-darkest -mb-2 right-0 bottom-0">
+                since {{ daysSincePlayerHistoryStart }}d ago
+              </span>
+              <svg
+                viewBox="0 0 240 32"
+                preserveAspectRatio="none"
+                class="absolute left-0 bottom-0 w-full h-8 overflow-visible"
+              >
+                <polyline
+                  :points="playerHistoryPoints.map(([x, y]) => `${x*240},${(1-y)*32} `)"
+                  fill="none"
+                  stroke="#f2d024"
+                  stroke-width="4"
+                /> <!-- stroke: secondary-dark -->
+              </svg>
+            </div>
+            <span
+              v-else
+              class="md:text-sm italic"
+            >
+              Visit again to see progress charts
+            </span>
           </div>
         </div>
 
