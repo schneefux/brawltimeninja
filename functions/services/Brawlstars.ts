@@ -77,7 +77,7 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      15000,
+      30000,
       10800,
     );
 

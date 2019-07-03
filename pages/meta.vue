@@ -86,14 +86,21 @@
         >
           <brawler-card
             :id="brawler.id"
-            :name="`#${index + 1} ${brawler.name}`"
+            :name="brawler.name"
           >
+            <template v-slot:history>
+              <div class="h-12 text-right">
+                <span class="font-semibold text-white text-2xl text-shadow">
+                  #{{ index + 1}}
+                </span>
+              </div>
+            </template>
             <template v-slot:stats>
               <table>
                 <tr
                   v-for="(label, prop) in statLabels"
                   :key="prop"
-                  class="card-props"
+                  class="card-props whitespace-no-wrap"
                 >
                   <td class="text-center">
                     <img
@@ -102,7 +109,7 @@
                     >
                   </td>
                   <td class="card-prop-value text-right pr-1">
-                    {{ Math.round(brawler[prop]) }}
+                    {{ statFormatters[prop](brawler[prop]) }}
                   </td>
                   <td class="card-prop-label">
                     {{ statLabels[prop] }}
@@ -143,12 +150,17 @@ export default {
     const statLabels = {
       trophies: 'Trophies',
       spTrophies: 'With Star Power',
-      trophyChange: '1 week +/-',
+      trophyChange: 'Total Week +/-',
     }
     const statIcons = {
       trophies: 'trophy_optimized',
       spTrophies: 'starpower_optimized',
       trophyChange: 'trophy_optimized', // TODO
+    }
+    const statFormatters = {
+      trophies: n => Math.round(n),
+      spTrophies: n => Math.round(n),
+      trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
     }
 
     return {
@@ -157,6 +169,7 @@ export default {
       comparators,
       statLabels,
       statIcons,
+      statFormatters,
     }
   },
   computed: {

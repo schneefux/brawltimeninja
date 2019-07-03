@@ -249,28 +249,30 @@
             :id="brawler.id"
             :name="brawler.name"
           >
-            <template
-              v-if="brawler.history.length > 1"
-              v-slot:history
-            >
-              <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
-                {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
-              </span>
-              <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
-                since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
-              </span>
-              <svg
-                viewBox="0 0 128 32"
-                preserveAspectRatio="none"
-                class="w-full h-8 overflow-visible"
+            <template v-slot:history>
+              <div
+                v-if="brawler.history.length > 1"
+                class="w-32 relative mx-auto my-2"
               >
-                <polyline
-                  :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
-                  fill="none"
-                  stroke="#f2d024"
-                  stroke-width="4"
-                /> <!-- stroke: secondary-dark -->
-              </svg>
+                <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
+                  {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
+                </span>
+                <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
+                  since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
+                </span>
+                <svg
+                  viewBox="0 0 128 32"
+                  preserveAspectRatio="none"
+                  class="w-full h-8 overflow-visible"
+                >
+                  <polyline
+                    :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
+                    fill="none"
+                    stroke="#f2d024"
+                    stroke-width="4"
+                  /> <!-- stroke: secondary-dark -->
+                </svg>
+              </div>
             </template>
             <template v-slot:stats>
               <table>

@@ -3,7 +3,7 @@
     class="card w-80 h-32 bg-primary-dark flex justify-between mx-auto"
   >
     <div class="w-32 relative">
-      <span class="z-10 absolute ml-3 mt-2 font-semibold text-white text-2xl text-shadow">
+      <span class="z-10 absolute ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap">
         {{ name }}
       </span>
       <img
@@ -12,9 +12,7 @@
       >
     </div>
     <div class="py-2 pr-3 flex flex-col justify-center items-end">
-      <div
-        class="w-32 relative mx-auto my-2"
-      >
+      <div>
         <slot name="history"></slot>
       </div>
       <div>
