@@ -84,7 +84,7 @@
               :key="prop"
               class="text-center"
             >
-              {{ Math.round(brawler[prop]) }}
+              {{ statFormatters[prop](brawler[prop]) }}
             </td>
           </tr>
         </tbody>
