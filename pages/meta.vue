@@ -1,11 +1,30 @@
 <template>
   <div class="mx-auto py-4 px-2">
-    <div class="md:bg-grey-lighter py-8 px-6 my-8 md:text-black">
+    <div
+      :class="{ 'md:bg-grey-lighter': !forceMobile, 'md:text-black': !forceMobile }"
+      class="py-8 px-6 my-8 relative"
+    >
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         Meta
       </h1>
 
-      <table class="table hidden md:block">
+      <button
+        v-show="!forceMobile"
+        @click="forceMobile = true"
+        class="hidden md:block text-sm text-grey-darker mr-3 mt-2 absolute top-0 right-0 underline">
+        Switch to Cards View
+      </button>
+      <button
+        v-show="forceMobile"
+        @click="forceMobile = false"
+        class="hidden md:block mx-auto -mt-4 mb-6 text-sm text-grey-light underline">
+        Switch to Table View
+      </button>
+
+      <table
+        v-show="!forceMobile"
+        class="table hidden md:block"
+      >
         <caption class="mb-1">
           Average Trophy statistics from Pros on Brawl Time Ninja this week
         </caption>
@@ -63,8 +82,11 @@
         </tbody>
       </table>
 
-      <div class="flex flex-wrap justify-between md:hidden">
-        <div class="text-center">
+      <div
+        :class="{ 'md:hidden': !forceMobile }"
+        class="flex flex-wrap justify-between"
+      >
+        <div class="text-center w-full">
           <button
             v-for="(label, id) in statLabels"
             :key="id"
@@ -166,6 +188,7 @@ export default {
     return {
       comparator: 'trophies',
       order: +1,
+      forceMobile: false,
       comparators,
       statLabels,
       statIcons,
