@@ -24,6 +24,14 @@
         Switch to Table View
       </button>
 
+      <adsense
+        v-show="ads"
+        root-class="hidden md:block"
+        ins-class="h-24 mb-2"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="9201379700"
+      />
+
       <table
         v-show="!forceMobile"
         class="table hidden md:block"
@@ -58,11 +66,11 @@
         </thead>
         <tbody>
           <tr
-            v-for="(brawler, index) in sortedMeta"
+            v-for="brawler in sortedMeta"
             :key="brawler.id"
           >
             <th scope="row" class="text-right">
-              {{ index + 1 }}
+              {{ brawler.rank }}
             </th>
             <td class="font-semibold">
               {{ brawler.name }}
@@ -102,18 +110,28 @@
         </div>
 
         <div
-          v-for="(brawler, index) in sortedMeta"
+          v-for="brawler in brawlersAndAds"
+          v-show="ads || brawler.name !== undefined"
           :key="brawler.id"
           class="card-wrapper w-full md:flex-1"
         >
+          <adsense
+            v-if="brawler.name == undefined"
+            root-class=""
+            ins-class="h-32 md:min-w-80 mx-auto"
+            data-ad-client="ca-pub-6856963757796636"
+            :data-ad-slot="brawler.id"
+          />
+
           <brawler-card
+            v-else
             :id="brawler.id"
             :name="brawler.name"
           >
             <template v-slot:history>
               <div class="h-12 text-right">
                 <span class="font-semibold text-white text-2xl text-shadow">
-                  #{{ index + 1}}
+                  #{{ brawler.rank }}
                 </span>
               </div>
             </template>
@@ -142,12 +160,21 @@
           </brawler-card>
         </div>
       </div>
+
+      <adsense
+        v-show="ads"
+        root-class="hidden md:block"
+        ins-class="h-32 mt-4"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="7838173054"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { induceAdsIntoBrawlers } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card'
 
 export default {
@@ -186,6 +213,7 @@ export default {
     }
 
     return {
+      ads: true,
       comparator: 'trophies',
       order: +1,
       forceMobile: false,
@@ -199,10 +227,20 @@ export default {
     sortedMeta() {
       const meta = this.meta.slice()
       return meta.sort(this.comparators[this.comparator])
+        .map((entry, index) => ({
+          ...entry,
+          rank: index + 1,
+        }))
+    },
+    brawlersAndAds() {
+      const adSlots = ['5457575815', '2907434096', '3837372386', '6271964031', '9020582159', '9306580664']
+      const adFrequency = 7
+      const brawlers = this.sortedMeta
+      return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
     },
     ...mapState({
       meta: state => state.meta,
-    }),
+    })
   },
   async fetch({ store }) {
     if (!process.static) {
@@ -212,6 +250,19 @@ export default {
   mounted() {
     if (process.static) {
       this.loadMeta()
+    }
+
+    // check for ads, same as in _tag.vue
+    if (global.window !== undefined) {
+      const checkAdblock = () => {
+        this.ads = global.adsbygoogle.loaded === true
+      }
+
+      if (global.document.readyState === 'complete') {
+        setTimeout(checkAdblock, 5000) // TODO make this smarter
+      } else {
+        global.window.addEventListener('load', checkAdblock)
+      }
     }
   },
   methods: {

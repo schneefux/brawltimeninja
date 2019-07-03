@@ -371,6 +371,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import { induceAdsIntoBrawlers } from '~/store/index'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 
@@ -494,22 +495,12 @@ export default {
     brawlersAndAds() {
       const adSlots = ['4939381313', '1491090899', '2180482263', '2451945008', '8597130071']
       const adFrequency = 9
-
-      const brawlers = [...Object.entries(this.player.brawlers)]
-      return brawlers.reduce((agg, [brawlerId, brawler], index, self) => {
-        const brawlerWithId = { id: brawlerId, ...brawler }
-        if (index === self.length - 1) {
-          const ad = { id: adSlots[index / adFrequency + 1] }
-          return agg.concat(brawlerWithId, ad)
-        }
-
-        if (index % adFrequency === 0) {
-          const ad = { id: adSlots[index / adFrequency] }
-          return agg.concat(ad, brawlerWithId)
-        }
-
-        return agg.concat(brawlerWithId)
-      }, [])
+      const brawlersKV = [...Object.entries(this.player.brawlers)]
+      const brawlers = brawlersKV.map(([brawlerId, brawler]) => ({
+        id: brawlerId,
+        ...brawler
+      }))
+      return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
     },
     ...mapState({
       player: state => state.player,
