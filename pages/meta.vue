@@ -198,7 +198,7 @@ export default {
     }
     const statLabels = {
       trophies: 'Trophies',
-      spTrophies: 'With Star Power',
+      spTrophies: 'with Star Power',
       trophyChange: 'since 7d ago',
     }
     const statIcons = {
