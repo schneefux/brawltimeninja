@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto py-4 px-2">
     <div class="md:bg-grey-lighter py-8 px-6 my-8 md:text-black">
-      <h1 class="text-4xl md:text-center mt-2 mb-8 font-semibold">
+      <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         Meta
       </h1>
 
@@ -64,18 +64,18 @@
       </table>
 
       <div class="flex flex-wrap justify-between md:hidden">
-        <div class="mb-4 text-center">
+        <div class="text-center">
           <button
             v-for="(label, id) in statLabels"
             :key="id"
-            class="mr-4"
+            class="mr-3 mb-2 bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light text-black font-semibold text-sm border-2 rounded py-1 px-2"
             @click="sortBy(id)"
           >
             <span v-if="comparator === id">
               <template v-if="order < 0">▲</template>
               <template v-else>▼</template>
             </span>
-            <span class="underline">{{ statLabels[id] }}</span>
+            <span>{{ statLabels[id] }}</span>
           </button>
         </div>
 
