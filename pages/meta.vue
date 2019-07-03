@@ -25,7 +25,7 @@
       </button>
 
       <adsense
-        v-show="ads"
+        v-if="ads"
         root-class="hidden md:block"
         ins-class="h-24 mb-2"
         data-ad-client="ca-pub-6856963757796636"
@@ -109,60 +109,61 @@
           </button>
         </div>
 
-        <div
-          v-for="brawler in brawlersAndAds"
-          v-show="ads || brawler.name !== undefined"
-          :key="brawler.id"
-          class="card-wrapper w-full md:flex-1"
-        >
-          <adsense
-            v-if="brawler.name == undefined"
-            root-class=""
-            ins-class="h-32 md:min-w-80 mx-auto"
-            data-ad-client="ca-pub-6856963757796636"
-            :data-ad-slot="brawler.id"
-          />
-
-          <brawler-card
-            v-else
-            :id="brawler.id"
-            :name="brawler.name"
+        <template v-for="brawler in brawlersAndAds">
+          <div
+            v-if="ads || brawler.name !== undefined"
+            :key="brawler.id"
+            class="card-wrapper w-full md:flex-1"
           >
-            <template v-slot:history>
-              <div class="h-12 text-right">
-                <span class="font-semibold text-white text-2xl text-shadow">
-                  #{{ brawler.rank }}
-                </span>
-              </div>
-            </template>
-            <template v-slot:stats>
-              <table>
-                <tr
-                  v-for="(label, prop) in statLabels"
-                  :key="prop"
-                  class="card-props whitespace-no-wrap"
-                >
-                  <td class="text-center">
-                    <img
-                      :src="require(`~/assets/images/icon/${statIcons[prop]}.png`)"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ statFormatters[prop](brawler[prop]) }}
-                  </td>
-                  <td class="card-prop-label">
-                    {{ statLabels[prop] }}
-                  </td>
-                </tr>
-              </table>
-            </template>
-          </brawler-card>
-        </div>
+            <adsense
+              v-if="ads && brawler.name === undefined"
+              root-class=""
+              ins-class="h-32 md:min-w-80 mx-auto"
+              data-ad-client="ca-pub-6856963757796636"
+              :data-ad-slot="brawler.id"
+            />
+
+            <brawler-card
+              v-if="brawler.name !== undefined"
+              :id="brawler.id"
+              :name="brawler.name"
+            >
+              <template v-slot:history>
+                <div class="h-12 text-right">
+                  <span class="font-semibold text-white text-2xl text-shadow">
+                    #{{ brawler.rank }}
+                  </span>
+                </div>
+              </template>
+              <template v-slot:stats>
+                <table>
+                  <tr
+                    v-for="(label, prop) in statLabels"
+                    :key="prop"
+                    class="card-props whitespace-no-wrap"
+                  >
+                    <td class="text-center">
+                      <img
+                        :src="require(`~/assets/images/icon/${statIcons[prop]}.png`)"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ statFormatters[prop](brawler[prop]) }}
+                    </td>
+                    <td class="card-prop-label">
+                      {{ statLabels[prop] }}
+                    </td>
+                  </tr>
+                </table>
+              </template>
+            </brawler-card>
+          </div>
+        </template>
       </div>
 
       <adsense
-        v-show="ads"
+        v-if="ads"
         root-class="hidden md:block"
         ins-class="h-32 mt-4"
         data-ad-client="ca-pub-6856963757796636"
