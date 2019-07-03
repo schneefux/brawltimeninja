@@ -77,10 +77,10 @@
 
     <div class="my-4 text-center max-w-sm">
       <p class="text-grey">
-        <span v-show="lastPlayers.length === 0">
+        <span v-if="lastPlayers.length === 0">
           Or check one of these profiles:
         </span>
-        <span v-show="lastPlayers.length > 0">
+        <span v-if="lastPlayers.length > 0">
           Recently viewed:
         </span>
       </p>
@@ -98,7 +98,7 @@
     </div>
 
     <div
-      v-show="relevantGuides.length > 0"
+      v-if="relevantGuides.length > 0"
       class="mt-10 lg:mt-6 mb-6 container"
     >
       <blogroll

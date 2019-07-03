@@ -177,14 +177,14 @@
         </div>
 
         <adsense
-          v-show="ads"
+          v-if="ads"
           root-class="w-full md:w-1/2 mt-1 mx-auto"
           ins-class="mx-4 h-24"
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3933066188"
         />
         <div
-          v-show="!ads"
+          v-else
           class="w-full md:w-1/2 mt-3 mx-auto text-center leading-tight"
         >
           <div class="flex flex-wrap justify-center items-center md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
@@ -203,7 +203,7 @@
 
     <div class="section">
       <adsense
-        v-show="ads"
+        v-if="ads"
         root-class="w-full mt-6 mx-auto"
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
@@ -230,126 +230,128 @@
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
-        <div
-          v-for="brawler in brawlersAndAds"
-          v-show="ads || brawler.name !== undefined"
-          :key="brawler.id"
-          class="card-wrapper w-full md:flex-1"
-        >
-          <adsense
-            v-if="brawler.name == undefined"
-            root-class=""
-            ins-class="h-32 md:min-w-80 mx-auto"
-            data-ad-client="ca-pub-6856963757796636"
-            :data-ad-slot="brawler.id"
-          />
-
-          <brawler-card
-            v-else
-            :id="brawler.id"
-            :name="brawler.name"
+        <template v-for="brawler in brawlersAndAds">
+          <div
+            v-if="ads || brawler.name !== undefined"
+            :key="brawler.id"
+            class="card-wrapper w-full md:flex-1"
           >
-            <template v-slot:history>
-              <div
-                v-if="brawler.history.length > 1"
-                class="w-32 relative mx-auto my-2"
-              >
-                <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
-                  {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
-                </span>
-                <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
-                  since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
-                </span>
-                <svg
-                  viewBox="0 0 128 32"
-                  preserveAspectRatio="none"
-                  class="w-full h-8 overflow-visible"
+            <adsense
+              v-if="ads && brawler.name === undefined"
+              v-show="ads"
+              root-class=""
+              ins-class="h-32 md:min-w-80 mx-auto"
+              data-ad-client="ca-pub-6856963757796636"
+              :data-ad-slot="brawler.id"
+            />
+
+            <brawler-card
+              v-if="brawler.name !== undefined"
+              :id="brawler.id"
+              :name="brawler.name"
+            >
+              <template v-slot:history>
+                <div
+                  v-if="brawler.history.length > 1"
+                  class="w-32 relative mx-auto my-2"
                 >
-                  <polyline
-                    :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
-                    fill="none"
-                    stroke="#f2d024"
-                    stroke-width="4"
-                  /> <!-- stroke: secondary-dark -->
-                </svg>
-              </div>
-            </template>
-            <template v-slot:stats>
-              <table>
-                <tr
-                  v-if="brawler.history.length <= 1"
-                  class="card-props"
-                >
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/leaderboards_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.rank }}
-                  </td>
-                  <td class="card-prop-label">
-                    Rank
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.trophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.highestTrophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Max Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      v-if="brawler.power < 10"
-                      src="~/assets/images/icon/powerpoint_optimized.png"
-                      class="card-prop-icon"
-                    >
-                    <img
-                      v-else
-                      src="~/assets/images/icon/starpower_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.power }}
-                  </td>
-                  <td class="card-prop-label">
-                    Power Level
-                  </td>
-                </tr>
-              </table>
-            </template>
-          </brawler-card>
-        </div>
+                  <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
+                    {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
+                  </span>
+                  <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
+                    since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
+                  </span>
+                  <svg
+                    viewBox="0 0 128 32"
+                    preserveAspectRatio="none"
+                    class="w-full h-8 overflow-visible"
+                  >
+                    <polyline
+                      :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
+                      fill="none"
+                      stroke="#f2d024"
+                      stroke-width="4"
+                    /> <!-- stroke: secondary-dark -->
+                  </svg>
+                </div>
+              </template>
+              <template v-slot:stats>
+                <table>
+                  <tr
+                    v-if="brawler.history.length <= 1"
+                    class="card-props"
+                  >
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/leaderboards_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.rank }}
+                    </td>
+                    <td class="card-prop-label">
+                      Rank
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.trophies }}
+                    </td>
+                    <td class="card-prop-label">
+                      Trophies
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.highestTrophies }}
+                    </td>
+                    <td class="card-prop-label">
+                      Max Trophies
+                    </td>
+                  </tr>
+                  <tr class="card-props">
+                    <td class="text-center">
+                      <img
+                        v-if="brawler.power < 10"
+                        src="~/assets/images/icon/powerpoint_optimized.png"
+                        class="card-prop-icon"
+                      >
+                      <img
+                        v-else
+                        src="~/assets/images/icon/starpower_optimized.png"
+                        class="card-prop-icon"
+                      >
+                    </td>
+                    <td class="card-prop-value text-right pr-1">
+                      {{ brawler.power }}
+                    </td>
+                    <td class="card-prop-label">
+                      Power Level
+                    </td>
+                  </tr>
+                </table>
+              </template>
+            </brawler-card>
+          </div>
+        </template>
       </div>
     </div>
 
     <div
-      v-show="relevantGuides.length > 0"
+      v-if="relevantGuides.length > 0"
       class="section-heading"
     >
       <h2 class="text-2xl font-semibold">
@@ -358,7 +360,7 @@
     </div>
 
     <div
-      v-show="relevantGuides.length > 0"
+      v-if="relevantGuides.length > 0"
       class="section"
     >
       <blogroll
