@@ -1,6 +1,22 @@
 import { exception } from 'vue-analytics'
 import payload from './payload.json'
 
+export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
+  return brawlers.reduce((agg, brawler, index, self) => {
+    if (index === self.length - 1) {
+      const ad = { id: adSlots[index / adFrequency + 1] }
+      return agg.concat(brawler, ad)
+    }
+
+    if (index % adFrequency === 0) {
+      const ad = { id: adSlots[index / adFrequency] }
+      return agg.concat(ad, brawler)
+    }
+
+    return agg.concat(brawler)
+  }, [])
+}
+
 export const state = () => ({
   // fill the store from the payload in static build
   blog: payload.blog,
