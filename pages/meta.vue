@@ -13,13 +13,13 @@
 
       <button
         v-show="!forceMobile"
-        @click="forceMobile = true"
+        @click="forceMobile = true; $ga.event('meta', 'view', 'switch_to_cards')"
         class="hidden md:block text-sm text-grey-darker mr-3 mt-2 absolute top-0 right-0 underline">
         Switch to Cards View
       </button>
       <button
         v-show="forceMobile"
-        @click="forceMobile = false"
+        @click="forceMobile = false; $ga.event('meta', 'view', 'switch_to_table')"
         class="hidden md:block mx-auto -mt-2 mb-6 text-sm text-grey-light underline">
         Switch to Table View
       </button>
@@ -215,13 +215,15 @@ export default {
     }
   },
   methods: {
-    sortBy(identifier) {
-      if (this.comparator === identifier) {
+    sortBy(prop) {
+      if (this.comparator === prop) {
         this.order *= -1
       } else {
-        this.comparator = identifier
+        this.comparator = prop
         this.order = +1
       }
+
+      this.$ga.event('meta', 'sort_by', `${this.comparator} ${this.order < 0 ? 'desc' : 'asc'}`)
     },
     ...mapActions({
       loadMeta: 'loadMeta',
