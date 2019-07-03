@@ -7,6 +7,9 @@
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         Meta
       </h1>
+      <p class="mb-3 text-center">
+        Average Trophy statistics from Pros on Brawl Time Ninja this week.
+      </p>
 
       <button
         v-show="!forceMobile"
@@ -17,7 +20,7 @@
       <button
         v-show="forceMobile"
         @click="forceMobile = false"
-        class="hidden md:block mx-auto -mt-4 mb-6 text-sm text-grey-light underline">
+        class="hidden md:block mx-auto -mt-2 mb-6 text-sm text-grey-light underline">
         Switch to Table View
       </button>
 
@@ -25,9 +28,6 @@
         v-show="!forceMobile"
         class="table hidden md:block"
       >
-        <caption class="mb-1">
-          Average Trophy statistics from Pros on Brawl Time Ninja this week
-        </caption>
         <thead>
           <tr>
             <th scope="col" class="text-right">
