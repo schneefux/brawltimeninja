@@ -53,6 +53,39 @@ export const getters = {
       .map(({ tag }) => tag)
       .indexOf(state.player.tag) + 1
   },
+  metaStatMaps(state) {
+    return {
+      labels: {
+        trophies: 'Trophies',
+        spTrophies: 'with Star Power',
+        trophyChange: 'since 7d ago',
+      },
+      icons: {
+        trophies: 'trophy',
+        spTrophies: 'starpower',
+        trophyChange: 'trophy', // TODO
+      },
+      formatters: {
+        trophies: n => Math.round(n),
+        spTrophies: n => Math.round(n),
+        trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
+      },
+    }
+  },
+  topBrawlers(state, getters) {
+    const props = Object.keys(getters.metaStatMaps.labels)
+    const max = {}
+
+    state.meta.forEach((entry) => {
+      props.forEach((prop) => {
+        if (!(prop in max) || max[prop][prop] < entry[prop]) {
+          max[prop] = entry
+        }
+      })
+    })
+
+    return max
+  },
 }
 
 export const mutations = {
