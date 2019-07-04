@@ -47,7 +47,7 @@
               Name
             </th>
             <th
-              v-for="(label, id) in statLabels"
+              v-for="(label, id) in metaStatMaps.labels"
               :key="id"
               scope="col"
               class="text-right whitespace-no-wrap"
@@ -61,7 +61,7 @@
                   <template v-else>▼</template>
                 </span>
                 <span v-else>&nbsp;&nbsp;&nbsp;</span>
-                <span class="underline">{{ statLabels[id] }}</span>
+                <span class="underline">{{ metaStatMaps.labels[id] }}</span>
               </button>
             </th>
           </tr>
@@ -82,11 +82,11 @@
               >
             </td>
             <td
-              v-for="(label, prop) in statLabels"
+              v-for="(label, prop) in metaStatMaps.labels"
               :key="prop"
               class="text-center"
             >
-              {{ statFormatters[prop](brawler[prop]) }}
+              {{ metaStatMaps.formatters[prop](brawler[prop]) }}
             </td>
           </tr>
         </tbody>
@@ -98,7 +98,7 @@
       >
         <div class="text-center w-full">
           <button
-            v-for="(label, id) in statLabels"
+            v-for="(label, id) in metaStatMaps.labels"
             :key="id"
             class="mr-3 mb-2 bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light text-black font-semibold text-sm border-2 rounded py-1 px-2"
             @click="sortBy(id)"
@@ -107,7 +107,7 @@
               <template v-if="order < 0">▲</template>
               <template v-else>▼</template>
             </span>
-            <span>{{ statLabels[id] }}</span>
+            <span>{{ metaStatMaps.labels[id] }}</span>
           </button>
         </div>
 
@@ -140,21 +140,21 @@
               <template v-slot:stats>
                 <table>
                   <tr
-                    v-for="(label, prop) in statLabels"
+                    v-for="(label, prop) in metaStatMaps.labels"
                     :key="prop"
                     class="card-props whitespace-no-wrap"
                   >
                     <td class="text-center">
                       <img
-                        :src="require(`~/assets/images/icon/${statIcons[prop]}.png`)"
+                        :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
                         class="card-prop-icon"
                       >
                     </td>
                     <td class="card-prop-value text-right pr-1">
-                      {{ statFormatters[prop](brawler[prop]) }}
+                      {{ metaStatMaps.formatters[prop](brawler[prop]) }}
                     </td>
                     <td class="card-prop-label">
-                      {{ statLabels[prop] }}
+                      {{ metaStatMaps.labels[prop] }}
                     </td>
                   </tr>
                 </table>
@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { induceAdsIntoBrawlers } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card'
 
@@ -199,21 +199,6 @@ export default {
       spTrophies: compareProp('spTrophies'),
       trophyChange: compareProp('trophyChange'),
     }
-    const statLabels = {
-      trophies: 'Trophies',
-      spTrophies: 'with Star Power',
-      trophyChange: 'since 7d ago',
-    }
-    const statIcons = {
-      trophies: 'trophy_optimized',
-      spTrophies: 'starpower_optimized',
-      trophyChange: 'trophy_optimized', // TODO
-    }
-    const statFormatters = {
-      trophies: n => Math.round(n),
-      spTrophies: n => Math.round(n),
-      trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
-    }
 
     return {
       ads: true,
@@ -221,9 +206,6 @@ export default {
       order: +1,
       forceMobile: false,
       comparators,
-      statLabels,
-      statIcons,
-      statFormatters,
     }
   },
   computed: {
@@ -243,6 +225,9 @@ export default {
     },
     ...mapState({
       meta: state => state.meta,
+    }),
+    ...mapGetters({
+      metaStatMaps: 'metaStatMaps',
     })
   },
   async fetch({ store }) {

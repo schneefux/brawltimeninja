@@ -98,13 +98,83 @@
     </div>
 
     <div
-      v-if="relevantGuides.length > 0"
-      class="mt-10 lg:mt-6 mb-6 container"
+      v-if="Object.keys(topBrawlers).length > 0"
+      class="mt-4 lg:mt-6 mb-6 container flex flex-wrap justify-center"
     >
+      <div class="w-full max-w-xl">
+        <div class="mx-5 mb-1 relative">
+          <div class="w-2/3 text-left text-lg">
+            Best Brawlers right now
+          </div>
+          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
+            <nuxt-link
+              to="/meta"
+              class="link"
+            >
+              Explore the Meta
+            </nuxt-link>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-wrap justify-center">
+        <template v-for="(brawler, prop) in topBrawlers">
+          <div
+            :key="prop"
+            class="card-wrapper px-2"
+          >
+            <div
+              class="card h-14 md:h-24 border-primary-darker border-2 flex justify-between mx-auto"
+            >
+              <div class="w-16 md:w-24 relative">
+                <span class="z-10 absolute ml-1 md:mt-1 md:ml-2 font-semibold md:text-lg text-white text-shadow whitespace-no-wrap">
+                  {{ brawler.name }}
+                </span>
+                <img
+                  :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                  class="z-0 absolute bottom-0 h-12 md:h-16"
+                >
+              </div>
+              <div class="w-24 md:w-32 py-1 pr-1 md:py-2 md:pr-2 my-auto text-center relative">
+                <div>
+                  <img
+                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
+                    class="card-prop-icon inline"
+                  >
+                  <span class="card-prop-value">{{ metaStatMaps.formatters[prop](brawler[prop]) }}</span>
+                </div>
+                <span class="text-xs md:text-sm">{{ metaStatMaps.labels[prop] }}</span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div
+      v-if="relevantGuides.length > 0"
+      class="lg:mt-6 mb-6 container flex flex-wrap justify-center"
+    >
+      <div class="w-full max-w-xl">
+        <div class="mx-5 mb-1 relative">
+          <div class="w-2/3 text-left text-lg">
+            Guides
+          </div>
+          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
+            <nuxt-link
+              to="/blog/guides"
+              class="link"
+            >
+              Read all
+            </nuxt-link>
+          </div>
+        </div>
+      </div>
+
       <blogroll
         :posts="relevantGuides"
         topic="guides"
-        class="mx-6"
+        class="mx-5"
       />
     </div>
   </div>
@@ -181,17 +251,21 @@ export default {
       featuredPlayers: state => state.featuredPlayers,
     }),
     ...mapGetters({
+      topBrawlers: 'topBrawlers',
+      metaStatMaps: 'metaStatMaps',
       relevantGuides: 'guidesForCurrentEvents',
     }),
   },
   async fetch({ store }) {
     if (!process.static) {
       await store.dispatch('loadCurrentEvents')
+      await store.dispatch('loadMeta')
     }
   },
   mounted() {
     if (process.static) {
       this.loadCurrentEvents()
+      this.loadMeta()
     }
   },
   methods: {
@@ -244,6 +318,7 @@ export default {
       setPlayerTag: 'setPlayerTag',
     }),
     ...mapActions({
+      loadMeta: 'loadMeta',
       loadPlayer: 'loadPlayer',
       loadCurrentEvents: 'loadCurrentEvents',
     }),
