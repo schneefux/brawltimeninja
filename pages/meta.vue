@@ -201,7 +201,7 @@ export default {
     }
 
     return {
-      comparator: 'trophies',
+      comparator: 'trophyChange',
       order: +1,
       forceMobile: true,
       comparators,
