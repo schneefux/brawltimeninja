@@ -136,6 +136,10 @@ export const mutations = {
   allowCookies(state) {
     state.cookiesAllowed = true
   },
+  clearCookieSettings(state) {
+    state.adsAllowed = false
+    state.cookiesAllowed = false
+  },
 }
 
 export const actions = {
