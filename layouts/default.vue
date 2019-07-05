@@ -149,11 +149,8 @@ export default {
       }
     },
     adsAllowed() {
-      console.log('watcher called, adsAllowed', this.adsAllowed)
       if (this.adsAllowed) {
         this.$ga.enable()
-        console.log('ga enabled')
-        console.log('ga disable', global.window['ga-disable-UA-137233906-1'])
       }
     },
   },
@@ -166,9 +163,6 @@ export default {
     if (global.window !== undefined) {
       global.window.removeEventListener('appinstalled', this.installed)
     }
-  },
-  mounted() {
-    console.log('mounted called, adsAllowed', this.adsAllowed)
   },
   methods: {
     disableCookies() {
