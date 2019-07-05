@@ -161,7 +161,7 @@ export default {
   },
   destroyed() {
     if (global.window !== undefined) {
-      global.window.addEventListener('appinstalled', this.installed)
+      global.window.removeEventListener('appinstalled', this.installed)
     }
   },
   methods: {
