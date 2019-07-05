@@ -149,6 +149,7 @@ export default {
       }
     },
     adsAllowed() {
+      console.log('watcher called, adsAllowed', this.adsAllowed)
       if (this.adsAllowed) {
         this.$ga.enable()
       }
@@ -165,6 +166,7 @@ export default {
     }
   },
   mounted() {
+    console.log('mounted called, adsAllowed', this.adsAllowed)
     if (this.adsAllowed) {
       this.$ga.enable()
     }
