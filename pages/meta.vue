@@ -201,7 +201,6 @@ export default {
     }
 
     return {
-      ads: true,
       comparator: 'trophies',
       order: +1,
       forceMobile: false,
@@ -225,6 +224,7 @@ export default {
     },
     ...mapState({
       meta: state => state.meta,
+      ads: state => state.adsAllowed,
     }),
     ...mapGetters({
       metaStatMaps: 'metaStatMaps',
@@ -238,19 +238,6 @@ export default {
   mounted() {
     if (process.static) {
       this.loadMeta()
-    }
-
-    // check for ads, same as in _tag.vue
-    if (global.window !== undefined) {
-      const checkAdblock = () => {
-        this.ads = global.adsbygoogle.loaded === true
-      }
-
-      if (global.document.readyState === 'complete') {
-        setTimeout(checkAdblock, 5000) // TODO make this smarter
-      } else {
-        global.window.addEventListener('load', checkAdblock)
-      }
     }
   },
   methods: {

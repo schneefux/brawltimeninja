@@ -8,5 +8,6 @@ export default ({ app, env }) => {
     set: [
       { field: 'dimension1', value: env.branch },
     ],
+    disabled: true,
   })
 }

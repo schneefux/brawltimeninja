@@ -417,7 +417,6 @@ export default {
     return {
       hoursSpent: 0,
       error: '',
-      ads: true,
       totalBrawlers: 27,
     }
   },
@@ -515,8 +514,9 @@ export default {
       return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
     },
     ...mapState({
-      player: state => state.player,
+      ads: state => state.adsAllowed,
       blog: state => state.blog,
+      player: state => state.player,
     }),
     ...mapGetters({
       rank: 'playerRank',
@@ -566,18 +566,6 @@ export default {
       }
     }, frameDuration)
     hoursTimer()
-
-    if (global.window !== undefined) {
-      const checkAdblock = () => {
-        this.ads = global.adsbygoogle.loaded === true
-      }
-
-      if (global.document.readyState === 'complete') {
-        setTimeout(checkAdblock, animationDuration) // TODO make this smarter
-      } else {
-        global.window.addEventListener('load', checkAdblock)
-      }
-    }
 
     if (process.static) {
       this.loadLeaderboard()

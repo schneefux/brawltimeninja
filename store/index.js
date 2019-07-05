@@ -18,6 +18,7 @@ export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
 }
 
 export const state = () => ({
+  version: undefined,
   // fill the store from the payload in static build
   blog: payload.blog,
   featuredPlayers: payload.featuredPlayers,
@@ -35,6 +36,8 @@ export const state = () => ({
   leaderboardLoaded: false,
   meta: [],
   metaLoaded: false,
+  cookiesAllowed: false,
+  adsAllowed: false,
 })
 
 export const getters = {
@@ -126,6 +129,12 @@ export const mutations = {
   setMeta(state, meta) {
     state.meta = meta
     state.metaLoaded = true
+  },
+  allowAds(state) {
+    state.adsAllowed = true
+  },
+  allowCookies(state) {
+    state.cookiesAllowed = true
   },
 }
 
