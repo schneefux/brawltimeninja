@@ -56,6 +56,10 @@ export default {
   axios: {
   },
 
+  workbox: {
+    cacheAssets: false,
+  },
+
   env: {
     branch: process.env.BRANCH || '',
   },
