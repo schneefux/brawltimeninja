@@ -30,7 +30,7 @@
         <div class="text-lg capitalize font-medium">
           <nuxt-link
             to="/"
-            class="md:hidden block mt-4 text-primary-lighter"
+            class="block md:inline-block mt-4 md:mt-0 text-primary-lighter"
           >
             Home
           </nuxt-link>
