@@ -294,10 +294,10 @@ export default {
         this.setPlayerTag(this.cleanedTag)
         await this.loadPlayer()
       } catch (error) {
-        if (error.response.status === 404) {
+        if (error.response !== undefined && error.response.status === 404) {
           this.$ga.event('player', 'search', 'error_notfound')
           this.error = 'This tag does not exist'
-        } else if (error.response.status === 429) {
+        } else if (error.response !== undefined && error.response.status === 429) {
           this.$ga.event('player', 'search', 'error_timeout')
           this.error = 'Either there was an error with the Brawlstars API, or this tag does not exist. Check it and try again'
         } else {
