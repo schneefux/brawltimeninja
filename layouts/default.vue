@@ -164,6 +164,11 @@ export default {
       global.window.removeEventListener('appinstalled', this.installed)
     }
   },
+  mounted() {
+    if (this.adsAllowed) {
+      this.$ga.enable()
+    }
+  },
   methods: {
     disableCookies() {
       this.cookieBannerOpen = false
