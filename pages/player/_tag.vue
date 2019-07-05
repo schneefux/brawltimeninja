@@ -543,7 +543,7 @@ export default {
         await store.dispatch('loadPlayer')
         return true
       } catch (error) {
-        if (error.response.status === 404) {
+        if (error.response !== undefined && error.response.status === 404) {
           return false
         }
         lastError = error
