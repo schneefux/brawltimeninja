@@ -203,7 +203,7 @@ export default {
     return {
       comparator: 'trophies',
       order: +1,
-      forceMobile: false,
+      forceMobile: true,
       comparators,
     }
   },
