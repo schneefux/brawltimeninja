@@ -35,5 +35,8 @@ export default {
       required: true
     },
   },
+  errorCaptured(error){
+    console.log(error)
+  },
 }
 </script>
