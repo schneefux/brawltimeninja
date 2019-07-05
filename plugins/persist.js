@@ -4,8 +4,10 @@ export default ({ store }) => {
   window.onNuxtReady(() => new VuexPersistence({
     key: `brawlstars-ninja`,
     reducer: state => ({
-      version: 4,
+      version: state.version,
       lastPlayers: state.lastPlayers,
+      cookiesAllowed: state.cookiesAllowed,
+      adsAllowed: state.adsAllowed,
     }),
     restoreState: (key, storage) => {
       // pass through (https://github.com/championswimmer/vuex-persist/blob/master/src/index.ts#L189)
@@ -22,6 +24,8 @@ export default ({ store }) => {
           }
         })
       }
+
+      value.version = 5
 
       return value
     }

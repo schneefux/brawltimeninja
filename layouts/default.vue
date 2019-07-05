@@ -3,7 +3,7 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-50 top-0 md:static">
+    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 md:static">
       <nuxt-link
         to="/"
         class="flex-shrink-0 font-semibold text-xl text-white tracking-tighter"
@@ -66,6 +66,34 @@
 
     <nuxt />
 
+    <div
+      v-if="cookieBannerOpen"
+      class="fixed z-50 bottom-0 w-full"
+    >
+      <div class="mx-auto my-auto container h-32 border-l-4 border-t-4 border-r-4 rounded-t border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
+        <p class="mx-2 text-center text-sm">
+          Brawl Time saves your tag in a Cookie. Analytics and Advertisements support the development of this site but usage data is sent to Google.
+        </p>
+        <p class="mt-2">
+          Enable Cookie, Analytics and Ads?
+        </p>
+        <div class="mt-2 text-sm">
+          <button
+            @click="disableCookies"
+            class="border rounded-sm py-1 w-24 bg-red-600 hover:bg-red-500"
+          >Disable All</button>
+          <button
+            @click="enableCookies"
+            class="border rounded-sm py-1 w-24 ml-1 bg-yellow-600 hover:bg-yellow-500"
+          >Enable Cookie</button>
+          <button
+            @click="enableCookiesAndAds"
+            class="border rounded-sm py-1 w-24 ml-1 bg-green-600 hover:bg-green-500"
+          >Enable All</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
       <p>&#169; 2019 Brawl Time Ninja</p>
       <p class="text-xs leading-tight">
@@ -76,12 +104,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   data() {
     return {
       menuOpen: false,
+      cookieBannerOpen: false,
     }
   },
   computed: {
@@ -99,11 +128,24 @@ export default {
     },
     ...mapState({
       blog: state => state.blog,
+      version: state => state.version,
+      adsAllowed: state => state.adsAllowed,
+      cookiesAllowed: state => state.cookiesAllowed,
     }),
   },
   watch: {
     '$route'() {
       this.menuOpen = false
+    },
+    version() {
+      if (this.version !== undefined) {
+        this.cookieBannerOpen = !this.cookiesAllowed
+      }
+    },
+    adsAllowed() {
+      if (this.adsAllowed) {
+        this.$ga.enable()
+      }
     },
   },
   created() {
@@ -117,9 +159,25 @@ export default {
     }
   },
   methods: {
+    disableCookies() {
+      this.cookieBannerOpen = false
+    },
+    enableCookies() {
+      this.cookieBannerOpen = false
+      this.allowCookies()
+    },
+    enableCookiesAndAds() {
+      this.cookieBannerOpen = false
+      this.allowCookies()
+      this.allowAds()
+    },
     installed() {
       this.$ga.event('app', 'install')
     },
+    ...mapMutations({
+      allowCookies: 'allowCookies',
+      allowAds: 'allowAds',
+    })
   },
 }
 </script>
