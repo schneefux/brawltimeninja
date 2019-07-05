@@ -29,22 +29,22 @@
       width="480"
       height="271"
       video-id="LuUmyorhSIQ"
-      @ready="startVideo"
+      autoplay
+      mute
+      @ready="$ga.event('player', 'search', '404_play_video')"
       @ended="$refs.helpVideo.player.playVideo()"
     />
   </div>
 </template>
 
 <script>
+import Youtube from '~/components/youtube'
+
 export default {
   layout: 'default',
   props: ['error'],
-  methods: {
-    startVideo() {
-      this.$ga.event('player', 'search', '404_play_video')
-      this.$refs.helpVideo.player.mute()
-      this.$refs.helpVideo.player.playVideo()
-    }
+  components: {
+    Youtube,
   },
 }
 </script>

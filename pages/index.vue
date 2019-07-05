@@ -69,7 +69,9 @@
           width="480"
           height="271"
           video-id="LuUmyorhSIQ"
-          @ready="startVideo"
+          autoplay
+          mute
+          @ready="$ga.event('player', 'search', 'play_video')"
           @ended="$refs.helpVideo.player.playVideo()"
         />
       </details>
@@ -183,6 +185,7 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import Blogroll from '~/components/blogroll'
+import Youtube from '~/components/youtube'
 
 function playerToRoute(player) {
   return {
@@ -196,6 +199,7 @@ function playerToRoute(player) {
 export default {
   components: {
     Blogroll,
+    Youtube,
   },
   head() {
     return {
@@ -269,11 +273,6 @@ export default {
     }
   },
   methods: {
-    startVideo() {
-      this.$ga.event('player', 'search', 'play_video')
-      this.$refs.helpVideo.player.mute()
-      this.$refs.helpVideo.player.playVideo()
-    },
     async search() {
       this.error = undefined
 
