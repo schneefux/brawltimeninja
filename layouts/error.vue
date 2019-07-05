@@ -42,9 +42,9 @@ import Youtube from '~/components/youtube'
 
 export default {
   layout: 'default',
-  props: ['error'],
   components: {
     Youtube,
   },
+  props: ['error'],
 }
 </script>
