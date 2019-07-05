@@ -86,7 +86,7 @@
             class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative"
           >
             <div
-              v-if="player.history.length > 1 && false"
+              v-if="player.history.length > 1"
               class="h-12"
             >
               <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
