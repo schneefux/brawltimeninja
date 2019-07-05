@@ -8,6 +8,6 @@ export default ({ app, env }) => {
     set: [
       { field: 'dimension1', value: env.branch },
     ],
-    disabled: true,
+    disabled: !app.store.state.adsAllowed, // always false in SSR mode
   })
 }
