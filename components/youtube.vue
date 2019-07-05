@@ -11,9 +11,18 @@ const CUED = 5
 export default {
   name: 'Youtube',
   props: {
-    videoId: String,
-    autoplay: Boolean,
-    mute: Boolean,
+    videoId: {
+      type: String,
+      required: true
+    },
+    autoplay: {
+      type: Boolean,
+      default: false
+    },
+    mute: {
+      type: Boolean,
+      default: false
+    },
     height: {
       type: [Number, String],
       default: 360
@@ -35,16 +44,6 @@ export default {
         [CUED]: 'cued'
       },
     }
-  },
-  methods: {
-    playerReady(e) {
-      this.$emit('ready', e.target)
-    },
-    playerStateChange(e) {
-      if (e.data !== null && e.data !== UNSTARTED) {
-        this.$emit(this.events[e.data], e.target)
-      }
-    },
   },
   beforeDestroy() {
     if (this.player !== null && this.player.destroy) {
@@ -73,6 +72,16 @@ export default {
     if (this.mute) {
       this.player.mute()
     }
+  },
+  methods: {
+    playerReady(e) {
+      this.$emit('ready', e.target)
+    },
+    playerStateChange(e) {
+      if (e.data !== null && e.data !== UNSTARTED) {
+        this.$emit(this.events[e.data], e.target)
+      }
+    },
   },
   render(h) {
     return h('div')

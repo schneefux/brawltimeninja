@@ -79,17 +79,23 @@
         </p>
         <div class="mt-2 text-sm">
           <button
-            @click="disableCookies"
             class="border rounded-sm py-1 w-24 bg-red-600 hover:bg-red-500"
-          >Disable All</button>
+            @click="disableCookies"
+          >
+            Disable All
+          </button>
           <button
-            @click="enableCookies"
             class="border rounded-sm py-1 w-24 ml-1 bg-yellow-600 hover:bg-yellow-500"
-          >Enable Cookie</button>
+            @click="enableCookies"
+          >
+            Enable Cookie
+          </button>
           <button
-            @click="enableCookiesAndAds"
             class="border rounded-sm py-1 w-24 ml-1 bg-green-600 hover:bg-green-500"
-          >Enable All</button>
+            @click="enableCookiesAndAds"
+          >
+            Enable All
+          </button>
         </div>
       </div>
     </div>

@@ -13,10 +13,10 @@
     </div>
     <div class="py-2 pr-3 flex flex-col justify-center items-end">
       <div>
-        <slot name="history"></slot>
+        <slot name="history" />
       </div>
       <div>
-        <slot name="stats"></slot>
+        <slot name="stats" />
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
       required: true
     },
   },
-  errorCaptured(error){
+  errorCaptured(error) {
     console.log(error)
   },
 }
