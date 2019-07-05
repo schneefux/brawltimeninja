@@ -34,10 +34,6 @@ export default {
 
   loading: { color: '#ffed4a' }, // secondary
 
-  workbox: {
-    cacheAssets: false, // TODO remove this after the update to @nuxtjs/pwa@3
-  },
-
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/app.css',
