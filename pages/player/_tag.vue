@@ -266,7 +266,7 @@
                     class="flex items-center mb-2"
                   >
                     <div
-                      class="mx-2 flex items-center rounded-r"
+                      class="mx-1 flex items-center rounded-r"
                       style="background: rgba(0, 0, 0, 0.5)"
                     >
                       <img
