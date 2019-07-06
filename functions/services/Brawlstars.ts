@@ -1,4 +1,4 @@
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent } from '../model/Brawlstars';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
@@ -95,10 +95,71 @@ export default class BrawlstarsService {
       { 'Authorization': token }
     );
 
+    const battleLog = await request<BattleLog>(
+      'player/battlelog',
+      this.apiBase,
+      { tag },
+      { 'Authorization': token }
+    );
+
+    const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+    const transformPlayer = (player: BattlePlayer) => ({
+      tag: player.tag.replace('#', ''),
+      name: player.name,
+      brawler: player.brawler.name.replace(/ /, '_').toLowerCase(),
+      brawlerTrophies: player.brawler.trophies,
+    })
+    const battles = battleLog.items.map((battle) => {
+      let mode = camelToSnakeCase(battle.event.mode)
+      let modeId = mode.replace('_', '');
+
+      if (modeId == 'biggame') {
+        modeId = 'bossfight';
+      }
+      if (['brawlball', 'heist'].includes(modeId)) {
+        modeId = 'gemgrab'; // TODO missing assets
+      }
+      if (modeId.endsWith('showdown')) {
+        modeId = 'showdown';
+      }
+
+      let result;
+      if (battle.battle.duration !== undefined) {
+        // bossfight, gem grab, ...
+        const minutes = Math.floor(battle.battle.duration / 60);
+        const seconds = battle.battle.duration % 60;
+        result = `${minutes}m ${seconds}s`;
+      }
+      if (battle.battle.result !== undefined) {
+        // 3v3
+        result = capitalize(battle.battle.result);
+      }
+      if (battle.battle.rank !== undefined) {
+        // showdown
+        result = `Rank ${battle.battle.rank}`;
+      }
+
+      const time = battle.battleTime;
+      const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
+
+      return {
+        timestamp: new Date(Date.parse(isoDate)),
+        mode: {
+          label: capitalize(mode.replace(/_/g, ' ')),
+          icon: `${modeId}_optimized.png`,
+          background: `${modeId}.jpg`,
+        },
+        result,
+        trophyChange: battle.battle.trophyChange,
+        teams: (battle.battle.teams !== undefined ? battle.battle.teams : [battle.battle.players]).map(teams => teams.map(transformPlayer)),
+      }
+    }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
+
     let history: History = { playerHistory: [], brawlerHistory: [] };
     if (trackerUrl != '') {
       try {
-        await post<null>(trackerUrl + '/track', player);
+        await post<null>(trackerUrl + '/track', { player, battles });
         history = await request<History>(
           `/history/${tag}`,
           trackerUrl,
@@ -162,6 +223,7 @@ export default class BrawlstarsService {
       history: history.playerHistory,
       brawlers,
       heroStats,
+      battles,
       modes: {
         '3v3': {
           label: '3v3',

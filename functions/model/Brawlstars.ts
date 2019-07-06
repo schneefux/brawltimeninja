@@ -64,3 +64,37 @@ export interface Event {
   modifierId: number;
   modifierName: string;
 }
+
+export interface BattlePlayer {
+  tag: string;
+  name: string;
+  brawler: {
+    id: number;
+    name: string;
+    power: number;
+    trophies: number;
+  }
+}
+
+export interface BattleLog {
+  items: {
+    battleTime: string;
+    event: {
+      id: number;
+      mode: string;
+      map: string;
+    }
+    battle: {
+      mode: string;
+      type: string;
+      result?: string;
+      duration?: number;
+      rank?: number;
+      trophyChange: number;
+      starPlayer?: BattlePlayer;
+      teams: BattlePlayer[][]; // 3v3
+      players: BattlePlayer[]; // showdown
+    }
+  }[]
+  paging: {}
+}
