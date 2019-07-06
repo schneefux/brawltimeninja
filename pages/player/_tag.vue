@@ -223,6 +223,91 @@
 
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
+        Last Battles
+      </h2>
+    </div>
+
+    <div class="section">
+      <div class="flex flex-wrap">
+        <div
+          v-for="battle in player.battles.slice(0, battlePage * battlePageSize)"
+          :key="battle.timestamp"
+          class="w-full md:w-1/2 xl:w-1/3 card-wrapper mx-auto"
+        >
+          <div
+            class="card bg-center bg-cover flex flex-wrap justify-between"
+            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${battle.mode.background}`) + '\')'"
+          >
+            <div class="card-content relative">
+              <span class="card-header text-white">
+                {{ battle.mode.label }}
+              </span>
+              <span class="text-primary-lightest absolute right-0 top-0 text-right text-lg font-semibold">
+                {{ battle.result }}
+              </span>
+              <span class="text-primary-lightest absolute right-0 bottom-0 text-right font-semibold">
+                {{ hoursSinceDate(battle.timestamp) }}h ago
+              </span>
+              <div class="mb-6 card-props flex flex-wrap">
+                <div
+                  v-for="(team, index) in battle.teams"
+                  :key="index"
+                  class="w-full flex flex-wrap justify-center"
+                >
+                  <div
+                    v-for="player in team"
+                    :key="player.tag"
+                    :class="{ 'flex-col': index == 1, 'flex-col-reverse': index == 0, 'mt-4': index == 1 }"
+                    class="w-24 flex items-center mb-2"
+                  >
+                    <div
+                      class="flex items-center rounded-r"
+                      style="background: rgba(0, 0, 0, 0.5)"
+                    >
+                      <img
+                        :src="require(`~/assets/images/hero/icon/${player.brawler}_optimized.png`)"
+                        class="mx-auto self-center mr-1 h-8"
+                      >
+                      <span
+                        class="text-secondary-lighter mx-1 w-8 font-semibold"
+                      >
+                        {{ player.brawlerTrophies }}
+                      </span>
+                    </div>
+                    <div
+                      :class="{ 'mt-1': index == 1, 'mb-1': index == 0 }"
+                      class="w-full text-center"
+                    >
+                      <nuxt-link
+                        class="text-xs link whitespace-no-wrap"
+                        :to="`/player/${player.tag}`"
+                      >
+                        {{ player.name }}
+                      </nuxt-link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="battlePage * battlePageSize < player.battles.length"
+        class="mt-2 w-full text-right"
+      >
+        <button
+          class="text-black font-semibold flex-shrink-0 bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 rounded"
+          @click="battlePage++"
+        >
+        Load More
+        </button>
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <h2 class="text-2xl font-semibold">
         Brawlers
       </h2>
     </div>
@@ -402,6 +487,12 @@ function zip(arr1, arr2) {
   return arr1.map((value, index) => [value, arr2[index]])
 }
 
+function hoursSinceDate(date) {
+  const then = Date.parse(date)
+  const now = (new Date()).getTime()
+  return Math.ceil((now - then) / 1000 / 3600)
+}
+
 export default {
   name: 'PlayerProfile',
   components: {
@@ -418,6 +509,9 @@ export default {
       hoursSpent: 0,
       error: '',
       totalBrawlers: 27,
+      battlePage: 1,
+      battlePageSize: 5,
+      hoursSinceDate,
     }
   },
   computed: {

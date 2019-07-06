@@ -48,4 +48,5 @@ export interface Player extends PlayerIdentifier {
     modes: {
         [id: string]: Mode;
     };
+    battles: any[]; // TODO
 }
