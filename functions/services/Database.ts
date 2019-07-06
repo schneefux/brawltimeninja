@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import { Player } from '~/model/Brawlstars';
+import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import { MetaEntry } from '~/model/MetaEntry';
@@ -17,7 +17,9 @@ export default class DatabaseService {
     this.knex.destroy();
   }
 
-  public async store(player: Player) {
+  public async store(entry: { player: Player, battleLog: BattleLog }) {
+    const player = entry.player;
+    const battleLog = entry.battleLog;
     const lastRecords = await this.knex
       .select('total_exp')
       .from('player')
