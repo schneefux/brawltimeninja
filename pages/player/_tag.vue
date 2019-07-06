@@ -280,6 +280,7 @@
                     >
                       <nuxt-link
                         class="text-xs link whitespace-no-wrap"
+                        rel="nofollow"
                         :to="`/player/${player.tag}`"
                       >
                         {{ player.name }}
