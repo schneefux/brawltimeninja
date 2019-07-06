@@ -68,40 +68,43 @@
 
     <div
       v-if="cookieBannerOpen"
-      class="fixed z-30 inset-0 w-full h-full"
+      class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
       style="background-color: rgba(0, 0, 0, 0.75)"
     >
-      <div class="absolute inset-0 mx-2 md:mx-auto my-auto max-w-xl h-32 border-4 rounded border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
-        <p class="mt-2 text-center text-xl">
+      <div class="mx-2 py-2 max-w-xl border-4 rounded border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
+        <p class="text-center text-xl">
           Cookies? 🍪
         </p>
         <p class="mt-2 mx-2 text-center text-sm">
           Brawl Time saves your tag in a Cookie. Analytics and Advertisements support the development of this site but usage data is sent to Google.
         </p>
-        <div class="mt-2 text-sm">
+        <p class="mt-1 mx-2 text-center">
+          Enable Cookie, Analytics and Ads?
+        </p>
+        <div class="mt-2 text-sm flex flex-wrap">
           <button
             v-if="showCookieOptions"
-            class="border rounded-sm py-1 w-24 bg-red-600 hover:bg-red-500"
+            class="border rounded-sm py-1 w-24 mx-1 bg-red-600 hover:bg-red-500"
             @click="disableCookies"
           >
             Disable All
           </button>
           <button
             v-if="showCookieOptions"
-            class="border rounded-sm py-1 w-24 ml-1 bg-yellow-600 hover:bg-yellow-500"
+            class="border rounded-sm py-1 w-24 mx-1 bg-yellow-600 hover:bg-yellow-500"
             @click="enableCookies"
           >
             Enable Cookie
           </button>
           <button
             v-if="!showCookieOptions"
-            class="border rounded-sm py-1 w-24 ml-1 bg-secondary-darkest hover:bg-black"
+            class="border rounded-sm py-1 w-24 mx-1 bg-secondary-darkest hover:bg-black"
             @click="showCookieOptions = true"
           >
             More Options
           </button>
           <button
-            class="border rounded-sm py-1 w-24 ml-1 bg-green-600 hover:bg-green-500"
+            class="border rounded-sm py-1 w-24 mx-1 bg-green-600 hover:bg-green-500"
             @click="enableCookiesAndAds"
           >
             Enable All
