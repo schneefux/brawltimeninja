@@ -258,7 +258,7 @@
                     v-for="player in team"
                     :key="player.tag"
                     :class="{
-                      'flex-col mt-2': battle.teams.length > 2,
+                      'flex-col mt-2': battle.teams.length != 2,
                       'flex-col mt-4': index == 1 && battle.teams.length == 2,
                       'flex-col-reverse': index == 0 && battle.teams.length == 2,
                     }"
