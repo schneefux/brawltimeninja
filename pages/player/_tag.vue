@@ -223,7 +223,7 @@
 
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
-        Last Battles
+        Latest Battles
       </h2>
     </div>
 
