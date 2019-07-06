@@ -68,27 +68,37 @@
 
     <div
       v-if="cookieBannerOpen"
-      class="fixed z-50 bottom-0 w-full"
+      class="fixed z-30 inset-0 w-full h-full"
+      style="background-color: rgba(0, 0, 0, 0.75)"
     >
-      <div class="mx-auto my-auto container h-32 border-l-4 border-t-4 border-r-4 rounded-t border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
-        <p class="mx-2 text-center text-sm">
-          Brawl Time saves your tag in a Cookie. Analytics and Advertisements support the development of this site but usage data is sent to Google.
+      <div class="absolute inset-0 mx-2 md:mx-auto my-auto max-w-xl h-32 border-4 rounded border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
+        <p class="mt-2 text-center text-xl">
+          Cookies? 🍪
         </p>
-        <p class="mt-2">
-          Enable Cookie, Analytics and Ads?
+        <p class="mt-2 mx-2 text-center text-sm">
+          Brawl Time saves your tag in a Cookie. Analytics and Advertisements support the development of this site but usage data is sent to Google.
         </p>
         <div class="mt-2 text-sm">
           <button
+            v-if="showCookieOptions"
             class="border rounded-sm py-1 w-24 bg-red-600 hover:bg-red-500"
             @click="disableCookies"
           >
             Disable All
           </button>
           <button
+            v-if="showCookieOptions"
             class="border rounded-sm py-1 w-24 ml-1 bg-yellow-600 hover:bg-yellow-500"
             @click="enableCookies"
           >
             Enable Cookie
+          </button>
+          <button
+            v-if="!showCookieOptions"
+            class="border rounded-sm py-1 w-24 ml-1 bg-secondary-darkest hover:bg-black"
+            @click="showCookieOptions = true"
+          >
+            More Options
           </button>
           <button
             class="border rounded-sm py-1 w-24 ml-1 bg-green-600 hover:bg-green-500"
@@ -117,6 +127,7 @@ export default {
     return {
       menuOpen: false,
       cookieBannerOpen: false,
+      showCookieOptions: false,
     }
   },
   computed: {
