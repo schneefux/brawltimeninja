@@ -115,10 +115,8 @@ export default class BrawlstarsService {
       let modeId = mode.replace('_', '');
 
       if (modeId == 'biggame') {
+        mode = 'Bossfight';
         modeId = 'bossfight';
-      }
-      if (['brawlball', 'heist'].includes(modeId)) {
-        modeId = 'gemgrab'; // TODO missing assets
       }
       if (modeId.endsWith('showdown')) {
         modeId = 'showdown';
@@ -147,7 +145,6 @@ export default class BrawlstarsService {
         timestamp: new Date(Date.parse(isoDate)),
         mode: {
           label: capitalize(mode.replace(/_/g, ' ')),
-          icon: `${modeId}_optimized.png`,
           background: `${modeId}.jpg`,
         },
         result,
