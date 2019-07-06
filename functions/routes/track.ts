@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 
 import DatabaseService from '../services/Database';
-import { Player } from '../model/Brawlstars';
+import { Player, BattleLog } from '../model/Brawlstars';
 
 const service = new DatabaseService();
 
@@ -13,7 +13,7 @@ router.get('/tracker/status', async (ctx, next) => {
 });
 
 router.post('/tracker/track', async (ctx, next) => {
-  await service.store(<Player> ((<any> ctx.request).body));
+  await service.store(<{ player: Player, battleLog: BattleLog }> ((<any> ctx.request).body));
   ctx.body = {};
   await next();
 });
