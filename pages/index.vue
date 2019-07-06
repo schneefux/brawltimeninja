@@ -176,7 +176,7 @@
       <blogroll
         :posts="relevantGuides"
         topic="guides"
-        class="mx-5"
+        class="w-full mx-5"
       />
     </div>
   </div>
