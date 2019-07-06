@@ -307,7 +307,7 @@
       >
         <button
           class="text-black font-semibold flex-shrink-0 bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 rounded"
-          @click="battlePage++"
+          @click="battlePage++; $ga.event('player', 'battlelog', 'load_more')"
         >
         Load More
         </button>
