@@ -236,7 +236,7 @@
         >
           <div
             class="h-full items-center card bg-center bg-cover flex flex-wrap justify-between"
-            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.25)), url(\'' + require(`~/assets/images/mode/background/${battle.mode.background}`) + '\')'"
+            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.5)), url(\'' + require(`~/assets/images/mode/background/${battle.mode.background}`) + '\')'"
           >
             <div class="card-content relative">
               <span class="card-header text-white">
