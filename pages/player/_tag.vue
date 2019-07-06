@@ -235,7 +235,7 @@
           class="w-full md:w-1/2 xl:w-1/3 card-wrapper mx-auto"
         >
           <div
-            class="card bg-center bg-cover flex flex-wrap justify-between"
+            class="h-full items-center card bg-center bg-cover flex flex-wrap justify-between"
             :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.25)), url(\'' + require(`~/assets/images/mode/background/${battle.mode.background}`) + '\')'"
           >
             <div class="card-content relative">
@@ -257,8 +257,12 @@
                   <div
                     v-for="player in team"
                     :key="player.tag"
-                    :class="{ 'flex-col': index == 1, 'flex-col-reverse': index == 0, 'mt-4': index == 1 }"
-                    class="w-24 flex items-center mb-2"
+                    :class="{
+                      'flex-col mt-2': battle.teams.length > 2,
+                      'flex-col mt-4': index == 1 && battle.teams.length == 2,
+                      'flex-col-reverse': index == 0 && battle.teams.length == 2,
+                    }"
+                    class="flex items-center mb-2"
                   >
                     <div
                       class="flex items-center rounded-r"
@@ -275,7 +279,9 @@
                       </span>
                     </div>
                     <div
-                      :class="{ 'mt-1': index == 1, 'mb-1': index == 0 }"
+                      :class="{
+                        'mb-1': index == 0 && battle.teams.length <= 2,
+                      }"
                       class="w-full text-center"
                     >
                       <nuxt-link
