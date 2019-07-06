@@ -528,7 +528,7 @@ export default {
       error: '',
       totalBrawlers: 27,
       battlePage: 1,
-      battlePageSize: 5,
+      battlePageSize: 6,
       hoursSinceDate,
     }
   },
