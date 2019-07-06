@@ -246,7 +246,8 @@
                 {{ battle.result }}
               </span>
               <span class="text-primary-lightest absolute right-0 bottom-0 text-right font-semibold">
-                {{ hoursSinceDate(battle.timestamp) }}h ago
+                {{ hoursSinceDate(battle.timestamp) - 9 }}h ago
+                <!-- TODO temporary fix for crooked timestamps -->
               </span>
               <div class="mb-6 card-props flex flex-wrap">
                 <div
