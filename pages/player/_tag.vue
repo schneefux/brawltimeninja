@@ -266,7 +266,7 @@
                     class="flex items-center mb-2"
                   >
                     <div
-                      class="flex items-center rounded-r"
+                      class="flex items-center rounded-r h-full"
                       style="background: rgba(0, 0, 0, 0.5)"
                       :class="{
                         'mx-1': mate.tag != player.tag,
