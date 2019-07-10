@@ -271,10 +271,14 @@
                     >
                       <img
                         :src="require(`~/assets/images/hero/icon/${player.brawler}_optimized.png`)"
-                        class="mx-auto self-center mr-1 h-8"
+                        class="w-10"
+                      >
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="w-4"
                       >
                       <span
-                        class="text-secondary-lighter mx-1 w-8 font-semibold"
+                        class="w-8 sm:ml-1 text-secondary-lighter font-semibold flex"
                       >
                         {{ player.brawlerTrophies }}
                       </span>
