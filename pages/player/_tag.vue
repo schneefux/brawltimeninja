@@ -256,8 +256,8 @@
                   class="w-full flex flex-wrap justify-center"
                 >
                   <div
-                    v-for="player in team"
-                    :key="player.tag"
+                    v-for="mate in team"
+                    :key="mate.tag"
                     :class="{
                       'flex-col mt-2': battle.teams.length != 2,
                       'flex-col mt-4': index == 1 && battle.teams.length == 2,
@@ -266,11 +266,15 @@
                     class="flex items-center mb-2"
                   >
                     <div
-                      class="mx-1 flex items-center rounded-r"
+                      class="flex items-center rounded-r"
                       style="background: rgba(0, 0, 0, 0.5)"
+                      :class="{
+                        'mx-1': mate.tag != player.tag,
+                        'border-2 border-primary -mx-1': mate.tag == player.tag,
+                      }"
                     >
                       <img
-                        :src="require(`~/assets/images/hero/icon/${player.brawler}_optimized.png`)"
+                        :src="require(`~/assets/images/hero/icon/${mate.brawler}_optimized.png`)"
                         class="w-10"
                       >
                       <img
@@ -280,7 +284,7 @@
                       <span
                         class="w-8 sm:ml-1 text-secondary-lighter font-semibold flex"
                       >
-                        {{ player.brawlerTrophies }}
+                        {{ mate.brawlerTrophies }}
                       </span>
                     </div>
                     <div
@@ -290,11 +294,15 @@
                       class="w-full text-center"
                     >
                       <nuxt-link
-                        class="text-xs link whitespace-no-wrap"
+                        class="text-xs whitespace-no-wrap"
                         rel="nofollow"
-                        :to="`/player/${player.tag}`"
+                        :to="`/player/${mate.tag}`"
+                        :class="{
+                          'link': mate.tag != player.tag,
+                          'text-secondary': mate.tag == player.tag,
+                        }"
                       >
-                        {{ player.name }}
+                        {{ mate.name }}
                       </nuxt-link>
                     </div>
                   </div>
