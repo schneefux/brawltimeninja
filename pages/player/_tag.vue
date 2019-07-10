@@ -266,11 +266,10 @@
                     class="flex items-center mb-2"
                   >
                     <div
-                      class="flex items-center rounded-r h-full"
+                      class="flex items-center rounded-r h-full mx-1"
                       style="background: rgba(0, 0, 0, 0.5)"
                       :class="{
-                        'mx-1': mate.tag != player.tag,
-                        'border-2 border-primary -mx-1': mate.tag == player.tag,
+                        'border-2 border-primary': mate.tag == player.tag,
                       }"
                     >
                       <img
