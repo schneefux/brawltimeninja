@@ -19,44 +19,162 @@ export default class DatabaseService {
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
     const player = entry.player;
-    const battleLog = entry.battleLog;
-    const lastRecords = await this.knex
-      .select('total_exp')
-      .from('player')
-      .where('tag', player.tag)
-      .orderBy('timestamp', 'desc')
-      .limit(1);
-
-    if (lastRecords.length == 1) {
-      if (player.totalExp == lastRecords[0].total_exp) {
-        console.log(player.tag, 'most recent record is the same as submitted record, skipping');
-        return;
-      }
+    const battleLog = entry.battleLog.items;
+    if (battleLog.length == 0) {
+      console.error('battle log is empty, aborting!!!', player.tag);
     }
 
-    await this.knex.transaction(async (trx) => {
-      const lastInsert = await trx('player').insert({
-        name: player.name,
-        tag: player.tag,
-        club_name: player.club === null ? null : player.club.name,
-        victories: player.victories,
-        solo_showdown_victories: player.soloShowdownVictories,
-        duo_showdown_victories: player.duoShowdownVictories,
-        total_exp: player.totalExp,
-        trophies: player.trophies,
-        brawlers_unlocked: player.brawlersUnlocked,
-      });
-      const playerId = lastInsert[0];
+    /** Parse broken API time format */
+    const parseTime = (time: string) => new Date(Date.parse(time));
+    const parseApiTime = (time: string) => {
+      const t = parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
+      t.setHours(t.getHours() + 8);
+      return t;
+    };
 
-      await Promise.all(player.brawlers.map((brawler) =>
-        trx('player_brawler').insert({
-          player_id: playerId,
-          name: brawler.name,
-          player_tag: player.tag,
-          trophies: brawler.trophies,
-          power: brawler.power,
-        })
-      ));
+    // get timestamp of last battle
+    battleLog.sort((b1, b2) => parseApiTime(b2.battleTime).valueOf() - parseApiTime(b1.battleTime).valueOf());
+    const lastBattle = battleLog[0];
+    const lastBattleTime = parseApiTime(lastBattle.battleTime);
+
+    await this.knex.transaction(async (trx) => {
+      console.time('add player record');
+      const lastPlayerRecord = await trx
+        .select('timestamp')
+        .from('player')
+        .where('tag', player.tag)
+        .orderBy('timestamp', 'desc')
+        .limit(1);
+      const lastPlayerTime = lastPlayerRecord.length == 0 ? new Date(0) : parseTime(lastPlayerRecord[0].timestamp);
+
+      // insert a player record that has the timestamp of the last battle played
+      if (lastBattleTime > lastPlayerTime) {
+        const lastInsert = await trx('player').insert({
+          timestamp: lastBattleTime,
+          name: player.name,
+          tag: player.tag,
+          club_name: player.club === null ? null : player.club.name,
+          victories: player.victories,
+          solo_showdown_victories: player.soloShowdownVictories,
+          duo_showdown_victories: player.duoShowdownVictories,
+          total_exp: player.totalExp,
+          trophies: player.trophies,
+          brawlers_unlocked: player.brawlersUnlocked,
+        });
+        const playerId = lastInsert[0];
+
+        await Promise.all(player.brawlers.map((brawler) =>
+          trx('player_brawler').insert({
+            timestamp: lastBattleTime,
+            player_id: playerId,
+            name: brawler.name,
+            player_tag: player.tag,
+            trophies: brawler.trophies,
+            power: brawler.power,
+          })
+        ));
+
+        console.log('added player record', player.tag, playerId);
+      }
+      console.timeEnd('add player record');
+
+      console.time('add battle records');
+
+      await Promise.all(battleLog.map(async (battle) => {
+        const battleTime = parseApiTime(battle.battleTime);
+        const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
+        const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
+        const playerTagsCsv = teams
+          .map((players) => players.map(({ tag }) => tag.replace('#', '')))
+          .reduce((agg, cur) => agg.concat(cur), [])
+          .sort()
+          .reduce((agg, cur) => agg.length > 0 ? `${agg},${cur}` : cur, '');
+
+        // try to find a battle with the same configuration
+        // and same players within +/- 5 min
+        const battleRecord = await trx
+          .select('id')
+          .from('battle')
+          .whereRaw('abs(timestampdiff(minute, timestamp, ?)) < 5', [battleTime])
+          .andWhere('player_tags', playerTagsCsv)
+          .andWhere('event_id', battle.event.id)
+          .andWhere('event_mode', battle.event.mode);
+
+        if (battleRecord.length == 0) {
+          // battle was not registered yet
+
+          const battleRecord = await trx('battle').insert({
+            /* id, */
+            timestamp: parseApiTime(battle.battleTime),
+            player_tags: playerTagsCsv,
+            event_id: battle.event.id,
+            event_mode: battle.event.mode,
+            event_map: battle.event.map,
+            type: battle.battle.type || null,
+          })
+          const battleId = battleRecord[0];
+
+          await Promise.all(teams.map((insertPlayers, teamIndex) =>
+            Promise.all(insertPlayers.map((insertPlayer, playerIndex) => {
+              const is3v3 = teams.length == 2 && teams[0].length == 3 && teams[1].length == 3;
+              const isMe = insertPlayer.tag.replace('#', '') == player.tag;
+              const isMyTeam = insertPlayers.find((p) => p.tag == insertPlayer.tag) !== undefined;
+              const flippedResult = battle.battle.result == 'draw' ? 'draw' : (battle.battle.result == 'victory' ? 'defeat' : 'victory');
+
+              return trx('player_battle').insert({
+                /* id, */
+                timestamp: battleTime,
+                is_complete: isMe,
+                brawler_id: insertPlayer.brawler.id,
+                brawler_name: insertPlayer.brawler.name,
+                battle_id: battleId,
+                player_tag: insertPlayer.tag.replace('#', ''),
+                player_name: insertPlayer.name,
+                player_index: playerIndex,
+                team_index: teamIndex,
+                brawler_trophies: insertPlayer.brawler.trophies,
+                brawler_power: insertPlayer.brawler.power,
+                is_starplayer: battle.battle.starPlayer !== undefined ? battle.battle.starPlayer.tag == insertPlayer.tag : undefined,
+                is_bigbrawler: battle.event.mode == 'bigGame' ? battle.battle.bigBrawler.tag == insertPlayer.tag : undefined,
+                result: !is3v3 ? undefined : (isMyTeam ? battle.battle.result : flippedResult),
+                duration: battle.battle.duration,
+                rank: !isMe ? undefined : battle.battle.rank,
+                trophy_change: !isMe ? undefined : battle.battle.trophyChange,
+                battle_event_id: battle.event.id,
+                battle_event_mode: battle.event.mode,
+                battle_event_map: battle.event.map,
+                battle_type: battle.battle.type || null,
+              })
+            }))
+          ));
+
+          console.log('added battle record', player.tag, battleId);
+        } else {
+          // battle exists - find the matching player_battle record
+          const playerBattleRecord = await trx
+            .select('is_complete', 'id')
+            .from('player_battle')
+            .where('battle_id', battleRecord[0].id)
+            .andWhere('player_tag', player.tag);
+
+          if (!playerBattleRecord[0].is_complete) {
+            // battle was registered, but by another player
+            // so it is missing some data - update trophy_change and rank
+            await trx('player_battle')
+              .where('id', playerBattleRecord[0].id)
+              .update({
+                timestamp: battleTime, // end time is different for players in showdown
+                is_complete: true,
+                trophy_change: battle.battle.trophyChange,
+                rank: battle.battle.rank,
+              });
+
+            console.log('updated player battle record', player.tag, playerBattleRecord[0].id);
+          }
+        }
+      }));
+
+      console.timeEnd('add battle records');
     });
 
     console.log(player.tag, 'added record');
@@ -182,7 +300,10 @@ export default class DatabaseService {
         ));
       }
 
-      public async migrate() {
+    public async migrate() {
+      // TODO
+      // ALTER DATABASE brawltime COLLATE = 'utf8_unicode_ci';
+
       if (!await this.knex.schema.hasTable('player')) {
       await this.knex.schema.createTable('player', (table) => {
         table.bigIncrements('id');
@@ -266,6 +387,60 @@ export default class DatabaseService {
         });
         console.log('updated player_brawler');
       });
+    }
+
+    if (!await this.knex.schema.hasTable('battle')) {
+      await this.knex.schema.createTable('battle', (table) => {
+        table.bigIncrements('id');
+
+        table.timestamp('timestamp').notNullable().defaultTo(0);
+        table.string('player_tags').notNullable(); // sorted CSV
+
+        // duplicated in player_battle
+        table.integer('event_id').notNullable();
+        table.string('event_mode').notNullable();
+        table.string('event_map').notNullable();
+        table.string('type');
+
+        table.unique(['player_tags', 'timestamp']); // team plays only one game at a time
+      });
+      console.log('created battle');
+
+      await this.knex.schema.createTable('player_battle', (table) => {
+        table.bigIncrements('id');
+
+        table.timestamp('timestamp').notNullable().defaultTo(0);
+        table.bigInteger('battle_id').unsigned().notNullable();
+        // true if player-private data is included
+        table.boolean('is_complete').notNullable();
+
+        table.integer('brawler_id').notNullable();
+        table.string('brawler_name').notNullable();
+        table.string('player_tag').notNullable();
+        table.string('player_name').notNullable();
+        table.integer('player_index').notNullable();
+        table.integer('team_index').notNullable();
+
+        table.integer('brawler_trophies');
+        table.integer('brawler_power');
+        table.boolean('is_starplayer');
+        table.boolean('is_bigbrawler');
+        table.string('result');
+        table.integer('duration');
+        table.integer('rank');
+        table.integer('trophy_change');
+
+        // battle attributes
+        table.integer('battle_event_id').notNullable();
+        table.string('battle_event_mode').notNullable();
+        table.string('battle_event_map').notNullable();
+        table.string('battle_type');
+
+        table.unique(['battle_id', 'player_tag']); // player plays once
+        table.unique(['player_tag', 'timestamp']); // player plays one game at a time
+        table.foreign('battle_id').references('battle.id');
+      });
+      console.log('created player_battle');
     }
 
     console.log('all migrations done');

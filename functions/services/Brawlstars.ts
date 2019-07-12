@@ -149,14 +149,16 @@ export default class BrawlstarsService {
         },
         result,
         trophyChange: battle.battle.trophyChange,
-        teams: (battle.battle.teams !== undefined ? battle.battle.teams : [battle.battle.players]).map(teams => teams.map(transformPlayer)),
+        teams: (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p])).map(teams => teams.map(transformPlayer)),
+        // TODO add big brawler
       }
     }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
 
     let history: History = { playerHistory: [], brawlerHistory: [] };
     if (trackerUrl != '') {
       try {
-        await post<null>(trackerUrl + '/track', { player, battleLog });
+        console.time('call tracker service');
+        await post<null>(trackerUrl + '/track', { player, battleLog }, 1000);
         history = await request<History>(
           `/history/${tag}`,
           trackerUrl,
@@ -165,6 +167,8 @@ export default class BrawlstarsService {
         );
       } catch (error) {
         console.error(error);
+      } finally {
+        console.timeEnd('call tracker service');
       }
     }
 
