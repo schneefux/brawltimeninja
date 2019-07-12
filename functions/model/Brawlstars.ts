@@ -86,14 +86,15 @@ export interface BattleLog {
     }
     battle: {
       mode: string;
-      type: string;
+      type?: string;
       result?: string;
       duration?: number;
       rank?: number;
-      trophyChange: number;
+      trophyChange?: number;
       starPlayer?: BattlePlayer;
       teams: BattlePlayer[][]; // 3v3
-      players: BattlePlayer[]; // showdown
+      players: BattlePlayer[]; // showdown, bossfight
+      bigBrawler: BattlePlayer; // bossfight
     }
   }[]
   paging: {}
