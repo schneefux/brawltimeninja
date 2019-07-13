@@ -14,7 +14,7 @@ function xpToHours(xp: number) {
 
 // TODO fromEntries polyfill, remove as soon as server is on node@12
 // https://github.com/ungap/from-entries/blob/master/index.js
-var fromEntries = Object.fromEntries || function fromEntries(iterable: any) {
+var fromEntries = function fromEntries(iterable: any) {
   var entries = ('entries' in iterable ? iterable.entries() : iterable);
   var object = {};
   var entry;
