@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es2017",
     "sourceMap": true,
-    "lib": ["es2018"],
+    "lib": ["es2018", "es2019"],
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "esModuleInterop": true,

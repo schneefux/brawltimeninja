@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaEntry } from '~/model/MetaEntry';
+import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -290,15 +290,45 @@ export default class DatabaseService {
         diff.trophies / diff.age_hours * 24 * 7 as trophies_diff_week
       from trophies_with_star_power w, trophies_no_star_power wo, trophies_diff diff
       where w.name = wo.name and w.name = diff.name
-        `).then((response) => response[0].map(
-          (entry: any) => (<MetaEntry> {
-            name: entry.name,
-            trophies: parseFloat(entry.trophies),
-            spTrophies: parseFloat(entry.sp_trophies),
-            trophyChange: parseFloat(entry.trophies_diff_week),
-          })
-        ));
-      }
+      `).then((response) => response[0].map(
+        (entry: any) => (<MetaEntry> {
+          name: entry.name,
+          trophies: parseFloat(entry.trophies),
+          spTrophies: parseFloat(entry.sp_trophies),
+          trophyChange: parseFloat(entry.trophies_diff_week),
+        })
+      ));
+    }
+
+    public async getMetaByMode() {
+      return await this.knex.raw(`
+        select
+          battle_event_mode as mode,
+          battle_event_map as map,
+          brawler_name as name,
+          is_bigbrawler,
+          avg(duration) as duration,
+          avg(rank) as rank,
+          sum(result='victory') as wins,
+          sum(is_starplayer) as stars,
+          count(*) as picks
+        from player_battle
+        where timestamp > now() - interval 1 week
+        group by battle_event_map, battle_event_mode, brawler_name, is_bigbrawler
+      `).then((response) => response[0].map(
+        (entry: any) => (<MetaModeEntry> {
+          mode: entry.mode,
+          map: entry.map,
+          name: entry.name,
+          isBigbrawler: entry.is_bigbrawler,
+          duration: parseFloat(entry.duration),
+          rank: parseFloat(entry.rank),
+          wins: parseInt(entry.wins),
+          stars: parseInt(entry.stars),
+          picks: parseInt(entry.picks),
+        })
+      ));
+    }
 
     public async migrate() {
       // TODO

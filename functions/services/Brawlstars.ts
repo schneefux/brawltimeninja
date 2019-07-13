@@ -3,7 +3,7 @@ import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
-import { MetaEntry } from '~/model/MetaEntry';
+import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const token = process.env.BRAWLSTARS_TOKEN || '';
@@ -72,7 +72,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const response = await request<MetaEntry[]>(
+    const meta = await request<MetaEntry[]>(
       '/meta',
       trackerUrl,
       {},
@@ -81,10 +81,39 @@ export default class BrawlstarsService {
       10800,
     );
 
-    return response.map(entry => ({
+    const metaByMode = await request<MetaModeEntry[]>(
+      '/meta/by-mode',
+      trackerUrl,
+      {},
+      {},
+      30000,
+      10800,
+    );
+
+    // TODO use id not mode+map
+    const sumPicksByEvent = <{ [event: string]: number }> {};
+    metaByMode.forEach((entry) => {
+      sumPicksByEvent[entry.mode + ',' + entry.map] = (sumPicksByEvent[entry.mode + ',' + entry.map] || 0) + entry.picks;
+    });
+
+    return meta.map((entry) => ({
       id: entry.name.replace(/ /g, '_').toLowerCase(),
-      ...entry
-    }))
+      ...entry,
+      events: Object.fromEntries(metaByMode
+        .filter((modeEntry) => modeEntry.name.toLowerCase() == entry.name.toLowerCase())
+        .map((modeEntry) => [
+          modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : '') +
+          ',' +
+          modeEntry.map, {
+            winRate: modeEntry.wins / modeEntry.picks,
+            rank: modeEntry.rank,
+            pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.mode + ',' + modeEntry.map],
+            duration: modeEntry.duration,
+            starRate: modeEntry.stars / modeEntry.picks,
+            wins: modeEntry.wins,
+          }])
+        )
+    }));
   }
 
   public async getPlayerStatistics(tag: string) {

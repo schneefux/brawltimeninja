@@ -62,16 +62,34 @@ export const getters = {
         trophies: 'Trophies',
         spTrophies: 'with Star Power',
         trophyChange: 'since 7d ago',
+        winRate: 'Win Rate',
+        starRate: 'Star Player',
+        pickRate: 'Pick Rate',
+        duration: 'Duration',
+        rank: 'Rank',
+        wins: 'Wins recorded',
       },
       icons: {
         trophies: 'trophy',
         spTrophies: 'starpower',
-        trophyChange: 'trophy', // TODO
+        trophyChange: 'trophy',
+        winRate: '📈',
+        starRate: '⭐',
+        pickRate: '👇',
+        duration: '⏰',
+        rank: 'leaderboards',
+        wins: '🏅',
       },
       formatters: {
         trophies: n => Math.round(n),
         spTrophies: n => Math.round(n),
         trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
+        winRate: n => `${Math.round(100 * n)}%`,
+        starRate: n => `${Math.round(100 * n)}%`,
+        pickRate: n => `${Math.round(100 * n)}%`,
+        duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
+        rank: n => n.toFixed(2),
+        wins: n => n,
       },
     }
   },
@@ -81,7 +99,8 @@ export const getters = {
 
     state.meta.forEach((entry) => {
       props.forEach((prop) => {
-        if (!(prop in max) || max[prop][prop] < entry[prop]) {
+        if ((!(prop in max) || max[prop][prop] < entry[prop]) &&
+          entry[prop] !== undefined && entry[prop] !== 0) {
           max[prop] = entry
         }
       })

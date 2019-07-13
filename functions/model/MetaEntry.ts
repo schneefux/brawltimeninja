@@ -4,3 +4,15 @@ export interface MetaEntry {
   spTrophies: number;
   trophyChange: number;
 }
+
+export interface MetaModeEntry {
+  mode: string;
+  map: string;
+  name: string;
+  isBigbrawler: number;
+  duration: number;
+  rank: number;
+  wins: number;
+  stars: number;
+  picks: number;
+}
