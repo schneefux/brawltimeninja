@@ -19,7 +19,7 @@
           <button
             v-for="[eMode, eMap] in currentEventsWithData"
             :key="eMode + ',' + eMap"
-            class="bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light ml-2 w-40 rounded border-2 py-1 px-2 text-black whitespace-no-wrap"
+            class="bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light ml-2 rounded border-2 py-1 px-2 text-black whitespace-no-wrap"
             @click="mode = eMode; map = eMap"
           >
             {{ formatMode(eMode) }}
