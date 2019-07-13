@@ -11,7 +11,7 @@
         Statistics from Pro Battles on Brawl Time Ninja this week.
       </p>
 
-      <div class="my-8 mx-auto flex flex-wrap justify-center items-center">
+      <div class="my-8 mx-auto text-center flex flex-wrap justify-center items-center">
         <div class="w-full text-center mb-5">
           <span class="font-semibold">
             Current Events
@@ -154,7 +154,7 @@
 
       <div
         :class="{ 'md:hidden': !forceMobile }"
-        class="flex flex-wrap justify-between"
+        class="text-center flex flex-wrap justify-between"
       >
         <div class="text-center w-full">
           <span class="mr-2">Sort By</span>
