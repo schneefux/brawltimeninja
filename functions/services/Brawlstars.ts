@@ -12,6 +12,24 @@ function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
 
+// TODO fromEntries polyfill, remove as soon as server is on node@12
+// https://github.com/ungap/from-entries/blob/master/index.js
+var fromEntries = Object.fromEntries || function fromEntries(iterable: any) {
+  var entries = ('entries' in iterable ? iterable.entries() : iterable);
+  var object = {};
+  var entry;
+  while ((entry = entries.next()) && !entry.done) {
+    var pair = entry.value;
+    Object.defineProperty(object, pair[0], {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: pair[1]
+    });
+  }
+  return object;
+};
+
 export default class BrawlstarsService {
   private readonly apiBase = 'https://api.brawlapi.cf/v1/';
 
@@ -99,7 +117,7 @@ export default class BrawlstarsService {
     return meta.map((entry) => ({
       id: entry.name.replace(/ /g, '_').toLowerCase(),
       ...entry,
-      events: Object.fromEntries(metaByMode
+      events: fromEntries(metaByMode
         .filter((modeEntry) => modeEntry.name.toLowerCase() == entry.name.toLowerCase())
         .map((modeEntry) => [
           modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : '') +
