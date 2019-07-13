@@ -393,7 +393,7 @@ export default class DatabaseService {
       await this.knex.schema.createTable('battle', (table) => {
         table.bigIncrements('id');
 
-        table.timestamp('timestamp').notNullable().defaultTo(0);
+        table.timestamp('timestamp').nullable();
         table.string('player_tags').notNullable(); // sorted CSV
 
         // duplicated in player_battle
@@ -409,7 +409,7 @@ export default class DatabaseService {
       await this.knex.schema.createTable('player_battle', (table) => {
         table.bigIncrements('id');
 
-        table.timestamp('timestamp').notNullable().defaultTo(0);
+        table.timestamp('timestamp').nullable();
         table.bigInteger('battle_id').unsigned().notNullable();
         // true if player-private data is included
         table.boolean('is_complete').notNullable();
