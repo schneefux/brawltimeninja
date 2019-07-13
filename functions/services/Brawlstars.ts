@@ -96,7 +96,7 @@ export default class BrawlstarsService {
       {},
       {},
       30000,
-      10800,
+      10800, // 3h
     );
 
     const metaByMode = await request<MetaModeEntry[]>(
@@ -105,7 +105,7 @@ export default class BrawlstarsService {
       {},
       {},
       30000,
-      10800,
+      3600, // 1h
     );
 
     // TODO use id not mode+map
