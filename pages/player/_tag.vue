@@ -1,7 +1,12 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-4" >
     <div class="section-heading">
-      <h1 class="text-4xl font-semibold">
+      <img
+        v-if="Object.keys(player.brawlers).length > 0"
+        :src="require(`~/assets/images/hero/model/${topBrawlerId}.png`)"
+        class="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
+      />
+      <h1 class="text-4xl font-semibold relative z-10">
         Statistics for
         <span class="text-secondary">{{ player.name }}</span>
         <span
@@ -635,6 +640,10 @@ export default {
         ...brawler
       }))
       return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
+    },
+    topBrawlerId() {
+      const brawlerIds = [...Object.keys(this.player.brawlers)]
+      return brawlerIds[0]
     },
     ...mapState({
       ads: state => state.adsAllowed,
