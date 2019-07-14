@@ -88,7 +88,7 @@ export const getters = {
         starRate: n => `${Math.round(100 * n)}%`,
         pickRate: n => `${Math.round(100 * n)}%`,
         duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
-        rank: n => n.toFixed(2),
+        rank: n => n === null ? 'N/A' : n.toFixed(2),
         wins: n => n,
       },
     }
