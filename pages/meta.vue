@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto py-4 px-2">
     <div
-      :class="{ 'md:bg-grey-lighter': !forceMobile, 'md:text-black': !forceMobile }"
+      :class="{ 'md:bg-grey-lighter md:text-black': !forceMobile }"
       class="py-8 px-6 my-8 relative"
     >
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
@@ -17,33 +17,33 @@
             Current Events
           </span>
           <button
-            v-for="[eMode, eMap] in currentEventsWithData"
-            :key="eMode + ',' + eMap"
+            v-for="event in currentEventsWithData"
+            :key="event.id"
             class="bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light ml-2 rounded border-2 py-1 px-2 text-black mt-2"
-            @click="mode = eMode; map = eMap"
+            @click="selectedEvent = event"
           >
-            {{ formatMode(eMode) }}
+            {{ formatMode(event.mode) }}
             -
-            {{ eMap }}
+            {{ event.map }}
           </button>
         </div>
         <div>
           <label class="font-semibold">
             Mode
             <select
-              v-model="mode"
+              v-model="selectedMode"
               :class="{
                 'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
               }"
               class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
-              @change="comparator = 'trophies'; order = +1; map = events[mode][0]"
+              @change="selectedProp = 'trophies'; order = +1"
             >
               <option
-                v-for="(_, m) in events"
-                :key="m"
-                :value="m"
+                v-for="mode in modes"
+                :key="mode"
+                :value="mode"
               >
-                {{ formatMode(m) }}
+                {{ formatMode(mode) }}
               </option>
             </select>
           </label>
@@ -52,19 +52,19 @@
           <label class="font-semibold">
             Map
             <select
-              v-model="map"
+              v-model="selectedMap"
               :class="{
                 'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
               }"
               class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
-              @change="comparator = 'trophies'; order = +1"
+              @change="selectedProp = 'trophies'; order = +1"
             >
               <option
-                v-for="m in events[mode]"
-                :key="m"
-                :value="m"
+                v-for="map in maps"
+                :key="map"
+                :value="map"
               >
-                {{ m }}
+                {{ map }}
               </option>
             </select>
           </label>
@@ -116,7 +116,7 @@
                 class="font-bold"
                 @click="sortBy(prop)"
               >
-                <span v-if="comparator === prop">
+                <span v-if="selectedProp === prop">
                   <template v-if="order < 0">▲</template>
                   <template v-else>▼</template>
                 </span>
@@ -164,7 +164,7 @@
             class="mr-3 mb-2 bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light text-black font-semibold text-sm border-2 rounded py-1 px-2"
             @click="sortBy(prop)"
           >
-            <span v-if="comparator === prop">
+            <span v-if="selectedProp === prop">
               <template v-if="order < 0">▲</template>
               <template v-else>▼</template>
             </span>
@@ -271,56 +271,67 @@ export default {
   },
   data() {
     return {
-      mode: 'gemGrab',
-      map: 'Chill Cave',
-      comparator: 'trophyChange',
+      selectedProp: 'trophyChange',
+      selectedEvent: {},
       order: +1,
       forceMobile: true,
       formatMode,
     }
   },
   computed: {
-    event() {
-      return this.mode + ',' + this.map
+    selectedMode: {
+      get() {
+        return this.selectedEvent.mode
+      },
+      set(mode) {
+        this.selectedEvent = this.events
+          .find(event => mode === event.mode)
+      }
+    },
+    selectedMap: {
+      get() {
+        return this.selectedEvent.map
+      },
+      set(map) {
+        this.selectedEvent = this.events
+          .find(event => this.selectedMode === event.mode && map === event.map)
+      }
+    },
+    modes() {
+      return [...new Set(this.events.map(event => event.mode))]
+    },
+    maps() {
+      return this.events
+        .filter(event => event.mode === this.selectedMode)
+        .map(event => event.map)
     },
     sortedMeta() {
+      if (this.selectedEvent.id === undefined) {
+        return []
+      }
+
       const meta = this.meta.slice()
-      return meta.sort(this.comparators[this.comparator])
+      return meta.sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
           ...entry,
-          ...entry.events[this.event], // TODO this is kind of a workaround
+          ...entry.events[this.selectedEvent.id].stats,
           index: index + 1,
         }))
     },
     events() {
       // get a list of events with data for every brawler
-      return this.meta.map(entry => [...Object.keys(entry.events)])
-        // keep all events which are available for all brawlers
+      const commonEventIds = this.meta.map(entry => [...Object.keys(entry.events)])
         .reduce((acc, cur, index) => index === 0 ? cur : cur.filter(m => acc.includes(m)), [])
         .sort()
-        .map(event => event.split(','))
-        .reduce((acc, [mode, map]) => ({
-          ...acc,
-          [mode]: (acc[mode] || []).concat([map])
-        }), {})
+      return commonEventIds.reduce((events, id) => events.concat([{
+        id: id,
+        mode: this.meta[0].events[id].mode,
+        map: this.meta[0].events[id].map,
+      }]), [])
     },
     currentEventsWithData() {
-      const events = []
-      // TODO return mode from API (or better id)
-      // find the mode that belongs to this map
-      this.currentEvents.forEach((eventMap) => {
-        let eventMode
-        Object.entries(this.events).forEach(([mode, maps]) => {
-          if (maps.includes(eventMap)) {
-            eventMode = mode
-          }
-        })
-        if (eventMode !== undefined) {
-          events.push([eventMode, eventMap])
-        }
-      })
-
-      return events
+      return this.currentEvents
+        .filter(({ id }) => this.events.find(({ id: id2 }) => id === id2) !== undefined)
     },
     comparators() {
       const compareProp = (prop) => {
@@ -332,14 +343,14 @@ export default {
         trophyChange: compareProp('trophyChange'),
       }
 
-      if (this.meta.length === 0) {
+      if (this.meta.length === 0 || this.selectedEvent.id === undefined) {
         return comparators
       }
 
       // add mode statistics that have values not null
-      Object.entries(this.meta[0].events[this.event]).forEach(([stat, value]) => {
+      Object.entries(this.meta[0].events[this.selectedEvent.id].stats).forEach(([prop, value]) => {
         if (value !== null && value !== 0) {
-          comparators[stat] = (e1, e2) => this.order * (e2.events[this.event][stat] - e1.events[this.event][stat])
+          comparators[prop] = (e1, e2) => this.order * (e2.events[this.selectedEvent.id].stats[prop] - e1.events[this.selectedEvent.id].stats[prop])
         }
       })
 
@@ -367,22 +378,23 @@ export default {
       await store.dispatch('loadMeta')
     }
   },
-  mounted() {
+  async mounted() {
     if (process.static) {
-      this.loadCurrentEvents()
-      this.loadMeta()
+      await this.loadCurrentEvents()
+      await this.loadMeta()
     }
+    this.selectedEvent = this.events[0]
   },
   methods: {
     sortBy(prop) {
-      if (this.comparator === prop) {
+      if (this.selectedProp === prop) {
         this.order *= -1
       } else {
-        this.comparator = prop
+        this.selectedProp = prop
         this.order = +1
       }
 
-      this.$ga.event('meta', 'sort_by', `${this.comparator} ${this.order < 0 ? 'desc' : 'asc'}`)
+      this.$ga.event('meta', 'sort_by', `${this.selectedProp} ${this.order < 0 ? 'desc' : 'asc'}`)
     },
     ...mapActions({
       loadMeta: 'loadMeta',

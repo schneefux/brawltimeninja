@@ -43,8 +43,8 @@ export const state = () => ({
 export const getters = {
   guidesForCurrentEvents(state) {
     const guides = state.blog.guides
-    const events = state.currentEvents
-    const matchesAnyEvent = ({ map }) => events.includes(map)
+    const eventMaps = state.currentEvents.map(({ map }) => map)
+    const matchesAnyEvent = ({ map }) => eventMaps.includes(map)
     return guides.filter(matchesAnyEvent)
   },
   playerRank(state) {
