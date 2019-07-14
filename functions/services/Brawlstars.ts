@@ -110,6 +110,7 @@ export default class BrawlstarsService {
           [modeEntry.id]: {
             mode: modeEntry.mode,
             map: modeEntry.map + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : ''),
+            sampleSize: modeEntry.picks,
             stats: {
               winRate: modeEntry.wins / modeEntry.picks,
               rank: modeEntry.rank,

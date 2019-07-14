@@ -71,6 +71,13 @@
         </div>
       </div>
 
+      <p
+        v-if="totalSampleSize < 1000"
+        class="my-8 text-center"
+      >
+        Not enough data for this event yet! Play a few battles and come back later.
+      </p>
+
       <button
         v-show="!forceMobile"
         class="hidden md:block text-sm text-grey-darker mr-3 mt-2 absolute top-0 right-0 underline"
@@ -332,6 +339,14 @@ export default {
     currentEventsWithData() {
       return this.currentEvents
         .filter(({ id }) => this.events.find(({ id: id2 }) => id === id2) !== undefined)
+    },
+    totalSampleSize() {
+      if (this.selectedEvent.id === undefined) {
+        return 0
+      }
+
+      return this.meta
+        .reduce((sampleSize, entry) => sampleSize + entry.events[this.selectedEvent.id].sampleSize, 0)
     },
     comparators() {
       const compareProp = (prop) => {
