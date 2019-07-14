@@ -303,6 +303,7 @@ export default class DatabaseService {
     public async getMetaByMode() {
       return await this.knex.raw(`
         select
+          battle_event_id as id,
           battle_event_mode as mode,
           battle_event_map as map,
           brawler_name as name,
@@ -314,9 +315,10 @@ export default class DatabaseService {
           count(*) as picks
         from player_battle
         where timestamp > now() - interval 1 week
-        group by battle_event_map, battle_event_mode, brawler_name, is_bigbrawler
+        group by battle_event_id, battle_event_map, battle_event_mode, brawler_name, is_bigbrawler
       `).then((response) => response[0].map(
         (entry: any) => (<MetaModeEntry> {
+          id: entry.id,
           mode: entry.mode,
           map: entry.map,
           name: entry.name,

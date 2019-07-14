@@ -6,6 +6,7 @@ export interface MetaEntry {
 }
 
 export interface MetaModeEntry {
+  id: number;
   mode: string;
   map: string;
   name: string;

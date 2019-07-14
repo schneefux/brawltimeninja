@@ -42,8 +42,13 @@ export default class BrawlstarsService {
       { 'Authorization': token }
     );
 
-    const events = response.current;
-    return events.map(({ mapName }) => mapName);
+    return response.current.map((event) => ({
+      // official BS API returns 150000xy event ids
+      // unofficial API returns  15000xy event ids
+      id: event.mapId.toString().replace(/^150/, '1500'),
+      map: event.mapName,
+      mode: event.gameMode,
+    }));
   }
 
   public async getHoursLeaderboard() {
@@ -90,10 +95,9 @@ export default class BrawlstarsService {
       3600, // 1h
     );
 
-    // TODO use id not mode+map
-    const sumPicksByEvent = <{ [event: string]: number }> {};
+    const sumPicksByEvent = <{ [id: number]: number }> {};
     metaByMode.forEach((entry) => {
-      sumPicksByEvent[entry.mode + ',' + entry.map] = (sumPicksByEvent[entry.mode + ',' + entry.map] || 0) + entry.picks;
+      sumPicksByEvent[entry.id] = (sumPicksByEvent[entry.id] || 0) + entry.picks;
     });
 
     return meta.map((entry) => ({
@@ -101,22 +105,20 @@ export default class BrawlstarsService {
       ...entry,
       events: metaByMode
         .filter((modeEntry) => modeEntry.name.toLowerCase() == entry.name.toLowerCase())
-        .map((modeEntry) => [
-          modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : '') +
-          ',' +
-          modeEntry.map, {
-            winRate: modeEntry.wins / modeEntry.picks,
-            rank: modeEntry.rank,
-            pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.mode + ',' + modeEntry.map],
-            duration: modeEntry.duration,
-            starRate: modeEntry.stars / modeEntry.picks,
-            wins: modeEntry.wins,
-          }])
-        // TODO upgrade to node@12 and replace by fromEntries
-        .reduce((acc, [key, value]) => ({
-          ...acc,
-          [<string>key]: value,
-        }), {})
+        .reduce((entries, modeEntry) => ({
+          ...entries,
+          [modeEntry.id]: {
+            mode: modeEntry.mode,
+            map: modeEntry.map + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : ''),
+            stats: {
+              winRate: modeEntry.wins / modeEntry.picks,
+              rank: modeEntry.rank,
+              pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.id],
+              duration: modeEntry.duration,
+              starRate: modeEntry.stars / modeEntry.picks,
+              wins: modeEntry.wins,
+            },
+          }}), {})
     }));
   }
 
