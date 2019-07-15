@@ -34,8 +34,10 @@ export const state = () => ({
   currentEventsLoaded: false,
   leaderboard: [],
   leaderboardLoaded: false,
-  meta: [],
-  metaLoaded: false,
+  brawlerMeta: [],
+  brawlerMetaLoaded: false,
+  mapMeta: [],
+  mapMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
 })
@@ -97,7 +99,7 @@ export const getters = {
     const props = Object.keys(getters.metaStatMaps.labels)
     const max = {}
 
-    state.meta.forEach((entry) => {
+    state.brawlerMeta.forEach((entry) => {
       props.forEach((prop) => {
         if ((!(prop in max) || max[prop][prop] < entry[prop]) &&
           entry[prop] !== undefined && entry[prop] !== 0) {
@@ -145,9 +147,13 @@ export const mutations = {
     state.leaderboard = leaderboard
     state.leaderboardLoaded = true
   },
-  setMeta(state, meta) {
-    state.meta = meta
-    state.metaLoaded = true
+  setBrawlerMeta(state, meta) {
+    state.brawlerMeta = meta
+    state.brawlerMetaLoaded = true
+  },
+  setMapMeta(state, meta) {
+    state.mapMeta = meta
+    state.mapMetaLoaded = true
   },
   allowAds(state) {
     state.adsAllowed = true
@@ -216,18 +222,32 @@ export const actions = {
       console.error('cannot get leaderboard:', error.message)
     }
   },
-  async loadMeta({ state, commit }) {
-    if (state.metaLoaded) {
+  async loadBrawlerMeta({ state, commit }) {
+    if (state.brawlerMetaLoaded) {
       return
     }
 
     try {
-      const meta = await this.$axios.$get('/api/meta')
-      commit('setMeta', meta)
+      const meta = await this.$axios.$get('/api/meta/brawler')
+      commit('setBrawlerMeta', meta)
     } catch (error) {
       // not critical, ignore
-      exception('cannot get meta: ' + error.message)
-      console.error('cannot get meta:', error.message)
+      exception('cannot get brawler meta: ' + error.message)
+      console.error('cannot get brawler meta:', error.message)
+    }
+  },
+  async loadMapMeta({ state, commit }) {
+    if (state.mapMetaLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta/map')
+      commit('setMapMeta', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get map meta: ' + error.message)
+      console.error('cannot get map meta:', error.message)
     }
   },
 }

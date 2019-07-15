@@ -222,7 +222,7 @@ export default class DatabaseService {
     return { playerHistory, brawlerHistory } as History;
   }
 
-  public async getMeta() {
+  public async getBrawlerMeta() {
     return await this.knex.raw(`
       with brawler_history as (
         select
@@ -282,25 +282,46 @@ export default class DatabaseService {
           n.sample
         from trophies_sum_old o, trophies_sum_new n
         where o.name = n.name
+      ),
+      brawler_stats as (
+        select
+          brawler_name as name,
+          avg(duration) as duration,
+          avg(rank) as rank,
+          avg(result='victory') as wins,
+          avg(is_starplayer) as stars,
+          count(*) as picks
+        from player_battle
+        group by brawler_name
       )
       select
         w.name,
         wo.trophies as trophies,
         w.trophies as sp_trophies,
+        stats.duration,
+        stats.rank,
+        stats.wins,
+        stats.stars,
+        stats.picks,
         diff.trophies / diff.age_hours * 24 * 7 as trophies_diff_week
-      from trophies_with_star_power w, trophies_no_star_power wo, trophies_diff diff
-      where w.name = wo.name and w.name = diff.name
+      from trophies_with_star_power w, trophies_no_star_power wo, trophies_diff diff, brawler_stats stats
+      where w.name = wo.name and w.name = diff.name and w.name = stats.name
       `).then((response) => response[0].map(
         (entry: any) => (<MetaEntry> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
           spTrophies: parseFloat(entry.sp_trophies),
           trophyChange: parseFloat(entry.trophies_diff_week),
+          duration: parseFloat(entry.duration),
+          rank: parseFloat(entry.rank),
+          winRate: parseFloat(entry.wins),
+          starRate: parseFloat(entry.stars),
+          picks: entry.picks,
         })
       ));
     }
 
-    public async getMetaByMode() {
+    public async getMapMeta() {
       return await this.knex.raw(`
         select
           battle_event_id as id,
@@ -308,8 +329,6 @@ export default class DatabaseService {
           battle_event_map as map,
           brawler_name as name,
           is_bigbrawler,
-          avg(duration) as duration,
-          avg(rank) as rank,
           sum(result='victory') as wins,
           sum(is_starplayer) as stars,
           count(*) as picks
@@ -323,8 +342,6 @@ export default class DatabaseService {
           map: entry.map,
           name: entry.name,
           isBigbrawler: entry.is_bigbrawler,
-          duration: parseFloat(entry.duration),
-          rank: parseFloat(entry.rank),
           wins: parseInt(entry.wins),
           stars: parseInt(entry.stars),
           picks: parseInt(entry.picks),
@@ -335,6 +352,7 @@ export default class DatabaseService {
     public async migrate() {
       // TODO
       // ALTER DATABASE brawltime COLLATE = 'utf8_unicode_ci';
+      // ALTERA TABLE player_battle CONVERT TO CHARACTER SET utf8mb4;
 
       if (!await this.knex.schema.hasTable('player')) {
       await this.knex.schema.createTable('player', (table) => {

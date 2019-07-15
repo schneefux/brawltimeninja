@@ -28,13 +28,13 @@ router.get('/tracker/history/:tag', async (ctx, next) => {
   await next();
 });
 
-router.get('/tracker/meta', async (ctx, next) => {
-  ctx.body = await service.getMeta();
+router.get('/tracker/meta/brawler', async (ctx, next) => {
+  ctx.body = await service.getBrawlerMeta();
   await next();
 });
 
-router.get('/tracker/meta/by-mode', async (ctx, next) => {
-  ctx.body = await service.getMetaByMode();
+router.get('/tracker/meta/map', async (ctx, next) => {
+  ctx.body = await service.getMapMeta();
   await next();
 });
 

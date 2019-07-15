@@ -42,10 +42,20 @@ router.get('/leaderboard/hours', async (ctx, next) => {
   await next();
 });
 
-router.get('/meta', async (ctx, next) => {
+router.get('/meta/brawler', async (ctx, next) => {
   try {
-    ctx.body = await service.getMeta();
-    ctx.set('Cache-Control', 'public, max-age=900'); // 15min
+    ctx.body = await service.getBrawlerMeta();
+    ctx.set('Cache-Control', 'public, max-age=6000');
+  } catch (error) {
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
+router.get('/meta/map', async (ctx, next) => {
+  try {
+    ctx.body = await service.getMapMeta();
+    ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     ctx.throw(error.status, error.reason);
   }

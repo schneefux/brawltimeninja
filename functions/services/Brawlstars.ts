@@ -72,13 +72,13 @@ export default class BrawlstarsService {
     }));
   }
 
-  public async getMeta() {
+  public async getBrawlerMeta() {
     if (trackerUrl == '') {
       return [];
     }
 
     const meta = await request<MetaEntry[]>(
-      '/meta',
+      '/meta/brawler',
       trackerUrl,
       {},
       {},
@@ -86,8 +86,29 @@ export default class BrawlstarsService {
       10800, // 3h
     );
 
-    const metaByMode = await request<MetaModeEntry[]>(
-      '/meta/by-mode',
+    const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
+    return meta.map((entry) => ({
+      id: entry.name.replace(/ /g, '_').toLowerCase(),
+      name: entry.name,
+      sampleSize: entry.picks,
+      stats: {
+        trophies: entry.trophies,
+        spTrophies: entry.spTrophies,
+        trophyChange: entry.trophyChange,
+        winRate: entry.winRate,
+        starRate: entry.starRate,
+        pickRate: entry.picks / sumPicks,
+      },
+    }))
+  }
+
+  public async getMapMeta() {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    const meta = await request<MetaModeEntry[]>(
+      '/meta/map',
       trackerUrl,
       {},
       {},
@@ -96,15 +117,19 @@ export default class BrawlstarsService {
     );
 
     const sumPicksByEvent = <{ [id: number]: number }> {};
-    metaByMode.forEach((entry) => {
+    meta.forEach((entry) => {
       sumPicksByEvent[entry.id] = (sumPicksByEvent[entry.id] || 0) + entry.picks;
     });
+    const brawlers = [...new Set(meta.map((entry) => entry.name))];
 
-    return meta.map((entry) => ({
-      id: entry.name.replace(/ /g, '_').toLowerCase(),
-      ...entry,
-      events: metaByMode
-        .filter((modeEntry) => modeEntry.name.toLowerCase() == entry.name.toLowerCase())
+    const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
+    const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
+
+    return brawlers.map((name) => ({
+      id: name.replace(/ /g, '_').toLowerCase(),
+      name: capitalizeWords(name.toLowerCase()),
+      events: meta
+        .filter((modeEntry) => modeEntry.name.toLowerCase() == name.toLowerCase())
         .reduce((entries, modeEntry) => ({
           ...entries,
           [modeEntry.id]: {
