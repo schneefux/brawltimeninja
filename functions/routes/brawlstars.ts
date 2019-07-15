@@ -45,7 +45,7 @@ router.get('/leaderboard/hours', async (ctx, next) => {
 router.get('/meta', async (ctx, next) => {
   try {
     ctx.body = await service.getMeta();
-    ctx.set('Cache-Control', 'public, max-age=6000');
+    ctx.set('Cache-Control', 'public, max-age=900'); // 15min
   } catch (error) {
     ctx.throw(error.status, error.reason);
   }

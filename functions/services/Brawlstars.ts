@@ -92,7 +92,7 @@ export default class BrawlstarsService {
       {},
       {},
       30000,
-      3600, // 1h
+      900, // 15m
     );
 
     const sumPicksByEvent = <{ [id: number]: number }> {};
