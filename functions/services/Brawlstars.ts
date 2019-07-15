@@ -51,6 +51,24 @@ export default class BrawlstarsService {
     }));
   }
 
+  // TODO deduplicate this code
+  public async getUpcomingEvents() {
+    const response = await request<{ upcoming: BrawlstarsEvent[] }>(
+      'events',
+      this.apiBase,
+      { type: 'upcoming' },
+      { 'Authorization': token }
+    );
+
+    return response.upcoming.map((event) => ({
+      // official BS API returns 150000xy event ids
+      // unofficial API returns  15000xy event ids
+      id: event.mapId.toString().replace(/^150/, '1500'),
+      map: event.mapName,
+      mode: event.gameMode,
+    }));
+  }
+
   public async getHoursLeaderboard() {
     if (trackerUrl == '') {
       return [];

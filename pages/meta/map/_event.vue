@@ -1,85 +1,26 @@
 <template>
-  <div class="mx-auto py-4 px-2">
+  <div class="py-4 px-2">
     <div
       :class="{ 'md:bg-grey-lighter md:text-black': !forceMobile }"
       class="py-8 px-6 my-8 relative"
     >
-      <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
-        Meta
+      <h1 class="text-4xl md:text-center mt-2 font-semibold">
+        Map Meta
       </h1>
-      <p class="mb-3 text-center">
+      <h2 class="text-2xl md:text-center mt-3 font-semibold capitalize">
+        {{ selectedMode }}: {{ selectedMap }}
+      </h2>
+      <img
+        :src="require(`~/assets/images/bs-assets/map_images/${selectedEvent.id.replace(/^1500/, '150')}.png`)"
+        class="mx-auto mt-5 w-48"
+      >
+      <p class="mt-5 mb-3 text-center">
         Statistics from Pro Battles on Brawl Time Ninja this week.
       </p>
 
-      <div class="my-8 mx-auto text-center flex flex-wrap justify-center items-center">
-        <div class="w-full text-center mb-5">
-          <span class="font-semibold block md:inline">
-            Current Events
-          </span>
-          <button
-            v-for="event in currentEventsWithData"
-            :key="event.id"
-            :class="{
-              'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
-              'bg-primary-lighter border-primary-lighter hover:bg-primary-lightest hover:border-primary-lightest': forceMobile,
-            }"
-            class="ml-2 rounded border-2 py-1 px-2 text-black mt-2"
-            @click="selectedEvent = event"
-          >
-            {{ formatMode(event.mode) }}
-            -
-            {{ event.map }}
-          </button>
-        </div>
-        <div>
-          <label class="font-semibold">
-            Mode
-            <select
-              v-model="selectedMode"
-              :class="{
-                'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
-                'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
-              }"
-              class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
-              @change="selectedProp = 'trophies'; order = +1"
-            >
-              <option
-                v-for="mode in modes"
-                :key="mode"
-                :value="mode"
-              >
-                {{ formatMode(mode) }}
-              </option>
-            </select>
-          </label>
-        </div>
-        <div class="md:ml-6 mt-4 md:mt-0">
-          <label class="font-semibold">
-            Map
-            <select
-              v-model="selectedMap"
-              :class="{
-                'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
-                'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
-              }"
-              class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
-              @change="selectedProp = 'trophies'; order = +1"
-            >
-              <option
-                v-for="map in maps"
-                :key="map"
-                :value="map"
-              >
-                {{ map }}
-              </option>
-            </select>
-          </label>
-        </div>
-      </div>
-
       <p
         v-if="totalSampleSize < 1000"
-        class="my-8 text-center"
+        class="mt-5 mb-8 text-center"
       >
         Not enough data for this event yet! Play a few battles and come back later.
       </p>
@@ -263,15 +204,6 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import { induceAdsIntoBrawlers } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card'
 
-function formatMode(mode) {
-  const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
-  const capitalize = str => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
-  return camelToSnakeCase(mode)
-    .split('_')
-    .map(w => capitalize(w))
-    .join(' ')
-}
-
 export default {
   name: 'MapMetaPage',
   components: {
@@ -285,44 +217,18 @@ export default {
   data() {
     return {
       selectedProp: 'trophyChange',
-      selectedEvent: {},
       order: +1,
       forceMobile: true,
-      formatMode,
     }
   },
   computed: {
-    selectedMode: {
-      get() {
-        return this.selectedEvent.mode
-      },
-      set(mode) {
-        this.selectedEvent = this.events
-          .find(event => mode === event.mode)
-      }
+    selectedMode() {
+      return this.selectedEvent.mode
     },
-    selectedMap: {
-      get() {
-        return this.selectedEvent.map
-      },
-      set(map) {
-        this.selectedEvent = this.events
-          .find(event => this.selectedMode === event.mode && map === event.map)
-      }
-    },
-    modes() {
-      return [...new Set(this.events.map(event => event.mode))]
-    },
-    maps() {
-      return this.events
-        .filter(event => event.mode === this.selectedMode)
-        .map(event => event.map)
+    selectedMap() {
+      return this.selectedEvent.map
     },
     sortedMeta() {
-      if (this.selectedEvent.id === undefined) {
-        return []
-      }
-
       const meta = this.meta.slice()
       return meta.sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
@@ -330,36 +236,12 @@ export default {
           index: index + 1,
         }))
     },
-    events() {
-      // get a list of events with data for every brawler
-      const commonEventIds = this.meta.map(entry => [...Object.keys(entry.events)])
-        .reduce((acc, cur, index) => index === 0 ? cur : cur.filter(m => acc.includes(m)), [])
-        .sort()
-      return commonEventIds.reduce((events, id) => events.concat([{
-        id: id,
-        mode: this.meta[0].events[id].mode,
-        map: this.meta[0].events[id].map,
-      }]), [])
-    },
-    currentEventsWithData() {
-      return this.events
-        .filter(({ id }) => this.currentEvents
-          .find(({ id: id2 }) => id === id2) !== undefined)
-    },
     totalSampleSize() {
-      if (this.selectedEvent.id === undefined) {
-        return 0
-      }
-
       return this.meta
         .reduce((sampleSize, entry) => sampleSize + entry.events[this.selectedEvent.id].sampleSize, 0)
     },
     comparators() {
       const comparators = {}
-
-      if (this.meta.length === 0 || this.selectedEvent.id === undefined) {
-        return comparators
-      }
 
       // add mode statistics that have values not null
       Object.entries(this.meta[0].events[this.selectedEvent.id].stats).forEach(([prop, value]) => {
@@ -378,25 +260,23 @@ export default {
     },
     ...mapState({
       meta: state => state.mapMeta,
-      currentEvents: state => state.currentEvents,
       ads: state => state.adsAllowed,
     }),
     ...mapGetters({
       metaStatMaps: 'metaStatMaps',
     })
   },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadMapMeta')
+  async asyncData({ store, params }) {
+    await store.dispatch('loadMapMeta')
+    console.log('TODO rethink this if it this is executed during static build')
+    const entry = store.state.mapMeta[0].events[params.event]
+    return {
+      selectedEvent: {
+        id: params.event,
+        mode: entry.mode,
+        map: entry.map,
+      }
     }
-  },
-  async mounted() {
-    if (process.static) {
-      await this.loadCurrentEvents()
-      await this.loadMapMeta()
-    }
-    this.selectedEvent = this.events[0]
   },
   methods: {
     sortBy(prop) {
@@ -411,7 +291,6 @@ export default {
     },
     ...mapActions({
       loadMapMeta: 'loadMapMeta',
-      loadCurrentEvents: 'loadCurrentEvents',
     }),
   },
 }

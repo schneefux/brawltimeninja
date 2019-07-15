@@ -32,6 +32,8 @@ export const state = () => ({
   playerLoaded: false,
   currentEvents: [],
   currentEventsLoaded: false,
+  upcomingEvents: [],
+  upcomingEventsLoaded: false,
   leaderboard: [],
   leaderboardLoaded: false,
   brawlerMeta: [],
@@ -143,6 +145,10 @@ export const mutations = {
     state.currentEvents = currentEvents
     state.currentEventsLoaded = true
   },
+  setUpcomingEvents(state, upcomingEvents) {
+    state.upcomingEvents = upcomingEvents
+    state.upcomingEventsLoaded = true
+  },
   setLeaderboard(state, leaderboard) {
     state.leaderboard = leaderboard
     state.leaderboardLoaded = true
@@ -206,6 +212,20 @@ export const actions = {
       // not critical, ignore
       exception('cannot get events: ' + error.message)
       console.error('cannot get current events:', error.message)
+    }
+  },
+  async loadUpcomingEvents({ state, commit }) {
+    if (state.upcomingEventsLoaded) {
+      return
+    }
+
+    try {
+      const upcomingEvents = await this.$axios.$get('/api/upcoming-events')
+      commit('setUpcomingEvents', upcomingEvents)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get upcoming events: ' + error.message)
+      console.error('cannot get upcoming events:', error.message)
     }
   },
   async loadLeaderboard({ state, commit }) {
