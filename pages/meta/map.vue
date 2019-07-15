@@ -13,13 +13,17 @@
 
       <div class="my-8 mx-auto text-center flex flex-wrap justify-center items-center">
         <div class="w-full text-center mb-5">
-          <span class="font-semibold">
+          <span class="font-semibold block md:inline">
             Current Events
           </span>
           <button
             v-for="event in currentEventsWithData"
             :key="event.id"
-            class="bg-primary-lighter border-primary-lighter hover:bg-primary-lightest hover:border-primary-lightest ml-2 rounded border-2 py-1 px-2 text-black mt-2"
+            :class="{
+              'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
+              'bg-primary-lighter border-primary-lighter hover:bg-primary-lightest hover:border-primary-lightest': forceMobile,
+            }"
+            class="ml-2 rounded border-2 py-1 px-2 text-black mt-2"
             @click="selectedEvent = event"
           >
             {{ formatMode(event.mode) }}
@@ -33,6 +37,7 @@
             <select
               v-model="selectedMode"
               :class="{
+                'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
                 'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
               }"
               class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
@@ -54,6 +59,7 @@
             <select
               v-model="selectedMap"
               :class="{
+                'bg-grey-lightest border-grey-light hover:bg-white hover:border-grey': !forceMobile,
                 'bg-primary-light border-primary-light hover:bg-primary-lighter hover:border-primary-lighter': forceMobile,
               }"
               class="ml-2 w-40 rounded border-2 py-1 px-2 text-black"
@@ -103,7 +109,7 @@
 
       <table
         v-show="!forceMobile"
-        class="table hidden md:block"
+        class="table hidden md:table mx-auto"
       >
         <thead>
           <tr>
@@ -153,7 +159,7 @@
               :key="prop"
               class="text-center"
             >
-              {{ metaStatMaps.formatters[prop](brawler[prop]) }}
+              {{ metaStatMaps.formatters[prop](brawler.events[selectedEvent.id].stats[prop]) }}
             </td>
           </tr>
         </tbody>
@@ -228,7 +234,7 @@
                       </span>
                     </td>
                     <td class="card-prop-value text-right pr-1">
-                      {{ metaStatMaps.formatters[prop](brawler[prop]) }}
+                      {{ metaStatMaps.formatters[prop](brawler.events[selectedEvent.id].stats[prop]) }}
                     </td>
                     <td class="card-prop-label">
                       {{ metaStatMaps.labels[prop] }}
@@ -267,13 +273,13 @@ function formatMode(mode) {
 }
 
 export default {
-  name: 'MetaPage',
+  name: 'MapMetaPage',
   components: {
     BrawlerCard,
   },
   head() {
     return {
-      title: 'Meta',
+      title: 'Map Meta',
     }
   },
   data() {
@@ -321,7 +327,6 @@ export default {
       return meta.sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
           ...entry,
-          ...entry.events[this.selectedEvent.id].stats,
           index: index + 1,
         }))
     },
@@ -337,8 +342,9 @@ export default {
       }]), [])
     },
     currentEventsWithData() {
-      return this.currentEvents
-        .filter(({ id }) => this.events.find(({ id: id2 }) => id === id2) !== undefined)
+      return this.events
+        .filter(({ id }) => this.currentEvents
+          .find(({ id: id2 }) => id === id2) !== undefined)
     },
     totalSampleSize() {
       if (this.selectedEvent.id === undefined) {
@@ -349,14 +355,7 @@ export default {
         .reduce((sampleSize, entry) => sampleSize + entry.events[this.selectedEvent.id].sampleSize, 0)
     },
     comparators() {
-      const compareProp = (prop) => {
-        return (e1, e2) => this.order * (e2[prop] - e1[prop])
-      }
-      const comparators = {
-        trophies: compareProp('trophies'),
-        spTrophies: compareProp('spTrophies'),
-        trophyChange: compareProp('trophyChange'),
-      }
+      const comparators = {}
 
       if (this.meta.length === 0 || this.selectedEvent.id === undefined) {
         return comparators
@@ -378,8 +377,7 @@ export default {
       return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
     },
     ...mapState({
-      meta: state => state.meta,
-      metaByMode: state => state.metaByMode,
+      meta: state => state.mapMeta,
       currentEvents: state => state.currentEvents,
       ads: state => state.adsAllowed,
     }),
@@ -390,13 +388,13 @@ export default {
   async fetch({ store }) {
     if (!process.static) {
       await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadMeta')
+      await store.dispatch('loadMapMeta')
     }
   },
   async mounted() {
     if (process.static) {
       await this.loadCurrentEvents()
-      await this.loadMeta()
+      await this.loadMapMeta()
     }
     this.selectedEvent = this.events[0]
   },
@@ -409,10 +407,10 @@ export default {
         this.order = +1
       }
 
-      this.$ga.event('meta', 'sort_by', `${this.selectedProp} ${this.order < 0 ? 'desc' : 'asc'}`)
+      this.$ga.event('map_meta', 'sort_by', `${this.selectedProp} ${this.order < 0 ? 'desc' : 'asc'}`)
     },
     ...mapActions({
-      loadMeta: 'loadMeta',
+      loadMapMeta: 'loadMapMeta',
       loadCurrentEvents: 'loadCurrentEvents',
     }),
   },

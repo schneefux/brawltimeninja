@@ -3,7 +3,7 @@
     class="card w-80 h-32 bg-primary-dark flex justify-between mx-auto"
   >
     <div class="w-32 relative">
-      <span class="z-10 absolute ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap">
+      <span class="z-10 absolute left-0 ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap">
         {{ name }}
       </span>
       <img

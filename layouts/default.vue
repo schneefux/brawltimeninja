@@ -35,10 +35,16 @@
             Home
           </nuxt-link>
           <nuxt-link
-            to="/meta"
+            to="/meta/brawler"
             class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
           >
-            Meta Statistics
+            Brawler Meta
+          </nuxt-link>
+          <nuxt-link
+            to="/meta/map"
+            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
+          >
+            Map Meta
           </nuxt-link>
           <nuxt-link
             to="/leaderboard"

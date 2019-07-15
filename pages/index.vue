@@ -110,10 +110,10 @@
           </div>
           <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
-              to="/meta"
+              to="/meta/brawler"
               class="link"
             >
-              Explore the Meta
+              Explore the Brawler Meta
             </nuxt-link>
           </div>
         </div>
