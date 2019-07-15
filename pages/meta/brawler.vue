@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto py-4 px-2">
+  <div class="py-4 px-2">
     <div
       :class="{ 'md:bg-grey-lighter md:text-black': !forceMobile }"
       class="py-8 px-6 my-8 relative"

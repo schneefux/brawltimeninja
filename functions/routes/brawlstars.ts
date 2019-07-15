@@ -32,6 +32,16 @@ router.get('/current-events', async (ctx, next) => {
   await next();
 });
 
+router.get('/upcoming-events', async (ctx, next) => {
+  try {
+    ctx.body = await service.getUpcomingEvents();
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/leaderboard/hours', async (ctx, next) => {
   try {
     ctx.body = await service.getHoursLeaderboard();

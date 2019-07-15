@@ -42,3 +42,7 @@
 .link-light {
   @apply text-primary-dark;
 }
+
+.link-card {
+  @apply bg-grey-lighter py-8 px-6 my-8 text-black;
+}
