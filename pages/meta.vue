@@ -19,7 +19,7 @@
           <button
             v-for="event in currentEventsWithData"
             :key="event.id"
-            class="bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light ml-2 rounded border-2 py-1 px-2 text-black mt-2"
+            class="bg-primary-lighter border-primary-lighter hover:bg-primary-lightest hover:border-primary-lightest ml-2 rounded border-2 py-1 px-2 text-black mt-2"
             @click="selectedEvent = event"
           >
             {{ formatMode(event.mode) }}
