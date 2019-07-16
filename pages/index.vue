@@ -334,9 +334,9 @@ export default {
 
           const top5 = this.bestBrawlersByMap[event.id].slice(0, 5).map(brawler => brawler.name)
 
-          sw.showNotification(`Brawl Time Ninja ${formatMode(event.mode)} recommendations`, {
+          sw.showNotification(`${formatMode(event.mode)}: ${top5.join(', ')}`, {
             tag: event.id,
-            body: `Best Brawlers for ${event.map}: ${top5.join(', ')}`,
+            body: `Best Brawlers for ${formatMode(event.mode)}: ${event.map} as recommended by Brawl Time Ninja`,
             badge: badge.default,
             icon: icon.default,
           })
