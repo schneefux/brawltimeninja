@@ -209,7 +209,7 @@
             <p>
               Support me
               <a class="link" href="https://paypal.me/schneefux">on PayPal</a>
-              and help me unlock my first Legendary?
+              and help me unlock Crow?
             </p>
           </div>
         </div>
