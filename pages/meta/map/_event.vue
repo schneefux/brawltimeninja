@@ -113,7 +113,7 @@
 
       <div
         :class="{ 'md:hidden': !forceMobile }"
-        class="text-center flex flex-wrap justify-between"
+        class="text-center flex flex-wrap justify-between items-center"
       >
         <div class="text-center w-full">
           <span class="mr-2">Sort By</span>
@@ -139,7 +139,7 @@
           >
             <adsense
               v-if="ads && brawler.name === undefined"
-              ins-class="h-32 md:min-w-80 mx-auto"
+              ins-class="md:min-w-80 mx-auto"
               data-ad-client="ca-pub-6856963757796636"
               :data-ad-slot="brawler.id"
             />
