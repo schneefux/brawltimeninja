@@ -34,7 +34,7 @@
             >
             <input
               type="submit"
-              class="text-black font-semibold flex-shrink-0 bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-sm border-8 py-1 px-2 mr-3 rounded"
+              class="button button-lg flex-shrink-0 mr-3"
               value="Search"
             >
           </div>
@@ -168,7 +168,7 @@
     <div
       class="mt-6 mb-6 container"
     >
-      <div class="mx-auto max-w-xl">
+      <div class="w-full mx-auto max-w-xl">
         <div class="mx-5 mb-1 relative">
           <div class="w-2/3 text-left text-lg">
             Live Events
@@ -196,13 +196,27 @@
           />
         </div>
       </div>
+
+      <div
+        v-if="notificationsAllowed"
+        class="mt-4 w-full mx-auto max-w-xl"
+      >
+        <div class="mx-5">
+          <button
+            class="mt-1 button button-sm"
+            @click="notifyCurrentEventMeta"
+          >
+            Send Notification with Map Meta
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps } from '~/store/index'
+import { metaStatMaps, formatMode } from '~/store/index'
 import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
 
@@ -228,6 +242,7 @@ export default {
   },
   data() {
     return {
+      notificationsAllowed: false,
       tag: undefined,
       loading: false,
       error: undefined,
@@ -277,6 +292,7 @@ export default {
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
+      bestBrawlersByMap: 'bestBrawlersByMap',
     }),
   },
   async fetch({ store }) {
@@ -292,8 +308,41 @@ export default {
       this.loadBrawlerMeta()
       this.loadMapMeta()
     }
+    this.notificationsAllowed = Notification.permission !== 'denied'
   },
   methods: {
+    async notifyCurrentEventMeta() {
+      if (!(Notification.permission in ['denied', 'granted'])) {
+        await Notification.requestPermission()
+      }
+
+      if (Notification.permission === 'granted') {
+        this.$ga.event('home', 'meta', 'send_notifications')
+        this.notificationsAllowed = true
+
+        await Promise.all(this.currentEvents.map(async (event) => {
+          const logAndNull = (e) => {
+            this.$ga.exception('cannot load image: ' + e.message)
+            console.log('cannot load image', e.message)
+            return {}
+          }
+          const modeId = event.mode.replace(' ', '').toLowerCase().replace('soloshowdown', 'showdown')
+          const badge = await import(`~/assets/images/mode/icon/${modeId}_optimized.png`).catch(logAndNull)
+          const icon = await import(`~/assets/images/bs-assets/map_images/${event.id.replace(/^1500/, '150')}.png`).catch(logAndNull)
+
+          const top5 = this.bestBrawlersByMap[event.id].slice(0, 5).map(brawler => brawler.name)
+
+          new Notification(`Brawl Time Ninja ${formatMode(event.mode)} recommendations`, { // eslint-disable-line
+            tag: event.id,
+            body: `Best Brawlers for ${event.map}: ${top5.join(', ')}`,
+            badge: badge.default,
+            icon: icon.default,
+          })
+        }))
+      } else {
+        this.notificationsAllowed = false
+      }
+    },
     async search() {
       this.error = undefined
 

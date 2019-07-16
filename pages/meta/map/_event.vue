@@ -120,7 +120,7 @@
           <button
             v-for="(_, prop) in comparators"
             :key="prop"
-            class="mr-3 mb-2 bg-secondary border-secondary hover:bg-secondary-light hover:border-secondary-light text-black font-semibold text-sm border-2 rounded py-1 px-2"
+            class="mr-3 mb-2 button button-sm"
             @click="sortBy(prop)"
           >
             <span v-if="selectedProp === prop">

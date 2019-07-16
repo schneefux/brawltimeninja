@@ -46,3 +46,23 @@
 .link-card {
   @apply bg-grey-lighter rounded shadow-lg py-6 px-4 card-content text-black;
 }
+
+.button {
+  @apply rounded bg-secondary border-secondary text-black font-semibold text-sm py-1 px-2;
+}
+
+.button:hover {
+  @apply bg-secondary-light border-secondary-light;
+}
+
+.button-sm {
+  @apply border-2;
+}
+
+.button-md {
+  @apply border-4;
+}
+
+.button-lg {
+  @apply border-8;
+}
