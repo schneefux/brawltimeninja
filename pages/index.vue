@@ -320,6 +320,8 @@ export default {
         this.$ga.event('home', 'meta', 'send_notifications')
         this.notificationsAllowed = true
 
+        const sw = await navigator.serviceWorker.ready
+
         await Promise.all(this.currentEvents.map(async (event) => {
           const logAndNull = (e) => {
             this.$ga.exception('cannot load image: ' + e.message)
@@ -332,7 +334,7 @@ export default {
 
           const top5 = this.bestBrawlersByMap[event.id].slice(0, 5).map(brawler => brawler.name)
 
-          new Notification(`Brawl Time Ninja ${formatMode(event.mode)} recommendations`, { // eslint-disable-line
+          sw.showNotification(`Brawl Time Ninja ${formatMode(event.mode)} recommendations`, {
             tag: event.id,
             body: `Best Brawlers for ${event.map}: ${top5.join(', ')}`,
             badge: badge.default,
