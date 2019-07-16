@@ -54,12 +54,6 @@ export const state = () => ({
 })
 
 export const getters = {
-  guidesForCurrentEvents(state) {
-    const guides = state.blog.guides
-    const eventMaps = state.currentEvents.map(({ map }) => map)
-    const matchesAnyEvent = ({ map }) => eventMaps.includes(map)
-    return guides.filter(matchesAnyEvent)
-  },
   playerRank(state) {
     if (!state.playerLoaded || !state.leaderboardLoaded) {
       return 0
