@@ -6,10 +6,11 @@
       :to="`/meta/map/${event.id}`"
       class="link-light capitalize"
     >
-      <img
-        :src="asset.default"
-        class="w-full max-w-xs mx-auto"
-      >
+      <div
+        v-if="asset.default"
+        :style="`background-image: url('${asset.default}')`"
+        class="h-48 bg-contain bg-no-repeat bg-center mt-6"
+      />
       <p class="mt-4 text-center text-xl">
         {{ formatMode(event.mode) }}
         -
@@ -32,7 +33,7 @@ export default {
   },
   data() {
     return {
-      asset: '',
+      asset: {},
       formatMode,
     }
   },
