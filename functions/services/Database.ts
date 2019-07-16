@@ -350,9 +350,8 @@ export default class DatabaseService {
     }
 
     public async migrate() {
-      // TODO
-      // ALTER DATABASE brawltime COLLATE = 'utf8_unicode_ci';
-      // ALTERA TABLE player_battle CONVERT TO CHARACTER SET utf8mb4;
+      // alter database brawltime collate = 'utf8mb4_unicode_ci';
+      // alter table player_brawler convert to character set utf8mb4 collate utf8mb4_unicode_ci;
 
       if (!await this.knex.schema.hasTable('player')) {
       await this.knex.schema.createTable('player', (table) => {
