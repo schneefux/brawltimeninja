@@ -20,9 +20,9 @@
 
       <p
         v-if="totalSampleSize < 1000"
-        class="mt-5 mb-8 text-center"
+        class="mt-5 mb-8 text-center text-xl font-bold"
       >
-        Not enough data for this event yet! Play a few battles and come back later.
+        ⚠ Not enough data for this event yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
       </p>
 
       <button
