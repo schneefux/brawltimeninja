@@ -4,6 +4,7 @@
       <h1 class="mx-2 text-4xl md:text-center mt-2 font-semibold">
         Map Meta
       </h1>
+
       <p class="mx-2 flex flex-wrap md:justify-center md:mx-auto mt-3">
         <span class="text-xl w-full md:text-center">
           Table of Contents
@@ -30,6 +31,13 @@
           </li>
         </ul>
       </p>
+
+      <adsense
+        v-if="ads"
+        ins-class="h-24 mt-6 text-center"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="8877810024"
+      />
 
       <div class="mt-6">
         <details
@@ -69,6 +77,13 @@
             />
           </div>
         </details>
+
+        <adsense
+          v-if="ads"
+          ins-class="h-24 mt-6 text-center"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="3577381889"
+        />
 
         <h2 class="mt-6 mx-2 text-xl md:text-center font-semibold">
           All maps
