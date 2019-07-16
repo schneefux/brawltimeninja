@@ -48,10 +48,9 @@
 
       <adsense
         v-if="ads"
-        root-class="hidden md:block"
         ins-class="h-24 mb-2 text-center"
         data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="9201379700"
+        data-ad-slot="1665534416"
       />
 
       <table
@@ -140,7 +139,6 @@
           >
             <adsense
               v-if="ads && brawler.name === undefined"
-              root-class=""
               ins-class="h-32 md:min-w-80 mx-auto"
               data-ad-client="ca-pub-6856963757796636"
               :data-ad-slot="brawler.id"
@@ -196,10 +194,9 @@
 
       <adsense
         v-if="ads"
-        root-class="hidden md:block"
         ins-class="h-32 mt-4 text-center"
         data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="7838173054"
+        data-ad-slot="3536131238"
       />
     </div>
   </div>
@@ -275,7 +272,7 @@ export default {
       return comparators
     },
     brawlersAndAds() {
-      const adSlots = ['5457575815', '2907434096', '3837372386', '6271964031', '9020582159', '9306580664']
+      const adSlots = ['3154710057', '6902383379', '8405314532', '7640749978', '1075341622', '5745639405']
       const adFrequency = 7
       const brawlers = this.sortedMeta
       return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
