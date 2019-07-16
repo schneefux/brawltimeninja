@@ -267,7 +267,7 @@ export default {
   },
   async mounted() {
     if (process.static) {
-      await this.loadbrawlerMeta()
+      await this.loadBrawlerMeta()
     }
   },
   methods: {
