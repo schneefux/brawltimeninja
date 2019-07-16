@@ -157,10 +157,11 @@ export default class BrawlstarsService {
             stats: {
               winRate: modeEntry.wins / modeEntry.picks,
               rank: modeEntry.rank,
-              pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.id],
               duration: modeEntry.duration,
-              starRate: modeEntry.stars / modeEntry.picks,
+              pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.id],
+              starRate: modeEntry.starRate,
               wins: modeEntry.wins,
+              rank1: modeEntry.rank1,
             },
           }}), {})
     }));

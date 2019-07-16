@@ -329,8 +329,11 @@ export default class DatabaseService {
           battle_event_map as map,
           brawler_name as name,
           is_bigbrawler,
+          avg(duration) as duration,
+          sum(rank=1) as rank_1,
+          avg(rank) as rank,
           sum(result='victory') as wins,
-          sum(is_starplayer) as stars,
+          avg(is_starplayer) as star_rate,
           count(*) as picks
         from player_battle
         where timestamp > now() - interval 1 week
@@ -342,8 +345,11 @@ export default class DatabaseService {
           map: entry.map,
           name: entry.name,
           isBigbrawler: entry.is_bigbrawler,
+          duration: parseFloat(entry.duration),
           wins: parseInt(entry.wins),
-          stars: parseInt(entry.stars),
+          rank1: parseInt(entry.rank_1),
+          rank: parseFloat(entry.rank),
+          starRate: parseFloat(entry.star_rate),
           picks: parseInt(entry.picks),
         })
       ));

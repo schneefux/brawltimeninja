@@ -15,8 +15,9 @@ export interface MetaModeEntry {
   name: string;
   isBigbrawler: number;
   duration: number;
+  rank1: number;
   rank: number;
   wins: number;
-  stars: number;
+  starRate: number;
   picks: number;
 }
