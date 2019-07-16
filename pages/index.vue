@@ -216,7 +216,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps, formatMode } from '~/store/index'
+import { metaStatMaps } from '~/store/index'
 import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
 
@@ -334,9 +334,9 @@ export default {
 
           const top5 = this.bestBrawlersByMap[event.id].slice(0, 5).map(brawler => brawler.name)
 
-          sw.showNotification(`${formatMode(event.mode)}: ${top5.join(', ')}`, {
+          sw.showNotification(`${event.mode}: ${top5.join(', ')}`, {
             tag: event.id,
-            body: `Best Brawlers for ${formatMode(event.mode)}: ${event.map} as recommended by Brawl Time Ninja`,
+            body: `Best Brawlers for ${event.mode}: ${event.map} as recommended by Brawl Time Ninja`,
             badge: badge.default,
             icon: icon.default,
           })
