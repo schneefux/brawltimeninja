@@ -8,7 +8,7 @@
         Map Meta
       </h1>
       <h2 class="text-2xl md:text-center mt-3 font-semibold capitalize">
-        {{ selectedMode }}: {{ selectedMap }}
+        {{ formatMode(selectedMode) }}: {{ selectedMap }}
       </h2>
       <div class="flex justify-center mt-5">
         <event-card :event="selectedEvent" />
@@ -207,7 +207,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import { induceAdsIntoBrawlers } from '~/store/index'
+import { induceAdsIntoBrawlers, formatMode } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card.vue'
 import EventCard from '~/components/event-card.vue'
 
@@ -227,6 +227,7 @@ export default {
       selectedProp: 'trophyChange',
       order: +1,
       forceMobile: true,
+      formatMode,
     }
   },
   computed: {
