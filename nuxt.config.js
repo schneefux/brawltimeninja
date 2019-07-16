@@ -20,7 +20,7 @@ export default {
   meta: {
     viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
     name: 'Brawl Time Ninja',
-    description: 'Brawl Time Ninja - Check time spent on Brawlstars and player statistics',
+    description: 'Check time spent on Brawlstars. Track trophies and player stats. View Brawler win rates and find the best Brawler for every map and mode.',
     author: 'schneefux',
     theme_color: '#3490dc', // primary
   },
@@ -28,7 +28,7 @@ export default {
   manifest: {
     name: 'Brawl Time Ninja',
     short_name: 'Brawl Time',
-    description: 'Check time spent on Brawlstars and player statistics',
+    description: 'Check time spent on Brawlstars, player stats and win rates.',
     theme_color: '#3490dc', // primary
   },
 

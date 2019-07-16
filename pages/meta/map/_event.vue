@@ -218,8 +218,13 @@ export default {
     EventCard,
   },
   head() {
+    const description = `BrawlStars Game Mode Tier List. Best Brawlers for ${formatMode(this.selectedMode)}: ${this.selectedMap}. View Win Rates, Pick Rates and Rankings.`
     return {
-      title: 'Map Meta',
+      title: `${formatMode(this.selectedMode)}: ${this.selectedMap}`,
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   data() {

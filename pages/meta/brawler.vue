@@ -203,8 +203,13 @@ export default {
     BrawlerCard,
   },
   head() {
+    const description = `BrawlStars Brawler Tier List. Find the best Brawlers. View Win Rates, Pick Rates and Rankings.`
     return {
       title: 'Brawler Meta',
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   data() {
