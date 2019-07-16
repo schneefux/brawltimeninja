@@ -2,10 +2,10 @@
   <div class="flex flex-col items-center">
     <img
       :src="randomHero"
-      class="mt-16 lg:mt-8 h-32 md:h-48 lg:h-64"
+      class="mt-16 lg:mt-12vh h-32 md:h-48 lg:h-64"
     >
 
-    <div class="mt-10 lg:mt-6 text-center mx-2">
+    <div class="mt-10 lg:mt-8vh text-center mx-2">
       <h1 class="text-4xl font-bold">
         How much time on Brawlstars?
       </h1>
@@ -154,37 +154,43 @@
     </div>
 
     <div
-      v-if="relevantGuides.length > 0"
-      class="lg:mt-6 mb-6 container flex flex-wrap justify-center"
+      class="mt-6 mb-6 container"
     >
-      <div class="w-full max-w-xl">
+      <div class="mx-auto max-w-xl">
         <div class="mx-5 mb-1 relative">
           <div class="w-2/3 text-left text-lg">
-            Guides
+            Events
           </div>
           <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
-              to="/blog/guides"
+              to="/meta/map"
               class="link"
             >
-              Read all
+              Explore all
             </nuxt-link>
           </div>
         </div>
       </div>
 
-      <blogroll
-        :posts="relevantGuides"
-        topic="guides"
-        class="w-full mx-5"
-      />
+      <div class="w-full flex flex-wrap justify-center">
+        <div
+          v-for="event in currentEvents"
+          :key="event.id"
+          class="w-80"
+        >
+          <event-card
+            :event="event"
+            class="rounded-lg"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import Blogroll from '~/components/blogroll'
+import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
 
 function playerToRoute(player) {
@@ -198,7 +204,7 @@ function playerToRoute(player) {
 
 export default {
   components: {
-    Blogroll,
+    EventCard,
     Youtube,
   },
   head() {
@@ -253,11 +259,11 @@ export default {
       tagPattern: state => state.tagPattern,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
+      currentEvents: state => state.currentEvents,
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
       metaStatMaps: 'metaStatMaps',
-      relevantGuides: 'guidesForCurrentEvents',
     }),
   },
   async fetch({ store }) {
@@ -328,5 +334,17 @@ export default {
 <style>
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
+}
+
+@responsive {
+  .mt-8vh {
+    margin-top: 8vh;
+  }
+}
+
+@responsive {
+  .mt-12vh {
+    margin-top: 12vh;
+  }
 }
 </style>
