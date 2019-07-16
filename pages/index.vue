@@ -106,7 +106,7 @@
       <div class="w-full max-w-xl">
         <div class="mx-5 mb-1 relative">
           <div class="w-2/3 text-left text-lg">
-            Best Brawlers right now
+            Best Brawlers
           </div>
           <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
@@ -140,12 +140,24 @@
               <div class="w-24 md:w-32 py-1 pr-1 md:py-2 md:pr-2 my-auto text-center relative">
                 <div>
                   <img
+                    v-if="metaStatMaps.icons[prop].length > 2"
                     :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
                     class="card-prop-icon inline"
                   >
-                  <span class="card-prop-value">{{ metaStatMaps.formatters[prop](brawler[prop]) }}</span>
+                  <!-- use emojis (length 2) -->
+                  <span
+                    v-else
+                    class="card-prop-icon"
+                  >
+                    {{ metaStatMaps.icons[prop] }}
+                  </span>
+                  <span class="card-prop-value">
+                    {{ metaStatMaps.formatters[prop](brawler.stats[prop]) }}
+                  </span>
                 </div>
-                <span class="text-xs md:text-sm">{{ metaStatMaps.labels[prop] }}</span>
+                <span class="text-xs md:text-sm">
+                  {{ metaStatMaps.labels[prop] }}
+                </span>
               </div>
             </div>
           </div>
@@ -159,14 +171,14 @@
       <div class="mx-auto max-w-xl">
         <div class="mx-5 mb-1 relative">
           <div class="w-2/3 text-left text-lg">
-            Events
+            Live Events
           </div>
           <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
               to="/meta/map"
               class="link"
             >
-              Explore all
+              Explore the Map Meta
             </nuxt-link>
           </div>
         </div>
@@ -190,6 +202,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { metaStatMaps } from '~/store/index'
 import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
 
@@ -221,6 +234,7 @@ export default {
       invalidTagAttempts: 0,
       loadHelpVideo: false,
       playerToRoute,
+      metaStatMaps,
     }
   },
   computed: {
@@ -263,19 +277,20 @@ export default {
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
-      metaStatMaps: 'metaStatMaps',
     }),
   },
   async fetch({ store }) {
     if (!process.static) {
       await store.dispatch('loadCurrentEvents')
       await store.dispatch('loadBrawlerMeta')
+      await store.dispatch('loadMapMeta')
     }
   },
   mounted() {
     if (process.static) {
       this.loadCurrentEvents()
       this.loadBrawlerMeta()
+      this.loadMapMeta()
     }
   },
   methods: {
@@ -324,6 +339,7 @@ export default {
     }),
     ...mapActions({
       loadBrawlerMeta: 'loadBrawlerMeta',
+      loadMapMeta: 'loadMapMeta',
       loadPlayer: 'loadPlayer',
       loadCurrentEvents: 'loadCurrentEvents',
     }),

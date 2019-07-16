@@ -206,8 +206,8 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
-import { induceAdsIntoBrawlers, formatMode } from '~/store/index'
+import { mapState, mapActions } from 'vuex'
+import { induceAdsIntoBrawlers, formatMode, metaStatMaps } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card.vue'
 import EventCard from '~/components/event-card.vue'
 
@@ -228,6 +228,7 @@ export default {
       order: +1,
       forceMobile: true,
       formatMode,
+      metaStatMaps,
     }
   },
   computed: {
@@ -278,9 +279,6 @@ export default {
       meta: state => state.mapMeta,
       ads: state => state.adsAllowed,
     }),
-    ...mapGetters({
-      metaStatMaps: 'metaStatMaps',
-    })
   },
   async asyncData({ store, params }) {
     await store.dispatch('loadMapMeta')
