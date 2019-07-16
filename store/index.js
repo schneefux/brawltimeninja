@@ -35,7 +35,8 @@ export const metaStatMaps = {
     starRate: 'Star Player',
     pickRate: 'Pick Rate',
     duration: 'Duration',
-    rank: 'Rank',
+    rank: 'Avg. Rank',
+    rank1: 'Wins recorded',
     wins: 'Wins recorded',
   },
   labelsShort: {
@@ -47,6 +48,7 @@ export const metaStatMaps = {
     pickRate: 'Picked',
     duration: 'Duration',
     rank: 'Rank',
+    rank1: 'Rank 1',
     wins: 'Wins',
   },
   icons: {
@@ -58,6 +60,7 @@ export const metaStatMaps = {
     pickRate: '👇',
     duration: '⏰',
     rank: 'leaderboards',
+    rank1: '🏅',
     wins: '🏅',
   },
   formatters: {
@@ -69,9 +72,10 @@ export const metaStatMaps = {
     pickRate: n => `${Math.round(100 * n)}%`,
     duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
     rank: n => n === null ? 'N/A' : n.toFixed(2),
+    rank1: n => n,
     wins: n => n,
   },
-  propPriority: ['wins', 'rank', 'duration', 'pickRate'],
+  propPriority: ['wins', 'rank1', 'duration', 'pickRate'],
 }
 
 export const state = () => ({
