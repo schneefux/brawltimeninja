@@ -7,7 +7,7 @@
       class="link-light capitalize"
     >
       <img
-        :src="require(`~/assets/images/bs-assets/map_images/${event.id.replace(/^1500/, '150')}.png`)"
+        :src="asset.default"
         class="w-full max-w-xs mx-auto"
       >
       <p class="mt-4 text-center text-xl">
@@ -28,8 +28,18 @@ export default {
       required: true
     },
   },
-  errorCaptured(error) {
-    console.log(error)
+  data() {
+    return {
+      asset: '',
+    }
+  },
+  async mounted() {
+    try {
+      this.asset = await import(`~/assets/images/bs-assets/map_images/${this.event.id.replace(/^1500/, '150')}.png`)
+    } catch (e) {
+      this.$ga.exception('cannot load map image: ' + e.message)
+      console.log('cannot load map image', e)
+    }
   },
 }
 </script>
