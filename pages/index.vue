@@ -263,13 +263,13 @@ export default {
   async fetch({ store }) {
     if (!process.static) {
       await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadMeta')
+      await store.dispatch('loadBrawlerMeta')
     }
   },
   mounted() {
     if (process.static) {
       this.loadCurrentEvents()
-      this.loadMeta()
+      this.loadBrawlerMeta()
     }
   },
   methods: {
@@ -317,7 +317,7 @@ export default {
       setPlayerTag: 'setPlayerTag',
     }),
     ...mapActions({
-      loadMeta: 'loadMeta',
+      loadBrawlerMeta: 'loadBrawlerMeta',
       loadPlayer: 'loadPlayer',
       loadCurrentEvents: 'loadCurrentEvents',
     }),
