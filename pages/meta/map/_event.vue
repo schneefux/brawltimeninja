@@ -10,10 +10,9 @@
       <h2 class="text-2xl md:text-center mt-3 font-semibold capitalize">
         {{ selectedMode }}: {{ selectedMap }}
       </h2>
-      <img
-        :src="require(`~/assets/images/bs-assets/map_images/${selectedEvent.id.replace(/^1500/, '150')}.png`)"
-        class="mx-auto mt-5 w-48"
-      >
+      <div class="flex justify-center mt-5">
+        <event-card :event="selectedEvent" />
+      </div>
       <p class="mt-5 mb-3 text-center">
         Statistics from Pro Battles on Brawl Time Ninja this week.
       </p>
@@ -22,7 +21,14 @@
         v-if="totalSampleSize < 1000"
         class="mt-5 mb-8 text-center text-xl font-bold"
       >
-        ⚠ Not enough data for this event yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
+        ⚠ Not enough data for this event yet!
+        <template v-if="sortedMeta.length == 0">
+          Statistics are unavailable.
+        </template>
+        <template v-else>
+          Statistics will be inaccurate.
+        </template>
+        Play a few battles and come back later. ⚠
       </p>
 
       <button
@@ -202,12 +208,14 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { induceAdsIntoBrawlers } from '~/store/index'
-import BrawlerCard from '~/components/brawler-card'
+import BrawlerCard from '~/components/brawler-card.vue'
+import EventCard from '~/components/event-card.vue'
 
 export default {
   name: 'MapMetaPage',
   components: {
     BrawlerCard,
+    EventCard,
   },
   head() {
     return {
@@ -229,6 +237,13 @@ export default {
       return this.selectedEvent.map
     },
     sortedMeta() {
+      // every brawler needs to have this event
+      const enoughData = this.meta
+        .reduce((enoughData, entry) => enoughData && this.selectedEvent.id in entry.events, true)
+      if (!enoughData) {
+        return []
+      }
+
       const meta = this.meta.slice()
       return meta.sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
@@ -237,7 +252,7 @@ export default {
         }))
     },
     totalSampleSize() {
-      return this.meta
+      return this.sortedMeta
         .reduce((sampleSize, entry) => sampleSize + entry.events[this.selectedEvent.id].sampleSize, 0)
     },
     comparators() {
