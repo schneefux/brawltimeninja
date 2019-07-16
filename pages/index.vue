@@ -206,7 +206,7 @@
             class="mt-1 button button-sm"
             @click="notifyCurrentEventMeta"
           >
-            Send Notification with Map Meta
+            Send a Notification with Map Meta
           </button>
         </div>
       </div>
