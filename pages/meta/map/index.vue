@@ -1,6 +1,6 @@
 <template>
   <div class="py-4 px-2">
-    <div class="my-8">
+    <div class="my-8 container mx-auto">
       <h1 class="mx-2 text-4xl md:text-center mt-2 font-semibold">
         Map Meta
       </h1>
@@ -11,7 +11,7 @@
         <ul class="mx-3 mt-2 border-l px-2">
           <li>
             <a href="#current">
-              Live right now
+              Live now
             </a>
           </li>
           <li class="mt-2">
@@ -37,7 +37,7 @@
           open
         >
           <summary class="mx-2 text-xl md:text-center font-semibold">
-            Live right now
+            Live now
           </summary>
           <div class="flex flex-wrap justify-center">
             <event-card

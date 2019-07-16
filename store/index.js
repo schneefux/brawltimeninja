@@ -26,6 +26,54 @@ export function formatMode(mode) {
     .join(' ')
 }
 
+export const metaStatMaps = {
+  labels: {
+    trophies: 'Trophies',
+    spTrophies: 'with Star Power',
+    trophyChange: 'since 7d ago',
+    winRate: 'Win Rate',
+    starRate: 'Star Player',
+    pickRate: 'Pick Rate',
+    duration: 'Duration',
+    rank: 'Rank',
+    wins: 'Wins recorded',
+  },
+  labelsShort: {
+    trophies: 'Trophies',
+    spTrophies: 'with Star Power',
+    trophyChange: 'since 7d ago',
+    winRate: 'Won',
+    starRate: 'Stars',
+    pickRate: 'Picked',
+    duration: 'Duration',
+    rank: 'Rank',
+    wins: 'Wins',
+  },
+  icons: {
+    trophies: 'trophy',
+    spTrophies: 'starpower',
+    trophyChange: 'trophy',
+    winRate: '📈',
+    starRate: '⭐',
+    pickRate: '👇',
+    duration: '⏰',
+    rank: 'leaderboards',
+    wins: '🏅',
+  },
+  formatters: {
+    trophies: n => Math.round(n),
+    spTrophies: n => Math.round(n),
+    trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
+    winRate: n => `${Math.round(100 * n)}%`,
+    starRate: n => `${Math.round(100 * n)}%`,
+    pickRate: n => `${Math.round(100 * n)}%`,
+    duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
+    rank: n => n === null ? 'N/A' : n.toFixed(2),
+    wins: n => n,
+  },
+  propPriority: ['wins', 'rank', 'duration', 'pickRate'],
+}
+
 export const state = () => ({
   version: undefined,
   // fill the store from the payload in static build
@@ -63,57 +111,41 @@ export const getters = {
       .map(({ tag }) => tag)
       .indexOf(state.player.tag) + 1
   },
-  metaStatMaps(state) {
-    return {
-      labels: {
-        trophies: 'Trophies',
-        spTrophies: 'with Star Power',
-        trophyChange: 'since 7d ago',
-        winRate: 'Win Rate',
-        starRate: 'Star Player',
-        pickRate: 'Pick Rate',
-        duration: 'Duration',
-        rank: 'Rank',
-        wins: 'Wins recorded',
-      },
-      icons: {
-        trophies: 'trophy',
-        spTrophies: 'starpower',
-        trophyChange: 'trophy',
-        winRate: '📈',
-        starRate: '⭐',
-        pickRate: '👇',
-        duration: '⏰',
-        rank: 'leaderboards',
-        wins: '🏅',
-      },
-      formatters: {
-        trophies: n => Math.round(n),
-        spTrophies: n => Math.round(n),
-        trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
-        winRate: n => `${Math.round(100 * n)}%`,
-        starRate: n => `${Math.round(100 * n)}%`,
-        pickRate: n => `${Math.round(100 * n)}%`,
-        duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
-        rank: n => n === null ? 'N/A' : n.toFixed(2),
-        wins: n => n,
-      },
-    }
-  },
-  topBrawlers(state, getters) {
-    const props = Object.keys(getters.metaStatMaps.labels)
+  topBrawlers(state) {
+    const props = Object.keys(metaStatMaps.labels)
     const max = {}
 
     state.brawlerMeta.forEach((entry) => {
       props.forEach((prop) => {
-        if ((!(prop in max) || max[prop][prop] < entry[prop]) &&
-          entry[prop] !== undefined && entry[prop] !== 0) {
+        if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
+          entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
           max[prop] = entry
         }
       })
     })
 
     return max
+  },
+  bestBrawlersByMap(state) {
+    // transpose { brawler: [ events ] } -> { event: [ brawlers ] }
+    // sorted by wins, rank, duration or …
+    return state.mapMeta
+      .map(entry => [...Object.entries(entry.events)]
+        .map(([eventId, event]) => ({
+          id: eventId,
+          brawler: {
+            id: entry.id,
+            name: entry.name,
+            stats: event.stats,
+            sortProp: metaStatMaps.propPriority.find(prop => prop in event.stats && event.stats[prop] !== null),
+          },
+        })))
+      .reduce((entries, es) => entries.concat(...es), [])
+      .sort((e1, e2) => e2.brawler.stats[e2.brawler.sortProp] - e1.brawler.stats[e1.brawler.sortProp])
+      .reduce((brawlersByEvent, entry) => ({
+        ...brawlersByEvent,
+        [entry.id]: (brawlersByEvent[entry.id] || []).concat([entry.brawler])
+      }), {})
   },
 }
 

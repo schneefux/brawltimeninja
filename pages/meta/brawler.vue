@@ -193,8 +193,8 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
-import { induceAdsIntoBrawlers } from '~/store/index'
+import { mapState, mapActions } from 'vuex'
+import { induceAdsIntoBrawlers, metaStatMaps } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card'
 
 export default {
@@ -212,6 +212,7 @@ export default {
       selectedProp: 'trophyChange',
       order: +1,
       forceMobile: true,
+      metaStatMaps,
     }
   },
   computed: {
@@ -253,9 +254,6 @@ export default {
       meta: state => state.brawlerMeta,
       ads: state => state.adsAllowed,
     }),
-    ...mapGetters({
-      metaStatMaps: 'metaStatMaps',
-    })
   },
   async fetch({ store }) {
     if (!process.static) {
