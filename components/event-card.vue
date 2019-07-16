@@ -19,7 +19,7 @@
 
       <div class="mt-4 flex flex-wrap justify-center">
         <div
-          v-for="brawler in bestBrawlersByMap[event.id].slice(0, 3)"
+          v-for="brawler in (bestBrawlersByMap[event.id] || []).slice(0, 3)"
           :key="brawler.id"
           class="px-2"
         >
