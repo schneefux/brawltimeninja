@@ -226,7 +226,6 @@ export default {
   },
   data() {
     return {
-      selectedProp: 'trophyChange',
       order: +1,
       forceMobile: true,
       formatMode,
@@ -292,7 +291,9 @@ export default {
   },
   asyncData({ store, params }) {
     const entry = store.state.mapMeta[0].events[params.event]
+    const selectedProp = metaStatMaps.propPriority.find(prop => prop in entry.stats && entry.stats[prop] !== null)
     return {
+      selectedProp,
       selectedEvent: {
         id: params.event,
         mode: entry.mode,
