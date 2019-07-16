@@ -280,9 +280,15 @@ export default {
       ads: state => state.adsAllowed,
     }),
   },
-  async asyncData({ store, params }) {
+  async validate({ store, params }) {
     await store.dispatch('loadMapMeta')
-    console.log('TODO rethink this if it this is executed during static build')
+    if (params.event in store.state.mapMeta[0].events) {
+      return true
+    }
+
+    return false
+  },
+  asyncData({ store, params }) {
     const entry = store.state.mapMeta[0].events[params.event]
     return {
       selectedEvent: {
