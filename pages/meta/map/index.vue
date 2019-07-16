@@ -105,16 +105,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { formatMode } from '~/store/index'
 import EventCard from '~/components/event-card.vue'
-
-function formatMode(mode) {
-  const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
-  const capitalize = str => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
-  return camelToSnakeCase(mode)
-    .split('_')
-    .map(w => capitalize(w))
-    .join(' ')
-}
 
 export default {
   name: 'MetaSelectMapPage',

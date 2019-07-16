@@ -11,7 +11,7 @@
         class="w-full max-w-xs mx-auto"
       >
       <p class="mt-4 text-center text-xl">
-        {{ event.mode }}
+        {{ formatMode(event.mode) }}
         -
         {{ event.map }}
       </p>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { formatMode } from '~/store/index'
+
 export default {
   name: 'EventCard',
   props: {
@@ -31,6 +33,7 @@ export default {
   data() {
     return {
       asset: '',
+      formatMode,
     }
   },
   async mounted() {
