@@ -36,7 +36,7 @@
       <adsense
         v-if="ads"
         root-class="hidden md:block"
-        ins-class="h-24 mb-2"
+        ins-class="h-24 mb-2 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="9201379700"
       />
@@ -184,7 +184,7 @@
       <adsense
         v-if="ads"
         root-class="hidden md:block"
-        ins-class="h-32 mt-4"
+        ins-class="h-32 mt-4 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="7838173054"
       />
