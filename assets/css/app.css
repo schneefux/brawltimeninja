@@ -40,7 +40,8 @@
 }
 
 .link {
-  @apply text-secondary border-primary border-b-2;
+  @apply text-secondary underline;
+  text-decoration-color: theme('colors.primary');
 }
 
 .link-light {
