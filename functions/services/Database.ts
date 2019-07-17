@@ -98,8 +98,7 @@ export default class DatabaseService {
           .from('battle')
           .whereRaw('abs(timestampdiff(minute, timestamp, ?)) < 5', [battleTime])
           .andWhere('player_tags', playerTagsCsv)
-          .andWhere('event_id', battle.event.id)
-          .andWhere('event_mode', battle.event.mode);
+          .andWhere('event_id', battle.event.id);
 
         if (battleRecord.length == 0) {
           // battle was not registered yet
