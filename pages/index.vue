@@ -129,8 +129,8 @@
               class="card h-14 md:h-24 border-primary-darker border-2 flex justify-between mx-auto"
             >
               <div class="w-16 md:w-24 relative">
-                <span class="z-10 absolute ml-1 md:mt-1 md:ml-2 font-semibold md:text-lg text-white text-shadow whitespace-no-wrap">
-                  {{ brawler.name }}
+                <span class="z-10 absolute ml-1 md:mt-1 md:ml-2 font-semibold md:text-lg text-white text-shadow whitespace-no-wrap capitalize">
+                  {{ brawler.name.toLowerCase() }}
                 </span>
                 <img
                   :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
