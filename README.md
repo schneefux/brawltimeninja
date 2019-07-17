@@ -11,19 +11,17 @@ https://brawltime.ninja
 $ npm install
 
 # serve with hot reload at localhost:3000
-$ npm run dev:api
-$ npm run dev:tracker
-$ npm run dev
+$ BRAWLAPI_TOKEN="…" BRAWLSTARS_TOKEN="…" TRACKER_URL="http://localhost:3002/tracker" npm run dev:api
+$ DATABASE_URI="mysql2://user:pass@host/db" npm run dev:tracker
+$ API_PORT=3001 npm run dev
 
 # build for production and launch server
-$ API_URL_BROWSER="..." npm run build
-$ npm run build:backend
-$ npm start
-$ npm start:api
-
-# generate static project
 $ npm run generate:api
-$ npm run generate
+$ npm run build:functions
+$ API_URL_BROWSER="..." npm run build
+$ BRAWLAPI_TOKEN="…" BRAWLSTARS_TOKEN="…" TRACKER_URL="…" node functions/dist/apps/api.js
+$ DATABASE_URI="…" node functions/dist/apps/tracker.js
+$ API_PORT="…" npm start
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
