@@ -105,7 +105,7 @@ export default class DatabaseService {
 
           const battleRecord = await trx('battle').insert({
             /* id, */
-            timestamp: parseApiTime(battle.battleTime),
+            timestamp: battleTime,
             player_tags: playerTagsCsv,
             event_id: battle.event.id,
             event_mode: battle.event.mode,
