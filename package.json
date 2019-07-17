@@ -23,7 +23,6 @@
     "cache-manager": "^2.9.1",
     "cache-manager-fs-hash": "0.0.7",
     "cross-env": "^5.2.0",
-    "dotenv": "^8.0.0",
     "knex": "^0.18.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
