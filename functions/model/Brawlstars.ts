@@ -1,51 +1,34 @@
-export interface Id {
-    high: number;
-    low: number;
-}
-
 export interface Brawler {
+  id: number;
+  name: string;
+  power: number;
+  rank: number;
+  trophies: number;
+  highestTrophies: number;
+  starPowers: {
+    id: number;
     name: string;
-    hasSkin: boolean;
-    skin: string|null;
-    trophies: number;
-    highestTrophies: number;
-    power: number;
-    rank: number;
-}
-
-export interface Club {
-    id: Id;
-    tag: string;
-    name: string;
-    role: string;
-    badgeId: number;
-    badgeUrl: string;
-    members: number;
-    trophies: number;
-    requiredTrophies: number;
-    onlineMembers: number;
+  }[];
 }
 
 export interface Player {
+  tag: string;
+  name: string;
+  nameColor: string;
+  trophies: number;
+  highestTrophies: number;
+  expLevel: number;
+  expPoints: number;
+  '3vs3Victories': number;
+  soloVictories: number;
+  duoVictories: number;
+  bestRoboRumbleTime: number;
+  bestTimeAsBigBrawler: number;
+  club: null | {
     tag: string;
-    id: Id;
     name: string;
-    brawlersUnlocked: number;
-    brawlers: Brawler[];
-    victories: number;
-    soloShowdownVictories: number;
-    duoShowdownVictories: number;
-    totalExp: number;
-    expFmt: string;
-    expLevel: number;
-    trophies: number;
-    highestTrophies: number;
-    avatarId: number;
-    avatarUrl: string;
-    bestTimeAsBigBrawler: string;
-    bestRoboRumbleTime: string;
-    hasSkins: boolean;
-    club: Club|null;
+  };
+  brawlers: Brawler[];
 }
 
 export interface Event {

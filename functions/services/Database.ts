@@ -54,12 +54,13 @@ export default class DatabaseService {
           name: player.name,
           tag: player.tag,
           club_name: player.club === null ? null : player.club.name,
-          victories: player.victories,
-          solo_showdown_victories: player.soloShowdownVictories,
-          duo_showdown_victories: player.duoShowdownVictories,
-          total_exp: player.totalExp,
+          club_tag: player.club === null ? null : player.club.tag,
+          victories: player["3vs3Victories"],
+          solo_showdown_victories: player.soloVictories,
+          duo_showdown_victories: player.duoVictories,
+          total_exp: player.expPoints,
           trophies: player.trophies,
-          brawlers_unlocked: player.brawlersUnlocked,
+          brawlers_unlocked: player.brawlers.length,
         });
         const playerId = lastInsert[0];
 
@@ -385,6 +386,7 @@ export default class DatabaseService {
         table.bigIncrements('id');
         table.bigInteger('player_id').unsigned().notNullable();
 
+        table.timestamp('timestamp').notNullable();
         table.string('name').notNullable();
         table.string('player_tag').notNullable();
 
@@ -496,6 +498,24 @@ export default class DatabaseService {
         table.foreign('battle_id').references('battle.id');
       });
       console.log('created player_battle');
+    }
+
+    if (!await this.knex.schema.hasColumn('player', 'club_tag')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player', (table) => {
+          table.string('club_tag');
+        });
+        console.log('updated player');
+
+        await txn.schema.alterTable('player_brawler', (table) => {
+          table.timestamp('timestamp').notNullable().defaultTo(this.knex.fn.now()).alter();
+        });
+
+        await txn.schema.raw(`
+          update player_brawler b set name=upper(name)
+        `);
+        console.log(`converted player_brawler.name to upper case`);
+      });
     }
 
     console.log('all migrations done');

@@ -57,6 +57,7 @@ router.get('/meta/brawler', async (ctx, next) => {
     ctx.body = await service.getBrawlerMeta();
     ctx.set('Cache-Control', 'public, max-age=6000');
   } catch (error) {
+    console.log(error);
     ctx.throw(error.status, error.reason);
   }
   await next();
