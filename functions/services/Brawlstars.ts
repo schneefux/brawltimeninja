@@ -6,14 +6,20 @@ import History from '~/model/History';
 import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
 
 const trackerUrl = process.env.TRACKER_URL || '';
-const token = process.env.BRAWLSTARS_TOKEN || '';
+const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
+const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
 function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
 
+const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
+
 export default class BrawlstarsService {
-  private readonly apiBase = 'https://api.brawlapi.cf/v1/';
+  private readonly apiUnofficial = 'https://api.brawlapi.cf/v1/';
+  private readonly apiOfficial = 'https://api.brawlstars.com/v1/';
 
   public getFeaturedPlayers() {
     return [ {
@@ -37,9 +43,9 @@ export default class BrawlstarsService {
   public async getEvents() {
     const response = await request<{ current: BrawlstarsEvent[] }>(
       'events',
-      this.apiBase,
+      this.apiUnofficial,
       { type: 'current' },
-      { 'Authorization': token }
+      { 'Authorization': tokenUnofficial }
     );
 
     return response.current.map((event) => ({
@@ -55,9 +61,9 @@ export default class BrawlstarsService {
   public async getUpcomingEvents() {
     const response = await request<{ upcoming: BrawlstarsEvent[] }>(
       'events',
-      this.apiBase,
+      this.apiUnofficial,
       { type: 'upcoming' },
-      { 'Authorization': token }
+      { 'Authorization': tokenUnofficial }
     );
 
     return response.upcoming.map((event) => ({
@@ -140,9 +146,6 @@ export default class BrawlstarsService {
     });
     const brawlers = [...new Set(meta.map((entry) => entry.name))];
 
-    const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
-    const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
-
     return brawlers.map((name) => ({
       id: name.replace(/ /g, '_').toLowerCase(),
       name: capitalizeWords(name.toLowerCase()),
@@ -169,21 +172,22 @@ export default class BrawlstarsService {
 
   public async getPlayerStatistics(tag: string) {
     const player = await request<BrawlstarsPlayer>(
-      'player',
-      this.apiBase,
-      { tag },
-      { 'Authorization': token }
+      'players/%23' + tag,
+      this.apiOfficial,
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial }
     );
+    // official API: with hash, unofficial API: no hash
+    // brawltime assumes no hash
+    player.tag = player.tag.replace(/^#/, '');
 
     const battleLog = await request<BattleLog>(
-      'player/battlelog',
-      this.apiBase,
-      { tag },
-      { 'Authorization': token }
+      'players/%23' + tag + '/battlelog',
+      this.apiOfficial,
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial }
     );
 
-    const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-    const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
     const transformPlayer = (player: BattlePlayer) => ({
       tag: player.tag.replace('#', ''),
       name: player.name,
@@ -269,7 +273,7 @@ export default class BrawlstarsService {
         } as Brawler;
       });
 
-    const hoursSpent = xpToHours(player.totalExp);
+    const hoursSpent = xpToHours(player.expPoints);
 
     const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
       .map((o) => o[prop])
@@ -279,7 +283,7 @@ export default class BrawlstarsService {
     const heroStats = {
       averageVictories: {
         label: 'Average 3v3 Victories',
-        value: Math.floor(player.victories / player.brawlers.length)
+        value: Math.floor(player["3vs3Victories"] / player.brawlers.length)
       },
       averageTrophies: {
         label: 'Average Trophies',
@@ -313,7 +317,7 @@ export default class BrawlstarsService {
           stats: {
             victories: {
               label: 'Victories',
-              value: player.victories,
+              value: player["3vs3Victories"],
             }
           }
         } as Mode,
@@ -324,7 +328,7 @@ export default class BrawlstarsService {
           stats: {
             victories: {
               label: 'Victories',
-              value: player.soloShowdownVictories,
+              value: player.soloVictories,
             }
           }
         } as Mode,
@@ -335,7 +339,7 @@ export default class BrawlstarsService {
           stats: {
             victories: {
               label: 'Victories',
-              value: player.duoShowdownVictories,
+              value: player.duoVictories,
             }
           }
         } as Mode,
