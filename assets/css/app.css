@@ -31,6 +31,10 @@
   @apply font-semibold;
 }
 
+.card-prop-label {
+  @apply text-left;
+}
+
 .section-heading {
   @apply font-sans mt-8;
 }
