@@ -166,6 +166,7 @@
     </div>
 
     <div
+      v-if="currentEvents.length > 0"
       class="mt-6 mb-6 container"
     >
       <div class="w-full mx-auto max-w-xl">
