@@ -767,11 +767,11 @@ export default {
   },
   methods: {
     dismissInstall() {
-      this.$ga.event('app', 'installbanner', 'dismissed')
+      this.$ga.event('app', 'install_banner', 'dismissed')
       this.installPrompt = undefined
     },
     async install() {
-      this.$ga.event('app', 'installbanner', 'clicked')
+      this.$ga.event('app', 'install_banner', 'clicked')
       this.installPrompt.prompt()
       const choice = await this.installPrompt.userChoice
       this.$ga.event('app', 'prompt', choice.outcome)
