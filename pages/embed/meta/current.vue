@@ -61,7 +61,7 @@ export default {
       await store.dispatch('loadMapMeta')
     }
   },
-  mounted() {
+  created() {
     if (process.static) {
       this.loadCurrentEvents()
       this.loadMapMeta()

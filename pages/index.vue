@@ -303,13 +303,16 @@ export default {
       await store.dispatch('loadMapMeta')
     }
   },
-  mounted() {
+  created() {
     if (process.static) {
       this.loadCurrentEvents()
       this.loadBrawlerMeta()
       this.loadMapMeta()
     }
-    this.notificationsAllowed = Notification.permission !== 'denied'
+
+    if (process.client) {
+      this.notificationsAllowed = Notification.permission !== 'denied'
+    }
   },
   methods: {
     async notifyCurrentEventMeta() {
