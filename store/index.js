@@ -103,6 +103,7 @@ export const state = () => ({
   mapMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
+  installBannerDismissed: false,
 })
 
 export const getters = {
@@ -209,6 +210,9 @@ export const mutations = {
   clearCookieSettings(state) {
     state.adsAllowed = false
     state.cookiesAllowed = false
+  },
+  dismissInstallBanner(state) {
+    state.installBannerDismissed = true
   },
 }
 
