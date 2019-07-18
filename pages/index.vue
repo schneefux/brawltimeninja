@@ -105,10 +105,10 @@
     >
       <div class="w-full max-w-xl">
         <div class="mx-5 mb-1 relative">
-          <div class="w-2/3 text-left text-lg">
+          <div class="w-1/2 text-left text-lg">
             Best Brawlers
           </div>
-          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
+          <div class="w-1/2 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
               to="/meta/brawler"
               class="link"
@@ -171,10 +171,10 @@
     >
       <div class="w-full mx-auto max-w-xl">
         <div class="mx-5 mb-1 relative">
-          <div class="w-2/3 text-left text-lg">
+          <div class="w-1/2 text-left text-lg">
             Live Events
           </div>
-          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
+          <div class="w-1/2 text-right text-sm absolute bottom-0 right-0">
             <nuxt-link
               to="/meta/map"
               class="link"
