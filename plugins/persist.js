@@ -8,6 +8,7 @@ export default ({ store }) => {
       lastPlayers: state.lastPlayers,
       cookiesAllowed: state.cookiesAllowed,
       adsAllowed: state.adsAllowed,
+      installBannerDismissed: state.installBannerDismissed,
     }),
     restoreState: (key, storage) => {
       // pass through (https://github.com/championswimmer/vuex-persist/blob/master/src/index.ts#L189)
@@ -25,7 +26,11 @@ export default ({ store }) => {
         })
       }
 
-      value.version = 5
+      if (value.installBannerDismissed === undefined) {
+        value.installBannerDismissed = false
+      }
+
+      value.version = 6
 
       return value
     }

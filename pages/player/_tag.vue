@@ -155,7 +155,7 @@
     </div>
 
     <div
-      v-if="installPrompt !== undefined"
+      v-if="installPrompt !== undefined && !installBannerDismissed"
       class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight">
       <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
         <button
@@ -549,7 +549,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { induceAdsIntoBrawlers } from '~/store/index'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
@@ -698,6 +698,7 @@ export default {
       ads: state => state.adsAllowed,
       blog: state => state.blog,
       player: state => state.player,
+      installBannerDismissed: state => state.installBannerDismissed,
     }),
     ...mapGetters({
       rank: 'playerRank',
@@ -769,6 +770,7 @@ export default {
     dismissInstall() {
       this.$ga.event('app', 'install_banner', 'dismissed')
       this.installPrompt = undefined
+      this.dismissInstallBanner()
     },
     async install() {
       this.$ga.event('app', 'install_banner', 'clicked')
@@ -777,6 +779,9 @@ export default {
       this.$ga.event('app', 'prompt', choice.outcome)
       this.installPrompt = undefined
     },
+    ...mapMutations({
+      dismissInstallBanner: 'dismissInstallBanner',
+    }),
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
