@@ -75,7 +75,7 @@ export default {
       loadMapMeta: 'loadMapMeta',
     }),
   },
-  async mounted() {
+  async created() {
     try {
       this.asset = await import(`~/assets/images/map/${this.event.id.replace(/^1500/, '150')}_small.jpg`)
     } catch (e) {

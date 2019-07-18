@@ -85,7 +85,7 @@ export default {
       await store.dispatch('loadLeaderboard')
     }
   },
-  mounted() {
+  created() {
     if (process.static) {
       this.loadLeaderboard()
     }

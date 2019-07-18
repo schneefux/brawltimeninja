@@ -262,7 +262,7 @@ export default {
       await store.dispatch('loadBrawlerMeta')
     }
   },
-  async mounted() {
+  async created() {
     if (process.static) {
       await this.loadBrawlerMeta()
     }

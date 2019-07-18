@@ -170,7 +170,7 @@ export default {
       await store.dispatch('loadMapMeta')
     }
   },
-  async mounted() {
+  async created() {
     if (process.static) {
       await this.loadCurrentEvents()
       await this.loadUpcomingEvents()
