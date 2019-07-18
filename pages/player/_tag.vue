@@ -58,7 +58,7 @@
 
       <div class="section flex flex-wrap justify-left md:justify-center mx-auto md:mx-0">
         <div
-          v-if="player.clubName != ''"
+          v-if="player.clubName !== undefined && player.clubName != ''"
           class="bigstat-container"
         >
           <div class="bigstat-left text-6vw md:text-4xl!">
