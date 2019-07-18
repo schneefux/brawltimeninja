@@ -6,6 +6,7 @@
       </h1>
 
       <adsense
+        v-if="ads"
         root-class="mt-6"
         ins-class="h-24"
         data-ad-client="ca-pub-6856963757796636"
@@ -53,6 +54,7 @@
       </table>
 
       <adsense
+        v-if="ads"
         root-class="mt-4"
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
@@ -75,6 +77,7 @@ export default {
   computed: {
     ...mapState({
       leaderboard: state => state.leaderboard,
+      ads: state => state.adsAllowed,
     }),
   },
   async fetch({ store }) {
