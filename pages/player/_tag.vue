@@ -734,6 +734,14 @@ export default {
 
     throw lastError
   },
+  created() {
+    if (process.client) {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        this.installPrompt = e
+      })
+    }
+  },
   mounted() {
     const playerHours = this.player.hoursSpent
     const animationDuration = 5000
@@ -758,13 +766,6 @@ export default {
       refreshTimer()
     }, 5 * 60 * 1000)
     refreshTimer()
-
-    if (process.client) {
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault()
-        this.installPrompt = e
-      })
-    }
   },
   methods: {
     dismissInstall() {
