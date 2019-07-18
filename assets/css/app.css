@@ -36,7 +36,16 @@
 }
 
 .section-heading {
-  @apply font-sans mt-8;
+  @apply mt-8;
+}
+
+.section {
+  @apply mt-4;
+}
+@screen md {
+  .section {
+    @apply mx-8;
+  }
 }
 
 .link {

@@ -154,6 +154,34 @@
       </div>
     </div>
 
+    <div
+      v-if="installPrompt !== undefined"
+      class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight">
+      <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
+        <button
+          class="absolute top-0 right-0 mr-1 mt-1"
+          @click="dismissInstall"
+        >
+          <svg class="h-6 w-6 fill-current" viewBox="0 0 20 20">
+            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+          </svg>
+        </button>
+        <p>
+          Install the App for instant access.
+          Track your trophies easily. Light, fast and free.
+        </p>
+        <div class="mt-3">
+          <button
+            class="button button-md"
+            @click="install"
+          >
+            <span class="mr-1">📥</span>
+            Install
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
         Game Modes
@@ -565,6 +593,7 @@ export default {
       totalBrawlers: 27,
       battlePage: 1,
       battlePageSize: 6,
+      installPrompt: undefined,
       hoursSinceDate,
     }
   },
@@ -728,8 +757,26 @@ export default {
       refreshTimer()
     }, 5 * 60 * 1000)
     refreshTimer()
+
+    if (process.client) {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        this.installPrompt = e
+      })
+    }
   },
   methods: {
+    dismissInstall() {
+      this.$ga.event('app', 'installbanner', 'dismissed')
+      this.installPrompt = undefined
+    },
+    async install() {
+      this.$ga.event('app', 'installbanner', 'clicked')
+      this.installPrompt.prompt()
+      const choice = await this.installPrompt.userChoice
+      this.$ga.event('app', 'prompt', choice.outcome)
+      this.installPrompt = undefined
+    },
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
@@ -739,15 +786,6 @@ export default {
 </script>
 
 <style scoped>
-.section {
-  @apply mt-4;
-}
-@screen md {
-  .section {
-    @apply mx-8;
-  }
-}
-
 .bigstat-container {
   @apply flex flex-wrap justify-center items-center mt-2 w-full;
 }
