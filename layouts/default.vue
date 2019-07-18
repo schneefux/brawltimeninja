@@ -198,15 +198,6 @@ export default {
   created() {
     if (process.client) {
       window.addEventListener('appinstalled', this.installed)
-    }
-  },
-  destroyed() {
-    if (process.client) {
-      window.removeEventListener('appinstalled', this.installed)
-    }
-  },
-  mounted() {
-    if (process.client) {
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
         this.installPrompt = e
