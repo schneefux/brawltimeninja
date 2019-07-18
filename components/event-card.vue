@@ -77,7 +77,7 @@ export default {
   },
   async mounted() {
     try {
-      this.asset = await import(`~/assets/images/bs-assets/map_images/${this.event.id.replace(/^1500/, '150')}.png`)
+      this.asset = await import(`~/assets/images/map/${this.event.id.replace(/^1500/, '150')}_small.jpg`)
     } catch (e) {
       this.$ga.exception('cannot load map image: ' + e.message)
       console.log('cannot load map image', e)
