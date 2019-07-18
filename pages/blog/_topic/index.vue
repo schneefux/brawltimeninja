@@ -8,7 +8,7 @@
       :key="post.title"
     >
       <InFeedAdsense
-        v-if="index == 3"
+        v-if="ads && index == 3"
         data-ad-layout-key="-6f+dk+1s-h+2d"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6887845661"
@@ -53,6 +53,7 @@ export default {
     },
     ...mapState({
       blog: state => state.blog,
+      ads: state => state.adsAllowed,
     }),
   },
   asyncData({ params }) {
