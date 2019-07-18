@@ -259,6 +259,21 @@
                   {{ hoursSinceDate(battle.timestamp) - 9 }}h ago
                 </template>
               </span>
+              <span
+                v-if="battle.trophyChange !== undefined"
+                class="text-primary-lightest absolute left-0 bottom-0 text-right font-semibold"
+              >
+                <template v-if="battle.trophyChange > 0">
+                  +{{ battle.trophyChange }}
+                </template>
+                <template v-else>
+                  {{ battle.trophyChange }}
+                </template>
+                <img
+                  src="~/assets/images/icon/trophy_optimized.png"
+                  class="w-4 inline"
+                >
+              </span>
               <div class="mb-6 card-props flex flex-wrap">
                 <div
                   v-for="(team, index) in battle.teams"
