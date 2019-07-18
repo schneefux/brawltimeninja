@@ -11,7 +11,16 @@
         Brawl Time Ninja
       </nuxt-link>
 
-      <div class="md:hidden">
+      <div class="md:hidden flex">
+        <button
+          v-if="installPrompt !== undefined"
+          class="mr-4 text-sm px-2 py-2 border rounded text-primary-lightest border-primary-light"
+          @click="install"
+        >
+          <span class="mr-1">📥</span>
+          Install App
+        </button>
+
         <button
           class="flex px-3 py-2 border rounded text-primary-light border-primary-light"
           @click="menuOpen = !menuOpen"
@@ -28,6 +37,14 @@
         :class="{ 'hidden': !menuOpen }"
       >
         <div class="text-lg capitalize font-medium">
+          <button
+            v-if="installPrompt !== undefined"
+            class="text-lg font-medium mr-4 hidden md:inline-block text-primary-lighter"
+            @click="install"
+          >
+            Install App
+          </button>
+
           <nuxt-link
             to="/"
             class="block md:inline-block mt-4 md:mt-0 text-primary-lighter"
@@ -140,6 +157,7 @@ export default {
       menuOpen: false,
       cookieBannerOpen: false,
       showCookieOptions: false,
+      installPrompt: undefined,
     }
   },
   computed: {
@@ -178,13 +196,21 @@ export default {
     },
   },
   created() {
-    if (global.window !== undefined) {
-      global.window.addEventListener('appinstalled', this.installed)
+    if (process.client) {
+      window.addEventListener('appinstalled', this.installed)
     }
   },
   destroyed() {
-    if (global.window !== undefined) {
-      global.window.removeEventListener('appinstalled', this.installed)
+    if (process.client) {
+      window.removeEventListener('appinstalled', this.installed)
+    }
+  },
+  mounted() {
+    if (process.client) {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        this.installPrompt = e
+      })
     }
   },
   methods: {
@@ -202,6 +228,13 @@ export default {
     },
     installed() {
       this.$ga.event('app', 'install')
+    },
+    async install() {
+      this.$ga.event('app', 'install_header', 'clicked')
+      this.installPrompt.prompt()
+      const choice = await this.installPrompt.userChoice
+      this.$ga.event('app', 'prompt', choice.outcome)
+      this.installPrompt = undefined
     },
     ...mapMutations({
       allowCookies: 'allowCookies',
