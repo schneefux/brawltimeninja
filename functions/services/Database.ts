@@ -118,7 +118,7 @@ export default class DatabaseService {
             Promise.all(insertPlayers.map((insertPlayer, playerIndex) => {
               const is3v3 = teams.length == 2 && teams[0].length == 3 && teams[1].length == 3;
               const isMe = insertPlayer.tag.replace('#', '') == player.tag;
-              const isMyTeam = insertPlayers.find((p) => p.tag == insertPlayer.tag) !== undefined;
+              const isMyTeam = insertPlayers.some((p) => p.tag.replace('#', '') == player.tag);
               const flippedResult = battle.battle.result == 'draw' ? 'draw' : (battle.battle.result == 'victory' ? 'defeat' : 'victory');
 
               return trx('player_battle').insert({
@@ -174,6 +174,13 @@ export default class DatabaseService {
         }
       }));
 
+      /*
+        2019-07-19 Fix for isMyTeam always true, resulting in all victory/all defeat entries:
+        -- update all enemies for is_complete players
+        update player_battle u set u.result='defeat' where (select count(distinct cmp.team_index) from player_battle cmp where u.battle_id=cmp.battle_id and cmp.is_complete)=1 and battle_event_mode in ('brawlBall', 'gemGrab', 'heist') and u.team_index<>(select team_index from player_battle en where u.battle_id=en.battle_id and en.is_complete and en.result='victory' limit 1);
+        -- delete all battles where both sides have an is_complete player
+        create temporary table bad_battles select id from battle where (select count(distinct team_index) from player_battle pb where pb.battle_id=battle.id and pb.is_complete)>1 and battle.event_mode in ('heist', 'gemGrab', 'brawlBall');
+      */
       console.timeEnd('add battle records');
     });
 
