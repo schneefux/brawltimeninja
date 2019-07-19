@@ -39,7 +39,7 @@ export default class TrackerService {
 
     // insert records for progress graphs
     await this.knex.transaction(async (trx) => {
-      console.time('add player record');
+      console.time('add player record ' + player.tag);
       const lastPlayerRecord = await trx
         .select('timestamp')
         .from('player')
@@ -78,15 +78,16 @@ export default class TrackerService {
 
         console.log('added player record', player.tag, playerId);
       }
-      console.timeEnd('add player record');
+
+      console.timeEnd('add player record ' + player.tag);
     });
 
     // do not await - process in background and resolve early
     // insert records for meta stats
-    this.knex.transaction(async (trx) => {
-      console.time('add battle records');
+    Promise.all(battleLog.map(async (battle) => {
+      await this.knex.transaction(async (trx) => {
+        console.time('add battle record ' + player.tag + ' ' + battle.battleTime);
 
-      await Promise.all(battleLog.map(async (battle) => {
         const battleTime = parseApiTime(battle.battleTime);
         const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
         const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
@@ -177,10 +178,10 @@ export default class TrackerService {
             console.log('updated player battle record', player.tag, playerBattleRecord[0].id);
           }
         }
-      }));
 
-      console.timeEnd('add battle records');
-    });
+        console.timeEnd('add battle record ' + player.tag + ' ' + battle.battleTime);
+      });
+    }));
   }
 
   public async getTopByExp(n: number) {
