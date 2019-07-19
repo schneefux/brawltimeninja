@@ -521,6 +521,99 @@ export default class TrackerService {
       });
     }
 
+    if (!await this.knex.schema.hasTable('agg_brawler_event')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.createTable('agg_brawler_event', (table) => {
+          table.bigIncrements('id');
+
+          // dimensions
+          table.timestamp('season_end').nullable();
+          table.bigInteger('event_id').unsigned();
+          table.string('brawler_name');
+          table.boolean('is_bigbrawler');
+
+          // metrics
+          table.bigInteger('count').unsigned();
+          table.bigInteger('duration').unsigned();
+          table.bigInteger('rank_1').unsigned();
+          table.bigInteger('rank').unsigned();
+          table.bigInteger('victory').unsigned();
+          table.bigInteger('starplayer').unsigned();
+
+          table.unique(['season_end', 'event_id', 'brawler_name', 'is_bigbrawler'], 'idx_unq_dimensions');
+        });
+        console.log('created aggregation table');
+
+        await txn.schema.createTable('meta_last_processed', (table) => {
+          table.string('name').primary();
+          table.bigInteger('last_id').unsigned();
+        });
+        console.log('created meta table');
+      });
+    }
+
     console.log('all migrations done');
+  }
+
+  public async materialize() {
+    await this.knex.transaction(async (txn) => {
+      const table = 'agg_brawler_event';
+
+      const lastIdRecords = await txn('meta_last_processed')
+        .select('last_id')
+        .where({ 'name': table });
+      const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
+      const lastId = Math.min(
+        (await txn('player_battle').max('id as id'))[0].id,
+        lastProcessedId + 100000
+      );
+      console.time('materialize from ' + lastProcessedId + ' to ' + lastId);
+
+      await txn.raw(`
+        insert agg_brawler_event
+          select
+            null,
+            date_add(from_days(
+              ceil(
+                to_days(
+                  date_sub(
+                    date_sub(timestamp, interval 8 hour),
+                  interval 1 day)
+                ) / 14
+              ) * 14 + 2
+            ), interval 8 hour) as season_end,
+            battle_event_id as event_id,
+            brawler_name,
+            coalesce(false, is_bigbrawler) as is_bigbrawler,
+
+            count(*) as count,
+            sum(duration) as duration,
+            sum(rank=1) as rank_1,
+            sum(rank) as rank,
+            sum(result='victory') as victory,
+            sum(is_starplayer) as starplayer
+          from player_battle
+          where id > ? and id <= ?
+          group by season_end, event_id, brawler_name, is_bigbrawler
+        on duplicate key update
+          count = count + values(count),
+          duration = duration + values(duration),
+          rank_1 = rank_1 + values(rank_1),
+          rank = rank + values(rank),
+          victory = victory + values(victory),
+          starplayer = starplayer + values(starplayer)
+      `, [lastProcessedId, lastId]);
+
+      if (lastIdRecords.length === 0) {
+        await txn('meta_last_processed')
+          .insert({ 'name': table, 'last_id': lastId });
+      } else {
+        await txn('meta_last_processed')
+          .where({ 'name': table })
+          .update({ 'last_id': lastId });
+      }
+
+      console.timeEnd('materialize from ' + lastProcessedId + ' to ' + lastId);
+    });
   }
 }
