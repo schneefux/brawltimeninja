@@ -37,6 +37,7 @@ export default class TrackerService {
     const lastBattle = battleLog[0];
     const lastBattleTime = parseApiTime(lastBattle.battleTime);
 
+    // insert records for progress graphs
     await this.knex.transaction(async (trx) => {
       console.time('add player record');
       const lastPlayerRecord = await trx
@@ -78,7 +79,11 @@ export default class TrackerService {
         console.log('added player record', player.tag, playerId);
       }
       console.timeEnd('add player record');
+    });
 
+    // do not await - process in background and resolve early
+    // insert records for meta stats
+    this.knex.transaction(async (trx) => {
       console.time('add battle records');
 
       await Promise.all(battleLog.map(async (battle) => {
@@ -183,8 +188,6 @@ export default class TrackerService {
       */
       console.timeEnd('add battle records');
     });
-
-    console.log(player.tag, 'added record');
   }
 
   public async getTopByExp(n: number) {
