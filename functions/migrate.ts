@@ -1,8 +1,8 @@
-import DatabaseService from './services/Database';
+import TrackerService from './services/Tracker';
 
 // TODO use knex migrations instead
 async function main() {
-  const service = new DatabaseService();
+  const service = new TrackerService();
   await service.migrate();
   service.shutdown();
 }

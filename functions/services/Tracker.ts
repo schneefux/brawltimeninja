@@ -6,7 +6,7 @@ import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
-export default class DatabaseService {
+export default class TrackerService {
   private knex: Knex;
 
   constructor() {
