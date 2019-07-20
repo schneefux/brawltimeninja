@@ -30,7 +30,7 @@ export const metaStatMaps = {
   labels: {
     trophies: 'Trophies',
     spTrophies: 'with Star Power',
-    trophyChange: 'since 7d ago',
+    trophyChange: 'this season',
     winRate: 'Win Rate',
     starRate: 'Star Player',
     pickRate: 'Pick Rate',
@@ -42,7 +42,7 @@ export const metaStatMaps = {
   labelsShort: {
     trophies: 'Trophies',
     spTrophies: 'with Star Power',
-    trophyChange: 'since 7d ago',
+    trophyChange: 'this season',
     winRate: 'Won',
     starRate: 'Stars',
     pickRate: 'Picked',

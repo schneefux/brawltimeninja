@@ -85,8 +85,8 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      15000,
-      3600,
+      10000,
+      600,
     );
 
     return response.map(entry => ({
@@ -106,8 +106,8 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      30000,
-      10800, // 3h
+      10000,
+      600,
     );
 
     const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
@@ -117,7 +117,6 @@ export default class BrawlstarsService {
       sampleSize: entry.picks,
       stats: {
         trophies: entry.trophies,
-        spTrophies: entry.spTrophies,
         trophyChange: entry.trophyChange,
         winRate: entry.winRate,
         starRate: entry.starRate,

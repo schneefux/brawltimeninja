@@ -1,7 +1,6 @@
 export interface MetaEntry {
   name: string;
   trophies: number;
-  spTrophies: number;
   winRate: number;
   starRate: number;
   picks: number;

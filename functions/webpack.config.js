@@ -49,6 +49,8 @@ const serverConfig = {
   entry: {
     api: './apps/api.ts',
     tracker: './apps/tracker.ts',
+    migrate: './migrate.ts',
+    materialize: './materialize.ts',
   },
   output: {
     filename: '[name].js',
