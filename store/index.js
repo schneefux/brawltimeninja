@@ -142,7 +142,7 @@ export const getters = {
             id: entry.id,
             name: entry.name,
             stats: event.stats,
-            sortProp: metaStatMaps.propPriority.find(prop => prop in event.stats && event.stats[prop] !== null),
+            sortProp: metaStatMaps.propPriority.find(prop => prop in event.stats && event.stats[prop] !== null && event.stats[prop] !== 0),
           },
         })))
       .reduce((entries, es) => entries.concat(...es), [])
