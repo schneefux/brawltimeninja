@@ -73,6 +73,10 @@ export default class TrackerService {
             player_tag: player.tag,
             trophies: brawler.trophies,
             power: brawler.power,
+            starpower1_id: brawler.starPowers.length == 0 ? null : brawler.starPowers[0].id,
+            starpower1_name: brawler.starPowers.length == 0 ? null : brawler.starPowers[0].name,
+            starpower2_id: brawler.starPowers.length <= 1 ? null : brawler.starPowers[1].id,
+            starpower2_name: brawler.starPowers.length <= 1 ? null : brawler.starPowers[1].name,
           })
         ));
 
@@ -126,6 +130,8 @@ export default class TrackerService {
               const isMe = insertPlayer.tag.replace('#', '') == player.tag;
               const isMyTeam = insertPlayers.some((p) => p.tag.replace('#', '') == player.tag);
               const flippedResult = battle.battle.result == 'draw' ? 'draw' : (battle.battle.result == 'victory' ? 'defeat' : 'victory');
+              const myBrawler = !isMe ? undefined : player.brawlers.find((b) => b.name == insertPlayer.brawler.name);
+              const myStarpower = myBrawler === undefined || myBrawler.starPowers.length != 1 ? undefined : myBrawler.starPowers[0];
 
               return trx('player_battle').insert({
                 /* id, */
@@ -150,6 +156,9 @@ export default class TrackerService {
                 battle_event_mode: battle.event.mode,
                 battle_event_map: battle.event.map,
                 battle_type: battle.battle.type || null,
+                starpower_found: myStarpower !== undefined,
+                starpower_id: myStarpower === undefined ? null : myStarpower.id,
+                starpower_name: myStarpower === undefined ? null : myStarpower.name,
               })
             }))
           ));
@@ -229,18 +238,18 @@ export default class TrackerService {
   public async getBrawlerMeta() {
     return await this.knex.raw(`
         select
-          dim_brawler.name as name,
+          dim_brawler_starpower.brawler_name as name,
           sum(cur.trophies) / sum(cur.trophies_count) as trophies,
           sum(cur.trophies) / sum(cur.trophies_count) - sum(prev.trophies) / sum(prev.trophies_count) as diff,
           sum(cur.count) as picks,
           sum(cur.victory) / sum(cur.result_count) as win_rate,
           sum(cur.starplayer) / sum(cur.starplayer_count) as star_rate
-        from agg_brawler_event cur
-        join dim_brawler on dim_brawler.id = brawler_id
+        from agg_player_battle cur
+        join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        join agg_brawler_event prev on prev.brawler_id = cur.brawler_id and prev.season_id = cur.season_id - 2
+        join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.season_id = cur.season_id - 2
         where is_current
-        group by dim_brawler.name
+        group by dim_brawler_starpower.brawler_name
       `).then((response) => response[0].map(
         (entry: any) => (<MetaEntry> {
           name: entry.name,
@@ -259,20 +268,21 @@ export default class TrackerService {
           dim_event.id as id,
           dim_event.mode as mode,
           dim_event.map as map,
-          dim_brawler.name as name,
+          dim_brawler_starpower.brawler_name as name,
           is_bigbrawler,
 
-          count as picks,
-          duration / duration_count as duration,
-          rank_1,
-          rank / rank_count as rank,
-          victory as wins,
-          starplayer / starplayer_count as star_rate
-        from agg_brawler_event
+          sum(count) as picks,
+          sum(duration) / sum(duration_count) as duration,
+          sum(rank_1) as rank_1,
+          sum(rank) / sum(rank_count) as rank,
+          sum(victory) as wins,
+          sum(starplayer) / sum(starplayer_count) as star_rate
+        from agg_player_battle
         join dim_event on dim_event.id = event_id
-        join dim_brawler on dim_brawler.id = brawler_id
+        join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
         where is_current
+        group by id, mode, map, name, is_bigbrawler
       `)
         .then((response) => response[0].map(
         (entry: any) => (<MetaModeEntry> {
@@ -453,10 +463,10 @@ export default class TrackerService {
       });
     }
 
-    if (!await this.knex.schema.hasTable('agg_brawler_event')) {
+    if (!await this.knex.schema.hasTable('agg_player_battle')) {
       await this.knex.transaction(async (txn) => {
         await txn.schema.createTable('dim_event', (table) => {
-          table.bigInteger('id').unsigned().primary();
+          table.integer('id').unsigned().primary();
 
           table.string('mode');
           table.string('map');
@@ -465,16 +475,22 @@ export default class TrackerService {
         });
         console.log('created event dimension');
 
-        await txn.schema.createTable('dim_brawler', (table) => {
-          table.bigInteger('id').unsigned().primary();
+        await txn.schema.createTable('dim_brawler_starpower', (table) => {
+          table.integer('id').unsigned().primary(); // coalesce(starpower_id, brawler_id)
 
-          table.string('name');
-          table.unique(['name']);
+          table.integer('brawler_id').unsigned().notNullable();
+          table.string('brawler_name').notNullable();
+
+          table.integer('starpower_id').notNullable();
+          table.string('starpower_name').notNullable();
+
+          table.index(['starpower_id']);
+          table.index(['brawler_id']);
         });
-        console.log('created brawler dimension');
+        console.log('created brawler_starpower dimension');
 
         await txn.schema.createTable('dim_season', (table) => {
-          table.bigInteger('id').unsigned().primary();
+          table.integer('id').unsigned().primary();
 
           table.timestamp('end').nullable();
           table.boolean('is_current').notNullable();
@@ -483,13 +499,34 @@ export default class TrackerService {
         });
         console.log('created season dimension');
 
-        await txn.schema.createTable('agg_brawler_event', (table) => {
+        await txn.schema.createTable('meta_last_processed', (table) => {
+          table.string('name').primary();
+          table.bigInteger('last_id').unsigned();
+        });
+        console.log('created meta table');
+
+        await txn.schema.table('player_brawler', (table) => {
+          table.integer('starpower1_id').nullable();
+          table.integer('starpower2_id').nullable();
+          table.string('starpower1_name').nullable();
+          table.string('starpower2_name').nullable();
+        });
+        console.log('updated player_brawler');
+
+        await txn.schema.table('player_battle', (table) => {
+          table.boolean('starpower_found').defaultTo(false);
+          table.integer('starpower_id').nullable();
+          table.string('starpower_name').nullable();
+        });
+        console.log('updated player_battle');
+
+        await txn.schema.createTable('agg_player_battle', (table) => {
           table.bigIncrements('id');
 
           // dimensions
-          table.bigInteger('season_id').unsigned().notNullable();
-          table.bigInteger('event_id').unsigned().notNullable();
-          table.bigInteger('brawler_id').unsigned().notNullable();
+          table.integer('season_id').unsigned().notNullable();
+          table.integer('event_id').unsigned().notNullable();
+          table.integer('brawler_starpower_id').unsigned().notNullable();
           table.boolean('is_bigbrawler').notNullable();
 
           // metrics
@@ -511,18 +548,12 @@ export default class TrackerService {
           table.bigInteger('power').notNullable().unsigned();
           table.bigInteger('power_count').notNullable().unsigned();
 
-          table.unique(['season_id', 'brawler_id', 'is_bigbrawler', 'event_id'], 'idx_unq_dimensions');
+          table.unique(['season_id', 'brawler_starpower_id', 'is_bigbrawler', 'event_id'], 'idx_unq_dimensions');
           table.foreign('season_id').references('dim_season.id');
           table.foreign('event_id').references('dim_event.id');
-          table.foreign('brawler_id').references('dim_brawler.id');
+          table.foreign('brawler_starpower_id').references('dim_brawler_starpower.id');
         });
         console.log('created aggregation table');
-
-        await txn.schema.createTable('meta_last_processed', (table) => {
-          table.string('name').primary();
-          table.bigInteger('last_id').unsigned();
-        });
-        console.log('created meta table');
       });
     }
 
@@ -558,32 +589,35 @@ export default class TrackerService {
     console.timeEnd('fill dim_event');
   }
 
-  private async fillDimBrawler(txn: Knex.Transaction) {
+  private async fillDimBrawlerStarpower(txn: Knex.Transaction) {
     const lastIdRecords = await txn('meta_last_processed')
       .select('last_id')
-      .where({ 'name': 'dim_brawler' });
+      .where({ 'name': 'dim_brawler_starpower' });
     const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
     const lastId = (await txn('player_battle').max('id as id'))[0].id;
-    console.time('fill dim_brawler');
+    console.time('fill dim_brawler_starpower');
 
     await txn.raw(`
-      insert ignore dim_brawler
+      insert ignore dim_brawler_starpower
         select distinct
-          brawler_id as id,
-          brawler_name as name
+          coalesce(starpower_id, brawler_id) as id,
+          brawler_id,
+          brawler_name,
+          coalesce(starpower_id, 0),
+          coalesce(starpower_name, '')
         from player_battle
         where id > ? and id <= ?
     `, [lastProcessedId, lastId]);
 
     if (lastIdRecords.length === 0) {
       await txn('meta_last_processed')
-        .insert({ 'name': 'dim_brawler', 'last_id': lastId });
+        .insert({ 'name': 'dim_brawler_starpower', 'last_id': lastId });
     } else {
       await txn('meta_last_processed')
-        .where({ 'name': 'dim_brawler' })
+        .where({ 'name': 'dim_brawler_starpower' })
         .update({ 'last_id': lastId });
     }
-    console.timeEnd('fill dim_brawler');
+    console.timeEnd('fill dim_brawler_starpower');
   }
 
   private sqlRoundTimestampToSeasonEnd = `
@@ -628,24 +662,24 @@ export default class TrackerService {
   }
 
   /** aggregate player_battle facts */
-  private async fillAggBrawlerEvent(txn: Knex.Transaction) {
+  private async fillAggPlayerBattle(txn: Knex.Transaction) {
     const lastIdRecords = await txn('meta_last_processed')
       .select('last_id')
-      .where({ 'name': 'agg_brawler_event' });
+      .where({ 'name': 'agg_player_battle' });
     const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
     const lastId = Math.min(
       (await txn('player_battle').max('id as id'))[0].id,
-      lastProcessedId + 1000000 // save memory
+      lastProcessedId + 100000 // save memory
     );
     console.time('materialize from ' + lastProcessedId + ' to ' + lastId);
 
     await txn.raw(`
-      insert agg_brawler_event
+      insert agg_player_battle
         select
           null,
           dim_season.id as season_id,
           battle_event_id as event_id,
-          brawler_id,
+          coalesce(starpower_id, brawler_id) as brawler_starpower_id,
           coalesce(false, is_bigbrawler) as is_bigbrawler,
 
           count(*) as count,
@@ -668,7 +702,7 @@ export default class TrackerService {
         from player_battle
         join dim_season on end=${this.sqlRoundTimestampToSeasonEnd}
         where player_battle.id > ? and player_battle.id <= ?
-        group by season_id, event_id, brawler_id, is_bigbrawler
+        group by season_id, event_id, brawler_starpower_id, is_bigbrawler
       on duplicate key update
         count = count + values(count),
         count_complete = count_complete + values(count_complete),
@@ -691,10 +725,10 @@ export default class TrackerService {
 
     if (lastIdRecords.length === 0) {
       await txn('meta_last_processed')
-        .insert({ 'name': 'agg_brawler_event', 'last_id': lastId });
+        .insert({ 'name': 'agg_player_battle', 'last_id': lastId });
     } else {
       await txn('meta_last_processed')
-        .where({ 'name': 'agg_brawler_event' })
+        .where({ 'name': 'agg_player_battle' })
         .update({ 'last_id': lastId });
     }
 
@@ -704,9 +738,9 @@ export default class TrackerService {
   public async materialize() {
     await this.knex.transaction(async (txn) => {
       await this.fillDimEvent(txn);
-      await this.fillDimBrawler(txn);
       await this.fillDimSeason(txn);
-      await this.fillAggBrawlerEvent(txn);
+      await this.fillDimBrawlerStarpower(txn);
+      await this.fillAggPlayerBattle(txn);
     });
   }
 }
