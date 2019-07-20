@@ -707,7 +707,7 @@ export default class TrackerService {
         count = count + values(count),
         count_complete = count_complete + values(count_complete),
         duration = duration + values(duration),
-        duration_count = duration_count + values(duration),
+        duration_count = duration_count + values(duration_count),
         rank_1 = rank_1 + values(rank_1),
         rank = rank + values(rank),
         rank_count = rank_count + values(rank_count),
