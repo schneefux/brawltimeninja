@@ -349,7 +349,7 @@ export default class BrawlstarsService {
           stats: {
             minutes: {
               label: 'survived',
-              value: player.bestTimeAsBigBrawler,
+              value: `${Math.floor(player.bestTimeAsBigBrawler/60)}m ${player.bestTimeAsBigBrawler%60}s`,
             }
           }
         } as Mode,
@@ -360,7 +360,7 @@ export default class BrawlstarsService {
           stats: {
             minutes: {
               label: 'survived',
-              value: player.bestRoboRumbleTime,
+              value: `${Math.floor(player.bestRoboRumbleTime/60)}m ${player.bestRoboRumbleTime%60}s`,
             }
           }
         } as Mode,
