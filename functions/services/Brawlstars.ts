@@ -152,9 +152,9 @@ export default class BrawlstarsService {
         .filter((modeEntry) => modeEntry.name.toLowerCase() == name.toLowerCase())
         .reduce((entries, modeEntry) => ({
           ...entries,
-          [modeEntry.id]: {
-            mode: modeEntry.mode,
-            map: modeEntry.map + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : ''),
+          [modeEntry.id + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? '-boss' : '')]: {
+            mode: modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? ' (Boss)' : ''),
+            map: modeEntry.map,
             sampleSize: modeEntry.picks,
             stats: {
               winRate: modeEntry.wins / modeEntry.picks,
