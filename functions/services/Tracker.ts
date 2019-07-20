@@ -680,7 +680,7 @@ export default class TrackerService {
           dim_season.id as season_id,
           battle_event_id as event_id,
           coalesce(starpower_id, brawler_id) as brawler_starpower_id,
-          coalesce(false, is_bigbrawler) as is_bigbrawler,
+          coalesce(is_bigbrawler, false) as is_bigbrawler,
 
           count(*) as count,
           sum(is_complete) as count_complete,
