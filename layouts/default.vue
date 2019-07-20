@@ -221,7 +221,7 @@ export default {
       this.$ga.event('app', 'install')
     },
     async install() {
-      this.$ga.event('app', 'install_header', 'clicked')
+      this.$ga.event('app', 'click', 'install_header')
       this.installPrompt.prompt()
       const choice = await this.installPrompt.userChoice
       this.$ga.event('app', 'prompt', choice.outcome)

@@ -371,7 +371,7 @@
       >
         <button
           class="button button-md"
-          @click="battlePage++; $ga.event('player', 'battlelog', 'load_more')"
+          @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
         >
         Load More
         </button>
@@ -769,12 +769,12 @@ export default {
   },
   methods: {
     dismissInstall() {
-      this.$ga.event('app', 'install_banner', 'dismissed')
+      this.$ga.event('app', 'dismiss', 'install_banner')
       this.installPrompt = undefined
       this.dismissInstallBanner()
     },
     async install() {
-      this.$ga.event('app', 'install_banner', 'clicked')
+      this.$ga.event('app', 'click', 'install_banner')
       this.installPrompt.prompt()
       const choice = await this.installPrompt.userChoice
       this.$ga.event('app', 'prompt', choice.outcome)

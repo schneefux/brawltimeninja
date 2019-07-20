@@ -21,14 +21,14 @@
       <button
         v-show="!forceMobile"
         class="hidden md:block text-sm text-grey-darker mr-3 mt-2 absolute top-0 right-0 underline"
-        @click="forceMobile = true; $ga.event('meta', 'view', 'switch_to_cards')"
+        @click="forceMobile = true; $ga.event('brawler_meta', 'switch_view', 'cards')"
       >
         Switch to Cards View
       </button>
       <button
         v-show="forceMobile"
         class="hidden md:block mx-auto -mt-2 mb-6 text-sm text-grey-light underline"
-        @click="forceMobile = false; $ga.event('meta', 'view', 'switch_to_table')"
+        @click="forceMobile = false; $ga.event('brawler_meta', 'switch_view', 'table')"
       >
         Switch to Table View
       </button>

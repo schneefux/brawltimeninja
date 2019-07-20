@@ -71,7 +71,7 @@
           video-id="LuUmyorhSIQ"
           autoplay
           mute
-          @ready="$ga.event('player', 'search', 'play_video')"
+          @ready="$ga.event('player', 'play_video', 'search')"
           @ended="$refs.helpVideo.player.playVideo()"
         />
       </details>
@@ -321,7 +321,7 @@ export default {
       }
 
       if (Notification.permission === 'granted') {
-        this.$ga.event('home', 'meta', 'send_notifications')
+        this.$ga.event('home', 'send_notification', 'meta')
         this.notificationsAllowed = true
 
         const sw = await navigator.serviceWorker.ready
