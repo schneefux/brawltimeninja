@@ -53,6 +53,26 @@
         data-ad-slot="1665534416"
       />
 
+      <div
+        v-if="hasBigbrawler"
+        class="text-center mt-2 mb-4"
+      >
+        <nuxt-link
+          v-if="!isBigbrawler"
+          :to="`/meta/map/${selectedEvent.id}-boss`"
+          class="link text-lg"
+        >
+          View statistics for defending Boss Brawler
+        </nuxt-link>
+        <nuxt-link
+          v-else
+          :to="`/meta/map/${selectedEvent.id.replace('-big', '')}`"
+          class="link text-lg"
+        >
+          View statistics for attacking Brawlers
+        </nuxt-link>
+      </div>
+
       <table
         v-show="!forceMobile"
         class="table hidden md:table mx-auto"
@@ -269,6 +289,12 @@ export default {
       })
 
       return comparators
+    },
+    hasBigbrawler() {
+      return this.isBigbrawler || `${this.selectedEvent.id}-boss` in this.meta[0].events
+    },
+    isBigbrawler() {
+      return this.selectedEvent.id.includes('-boss')
     },
     brawlersAndAds() {
       const adSlots = ['3154710057', '6902383379', '8405314532', '7640749978', '1075341622', '5745639405']
