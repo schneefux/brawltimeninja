@@ -375,11 +375,11 @@ export default {
           this.error = 'This tag does not exist'
         } else if (error.response !== undefined && error.response.status === 429) {
           this.$ga.event('player', 'search', 'error_timeout')
-          this.error = 'Either there was an error with the Brawlstars API, or this tag does not exist. Check it and try again'
+          this.error = 'Could not communicate with the Brawlstars API, try again?'
         } else {
           this.$ga.exception('cannot get player: ' + error.message)
           this.$ga.event('player', 'search', 'error_api')
-          this.error = 'Could not communicate with the Brawlstars API, try again later'
+          this.error = 'Brawlstars API is not available right now, try again later'
         }
         return
       } finally {
