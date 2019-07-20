@@ -228,99 +228,27 @@ export default class TrackerService {
 
   public async getBrawlerMeta() {
     return await this.knex.raw(`
-      with brawler_history as (
         select
-          *,
-          row_number() over (partition by player_tag, name order by timestamp desc) as number,
-          row_number() over (partition by player_tag, name order by timestamp asc) as number_rev
-        from player_brawler
-        where timestamp > now() - interval 1 week
-      ),
-      brawler_oldest as (
-        select * from brawler_history where number = 1
-      ),
-      brawler_newest as (
-        select * from brawler_history where number_rev = 1
-      ),
-      trophies_no_star_power as (
-        select
-          name,
-          avg(trophies) as trophies,
-          count(*) as sample
-        from brawler_newest where power in (8, 9)
-        group by name
-      ),
-      trophies_with_star_power as (
-        select
-          name,
-          avg(trophies) as trophies,
-          count(*) as sample
-        from brawler_newest where power = 10
-        group by name
-      ),
-      trophies_sum_old as (
-        select
-          name,
-          sum(trophies) as trophies,
-          sum(timestampdiff(hour, now(), timestamp)) as age_hours,
-          count(*) as sample
-        from brawler_newest
-        where number <> 1
-        group by name
-      ),
-      trophies_sum_new as (
-        select
-          name,
-          sum(trophies) as trophies,
-          sum(timestampdiff(hour, now(), timestamp)) as age_hours,
-          count(*) as sample
-        from brawler_oldest
-        where number_rev <> 1
-        group by name
-      ),
-      trophies_diff as (
-        select
-          n.name,
-          (n.trophies - o.trophies) / n.sample as trophies,
-          (n.age_hours - o.age_hours) / n.sample as age_hours,
-          n.sample
-        from trophies_sum_old o, trophies_sum_new n
-        where o.name = n.name
-      ),
-      brawler_stats as (
-        select
-          brawler_name as name,
-          avg(duration) as duration,
-          avg(rank) as rank,
-          avg(result='victory') as wins,
-          avg(is_starplayer) as stars,
-          count(*) as picks
-        from player_battle
-        group by brawler_name
-      )
-      select
-        w.name,
-        wo.trophies as trophies,
-        w.trophies as sp_trophies,
-        stats.duration,
-        stats.rank,
-        stats.wins,
-        stats.stars,
-        stats.picks,
-        diff.trophies / diff.age_hours * 24 * 7 as trophies_diff_week
-      from trophies_with_star_power w, trophies_no_star_power wo, trophies_diff diff, brawler_stats stats
-      where w.name = wo.name and w.name = diff.name and w.name = stats.name
+          dim_brawler.name as name,
+          sum(cur.trophies) / sum(cur.trophies_count) as trophies,
+          sum(cur.trophies) / sum(cur.trophies_count) - sum(prev.trophies) / sum(prev.trophies_count) as diff,
+          sum(cur.count) as picks,
+          sum(cur.victory) / sum(cur.result_count) as win_rate,
+          sum(cur.starplayer) / sum(cur.starplayer_count) as star_rate
+        from agg_brawler_event cur
+        join dim_brawler on dim_brawler.id = brawler_id
+        join dim_season on dim_season.id = season_id
+        join agg_brawler_event prev on prev.brawler_id = cur.brawler_id and prev.season_id = cur.season_id - 2
+        where is_current
+        group by dim_brawler.name
       `).then((response) => response[0].map(
         (entry: any) => (<MetaEntry> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
-          spTrophies: parseFloat(entry.sp_trophies),
-          trophyChange: parseFloat(entry.trophies_diff_week),
-          duration: parseFloat(entry.duration),
-          rank: parseFloat(entry.rank),
-          winRate: parseFloat(entry.wins),
-          starRate: parseFloat(entry.stars),
-          picks: entry.picks,
+          trophyChange: parseFloat(entry.diff),
+          winRate: parseFloat(entry.win_rate),
+          starRate: parseFloat(entry.star_rate),
+          picks: parseInt(entry.picks),
         })
       ));
     }
@@ -328,21 +256,25 @@ export default class TrackerService {
     public async getMapMeta() {
       return await this.knex.raw(`
         select
-          battle_event_id as id,
-          battle_event_mode as mode,
-          battle_event_map as map,
-          brawler_name as name,
+          dim_event.id as id,
+          dim_event.mode as mode,
+          dim_event.map as map,
+          dim_brawler.name as name,
           is_bigbrawler,
-          avg(duration) as duration,
-          sum(rank=1) as rank_1,
-          avg(rank) as rank,
-          sum(result='victory') as wins,
-          avg(is_starplayer) as star_rate,
-          count(*) as picks
-        from player_battle
-        where timestamp > now() - interval 1 week
-        group by battle_event_id, battle_event_map, battle_event_mode, brawler_name, is_bigbrawler
-      `).then((response) => response[0].map(
+
+          count as picks,
+          duration / duration_count as duration,
+          rank_1,
+          rank / rank_count as rank,
+          victory as wins,
+          starplayer / starplayer_count as star_rate
+        from agg_brawler_event
+        join dim_event on dim_event.id = event_id
+        join dim_brawler on dim_brawler.id = brawler_id
+        join dim_season on dim_season.id = season_id
+        where is_current
+      `)
+        .then((response) => response[0].map(
         (entry: any) => (<MetaModeEntry> {
           id: entry.id,
           mode: entry.mode,
@@ -523,24 +455,66 @@ export default class TrackerService {
 
     if (!await this.knex.schema.hasTable('agg_brawler_event')) {
       await this.knex.transaction(async (txn) => {
+        await txn.schema.createTable('dim_event', (table) => {
+          table.bigInteger('id').unsigned().primary();
+
+          table.string('mode');
+          table.string('map');
+
+          table.unique(['mode', 'map']);
+        });
+        console.log('created event dimension');
+
+        await txn.schema.createTable('dim_brawler', (table) => {
+          table.bigInteger('id').unsigned().primary();
+
+          table.string('name');
+          table.unique(['name']);
+        });
+        console.log('created brawler dimension');
+
+        await txn.schema.createTable('dim_season', (table) => {
+          table.bigInteger('id').unsigned().primary();
+
+          table.timestamp('end').nullable();
+          table.boolean('is_current').notNullable();
+
+          table.unique(['end']);
+        });
+        console.log('created season dimension');
+
         await txn.schema.createTable('agg_brawler_event', (table) => {
           table.bigIncrements('id');
 
           // dimensions
-          table.timestamp('season_end').nullable();
-          table.bigInteger('event_id').unsigned();
-          table.string('brawler_name');
-          table.boolean('is_bigbrawler');
+          table.bigInteger('season_id').unsigned().notNullable();
+          table.bigInteger('event_id').unsigned().notNullable();
+          table.bigInteger('brawler_id').unsigned().notNullable();
+          table.boolean('is_bigbrawler').notNullable();
 
           // metrics
-          table.bigInteger('count').unsigned();
-          table.bigInteger('duration').unsigned();
-          table.bigInteger('rank_1').unsigned();
-          table.bigInteger('rank').unsigned();
-          table.bigInteger('victory').unsigned();
-          table.bigInteger('starplayer').unsigned();
+          table.bigInteger('count').notNullable().unsigned();
+          table.bigInteger('count_complete').notNullable().unsigned();
+          table.bigInteger('duration').notNullable().unsigned();
+          table.bigInteger('duration_count').notNullable().unsigned();
+          table.bigInteger('rank_1').notNullable().unsigned();
+          table.bigInteger('rank').notNullable().unsigned();
+          table.bigInteger('rank_count').notNullable().unsigned();
+          table.bigInteger('victory').notNullable().unsigned();
+          table.bigInteger('defeat').notNullable().unsigned();
+          table.bigInteger('draw').notNullable().unsigned();
+          table.bigInteger('result_count').notNullable().unsigned();
+          table.bigInteger('starplayer').notNullable().unsigned();
+          table.bigInteger('starplayer_count').notNullable().unsigned();
+          table.bigInteger('trophies').notNullable().unsigned();
+          table.bigInteger('trophies_count').notNullable().unsigned();
+          table.bigInteger('power').notNullable().unsigned();
+          table.bigInteger('power_count').notNullable().unsigned();
 
-          table.unique(['season_end', 'event_id', 'brawler_name', 'is_bigbrawler'], 'idx_unq_dimensions');
+          table.unique(['season_id', 'brawler_id', 'is_bigbrawler', 'event_id'], 'idx_unq_dimensions');
+          table.foreign('season_id').references('dim_season.id');
+          table.foreign('event_id').references('dim_event.id');
+          table.foreign('brawler_id').references('dim_brawler.id');
         });
         console.log('created aggregation table');
 
@@ -555,65 +529,184 @@ export default class TrackerService {
     console.log('all migrations done');
   }
 
+  private async fillDimEvent(txn: Knex.Transaction) {
+    const lastIdRecords = await txn('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'dim_event' });
+    const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
+    const lastId = (await txn('battle').max('id as id'))[0].id;
+    console.time('fill dim_event');
+
+    await txn.raw(`
+      insert ignore dim_event
+        select distinct
+          event_id as id,
+          event_mode as mode,
+          event_map as map
+        from battle
+        where id > ? and id <= ?
+    `, [lastProcessedId, lastId]);
+
+    if (lastIdRecords.length === 0) {
+      await txn('meta_last_processed')
+        .insert({ 'name': 'dim_event', 'last_id': lastId });
+    } else {
+      await txn('meta_last_processed')
+        .where({ 'name': 'dim_event' })
+        .update({ 'last_id': lastId });
+    }
+    console.timeEnd('fill dim_event');
+  }
+
+  private async fillDimBrawler(txn: Knex.Transaction) {
+    const lastIdRecords = await txn('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'dim_brawler' });
+    const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
+    const lastId = (await txn('player_battle').max('id as id'))[0].id;
+    console.time('fill dim_brawler');
+
+    await txn.raw(`
+      insert ignore dim_brawler
+        select distinct
+          brawler_id as id,
+          brawler_name as name
+        from player_battle
+        where id > ? and id <= ?
+    `, [lastProcessedId, lastId]);
+
+    if (lastIdRecords.length === 0) {
+      await txn('meta_last_processed')
+        .insert({ 'name': 'dim_brawler', 'last_id': lastId });
+    } else {
+      await txn('meta_last_processed')
+        .where({ 'name': 'dim_brawler' })
+        .update({ 'last_id': lastId });
+    }
+    console.timeEnd('fill dim_brawler');
+  }
+
+  private sqlRoundTimestampToSeasonEnd = `
+    date_add(from_days(
+      ceil(to_days(
+          date_sub(
+            date_sub(timestamp, interval 8 hour),
+          interval 1 day)
+      ) / 14) * 14 + 2
+    ), interval 8 hour)
+  `;
+
+  private async fillDimSeason(txn: Knex.Transaction) {
+    const lastIdRecords = await txn('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'dim_season' });
+    const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
+    const lastId = (await txn('battle').max('id as id'))[0].id;
+    console.time('fill dim_season');
+
+    await txn.raw(`
+      insert ignore dim_season
+        select distinct
+          yearweek(${this.sqlRoundTimestampToSeasonEnd}) as id,
+          ${this.sqlRoundTimestampToSeasonEnd} as end,
+          now() <= ${this.sqlRoundTimestampToSeasonEnd} as is_current
+        from battle
+        where id > ? and id <= ?
+        on duplicate key update
+          is_current = values(is_current)
+    `, [lastProcessedId, lastId]);
+
+    if (lastIdRecords.length === 0) {
+      await txn('meta_last_processed')
+        .insert({ 'name': 'dim_season', 'last_id': lastId });
+    } else {
+      await txn('meta_last_processed')
+        .where({ 'name': 'dim_season' })
+        .update({ 'last_id': lastId });
+    }
+    console.timeEnd('fill dim_season');
+  }
+
+  /** aggregate player_battle facts */
+  private async fillAggBrawlerEvent(txn: Knex.Transaction) {
+    const lastIdRecords = await txn('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'agg_brawler_event' });
+    const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
+    const lastId = Math.min(
+      (await txn('player_battle').max('id as id'))[0].id,
+      lastProcessedId + 1000000 // save memory
+    );
+    console.time('materialize from ' + lastProcessedId + ' to ' + lastId);
+
+    await txn.raw(`
+      insert agg_brawler_event
+        select
+          null,
+          dim_season.id as season_id,
+          battle_event_id as event_id,
+          brawler_id,
+          coalesce(false, is_bigbrawler) as is_bigbrawler,
+
+          count(*) as count,
+          sum(is_complete) as count_complete,
+          coalesce(sum(duration), 0) as duration,
+          sum(duration is not null) as duration_count,
+          coalesce(sum(rank=1), 0) as rank_1,
+          coalesce(sum(rank), 0) as rank,
+          sum(rank is not null) as rank_count,
+          coalesce(sum(result='victory'), 0) as victory,
+          coalesce(sum(result='defeat'), 0) as defeat,
+          coalesce(sum(result='draw'), 0) as draw,
+          sum(result is not null) as result_count,
+          coalesce(sum(is_starplayer), 0) as starplayer,
+          sum(is_starplayer is not null) as starplayer_count,
+          coalesce(sum(brawler_trophies), 0) as trophies,
+          sum(brawler_trophies is not null) as trophies_count,
+          coalesce(sum(brawler_power), 0) as power,
+          sum(brawler_power is not null) as power_count
+        from player_battle
+        join dim_season on end=${this.sqlRoundTimestampToSeasonEnd}
+        where player_battle.id > ? and player_battle.id <= ?
+        group by season_id, event_id, brawler_id, is_bigbrawler
+      on duplicate key update
+        count = count + values(count),
+        count_complete = count_complete + values(count_complete),
+        duration = duration + values(duration),
+        duration_count = duration_count + values(duration),
+        rank_1 = rank_1 + values(rank_1),
+        rank = rank + values(rank),
+        rank_count = rank_count + values(rank_count),
+        victory = victory + values(victory),
+        defeat = defeat + values(defeat),
+        draw = draw + values(draw),
+        result_count = result_count + values(result_count),
+        starplayer = starplayer + values(starplayer),
+        starplayer_count = starplayer_count + values(starplayer_count),
+        trophies = trophies + values(trophies),
+        trophies_count = trophies_count + values(trophies_count),
+        power = power + values(power),
+        power_count = power_count + values(power_count)
+    `, [lastProcessedId, lastId]);
+
+    if (lastIdRecords.length === 0) {
+      await txn('meta_last_processed')
+        .insert({ 'name': 'agg_brawler_event', 'last_id': lastId });
+    } else {
+      await txn('meta_last_processed')
+        .where({ 'name': 'agg_brawler_event' })
+        .update({ 'last_id': lastId });
+    }
+
+    console.timeEnd('materialize from ' + lastProcessedId + ' to ' + lastId);
+  }
+
   public async materialize() {
     await this.knex.transaction(async (txn) => {
-      const table = 'agg_brawler_event';
-
-      const lastIdRecords = await txn('meta_last_processed')
-        .select('last_id')
-        .where({ 'name': table });
-      const lastProcessedId = lastIdRecords.length > 0 ? lastIdRecords[0].last_id : 0;
-      const lastId = Math.min(
-        (await txn('player_battle').max('id as id'))[0].id,
-        lastProcessedId + 100000
-      );
-      console.time('materialize from ' + lastProcessedId + ' to ' + lastId);
-
-      await txn.raw(`
-        insert agg_brawler_event
-          select
-            null,
-            date_add(from_days(
-              ceil(
-                to_days(
-                  date_sub(
-                    date_sub(timestamp, interval 8 hour),
-                  interval 1 day)
-                ) / 14
-              ) * 14 + 2
-            ), interval 8 hour) as season_end,
-            battle_event_id as event_id,
-            brawler_name,
-            coalesce(false, is_bigbrawler) as is_bigbrawler,
-
-            count(*) as count,
-            sum(duration) as duration,
-            sum(rank=1) as rank_1,
-            sum(rank) as rank,
-            sum(result='victory') as victory,
-            sum(is_starplayer) as starplayer
-          from player_battle
-          where id > ? and id <= ?
-          group by season_end, event_id, brawler_name, is_bigbrawler
-        on duplicate key update
-          count = count + values(count),
-          duration = duration + values(duration),
-          rank_1 = rank_1 + values(rank_1),
-          rank = rank + values(rank),
-          victory = victory + values(victory),
-          starplayer = starplayer + values(starplayer)
-      `, [lastProcessedId, lastId]);
-
-      if (lastIdRecords.length === 0) {
-        await txn('meta_last_processed')
-          .insert({ 'name': table, 'last_id': lastId });
-      } else {
-        await txn('meta_last_processed')
-          .where({ 'name': table })
-          .update({ 'last_id': lastId });
-      }
-
-      console.timeEnd('materialize from ' + lastProcessedId + ' to ' + lastId);
+      await this.fillDimEvent(txn);
+      await this.fillDimBrawler(txn);
+      await this.fillDimSeason(txn);
+      await this.fillAggBrawlerEvent(txn);
     });
   }
 }

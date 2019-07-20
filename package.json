@@ -13,7 +13,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "generate:api": "cd functions/ && ts-node generate.ts",
-    "migrate": "cd functions/ && ts-node migrate.ts"
+    "migrate": "cd functions/ && ts-node migrate.ts",
+    "materialize": "cd functions/ && ts-node materialize.ts"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
