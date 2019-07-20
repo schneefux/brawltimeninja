@@ -187,13 +187,15 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenOfficial }
     );
 
-    const transformPlayer = (player: BattlePlayer) => ({
-      tag: player.tag.replace('#', ''),
-      name: player.name,
-      brawler: player.brawler.name.replace(/ /, '_').toLowerCase(),
-      brawlerTrophies: player.brawler.trophies,
-    })
     const battles = battleLog.items.map((battle) => {
+      const transformPlayer = (player: BattlePlayer) => ({
+        tag: player.tag.replace('#', ''),
+        name: player.name,
+        brawler: player.brawler.name.replace(/ /, '_').toLowerCase(),
+        brawlerTrophies: player.brawler.trophies,
+        isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
+      })
+
       let mode = camelToSnakeCase(battle.event.mode)
       let modeId = mode.replace('_', '');
 
@@ -224,6 +226,9 @@ export default class BrawlstarsService {
       const time = battle.battleTime;
       const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
 
+      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
+      const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
+
       return {
         timestamp: new Date(Date.parse(isoDate)),
         mode: {
@@ -232,8 +237,7 @@ export default class BrawlstarsService {
         },
         result,
         trophyChange: battle.battle.trophyChange,
-        teams: (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p])).map(teams => teams.map(transformPlayer)),
-        // TODO add big brawler
+        teams: teams.map(t => t.map(transformPlayer)),
       }
     }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
 

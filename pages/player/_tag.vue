@@ -338,6 +338,12 @@
                       >
                         {{ mate.brawlerTrophies }}
                       </span>
+                      <span
+                        v-if="mate.isBigbrawler"
+                        class="text-lg w-8 text-center"
+                      >
+                        💀
+                      </span>
                     </div>
                     <div
                       :class="{
