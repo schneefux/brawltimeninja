@@ -144,6 +144,10 @@
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
       </p>
+      <div ref="adblock-bait">
+        <div class="adBanner w-px h-px bg-transparent">
+        </div>
+      </div>
     </footer>
   </div>
 </template>
@@ -184,14 +188,19 @@ export default {
     '$route'() {
       this.menuOpen = false
     },
-    version() {
-      if (this.version !== undefined) {
+    version(version) {
+      if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
       }
     },
-    adsAllowed() {
-      if (this.adsAllowed) {
+    adsAllowed(allowed) {
+      if (allowed) {
         this.$ga.enable()
+        const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
+        this.$ga.event('ads', 'blocked', adsBlocked)
+        if (!adsBlocked) {
+          this.enableAds()
+        }
       }
     },
   },
@@ -230,6 +239,7 @@ export default {
     ...mapMutations({
       allowCookies: 'allowCookies',
       allowAds: 'allowAds',
+      enableAds: 'enableAds',
     })
   },
 }

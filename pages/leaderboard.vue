@@ -77,7 +77,7 @@ export default {
   computed: {
     ...mapState({
       leaderboard: state => state.leaderboard,
-      ads: state => state.adsAllowed,
+      ads: state => state.adsEnabled,
     }),
   },
   async fetch({ store }) {

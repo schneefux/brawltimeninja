@@ -103,6 +103,7 @@ export const state = () => ({
   mapMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
+  adsEnabled: false,
   installBannerDismissed: false,
 })
 
@@ -203,6 +204,9 @@ export const mutations = {
   },
   allowAds(state) {
     state.adsAllowed = true
+  },
+  enableAds(state) {
+    state.adsEnabled = true
   },
   allowCookies(state) {
     state.cookiesAllowed = true

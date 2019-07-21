@@ -304,7 +304,7 @@ export default {
     },
     ...mapState({
       meta: state => state.mapMeta,
-      ads: state => state.adsAllowed,
+      ads: state => state.adsEnabled,
     }),
   },
   async validate({ store, params }) {
