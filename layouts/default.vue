@@ -11,10 +11,10 @@
         >
           Brawl Time Ninja
         </nuxt-link>
-        <div class="md:hidden float-right -mb-2">
+        <div class="md:hidden float-right">
           <button
             v-if="installPrompt !== undefined"
-            class="mr-4 px-2 py-1 border rounded border-primary-light text-primary-lightest"
+            class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
             @click="install"
           >
             <span class="mr-1">📥</span>
@@ -22,7 +22,7 @@
           </button>
           <button
             v-show="menuButtonVisible"
-            class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
+            class="ml-4 px-2 py-1 border rounded border-primary-light text-primary-lightest"
             @click="openMenu"
           >
             Menu
