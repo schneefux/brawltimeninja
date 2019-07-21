@@ -153,7 +153,7 @@ export default class BrawlstarsService {
         .reduce((entries, modeEntry) => ({
           ...entries,
           [modeEntry.id + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? '-boss' : '')]: {
-            mode: modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? ' (Boss)' : ''),
+            mode: modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : ''),
             map: modeEntry.map,
             sampleSize: modeEntry.picks,
             stats: {
