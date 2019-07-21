@@ -3,86 +3,87 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <nav class="bg-primary-dark p-4 md:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 md:static">
-      <nuxt-link
-        to="/"
-        class="flex-shrink-0 font-semibold text-xl text-white tracking-tighter"
-      >
-        Brawl Time Ninja
-      </nuxt-link>
-
-      <div class="md:hidden flex">
-        <button
-          v-if="installPrompt !== undefined"
-          class="mr-4 text-sm px-2 py-2 border rounded text-primary-lightest border-primary-light"
-          @click="install"
+    <nav class="bg-primary-dark px-4 pb-2 md:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 md:static">
+      <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-2 md:py-0 w-full md:w-auto">
+        <nuxt-link
+          to="/"
+          class="font-semibold text-xl text-white tracking-tighter"
         >
-          <span class="mr-1">📥</span>
-          Install App
-        </button>
-
-        <button
-          class="flex px-3 py-2 border rounded text-primary-light border-primary-light"
-          @click="menuOpen = !menuOpen"
-        >
-          <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-          </svg>
-        </button>
+          Brawl Time Ninja
+        </nuxt-link>
+        <div class="md:hidden float-right -mb-2">
+          <button
+            v-if="installPrompt !== undefined"
+            class="mr-4 px-2 py-1 border rounded border-primary-light text-primary-lightest"
+            @click="install"
+          >
+            <span class="mr-1">📥</span>
+            Install
+          </button>
+          <button
+            v-show="menuButtonVisible"
+            class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
+            @click="openMenu"
+          >
+            Menu
+          </button>
+        </div>
       </div>
 
       <div
-        class="w-full md:w-auto md:block"
-        :class="{ 'hidden': !menuOpen }"
+        ref="menu"
+        class="w-full md:w-auto relative z-0"
       >
-        <div class="text-lg capitalize font-medium">
-          <button
-            v-if="installPrompt !== undefined"
-            class="text-lg font-medium mr-4 hidden md:inline-block text-primary-lighter"
-            @click="install"
-          >
-            Install App
-          </button>
+        <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap overflow-scroll-gradient md:overflow-scroll-no-gradient">
+          <div class="text-lg capitalize font-medium py-1 my-1 md:py-0 md:my-0 border-b border-primary-light md:border-0">
+            <button
+              v-if="installPrompt !== undefined"
+              class="mr-3 hidden md:inline-block text-primary-lighter"
+              @click="install"
+            >
+              <span class="mr-1">📥</span>
+              Install App
+            </button>
 
-          <nuxt-link
-            to="/"
-            class="block md:inline-block mt-4 md:mt-0 text-primary-lighter"
-          >
-            Home
-          </nuxt-link>
-          <nuxt-link
-            to="/meta/brawler"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
-          >
-            Brawler Meta
-          </nuxt-link>
-          <nuxt-link
-            to="/meta/map"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
-          >
-            Map Meta
-          </nuxt-link>
-          <nuxt-link
-            to="/leaderboard"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
-          >
-            Leaderboard
-          </nuxt-link>
-          <nuxt-link
-            v-for="topic in topics"
-            :key="topic"
-            :to="`/blog/${topic}`"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
-          >
-            {{ topic }}
-          </nuxt-link>
-          <nuxt-link
-            to="/about"
-            class="block md:inline-block mt-4 md:mt-0 md:ml-4 text-primary-lighter"
-          >
-            Privacy
-          </nuxt-link>
+            <nuxt-link
+              to="/"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              Home
+            </nuxt-link>
+            <nuxt-link
+              to="/meta/brawler"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              Brawler Meta
+            </nuxt-link>
+            <nuxt-link
+              to="/meta/map"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              Map Meta
+            </nuxt-link>
+            <nuxt-link
+              to="/leaderboard"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              Leaderboard
+            </nuxt-link>
+            <nuxt-link
+              v-for="topic in topics"
+              :key="topic"
+              :to="`/blog/${topic}`"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              {{ topic }}
+            </nuxt-link>
+            <nuxt-link
+              to="/about"
+              class="inline-block mr-3 text-primary-lighter"
+            >
+              Privacy
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </nav>
@@ -158,10 +159,12 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      menuOpen: false,
       cookieBannerOpen: false,
       showCookieOptions: false,
       installPrompt: undefined,
+      lastScrollY: 0,
+      lastScrollUpY: 0,
+      menuButtonVisible: false,
     }
   },
   computed: {
@@ -185,9 +188,6 @@ export default {
     }),
   },
   watch: {
-    '$route'() {
-      this.menuOpen = false
-    },
     version(version) {
       if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
@@ -213,7 +213,36 @@ export default {
       })
     }
   },
+  mounted() {
+    window.addEventListener('scroll', () => this.onScroll())
+    this.openMenu()
+  },
   methods: {
+    onScroll() {
+      if (Math.abs(window.scrollY - this.lastScrollY) < 10) {
+        return
+      }
+
+      if (window.scrollY < this.lastScrollY) {
+        // scrolled up
+        this.$refs.menu.style['margin-top'] = '0px'
+        this.menuButtonVisible = false
+        this.lastScrollUpY = window.scrollY
+      } else {
+        // scrolled down
+        this.$refs.menu.style['margin-top'] = `-${(window.scrollY - this.lastScrollUpY) / 4}px`
+        this.menuButtonVisible = true
+      }
+
+      this.lastScrollY = window.scrollY
+    },
+    openMenu() {
+      this.menuButtonVisible = false
+      this.$refs.menu.style['margin-top'] = '0px'
+      // important: header style changes modify window.scrollY!
+      this.lastScrollY = window.scrollY
+      this.lastScrollUpY = window.scrollY
+    },
     disableCookies() {
       this.cookieBannerOpen = false
     },
@@ -248,5 +277,18 @@ export default {
 <style>
 .bg-top-y {
   background-position-y: top;
+}
+
+.overflow-scroll-gradient::after {
+  @apply absolute right-0 top-0 w-10 h-8 mt-1 pointer-events-none;
+  content: '';
+  background: linear-gradient(to right, transparent, theme('colors.primary-dark'));
+}
+
+@screen md {
+  .md\:overflow-scroll-no-gradient::after {
+    content: '';
+    background: none;
+  }
 }
 </style>
