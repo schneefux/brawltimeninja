@@ -35,7 +35,7 @@
         class="w-full md:w-auto relative z-0"
       >
         <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap overflow-scroll-gradient md:overflow-scroll-no-gradient">
-          <div class="text-lg capitalize font-medium pt-1 my-1 md:py-0 md:my-0">
+          <div class="pt-1 my-1 md:py-0 md:my-0">
             <button
               v-if="installPrompt !== undefined"
               class="nav-link"
@@ -293,7 +293,7 @@ export default {
 }
 
 .nav-link {
-  @apply inline-block mr-4 text-primary-lighter border-b border-primary-lighter;
+  @apply inline-block mr-4 text-primary-lighter border-b border-primary-lighter text-lg capitalize font-medium;
 }
 
 @screen md {
