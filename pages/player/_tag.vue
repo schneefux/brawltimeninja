@@ -156,7 +156,8 @@
 
     <div
       v-if="installPrompt !== undefined && !installBannerDismissed"
-      class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight">
+      class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight"
+    >
       <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
         <button
           class="absolute top-0 right-0 mr-1 mt-1"
@@ -254,10 +255,22 @@
       />
     </div>
 
-    <div class="section-heading">
+    <div class="section-heading flex flex-wrap items-center">
       <h2 class="text-2xl font-semibold">
         Latest Battles
       </h2>
+
+      <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
+        <span class="text-sm text-grey-lighter">
+          Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
+        </span>
+        <button
+          class="ml-auto md:ml-4 button button-sm"
+          @click="refresh"
+        >
+          Refresh now
+        </button>
+      </div>
     </div>
 
     <div class="section">
@@ -599,6 +612,7 @@ export default {
       totalBrawlers: 27,
       battlePage: 1,
       battlePageSize: 6,
+      refreshSecondsLeft: 180,
       installPrompt: undefined,
       hoursSinceDate,
     }
@@ -701,7 +715,7 @@ export default {
       return brawlerIds[0]
     },
     ...mapState({
-      ads: state => state.adsEnabled,
+      ads: state => state.ads,
       blog: state => state.blog,
       player: state => state.player,
       installBannerDismissed: state => state.installBannerDismissed,
@@ -767,13 +781,20 @@ export default {
       this.loadLeaderboard()
     }
 
-    const refreshTimer = () => setTimeout(async () => {
-      await this.refreshPlayer()
-      refreshTimer()
-    }, 5 * 60 * 1000)
-    refreshTimer()
+    setTimeout(() => this.refreshTimer(), 15 * 1000)
   },
   methods: {
+    async refreshTimer() {
+      this.refreshSecondsLeft -= 15
+      if (this.refreshSecondsLeft <= 0) {
+        await this.refreshPlayer()
+      }
+      setTimeout(() => this.refreshTimer(), 15 * 1000)
+    },
+    async refresh() {
+      this.refreshSecondsLeft = 180
+      await this.refreshPlayer()
+    },
     dismissInstall() {
       this.$ga.event('app', 'dismiss', 'install_banner')
       this.installPrompt = undefined
