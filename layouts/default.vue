@@ -36,14 +36,16 @@
       >
         <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap overflow-scroll-gradient md:overflow-scroll-no-gradient">
           <div class="pt-1 my-1 md:py-0 md:my-0">
-            <button
-              v-if="installPrompt !== undefined"
-              class="nav-link"
-              @click="install"
-            >
-              <span class="mr-1">📥</span>
-              Install App
-            </button>
+            <div class="hidden md:inline-block">
+              <button
+                v-if="installPrompt !== undefined"
+                class="nav-link"
+                @click="install"
+              >
+                <span class="mr-1">📥</span>
+                Install App
+              </button>
+            </div>
 
             <nuxt-link
               to="/"
