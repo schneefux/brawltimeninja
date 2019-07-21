@@ -424,6 +424,42 @@
       </p>
     </div>
 
+    <div
+      v-if="eventRecommendations.length > 0"
+      class="section md:mx-4 py-4 px-3"
+    >
+      <div class="mb-3">
+        <div class="text-left text-lg">
+          💡
+          Tip: Use the Map Meta
+        </div>
+      </div>
+      <p
+        v-for="tip in eventRecommendations.slice(0, tipsPage * tipsPageSize)"
+        :key="tip.id"
+        class="mt-2 px-3"
+      >
+        {{ tip.phrase }}
+        <span class="capitalize text-primary-lighter">
+          {{ tip.brawler.name.toLowerCase() }}
+        </span>
+        in
+        <nuxt-link
+          :to="`/meta/map/${tip.event.id}`"
+          class="link inline-block"
+        >
+          {{ formatMode(tip.event.mode) }} - {{ tip.event.map }}
+        </nuxt-link>.
+      </p>
+      <button
+        v-if="tipsPage * tipsPageSize < eventRecommendations.length"
+        class="mt-3 button button-sm"
+        @click="tipsPage++; $ga.event('tips', 'load_more', tipsPage)"
+      >
+        More Tips
+      </button>
+    </div>
+
     <div class="section">
       <div class="flex flex-wrap justify-between">
         <template v-for="brawler in brawlersAndAds">
@@ -569,7 +605,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { induceAdsIntoBrawlers } from '~/store/index'
+import { induceAdsIntoBrawlers, formatMode } from '~/store/index'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 
@@ -614,7 +650,10 @@ export default {
       battlePageSize: 6,
       refreshSecondsLeft: 180,
       installPrompt: undefined,
+      tipsPage: 1,
+      tipsPageSize: 2,
       hoursSinceDate,
+      formatMode,
     }
   },
   computed: {
@@ -714,19 +753,67 @@ export default {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
       return brawlerIds[0]
     },
+    eventRecommendations() {
+      const phrases = [
+        'Get more trophies by playing',
+        'You can push',
+        'Try to play',
+        'To gain some trophies, play',
+        'Other players had success with',
+        'You should try',
+        'For easy wins, play',
+      ]
+      const recommendations = []
+      const worstBrawlers = [...Object.values(this.player.brawlers)]
+        .sort((b1, b2) => b1.trophies - b2.trophies)
+
+      // sort by score =
+      // index [ brawlers owned by player, worst first ]
+      // *
+      // index [ brawler in map meta, best first ]
+      this.currentEvents.forEach((event) => {
+        // reject unranked
+        if (['bigGame', 'roboRumble'].includes(event.mode)) {
+          return
+        }
+
+        worstBrawlers.forEach((brawler) => {
+          const bestBrawlers = this.bestBrawlersByMap[event.id]
+          const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
+          if (rankIndex === -1) {
+            return
+          }
+
+          const score = (brawler.trophies + 1) * (rankIndex + 1)
+          recommendations.push({
+            id: `${brawler.name} ${event.id}`,
+            phrase: phrases[Math.round(event.id / 31) % phrases.length],
+            score,
+            brawler,
+            event,
+          })
+        })
+      })
+      recommendations.sort((r1, r2) => r1.score - r2.score)
+      return recommendations.slice(0, 20)
+    },
     ...mapState({
       ads: state => state.ads,
       blog: state => state.blog,
       player: state => state.player,
+      currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
     }),
     ...mapGetters({
       rank: 'playerRank',
+      bestBrawlersByMap: 'bestBrawlersByMap',
     }),
   },
   async fetch({ store, params }) {
     if (!process.static) {
       await store.dispatch('loadLeaderboard')
+      await store.dispatch('loadCurrentEvents')
+      await store.dispatch('loadMapMeta')
     }
   },
   async validate({ store, params }) {
@@ -760,6 +847,10 @@ export default {
         e.preventDefault()
         this.installPrompt = e
       })
+    }
+    if (process.static) {
+      this.loadCurrentEvents()
+      this.loadMapMeta()
     }
   },
   mounted() {
@@ -813,6 +904,8 @@ export default {
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
+      loadMapMeta: 'loadMapMeta',
+      loadCurrentEvents: 'loadCurrentEvents',
     }),
   },
 }
