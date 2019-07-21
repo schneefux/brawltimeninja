@@ -66,7 +66,7 @@
         </nuxt-link>
         <nuxt-link
           v-else
-          :to="`/meta/map/${selectedEvent.id.replace('-big', '')}`"
+          :to="`/meta/map/${selectedEvent.id.replace('-boss', '')}`"
           class="link text-lg"
         >
           View statistics for attacking Brawlers
