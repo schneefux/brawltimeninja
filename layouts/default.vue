@@ -49,7 +49,7 @@
               to="/"
               class="nav-link"
             >
-              Home
+              Profile Search
             </nuxt-link>
             <nuxt-link
               to="/meta/brawler"
