@@ -53,7 +53,7 @@ export default {
     },
     ...mapState({
       blog: state => state.blog,
-      ads: state => state.adsAllowed,
+      ads: state => state.adsEnabled,
     }),
   },
   asyncData({ params }) {

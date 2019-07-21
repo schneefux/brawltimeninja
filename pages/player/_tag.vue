@@ -701,7 +701,7 @@ export default {
       return brawlerIds[0]
     },
     ...mapState({
-      ads: state => state.adsAllowed,
+      ads: state => state.adsEnabled,
       blog: state => state.blog,
       player: state => state.player,
       installBannerDismissed: state => state.installBannerDismissed,

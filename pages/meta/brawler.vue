@@ -254,7 +254,7 @@ export default {
     },
     ...mapState({
       meta: state => state.brawlerMeta,
-      ads: state => state.adsAllowed,
+      ads: state => state.adsEnabled,
     }),
   },
   async fetch({ store }) {
