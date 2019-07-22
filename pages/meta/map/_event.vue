@@ -13,8 +13,18 @@
       <div class="flex justify-center mt-5">
         <event-card :event="selectedEvent" />
       </div>
-      <p class="mt-5 mb-3 text-center">
-        Statistics from Pro Battles on Brawl Time Ninja this week.
+      <p class="mt-6 md:text-center">
+        Statistics from Battles by Players who visited Brawl Time Ninja in the current season.
+      </p>
+      <p class="mt-2 mb-6 md:text-center">
+        Showing statistics for
+        <span class="text-primary-lighter">
+          {{ formatMode(selectedMode) }} - {{ selectedMap }}
+        </span>.
+        To view average Win Rates for all maps, load the
+        <nuxt-link to="/meta/brawler" class="link inline-block">
+          Brawler Meta
+        </nuxt-link>.
       </p>
 
       <p

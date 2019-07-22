@@ -7,15 +7,21 @@
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         Brawler Meta
       </h1>
-      <p class="mb-3 text-center">
-        Statistics from Pro Battles on Brawl Time Ninja this week.
+      <p class="md:text-center">
+        Statistics from Battles by Players who visited Brawl Time Ninja in the current season.
+      </p>
+      <p class="mt-2 mb-6 md:text-center">
+        Showing average statistics for all maps. To view Win Rates for specific maps, load the
+        <nuxt-link to="/meta/map" class="link inline-block">
+          Map Meta
+        </nuxt-link>.
       </p>
 
       <p
-        v-if="totalSampleSize < 1000"
+        v-if="totalSampleSize < 10000"
         class="my-8 text-center"
       >
-        Not enough data! Play a few battles and come back later.
+        ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
       </p>
 
       <button
@@ -27,7 +33,7 @@
       </button>
       <button
         v-show="forceMobile"
-        class="hidden md:block mx-auto -mt-2 mb-6 text-sm text-grey-light underline"
+        class="hidden md:block mx-auto mb-6 text-sm text-grey-light underline"
         @click="forceMobile = false; $ga.event('brawler_meta', 'switch_view', 'table')"
       >
         Switch to Table View
