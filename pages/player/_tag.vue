@@ -392,7 +392,7 @@
           class="button button-md"
           @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
         >
-        Load More
+        Load More Battles
         </button>
       </div>
     </div>
@@ -456,7 +456,7 @@
         class="mt-3 button button-sm"
         @click="tipsPage++; $ga.event('tips', 'load_more', tipsPage)"
       >
-        More Tips
+        Load More Tips
       </button>
     </div>
 
