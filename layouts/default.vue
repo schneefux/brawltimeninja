@@ -35,7 +35,7 @@
         class="w-full md:w-auto relative z-0"
       >
         <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap overflow-scroll-gradient md:overflow-scroll-no-gradient">
-          <div class="pt-1 my-1 md:py-0 md:my-0">
+          <div class="pt-3 pb-3 md:py-0 md:my-0">
             <div class="hidden md:inline-block">
               <button
                 v-if="installPrompt !== undefined"
