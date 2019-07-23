@@ -406,16 +406,4 @@ export default {
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
 }
-
-@responsive {
-  .mt-8vh {
-    margin-top: 8vh;
-  }
-}
-
-@responsive {
-  .mt-12vh {
-    margin-top: 12vh;
-  }
-}
 </style>
