@@ -60,7 +60,7 @@
         class="mx-6"
       >
         <summary @click="loadHelpVideo = true">
-          Need help?
+          What is my tag?
         </summary>
         <youtube
           v-if="loadHelpVideo"
