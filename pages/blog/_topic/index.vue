@@ -56,6 +56,9 @@ export default {
       ads: state => state.adsEnabled,
     }),
   },
+  validate({ store, params }) {
+    return params.topic in store.state.blog
+  },
   asyncData({ params }) {
     return {
       topic: params.topic,

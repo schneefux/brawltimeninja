@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'TopicPage',
   head() {
@@ -57,19 +59,24 @@ export default {
       lightboxImage: '',
     }
   },
-  asyncData({ params, store, error }) {
-    const posts = store.state.blog[params.topic]
-    if (posts === undefined) {
-      error({ statusCode: 404, message: 'Category does not exist' })
-    }
-
-    const post = posts.filter(({ id }) => id === params.post)
-    if (post.length === 0) {
-      error({ statusCode: 404, message: 'Post does not exist' })
-    }
-
+  computed: {
+    post() {
+      return this.blog[this.topic]
+        .find(({ id }) => id === this.id)
+    },
+    ...mapState({
+      blog: state => state.blog,
+      ads: state => state.adsEnabled,
+    }),
+  },
+  validate({ store, params }) {
+    return params.topic in store.state.blog &&
+        params.post in store.state.blog[params.topic]
+  },
+  asyncData({ params }) {
     return {
-      post: post[0],
+      topic: params.topic,
+      id: params.post,
     }
   },
   mounted() {
