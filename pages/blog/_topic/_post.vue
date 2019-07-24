@@ -71,7 +71,7 @@ export default {
   },
   validate({ store, params }) {
     return params.topic in store.state.blog &&
-        params.post in store.state.blog[params.topic]
+      store.state.blog[params.topic].find(({ id }) => id === params.post) !== undefined
   },
   asyncData({ params }) {
     return {
