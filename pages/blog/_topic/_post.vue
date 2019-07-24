@@ -11,7 +11,7 @@
         <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
       </h1>
       <div class="mt-2">
-        <p
+        <div
           ref="markdown"
           class="markdown"
           v-html="post.content"
