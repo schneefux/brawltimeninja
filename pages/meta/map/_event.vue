@@ -319,11 +319,7 @@ export default {
   },
   async validate({ store, params }) {
     await store.dispatch('loadMapMeta')
-    if (params.event in store.state.mapMeta[0].events) {
-      return true
-    }
-
-    return false
+    return params.event in store.state.mapMeta[0].events
   },
   asyncData({ store, params }) {
     const entry = store.state.mapMeta[0].events[params.event]
