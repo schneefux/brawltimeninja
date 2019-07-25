@@ -232,7 +232,7 @@ export default class BrawlstarsService {
       return {
         timestamp: new Date(Date.parse(isoDate)),
         mode: {
-          label: capitalize(mode.replace(/_/g, ' ')),
+          label: battle.event.map,
           background: `${modeId}.jpg`,
         },
         result,
