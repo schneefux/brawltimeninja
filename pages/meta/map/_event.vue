@@ -14,7 +14,8 @@
         <event-card :event="selectedEvent" />
       </div>
       <p class="mt-6 md:text-center">
-        Statistics from Battles by Players who visited Brawl Time Ninja in the current season.
+        The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
+        For this reason, the numbers shown can be contrary to your personal experience.
       </p>
       <p class="mt-2 mb-6 md:text-center">
         Showing statistics for
