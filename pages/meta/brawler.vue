@@ -8,7 +8,8 @@
         Brawler Meta
       </h1>
       <p class="md:text-center">
-        Statistics from Battles by Players who visited Brawl Time Ninja in the current season.
+        The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
+        For this reason, the numbers shown can be contrary to your personal experience.
       </p>
       <p class="mt-2 mb-6 md:text-center">
         Showing average statistics for all maps. To view Win Rates for specific maps, load the
