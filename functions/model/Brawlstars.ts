@@ -74,6 +74,10 @@ export interface BattleLog {
       duration?: number;
       rank?: number;
       trophyChange?: number;
+      level: {
+        name: null;
+        id: number;
+      }; // bossfight
       starPlayer?: BattlePlayer;
       teams: BattlePlayer[][]; // 3v3
       players: BattlePlayer[]; // showdown, bossfight

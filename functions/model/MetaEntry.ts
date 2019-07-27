@@ -13,6 +13,7 @@ export interface MetaModeEntry {
   map: string;
   name: string;
   isBigbrawler: number;
+  level: number;
   duration: number;
   rank1: number;
   rank: number;
