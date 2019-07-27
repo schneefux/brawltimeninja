@@ -126,7 +126,6 @@ export default class TrackerService {
 
           await Promise.all(teams.map((insertPlayers, teamIndex) =>
             Promise.all(insertPlayers.map((insertPlayer, playerIndex) => {
-              const is3v3 = teams.length == 2 && teams[0].length == 3 && teams[1].length == 3;
               const isMe = insertPlayer.tag.replace('#', '') == player.tag;
               const isMyTeam = insertPlayers.some((p) => p.tag.replace('#', '') == player.tag);
               const flippedResult = battle.battle.result == 'draw' ? 'draw' : (battle.battle.result == 'victory' ? 'defeat' : 'victory');
@@ -147,8 +146,9 @@ export default class TrackerService {
                 brawler_trophies: insertPlayer.brawler.trophies,
                 brawler_power: insertPlayer.brawler.power,
                 is_starplayer: battle.battle.starPlayer !== undefined ? battle.battle.starPlayer.tag == insertPlayer.tag : undefined,
-                is_bigbrawler: battle.event.mode == 'bigGame' ? battle.battle.bigBrawler.tag == insertPlayer.tag : undefined,
-                result: !is3v3 ? undefined : (isMyTeam ? battle.battle.result : flippedResult),
+                is_bigbrawler: battle.event.mode === 'bigGame' ? battle.battle.bigBrawler.tag == insertPlayer.tag : undefined,
+                level_id: battle.battle.level !== undefined ? battle.battle.level.id : undefined,
+                result: battle.battle.result === undefined ? undefined : (isMyTeam ? battle.battle.result : flippedResult),
                 duration: battle.battle.duration,
                 rank: !isMe ? undefined : battle.battle.rank,
                 trophy_change: !isMe ? undefined : battle.battle.trophyChange,
@@ -276,7 +276,8 @@ export default class TrackerService {
           sum(rank_1) as rank_1,
           sum(rank) / sum(rank_count) as rank,
           sum(victory) as wins,
-          sum(starplayer) / sum(starplayer_count) as star_rate
+          sum(starplayer) / sum(starplayer_count) as star_rate,
+          sum(level) / sum(level_count) as level
         from agg_player_battle
         join dim_event on dim_event.id = event_id
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
@@ -297,6 +298,7 @@ export default class TrackerService {
           rank: parseFloat(entry.rank),
           starRate: parseFloat(entry.star_rate),
           picks: parseInt(entry.picks),
+          level: parseInt(entry.level),
         })
       ));
     }
@@ -557,6 +559,20 @@ export default class TrackerService {
       });
     }
 
+    if (!await this.knex.schema.hasColumn('player_battle', 'level_id')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player_battle', (table) => {
+          table.integer('level_id');
+        });
+
+        await txn.schema.table('agg_player_battle', (table) => {
+          table.bigInteger('level').notNullable().defaultTo(0).unsigned()
+          table.bigInteger('level_count').notNullable().defaultTo(0).unsigned()
+        });
+      })
+      console.log('added level_id');
+    }
+
     console.log('all migrations done');
   }
 
@@ -698,11 +714,13 @@ export default class TrackerService {
           coalesce(sum(brawler_trophies), 0) as trophies,
           sum(brawler_trophies is not null) as trophies_count,
           coalesce(sum(brawler_power), 0) as power,
-          sum(brawler_power is not null) as power_count
+          sum(brawler_power is not null) as power_count,
+          coalesce(sum(level_id), 0) as level,
+          sum(level_id is not null) as level_count
         from player_battle
         join dim_season on end=${this.sqlRoundTimestampToSeasonEnd}
         where player_battle.id > ? and player_battle.id <= ?
-        group by season_id, event_id, brawler_starpower_id, is_bigbrawler
+        group by season_id, event_id, brawler_starpower_id, is_bigbrawler, level_id
       on duplicate key update
         count = count + values(count),
         count_complete = count_complete + values(count_complete),
@@ -720,7 +738,9 @@ export default class TrackerService {
         trophies = trophies + values(trophies),
         trophies_count = trophies_count + values(trophies_count),
         power = power + values(power),
-        power_count = power_count + values(power_count)
+        power_count = power_count + values(power_count),
+        level = level + values(level),
+        level_count = level_count + values(level_count)
     `, [lastProcessedId, lastId]);
 
     if (lastIdRecords.length === 0) {
