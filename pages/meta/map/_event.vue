@@ -19,7 +19,7 @@
       </p>
       <p class="mt-2 mb-6 md:text-center">
         Showing statistics for
-        <span class="text-primary-lighter">
+        <span class="text-primary-lighter inline-block">
           {{ formatMode(selectedMode) }} - {{ selectedMap }}
         </span>.
         To view average Win Rates for all maps, load the
