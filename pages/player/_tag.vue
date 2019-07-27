@@ -772,7 +772,7 @@ export default {
       // index [ brawler in map meta, best first ]
       this.currentEvents.forEach((event) => {
         // reject unranked
-        if (['bigGame', 'roboRumble'].includes(event.mode)) {
+        if (['Big Game', 'Boss Fight'].includes(event.mode)) {
           return
         }
 
