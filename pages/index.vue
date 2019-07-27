@@ -298,16 +298,14 @@ export default {
   },
   async fetch({ store }) {
     if (!process.static) {
-      await store.dispatch('loadCurrentEvents')
+      await store.dispatch('loadCurrentMeta')
       await store.dispatch('loadBrawlerMeta')
-      await store.dispatch('loadMapMeta')
     }
   },
   created() {
     if (process.static) {
-      this.loadCurrentEvents()
+      this.loadCurrentMeta()
       this.loadBrawlerMeta()
-      this.loadMapMeta()
     }
 
     if (process.client) {
@@ -394,9 +392,8 @@ export default {
     }),
     ...mapActions({
       loadBrawlerMeta: 'loadBrawlerMeta',
-      loadMapMeta: 'loadMapMeta',
       loadPlayer: 'loadPlayer',
-      loadCurrentEvents: 'loadCurrentEvents',
+      loadCurrentMeta: 'loadCurrentMeta',
     }),
   },
 }

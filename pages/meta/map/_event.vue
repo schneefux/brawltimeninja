@@ -214,7 +214,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { induceAdsIntoBrawlers, formatMode, metaStatMaps } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card.vue'
 import EventCard from '~/components/event-card.vue'
@@ -289,7 +289,7 @@ export default {
     }),
   },
   async validate({ store, params }) {
-    await store.dispatch('loadMapMeta')
+    await store.dispatch('loadMapMetaSlice', `include=${params.event}`)
     return params.event in store.state.mapMeta
   },
   asyncData({ store, params }) {
@@ -315,9 +315,6 @@ export default {
 
       this.$ga.event('map_meta', 'sort_by', `${this.selectedProp} ${this.order < 0 ? 'desc' : 'asc'}`)
     },
-    ...mapActions({
-      loadMapMeta: 'loadMapMeta',
-    }),
   },
 }
 </script>

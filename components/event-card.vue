@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import { formatMode, metaStatMaps } from '~/store/index'
 
 export default {
@@ -68,13 +68,6 @@ export default {
       metaStatMaps,
     }
   },
-  methods: {
-    ...mapActions({
-      loadCurrentEvents: 'loadCurrentEvents',
-      loadUpcomingEvents: 'loadUpcomingEvents',
-      loadMapMeta: 'loadMapMeta',
-    }),
-  },
   async created() {
     try {
       this.asset = await import(`~/assets/images/map/${this.event.id.replace(/^1500/, '150').replace(/-boss$/, '')}_small.jpg`)
@@ -82,7 +75,6 @@ export default {
       this.$ga.exception('cannot load map image: ' + e.message)
       console.log('cannot load map image', e)
     }
-    await this.loadMapMeta()
   },
 }
 </script>

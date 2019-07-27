@@ -54,20 +54,17 @@ export default {
   },
   async fetch({ store }) {
     if (!process.static) {
-      await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadMapMeta')
+      await store.dispatch('loadCurrentMeta')
     }
   },
   created() {
     if (process.static) {
-      this.loadCurrentEvents()
-      this.loadMapMeta()
+      this.loadCurrentMeta()
     }
   },
   methods: {
     ...mapActions({
-      loadMapMeta: 'loadMapMeta',
-      loadCurrentEvents: 'loadCurrentEvents',
+      loadCurrentMeta: 'loadCurrentMeta',
     }),
   },
 }

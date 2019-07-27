@@ -69,7 +69,7 @@ router.get('/meta/brawler', async (ctx, next) => {
 
 router.get('/meta/map', async (ctx, next) => {
   try {
-    ctx.body = await service.getMapMeta();
+    ctx.body = await service.getMapMeta(ctx.request.query);
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);
