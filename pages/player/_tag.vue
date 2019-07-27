@@ -777,6 +777,9 @@ export default {
         }
 
         worstBrawlers.forEach((brawler) => {
+          if (!(event.id in this.bestBrawlersByMap)) {
+            return
+          }
           const bestBrawlers = this.bestBrawlersByMap[event.id]
           const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
           if (rankIndex === -1) {
