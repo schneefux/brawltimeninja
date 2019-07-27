@@ -139,34 +139,79 @@ export default class BrawlstarsService {
       900, // 15m
     );
 
-    const sumPicksByEvent = <{ [id: number]: number }> {};
-    meta.forEach((entry) => {
-      sumPicksByEvent[entry.id] = (sumPicksByEvent[entry.id] || 0) + entry.picks;
-    });
-    const brawlers = [...new Set(meta.map((entry) => entry.name))];
+    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaModeEntry) => ({
+      ...mapTotalPicks,
+      [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
+    }), <{ [id: string]: number }>{});
 
-    return brawlers.map((name) => ({
-      id: name.replace(/ /g, '_').toLowerCase(),
-      name: capitalizeWords(name.toLowerCase()),
-      events: meta
-        .filter((modeEntry) => modeEntry.name.toLowerCase() == name.toLowerCase())
-        .reduce((entries, modeEntry) => ({
-          ...entries,
-          [modeEntry.id + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? '-boss' : '')]: {
-            mode: modeEntry.mode + (modeEntry.isBigbrawler !== null && modeEntry.isBigbrawler === 1 ? 'Boss' : ''),
-            map: modeEntry.map,
-            sampleSize: modeEntry.picks,
+    const nonNullStats = (entry: MetaModeEntry) => {
+      const stats = <{ [stat: string]: number }>{};
+      if (!!entry.wins && entry.wins > 0) {
+        stats.winRate = entry.wins / entry.picks;
+      }
+      if (!!entry.rank && entry.rank > 0) {
+        stats.rank = entry.rank;
+      }
+      if (!!entry.duration && entry.duration > 0) {
+        stats.duration = entry.duration;
+      }
+      stats.pickRate = entry.picks / mapTotalPicks[entry.id];
+      if (!!entry.starRate && entry.starRate > 0) {
+        stats.starRate = entry.starRate;
+      }
+      if (!!entry.rank1 && entry.rank1 > 0) {
+        stats.rank1 = entry.rank1;
+      }
+      if (!!entry.wins && entry.wins > 0) {
+        stats.wins = entry.wins;
+      }
+
+      if (entry.isBigbrawler === 1) {
+        return [...Object.entries(stats)]
+          .reduce((stats, [prop, value]) => ({ ...stats, [prop + '_boss']: value }), {});
+      }
+      return stats;
+    };
+
+    const brawlerId = (entry: MetaModeEntry) =>
+      entry.name.replace(/ /g, '_').toLowerCase();
+
+    const mapMeta = meta.reduce((mapMeta, entry: MetaModeEntry) => ({
+      ...mapMeta,
+      [entry.id]: {
+        mode: entry.mode,
+        map: entry.map,
+        sampleSize: mapTotalPicks[entry.id],
+        brawlers: {
+          ...((mapMeta[entry.id] || {}).brawlers || {}),
+          [brawlerId(entry)]: {
+            name: capitalizeWords(entry.name.toLowerCase()),
+            sampleSize: entry.picks,
             stats: {
-              winRate: modeEntry.wins / modeEntry.picks,
-              rank: modeEntry.rank,
-              duration: modeEntry.duration,
-              pickRate: modeEntry.picks / sumPicksByEvent[modeEntry.id],
-              starRate: modeEntry.starRate,
-              wins: modeEntry.wins,
-              rank1: modeEntry.rank1,
-            },
-          }}), {})
-    }));
+              // boss has two records -> merge, boss stats get a suffix
+              ...(((mapMeta[entry.id] || {}).brawlers || {})[brawlerId(entry)] || {}).stats,
+              ...nonNullStats(entry),
+            }
+          }
+        }
+      }
+    }), <{
+      [event: string]: {
+        mode: string
+        map: string
+        sampleSize: number
+        brawlers: {
+          [brawler: string]: {
+            name: string
+            sampleSize: number
+            stats: {
+              [stat: string]: number
+            }
+          }
+        }
+      }}>{});
+
+    return mapMeta;
   }
 
   public async getPlayerStatistics(tag: string) {

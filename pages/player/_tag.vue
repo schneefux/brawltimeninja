@@ -645,7 +645,6 @@ export default {
     return {
       hoursSpent: 0,
       error: '',
-      totalBrawlers: 27,
       battlePage: 1,
       battlePageSize: 6,
       refreshSecondsLeft: 180,
@@ -801,6 +800,7 @@ export default {
       ads: state => state.ads,
       blog: state => state.blog,
       player: state => state.player,
+      totalBrawlers: state => state.totalBrawlers,
       currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
     }),
