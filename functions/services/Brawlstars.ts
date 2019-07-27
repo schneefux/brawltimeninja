@@ -125,7 +125,7 @@ export default class BrawlstarsService {
     }))
   }
 
-  public async getMapMeta() {
+  public async getMapMeta(filters: { [name: string]: string }) {
     if (trackerUrl == '') {
       return [];
     }
@@ -210,6 +210,25 @@ export default class BrawlstarsService {
           }
         }
       }}>{});
+
+    if (filters.current !== undefined) {
+      const currentEvents = await this.getEvents();
+      const currentEventIds = currentEvents.map(({ id }) => id);
+      Object.keys(mapMeta).forEach((eventId) => {
+        if (!currentEventIds.includes(eventId)) {
+          delete mapMeta[eventId];
+        }
+      });
+    }
+
+    if (filters.include !== undefined) {
+      const whitelistedIds = filters.include.split(',');
+      Object.keys(mapMeta).forEach((eventId) => {
+        if (!whitelistedIds.includes(eventId)) {
+          delete mapMeta[eventId];
+        }
+      });
+    }
 
     return mapMeta;
   }

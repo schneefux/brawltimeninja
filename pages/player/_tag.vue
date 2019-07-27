@@ -815,8 +815,7 @@ export default {
   async fetch({ store, params }) {
     if (!process.static) {
       await store.dispatch('loadLeaderboard')
-      await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadMapMeta')
+      await store.dispatch('loadCurrentMeta')
     }
   },
   async validate({ store, params }) {
@@ -853,8 +852,7 @@ export default {
     }
     if (process.static) {
       this.loadLeaderboard()
-      this.loadCurrentEvents()
-      this.loadMapMeta()
+      this.loadCurrentMeta()
     }
   },
   mounted() {
@@ -908,8 +906,7 @@ export default {
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
-      loadMapMeta: 'loadMapMeta',
-      loadCurrentEvents: 'loadCurrentEvents',
+      loadCurrentMeta: 'loadCurrentMeta',
     }),
   },
 }

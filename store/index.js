@@ -107,6 +107,7 @@ export const state = () => ({
   brawlerMetaLoaded: false,
   mapMeta: [],
   mapMetaLoaded: false,
+  mapMetaSlicesLoaded: [],
   cookiesAllowed: false,
   adsAllowed: false,
   adsEnabled: false,
@@ -211,6 +212,15 @@ export const mutations = {
   setMapMeta(state, meta) {
     state.mapMeta = meta
     state.mapMetaLoaded = true
+  },
+  addMapMetaSlice(state, metaSlice) {
+    state.mapMeta = {
+      ...state.mapMeta,
+      ...metaSlice,
+    }
+  },
+  setMapMetaSliceLoaded(state, sliceName) {
+    state.mapMetaSlicesLoaded.push(sliceName)
   },
   allowAds(state) {
     state.adsAllowed = true
@@ -326,5 +336,27 @@ export const actions = {
       exception('cannot get map meta: ' + error.message)
       console.error('cannot get map meta:', error.message)
     }
+  },
+  async loadMapMetaSlice({ state, commit }, sliceName) {
+    if (state.mapMetaLoaded ||
+        state.mapMetaSlicesLoaded.includes(sliceName)) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta/map?' + sliceName)
+      commit('addMapMetaSlice', meta)
+      commit('setMapMetaSliceLoaded', sliceName)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get map meta slice: ' + error.message)
+      console.error('cannot get map meta slice:', error.message)
+    }
+  },
+  async loadCurrentMeta({ state, dispatch }) {
+    await dispatch('loadCurrentEvents')
+    const eventIds = state.currentEvents
+      .reduce((csv, { id }) => `${csv},${id}`, '')
+    await dispatch('loadMapMetaSlice', `include=${eventIds}`)
   },
 }
