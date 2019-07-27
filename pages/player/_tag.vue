@@ -852,6 +852,7 @@ export default {
       })
     }
     if (process.static) {
+      this.loadLeaderboard()
       this.loadCurrentEvents()
       this.loadMapMeta()
     }
