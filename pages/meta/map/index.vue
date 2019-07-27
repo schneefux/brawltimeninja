@@ -144,8 +144,8 @@ export default {
       return [...Object.entries(this.mapMeta)]
         .map(([eventId, event]) => ({
           id: eventId,
-            mode: event.mode,
-            map: event.map,
+          mode: event.mode,
+          map: event.map,
         }))
         .sort((e1, e2) => e1.map > e2.map ? 1 : e1.map < e2.map ? -1 : 0)
         .reduce((eventsByMode, event) => ({
