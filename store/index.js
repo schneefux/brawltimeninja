@@ -353,10 +353,8 @@ export const actions = {
       console.error('cannot get map meta slice:', error.message)
     }
   },
-  async loadCurrentMeta({ state, dispatch }) {
+  async loadCurrentMeta({ dispatch }) {
     await dispatch('loadCurrentEvents')
-    const eventIds = state.currentEvents
-      .reduce((csv, { id }) => `${csv},${id}`, '')
-    await dispatch('loadMapMetaSlice', `include=${eventIds}`)
+    await dispatch('loadMapMetaSlice', 'current')
   },
 }
