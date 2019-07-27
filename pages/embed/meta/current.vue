@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { metaStatMaps } from '~/store/index'
 import EventCard from '~/components/event-card'
 
@@ -50,9 +50,6 @@ export default {
   computed: {
     ...mapState({
       currentEvents: state => state.currentEvents,
-    }),
-    ...mapGetters({
-      bestBrawlersByMap: 'bestBrawlersByMap',
     }),
   },
   async fetch({ store }) {

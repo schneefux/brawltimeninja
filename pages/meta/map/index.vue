@@ -141,15 +141,12 @@ export default {
   },
   computed: {
     events() {
-      return this.meta.map(entry => [...Object.entries(entry.events)])
-        .reduce((entries, entryEntries) => entries.concat(entryEntries), [])
-        .reduce((events, [id, event]) => events.filter(e => id === e.id).length === 0
-          ? events.concat([{
-            id: id,
+      return [...Object.entries(this.mapMeta)]
+        .map(([eventId, event]) => ({
+          id: eventId,
             mode: event.mode,
             map: event.map,
-          }])
-          : events, [])
+        }))
         .sort((e1, e2) => e1.map > e2.map ? 1 : e1.map < e2.map ? -1 : 0)
         .reduce((eventsByMode, event) => ({
           ...eventsByMode,
@@ -159,7 +156,7 @@ export default {
     ...mapState({
       currentEvents: state => state.currentEvents,
       upcomingEvents: state => state.upcomingEvents,
-      meta: state => state.mapMeta,
+      mapMeta: state => state.mapMeta,
       ads: state => state.adsEnabled,
     }),
   },

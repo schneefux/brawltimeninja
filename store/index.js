@@ -34,7 +34,9 @@ export const metaStatMaps = {
     winRate: 'Win Rate',
     starRate: 'Star Player',
     pickRate: 'Pick Rate',
+    pickRate_boss: 'Boss Pick Rate',
     duration: 'Duration',
+    duration_boss: 'Boss Duration',
     rank: 'Avg. Rank',
     rank1: 'Wins recorded',
     wins: 'Wins recorded',
@@ -58,7 +60,9 @@ export const metaStatMaps = {
     winRate: '📈',
     starRate: '⭐',
     pickRate: '👇',
+    pickRate_boss: '👇',
     duration: '⏰',
+    duration_boss: '⏰',
     rank: 'leaderboards',
     rank1: '🏅',
     wins: '🏅',
@@ -70,7 +74,9 @@ export const metaStatMaps = {
     winRate: n => `${Math.round(100 * n)}%`,
     starRate: n => `${Math.round(100 * n)}%`,
     pickRate: n => `${Math.round(100 * n)}%`,
+    pickRate_boss: n => `${Math.round(100 * n)}%`,
     duration: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
+    duration_boss: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
     rank: n => n === null ? 'N/A' : n.toFixed(2),
     rank1: n => n,
     wins: n => n,
@@ -105,6 +111,7 @@ export const state = () => ({
   adsAllowed: false,
   adsEnabled: false,
   installBannerDismissed: false,
+  totalBrawlers: 27,
 })
 
 export const getters = {
@@ -132,25 +139,28 @@ export const getters = {
 
     return max
   },
+  /**
+   * Get brawlers by event: {
+   *  [eventId]: [
+   *    brawler id,
+   *    brawler name,
+   *    brawler stats,
+   *    sort prop
+   *  ] }
+   * sorted by the preferred prop according to propPriority
+   */
   bestBrawlersByMap(state) {
-    // transpose { brawler: [ events ] } -> { event: [ brawlers ] }
-    // sorted by wins, rank, duration or …
-    return state.mapMeta
-      .map(entry => [...Object.entries(entry.events)]
-        .map(([eventId, event]) => ({
-          id: eventId,
-          brawler: {
-            id: entry.id,
-            name: entry.name,
-            stats: event.stats,
-            sortProp: metaStatMaps.propPriority.find(prop => prop in event.stats && event.stats[prop] !== null && event.stats[prop] !== 0),
-          },
-        })))
-      .reduce((entries, es) => entries.concat(...es), [])
-      .sort((e1, e2) => e2.brawler.stats[e2.brawler.sortProp] - e1.brawler.stats[e1.brawler.sortProp])
-      .reduce((brawlersByEvent, entry) => ({
-        ...brawlersByEvent,
-        [entry.id]: (brawlersByEvent[entry.id] || []).concat([entry.brawler])
+    return [...Object.entries(state.mapMeta)]
+      .reduce((top5, [eventId, entry]) => ({
+        ...top5,
+        [eventId]: [...Object.entries(entry.brawlers)]
+          .map(([brawlerId, brawler]) => ({
+            id: brawlerId,
+            name: brawler.name,
+            stats: brawler.stats,
+            sortProp: metaStatMaps.propPriority.find(prop => prop in brawler.stats),
+          }))
+          .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
       }), {})
   },
 }

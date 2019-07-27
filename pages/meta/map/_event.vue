@@ -29,11 +29,11 @@
       </p>
 
       <p
-        v-if="totalSampleSize < 1000"
+        v-if="meta.sampleSize < 1000"
         class="mt-5 mb-8 text-center text-xl font-bold"
       >
         ⚠ Not enough data for this event yet!
-        <template v-if="sortedMeta.length == 0">
+        <template v-if="sortedBrawlers.length == 0">
           Statistics are unavailable.
         </template>
         <template v-else>
@@ -63,26 +63,6 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1665534416"
       />
-
-      <div
-        v-if="hasBigbrawler"
-        class="text-center mt-2 mb-4"
-      >
-        <nuxt-link
-          v-if="!isBigbrawler"
-          :to="`/meta/map/${selectedEvent.id}-boss`"
-          class="link text-lg"
-        >
-          View statistics for defending Boss Brawler
-        </nuxt-link>
-        <nuxt-link
-          v-else
-          :to="`/meta/map/${selectedEvent.id.replace('-boss', '')}`"
-          class="link text-lg"
-        >
-          View statistics for attacking Brawlers
-        </nuxt-link>
-      </div>
 
       <table
         v-show="!forceMobile"
@@ -118,7 +98,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="brawler in sortedMeta"
+            v-for="brawler in sortedBrawlers"
             :key="brawler.id"
           >
             <th scope="row" class="text-right">
@@ -136,7 +116,7 @@
               :key="prop"
               class="text-center"
             >
-              {{ metaStatMaps.formatters[prop](brawler.events[selectedEvent.id].stats[prop]) }}
+              {{ metaStatMaps.formatters[prop](brawler.stats[prop]) }}
             </td>
           </tr>
         </tbody>
@@ -210,7 +190,7 @@
                       </span>
                     </td>
                     <td class="card-prop-value text-right pr-1">
-                      {{ metaStatMaps.formatters[prop](brawler.events[selectedEvent.id].stats[prop]) }}
+                      {{ metaStatMaps.formatters[prop](brawler.stats[prop]) }}
                     </td>
                     <td class="card-prop-label">
                       {{ metaStatMaps.labels[prop] }}
@@ -270,67 +250,57 @@ export default {
     selectedMap() {
       return this.selectedEvent.map
     },
-    sortedMeta() {
-      // every brawler needs to have this event
-      const enoughData = this.meta
-        .reduce((enoughData, entry) => enoughData && this.selectedEvent.id in entry.events, true)
-      if (!enoughData) {
+    meta() {
+      return this.mapMeta[this.selectedEvent.id]
+    },
+    sortedBrawlers() {
+      const meta = [...Object.entries(this.meta.brawlers)]
+        .map(([brawlerId, brawler]) => ({
+          id: brawlerId,
+          ...brawler,
+        }))
+      if (meta.length < this.totalBrawlers) {
         return []
       }
 
-      const meta = this.meta.slice()
       return meta.sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
           ...entry,
           index: index + 1,
         }))
     },
-    totalSampleSize() {
-      return this.sortedMeta
-        .reduce((sampleSize, entry) => sampleSize + entry.events[this.selectedEvent.id].sampleSize, 0)
-    },
-    comparators() {
-      const comparators = {}
-
-      // add mode statistics that have values not null
-      Object.entries(this.meta[0].events[this.selectedEvent.id].stats).forEach(([prop, value]) => {
-        if (value !== null && value !== 0) {
-          comparators[prop] = (e1, e2) => this.order * (e2.events[this.selectedEvent.id].stats[prop] - e1.events[this.selectedEvent.id].stats[prop])
-        }
-      })
-
-      return comparators
-    },
-    hasBigbrawler() {
-      return this.isBigbrawler || `${this.selectedEvent.id}-boss` in this.meta[0].events
-    },
-    isBigbrawler() {
-      return this.selectedEvent.id.includes('-boss')
-    },
     brawlersAndAds() {
       const adSlots = ['3154710057', '6902383379', '8405314532', '7640749978', '1075341622', '5745639405']
       const adFrequency = 7
-      const brawlers = this.sortedMeta
+      const brawlers = this.sortedBrawlers
       return induceAdsIntoBrawlers(brawlers, adSlots, adFrequency)
     },
+    comparators() {
+      return [...Object.keys(this.meta.brawlers.crow.stats)]
+        .reduce((comparators, prop) => ({
+          ...comparators,
+          [prop]: (e1, e2) => this.order * (e2.stats[prop] - e1.stats[prop])
+        }), {})
+    },
     ...mapState({
-      meta: state => state.mapMeta,
+      totalBrawlers: state => state.totalBrawlers,
+      mapMeta: state => state.mapMeta,
       ads: state => state.adsEnabled,
     }),
   },
   async validate({ store, params }) {
     await store.dispatch('loadMapMeta')
-    return params.event in store.state.mapMeta[0].events
+    return params.event in store.state.mapMeta
   },
   asyncData({ store, params }) {
-    const entry = store.state.mapMeta[0].events[params.event]
-    const selectedProp = metaStatMaps.propPriority.find(prop => prop in entry.stats && entry.stats[prop] !== null)
+    const meta = store.state.mapMeta[params.event]
+    const selectedProp = metaStatMaps.propPriority.find(prop => prop in meta.brawlers.crow.stats)
     return {
       selectedProp,
       selectedEvent: {
         id: params.event,
-        mode: entry.mode,
-        map: entry.map,
+        mode: meta.mode,
+        map: meta.map,
       }
     }
   },
