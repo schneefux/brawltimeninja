@@ -20,7 +20,10 @@ export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
 export function formatMode(mode) {
   const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
   const capitalize = str => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
-  return camelToSnakeCase(mode.replace('bigGame', 'bossfight'))
+  return camelToSnakeCase(
+    mode
+      .replace('bossFight', 'roboRumble')
+      .replace('bigGame', 'bossfight'))
     .split('_')
     .map(w => capitalize(w))
     .join(' ')
