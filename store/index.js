@@ -117,6 +117,8 @@ export const state = () => ({
   adsEnabled: false,
   installBannerDismissed: false,
   totalBrawlers: 27,
+  bsuArticles: [],
+  bsuArticlesLoaded: false,
 })
 
 export const getters = {
@@ -242,6 +244,10 @@ export const mutations = {
   dismissInstallBanner(state) {
     state.installBannerDismissed = true
   },
+  setBsuArticles(state, articles) {
+    state.bsuArticles = articles
+    state.bsuArticlesLoaded = true
+  },
 }
 
 export const actions = {
@@ -360,5 +366,19 @@ export const actions = {
   async loadCurrentMeta({ dispatch }) {
     await dispatch('loadCurrentEvents')
     await dispatch('loadMapMetaSlice', 'current')
+  },
+  async loadBsuArticles({ state, commit }) {
+    if (state.bsuArticlesLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/partners/bsu')
+      commit('setBsuArticles', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get bsu articles: ' + error.message)
+      console.error('cannot get bsu articles:', error.message)
+    }
   },
 }

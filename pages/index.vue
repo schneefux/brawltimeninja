@@ -212,6 +212,54 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="currentEvents.length > 0"
+      class="mt-6 mb-6 container"
+    >
+      <div class="w-full mx-auto max-w-xl">
+        <div class="mx-5 mb-1 relative">
+          <div class="w-2/3 text-left text-lg">
+            News from Brawl Stars UP!
+          </div>
+          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
+            <a
+              href="https://brawlstarsup.com/"
+              class="link"
+              target="_blank"
+              rel="noopener nofollow"
+            >
+              Visit BSU
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-wrap justify-center">
+        <div
+          v-for="article in bsuArticles.slice(0, 2)"
+          :key="article.link"
+          class="link-card flex flex-col"
+        >
+          <a
+            :href="article.link"
+            class="w-64"
+            target="_blank"
+            rel="noopener nofollow"
+          >
+            <p class="link-light mt-4 text-center text-xl">
+              {{ article.title }}
+            </p>
+            <p class="mt-4 text-black">
+              {{ article.contentSnippet.split('. ').slice(0, 1).join('. ') }}…
+              <span class="link-light">
+                Read more
+              </span>
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -290,6 +338,7 @@ export default {
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
       currentEvents: state => state.currentEvents,
+      bsuArticles: state => state.bsuArticles,
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
@@ -300,12 +349,14 @@ export default {
     if (!process.static) {
       await store.dispatch('loadCurrentMeta')
       await store.dispatch('loadBrawlerMeta')
+      await store.dispatch('loadBsuArticles')
     }
   },
   created() {
     if (process.static) {
       this.loadCurrentMeta()
       this.loadBrawlerMeta()
+      this.loadBsuArticles()
     }
 
     if (process.client) {
@@ -394,6 +445,7 @@ export default {
       loadBrawlerMeta: 'loadBrawlerMeta',
       loadPlayer: 'loadPlayer',
       loadCurrentMeta: 'loadCurrentMeta',
+      loadBsuArticles: 'loadBsuArticles',
     }),
   },
 }
