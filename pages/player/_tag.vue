@@ -856,19 +856,23 @@ export default {
     }
   },
   mounted() {
-    const playerHours = this.player.hoursSpent
-    const animationDuration = 5000
-    const frameDuration = 50
-    const k = Math.log(playerHours) / (animationDuration / frameDuration)
+    if (process.client) {
+      const playerHours = this.player.hoursSpent
+      const animationDuration = 5000
+      const frameDuration = 100
+      const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
-    this.hoursSpent = 0
-    const hoursTimer = () => setTimeout(() => {
-      this.hoursSpent += k * (playerHours - this.hoursSpent)
-      if (Math.floor(this.hoursSpent) < playerHours) {
-        hoursTimer()
-      }
-    }, frameDuration)
-    hoursTimer()
+      this.hoursSpent = 0
+      const hoursTimer = () => setTimeout(() => {
+        this.hoursSpent += k * (playerHours - this.hoursSpent)
+        if (Math.floor(this.hoursSpent) < playerHours) {
+          hoursTimer()
+        } else {
+          this.hoursSpent = playerHours
+        }
+      }, frameDuration)
+      hoursTimer()
+    }
 
     if (process.static) {
       this.loadLeaderboard()
