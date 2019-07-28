@@ -146,7 +146,7 @@ export default class TrackerService {
                 brawler_trophies: insertPlayer.brawler.trophies,
                 brawler_power: insertPlayer.brawler.power,
                 is_starplayer: battle.battle.starPlayer !== undefined ? battle.battle.starPlayer.tag == insertPlayer.tag : undefined,
-                is_bigbrawler: battle.event.mode === 'bigGame' ? battle.battle.bigBrawler.tag == insertPlayer.tag : undefined,
+                is_bigbrawler: battle.battle.bigBrawler !== undefined ? battle.battle.bigBrawler.tag == insertPlayer.tag : undefined,
                 level_id: battle.battle.level !== undefined ? battle.battle.level.id : undefined,
                 result: battle.battle.result === undefined ? undefined : (isMyTeam ? battle.battle.result : flippedResult),
                 duration: battle.battle.duration,
