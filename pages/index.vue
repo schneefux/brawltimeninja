@@ -101,25 +101,23 @@
 
     <div
       v-if="Object.keys(topBrawlers).length > 0"
-      class="mt-4 lg:mt-6 mb-6 container flex flex-wrap justify-center"
+      class="home-section container"
     >
-      <div class="w-full max-w-xl">
-        <div class="mx-5 mb-1 relative">
-          <div class="w-1/2 text-left text-lg">
-            Best Brawlers
-          </div>
-          <div class="w-1/2 text-right text-sm absolute bottom-0 right-0">
-            <nuxt-link
-              to="/meta/brawler"
-              class="link"
-            >
-              Explore the Brawler Meta
-            </nuxt-link>
-          </div>
+      <div class="home-section-heading-container">
+        <div class="home-section-heading-left">
+          Best Brawlers
+        </div>
+        <div class="home-section-heading-right">
+          <nuxt-link
+            to="/meta/brawler"
+            class="link"
+          >
+            Explore the Brawler Meta
+          </nuxt-link>
         </div>
       </div>
 
-      <div class="w-full flex flex-wrap justify-center">
+      <div class="home-section-content">
         <template v-for="(brawler, prop) in topBrawlers">
           <div
             :key="prop"
@@ -167,25 +165,23 @@
 
     <div
       v-if="currentEvents.length > 0"
-      class="mt-6 mb-6 container"
+      class="home-section container"
     >
-      <div class="w-full mx-auto max-w-xl">
-        <div class="mx-5 mb-1 relative">
-          <div class="w-1/2 text-left text-lg">
-            Live Events
-          </div>
-          <div class="w-1/2 text-right text-sm absolute bottom-0 right-0">
-            <nuxt-link
-              to="/meta/map"
-              class="link"
-            >
-              Explore the Map Meta
-            </nuxt-link>
-          </div>
+      <div class="home-section-heading-container">
+        <div class="home-section-heading-left">
+          Live Events
+        </div>
+        <div class="home-section-heading-right">
+          <nuxt-link
+            to="/meta/map"
+            class="link"
+          >
+            Explore the Map Meta
+          </nuxt-link>
         </div>
       </div>
 
-      <div class="w-full flex flex-wrap justify-center">
+      <div class="home-section-content">
         <div
           v-for="event in currentEvents"
           :key="event.id"
@@ -215,28 +211,26 @@
 
     <div
       v-if="currentEvents.length > 0"
-      class="mt-6 mb-6 container"
+      class="home-section container"
     >
-      <div class="w-full mx-auto max-w-xl">
-        <div class="mx-5 mb-1 relative">
-          <div class="w-2/3 text-left text-lg">
-            News from Brawl Stars UP!
-          </div>
-          <div class="w-1/3 text-right text-sm absolute bottom-0 right-0">
-            <a
-              href="https://brawlstarsup.com/"
-              class="link"
-              target="_blank"
-              rel="noopener nofollow"
-              @click="$ga.event('home', 'bsu', 'click_visit')"
-            >
-              Visit BSU
-            </a>
-          </div>
+      <div class="home-section-heading-container">
+        <div class="home-section-heading-left">
+          News from Brawl Stars UP!
+        </div>
+        <div class="home-section-heading-right">
+          <a
+            href="https://brawlstarsup.com/"
+            class="link"
+            target="_blank"
+            rel="noopener nofollow"
+            @click="$ga.event('home', 'bsu', 'click_visit')"
+          >
+            Visit BSU
+          </a>
         </div>
       </div>
 
-      <div class="w-full flex flex-wrap justify-center">
+      <div class="home-section-content">
         <div
           v-for="article in bsuArticles"
           :key="article.link"
@@ -456,5 +450,25 @@ export default {
 <style>
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
+}
+
+.home-section {
+  @apply my-6;
+}
+
+.home-section-heading-container {
+  @apply w-full max-w-xl mx-auto mb-1 relative;
+}
+
+.home-section-heading-left {
+  @apply text-left text-lg ml-5;
+}
+
+.home-section-heading-right {
+  @apply text-right text-sm absolute bottom-0 right-0 mr-5;
+}
+
+.home-section-content {
+  @apply w-full flex flex-wrap justify-center;
 }
 </style>
