@@ -152,6 +152,9 @@ export default class BrawlstarsService {
       if (!!entry.rank && entry.rank > 0) {
         stats.rank = entry.rank;
       }
+      if (!!entry.level && entry.level > 0) {
+        stats.level = entry.level;
+      }
       if (!!entry.duration && entry.duration > 0) {
         stats.duration = entry.duration;
       }
