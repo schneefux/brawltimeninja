@@ -228,6 +228,7 @@
               class="link"
               target="_blank"
               rel="noopener nofollow"
+              @click="$ga.event('home', 'bsu', 'click_visit')"
             >
               Visit BSU
             </a>
@@ -246,6 +247,7 @@
             class="w-64"
             target="_blank"
             rel="noopener nofollow"
+            @click="$ga.event('home', 'bsu', 'click_article')"
           >
             <p class="link-light mt-4 text-center text-xl">
               {{ article.title }}
