@@ -237,7 +237,7 @@
 
       <div class="w-full flex flex-wrap justify-center">
         <div
-          v-for="article in bsuArticles.slice(0, 2)"
+          v-for="article in bsuArticles"
           :key="article.link"
           class="link-card flex flex-col"
         >
@@ -251,7 +251,7 @@
               {{ article.title }}
             </p>
             <p class="mt-4 text-black">
-              {{ article.contentSnippet.split('. ').slice(0, 1).join('. ') }}…
+              {{ article.contentSnippet }}…
               <span class="link-light">
                 Read more
               </span>
