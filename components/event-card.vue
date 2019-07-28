@@ -5,6 +5,7 @@
     <nuxt-link
       :to="`/meta/map/${event.id}`"
       class="link-light capitalize"
+      target="_blank"
     >
       <div
         v-if="asset.default"

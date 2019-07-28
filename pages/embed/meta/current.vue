@@ -3,11 +3,12 @@
     <h1 class="mt-4 text-2xl text-center">
       Best Brawlers for Current Events
     </h1>
-    <h2 class="mt-1 text-sm text-center">
-      Powered by
+    <h2 class="mt-2 text-sm text-center">
+      Track trophies and view Brawler win rates on
       <a
         class="link-light underline"
         href="https://brawltime.ninja"
+        target="_blank"
       >
         brawltime.ninja
       </a>
