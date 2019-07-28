@@ -298,7 +298,7 @@ export default class TrackerService {
           rank: parseFloat(entry.rank),
           starRate: parseFloat(entry.star_rate),
           picks: parseInt(entry.picks),
-          level: parseInt(entry.level),
+          level: parseFloat(entry.level),
         })
       ));
     }
