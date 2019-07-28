@@ -267,7 +267,6 @@ export default class BrawlstarsService {
       let modeId = mode.replace('_', '');
 
       if (modeId == 'biggame') {
-        mode = 'Bossfight';
         modeId = 'bossfight';
       }
       if (modeId.endsWith('showdown')) {
