@@ -5,7 +5,7 @@
     <nuxt-link
       :to="`/meta/map/${event.id}`"
       class="link-light capitalize"
-      target="_blank"
+      :target="isInIframe ? '_blank' : ''"
     >
       <div
         v-if="asset.default"
@@ -58,6 +58,13 @@ export default {
     },
   },
   computed: {
+    isInIframe() {
+      try {
+        return global.window === undefined || global.window.self !== global.window.top
+      } catch (e) {
+        return true
+      }
+    },
     ...mapGetters({
       bestBrawlersByMap: 'bestBrawlersByMap',
     })
