@@ -26,6 +26,12 @@ $ API_PORT="…" npm start
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
 
+## Maintenance
+
+* Upload new Brawler icons: `assets/images/hero/icon`
+* Upload new maps: `assets/images/bs-assets/map_images`
+* `update dim_season set is_current = 0` for all seasons older than the current balance changes
+
 ## Processing images
 
 * `for f in assets/images/hero/icon/*.png; do magick.exe "$f" -strip -resize x192 "${f%.png}_optimized.png"; done` 
