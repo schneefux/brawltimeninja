@@ -662,8 +662,6 @@ export default class TrackerService {
           now() <= ${this.sqlRoundTimestampToSeasonEnd} as is_current
         from battle
         where id > ? and id <= ?
-        on duplicate key update
-          is_current = values(is_current)
     `, [lastProcessedId, lastId]);
 
     if (lastIdRecords.length === 0) {
