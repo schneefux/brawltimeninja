@@ -804,7 +804,7 @@ export default {
       return recommendations.slice(0, 20)
     },
     ...mapState({
-      ads: state => state.ads,
+      ads: state => state.adsEnabled,
       blog: state => state.blog,
       player: state => state.player,
       totalBrawlers: state => state.totalBrawlers,
