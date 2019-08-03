@@ -135,8 +135,13 @@ export default {
     }
   },
   head() {
+    const description = `BrawlStars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.`
     return {
       title: 'Map Meta',
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   computed: {
