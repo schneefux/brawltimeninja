@@ -464,23 +464,22 @@
       <div class="flex flex-wrap justify-between">
         <template v-for="brawler in brawlersAndAds">
           <div
-            v-if="ads || brawler.name !== undefined"
+            v-if="ads || brawler.adSlot === undefined"
             :key="brawler.id"
             class="card-wrapper w-full md:flex-1"
           >
             <adsense
-              v-if="ads && brawler.name === undefined"
+              v-if="ads && brawler.adSlot !== undefined"
               v-show="ads"
-              root-class=""
               ins-class="h-32 md:min-w-80 mx-auto"
               data-ad-client="ca-pub-6856963757796636"
               :data-ad-slot="brawler.id"
             />
 
             <brawler-card
-              v-if="brawler.name !== undefined"
-              :id="brawler.id"
-              :name="brawler.name"
+              v-if="brawler.adSlot === undefined"
+              :title="brawler.name"
+              :brawler="brawler.id"
             >
               <template v-slot:history>
                 <div

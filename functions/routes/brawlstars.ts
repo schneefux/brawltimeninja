@@ -67,9 +67,31 @@ router.get('/meta/brawler', async (ctx, next) => {
   await next();
 });
 
+router.get('/meta/starpower', async (ctx, next) => {
+  try {
+    ctx.body = await service.getStarpowerMeta();
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/meta/map', async (ctx, next) => {
   try {
     ctx.body = await service.getMapMeta(ctx.request.query);
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
+router.get('/meta/mode', async (ctx, next) => {
+  try {
+    ctx.body = await service.getModeMeta();
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);

@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
+import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -247,17 +247,77 @@ export default class TrackerService {
         from agg_player_battle cur
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.season_id = cur.season_id - 2
+        left join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.season_id = cur.season_id - 2
         where is_current
-        group by dim_brawler_starpower.brawler_name
+        group by name
       `).then((response) => response[0].map(
-        (entry: any) => (<MetaEntry> {
+        (entry: any) => (<MetaBrawlerEntry> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
           trophyChange: parseFloat(entry.diff),
           winRate: parseFloat(entry.win_rate),
           starRate: parseFloat(entry.star_rate),
           picks: parseInt(entry.picks),
+        })
+      ));
+    }
+
+  public async getStarpowerMeta() {
+    return await this.knex.raw(`
+        select
+          dim_brawler_starpower.id as id,
+          dim_brawler_starpower.brawler_name as brawler_name,
+          dim_brawler_starpower.starpower_name as starpower_name,
+          sum(count) as picks,
+          sum(victory) / sum(result_count) as win_rate,
+          sum(starplayer) / sum(starplayer_count) as star_rate,
+          sum(rank_1) / sum(rank_count) as rank1_rate
+        from agg_player_battle
+        join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
+        join dim_season on dim_season.id = season_id
+        join dim_event on dim_event.id = event_id
+        where is_current and mode <> 'duoShowdown'
+        group by id, brawler_name, starpower_name
+      `).then((response) => response[0].map(
+        (entry: any) => (<MetaStarpowerEntry> {
+          id: parseInt(entry.id),
+          brawlerName: entry.brawler_name,
+          starpowerName: entry.starpower_name,
+          winRate: parseFloat(entry.win_rate),
+          starRate: parseFloat(entry.star_rate),
+          rank1Rate: parseFloat(entry.rank1_rate),
+          picks: parseInt(entry.picks),
+        })
+      ));
+    }
+
+  public async getModeMeta() {
+    return await this.knex.raw(`
+        select
+          dim_brawler_starpower.brawler_name as name,
+          dim_event.mode as mode,
+          sum(count) as picks,
+          sum(victory) / sum(result_count) as win_rate,
+          sum(duration) / sum(duration_count) as duration,
+          sum(rank_1) / sum(rank_count) as rank1_rate,
+          sum(rank) / sum(rank_count) as rank,
+          sum(starplayer) / sum(starplayer_count) as star_rate
+        from agg_player_battle
+        join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
+        join dim_season on dim_season.id = season_id
+        join dim_event on dim_event.id = event_id
+        where is_current
+        group by name, mode
+      `).then((response) => response[0].map(
+        (entry: any) => (<MetaModeEntry> {
+          name: entry.name,
+          mode: entry.mode,
+          picks: parseInt(entry.picks),
+          winRate: parseFloat(entry.win_rate),
+          duration: parseFloat(entry.duration),
+          rank1Rate: parseFloat(entry.rank1_rate),
+          rank: parseFloat(entry.rank),
+          starRate: parseFloat(entry.star_rate)
         })
       ));
     }
@@ -286,7 +346,7 @@ export default class TrackerService {
         group by id, mode, map, name, is_bigbrawler
       `)
         .then((response) => response[0].map(
-        (entry: any) => (<MetaModeEntry> {
+        (entry: any) => (<MetaMapEntry> {
           id: entry.id,
           mode: entry.mode,
           map: entry.map,

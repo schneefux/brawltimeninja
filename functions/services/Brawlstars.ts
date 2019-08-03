@@ -3,7 +3,7 @@ import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
-import { MetaEntry, MetaModeEntry } from '~/model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry } from '~/model/MetaEntry';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
@@ -11,6 +11,20 @@ const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
 function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
+}
+
+const brawlerId = (entry: { name: string }) =>
+  entry.name.replace(/ /g, '_').toLowerCase();
+
+const modeBackgroundId = (modeCamelCase: string) => {
+  const mode = camelToSnakeCase(modeCamelCase);
+  if (mode == 'big_game') {
+    return 'bossfight';
+  }
+  if (mode.endsWith('showdown')) {
+    return 'showdown';
+  }
+  return mode.replace('_', '');
 }
 
 const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -101,7 +115,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaEntry[]>(
+    const meta = await request<MetaBrawlerEntry[]>(
       '/meta/brawler',
       trackerUrl,
       {},
@@ -125,12 +139,111 @@ export default class BrawlstarsService {
     }))
   }
 
-  public async getMapMeta(filters: { [name: string]: string }) {
+  public async getStarpowerMeta() {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    const meta = await request<MetaStarpowerEntry[]>(
+      '/meta/starpower',
+      trackerUrl,
+      {},
+      {},
+      10000,
+      600,
+    );
+
+    return meta.map((entry) => ({
+      id: entry.id,
+      brawlerName: entry.brawlerName.replace(/ /g, '_').toLowerCase(),
+      starpowerName: entry.starpowerName,
+      sampleSize: entry.picks,
+      stats: {
+        winRate: entry.winRate,
+        starRate: entry.starRate,
+        rank1Rate: entry.rank1Rate,
+      },
+    }))
+  }
+
+  public async getModeMeta() {
     if (trackerUrl == '') {
       return [];
     }
 
     const meta = await request<MetaModeEntry[]>(
+      '/meta/mode',
+      trackerUrl,
+      {},
+      {},
+      30000,
+      900, // 15m
+    );
+
+    const modeTotalPicks = meta.reduce((modeTotalPicks, entry: MetaModeEntry) => ({
+      ...modeTotalPicks,
+      [entry.mode]: (modeTotalPicks[entry.mode] || 0) + entry.picks,
+    }), <{ [id: string]: number }>{});
+
+    const nonNullStats = (entry: MetaModeEntry) => {
+      const stats = <{ [stat: string]: number }>{};
+      if (!!entry.winRate && entry.winRate > 0) {
+        stats.winRate = entry.winRate;
+      }
+      if (!!entry.rank && entry.rank > 0) {
+        stats.rank = entry.rank;
+      }
+      if (!!entry.duration && entry.duration > 0) {
+        stats.duration = entry.duration;
+      }
+      stats.pickRate = entry.picks / modeTotalPicks[entry.mode];
+      if (!!entry.starRate && entry.starRate > 0) {
+        stats.starRate = entry.starRate;
+      }
+      if (!!entry.rank1Rate && entry.rank1Rate > 0) {
+        stats.rank1Rate = entry.rank1Rate;
+      }
+      return stats;
+    };
+
+    const modeMeta = meta.reduce((modeMeta, entry: MetaModeEntry) => ({
+      ...modeMeta,
+      [entry.mode]: {
+        mode: entry.mode,
+        sampleSize: modeTotalPicks[entry.mode],
+        brawlers: {
+          ...((modeMeta[entry.mode] || {}).brawlers || {}),
+          [brawlerId(entry)]: {
+            name: capitalizeWords(entry.name.toLowerCase()),
+            sampleSize: entry.picks,
+            stats: nonNullStats(entry),
+          }
+        }
+      }
+    }), <{
+      [event: string]: {
+        mode: string
+        sampleSize: number
+        brawlers: {
+          [brawler: string]: {
+            name: string
+            sampleSize: number
+            stats: {
+              [stat: string]: number
+            }
+          }
+        }
+      }}>{});
+
+    return modeMeta;
+  }
+
+  public async getMapMeta(filters: { [name: string]: string }) {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    const meta = await request<MetaMapEntry[]>(
       '/meta/map',
       trackerUrl,
       {},
@@ -139,12 +252,12 @@ export default class BrawlstarsService {
       900, // 15m
     );
 
-    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaModeEntry) => ({
+    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaMapEntry) => ({
       ...mapTotalPicks,
       [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
     }), <{ [id: string]: number }>{});
 
-    const nonNullStats = (entry: MetaModeEntry) => {
+    const nonNullStats = (entry: MetaMapEntry) => {
       const stats = <{ [stat: string]: number }>{};
       if (!!entry.wins && entry.wins > 0) {
         stats.winRate = entry.wins / entry.picks;
@@ -176,10 +289,7 @@ export default class BrawlstarsService {
       return stats;
     };
 
-    const brawlerId = (entry: MetaModeEntry) =>
-      entry.name.replace(/ /g, '_').toLowerCase();
-
-    const mapMeta = meta.reduce((mapMeta, entry: MetaModeEntry) => ({
+    const mapMeta = meta.reduce((mapMeta, entry: MetaMapEntry) => ({
       ...mapMeta,
       [entry.id]: {
         mode: entry.mode,
@@ -263,16 +373,6 @@ export default class BrawlstarsService {
         isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
       })
 
-      let mode = camelToSnakeCase(battle.event.mode)
-      let modeId = mode.replace('_', '');
-
-      if (modeId == 'biggame') {
-        modeId = 'bossfight';
-      }
-      if (modeId.endsWith('showdown')) {
-        modeId = 'showdown';
-      }
-
       let result;
       if (battle.battle.duration !== undefined) {
         // bossfight, gem grab, ...
@@ -299,7 +399,7 @@ export default class BrawlstarsService {
         timestamp: new Date(Date.parse(isoDate)),
         mode: {
           label: battle.event.map,
-          background: `${modeId}.jpg`,
+          background: `${modeBackgroundId(battle.event.mode)}.jpg`,
         },
         result,
         trophyChange: battle.battle.trophyChange,
