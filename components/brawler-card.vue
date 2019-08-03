@@ -1,13 +1,11 @@
 <template>
-  <div
-    class="card w-80 h-32 bg-primary-dark flex justify-between mx-auto"
-  >
+  <div class="card w-80 h-32 bg-primary-dark flex justify-between mx-auto">
     <div class="w-32 relative">
       <span class="z-10 absolute left-0 ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap capitalize">
-        {{ name.toLowerCase() }}
+        {{ title.toLowerCase() }}
       </span>
       <img
-        :src="require(`~/assets/images/hero/icon/${id}_optimized.png`)"
+        :src="require(`~/assets/images/hero/icon/${brawler}_optimized.png`)"
         class="z-0 absolute bottom-0 h-20"
       >
     </div>
@@ -26,17 +24,14 @@
 export default {
   name: 'BrawlerCard',
   props: {
-    name: {
+    title: {
       type: String,
       required: true
     },
-    id: {
+    brawler: {
       type: String,
-      required: true
+      required: true,
     },
-  },
-  errorCaptured(error) {
-    console.log(error)
   },
 }
 </script>

@@ -33,6 +33,16 @@ router.get('/tracker/meta/brawler', async (ctx, next) => {
   await next();
 });
 
+router.get('/tracker/meta/starpower', async (ctx, next) => {
+  ctx.body = await service.getStarpowerMeta();
+  await next();
+});
+
+router.get('/tracker/meta/mode', async (ctx, next) => {
+  ctx.body = await service.getModeMeta();
+  await next();
+});
+
 router.get('/tracker/meta/map', async (ctx, next) => {
   ctx.body = await service.getMapMeta();
   await next();

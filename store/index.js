@@ -3,13 +3,21 @@ import payload from './payload.json'
 
 export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
   return brawlers.reduce((agg, brawler, index, self) => {
-    if (index === self.length - 1) {
-      const ad = { id: adSlots[index / adFrequency + 1] }
+    const lastSlotIndex = Math.floor(index / adFrequency) + 1
+    if (index === self.length - 1 && lastSlotIndex < adSlots.length) {
+      const ad = {
+        adSlot: adSlots[lastSlotIndex],
+        id: `ad-last`,
+      }
       return agg.concat(brawler, ad)
     }
 
-    if (index % adFrequency === 0) {
-      const ad = { id: adSlots[index / adFrequency] }
+    const slotIndex = index / adFrequency
+    if (index % adFrequency === 0 && slotIndex < adSlots.length) {
+      const ad = {
+        adSlot: adSlots[slotIndex],
+        id: `ad-${index}`,
+      }
       return agg.concat(ad, brawler)
     }
 
@@ -26,12 +34,26 @@ export function formatMode(mode) {
     .join(' ')
 }
 
+// TODO duplicated in backend - move this to a lib
+const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+export function modeToBackgroundId(modeCamelCase) {
+  const mode = camelToSnakeCase(modeCamelCase)
+  if (mode === 'big_game') {
+    return 'bossfight'
+  }
+  if (mode.endsWith('showdown')) {
+    return 'showdown'
+  }
+  return mode.replace('_', '')
+}
+
 export const metaStatMaps = {
   labels: {
     trophies: 'Trophies',
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
     winRate: 'Win Rate',
+    rank1Rate: 'SD Win Rate',
     level: 'Avg. Level',
     starRate: 'Star Player',
     pickRate: 'Pick Rate',
@@ -47,6 +69,7 @@ export const metaStatMaps = {
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
     winRate: 'Won',
+    rank1Rate: 'SD Won',
     level: 'Level',
     starRate: 'Stars',
     pickRate: 'Picked',
@@ -60,6 +83,7 @@ export const metaStatMaps = {
     spTrophies: 'starpower',
     trophyChange: 'trophy',
     winRate: '📈',
+    rank1Rate: '📈',
     level: '🏅',
     starRate: '⭐',
     pickRate: '👇',
@@ -75,6 +99,7 @@ export const metaStatMaps = {
     spTrophies: n => Math.round(n),
     trophyChange: n => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
     winRate: n => `${Math.round(100 * n)}%`,
+    rank1Rate: n => `${Math.round(100 * n)}%`,
     starRate: n => `${Math.round(100 * n)}%`,
     pickRate: n => `${Math.round(100 * n)}%`,
     pickRate_boss: n => `${Math.round(100 * n)}%`,
@@ -112,6 +137,10 @@ export const state = () => ({
   mapMeta: [],
   mapMetaLoaded: false,
   mapMetaSlicesLoaded: [],
+  starpowerMeta: [],
+  starpowerMetaLoaded: false,
+  modeMeta: [],
+  modeMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
   adsEnabled: false,
@@ -219,6 +248,10 @@ export const mutations = {
     state.mapMeta = meta
     state.mapMetaLoaded = true
   },
+  setStarpowerMeta(state, meta) {
+    state.starpowerMeta = meta
+    state.starpowerMetaLoaded = true
+  },
   addMapMetaSlice(state, metaSlice) {
     state.mapMeta = {
       ...state.mapMeta,
@@ -227,6 +260,10 @@ export const mutations = {
   },
   setMapMetaSliceLoaded(state, sliceName) {
     state.mapMetaSlicesLoaded.push(sliceName)
+  },
+  setModeMeta(state, meta) {
+    state.modeMeta = meta
+    state.modeMetaLoaded = true
   },
   allowAds(state) {
     state.adsAllowed = true
@@ -366,6 +403,34 @@ export const actions = {
   async loadCurrentMeta({ dispatch }) {
     await dispatch('loadCurrentEvents')
     await dispatch('loadMapMetaSlice', 'current')
+  },
+  async loadStarpowerMeta({ state, commit }) {
+    if (state.starpowerMetaLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta/starpower')
+      commit('setStarpowerMeta', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get starpower meta: ' + error.message)
+      console.error('cannot get starpower meta:', error.message)
+    }
+  },
+  async loadModeMeta({ state, commit }) {
+    if (state.modeMetaLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta/mode')
+      commit('setModeMeta', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get mode meta: ' + error.message)
+      console.error('cannot get mode meta:', error.message)
+    }
   },
   async loadBsuArticles({ state, commit }) {
     if (state.bsuArticlesLoaded) {
