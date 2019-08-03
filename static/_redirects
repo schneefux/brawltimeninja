@@ -1,5 +1,6 @@
 https://brawlstarstime.ninja/* https://brawltime.ninja/:splat 301!
-/meta /meta/brawler
+/meta /meta/brawler 301
+/fr/* /:splat 301
 
 # Tell netlify to fetch the 404.html for dynamic URLs but return 200
 /meta/map/* /404.html 200
