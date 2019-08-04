@@ -18,7 +18,7 @@
         to="/"
         class="link"
       >
-        Return to home
+        Return to profile search
       </nuxt-link>
     </p>
 
