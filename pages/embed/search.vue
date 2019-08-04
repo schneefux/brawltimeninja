@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       tag: undefined,
-      tagValid: false,
+      tagValid: true,
     }
   },
   computed: {
