@@ -123,19 +123,15 @@
             :key="prop"
             class="card-wrapper px-2"
           >
-            <div
-              class="card h-14 md:h-24 border-primary-darker border-2 flex justify-between mx-auto"
-            >
-              <div class="w-16 md:w-24 relative">
-                <span class="z-10 absolute ml-1 md:mt-1 md:ml-2 font-semibold md:text-lg text-white text-shadow whitespace-no-wrap capitalize">
-                  {{ brawler.name.toLowerCase() }}
-                </span>
-                <img
-                  :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
-                  class="z-0 absolute bottom-0 h-12 md:h-16"
-                >
-              </div>
-              <div class="w-24 md:w-32 py-1 pr-1 md:py-2 md:pr-2 my-auto text-center relative">
+            <div class="card prop-card">
+              <span class="prop-card-title">
+                {{ brawler.name.toLowerCase() }}
+              </span>
+              <img
+                :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                class="prop-card-image"
+              >
+              <div class="prop-card-content">
                 <div>
                   <img
                     v-if="metaStatMaps.icons[prop].length > 2"

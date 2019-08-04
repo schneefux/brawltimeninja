@@ -80,3 +80,57 @@
 .button-lg {
   @apply border-8;
 }
+
+/* blue card with a title and an image which highlights multiple stats */
+.stats-card {
+  @apply w-80 h-32 bg-primary-dark mx-auto relative;
+}
+
+.stats-card-title {
+  @apply z-10 absolute left-0 ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap capitalize;
+}
+
+.stats-card-image {
+  @apply z-0 absolute bottom-0 h-20;
+}
+
+.stats-card-content {
+  @apply py-2 pr-3 flex flex-col justify-center items-end;
+}
+
+.prop-card {
+  @apply w-40 h-14 border-primary-darker border-2 mx-auto relative;
+}
+@screen md {
+  .prop-card {
+    @apply w-56 h-24;
+  }
+}
+
+/* transparent card with a title and an image which highlights a single stat */
+.prop-card-title {
+  @apply z-10 absolute left-0 ml-1 font-semibold text-white text-shadow whitespace-no-wrap capitalize;
+}
+@screen md {
+  .prop-card-title {
+    @apply mt-1 ml-2 text-lg;
+  }
+}
+
+.prop-card-image {
+  @apply z-0 absolute bottom-0 h-12;
+}
+@screen md {
+  .prop-card-image {
+    @apply h-16;
+  }
+}
+
+.prop-card-content {
+  @apply w-24 py-1 pr-1 absolute right-0 h-full flex flex-col justify-center items-center text-center;
+}
+@screen md {
+  .prop-card-content {
+    @apply w-32 py-2 pr-2;
+  }
+}
