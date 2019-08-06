@@ -106,7 +106,7 @@ export default {
       const meta = [...Object.entries(this.meta.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
-          title: brawlerId,
+          title: brawler.name,
           brawler: brawlerId,
           stats: brawler.stats,
         }))

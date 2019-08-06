@@ -81,7 +81,7 @@ export default {
       return this.meta.map(brawler => ({
         id: brawler.id,
         brawler: brawler.id,
-        title: brawler.id,
+        title: brawler.name,
         stats: brawler.stats,
       }))
     },
