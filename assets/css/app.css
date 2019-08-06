@@ -83,7 +83,7 @@
 
 /* blue card with a title and an image which highlights multiple stats */
 .stats-card {
-  @apply w-80 h-32 bg-primary-dark mx-auto relative;
+  @apply w-80 bg-primary-dark mx-auto relative;
 }
 
 .stats-card-title {
@@ -98,6 +98,7 @@
   @apply py-2 pr-3 flex flex-col justify-center items-end;
 }
 
+/* transparent card with a title and an image which highlights a single stat */
 .prop-card {
   @apply w-40 h-14 border-primary-darker border-2 mx-auto relative;
 }
@@ -107,7 +108,6 @@
   }
 }
 
-/* transparent card with a title and an image which highlights a single stat */
 .prop-card-title {
   @apply z-10 absolute left-0 ml-1 font-semibold text-white text-shadow whitespace-no-wrap capitalize;
 }
