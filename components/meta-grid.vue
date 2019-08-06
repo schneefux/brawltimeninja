@@ -27,7 +27,7 @@
       >
         <adsense
           v-if="ads && entry.adSlot !== undefined"
-          ins-class="md:min-w-80 mx-auto"
+          ins-class="md:min-w-80 h-48 md:h-32 mx-auto bg-primary"
           data-ad-client="ca-pub-6856963757796636"
           :data-ad-slot="entry.adSlot"
         />
