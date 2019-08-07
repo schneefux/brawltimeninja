@@ -197,17 +197,21 @@ export default {
     },
     adsAllowed(allowed) {
       if (allowed) {
-        this.$ga.enable()
-        // variable for split testing
-        this.$ga.set('dimension1', env.branch)
-        // events should not affect bounce rate
-        this.$ga.set('nonInteraction', true)
-
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
         this.$ga.event('ads', 'blocked', adsBlocked)
         if (!adsBlocked) {
           this.enableAds()
         }
+
+        const isPwa = window.matchMedia('(display-mode: standalone)').matches
+
+        this.$ga.enable()
+        // set variables for split testing
+        this.$ga.set('dimension1', env.branch)
+        this.$ga.set('dimension2', !adsBlocked)
+        this.$ga.set('dimension3', isPwa)
+        // events should not affect bounce rate
+        this.$ga.set('nonInteraction', true)
       }
     },
   },
