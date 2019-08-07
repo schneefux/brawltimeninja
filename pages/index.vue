@@ -251,6 +251,14 @@
           </a>
         </div>
       </div>
+
+      <adsense
+        v-if="ads"
+        root-class="home-section w-full"
+        ins-class="mx-4 h-32"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6736366415"
+      />
     </div>
   </div>
 </template>
@@ -326,6 +334,7 @@ export default {
       }
     },
     ...mapState({
+      ads: state => state.adsEnabled,
       tagPattern: state => state.tagPattern,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
