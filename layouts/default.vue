@@ -198,6 +198,11 @@ export default {
     adsAllowed(allowed) {
       if (allowed) {
         this.$ga.enable()
+        // variable for split testing
+        this.$ga.set('dimension1', env.branch)
+        // events should not affect bounce rate
+        this.$ga.set('nonInteraction', true)
+
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
         this.$ga.event('ads', 'blocked', adsBlocked)
         if (!adsBlocked) {
