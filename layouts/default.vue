@@ -207,7 +207,7 @@ export default {
 
         this.$ga.enable()
         // set variables for split testing
-        this.$ga.set('dimension1', env.branch)
+        this.$ga.set('dimension1', process.env.branch)
         this.$ga.set('dimension2', !adsBlocked)
         this.$ga.set('dimension3', isPwa)
         // events should not affect bounce rate
