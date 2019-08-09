@@ -5,7 +5,7 @@
     target="_blank"
     @submit="search"
   >
-    <div class="link-card">
+    <div class="link-card p-0!">
       <div class="py-2 rounded-lg bg-primary-light">
         <input
           v-model="tag"
@@ -76,5 +76,9 @@ export default {
 <style>
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
+}
+
+.p-0\! {
+  padding: 0;
 }
 </style>
