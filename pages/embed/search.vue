@@ -12,7 +12,7 @@
           placeholder="Enter your Tag"
           type="text"
           autocomplete="off"
-          class="w-40 tracking-wider uppercase placeholder:normal-case font-semibold appearance-none bg-transparent focus:outline-none ml-3 mr-2"
+          class="w-32 tracking-wider uppercase placeholder:normal-case font-semibold appearance-none bg-transparent focus:outline-none ml-3 mr-2"
         >
         <input
           type="submit"
