@@ -71,7 +71,7 @@
           video-id="LuUmyorhSIQ"
           autoplay
           mute
-          @ready="$ga.event('player', 'play_video', 'search')"
+          @ready="$ga.event('player', 'play_video', 'search', { nonInteraction: true })"
           @ended="$refs.helpVideo.player.playVideo()"
         />
       </details>
