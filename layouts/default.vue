@@ -198,7 +198,7 @@ export default {
     adsAllowed(allowed) {
       if (allowed) {
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
-        this.$ga.event('ads', 'blocked', adsBlocked)
+        this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
         if (!adsBlocked) {
           this.enableAds()
         }
@@ -210,8 +210,6 @@ export default {
         this.$ga.set('dimension1', process.env.branch)
         this.$ga.set('dimension2', !adsBlocked)
         this.$ga.set('dimension3', isPwa)
-        // events should not affect bounce rate
-        this.$ga.set('nonInteraction', true)
       }
     },
   },
