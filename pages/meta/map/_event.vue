@@ -30,7 +30,7 @@
         class="mt-5 mb-8 text-center text-xl font-bold"
       >
         ⚠ Not enough data for this event yet!
-        <template v-if="sortedBrawlers.length == 0">
+        <template v-if="brawlers.length == 0">
           Statistics are unavailable.
         </template>
         <template v-else>
@@ -47,6 +47,7 @@
       />
 
       <meta-grid
+        v-if="brawlers.length > 0"
         :entries="brawlers"
         :ad-slots="adSlots"
         :ad-frequency="7"
