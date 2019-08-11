@@ -74,6 +74,13 @@
                 </td>
               </tr>
             </table>
+            <nuxt-link
+              v-if="entry.link !== undefined"
+              :to="entry.link"
+              class="link"
+            >
+              {{ linkText }}
+            </nuxt-link>
           </template>
         </brawler-card>
       </div>
@@ -98,6 +105,7 @@ export default {
           id,
           title,
           brawler,
+          link,
           stats[]
         }
       **/
@@ -107,6 +115,10 @@ export default {
     enableSort: {
       type: Boolean,
       default: true,
+    },
+    linkText: {
+      type: String,
+      default: '',
     },
     defaultSortProp: {
       type: String,

@@ -33,6 +33,7 @@
         :entries="brawlers"
         :ad-slots="adSlots"
         :ad-frequency="7"
+        link-text="View Starpower stats"
         ga-category="brawler_meta"
       />
 
@@ -83,6 +84,7 @@ export default {
         brawler: brawler.id,
         title: brawler.name,
         stats: brawler.stats,
+        link: `/meta/brawler/${brawler.id}`,
       }))
     },
     ...mapState({
