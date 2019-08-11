@@ -123,13 +123,13 @@
             :key="prop"
             class="card-wrapper px-2"
           >
-            <div class="card prop-card">
-              <span class="prop-card-title">
+            <div class="card prop-card md:prop-card-lg">
+              <span class="prop-card-title md:prop-card-title-lg">
                 {{ brawler.name.toLowerCase() }}
               </span>
               <img
                 :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
-                class="prop-card-image"
+                class="prop-card-image md:prop-card-image-lg"
               >
               <div class="prop-card-content">
                 <div>
