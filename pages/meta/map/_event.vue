@@ -30,8 +30,8 @@
         class="mt-5 mb-8 text-center text-xl font-bold"
       >
         ⚠ Not enough data for this event yet!
-        <template v-if="brawlers.length == 0">
-          Statistics are unavailable.
+        <template v-if="brawlers.length < totalBrawlers">
+          Some statistics are unavailable.
         </template>
         <template v-else>
           Statistics will be inaccurate.
@@ -47,7 +47,6 @@
       />
 
       <meta-grid
-        v-if="brawlers.length > 0"
         :entries="brawlers"
         :ad-slots="adSlots"
         :ad-frequency="7"
@@ -104,18 +103,13 @@ export default {
       return this.mapMeta[this.selectedEvent.id]
     },
     brawlers() {
-      const meta = [...Object.entries(this.meta.brawlers)]
+      return [...Object.entries(this.meta.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           title: brawler.name,
           brawler: brawlerId,
           stats: brawler.stats,
         }))
-      if (meta.length < this.totalBrawlers) {
-        return []
-      }
-
-      return meta
     },
     ...mapState({
       totalBrawlers: state => state.totalBrawlers,
