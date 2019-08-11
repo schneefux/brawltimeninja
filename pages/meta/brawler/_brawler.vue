@@ -83,6 +83,14 @@
       </template>
     </div>
 
+    <adsense
+      v-if="ads"
+      root-class="w-full md:w-1/2 mt-4 mx-auto"
+      ins-class="mx-4 h-24"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="8533352178"
+    />
+
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
         Game Modes
@@ -125,6 +133,14 @@
         </div>
       </div>
     </div>
+
+    <adsense
+      v-if="ads"
+      root-class="w-full mt-6 mx-auto"
+      ins-class="h-32"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="6837127123"
+    />
   </div>
 </template>
 
@@ -175,6 +191,7 @@ export default {
     ...mapState({
       starpowerMeta: state => state.starpowerMeta,
       modeMeta: state => state.modeMeta,
+      ads: state => state.adsEnabled,
     }),
   },
   async fetch({ store }) {
