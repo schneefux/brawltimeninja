@@ -888,7 +888,7 @@ export default {
     async refreshTimer() {
       this.refreshSecondsLeft -= 15
       if (this.refreshSecondsLeft <= 0) {
-        await this.refreshPlayer()
+        await this.refresh()
       }
       setTimeout(() => this.refreshTimer(), 15 * 1000)
     },
