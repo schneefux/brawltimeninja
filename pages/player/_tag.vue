@@ -654,7 +654,7 @@ export default {
       refreshSecondsLeft: 180,
       installPrompt: undefined,
       tipsPage: 1,
-      tipsPageSize: 2,
+      tipsPageSize: 3,
       hoursSinceDate,
       formatMode,
     }
