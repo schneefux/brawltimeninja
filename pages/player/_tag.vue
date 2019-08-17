@@ -459,6 +459,13 @@
       >
         Load More Tips
       </button>
+      <button
+        v-if="notificationsAllowed"
+        class="ml-2 button button-sm"
+        @click="notifyTips"
+      >
+        Send as Notification
+      </button>
     </div>
 
     <div class="section">
@@ -605,7 +612,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { induceAdsIntoBrawlers, formatMode } from '~/store/index'
+import { induceAdsIntoBrawlers, formatMode, capitalizeWords } from '~/store/index'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 
@@ -656,6 +663,7 @@ export default {
       installPrompt: undefined,
       tipsPage: 1,
       tipsPageSize: 3,
+      notificationsAllowed: false,
       hoursSinceDate,
       formatMode,
     }
@@ -852,6 +860,8 @@ export default {
         e.preventDefault()
         this.installPrompt = e
       })
+
+      this.notificationsAllowed = Notification.permission !== 'denied'
     }
     if (process.static) {
       this.loadLeaderboard()
@@ -906,6 +916,27 @@ export default {
       const choice = await this.installPrompt.userChoice
       this.$ga.event('app', 'prompt', choice.outcome)
       this.installPrompt = undefined
+    },
+    async notifyTips() {
+      if (!(Notification.permission in ['denied', 'granted'])) {
+        await Notification.requestPermission()
+      }
+
+      if (Notification.permission === 'granted') {
+        this.$ga.event('profile', 'send_notification', 'tips')
+        this.notificationsAllowed = true
+
+        const sw = await navigator.serviceWorker.ready
+
+        const tips = this.eventRecommendations.slice(0, this.tipsPage * this.tipsPageSize)
+        sw.showNotification(`Tips for ${this.player.name} by Brawl Time Ninja`, {
+          body: tips.map(tip =>
+            `Play ${capitalizeWords(tip.brawler.name.toLowerCase())} in ${formatMode(tip.event.mode).trim()} - ${tip.event.map}`
+          ).join('\n'),
+        })
+      } else {
+        this.notificationsAllowed = false
+      }
     },
     ...mapMutations({
       dismissInstallBanner: 'dismissInstallBanner',
