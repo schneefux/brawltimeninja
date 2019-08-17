@@ -1,10 +1,7 @@
 <template>
   <div class="py-8 px-6 relative">
     <h1 class="text-4xl md:text-center mt-2 font-semibold">
-      <span class="capitalize">
-        {{ brawlerId }}
-      </span>
-      Meta
+      {{ brawlerName }} Meta
     </h1>
     <p class="md:text-center">
       The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
@@ -12,8 +9,8 @@
     </p>
     <p class="mt-2 mb-6 md:text-center">
       Showing average statistics for
-      <span class="capitalize inline-block text-primary-lighter">
-        {{ brawlerId }}
+      <span class="inline-block text-primary-lighter">
+        {{ brawlerName }}
       </span>.
     </p>
 
@@ -146,15 +143,20 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { metaStatMaps, formatMode, modeToBackgroundId } from '~/store/index'
+import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/store/index'
 
 export default {
   name: 'StarpowerMetaPage',
   components: {
   },
-  asyncData({ params }) {
+  head() {
+    const description = `${this.brawlerName} Brawl Stars stats. Star Power win rate and pick rates for all modes.`
     return {
-      brawlerId: params.brawler,
+      title: `${this.brawlerName} Brawler Meta`,
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   data() {
@@ -193,6 +195,13 @@ export default {
       modeMeta: state => state.modeMeta,
       ads: state => state.adsEnabled,
     }),
+  },
+  asyncData({ params }) {
+    const brawlerId = params.brawler
+    return {
+      brawlerId,
+      brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')),
+    }
   },
   async fetch({ store }) {
     if (!process.static) {
