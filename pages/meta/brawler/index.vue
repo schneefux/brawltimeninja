@@ -58,7 +58,7 @@ export default {
     MetaGrid,
   },
   head() {
-    const description = `BrawlStars Brawler Tier List. Find the best Brawlers. View Win Rates, Pick Rates and Rankings.`
+    const description = `Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates, Pick Rates and Rankings.`
     return {
       title: 'Brawler Meta',
       meta: [

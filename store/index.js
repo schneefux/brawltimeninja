@@ -1,6 +1,10 @@
 import { exception } from 'vue-analytics'
 import payload from './payload.json'
 
+// TODO copied from backend
+const capitalize = str => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
+export const capitalizeWords = str => str.split(' ').map(w => capitalize(w)).join(' ')
+
 export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
   return brawlers.reduce((agg, brawler, index, self) => {
     const lastSlotIndex = Math.floor(index / adFrequency) + 1
