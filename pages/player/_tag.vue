@@ -790,7 +790,7 @@ export default {
             return
           }
 
-          const score = (brawler.trophies + 1) * (rankIndex + 1)
+          const score = (brawler.trophies + 1) * (rankIndex / bestBrawlers.length + 1)
           recommendations.push({
             id: `${brawler.name} ${event.id}`,
             phrase: phrases[Math.round(event.id / 31) % phrases.length],
