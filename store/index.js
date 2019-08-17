@@ -129,7 +129,6 @@ export const state = () => ({
     modes: [],
     heroes: [],
   },
-  playerLoaded: false,
   currentEvents: [],
   currentEventsLoaded: false,
   upcomingEvents: [],
@@ -156,7 +155,7 @@ export const state = () => ({
 
 export const getters = {
   playerRank(state) {
-    if (!state.playerLoaded || !state.leaderboardLoaded) {
+    if (state.player.tag === '' || !state.leaderboardLoaded) {
       return 0
     }
 
@@ -212,17 +211,8 @@ export const mutations = {
   setFeaturedPlayers(state, featuredPlayers) {
     state.featuredPlayers = featuredPlayers
   },
-  setPlayerTag(state, tag) {
-    if (state.player.tag === tag) {
-      return
-    }
-
-    this._vm.$set(state.player, 'tag', tag)
-    state.playerLoaded = false
-  },
   setPlayer(state, player) {
     state.player = player
-    state.playerLoaded = true
   },
   addLastPlayer(state, player) {
     if (state.lastPlayers.some(({ tag }) => player.tag === tag)) {
@@ -305,18 +295,17 @@ export const actions = {
     commit('setFeaturedPlayers', featuredPlayers)
     commit('setBlog', blog)
   },
-  async refreshPlayer({ state, commit }) {
-    const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
-    commit('setPlayer', player)
-  },
-  async loadPlayer({ state, commit }) {
-    if (state.playerLoaded) {
+  async loadPlayer({ state, commit }, playerTag) {
+    if (playerTag === state.player.tag) {
       return
     }
 
+    const player = await this.$axios.$get(`/api/player/${playerTag}`)
+    commit('setPlayer', player)
+  },
+  async refreshPlayer({ state, commit }) {
     const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
     commit('setPlayer', player)
-    commit('addLastPlayer', player)
   },
   async loadCurrentEvents({ state, commit }) {
     if (state.currentEventsLoaded) {

@@ -83,7 +83,7 @@
           Or check one of these profiles:
         </span>
         <span v-if="lastPlayers.length > 0">
-          Recently viewed:
+          Recently searched:
         </span>
       </p>
       <p class="mt-2 mx-auto">
@@ -335,6 +335,7 @@ export default {
     },
     ...mapState({
       ads: state => state.adsEnabled,
+      player: state => state.player,
       tagPattern: state => state.tagPattern,
       lastPlayers: state => state.lastPlayers,
       featuredPlayers: state => state.featuredPlayers,
@@ -417,8 +418,8 @@ export default {
 
       try {
         this.loading = true
-        this.setPlayerTag(this.cleanedTag)
-        await this.loadPlayer()
+        await this.loadPlayer(this.cleanedTag)
+        this.addLastPlayer(this.player)
       } catch (error) {
         if (error.response !== undefined && error.response.status === 404) {
           this.$ga.event('player', 'search', 'error_notfound')
@@ -440,7 +441,7 @@ export default {
       this.$router.push(this.playerRoute)
     },
     ...mapMutations({
-      setPlayerTag: 'setPlayerTag',
+      addLastPlayer: 'addLastPlayer',
     }),
     ...mapActions({
       loadBrawlerMeta: 'loadBrawlerMeta',
