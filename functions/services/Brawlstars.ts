@@ -512,8 +512,8 @@ export default class BrawlstarsService {
             }
           }
         } as Mode,
-        'bossfight': {
-          label: 'Bossfight',
+        'bigGame': {
+          label: 'Big Game',
           icon: 'bossfight_optimized.png',
           background: 'bossfight.jpg',
           stats: {
