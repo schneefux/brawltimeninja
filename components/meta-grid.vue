@@ -40,6 +40,12 @@
         >
           <template v-slot:history>
             <div class="mb-auto text-right">
+              <span
+                v-if="entry.sampleSize < 300"
+                class="align-text-top mr-1 text-sm text-grey-light"
+              >
+                Not enough data
+              </span>
               <span class="font-semibold text-white text-2xl text-shadow">
                 #{{ entry.index }}
               </span>
@@ -106,6 +112,7 @@ export default {
           title,
           brawler,
           link,
+          sampleSize?,
           stats[]
         }
       **/
