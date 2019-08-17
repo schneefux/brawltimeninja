@@ -108,6 +108,7 @@ export default {
           id: brawlerId,
           title: brawler.name,
           brawler: brawlerId,
+          sampleSize: brawler.sampleSize,
           stats: brawler.stats,
         }))
     },
