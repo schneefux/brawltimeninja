@@ -816,8 +816,14 @@ export default class TrackerService {
   public async materialize() {
     await this.knex.transaction(async (txn) => {
       await this.fillDimEvent(txn);
+    });
+    await this.knex.transaction(async (txn) => {
       await this.fillDimSeason(txn);
+    });
+    await this.knex.transaction(async (txn) => {
       await this.fillDimBrawlerStarpower(txn);
+    });
+    await this.knex.transaction(async (txn) => {
       await this.fillAggPlayerBattle(txn);
     });
   }
