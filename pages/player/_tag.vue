@@ -650,7 +650,7 @@ export default {
       hoursSpent: 0,
       error: '',
       battlePage: 1,
-      battlePageSize: 6,
+      battlePageSize: 3,
       refreshSecondsLeft: 180,
       installPrompt: undefined,
       tipsPage: 1,
