@@ -99,7 +99,7 @@
         <div
           v-for="entry in modes"
           :key="entry.mode"
-          class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 card-wrapper mx-auto"
+          class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 card-wrapper mx-auto z-10"
         >
           <div
             class="items-center card bg-center bg-cover h-full"
