@@ -6,4 +6,7 @@ async function main() {
   service.shutdown();
 }
 
-main().catch(console.error);
+main().catch(e => {
+  console.error(e);
+  process.exit();
+});
