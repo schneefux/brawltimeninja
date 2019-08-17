@@ -831,12 +831,10 @@ export default {
       return false
     }
 
-    store.commit('setPlayerTag', tag)
-
     let lastError
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        await store.dispatch('loadPlayer')
+        await store.dispatch('loadPlayer', tag)
         return true
       } catch (error) {
         if (error.response !== undefined && error.response.status === 404) {
