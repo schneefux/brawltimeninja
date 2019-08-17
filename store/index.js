@@ -56,7 +56,7 @@ export const metaStatMaps = {
     trophies: 'Trophies',
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
-    winRate: 'Win Rate',
+    winRate: '3v3 Win Rate',
     rank1Rate: 'SD Win Rate',
     level: 'Avg. Level',
     starRate: 'Star Player',
