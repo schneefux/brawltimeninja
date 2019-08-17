@@ -931,7 +931,7 @@ export default {
         const tips = this.eventRecommendations.slice(0, this.tipsPage * this.tipsPageSize)
         sw.showNotification(`Tips for ${this.player.name} by Brawl Time Ninja`, {
           body: tips.map(tip =>
-            `Play ${capitalizeWords(tip.brawler.name.toLowerCase())} in ${formatMode(tip.event.mode).trim()} - ${tip.event.map}`
+            `Play ${capitalizeWords(tip.brawler.name.toLowerCase())} in ${tip.event.mode} - ${tip.event.map}`
           ).join('\n'),
         })
       } else {
