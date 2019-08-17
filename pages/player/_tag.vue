@@ -315,11 +315,12 @@
                   class="w-4 inline"
                 >
               </span>
-              <div class="mb-6 card-props flex flex-wrap">
+              <div class="mb-6 card-props flex flex-wrap justify-center">
                 <div
                   v-for="(team, index) in battle.teams"
                   :key="index"
-                  class="w-full flex flex-wrap justify-center"
+                  :class="{ 'w-full': team.length > 1 }"
+                  class="flex flex-wrap justify-center"
                 >
                   <div
                     v-for="mate in team"
