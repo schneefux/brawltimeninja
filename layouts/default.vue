@@ -195,10 +195,13 @@ export default {
       if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
       }
+      // TODO try to find the reason why the TWA detection does not work
+      /*
       if (window.document.referrer.includes('xyz.schneefux.brawltimeninja')) {
         // play store allows only 1 ad/page - TWA is detected via referrer
         this.setIsApp()
       }
+      */
     },
     adsAllowed(allowed) {
       if (allowed) {
@@ -209,6 +212,11 @@ export default {
         }
 
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
+
+        if (isPwa) {
+          // TODO detect TWA instead (see above)
+          this.setIsApp()
+        }
 
         this.$ga.enable()
         // set variables for split testing
