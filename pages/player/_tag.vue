@@ -928,7 +928,7 @@ export default {
 
         const sw = await navigator.serviceWorker.ready
 
-        const tips = this.eventRecommendations.slice(0, this.tipsPage * this.tipsPageSize)
+        const tips = this.eventRecommendations
         sw.showNotification(`Tips for ${this.player.name} by Brawl Time Ninja`, {
           body: tips.map(tip =>
             `Play ${capitalizeWords(tip.brawler.name.toLowerCase())} in ${tip.event.mode} - ${tip.event.map}`
