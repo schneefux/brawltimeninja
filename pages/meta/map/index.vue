@@ -135,7 +135,7 @@ export default {
     }
   },
   head() {
-    const description = `BrawlStars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.`
+    const description = 'BrawlStars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
     return {
       title: 'Map Meta',
       meta: [

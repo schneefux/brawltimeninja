@@ -11,7 +11,7 @@ export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
     if (index === self.length - 1 && lastSlotIndex < adSlots.length) {
       const ad = {
         adSlot: adSlots[lastSlotIndex],
-        id: `ad-last`,
+        id: 'ad-last',
       }
       return agg.concat(brawler, ad)
     }
