@@ -151,6 +151,7 @@ export const state = () => ({
   totalBrawlers: 27,
   bsuArticles: [],
   bsuArticlesLoaded: false,
+  isApp: false,
 })
 
 export const getters = {
@@ -278,6 +279,9 @@ export const mutations = {
   setBsuArticles(state, articles) {
     state.bsuArticles = articles
     state.bsuArticlesLoaded = true
+  },
+  setIsApp(state) {
+    state.isApp = true
   },
 }
 

@@ -21,7 +21,7 @@
 
     <template v-for="entry in entriesAndAds">
       <div
-        v-if="ads || entry.adSlot === undefined"
+        v-if="(ads && !isApp) || entry.adSlot === undefined"
         :key="entry.id"
         class="card-wrapper w-full md:flex-1"
       >
@@ -183,6 +183,7 @@ export default {
     },
     ...mapState({
       ads: state => state.adsEnabled,
+      isApp: state => state.isApp,
     }),
   },
   methods: {

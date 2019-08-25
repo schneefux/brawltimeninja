@@ -54,7 +54,7 @@
       </table>
 
       <adsense
-        v-if="ads"
+        v-if="ads && !isApp"
         root-class="mt-4"
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
@@ -78,6 +78,7 @@ export default {
     ...mapState({
       leaderboard: state => state.leaderboard,
       ads: state => state.adsEnabled,
+      isApp: state => state.isApp,
     }),
   },
   async fetch({ store }) {
