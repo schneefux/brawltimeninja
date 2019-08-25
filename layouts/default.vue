@@ -190,18 +190,11 @@ export default {
     }),
   },
   watch: {
+    // called after vuex-persist has loaded the client's data
     version(version) {
-      // called after vuex-persist has loaded the client's data
       if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
       }
-      // TODO try to find the reason why the TWA detection does not work
-      /*
-      if (window.document.referrer.includes('xyz.schneefux.brawltimeninja')) {
-        // play store allows only 1 ad/page - TWA is detected via referrer
-        this.setIsApp()
-      }
-      */
     },
     adsAllowed(allowed) {
       if (allowed) {
@@ -211,10 +204,11 @@ export default {
           this.enableAds()
         }
 
+        // play store allows only 1 ad/page - TWA is detected via referrer
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
+        const isTwa = document.referrer.startsWith('android-app')
 
-        if (isPwa) {
-          // TODO detect TWA instead (see above)
+        if (isPwa || isTwa) {
           this.setIsApp()
         }
 
@@ -223,6 +217,7 @@ export default {
         this.$ga.set('dimension1', process.env.branch)
         this.$ga.set('dimension2', !adsBlocked)
         this.$ga.set('dimension3', isPwa)
+        this.$ga.set('dimension4', isTwa)
       }
     },
   },
