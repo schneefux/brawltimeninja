@@ -38,7 +38,7 @@
       />
 
       <adsense
-        v-if="ads"
+        v-if="ads && !isApp"
         ins-class="h-32 mt-4 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="7838173054"
@@ -90,6 +90,7 @@ export default {
     ...mapState({
       meta: state => state.brawlerMeta,
       ads: state => state.adsEnabled,
+      isApp: state => state.isApp,
     }),
   },
   async fetch({ store }) {

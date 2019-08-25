@@ -79,7 +79,7 @@
         </details>
 
         <adsense
-          v-if="ads"
+          v-if="ads && !isApp"
           ins-class="h-24 mt-6 text-center"
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3577381889"
@@ -163,6 +163,7 @@ export default {
       upcomingEvents: state => state.upcomingEvents,
       mapMeta: state => state.mapMeta,
       ads: state => state.adsEnabled,
+      isApp: state => state.isApp,
     }),
   },
   async fetch({ store }) {

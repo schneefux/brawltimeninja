@@ -221,7 +221,7 @@
         </div>
 
         <adsense
-          v-if="ads"
+          v-if="ads && !isApp"
           root-class="w-full md:w-1/2 mt-1 mx-auto"
           ins-class="mx-4 h-24"
           data-ad-client="ca-pub-6856963757796636"
@@ -400,7 +400,7 @@
 
     <div class="section">
       <adsense
-        v-if="ads"
+        v-if="ads && !isApp"
         root-class="w-full mt-6 mx-auto"
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
@@ -472,7 +472,7 @@
       <div class="flex flex-wrap justify-between">
         <template v-for="brawler in brawlersAndAds">
           <div
-            v-if="ads || brawler.adSlot === undefined"
+            v-if="(ads && !isApp) || brawler.adSlot === undefined"
             :key="brawler.id"
             class="card-wrapper w-full md:flex-1"
           >
@@ -819,6 +819,7 @@ export default {
       totalBrawlers: state => state.totalBrawlers,
       currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
+      isApp: state => state.isApp,
     }),
     ...mapGetters({
       rank: 'playerRank',

@@ -132,7 +132,7 @@
     </div>
 
     <adsense
-      v-if="ads"
+      v-if="ads && !isApp"
       root-class="w-full mt-6 mx-auto"
       ins-class="h-32"
       data-ad-client="ca-pub-6856963757796636"
@@ -147,8 +147,6 @@ import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~
 
 export default {
   name: 'StarpowerMetaPage',
-  components: {
-  },
   head() {
     const description = `${this.brawlerName} Brawl Stars stats. Star Power win rate and pick rates for all modes.`
     return {
@@ -194,6 +192,7 @@ export default {
       starpowerMeta: state => state.starpowerMeta,
       modeMeta: state => state.modeMeta,
       ads: state => state.adsEnabled,
+      isApp: state => state.isApp,
     }),
   },
   asyncData({ params }) {

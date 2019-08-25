@@ -191,8 +191,13 @@ export default {
   },
   watch: {
     version(version) {
+      // called after vuex-persist has loaded the client's data
       if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
+      }
+      if (document.referrer.startsWith('android-app')) {
+        // play store allows only 1 ad/page - TWA is detected via referrer
+        this.setIsApp()
       }
     },
     adsAllowed(allowed) {
@@ -278,6 +283,7 @@ export default {
       allowCookies: 'allowCookies',
       allowAds: 'allowAds',
       enableAds: 'enableAds',
+      setIsApp: 'setIsApp',
     })
   },
 }
