@@ -195,7 +195,7 @@ export default {
       if (version !== undefined) {
         this.cookieBannerOpen = !this.cookiesAllowed
       }
-      if (document.referrer.startsWith('android-app')) {
+      if (window.document.referrer.includes('xyz.schneefux.brawltimeninja')) {
         // play store allows only 1 ad/page - TWA is detected via referrer
         this.setIsApp()
       }
