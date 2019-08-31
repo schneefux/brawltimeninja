@@ -15,7 +15,7 @@
           <button
             v-if="installPrompt !== undefined"
             class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
-            @click="install"
+            @click="clickInstall"
           >
             <span class="mr-1">📥</span>
             Install
@@ -40,7 +40,7 @@
               <button
                 v-if="installPrompt !== undefined"
                 class="nav-link"
-                @click="install"
+                @click="clickInstall"
               >
                 <span class="mr-1">📥</span>
                 Install App
@@ -156,14 +156,13 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   data() {
     return {
       cookieBannerOpen: false,
       showCookieOptions: false,
-      installPrompt: undefined,
       lastScrollY: 0,
       lastScrollUpY: 0,
       menuButtonVisible: false,
@@ -187,6 +186,7 @@ export default {
       version: state => state.version,
       adsAllowed: state => state.adsAllowed,
       cookiesAllowed: state => state.cookiesAllowed,
+      installPrompt: state => state.installPrompt,
     }),
   },
   watch: {
@@ -226,7 +226,7 @@ export default {
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
-        this.installPrompt = e
+        this.setInstallPrompt(e)
       })
     }
   },
@@ -275,18 +275,20 @@ export default {
     installed() {
       this.$ga.event('app', 'install')
     },
-    async install() {
+    async clickInstall() {
       this.$ga.event('app', 'click', 'install_header')
-      this.installPrompt.prompt()
-      const choice = await this.installPrompt.userChoice
-      this.$ga.event('app', 'prompt', choice.outcome)
-      this.installPrompt = undefined
+      await this.install()
     },
     ...mapMutations({
       allowCookies: 'allowCookies',
       allowAds: 'allowAds',
       enableAds: 'enableAds',
       setIsApp: 'setIsApp',
+      setInstallPrompt: 'setInstallPrompt',
+      clearInstallPrompt: 'clearInstallPrompt',
+    }),
+    ...mapActions({
+      install: 'install',
     })
   },
 }

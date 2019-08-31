@@ -174,7 +174,7 @@
         <div class="mt-3">
           <button
             class="button button-md"
-            @click="install"
+            @click="clickInstall"
           >
             <span class="mr-1">📥</span>
             Install
@@ -660,7 +660,6 @@ export default {
       battlePage: 1,
       battlePageSize: 3,
       refreshSecondsLeft: 180,
-      installPrompt: undefined,
       tipsPage: 1,
       tipsPageSize: 3,
       notificationsAllowed: false,
@@ -820,6 +819,7 @@ export default {
       currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
       isApp: state => state.isApp,
+      installPrompt: state => state.installPrompt,
     }),
     ...mapGetters({
       rank: 'playerRank',
@@ -857,11 +857,6 @@ export default {
   },
   created() {
     if (process.client) {
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault()
-        this.installPrompt = e
-      })
-
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
     if (process.static) {
@@ -908,15 +903,12 @@ export default {
     },
     dismissInstall() {
       this.$ga.event('app', 'dismiss', 'install_banner')
-      this.installPrompt = undefined
+      this.clearInstallPrompt()
       this.dismissInstallBanner()
     },
-    async install() {
+    async clickInstall() {
       this.$ga.event('app', 'click', 'install_banner')
-      this.installPrompt.prompt()
-      const choice = await this.installPrompt.userChoice
-      this.$ga.event('app', 'prompt', choice.outcome)
-      this.installPrompt = undefined
+      await this.install()
     },
     async notifyTips() {
       if (!(Notification.permission in ['denied', 'granted'])) {
@@ -941,11 +933,13 @@ export default {
     },
     ...mapMutations({
       dismissInstallBanner: 'dismissInstallBanner',
+      clearInstallPrompt: 'clearInstallPrompt',
     }),
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
       loadLeaderboard: 'loadLeaderboard',
       loadCurrentMeta: 'loadCurrentMeta',
+      install: 'install',
     }),
   },
 }
