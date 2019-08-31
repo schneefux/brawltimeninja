@@ -49,15 +49,8 @@
       <meta-grid
         :entries="brawlers"
         :ad-slots="adSlots"
-        :ad-frequency="7"
+        :ad-frequency="13"
         ga-category="map_meta"
-      />
-
-      <adsense
-        v-if="ads && !isApp"
-        ins-class="h-32 mt-4 text-center"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3536131238"
       />
     </div>
   </div>
