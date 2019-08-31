@@ -1,4 +1,4 @@
-import { exception } from 'vue-analytics'
+import { exception, event } from 'vue-analytics'
 import payload from './payload.json'
 
 // TODO copied from backend
@@ -152,6 +152,7 @@ export const state = () => ({
   bsuArticles: [],
   bsuArticlesLoaded: false,
   isApp: false,
+  installPrompt: undefined,
 })
 
 export const getters = {
@@ -282,6 +283,12 @@ export const mutations = {
   },
   setIsApp(state) {
     state.isApp = true
+  },
+  setInstallPrompt(state, prompt) {
+    state.installPrompt = prompt
+  },
+  clearInstallPrompt(state) {
+    state.installPrompt = undefined
   },
 }
 
@@ -442,5 +449,11 @@ export const actions = {
       exception('cannot get bsu articles: ' + error.message)
       console.error('cannot get bsu articles:', error.message)
     }
+  },
+  async install({ state, commit }) {
+    state.installPrompt.prompt()
+    const choice = await state.installPrompt.userChoice
+    event('app', 'prompt', choice.outcome)
+    commit('clearInstallPrompt')
   },
 }
