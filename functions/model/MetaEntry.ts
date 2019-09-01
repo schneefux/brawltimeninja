@@ -28,6 +28,17 @@ export interface MetaModeEntry {
   starRate: number;
 }
 
+export interface PlayerMetaModeEntry {
+  mode: string;
+  picks: number;
+  winRate: number;
+  duration: number;
+  rank1Rate: number;
+  rank: number;
+  starRate: number;
+  trophyChange: number;
+}
+
 export interface MetaMapEntry {
   id: number;
   mode: string;

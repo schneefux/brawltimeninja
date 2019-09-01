@@ -28,6 +28,11 @@ router.get('/tracker/history/:tag', async (ctx, next) => {
   await next();
 });
 
+router.get('/tracker/winrates/:tag', async (ctx, next) => {
+  ctx.body = await service.getPlayerWinrates(ctx.params.tag);
+  await next();
+});
+
 router.get('/tracker/meta/brawler', async (ctx, next) => {
   ctx.body = await service.getBrawlerMeta();
   await next();
