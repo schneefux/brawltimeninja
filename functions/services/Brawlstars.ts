@@ -495,9 +495,9 @@ export default class BrawlstarsService {
         ...('gemGrab' in statsByMode ? {
           'gemGrab': {
             label: 'Gem Grab',
-          icon: 'gemgrab_optimized.png',
-          background: 'gemgrab.jpg',
-          stats: {
+            icon: 'gemgrab_optimized.png',
+            background: 'gemgrab.jpg',
+            stats: {
               winRate: {
                 label: 'Recent Win Rate',
                 value: `${Math.round(statsByMode.gemGrab.winRate * 100)}%`,
@@ -523,16 +523,16 @@ export default class BrawlstarsService {
               value: player.duoVictories,
             },
             ...('soloShowdown' in statsByMode ? {
-              winRate: {
+              soloWinRate: {
                 label: 'Recent Solo Rank 1 Rate',
                 value: `${Math.round(statsByMode.soloShowdown.rank1Rate * 100)}%`,
-            }
+              }
             } : {}),
             ...('duoShowdown' in statsByMode ? {
-              winRate: {
+              duoWinRate: {
                 label: 'Recent Duo Rank 1 Rate',
                 value: `${Math.round(statsByMode.duoShowdown.rank1Rate * 100)}%`,
-          }
+              }
             } : {})
           }
         } as Mode,
