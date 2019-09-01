@@ -2,7 +2,8 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry } from '~/model/MetaEntry';
+import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
+import { PlayerWinRates } from '~/model/PlayerWinRates';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -233,6 +234,38 @@ export default class TrackerService {
     )
 
     return { playerHistory, brawlerHistory } as History;
+  }
+
+  public async getPlayerWinrates(tag: string) {
+    const statsByMode = await this.knex.raw(`
+        select
+          battle_event_mode as mode,
+          count(*) as picks,
+          sum(result = 'victory') / sum(result is not null) as win_rate,
+          sum(duration) / sum(duration is not null) as duration,
+          sum(rank = 1) / sum(rank is not null) as rank1_rate,
+          sum(rank) / sum(rank is not null) as rank,
+          sum(is_starplayer) / sum(is_starplayer is not null) as star_rate,
+          sum(trophy_change) / sum(trophy_change is not null) as trophy_change
+        from player_battle
+        where player_tag = ?
+        group by mode
+      `, tag).then((response) => response[0].map(
+        (entry: any) => (<PlayerMetaModeEntry> {
+          mode: entry.mode,
+          picks: parseInt(entry.picks),
+          winRate: parseFloat(entry.win_rate),
+          duration: parseFloat(entry.duration),
+          rank1Rate: parseFloat(entry.rank1_rate),
+          rank: parseFloat(entry.rank),
+          starRate: parseFloat(entry.star_rate),
+          trophyChange: parseFloat(entry.trophy_change),
+        })
+      ));
+
+    return <PlayerWinRates> {
+      mode: statsByMode,
+    }
   }
 
   public async getBrawlerMeta() {

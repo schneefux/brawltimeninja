@@ -163,12 +163,12 @@
     <div class="section">
       <div class="flex flex-wrap">
         <div
-          v-for="(mode, modeName) in player.modes"
-          :key="modeName"
+          v-for="mode in [...Object.values(player.modes)].slice(0, showAllModes ? Infinity : 3)"
+          :key="mode.label"
           class="w-full md:w-1/2 card-wrapper mx-auto"
         >
           <div
-            class="card bg-center bg-cover flex flex-wrap justify-between"
+            class="card bg-center bg-cover flex flex-wrap justify-between h-full"
             :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
           >
             <div class="card-content">
@@ -185,6 +185,7 @@
               </p>
             </div>
             <img
+              v-if="mode.icon"
               :src="require(`~/assets/images/mode/icon/${mode.icon}`)"
               class="h-12 self-center mr-6 my-4"
             >
@@ -199,7 +200,7 @@
           data-ad-slot="3933066188"
         />
         <div
-          v-else
+          v-if="!ads"
           class="w-full md:w-1/2 mt-3 mx-auto text-center leading-tight"
         >
           <div class="flex flex-wrap justify-center items-center md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
@@ -212,6 +213,18 @@
               and help me unlock Crow?
             </p>
           </div>
+        </div>
+
+        <div
+          v-if="!showAllModes"
+          class="mt-2 w-full text-right"
+        >
+          <button
+            class="button button-md"
+            @click="showAllModes = true; $ga.event('gamemodes', 'show_all')"
+          >
+            Load all Modes
+          </button>
         </div>
       </div>
     </div>
@@ -393,7 +406,7 @@
           class="button button-md"
           @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
         >
-        Load More Battles
+          Load More Battles
         </button>
       </div>
     </div>
@@ -652,6 +665,7 @@ export default {
       tipsPage: 1,
       tipsPageSize: 3,
       notificationsAllowed: false,
+      showAllModes: false,
       hoursSinceDate,
       formatMode,
     }

@@ -3,7 +3,8 @@ import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry } from '~/model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
+import { PlayerWinRates } from '~/model/PlayerWinRates';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
@@ -408,12 +409,19 @@ export default class BrawlstarsService {
     }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
 
     let history: History = { playerHistory: [], brawlerHistory: [] };
+    let winRates: PlayerWinRates = { mode: [] };
     if (trackerUrl != '') {
       try {
         console.time('call tracker service');
         await post<null>(trackerUrl + '/track', { player, battleLog }, 1000);
         history = await request<History>(
           `/history/${tag}`,
+          trackerUrl,
+          {},
+          {}
+        );
+        winRates = await request<PlayerWinRates>(
+          `/winrates/${tag}`,
           trackerUrl,
           {},
           {}
@@ -468,6 +476,11 @@ export default class BrawlstarsService {
       },
     } as { [id: string]: PlayerStatistic };
 
+    const statsByMode = winRates.mode.reduce((statsByMode, entry) => ({
+      ...statsByMode,
+      [entry.mode]: entry,
+    }), <{ [mode: string]: PlayerMetaModeEntry }>{});
+
     const data = {
       tag: player.tag,
       name: player.name,
@@ -479,37 +492,127 @@ export default class BrawlstarsService {
       heroStats,
       battles,
       modes: {
+        ...('gemGrab' in statsByMode ? {
+          'gemGrab': {
+            label: 'Gem Grab',
+          icon: 'gemgrab_optimized.png',
+          background: 'gemgrab.jpg',
+          stats: {
+              winRate: {
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.gemGrab.winRate * 100)}%`,
+              },
+              starPlayerRate: {
+                label: 'Recent Star Player Rate',
+                value: `${Math.round(statsByMode.gemGrab.starRate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
+        'showdown': {
+          label: 'Showdown',
+          icon: 'showdown_optimized.png',
+          background: 'showdown.jpg',
+          stats: {
+            victories: {
+              label: 'Solo Victories',
+              value: player.soloVictories,
+            },
+            duoVictories: {
+              label: 'Duo Victories',
+              value: player.duoVictories,
+            },
+            ...('soloShowdown' in statsByMode ? {
+              winRate: {
+                label: 'Recent Solo Rank 1 Rate',
+                value: `${Math.round(statsByMode.soloShowdown.rank1Rate * 100)}%`,
+            }
+            } : {}),
+            ...('duoShowdown' in statsByMode ? {
+              winRate: {
+                label: 'Recent Duo Rank 1 Rate',
+                value: `${Math.round(statsByMode.duoShowdown.rank1Rate * 100)}%`,
+          }
+            } : {})
+          }
+        } as Mode,
+        ...('brawlBall' in statsByMode ? {
+          'brawlBall': {
+            label: 'Brawl Ball',
+            icon: 'brawlball_optimized.png',
+            background: 'brawlball.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.brawlBall.winRate * 100)}%`,
+              },
+              starPlayerRate: {
+                label: 'Recent Star Player Rate',
+                value: `${Math.round(statsByMode.brawlBall.starRate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
+        ...('bounty' in statsByMode ? {
+          'bounty': {
+            label: 'Bounty',
+            icon: 'bounty_optimized.png',
+            background: 'bounty.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.bounty.winRate * 100)}%`,
+              },
+              starPlayerRate: {
+                label: 'Recent Star Player Rate',
+                value: `${Math.round(statsByMode.bounty.starRate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
+        ...('heist' in statsByMode ? {
+          'heist': {
+            label: 'Heist',
+            icon: 'heist_optimized.png',
+            background: 'heist.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.heist.winRate * 100)}%`,
+              },
+              starPlayerRate: {
+                label: 'Recent Star Player Rate',
+                value: `${Math.round(statsByMode.heist.starRate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
+        ...('siege' in statsByMode ? {
+          'siege': {
+            label: 'Siege',
+            icon: '',
+            background: 'siege.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.siege.winRate * 100)}%`,
+              },
+              starPlayerRate: {
+                label: 'Recent Star Player Rate',
+                value: `${Math.round(statsByMode.siege.starRate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
         '3v3': {
-          label: '3v3',
+          label: 'All 3v3',
           icon: 'gemgrab_optimized.png',
           background: 'gemgrab.jpg',
           stats: {
             victories: {
               label: 'Victories',
-              value: player["3vs3Victories"],
-            }
-          }
-        } as Mode,
-        'soloShowdown': {
-          label: 'Solo Showdown',
-          icon: 'showdown_optimized.png',
-          background: 'showdown.jpg',
-          stats: {
-            victories: {
-              label: 'Victories',
-              value: player.soloVictories,
-            }
-          }
-        } as Mode,
-        'duoShowdown': {
-          label: 'Duo Showdown',
-          icon: 'duoshowdown_optimized.png',
-          background: 'showdown.jpg',
-          stats: {
-            victories: {
-              label: 'Victories',
-              value: player.duoVictories,
-            }
+              value: player['3vs3Victories'],
+            },
           }
         } as Mode,
         'bigGame': {
