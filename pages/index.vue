@@ -206,7 +206,7 @@
     </div>
 
     <div
-      v-if="bsuArticles.length > 0"
+      v-if="bsuArticles.length > 0 && !isApp"
       class="home-section container"
     >
       <div class="home-section-heading-container">
@@ -341,6 +341,7 @@ export default {
       featuredPlayers: state => state.featuredPlayers,
       currentEvents: state => state.currentEvents,
       bsuArticles: state => state.bsuArticles,
+      isApp: state => state.isApp,
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
