@@ -206,7 +206,7 @@
     </div>
 
     <div
-      v-if="currentEvents.length > 0"
+      v-if="bsuArticles.length > 0"
       class="home-section container"
     >
       <div class="home-section-heading-container">
