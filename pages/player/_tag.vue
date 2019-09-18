@@ -268,7 +268,10 @@
       />
     </div>
 
-    <div class="section-heading flex flex-wrap items-center">
+    <div
+      v-if="player.battles.length > 0"
+      class="section-heading flex flex-wrap items-center"
+    >
       <h2 class="text-2xl font-semibold">
         Latest Battles
       </h2>
@@ -286,7 +289,10 @@
       </div>
     </div>
 
-    <div class="section">
+    <div
+      v-if="player.battles.length > 0"
+      class="section"
+    >
       <div class="flex flex-wrap">
         <div
           v-for="battle in player.battles.slice(0, battlePage * battlePageSize)"
@@ -411,7 +417,10 @@
       </div>
     </div>
 
-    <div class="section">
+    <div
+      v-if="player.battles.length > 0"
+      class="section"
+    >
       <adsense
         v-if="ads && !isApp"
         root-class="w-full mt-6 mx-auto"
