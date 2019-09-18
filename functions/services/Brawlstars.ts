@@ -358,12 +358,15 @@ export default class BrawlstarsService {
     // brawltime assumes no hash
     player.tag = player.tag.replace(/^#/, '');
 
+    const battleLog = { items: [], paging: {} } as BattleLog;
+    /*
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       this.apiOfficial,
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial }
     );
+    */
 
     const battles = battleLog.items.map((battle) => {
       const transformPlayer = (player: BattlePlayer) => ({
