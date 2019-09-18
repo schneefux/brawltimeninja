@@ -21,9 +21,6 @@ export default class TrackerService {
   public async store(entry: { player: Player, battleLog: BattleLog }) {
     const player = entry.player;
     const battleLog = entry.battleLog.items;
-    if (battleLog.length == 0) {
-      console.error('battle log is empty, aborting!!!', player.tag);
-    }
 
     /** Parse broken API time format */
     const parseTime = (time: string) => new Date(Date.parse(time));
@@ -35,8 +32,16 @@ export default class TrackerService {
 
     // get timestamp of last battle
     battleLog.sort((b1, b2) => parseApiTime(b2.battleTime).valueOf() - parseApiTime(b1.battleTime).valueOf());
-    const lastBattle = battleLog[0];
-    const lastBattleTime = parseApiTime(lastBattle.battleTime);
+    let playerRecordTime: Date;
+
+    if (battleLog.length > 0) {
+      const lastBattle = battleLog[0];
+      const lastBattleTime = parseApiTime(lastBattle.battleTime);
+      playerRecordTime = lastBattleTime;
+    } else {
+      playerRecordTime = new Date()
+      console.error('battle log is empty!', player.tag);
+    }
 
     // insert records for progress graphs
     await this.knex.transaction(async (trx) => {
@@ -50,9 +55,9 @@ export default class TrackerService {
       const lastPlayerTime = lastPlayerRecord.length == 0 ? new Date(0) : parseTime(lastPlayerRecord[0].timestamp);
 
       // insert a player record that has the timestamp of the last battle played
-      if (lastBattleTime > lastPlayerTime) {
+      if (playerRecordTime > lastPlayerTime) {
         const lastInsert = await trx('player').insert({
-          timestamp: lastBattleTime,
+          timestamp: playerRecordTime,
           name: player.name,
           tag: player.tag,
           club_name: player.club === null ? null : player.club.name,
@@ -68,7 +73,7 @@ export default class TrackerService {
 
         await Promise.all(player.brawlers.map((brawler) =>
           trx('player_brawler').insert({
-            timestamp: lastBattleTime,
+            timestamp: playerRecordTime,
             player_id: playerId,
             name: brawler.name,
             player_tag: player.tag,
