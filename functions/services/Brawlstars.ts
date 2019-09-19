@@ -604,6 +604,32 @@ export default class BrawlstarsService {
             }
           } as Mode
         } : {}),
+        ...('loneStar' in statsByMode ? {
+          'loneStar': {
+            label: 'Lone Star',
+            icon: 'lonestar_optimized.png',
+            background: 'lonestar.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Rank 1 Rate',
+                value: `${Math.round(statsByMode.loneStar.rank1Rate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
+        ...('takedown' in statsByMode ? {
+          'takedown': {
+            label: 'Takedown',
+            icon: 'takedown_optimized.png',
+            background: 'takedown.jpg',
+            stats: {
+              winRate: {
+                label: 'Recent Rank 1 Rate',
+                value: `${Math.round(statsByMode.takedown.rank1Rate * 100)}%`,
+              },
+            }
+          } as Mode
+        } : {}),
         '3v3': {
           label: 'All 3v3',
           icon: 'gemgrab_optimized.png',
