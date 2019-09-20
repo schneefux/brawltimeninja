@@ -13,7 +13,7 @@
         </nuxt-link>
         <div class="md:hidden float-right">
           <button
-            v-if="installPrompt !== undefined"
+            v-if="isInstallable"
             class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
             @click="clickInstall"
           >
@@ -38,7 +38,7 @@
           <div class="pt-3 pb-3 md:py-0 md:my-0">
             <div class="hidden md:inline-block">
               <button
-                v-if="installPrompt !== undefined"
+                v-if="isInstallable"
                 class="nav-link"
                 @click="clickInstall"
               >
@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -181,12 +181,15 @@ export default {
         ? require('~/assets/images/background/blue_desktop.jpg')
         : require('~/assets/images/background/blue_mobile.jpg')
     },
+    ...mapGetters({
+      isInstallable: 'isInstallable',
+    }),
     ...mapState({
       blog: state => state.blog,
       version: state => state.version,
       adsAllowed: state => state.adsAllowed,
       cookiesAllowed: state => state.cookiesAllowed,
-      installPrompt: state => state.installPrompt,
+      isApp: state => state.isApp,
     }),
   },
   watch: {

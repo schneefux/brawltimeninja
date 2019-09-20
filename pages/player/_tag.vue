@@ -230,7 +230,7 @@
     </div>
 
     <div
-      v-if="installPrompt !== undefined && !installBannerDismissed"
+      v-if="isInstallable && !installBannerDismissed"
       class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight"
     >
       <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
@@ -828,11 +828,11 @@ export default {
       currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
       isApp: state => state.isApp,
-      installPrompt: state => state.installPrompt,
     }),
     ...mapGetters({
       rank: 'playerRank',
       bestBrawlersByMap: 'bestBrawlersByMap',
+      isInstallable: 'isInstallable',
     }),
   },
   async fetch({ store, params }) {

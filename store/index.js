@@ -204,6 +204,10 @@ export const getters = {
           .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
       }), {})
   },
+  isInstallable(state) {
+    const isAndroid = process.client && /android/i.test(navigator.userAgent)
+    return state.installPrompt !== undefined || (!state.isApp && isAndroid)
+  },
 }
 
 export const mutations = {
@@ -451,9 +455,13 @@ export const actions = {
     }
   },
   async install({ state, commit }) {
-    state.installPrompt.prompt()
-    const choice = await state.installPrompt.userChoice
-    event('app', 'prompt', choice.outcome)
-    commit('clearInstallPrompt')
+    if (this.installPrompt === undefined) {
+      window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja', '_blank')
+    } else {
+      state.installPrompt.prompt()
+      const choice = await state.installPrompt.userChoice
+      event('app', 'prompt', choice.outcome)
+      commit('clearInstallPrompt')
+    }
   },
 }
