@@ -34,7 +34,7 @@
         ref="menu"
         class="w-full md:w-auto relative z-0"
       >
-        <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap overflow-scroll-gradient md:overflow-scroll-no-gradient">
+        <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap">
           <div class="pt-3 pb-3 md:py-0 md:my-0">
             <div class="hidden md:inline-block">
               <button
@@ -300,19 +300,6 @@ export default {
 <style>
 .bg-top-y {
   background-position-y: top;
-}
-
-.overflow-scroll-gradient::after {
-  @apply absolute right-0 top-0 w-12 h-8 mt-1 pointer-events-none;
-  content: '';
-  background: linear-gradient(to right, transparent, theme('colors.primary-dark'));
-}
-
-@screen md {
-  .md\:overflow-scroll-no-gradient::after {
-    content: '';
-    background: none;
-  }
 }
 
 .nav-link {
