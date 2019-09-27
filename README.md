@@ -39,7 +39,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 * `for f in assets/images/mode/background/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -resize x256 "${f%.png}.jpg"; done`
 * `for f in assets/images/mode/icon/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -resize x96 "${f%.png}_optimized.png"; done`
 * `for f in assets/images/blog/guides/*.jpg; do magick.exe "$f" -strip -resize 800x "${f%.jpg}_small.jpg"; done`
-* `for f in assets/images/bs-assets/map_images/*.png; do magick.exe "$f" -strip -resize x384 -background white "${f%.png}_small.jpg"; done; mv assets/images/bs-assets/map_images/*_small.jpg assets/images/maps/`
+* `for f in assets/images/bs-assets/map_images/*.png; do magick.exe "$f" -strip -resize x384 -background white "${f%.png}_small.jpg"; done; mv assets/images/bs-assets/map_images/*_small.jpg assets/images/map/`
 
 ## Assets
 
