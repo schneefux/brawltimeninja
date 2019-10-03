@@ -363,7 +363,10 @@ export default class BrawlstarsService {
       this.apiOfficial,
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial }
-    );
+    ).catch(() => <BattleLog>({
+      items: [],
+      paging: [],
+    }));
 
     const battles = battleLog.items.map((battle) => {
       const transformPlayer = (player: BattlePlayer) => ({
