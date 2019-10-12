@@ -21,6 +21,6 @@ app.use(router.routes());
 
 const port = parseInt(process.env.PORT || '') || 3001;
 
-app.listen(port, 'localhost', () => {
+app.listen(port, () => {
   console.log(`listening on port ${port}`)
 });

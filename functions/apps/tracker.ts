@@ -10,6 +10,6 @@ app.use(trackRoutes);
 
 const port = parseInt(process.env.PORT || '') || 3002;
 
-app.listen(port, 'localhost', () => {
+app.listen(port, () => {
   console.log(`listening on port ${port}`)
 });
