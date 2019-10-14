@@ -13,7 +13,7 @@
         </nuxt-link>
         <div class="md:hidden float-right">
           <button
-            v-if="isInstallable"
+            v-show="isInstallable"
             class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
             @click="clickInstall"
           >
@@ -38,7 +38,7 @@
           <div class="pt-3 pb-3 md:py-0 md:my-0">
             <div class="hidden md:inline-block">
               <button
-                v-if="isInstallable"
+                v-show="isInstallable"
                 class="nav-link"
                 @click="clickInstall"
               >
