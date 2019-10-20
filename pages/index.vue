@@ -285,8 +285,7 @@ export default {
   },
   head() {
     return {
-      titleTemplate: null,
-      title: 'Brawl Time Ninja',
+      title: 'Brawl Stars Statistics',
     }
   },
   data() {
