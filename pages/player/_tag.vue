@@ -311,12 +311,11 @@
                 {{ battle.result }}
               </span>
               <span class="text-primary-lightest absolute right-0 bottom-0 text-right font-semibold">
-                <!-- TODO temporary fix for crooked timestamps -->
-                <template v-if="hoursSinceDate(battle.timestamp) - 9 == 0">
+                <template v-if="hoursSinceDate(battle.timestamp) == 0">
                   just now
                 </template>
                 <template v-else>
-                  {{ hoursSinceDate(battle.timestamp) - 9 }}h ago
+                  {{ hoursSinceDate(battle.timestamp) }}h ago
                 </template>
               </span>
               <span
