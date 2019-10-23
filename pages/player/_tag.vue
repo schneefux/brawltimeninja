@@ -210,7 +210,7 @@
             <p>
               Support me
               <a class="link" href="https://paypal.me/schneefux">on PayPal</a>
-              and help me unlock Crow?
+              and help me unlock Sandy?
             </p>
           </div>
         </div>
