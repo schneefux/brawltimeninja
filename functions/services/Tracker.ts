@@ -25,9 +25,7 @@ export default class TrackerService {
     /** Parse broken API time format */
     const parseTime = (time: string) => new Date(Date.parse(time));
     const parseApiTime = (time: string) => {
-      const t = parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
-      t.setHours(t.getHours() + 8);
-      return t;
+      return parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
     };
 
     // get timestamp of last battle
