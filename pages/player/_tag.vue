@@ -644,7 +644,7 @@ function zip(arr1, arr2) {
 function hoursSinceDate(date) {
   const then = Date.parse(date)
   const now = (new Date()).getTime()
-  return Math.ceil((now - then) / 1000 / 3600)
+  return Math.floor((now - then) / 1000 / 3600)
 }
 
 export default {
