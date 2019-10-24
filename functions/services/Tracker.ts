@@ -568,8 +568,6 @@ export default class TrackerService {
 
           table.string('mode');
           table.string('map');
-
-          table.unique(['mode', 'map']);
         });
         console.log('created event dimension');
 
