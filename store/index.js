@@ -456,10 +456,9 @@ export const actions = {
   },
   async install({ state, commit }) {
     const pwaSupported = state.installPrompt !== undefined
-    const installTwa = !pwaSupported || Math.random() < 0.5
-    const medium = pwaSupported ? 'app' : 'fallback'
-    if (installTwa) {
-      const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3D' + medium
+    if (!pwaSupported) {
+      const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
+      event('app', 'redirect_store', 'fallback')
       window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
     } else {
       state.installPrompt.prompt()
