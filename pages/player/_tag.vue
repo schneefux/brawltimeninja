@@ -930,11 +930,20 @@ export default {
 
         const sw = await navigator.serviceWorker.ready
 
-        const tips = this.eventRecommendations
+        const eventDescription = event => event.mode + ' - ' + event.map
+        const N = 5
+        const topNByEvent = this.eventRecommendations
+          .reduce((topNByEvent, recommendation) => ({
+            ...topNByEvent,
+            [eventDescription(recommendation.event)]: [
+              ...(topNByEvent[eventDescription(recommendation.event)] || []),
+              capitalizeWords(recommendation.brawler.name.toLowerCase())
+            ].slice(0, N)
+          }), {})
+        const tips = [...Object.entries(topNByEvent)]
+          .map(([eventDescription, topN]) => 'Play ' + topN.join(', ') + ' in ' + eventDescription)
         sw.showNotification(`Tips for ${this.player.name} by Brawl Time Ninja`, {
-          body: tips.map(tip =>
-            `Play ${capitalizeWords(tip.brawler.name.toLowerCase())} in ${tip.event.mode} - ${tip.event.map}`
-          ).join('\n'),
+          body: tips.join('\n')
         })
       } else {
         this.notificationsAllowed = false
