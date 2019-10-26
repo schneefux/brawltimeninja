@@ -908,6 +908,7 @@ export default {
     async refresh() {
       this.refreshSecondsLeft = 180
       await this.refreshPlayer()
+      await this.loadCurrentMeta()
     },
     dismissInstall() {
       this.$ga.event('app', 'dismiss', 'install_banner')
