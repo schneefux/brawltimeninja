@@ -154,7 +154,13 @@
       </div>
     </div>
 
-    <div class="section-heading">
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'gamemodes'),
+        once: true,
+      }"
+      class="section-heading"
+    >
       <h2 class="text-2xl font-semibold">
         Game Modes
       </h2>
@@ -270,6 +276,10 @@
 
     <div
       v-if="player.battles.length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'battles'),
+        once: true,
+      }"
       class="section-heading flex flex-wrap items-center"
     >
       <h2 class="text-2xl font-semibold">
@@ -429,7 +439,13 @@
       />
     </div>
 
-    <div class="section-heading">
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'brawlers'),
+        once: true,
+      }"
+      class="section-heading"
+    >
       <h2 class="text-2xl font-semibold">
         Brawlers
       </h2>
@@ -918,6 +934,11 @@ export default {
     async clickInstall() {
       this.$ga.event('app', 'click', 'install_banner')
       await this.install()
+    },
+    trackScroll(visible, entry, section) {
+      if (visible) {
+        this.$ga.event('profile', 'scroll', section)
+      }
     },
     async notifyTips() {
       if (!(Notification.permission in ['denied', 'granted'])) {
