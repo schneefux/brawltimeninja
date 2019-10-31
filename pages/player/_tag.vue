@@ -469,7 +469,7 @@
       <div class="mb-3">
         <div class="text-left text-lg">
           💡
-          Tip: Play your lowest Brawlers' strengths
+          Play your lowest Brawlers' strengths
         </div>
       </div>
       <p
