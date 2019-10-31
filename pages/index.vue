@@ -101,6 +101,10 @@
 
     <div
       v-if="Object.keys(topBrawlers).length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
+        once: true,
+      }"
       class="home-section container"
     >
       <div class="home-section-heading-container">
@@ -161,6 +165,10 @@
 
     <div
       v-if="currentEvents.length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'live_events'),
+        once: true,
+      }"
       class="home-section container"
     >
       <div class="home-section-heading-container">
@@ -215,6 +223,10 @@
 
     <div
       v-if="bsuArticles.length > 0 && !isApp"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'news_feed'),
+        once: true,
+      }"
       class="home-section container"
     >
       <div class="home-section-heading-container">
@@ -439,6 +451,11 @@ export default {
 
       this.$ga.event('player', 'search', 'success')
       this.$router.push(this.playerRoute)
+    },
+    trackScroll(visible, entry, section) {
+      if (visible) {
+        this.$ga.event('home', 'scroll', section)
+      }
     },
     ...mapMutations({
       addLastPlayer: 'addLastPlayer',
