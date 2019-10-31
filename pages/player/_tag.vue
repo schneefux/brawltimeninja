@@ -453,7 +453,7 @@
       <div class="mb-3">
         <div class="text-left text-lg">
           💡
-          Tip: Use the Map Meta
+          Tip: Play your lowest Brawlers' strengths
         </div>
       </div>
       <p
