@@ -484,6 +484,18 @@ export default class BrawlstarsService {
       [entry.mode]: entry,
     }), <{ [mode: string]: PlayerMetaModeEntry }>{});
 
+    const totalStats = winRates.mode.reduce((totalStats, entry) => ({
+      picks: totalStats.picks + entry.picks,
+      trophyRate: totalStats.trophyRate + (entry.trophyChange || 0),
+      winRate: totalStats.winRate
+        + ( entry.winRate !== undefined ? (entry.picks * entry.winRate) : 0 ) // 3v3
+        + ( entry.rank !== undefined ? (entry.picks * (1 - (entry.rank - 1) / (entry.mode.includes('duo') ? 4 : 9))) : 0 ) // free for all
+    }), { picks: 0, winRate: 0, trophyRate: 0 });
+    if (totalStats.picks >= 0) {
+      totalStats.winRate = totalStats.winRate / totalStats.picks;
+      totalStats.trophyRate = totalStats.trophyRate / totalStats.picks;
+    }
+
     const data = {
       tag: player.tag,
       name: player.name,
@@ -494,6 +506,7 @@ export default class BrawlstarsService {
       brawlers,
       heroStats,
       battles,
+      totalStats,
       modes: {
         ...('gemGrab' in statsByMode ? {
           'gemGrab': {
