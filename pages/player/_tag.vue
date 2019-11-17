@@ -143,6 +143,17 @@
 
         <div class="bigstat-container">
           <div class="bigstat-left bigstat-number">
+            {{ Math.floor(player.totalStats.winRate * 100) }}%
+          </div>
+          <div class="bigstat-right bigstat-label text-xl">
+            <p class="w-24">
+              Recent Win&nbsp;Rate
+            </p>
+          </div>
+        </div>
+
+        <div class="bigstat-container">
+          <div class="bigstat-left bigstat-number">
             {{ Math.floor(trophiesPerHour) }}
           </div>
           <div class="bigstat-right bigstat-label text-xl">
