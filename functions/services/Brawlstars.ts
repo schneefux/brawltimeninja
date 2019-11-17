@@ -33,7 +33,7 @@ const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperC
 const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
 
 export default class BrawlstarsService {
-  private readonly apiUnofficial = 'https://api.brawlapi.cf/v1/';
+  private readonly apiUnofficial = 'https://api.starlist.pro/v1/';
   private readonly apiOfficial = 'https://api.brawlstars.com/v1/';
 
   public getFeaturedPlayers() {
