@@ -484,16 +484,21 @@ export default class BrawlstarsService {
       [entry.mode]: entry,
     }), <{ [mode: string]: PlayerMetaModeEntry }>{});
 
-    const totalStats = winRates.mode.reduce((totalStats, entry) => ({
-      picks: totalStats.picks + entry.picks,
-      trophyRate: totalStats.trophyRate + (entry.trophyChange || 0),
-      winRate: totalStats.winRate
-        + ( entry.winRate !== undefined ? (entry.picks * entry.winRate) : 0 ) // 3v3
-        + ( entry.rank !== undefined ? (entry.picks * (1 - (entry.rank - 1) / (entry.mode.includes('duo') ? 4 : 9))) : 0 ) // free for all
-    }), { picks: 0, winRate: 0, trophyRate: 0 });
-    if (totalStats.picks >= 0) {
-      totalStats.winRate = totalStats.winRate / totalStats.picks;
-      totalStats.trophyRate = totalStats.trophyRate / totalStats.picks;
+    const rankToWinRate = (entry: PlayerMetaModeEntry) => 1 - (entry.rank - 1) / (entry.mode.includes('duo') ? 4 : 9);
+    const statsSum = winRates.mode.reduce((statsSum, entry) => ({
+      trophies: statsSum.trophies + (entry.trophyChange || 0),
+      trophiesCount: statsSum.trophiesCount + (entry.trophyChange === null ? 0 : entry.picks),
+      wins: statsSum.wins
+        + ( entry.winRate !== null ? (entry.picks * entry.winRate) : 0 ) // 3v3
+        + ( entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
+      winsCount: statsSum.winsCount + (entry.winRate !== null || entry.rank !== null ? entry.picks : 0),
+    }), { wins: 0, winsCount: 0, trophies: 0, trophiesCount: 0 });
+    const totalStats = { winRate: 0, trophyRate: 0 };
+    if (statsSum.winsCount > 0) {
+      totalStats.winRate = statsSum.wins / statsSum.winsCount;
+    }
+    if (statsSum.trophiesCount > 0) {
+      totalStats.trophyRate = statsSum.trophies / statsSum.trophiesCount;
     }
 
     const data = {
