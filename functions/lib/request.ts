@@ -49,6 +49,7 @@ export function request<T>(
   return Promise.race([
     sleep(timeoutMs).then(() => {
       throw {
+        url: url.toString(),
         status: 429,
         reason: 'API took too long to respond',
       };
@@ -60,6 +61,7 @@ export function request<T>(
       }).then(response => {
         if (!response.ok) {
           throw {
+            url: url.toString(),
             status: response.status,
             reason: response.statusText,
           };
@@ -80,6 +82,7 @@ export function post<T>(
   return Promise.race([
     sleep(timeout).then(() => {
       throw {
+        url: url.toString(),
         status: 429,
         reason: 'API took too long to respond',
       };
@@ -93,6 +96,7 @@ export function post<T>(
     }).then(response => {
       if (!response.ok) {
         throw {
+          url: url.toString(),
           status: response.status,
           reason: response.statusText,
         };
