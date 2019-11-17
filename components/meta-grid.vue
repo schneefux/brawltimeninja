@@ -96,7 +96,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { induceAdsIntoBrawlers, formatMode, metaStatMaps } from '~/store/index'
+import { induceAdsIntoArray, formatMode, metaStatMaps } from '~/store/index'
 import BrawlerCard from '~/components/brawler-card.vue'
 
 export default {
@@ -167,7 +167,7 @@ export default {
         }))
     },
     entriesAndAds() {
-      return induceAdsIntoBrawlers(
+      return induceAdsIntoArray(
         this.sortedEntries, this.adSlots, this.adFrequency)
     },
     comparators() {

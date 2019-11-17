@@ -5,27 +5,27 @@ import payload from './payload.json'
 const capitalize = str => str.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
 export const capitalizeWords = str => str.split(' ').map(w => capitalize(w)).join(' ')
 
-export function induceAdsIntoBrawlers(brawlers, adSlots, adFrequency) {
-  return brawlers.reduce((agg, brawler, index, self) => {
+export function induceAdsIntoArray(array, adSlots, adFrequency) {
+  return array.reduce((agg, element, index, self) => {
     const lastSlotIndex = Math.floor(index / adFrequency) + 1
     if (index === self.length - 1 && lastSlotIndex < adSlots.length) {
       const ad = {
         adSlot: adSlots[lastSlotIndex],
         id: 'ad-last',
       }
-      return agg.concat(brawler, ad)
+      return agg.concat(element, ad)
     }
 
-    const slotIndex = index / adFrequency
-    if (index % adFrequency === 0 && slotIndex < adSlots.length) {
+    const slotIndex = Math.floor(index / adFrequency)
+    if (index % adFrequency === adFrequency - 1 && slotIndex < adSlots.length) {
       const ad = {
         adSlot: adSlots[slotIndex],
         id: `ad-${index}`,
       }
-      return agg.concat(ad, brawler)
+      return agg.concat(ad, element)
     }
 
-    return agg.concat(brawler)
+    return agg.concat(element)
   }, [])
 }
 
