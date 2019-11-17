@@ -15,7 +15,9 @@ const cache = cacheDisable ?
     ttl: 180,
   }) :
   cacheManager.caching(<any>{
+    max: 10000,
     store: fsStore,
+    ttl: 180,
     options: { path: cachePath, subdirs: true, },
   });
 
