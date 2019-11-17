@@ -438,7 +438,7 @@ export default class BrawlstarsService {
 
     const brawlers = {} as { [id: string]: Brawler };
     player.brawlers
-      .sort((b1, b2) => b2.highestTrophies - b1.highestTrophies)
+      .sort((b1, b2) => b2.trophies - b1.trophies)
       .forEach((brawler) => {
         const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
         brawlers[brawlerId] = {
