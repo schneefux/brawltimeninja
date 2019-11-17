@@ -36,11 +36,11 @@
           </nuxt-link>
         </div>
 
-        <p class="w-full md:w-auto text-xl my-4 mx-auto">
+        <p class="hidden md:block w-full md:w-auto text-xl my-4 mx-auto">
           which is about
         </p>
 
-        <div class="flex flex-wrap justify-between">
+        <div class="hidden md:flex flex-wrap justify-between">
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
@@ -162,19 +162,30 @@
       class="section-heading"
     >
       <h2 class="text-2xl font-semibold">
-        Game Modes
+        Game Mode Win Rates
       </h2>
     </div>
 
     <div class="section">
-      <div class="flex flex-wrap">
+      <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="mode in [...Object.values(player.modes)].slice(0, showAllModes ? Infinity : 3)"
+          v-for="(mode, index) in induceAdsIntoArray([...Object.values(player.modes)], ['3933066188'], 4)"
           :key="mode.label"
-          class="w-full md:w-1/2 card-wrapper mx-auto"
+          :class="{
+            'md:hidden': !showAllModes && index > 3,
+          }"
+          class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-40 md:h-auto card-wrapper"
         >
+          <adsense
+            v-if="mode.adSlot !== undefined && ads && !isApp"
+            root-class="md:mt-1 md:mx-auto"
+            ins-class="md:mx-4 md:w-auto md:h-24"
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="3933066188"
+          />
           <div
-            class="card bg-center bg-cover flex flex-wrap justify-between h-full"
+            v-if="mode.adSlot === undefined"
+            class="card bg-center bg-cover flex flex-wrap justify-between h-full relative"
             :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
           >
             <div class="card-content">
@@ -184,7 +195,7 @@
               <p
                 v-for="(stat, statName) in mode.stats"
                 :key="statName"
-                class="card-props mt-2"
+                class="card-props"
               >
                 <span class="card-prop-value">{{ stat.value }}</span>
                 <span class="card-prop-label">{{ stat.label }}</span>
@@ -193,37 +204,14 @@
             <img
               v-if="mode.icon"
               :src="require(`~/assets/images/mode/icon/${mode.icon}`)"
-              class="h-12 self-center mr-6 my-4"
+              class="absolute top-0 right-0 h-12 self-center mr-6 my-4"
             >
-          </div>
-        </div>
-
-        <adsense
-          v-if="ads && !isApp"
-          root-class="w-full md:w-1/2 mt-1 mx-auto"
-          ins-class="mx-4 h-24"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="3933066188"
-        />
-        <div
-          v-if="!ads"
-          class="w-full md:w-1/2 mt-3 mx-auto text-center leading-tight"
-        >
-          <div class="flex flex-wrap justify-center items-center md:mx-4 md:h-20 py-2 px-2 bg-primary-darker rounded border-2 border-secondary-lighter">
-            <p class="text-xl italic">
-              This site runs on Gems...
-            </p>
-            <p>
-              Support me
-              <a class="link" href="https://paypal.me/schneefux">on PayPal</a>
-              and help me unlock Sandy?
-            </p>
           </div>
         </div>
 
         <div
           v-if="!showAllModes"
-          class="mt-2 w-full text-right"
+          class="mt-2 w-full text-right hidden md:block"
         >
           <button
             class="button button-md"
@@ -283,7 +271,7 @@
       class="section-heading flex flex-wrap items-center"
     >
       <h2 class="text-2xl font-semibold">
-        Latest Battles
+        Battle Log
       </h2>
 
       <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
@@ -303,11 +291,12 @@
       v-if="player.battles.length > 0"
       class="section"
     >
-      <div class="flex flex-wrap">
+      <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="battle in player.battles.slice(0, battlePage * battlePageSize)"
+          v-for="(battle, index) in player.battles"
           :key="battle.timestamp"
-          class="w-full md:w-1/2 xl:w-1/3 card-wrapper mx-auto"
+          :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
+          class="flex-0-auto w-80 mx-4 md:w-1/2 xl:w-1/3 card-wrapper md:mx-auto"
         >
           <div
             class="h-full items-center card bg-center bg-cover flex flex-wrap justify-between"
@@ -415,7 +404,7 @@
 
       <div
         v-if="battlePage * battlePageSize < player.battles.length"
-        class="mt-2 w-full text-right"
+        class="mt-2 w-full text-right hidden md:block"
       >
         <button
           class="button button-md"
@@ -638,7 +627,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { formatMode, capitalizeWords } from '~/store/index'
+import { induceAdsIntoArray, formatMode, capitalizeWords } from '~/store/index'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 
@@ -692,6 +681,7 @@ export default {
       showAllModes: false,
       hoursSinceDate,
       formatMode,
+      induceAdsIntoArray,
     }
   },
   computed: {
