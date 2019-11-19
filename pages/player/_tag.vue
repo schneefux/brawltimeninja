@@ -123,7 +123,7 @@
         </div>
 
         <div
-          v-if="brawlersUnlocked != totalBrawlers"
+          v-if="brawlersUnlocked < totalBrawlers"
           class="bigstat-container"
         >
           <div class="bigstat-left bigstat-number">
