@@ -154,11 +154,11 @@
 
         <div class="bigstat-container">
           <div class="bigstat-left bigstat-number">
-            {{ Math.floor(trophiesPerHour) }}
+            {{ player.totalStats.trophyRate.toFixed(2) }}
           </div>
           <div class="bigstat-right bigstat-label text-xl">
             <p class="w-24">
-              Trophies per&nbsp;hour
+              Recent&nbsp;Trophies per&nbsp;battle
             </p>
           </div>
         </div>
