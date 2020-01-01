@@ -485,9 +485,10 @@ export default class BrawlstarsService {
     }), <{ [mode: string]: PlayerMetaModeEntry }>{});
 
     const rankToWinRate = (entry: PlayerMetaModeEntry) => 1 - (entry.rank - 1) / (entry.mode.includes('duo') ? 4 : 9);
+    // stats are averages, so do `sum (picks * stat) / count`
     const statsSum = winRates.mode.reduce((statsSum, entry) => ({
-      trophies: statsSum.trophies + (entry.trophyChange || 0),
-      trophiesCount: statsSum.trophiesCount + (entry.trophyChange === null ? 0 : entry.picks),
+      trophies: statsSum.trophies + (entry.trophyChange * entry.picks || 0),
+      trophiesCount: statsSum.trophiesCount + (entry.trophyChange !== null ? entry.picks : 0),
       wins: statsSum.wins
         + ( entry.winRate !== null ? (entry.picks * entry.winRate) : 0 ) // 3v3
         + ( entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
