@@ -36,7 +36,7 @@
     "tiny-glob": "^0.2.6",
     "typescript": "^3.5.2",
     "vue-analytics": "^5.17.0",
-    "vue-google-adsense": "^1.6.0",
+    "vue-google-adsense": "^1.8.0",
     "vue-observe-visibility": "^0.4.6",
     "vuex-persist": "^2.0.1",
     "youtube-player": "^5.5.2"
