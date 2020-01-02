@@ -163,6 +163,14 @@
       </div>
     </div>
 
+    <adsense
+      v-if="ads"
+      root-class="home-section container flex justify-center"
+      ins-class="w-full mx-4 h-32"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="6709232983"
+    />
+
     <div
       v-if="currentEvents.length > 0"
       v-observe-visibility="{
