@@ -180,7 +180,7 @@
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="(mode, index) in induceAdsIntoArray([...Object.values(player.modes)], ['3933066188'], 4)"
+          v-for="(mode, index) in induceAdsIntoArray([...Object.values(player.modes)], ['3933066188'], 3)"
           :key="mode.label"
           :class="{
             'md:hidden': !showAllModes && index > 3,
