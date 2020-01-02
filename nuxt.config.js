@@ -25,11 +25,17 @@ export default {
     theme_color: '#3490dc', // primary
   },
 
-  manifest: {
-    name: 'Brawl Time Ninja',
-    short_name: 'Brawl Time',
-    description: 'Check Brawl Stars hours played, player stats and win rates.',
-    theme_color: '#3490dc', // primary
+  pwa: {
+    manifest: {
+      name: 'Brawl Time Ninja',
+      short_name: 'Brawl Time',
+      description: 'Check Brawl Stars hours played, player stats and win rates.',
+      theme_color: '#3490dc', // primary
+    },
+    workbox: {
+      // https://github.com/nuxt-community/pwa-module/issues/149
+      cacheAssets: false,
+    },
   },
 
   loading: { color: '#ffed4a' }, // secondary
@@ -55,10 +61,6 @@ export default {
   },
 
   axios: {
-  },
-
-  workbox: {
-    cacheAssets: false,
   },
 
   env: {
