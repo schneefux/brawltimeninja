@@ -264,13 +264,17 @@
     </div>
 
     <div class="section">
-      <adsense
+      <div
         v-if="ads"
-        root-class="w-full mt-6 mx-auto"
-        ins-class="h-32"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1752268168"
-      />
+        id="ezoic-pub-ad-placeholder-101"
+      >
+        <adsense
+          root-class="w-full mt-6 mx-auto"
+          ins-class="h-32"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="1752268168"
+        />
+      </div>
     </div>
 
     <div
@@ -430,13 +434,17 @@
       v-if="player.battles.length > 0"
       class="section"
     >
-      <adsense
+      <div
         v-if="ads && !isApp"
-        root-class="w-full mt-6 mx-auto"
-        ins-class="h-32"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4129048243"
-      />
+        id="ezoic-pub-ad-placeholder-101"
+      >
+        <adsense
+          root-class="w-full mt-6 mx-auto"
+          ins-class="h-32"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="4129048243"
+        />
+      </div>
     </div>
 
     <div
