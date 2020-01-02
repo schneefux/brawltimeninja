@@ -5,3 +5,23 @@
 
 [build.environment]
   GIT_LFS_ENABLED = "1"
+ 
+[[headers]]
+  for = "_nuxt/img/*"
+  [headers.values]
+    Cache-Control = "public, s-max-age=86400"
+
+[[headers]]
+  for = "_nuxt/icons/*"
+  [headers.values]
+    Cache-Control = "public, s-max-age=86400"
+
+[[headers]]
+  for = "_nuxt/*.js"
+  [headers.values]
+    Cache-Control = "public, s-max-age=86400"
+
+[[headers]]
+  for = "_nuxt/*.css"
+  [headers.values]
+    Cache-Control = "public, s-max-age=86400"
