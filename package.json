@@ -24,7 +24,7 @@
     "cache-manager": "^2.10.1",
     "cache-manager-fs-hash": "0.0.7",
     "cross-env": "^5.2.1",
-    "knex": "^0.18.4",
+    "knex": "^0.19.5",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
