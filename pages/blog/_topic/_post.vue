@@ -19,7 +19,7 @@
 
         <div
           v-show="lightboxOpen"
-          class="fixed inset-0"
+          class="fixed inset-0 z-50"
           style="background-color: rgba(0, 0, 0, 0.75)"
         >
           <button
