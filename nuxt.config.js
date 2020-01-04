@@ -49,7 +49,7 @@ export default {
     { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/analytics', mode: 'client' },
-    { src: '~/plugins/visibility' },
+    { src: '~/plugins/visibility', mode: 'client' },
   ],
 
   modules: [
