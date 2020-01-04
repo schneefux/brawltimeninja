@@ -221,7 +221,7 @@
         </div>
 
         <div
-          v-if="!showAllModes"
+          v-show="!showAllModes"
           class="mt-2 w-full text-right hidden md:block"
         >
           <button
@@ -235,7 +235,7 @@
     </div>
 
     <div
-      v-if="isInstallable && !installBannerDismissed"
+      v-show="isInstallable && !installBannerDismissed"
       class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight"
     >
       <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
@@ -418,7 +418,7 @@
       </div>
 
       <div
-        v-if="battlePage * battlePageSize < player.battles.length"
+        v-show="battlePage * battlePageSize < player.battles.length"
         class="mt-2 w-full text-right hidden md:block"
       >
         <button
@@ -498,14 +498,14 @@
         </nuxt-link>.
       </p>
       <button
-        v-if="tipsPage * tipsPageSize < eventRecommendations.length"
+        v-show="tipsPage * tipsPageSize < eventRecommendations.length"
         class="mt-3 button button-sm"
         @click="tipsPage++; $ga.event('tips', 'load_more', tipsPage)"
       >
         Load More Tips
       </button>
       <button
-        v-if="notificationsAllowed"
+        v-show="notificationsAllowed"
         class="ml-2 button button-sm"
         @click="notifyTips"
       >
