@@ -40,13 +40,13 @@
           </div>
         </div>
         <p
-          v-if="loading"
+          v-show="loading"
           class="mt-2 text-red-lighter"
         >
           Searching…
         </p>
         <p
-          v-if="error"
+          v-show="error"
           class="mt-2 text-red-lighter"
         >
           {{ error }}
@@ -79,10 +79,10 @@
 
     <div class="my-4 text-center max-w-sm">
       <p class="text-grey">
-        <span v-if="lastPlayers.length === 0">
+        <span v-show="lastPlayers.length === 0">
           Or check one of these profiles:
         </span>
-        <span v-if="lastPlayers.length > 0">
+        <span v-show="lastPlayers.length > 0">
           Recently searched:
         </span>
       </p>
@@ -172,7 +172,7 @@
     />
 
     <div
-      v-if="currentEvents.length > 0"
+      v-show="currentEvents.length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'live_events'),
         once: true,
@@ -207,7 +207,7 @@
       </div>
 
       <div
-        v-if="notificationsAllowed"
+        v-show="notificationsAllowed"
         class="mt-4 w-full mx-auto max-w-xl"
       >
         <div class="mx-5">
@@ -230,7 +230,7 @@
     />
 
     <div
-      v-if="bsuArticles.length > 0 && !isApp"
+      v-show="bsuArticles.length > 0 && !isApp"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'news_feed'),
         once: true,

@@ -93,7 +93,7 @@
     <nuxt />
 
     <div
-      v-if="cookieBannerOpen"
+      v-show="cookieBannerOpen"
       class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
       style="background-color: rgba(0, 0, 0, 0.75)"
     >
@@ -109,21 +109,21 @@
         </p>
         <div class="mt-2 text-sm flex flex-wrap">
           <button
-            v-if="showCookieOptions"
+            v-show="showCookieOptions"
             class="border rounded-sm py-1 w-24 mx-1 bg-red-600 hover:bg-red-500"
             @click="disableCookies"
           >
             Disable All
           </button>
           <button
-            v-if="showCookieOptions"
+            v-show="showCookieOptions"
             class="border rounded-sm py-1 w-24 mx-1 bg-yellow-600 hover:bg-yellow-500"
             @click="enableCookies"
           >
             Enable Cookie
           </button>
           <button
-            v-if="!showCookieOptions"
+            v-show="!showCookieOptions"
             class="border rounded-sm py-1 w-24 mx-1 bg-secondary-darkest hover:bg-black"
             @click="showCookieOptions = true"
           >
