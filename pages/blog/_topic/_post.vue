@@ -47,10 +47,15 @@
 import { mapState } from 'vuex'
 
 export default {
-  name: 'TopicPage',
+  name: 'PostPage',
   head() {
+    const description = `Brawl Stars Guides written by ${this.post.author}. ${this.post.description}`
     return {
       title: this.post.title,
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   data() {
