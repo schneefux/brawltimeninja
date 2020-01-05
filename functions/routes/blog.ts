@@ -69,7 +69,7 @@ export async function renderBlog(): Promise<Blog> {
     } as Post;
   }));
 
-  guides.sort((g1, g2) => g1.order - g2.order)
+  guides.sort((g1, g2) => g2.order - g1.order)
   const blog = { guides };
 
   return blog;
