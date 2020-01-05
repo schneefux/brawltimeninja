@@ -102,4 +102,12 @@ export default {
 .markdown /deep/ h3 {
   @apply text-2xl mt-2 mb-1;
 }
+
+.markdown /deep/ p {
+  @apply mt-3;
+}
+
+.markdown /deep/ li {
+  @apply mt-2;
+}
 </style>
