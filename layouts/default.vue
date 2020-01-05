@@ -72,6 +72,12 @@
               Leaderboard
             </nuxt-link>
             <nuxt-link
+              to="/status"
+              class="nav-link"
+            >
+              Status
+            </nuxt-link>
+            <nuxt-link
               v-for="topic in topics"
               :key="topic"
               :to="`/blog/${topic}`"
