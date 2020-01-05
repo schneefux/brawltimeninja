@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Minecart Madness", "author": "kinglionleo", "image": "/images/blog/guides/minecart-madness_small.jpg", "description": "Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.", "mode": "Gem Grab", "map": "Minecart Madness", "id": 4 }
+{ "title": "Gem Grab: Minecart Madness", "author": "kinglionleo", "image": "/images/blog/guides/minecart-madness_small.jpg", "description": "Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.", "mode": "Gem Grab", "map": "Minecart Madness", "order": 4 }
 
 Recommended Comp
 ---
