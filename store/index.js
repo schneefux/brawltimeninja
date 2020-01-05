@@ -307,13 +307,14 @@ export const actions = {
       return
     }
 
+    /*
     // overwrite generated (possibly empty) payload
     // with current API data when running on server
-    const blog = await this.$axios.$get('/api/blog')
-    const featuredPlayers = await this.$axios.$get('/api/featured-players')
-
-    commit('setFeaturedPlayers', featuredPlayers)
-    commit('setBlog', blog)
+    await Promise.all([
+      this.$axios.$get('/api/blog').then(blog => commit('setBlog', blog)),
+      this.$axios.$get('/api/featured-players').then(players => commit('setFeaturedPlayers', players)),
+    ])
+    */
   },
   async loadPlayer({ state, commit }, playerTag) {
     if (playerTag === state.player.tag) {
