@@ -1,6 +1,6 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
-import { request, post } from '../lib/request';
+import { cache, request, post } from '../lib/request';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History from '~/model/History';
 import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
@@ -244,107 +244,109 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaMapEntry[]>(
-      '/meta/map',
-      trackerUrl,
-      {},
-      {},
-      30000,
-      900, // 15m
-    );
+    return cache.wrap(`map-meta-${JSON.stringify(filters)}`, async () => {
+      const meta = await request<MetaMapEntry[]>(
+        '/meta/map',
+        trackerUrl,
+        {},
+        {},
+        30000,
+        900, // 15m
+      );
 
-    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaMapEntry) => ({
-      ...mapTotalPicks,
-      [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
-    }), <{ [id: string]: number }>{});
+      const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaMapEntry) => ({
+        ...mapTotalPicks,
+        [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
+      }), <{ [id: string]: number }>{});
 
-    const nonNullStats = (entry: MetaMapEntry) => {
-      const stats = <{ [stat: string]: number }>{};
-      if (!!entry.wins && entry.wins > 0) {
-        stats.winRate = entry.wins / entry.picks;
-      }
-      if (!!entry.rank && entry.rank > 0) {
-        stats.rank = entry.rank;
-      }
-      if (!!entry.level && entry.level > 0) {
-        stats.level = entry.level;
-      }
-      if (!!entry.duration && entry.duration > 0) {
-        stats.duration = entry.duration;
-      }
-      stats.pickRate = entry.picks / mapTotalPicks[entry.id];
-      if (!!entry.starRate && entry.starRate > 0) {
-        stats.starRate = entry.starRate;
-      }
-      if (!!entry.rank1 && entry.rank1 > 0) {
-        stats.rank1 = entry.rank1;
-      }
-      if (!!entry.wins && entry.wins > 0) {
-        stats.wins = entry.wins;
-      }
+      const nonNullStats = (entry: MetaMapEntry) => {
+        const stats = <{ [stat: string]: number }>{};
+        if (!!entry.wins && entry.wins > 0) {
+          stats.winRate = entry.wins / entry.picks;
+        }
+        if (!!entry.rank && entry.rank > 0) {
+          stats.rank = entry.rank;
+        }
+        if (!!entry.level && entry.level > 0) {
+          stats.level = entry.level;
+        }
+        if (!!entry.duration && entry.duration > 0) {
+          stats.duration = entry.duration;
+        }
+        stats.pickRate = entry.picks / mapTotalPicks[entry.id];
+        if (!!entry.starRate && entry.starRate > 0) {
+          stats.starRate = entry.starRate;
+        }
+        if (!!entry.rank1 && entry.rank1 > 0) {
+          stats.rank1 = entry.rank1;
+        }
+        if (!!entry.wins && entry.wins > 0) {
+          stats.wins = entry.wins;
+        }
 
-      if (entry.isBigbrawler === 1) {
-        return [...Object.entries(stats)]
-          .reduce((stats, [prop, value]) => ({ ...stats, [prop + '_boss']: value }), {});
-      }
-      return stats;
-    };
+        if (entry.isBigbrawler === 1) {
+          return [...Object.entries(stats)]
+            .reduce((stats, [prop, value]) => ({ ...stats, [prop + '_boss']: value }), {});
+        }
+        return stats;
+      };
 
-    const mapMeta = meta.reduce((mapMeta, entry: MetaMapEntry) => ({
-      ...mapMeta,
-      [entry.id]: {
-        mode: entry.mode,
-        map: entry.map,
-        sampleSize: mapTotalPicks[entry.id],
-        brawlers: {
-          ...((mapMeta[entry.id] || {}).brawlers || {}),
-          [brawlerId(entry)]: {
-            name: capitalizeWords(entry.name.toLowerCase()),
-            sampleSize: entry.picks,
-            stats: {
-              // boss has two records -> merge, boss stats get a suffix
-              ...(((mapMeta[entry.id] || {}).brawlers || {})[brawlerId(entry)] || {}).stats,
-              ...nonNullStats(entry),
+      const mapMeta = meta.reduce((mapMeta, entry: MetaMapEntry) => ({
+        ...mapMeta,
+        [entry.id]: {
+          mode: entry.mode,
+          map: entry.map,
+          sampleSize: mapTotalPicks[entry.id],
+          brawlers: {
+            ...((mapMeta[entry.id] || {}).brawlers || {}),
+            [brawlerId(entry)]: {
+              name: capitalizeWords(entry.name.toLowerCase()),
+              sampleSize: entry.picks,
+              stats: {
+                // boss has two records -> merge, boss stats get a suffix
+                ...(((mapMeta[entry.id] || {}).brawlers || {})[brawlerId(entry)] || {}).stats,
+                ...nonNullStats(entry),
+              }
             }
           }
         }
-      }
-    }), <{
-      [event: string]: {
-        mode: string
-        map: string
-        sampleSize: number
-        brawlers: {
-          [brawler: string]: {
-            name: string
-            sampleSize: number
-            stats: {
-              [stat: string]: number
+      }), <{
+        [event: string]: {
+          mode: string
+          map: string
+          sampleSize: number
+          brawlers: {
+            [brawler: string]: {
+              name: string
+              sampleSize: number
+              stats: {
+                [stat: string]: number
+              }
             }
           }
-        }
-      }}>{});
+        }}>{});
 
-    if (filters.current !== undefined) {
-      const currentEvents = await this.getEvents();
-      const currentEventIds = currentEvents.map(({ id }) => id);
-      Object.keys(mapMeta).forEach((eventId) => {
-        if (!currentEventIds.includes(eventId)) {
-          delete mapMeta[eventId];
-        }
-      });
-    }
+      if (filters.current !== undefined) {
+        const currentEvents = await this.getEvents();
+        const currentEventIds = currentEvents.map(({ id }) => id);
+        Object.keys(mapMeta).forEach((eventId) => {
+          if (!currentEventIds.includes(eventId)) {
+            delete mapMeta[eventId];
+          }
+        });
+      }
 
-    if (filters.include !== undefined) {
-      const whitelistedIds = filters.include.split(',');
-      Object.keys(mapMeta).forEach((eventId) => {
-        if (!whitelistedIds.includes(eventId)) {
-          delete mapMeta[eventId];
-        }
-      });
-    }
+      if (filters.include !== undefined) {
+        const whitelistedIds = filters.include.split(',');
+        Object.keys(mapMeta).forEach((eventId) => {
+          if (!whitelistedIds.includes(eventId)) {
+            delete mapMeta[eventId];
+          }
+        });
+      }
 
-    return mapMeta;
+      return mapMeta;
+    }, { ttl: 900 }); // 15m
   }
 
   public async getPlayerStatistics(tag: string) {
