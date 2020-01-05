@@ -2,7 +2,7 @@
   <div class="py-4 px-2">
     <div class="py-8 px-6 my-8 relative">
       <h1 class="text-4xl md:text-center mt-2 font-semibold">
-        Map Meta
+        Map Tier List
       </h1>
       <h2 class="text-2xl md:text-center mt-3 font-semibold capitalize">
         {{ formatMode(selectedMode) }}: {{ selectedMap }}
@@ -20,8 +20,8 @@
           {{ formatMode(selectedMode) }} - {{ selectedMap }}
         </span>.
         To view average Win Rates for all maps, load the
-        <nuxt-link to="/meta/brawler" class="link inline-block">
-          Brawler Meta
+        <nuxt-link to="/tier-list/brawler" class="link inline-block">
+          Brawler Tier List
         </nuxt-link>.
       </p>
 
@@ -69,9 +69,9 @@ export default {
     MetaGrid,
   },
   head() {
-    const description = `Best Brawlers for ${formatMode(this.selectedMode)}: ${this.selectedMap}. View a Tier List with Win Rates, Pick Rates and Rankings.`
+    const description = `Brawl Stars Tier List for ${formatMode(this.selectedMode)}: ${this.selectedMap}. View the best Brawlers with Win Rates, Pick Rates and Rankings.`
     return {
-      title: `Win Rates for ${formatMode(this.selectedMode)}: ${this.selectedMap}`,
+      title: `Tier List for ${formatMode(this.selectedMode)}: ${this.selectedMap}`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

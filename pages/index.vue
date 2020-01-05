@@ -113,10 +113,10 @@
         </div>
         <div class="home-section-heading-right">
           <nuxt-link
-            to="/meta/brawler"
+            to="/tier-list/brawler"
             class="link"
           >
-            Explore the Brawler Meta
+            Explore the Brawler Tier List
           </nuxt-link>
         </div>
       </div>
@@ -185,10 +185,10 @@
         </div>
         <div class="home-section-heading-right">
           <nuxt-link
-            to="/meta/map"
+            to="/tier-list/map"
             class="link"
           >
-            Explore the Map Meta
+            Explore the Map Tier Lists
           </nuxt-link>
         </div>
       </div>
@@ -215,7 +215,7 @@
             class="mt-1 button button-sm"
             @click="notifyCurrentEventMeta"
           >
-            Send a Notification with Map Meta
+            Send a Notification with Map Tier List
           </button>
         </div>
       </div>

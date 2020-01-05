@@ -54,16 +54,16 @@
               Profile Search
             </nuxt-link>
             <nuxt-link
-              to="/meta/brawler"
+              to="/tier-list/brawler"
               class="nav-link"
             >
-              Brawler Meta
+              Brawler Tier List
             </nuxt-link>
             <nuxt-link
-              to="/meta/map"
+              to="/tier-list/map"
               class="nav-link"
             >
-              Map Meta
+              Map Tier Lists
             </nuxt-link>
             <nuxt-link
               to="/leaderboard"

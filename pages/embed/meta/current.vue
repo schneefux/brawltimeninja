@@ -40,7 +40,7 @@ export default {
   },
   head() {
     return {
-      title: 'Live Events Meta Widget',
+      title: 'Live Events Tier List Widget',
     }
   },
   data() {

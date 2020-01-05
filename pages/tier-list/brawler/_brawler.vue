@@ -1,7 +1,7 @@
 <template>
   <div class="py-8 px-6 relative">
     <h1 class="text-4xl md:text-center mt-2 font-semibold">
-      {{ brawlerName }} Meta
+      {{ brawlerName }} Tier List
     </h1>
     <p class="md:text-center">
       The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
@@ -148,9 +148,9 @@ import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~
 export default {
   name: 'StarpowerMetaPage',
   head() {
-    const description = `${this.brawlerName} Brawl Stars stats. Star Power win rate and pick rates for all modes.`
+    const description = `${this.brawlerName} Brawl Stars stats. Star Power Tier List with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Brawler Meta`,
+      title: `${this.brawlerName} Brawler Tier List`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

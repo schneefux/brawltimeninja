@@ -3,7 +3,7 @@
     class="link-card flex flex-col justify-end"
   >
     <nuxt-link
-      :to="`/meta/map/${event.id}`"
+      :to="`/tier-list/map/${event.id}`"
       class="link-light capitalize"
       :target="isInIframe ? '_blank' : ''"
     >
