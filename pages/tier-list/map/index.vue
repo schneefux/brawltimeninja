@@ -60,16 +60,10 @@
           id="upcoming"
           class="mt-6"
         >
-          <summary
-            class="mx-2 text-xl md:text-center font-semibold"
-            @click="$set(load, 'upcoming', true)"
-          >
+          <summary class="mx-2 text-xl md:text-center font-semibold">
             Up next
           </summary>
-          <div
-            v-if="load['upcoming']"
-            class="flex flex-wrap justify-center"
-          >
+          <div class="flex flex-wrap justify-center">
             <event-card
               v-for="event in upcomingEvents"
               :key="event.id"
@@ -94,18 +88,12 @@
           :key="mode"
           class="mt-4"
         >
-          <summary
-            class="mx-2 md:text-center text-lg font-semibold capitalize"
-            @click="$set(load, mode, true)"
-          >
+          <summary class="mx-2 md:text-center text-lg font-semibold capitalize">
             <span class="w-48 inline-block text-left">
               {{ formatMode(mode) }}
             </span>
           </summary>
-          <div
-            v-if="load[mode]"
-            class="flex flex-wrap justify-center"
-          >
+          <div class="flex flex-wrap justify-center">
             <event-card
               v-for="event in modeEvents"
               :key="event.id"
@@ -130,7 +118,6 @@ export default {
   },
   data() {
     return {
-      load: {},
       formatMode,
     }
   },
