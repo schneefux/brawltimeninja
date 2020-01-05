@@ -8,7 +8,7 @@ import fsStore from 'cache-manager-fs-hash';
 const cachePath = process.env.CACHE_PATH || 'cache';
 const cacheDisable = !!process.env.CACHE_DISABLE;
 
-const cache = cacheDisable ?
+export const cache = cacheDisable ?
   cacheManager.caching({
     store: 'memory',
     max: 0,
