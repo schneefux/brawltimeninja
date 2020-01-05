@@ -1,23 +1,23 @@
-{ "title": "Gem Grab: Escape Velocity", "author": "kinglionleo", "image": "/images/blog/guides/escape-velocity_small.jpg", "description": "How to poke your enemy team in Escape Velocity with Gene, Shelly and Carl.", "mode": "gemgrab", "map": "Escape Velocity" }
+{ "title": "Gem Grab: Escape Velocity", "author": "kinglionleo", "image": "/images/blog/guides/escape-velocity_small.jpg", "description": "How to poke your enemy team in Escape Velocity with Gene, Shelly and Carl.", "mode": "gemgrab", "map": "Escape Velocity", "id": 7 }
 
 Recommended Comp
 ---
 
 ### Gene
 
-![~hero/icon/gene_optimized.png h-16,p-2,float-right] 
+![~hero/icon/gene_optimized.png h-16,p-2,float-right]
 
 Gene offers amazing poking abilities, and his super can make the enemy feel uneasy with their movement. His Star Power can assist his teammates when they are grouped up.
 
 ### Shelly
 
-![~hero/icon/shelly_optimized.png h-16,p-2,float-right] 
+![~hero/icon/shelly_optimized.png h-16,p-2,float-right]
 
 Lane player who can full utilize launch pads to displace enemy movement. Her super with Star Power can make it easy for Gene to hit his attack.
 
 ### Carl
 
-![~hero/icon/carl_optimized.png h-16,p-2,float-right] 
+![~hero/icon/carl_optimized.png h-16,p-2,float-right]
 
 Lane player who's long attack can act as a tripwire at mid. His attack can force enemies to move in certain directions, synergizing with Gene's super.
 
