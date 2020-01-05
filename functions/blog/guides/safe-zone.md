@@ -1,4 +1,4 @@
-{ "title": "Heist: Safe Zone", "author": "PedroGuijarro_", "image": "/images/blog/guides/safe-zone_small.jpg", "description": "Siege or play aggressively with one of three compositions on Safe Zone.", "mode": "heist", "map": "Safe Zone", "id": 3 }
+{ "title": "Heist: Safe Zone", "author": "PedroGuijarro_", "image": "/images/blog/guides/safe-zone_small.jpg", "description": "Siege or play aggressively with one of three compositions on Safe Zone.", "mode": "heist", "map": "Safe Zone", "order": 3 }
 
 Control Comp
 ---

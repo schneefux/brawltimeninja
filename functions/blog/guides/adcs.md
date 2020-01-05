@@ -1,4 +1,4 @@
-{ "title": "Guide into Competitive Brawl Stars: ADCs", "author": "XaviorKeyz", "description": "Today I break down and dissect the long-ranged class of Brawl Stars - ADCs.", "id": 11 }
+{ "title": "Guide into Competitive Brawl Stars: ADCs", "author": "XaviorKeyz", "description": "Today I break down and dissect the long-ranged class of Brawl Stars - ADCs.", "order": 11 }
 
 Guide into the Competitive Scene of Brawl Stars - ADCs
 ---

@@ -1,4 +1,4 @@
-{ "title": "Guide into Competitive Brawl Stars: Tanks", "author": "XaviorKeyz", "description": "Today's focus is on the Tank class of Brawl Stars.", "id": 10 }
+{ "title": "Guide into Competitive Brawl Stars: Tanks", "author": "XaviorKeyz", "description": "Today's focus is on the Tank class of Brawl Stars.", "order": 10 }
 
 Guide into the Competitive Scene of Brawl Stars - Tanks
 ---

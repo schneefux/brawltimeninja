@@ -5,5 +5,6 @@ export default interface Blog {
 export interface Post {
   title: string;
   content: string;
-  id: number;
+  id: string;
+  order: number;
 }
