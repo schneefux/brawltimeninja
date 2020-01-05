@@ -79,5 +79,8 @@
     "ts-node": "^8.5.4",
     "webpack-cli": "^3.3.10",
     "yaml-loader": "^0.5.0"
+  },
+  "resolutions": {
+    "@babel/parser": "7.7.5"
   }
 }
