@@ -369,9 +369,11 @@ export default {
   },
   async fetch({ store }) {
     if (!process.static) {
-      await store.dispatch('loadCurrentMeta')
-      await store.dispatch('loadBrawlerMeta')
-      await store.dispatch('loadBsuArticles')
+      await Promise.all([
+        store.dispatch('loadCurrentMeta'),
+        store.dispatch('loadBrawlerMeta'),
+        store.dispatch('loadBsuArticles'),
+      ])
     }
   },
   created() {
