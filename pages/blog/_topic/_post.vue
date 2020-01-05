@@ -110,4 +110,8 @@ export default {
 .markdown /deep/ li {
   @apply mt-2;
 }
+
+.markdown /deep/ a {
+  @apply underline text-primary-dark;
+}
 </style>
