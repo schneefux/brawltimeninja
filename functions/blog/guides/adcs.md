@@ -1,8 +1,7 @@
 { "title": "ADCs", "author": "XaviorKeyz", "description": "Today I break down and dissect the long-ranged class of Brawl Stars - ADCs." }
 
 Guide into the Competitive Scene of Brawl Stars - ADCs
-
-By EZ | Xavior
+---
 
 **Preface:** Welcome back to Article 1 - Part 2 of my series, *“An In-Depth Guide into the Competitive Scene of 2020 Brawl Stars!”* Today I break down and dissect the long-ranged class of Brawl Stars - ADCs, as well as explain their roles and impact in the game. Please comment after you finish reading. I appreciate all thoughts and feedback and personally read every single comment that I get! I hope you enjoy!
 
