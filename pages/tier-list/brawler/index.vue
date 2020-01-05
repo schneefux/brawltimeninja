@@ -5,11 +5,12 @@
         Brawler Tier List
       </h1>
       <p class="md:text-center">
-        The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
-        For this reason, the numbers shown can be contrary to your personal experience.
+        This Brawler Tier List is generated automatically for all Brawlers in Brawl Stars.
+        The data is from Brawl Stars battles in the current season.
+        Click on a link to view the best Star Powers for each Brawler.
       </p>
       <p class="mt-2 mb-6 md:text-center">
-        Showing average statistics for all maps. To view Win Rates for specific maps, load the
+        Showing global Tier List. To view Tier Lists for specific maps, load the
         <nuxt-link to="/tier-list/map" class="link inline-block">
           Map Tier List
         </nuxt-link>.
@@ -51,9 +52,9 @@ export default {
     MetaGrid,
   },
   head() {
-    const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates, Pick Rates and Rankings.'
+    const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.'
     return {
-      title: 'Brawler Tier List',
+      title: 'All Brawlers Tier List',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

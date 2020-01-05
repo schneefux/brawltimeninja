@@ -5,7 +5,13 @@
         Map Tier Lists
       </h1>
 
-      <p class="mx-2 flex flex-wrap md:justify-center md:mx-auto mt-3">
+      <p class="md:text-center px-2 mt-6 max-w-lg mx-auto">
+        Brawler Tier Lists for all maps in Brawl Stars.
+        Click on a map and see the best Brawlers for all Brawl Stars Events.
+        The data is from battles played in the current season.
+      </p>
+
+      <p class="mx-2 flex flex-wrap md:justify-center md:mx-auto mt-4">
         <span class="text-xl w-full md:text-center">
           Table of Contents
         </span>

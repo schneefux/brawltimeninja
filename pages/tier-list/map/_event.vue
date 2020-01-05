@@ -10,16 +10,16 @@
       <div class="flex justify-center mt-5">
         <event-card :event="selectedEvent" />
       </div>
-      <p class="mt-6 md:text-center">
-        The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
-        For this reason, the numbers shown can be contrary to your personal experience.
+      <p class="mt-6 md:text-center max-w-lg mx-auto">
+        Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map.
+        The data is from Brawl Stars battles in the current season.
       </p>
       <p class="mt-2 mb-6 md:text-center">
-        Showing statistics for
+        Showing statistics for battles played in
         <span class="text-primary-lighter inline-block">
           {{ formatMode(selectedMode) }} - {{ selectedMap }}
         </span>.
-        To view average Win Rates for all maps, load the
+        To view a Tier List for all Brawlers, load the
         <nuxt-link to="/tier-list/brawler" class="link inline-block">
           Brawler Tier List
         </nuxt-link>.
@@ -69,7 +69,7 @@ export default {
     MetaGrid,
   },
   head() {
-    const description = `Brawl Stars Tier List for ${formatMode(this.selectedMode)}: ${this.selectedMap}. View the best Brawlers with Win Rates, Pick Rates and Rankings.`
+    const description = `Brawl Stars Tier List for ${formatMode(this.selectedMode)}: ${this.selectedMap}. View the best Brawlers with Win Rates and Rankings.`
     return {
       title: `Tier List for ${formatMode(this.selectedMode)}: ${this.selectedMap}`,
       meta: [
