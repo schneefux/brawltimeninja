@@ -2,8 +2,12 @@
   <div class="w-120 max-w-full mx-auto py-4 px-2">
     <div class="bg-grey-lighter py-8 px-6 my-8 text-black">
       <h1 class="text-4xl md:text-center mt-2 font-semibold">
-        Leaderboard
+        Brawl Stars Hours Leaderboard
       </h1>
+
+      <p class="mt-2">
+        Who plays the most? Find your favorite YouTuber in this leaderboard.
+      </p>
 
       <adsense
         v-if="ads"
@@ -70,8 +74,13 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'LeaderboardPage',
   head() {
+    const description = 'Brawl Stars Leaderboard. Who spent the most hours on Brawl Stars?'
     return {
-      title: 'Leaderboard',
+      title: 'Brawl Stars Time Leaderboard',
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
     }
   },
   computed: {
