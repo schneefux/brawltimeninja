@@ -140,6 +140,7 @@ export const state = () => ({
   mapMeta: [],
   mapMetaLoaded: false,
   mapMetaSlicesLoaded: [],
+  bestByEvent: {},
   starpowerMeta: [],
   starpowerMetaLoaded: false,
   modeMeta: [],
@@ -180,34 +181,35 @@ export const getters = {
 
     return max
   },
-  /**
-   * Get brawlers by event: {
-   *  [eventId]: [
-   *    brawler id,
-   *    brawler name,
-   *    brawler stats,
-   *    sort prop
-   *  ] }
-   * sorted by the preferred prop according to propPriority
-   */
-  bestBrawlersByMap(state) {
-    return [...Object.entries(state.mapMeta)]
-      .reduce((top5, [eventId, entry]) => ({
-        ...top5,
-        [eventId]: [...Object.entries(entry.brawlers)]
-          .map(([brawlerId, brawler]) => ({
-            id: brawlerId,
-            name: brawler.name,
-            stats: brawler.stats,
-            sortProp: metaStatMaps.propPriority.find(prop => prop in brawler.stats),
-          }))
-          .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
-      }), {})
-  },
   isInstallable(state) {
     const isAndroid = process.client && /android/i.test(navigator.userAgent)
     return state.installPrompt !== undefined || (!state.isApp && isAndroid)
   },
+}
+
+/**
+ * Get brawlers by event: {
+ *  [eventId]: [
+ *    brawler id,
+ *    brawler name,
+ *    brawler stats,
+ *    sort prop
+ *  ] }
+ * sorted by the preferred prop according to propPriority
+ */
+function getBestByEvent(state) {
+  return [...Object.entries(state.mapMeta)]
+    .reduce((top5, [eventId, entry]) => ({
+      ...top5,
+      [eventId]: [...Object.entries(entry.brawlers)]
+        .map(([brawlerId, brawler]) => ({
+          id: brawlerId,
+          name: brawler.name,
+          stats: brawler.stats,
+          sortProp: metaStatMaps.propPriority.find(prop => prop in brawler.stats),
+        }))
+        .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
+    }), {})
 }
 
 export const mutations = {
@@ -246,6 +248,8 @@ export const mutations = {
   },
   setMapMeta(state, meta) {
     state.mapMeta = meta
+    state.bestByEvent = getBestByEvent(state)
+
     state.mapMetaLoaded = true
   },
   setStarpowerMeta(state, meta) {
@@ -257,6 +261,7 @@ export const mutations = {
       ...state.mapMeta,
       ...metaSlice,
     }
+    state.bestByEvent = getBestByEvent(state)
   },
   setMapMetaSliceLoaded(state, sliceName) {
     state.mapMetaSlicesLoaded.push(sliceName)
