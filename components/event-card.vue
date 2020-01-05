@@ -18,9 +18,9 @@
         {{ event.map }}
       </p>
 
-      <div class="mt-4 flex flex-wrap justify-center">
+      <div v-if="load" class="mt-4 flex flex-wrap justify-center">
         <div
-          v-for="brawler in (bestBrawlersByMap[event.id] || []).slice(0, 3)"
+          v-for="brawler in (bestByEvent[event.id] || []).slice(0, 3)"
           :key="brawler.id"
           class="px-2"
         >
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { formatMode, metaStatMaps } from '~/store/index'
 
 export default {
@@ -56,6 +56,10 @@ export default {
       type: Object,
       required: true
     },
+    load: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     isInIframe() {
@@ -65,8 +69,8 @@ export default {
         return true
       }
     },
-    ...mapGetters({
-      bestBrawlersByMap: 'bestBrawlersByMap',
+    ...mapState({
+      bestByEvent: state => state.bestByEvent,
     })
   },
   data() {

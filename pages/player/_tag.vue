@@ -822,10 +822,10 @@ export default {
         }
 
         worstBrawlers.forEach((brawler) => {
-          if (!(event.id in this.bestBrawlersByMap)) {
+          if (!(event.id in this.bestByEvent)) {
             return
           }
-          const bestBrawlers = this.bestBrawlersByMap[event.id]
+          const bestBrawlers = this.bestByEvent[event.id]
           const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
           if (rankIndex === -1) {
             return
@@ -852,10 +852,10 @@ export default {
       currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
       isApp: state => state.isApp,
+      bestByEvent: state => state.bestByEvent,
     }),
     ...mapGetters({
       rank: 'playerRank',
-      bestBrawlersByMap: 'bestBrawlersByMap',
       isInstallable: 'isInstallable',
     }),
   },

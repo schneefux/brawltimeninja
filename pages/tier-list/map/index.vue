@@ -66,10 +66,16 @@
           id="upcoming"
           class="mt-6"
         >
-          <summary class="mx-2 text-xl md:text-center font-semibold">
+          <summary
+            class="mx-2 text-xl md:text-center font-semibold"
+            @click="$set(load, 'upcoming', true)"
+          >
             Up next
           </summary>
-          <div class="flex flex-wrap justify-center">
+          <div
+            v-if="load['upcoming']"
+            class="flex flex-wrap justify-center"
+          >
             <event-card
               v-for="event in upcomingEvents"
               :key="event.id"
@@ -94,14 +100,20 @@
           :key="mode"
           class="mt-4"
         >
-          <summary class="mx-2 md:text-center text-lg font-semibold capitalize">
+          <summary
+            class="mx-2 md:text-center text-lg font-semibold capitalize"
+            @click="$set(load, mode, true)"
+          >
             <span class="w-48 inline-block text-left">
               {{ formatMode(mode) }}
             </span>
           </summary>
-          <div class="flex flex-wrap justify-center">
+          <div
+            class="flex flex-wrap justify-center"
+          >
             <event-card
               v-for="event in modeEvents"
+              :load="load[mode]"
               :key="event.id"
               :event="event"
             />
@@ -124,6 +136,7 @@ export default {
   },
   data() {
     return {
+      load: {},
       formatMode,
     }
   },
@@ -161,16 +174,20 @@ export default {
   },
   async fetch({ store }) {
     if (!process.static) {
-      await store.dispatch('loadCurrentEvents')
-      await store.dispatch('loadUpcomingEvents')
-      await store.dispatch('loadMapMeta')
+      await Promise.all([
+        store.dispatch('loadCurrentEvents'),
+        store.dispatch('loadUpcomingEvents'),
+        store.dispatch('loadMapMeta'),
+      ])
     }
   },
   async created() {
     if (process.static) {
-      await this.loadCurrentEvents()
-      await this.loadUpcomingEvents()
-      await this.loadMapMeta()
+      await Promise.all([
+        this.loadCurrentEvents(),
+        this.loadUpcomingEvents(),
+        this.loadMapMeta(),
+      ])
     }
   },
   methods: {
