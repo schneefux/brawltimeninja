@@ -2,7 +2,7 @@
   <div class="py-4 px-2">
     <div class="py-8 px-6 my-8 relative">
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
-        Brawler Meta
+        Brawler Tier List
       </h1>
       <p class="md:text-center">
         The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
@@ -10,8 +10,8 @@
       </p>
       <p class="mt-2 mb-6 md:text-center">
         Showing average statistics for all maps. To view Win Rates for specific maps, load the
-        <nuxt-link to="/meta/map" class="link inline-block">
-          Map Meta
+        <nuxt-link to="/tier-list/map" class="link inline-block">
+          Map Tier List
         </nuxt-link>.
       </p>
 
@@ -53,7 +53,7 @@ export default {
   head() {
     const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates, Pick Rates and Rankings.'
     return {
-      title: 'Brawler Meta',
+      title: 'Brawler Tier List',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -77,7 +77,7 @@ export default {
         brawler: brawler.id,
         title: brawler.name,
         stats: brawler.stats,
-        link: `/meta/brawler/${brawler.id}`,
+        link: `/tier-list/brawler/${brawler.id}`,
       }))
     },
     ...mapState({

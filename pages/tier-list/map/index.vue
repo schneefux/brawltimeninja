@@ -2,7 +2,7 @@
   <div class="py-4 px-2">
     <div class="my-8 container mx-auto">
       <h1 class="mx-2 text-4xl md:text-center mt-2 font-semibold">
-        Map Meta
+        Map Tier Lists
       </h1>
 
       <p class="mx-2 flex flex-wrap md:justify-center md:mx-auto mt-3">
@@ -135,9 +135,9 @@ export default {
     }
   },
   head() {
-    const description = 'BrawlStars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
+    const description = 'Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
     return {
-      title: 'Map Meta',
+      title: 'Map Tier List',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

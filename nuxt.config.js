@@ -54,7 +54,8 @@ export default {
 
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/redirect-module'
   ],
 
   router: {
@@ -62,6 +63,11 @@ export default {
 
   axios: {
   },
+
+  redirect: [
+    { from: '^/meta$', to: '/tier-list/brawler', statusCode: 301 },
+    { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
+  ],
 
   env: {
     branch: process.env.BRANCH || '',
