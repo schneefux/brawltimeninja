@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave_small.jpg", "description": "Keep control of Deathcap Cave with Pam, Nita and Barley.", "mode": "gemgrab", "map": "Deathcap Cave" }
+{ "title": "Gem Grab: Deathcap Cave", "author": "kinglionleo", "image": "/images/blog/guides/deathcap-cave_small.jpg", "description": "Keep control of Deathcap Cave with Pam, Nita and Barley.", "mode": "gemgrab", "map": "Deathcap Cave", "id": 9 }
 
 Recommended Comp
 ---
@@ -9,7 +9,7 @@ Note: Deathcap Cave has a lot of diverse comps and this one is just a suggestion
 
 ### Pam
 
-![~hero/icon/pam_optimized.png h-16,p-2,float-right] 
+![~hero/icon/pam_optimized.png h-16,p-2,float-right]
 
 Mid player who offers a lot of area control. She has a lot of great healing turret spots that can benefit either herself, or either lane.
 

@@ -1,23 +1,23 @@
-{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/blog/guides/four-squared_small.jpg", "description": "Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Four Squared" }
+{ "title": "Gem Grab: Four Squared", "author": "kinglionleo", "image": "/images/blog/guides/four-squared_small.jpg", "description": "Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Four Squared", "id": 5 }
 
 Recommended Comp
 ---
 
 ### Spike
 
-![~hero/icon/spike_optimized.png h-16,p-2,float-right] 
+![~hero/icon/spike_optimized.png h-16,p-2,float-right]
 
-Mid player who offers a lot of area control. Can burst down tanks and once the map is opened up, becomes even deadlier. 
+Mid player who offers a lot of area control. Can burst down tanks and once the map is opened up, becomes even deadlier.
 
 ### Mortis
 
-![~hero/icon/mortis_optimized.png h-16,p-2,float-right] 
+![~hero/icon/mortis_optimized.png h-16,p-2,float-right]
 
 Left lane player that harasses the enemy thrower by flanking from behind. Utilize walls as cover and dash-in, dash-out.
 
 ### Dynamike
 
-![~hero/icon/dynamike_optimized.png h-16,p-2,float-right] 
+![~hero/icon/dynamike_optimized.png h-16,p-2,float-right]
 
 Mid player who controls right lane and offers area control for the middle area. Should use super to destroy middle cover.
 

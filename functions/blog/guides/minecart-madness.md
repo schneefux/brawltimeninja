@@ -1,11 +1,11 @@
-{ "title": "Gem Grab: Minecart Madness", "author": "kinglionleo", "image": "/images/blog/guides/minecart-madness_small.jpg", "description": "Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.", "mode": "Gem Grab", "map": "Minecart Madness" }
+{ "title": "Gem Grab: Minecart Madness", "author": "kinglionleo", "image": "/images/blog/guides/minecart-madness_small.jpg", "description": "Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.", "mode": "Gem Grab", "map": "Minecart Madness", "id": 4 }
 
 Recommended Comp
 ---
 
 ### Piper
 
-![~hero/icon/piper_optimized.png h-16,p-2,float-right] 
+![~hero/icon/piper_optimized.png h-16,p-2,float-right]
 
 Mid player whose long range can easily make her come out on top in fights. Her super allows her to make clutch plays coupled with minecarts.
 

@@ -1,23 +1,23 @@
-{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort_small.jpg", "description": "Hold the Stone Fort with long range attacks and Frank, Carl and Rico.", "mode": "Gem Grab", "map": "Stone Fort" }
+{ "title": "Gem Grab: Stone Fort", "author": "kinglionleo", "image": "/images/blog/guides/stone-fort_small.jpg", "description": "Hold the Stone Fort with long range attacks and Frank, Carl and Rico.", "mode": "Gem Grab", "map": "Stone Fort", "id": 2 }
 
 Recommended Comp
 ---
 
 ### Frank
 
-![~hero/icon/frank_optimized.png h-16,p-2,float-right] 
+![~hero/icon/frank_optimized.png h-16,p-2,float-right]
 
 Frank's presence and powerful attack can keep enemies back. He effectively controls an entire area by simply "being there".
 
 ### Carl
 
-![~hero/icon/carl_optimized.png h-16,p-2,float-right] 
+![~hero/icon/carl_optimized.png h-16,p-2,float-right]
 
 Lane player who's long attack can control the bush from afar. His unique returning attack also is able to clip enemies behind walls.
 
 ### Rico
 
-![~hero/icon/rico_optimized.png h-16,p-2,float-right] 
+![~hero/icon/rico_optimized.png h-16,p-2,float-right]
 
 Lane player who's long attack can control the bush from afar. His bouncy bullets lets him poke at enemies hiding behind walls.
 

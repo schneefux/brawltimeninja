@@ -1,11 +1,11 @@
-{ "title": "Gem Grab: Flooded Mines", "author": "kinglionleo", "image": "/images/blog/guides/flooded-mines_small.jpg", "description": "Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.", "mode": "gemgrab", "map": "Flooded Mines" }
+{ "title": "Gem Grab: Flooded Mines", "author": "kinglionleo", "image": "/images/blog/guides/flooded-mines_small.jpg", "description": "Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.", "mode": "gemgrab", "map": "Flooded Mines", "id": 6 }
 
 Recommended Comp
 ---
 
 ### Piper
 
-![~hero/icon/piper_optimized.png h-16,p-2,float-right] 
+![~hero/icon/piper_optimized.png h-16,p-2,float-right]
 
 Mid player who can easily hold control of the gem mine. Her long range enables her to support lanes and take shots at the enemy's mid.
 

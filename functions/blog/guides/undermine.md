@@ -1,4 +1,4 @@
-{ "title": "Gem Grab: Undermine", "author": "kinglionleo", "image": "/images/blog/guides/undermine_small.jpg", "description": "Hide in the bushes and protect the Undermine with Pam, Nita and Leon.", "mode": "Gem Grab", "map": "Undermine" }
+{ "title": "Gem Grab: Undermine", "author": "kinglionleo", "image": "/images/blog/guides/undermine_small.jpg", "description": "Hide in the bushes and protect the Undermine with Pam, Nita and Leon.", "mode": "Gem Grab", "map": "Undermine", "id": 1 }
 
 Recommended Comp
 ---
@@ -9,7 +9,7 @@ Note: Deathcap Cave has a lot of diverse comps and this one is just a suggestion
 
 ### Pam
 
-![~hero/icon/pam_optimized.png h-16,p-2,float-right] 
+![~hero/icon/pam_optimized.png h-16,p-2,float-right]
 
 Mid player who offers a lot of area control. She has a good healing spot and can also assist her lane players with it.
 

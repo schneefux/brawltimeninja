@@ -1,23 +1,23 @@
-{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/deep-siege_small.jpg", "description": "Use walls to your advantage in Deep Siege with Jessie, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Stone Fort" }
+{ "title": "Gem Grab: Deep Siege", "author": "kinglionleo", "image": "/images/blog/guides/deep-siege_small.jpg", "description": "Use walls to your advantage in Deep Siege with Jessie, Mortis and Dynamike.", "mode": "Gem Grab", "map": "Stone Fort", "id": 8 }
 
 Recommended Comp
 ---
 
 ### Jessie
 
-![~hero/icon/jessie_optimized.png h-16,p-2,float-right] 
+![~hero/icon/jessie_optimized.png h-16,p-2,float-right]
 
 Mid player who offers a lot of control. Can punish grouped enemies and has various turret locations.
 
 ### Mortis
 
-![~hero/icon/mortis_optimized.png h-16,p-2,float-right] 
+![~hero/icon/mortis_optimized.png h-16,p-2,float-right]
 
 Right lane player who harasses the enemy by pushing up deep into their spawn. Should try to stay alive.
 
 ### Dynamike
 
-![~hero/icon/dynamike_optimized.png h-16,p-2,float-right] 
+![~hero/icon/dynamike_optimized.png h-16,p-2,float-right]
 
 Left lane player who assists mid by controlling the middle proportion of the map. Important to stay alive.
 
