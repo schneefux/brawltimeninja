@@ -181,7 +181,7 @@
     >
       <div class="home-section-heading-container">
         <div class="home-section-heading-left">
-          Live Events
+          Brawl Stars Events
         </div>
         <div class="home-section-heading-right">
           <nuxt-link

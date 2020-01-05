@@ -4,11 +4,11 @@
       {{ brawlerName }} Tier List
     </h1>
     <p class="md:text-center">
-      The statistics shown are from Battles by Players who visited Brawl Time Ninja in the current season.
-      For this reason, the numbers shown can be contrary to your personal experience.
+      This Brawler Tier List is generated automatically.
+      The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
     </p>
     <p class="mt-2 mb-6 md:text-center">
-      Showing average statistics for
+      Showing Star Power Tier list and best modes for
       <span class="inline-block text-primary-lighter">
         {{ brawlerName }}
       </span>.
