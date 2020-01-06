@@ -202,8 +202,8 @@ export default {
     // called after vuex-persist has loaded the client's data
     version(version) {
       if (version !== undefined) {
-        // only open banner if not Ezoic does not load the constent dialog
-        this.cookieBannerOpen = !this.cookiesAllowed && window.ezdomain == undefined
+        // open banner if user has not opted in & Ezoic did not load the consent manager popup
+        this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
       }
     },
     adsAllowed(allowed) {
@@ -242,6 +242,10 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', () => this.onScroll())
+    if ('update_cookieconsent_options' in window) {
+      // TODO hides Ezoic cookie constent banner
+      window.update_cookieconsent_options({markup: '<i></i>'})
+    }
     window.EzConsentCallback = (consent) => {
       if (consent.preferences) {
         this.allowCookies()
