@@ -202,7 +202,8 @@ export default {
     // called after vuex-persist has loaded the client's data
     version(version) {
       if (version !== undefined) {
-        this.cookieBannerOpen = !this.cookiesAllowed
+        // only open banner if not Ezoic does not load the constent dialog
+        this.cookieBannerOpen = !this.cookiesAllowed && window.ezdomain == undefined
       }
     },
     adsAllowed(allowed) {
@@ -241,6 +242,19 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', () => this.onScroll())
+    window.EzConsentCallback = (consent) => {
+      if (consent.preferences) {
+        this.allowCookies()
+      }
+
+      if (consent.statistics) {
+        this.$ga.enable()
+      }
+
+      if (consent.marketing) {
+        this.allowAds()
+      }
+    }
     this.openMenu()
   },
   methods: {
