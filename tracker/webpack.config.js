@@ -5,14 +5,13 @@ const serverConfig = {
   target: 'node',
   devtool: false,
   entry: {
-    api: './apps/api.ts',
-    tracker: './apps/tracker.ts',
+    tracker: './server.ts',
     migrate: './migrate.ts',
     materialize: './materialize.ts',
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist/apps'),
+    path: path.resolve(__dirname, './dist/'),
   },
   module: {
     rules: [ {

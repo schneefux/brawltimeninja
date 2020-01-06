@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 
-import trackRoutes from '../routes/track';
+import trackRoutes from './routes';
 
 const app = new Koa();
 

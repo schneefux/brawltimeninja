@@ -1,0 +1,41 @@
+{
+  "name": "brawltimeninja",
+  "version": "1.0.0",
+  "description": "Brawlstars player statistics website",
+  "author": "schneefux",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.9.0",
+    "@nuxtjs/pwa": "^3.0.0-beta.19",
+    "@nuxtjs/redirect-module": "^0.3.1",
+    "glob-all": "^3.1.0",
+    "nuxt": "^2.11.0",
+    "vue-analytics": "^5.20.2",
+    "vue-google-adsense": "^1.8.0",
+    "vue-observe-visibility": "^0.4.6",
+    "vuex-persist": "^2.2.0",
+    "youtube-player": "^5.5.2"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^0.0.1",
+    "autoprefixer": "^9.7.3",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": ">=4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-vue": "^5.2.3",
+    "purgecss-webpack-plugin": "^1.6.0",
+    "tailwindcss": "^1.1.4",
+    "tailwindcss-typography": "^2.2.0"
+  }
+}

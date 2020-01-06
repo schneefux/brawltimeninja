@@ -1,0 +1,36 @@
+{
+  "name": "brawltimeninja",
+  "version": "1.0.0",
+  "description": "Brawlstars player statistics website",
+  "author": "schneefux",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -e ts -x ts-node server.ts",
+    "build": "webpack --mode production",
+    "start": "node dist/tracker.js",
+    "migrate": "ts-node migrate.ts",
+    "materialize": "ts-node materialize.ts"
+  },
+  "dependencies": {
+    "knex": "^0.18.4",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "mysql2": "^1.7.0",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/knex": "^0.16.1",
+    "@types/koa": "^2.11.0",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-json": "^2.0.18",
+    "@types/koa-router": "^7.0.42",
+    "@types/koa__cors": "^2.2.3",
+    "@types/node": "^12.12.22",
+    "nodemon": "^1.19.4",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.5.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}
