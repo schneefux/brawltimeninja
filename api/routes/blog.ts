@@ -7,7 +7,7 @@ import Router from 'koa-router';
 import marked from 'marked';
 
 import Blog, { Post } from '../model/Blog';
-import { cache } from '~/lib/request';
+import { cache } from '../lib/request';
 
 const readFileP = promisify(readFile);
 
