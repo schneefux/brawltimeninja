@@ -1,10 +1,10 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
+import { LeaderboardEntry } from '../model/Leaderboard';
+import History from '../model/History';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '../model/MetaEntry';
+import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
-import { LeaderboardEntry } from '~/model/Leaderboard';
-import History from '~/model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
-import { PlayerWinRates } from '~/model/PlayerWinRates';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';

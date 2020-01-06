@@ -11,7 +11,7 @@ async function main() {
   const featuredPlayers = await new BrawlstarsService().getFeaturedPlayers();
   const payload = { blog, featuredPlayers };
 
-  await writeFileP('../store/payload.json', JSON.stringify(payload, null, 2));
+  await writeFileP('./payload.json', JSON.stringify(payload, null, 2));
 }
 
 main().catch(console.error);

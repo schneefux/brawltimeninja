@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 
-import TrackerService from '../services/Tracker';
-import { Player, BattleLog } from '../model/Brawlstars';
+import TrackerService from './services/Tracker';
+import { Player, BattleLog } from '~/model/Brawlstars';
 
 const service = new TrackerService();
 

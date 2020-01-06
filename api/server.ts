@@ -2,10 +2,10 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import Router from 'koa-router';
 
-import statusRoutes from '../routes/status';
-import brawlstarsRoutes from '../routes/brawlstars';
-import blogRoutes from '../routes/blog';
-import partnerRoutes from '../routes/partners';
+import statusRoutes from './routes/status';
+import brawlstarsRoutes from './routes/brawlstars';
+import blogRoutes from './routes/blog';
+import partnerRoutes from './routes/partners';
 
 const app = new Koa();
 const router = new Router();
