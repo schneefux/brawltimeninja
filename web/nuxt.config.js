@@ -3,12 +3,6 @@ import glob from 'glob-all'
 
 import payload from './store/payload.json'
 
-class TailwindExtractor {
-  static extract(content) {
-    return content.match(/[A-z0-9-:!/]+/g) || []
-  }
-}
-
 export default {
   mode: 'universal',
 
@@ -86,10 +80,11 @@ export default {
             content: [
               path.join(__dirname, './pages/**/*.vue'),
               path.join(__dirname, './layouts/**/*.vue'),
-              path.join(__dirname, './components/**/*.vue')
+              path.join(__dirname, './components/**/*.vue'),
+              path.join(__dirname, './store/payload.json'),
             ],
             defaultExtractor: content =>
-              content.match(/[\w-/:]+(?<!:)/g) || [],
+              content.match(/[\w-\/:!/]+/g) || [],
             whitelist: ['html', 'body', 'nuxt-progress']
           }
         }: {})
