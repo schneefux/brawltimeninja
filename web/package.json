@@ -19,6 +19,7 @@
     "vue-analytics": "^5.20.2",
     "vue-google-adsense": "^1.8.0",
     "vue-observe-visibility": "^0.4.6",
+    "vue-tweet-embed": "^2.4.0",
     "vuex-persist": "^2.2.0",
     "youtube-player": "^5.5.2"
   },

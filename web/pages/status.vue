@@ -20,20 +20,15 @@
       </p>
 
       <div class="mt-8">
-        <a
-          class="twitter-timeline"
-          data-height="600"
-          data-dnt="true"
-          data-theme="dark"
-          href="https://twitter.com/BrawlStars?ref_src=twsrc%5Etfw"
-        >Tweets by BrawlStars</a>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <Timeline id="BrawlStars" sourceType="profile" :options="{ theme: 'dark', height: 600, dnt: true }" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { Timeline } from 'vue-tweet-embed'
+
 export default {
   head() {
     const description = 'Is Brawl Stars down? Check Brawl Stars server status.'
@@ -44,6 +39,9 @@ export default {
         { hid: 'og:description', property: 'og:description', content: description },
       ]
     }
+  },
+  components: {
+    Timeline,
   },
   data() {
     return {
