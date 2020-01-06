@@ -12,7 +12,7 @@
     "materialize": "ts-node materialize.ts"
   },
   "dependencies": {
-    "knex": "^0.18.4",
+    "knex": "^0.19.5",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
