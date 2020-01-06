@@ -47,7 +47,7 @@
       <p>We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately, after they are posted on this page.</p>
       <h2>Contact Us</h2>
       <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us.</p>
-      <span id="ezoic-privacy-policy-embed"></span>
+      <span id="ezoic-privacy-policy-embed" class="mt-8"></span>
     </article>
   </div>
 </template>
@@ -69,7 +69,7 @@ export default {
   methods: {
     withdrawCookieConsent() {
       this.clearCookieSettings()
-      location.reload()
+      window.location = '/?ez_force_cookie_consent=1'
     },
     ...mapMutations({
       clearCookieSettings: 'clearCookieSettings',
