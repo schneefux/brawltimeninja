@@ -203,6 +203,7 @@ export default {
     version(version) {
       if (version !== undefined) {
         // open banner if user has not opted in & Ezoic did not load the consent manager popup
+        console.log('ezoic CMP popup visible', window.__cmp == undefined)
         this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
       }
     },
@@ -244,6 +245,7 @@ export default {
     window.addEventListener('scroll', () => this.onScroll())
     if ('update_cookieconsent_options' in window) {
       // TODO hides Ezoic cookie constent banner
+      console.log('hiding ezoic cookie consent banner')
       window.update_cookieconsent_options({markup: '<i></i>'})
     }
     window.EzConsentCallback = (consent) => {
