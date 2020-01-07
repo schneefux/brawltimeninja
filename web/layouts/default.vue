@@ -213,6 +213,9 @@ export default {
         this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
         if (!adsBlocked) {
           this.enableAds()
+          // on Chrome, lazy-loading of ads does not work on first visit
+          // this workaround fixes it
+          window.adsbygoogle.pauseAdRequests = 0
         }
 
         // play store allows only 1 ad/page - TWA is detected via referrer
