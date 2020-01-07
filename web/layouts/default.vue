@@ -201,14 +201,14 @@ export default {
   watch: {
     // called after vuex-persist has loaded the client's data
     version(version) {
-      if (version !== undefined) {
+      if (version !== undefined && process.client) {
         // open banner if user has not opted in & Ezoic did not load the consent manager popup
         console.log('ezoic CMP popup visible', window.__cmp == undefined)
         this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
       }
     },
     adsAllowed(allowed) {
-      if (allowed) {
+      if (allowed && process.client) {
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
         this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
         if (!adsBlocked) {
