@@ -249,6 +249,8 @@ export default {
       window.update_cookieconsent_options({markup: '<i></i>'})
     }
     window.EzConsentCallback = (consent) => {
+      this.cookieBannerOpen = false
+
       if (consent.preferences) {
         this.allowCookies()
       }
