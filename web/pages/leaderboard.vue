@@ -11,6 +11,7 @@
 
       <adsense
         v-if="ads"
+        id="ezoic-pub-ad-placeholder-105"
         root-class="mt-6"
         ins-class="h-24"
         data-ad-client="ca-pub-6856963757796636"
@@ -59,6 +60,7 @@
 
       <adsense
         v-if="ads && !isApp"
+        id="ezoic-pub-ad-placeholder-106"
         root-class="mt-4"
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"

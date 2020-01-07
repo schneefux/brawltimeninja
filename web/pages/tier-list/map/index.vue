@@ -40,6 +40,7 @@
 
       <adsense
         v-if="ads"
+        id="ezoic-pub-ad-placeholder-110"
         ins-class="h-24 mt-6 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="8877810024"
@@ -86,6 +87,7 @@
 
         <adsense
           v-if="ads && !isApp"
+          id="ezoic-pub-ad-placeholder-111"
           ins-class="h-24 mt-6 text-center"
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3577381889"

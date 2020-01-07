@@ -41,6 +41,7 @@
 
       <adsense
         v-if="ads"
+        id="ezoic-pub-ad-placeholder-112"
         ins-class="h-24 mb-2 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1665534416"
