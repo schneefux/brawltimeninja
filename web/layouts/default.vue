@@ -215,7 +215,9 @@ export default {
           this.enableAds()
           // on Chrome, lazy-loading of ads does not work on first visit
           // this workaround fixes it
-          window.adsbygoogle.pauseAdRequests = 0
+          if ('adsbygoogle' in window) {
+            window.adsbygoogle.pauseAdRequests = 0
+          }
         }
 
         // play store allows only 1 ad/page - TWA is detected via referrer
