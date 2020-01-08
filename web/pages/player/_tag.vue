@@ -672,7 +672,7 @@ export default {
     BrawlerCard,
   },
   head() {
-    const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track progress stats and get recommendations for Brawl Stars.`
+    const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats and get Tips.`
     return {
       title: this.player.name,
       meta: [

@@ -13,7 +13,7 @@ export default {
   meta: {
     viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
     name: 'Brawl Time Ninja',
-    description: 'Check Brawl Stars hours played. Track trophies and player stats. View Brawler win rates and find the best Brawler for every map and mode.',
+    description: 'Get your Brawl Stars stats. Track trophies, view Tier Lists. Read Guides and personalised Tips for all Events.',
     author: 'schneefux',
     theme_color: '#3490dc', // primary
   },
@@ -22,7 +22,7 @@ export default {
     manifest: {
       name: 'Brawl Time Ninja',
       short_name: 'Brawl Time',
-      description: 'Check Brawl Stars hours played, player stats and win rates.',
+      description: 'Track Brawl Stars stats, hours played and view Tier Lists.',
       theme_color: '#3490dc', // primary
     },
     workbox: {
