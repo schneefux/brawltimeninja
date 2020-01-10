@@ -27,7 +27,8 @@ export default {
     },
     workbox: {
       // https://github.com/nuxt-community/pwa-module/issues/149
-      cacheAssets: false,
+      // needed for Netlify
+      //cacheAssets: false,
     },
   },
 
