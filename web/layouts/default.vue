@@ -208,6 +208,9 @@ export default {
       }
     },
     adsAllowed(allowed) {
+      if (!allowed && process.client) {
+        this.disableAds()
+      }
       if (allowed && process.client) {
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
         this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
@@ -218,6 +221,8 @@ export default {
           if ('adsbygoogle' in window) {
             window.adsbygoogle.pauseAdRequests = 0
           }
+        } else {
+          this.disableAds()
         }
 
         // play store allows only 1 ad/page - TWA is detected via referrer
@@ -266,6 +271,8 @@ export default {
 
       if (consent.marketing) {
         this.allowAds()
+      } else {
+        this.disableAds()
       }
     }
     this.openMenu()
@@ -302,6 +309,7 @@ export default {
     enableCookies() {
       this.cookieBannerOpen = false
       this.allowCookies()
+      this.disallowAds()
     },
     enableCookiesAndAds() {
       this.cookieBannerOpen = false
@@ -318,7 +326,9 @@ export default {
     ...mapMutations({
       allowCookies: 'allowCookies',
       allowAds: 'allowAds',
+      disallowAds: 'disallowAds',
       enableAds: 'enableAds',
+      disableAds: 'disableAds',
       setIsApp: 'setIsApp',
       setInstallPrompt: 'setInstallPrompt',
       clearInstallPrompt: 'clearInstallPrompt',

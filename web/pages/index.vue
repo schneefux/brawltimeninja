@@ -166,7 +166,7 @@
     <adsense
       v-if="ads"
       id="ezoic-pub-ad-placeholder-104"
-      root-class="home-section container flex justify-center"
+      class="home-section container flex justify-center"
       ins-class="w-full mx-4 h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6709232983"
@@ -225,7 +225,7 @@
     <adsense
       v-if="ads"
       id="ezoic-pub-ad-placeholder-103"
-      root-class="home-section container flex justify-center"
+      class="home-section container flex justify-center"
       ins-class="w-full mx-4 h-48"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6736366415"
