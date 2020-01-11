@@ -162,6 +162,17 @@
             </p>
           </div>
         </div>
+
+        <div class="bigstat-container">
+          <div class="bigstat-left bigstat-number">
+            {{ accountRating }}
+          </div>
+          <div class="bigstat-right bigstat-label text-xl">
+            <p class="w-24">
+              Account Rating
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -837,6 +848,28 @@ export default {
       })
       recommendations.sort((r1, r2) => r1.score - r2.score)
       return recommendations.slice(0, 20)
+    },
+    accountRating() {
+      const medTrophies = this.trophiesGoal / this.totalBrawlers
+      // end of Jan 2019 season *average* (not med!) trophies per brawler:
+      // 290 - 25%ile
+      // 380 - 50%ile
+      // 530 - 90%ile
+      // 550 - 95%ile
+      // 620 - 99%ile
+      if (medTrophies <= 290) {
+        return '?'
+      }
+      if (medTrophies <= 380) {
+        return 'C'
+      }
+      if (medTrophies <= 530) {
+        return 'B'
+      }
+      if (medTrophies <= 550) {
+        return 'A'
+      }
+      return 'S'
     },
     ...mapState({
       ads: state => state.adsEnabled,
