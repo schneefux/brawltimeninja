@@ -438,7 +438,6 @@ export default class TrackerService {
 
         table.index(['player_id']);
         table.index(['player_tag']);
-        table.foreign('player_id').references('player.id');
       });
       console.log('created player_brawler table');
     }
@@ -483,7 +482,6 @@ export default class TrackerService {
 
         await txn.schema.table('player_brawler', (table) => {
           table.bigInteger('player_id').unsigned().notNullable().alter();
-          table.foreign('player_id').references('player.id');
         });
         console.log('updated player_brawler');
       });
@@ -538,7 +536,6 @@ export default class TrackerService {
 
         table.unique(['battle_id', 'player_tag']); // player plays once
         table.unique(['player_tag', 'timestamp']); // player plays one game at a time
-        table.foreign('battle_id').references('battle.id');
       });
       console.log('created player_battle');
     }
@@ -645,9 +642,6 @@ export default class TrackerService {
           table.bigInteger('power_count').notNullable().unsigned();
 
           table.unique(['season_id', 'brawler_starpower_id', 'is_bigbrawler', 'event_id'], 'idx_unq_dimensions');
-          table.foreign('season_id').references('dim_season.id');
-          table.foreign('event_id').references('dim_event.id');
-          table.foreign('brawler_starpower_id').references('dim_brawler_starpower.id');
         });
         console.log('created aggregation table');
       });
