@@ -54,28 +54,10 @@
               Profile Search
             </nuxt-link>
             <nuxt-link
-              to="/tier-list/brawler"
-              class="nav-link"
-            >
-              Brawler Tier List
-            </nuxt-link>
-            <nuxt-link
-              to="/tier-list/map"
-              class="nav-link"
-            >
-              Map Tier Lists
-            </nuxt-link>
-            <nuxt-link
               to="/leaderboard"
               class="nav-link"
             >
               Leaderboard
-            </nuxt-link>
-            <nuxt-link
-              to="/status"
-              class="nav-link"
-            >
-              Status
             </nuxt-link>
             <nuxt-link
               v-for="topic in topics"
@@ -84,6 +66,30 @@
               class="nav-link"
             >
               {{ topic }}
+            </nuxt-link>
+            <nuxt-link
+              to="/tier-list/brawler"
+              class="nav-link"
+            >
+              Brawler Tier List
+            </nuxt-link>
+            <nuxt-link
+              to="/tier-list/mode"
+              class="nav-link"
+            >
+              Mode Tier Lists
+            </nuxt-link>
+            <nuxt-link
+              to="/tier-list/map"
+              class="nav-link"
+            >
+              Map Tier Lists
+            </nuxt-link>
+            <nuxt-link
+              to="/status"
+              class="nav-link"
+            >
+              Status
             </nuxt-link>
             <nuxt-link
               to="/about"
