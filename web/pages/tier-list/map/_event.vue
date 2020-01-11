@@ -19,9 +19,13 @@
         <span class="text-primary-lighter inline-block">
           {{ formatMode(selectedMode) }} - {{ selectedMap }}
         </span>.
-        To view a Tier List for all Brawlers, load the
+        To view an overall Tier List, load the
         <nuxt-link to="/tier-list/brawler" class="link inline-block">
           Brawler Tier List
+        </nuxt-link>,
+        or load the
+        <nuxt-link :to="`/tier-list/mode/${camelToKebab(selectedMode)}`" class="link">
+          {{ formatMode(selectedMode) }} Tier List
         </nuxt-link>.
       </p>
 
@@ -59,7 +63,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { formatMode, metaStatMaps } from '~/store/index'
+import { formatMode, metaStatMaps, camelToKebab } from '~/store/index'
 import EventCard from '~/components/event-card.vue'
 import MetaGrid from '~/components/meta-grid.vue'
 
@@ -84,6 +88,7 @@ export default {
       adSlots: ['3154710057', '6902383379', '8405314532', '7640749978', '1075341622', '5745639405'],
       formatMode,
       metaStatMaps,
+      camelToKebab,
     }
   },
   computed: {

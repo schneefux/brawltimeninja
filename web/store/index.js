@@ -51,6 +51,9 @@ export function modeToBackgroundId(modeCamelCase) {
   return mode.replace('_', '')
 }
 
+export const camelToKebab = (s) =>
+  s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+
 export const metaStatMaps = {
   labels: {
     trophies: 'Trophies',

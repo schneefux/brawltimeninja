@@ -10,9 +10,12 @@
         Click on a link to view the best Star Powers for each Brawler.
       </p>
       <p class="mt-2 mb-6 md:text-center">
-        Showing global Tier List. To view Tier Lists for specific maps, load the
+        Showing global Tier List. To view specific Tier Lists, load the
         <nuxt-link to="/tier-list/map" class="link inline-block">
           Map Tier Lists
+        </nuxt-link> or the
+        <nuxt-link to="/tier-list/mode" class="link inline-block">
+          Mode Tier Lists
         </nuxt-link>.
       </p>
 

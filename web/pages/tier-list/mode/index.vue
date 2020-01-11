@@ -4,6 +4,12 @@
       Game Mode Tier Lists
     </h1>
 
+    <p class="md:text-center px-2 mt-6 max-w-lg mx-auto">
+      Mode Tier Lists for all modes in Brawl Stars.
+      Click on a Mode and see the best Brawlers for all Brawl Stars Modes.
+      The data is from battles played in the current season.
+    </p>
+
     <div class="section">
       <div class="flex flex-wrap">
         <div
@@ -34,11 +40,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { formatMode, modeToBackgroundId } from '~/store/index'
+import { formatMode, modeToBackgroundId, camelToKebab } from '~/store/index'
 import MetaGrid from '~/components/meta-grid.vue'
-
-const camelToKebab = (s) =>
-  s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
 
 export default {
   name: 'ModeMetaPage',
