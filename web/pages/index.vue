@@ -126,16 +126,24 @@
           <div
             :key="prop"
             class="card-wrapper px-2"
+            itemscope
+            itemtype="http://schema.org/Person"
           >
             <div class="card prop-card md:prop-card-lg">
-              <span class="prop-card-title md:prop-card-title-lg">
+              <span class="prop-card-title md:prop-card-title-lg" itemprop="name">
                 {{ brawler.name.toLowerCase() }}
               </span>
               <img
                 :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                :alt="brawler.name"
                 class="prop-card-image md:prop-card-image-lg"
+                itemprop="image"
               >
-              <div class="prop-card-content">
+              <div
+                class="prop-card-content"
+                itemscope
+                itemtype="http://schema.org/QuantitativeValue"
+              >
                 <div>
                   <img
                     v-if="metaStatMaps.icons[prop].length > 2"
@@ -149,11 +157,11 @@
                   >
                     {{ metaStatMaps.icons[prop] }}
                   </span>
-                  <span class="card-prop-value">
+                  <span class="card-prop-value" itemprop="value">
                     {{ metaStatMaps.formatters[prop](brawler.stats[prop]) }}
                   </span>
                 </div>
-                <span class="text-xs md:text-sm">
+                <span class="text-xs md:text-sm" itemprop="unitText">
                   {{ metaStatMaps.labels[prop] }}
                 </span>
               </div>

@@ -1,18 +1,21 @@
 <template>
   <div
     class="link-card flex flex-col justify-end"
+    itemscope
+    itemtype="http://schema.org/Event"
   >
     <nuxt-link
       :to="`/tier-list/map/${event.id}`"
       class="link-light capitalize"
       :target="isInIframe ? '_blank' : ''"
+      itemprop="url"
     >
       <div
         v-if="asset.default"
         :style="`background-image: url('${asset.default}')`"
         class="h-48 bg-contain bg-no-repeat bg-center mt-6"
       />
-      <p class="mt-4 text-center text-xl">
+      <p class="mt-4 text-center text-xl" itemprop="location">
         {{ formatMode(event.mode) }}
         -
         {{ event.map }}
@@ -23,21 +26,28 @@
           v-for="brawler in (bestByEvent[event.id] || []).slice(0, 3)"
           :key="brawler.id"
           class="px-2"
+          itemprop="performer"
+          itemscope
+          itemtype="http://schema.org/Person"
         >
           <div class="card border-grey-darker border flex justify-between mx-auto">
             <div class="w-12">
               <img
                 :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                :alt="brawler.name"
                 class="h-8"
+                itemprop="image"
               >
             </div>
           </div>
           <div
             v-if="brawler.stats"
             class="mt-1 text-center text-grey-darker text-xs"
+            itemscope
+            itemtype="http://schema.org/QuantitativeValue"
           >
-            {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-            {{ metaStatMaps.labelsShort[brawler.sortProp] }}
+            <span itemprop="value">{{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}</span>
+            <span itemprop="unitText">{{ metaStatMaps.labelsShort[brawler.sortProp] }}</span>
           </div>
         </div>
       </div>

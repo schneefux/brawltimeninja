@@ -1,19 +1,25 @@
 <template>
   <div class="container mx-auto py-4 px-2">
-    <article class="bg-grey-lighter py-8 px-6 my-8 text-black">
+    <article
+      class="bg-grey-lighter py-8 px-6 my-8 text-black"
+      itemscop
+      itemtype="http://schema.org/AnalysisNewsArticle"
+    >
       <div
         v-if="post.image"
         :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
         class="h-48 bg-cover bg-center mb-6"
+        itemprop="thumbnailUrl"
       />
       <h1 class="text-4xl font-semibold">
-        <span class="text-primary-dark">{{ post.title }}</span>
-        <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker">{{ post.author }}</span>
+        <span class="text-primary-dark" itemprop="headline">{{ post.title }}</span>
+        <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker" rel="author">{{ post.author }}</span>
       </h1>
       <div class="mt-2">
         <div
           ref="markdown"
           class="markdown"
+          itemprop="articleBody"
           v-html="post.content"
         />
 

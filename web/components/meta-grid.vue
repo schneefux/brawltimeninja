@@ -24,6 +24,8 @@
         v-if="(ads && !isApp) || entry.adSlot === undefined"
         :key="entry.id"
         class="card-wrapper w-full md:flex-1"
+        itemscope
+        itemtype="http://schema.org/Person"
       >
         <adsense
           v-if="ads && entry.adSlot !== undefined"
@@ -57,11 +59,14 @@
                 v-for="(_, prop) in comparators"
                 :key="prop"
                 class="card-props whitespace-no-wrap"
+                itemscope
+                itemtype="http://schema.org/QuantitativeValue"
               >
                 <td class="text-center">
                   <img
                     v-if="metaStatMaps.icons[prop].length > 2"
                     :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
+                    :alt="prop"
                     class="card-prop-icon inline"
                   >
                   <!-- use emojis (length 2) -->
@@ -72,10 +77,10 @@
                     {{ metaStatMaps.icons[prop] }}
                   </span>
                 </td>
-                <td class="card-prop-value text-right pr-1">
+                <td class="card-prop-value text-right pr-1" itemprop="unitText">
                   {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
                 </td>
-                <td class="card-prop-label">
+                <td class="card-prop-label" itemprop="value">
                   {{ metaStatMaps.labels[prop] }}
                 </td>
               </tr>
@@ -84,6 +89,7 @@
               v-if="entry.link !== undefined"
               :to="entry.link"
               class="link"
+              itemprop="url"
             >
               {{ linkText }}
             </nuxt-link>
