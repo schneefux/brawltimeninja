@@ -9,7 +9,13 @@ const writeFileP = promisify(writeFile);
 async function main() {
   const blog = await renderBlog();
   const featuredPlayers = await new BrawlstarsService().getFeaturedPlayers();
-  const payload = { blog, featuredPlayers };
+  const mapMeta = await new BrawlstarsService().getMapMeta({});
+  const events = [...Object.entries(mapMeta)].map(([id, map]: any) => ({
+    id,
+    mode: map.mode,
+    map: map.map,
+  }))
+  const payload = { blog, featuredPlayers, events };
 
   await writeFileP('./payload.json', JSON.stringify(payload, null, 2));
 }

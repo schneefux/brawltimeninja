@@ -1,6 +1,6 @@
 import path from 'path'
-import glob from 'glob-all'
 
+import { camelToKebab } from './store/index'
 import payload from './store/payload.json'
 
 export default {
@@ -29,9 +29,9 @@ export default {
       // https://github.com/nuxt-community/pwa-module/issues/149
       // https://github.com/nuxt-community/pwa-module/issues/116#issuecomment-461534741
       // needed for Netlify
-      // do not cache JS
+      // do not cache /_nuxt/*
       //cacheAssets: false,
-      // do not cache html
+      // do not cache /*
       offline: false,
     },
   },
@@ -53,7 +53,8 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/redirect-module'
+    '@nuxtjs/redirect-module',
+    '@nuxtjs/sitemap',
   ],
 
   router: {
@@ -98,14 +99,42 @@ export default {
     },
   },
 
+  sitemap: {
+    // generated during run time
+    gzip: true,
+    exclude: ['/embed/**'],
+    routes() {
+      const routes = []
+
+      const modes = []
+      payload.events.forEach((event) => {
+        if (!modes.includes(event.mode)) {
+          const mode = camelToKebab(event.mode)
+          modes.push(event.mode)
+          routes.push(`/tier-list/mode/${mode}`)
+        }
+        routes.push(`/tier-list/map/${event.id}`)
+      });
+
+      [...Object.entries(payload.blog)].forEach(([topic, posts]) => {
+        routes.push(`/blog/${topic}`)
+        posts.forEach(post => routes.push(`/blog/${topic}/${post.id}`))
+      })
+
+      return routes
+    },
+  },
+
   generate: {
     fallback: true,
     routes() {
       const routes = []
 
+      // do not include meta pages because they require dynamic data
       routes.push({
         route: '/',
       });
+
       [...Object.entries(payload.blog)].forEach(([topic, posts]) => {
         routes.push({
           route: `/blog/${topic}`,
