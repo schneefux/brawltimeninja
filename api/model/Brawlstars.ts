@@ -40,6 +40,7 @@ export interface Event {
   endTime: string;
   freeKeys: number;
   mapId: number;
+  mapApiId: number;
   mapName: string;
   mapImageUrl: string;
   gameMode: string;

@@ -64,11 +64,11 @@ export default class BrawlstarsService {
     );
 
     return response.current.map((event) => ({
-      // official BS API returns 150000xy event ids
-      // unofficial API returns  15000xy event ids
-      id: event.mapId.toString().replace(/^150/, '1500'),
+      id: event.mapApiId.toString(),
       map: event.mapName,
       mode: event.gameMode,
+      start: event.startTime,
+      end: event.endTime,
     }));
   }
 
@@ -82,11 +82,11 @@ export default class BrawlstarsService {
     );
 
     return response.upcoming.map((event) => ({
-      // official BS API returns 150000xy event ids
-      // unofficial API returns  15000xy event ids
-      id: event.mapId.toString().replace(/^150/, '1500'),
+      id: event.mapApiId.toString(),
       map: event.mapName,
       mode: event.gameMode,
+      start: event.startTime,
+      end: event.endTime,
     }));
   }
 
