@@ -3,15 +3,15 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <nav class="bg-primary-dark px-4 pb-2 md:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 md:static">
-      <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-1 md:py-0 w-full md:w-auto">
+    <nav class="bg-primary-dark px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
+      <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
         <nuxt-link
           to="/"
           class="font-semibold text-xl text-white tracking-tighter"
         >
           Brawl Time Ninja
         </nuxt-link>
-        <div class="md:hidden float-right">
+        <div class="lg:hidden float-right">
           <button
             v-show="isInstallable"
             class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
@@ -32,11 +32,11 @@
 
       <div
         ref="menu"
-        class="w-full md:w-auto relative z-0"
+        class="w-full lg:w-auto relative z-0"
       >
         <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap">
-          <div class="pt-3 pb-3 md:py-0 md:my-0">
-            <div class="hidden md:inline-block">
+          <div class="pt-3 pb-3 lg:py-0 lg:my-0">
+            <div class="hidden lg:inline-block">
               <button
                 v-show="isInstallable"
                 class="nav-link"
@@ -355,7 +355,7 @@ export default {
   @apply inline-block mr-4 text-primary-lighter border-b border-primary-lighter text-lg capitalize font-medium;
 }
 
-@screen md {
+@screen lg {
   .nav-link {
     @apply border-0;
   }
