@@ -437,7 +437,8 @@ export default class TrackerService {
         table.integer('power').unsigned().notNullable();
 
         table.index(['player_id']);
-        table.index(['player_tag']);
+        table.index(['player_tag', 'timestamp', 'name']);
+        // create index player_brawler_player_name_timestamp_index on player_brawler(player_tag, timestamp, name);
       });
       console.log('created player_brawler table');
     }
