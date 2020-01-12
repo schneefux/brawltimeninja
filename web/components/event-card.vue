@@ -15,11 +15,14 @@
         :style="`background-image: url('${asset.default}')`"
         class="h-48 bg-contain bg-no-repeat bg-center mt-6"
       />
-      <p class="mt-4 text-center text-xl" itemprop="location">
+      <meta itemprop="image" :content="asset.default" />
+      <p class="mt-4 text-center text-xl" itemprop="name">
         {{ formatMode(event.mode) }}
         -
         {{ event.map }}
       </p>
+      <meta itemprop="startDate" :content="event.start" />
+      <meta itemprop="endDate" :content="event.end" />
 
       <div v-if="load" class="mt-4 flex flex-wrap justify-center">
         <div
@@ -38,6 +41,7 @@
                 class="h-8"
                 itemprop="image"
               >
+              <meta itemprop="name" :content="brawler.name" />
             </div>
           </div>
           <div
