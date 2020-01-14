@@ -13,7 +13,7 @@ export default {
   meta: {
     viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
     name: 'Brawl Time Ninja',
-    description: 'Get your Brawl Stars stats. Track trophies, view Tier Lists. Read Guides and personalised Tips for all Events.',
+    description: 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.',
     author: 'schneefux',
     theme_color: '#3490dc', // primary
   },

@@ -314,7 +314,7 @@ export default {
     Youtube,
   },
   head() {
-    const description = 'Get your Brawl Stars stats. Track trophies, view Tier Lists. Read Guides and personalised Tips for all Events.'
+    const description = 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
     return {
       title: 'Brawl Stars Statistics',
       meta: [
