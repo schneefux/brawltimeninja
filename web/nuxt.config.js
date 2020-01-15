@@ -55,6 +55,7 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
     '@nuxtjs/sitemap',
+    '@nuxtjs/sentry',
   ],
 
   router: {
@@ -67,6 +68,11 @@ export default {
     { from: '^/meta$', to: '/tier-list/brawler', statusCode: 301 },
     { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
   ],
+
+  sentry: {
+    dsn: 'https://8f9daacd6ab7467788de9869803c41e8@sentry.io/1882484',
+    config: {},
+  },
 
   env: {
     branch: process.env.BRANCH || '',
