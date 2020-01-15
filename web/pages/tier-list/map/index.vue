@@ -65,18 +65,13 @@
 
         <details
           id="upcoming"
+          open
           class="mt-6"
         >
-          <summary
-            class="mx-2 text-xl md:text-center font-semibold"
-            @click="$set(load, 'upcoming', true)"
-          >
+          <summary class="mx-2 text-xl md:text-center font-semibold">
             Up next
           </summary>
-          <div
-            v-if="load['upcoming']"
-            class="flex flex-wrap justify-center"
-          >
+          <div class="flex flex-wrap justify-center">
             <event-card
               v-for="event in upcomingEvents"
               :key="event.id"
