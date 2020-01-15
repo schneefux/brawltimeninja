@@ -40,7 +40,7 @@ export function request<T>(
     base: string,
     params: { [key: string]: string },
     headers: { [header: string]: string },
-    timeoutMs: number = 5000,
+    timeoutMs: number = 10000,
     ttlS: number = 180): Promise<T> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
