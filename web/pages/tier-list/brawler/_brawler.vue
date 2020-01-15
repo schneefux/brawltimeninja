@@ -1,10 +1,10 @@
 <template>
   <div class="py-8 px-6 relative">
     <h1 class="text-4xl md:text-center mt-2 font-semibold">
-      {{ brawlerName }} Tier List
+      {{ brawlerName }} Statistics
     </h1>
-    <p class="md:text-center">
-      This Brawler Tier List is generated automatically.
+    <p class="mt-2 md:text-center">
+      This Star Power Tier List is generated automatically.
       The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
     </p>
     <p class="mt-2 mb-6 md:text-center">
@@ -25,7 +25,7 @@
 
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
-        Star Powers
+        Star Power Tier List
       </h2>
     </div>
 
@@ -91,7 +91,7 @@
 
     <div class="section-heading">
       <h2 class="text-2xl font-semibold">
-        Game Modes
+        Game Mode Statistics
       </h2>
     </div>
 
