@@ -70,11 +70,21 @@ export default {
   ],
 
   sentry: {
-    dsn: 'https://8f9daacd6ab7467788de9869803c41e8@sentry.io/1882484',
+    // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
+    // auth token is an organization integration auth token (developer settings)
+    // with project write, release admin and org read access
     config: {
-      ignoreErrors: [/'frameElement'/],
+      ignoreErrors: [/frameElement/],
     },
     disabled: process.env.NODE_ENV == 'development',
+    publishRelease: true,
+    webpackConfig: {
+      release: 'brawltimeninja@' + process.env.GIT_REV,
+      setCommits: {
+        repo: 'schneefux/brawltimeninja',
+        commit: process.env.GIT_REV,
+      },
+    },
   },
 
   env: {
