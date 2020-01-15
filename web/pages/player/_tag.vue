@@ -916,7 +916,7 @@ export default {
     throw lastError
   },
   created() {
-    if (process.client) {
+    if (process.client && 'Notification' in window) {
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
     if (process.static) {
