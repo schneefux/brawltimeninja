@@ -100,7 +100,7 @@
     </div>
 
     <div
-      v-if="Object.keys(topBrawlers).length > 0"
+      v-show="Object.keys(topBrawlers).length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,

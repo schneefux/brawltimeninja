@@ -11,9 +11,9 @@
             :to="`/blog/${topic}/${post.id}`"
           >
             <img
-              v-if="post.mode != undefined"
+              v-show="'mode' in post"
               class="h-6 float-right mx-2"
-              :src="require(`~/assets/images/mode/icon/${post.mode.toLowerCase().replace(' ', '')}_optimized.png`)"
+              :src="'mode' in post ? require(`~/assets/images/mode/icon/${post.mode.toLowerCase().replace(' ', '')}_optimized.png`) : ''"
             >
             <h3 class="card-header text-primary-dark">
               {{ post.title }}

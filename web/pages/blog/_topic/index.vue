@@ -29,8 +29,8 @@
           {{ post.description }}
         </p>
         <div
-          v-if="post.image"
-          :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')`"
+          v-show="'image' in post"
+          :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
           class="h-48 bg-cover bg-center mt-6"
           itemprop="thumbnailUrl"
         />

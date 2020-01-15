@@ -21,7 +21,7 @@
         >
       </div>
       <p
-        v-if="!tagValid"
+        v-show="!tagValid"
         class="mt-2 -mb-4 text-red-500 w-full text-center"
       >
         This is not a tag.
