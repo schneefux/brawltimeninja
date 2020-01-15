@@ -152,7 +152,7 @@ export default {
   head() {
     const description = `${this.brawlerName} Brawl Stars stats. Star Power Tier List with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Brawler Tier List`,
+      title: `${this.brawlerName} Star Power Tier List`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
