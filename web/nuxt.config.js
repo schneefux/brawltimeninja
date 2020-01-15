@@ -71,7 +71,9 @@ export default {
 
   sentry: {
     dsn: 'https://8f9daacd6ab7467788de9869803c41e8@sentry.io/1882484',
-    config: {},
+    config: {
+      ignoreErrors: [/'frameElement'/],
+    },
     disabled: process.env.NODE_ENV == 'development',
   },
 
