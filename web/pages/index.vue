@@ -316,7 +316,7 @@ export default {
   head() {
     const description = 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
     return {
-      title: 'Brawl Stars Statistics',
+      title: 'Brawl Stars Stats',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
