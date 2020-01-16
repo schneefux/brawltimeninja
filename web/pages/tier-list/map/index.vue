@@ -11,33 +11,6 @@
         The data is from battles played in the current season.
       </p>
 
-      <p class="mx-2 flex flex-wrap md:justify-center md:mx-auto mt-4">
-        <span class="text-xl w-full md:text-center">
-          Table of Contents
-        </span>
-        <ul class="mx-3 mt-2 border-l px-2">
-          <li>
-            <a href="#current">
-              Live now
-            </a>
-          </li>
-          <li class="mt-2">
-            <a href="#upcoming">
-              Up next
-            </a>
-          </li>
-          <li
-            v-for="(_, mode) in events"
-            :key="mode"
-            class="mt-2"
-          >
-            <a :href="`#${mode}`">
-              {{ formatMode(mode) }}
-            </a>
-          </li>
-        </ul>
-      </p>
-
       <adsense
         v-if="ads"
         id="ezoic-pub-ad-placeholder-110"
