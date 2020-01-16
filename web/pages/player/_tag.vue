@@ -934,7 +934,7 @@ export default {
       this.hoursSpent = 0
       const hoursTimer = () => setTimeout(() => {
         this.hoursSpent += k * (playerHours - this.hoursSpent)
-        if (Math.floor(this.hoursSpent) < playerHours) {
+        if (Math.floor(this.hoursSpent) < playerHours - 1) {
           hoursTimer()
         } else {
           this.hoursSpent = playerHours
