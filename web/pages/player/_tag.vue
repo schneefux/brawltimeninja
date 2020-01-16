@@ -20,8 +20,9 @@
       <div class="section items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0 flex">
           <div>
-            <p class="text-5xl text-secondary font-bold">
-              {{ Math.floor(hoursSpent) }}
+            <p ref="counter-hours" class="text-5xl text-secondary font-bold">
+              ...
+              <!-- set by ref -->
             </p>
             <p class="text-3xl text-white">
               hours spent
@@ -46,8 +47,9 @@
             :key="statName"
             class="mx-auto px-2 my-3"
           >
-            <p class="text-3xl text-secondary font-semibold">
-              {{ Math.floor(stat.value) }}
+            <p ref="counter-funstats" class="text-3xl text-secondary font-semibold">
+              ...
+              <!-- set by ref -->
             </p>
             <p class="text-2xl text-grey-lighter">
               {{ stat.label }}
@@ -694,7 +696,6 @@ export default {
   },
   data() {
     return {
-      hoursSpent: 0,
       error: '',
       battlePage: 1,
       battlePageSize: 3,
@@ -714,23 +715,23 @@ export default {
         recharges: {
           // measured with AccuBattery on my phone
           label: 'empty batteries',
-          value: this.hoursSpent / 4.27
+          value: (h) => h / 4.27
         },
         toiletBreaks: {
           // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
           // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
           label: 'toilet breaks',
-          value: this.hoursSpent / (102 / 7 / 60)
+          value: (h) => h / (102 / 7 / 60)
         },
         books: {
           // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
           label: 'books unread',
-          value: this.hoursSpent / 7.72
+          value: (h) => h / 7.72
         },
         songs: {
           // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
           label: 'songs unheard',
-          value: this.hoursSpent / (3.7 / 60)
+          value: (h) => h / (3.7 / 60)
         },
       }
     },
@@ -738,10 +739,7 @@ export default {
       return Object.keys(this.player.brawlers).length
     },
     trophiesPerHour() {
-      if (this.hoursSpent === 0) {
-        return 0
-      }
-      return this.player.trophies / this.hoursSpent
+      return this.player.trophies / this.player.hoursSpent
     },
     trophiesGoal() {
       const brawlerTrophies = [...Object.values(this.player.brawlers)]
@@ -927,24 +925,24 @@ export default {
   mounted() {
     if (process.client) {
       const playerHours = this.player.hoursSpent
-      const animationDuration = 5000
+      const animationDuration = 3000
       const frameDuration = 100
       const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
-      this.hoursSpent = 0
+      let hoursSpent = 0
       const hoursTimer = () => setTimeout(() => {
-        this.hoursSpent += k * (playerHours - this.hoursSpent)
-        if (Math.floor(this.hoursSpent) < playerHours - 1) {
+        hoursSpent += k * (playerHours - hoursSpent)
+        if (Math.floor(hoursSpent) < playerHours - 1) {
           hoursTimer()
         } else {
-          this.hoursSpent = playerHours
+          hoursSpent = playerHours
         }
+        this.$refs['counter-hours'].textContent = Math.floor(hoursSpent)
+        Object.values(this.funStats).forEach((stat, index) => {
+          this.$refs['counter-funstats'][index].textContent = Math.floor(stat.value(hoursSpent))
+        })
       }, frameDuration)
       hoursTimer()
-    }
-
-    if (process.static) {
-      this.loadLeaderboard()
     }
 
     setTimeout(() => this.refreshTimer(), 15 * 1000)
