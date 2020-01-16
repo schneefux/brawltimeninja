@@ -27,36 +27,40 @@
       <meta itemprop="startDate" :content="event.start" />
       <meta itemprop="endDate" :content="event.end" />
 
-      <div v-if="load" class="mt-4 flex flex-wrap justify-center">
-        <div
-          v-for="brawler in (bestByEvent[event.id] || []).slice(0, 3)"
-          :key="brawler.id"
-          class="px-2"
-          itemprop="performer"
-          itemscope
-          itemtype="http://schema.org/Person"
-        >
-          <div class="card border-grey-darker border flex justify-between mx-auto">
-            <div class="w-12">
-              <img
-                :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
-                :alt="brawler.name"
-                class="h-8"
-                itemprop="image"
-              >
-              <meta itemprop="name" :content="brawler.name" />
-            </div>
-          </div>
-          <div
-            v-if="brawler.stats"
-            class="mt-1 text-center text-grey-darker text-xs"
+      <div v-if="load" class="flex flex-wrap justify-center">
+        <p class="mb-1 mt-1 w-full text-center text-sm">Best Brawlers:</p>
+        <ul>
+          <li
+            v-for="brawler in (bestByEvent[event.id] || []).slice(0, 3)"
+            :key="brawler.id"
+            class="inline-block px-2 text-grey-darker text-xs"
+            itemprop="performer"
             itemscope
-            itemtype="http://schema.org/QuantitativeValue"
+            itemtype="http://schema.org/Person"
           >
-            <span itemprop="value">{{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}</span>
-            <span itemprop="unitText">{{ metaStatMaps.labelsShort[brawler.sortProp] }}</span>
-          </div>
-        </div>
+            <div class="card border-grey-darker border flex justify-between mx-auto">
+              <div class="w-12">
+                <img
+                  :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                  :alt="brawler.name"
+                  class="h-8"
+                  itemprop="image"
+                >
+              </div>
+            </div>
+            <p itemprop="name" class="mt-1 text-center">{{ brawler.name }}</p>
+            <p
+              v-if="brawler.stats"
+              class="text-center"
+              itemscope
+              itemtype="http://schema.org/QuantitativeValue"
+            >
+
+              <span itemprop="value">{{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}</span>
+              <span itemprop="unitText">{{ metaStatMaps.labelsShort[brawler.sortProp] }}</span>
+            </p>
+          </li>
+        </ul>
       </div>
     </nuxt-link>
   </div>
