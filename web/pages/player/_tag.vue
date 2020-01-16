@@ -633,7 +633,7 @@
       class="section-heading"
     >
       <h2 class="text-2xl font-semibold">
-        Recommended for you
+        Guides from the Blog
       </h2>
     </div>
 
