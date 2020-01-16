@@ -11,7 +11,7 @@
       v-if="error.statusCode == 429 || error.statusCode >= 500"
       class="text-2xl mt-2"
     >
-      Could not communicate with the Brawlstars API! Try again later.
+      Could not communicate with the Brawl Stars API! Try again later.
     </h3>
     <p class="mt-4">
       <nuxt-link

@@ -7,7 +7,7 @@
 
     <div class="mt-10 lg:mt-8vh text-center mx-2">
       <h1 class="text-4xl font-bold">
-        How much time on Brawlstars?
+        How much time on Brawl Stars?
       </h1>
     </div>
 
@@ -463,11 +463,11 @@ export default {
           this.error = 'This tag does not exist'
         } else if (error.response !== undefined && error.response.status === 429) {
           this.$ga.event('player', 'search', 'error_timeout')
-          this.error = 'Could not communicate with the Brawlstars API, try again?'
+          this.error = 'Could not communicate with the Brawl Stars API, try again?'
         } else {
           this.$ga.exception('cannot get player: ' + error.message)
           this.$ga.event('player', 'search', 'error_api')
-          this.error = 'Brawlstars API is not available right now, try again later'
+          this.error = 'Brawl Stars API is not available right now, try again later'
         }
         return
       } finally {
