@@ -219,7 +219,6 @@ export default {
       }
       if (allowed && process.client) {
         const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
-        this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
         if (!adsBlocked) {
           this.enableAds()
           // on Chrome, lazy-loading of ads does not work on first visit
@@ -239,12 +238,15 @@ export default {
           this.setIsApp()
         }
 
-        this.$ga.enable()
-        // set variables for split testing
-        this.$ga.set('dimension1', process.env.branch)
-        this.$ga.set('dimension2', !adsBlocked)
-        this.$ga.set('dimension3', isPwa)
-        this.$ga.set('dimension4', isTwa)
+        if ('$ga' in this) {
+          this.$ga.enable()
+          // set variables for split testing
+          this.$ga.set('dimension1', process.env.branch)
+          this.$ga.set('dimension2', !adsBlocked)
+          this.$ga.set('dimension3', isPwa)
+          this.$ga.set('dimension4', isTwa)
+          this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
+        }
       }
     },
   },
@@ -271,7 +273,7 @@ export default {
         this.allowCookies()
       }
 
-      if (consent.statistics) {
+      if (consent.statistics && '$ga' in this) {
         this.$ga.enable()
       }
 
@@ -323,10 +325,14 @@ export default {
       this.allowAds()
     },
     installed() {
-      this.$ga.event('app', 'install')
+      if ('$ga' in this) {
+        this.$ga.event('app', 'install')
+      }
     },
     async clickInstall() {
-      this.$ga.event('app', 'click', 'install_header')
+      if ('$ga' in this) {
+        this.$ga.event('app', 'click', 'install_header')
+      }
       await this.install()
     },
     ...mapMutations({
