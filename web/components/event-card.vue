@@ -51,7 +51,7 @@
             <p itemprop="name" class="mt-1 text-center">{{ brawler.name }}</p>
             <p
               v-if="brawler.stats"
-              class="text-center"
+              class="text-center tracking-tight"
               itemscope
               itemtype="http://schema.org/QuantitativeValue"
             >
