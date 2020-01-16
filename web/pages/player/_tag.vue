@@ -924,25 +924,27 @@ export default {
   },
   mounted() {
     if (process.client) {
-      const playerHours = this.player.hoursSpent
-      const animationDuration = 3000
-      const frameDuration = 100
-      const k = Math.log(playerHours) / (animationDuration / frameDuration)
+      this.$nextTick(() => {
+        const playerHours = this.player.hoursSpent
+        const animationDuration = 3000
+        const frameDuration = 100
+        const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
-      let hoursSpent = 0
-      const hoursTimer = () => setTimeout(() => {
-        hoursSpent += k * (playerHours - hoursSpent)
-        if (Math.floor(hoursSpent) < playerHours - 1) {
-          hoursTimer()
-        } else {
-          hoursSpent = playerHours
-        }
-        this.$refs['counter-hours'].textContent = Math.floor(hoursSpent)
-        Object.values(this.funStats).forEach((stat, index) => {
-          this.$refs['counter-funstats'][index].textContent = Math.floor(stat.value(hoursSpent))
-        })
-      }, frameDuration)
-      hoursTimer()
+        let hoursSpent = 0
+        const hoursTimer = () => setTimeout(() => {
+          hoursSpent += k * (playerHours - hoursSpent)
+          if (Math.floor(hoursSpent) < playerHours - 1) {
+            hoursTimer()
+          } else {
+            hoursSpent = playerHours
+          }
+          this.$refs['counter-hours'].textContent = Math.floor(hoursSpent)
+          Object.values(this.funStats).forEach((stat, index) => {
+            this.$refs['counter-funstats'][index].textContent = Math.floor(stat.value(hoursSpent))
+          })
+        }, frameDuration)
+        hoursTimer()
+      })
     }
 
     setTimeout(() => this.refreshTimer(), 15 * 1000)
