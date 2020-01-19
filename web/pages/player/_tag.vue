@@ -166,8 +166,26 @@
         </div>
 
         <div class="bigstat-container">
-          <div class="bigstat-left bigstat-number">
-            {{ accountRating }}
+          <div class="bigstat-left relative">
+            <span class="bigstat-number">{{ accountRating }}</span>
+            <button
+              @click="ratingHelpOpen = true"
+              class="absolute mt-2 mr-1 text-primary-light font-semibold underline top-0 right-0"
+            >?</button>
+            <p
+              v-show="ratingHelpOpen"
+              @click="ratingHelpOpen = false"
+              class="absolute top-0 left-0 text-sm w-48 bg-black text-grey-lighter rounded px-2 py-1 ml-2 text-left"
+            >
+              Ratings are calculated by comparing mean Brawler trophies to all players on Brawl Time Ninja.
+              <ul>
+                <li>C: Better than 50%</li>
+                <li>B: Better than 90%</li>
+                <li>A: Better than 95%</li>
+                <li>S: Better than 99%</li>
+              </ul>
+              <span class="text-primary-light font-semibold absolute top-0 right-0 mr-1">x</span>
+            </p>
           </div>
           <div class="bigstat-right bigstat-label text-xl">
             <p class="w-24">
@@ -704,6 +722,7 @@ export default {
       tipsPageSize: 3,
       notificationsAllowed: false,
       showAllModes: false,
+      ratingHelpOpen: false,
       hoursSinceDate,
       formatMode,
       induceAdsIntoArray,
