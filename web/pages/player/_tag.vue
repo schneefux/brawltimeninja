@@ -933,15 +933,22 @@ export default {
         let hoursSpent = 0
         const hoursTimer = () => setTimeout(() => {
           hoursSpent += k * (playerHours - hoursSpent)
-          if (Math.floor(hoursSpent) < playerHours - 1) {
-            hoursTimer()
-          } else {
+          if (Math.floor(hoursSpent) >= playerHours - 1) {
             hoursSpent = playerHours
-          }
+	  }
+	  if (this.$refs['counter-hours'] == undefined) {
+            // user navigated to a different page
+            return
+	  }
+
           this.$refs['counter-hours'].textContent = Math.floor(hoursSpent)
           Object.values(this.funStats).forEach((stat, index) => {
             this.$refs['counter-funstats'][index].textContent = Math.floor(stat.value(hoursSpent))
           })
+
+          if (Math.floor(hoursSpent) < playerHours) {
+            hoursTimer()
+          }
         }, frameDuration)
         hoursTimer()
       })
