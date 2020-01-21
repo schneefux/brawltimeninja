@@ -4,9 +4,9 @@
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         {{ formatMode(mode) }} Tier List
       </h1>
-      <p class="md:text-center">
-        This {{ formatMode(mode) }} Tier List is generated automatically.
-        The data is from {{ formatMode(mode) }} Brawl Stars battles played in the current season.
+      <p class="md:text-center max-w-lg mx-auto">
+        Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps.
+        The data is from Brawl Stars battles in the current season.
       </p>
 
       <p class="mt-2 mb-6 md:text-center">
@@ -51,7 +51,7 @@ export default {
     MetaGrid,
   },
   head() {
-    const description = `Brawl Stars ${formatMode(this.mode)} Tier List. Find the best Brawlers. View Win Rates and Rankings for ${formatMode(this.mode)}.`
+    const description = `Brawl Stars ${formatMode(this.mode)} Tier List. Find the best Brawlers for ${formatMode(this.mode)} with Win Rates and Rankings.`
     return {
       title: `${formatMode(this.mode)} Tier List`,
       meta: [
