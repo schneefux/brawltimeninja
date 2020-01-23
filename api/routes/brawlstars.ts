@@ -26,7 +26,7 @@ router.get('/player/:tag', async (ctx, next) => {
 router.get('/current-events', async (ctx, next) => {
   try {
     ctx.body = await service.getEvents();
-    ctx.set('Cache-Control', 'public, max-age=600');
+    ctx.set('Cache-Control', 'public, max-age=300');
   } catch (error) {
     console.log(error);
     ctx.throw(error.status, error.reason);
@@ -37,7 +37,7 @@ router.get('/current-events', async (ctx, next) => {
 router.get('/upcoming-events', async (ctx, next) => {
   try {
     ctx.body = await service.getUpcomingEvents();
-    ctx.set('Cache-Control', 'public, max-age=600');
+    ctx.set('Cache-Control', 'public, max-age=300');
   } catch (error) {
     console.log(error);
     ctx.throw(error.status, error.reason);
