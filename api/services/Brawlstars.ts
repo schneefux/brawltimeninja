@@ -15,7 +15,7 @@ function xpToHours(xp: number) {
 }
 
 const brawlerId = (entry: { name: string }) =>
-  entry.name.replace(/ /g, '_').toLowerCase();
+  entry.name.replace(/\.| /g, '_').toLowerCase();
 
 const modeBackgroundId = (modeCamelCase: string) => {
   const mode = camelToSnakeCase(modeCamelCase);
@@ -127,7 +127,7 @@ export default class BrawlstarsService {
 
     const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
     return meta.map((entry) => ({
-      id: entry.name.replace(/ /g, '_').toLowerCase(),
+      id: brawlerId(entry),
       name: entry.name,
       sampleSize: entry.picks,
       stats: {
@@ -156,7 +156,7 @@ export default class BrawlstarsService {
 
     return meta.map((entry) => ({
       id: entry.id,
-      brawlerName: entry.brawlerName.replace(/ /g, '_').toLowerCase(),
+      brawlerName: brawlerId({ name: entry.brawlerName }),
       starpowerName: entry.starpowerName,
       sampleSize: entry.picks,
       stats: {
@@ -374,7 +374,7 @@ export default class BrawlstarsService {
       const transformPlayer = (player: BattlePlayer) => ({
         tag: player.tag.replace('#', ''),
         name: player.name,
-        brawler: player.brawler.name.replace(/ /, '_').toLowerCase(),
+        brawler: brawlerId(player.brawler),
         brawlerTrophies: player.brawler.trophies,
         isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
       })
@@ -442,8 +442,7 @@ export default class BrawlstarsService {
     player.brawlers
       .sort((b1, b2) => b2.trophies - b1.trophies)
       .forEach((brawler) => {
-        const brawlerId = brawler.name.toLowerCase().replace(' ', '_');
-        brawlers[brawlerId] = {
+        brawlers[brawlerId(brawler)] = {
           name: brawler.name,
           rank: brawler.rank,
           trophies: brawler.trophies,
