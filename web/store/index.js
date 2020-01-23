@@ -152,7 +152,7 @@ export const state = () => ({
   adsAllowed: false,
   adsEnabled: true,
   installBannerDismissed: false,
-  totalBrawlers: 32,
+  totalBrawlers: 33,
   bsuArticles: [],
   bsuArticlesLoaded: false,
   isApp: false,
