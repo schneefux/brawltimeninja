@@ -628,28 +628,15 @@ export default class BrawlstarsService {
             }
           } as Mode
         } : {}),
-        ...('loneStar' in statsByMode ? {
-          'loneStar': {
-            label: 'Lone Star',
-            icon: 'lonestar_optimized.png',
-            background: 'lonestar.jpg',
+        ...('hotZone' in statsByMode ? {
+          'hotZone': {
+            label: 'hotZone',
+            icon: 'hotzone_optimized.png',
+            background: 'hotzone.jpg',
             stats: {
               winRate: {
-                label: 'Recent Rank 1 Rate',
-                value: `${Math.round(statsByMode.loneStar.rank1Rate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-        ...('takedown' in statsByMode ? {
-          'takedown': {
-            label: 'Takedown',
-            icon: 'takedown_optimized.png',
-            background: 'takedown.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Rank 1 Rate',
-                value: `${Math.round(statsByMode.takedown.rank1Rate * 100)}%`,
+                label: 'Recent Win Rate',
+                value: `${Math.round(statsByMode.hotZone.winRate * 100)}%`,
               },
             }
           } as Mode
