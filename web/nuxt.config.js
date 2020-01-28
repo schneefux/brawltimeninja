@@ -75,11 +75,11 @@ export default {
     // with project write, release admin and org read access
     config: {
       ignoreErrors: [/frameElement/],
+      release: 'brawltimeninja@' + process.env.GIT_REV,
     },
     disabled: process.env.NODE_ENV == 'development',
     publishRelease: true,
     webpackConfig: {
-      release: 'brawltimeninja@' + process.env.GIT_REV,
       setCommits: {
         repo: 'schneefux/brawltimeninja',
         commit: process.env.GIT_REV,
