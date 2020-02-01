@@ -17,6 +17,8 @@ export interface Player {
   nameColor: string;
   trophies: number;
   highestTrophies: number;
+  powerPlayPoints: number;
+  highestPowerPlayPoints: number;
   expLevel: number;
   expPoints: number;
   '3vs3Victories': number;

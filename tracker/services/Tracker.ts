@@ -56,15 +56,21 @@ export default class TrackerService {
       if (playerRecordTime > lastPlayerTime) {
         const lastInsert = await trx('player').insert({
           timestamp: playerRecordTime,
-          name: player.name,
           tag: player.tag,
-          club_name: player.club === null ? null : player.club.name,
-          club_tag: player.club === null ? null : player.club.tag,
+          name: player.name,
+          name_color: player.nameColor,
+          trophies: player.trophies,
+          highest_trophies: player.highestTrophies,
+          power_play_points: player.powerPlayPoints,
+          highest_power_play_points: player.highestPowerPlayPoints,
           victories: player["3vs3Victories"],
           solo_showdown_victories: player.soloVictories,
           duo_showdown_victories: player.duoVictories,
+          best_robo_rumble_time: player.bestRoboRumbleTime,
+          best_time_as_big_brawler: player.bestTimeAsBigBrawler,
           total_exp: player.expPoints,
-          trophies: player.trophies,
+          club_name: player.club === null ? null : player.club.name,
+          club_tag: player.club === null ? null : player.club.tag,
           brawlers_unlocked: player.brawlers.length,
         });
         const playerId = lastInsert[0];
@@ -658,8 +664,22 @@ export default class TrackerService {
           table.bigInteger('level').notNullable().defaultTo(0).unsigned()
           table.bigInteger('level_count').notNullable().defaultTo(0).unsigned()
         });
-      })
+      });
       console.log('added level_id');
+    }
+
+    if (!await this.knex.schema.hasColumn('player', 'name_color')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player', (table) => {
+          table.string('name_color');
+          table.integer('power_play_points');
+          table.integer('highest_power_play_points');
+          table.integer('highest_trophies');
+          table.integer('best_robo_rumble_time');
+          table.integer('best_time_as_big_brawler');
+        });
+      });
+      console.log('added new player attributes');
     }
 
     console.log('all migrations done');
