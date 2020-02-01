@@ -5,32 +5,11 @@ import History from '../model/History';
 import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '../model/MetaEntry';
 import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
+import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
 
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
-
-function xpToHours(xp: number) {
-  return xp / 220; // 145h for 30300 XP as measured by @schneefux
-}
-
-const brawlerId = (entry: { name: string }) =>
-  entry.name.replace(/\.| /g, '_').toLowerCase();
-
-const modeBackgroundId = (modeCamelCase: string) => {
-  const mode = camelToSnakeCase(modeCamelCase);
-  if (mode == 'big_game') {
-    return 'bossfight';
-  }
-  if (mode.endsWith('showdown')) {
-    return 'showdown';
-  }
-  return mode.replace('_', '');
-}
-
-const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
-const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
 
 export default class BrawlstarsService {
   private readonly apiUnofficial = 'https://api.starlist.pro/v1/';
@@ -405,7 +384,7 @@ export default class BrawlstarsService {
         timestamp: new Date(Date.parse(isoDate)),
         mode: {
           label: battle.event.map,
-          background: `${modeBackgroundId(battle.event.mode)}.jpg`,
+          background: `${modeToBackgroundId(battle.event.mode)}.jpg`,
         },
         result,
         trophyChange: battle.battle.trophyChange,

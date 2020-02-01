@@ -145,7 +145,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/store/index'
+import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/lib/util'
 
 export default {
   name: 'StarpowerMetaPage',

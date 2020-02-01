@@ -295,7 +295,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps } from '~/store/index'
+import { metaStatMaps } from '~/lib/util'
 import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
 

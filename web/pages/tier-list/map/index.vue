@@ -96,7 +96,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { formatMode } from '~/store/index'
+import { formatMode } from '~/lib/util'
 import EventCard from '~/components/event-card.vue'
 
 export default {

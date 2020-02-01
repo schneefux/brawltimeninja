@@ -4,11 +4,8 @@ module.exports = {
     browser: true,
     node: true
   },
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
   extends: [
-    '@nuxtjs'
+    '@nuxtjs/eslint-config-typescript'
   ],
   // add your custom rules here
   rules: {

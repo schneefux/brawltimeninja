@@ -671,7 +671,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { induceAdsIntoArray, formatMode, capitalizeWords } from '~/store/index'
+import { induceAdsIntoArray, formatMode, capitalizeWords } from '~/lib/util'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 

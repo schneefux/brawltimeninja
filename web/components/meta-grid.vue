@@ -102,7 +102,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { induceAdsIntoArray, formatMode, metaStatMaps } from '~/store/index'
+import { induceAdsIntoArray, formatMode, metaStatMaps } from '~/lib/util'
 import BrawlerCard from '~/components/brawler-card.vue'
 
 export default {

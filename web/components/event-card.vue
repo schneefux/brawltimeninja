@@ -68,7 +68,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { formatMode, metaStatMaps } from '~/store/index'
+import { formatMode, metaStatMaps } from '~/lib/util'
 
 export default {
   name: 'EventCard',

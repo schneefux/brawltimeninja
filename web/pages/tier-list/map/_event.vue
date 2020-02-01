@@ -63,7 +63,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { formatMode, metaStatMaps, camelToKebab } from '~/store/index'
+import { formatMode, metaStatMaps, camelToKebab } from '~/lib/util'
 import EventCard from '~/components/event-card.vue'
 import MetaGrid from '~/components/meta-grid.vue'
 

@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { camelToKebab } from './store/index'
+import { camelToKebab } from './lib/util'
 import payload from './store/payload.json'
 
 export default {
@@ -57,6 +57,8 @@ export default {
     '@nuxtjs/sitemap',
     '@nuxtjs/sentry',
   ],
+
+  buildModules: ['@nuxt/typescript-build'],
 
   router: {
   },

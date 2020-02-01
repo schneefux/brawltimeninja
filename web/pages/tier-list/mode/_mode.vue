@@ -34,7 +34,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { formatMode } from '~/store/index'
+import { formatMode } from '~/lib/util'
 import MetaGrid from '~/components/meta-grid.vue'
 
 const kebabToCamel = (s) => {

@@ -47,7 +47,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { metaStatMaps } from '~/store/index'
+import { metaStatMaps } from '~/lib/util'
 import MetaGrid from '~/components/meta-grid.vue'
 
 export default {

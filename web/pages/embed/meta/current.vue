@@ -30,7 +30,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { metaStatMaps } from '~/store/index'
+import { metaStatMaps } from '~/lib/util'
 import EventCard from '~/components/event-card'
 
 export default {
