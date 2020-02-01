@@ -23,6 +23,22 @@ export var camelToKebab = function (s) {
 };
 export var capitalize = function (str) { return str.replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); }); };
 export var capitalizeWords = function (str) { return str.split(' ').map(function (w) { return capitalize(w); }).join(' '); };
+export function scaleMinMax(values) {
+    var min = Math.min.apply(Math, values);
+    var max = Math.max.apply(Math, values);
+    if (min === max) {
+        return values.map(function (value) { return 0.5; });
+    }
+    return values.map(function (value) { return (value - min) / (max - min); });
+}
+export function zip(arr1, arr2) {
+    return arr1.map(function (value, index) { return [value, arr2[index]]; });
+}
+export function hoursSinceDate(date) {
+    var then = Date.parse(date);
+    var now = (new Date()).getTime();
+    return Math.floor((now - then) / 1000 / 3600);
+}
 export var brawlerId = function (entry) {
     return entry.name.replace(/\.| /g, '_').toLowerCase();
 };

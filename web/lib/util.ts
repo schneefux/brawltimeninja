@@ -6,6 +6,27 @@ export const camelToKebab = (s: string) =>
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 export const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
 
+export function scaleMinMax(values: number[]) {
+  const min = Math.min.apply(Math, values)
+  const max = Math.max.apply(Math, values)
+
+  if (min === max) {
+    return values.map(value => 0.5)
+  }
+
+  return values.map(value => (value - min) / (max - min))
+}
+
+export function zip<T>(arr1: T[], arr2: T[]) {
+  return arr1.map((value, index) => [value, arr2[index]])
+}
+
+export function hoursSinceDate(date: string) {
+  const then = Date.parse(date)
+  const now = (new Date()).getTime()
+  return Math.floor((now - then) / 1000 / 3600)
+}
+
 export const brawlerId = (entry: { name: string }) =>
   entry.name.replace(/\.| /g, '_').toLowerCase();
 

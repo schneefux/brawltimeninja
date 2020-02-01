@@ -671,30 +671,9 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { induceAdsIntoArray, formatMode, capitalizeWords } from '~/lib/util'
+import { induceAdsIntoArray, formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~/lib/util'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
-
-function scaleMinMax(values) {
-  const min = Math.min.apply(Math, values)
-  const max = Math.max.apply(Math, values)
-
-  if (min === max) {
-    return values.map(value => 0.5)
-  }
-
-  return values.map(value => (value - min) / (max - min))
-}
-
-function zip(arr1, arr2) {
-  return arr1.map((value, index) => [value, arr2[index]])
-}
-
-function hoursSinceDate(date) {
-  const then = Date.parse(date)
-  const now = (new Date()).getTime()
-  return Math.floor((now - then) / 1000 / 3600)
-}
 
 export default {
   name: 'PlayerProfile',
@@ -946,7 +925,7 @@ export default {
       this.$nextTick(() => {
         const playerHours = this.player.hoursSpent
         const animationDuration = 3000
-        const frameDuration = 100
+        const frameDuration = 50
         const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
         let hoursSpent = 0
