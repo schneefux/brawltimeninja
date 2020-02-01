@@ -933,11 +933,11 @@ export default {
           hoursSpent += k * (playerHours - hoursSpent)
           if (Math.floor(hoursSpent) >= playerHours - 1) {
             hoursSpent = playerHours
-	  }
-	  if (this.$refs['counter-hours'] == undefined) {
+          }
+          if (this.$refs['counter-hours'] == undefined) {
             // user navigated to a different page
             return
-	  }
+          }
 
           this.$refs['counter-hours'].textContent = Math.floor(hoursSpent)
           Object.values(this.funStats).forEach((stat, index) => {
