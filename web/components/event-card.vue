@@ -105,7 +105,9 @@ export default {
     try {
       this.asset = await import(`~/assets/images/map/${this.event.id.replace(/^1500/, '150').replace(/-boss$/, '')}_small.jpg`)
     } catch (e) {
-      this.$ga.exception('cannot load map image: ' + e.message)
+      if (process.client) {
+        this.$ga.exception('cannot load map image: ' + e.message)
+      }
       console.log('cannot load map image', e)
     }
   },
