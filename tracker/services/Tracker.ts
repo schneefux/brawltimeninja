@@ -106,11 +106,11 @@ export default class TrackerService {
           .reduce((agg, cur) => agg.length > 0 ? `${agg},${cur}` : cur, '');
 
         // try to find a battle with the same configuration
-        // and same players within +/- 5 min
+        // and same players within +/- 10 min
         const battleRecord = await trx
           .select('id')
           .from('battle')
-          .whereRaw('abs(timestampdiff(minute, timestamp, ?)) < 5', [battleTime])
+          .whereRaw('abs(timestampdiff(minute, timestamp, ?)) < 10', [battleTime])
           .andWhere('player_tags', playerTagsCsv)
           .andWhere('event_id', battle.event.id);
 
