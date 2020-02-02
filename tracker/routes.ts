@@ -34,7 +34,7 @@ router.get('/tracker/winrates/:tag', async (ctx, next) => {
 });
 
 router.get('/tracker/meta/brawler', async (ctx, next) => {
-  ctx.body = await service.getBrawlerMeta();
+  ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeId);
   await next();
 });
 

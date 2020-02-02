@@ -92,7 +92,7 @@ export default class BrawlstarsService {
     }));
   }
 
-  public async getBrawlerMeta() {
+  public async getBrawlerMeta(trophyrangeId: number|null) {
     if (trackerUrl == '') {
       return [];
     }
@@ -100,7 +100,7 @@ export default class BrawlstarsService {
     const meta = await request<MetaBrawlerEntry[]>(
       '/meta/brawler',
       trackerUrl,
-      {},
+      { trophyrangeId: `${trophyrangeId}` },
       {},
       10000,
       600,

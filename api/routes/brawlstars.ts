@@ -58,7 +58,7 @@ router.get('/leaderboard/hours', async (ctx, next) => {
 
 router.get('/meta/brawler', async (ctx, next) => {
   try {
-    ctx.body = await service.getBrawlerMeta();
+    ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeId);
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);

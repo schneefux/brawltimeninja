@@ -277,7 +277,7 @@ export default class TrackerService {
     }
   }
 
-  public async getBrawlerMeta() {
+  public async getBrawlerMeta(trophyrangeId: number|null) {
     return await this.knex.raw(`
         select
           dim_brawler_starpower.brawler_name as name,
@@ -289,10 +289,10 @@ export default class TrackerService {
         from agg_player_battle cur
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        left join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.season_id = cur.season_id - 2
-        where is_current
+        left join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.trophyrange_id = cur.trophyrange_id and prev.season_id = cur.season_id - 2
+        where is_current and (:trophyrange_id = 0 or cur.trophyrange_id = :trophyrange_id)
         group by name
-      `).then((response) => response[0].map(
+      `, { trophyrange_id: `${trophyrangeId || 0}` }).then((response) => response[0].map(
         (entry: any) => (<MetaBrawlerEntry> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
@@ -682,6 +682,39 @@ export default class TrackerService {
       console.log('added new player attributes');
     }
 
+    if (!await this.knex.schema.hasColumn('agg_player_battle', '')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.createTable('dim_trophyrange', (table) => {
+          table.bigIncrements('id');
+
+          table.integer('start');
+          table.integer('end');
+          table.string('name');
+        });
+        console.log('created trophyrange dimension');
+
+        await txn('dim_trophyrange').insert([{
+          name: 'Low (0-300)',
+          start: 0,
+          end: 299,
+        }, {
+          name: 'Mid (300-600)',
+          start: 299,
+          end: 599,
+        }, {
+          name: 'High (600+)',
+          start: 600,
+          end: 9999,
+        }]);
+        console.log('filled trophyrange dimension');
+
+        await txn.schema.table('agg_player_battle', (table) => {
+          table.integer('trophyrange_id').unsigned().nullable(); // null for old records
+        });
+        console.log('added trophyrange to agg table');
+      });
+    }
+
     console.log('all migrations done');
   }
 
@@ -823,9 +856,11 @@ export default class TrackerService {
           coalesce(sum(brawler_power), 0) as power,
           sum(brawler_power is not null) as power_count,
           coalesce(sum(level_id), 0) as level,
-          sum(level_id is not null) as level_count
+          sum(level_id is not null) as level_count,
+          dim_trophyrange.id as trophyrange_id
         from player_battle
-        join dim_season on end=${this.sqlRoundTimestampToSeasonEnd}
+        join dim_season on dim_season.end=${this.sqlRoundTimestampToSeasonEnd}
+        join dim_trophyrange on brawler_trophies between dim_trophyrange.start and dim_trophyrange.end
         where player_battle.id > ? and player_battle.id <= ?
         group by season_id, event_id, brawler_starpower_id, is_bigbrawler, level_id
       on duplicate key update
