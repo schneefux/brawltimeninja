@@ -7,13 +7,15 @@ import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
 
+const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/v1/';
+const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
 export default class BrawlstarsService {
-  private readonly apiUnofficial = 'https://api.starlist.pro/v1/';
-  private readonly apiOfficial = 'https://api.brawlstars.com/v1/';
+  private readonly apiUnofficial = apiUnofficialUrl;
+  private readonly apiOfficial = apiOfficialUrl;
 
   public getFeaturedPlayers() {
     return [ {

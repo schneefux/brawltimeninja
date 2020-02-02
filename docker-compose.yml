@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  web:
+    build: ./web
+    volumes:
+      - ./web/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:80
+    environment:
+      HOST: 0.0.0.0
+      PORT: 80
+      API_URL: http://api/
+    command: npm run dev
+  api:
+    build: ./api
+    volumes:
+      - ./api/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:80
+    environment:
+      PORT: 80
+      BRAWLSTARS_TOKEN: "${BRAWLSTARS_TOKEN}"
+      BRAWLAPI_TOKEN: "${BRAWLAPI_TOKEN}"
+      BRAWLAPI_URL: "${BRAWLAPI_URL}"
+      BRAWLSTARS_URL: "${BRAWLSTARS_URL}"
+      TRACKER_URL: http://tracker/tracker
+    command: npm run dev
+  tracker:
+    build: ./tracker
+    volumes:
+      - ./tracker/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3002:80
+    environment:
+      PORT: 80
+      DATABASE_URI: mysql2://brawltime:brawltime@db/brawltime
+    command: npm run dev
+  db:
+    image: mariadb:10.4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: brawltime
+      MYSQL_USER: brawltime
+      MYSQL_PASSWORD: brawltime
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  adminer:
+    image: adminer
+    ports:
+      - 8080

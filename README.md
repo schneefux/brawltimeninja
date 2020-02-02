@@ -6,7 +6,9 @@ https://brawltime.ninja
 
 ## Build Setup
 
-``` bash
+For development, copy `example.env` to `.env`, fill credentials and run `docker-compose up` or follow the steps below. Note: For deployment, buildpacks (using dokku) are used and not the Dockerfiles.
+
+```bash
 # install dependencies in web/, api/ and tracker/
 $ npm install
 
