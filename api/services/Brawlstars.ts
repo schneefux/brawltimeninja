@@ -81,7 +81,7 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      10000,
+      60000,
       600,
     );
 
@@ -102,7 +102,7 @@ export default class BrawlstarsService {
       trackerUrl,
       { trophyrangeId: `${trophyrangeId}` },
       {},
-      10000,
+      60000,
       600,
     );
 
@@ -130,7 +130,7 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      10000,
+      60000,
       600,
     );
 
@@ -157,7 +157,7 @@ export default class BrawlstarsService {
       trackerUrl,
       {},
       {},
-      30000,
+      60000,
       900, // 15m
     );
 
@@ -230,7 +230,7 @@ export default class BrawlstarsService {
         trackerUrl,
         {},
         {},
-        30000,
+        60000,
         900, // 15m
       );
 
