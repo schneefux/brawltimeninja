@@ -4,7 +4,6 @@ export interface MetaBrawlerEntry {
   winRate: number;
   starRate: number;
   picks: number;
-  trophyChange: number;
 }
 
 export interface MetaStarpowerEntry {

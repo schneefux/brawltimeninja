@@ -113,7 +113,6 @@ export default class BrawlstarsService {
       sampleSize: entry.picks,
       stats: {
         trophies: entry.trophies,
-        trophyChange: entry.trophyChange,
         winRate: entry.winRate,
         starRate: entry.starRate,
         pickRate: entry.picks / sumPicks,

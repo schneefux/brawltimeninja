@@ -282,7 +282,6 @@ export default class TrackerService {
         select
           dim_brawler_starpower.brawler_name as name,
           sum(cur.trophies) / sum(cur.trophies_count) as trophies,
-          sum(cur.trophies) / sum(cur.trophies_count) - sum(prev.trophies) / sum(prev.trophies_count) as diff,
           sum(cur.count) as picks,
           sum(cur.victory) / sum(cur.result_count) as win_rate,
           sum(cur.starplayer) / sum(cur.starplayer_count) as star_rate
@@ -296,7 +295,6 @@ export default class TrackerService {
         (entry: any) => (<MetaBrawlerEntry> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
-          trophyChange: parseFloat(entry.diff),
           winRate: parseFloat(entry.win_rate),
           starRate: parseFloat(entry.star_rate),
           picks: parseInt(entry.picks),
