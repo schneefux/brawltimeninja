@@ -710,6 +710,8 @@ export default class TrackerService {
 
         await txn.schema.table('agg_player_battle', (table) => {
           table.integer('trophyrange_id').unsigned().nullable(); // null for old records
+          table.unique(['season_id', 'brawler_starpower_id', 'is_bigbrawler', 'event_id', 'trophyrange_id'], 'idx_unq_dimensions_2');
+          table.dropIndex([], 'idx_unq_dimensions');
         });
         console.log('added trophyrange to agg table');
       });
