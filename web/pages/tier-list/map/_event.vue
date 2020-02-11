@@ -1,5 +1,5 @@
 <template>
-  <div class="py-4 px-2">
+  <div class="py-4 px-6">
     <div class="py-8 px-6 my-8 relative">
       <h1 class="text-4xl md:text-center mt-2 font-semibold">
         Map Tier List

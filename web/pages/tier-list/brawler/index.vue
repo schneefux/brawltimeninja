@@ -4,11 +4,6 @@
       <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
         Brawler Tier List
       </h1>
-      <p class="md:text-center">
-        This Brawler Tier List is generated automatically for all Brawlers in Brawl Stars.
-        The data is from Brawl Stars battles in the current season.
-        Click on a link to view the best Star Powers for each Brawler.
-      </p>
       <p class="mt-2 mb-6 md:text-center">
         Showing global Tier List. To view specific Tier Lists, load the
         <nuxt-link to="/tier-list/map" class="link inline-block">
@@ -56,6 +51,12 @@
         link-text="View Starpower stats"
         ga-category="brawler_meta"
       />
+
+      <p class="md:text-center">
+        This Brawler Tier List is generated automatically for all Brawlers in Brawl Stars.
+        The data is from Brawl Stars battles in the current season.
+        Click on a link to view the best Star Powers for each Brawler.
+      </p>
     </div>
   </div>
 </template>

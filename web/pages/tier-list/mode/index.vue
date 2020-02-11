@@ -4,12 +4,6 @@
       Game Mode Tier Lists
     </h1>
 
-    <p class="md:text-center px-2 mt-6 max-w-lg mx-auto">
-      Mode Tier Lists for all modes in Brawl Stars.
-      Click on a Mode and see the best Brawlers for all Brawl Stars Modes.
-      The data is from battles played in the current season.
-    </p>
-
     <div class="section">
       <div class="flex flex-wrap">
         <div
@@ -35,6 +29,12 @@
         </div>
       </div>
     </div>
+
+    <p class="md:text-center px-2 mt-4 mb-2 max-w-lg mx-auto">
+      Mode Tier Lists for all modes in Brawl Stars.
+      Click on a Mode and see the best Brawlers for all Brawl Stars Modes.
+      The data is from battles played in the current season.
+    </p>
   </div>
 </template>
 

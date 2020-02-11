@@ -1,34 +1,33 @@
 <template>
-  <div class="py-4 px-2">
-    <div class="py-8 px-6 my-8 relative">
-      <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
-        {{ formatMode(mode) }} Tier List
-      </h1>
-      <p class="md:text-center max-w-lg mx-auto">
-        Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps.
-        The data is from Brawl Stars battles in the current season.
-      </p>
+  <div class="py-4 px-6">
+    <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
+      {{ formatMode(mode) }} Tier List
+    </h1>
 
-      <p class="mt-2 mb-6 md:text-center">
-        Showing global Tier List. To view Tier Lists for specific maps, load the
-        <nuxt-link to="/tier-list/map" class="link inline-block">
-          Map Tier Lists
-        </nuxt-link>.
-      </p>
+    <p class="mt-2 mb-6 md:text-center">
+      Showing global Tier List. To view Tier Lists for specific maps, load the
+      <nuxt-link to="/tier-list/map" class="link inline-block">
+        Map Tier Lists
+      </nuxt-link>.
+    </p>
 
-      <p
-        v-if="totalSampleSize < 10000"
-        class="my-8 text-center"
-      >
-        ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-      </p>
+    <p
+      v-if="totalSampleSize < 10000"
+      class="my-8 text-center"
+    >
+      ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
+    </p>
 
-      <meta-grid
-        :entries="modes"
-        :adSlots="[]"
-        ga-category="mode_meta"
-      />
-    </div>
+    <meta-grid
+      :entries="modes"
+      :adSlots="[]"
+      ga-category="mode_meta"
+    />
+
+    <p class="md:text-center mt-4 mb-2 max-w-lg mx-auto">
+      Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps.
+      The data is from Brawl Stars battles in the current season.
+    </p>
   </div>
 </template>
 

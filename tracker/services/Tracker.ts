@@ -862,7 +862,7 @@ export default class TrackerService {
         join dim_season on dim_season.end=${this.sqlRoundTimestampToSeasonEnd}
         join dim_trophyrange on brawler_trophies between dim_trophyrange.start and dim_trophyrange.end
         where player_battle.id > ? and player_battle.id <= ?
-        group by season_id, event_id, brawler_starpower_id, is_bigbrawler, level_id
+        group by season_id, event_id, brawler_starpower_id, is_bigbrawler, trophyrange_id
       on duplicate key update
         count = count + values(count),
         count_complete = count_complete + values(count_complete),
