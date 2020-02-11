@@ -208,6 +208,8 @@ export default class TrackerService {
       .select('name', 'tag')
       .max('total_exp as total_exp')
       .from('player')
+      // TODO temporary performance workaround
+      .where('id', '>=', this.knex.raw('(select max(id)-150000 from player)'))
       .groupBy('tag')
       .orderBy('total_exp', 'desc')
       .limit(n) as LeaderboardEntry[];
