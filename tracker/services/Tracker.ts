@@ -423,7 +423,7 @@ export default class TrackerService {
         table.integer('trophies').unsigned().notNullable();
         table.integer('brawlers_unlocked').unsigned().notNullable();
 
-        table.index(['tag']);
+        table.index(['tag', 'timestamp']);
       });
       console.log('created player table');
     }
@@ -441,7 +441,7 @@ export default class TrackerService {
         table.integer('power').unsigned().notNullable();
 
         table.index(['player_id']);
-        table.index(['player_tag', 'timestamp', 'name']);
+        table.index(['player_tag', 'timestamp', 'name'], 'player_brawler_player_name_timestamp_index');
         // create index player_brawler_player_name_timestamp_index on player_brawler(player_tag, timestamp, name);
       });
       console.log('created player_brawler table');
