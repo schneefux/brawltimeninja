@@ -8,8 +8,8 @@
     "dev": "nodemon -e ts -x ts-node server.ts",
     "build": "webpack --mode production",
     "start": "node dist/tracker.js",
-    "migrate": "ts-node migrate.ts",
-    "materialize": "ts-node materialize.ts"
+    "migrate": "node dist/migrate.js",
+    "materialize": "node dist/materialize.js"
   },
   "dependencies": {
     "knex": "^0.18.4",
