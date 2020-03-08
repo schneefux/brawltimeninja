@@ -19,6 +19,21 @@
         </nuxt-link>.
       </p>
 
+      <p class="text-center">
+        <label>
+          Trophy Range:
+          <select
+            v-model="selectedRange"
+            class="bg-primary hover:bg-primary-light rounded py-1 px-2 ml-2"
+          >
+            <option value="all" selected>All</option>
+            <option value="1">Low (0-300)</option>
+            <option value="2">Mid (300-600)</option>
+            <option value="3">High (600+)</option>
+          </select>
+        </label>
+      </p>
+
       <p
         v-if="totalSampleSize < 10000"
         class="my-8 text-center"
@@ -69,6 +84,8 @@ export default {
     return {
       adSlots: ['5457575815', '2907434096', '3837372386', '6271964031', '9020582159', '9306580664'],
       metaStatMaps,
+      rangeMeta: [],
+      selectedRange: 'all',
     }
   },
   computed: {
@@ -85,11 +102,22 @@ export default {
         link: `/tier-list/brawler/${brawler.id}`,
       }))
     },
+    meta() {
+      return this.selectedRange == 'all' ? this.allBrawlerMeta : this.rangeMeta
+    },
     ...mapState({
-      meta: state => state.brawlerMeta,
+      allBrawlerMeta: state => state.brawlerMeta,
       ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
+  },
+  watch: {
+    async selectedRange(trophyrangeId) {
+      if (trophyrangeId == 'all') {
+        return
+      }
+      this.rangeMeta = await this.$axios.$get('/api/meta/brawler?trophyrangeId=' + trophyrangeId)
+    },
   },
   async fetch({ store }) {
     if (!process.static) {
