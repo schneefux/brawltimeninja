@@ -289,7 +289,7 @@ export default class TrackerService {
         from agg_player_battle cur
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        left join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and prev.trophyrange_id = cur.trophyrange_id and prev.season_id = cur.season_id - 2
+        left join agg_player_battle prev on prev.brawler_starpower_id = cur.brawler_starpower_id and (prev.trophyrange_id = cur.trophyrange_id or prev.trophyrange_id is null or cur.trophyrange_id is null) and prev.season_id = cur.season_id - 2
         where is_current and (:trophyrange_id = 0 or cur.trophyrange_id = :trophyrange_id)
         group by name
       `, { trophyrange_id: `${trophyrangeId || 0}` }).then((response) => response[0].map(
