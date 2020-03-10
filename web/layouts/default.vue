@@ -153,8 +153,9 @@
 
     <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
       <p>
-        &#169; 2019 Brawl Time Ninja &mdash; Discord Server:
+        &#169; 2018 - 2020 Brawl Time Ninja &mdash; Discord Server:
         <a class="link" href="https://discord.gg/uYfgznq">uYfgznq</a>
+        &mdash; Twitter: <a class="link" href="https://twitter.com/brawltimeninja">@BrawlTimeNinja</a>
       </p>
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
