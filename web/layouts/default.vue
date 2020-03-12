@@ -158,7 +158,7 @@
         &mdash; Twitter: <a class="link" href="https://twitter.com/brawltimeninja">@BrawlTimeNinja</a>
       </p>
       <p class="text-xs leading-tight">
-        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it.
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
       </p>
       <div ref="adblock-bait">
         <div class="adBanner w-px h-px bg-transparent">
