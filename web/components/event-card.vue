@@ -16,8 +16,9 @@
         class="h-48 bg-contain bg-no-repeat bg-center mt-6"
       />
       <meta itemprop="image" :content="asset.default" />
-      <div itemprop="location" itemscope itemtype="http://schema.org/Place">
-        <meta itemprop="address" :content="formatMode(event.mode)" />
+      <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
+      <div itemprop="location" itemscope itemtype="http://schema.org/VirtualLocation">
+        <meta itemprop="url" :content="`/tier-list/map/${event.id}`" />
       </div>
       <p class="mt-4 text-center text-xl" itemprop="name">
         {{ formatMode(event.mode) }}
