@@ -9,7 +9,7 @@
         Brawl Time Ninja uses the official and unofficial Brawl Stars API. The service may be unreliable at times.
       </p>
       <p class="mt-2">
-        Send questions or feedback to dev (at) {{ domain }}.
+        Send questions or feedback to dev (at) {{ domain }}. Built with ❤️ by <a href="https://schneefux.xyz">schneefux</a>.
       </p>
       <p class="mt-2">
         With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking <button class="underline" @click="withdrawCookieConsent">
