@@ -118,6 +118,10 @@ export default {
   @apply mt-3;
 }
 
+.markdown /deep/ ul {
+  @apply list-disc list-inside;
+}
+
 .markdown /deep/ li {
   @apply mt-2;
 }
