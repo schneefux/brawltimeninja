@@ -4,7 +4,7 @@ If you learn a few simple tips and tricks, getting goals and defending them will
 
 Understand positioning, defensive and offensive. When the opponent kicks the ball away, make sure that only one Brawler goes back to get the ball. Try to keep control of the area. You and a second brawler keep high ground. Understand the importance of passes, especially super passes to cover ground before opponents respawn and cover the goal. Learn how to stay in front of an opponent when defending the goal. Be careful not to get too close to enemies with the Ball, or they'll shoot through you to score.
 
-Understand teammate and ball awareness, which teammate needs help and when to move back. And where the ball is at all times. Learn your counters. Pick your opponents: If you're Shelly, go for Rico over Frank. Pick the enemy that is the easiest target and the biggest threat.
+Understand your teammates and learn ball awareness, that means you need to look out for which teammate needs help and when to move back. And where the ball is at all times. Learn your counters. Pick your opponents: If you're Shelly, go for Rico over Frank. Pick the enemy that is the easiest target and the biggest threat.
 
 Learn to juke in general. Move unpredictably. Otherwise, your enemies will charge their supers.
 
