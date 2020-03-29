@@ -215,10 +215,8 @@ export default {
         this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
       }
     },
-    lastPlayers() {
-      if (this.$route.path == '/'
-          && this.$route.query['standalone'] == 'true'
-          && this.lastPlayers.length > 0) {
+    isApp() {
+      if (this.$route.path == '/' && this.isApp && this.lastPlayers.length > 0) {
         this.$router.push({
           name: 'player-tag',
           params: {
