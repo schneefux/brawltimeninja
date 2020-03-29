@@ -33,7 +33,9 @@ async function respond(ctx: Context, buffer: Buffer|null) {
   if (type !== undefined) {
     ctx.type = type.mime;
   }
-  ctx.set('Cache-Control', 'public, max-age=86400'); // 1 day
+  if (buffer != null) {
+    ctx.set('Cache-Control', 'public, max-age=86400'); // 1 day
+  }
 }
 
 router.get('/brawlers/:name/avatar', async (ctx, next) => {
