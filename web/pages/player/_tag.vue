@@ -41,7 +41,7 @@
           which is about
         </p>
 
-        <div class="hidden md:flex flex-wrap justify-between">
+        <div class="hidden md:flex flex-wrap justify-between z-20">
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
@@ -390,7 +390,7 @@
                   class="w-4 inline"
                 >
               </span>
-              <div class="mb-6 card-props flex flex-wrap justify-center">
+              <div class="mb-6 card-props flex flex-wrap justify-center -mx-4">
                 <div
                   v-for="(team, index) in battle.teams"
                   :key="index"
