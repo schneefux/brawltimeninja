@@ -134,7 +134,7 @@
                 {{ brawler.name.toLowerCase() }}
               </span>
               <img
-                :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                :src="mediaUrl + '/brawlers/' + brawler.id + '/avatar?size=128'"
                 :alt="brawler.name"
                 class="prop-card-image md:prop-card-image-lg"
                 itemprop="image"
@@ -331,6 +331,7 @@ export default {
       error: undefined,
       invalidTagAttempts: 0,
       loadHelpVideo: false,
+      mediaUrl: process.env.mediaUrl,
       playerToRoute,
       metaStatMaps,
     }
@@ -352,9 +353,9 @@ export default {
         .replace(/O/g, '0')
     },
     randomHero() {
-      const heroes = ['crow1_optimized', 'crow2_optimized', 'crow3_optimized']
+      const heroes = ['crow1', 'crow2', 'crow3']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
-      return require(`~/assets/images/hero/model/${hero}.png`)
+      return this.mediaUrl + '/brawlers/' + hero + '/model';
     },
     randomPlayers() {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())

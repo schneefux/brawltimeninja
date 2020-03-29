@@ -12,6 +12,7 @@ services:
       HOST: 0.0.0.0
       PORT: 80
       API_URL: http://api/
+      MEDIA_URL: http://media/
     command: npm run dev
   api:
     build: ./api
@@ -27,6 +28,18 @@ services:
       BRAWLAPI_URL: "${BRAWLAPI_URL}"
       BRAWLSTARS_URL: "${BRAWLSTARS_URL}"
       TRACKER_URL: http://tracker/tracker
+    command: npm run dev
+  media:
+    build: ./media
+    volumes:
+      - ./media/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3003:80
+    environment:
+      PORT: 80
+      BRAWLAPI_TOKEN: "${BRAWLAPI_TOKEN}"
+      BRAWLAPI_URL: "${BRAWLAPI_URL}"
     command: npm run dev
   tracker:
     build: ./tracker

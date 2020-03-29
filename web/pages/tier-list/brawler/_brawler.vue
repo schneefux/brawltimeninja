@@ -30,7 +30,7 @@
     </div>
 
     <img
-      :src="require(`~/assets/images/hero/model/${brawlerId}.png`)"
+      :src="mediaUrl + '/brawlers/' + brawlerId + '/model'"
       class="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
     />
 
@@ -53,12 +53,12 @@
               </span>
               <img
                 v-if="entry.starpowerName !== ''"
-                :src="require(`~/assets/images/bs-assets/star_powers/${entry.id}.png`)"
+                :src="mediaUrl + '/starpowers/' + entry.id + '?size=96'"
                 class="prop-card-image"
               >
               <img
                 v-else
-                :src="require(`~/assets/images/hero/icon/${brawlerId}_optimized.png`)"
+                :src="mediaUrl + '/brawlers/' + brawlerId + '/avatar?size=96'"
                 class="prop-card-image"
               >
               <div class="prop-card-content prop-card-content-md">
@@ -164,6 +164,7 @@ export default {
       metaStatMaps,
       formatMode,
       modeToBackgroundId,
+      mediaUrl: process.env.mediaUrl,
     }
   },
   computed: {

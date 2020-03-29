@@ -11,11 +11,10 @@
       itemprop="url"
     >
       <div
-        v-if="asset.default"
-        :style="`background-image: url('${asset.default}')`"
+        :style="`background-image: url('${mediaUrl}/maps/${event.id}?size=384')`"
         class="h-48 bg-contain bg-no-repeat bg-center mt-6"
       />
-      <meta itemprop="image" :content="asset.default" />
+      <meta itemprop="image" :content="mediaUrl + '/maps/' + event.id" />
       <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
       <div itemprop="location" itemscope itemtype="http://schema.org/VirtualLocation">
         <meta itemprop="url" :content="`/tier-list/map/${event.id}`" />
@@ -42,7 +41,7 @@
             <div class="card border-grey-darker border flex justify-between mx-auto">
               <div class="w-12">
                 <img
-                  :src="require(`~/assets/images/hero/icon/${brawler.id}_optimized.png`)"
+                  :src="mediaUrl + '/brawlers/' + brawler.id + '/avatar?size=64'"
                   :alt="brawler.name"
                   class="h-8"
                   itemprop="image"
@@ -98,18 +97,9 @@ export default {
   data() {
     return {
       asset: {},
+      mediaUrl: process.env.mediaUrl,
       formatMode,
       metaStatMaps,
-    }
-  },
-  async created() {
-    try {
-      this.asset = await import(`~/assets/images/map/${this.event.id.replace(/^1500/, '150').replace(/-boss$/, '')}_small.jpg`)
-    } catch (e) {
-      if (process.client) {
-        this.$ga.exception('cannot load map image: ' + e.message)
-      }
-      console.log('cannot load map image', e)
     }
   },
 }

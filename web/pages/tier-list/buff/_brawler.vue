@@ -11,7 +11,7 @@
 
       <img
         class="sticky z-0 top-0 ml-auto pt-25vh mt-25vh h-60vh opacity-50"
-        :src="require(`~/assets/images/hero/model/${brawler.id}.png`)"
+        :src="mediaUrl + '/brawlers/' + brawler.id + '/model'"
       />
 
       <p class="sticky z-10 top-0 pt-35vh mt-25vh text-6xl font-semibold text-secondary">
@@ -45,6 +45,11 @@
 <script>
 export default {
   name: 'BuffMetaPage',
+  data() {
+    return {
+      mediaUrl: process.env.mediaUrl,
+    }
+  },
   async asyncData({ store, params }) {
     await store.dispatch('loadBrawlerMeta')
     const brawler = store.state.brawlerMeta.find(b => b.id === params.brawler)

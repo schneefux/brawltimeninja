@@ -91,6 +91,7 @@ export default {
 
   env: {
     branch: process.env.BRANCH || '',
+    mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''), // replace trailing slash
   },
 
   build: {

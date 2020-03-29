@@ -4,7 +4,7 @@
       {{ title.toLowerCase() }}
     </span>
     <img
-      :src="require(`~/assets/images/hero/icon/${brawler}_optimized.png`)"
+      :src="mediaUrl + '/brawlers/' + brawler + '/avatar?size=160'"
       class="stats-card-image"
     >
     <div class="stats-card-content">
@@ -30,6 +30,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      mediaUrl: process.env.mediaUrl,
+    }
   },
 }
 </script>

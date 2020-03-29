@@ -3,7 +3,7 @@
     <div class="section-heading">
       <img
         v-if="Object.keys(player.brawlers).length > 0"
-        :src="require(`~/assets/images/hero/model/${topBrawlerId}.png`)"
+        :src="mediaUrl + '/brawlers/' + topBrawlerId + '/model'"
         class="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
       />
       <h1 class="text-4xl font-semibold relative z-10">
@@ -400,7 +400,7 @@
                       }"
                     >
                       <img
-                        :src="require(`~/assets/images/hero/icon/${mate.brawler}_optimized.png`)"
+                        :src="mediaUrl + '/brawlers/' + mate.brawler + '/avatar?size=80'"
                         class="w-10"
                       >
                       <img
@@ -702,6 +702,7 @@ export default {
       notificationsAllowed: false,
       showAllModes: false,
       ratingHelpOpen: false,
+      mediaUrl: process.env.mediaUrl,
       hoursSinceDate,
       formatMode,
       induceAdsIntoArray,
