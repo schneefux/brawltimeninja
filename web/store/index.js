@@ -83,12 +83,11 @@ export const mutations = {
     state.player = player
   },
   addLastPlayer(state, player) {
-    if (state.lastPlayers.some(({ tag }) => player.tag === tag)) {
-      return
-    }
     const clone = obj => JSON.parse(JSON.stringify(obj))
 
-    state.lastPlayers = [clone(player), ...state.lastPlayers.slice(0, 4)]
+    const lastPlayers = [clone(player), ...state.lastPlayers]
+      .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
+    state.lastPlayers = lastPlayers.slice(0, 4)
   },
   setCurrentEvents(state, currentEvents) {
     state.currentEvents = currentEvents
