@@ -18,7 +18,7 @@
         data-ad-slot="4579727583"
       />
 
-      <div class="text-center">
+      <div class="text-center my-2">
         <button @click="metric = 'hours'" class="bg-primary-lighter px-2 py-1 rounded">Load Most Hours</button>
         <button @click="metric = 'trophies'" class="bg-primary-lighter px-2 py-1 rounded">Load Most Trophies</button>
       </div>

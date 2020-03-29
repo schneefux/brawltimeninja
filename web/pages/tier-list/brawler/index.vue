@@ -14,7 +14,7 @@
         </nuxt-link>.
       </p>
 
-      <p class="text-center">
+      <p class="text-center mb-2">
         <label>
           Trophy Range:
           <select
