@@ -93,7 +93,7 @@ export default class BrawlstarsService {
   }
 
   public async getTrophiesLeaderboard() {
-    const response = await request<any>('/rankings/global/players', apiOfficialUrl, {}, {}, 10000, 600);
+    const response = await request<any>('rankings/global/players', apiOfficialUrl, {}, {}, 10000, 600);
     return response.items.map((d: any) => ({
       tag: d.tag.replace(/^#/, ''),
       name: d.name,
