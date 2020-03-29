@@ -607,19 +607,6 @@ export default class BrawlstarsService {
             }
           } as Mode
         } : {}),
-        ...('hotZone' in statsByMode ? {
-          'hotZone': {
-            label: 'hotZone',
-            icon: 'hotzone_optimized.png',
-            background: 'hotzone.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.hotZone.winRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
         '3v3': {
           label: 'All 3v3',
           icon: 'gemgrab_optimized.png',
