@@ -27,7 +27,7 @@
       <meta itemprop="startDate" :content="event.start" />
       <meta itemprop="endDate" :content="event.end" />
 
-      <div v-if="load" class="flex flex-wrap justify-center">
+      <div v-if="load" class="flex flex-wrap justify-center -mx-2">
         <p class="mb-1 mt-1 w-full text-center text-sm">Best Brawlers:</p>
         <ul>
           <li
