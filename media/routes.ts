@@ -24,9 +24,11 @@ async function respond(ctx: Context, buffer: Buffer|null) {
       background: { r: 0, b: 0, g: 0, alpha: 0.0 },
     }
   }).png();
+
   if ('size' in ctx.query) {
     img = img.resize(parseInt(ctx.query.size));
   }
+  img = img.toFormat(ctx.accepts('webp') ? 'webp' : ('noalpha' in ctx.query ? 'jpg' : 'png'))
   ctx.body = await img.toBuffer();
 
   const type = await fileType.fromBuffer(ctx.body);
