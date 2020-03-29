@@ -2,11 +2,11 @@
   <div class="w-120 max-w-full mx-auto py-4 px-2">
     <div class="bg-grey-lighter py-8 px-6 my-8 text-black">
       <h1 class="text-4xl md:text-center mt-2 font-semibold">
-        Brawl Stars Hours Leaderboard
+        Brawl Stars Leaderboards
       </h1>
 
       <p class="mt-2">
-        Who plays the most? Find your favorite YouTuber in this leaderboard.
+        The best players are ranked by the most hours and most trophies in this leaderboard.
       </p>
 
       <adsense
@@ -17,6 +17,11 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4579727583"
       />
+
+      <div class="text-center">
+        <button @click="metric = 'hours'" class="bg-primary-lighter px-2 py-1 rounded">Load Most Hours</button>
+        <button @click="metric = 'trophies'" class="bg-primary-lighter px-2 py-1 rounded">Load Most Trophies</button>
+      </div>
 
       <table class="mt-8 mx-auto w-64 max-w-full table">
         <caption class="mb-1">
@@ -30,8 +35,8 @@
             <th scope="col" class="text-left">
               Name
             </th>
-            <th scope="col" class="text-right">
-              Hours
+            <th scope="col" class="text-right capitalize">
+              {{ metric }}
             </th>
           </tr>
         </thead>
@@ -52,7 +57,7 @@
               </nuxt-link>
             </td>
             <td class="text-right">
-              {{ Math.floor(entry.hours) }}
+              {{ Math.floor(entry[metric]) }}
             </td>
           </tr>
         </tbody>
@@ -76,9 +81,9 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'LeaderboardPage',
   head() {
-    const description = 'Brawl Stars Leaderboard. Who spent the most hours on Brawl Stars?'
+    const description = 'Brawl Stars Leaderboard. Player rankings by most hours and most trophies.'
     return {
-      title: 'Brawl Stars Time Leaderboard',
+      title: 'Brawl Stars Leaderboard',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -87,7 +92,7 @@ export default {
   },
   computed: {
     ...mapState({
-      leaderboard: state => state.leaderboard,
+      hoursLeaderboard: state => state.leaderboard,
       ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
@@ -97,14 +102,33 @@ export default {
       await store.dispatch('loadLeaderboard')
     }
   },
+  data() {
+    return {
+      metric: 'hours',
+      leaderboard: [],
+    }
+  },
+  watch: {
+    async metric() {
+      this.leaderboard = []
+
+      if (this.metric == 'hours') {
+        this.leaderboard = this.hoursLeaderboard.slice()
+      }
+      if (this.metric == 'trophies') {
+        this.leaderboard = await this.$axios.$get('/api/leaderboard/trophies')
+      }
+    }
+  },
   created() {
     if (process.static) {
       this.loadLeaderboard()
     }
+    this.leaderboard = this.hoursLeaderboard.slice()
   },
   methods: {
     ...mapActions({
-      loadLeaderboard: 'loadLeaderboard',
+      loadHoursLeaderboard: 'loadLeaderboard',
     }),
   },
 }

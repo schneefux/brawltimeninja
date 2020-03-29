@@ -56,6 +56,17 @@ router.get('/leaderboard/hours', async (ctx, next) => {
   await next();
 });
 
+router.get('/leaderboard/trophies', async (ctx, next) => {
+  try {
+    ctx.body = await service.getTrophiesLeaderboard();
+    ctx.set('Cache-Control', 'public, max-age=6000');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/meta/brawler', async (ctx, next) => {
   try {
     ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeId);
