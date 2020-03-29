@@ -1,6 +1,6 @@
 <template>
   <div class="container text-center mx-auto py-4 px-2">
-    <img class="h-32 mt-6 inline" src="~/assets/images/hero/model/spike_loss_optimized.png">
+    <img class="h-32 mt-6 inline" :src="mediaUrl + '/brawlers/spike_loss/model'">
     <h1 class="text-3xl">
       Oops!
     </h1>
@@ -46,5 +46,10 @@ export default {
     Youtube,
   },
   props: ['error'],
+  data() {
+    return {
+      mediaUrl: process.env.mediaUrl,
+    }
+  },
 }
 </script>

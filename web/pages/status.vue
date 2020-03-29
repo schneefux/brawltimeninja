@@ -5,13 +5,13 @@
     <div class="px-2 mt-8 mx-auto max-w-lg">
       <p v-show="status == undefined">Checking…</p>
       <div v-show="status == 'down'">
-        <img src="~/assets/images/hero/model/spike_loss.png" class="mt-8 w-40 mx-auto" alt="Spike" />
+        <img :src="mediaUrl + '/brawlers/spike_loss/model'" class="mt-8 w-40 mx-auto" alt="Spike" />
         <h2 class="text-3xl font-bold text-center tracking-wide text-secondary">Oh no!</h2>
         <p class="mt-6">No connection to Brawl Stars servers possible. It's not just you!</p>
       </div>
       <div v-show="status == 'up'">
         <h2 class="text-3xl font-bold text-center tracking-wide text-secondary">All fine!</h2>
-        <img src="~/assets/images/hero/model/poco.png" class="mt-8 w-40 mx-auto" alt="Poco" />
+        <img :src="mediaUrl + '/brawlers/poco/model'" class="mt-8 w-40 mx-auto" alt="Poco" />
         <p class="mt-6">If you are having connection issues, try moving closer to your WiFi access point.</p>
       </div>
 
@@ -45,7 +45,8 @@ export default {
   },
   data() {
     return {
-      status: undefined
+      status: undefined,
+      mediaUrl: process.env.mediaUrl,
     }
   },
   async created() {
