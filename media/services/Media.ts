@@ -90,7 +90,7 @@ export default class MediaService {
 
   public async getStarpower(id: number, accept: string): Promise<Buffer|null> {
     try {
-      const path = assetDir + '/map_images/' + id + '.png';
+      const path = assetDir + '/star_powers/' + id + '.png';
       await fs.promises.access(path);
       return fs.promises.readFile(path);
     } catch (err) {
