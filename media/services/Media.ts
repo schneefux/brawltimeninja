@@ -12,7 +12,7 @@ console.log('using asset directory ' + assetDir);
 export const cache = cacheManager.caching({
   store: 'memory',
   max: cacheDisable ? 0 : 1000,
-  ttl: 180,
+  ttl: 60 * 60, // 1h
 });
 
 const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/v1/';
