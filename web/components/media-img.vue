@@ -1,7 +1,7 @@
 <template>
   <picture>
     <source :srcset="url + '.webp'" type="image/webp">
-    <img :src="url + '.jpg' + query" :alt="alt" :class="clazz">
+    <img :src="url + (transparent ? '.png': '.jpg') + query" :alt="alt" :class="clazz">
   </picture>
 </template>
 
@@ -23,6 +23,10 @@ export default {
     alt: {
       type: String,
       default: ''
+    },
+    transparent: {
+      type: Boolean,
+      default: true
     },
   },
   computed: {
