@@ -1,6 +1,6 @@
 <template>
   <picture>
-    <source :srcset="url + '.webp'" type="image/webp">
+    <source :srcset="url + '.webp' + query" type="image/webp">
     <img :src="url + (transparent ? '.png': '.jpg') + query" :alt="alt" :class="clazz">
   </picture>
 </template>
