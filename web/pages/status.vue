@@ -5,13 +5,13 @@
     <div class="px-2 mt-8 mx-auto max-w-lg">
       <p v-show="status == undefined">Checking…</p>
       <div v-show="status == 'down'">
-        <img :src="mediaUrl + '/brawlers/spike_loss/model'" class="mt-8 w-40 mx-auto" alt="Spike" />
+        <media-img path="/brawlers/spike_loss/model" clazz="mt-8 w-40 mx-auto" alt="Spike"></media-img>
         <h2 class="text-3xl font-bold text-center tracking-wide text-secondary">Oh no!</h2>
         <p class="mt-6">No connection to Brawl Stars servers possible. It's not just you!</p>
       </div>
       <div v-show="status == 'up'">
         <h2 class="text-3xl font-bold text-center tracking-wide text-secondary">All fine!</h2>
-        <img :src="mediaUrl + '/brawlers/poco/model'" class="mt-8 w-40 mx-auto" alt="Poco" />
+        <media-img path="/brawlers/poco/model" clazz="mt-8 w-40 mx-auto" alt="Poco"></media-img>
         <p class="mt-6">If you are having connection issues, try moving closer to your WiFi access point.</p>
       </div>
 
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import MediaImg from '~/components/media-img'
 import { Timeline } from 'vue-tweet-embed'
 
 export default {
@@ -42,11 +43,11 @@ export default {
   },
   components: {
     Timeline,
+    MediaImg,
   },
   data() {
     return {
       status: undefined,
-      mediaUrl: process.env.mediaUrl,
     }
   },
   async created() {

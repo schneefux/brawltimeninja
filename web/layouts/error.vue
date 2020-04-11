@@ -1,6 +1,6 @@
 <template>
   <div class="container text-center mx-auto py-4 px-2">
-    <img class="h-32 mt-6 inline" :src="mediaUrl + '/brawlers/spike_loss/model'">
+    <media-img clazz="h-32 mt-6 inline" path="/brawlers/spike_loss/model"></media-img>
     <h1 class="text-3xl">
       Oops!
     </h1>
@@ -39,17 +39,14 @@
 
 <script>
 import Youtube from '~/components/youtube'
+import MediaImg from '~/components/media-img'
 
 export default {
   layout: 'default',
   components: {
     Youtube,
+    MediaImg,
   },
   props: ['error'],
-  data() {
-    return {
-      mediaUrl: process.env.mediaUrl,
-    }
-  },
 }
 </script>

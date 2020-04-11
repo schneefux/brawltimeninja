@@ -10,11 +10,12 @@
       :target="isInIframe ? '_blank' : ''"
       itemprop="url"
     >
-      <div
-        :style="`background-image: url('${mediaUrl}/maps/${event.id}?size=384')`"
-        class="h-48 bg-contain bg-no-repeat bg-center mt-6"
-      />
-      <meta itemprop="image" :content="mediaUrl + '/maps/' + event.id" />
+      <media-img
+        :path="'/maps/' + event.id"
+        size="384"
+        clazz="h-48 mt-4 ml-auto mr-auto"
+        itemprop="image"
+      ></media-img>
       <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
       <div itemprop="location" itemscope itemtype="http://schema.org/VirtualLocation">
         <meta itemprop="url" :content="`/tier-list/map/${event.id}`" />
@@ -40,12 +41,13 @@
           >
             <div class="card border-grey-darker border flex justify-between mx-auto">
               <div class="w-12">
-                <img
-                  :src="mediaUrl + '/brawlers/' + brawler.id + '/avatar?size=64'"
+                <media-img
+                  :path="'/brawlers/' + brawler.id + '/avatar'"
                   :alt="brawler.name"
-                  class="h-8"
+                  size="64"
+                  clazz="h-8"
                   itemprop="image"
-                >
+                ></media-img>
               </div>
             </div>
             <p itemprop="name" class="mt-1 text-center">{{ brawler.name }}</p>
@@ -69,9 +71,13 @@
 <script>
 import { mapState } from 'vuex'
 import { formatMode, metaStatMaps } from '~/lib/util'
+import MediaImg from '~/components/media-img'
 
 export default {
   name: 'EventCard',
+  components: {
+    MediaImg,
+  },
   props: {
     event: {
       type: Object,
@@ -96,8 +102,6 @@ export default {
   },
   data() {
     return {
-      asset: {},
-      mediaUrl: process.env.mediaUrl,
       formatMode,
       metaStatMaps,
     }

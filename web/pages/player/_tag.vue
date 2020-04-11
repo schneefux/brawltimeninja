@@ -1,11 +1,11 @@
 <template>
   <div class="container mx-auto p-4" >
     <div class="section-heading">
-      <img
+      <media-img
         v-if="Object.keys(player.brawlers).length > 0"
-        :src="mediaUrl + '/brawlers/' + topBrawlerId + '/model'"
-        class="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
-      />
+        :path="'/brawlers/' + topBrawlerId + '/model'"
+        clazz="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
+      ></media-img>
       <h1 class="text-4xl font-semibold relative z-10">
         Statistics for
         <span class="text-secondary">{{ player.name }}</span>
@@ -414,10 +414,11 @@
                         'border-2 border-primary': mate.tag == player.tag,
                       }"
                     >
-                      <img
-                        :src="mediaUrl + '/brawlers/' + mate.brawler + '/avatar?size=80'"
-                        class="w-10"
-                      >
+                      <media-img
+                        :path="'/brawlers/' + mate.brawler + '/avatar'"
+                        size="80"
+                        clazz="w-10"
+                      ></media-img>
                       <img
                         src="~/assets/images/icon/trophy_optimized.png"
                         class="w-4"
@@ -689,12 +690,14 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { induceAdsIntoArray, formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~/lib/util'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
+import MediaImg from '~/components/media-img'
 
 export default {
   name: 'PlayerProfile',
   components: {
     Blogroll,
     BrawlerCard,
+    MediaImg,
   },
   head() {
     const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats and get Tips.`
@@ -718,7 +721,6 @@ export default {
       showAllModes: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
-      mediaUrl: process.env.mediaUrl,
       hoursSinceDate,
       formatMode,
       induceAdsIntoArray,

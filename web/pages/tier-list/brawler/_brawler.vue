@@ -29,10 +29,10 @@
       </h2>
     </div>
 
-    <img
-      :src="mediaUrl + '/brawlers/' + brawlerId + '/model'"
-      class="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
-    />
+    <media-img
+      :path="'/brawlers/' + brawlerId + '/model'"
+      clazz="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
+    ></media-img>
 
     <div class="section flex flex-wrap justify-center">
       <template v-for="prop in ['winRate']">
@@ -51,16 +51,18 @@
               >
                 Not enough data yet!
               </span>
-              <img
+              <media-img
                 v-if="entry.starpowerName !== ''"
-                :src="mediaUrl + '/starpowers/' + entry.id + '?size=96'"
-                class="prop-card-image"
-              >
-              <img
+                :path="'/starpowers/' + entry.id"
+                size="96"
+                clazz="prop-card-image"
+              ></media-img>
+              <media-img
                 v-else
-                :src="mediaUrl + '/brawlers/' + brawlerId + '/avatar?size=96'"
-                class="prop-card-image"
-              >
+                :path="'/brawlers/' + brawlerId + '/avatar'"
+                size="96"
+                clazz="prop-card-image"
+              ></media-img>
               <div class="prop-card-content prop-card-content-md">
                 <div>
                   <span class="card-prop-icon">
@@ -146,6 +148,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/lib/util'
+import MediaImg from '~/components/media-img'
 
 export default {
   name: 'StarpowerMetaPage',
@@ -159,12 +162,14 @@ export default {
       ]
     }
   },
+  components: {
+    MediaImg,
+  },
   data() {
     return {
       metaStatMaps,
       formatMode,
       modeToBackgroundId,
-      mediaUrl: process.env.mediaUrl,
     }
   },
   computed: {

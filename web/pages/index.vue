@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col items-center">
-    <img
-      :src="randomHero"
-      class="mt-16 lg:mt-12vh h-32 md:h-48 lg:h-64"
-    >
+    <media-img
+      :path="randomHero"
+      clazz="mt-16 lg:mt-12vh h-32 md:h-48 lg:h-64"
+    ></media-img>
 
     <div class="mt-10 lg:mt-8vh text-center mx-2">
       <h1 class="text-4xl font-bold">
@@ -134,12 +134,13 @@
               <span class="prop-card-title md:prop-card-title-lg" itemprop="name">
                 {{ brawler.name.toLowerCase() }}
               </span>
-              <img
-                :src="mediaUrl + '/brawlers/' + brawler.id + '/avatar?size=128'"
+              <media-img
+                :path="'/brawlers/' + brawler.id + '/avatar'"
                 :alt="brawler.name"
-                class="prop-card-image md:prop-card-image-lg"
+                size="128"
+                clazz="prop-card-image md:prop-card-image-lg"
                 itemprop="image"
-              >
+              ></media-img>
               <div
                 class="prop-card-content"
                 itemscope
@@ -299,6 +300,7 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { metaStatMaps } from '~/lib/util'
 import EventCard from '~/components/event-card'
 import Youtube from '~/components/youtube'
+import MediaImg from '~/components/media-img'
 
 function playerToRoute(player) {
   return {
@@ -313,6 +315,7 @@ export default {
   components: {
     EventCard,
     Youtube,
+    MediaImg,
   },
   head() {
     const description = 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
@@ -332,7 +335,6 @@ export default {
       error: undefined,
       invalidTagAttempts: 0,
       loadHelpVideo: false,
-      mediaUrl: process.env.mediaUrl,
       playerToRoute,
       metaStatMaps,
     }
@@ -356,7 +358,7 @@ export default {
     randomHero() {
       const heroes = ['crow1', 'crow2', 'crow3']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
-      return this.mediaUrl + '/brawlers/' + hero + '/model';
+      return '/brawlers/' + hero + '/model';
     },
     randomPlayers() {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())

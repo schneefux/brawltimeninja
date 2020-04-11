@@ -3,10 +3,11 @@
     <span class="stats-card-title">
       {{ title.toLowerCase() }}
     </span>
-    <img
-      :src="mediaUrl + '/brawlers/' + brawler + '/avatar?size=160'"
-      class="stats-card-image"
-    >
+    <media-img
+      :path="'/brawlers/' + brawler + '/avatar'"
+      :size="160"
+      clazz="stats-card-image"
+    ></media-img>
     <div class="stats-card-content">
       <div>
         <slot name="history" />
@@ -19,8 +20,13 @@
 </template>
 
 <script>
+import MediaImg from '~/components/media-img'
+
 export default {
   name: 'BrawlerCard',
+  components: {
+    MediaImg,
+  },
   props: {
     title: {
       type: String,
@@ -30,11 +36,6 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      mediaUrl: process.env.mediaUrl,
-    }
   },
 }
 </script>
