@@ -28,7 +28,7 @@ async function respond(ctx: Context, buffer: Buffer|null) {
   if ('size' in ctx.query) {
     img = img.resize(parseInt(ctx.query.size));
   }
-  img = img.toFormat(ctx.accepts('webp') ? 'webp' : ('noalpha' in ctx.query ? 'jpg' : 'png'))
+  img = img.toFormat(ctx.params.ext);
   ctx.body = await img.toBuffer();
 
   const type = await fileType.fromBuffer(ctx.body);
@@ -40,25 +40,27 @@ async function respond(ctx: Context, buffer: Buffer|null) {
   }
 }
 
-router.get('/brawlers/:name/avatar', async (ctx, next) => {
+const EXT = '.:ext(webp|png|jpg)';
+
+router.get(`/brawlers/:name/avatar${EXT}`, async (ctx, next) => {
   const buffer = await service.getBrawlerAvatar(ctx.params.name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
-router.get('/brawlers/:name/model', async (ctx, next) => {
+router.get(`/brawlers/:name/model${EXT}`, async (ctx, next) => {
   const buffer = await service.getBrawlerModel(ctx.params.name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
-router.get('/starpowers/:id', async (ctx, next) => {
+router.get(`/starpowers/:id${EXT}`, async (ctx, next) => {
   const buffer = await service.getStarpower(ctx.params.id, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
-router.get('/maps/:id', async (ctx, next) => {
+router.get(`/maps/:id${EXT}`, async (ctx, next) => {
   let id = ctx.params.id;
   if (id.length < '15000000'.length) {
     id = id.replace('^150', '1500');
