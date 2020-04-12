@@ -203,7 +203,6 @@ export default {
       adsAllowed: state => state.adsAllowed,
       cookiesAllowed: state => state.cookiesAllowed,
       isApp: state => state.isApp,
-      lastPlayers: state => state.lastPlayers,
     }),
   },
   watch: {
@@ -213,16 +212,6 @@ export default {
         // open banner if user has not opted in & Ezoic did not load the consent manager popup
         console.log('ezoic CMP popup visible', window.__cmp == undefined)
         this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
-      }
-    },
-    isApp() {
-      if (this.$route.path == '/' && this.isApp && this.lastPlayers.length > 0) {
-        this.$router.push({
-          name: 'player-tag',
-          params: {
-            tag: this.lastPlayers[0].tag,
-          },
-        })
       }
     },
     adsAllowed(allowed) {
