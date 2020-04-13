@@ -92,7 +92,6 @@
           :key="player.tag"
           :to="playerToRoute(player)"
           @click.native.passive="addLastPlayer(player)"
-          rel="nofollow"
           class="ml-2 link"
         >
           {{ player.name }}

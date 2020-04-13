@@ -443,7 +443,6 @@
                     >
                       <nuxt-link
                         class="text-xs whitespace-no-wrap"
-                        rel="nofollow"
                         :to="`/player/${mate.tag}`"
                         :class="{
                           'link': mate.tag != player.tag,
