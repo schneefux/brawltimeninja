@@ -1,4 +1,5 @@
 import path from 'path'
+import axios from 'axios'
 
 import { camelToKebab } from './lib/util'
 import payload from './store/payload.json'
@@ -125,7 +126,7 @@ export default {
     // generated during run time
     gzip: true,
     exclude: ['/embed/**'],
-    routes() {
+    async routes() {
       const routes = []
 
       const modes = []
@@ -142,6 +143,16 @@ export default {
         routes.push(`/blog/${topic}`)
         posts.forEach(post => routes.push(`/blog/${topic}/${post.id}`))
       })
+
+      try {
+        const topTrophies = await axios.get('https://api.brawltime.ninja/api/leaderboard/trophies')
+        topTrophies.forEach(({ tag }) => routes.push(`/player/${tag}`))
+      } catch (err) { }
+
+      try {
+        const topHours = await axios.get('https://api.brawltime.ninja/api/leaderboard/hours')
+        topHours.forEach(({ tag }) => routes.push(`/player/${tag}`))
+      } catch (err) { }
 
       return routes
     },
