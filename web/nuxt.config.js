@@ -146,12 +146,12 @@ export default {
 
       try {
         const topTrophies = await axios.get('https://api.brawltime.ninja/api/leaderboard/trophies')
-        topTrophies.forEach(({ tag }) => routes.push(`/player/${tag}`))
+        topTrophies.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
       } catch (err) { }
 
       try {
         const topHours = await axios.get('https://api.brawltime.ninja/api/leaderboard/hours')
-        topHours.forEach(({ tag }) => routes.push(`/player/${tag}`))
+        topHours.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
       } catch (err) { }
 
       return routes
