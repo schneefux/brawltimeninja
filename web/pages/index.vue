@@ -257,7 +257,7 @@
             href="https://brawlstarsup.com/"
             class="link"
             target="_blank"
-            rel="noopener nofollow"
+            rel="noopener nofollow sponsored"
             @click="$ga.event('home', 'bsu', 'click_visit')"
           >
             Visit BSU
@@ -275,7 +275,7 @@
             :href="article.link"
             class="w-64"
             target="_blank"
-            rel="noopener nofollow"
+            rel="noopener nofollow sponsored"
             @click="$ga.event('home', 'bsu', 'click_article')"
           >
             <p class="link-light mt-4 text-center text-xl">
