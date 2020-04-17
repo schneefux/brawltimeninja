@@ -17,6 +17,7 @@
         itemprop="image"
       ></media-img>
       <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
+      <meta itemprop="eventStatus" content="https://schema.org/EventScheduled" />
       <div itemprop="location" itemscope itemtype="http://schema.org/VirtualLocation">
         <meta itemprop="url" :content="`/tier-list/map/${event.id}`" />
       </div>
@@ -25,6 +26,7 @@
         -
         {{ event.map }}
       </p>
+      <meta itemprop="description" :content="`${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`" />
       <meta itemprop="startDate" :content="event.start" />
       <meta itemprop="endDate" :content="event.end" />
 

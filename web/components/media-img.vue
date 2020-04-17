@@ -7,7 +7,6 @@
 
 <script>
 export default {
-  inheritAttrs: false,
   props: {
     clazz: {
       type: String,
