@@ -1,12 +1,13 @@
 <template>
   <picture>
     <source :srcset="url + '.webp' + query" type="image/webp">
-    <img :src="url + (transparent ? '.png': '.jpg') + query" :alt="alt" :class="clazz">
+    <img :src="url + (transparent ? '.png': '.jpg') + query" :class="clazz" v-bind="$attrs">
   </picture>
 </template>
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
     clazz: {
       type: String,
@@ -18,10 +19,6 @@ export default {
     },
     size: {
       required: false
-    },
-    alt: {
-      type: String,
-      default: ''
     },
     transparent: {
       type: Boolean,
