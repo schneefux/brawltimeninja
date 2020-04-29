@@ -931,5 +931,17 @@ export default class TrackerService {
       delete from battle
       where timestamp < now() - interval 7 day and id <= ?
     `, [lastBProcessedId]);
+
+
+    console.log('deleting historical player');
+    await this.knex.raw(`
+      delete from player
+      where timestamp < now() - interval 30 day
+    `);
+    console.log('deleting historical player_brawler');
+    await this.knex.raw(`
+      delete from player_brawler
+      where timestamp < now() - interval 30 day
+    `);
   }
 }
