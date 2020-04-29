@@ -911,5 +911,25 @@ export default class TrackerService {
     await this.knex.transaction(async (txn) => {
       await this.fillAggPlayerBattle(txn);
     });
+
+    console.log('deleting processed player_battle');
+    const lastPbIdRecords = await this.knex('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'agg_player_battle' });
+    const lastPbProcessedId = lastPbIdRecords.length > 0 ? lastPbIdRecords[0].last_id : 0;
+    await this.knex.raw(`
+      delete from player_battle
+      where timestamp < now() - interval 7 day and id <= ?
+    `, [lastPbProcessedId]);
+
+    console.log('deleting processed battle');
+    const lastBIdRecords = await this.knex('meta_last_processed')
+      .select('last_id')
+      .where({ 'name': 'dim_season' });
+    const lastBProcessedId = lastBIdRecords.length > 0 ? lastBIdRecords[0].last_id : 0;
+    await this.knex.raw(`
+      delete from battle
+      where timestamp < now() - interval 7 day and id <= ?
+    `, [lastBProcessedId]);
   }
 }
