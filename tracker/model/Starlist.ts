@@ -21,6 +21,14 @@ export interface StarlistBrawler {
     imageUrl: string;
     released: boolean;
   }[];
+  gadgets: {
+    id: number;
+    name: string;
+    path: string;
+    description: string;
+    imageUrl: string;
+    released: boolean;
+  }[];
   videos: {
     type: number;
     name: string;

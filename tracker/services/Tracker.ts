@@ -87,6 +87,8 @@ export default class TrackerService {
             starpower1_name: brawler.starPowers.length == 0 ? null : brawler.starPowers[0].name,
             starpower2_id: brawler.starPowers.length <= 1 ? null : brawler.starPowers[1].id,
             starpower2_name: brawler.starPowers.length <= 1 ? null : brawler.starPowers[1].name,
+            gadget1_id: brawler.gadgets.length == 0 ? null : brawler.gadgets[0].id,
+            gadget1_name: brawler.gadgets.length == 0 ? null : brawler.gadgets[0].id,
           })
         ));
 
@@ -141,6 +143,7 @@ export default class TrackerService {
               const flippedResult = battle.battle.result == 'draw' ? 'draw' : (battle.battle.result == 'victory' ? 'defeat' : 'victory');
               const myBrawler = !isMe ? undefined : player.brawlers.find((b) => b.name == insertPlayer.brawler.name);
               const myStarpower = myBrawler === undefined || myBrawler.starPowers.length != 1 ? undefined : myBrawler.starPowers[0];
+              const myGadget = myBrawler === undefined || myBrawler.gadgets.length != 1 ? undefined : myBrawler.gadgets[0];
 
               return trx('player_battle').insert({
                 /* id, */
@@ -169,6 +172,9 @@ export default class TrackerService {
                 starpower_found: myStarpower !== undefined,
                 starpower_id: myStarpower === undefined ? null : myStarpower.id,
                 starpower_name: myStarpower === undefined ? null : myStarpower.name,
+                gadget_found: myGadget !== undefined,
+                gadget_id: myGadget === undefined ? null : myGadget.id,
+                gadget_name: myGadget === undefined ? null : myGadget.name,
               })
             }))
           ));
@@ -575,7 +581,7 @@ export default class TrackerService {
         console.log('created event dimension');
 
         await txn.schema.createTable('dim_brawler_starpower', (table) => {
-          table.integer('id').unsigned().primary(); // coalesce(starpower_id, brawler_id)
+          table.integer('id').unsigned().primary(); // coalesce(starpower_id, brawler_id, gadget_id)
 
           table.integer('brawler_id').unsigned().notNullable();
           table.string('brawler_name').notNullable();
@@ -716,6 +722,30 @@ export default class TrackerService {
       });
     }
 
+    if (!await this.knex.schema.hasColumn('dim_brawler_starpower', 'gadget_id')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player_brawler', (table) => {
+          table.integer('gadget1_id').nullable();
+          table.string('gadget1_name').nullable();
+        });
+        console.log('updated player_brawler');
+
+        await txn.schema.table('player_battle', (table) => {
+          table.integer('gadget_found').defaultTo(false);
+          table.integer('gadget_id').nullable();
+          table.string('gadget_name').nullable();
+        });
+        console.log('updated player_battle');
+
+        await txn.schema.table('dim_brawler_starpower', (table) => {
+          table.integer('gadget_id').defaultTo(0);
+          table.string('gadget_name').defaultTo('');
+          table.index(['gadget_id']);
+        });
+      });
+      console.log('added gadgets to dim brawler starpower and player_brawler');
+    }
+
     console.log('all migrations done');
   }
 
@@ -759,11 +789,13 @@ export default class TrackerService {
     await txn.raw(`
       insert ignore dim_brawler_starpower
         select distinct
-          coalesce(starpower_id, brawler_id) as id,
+          coalesce(starpower_id, brawler_id, gadget_id) as id,
           brawler_id,
           brawler_name,
           coalesce(starpower_id, 0),
-          coalesce(starpower_name, '')
+          coalesce(starpower_name, ''),
+          coalesce(gadget_id, 0),
+          coalesce(gadget_name, '')
         from player_battle
         where id > ? and id <= ?
     `, [lastProcessedId, lastId]);
@@ -836,7 +868,7 @@ export default class TrackerService {
           null,
           dim_season.id as season_id,
           battle_event_id as event_id,
-          coalesce(starpower_id, brawler_id) as brawler_starpower_id,
+          coalesce(starpower_id, brawler_id, gadget_id) as brawler_starpower_id,
           coalesce(is_bigbrawler, false) as is_bigbrawler,
 
           count(*) as count,

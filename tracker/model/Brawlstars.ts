@@ -9,6 +9,10 @@ export interface Brawler {
     id: number;
     name: string;
   }[];
+  gadgets: {
+    id: number;
+    name: string;
+  }[];
 }
 
 export interface Player {
@@ -21,6 +25,7 @@ export interface Player {
   highestPowerPlayPoints: number;
   expLevel: number;
   expPoints: number;
+  isQualifiedFromChampionshipChallenge: boolean;
   '3vs3Victories': number;
   soloVictories: number;
   duoVictories: number;
@@ -42,6 +47,7 @@ export interface Event {
   endTime: string;
   freeKeys: number;
   mapId: number;
+  mapApiId: number;
   mapName: string;
   mapImageUrl: string;
   gameMode: string;
