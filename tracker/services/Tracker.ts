@@ -691,7 +691,7 @@ export default class TrackerService {
       console.log('added new player attributes');
     }
 
-    if (!await this.knex.schema.hasColumn('agg_player_battle', '')) {
+    if (!await this.knex.schema.hasColumn('agg_player_battle', 'trophyrange_id')) {
       await this.knex.transaction(async (txn) => {
         await txn.schema.createTable('dim_trophyrange', (table) => {
           table.bigIncrements('id');
@@ -735,7 +735,7 @@ export default class TrackerService {
         console.log('updated player_brawler');
 
         await txn.schema.table('player_battle', (table) => {
-          table.integer('gadget_found').defaultTo(false);
+          table.boolean('gadget_found').defaultTo(false);
           table.integer('gadget_id').nullable();
           table.string('gadget_name').nullable();
         });
