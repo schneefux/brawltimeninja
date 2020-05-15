@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cache-manager": "^3.2.1",
+    "cache-manager-fs-hash": "0.0.8",
     "file-type": "^14.1.4",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",

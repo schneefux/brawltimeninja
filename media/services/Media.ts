@@ -2,18 +2,29 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
 import cacheManager from 'cache-manager';
+import fsStore from 'cache-manager-fs-hash';
 import { StarlistBrawler, StarlistMap } from '~/model/Starlist';
 
-const cacheDisable = !!process.env.CACHE_DISABLE;
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets');
 
 console.log('using asset directory ' + assetDir);
 
-export const cache = cacheManager.caching({
-  store: 'memory',
-  max: cacheDisable ? 0 : 1000,
-  ttl: 60 * 60, // 1h
-});
+const cachePath = process.env.CACHE_PATH || 'cache';
+const cacheDisable = !!process.env.CACHE_DISABLE;
+
+export const cache = cacheDisable ?
+  cacheManager.caching({
+    store: 'memory',
+    max: 0,
+    ttl: 60 * 60,
+  }) :
+  cacheManager.caching(<any>{
+    max: 10000,
+    store: fsStore,
+    ttl: 60 * 60,
+    options: { path: cachePath, subdirs: true, },
+  });
+
 
 const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/v1/';
 const token = process.env.BRAWLAPI_TOKEN || '';
