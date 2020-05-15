@@ -726,28 +726,36 @@ export default class TrackerService {
       });
     }
 
-    if (!await this.knex.schema.hasColumn('dim_brawler_starpower', 'gadget_id')) {
+    if (!await this.knex.schema.hasColumn('player_brawler', 'gadget1_id')) {
       await this.knex.transaction(async (txn) => {
         await txn.schema.table('player_brawler', (table) => {
           table.integer('gadget1_id').nullable();
           table.string('gadget1_name').nullable();
         });
         console.log('updated player_brawler');
+      })
+    }
 
+    if (!await this.knex.schema.hasColumn('player_battle', 'gadget_found')) {
+      await this.knex.transaction(async (txn) => {
         await txn.schema.table('player_battle', (table) => {
           table.boolean('gadget_found').defaultTo(false);
           table.integer('gadget_id').nullable();
           table.string('gadget_name').nullable();
         });
         console.log('updated player_battle');
+      })
+    }
 
+    if (!await this.knex.schema.hasColumn('dim_brawler_starpower', 'gadget_id')) {
+      await this.knex.transaction(async (txn) => {
         await txn.schema.table('dim_brawler_starpower', (table) => {
           table.integer('gadget_id').defaultTo(0);
           table.string('gadget_name').defaultTo('');
           table.index(['gadget_id']);
         });
       });
-      console.log('added gadgets to dim brawler starpower and player_brawler');
+      console.log('added gadgets to dim brawler starpower');
     }
 
     console.log('all migrations done');
