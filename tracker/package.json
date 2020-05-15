@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts",
     "build": "webpack --mode production",
-    "start": "node dist/tracker.js",
+    "start": "node dist/migrate.js && node dist/tracker.js",
     "migrate": "node dist/migrate.js",
     "materialize": "node dist/materialize.js"
   },
