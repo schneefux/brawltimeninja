@@ -513,6 +513,8 @@ export default class TrackerService {
         table.string('type');
 
         table.unique(['player_tags', 'timestamp']); // team plays only one game at a time
+        table.index(['timestamp'], 'battle_timestamp');
+        // create index battle_timestamp on battle(timestamp);
       });
       console.log('created battle');
 
@@ -548,6 +550,8 @@ export default class TrackerService {
 
         table.unique(['battle_id', 'player_tag']); // player plays once
         table.unique(['player_tag', 'timestamp']); // player plays one game at a time
+        table.index(['timestamp'], 'player_battle_timestamp');
+        // create index player_battle_timestamp on player_battle(timestamp);
       });
       console.log('created player_battle');
     }
