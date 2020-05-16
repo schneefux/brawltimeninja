@@ -312,7 +312,7 @@ export default class TrackerService {
   public async getStarpowerMeta() {
     return await this.knex.raw(`
         select
-          dim_brawler_starpower.id as id,
+          if(dim_brawler_starpower.starpower_id=0, dim_brawler_starpower.brawler_id, dim_brawler_starpower.starpower_id) as id,
           dim_brawler_starpower.brawler_name as brawler_name,
           dim_brawler_starpower.starpower_name as starpower_name,
           sum(count) as picks,
@@ -341,7 +341,7 @@ export default class TrackerService {
   public async getGadgetMeta() {
     return await this.knex.raw(`
         select
-          dim_brawler_starpower.id as id,
+          if(dim_brawler_starpower.gadget_id=0, dim_brawler_starpower.brawler_id, dim_brawler_starpower.gadget_id) as id,
           dim_brawler_starpower.brawler_name as brawler_name,
           dim_brawler_starpower.gadget_name as gadget_name,
           sum(count) as picks,
