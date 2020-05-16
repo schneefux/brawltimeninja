@@ -443,7 +443,7 @@
                     >
                       <nuxt-link
                         class="text-xs whitespace-no-wrap"
-                        :rel="mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
+                        :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
                         :to="`/player/${mate.tag}`"
                         :class="{
                           'link': mate.tag != player.tag,
