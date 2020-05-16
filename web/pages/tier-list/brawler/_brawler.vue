@@ -4,11 +4,11 @@
       {{ brawlerName }} Statistics
     </h1>
     <p class="mt-2 md:text-center">
-      This Star Power Tier List is generated automatically.
+      This Star Power and Gadget Tier List is generated automatically.
       The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
     </p>
     <p class="mt-2 mb-6 md:text-center">
-      Showing Star Power Tier list and best modes for
+      Showing Star Power and Gadget Tier list and best modes for
       <span class="inline-block text-primary-lighter">
         {{ brawlerName }}
       </span>.
@@ -54,6 +54,60 @@
               <media-img
                 v-if="entry.starpowerName !== ''"
                 :path="'/starpowers/' + entry.id"
+                size="96"
+                clazz="prop-card-image"
+              ></media-img>
+              <media-img
+                v-else
+                :path="'/brawlers/' + brawlerId + '/avatar'"
+                size="96"
+                clazz="prop-card-image"
+              ></media-img>
+              <div class="prop-card-content prop-card-content-md">
+                <div>
+                  <span class="card-prop-icon">
+                    {{ metaStatMaps.icons[prop] }}
+                  </span>
+                  <span class="card-prop-value">
+                    {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
+                  </span>
+                </div>
+                <span class="text-sm">
+                  {{ metaStatMaps.labels[prop] }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <div class="section-heading">
+      <h2 class="text-2xl font-semibold">
+        Gadget Tier List
+      </h2>
+    </div>
+
+    <div class="section flex flex-wrap justify-center">
+      <template v-for="prop in ['winRate']">
+        <template v-for="entry in gadgets">
+          <div
+            :key="prop + ' ' + entry.id"
+            class="card-wrapper px-2"
+          >
+            <div class="card prop-card prop-card-md w-48">
+              <span class="prop-card-title">
+                {{ entry.gadgetName || 'No Gadget' }}
+              </span>
+              <span
+                v-if="entry.sampleSize < 1000"
+                class="text-xs absolute bottom-0 right-0 text-grey"
+              >
+                Not enough data yet!
+              </span>
+              <media-img
+                v-if="entry.gadgetName !== ''"
+                :path="'/gadgets/' + entry.id"
                 size="96"
                 clazz="prop-card-image"
               ></media-img>
@@ -153,9 +207,9 @@ import MediaImg from '~/components/media-img'
 export default {
   name: 'StarpowerMetaPage',
   head() {
-    const description = `${this.brawlerName} Brawl Stars stats. Star Power Tier List with win rate and pick rates for all modes.`
+    const description = `${this.brawlerName} Brawl Stars stats. Star Power Tier List and Gadget Tier List with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Star Power Tier List`,
+      title: `${this.brawlerName} Star Power and Gadget Tier List`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -182,6 +236,11 @@ export default {
         .filter(entry => entry.brawlerName === this.brawlerId)
         .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
     },
+    gadgets() {
+      return this.gadgetMeta
+        .filter(entry => entry.brawlerName === this.brawlerId)
+        .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    },
     modes() {
       // transpose { mode: { brawler} } to { brawler: mode }
       return [...Object.values(this.modeMeta)]
@@ -198,6 +257,7 @@ export default {
     },
     ...mapState({
       starpowerMeta: state => state.starpowerMeta,
+      gadgetMeta: state => state.gadgetMeta,
       modeMeta: state => state.modeMeta,
       ads: state => state.adsEnabled,
       isApp: state => state.isApp,
@@ -213,18 +273,21 @@ export default {
   async fetch({ store }) {
     if (!process.static) {
       await store.dispatch('loadStarpowerMeta')
+      await store.dispatch('loadGadgetMeta')
       await store.dispatch('loadModeMeta')
     }
   },
   async created() {
     if (process.static) {
       await this.loadStarpowerMeta()
+      await this.loadGadgetMeta()
       await this.loadModeMeta()
     }
   },
   methods: {
     ...mapActions({
       loadStarpowerMeta: 'loadStarpowerMeta',
+      loadGadgetMeta: 'loadGadgetMeta',
       loadModeMeta: 'loadModeMeta',
     }),
   },

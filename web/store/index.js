@@ -28,6 +28,8 @@ export const state = () => ({
   bestByEvent: {},
   starpowerMeta: [],
   starpowerMetaLoaded: false,
+  gadgetMeta: [],
+  gadgetMetaLoaded: false,
   modeMeta: [],
   modeMetaLoaded: false,
   cookiesAllowed: false,
@@ -114,6 +116,10 @@ export const mutations = {
   setStarpowerMeta(state, meta) {
     state.starpowerMeta = meta
     state.starpowerMetaLoaded = true
+  },
+  setGadgetMeta(state, meta) {
+    state.gadgetMeta = meta
+    state.gadgetMetaLoaded = true
   },
   addMapMetaSlice(state, metaSlice) {
     state.mapMeta = {
@@ -293,6 +299,20 @@ export const actions = {
       // not critical, ignore
       exception('cannot get starpower meta: ' + error.message)
       console.error('cannot get starpower meta:', error.message)
+    }
+  },
+  async loadGadgetMeta({ state, commit }) {
+    if (state.gadgetMetaLoaded) {
+      return
+    }
+
+    try {
+      const meta = await this.$axios.$get('/api/meta/gadget')
+      commit('setGadgetMeta', meta)
+    } catch (error) {
+      // not critical, ignore
+      exception('cannot get gadget meta: ' + error.message)
+      console.error('cannot get gadget meta:', error.message)
     }
   },
   async loadModeMeta({ state, commit }) {
