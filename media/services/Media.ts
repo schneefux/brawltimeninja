@@ -136,6 +136,43 @@ export default class MediaService {
     }
   }
 
+  public async getGadget(id: number, accept: string): Promise<Buffer|null> {
+    try {
+      const path = assetDir + '/gadgets/' + id + '.png';
+      await fs.promises.access(path);
+      return fs.promises.readFile(path);
+    } catch (err) {
+      console.log('Gadget not found (local): ' + id);
+    }
+
+    let brawlers: StarlistBrawler[];
+
+    try {
+      brawlers = await this.getStarlistBrawlers();
+    } catch(err) {
+      console.log('Gadget API error: ' + err);
+      return null;
+    }
+
+    const gadgets = brawlers
+      .map(b => b.gadgets)
+      .reduce((agg, cur) => agg.concat(...cur), []);
+    const gadget = gadgets.find(g => g.id == id);
+    if (gadget == undefined) {
+      console.log('Gadget not found (starlist): ' + id);
+      return null;
+    }
+
+    const url = gadget.imageUrl;
+    try {
+      return await fetch(url, { headers: { accept } })
+      .then(res => res.buffer());
+    } catch (err) {
+      console.log('Gadget fetch error: ' + err);
+      return null;
+    }
+  }
+
   public async getMap(id: number, accept: string): Promise<Buffer|null> {
     try {
       const path = assetDir + '/map_images/' + id.toString().replace(/^1500/g, '150') + '.png';

@@ -60,6 +60,12 @@ router.get(`/starpowers/:id${EXT}`, async (ctx, next) => {
   await next();
 });
 
+router.get(`/gadgets/:id${EXT}`, async (ctx, next) => {
+  const buffer = await service.getGadget(ctx.params.id, ctx.req.headers.accept || '');
+  await respond(ctx, buffer);
+  await next();
+});
+
 router.get(`/maps/:id${EXT}`, async (ctx, next) => {
   let id = ctx.params.id;
   if (id.length < '15000000'.length) {
