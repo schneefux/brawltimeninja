@@ -70,7 +70,7 @@ export default {
           sampleSize: starpower.sampleSize,
           stats: starpower.stats,
           icon: `/starpowers/${starpower.id}`,
-          link: `/tier-list/brawler/${starpower.brawlerId}`,
+          link: `/tier-list/brawler/${starpower.brawlerName}`,
         }))
     },
     ...mapState({

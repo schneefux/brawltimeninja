@@ -70,7 +70,7 @@ export default {
           sampleSize: gadget.sampleSize,
           stats: gadget.stats,
           icon: `/gadgets/${gadget.id}`,
-          link: `/tier-list/brawler/${gadget.brawlerId}`,
+          link: `/tier-list/brawler/${gadget.brawlerName}`,
         }))
     },
     ...mapState({
