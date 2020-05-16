@@ -139,7 +139,7 @@ export const metaStatMaps = {
     rank1: (n: number) => n,
     wins: (n: number) => n,
   },
-  propPriority: ['wins', 'rank1', 'duration', 'pickRate'],
+  propPriority: ['wins', 'rank1', 'duration', 'pickRate', 'winRate'],
 }
 
 /**

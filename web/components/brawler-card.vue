@@ -8,6 +8,12 @@
       :size="160"
       clazz="stats-card-image"
     ></media-img>
+    <media-img
+      v-if="icon !== ''"
+      :path="icon"
+      :size="80"
+      clazz="stats-card-icon"
+    ></media-img>
     <div class="stats-card-content">
       <div>
         <slot name="history" />
@@ -30,11 +36,15 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     brawler: {
       type: String,
       required: true,
+    },
+    icon: {
+      type: String,
+      default: '',
     },
   },
 }

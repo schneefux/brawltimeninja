@@ -4,6 +4,7 @@ import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
 import { PlayerWinRates } from '~/model/PlayerWinRates';
+import { parse } from 'path';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -314,6 +315,7 @@ export default class TrackerService {
         select
           if(dim_brawler_starpower.starpower_id=0, dim_brawler_starpower.brawler_id, dim_brawler_starpower.starpower_id) as id,
           dim_brawler_starpower.brawler_name as brawler_name,
+          dim_brawler_starpower.brawler_id as brawler_id,
           dim_brawler_starpower.starpower_name as starpower_name,
           sum(count) as picks,
           sum(victory) / sum(result_count) as win_rate,
@@ -328,6 +330,7 @@ export default class TrackerService {
       `).then((response) => response[0].map(
         (entry: any) => (<MetaStarpowerEntry> {
           id: parseInt(entry.id),
+          brawlerId: parseInt(entry.brawler_id),
           brawlerName: entry.brawler_name,
           starpowerName: entry.starpower_name,
           winRate: parseFloat(entry.win_rate),
@@ -343,6 +346,7 @@ export default class TrackerService {
         select
           if(dim_brawler_starpower.gadget_id=0, dim_brawler_starpower.brawler_id, dim_brawler_starpower.gadget_id) as id,
           dim_brawler_starpower.brawler_name as brawler_name,
+          dim_brawler_starpower.brawler_id as brawler_id,
           dim_brawler_starpower.gadget_name as gadget_name,
           sum(count) as picks,
           sum(victory) / sum(result_count) as win_rate,
@@ -358,6 +362,7 @@ export default class TrackerService {
         (entry: any) => (<MetaGadgetEntry> {
           id: parseInt(entry.id),
           brawlerName: entry.brawler_name,
+          brawlerId: entry.brawler_id,
           gadgetName: entry.gadget_name,
           winRate: parseFloat(entry.win_rate),
           starRate: parseFloat(entry.star_rate),

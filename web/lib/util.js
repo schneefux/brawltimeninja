@@ -145,7 +145,7 @@ export var metaStatMaps = {
         rank1: function (n) { return n; },
         wins: function (n) { return n; }
     },
-    propPriority: ['wins', 'rank1', 'duration', 'pickRate']
+    propPriority: ['wins', 'rank1', 'duration', 'pickRate', 'winRate']
 };
 /**
  * Get brawlers by event: {

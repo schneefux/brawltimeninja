@@ -12,6 +12,13 @@
         <nuxt-link to="/tier-list/mode" class="link inline-block">
           Mode Tier Lists
         </nuxt-link>.
+        See also the
+        <nuxt-link to="/tier-list/gadgets" class="link inline-block">
+          Gadget Tier List
+        </nuxt-link> or the
+        <nuxt-link to="/tier-list/starpowers" class="link inline-block">
+          Star Power Tier List
+        </nuxt-link>.
       </p>
 
       <p class="text-center mb-2">
@@ -48,7 +55,7 @@
         :entries="brawlers"
         :ad-slots="adSlots"
         :ad-frequency="13"
-        link-text="View Starpower stats"
+        link-text="More Statistics"
         ga-category="brawler_meta"
       />
 

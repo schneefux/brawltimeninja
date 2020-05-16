@@ -9,6 +9,7 @@ export interface MetaBrawlerEntry {
 export interface MetaStarpowerEntry {
   id: number;
   brawlerName: string;
+  brawlerId: number;
   starpowerName: string;
   winRate: number;
   starRate: number;
@@ -19,6 +20,7 @@ export interface MetaStarpowerEntry {
 export interface MetaGadgetEntry {
   id: number;
   brawlerName: string;
+  brawlerId: number;
   gadgetName: string;
   winRate: number;
   starRate: number;

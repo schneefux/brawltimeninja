@@ -152,6 +152,7 @@ export default class BrawlstarsService {
     return meta.map((entry) => ({
       id: entry.id,
       brawlerName: brawlerId({ name: entry.brawlerName }),
+      brawlerId: entry.brawlerId,
       starpowerName: entry.starpowerName,
       sampleSize: entry.picks,
       stats: {
@@ -179,6 +180,7 @@ export default class BrawlstarsService {
     return meta.map((entry) => ({
       id: entry.id,
       brawlerName: brawlerId({ name: entry.brawlerName }),
+      brawlerId: entry.brawlerId,
       gadgetName: entry.gadgetName,
       sampleSize: entry.picks,
       stats: {

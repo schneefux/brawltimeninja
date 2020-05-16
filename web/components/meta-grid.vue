@@ -38,6 +38,7 @@
           v-if="entry.adSlot === undefined"
           :title="entry.title"
           :brawler="entry.brawler"
+          :icon="entry.icon"
           class="h-auto"
         >
           <template v-slot:history>
@@ -118,6 +119,7 @@ export default {
           title,
           brawler,
           link,
+          icon?,
           sampleSize?,
           stats[]
         }
@@ -151,7 +153,7 @@ export default {
     },
   },
   data() {
-    const defaultProp = this.defaultProp ||
+    const defaultProp = this.defaultSortProp ||
       this.entries.length === 0 ? ''
       : metaStatMaps.propPriority
         .find(prop => prop in this.entries[0].stats)
