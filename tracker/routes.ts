@@ -43,6 +43,11 @@ router.get('/tracker/meta/starpower', async (ctx, next) => {
   await next();
 });
 
+router.get('/tracker/meta/gadget', async (ctx, next) => {
+  ctx.body = await service.getGadgetMeta();
+  await next();
+});
+
 router.get('/tracker/meta/mode', async (ctx, next) => {
   ctx.body = await service.getModeMeta();
   await next();

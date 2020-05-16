@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
+import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
 import { PlayerWinRates } from '~/model/PlayerWinRates';
 
 const dbUri = process.env.DATABASE_URI || '';
@@ -307,7 +307,7 @@ export default class TrackerService {
           picks: parseInt(entry.picks),
         })
       ));
-    }
+  }
 
   public async getStarpowerMeta() {
     return await this.knex.raw(`
@@ -336,7 +336,36 @@ export default class TrackerService {
           picks: parseInt(entry.picks),
         })
       ));
-    }
+  }
+
+  public async getGadgetMeta() {
+    return await this.knex.raw(`
+        select
+          dim_brawler_starpower.id as id,
+          dim_brawler_starpower.brawler_name as brawler_name,
+          dim_brawler_starpower.gadget_name as gadget_name,
+          sum(count) as picks,
+          sum(victory) / sum(result_count) as win_rate,
+          sum(starplayer) / sum(starplayer_count) as star_rate,
+          sum(rank_1) / sum(rank_count) as rank1_rate
+        from agg_player_battle
+        join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
+        join dim_season on dim_season.id = season_id
+        join dim_event on dim_event.id = event_id
+        where is_current and mode <> 'duoShowdown'
+        group by id, brawler_name, gadget_name
+      `).then((response) => response[0].map(
+        (entry: any) => (<MetaGadgetEntry> {
+          id: parseInt(entry.id),
+          brawlerName: entry.brawler_name,
+          gadgetName: entry.gadget_name,
+          winRate: parseFloat(entry.win_rate),
+          starRate: parseFloat(entry.star_rate),
+          rank1Rate: parseFloat(entry.rank1_rate),
+          picks: parseInt(entry.picks),
+        })
+      ));
+  }
 
   public async getModeMeta() {
     return await this.knex.raw(`

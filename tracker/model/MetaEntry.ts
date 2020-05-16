@@ -16,6 +16,16 @@ export interface MetaStarpowerEntry {
   picks: number;
 }
 
+export interface MetaGadgetEntry {
+  id: number;
+  brawlerName: string;
+  gadgetName: string;
+  winRate: number;
+  starRate: number;
+  rank1Rate: number;
+  picks: number;
+}
+
 export interface MetaModeEntry {
   name: string;
   mode: string;
