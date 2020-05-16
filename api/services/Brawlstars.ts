@@ -2,7 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry } from '../model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '../model/MetaEntry';
 import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
@@ -153,6 +153,33 @@ export default class BrawlstarsService {
       id: entry.id,
       brawlerName: brawlerId({ name: entry.brawlerName }),
       starpowerName: entry.starpowerName,
+      sampleSize: entry.picks,
+      stats: {
+        winRate: entry.winRate,
+        starRate: entry.starRate,
+        rank1Rate: entry.rank1Rate,
+      },
+    }))
+  }
+
+  public async getGadgetMeta() {
+    if (trackerUrl == '') {
+      return [];
+    }
+
+    const meta = await request<MetaGadgetEntry[]>(
+      '/meta/gadget',
+      trackerUrl,
+      {},
+      {},
+      60000,
+      600,
+    );
+
+    return meta.map((entry) => ({
+      id: entry.id,
+      brawlerName: brawlerId({ name: entry.brawlerName }),
+      gadgetName: entry.gadgetName,
       sampleSize: entry.picks,
       stats: {
         winRate: entry.winRate,
