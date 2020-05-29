@@ -61,6 +61,20 @@ export default {
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
     gadgets() {
+      const statsToDiffs = (gadget) => {
+        const brawlerWithout = this.gadgetMeta
+          .find(b => b.gadgetName == '' && b.brawlerId == gadget.brawlerId)
+
+        const perc = (v) => Math.round(v * 100)
+        const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
+        const format = (v) => signed(perc(v))
+
+        const stats = {}
+        Object.entries(gadget.stats)
+          .forEach(([prop, value]) => stats[prop] = format(value - brawlerWithout.stats[prop]))
+        return stats
+      }
+
       return this.gadgetMeta
         .filter(g => g.gadgetName !== '')
         .map((gadget) => ({
@@ -68,7 +82,7 @@ export default {
           title: gadget.gadgetName,
           brawler: gadget.brawlerName,
           sampleSize: gadget.sampleSize,
-          stats: gadget.stats,
+          stats: statsToDiffs(gadget),
           icon: `/gadgets/${gadget.id}`,
           link: `/tier-list/brawler/${gadget.brawlerName}`,
         }))

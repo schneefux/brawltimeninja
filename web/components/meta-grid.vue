@@ -79,7 +79,7 @@
                   </span>
                 </td>
                 <td class="card-prop-value text-right pr-1" itemprop="unitText">
-                  {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
+                  {{ typeof entry.stats[prop] == 'string' ? entry.stats[prop] : metaStatMaps.formatters[prop](entry.stats[prop]) }}
                 </td>
                 <td class="card-prop-label" itemprop="value">
                   {{ metaStatMaps.labels[prop] }}
@@ -186,7 +186,7 @@ export default {
       return [...Object.keys(this.entries[0].stats)]
         .reduce((comparators, prop) => ({
           ...comparators,
-          [prop]: (e1, e2) => this.order * (e2.stats[prop] - e1.stats[prop])
+          [prop]: (e1, e2) => this.order * (Number.parseFloat(e2.stats[prop]) - Number.parseFloat(e1.stats[prop]))
         }), {})
     },
     ...mapState({
