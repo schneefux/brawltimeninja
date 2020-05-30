@@ -61,6 +61,20 @@ export default {
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
     starpowers() {
+      const statsToDiffs = (starpower) => {
+        const brawlerWithout = this.starpowerMeta
+          .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
+
+        const perc = (v) => Math.round(v * 100)
+        const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
+        const format = (v) => signed(perc(v))
+
+        const stats = {}
+        Object.entries(starpower.stats)
+          .forEach(([prop, value]) => stats[prop] = format(value - brawlerWithout.stats[prop]))
+        return stats
+      }
+
       return this.starpowerMeta
         .filter(s => s.starpowerName !== '')
         .map((starpower) => ({
@@ -68,7 +82,7 @@ export default {
           title: starpower.starpowerName,
           brawler: starpower.brawlerName,
           sampleSize: starpower.sampleSize,
-          stats: starpower.stats,
+          stats: statsToDiffs(starpower),
           icon: `/starpowers/${starpower.id}`,
           link: `/tier-list/brawler/${starpower.brawlerName}`,
         }))
