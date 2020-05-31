@@ -297,7 +297,7 @@ export default class TrackerService {
         from agg_player_battle cur
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        where is_current and (:trophyrange_id = 0 or cur.trophyrange_id = :trophyrange_id)
+        where is_current and (:trophyrange_id = 0 or cur.trophyrange_id = :trophyrange_id) and not dim_brawler_starpower.disabled
         group by name
       `, { trophyrange_id: `${trophyrangeId || 0}` }).then((response) => response[0].map(
         (entry: any) => (<MetaBrawlerEntry> {
@@ -325,7 +325,7 @@ export default class TrackerService {
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
         join dim_event on dim_event.id = event_id
-        where is_current and mode <> 'duoShowdown'
+        where is_current and mode <> 'duoShowdown' and not dim_brawler_starpower.disabled
         group by id, brawler_name, starpower_name
       `).then((response) => response[0].map(
         (entry: any) => (<MetaStarpowerEntry> {
@@ -356,7 +356,7 @@ export default class TrackerService {
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
         join dim_event on dim_event.id = event_id
-        where is_current and mode <> 'duoShowdown'
+        where is_current and mode <> 'duoShowdown' and not dim_brawler_starpower.disabled
         group by id, brawler_name, gadget_name
       `).then((response) => response[0].map(
         (entry: any) => (<MetaGadgetEntry> {
@@ -387,7 +387,7 @@ export default class TrackerService {
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
         join dim_event on dim_event.id = event_id
-        where is_current
+        where is_current and not dim_brawler_starpower.disabled
         group by name, mode
       `).then((response) => response[0].map(
         (entry: any) => (<MetaModeEntry> {
@@ -423,7 +423,7 @@ export default class TrackerService {
         join dim_event on dim_event.id = event_id
         join dim_brawler_starpower on dim_brawler_starpower.id = brawler_starpower_id
         join dim_season on dim_season.id = season_id
-        where is_current
+        where is_current and not dim_brawler_starpower.disabled
         group by id, mode, map, name, is_bigbrawler
       `)
         .then((response) => response[0].map(
@@ -795,6 +795,16 @@ export default class TrackerService {
       console.log('added gadgets to dim brawler starpower');
     }
 
+    if (!await this.knex.schema.hasColumn('dim_brawler_starpower', 'disabled')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('dim_brawler_starpower', (table) => {
+          // ignore records with id collision 2020-05-16 to 2020-05-31
+          table.boolean('disabled').defaultTo(false);
+        });
+      });
+      console.log('added disabled to dim brawler starpower');
+    }
+
     console.log('all migrations done');
   }
 
@@ -844,7 +854,8 @@ export default class TrackerService {
           coalesce(starpower_id, 0),
           coalesce(starpower_name, ''),
           coalesce(gadget_id, 0),
-          coalesce(gadget_name, '')
+          coalesce(gadget_name, ''),
+          false
         from player_battle
         where id > ? and id <= ?
     `, [lastProcessedId, lastId]);
