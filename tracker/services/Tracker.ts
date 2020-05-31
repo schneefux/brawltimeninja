@@ -621,7 +621,7 @@ export default class TrackerService {
         console.log('created event dimension');
 
         await txn.schema.createTable('dim_brawler_starpower', (table) => {
-          table.integer('id').unsigned().primary(); // coalesce(starpower_id, brawler_id) + coalesce(gadget_id, 0)
+          table.integer('id').unsigned().primary(); // coalesce(starpower_id, brawler_id) + coalesce(gadget_id*1000, 0)*1000
           // IDs (brawler id, starpower id and gadget id) are unique
 
           table.integer('brawler_id').unsigned().notNullable();
@@ -838,7 +838,7 @@ export default class TrackerService {
     await txn.raw(`
       insert ignore dim_brawler_starpower
         select distinct
-          coalesce(starpower_id, brawler_id) + coalesce(gadget_id, 0) as id,
+          coalesce(starpower_id, brawler_id) + coalesce(gadget_id%1000, 0)*1000 as id,
           brawler_id,
           brawler_name,
           coalesce(starpower_id, 0),
@@ -917,7 +917,7 @@ export default class TrackerService {
           null,
           dim_season.id as season_id,
           battle_event_id as event_id,
-          coalesce(starpower_id, brawler_id) + coalesce(gadget_id, 0) as brawler_starpower_id,
+          coalesce(starpower_id, brawler_id) + coalesce(gadget_id%1000, 0)*1000 as brawler_starpower_id,
           coalesce(is_bigbrawler, false) as is_bigbrawler,
 
           count(*) as count,
