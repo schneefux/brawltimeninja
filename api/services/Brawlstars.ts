@@ -7,7 +7,7 @@ import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
 
-const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/v1/';
+const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://www.starlist.pro/app/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
@@ -37,17 +37,17 @@ export default class BrawlstarsService {
   }
 
   public async getEvents() {
-    const response = await request<{ current: BrawlstarsEvent[] }>(
-      'events',
+    const response = await request<{ active: BrawlstarsEvent[] }>(
+      'events2',
       this.apiUnofficial,
-      { type: 'current' },
-      { 'Authorization': tokenUnofficial }
+      { },
+      { 'Authorization': 'Bearer ' + tokenUnofficial }
     );
 
-    return response.current.map((event) => ({
-      id: event.mapApiId.toString(),
-      map: event.mapName,
-      mode: event.gameMode,
+    return response.active.map((event) => ({
+      id: event.map.id.toString(),
+      map: event.map.name,
+      mode: event.map.gameMode.name,
       start: event.startTime,
       end: event.endTime,
     }));
@@ -56,16 +56,16 @@ export default class BrawlstarsService {
   // TODO deduplicate this code
   public async getUpcomingEvents() {
     const response = await request<{ upcoming: BrawlstarsEvent[] }>(
-      'events',
+      'events2',
       this.apiUnofficial,
-      { type: 'upcoming' },
-      { 'Authorization': tokenUnofficial }
+      { },
+      { 'Authorization': 'Bearer ' + tokenUnofficial }
     );
 
     return response.upcoming.map((event) => ({
-      id: event.mapApiId.toString(),
-      map: event.mapName,
-      mode: event.gameMode,
+      id: event.map.id.toString(),
+      map: event.map.name,
+      mode: event.map.gameMode.name,
       start: event.startTime,
       end: event.endTime,
     }));

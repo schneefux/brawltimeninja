@@ -1,3 +1,5 @@
+import { StarlistMap } from "./Starlist";
+
 export interface Brawler {
   id: number;
   name: string;
@@ -39,21 +41,18 @@ export interface Player {
 }
 
 export interface Event {
-  slot: number;
-  slotName: string;
-  startTimeInSeconds: number;
+  slot: {
+    id: number;
+    name: string;
+    hash: string;
+    listAlone: boolean;
+    background: string|null;
+  };
   startTime: string;
-  endTimeInSeconds: number;
   endTime: string;
-  freeKeys: number;
-  mapId: number;
-  mapApiId: number;
-  mapName: string;
-  mapImageUrl: string;
-  gameMode: string;
-  hasModifier: boolean;
-  modifierId: number;
-  modifierName: string;
+  reward: number;
+  map: StarlistMap;
+  modifier: null; // TODO
 }
 
 export interface BattlePlayer {
