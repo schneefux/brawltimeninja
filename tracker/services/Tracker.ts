@@ -80,7 +80,7 @@ export default class TrackerService {
           trx('player_brawler').insert({
             timestamp: playerRecordTime,
             player_id: playerId,
-            name: brawler.name,
+            name: brawler.name == null ? 'NANI' : brawler.name, // FIXME API bug 2020-06-06
             player_tag: player.tag,
             trophies: brawler.trophies,
             power: brawler.power,
@@ -151,7 +151,7 @@ export default class TrackerService {
                 timestamp: battleTime,
                 is_complete: isMe,
                 brawler_id: insertPlayer.brawler.id,
-                brawler_name: insertPlayer.brawler.name,
+                brawler_name: insertPlayer.brawler.name == null ? 'NANI' : insertPlayer.brawler.name, // FIXME API bug 2020-06-06
                 battle_id: battleId,
                 player_tag: insertPlayer.tag.replace('#', ''),
                 player_name: insertPlayer.name,
