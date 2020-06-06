@@ -466,7 +466,7 @@ export default class BrawlstarsService {
     player.brawlers
       .sort((b1, b2) => b2.trophies - b1.trophies)
       .forEach((brawler) => {
-        brawlers[brawlerId(brawler)] = {
+        brawlers[brawler.name === null ? 'nani' : brawlerId(brawler)] = { // FIXME
           name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
           rank: brawler.rank,
           trophies: brawler.trophies,
