@@ -398,7 +398,7 @@ export default class BrawlstarsService {
       const transformPlayer = (player: BattlePlayer) => ({
         tag: player.tag.replace('#', ''),
         name: player.name,
-        brawler: brawlerId(player.brawler),
+        brawler: player.brawler.name === null ? 'nani' : brawlerId(player.brawler), // FIXME API bug reported 2020-06-06
         brawlerTrophies: player.brawler.trophies,
         isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
       })
@@ -467,7 +467,7 @@ export default class BrawlstarsService {
       .sort((b1, b2) => b2.trophies - b1.trophies)
       .forEach((brawler) => {
         brawlers[brawlerId(brawler)] = {
-          name: brawler.name,
+          name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
           rank: brawler.rank,
           trophies: brawler.trophies,
           highestTrophies: brawler.highestTrophies,
