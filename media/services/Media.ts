@@ -26,7 +26,7 @@ export const cache = cacheDisable ?
   });
 
 
-const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/v1/';
+const starlistUrl = process.env.BRAWLAPI_URL || 'https://www.starlist.pro/app/';
 const token = process.env.BRAWLAPI_TOKEN || '';
 
 function sleep(ms: number) {
