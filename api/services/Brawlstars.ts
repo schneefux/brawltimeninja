@@ -7,7 +7,7 @@ import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
 
-const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://www.starlist.pro/app/';
+const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const trackerUrl = process.env.TRACKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
@@ -38,7 +38,7 @@ export default class BrawlstarsService {
 
   public async getEvents() {
     const response = await request<{ active: BrawlstarsEvent[] }>(
-      'events2',
+      'events',
       this.apiUnofficial,
       { },
       { 'Authorization': 'Bearer ' + tokenUnofficial }
@@ -56,7 +56,7 @@ export default class BrawlstarsService {
   // TODO deduplicate this code
   public async getUpcomingEvents() {
     const response = await request<{ upcoming: BrawlstarsEvent[] }>(
-      'events2',
+      'events',
       this.apiUnofficial,
       { },
       { 'Authorization': 'Bearer ' + tokenUnofficial }
