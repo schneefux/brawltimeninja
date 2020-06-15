@@ -37,7 +37,7 @@ function request(url: string) {
   return Promise.race([
     sleep(2000).then(() => { throw new Error('API Timeout') }),
     cache.wrap(url, () => fetch(url, {
-      headers: { 'Authorization': token },
+      headers: { 'Authorization': 'Bearer ' + token },
       compress: true,
     }).then(res => {
       if (!res.ok) {
