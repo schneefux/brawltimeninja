@@ -65,7 +65,7 @@ export default class MediaService {
 
     let brawlers: StarlistBrawler[];
     try {
-      brawlers = await this.getStarlistBrawlers();
+      brawlers = (await this.getStarlistBrawlers()).list;
     } catch (err) {
       console.log('Brawler avatar API error: ' + err);
       return null;
@@ -111,7 +111,7 @@ export default class MediaService {
     let brawlers: StarlistBrawler[];
 
     try {
-      brawlers = await this.getStarlistBrawlers();
+      brawlers = (await this.getStarlistBrawlers()).list;
     } catch(err) {
       console.log('Starpower API error: ' + err);
       return null;
@@ -148,7 +148,7 @@ export default class MediaService {
     let brawlers: StarlistBrawler[];
 
     try {
-      brawlers = await this.getStarlistBrawlers();
+      brawlers = (await this.getStarlistBrawlers()).list;
     } catch(err) {
       console.log('Gadget API error: ' + err);
       return null;
@@ -200,11 +200,11 @@ export default class MediaService {
     }
   }
 
-  private getStarlistBrawlers(): Promise<StarlistBrawler[]> {
+  private getStarlistBrawlers(): Promise<{ list: StarlistBrawler[] }> {
     return request(starlistUrl + '/brawlers');
   }
 
-  private getStarlistMaps(): Promise<StarlistMap[]> {
+  private getStarlistMaps(): Promise<{ list: StarlistMap[] }> {
     return request(starlistUrl + '/maps');
   }
 
