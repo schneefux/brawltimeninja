@@ -756,7 +756,7 @@ export default {
       return Object.keys(this.player.brawlers).length
     },
     trophiesPerHour() {
-      return this.player.trophies / this.player.hoursSpent
+      return this.player.trophies / Math.max(this.player.hoursSpent, 1)
     },
     trophiesGoal() {
       const brawlerTrophies = [...Object.values(this.player.brawlers)]
@@ -942,7 +942,7 @@ export default {
   mounted() {
     if (process.client) {
       this.$nextTick(() => {
-        const playerHours = this.player.hoursSpent
+        const playerHours = Math.max(this.player.hoursSpent, 1)
         const animationDuration = 3000
         const frameDuration = 50
         const k = Math.log(playerHours) / (animationDuration / frameDuration)
