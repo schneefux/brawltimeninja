@@ -99,9 +99,8 @@ export default class TrackerService {
       console.timeEnd('add player record ' + player.tag);
     });
 
-    // do not await - process in background and resolve early
     // insert records for meta stats
-    Promise.all(battleLog.map(async (battle) => {
+    await Promise.all(battleLog.map(async (battle) => {
       await this.knex.transaction(async (trx) => {
         console.time('add battle record ' + player.tag + ' ' + battle.battleTime);
 

@@ -385,7 +385,7 @@ export default class BrawlstarsService {
           trackerUrl,
           {},
           {},
-          300
+          3000
         );
       } catch (error) {
         console.error(error, tag);
@@ -540,7 +540,7 @@ export default class BrawlstarsService {
           trackerUrl,
           {},
           {},
-          1000
+          3000
         );
       } catch (error) {
         console.error(error, tag);
@@ -637,7 +637,8 @@ export default class BrawlstarsService {
     if (trackerUrl != '') {
       try {
         console.time('post battles to tracker ' + tag)
-        await post<null>(trackerUrl + '/track', { player, battleLog }, 600);
+        // do not await - process in background and resolve early
+        post<null>(trackerUrl + '/track', { player, battleLog }, 1000);
       } catch (error) {
         console.error(error, tag);
       }
