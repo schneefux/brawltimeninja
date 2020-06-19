@@ -378,19 +378,14 @@ export default class BrawlstarsService {
 
     let winRates: PlayerWinRates = { mode: [] };
     if (trackerUrl != '') {
-      try {
-        console.time('get winrates from tracker ' + tag);
-        winRates = await request<PlayerWinRates>(
-          `/winrates/${tag}`,
-          trackerUrl,
-          {},
-          {},
-          3000
-        );
-      } catch (error) {
-        console.error(error, tag);
-      }
-
+      console.time('get winrates from tracker ' + tag);
+      winRates = await request<PlayerWinRates>(
+        `/winrates/${tag}`,
+        trackerUrl,
+        {},
+        {},
+        3000
+      );
       console.timeEnd('get winrates from tracker ' + tag);
     }
 
@@ -533,19 +528,14 @@ export default class BrawlstarsService {
 
     let history: History = { playerHistory: [], brawlerHistory: [] };
     if (trackerUrl != '') {
-      try {
-        console.time('get history from tracker ' + tag);
-        history = await request<History>(
-          `/history/${tag}`,
-          trackerUrl,
-          {},
-          {},
-          3000
-        );
-      } catch (error) {
-        console.error(error, tag);
-      }
-
+      console.time('get history from tracker ' + tag);
+      history = await request<History>(
+        `/history/${tag}`,
+        trackerUrl,
+        {},
+        {},
+        3000
+      );
       console.timeEnd('get history from tracker ' + tag);
     }
 
