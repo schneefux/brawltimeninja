@@ -102,7 +102,6 @@ export default class TrackerService {
     // insert records for meta stats
     await Promise.all(battleLog.map(async (battle) => {
       await this.knex.transaction(async (trx) => {
-        console.time('add battle record ' + player.tag + ' ' + battle.battleTime);
 
         const battleTime = parseApiTime(battle.battleTime);
         const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
@@ -112,6 +111,9 @@ export default class TrackerService {
           .reduce((agg, cur) => agg.concat(cur), [])
           .sort()
           .reduce((agg, cur) => agg.length > 0 ? `${agg},${cur}` : cur, '');
+
+        const timerLabel = 'add battle record ' + player.tag + ' ' + battle.event.id + ' ' + playerTagsCsv + ' ' + battleTime;
+        console.time(timerLabel);
 
         // try to find a battle with the same configuration
         // and same players within +/- 10 min
@@ -204,7 +206,7 @@ export default class TrackerService {
           }
         }
 
-        console.timeEnd('add battle record ' + player.tag + ' ' + battle.battleTime);
+        console.timeEnd(timerLabel);
       });
     }));
   }
