@@ -901,12 +901,6 @@ export default {
       isInstallable: 'isInstallable',
     }),
   },
-  async fetch({ store, params }) {
-    if (!process.static) {
-      await store.dispatch('loadLeaderboard')
-      await store.dispatch('loadCurrentMeta')
-    }
-  },
   async validate({ store, params }) {
     const { tag } = params
     const tagRegex = RegExp(store.state.tagPattern)
@@ -934,12 +928,10 @@ export default {
     if (process.client && 'Notification' in window) {
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
-    if (process.static) {
-      this.loadLeaderboard()
-      this.loadCurrentMeta()
-    }
-    this.loadPlayerHistory()
     this.loadPlayerWinrates()
+    this.loadPlayerHistory()
+    this.loadCurrentMeta()
+    this.loadLeaderboard()
   },
   mounted() {
     if (process.client) {
