@@ -441,10 +441,10 @@ export default class BrawlstarsService {
     let winRates: PlayerWinRates = { mode: [] };
     if (trackerUrl != '') {
       try {
-        console.time('call tracker service');
+        console.time('call tracker service ' + tag);
         await post<null>(trackerUrl + '/track', { player, battleLog }, 500);
       } catch (error) {
-        console.error(error);
+        console.error(error, tag);
       }
 
       try {
@@ -463,10 +463,10 @@ export default class BrawlstarsService {
           200
         );
       } catch (error) {
-        console.error(error);
+        console.error(error, tag);
       }
 
-      console.timeEnd('call tracker service');
+      console.timeEnd('call tracker service ' + tag);
     }
 
     const brawlers = {} as { [id: string]: Brawler };
