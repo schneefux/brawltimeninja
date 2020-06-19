@@ -442,24 +442,31 @@ export default class BrawlstarsService {
     if (trackerUrl != '') {
       try {
         console.time('call tracker service');
-        await post<null>(trackerUrl + '/track', { player, battleLog }, 1000);
+        await post<null>(trackerUrl + '/track', { player, battleLog }, 500);
+      } catch (error) {
+        console.error(error);
+      }
+
+      try {
         history = await request<History>(
           `/history/${tag}`,
           trackerUrl,
           {},
-          {}
+          {},
+          300
         );
         winRates = await request<PlayerWinRates>(
           `/winrates/${tag}`,
           trackerUrl,
           {},
-          {}
+          {},
+          200
         );
       } catch (error) {
         console.error(error);
-      } finally {
-        console.timeEnd('call tracker service');
       }
+
+      console.timeEnd('call tracker service');
     }
 
     const brawlers = {} as { [id: string]: Brawler };
