@@ -101,8 +101,9 @@ export default class TrackerService {
 
     // insert records for meta stats
     await Promise.all(battleLog.map(async (battle) => {
-      await this.knex.transaction(async (trx) => {
+      let timerId = ''
 
+      return this.knex.transaction(async (trx) => {
         const battleTime = parseApiTime(battle.battleTime);
         const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
         const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
@@ -112,8 +113,8 @@ export default class TrackerService {
           .sort()
           .reduce((agg, cur) => agg.length > 0 ? `${agg},${cur}` : cur, '');
 
-        const timerLabel = 'add battle record ' + player.tag + ' ' + battle.event.id + ' ' + playerTagsCsv + ' ' + battleTime;
-        console.time(timerLabel);
+        timerId = player.tag + ' ' + battle.event.id + ' ' + playerTagsCsv + ' ' + battleTime.toISOString();
+        console.time('add battle record ' + timerId);
 
         // try to find a battle with the same configuration
         // and same players within +/- 10 min
@@ -181,7 +182,7 @@ export default class TrackerService {
             }))
           ));
 
-          console.log('added battle record', player.tag, battleId);
+          console.log('added battle record ' + timerId + ' ' + battleId);
         } else {
           // battle exists - find the matching player_battle record
           const playerBattleRecord = await trx
@@ -202,12 +203,12 @@ export default class TrackerService {
                 rank: battle.battle.rank,
               });
 
-            console.log('updated player battle record', player.tag, playerBattleRecord[0].id);
+            console.log('updated player battle record ' + timerId + ' ' + playerBattleRecord[0].id);
           }
         }
 
-        console.timeEnd(timerLabel);
-      });
+      }).catch(error => console.error(timerId, error))
+        .finally(() => console.timeEnd('add battle record ' + timerId));
     }));
   }
 
