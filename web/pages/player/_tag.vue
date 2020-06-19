@@ -928,10 +928,12 @@ export default {
     if (process.client && 'Notification' in window) {
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
-    this.loadPlayerWinrates()
-    this.loadPlayerHistory()
-    this.loadCurrentMeta()
-    this.loadLeaderboard()
+    if (process.client) {
+      this.loadPlayerWinrates()
+      this.loadPlayerHistory()
+      this.loadCurrentMeta()
+      this.loadLeaderboard()
+    }
   },
   mounted() {
     if (process.client) {
