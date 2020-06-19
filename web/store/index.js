@@ -229,9 +229,11 @@ export const actions = {
     const playerWinrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
     commit('setPlayerWinrates', playerWinrates)
   },
-  async refreshPlayer({ state, commit }) {
+  async refreshPlayer({ state, commit, dispatch }) {
     const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
     commit('setPlayer', player)
+    await dispatch('loadPlayerHistory')
+    await dispatch('loadPlayerWinrates')
   },
   async loadCurrentEvents({ state, commit }) {
     if (state.currentEventsLoaded) {
