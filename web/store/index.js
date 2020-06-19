@@ -2,6 +2,28 @@ import { exception, event } from 'vue-analytics'
 import payload from './payload.json'
 import { metaStatMaps, getBestByEvent } from '~/lib/util'
 
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+// immutable
+function mergeDeep(target, source) {
+  let output = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target))
+          Object.assign(output, { [key]: source[key] });
+        else
+          output[key] = mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+  }
+  return output;
+}
+
 export const state = () => ({
   version: undefined,
   // fill the store from the payload in static build
@@ -83,6 +105,12 @@ export const mutations = {
   },
   setPlayer(state, player) {
     state.player = player
+  },
+  setPlayerHistory(state, playerHistory) {
+    state.player = mergeDeep(state.player, playerHistory)
+  },
+  setPlayerWinrates(state, playerWinrates) {
+    state.player = mergeDeep(state.player, playerWinrates)
   },
   addLastPlayer(state, player) {
     const clone = obj => JSON.parse(JSON.stringify(obj))
@@ -192,6 +220,14 @@ export const actions = {
 
     const player = await this.$axios.$get(`/api/player/${playerTag}`)
     commit('setPlayer', player)
+  },
+  async loadPlayerHistory({ state, commit }) {
+    const playerHistory = await this.$axios.$get(`/api/player/${state.player.tag}/history`)
+    commit('setPlayerHistory', playerHistory)
+  },
+  async loadPlayerWinrates({ state, commit }) {
+    const playerWinrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
+    commit('setPlayerWinrates', playerWinrates)
   },
   async refreshPlayer({ state, commit }) {
     const player = await this.$axios.$get(`/api/player/${state.player.tag}`)

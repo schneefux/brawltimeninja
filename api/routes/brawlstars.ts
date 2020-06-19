@@ -23,6 +23,28 @@ router.get('/player/:tag', async (ctx, next) => {
   await next();
 });
 
+router.get('/player/:tag/winrates', async (ctx, next) => {
+  try {
+    ctx.body = await service.getPlayerWinrates(ctx.params.tag);
+    ctx.set('Cache-Control', 'public, max-age=180');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
+router.get('/player/:tag/history', async (ctx, next) => {
+  try {
+    ctx.body = await service.getPlayerHistory(ctx.params.tag);
+    ctx.set('Cache-Control', 'public, max-age=180');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/current-events', async (ctx, next) => {
   try {
     ctx.body = await service.getEvents();

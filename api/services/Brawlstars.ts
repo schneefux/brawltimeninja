@@ -373,88 +373,13 @@ export default class BrawlstarsService {
     }, { ttl: 900 }); // 15m
   }
 
-  public async getPlayerStatistics(tag: string) {
-    const player = await request<BrawlstarsPlayer>(
-      'players/%23' + tag,
-      this.apiOfficial,
-      { },
-      { 'Authorization': 'Bearer ' + tokenOfficial }
-    );
-    // official API: with hash, unofficial API: no hash
-    // brawltime assumes no hash
-    player.tag = player.tag.replace(/^#/, '');
+  public async getPlayerWinrates(tag: string) {
+    tag = tag.replace(/^#/, '');
 
-    const battleLog = await request<BattleLog>(
-      'players/%23' + tag + '/battlelog',
-      this.apiOfficial,
-      { },
-      { 'Authorization': 'Bearer ' + tokenOfficial }
-    ).catch(() => <BattleLog>({
-      items: [],
-      paging: [],
-    }));
-
-    const battles = battleLog.items.map((battle) => {
-      const transformPlayer = (player: BattlePlayer) => ({
-        tag: player.tag.replace('#', ''),
-        name: player.name,
-        brawler: player.brawler.name === null ? 'nani' : brawlerId(player.brawler), // FIXME API bug reported 2020-06-06
-        brawlerTrophies: player.brawler.trophies,
-        isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
-      })
-
-      let result;
-      if (battle.battle.duration !== undefined) {
-        // bossfight, gem grab, ...
-        const minutes = Math.floor(battle.battle.duration / 60);
-        const seconds = battle.battle.duration % 60;
-        result = `${minutes}m ${seconds}s`;
-      }
-      if (battle.battle.result !== undefined) {
-        // 3v3
-        result = capitalize(battle.battle.result);
-      }
-      if (battle.battle.rank !== undefined) {
-        // showdown
-        result = `Rank ${battle.battle.rank}`;
-      }
-
-      const time = battle.battleTime;
-      const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
-
-      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
-      const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
-
-      return {
-        timestamp: new Date(Date.parse(isoDate)),
-        mode: {
-          label: battle.event.map,
-          background: `${modeToBackgroundId(battle.event.mode)}.jpg`,
-        },
-        result,
-        trophyChange: battle.battle.trophyChange,
-        teams: teams.map(t => t.map(transformPlayer)),
-      }
-    }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
-
-    let history: History = { playerHistory: [], brawlerHistory: [] };
     let winRates: PlayerWinRates = { mode: [] };
     if (trackerUrl != '') {
       try {
-        console.time('call tracker service ' + tag);
-        await post<null>(trackerUrl + '/track', { player, battleLog }, 600);
-      } catch (error) {
-        console.error(error, tag);
-      }
-
-      try {
-        history = await request<History>(
-          `/history/${tag}`,
-          trackerUrl,
-          {},
-          {},
-          600
-        );
+        console.time('get winrates from tracker ' + tag);
         winRates = await request<PlayerWinRates>(
           `/winrates/${tag}`,
           trackerUrl,
@@ -466,50 +391,8 @@ export default class BrawlstarsService {
         console.error(error, tag);
       }
 
-      console.timeEnd('call tracker service ' + tag);
+      console.timeEnd('get winrates from tracker ' + tag);
     }
-
-    const brawlers = {} as { [id: string]: Brawler };
-    player.brawlers
-      .sort((b1, b2) => b2.trophies - b1.trophies)
-      .forEach((brawler) => {
-        brawlers[brawler.name === null ? 'nani' : brawlerId(brawler)] = { // FIXME
-          name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
-          rank: brawler.rank,
-          trophies: brawler.trophies,
-          highestTrophies: brawler.highestTrophies,
-          power: brawler.power,
-          history: history.brawlerHistory
-            .filter(({ name }) => name == brawler.name)
-            .map(({ timestamp, trophies }) => ({ timestamp, trophies })),
-        } as Brawler;
-      });
-
-    const hoursSpent = xpToHours(player.expPoints);
-
-    const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
-      .map((o) => o[prop])
-      .reduce((agg, cur) => agg + cur, 0)
-      / arr.length;
-
-    const heroStats = {
-      averageVictories: {
-        label: 'Average 3v3 Victories',
-        value: Math.floor(player["3vs3Victories"] / player.brawlers.length)
-      },
-      averageTrophies: {
-        label: 'Average Trophies',
-        value: Math.floor(avgProp('trophies')(player.brawlers))
-      },
-      averageRank: {
-        label: 'Average Rank',
-        value: Math.floor(avgProp('rank')(player.brawlers))
-      },
-      averagePower: {
-        label: 'Average Power Level',
-        value: Math.floor(avgProp('power')(player.brawlers))
-      },
-    } as { [id: string]: PlayerStatistic };
 
     const statsByMode = winRates.mode.reduce((statsByMode, entry) => ({
       ...statsByMode,
@@ -534,16 +417,7 @@ export default class BrawlstarsService {
       totalStats.trophyRate = statsSum.trophies / statsSum.trophiesCount;
     }
 
-    const data = {
-      tag: player.tag,
-      name: player.name,
-      hoursSpent,
-      trophies: player.trophies,
-      clubName: player.club === null ? '' : player.club.name,
-      history: history.playerHistory,
-      brawlers,
-      heroStats,
-      battles,
+    return {
       totalStats,
       modes: {
         ...('gemGrab' in statsByMode ? {
@@ -568,14 +442,6 @@ export default class BrawlstarsService {
           icon: 'showdown_optimized.png',
           background: 'showdown.jpg',
           stats: {
-            victories: {
-              label: 'Solo Victories',
-              value: player.soloVictories,
-            },
-            duoVictories: {
-              label: 'Duo Victories',
-              value: player.duoVictories,
-            },
             ...('soloShowdown' in statsByMode ? {
               soloWinRate: {
                 label: 'Recent Solo Rank 1 Rate',
@@ -658,6 +524,194 @@ export default class BrawlstarsService {
             }
           } as Mode
         } : {}),
+      }
+    }
+  }
+
+  public async getPlayerHistory(tag: string) {
+    tag = tag.replace(/^#/, '');
+
+    let history: History = { playerHistory: [], brawlerHistory: [] };
+    if (trackerUrl != '') {
+      try {
+        console.time('get history from tracker ' + tag);
+        history = await request<History>(
+          `/history/${tag}`,
+          trackerUrl,
+          {},
+          {},
+          1000
+        );
+      } catch (error) {
+        console.error(error, tag);
+      }
+
+      console.timeEnd('get history from tracker ' + tag);
+    }
+
+    interface BrawlerHistoryEntry {
+      timestamp: Date
+      trophies: number
+    }
+    history.brawlerHistory.forEach((b) => b.name = brawlerId(b))
+    const brawlers = history.brawlerHistory.reduce((brawlers, entry) => ({
+      ...brawlers,
+      [entry.name]: {
+        history: [...(brawlers[entry.name]?.history || [] as BrawlerHistoryEntry[]), {
+          timestamp: entry.timestamp,
+          trophies: entry.trophies,
+        }]
+      },
+    }), {} as { [id: string]: { history: BrawlerHistoryEntry[] } })
+
+    return {
+      history: history.playerHistory,
+      brawlers,
+    };
+  }
+
+  public async getPlayerStatistics(tag: string) {
+    const player = await request<BrawlstarsPlayer>(
+      'players/%23' + tag,
+      this.apiOfficial,
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial }
+    );
+    // official API: with hash, unofficial API: no hash
+    // brawltime assumes no hash
+    player.tag = player.tag.replace(/^#/, '');
+
+    const battleLog = await request<BattleLog>(
+      'players/%23' + tag + '/battlelog',
+      this.apiOfficial,
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial }
+    ).catch(() => <BattleLog>({
+      items: [],
+      paging: [],
+    }));
+
+    const battles = battleLog.items.map((battle) => {
+      const transformPlayer = (player: BattlePlayer) => ({
+        tag: player.tag.replace('#', ''),
+        name: player.name,
+        brawler: player.brawler.name === null ? 'nani' : brawlerId(player.brawler), // FIXME API bug reported 2020-06-06
+        brawlerTrophies: player.brawler.trophies,
+        isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
+      })
+
+      let result;
+      if (battle.battle.duration !== undefined) {
+        // bossfight, gem grab, ...
+        const minutes = Math.floor(battle.battle.duration / 60);
+        const seconds = battle.battle.duration % 60;
+        result = `${minutes}m ${seconds}s`;
+      }
+      if (battle.battle.result !== undefined) {
+        // 3v3
+        result = capitalize(battle.battle.result);
+      }
+      if (battle.battle.rank !== undefined) {
+        // showdown
+        result = `Rank ${battle.battle.rank}`;
+      }
+
+      const time = battle.battleTime;
+      const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
+
+      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
+      const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
+
+      return {
+        timestamp: new Date(Date.parse(isoDate)),
+        mode: {
+          label: battle.event.map,
+          background: `${modeToBackgroundId(battle.event.mode)}.jpg`,
+        },
+        result,
+        trophyChange: battle.battle.trophyChange,
+        teams: teams.map(t => t.map(transformPlayer)),
+      }
+    }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
+
+    if (trackerUrl != '') {
+      try {
+        console.time('post battles to tracker ' + tag)
+        await post<null>(trackerUrl + '/track', { player, battleLog }, 600);
+      } catch (error) {
+        console.error(error, tag);
+      }
+
+      console.timeEnd('post battles to tracker ' + tag)
+    }
+
+    const brawlers = {} as { [id: string]: Brawler };
+    player.brawlers
+      .sort((b1, b2) => b2.trophies - b1.trophies)
+      .forEach((brawler) => {
+        brawlers[brawler.name === null ? 'nani' : brawlerId(brawler)] = { // FIXME
+          name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
+          rank: brawler.rank,
+          trophies: brawler.trophies,
+          highestTrophies: brawler.highestTrophies,
+          power: brawler.power,
+          history: [],
+        } as Brawler;
+      });
+
+    const hoursSpent = xpToHours(player.expPoints);
+
+    const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
+      .map((o) => o[prop])
+      .reduce((agg, cur) => agg + cur, 0)
+      / arr.length;
+
+    const heroStats = {
+      averageVictories: {
+        label: 'Average 3v3 Victories',
+        value: Math.floor(player["3vs3Victories"] / player.brawlers.length)
+      },
+      averageTrophies: {
+        label: 'Average Trophies',
+        value: Math.floor(avgProp('trophies')(player.brawlers))
+      },
+      averageRank: {
+        label: 'Average Rank',
+        value: Math.floor(avgProp('rank')(player.brawlers))
+      },
+      averagePower: {
+        label: 'Average Power Level',
+        value: Math.floor(avgProp('power')(player.brawlers))
+      },
+    } as { [id: string]: PlayerStatistic };
+
+    const data = {
+      tag: player.tag,
+      name: player.name,
+      hoursSpent,
+      trophies: player.trophies,
+      clubName: player.club === null ? '' : player.club.name,
+      history: [], // filled by /history
+      totalStats: {}, // filled by /winrates
+      brawlers,
+      heroStats,
+      battles,
+      modes: {
+        'showdown': {
+          label: 'Showdown',
+          icon: 'showdown_optimized.png',
+          background: 'showdown.jpg',
+          stats: {
+            victories: {
+              label: 'Solo Victories',
+              value: player.soloVictories,
+            },
+            duoVictories: {
+              label: 'Duo Victories',
+              value: player.duoVictories,
+            },
+          }
+        } as Mode,
         '3v3': {
           label: 'All 3v3',
           icon: 'gemgrab_optimized.png',
@@ -667,28 +721,6 @@ export default class BrawlstarsService {
               label: 'Victories',
               value: player['3vs3Victories'],
             },
-          }
-        } as Mode,
-        'bigGame': {
-          label: 'Big Game',
-          icon: 'bossfight_optimized.png',
-          background: 'bossfight.jpg',
-          stats: {
-            minutes: {
-              label: 'survived',
-              value: `${Math.floor(player.bestTimeAsBigBrawler/60)}m ${player.bestTimeAsBigBrawler%60}s`,
-            }
-          }
-        } as Mode,
-        'roborumble': {
-          label: 'Robo Rumble',
-          icon: 'roborumble_optimized.png',
-          background: 'roborumble.jpg',
-          stats: {
-            minutes: {
-              label: 'survived',
-              value: `${Math.floor(player.bestRoboRumbleTime/60)}m ${player.bestRoboRumbleTime%60}s`,
-            }
           }
         } as Mode,
       },

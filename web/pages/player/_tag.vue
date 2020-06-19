@@ -143,7 +143,7 @@
           </div>
         </div>
 
-        <div class="bigstat-container">
+        <div class="bigstat-container" v-if="player.totalStats.winRate !== undefined">
           <div class="bigstat-left relative">
             <span class="bigstat-number">
               {{ Math.floor(player.totalStats.winRate * 100) }}%
@@ -169,7 +169,7 @@
           </div>
         </div>
 
-        <div class="bigstat-container">
+        <div class="bigstat-container" v-if="player.totalStats.trophyRate !== undefined">
           <div class="bigstat-left bigstat-number">
             {{ player.totalStats.trophyRate.toFixed(2) }}
           </div>
@@ -938,6 +938,8 @@ export default {
       this.loadLeaderboard()
       this.loadCurrentMeta()
     }
+    this.loadPlayerHistory()
+    this.loadPlayerWinrates()
   },
   mounted() {
     if (process.client) {
@@ -1036,6 +1038,8 @@ export default {
     }),
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
+      loadPlayerHistory: 'loadPlayerHistory',
+      loadPlayerWinrates: 'loadPlayerWinrates',
       loadLeaderboard: 'loadLeaderboard',
       loadCurrentMeta: 'loadCurrentMeta',
       install: 'install',
