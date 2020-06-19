@@ -442,7 +442,7 @@ export default class BrawlstarsService {
     if (trackerUrl != '') {
       try {
         console.time('call tracker service ' + tag);
-        await post<null>(trackerUrl + '/track', { player, battleLog }, 500);
+        await post<null>(trackerUrl + '/track', { player, battleLog }, 600);
       } catch (error) {
         console.error(error, tag);
       }
@@ -453,14 +453,14 @@ export default class BrawlstarsService {
           trackerUrl,
           {},
           {},
-          300
+          600
         );
         winRates = await request<PlayerWinRates>(
           `/winrates/${tag}`,
           trackerUrl,
           {},
           {},
-          200
+          300
         );
       } catch (error) {
         console.error(error, tag);
