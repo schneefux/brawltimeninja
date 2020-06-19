@@ -625,15 +625,11 @@ export default class BrawlstarsService {
     }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
 
     if (trackerUrl != '') {
-      try {
-        console.time('post battles to tracker ' + tag)
-        // do not await - process in background and resolve early
-        post<null>(trackerUrl + '/track', { player, battleLog }, 1000);
-      } catch (error) {
-        console.error(error, tag);
-      }
-
-      console.timeEnd('post battles to tracker ' + tag)
+      console.time('post battles to tracker ' + tag)
+      // do not await - process in background and resolve early
+      post<null>(trackerUrl + '/track', { player, battleLog }, 1000)
+        .catch(error => console.error(error, tag))
+        .finally(() => console.timeEnd('post battles to tracker ' + tag));
     }
 
     const brawlers = {} as { [id: string]: Brawler };
