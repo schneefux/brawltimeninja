@@ -42,6 +42,7 @@ export default {
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/app.css',
+    ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
 
   plugins: [
