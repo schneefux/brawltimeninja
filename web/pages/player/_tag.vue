@@ -2,8 +2,7 @@
   <div class="container mx-auto p-4">
     <adsense
       v-if="ads && !isApp"
-      root-class="lg:hidden"
-      ins-class="w-full"
+      root-class="w-full lg:hidden"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9429125351"
       data-ad-format="auto"
@@ -205,7 +204,7 @@
       <adsense
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
-        ins-class="w-full"
+        root-class="w-full"
         data-ad-format="auto"
         data-full-width-responsive
       />
@@ -306,7 +305,7 @@
         id="ezoic-pub-ad-placeholder-101"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
-        ins-class="w-full"
+        root-class="w-full"
         data-ad-format="auto"
         data-full-width-responsive
       />
@@ -537,7 +536,7 @@
         id="ezoic-pub-ad-placeholder-102"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
-        ins-class="w-full"
+        root-class="w-full"
         data-ad-format="auto"
         data-full-width-responsive
       />
