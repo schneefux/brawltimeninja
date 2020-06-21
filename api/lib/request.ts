@@ -100,25 +100,28 @@ export function request<T>(
 export function post<T>(
     url: string,
     data: any,
-    timeout: number = 500): Promise<T> {
+    metricName: string,
+    timeoutMs: number = 500): Promise<T> {
   const agent = url.startsWith('https') ? httpsAgent : httpAgent;
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
 
-  return Promise.race([
-    sleep(timeout).then(() => {
-      throw {
-        url: url.toString(),
-        status: 429,
-        reason: 'API took too long to respond',
-      };
-    }),
-    fetch(url, {
+  stats.increment(metricName + '.run')
+  return stats.asyncTimer(() => fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
       agent,
       compress: true,
-    }).then(response => {
+      signal: controller.signal,
+    }), metricName + '.timer')()
+    .then(response => {
       if (!response.ok) {
+        if (response.status >= 500) {
+          stats.increment(metricName + '.servererror');
+        }
         throw {
           url: url.toString(),
           status: response.status,
@@ -128,5 +131,16 @@ export function post<T>(
 
       return response.json();
     })
-  ]);
+    .catch(error => {
+      if (error.name == 'AbortError') {
+        stats.increment(metricName + '.timeout');
+        throw {
+          url: url.toString(),
+          status: 429,
+          reason: 'API took too long to respond',
+        };
+      }
+      throw error
+    })
+    .finally(() => clearTimeout(timeout))
 }

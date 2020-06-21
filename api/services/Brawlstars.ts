@@ -647,7 +647,11 @@ export default class BrawlstarsService {
     if (trackerUrl != '') {
       console.time('post battles to tracker ' + tag)
       // do not await - process in background and resolve early
-      post<null>(trackerUrl + '/track', { player, battleLog }, 5000)
+      post<null>(
+        trackerUrl + '/track',
+        { player, battleLog },
+        'upload_battlelog',
+        5000)
         .catch(error => console.error(error, tag))
         .finally(() => console.timeEnd('post battles to tracker ' + tag));
     }
