@@ -1,6 +1,11 @@
 <template>
-  <div class="container mx-auto p-4" >
-    <div class="section-heading">
+  <div class="container mx-auto p-4">
+    <div class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'hours'),
+        once: true,
+      }"
+    >
       <media-img
         v-if="Object.keys(player.brawlers).length > 0"
         :path="'/brawlers/' + topBrawlerId + '/model'"

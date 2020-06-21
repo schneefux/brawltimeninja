@@ -15,7 +15,12 @@
       See how much you play, statistics for your Brawlers and more.
     </p>
 
-    <div class="mt-4 mx-4">
+    <div class="mt-4 mx-4"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'search'),
+        once: true,
+      }"
+    >
       <form
         class="flex flex-wrap justify-center"
         :action="`/player/${cleanedTag}`"
