@@ -500,7 +500,7 @@ export default {
       this.$router.push(this.playerRoute)
     },
     trackScroll(visible, entry, section) {
-      if (visible) {
+      if (visible && '$ga' in this) {
         this.$ga.event('home', 'scroll', section)
       }
     },

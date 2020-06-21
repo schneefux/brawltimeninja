@@ -1012,7 +1012,7 @@ export default {
       await this.install()
     },
     trackScroll(visible, entry, section) {
-      if (visible) {
+      if (visible && '$ga' in this) {
         this.$ga.event('profile', 'scroll', section)
       }
     },
