@@ -69,8 +69,8 @@ export function request<T>(
       if (!response.ok) {
         if (response.status == 429) {
           stats.increment(metricName + '.ratelimited');
-        } else {
-          stats.increment(metricName + '.error');
+        } else if (response.status >= 500) {
+          stats.increment(metricName + '.servererror');
         }
 
         throw {
