@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import AbortController from 'abort-controller';
 import { URLSearchParams, URL } from 'url';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
@@ -51,45 +52,49 @@ export function request<T>(
   url.search = urlParams.toString();
   const urlStr = url.toString();
   const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent;
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
 
   stats.increment(metricName + '.cache.access')
-  return Promise.race([
-    sleep(timeoutMs).then(() => {
-      throw {
-        url: url.toString(),
-        status: 429,
-        reason: 'API took too long to respond',
-      };
-    }),
-    cache.wrap(urlStr, () => stats.asyncTimer(() => fetch(urlStr, {
-        headers,
-        agent,
-        compress: true,
-      }), metricName + '_timer')().then(response => {
-        stats.increment(metricName + '.cache.miss');
-        if (!response.ok) {
-          if (response.status == 429) {
-            stats.increment(metricName + '.ratelimited');
-          } else {
-            stats.increment(metricName + '.error');
-          }
-
-          throw {
-            url: url.toString(),
-            status: response.status,
-            reason: response.statusText,
-          };
+  return cache.wrap(urlStr, () => stats.asyncTimer(() => fetch(urlStr, {
+      headers,
+      agent,
+      compress: true,
+      signal: controller.signal,
+    }), metricName + '_timer')()
+    .then(response => {
+      stats.increment(metricName + '.cache.miss');
+      if (!response.ok) {
+        if (response.status == 429) {
+          stats.increment(metricName + '.ratelimited');
+        } else {
+          stats.increment(metricName + '.error');
         }
 
-        return response.json();
-      })
-    , { ttl: ttlS }),
-  ]).catch(error => {
-    if (error.reason == 'API took too long to respond') {
-      stats.increment(metricName + '.timeout');
-    }
-    throw error
-  });
+        throw {
+          url: url.toString(),
+          status: response.status,
+          reason: response.statusText,
+        };
+      }
+
+      return response.json();
+    })
+    .catch(error => {
+      stats.increment(metricName + '.cache.miss');
+      if (error.name == 'AbortError') {
+        stats.increment(metricName + '.timeout');
+        throw {
+          url: url.toString(),
+          status: 429,
+          reason: 'API took too long to respond',
+        };
+      }
+      throw error
+    }), { ttl: ttlS })
+    .finally(() => clearTimeout(timeout))
 }
 
 export function post<T>(

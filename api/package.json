@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
+    "abort-controller": "^3.0.0",
     "cache-manager": "^2.10.1",
     "cache-manager-fs-hash": "0.0.7",
     "hot-shots": "^7.6.0",
