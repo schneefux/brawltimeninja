@@ -18,6 +18,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="8877810024"
         data-ad-format="auto"
+        data-full-width-responsive
       />
 
       <div class="mt-6">
@@ -61,6 +62,7 @@
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3577381889"
           data-ad-format="auto"
+          data-full-width-responsive
         />
 
         <h2 class="mt-6 mx-2 text-xl md:text-center font-semibold">

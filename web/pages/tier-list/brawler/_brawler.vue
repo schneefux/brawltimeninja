@@ -144,6 +144,7 @@
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="8533352178"
       data-ad-format="auto"
+      data-full-width-responsive
     />
 
     <div class="section-heading">
@@ -197,6 +198,7 @@
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6837127123"
       data-ad-format="auto"
+      data-full-width-responsive
     />
   </div>
 </template>

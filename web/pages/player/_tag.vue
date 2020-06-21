@@ -7,6 +7,7 @@
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9429125351"
       data-ad-format="auto"
+      data-full-width-responsive
     />
 
     <div class="section-heading"
@@ -333,6 +334,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
         data-ad-format="auto"
+        data-full-width-responsive
       />
     </div>
 
@@ -502,6 +504,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
         data-ad-format="auto"
+        data-full-width-responsive
       />
     </div>
 

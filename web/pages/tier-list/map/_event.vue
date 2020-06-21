@@ -50,6 +50,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1665534416"
         data-ad-format="auto"
+        data-full-width-responsive
       />
 
       <meta-grid
