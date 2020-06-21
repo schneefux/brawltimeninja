@@ -384,7 +384,7 @@ export default class BrawlstarsService {
         trackerUrl,
         {},
         {},
-        3000
+        10000
       );
       console.timeEnd('get winrates from tracker ' + tag);
     }
@@ -534,7 +534,7 @@ export default class BrawlstarsService {
         trackerUrl,
         {},
         {},
-        3000
+        10000
       );
       console.timeEnd('get history from tracker ' + tag);
     }
