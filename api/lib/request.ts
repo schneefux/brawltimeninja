@@ -52,10 +52,10 @@ export function request<T>(
   const urlStr = url.toString();
   const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent;
 
-  stats.increment(metricName + '_cache_access')
+  stats.increment(metricName + '.cache.access')
   return Promise.race([
     sleep(timeoutMs).then(() => {
-      stats.increment(metricName + '_timeout');
+      stats.increment(metricName + '.timeout');
       throw {
         url: url.toString(),
         status: 429,
@@ -67,9 +67,9 @@ export function request<T>(
         agent,
         compress: true,
       }), metricName + '_timer')().then(response => {
-        stats.increment(metricName + '_cache_miss');
+        stats.increment(metricName + '.cache.miss');
         if (!response.ok) {
-          stats.increment(metricName + '_error');
+          stats.increment(metricName + '.error');
           throw {
             url: url.toString(),
             status: response.status,
