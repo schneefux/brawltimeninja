@@ -254,7 +254,6 @@
             ins-class="md:mx-4 md:w-auto md:h-24"
             data-ad-client="ca-pub-6856963757796636"
             data-ad-slot="3933066188"
-            data-ad-format="auto"
           />
           <div
             v-if="mode.adSlot === undefined"
