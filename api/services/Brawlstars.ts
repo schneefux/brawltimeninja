@@ -40,6 +40,7 @@ export default class BrawlstarsService {
     const response = await request<{ active: BrawlstarsEvent[] }>(
       'events',
       this.apiUnofficial,
+      'fetch_events',
       { },
       { 'Authorization': 'Bearer ' + tokenUnofficial }
     );
@@ -58,6 +59,7 @@ export default class BrawlstarsService {
     const response = await request<{ upcoming: BrawlstarsEvent[] }>(
       'events',
       this.apiUnofficial,
+      'fetch_events',
       { },
       { 'Authorization': 'Bearer ' + tokenUnofficial }
     );
@@ -79,6 +81,7 @@ export default class BrawlstarsService {
     const response = await request<LeaderboardEntry[]>(
       '/top/exp',
       trackerUrl,
+      'fetch_leaderboard',
       {},
       {},
       60000,
@@ -95,6 +98,7 @@ export default class BrawlstarsService {
   public async getTrophiesLeaderboard() {
     const response = await request<any>('rankings/global/players',
       this.apiOfficial,
+      'fetch_trophies_leaderboard',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
       10000,
@@ -115,6 +119,7 @@ export default class BrawlstarsService {
     const meta = await request<MetaBrawlerEntry[]>(
       '/meta/brawler',
       trackerUrl,
+      'fetch_brawler_meta',
       { trophyrangeId: `${trophyrangeId}` },
       {},
       60000,
@@ -143,6 +148,7 @@ export default class BrawlstarsService {
     const meta = await request<MetaStarpowerEntry[]>(
       '/meta/starpower',
       trackerUrl,
+      'fetch_starpower_meta',
       {},
       {},
       60000,
@@ -171,6 +177,7 @@ export default class BrawlstarsService {
     const meta = await request<MetaGadgetEntry[]>(
       '/meta/gadget',
       trackerUrl,
+      'fetch_gadget_meta',
       {},
       {},
       60000,
@@ -199,6 +206,7 @@ export default class BrawlstarsService {
     const meta = await request<MetaModeEntry[]>(
       '/meta/mode',
       trackerUrl,
+      'fetch_mode_meta',
       {},
       {},
       60000,
@@ -272,6 +280,7 @@ export default class BrawlstarsService {
       const meta = await request<MetaMapEntry[]>(
         '/meta/map',
         trackerUrl,
+        'fetch_map_meta',
         {},
         {},
         60000,
@@ -382,6 +391,7 @@ export default class BrawlstarsService {
       winRates = await request<PlayerWinRates>(
         `/winrates/${tag}`,
         trackerUrl,
+        'fetch_player_winrates',
         {},
         {},
         10000
@@ -532,6 +542,7 @@ export default class BrawlstarsService {
       history = await request<History>(
         `/history/${tag}`,
         trackerUrl,
+        'fetch_player_history',
         {},
         {},
         10000
@@ -564,6 +575,7 @@ export default class BrawlstarsService {
     const player = await request<BrawlstarsPlayer>(
       'players/%23' + tag,
       this.apiOfficial,
+      'fetch_player',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial }
     );
@@ -574,6 +586,7 @@ export default class BrawlstarsService {
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       this.apiOfficial,
+      'fetch_player_battles',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial }
     ).catch(() => <BattleLog>({

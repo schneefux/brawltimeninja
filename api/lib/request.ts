@@ -4,6 +4,7 @@ import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
+import StatsD from 'hot-shots'
 
 const cachePath = process.env.CACHE_PATH || 'cache';
 const cacheDisable = !!process.env.CACHE_DISABLE;
@@ -20,6 +21,8 @@ export const cache = cacheDisable ?
     ttl: 180,
     options: { path: cachePath, subdirs: true, },
   });
+
+const stats = new StatsD({ prefix: 'brawltime.api.' })
 
 const httpAgent = new HttpAgent({
   keepAlive: true,
@@ -38,6 +41,7 @@ function sleep(ms: number) {
 export function request<T>(
     path: string,
     base: string,
+    metricName: string,
     params: { [key: string]: string },
     headers: { [header: string]: string },
     timeoutMs: number = 10000,
@@ -48,20 +52,24 @@ export function request<T>(
   const urlStr = url.toString();
   const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent;
 
+  stats.increment(metricName + '_cache_access')
   return Promise.race([
     sleep(timeoutMs).then(() => {
+      stats.increment(metricName + '_timeout');
       throw {
         url: url.toString(),
         status: 429,
         reason: 'API took too long to respond',
       };
     }),
-    cache.wrap(urlStr, () => fetch(urlStr, {
+    cache.wrap(urlStr, () => stats.asyncTimer(() => fetch(urlStr, {
         headers,
         agent,
         compress: true,
-      }).then(response => {
+      }), metricName + '_timer')().then(response => {
+        stats.increment(metricName + '_cache_miss');
         if (!response.ok) {
+          stats.increment(metricName + '_error');
           throw {
             url: url.toString(),
             status: response.status,
