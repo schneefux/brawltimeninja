@@ -367,141 +367,162 @@
       v-if="player.battles.length > 0"
       class="section"
     >
-      <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
-        <div
-          v-for="(battle, index) in player.battles"
-          :key="battle.timestamp"
-          :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
-          class="flex-0-auto flex w-80 mx-2 md:w-1/2 xl:w-1/3 card-wrapper md:mx-auto"
-        >
-          <div class="card h-full w-full">
-            <div class="bg-black w-full px-2 py-1 flex text-lg font-semibold flex justify-between">
-              <div>
-                <span class="text-primary-lightest mr-2">
-                  {{ battle.result }}
-                </span>
-                <span
-                  v-if="battle.trophyChange !== undefined"
-                  class="text-primary-lightest"
-                >
-                  <template v-if="battle.trophyChange > 0">
-                    +{{ battle.trophyChange }}
+      <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex flex-wrap flex-1">
+        <div class="w-full mx-2 flex md:flex-wrap min-width-min-content">
+          <div
+            v-for="(battle, index) in player.battles"
+            :key="battle.timestamp"
+            class="border-r-2 border-t-2 border-b-2 border-black w-12 h-12 bg-primary-dark flex justify-center items-center"
+            :class="{
+              'rounded-l border-l-2': index == 0,
+              'rounded-r': index == player.battles.length - 1,
+              'bg-red-500': battle.victory === false,
+              'bg-green-500': battle.victory === true,
+            }"
+          >
+            <media-img :path="'/modes/' + battle.event.mode + '/icon'"
+              size="120"
+              clazz="w-8 mx-auto my-auto"
+            ></media-img>
+          </div>
+        </div>
+
+        <div class="w-full flex md:flex-wrap">
+          <div
+            v-for="(battle, index) in player.battles"
+            :key="battle.timestamp"
+            :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
+            class="flex-0-auto flex w-80 mx-2 md:w-1/2 xl:w-1/3 card-wrapper md:mx-auto"
+          >
+            <div class="card h-full w-full">
+              <div class="bg-black w-full px-2 py-1 flex text-lg font-semibold flex justify-between">
+                <div>
+                  <span class="text-primary-lightest mr-2">
+                    {{ battle.result }}
+                  </span>
+                  <span
+                    v-if="battle.trophyChange !== undefined"
+                    class="text-primary-lightest"
+                  >
+                    <template v-if="battle.trophyChange > 0">
+                      +{{ battle.trophyChange }}
+                    </template>
+                    <template v-else>
+                      {{ battle.trophyChange }}
+                    </template>
+                    <img
+                      src="~/assets/images/icon/trophy_optimized.png"
+                      class="w-4 inline"
+                    >
+                  </span>
+                </div>
+                <span class="text-primary-lightest">
+                  <template v-if="hoursSinceDate(battle.timestamp) == 0">
+                    just now
                   </template>
                   <template v-else>
-                    {{ battle.trophyChange }}
+                    {{ hoursSinceDate(battle.timestamp) }}h ago
                   </template>
-                  <img
-                    src="~/assets/images/icon/trophy_optimized.png"
-                    class="w-4 inline"
-                  >
                 </span>
               </div>
-              <span class="text-primary-lightest">
-                <template v-if="hoursSinceDate(battle.timestamp) == 0">
-                  just now
-                </template>
-                <template v-else>
-                  {{ hoursSinceDate(battle.timestamp) }}h ago
-                </template>
-              </span>
-            </div>
-            <div
-              class="w-full px-3 py-2 flex font-semibold justify-start items-center"
-              :class="`bg-color-${battle.event.mode.toLowerCase()}`"
-            >
-              <media-img :path="'/modes/' + battle.event.mode + '/icon'"
-                size="120"
-                clazz="w-10"
-              ></media-img>
-              <div class="ml-2 text-white">
-                <p class="text-xl">
-                  {{ formatMode(battle.event.mode) }}
-                </p>
-                <p>
-                  {{ battle.event.map }}
-                </p>
-              </div>
-            </div>
-            <div class="relative">
-              <media-img :path="'/modes/' + battle.event.mode + '/background'"
-                size="800"
-                clazz="absolute left-0 top-0 z-0 h-32"
-                ztyle="filter: brightness(0.75) grayscale(0.25);"
-              ></media-img>
-            </div>
-            <div class="w-full flex flex-wrap justify-center">
               <div
-                v-for="(team, index) in battle.teams"
-                :key="index"
-                :class="{
-                  'mt-8': battle.teams.length == 3,
-                  'mx-1 rounded-sm': team.length == 2,
-                }"
-                class="flex flex-wrap justify-center z-10 my-1"
+                class="w-full px-3 py-2 flex font-semibold justify-start items-center"
+                :class="`bg-color-${battle.event.mode.toLowerCase()}`"
               >
-                <nuxt-link
-                  v-for="mate in team"
-                  :key="mate.tag"
-                  :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
-                  :to="`/player/${mate.tag}`"
-                  class="w-14 h-14 bg-black py-px relative overflow-hidden"
+                <media-img :path="'/modes/' + battle.event.mode + '/icon'"
+                  size="120"
+                  clazz="w-10"
+                ></media-img>
+                <div class="ml-2 text-white">
+                  <p class="text-xl">
+                    {{ formatMode(battle.event.mode) }}
+                  </p>
+                  <p>
+                    {{ battle.event.map }}
+                  </p>
+                </div>
+              </div>
+              <div class="relative">
+                <media-img :path="'/modes/' + battle.event.mode + '/background'"
+                  size="800"
+                  clazz="absolute left-0 top-0 z-0 h-32"
+                  ztyle="filter: brightness(0.75) grayscale(0.25);"
+                ></media-img>
+              </div>
+              <div class="w-full flex flex-wrap justify-center">
+                <div
+                  v-for="(team, index) in battle.teams"
+                  :key="index"
                   :class="{
-                    'border-2 border-gray-300': mate.tag == player.tag,
-                    'mx-1 rounded-sm': team.length != 2,
+                    'mt-8': battle.teams.length == 3,
+                    'mx-1 rounded-sm': team.length == 2,
                   }"
+                  class="flex flex-wrap justify-center z-10 my-1"
                 >
-                  <media-img
-                    :path="'/brawlers/' + mate.brawler + '/avatar'"
-                    size="80"
-                    clazz="h-8"
-                  ></media-img>
-                  <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
-                    <div class="w-full flex">
-                      <span
-                        class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
-                      >
-                        {{ mate.brawlerTrophies }}
-                      </span>
-                      <img
-                        src="~/assets/images/icon/trophy_optimized.png"
-                        class="w-4 ml-px"
-                      >
-                    </div>
-                    <div class="w-full">
-                      <span
-                        v-if="mate.isBigbrawler"
-                        class="text-sm"
-                      >
-                        💀
-                      </span>
-                    </div>
-                  </div>
-                  <span
-                    class="text-xs whitespace-no-wrap m-px"
+                  <nuxt-link
+                    v-for="mate in team"
+                    :key="mate.tag"
+                    :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
+                    :to="`/player/${mate.tag}`"
+                    class="w-14 h-14 bg-black py-px relative overflow-hidden"
                     :class="{
-                      'link': mate.tag != player.tag,
-                      'text-secondary': mate.tag == player.tag,
+                      'border-2 border-gray-300': mate.tag == player.tag,
+                      'mx-1 rounded-sm': team.length != 2,
                     }"
                   >
-                    {{ mate.name }}
-                  </span>
-                </nuxt-link>
+                    <media-img
+                      :path="'/brawlers/' + mate.brawler + '/avatar'"
+                      size="80"
+                      clazz="h-8"
+                    ></media-img>
+                    <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
+                      <div class="w-full flex">
+                        <span
+                          class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
+                        >
+                          {{ mate.brawlerTrophies }}
+                        </span>
+                        <img
+                          src="~/assets/images/icon/trophy_optimized.png"
+                          class="w-4 ml-px"
+                        >
+                      </div>
+                      <div class="w-full">
+                        <span
+                          v-if="mate.isBigbrawler"
+                          class="text-sm"
+                        >
+                          💀
+                        </span>
+                      </div>
+                    </div>
+                    <span
+                      class="text-xs whitespace-no-wrap m-px"
+                      :class="{
+                        'link': mate.tag != player.tag,
+                        'text-secondary': mate.tag == player.tag,
+                      }"
+                    >
+                      {{ mate.name }}
+                    </span>
+                  </nuxt-link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div
-        v-show="battlePage * battlePageSize < player.battles.length"
-        class="mt-2 w-full text-right hidden md:block"
-      >
-        <button
-          class="button button-md"
-          @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
+        <div
+          v-show="battlePage * battlePageSize < player.battles.length"
+          class="mt-2 w-full text-right hidden md:block"
         >
-          Load More Battles
-        </button>
+          <button
+            class="button button-md"
+            @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
+          >
+            Load More Battles
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1156,5 +1177,9 @@ export default {
 
 .bg-color-roborumble {
   background-color: #0085fb;
+}
+
+.min-width-min-content {
+ min-width: min-content;
 }
 </style>

@@ -590,7 +590,8 @@ export default class BrawlstarsService {
         isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
       })
 
-      let result;
+      let result = undefined as undefined|string;
+      let victory = undefined as undefined|boolean;
       if (battle.battle.duration !== undefined) {
         // bossfight, gem grab, ...
         const minutes = Math.floor(battle.battle.duration / 60);
@@ -600,10 +601,14 @@ export default class BrawlstarsService {
       if (battle.battle.result !== undefined) {
         // 3v3
         result = capitalize(battle.battle.result);
+        victory = battle.battle.result == 'victory'
       }
       if (battle.battle.rank !== undefined) {
         // showdown
         result = `Rank ${battle.battle.rank}`;
+        if (battle.battle.players) {
+          victory = battle.battle.rank >= battle.battle.players.length / 2;
+        }
       }
 
       const time = battle.battleTime;
@@ -620,6 +625,7 @@ export default class BrawlstarsService {
           map: battle.event.map,
         },
         result,
+        victory,
         trophyChange: battle.battle.trophyChange,
         teams: teams.map(t => t.map(transformPlayer)),
       }
