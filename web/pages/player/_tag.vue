@@ -433,7 +433,10 @@
               <div
                 v-for="(team, index) in battle.teams"
                 :key="index"
-                :class="{ 'mt-8': battle.teams.length == 1 }"
+                :class="{
+                  'mt-8': battle.teams.length == 3,
+                  'mx-1 rounded-sm': team.length == 2,
+                }"
                 class="flex flex-wrap justify-center z-10 my-1"
               >
                 <nuxt-link
@@ -441,9 +444,10 @@
                   :key="mate.tag"
                   :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
                   :to="`/player/${mate.tag}`"
-                  class="w-14 h-14 rounded-sm mx-1 bg-black py-px relative overflow-hidden text-center"
+                  class="w-14 h-14 bg-black py-px relative overflow-hidden"
                   :class="{
                     'border-2 border-gray-300': mate.tag == player.tag,
+                    'mx-1 rounded-sm': team.length != 2,
                   }"
                 >
                   <media-img
@@ -451,25 +455,29 @@
                     size="80"
                     clazz="h-8"
                   ></media-img>
-                  <div class="absolute top-0 text-secondary-lighter w-12 flex" v-if="mate.brawlerTrophies">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="w-4 mr-px"
-                    >
-                    <span
-                      class="w-8 text-xs font-semibold"
-                    >
-                      {{ mate.brawlerTrophies }}
-                    </span>
+                  <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
+                    <div class="w-full flex">
+                      <span
+                        class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
+                      >
+                        {{ mate.brawlerTrophies }}
+                      </span>
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="w-4 ml-px"
+                      >
+                    </div>
+                    <div class="w-full">
+                      <span
+                        v-if="mate.isBigbrawler"
+                        class="text-sm"
+                      >
+                        💀
+                      </span>
+                    </div>
                   </div>
                   <span
-                    v-if="mate.isBigbrawler"
-                    class="text-lg w-8 text-center"
-                  >
-                    💀
-                  </span>
-                  <span
-                    class="text-xs whitespace-no-wrap"
+                    class="text-xs whitespace-no-wrap m-px"
                     :class="{
                       'link': mate.tag != player.tag,
                       'text-secondary': mate.tag == player.tag,
