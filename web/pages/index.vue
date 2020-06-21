@@ -104,6 +104,14 @@
       </p>
     </div>
 
+    <adsense
+      v-if="ads && !isApp"
+      class="container flex justify-center"
+      ins-class="w-full h-32"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="6067985913"
+    />
+
     <div
       v-show="Object.keys(topBrawlers).length > 0"
       v-observe-visibility="{
@@ -178,10 +186,10 @@
     </div>
 
     <adsense
-      v-if="ads"
+      v-if="ads && !isApp"
       id="ezoic-pub-ad-placeholder-104"
-      class="home-section container flex justify-center"
-      ins-class="w-full mx-4 h-32"
+      class="container flex justify-center"
+      ins-class="w-full h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6709232983"
     />

@@ -1,5 +1,13 @@
 <template>
   <div class="container mx-auto p-4">
+    <adsense
+      v-if="ads && !isApp"
+      root-class="w-full mt-4 mx-auto lg:hidden"
+      ins-class="h-80"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="9429125351"
+    />
+
     <div class="section-heading"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
