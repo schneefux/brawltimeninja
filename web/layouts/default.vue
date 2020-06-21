@@ -258,6 +258,15 @@ export default {
         e.preventDefault()
         this.setInstallPrompt(e)
       })
+      if ('$workbox' in window) {
+        window.$workbox.then(workbox => {
+          workbox.addEventListener('installed', (e) => {
+            if (e.isUpdate) {
+              location.reload(true)
+            }
+          })
+        })
+      }
     }
   },
   mounted() {
