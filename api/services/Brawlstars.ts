@@ -404,7 +404,7 @@ export default class BrawlstarsService {
         + ( entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
       winsCount: statsSum.winsCount + (entry.winRate !== null || entry.rank !== null ? entry.picks : 0),
     }), { wins: 0, winsCount: 0, trophies: 0, trophiesCount: 0 });
-    const totalStats = { winRate: 0, trophyRate: 0, battles: statsSum.trophiesCount };
+    const totalStats = { winRate: 0, trophyRate: 0, battles: statsSum.trophiesCount, byMode: statsByMode };
     if (statsSum.winsCount > 0) {
       totalStats.winRate = statsSum.wins / statsSum.winsCount;
     }

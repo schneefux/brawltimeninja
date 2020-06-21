@@ -158,35 +158,9 @@
           </div>
         </div>
 
-        <div class="bigstat-container" v-if="player.totalStats.winRate !== undefined">
-          <div class="bigstat-left relative">
-            <span class="bigstat-number">
-              {{ Math.floor(player.totalStats.winRate * 100) }}%
-            </span>
-            <button
-              @click="recentHelpOpen = true"
-              class="bigstat-tooltip-btn"
-            >?</button>
-            <p
-              v-show="recentHelpOpen"
-              @click="recentHelpOpen = false"
-              class="bigstat-tooltip-text"
-            >
-              Your last {{ player.totalStats.battles }} battles are used for "Recent" statistics. <br>
-              The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
-              <span class="bigstat-tooltip-close">x</span>
-            </p>
-          </div>
-          <div class="bigstat-right bigstat-label text-xl">
-            <p class="w-24">
-              Recent Win&nbsp;Rate
-            </p>
-          </div>
-        </div>
-
-        <div class="bigstat-container" v-if="player.totalStats.trophyRate !== undefined">
+        <div class="bigstat-container" v-if="trophyRate !== 0">
           <div class="bigstat-left bigstat-number">
-            {{ player.totalStats.trophyRate.toFixed(2) }}
+            {{ trophyRate.toFixed(2) }}
           </div>
           <div class="bigstat-right bigstat-label text-xl">
             <p class="w-24">
@@ -339,7 +313,6 @@
     </div>
 
     <div
-      v-if="player.battles.length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'battles'),
         once: true,
@@ -363,12 +336,41 @@
       </div>
     </div>
 
-    <div
-      v-if="player.battles.length > 0"
-      class="section"
-    >
-      <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex flex-wrap flex-1">
-        <div class="w-full mx-2 flex md:flex-wrap min-width-min-content">
+    <div class="section">
+      <div class="mt-3 mb-6 flex flex-wrap justify-center" v-if="totalBattles !== 0">
+        <div class="w-32 flex">
+          <span class="bigstat-left bigstat-number bigstat-number--light">
+            {{ totalBattles }}
+          </span>
+          <span class="bigstat-right bigstat-label text-xl">
+            Battles Recorded
+          </span>
+        </div>
+
+        <div class="w-64 flex">
+          <span class="bigstat-left bigstat-number bigstat-number--light">
+            {{ Math.floor(winRate * 100) }}%
+          </span>
+          <span class="bigstat-right bigstat-label text-xl">
+            Win&nbsp;Rate
+          </span>
+        </div>
+
+        <div class="w-80 flex">
+          <span class="bigstat-left bigstat-number bigstat-number--light">
+            {{ formatMode(bestMode) }}
+          </span>
+          <span class="bigstat-right bigstat-label text-xl">
+            Best Mode
+          </span>
+        </div>
+      </div>
+
+      <div
+        v-if="player.battles.length > 0"
+        class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex flex-wrap flex-1"
+      >
+        <div class="w-full mx-2 mb-2 flex md:flex-wrap min-width-min-content">
           <div
             v-for="(battle, index) in player.battles"
             :key="battle.timestamp"
@@ -941,6 +943,63 @@ export default {
       }
       return 'S'
     },
+    totalBattles() {
+      if (this.player.totalStats.battles !== undefined) {
+        return this.player.totalStats.battles
+      }
+      return this.player.battles.length
+    },
+    winRate() {
+      if (this.player.totalStats.winRate !== undefined) {
+        return this.player.totalStats.winRate
+      }
+      if (this.player.battles.length == 0) {
+        return 0
+      }
+      return this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
+    },
+    battlesByMode() {
+      return this.player.battles.reduce((battlesByMode, battle) => ({
+        ...battlesByMode,
+        [battle.event.mode]: [...(battlesByMode[battle.event.mode] || []), battle],
+      }), {})
+    },
+    trophyRate() {
+      if (this.player.totalStats.trophyRate !== undefined) {
+        return this.player.totalStats.trophyRate
+      }
+      const rankedBattles = (battles) => battles.filter(b => b.trophyChange !== undefined)
+      const trophyChanges = this.player.battles
+        .map((battle) => battle.trophyChange)
+        .filter((trophyChange) => trophyChange !== undefined)
+      if (trophyChanges.length == 0) {
+        return 0
+      }
+      return trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+    },
+    bestMode() {
+      let avgTrophyChangeByMode = []
+      if (this.player.totalStats.byMode !== undefined) {
+        avgTrophyChangeByMode = [...Object.values(this.player.totalStats.byMode || {})]
+          .filter((m) => m.trophyChange !== undefined)
+      } else {
+        const rankedBattles = (battles) => battles.filter(b => b.trophyChange !== undefined)
+        avgTrophyChangeByMode = [...Object.entries(this.battlesByMode)]
+          .map(([mode, battles]) => [mode, rankedBattles(battles)])
+          .filter(([mode, battles]) => battles.length > 0)
+          .map(([mode, battles]) => ({
+            mode,
+            trophyChange: battles.reduce((trophies, b) => trophies + b.trophyChange, 0) / battles.length,
+          }))
+      }
+      const modes = avgTrophyChangeByMode
+        .sort((m1, m2) => m2.trophyChange - m1.trophyChange)
+        .map((m) => m.mode)
+      if (modes.length == 0) {
+        return '?'
+      }
+      return modes[0]
+    },
     ...mapState({
       ads: state => state.adsEnabled,
       blog: state => state.blog,
@@ -1144,6 +1203,10 @@ export default {
 
 .bigstat-tooltip-close {
   @apply text-primary-light font-semibold absolute top-0 right-0 mr-1 cursor-pointer;
+}
+
+.bigstat-number--light {
+  @apply text-3xl text-primary-light;
 }
 
 .bg-color-heist {
