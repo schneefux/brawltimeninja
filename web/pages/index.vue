@@ -106,8 +106,8 @@
 
     <adsense
       v-if="ads && !isApp"
-      class="container flex justify-center"
-      ins-class="w-full h-32"
+      root-class="container"
+      ins-class="w-full"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6067985913"
       data-ad-format="auto"
@@ -190,8 +190,8 @@
     <adsense
       v-if="ads && !isApp"
       id="ezoic-pub-ad-placeholder-104"
-      class="container flex justify-center"
-      ins-class="w-full h-32"
+      root-class="container"
+      ins-class="w-full"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6709232983"
       data-ad-format="auto"
@@ -251,8 +251,8 @@
     <adsense
       v-if="ads"
       id="ezoic-pub-ad-placeholder-103"
-      class="home-section container flex justify-center"
-      ins-class="w-full mx-4 h-48"
+      root-class="container"
+      ins-class="w-full"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6736366415"
       data-ad-format="auto"
