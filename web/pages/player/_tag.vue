@@ -742,7 +742,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { induceAdsIntoArray, formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~/lib/util'
+import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~/lib/util'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 import MediaImg from '~/components/media-img'
@@ -775,10 +775,8 @@ export default {
       notificationsAllowed: false,
       showAllModes: false,
       ratingHelpOpen: false,
-      recentHelpOpen: false,
       hoursSinceDate,
       formatMode,
-      induceAdsIntoArray,
     }
   },
   computed: {
