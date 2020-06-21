@@ -258,15 +258,16 @@ export default {
         e.preventDefault()
         this.setInstallPrompt(e)
       })
-      if ('$workbox' in window) {
-        window.$workbox.then(workbox => {
+      // nuxt-pwa auto update
+      window.$workbox.then(workbox => {
+        if (workbox) {
           workbox.addEventListener('installed', (e) => {
             if (e.isUpdate) {
               location.reload(true)
             }
           })
-        })
-      }
+        }
+      })
     }
   },
   mounted() {
