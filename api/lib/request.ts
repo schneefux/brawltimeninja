@@ -63,7 +63,7 @@ export function request<T>(
       agent,
       compress: true,
       signal: controller.signal,
-    }), metricName + '_timer')()
+    }), metricName + '.timer')()
     .then(response => {
       stats.increment(metricName + '.cache.miss');
       if (!response.ok) {
