@@ -212,44 +212,10 @@ export default {
         // open banner if user has not opted in & Ezoic did not load the consent manager popup
         console.log('ezoic CMP popup visible', window.__cmp == undefined)
         this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
+        this.applyAdPreferences()
       }
     },
-    adsAllowed(allowed) {
-      if (!allowed && process.client) {
-        this.disableAds()
-      }
-      if (allowed && process.client) {
-        const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
-        if (!adsBlocked) {
-          this.enableAds()
-          // on Chrome, lazy-loading of ads does not work on first visit
-          // this workaround fixes it
-          if ('adsbygoogle' in window) {
-            window.adsbygoogle.pauseAdRequests = 0
-          }
-        } else {
-          this.disableAds()
-        }
-
-        // play store allows only 1 ad/page - TWA is detected via referrer
-        const isPwa = window.matchMedia('(display-mode: standalone)').matches
-        const isTwa = document.referrer.startsWith('android-app')
-
-        if (isPwa || isTwa) {
-          this.setIsApp()
-        }
-
-        if ('$ga' in this) {
-          this.$ga.enable()
-          // set variables for split testing
-          this.$ga.set('dimension1', process.env.branch)
-          this.$ga.set('dimension2', !adsBlocked)
-          this.$ga.set('dimension3', isPwa)
-          this.$ga.set('dimension4', isTwa)
-          this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
-        }
-      }
-    },
+    adsAllowed: 'applyAdPreferences',
   },
   created() {
     if (process.client) {
@@ -345,6 +311,43 @@ export default {
         this.$ga.event('app', 'click', 'install_header')
       }
       await this.install()
+    },
+    applyAdPreferences() {
+      const allowed = this.adsAllowed
+      if (!allowed && process.client) {
+        this.disableAds()
+      }
+      if (allowed && process.client) {
+        const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
+        if (!adsBlocked) {
+          this.enableAds()
+          // on Chrome, lazy-loading of ads does not work on first visit
+          // this workaround fixes it
+          if ('adsbygoogle' in window) {
+            window.adsbygoogle.pauseAdRequests = 0
+          }
+        } else {
+          this.disableAds()
+        }
+
+        // play store allows only 1 ad/page - TWA is detected via referrer
+        const isPwa = window.matchMedia('(display-mode: standalone)').matches
+        const isTwa = document.referrer.startsWith('android-app')
+
+        if (isPwa || isTwa) {
+          this.setIsApp()
+        }
+
+        if ('$ga' in this) {
+          this.$ga.enable()
+          // set variables for split testing
+          this.$ga.set('dimension1', process.env.branch)
+          this.$ga.set('dimension2', !adsBlocked)
+          this.$ga.set('dimension3', isPwa)
+          this.$ga.set('dimension4', isTwa)
+          this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
+        }
+      }
     },
     ...mapMutations({
       allowCookies: 'allowCookies',
