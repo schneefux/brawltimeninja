@@ -2,8 +2,7 @@
   <div class="container mx-auto p-4">
     <adsense
       v-if="ads && !isApp"
-      root-class="w-full mt-4 mx-auto lg:hidden"
-      ins-class="h-80"
+      root-class="lg:hidden"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9429125351"
       data-ad-format="auto"
@@ -226,6 +225,16 @@
       </div>
     </div>
 
+    <div class="section hidden lg:block">
+      <adsense
+        v-if="ads && !isApp"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="3933066188"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </div>
+
     <div
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'gamemodes'),
@@ -241,22 +250,14 @@
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="(mode, index) in induceAdsIntoArray([...Object.values(player.modes)], ['3933066188'], 3)"
+          v-for="(mode, index) in Object.values(player.modes)"
           :key="mode.label"
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
           class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-40 md:h-auto card-wrapper"
         >
-          <adsense
-            v-if="mode.adSlot !== undefined && ads && !isApp"
-            root-class="md:mt-1 md:mx-auto"
-            ins-class="md:mx-4 md:w-auto md:h-24"
-            data-ad-client="ca-pub-6856963757796636"
-            data-ad-slot="3933066188"
-          />
           <div
-            v-if="mode.adSlot === undefined"
             class="card bg-center bg-cover flex flex-wrap justify-between h-full relative"
             :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
           >
@@ -324,12 +325,9 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" v-if="ads">
       <adsense
-        v-if="ads"
         id="ezoic-pub-ad-placeholder-101"
-        root-class="w-full mt-6 mx-auto"
-        ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
         data-ad-format="auto"
@@ -498,8 +496,6 @@
       <adsense
         v-if="ads && !isApp"
         id="ezoic-pub-ad-placeholder-102"
-        root-class="w-full mt-6 mx-auto"
-        ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
         data-ad-format="auto"
