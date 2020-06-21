@@ -587,7 +587,7 @@
           >
             <template v-slot:history>
               <div
-                v-if="brawler.history.length > 1"
+                v-if="brawler.id in daysSinceBrawlerHistoryStart"
                 class="w-32 relative mx-auto my-2"
               >
                 <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
@@ -815,9 +815,11 @@ export default {
     daysSinceBrawlerHistoryStart() {
       const brawlersMin = {}
       Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
-        const start = Date.parse(brawler.history[0].timestamp)
-        const now = (new Date()).getTime()
-        brawlersMin[brawlerId] = Math.ceil((now - start) / 1000 / 3600 / 24)
+        if (brawler.history.length > 1) {
+          const start = Date.parse(brawler.history[0].timestamp)
+          const now = (new Date()).getTime()
+          brawlersMin[brawlerId] = Math.ceil((now - start) / 1000 / 3600 / 24)
+        }
       })
       return brawlersMin
     },
