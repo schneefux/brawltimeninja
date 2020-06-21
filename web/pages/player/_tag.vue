@@ -205,6 +205,7 @@
               v-show="ratingHelpOpen"
               @click="ratingHelpOpen = false"
               class="bigstat-tooltip-text"
+              style="display: none;"
             >
               Ratings are calculated by comparing mean Brawler trophies to all players on Brawl Time Ninja.
               <ul>
@@ -1105,6 +1106,6 @@ export default {
 }
 
 .bigstat-tooltip-close {
-  @apply text-primary-light font-semibold absolute top-0 right-0 mr-1;
+  @apply text-primary-light font-semibold absolute top-0 right-0 mr-1 cursor-pointer;
 }
 </style>
