@@ -55,7 +55,6 @@ export function request<T>(
   stats.increment(metricName + '.cache.access')
   return Promise.race([
     sleep(timeoutMs).then(() => {
-      stats.increment(metricName + '.timeout');
       throw {
         url: url.toString(),
         status: 429,
@@ -69,7 +68,12 @@ export function request<T>(
       }), metricName + '_timer')().then(response => {
         stats.increment(metricName + '.cache.miss');
         if (!response.ok) {
-          stats.increment(metricName + '.error');
+          if (response.status == 429) {
+            stats.increment(metricName + '.ratelimited');
+          } else {
+            stats.increment(metricName + '.error');
+          }
+
           throw {
             url: url.toString(),
             status: response.status,
@@ -80,7 +84,12 @@ export function request<T>(
         return response.json();
       })
     , { ttl: ttlS }),
-  ]);
+  ]).catch(error => {
+    if (error.reason == 'API took too long to respond') {
+      stats.increment(metricName + '.timeout');
+    }
+    throw error
+  });
 }
 
 export function post<T>(
