@@ -49,6 +49,7 @@
         ins-class="h-24 mb-2 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="9201379700"
+        data-ad-format="auto"
       />
 
       <meta-grid

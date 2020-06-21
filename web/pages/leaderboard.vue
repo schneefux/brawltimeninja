@@ -16,6 +16,7 @@
         ins-class="h-24"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4579727583"
+        data-ad-format="auto"
       />
 
       <div class="text-center my-2">
@@ -70,6 +71,7 @@
         ins-class="h-32"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="5140154307"
+        data-ad-format="auto"
       />
     </div>
   </div>

@@ -17,6 +17,7 @@
         ins-class="h-24 mt-6 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="8877810024"
+        data-ad-format="auto"
       />
 
       <div class="mt-6">
@@ -59,6 +60,7 @@
           ins-class="h-24 mt-6 text-center"
           data-ad-client="ca-pub-6856963757796636"
           data-ad-slot="3577381889"
+          data-ad-format="auto"
         />
 
         <h2 class="mt-6 mx-2 text-xl md:text-center font-semibold">

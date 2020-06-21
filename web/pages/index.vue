@@ -110,6 +110,7 @@
       ins-class="w-full h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6067985913"
+      data-ad-format="auto"
     />
 
     <div
@@ -192,6 +193,7 @@
       ins-class="w-full h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6709232983"
+      data-ad-format="auto"
     />
 
     <div
@@ -251,6 +253,7 @@
       ins-class="w-full mx-4 h-48"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6736366415"
+      data-ad-format="auto"
     />
 
     <div

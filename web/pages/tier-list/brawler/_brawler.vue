@@ -143,6 +143,7 @@
       ins-class="mx-4 h-24"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="8533352178"
+      data-ad-format="auto"
     />
 
     <div class="section-heading">
@@ -195,6 +196,7 @@
       ins-class="h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6837127123"
+      data-ad-format="auto"
     />
   </div>
 </template>
