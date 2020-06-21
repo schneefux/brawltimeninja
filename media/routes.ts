@@ -77,4 +77,24 @@ router.get(`/maps/:id${EXT}`, async (ctx, next) => {
   await next();
 });
 
+router.get(`/modes/:name/icon${EXT}`, async (ctx, next) => {
+  let name = ctx.params.name
+  if (name.endsWith('Showdown')) {
+    name = 'Showdown'
+  }
+  const buffer = await service.getModeIcon(name, ctx.req.headers.accept || '');
+  await respond(ctx, buffer);
+  await next();
+});
+
+router.get(`/modes/:name/background${EXT}`, async (ctx, next) => {
+  let name = ctx.params.name
+  if (name.endsWith('Showdown')) {
+    name = 'Showdown'
+  }
+  const buffer = await service.getModeBackground(name, ctx.req.headers.accept || '');
+  await respond(ctx, buffer);
+  await next();
+});
+
 export default router.routes();

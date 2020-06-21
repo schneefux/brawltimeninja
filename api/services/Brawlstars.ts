@@ -614,9 +614,10 @@ export default class BrawlstarsService {
 
       return {
         timestamp: new Date(Date.parse(isoDate)),
-        mode: {
-          label: battle.event.map,
-          background: `${modeToBackgroundId(battle.event.mode)}.jpg`,
+        event: {
+          id: battle.event.id,
+          mode: battle.event.mode,
+          map: battle.event.map,
         },
         result,
         trophyChange: battle.battle.trophyChange,

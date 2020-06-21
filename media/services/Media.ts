@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
-import { StarlistBrawler, StarlistMap } from '~/model/Starlist';
+import { StarlistBrawler, StarlistMap, StarlistMode } from '~/model/Starlist';
 
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets');
 
@@ -200,6 +200,74 @@ export default class MediaService {
     }
   }
 
+  public async getModeIcon(name: string, accept: string): Promise<Buffer|null> {
+    try {
+      const path = assetDir + '/modes/icon/' + name + '.png';
+      await fs.promises.access(path);
+      return fs.promises.readFile(path);
+    } catch (err) {
+      console.log('Mode not found (local): ' + name);
+    }
+
+    let modes: StarlistMode[];
+
+    try {
+      modes = (await this.getStarlistModes()).list;
+    } catch(err) {
+      console.log('Modes API error: ' + err);
+      return null;
+    }
+
+    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.toLowerCase());
+    if (mode == undefined) {
+      console.log('Mode not found (starlist): ' + name);
+      return null;
+    }
+
+    const url = mode.imageUrl;
+    try {
+      return await fetch(url, { headers: { accept } })
+        .then(res => res.buffer());
+    } catch (err) {
+      console.log('Mode fetch error: ' + err);
+      return null;
+    }
+  }
+
+  public async getModeBackground(name: string, accept: string): Promise<Buffer|null> {
+    try {
+      const path = assetDir + '/modes/background/' + name + '.png';
+      await fs.promises.access(path);
+      return fs.promises.readFile(path);
+    } catch (err) {
+      console.log('Mode not found (local): ' + name);
+    }
+
+    let modes: StarlistMode[];
+
+    try {
+      modes = (await this.getStarlistModes()).list;
+    } catch(err) {
+      console.log('Modes API error: ' + err);
+      return null;
+    }
+
+    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.toLowerCase());
+    if (mode == undefined) {
+      console.log('Mode not found (starlist): ' + name);
+      return null;
+    }
+
+    const url = mode.imageUrl2;
+    try {
+      return await fetch(url, { headers: { accept } })
+        .then(res => res.buffer());
+    } catch (err) {
+      console.log('Mode fetch error: ' + err);
+      return null;
+    }
+  }
+
   private getStarlistBrawlers(): Promise<{ list: StarlistBrawler[] }> {
     return request(starlistUrl + '/brawlers');
   }
@@ -210,5 +278,9 @@ export default class MediaService {
 
   private getStarlistMap(id: number): Promise<{ map: StarlistMap }> {
     return request(starlistUrl + '/maps/' + id);
+  }
+
+  private getStarlistModes(): Promise<{ list: StarlistMode[] }> {
+    return request(starlistUrl + '/gamemodes');
   }
 }

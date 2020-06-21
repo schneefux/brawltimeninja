@@ -1,7 +1,7 @@
 <template>
   <picture>
     <source :srcset="url + '.webp' + query" type="image/webp">
-    <img :src="url + (transparent ? '.png': '.jpg') + query" :class="clazz" v-bind="$attrs">
+    <img :src="url + (transparent ? '.png': '.jpg') + query" :class="clazz" :style="ztyle" v-bind="$attrs">
   </picture>
 </template>
 
@@ -10,6 +10,10 @@ export default {
   inheritAttrs: false,
   props: {
     clazz: {
+      type: String,
+      default: ''
+    },
+    ztyle: {
       type: String,
       default: ''
     },
