@@ -225,33 +225,25 @@ export default class TrackerService {
   }
 
   public async getHistory(tag: string) {
+    // round to hour to reduce high-activity players
+    const timestampRoundedAsTimestamp = this.knex.raw('date_format(timestamp, \'%Y-%m-%d %H:00:00\') as timestamp')
+    const timestampRounded = this.knex.raw('date_format(timestamp, \'%Y-%m-%d %H:00:00\')')
     const playerHistory = await this.knex
-      .select('timestamp')
-      .max('trophies as trophies', 'total_exp as total_exp')
+      .select(timestampRoundedAsTimestamp)
+      .max('trophies as trophies')
       .from('player')
       .where('tag', tag)
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
-      .groupBy('trophies', 'timestamp')
+      .groupBy(timestampRounded)
       .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
-    const brawlerHistoryEntries = await this.knex
-      .select('name', 'timestamp')
+    const brawlerHistory = await this.knex
+      .select('name', timestampRoundedAsTimestamp)
       .max('trophies as trophies')
       .from('player_brawler')
       .where('player_tag', tag)
       .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 month'))
-      .groupBy('name', 'timestamp')
+      .groupBy('name', timestampRounded)
       .orderBy('timestamp', 'asc') as BrawlerHistoryEntry[];
-
-    // filter duplicates by trophies in brawler history grouped by name
-    const entriesAreSame =
-      ({ name: nameA, trophies: trophiesA }: BrawlerHistoryEntry, { name: nameB, trophies: trophiesB }: BrawlerHistoryEntry) =>
-        nameA == nameB && trophiesA == trophiesB
-    const brawlerHistory = brawlerHistoryEntries.filter(
-      (entryA, indexA, self) =>
-        indexA == self.findIndex(
-          (entryB) => entriesAreSame(entryA, entryB)
-        )
-    )
 
     return { playerHistory, brawlerHistory } as History;
   }

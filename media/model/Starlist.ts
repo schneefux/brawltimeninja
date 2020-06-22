@@ -59,22 +59,12 @@ export interface StarlistMap {
     version: number;
     imageUrl: string;
   };
-  gameMode: StarlistMode;
-}
-
-export interface StarlistMode {
-  id: number;
-  name: string;
-  hash: string;
-  disabled: boolean;
-  version: number;
-  title: string;
-  tutorial: string;
-  description: string;
-  shortDescription: string;
-  sort1: number; // ?
-  sort2: number; // ?
-  link: string; // starlist detail page
-  imageUrl: string; // icon
-  imageUrl2: string; // background
+  gameMode: {
+    id: number;
+    name: string;
+    hash: string;
+    version: number;
+    link: string; // starlist detail page
+    imageUrl: string;
+  };
 }

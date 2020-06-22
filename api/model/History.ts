@@ -1,7 +1,6 @@
 export interface PlayerHistoryEntry {
   timestamp: Date;
   trophies: number;
-  total_exp: number;
 }
 
 export interface BrawlerHistoryEntry {
