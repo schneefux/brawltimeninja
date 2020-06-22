@@ -35,10 +35,6 @@ const httpsAgent = new HttpsAgent({
   keepAliveMsecs: 90*60,
 });
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export function request<T>(
     path: string,
     base: string,
@@ -109,7 +105,7 @@ export function post<T>(
   }, timeoutMs);
 
   stats.increment(metricName + '.run')
-  return stats.asyncTimer(() => fetch(url, {
+  return stats.asyncTimer<[], any>(() => fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
