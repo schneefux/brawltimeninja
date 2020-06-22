@@ -27,13 +27,15 @@ export default {
       theme_color: '#3490dc', // primary
     },
     workbox: {
-      // https://github.com/nuxt-community/pwa-module/issues/149
-      // https://github.com/nuxt-community/pwa-module/issues/116#issuecomment-461534741
-      // needed for Netlify
-      // do not cache /_nuxt/*
-      //cacheAssets: false,
-      // do not cache /*
-      offline: false,
+      // prefix all cache keys with release id
+      // write release id to a custom option
+      // -> sw.js changes on deploy
+      cacheNames: {
+        prefix: 'brawltimeninja@' + process.env.GIT_REV,
+      },
+      release: 'brawltimeninja@' + process.env.GIT_REV,
+      // custom service worker with cache busting on release
+      swTemplate: process.NODE_ENV == 'production' ? path.resolve(__dirname, 'static/sw-template.js') : undefined,
     },
   },
 
@@ -57,7 +59,7 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
     '@nuxtjs/sitemap',
-    '@nuxtjs/sentry',
+    //'@nuxtjs/sentry',
   ],
 
   buildModules: ['@nuxt/typescript-build'],
@@ -73,6 +75,7 @@ export default {
     { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
   ],
 
+  /*
   sentry: {
     // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
     // auth token is an organization integration auth token (developer settings)
@@ -90,6 +93,7 @@ export default {
       },
     },
   },
+  */
 
   env: {
     branch: process.env.BRANCH || '',
