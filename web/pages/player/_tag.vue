@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <div class="section flex flex-wrap justify-left md:justify-center mx-auto md:mx-0">
+      <div class="section bigstat-wrapper">
         <div
           v-if="player.clubName !== undefined && player.clubName != ''"
           class="bigstat-container"
@@ -336,8 +336,8 @@
     </div>
 
     <div class="section">
-      <div class="mt-3 mb-6 flex flex-wrap justify-center" v-if="totalBattles !== 0">
-        <div class="w-32 flex">
+      <div class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
+        <div class="bigstat-container">
           <span class="bigstat-left bigstat-number bigstat-number--light">
             {{ totalBattles }}
           </span>
@@ -346,7 +346,7 @@
           </span>
         </div>
 
-        <div class="w-64 flex">
+        <div class="bigstat-container">
           <span class="bigstat-left bigstat-number bigstat-number--light">
             {{ Math.floor(winRate * 100) }}%
           </span>
@@ -355,8 +355,8 @@
           </span>
         </div>
 
-        <div class="w-80 flex">
-          <span class="bigstat-left bigstat-number bigstat-number--light">
+        <div class="bigstat-container">
+          <span class="bigstat-left bigstat-number bigstat-number--light whitespace-no-wrap">
             {{ formatMode(bestMode) }}
           </span>
           <span class="bigstat-right bigstat-label text-xl">
@@ -1154,6 +1154,16 @@ export default {
 </script>
 
 <style scoped>
+.bigstat-wrapper {
+  @apply flex flex-wrap mx-auto;
+}
+
+@screen md {
+  .bigstat-wrapper {
+    @apply justify-center mx-0;
+  }
+}
+
 .bigstat-container {
   @apply flex flex-wrap justify-center items-center mt-2 w-full;
 }
