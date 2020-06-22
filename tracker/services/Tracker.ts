@@ -1005,7 +1005,7 @@ export default class TrackerService {
     const lastPbProcessedId = lastPbIdRecords.length > 0 ? lastPbIdRecords[0].last_id : 0;
     await this.knex.raw(`
       delete from player_battle
-      where timestamp < now() - interval 7 day and id <= ?
+      where timestamp < now() - interval 14 day and id <= ?
     `, [lastPbProcessedId]);
 
     console.log('deleting processed battle');
@@ -1015,7 +1015,7 @@ export default class TrackerService {
     const lastBProcessedId = lastBIdRecords.length > 0 ? lastBIdRecords[0].last_id : 0;
     await this.knex.raw(`
       delete from battle
-      where timestamp < now() - interval 7 day and id <= ?
+      where timestamp < now() - interval 14 day and id <= ?
     `, [lastBProcessedId]);
 
 
