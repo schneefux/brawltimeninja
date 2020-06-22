@@ -233,7 +233,7 @@ export default class TrackerService {
       .max('trophies as trophies')
       .from('player')
       .where('tag', tag)
-      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 week'))
+      .andWhere('timestamp', '>=', this.knex.raw('now() - interval 1 month'))
       .groupBy(timestampRounded)
       .orderBy('timestamp', 'asc') as PlayerHistoryEntry[];
     const brawlerHistory = await this.knex
