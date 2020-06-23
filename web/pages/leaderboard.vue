@@ -1,6 +1,15 @@
 <template>
-  <div class="w-120 max-w-full mx-auto py-4 px-2">
-    <div class="bg-grey-lighter py-8 px-6 my-8 text-black">
+  <div class="py-4 px-2">
+    <adsense
+      v-if="ads"
+      id="ezoic-pub-ad-placeholder-105"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="4579727583"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
+    <div class="w-120 max-w-full mx-auto bg-grey-lighter py-8 px-6 my-8 text-black">
       <h1 class="text-4xl md:text-center mt-2 font-semibold">
         Brawl Stars Leaderboards
       </h1>
@@ -8,17 +17,6 @@
       <p class="mt-2">
         The best players are ranked by the most hours and most trophies in this leaderboard.
       </p>
-
-      <adsense
-        v-if="ads"
-        id="ezoic-pub-ad-placeholder-105"
-        root-class="mt-6"
-        ins-class="h-24"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4579727583"
-        data-ad-format="auto"
-        data-full-width-responsive
-      />
 
       <div class="text-center my-2">
         <button @click="metric = 'hours'" class="bg-primary-lighter px-2 py-1 rounded">Load Most Hours</button>
@@ -64,18 +62,16 @@
           </tr>
         </tbody>
       </table>
-
-      <adsense
-        v-if="ads && !isApp"
-        id="ezoic-pub-ad-placeholder-106"
-        root-class="mt-4"
-        ins-class="h-32"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="5140154307"
-        data-ad-format="auto"
-        data-full-width-responsive
-      />
     </div>
+
+    <adsense
+      v-if="ads && !isApp"
+      id="ezoic-pub-ad-placeholder-106"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="5140154307"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
   </div>
 </template>
 

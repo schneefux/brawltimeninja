@@ -336,7 +336,7 @@ export default {
     MediaImg,
   },
   head() {
-    const description = 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
+    const description = 'Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
     return {
       title: 'Brawl Stars Stats',
       meta: [
