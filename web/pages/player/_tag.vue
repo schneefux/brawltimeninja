@@ -389,22 +389,22 @@
         </div>
 
         <div class="w-full flex md:flex-wrap">
-          <div
+          <event
             v-for="(battle, index) in player.battles"
             :key="battle.timestamp"
+            :mode="battle.event.mode"
+            :map="battle.event.map"
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
-            class="flex-0-auto flex w-80 mx-2 md:w-1/2 xl:w-1/3 card-wrapper md:mx-auto"
+            class="flex-0-auto"
+            infobar
           >
-            <div class="card h-full w-full">
-              <div class="bg-black w-full px-2 py-1 flex text-lg font-semibold flex justify-between">
+            <template v-slot:infobar>
+              <div class="flex justify-between">
                 <div>
-                  <span class="text-primary-lightest mr-2">
+                  <span class="mr-2">
                     {{ battle.result }}
                   </span>
-                  <span
-                    v-if="battle.trophyChange !== undefined"
-                    class="text-primary-lightest"
-                  >
+                  <span v-if="battle.trophyChange !== undefined">
                     <template v-if="battle.trophyChange > 0">
                       +{{ battle.trophyChange }}
                     </template>
@@ -417,7 +417,7 @@
                     >
                   </span>
                 </div>
-                <span class="text-primary-lightest">
+                <span>
                   <template v-if="hoursSinceDate(battle.timestamp) == 0">
                     just now
                   </template>
@@ -426,31 +426,9 @@
                   </template>
                 </span>
               </div>
-              <div
-                class="w-full px-3 py-2 flex font-semibold justify-start items-center"
-                :class="`bg-color-${battle.event.mode.toLowerCase()}`"
-              >
-                <media-img :path="'/modes/' + battle.event.mode + '/icon'"
-                  size="120"
-                  clazz="w-10"
-                ></media-img>
-                <div class="ml-2 text-white">
-                  <p class="text-xl">
-                    {{ formatMode(battle.event.mode) }}
-                  </p>
-                  <p>
-                    {{ battle.event.map }}
-                  </p>
-                </div>
-              </div>
-              <div class="relative">
-                <media-img :path="'/modes/' + battle.event.mode + '/background'"
-                  size="800"
-                  clazz="absolute left-0 top-0 z-0 h-32"
-                  ztyle="filter: brightness(0.75) grayscale(0.25);"
-                ></media-img>
-              </div>
-              <div class="w-full flex flex-wrap justify-center">
+            </template>
+            <template v-slot:content>
+              <div class="flex flex-wrap justify-center">
                 <div
                   v-for="(team, index) in battle.teams"
                   :key="index"
@@ -509,8 +487,8 @@
                   </nuxt-link>
                 </div>
               </div>
-            </div>
-          </div>
+            </template>
+          </event>
         </div>
 
         <div
@@ -745,6 +723,7 @@ import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 import MediaImg from '~/components/media-img'
+import Event from '~/components/event'
 
 export default {
   name: 'PlayerProfile',
@@ -752,6 +731,7 @@ export default {
     Blogroll,
     BrawlerCard,
     MediaImg,
+    Event,
   },
   head() {
     const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
@@ -1215,40 +1195,6 @@ export default {
 .bigstat-number--light {
   @apply text-3xl text-primary-light;
 }
-
-.bg-color-heist {
-  background-color: #c663cd;
-}
-
-.bg-color-siege {
-  background-color: #ef5132;
-}
-
-.bg-color-soloshowdown,
-.bg-color-duoshowdown {
-  background-color: #81d621;
-}
-
-.bg-color-bounty {
-  background-color: #10b2b7;
-}
-
-.bg-color-brawlball {
-  background-color: #8ca0e0;
-}
-
-.bg-color-gemgrab {
-  background-color: #9b3df3;
-}
-
-.bg-color-biggame {
-  background-color: #dc2423;
-}
-
-.bg-color-roborumble {
-  background-color: #0085fb;
-}
-
 .min-width-min-content {
  min-width: min-content;
 }

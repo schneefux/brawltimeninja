@@ -1,32 +1,26 @@
 <template>
-  <div class="py-4 px-6">
-    <h1 class="text-3xl md:text-center mt-2 mb-6 font-semibold">
-      Game Mode Tier Lists
-    </h1>
+  <div class="container mx-auto p-4">
+    <div class="section-heading">
+      <h1 class="text-3xl font-semibold">
+        Game Mode Tier Lists
+      </h1>
+    </div>
 
     <div class="section">
       <div class="flex flex-wrap">
-        <div
+        <event
           v-for="mode in modes"
           :key="mode"
-          class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 card-wrapper mx-auto z-10"
+          :mode="mode"
         >
-          <div
-            class="items-center card bg-center bg-cover h-full"
-            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + require(`~/assets/images/mode/background/${modeToBackgroundId(mode)}.jpg`) + '\')'"
-          >
-            <div class="card-content">
-              <span class="card-header">
-                {{ formatMode(mode) }}
-              </span>
-              <div class="card-props">
-                <nuxt-link :to="`/tier-list/mode/${camelToKebab(mode)}`" class="link">
-                  View {{ formatMode(mode) }} Tier List
-                </nuxt-link>
-              </div>
+          <template v-slot:content>
+            <div class="text-center py-4">
+              <nuxt-link :to="`/tier-list/mode/${camelToKebab(mode)}`" class="link bg-black px-2 py-1 rounded-sm">
+                Open the {{ formatMode(mode) }} Tier List
+              </nuxt-link>
             </div>
-          </div>
-        </div>
+          </template>
+        </event>
       </div>
     </div>
 
@@ -42,11 +36,13 @@
 import { mapState, mapActions } from 'vuex'
 import { formatMode, modeToBackgroundId, camelToKebab } from '~/lib/util'
 import MetaGrid from '~/components/meta-grid.vue'
+import Event from '~/components/event'
 
 export default {
   name: 'ModeMetaPage',
   components: {
     MetaGrid,
+    Event,
   },
   head() {
     // TODO
