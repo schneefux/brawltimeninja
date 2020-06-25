@@ -59,7 +59,7 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
     '@nuxtjs/sitemap',
-    //'@nuxtjs/sentry',
+    '@nuxtjs/sentry',
   ],
 
   buildModules: ['@nuxt/typescript-build'],
@@ -75,7 +75,6 @@ export default {
     { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
   ],
 
-  /*
   sentry: {
     // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
     // auth token is an organization integration auth token (developer settings)
@@ -93,7 +92,6 @@ export default {
       },
     },
   },
-  */
 
   env: {
     branch: process.env.BRANCH || '',
