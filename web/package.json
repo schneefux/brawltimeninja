@@ -20,7 +20,7 @@
     "glob-all": "^3.2.1",
     "nuxt": "^2.13.0",
     "vue-analytics": "^5.22.1",
-    "vue-google-adsense": "^1.8.1",
+    "vue-google-adsense": "^1.8.3",
     "vue-observe-visibility": "^0.4.6",
     "vue-script2": "^2.1.0",
     "vue-tweet-embed": "^2.4.0",
