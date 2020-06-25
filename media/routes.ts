@@ -78,7 +78,7 @@ router.get(`/maps/:id${EXT}`, async (ctx, next) => {
 });
 
 router.get(`/modes/:name/icon${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name
+  let name = ctx.params.name.replace(/-/g, '')
   if (name.endsWith('Showdown')) {
     name = 'Showdown'
   }
@@ -88,7 +88,7 @@ router.get(`/modes/:name/icon${EXT}`, async (ctx, next) => {
 });
 
 router.get(`/modes/:name/background${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name
+  let name = ctx.params.name.replace(/-/g, '')
   if (name.endsWith('Showdown')) {
     name = 'Showdown'
   }
