@@ -158,16 +158,34 @@ export var metaStatMaps = {
  * sorted by the preferred prop according to propPriority
  */
 export function getBestByEvent(mapMeta) {
-    return __spreadArrays(Object.entries(mapMeta)).reduce(function (top5, _a) {
+    return __spreadArrays(Object.entries(mapMeta)).reduce(function (top, _a) {
         var _b;
         var eventId = _a[0], entry = _a[1];
-        return (__assign(__assign({}, top5), (_b = {}, _b[eventId] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
+        return (__assign(__assign({}, top), (_b = {}, _b[eventId] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
             var brawlerId = _a[0], brawler = _a[1];
             return ({
                 id: brawlerId,
                 name: brawler.name,
                 stats: brawler.stats,
+                sampleSize: brawler.sampleSize,
                 sortProp: metaStatMaps.propPriority.find(function (prop) { return prop in brawler.stats; })
+            });
+        })
+            .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));
+    }, {});
+}
+export function getMostPopular(modeMeta) {
+    return __spreadArrays(Object.entries(modeMeta)).reduce(function (top, _a) {
+        var _b;
+        var eventId = _a[0], entry = _a[1];
+        return (__assign(__assign({}, top), (_b = {}, _b[eventId] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
+            var brawlerId = _a[0], brawler = _a[1];
+            return ({
+                id: brawlerId,
+                name: brawler.name,
+                stats: brawler.stats,
+                sampleSize: brawler.sampleSize,
+                sortProp: 'pickRate'
             });
         })
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));

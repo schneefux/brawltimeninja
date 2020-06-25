@@ -395,7 +395,7 @@
             :mode="battle.event.mode"
             :map="battle.event.map"
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
-            class="flex-0-auto"
+            class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
             infobar
           >
             <template v-slot:infobar>
@@ -463,7 +463,7 @@
                         </span>
                         <img
                           src="~/assets/images/icon/trophy_optimized.png"
-                          class="w-4 ml-px"
+                          class="w-4 h-4 ml-px"
                         >
                       </div>
                       <div class="w-full">

@@ -7,20 +7,41 @@
     </div>
 
     <div class="section">
-      <div class="flex flex-wrap">
-        <event
+      <div class="flex flex-wrap justify-center">
+        <nuxt-link
           v-for="mode in modes"
           :key="mode"
-          :mode="mode"
+          :to="`/tier-list/mode/${camelToKebab(mode)}`"
         >
-          <template v-slot:content>
-            <div class="text-center py-4">
-              <nuxt-link :to="`/tier-list/mode/${camelToKebab(mode)}`" class="link bg-black px-2 py-1 rounded-sm">
-                Open the {{ formatMode(mode) }} Tier List
-              </nuxt-link>
-            </div>
-          </template>
-        </event>
+          <event :mode="mode">
+            <template v-slot:content>
+              <div class="flex justify-between mt-3 mx-2">
+                <div
+                  v-for="brawler in topBrawlersByMode[mode].slice(0, 5)"
+                  :key="brawler.id"
+                  class="w-1/5 mx-1 flex flex-wrap justify-center overflow-hidden"
+                >
+                  <div class="bg-black rounded-sm">
+                    <media-img
+                      :path="`/brawlers/${brawler.id}/avatar`"
+                      size="160"
+                      clazz="h-10"
+                    />
+                    <p class="text-xs whitespace-no-wrap mx-1 my-1">
+                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
+                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center py-4">
+                <span class="link bg-black px-3 py-2 rounded-sm">
+                  Open the {{ formatMode(mode) }} Tier List
+                </span>
+              </div>
+            </template>
+          </event>
+        </nuxt-link>
       </div>
     </div>
 
@@ -34,18 +55,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { formatMode, modeToBackgroundId, camelToKebab } from '~/lib/util'
-import MetaGrid from '~/components/meta-grid.vue'
-import Event from '~/components/event'
+import { formatMode, camelToKebab } from '~/lib/util'
+import { getBestByEvent, metaStatMaps } from '~/lib/util'
+import { getMostPopular } from '../../../lib/util'
 
 export default {
   name: 'ModeMetaPage',
-  components: {
-    MetaGrid,
-    Event,
-  },
   head() {
-    // TODO
     const description = 'Brawl Stars Game Mode Tier Lists. Find the best Brawlers. View Win Rates and Rankings.'
     return {
       title: 'All Game Modes Tier List',
@@ -59,13 +75,16 @@ export default {
     return {
       camelToKebab,
       formatMode,
-      modeToBackgroundId,
+      metaStatMaps,
     }
   },
   computed: {
     modes() {
       return [...Object.keys(this.modeMeta)]
         .sort((mode1, mode2) => this.modeMeta[mode2].sampleSize - this.modeMeta[mode1].sampleSize)
+    },
+    topBrawlersByMode() {
+      return getMostPopular(this.modeMeta)
     },
     ...mapState({
       modeMeta: state => state.modeMeta,

@@ -154,14 +154,31 @@ export const metaStatMaps = {
  */
 export function getBestByEvent(mapMeta: any[]) {
   return [...Object.entries(mapMeta)]
-    .reduce((top5, [eventId, entry]) => ({
-      ...top5,
+    .reduce((top, [eventId, entry]) => ({
+      ...top,
       [eventId]: [...Object.entries(<any[]>entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           name: brawler.name,
           stats: brawler.stats,
+          sampleSize: brawler.sampleSize,
           sortProp: <string>metaStatMaps.propPriority.find(prop => prop in brawler.stats),
+        }))
+        .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
+    }), {})
+}
+
+export function getMostPopular(modeMeta: any[]) {
+  return [...Object.entries(modeMeta)]
+    .reduce((top, [eventId, entry]) => ({
+      ...top,
+      [eventId]: [...Object.entries(<any[]>entry.brawlers)]
+        .map(([brawlerId, brawler]) => ({
+          id: brawlerId,
+          name: brawler.name,
+          stats: brawler.stats,
+          sampleSize: brawler.sampleSize,
+          sortProp: 'pickRate',
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})

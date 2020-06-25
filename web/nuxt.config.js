@@ -62,7 +62,12 @@ export default {
     '@nuxtjs/sentry',
   ],
 
-  buildModules: ['@nuxt/typescript-build'],
+  buildModules: [
+    '@nuxt/typescript-build',
+    '@nuxt/components',
+  ],
+
+  components: true,
 
   router: {
   },
