@@ -3,13 +3,13 @@
     <div class="text-center w-full">
       <span class="mr-2">Sort By</span>
       <button
-        v-for="(_, prop) in comparators"
-        :key="prop"
+        v-for="stat in stats"
+        :key="stat"
         class="mr-3 mb-2 button button-sm"
-        :class="{ 'button--selected': selectedProp == prop }"
-        @click="sortBy(prop)"
+        :class="{ 'button--selected': selectedStat == stat }"
+        @click="sortBy(stat)"
       >
-        {{ metaStatMaps.labels[prop] }}
+        {{ metaStatMaps.labels[stat] }}
       </button>
     </div>
 
@@ -17,17 +17,17 @@
       <h5 class="text-2xl font-bold mb-3">Tier List</h5>
       <div class="container mx-auto bg-gray-800 px-3 py-2">
         <h6 class="text-xl font-bold">
-          Best Brawlers by {{ metaStatMaps.labels[selectedProp] }}
+          Best Brawlers by {{ metaStatMaps.labels[selectedStat] }}
         </h6>
         <p class="mt-1">
-          {{ metaStatMaps.descriptions[selectedProp] }}
+          {{ metaStatMaps.descriptions[selectedStat] }}
         </p>
         <p v-if="linkText.length">
           Click on a Brawler to learn more about them.
         </p>
         <ul class="mt-2">
           <li
-            v-for="(entries, tier) in tiersBySelectedProp"
+            v-for="(entries, tier) in tiersBySelectedStat"
             :key="tier"
             class="my-4 flex"
           >
@@ -54,7 +54,7 @@
                     clazz="h-6 md:h-8 absolute top-0 right-0"
                   />
                   <p class="my-1 font-semibold text-lg text-center">
-                    {{ typeof entry.stats[selectedProp] == 'string' ? entry.stats[selectedProp] : metaStatMaps.formatters[selectedProp](entry.stats[selectedProp]) }}
+                    {{ typeof entry.stats[selectedStat] == 'string' ? entry.stats[selectedStat] : metaStatMaps.formatters[selectedStat](entry.stats[selectedStat]) }}
                   </p>
                 </li>
               </nuxt-link>
@@ -96,17 +96,17 @@
           <template v-slot:stats>
             <table>
               <tr
-                v-for="(_, prop) in comparators"
-                :key="prop"
+                v-for="stat in stats"
+                :key="stat"
                 class="card-props whitespace-no-wrap"
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >
                 <td class="text-center">
                   <img
-                    v-if="metaStatMaps.icons[prop].length > 2"
-                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
-                    :alt="prop"
+                    v-if="metaStatMaps.icons[stat].length > 2"
+                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[stat]}_optimized.png`)"
+                    :alt="stat"
                     class="card-prop-icon inline"
                   >
                   <!-- use emojis (length 2) -->
@@ -114,14 +114,14 @@
                     v-else
                     class="card-prop-icon"
                   >
-                    {{ metaStatMaps.icons[prop] }}
+                    {{ metaStatMaps.icons[stat] }}
                   </span>
                 </td>
                 <td class="card-prop-value text-right pr-1" itemprop="unitText">
-                  {{ typeof entry.stats[prop] == 'string' ? entry.stats[prop] : metaStatMaps.formatters[prop](entry.stats[prop]) }}
+                  {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
                 </td>
                 <td class="card-prop-label" itemprop="value">
-                  {{ metaStatMaps.labels[prop] }}
+                  {{ metaStatMaps.labels[stat] }}
                 </td>
               </tr>
             </table>
@@ -162,7 +162,22 @@ interface IndexedMetaEntry extends MetaEntry {
   index: number
 }
 
-function groupStatIntoTiers(entries: MetaEntry[], stat: string) {
+interface TierList {
+  [tier: string]: MetaEntry[]
+}
+
+function compare(entry1: MetaEntry, entry2: MetaEntry, stat: string): number {
+  const sign = metaStatMaps.signs[stat] as number
+  const e1stat = Number.parseFloat(entry1.stats[stat].toString())
+  const e2stat = Number.parseFloat(entry1.stats[stat].toString())
+  return sign * (e1stat - e2stat)
+}
+
+function compare1(stat: string) {
+  return (entry1: MetaEntry, entry2: MetaEntry) => compare(entry1, entry2, stat)
+}
+
+function groupStatIntoTiers(entries: MetaEntry[], stat: string): TierList {
   const sign = metaStatMaps.signs[stat] as number
   const stats = entries.map(b => Number.parseFloat(b.stats[stat].toString()))
   const avg = stats.reduce((sum, s) => sum + s, 0) / entries.length
@@ -197,7 +212,7 @@ function groupStatIntoTiers(entries: MetaEntry[], stat: string) {
   }
 
   for (let tier of Object.keys(tiers)) {
-    tiers[tier].sort((b1, b2) => (Number.parseFloat(b1.stats[stat].toString()) - Number.parseFloat(b2.stats[stat].toString())) * sign)
+    tiers[tier].sort(compare1(stat))
   }
 
   return tiers
@@ -220,45 +235,39 @@ export default Vue.extend({
     },
   },
   data() {
-    const defaultProp = (this.entries.length === 0 ? ''
+    const defaultStat = (this.entries.length === 0 ? ''
       : metaStatMaps.propPriority.find(prop => prop in this.entries[0].stats)) as string
 
     return {
-      selectedProp: defaultProp,
+      selectedStat: defaultStat,
       formatMode,
       metaStatMaps,
       sampleSizeThreshold,
     }
   },
   computed: {
+    stats(): string[] {
+      if (this.entries.length == 0) {
+        return []
+      }
+      return [...Object.keys(this.entries[0].stats)]
+    },
     sortedEntries(): IndexedMetaEntry[] {
       return this.entries.slice()
-        .sort(this.comparators[this.selectedProp])
+        .sort(compare1(this.selectedStat))
         .map((entry, index) => ({
           ...entry,
           index: index + 1,
         }))
     },
-    tiersBySelectedProp() {
-      return groupStatIntoTiers(this.entries, this.selectedProp)
-    },
-    comparators() {
-      if (this.entries.length === 0) {
-        return {}
-      }
-
-      return [...Object.keys(this.entries[0].stats)]
-        .reduce(
-          (comparators, prop) => ({
-          ...comparators,
-          [prop]: (e1: MetaEntry, e2: MetaEntry) => (Number.parseFloat(e2.stats[prop].toString()) - Number.parseFloat(e1.stats[prop].toString()) * this.metaStatMaps.signs[prop])
-        }), {} as { [stat: string]: (e1: MetaEntry, e2: MetaEntry) => number })
+    tiersBySelectedStat(): TierList {
+      return groupStatIntoTiers(this.entries, this.selectedStat)
     },
   },
   methods: {
-    sortBy(prop: string) {
-      this.selectedProp = prop
-      this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedProp}`)
+    sortBy(stat: string) {
+      this.selectedStat = stat
+      this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedStat}`)
     },
   },
 })
