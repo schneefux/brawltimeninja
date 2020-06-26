@@ -24,7 +24,6 @@
 
     <meta-grid
       :entries="starpowers"
-      :adSlots="[]"
       link-text="More Statistics"
       ga-category="starpower_meta"
     />

@@ -24,7 +24,6 @@
 
     <meta-grid
       :entries="gadgets"
-      :adSlots="[]"
       ga-category="gadget_meta"
       link-text="More Statistics"
     />

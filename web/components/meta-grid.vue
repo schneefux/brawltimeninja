@@ -1,40 +1,78 @@
 <template>
-  <div class="text-center flex flex-wrap justify-between items-center">
-    <div
-      v-if="enableSort"
-      class="text-center w-full"
-    >
+  <div class="mt-6">
+    <div class="text-center w-full">
       <span class="mr-2">Sort By</span>
       <button
         v-for="(_, prop) in comparators"
         :key="prop"
         class="mr-3 mb-2 button button-sm"
+        :class="{ 'button--selected': selectedProp == prop }"
         @click="sortBy(prop)"
       >
-        <span v-if="selectedProp === prop">
-          <template v-if="order < 0">▲</template>
-          <template v-else>▼</template>
-        </span>
-        <span>{{ metaStatMaps.labels[prop] }}</span>
+        {{ metaStatMaps.labels[prop] }}
       </button>
     </div>
 
-    <template v-for="entry in entriesAndAds">
+    <div class="mt-4 container mx-auto">
+      <h5 class="text-2xl font-bold mb-3">Tier List</h5>
+      <div class="container mx-auto bg-gray-800 px-3 py-2">
+        <h6 class="text-xl font-bold">
+          Best Brawlers by {{ metaStatMaps.labels[selectedProp] }}
+        </h6>
+        <p class="mt-1">
+          {{ metaStatMaps.descriptions[selectedProp] }}
+        </p>
+        <p v-if="linkText.length">
+          Click on a Brawler to learn more about them.
+        </p>
+        <ul class="mt-2">
+          <li
+            v-for="(entries, tier) in tiersBySelectedProp"
+            :key="tier"
+            class="my-4 flex"
+          >
+            <div class="w-6 mr-3 flex justify-center items-center">
+              <span class="text-3xl font-bold">{{ tier }}</span>
+            </div>
+            <ul class="w-full flex flex-wrap justify-start">
+              <nuxt-link
+                v-for="entry in entries"
+                :key="entry.id"
+                :to="entry.link || ''"
+              >
+                <li class="mt-1 mr-2 w-16 md:w-20 bg-black rounded-sm relative">
+                  <media-img
+                    :path="`/brawlers/${entry.brawler}/avatar`"
+                    :alt="entry.brawler"
+                    size="160"
+                    clazz="h-12 md:h-16"
+                  />
+                  <media-img
+                    v-if="entry.icon"
+                    :path="entry.icon"
+                    size="80"
+                    clazz="h-6 md:h-8 absolute top-0 right-0"
+                  />
+                  <p class="my-1 font-semibold text-lg text-center">
+                    {{ typeof entry.stats[selectedProp] == 'string' ? entry.stats[selectedProp] : metaStatMaps.formatters[selectedProp](entry.stats[selectedProp]) }}
+                  </p>
+                </li>
+              </nuxt-link>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-6 container mx-auto flex flex-wrap justify-center">
+      <h5 class="w-full text-2xl font-bold mb-3">All Statistics</h5>
       <div
-        v-if="(ads && !isApp) || entry.adSlot === undefined"
+        v-for="entry in sortedEntries"
         :key="entry.id"
         class="card-wrapper w-full md:flex-1"
         itemscope
         itemtype="http://schema.org/Person"
       >
-        <adsense
-          v-if="ads && entry.adSlot !== undefined"
-          ins-class="md:min-w-80 h-48 md:h-32 mx-auto"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-format="auto"
-          :data-ad-slot="entry.adSlot"
-        />
-
         <brawler-card
           v-if="entry.adSlot === undefined"
           :title="entry.title"
@@ -45,7 +83,7 @@
           <template v-slot:history>
             <div class="mb-auto text-right">
               <span
-                v-if="entry.sampleSize < 300"
+                v-if="entry.sampleSize < sampleSizeThreshold"
                 class="align-text-top mr-1 text-sm text-grey-light"
               >
                 Not enough data
@@ -98,55 +136,83 @@
           </template>
         </brawler-card>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import { induceAdsIntoArray, formatMode, metaStatMaps } from '~/lib/util'
-import BrawlerCard from '~/components/brawler-card.vue'
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { formatMode, metaStatMaps } from '~/lib/util'
 
-export default {
+const sampleSizeThreshold = 300
+
+interface MetaEntry {
+  id: string
+  title: string
+  brawler: string // ID
+  link: string
+  icon?: string
+  sampleSize: number
+  stats: {
+    [name: string]: string|number
+  }
+}
+
+interface IndexedMetaEntry extends MetaEntry {
+  index: number
+}
+
+function groupStatIntoTiers(entries: MetaEntry[], stat: string) {
+  const sign = metaStatMaps.signs[stat] as number
+  const stats = entries.map(b => Number.parseFloat(b.stats[stat].toString()))
+  const avg = stats.reduce((sum, s) => sum + s, 0) / entries.length
+  const std = Math.sqrt(
+    stats.reduce((sum, s) => sum + Math.pow(avg - s, 2), 0) / entries.length
+  )
+  const ks = { S: 1, A: 0.5, B: -0.5, C: -1, D: -Infinity }
+  const tiers = { S: [], A: [], B: [], C: [], D: [] } as { [tier: string]: MetaEntry[] }
+
+  for (let entry of entries) {
+    if (entry.sampleSize < sampleSizeThreshold) {
+      if (!('?' in tiers)) {
+        tiers['?'] = []
+      }
+      tiers['?'].push(entry)
+      continue
+    }
+
+    for (let [tier, bound] of Object.entries(ks)) {
+      if (sign == -1) {
+        if (Number.parseFloat(entry.stats[stat].toString()) > avg + bound * std) {
+          tiers[tier].push(entry)
+          break;
+        }
+      } else {
+        if (Number.parseFloat(entry.stats[stat].toString()) < avg - bound * std) {
+          tiers[tier].push(entry)
+          break;
+        }
+      }
+    }
+  }
+
+  for (let tier of Object.keys(tiers)) {
+    tiers[tier].sort((b1, b2) => (Number.parseFloat(b1.stats[stat].toString()) - Number.parseFloat(b2.stats[stat].toString())) * sign)
+  }
+
+  return tiers
+}
+
+export default Vue.extend({
   name: 'MapMetaPage',
-  components: {
-    BrawlerCard,
-  },
   props: {
     entries: {
-      /**
-        {
-          id,
-          title,
-          brawler,
-          link,
-          icon?,
-          sampleSize?,
-          stats[]
-        }
-      **/
-      type: Array,
+      type: Array as PropType<MetaEntry[]>,
       required: true,
-    },
-    enableSort: {
-      type: Boolean,
-      default: true,
     },
     linkText: {
       type: String,
       default: '',
-    },
-    defaultSortProp: {
-      type: String,
-      default: '',
-    },
-    adSlots: {
-      type: Array,
-      required: true,
-    },
-    adFrequency: {
-      type: Number,
-      default: 7,
     },
     gaCategory: {
       type: String,
@@ -154,20 +220,18 @@ export default {
     },
   },
   data() {
-    const defaultProp = this.defaultSortProp ||
-      this.entries.length === 0 ? ''
-      : metaStatMaps.propPriority
-        .find(prop => prop in this.entries[0].stats)
+    const defaultProp = (this.entries.length === 0 ? ''
+      : metaStatMaps.propPriority.find(prop => prop in this.entries[0].stats)) as string
 
     return {
-      order: +1,
       selectedProp: defaultProp,
       formatMode,
       metaStatMaps,
+      sampleSizeThreshold,
     }
   },
   computed: {
-    sortedEntries() {
+    sortedEntries(): IndexedMetaEntry[] {
       return this.entries.slice()
         .sort(this.comparators[this.selectedProp])
         .map((entry, index) => ({
@@ -175,9 +239,8 @@ export default {
           index: index + 1,
         }))
     },
-    entriesAndAds() {
-      return induceAdsIntoArray(
-        this.sortedEntries, this.adSlots, this.adFrequency)
+    tiersBySelectedProp() {
+      return groupStatIntoTiers(this.entries, this.selectedProp)
     },
     comparators() {
       if (this.entries.length === 0) {
@@ -185,27 +248,18 @@ export default {
       }
 
       return [...Object.keys(this.entries[0].stats)]
-        .reduce((comparators, prop) => ({
+        .reduce(
+          (comparators, prop) => ({
           ...comparators,
-          [prop]: (e1, e2) => this.order * (Number.parseFloat(e2.stats[prop]) - Number.parseFloat(e1.stats[prop]))
-        }), {})
+          [prop]: (e1: MetaEntry, e2: MetaEntry) => (Number.parseFloat(e2.stats[prop].toString()) - Number.parseFloat(e1.stats[prop].toString()) * this.metaStatMaps.signs[prop])
+        }), {} as { [stat: string]: (e1: MetaEntry, e2: MetaEntry) => number })
     },
-    ...mapState({
-      ads: state => state.adsEnabled,
-      isApp: state => state.isApp,
-    }),
   },
   methods: {
-    sortBy(prop) {
-      if (this.selectedProp === prop) {
-        this.order *= -1
-      } else {
-        this.selectedProp = prop
-        this.order = +1
-      }
-
-      this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedProp} ${this.order < 0 ? 'desc' : 'asc'}`)
+    sortBy(prop: string) {
+      this.selectedProp = prop
+      this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedProp}`)
     },
   },
-}
+})
 </script>

@@ -52,30 +52,6 @@ export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
 
-export function induceAdsIntoArray(array: any[], adSlots: any[], adFrequency: number) {
-  return array.reduce((agg, element, index, self) => {
-    const lastSlotIndex = Math.floor(index / adFrequency) + 1
-    if (index === self.length - 1 && lastSlotIndex < adSlots.length) {
-      const ad = {
-        adSlot: adSlots[lastSlotIndex],
-        id: 'ad-last',
-      }
-      return agg.concat(element, ad)
-    }
-
-    const slotIndex = Math.floor(index / adFrequency)
-    if (index % adFrequency === adFrequency - 1 && slotIndex < adSlots.length) {
-      const ad = {
-        adSlot: adSlots[slotIndex],
-        id: `ad-${index}`,
-      }
-      return agg.concat(ad, element)
-    }
-
-    return agg.concat(element)
-  }, [])
-}
-
 export const metaStatMaps = {
   labels: {
     trophies: 'Trophies',
@@ -106,6 +82,15 @@ export const metaStatMaps = {
     rank: 'Rank',
     rank1: 'Rank 1',
     wins: 'Wins',
+  },
+  descriptions: {
+    pickRate: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+    rank: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+    rank1Rate: 'The Showdown Win Rate tells you the % of Showdown battles a Brawler is #1.',
+    wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+    winRate: 'The 3v3 Win Rate tells you the % of 3v3 battles this Brawler wins.',
+    starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+    trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
   },
   icons: {
     trophies: 'trophy',
@@ -138,6 +123,22 @@ export const metaStatMaps = {
     level: (n: number) => n.toFixed(2),
     rank1: (n: number) => n,
     wins: (n: number) => n,
+  },
+  signs: {
+    trophies: -1, // more is better -> sort rank desc
+    spTrophies: -1,
+    trophyChange: -1,
+    winRate: -1,
+    rank1Rate: -1,
+    starRate: -1,
+    pickRate: -1,
+    pickRate_boss: -1,
+    duration: +1, // asc
+    duration_boss: +1,
+    rank: +1,
+    level: -1,
+    rank1: -1,
+    wins: -1,
   },
   propPriority: ['wins', 'rank1', 'duration', 'pickRate', 'winRate'],
 }

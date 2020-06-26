@@ -20,7 +20,6 @@
 
     <meta-grid
       :entries="modes"
-      :adSlots="[]"
       ga-category="mode_meta"
     />
 

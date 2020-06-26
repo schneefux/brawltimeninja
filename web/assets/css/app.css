@@ -65,6 +65,10 @@
   @apply rounded bg-secondary border-secondary text-black font-semibold text-sm py-1 px-2;
 }
 
+.button--selected {
+  @apply bg-secondary-dark border-secondary-dark;
+}
+
 .button:hover {
   @apply bg-secondary-light border-secondary-light;
 }

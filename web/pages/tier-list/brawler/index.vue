@@ -55,8 +55,6 @@
 
       <meta-grid
         :entries="brawlers"
-        :ad-slots="adSlots"
-        :ad-frequency="13"
         link-text="More Statistics"
         ga-category="brawler_meta"
       />
@@ -92,7 +90,6 @@ export default {
   },
   data() {
     return {
-      adSlots: ['5457575815', '2907434096', '3837372386', '6271964031', '9020582159', '9306580664'],
       metaStatMaps,
       rangeMeta: [],
       selectedRange: 'all',
