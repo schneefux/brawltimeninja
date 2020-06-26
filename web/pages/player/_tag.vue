@@ -820,6 +820,9 @@ export default {
       return brawlersS
     },
     daysSincePlayerHistoryStart() {
+      if (this.player.history.length == 0) {
+        return 0
+      }
       const start = Date.parse(this.player.history[0].timestamp)
       const now = (new Date()).getTime()
       return Math.ceil((now - start) / 1000 / 3600 / 24)
