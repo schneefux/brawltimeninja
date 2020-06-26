@@ -169,7 +169,7 @@ interface TierList {
 function compare(entry1: MetaEntry, entry2: MetaEntry, stat: string): number {
   const sign = metaStatMaps.signs[stat] as number
   const e1stat = Number.parseFloat(entry1.stats[stat].toString())
-  const e2stat = Number.parseFloat(entry1.stats[stat].toString())
+  const e2stat = Number.parseFloat(entry2.stats[stat].toString())
   return sign * (e1stat - e2stat)
 }
 
