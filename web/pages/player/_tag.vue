@@ -878,6 +878,12 @@ export default {
           return
         }
 
+        // TODO remove this - trying to debug undefined error in prod
+        const best = this.bestByEvent[event.id]
+        if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
+          console.log(bestBrawlers)
+        }
+
         worstBrawlers.forEach((brawler) => {
           if (!(event.id in this.bestByEvent)) {
             return
