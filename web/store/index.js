@@ -1,6 +1,6 @@
 import { exception, event } from 'vue-analytics'
 import payload from './payload.json'
-import { metaStatMaps, getBestByEvent } from '~/lib/util'
+import { metaStatMaps, getBest } from '~/lib/util'
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -137,7 +137,7 @@ export const mutations = {
   },
   setMapMeta(state, meta) {
     state.mapMeta = meta
-    state.bestByEvent = getBestByEvent(state.mapMeta)
+    state.bestByEvent = getBest(state.mapMeta)
 
     state.mapMetaLoaded = true
   },
@@ -154,7 +154,7 @@ export const mutations = {
       ...state.mapMeta,
       ...metaSlice,
     }
-    state.bestByEvent = getBestByEvent(state.mapMeta)
+    state.bestByEvent = getBest(state.mapMeta)
   },
   setMapMetaSliceLoaded(state, sliceName) {
     state.mapMetaSlicesLoaded.push(sliceName)

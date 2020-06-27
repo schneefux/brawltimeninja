@@ -2,10 +2,10 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '../model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, MapMeta, MapMetaMap } from '../model/MetaEntry';
 import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
-import { xpToHours, brawlerId, capitalizeWords, capitalize, modeToBackgroundId } from '../lib/util';
+import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -343,21 +343,7 @@ export default class BrawlstarsService {
             }
           }
         }
-      }), <{
-        [event: string]: {
-          mode: string
-          map: string
-          sampleSize: number
-          brawlers: {
-            [brawler: string]: {
-              name: string
-              sampleSize: number
-              stats: {
-                [stat: string]: number
-              }
-            }
-          }
-        }}>{});
+      }), <MapMetaMap>{});
 
       if (filters.current !== undefined) {
         const currentEvents = await this.getEvents();

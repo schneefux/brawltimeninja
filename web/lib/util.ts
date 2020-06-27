@@ -175,11 +175,11 @@ export const metaStatMaps = {
  *  ] }
  * sorted by the preferred prop according to propPriority
  */
-export function getBestByEvent(mapMeta: any[]) {
-  return [...Object.entries(mapMeta)]
-    .reduce((top, [eventId, entry]) => ({
+export function getBest(meta: any[]): { [key: string]: MetaGridEntrySorted[] } {
+  return [...Object.entries(meta)]
+    .reduce((top, [key, entry]) => ({
       ...top,
-      [eventId]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(<any[]>entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           name: brawler.name,
@@ -191,11 +191,11 @@ export function getBestByEvent(mapMeta: any[]) {
     }), {})
 }
 
-export function getMostPopular(modeMeta: any[]) {
-  return [...Object.entries(modeMeta)]
-    .reduce((top, [eventId, entry]) => ({
+export function getMostPopular(meta: any[]): { [key: string]: MetaGridEntrySorted[] } {
+  return [...Object.entries(meta)]
+    .reduce((top, [key, entry]) => ({
       ...top,
-      [eventId]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(<any[]>entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           name: brawler.name,
@@ -205,4 +205,20 @@ export function getMostPopular(modeMeta: any[]) {
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})
+}
+
+export interface MetaGridEntry {
+  id: string
+  title: string
+  brawler: string // ID
+  link?: string
+  icon?: string
+  sampleSize: number
+  stats: {
+    [name: string]: string|number
+  }
+}
+
+export interface MetaGridEntrySorted extends MetaGridEntry {
+  sortProp: string
 }

@@ -15,19 +15,19 @@
         >
           <event :mode="mode">
             <template v-slot:content>
-              <div class="flex justify-between mt-3 mx-2">
+              <div class="flex justify-between mt-3 mb-2 mx-2">
                 <div
                   v-for="brawler in topBrawlersByMode[mode].slice(0, 5)"
                   :key="brawler.id"
                   class="w-1/5 mx-1 flex flex-wrap justify-center overflow-hidden"
                 >
-                  <div class="bg-black rounded-sm">
+                  <div class="brawler-avatar">
                     <media-img
                       :path="`/brawlers/${brawler.id}/avatar`"
                       size="160"
-                      clazz="h-10"
+                      clazz="brawler-avatar__img"
                     />
-                    <p class="text-xs whitespace-no-wrap mx-1 my-1">
+                    <p class="brawler-avatar__stats">
                       {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
                       {{ metaStatMaps.labelsShort[brawler.sortProp] }}
                     </p>
@@ -56,7 +56,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { formatMode, camelToKebab } from '~/lib/util'
-import { getBestByEvent, metaStatMaps } from '~/lib/util'
+import { metaStatMaps } from '~/lib/util'
 import { getMostPopular } from '../../../lib/util'
 
 export default {

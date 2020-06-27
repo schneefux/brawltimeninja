@@ -64,3 +64,22 @@ export interface MetaMapEntry {
   starRate: number;
   picks: number;
 }
+
+export interface MapMeta {
+  mode: string
+  map: string
+  sampleSize: number
+  brawlers: {
+    [brawler: string]: {
+      name: string
+      sampleSize: number
+      stats: {
+        [stat: string]: number
+      }
+    }
+  }
+}
+
+export interface MapMetaMap {
+  [event: string]: MapMeta
+}

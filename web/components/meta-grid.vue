@@ -142,31 +142,19 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps } from '../lib/util'
+import { formatMode, metaStatMaps, MetaGridEntry } from '../lib/util'
 
 const sampleSizeThreshold = 300
 
-interface MetaEntry {
-  id: string
-  title: string
-  brawler: string // ID
-  link: string
-  icon?: string
-  sampleSize: number
-  stats: {
-    [name: string]: string|number
-  }
-}
-
-interface IndexedMetaEntry extends MetaEntry {
+interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
 }
 
 interface TierList {
-  [tier: string]: MetaEntry[]
+  [tier: string]: MetaGridEntry[]
 }
 
-function compare(entry1: MetaEntry, entry2: MetaEntry, stat: string): number {
+function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
   const sign = metaStatMaps.signs[stat] as number
   const e1stat = Number.parseFloat(entry1.stats[stat].toString())
   const e2stat = Number.parseFloat(entry2.stats[stat].toString())
@@ -174,10 +162,10 @@ function compare(entry1: MetaEntry, entry2: MetaEntry, stat: string): number {
 }
 
 function compare1(stat: string) {
-  return (entry1: MetaEntry, entry2: MetaEntry) => compare(entry1, entry2, stat)
+  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
 }
 
-function groupStatIntoTiers(entries: MetaEntry[], stat: string): TierList {
+function groupStatIntoTiers(entries: MetaGridEntry[], stat: string): TierList {
   const sign = metaStatMaps.signs[stat] as number
   const stats = entries.map(b => Number.parseFloat(b.stats[stat].toString()))
   const avg = stats.reduce((sum, s) => sum + s, 0) / entries.length
@@ -185,7 +173,7 @@ function groupStatIntoTiers(entries: MetaEntry[], stat: string): TierList {
     stats.reduce((sum, s) => sum + Math.pow(avg - s, 2), 0) / entries.length
   )
   const ks = { S: 1, A: 0.5, B: -0.5, C: -1, D: -Infinity }
-  const tiers = { S: [], A: [], B: [], C: [], D: [] } as { [tier: string]: MetaEntry[] }
+  const tiers = { S: [], A: [], B: [], C: [], D: [] } as { [tier: string]: MetaGridEntry[] }
 
   for (let entry of entries) {
     if (entry.sampleSize < sampleSizeThreshold) {
@@ -222,7 +210,7 @@ export default Vue.extend({
   name: 'MapMetaPage',
   props: {
     entries: {
-      type: Array as PropType<MetaEntry[]>,
+      type: Array as PropType<MetaGridEntry[]>,
       required: true,
     },
     linkText: {
@@ -252,7 +240,7 @@ export default Vue.extend({
       }
       return [...Object.keys(this.entries[0].stats)]
     },
-    sortedEntries(): IndexedMetaEntry[] {
+    sortedEntries(): IndexedMetaGridEntry[] {
       return this.entries.slice()
         .sort(compare1(this.selectedStat))
         .map((entry, index) => ({

@@ -1,34 +1,39 @@
 <template>
-  <div class="card-wrapper card">
-    <div v-if="infobar" class="bg-black text-primary-lightest w-full px-2 py-1 text-lg font-semibold">
-      <slot name="infobar" />
-    </div>
-    <div
-      class="w-full px-3 py-2 flex font-semibold justify-start items-center"
-      :class="`bg-color-${mode.toLowerCase()}`"
-    >
-      <media-img :path="'/modes/' + mode + '/icon'"
-        size="120"
-        clazz="w-10"
-      ></media-img>
-      <div class="ml-2 text-white">
-        <p class="text-xl">
-          {{ formatMode(mode) }}
-        </p>
-        <p v-if="map !== undefined">
-          {{ map }}
-        </p>
+  <div class="card-wrapper">
+    <div class="card">
+      <div v-if="infobar" class="bg-black text-primary-lightest w-full px-2 py-1 text-lg font-semibold">
+        <slot name="infobar" />
       </div>
-    </div>
-    <div class="relative z-0">
-      <media-img :path="'/modes/' + mode + '/background'"
-        size="800"
-        clazz="absolute left-0 top-0 h-32"
-        ztyle="filter: brightness(0.75) grayscale(0.25);"
-      ></media-img>
-    </div>
-    <div class="relative z-10 w-80 mx-auto">
-      <slot name="content" />
+      <div
+        class="w-full px-3 py-2 flex font-semibold justify-start items-center"
+        :class="`bg-color-${mode.toLowerCase()}`"
+      >
+        <media-img :path="'/modes/' + mode + '/icon'"
+          size="120"
+          clazz="w-10"
+        ></media-img>
+        <div class="ml-2 text-white">
+          <p class="text-xl">
+            {{ formatMode(mode) }}
+          </p>
+          <p v-if="map !== undefined">
+            {{ map }}
+          </p>
+        </div>
+      </div>
+      <div class="relative z-0">
+        <media-img :path="'/modes/' + mode + '/background'"
+          size="800"
+          clazz="absolute left-0 top-0 h-32"
+          ztyle="filter: brightness(0.75) grayscale(0.25);"
+        ></media-img>
+      </div>
+      <div
+        class="relative z-10 mx-auto"
+        :class="size"
+      >
+        <slot name="content" />
+      </div>
     </div>
   </div>
 </template>
@@ -54,6 +59,10 @@ export default {
     infobar: {
       type: Boolean,
       default: false
+    },
+    size: {
+      type: String, // class
+      default: '',
     },
   },
   data() {

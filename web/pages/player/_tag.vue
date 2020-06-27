@@ -395,6 +395,7 @@
             :mode="battle.event.mode"
             :map="battle.event.map"
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
+            size="w-80"
             class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
             infobar
           >

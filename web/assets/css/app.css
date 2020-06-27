@@ -155,3 +155,16 @@
     @apply w-32 py-2 pr-2;
   }
 }
+
+/** Brawler avatar with stats below */
+.brawler-avatar {
+  @apply bg-black rounded-sm;
+}
+
+.brawler-avatar__img {
+  @apply h-10;
+}
+
+.brawler-avatar__stats {
+  @apply text-xs whitespace-no-wrap m-1;
+}
