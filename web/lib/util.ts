@@ -52,6 +52,27 @@ export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
 
+/**
+ * Suffix num with SI unit
+ * @param num number
+ * @param digits digits after comma
+ */
+export function formatSI(num: number, digits: number) {
+  const si = [
+    { value: 1, symbol: '' },
+    { value: 1E3, symbol: 'k' },
+    { value: 1E6, symbol: 'M' },
+  ]
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/
+  let i
+  for (i = si.length - 1; i > 0; i--) {
+    if (num >= si[i].value) {
+      break
+    }
+  }
+  return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol
+}
+
 export const metaStatMaps = {
   labels: {
     trophies: 'Trophies',
@@ -91,6 +112,7 @@ export const metaStatMaps = {
     winRate: 'The 3v3 Win Rate tells you the % of 3v3 battles this Brawler wins.',
     starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+    duration: 'The Duration tells you how long battles with this Brawler last on average.',
   },
   icons: {
     trophies: 'trophy',
@@ -122,7 +144,7 @@ export const metaStatMaps = {
     rank: (n: number) => n === null ? 'N/A' : n.toFixed(2),
     level: (n: number) => n.toFixed(2),
     rank1: (n: number) => n,
-    wins: (n: number) => n,
+    wins: (n: number) => formatSI(n, 1),
   },
   signs: {
     trophies: -1, // more is better -> sort rank desc

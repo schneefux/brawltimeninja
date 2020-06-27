@@ -142,7 +142,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps } from '~/lib/util'
+import { formatMode, metaStatMaps } from '../lib/util'
 
 const sampleSizeThreshold = 300
 

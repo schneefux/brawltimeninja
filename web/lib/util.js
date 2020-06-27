@@ -61,6 +61,26 @@ export function formatMode(mode) {
 export function xpToHours(xp) {
     return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
+/**
+ * Suffix num with SI unit
+ * @param num number
+ * @param digits digits after comma
+ */
+export function formatSI(num, digits) {
+    var si = [
+        { value: 1, symbol: '' },
+        { value: 1E3, symbol: 'k' },
+        { value: 1E6, symbol: 'M' },
+    ];
+    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    var i;
+    for (i = si.length - 1; i > 0; i--) {
+        if (num >= si[i].value) {
+            break;
+        }
+    }
+    return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol;
+}
 export var metaStatMaps = {
     labels: {
         trophies: 'Trophies',
@@ -99,7 +119,8 @@ export var metaStatMaps = {
         wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
         winRate: 'The 3v3 Win Rate tells you the % of 3v3 battles this Brawler wins.',
         starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-        trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.'
+        trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+        duration: 'The Duration tells you how long battles with this Brawler last on average.'
     },
     icons: {
         trophies: 'trophy',
@@ -131,7 +152,7 @@ export var metaStatMaps = {
         rank: function (n) { return n === null ? 'N/A' : n.toFixed(2); },
         level: function (n) { return n.toFixed(2); },
         rank1: function (n) { return n; },
-        wins: function (n) { return n; }
+        wins: function (n) { return formatSI(n, 1); }
     },
     signs: {
         trophies: -1,
