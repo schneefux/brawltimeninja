@@ -311,6 +311,11 @@ export default {
     }
   },
   methods: {
+    trackScroll(visible, element, section) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('brawler', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadStarpowerMeta: 'loadStarpowerMeta',
       loadGadgetMeta: 'loadGadgetMeta',
