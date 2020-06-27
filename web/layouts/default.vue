@@ -147,9 +147,13 @@
 
     <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
       <p>
-        &#169; 2018 - 2020 Brawl Time Ninja &mdash; Discord Server:
-        <a class="link" href="https://discord.gg/uYfgznq">uYfgznq</a>
-        &mdash; Twitter: <a class="link" href="https://twitter.com/brawltimeninja">@BrawlTimeNinja</a>
+        &#169; 2018 - 2020 Brawl Time Ninja
+        ({{ releaseVersion }})
+      </p>
+      <p>
+        Discord Server: <a class="link" href="https://discord.gg/uYfgznq">uYfgznq</a>
+        &mdash;
+        Twitter: <a class="link" href="https://twitter.com/brawltimeninja">@BrawlTimeNinja</a>
       </p>
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
@@ -162,10 +166,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
-export default {
+export default Vue.extend({
   data() {
     return {
       cookieBannerOpen: false,
@@ -176,43 +181,46 @@ export default {
     }
   },
   computed: {
-    topics() {
+    topics(): string[] {
       return Object.keys(this.blog)
         .map(topic => topic.replace('_', ' '))
     },
-    isDesktop() {
-      return global.screen !== undefined && screen.width > 720
+    isDesktop(): boolean {
+      return (<any>global).screen !== undefined && screen.width > 720
     },
-    background() {
+    background(): string {
       return this.isDesktop
         ? require('~/assets/images/background/blue_desktop.jpg')
         : require('~/assets/images/background/blue_mobile.jpg')
+    },
+    releaseVersion(): string {
+      return (<any>process.env).release
     },
     ...mapGetters({
       isInstallable: 'isInstallable',
     }),
     ...mapState({
-      blog: state => state.blog,
-      version: state => state.version,
-      adsAllowed: state => state.adsAllowed,
-      cookiesAllowed: state => state.cookiesAllowed,
-      isApp: state => state.isApp,
+      blog: (state: any) => state.blog,
+      version: (state: any) => state.version as number,
+      adsAllowed: (state: any) => state.adsAllowed as boolean,
+      cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
+      isApp: (state: any) => state.isApp as boolean,
     }),
   },
   watch: {
     // called after vuex-persist has loaded the client's data
     version(version) {
-      if (version !== undefined && process.client) {
+      if (version !== undefined && (<any>process).client) {
         // open banner if user has not opted in & Ezoic did not load the consent manager popup
-        console.log('ezoic CMP popup visible', window.__cmp == undefined)
-        this.cookieBannerOpen = !this.cookiesAllowed && window.__cmp == undefined
+        console.log('ezoic CMP popup visible', (<any>window).__cmp == undefined)
+        this.cookieBannerOpen = !this.cookiesAllowed && (<any>window).__cmp == undefined
         this.applyAdPreferences()
       }
     },
     adsAllowed: 'applyAdPreferences',
   },
   created() {
-    if (process.client) {
+    if ((<any>process).client) {
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
@@ -225,9 +233,10 @@ export default {
     if ('update_cookieconsent_options' in window) {
       // TODO hides Ezoic cookie constent banner
       console.log('hiding ezoic cookie consent banner')
-      window.update_cookieconsent_options({markup: '<i></i>'})
+      const w = window as any
+      w.update_cookieconsent_options({markup: '<i></i>'})
     }
-    window.EzConsentCallback = (consent) => {
+    (<any>window).EzConsentCallback = (consent) => {
       this.cookieBannerOpen = false
 
       if (consent.preferences) {
@@ -252,14 +261,15 @@ export default {
         return
       }
 
+      const menu = this.$refs.menu as any
       if (window.scrollY < this.lastScrollY) {
         // scrolled up
-        this.$refs.menu.style['margin-top'] = '0px'
+        menu.style['margin-top'] = '0px'
         this.menuButtonVisible = false
         this.lastScrollUpY = window.scrollY
       } else {
         // scrolled down
-        this.$refs.menu.style['margin-top'] = `-${(window.scrollY - this.lastScrollUpY) / 4}px`
+        menu.style['margin-top'] = `-${(window.scrollY - this.lastScrollUpY) / 4}px`
         this.menuButtonVisible = true
       }
 
@@ -267,7 +277,8 @@ export default {
     },
     openMenu() {
       this.menuButtonVisible = false
-      this.$refs.menu.style['margin-top'] = '0px'
+      const menu = this.$refs.menu as any
+      menu.style['margin-top'] = '0px'
       // important: header style changes modify window.scrollY!
       this.lastScrollY = window.scrollY
       this.lastScrollUpY = window.scrollY
@@ -298,17 +309,17 @@ export default {
     },
     applyAdPreferences() {
       const allowed = this.adsAllowed
-      if (!allowed && process.client) {
+      if (!allowed && (<any>process).client) {
         this.disableAds()
       }
-      if (allowed && process.client) {
-        const adsBlocked = this.$refs['adblock-bait'].clientHeight === 0
+      if (allowed && (<any>process).client) {
+        const adsBlocked = (<any>this.$refs['adblock-bait']).clientHeight === 0
         if (!adsBlocked) {
           this.enableAds()
           // on Chrome, lazy-loading of ads does not work on first visit
           // this workaround fixes it
           if ('adsbygoogle' in window) {
-            window.adsbygoogle.pauseAdRequests = 0
+            (<any>window).adsbygoogle.pauseAdRequests = 0
           }
         } else {
           this.disableAds()
@@ -329,7 +340,7 @@ export default {
           this.$ga.set('dimension2', !adsBlocked)
           this.$ga.set('dimension3', isPwa)
           this.$ga.set('dimension4', isTwa)
-          this.$ga.event('ads', 'blocked', adsBlocked, { nonInteraction: true })
+          this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
         }
       }
     },
@@ -347,7 +358,7 @@ export default {
       install: 'install',
     })
   },
-}
+})
 </script>
 
 <style>
