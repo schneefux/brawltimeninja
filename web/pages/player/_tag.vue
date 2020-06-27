@@ -881,9 +881,9 @@ export default {
 
         // TODO remove this - trying to debug undefined error in prod
         const best = this.bestByEvent[event.id]
-        console.log(worstBrawlers)
+        console.log(JSON.stringify(worstBrawlers))
         if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
-          console.log(best)
+          console.log(JSON.stringify(best))
         }
 
         worstBrawlers.forEach((brawler) => {
@@ -891,7 +891,7 @@ export default {
             return
           }
           const bestBrawlers = this.bestByEvent[event.id]
-          const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
+          const rankIndex = bestBrawlers.findIndex(b => (b.name||'').toLowerCase() === (brawler.name||'').toLowerCase())
           if (rankIndex === -1) {
             return
           }
