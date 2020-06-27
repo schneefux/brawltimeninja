@@ -145,7 +145,7 @@ export const metaStatMaps = {
     duration_boss: (n: number) => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
     rank: (n: number) => n === null ? 'N/A' : n.toFixed(2),
     level: (n: number) => n.toFixed(2),
-    rank1: (n: number) => n,
+    rank1: (n: number) => formatSI(n, 1),
     wins: (n: number) => formatSI(n, 1),
   },
   signs: {
