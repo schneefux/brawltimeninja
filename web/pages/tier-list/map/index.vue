@@ -29,6 +29,7 @@
           :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
           :map="event.map"
           :id="event.id"
+          actions
         >
           <template v-slot:content>
             <div class="brawler-avatars my-4">
@@ -51,6 +52,16 @@
               </div>
             </div>
           </template>
+          <template v-slot:actions>
+            <div class="flex justify-end">
+              <nuxt-link
+                :to="`/tier-list/mode/${event.id}`"
+                class="button button-md"
+              >
+                Open
+              </nuxt-link>
+            </div>
+          </template>
         </event>
       </nuxt-link>
     </div>
@@ -69,6 +80,7 @@
           :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
           :map="event.map"
           :id="event.id"
+          actions
         >
           <template v-slot:content>
             <div class="brawler-avatars my-4">
@@ -89,6 +101,16 @@
                   </p>
                 </div>
               </div>
+            </div>
+          </template>
+          <template v-slot:actions>
+            <div class="flex justify-end">
+              <nuxt-link
+                :to="`/tier-list/mode/${event.id}`"
+                class="button button-md"
+              >
+                Open
+              </nuxt-link>
             </div>
           </template>
         </event>

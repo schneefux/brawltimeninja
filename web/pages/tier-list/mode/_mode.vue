@@ -28,6 +28,14 @@
                   clazz="h-48"
                 ></media-img>
               </div>
+              <div class="absolute bottom-0 right-0 mb-4 mr-2">
+                <nuxt-link
+                  :to="`/tier-list/map/${map.id}`"
+                  class="button button-md"
+                >
+                  Open
+                </nuxt-link>
+              </div>
             </template>
           </event>
         </nuxt-link>

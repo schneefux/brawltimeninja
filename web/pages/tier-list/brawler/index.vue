@@ -28,7 +28,7 @@
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
           class="px-2"
         >
-          <event :mode="mode">
+          <event :mode="mode" actions>
             <template v-slot:content>
               <div class="brawler-avatars my-4">
                 <div
@@ -48,6 +48,16 @@
                     </p>
                   </div>
                 </div>
+              </div>
+            </template>
+            <template v-slot:actions>
+              <div class="flex justify-end">
+                <nuxt-link
+                  :to="`/tier-list/mode/${camelToKebab(mode)}`"
+                  class="button button-md"
+                >
+                  Open
+                </nuxt-link>
               </div>
             </template>
           </event>

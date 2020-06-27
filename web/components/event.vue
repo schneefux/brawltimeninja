@@ -43,6 +43,9 @@
       >
         <slot name="content" />
       </div>
+      <div v-if="actions" class="relative z-10 bg-black text-primary-lightest w-full px-3 py-2 font-semibold">
+        <slot name="actions" />
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +73,10 @@ export default {
       required: false,
     },
     infobar: {
+      type: Boolean,
+      default: false
+    },
+    actions: {
       type: Boolean,
       default: false
     },
