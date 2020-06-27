@@ -7,6 +7,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
+function encodeQuery(data: { [key: string]: number|string }) {
+   const ret = [] as string[]
+   for (let d in data) {
+     ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]))
+   }
+   return ret.join('&')
+}
+
 export default Vue.extend({
   inheritAttrs: false,
   props: {
@@ -40,7 +49,7 @@ export default Vue.extend({
       if (this.size) {
         opts['size'] = this.size
       }
-      return '?' + new URLSearchParams(opts).toString()
+      return '?' + encodeQuery(opts)
     },
   }
 })
