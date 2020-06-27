@@ -1,8 +1,8 @@
 <template>
   <div class="page container">
     <adsense
-      v-if="ads && !isApp"
-      root-class="w-full lg:hidden"
+      v-if="ads"
+      root-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9429125351"
       data-ad-format="auto"
@@ -200,15 +200,14 @@
       </div>
     </div>
 
-    <div class="section hidden lg:block" v-if="ads && !isApp">
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3933066188"
-        root-class="w-full"
-        data-ad-format="auto"
-        data-full-width-responsive
-      />
-    </div>
+    <adsense
+      v-if="ads && !isApp"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="3933066188"
+      root-class="w-full ad-section"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
 
     <div
       v-observe-visibility="{
@@ -300,16 +299,15 @@
       </div>
     </div>
 
-    <div class="section" v-if="ads">
-      <adsense
-        id="ezoic-pub-ad-placeholder-101"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1752268168"
-        root-class="w-full"
-        data-ad-format="auto"
-        data-full-width-responsive
-      />
-    </div>
+    <adsense
+      v-if="ads && !isApp"
+      id="ezoic-pub-ad-placeholder-101"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="1752268168"
+      root-class="ad-section"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
 
     <div
       v-observe-visibility="{
@@ -506,20 +504,15 @@
       </div>
     </div>
 
-    <div
-      v-if="player.battles.length > 0"
-      class="section"
-    >
-      <adsense
-        v-if="ads && !isApp"
-        id="ezoic-pub-ad-placeholder-102"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4129048243"
-        root-class="w-full"
-        data-ad-format="auto"
-        data-full-width-responsive
-      />
-    </div>
+    <adsense
+      v-if="ads && !isApp && player.battles.length > 0"
+      id="ezoic-pub-ad-placeholder-102"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="4129048243"
+      root-class="ad-section"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
 
     <div
       v-observe-visibility="{
