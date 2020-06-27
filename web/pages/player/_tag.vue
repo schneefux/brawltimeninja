@@ -600,7 +600,7 @@
           >
             <template v-slot:history>
               <div
-                v-if="brawler.id in daysSinceBrawlerHistoryStart"
+                v-if="brawler.id in daysSinceBrawlerHistoryStart && brawler.history.length > 1"
                 class="w-32 relative mx-auto my-2"
               >
                 <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
