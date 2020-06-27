@@ -61,7 +61,7 @@
           <template v-slot:actions>
             <div class="flex justify-end">
               <nuxt-link
-                :to="`/tier-list/mode/${event.id}`"
+                :to="`/tier-list/map/${event.id}`"
                 class="button button-md"
               >
                 Open
@@ -118,7 +118,7 @@
           <template v-slot:actions>
             <div class="flex justify-end">
               <nuxt-link
-                :to="`/tier-list/mode/${event.id}`"
+                :to="`/tier-list/map/${event.id}`"
                 class="button button-md"
               >
                 Open
