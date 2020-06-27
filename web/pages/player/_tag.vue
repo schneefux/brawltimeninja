@@ -78,7 +78,7 @@
           v-if="player.clubName !== undefined && player.clubName != ''"
           class="bigstat-container"
         >
-          <div class="bigstat-left text-6vw md:text-4xl!">
+          <div class="bigstat-left text-5vw md:text-4xl!">
             <div class="" style="margin-top: -0.125em">
               [
             </div>
@@ -1187,8 +1187,8 @@ export default {
   @apply w-1/2 text-right flex justify-end items-center pr-2;
 }
 
-.text-6vw {
-  font-size: 6vw;
+.text-5vw {
+  font-size: 5vw;
 }
 
 @responsive {
