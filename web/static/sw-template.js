@@ -76,7 +76,7 @@ workbox.routing.registerRoute(new RegExp('<%= options.pagesURLPattern %>'), ({ev
 //
 // on update, bust all caches for older versions
 self.addEventListener('activate', (event) => {
-  const release = <%= options.release %>
+  const release = '<%= options.release %>'
   console.log('running on release', release)
   caches.keys().then((keys) => Promise.all(
     keys
