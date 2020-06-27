@@ -158,6 +158,32 @@
           </div>
         </div>
 
+        <div class="bigstat-container" v-if="winRate !== 0">
+          <div class="bigstat-left relative">
+            <span class="bigstat-number">
+              {{ Math.floor(winRate * 100) }}%
+            </span>
+            <button
+              @click="recentHelpOpen = true"
+              class="bigstat-tooltip-btn"
+            >?</button>
+            <p
+              v-show="recentHelpOpen"
+              @click="recentHelpOpen = false"
+              class="bigstat-tooltip-text"
+            >
+              Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
+              The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
+              <span class="bigstat-tooltip-close">x</span>
+            </p>
+          </div>
+          <div class="bigstat-right bigstat-label text-xl">
+            <p class="w-24">
+              Recent Win&nbsp;Rate
+            </p>
+          </div>
+        </div>
+
         <div class="bigstat-container" v-if="trophyRate !== 0">
           <div class="bigstat-left bigstat-number">
             {{ trophyRate.toFixed(2) }}
@@ -753,6 +779,7 @@ export default {
       notificationsAllowed: false,
       showAllModes: false,
       ratingHelpOpen: false,
+      recentHelpOpen: false,
       hoursSinceDate,
       formatMode,
     }
