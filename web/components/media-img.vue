@@ -23,7 +23,7 @@ export default Vue.extend({
       required: true
     },
     size: {
-      type: String,
+      type: [String, Number],
       required: false
     },
     transparent: {
