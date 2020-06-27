@@ -881,6 +881,7 @@ export default {
 
         // TODO remove this - trying to debug undefined error in prod
         const best = this.bestByEvent[event.id]
+        console.log(worstBrawlers)
         if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
           console.log(bestBrawlers)
         }
