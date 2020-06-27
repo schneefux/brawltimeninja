@@ -68,7 +68,7 @@
         <button
           v-show="!showAllModes"
           class="button button-md"
-          @click="showAllModes = true; $ga.event('meta_brawler', 'load_more', battlePage)"
+          @click="showAllModes = true; $ga.event('meta_brawler', 'load_more')"
         >
           Show All Modes
         </button>

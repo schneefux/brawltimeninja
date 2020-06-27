@@ -45,7 +45,7 @@
         <button
           v-show="!showAllMaps"
           class="button button-md"
-          @click="showAllMaps = true; $ga.event('meta_mode', 'load_more', battlePage)"
+          @click="showAllMaps = true; $ga.event('meta_mode', 'load_more')"
         >
           Show All {{ formatMode(mode) }} Maps
         </button>
