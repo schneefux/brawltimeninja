@@ -5,8 +5,9 @@
   </picture>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   inheritAttrs: false,
   props: {
     clazz: {
@@ -22,6 +23,7 @@ export default {
       required: true
     },
     size: {
+      type: String,
       required: false
     },
     transparent: {
@@ -30,12 +32,16 @@ export default {
     },
   },
   computed: {
-    url() {
+    url(): string {
       return process.env.mediaUrl + this.path
     },
-    query() {
-      return this.size ? '?size=' + this.size : ''
+    query(): string {
+      const opts = {}
+      if (this.size) {
+        opts['size'] = this.size
+      }
+      return '?' + new URLSearchParams(opts).toString()
     },
   }
-}
+})
 </script>

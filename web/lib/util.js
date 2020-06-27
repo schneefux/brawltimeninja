@@ -151,7 +151,7 @@ export var metaStatMaps = {
         duration_boss: function (n) { return Math.floor(n / 60) + ":" + Math.floor(n % 60).toString().padStart(2, '0'); },
         rank: function (n) { return n === null ? 'N/A' : n.toFixed(2); },
         level: function (n) { return n.toFixed(2); },
-        rank1: function (n) { return n; },
+        rank1: function (n) { return formatSI(n, 1); },
         wins: function (n) { return formatSI(n, 1); }
     },
     signs: {

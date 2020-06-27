@@ -27,6 +27,10 @@ export default {
       theme_color: '#3490dc', // primary
     },
     workbox: {
+      runtimeCaching: [{
+        urlPattern: process.env.MEDIA_URL + '/.*',
+        handler: 'staleWhileRevalidate',
+      }],
       // prefix all cache keys with release id
       // write release id to a custom option
       // -> sw.js changes on deploy
