@@ -39,7 +39,7 @@ export default {
       },
       release: 'brawltimeninja@' + process.env.GIT_REV,
       // custom service worker with cache busting on release
-      swTemplate: path.resolve(__dirname, 'static/sw-template.js'),
+      swTemplate: process.env.NODE_ENV == 'development' ? undefined : path.resolve(__dirname, 'static/sw-template.js'),
     },
   },
 
