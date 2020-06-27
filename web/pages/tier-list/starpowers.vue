@@ -1,37 +1,22 @@
 <template>
-  <div class="py-4 px-6">
-    <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
-      Star Power Tier List
-    </h1>
+  <div class="page container">
+    <div class="section-heading">
+      <h1 class="page-h1">Star Power Tier List</h1>
+      <p>
+        Use the Gadget Tier List to find the best Star Power for all Brawlers in Brawl Stars.
+      </p>
+      <p v-if="totalSampleSize < 10000">
+        ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
+      </p>
+    </div>
 
-    <p class="mt-2 mb-6 md:text-center">
-      Showing Star Power Tier List for all Brawlers.
-      To view other Brawler Tier Lists, load the
-      <nuxt-link to="/tier-list/brawler" class="link inline-block">
-        Brawler Tier List
-      </nuxt-link> or the
-      <nuxt-link to="/tier-list/gadgets" class="link inline-block">
-        Gadget Tier List
-      </nuxt-link>.
-    </p>
-
-    <p
-      v-if="totalSampleSize < 10000"
-      class="my-8 text-center"
-    >
-      ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-    </p>
-
-    <meta-grid
-      :entries="starpowers"
-      link-text="More Statistics"
-      ga-category="starpower_meta"
-    />
-
-    <p class="md:text-center mt-4 mb-2 max-w-lg mx-auto">
-      Use the Star Power Tier List to find the best Star Power.
-      The data is from Brawl Stars battles in the current season.
-    </p>
+    <div class="section">
+      <meta-grid
+        :entries="starpowers"
+        link-text="More Statistics"
+        ga-category="starpower_meta"
+      />
+    </div>
   </div>
 </template>
 

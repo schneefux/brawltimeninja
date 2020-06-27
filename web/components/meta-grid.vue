@@ -14,9 +14,11 @@
     </div>
 
     <div class="mt-4 container mx-auto">
-      <h5 class="text-2xl font-bold mb-3">Tier List</h5>
-      <div class="container mx-auto bg-gray-800 px-3 py-2">
-        <h6 class="text-xl font-bold">
+      <div class="section-heading">
+        <h5 class="text-xl font-semibold">Tier List</h5>
+      </div>
+      <div class="section bg-gray-800 px-3 py-2">
+        <h6 class="text-lg font-semibold">
           Best Brawlers by {{ metaStatMaps.labels[selectedStat] }}
         </h6>
         <p class="mt-1">
@@ -64,8 +66,10 @@
       </div>
     </div>
 
-    <div class="mt-6 container mx-auto flex flex-wrap justify-center">
-      <h5 class="w-full text-2xl font-bold mb-3">All Statistics</h5>
+    <div class="section-heading">
+      <h5 class="w-full text-xl font-semibold">All Statistics</h5>
+    </div>
+    <div class="section flex flex-wrap justify-center">
       <div
         v-for="entry in sortedEntries"
         :key="entry.id"

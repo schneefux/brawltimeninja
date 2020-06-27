@@ -1,11 +1,21 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="page container">
     <div class="section-heading">
-      <h1 class="text-3xl font-semibold">
-        {{ formatMode(selectedMode) }}: {{ selectedMap }} Tier List
-      </h1>
+      <h1 class="page-h1">{{ formatMode(selectedMode) }}: {{ selectedMap }}</h1>
+      <p>Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map in Brawl Stars.</p>
+      <p v-if="meta.sampleSize < 1000">
+        ⚠ Not enough data for this event yet!
+        <template v-if="brawlers.length < totalBrawlers">
+          Some statistics are unavailable.
+        </template>
+        <template v-else>
+          Statistics will be inaccurate.
+        </template>
+        Play a few battles and come back later. ⚠
+      </p>
     </div>
-    <div v-if="bestByEvent[selectedEvent.id].length" class="flex justify-center section">
+
+    <div v-if="bestByEvent[selectedEvent.id].length" class="section flex justify-center">
       <event
         :mode="selectedEvent.mode"
         :map="selectedEvent.map"
@@ -42,38 +52,6 @@
         </template>
       </event>
     </div>
-    <p class="mt-4 md:text-center max-w-lg mx-auto">
-      Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map.
-      The data is from Brawl Stars battles in the current season.
-    </p>
-    <p class="mt-2 mb-6 md:text-center">
-      Showing statistics for battles played in
-      <span class="text-primary-lighter inline-block">
-        {{ formatMode(selectedMode) }} - {{ selectedMap }}
-      </span>.
-      To view an overall Tier List, load the
-      <nuxt-link to="/tier-list/brawler" class="link inline-block">
-        Brawler Tier List
-      </nuxt-link>,
-      or load the
-      <nuxt-link :to="`/tier-list/mode/${camelToKebab(selectedMode)}`" class="link">
-        {{ formatMode(selectedMode) }} Tier List
-      </nuxt-link>.
-    </p>
-
-    <p
-      v-if="meta.sampleSize < 1000"
-      class="mt-5 mb-8 text-center text-xl font-bold"
-    >
-      ⚠ Not enough data for this event yet!
-      <template v-if="brawlers.length < totalBrawlers">
-        Some statistics are unavailable.
-      </template>
-      <template v-else>
-        Statistics will be inaccurate.
-      </template>
-      Play a few battles and come back later. ⚠
-    </p>
 
     <adsense
       v-if="ads"
@@ -85,10 +63,16 @@
       data-full-width-responsive
     />
 
-    <meta-grid
-      :entries="brawlers"
-      ga-category="map_meta"
-    />
+    <div class="section-heading">
+      <h2 class="page-h2">Tier List for {{ formatMode(selectedMode) }} - {{ selectedMap }}</h2>
+    </div>
+
+    <div class="section">
+      <meta-grid
+        :entries="brawlers"
+        ga-category="map_meta"
+      />
+    </div>
   </div>
 </template>
 

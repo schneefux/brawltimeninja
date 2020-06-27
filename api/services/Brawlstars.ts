@@ -2,7 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, MapMeta, MapMetaMap, BrawlerMetaEntry } from '../model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, ModeMetaMap, MapMetaMap, BrawlerMetaEntry } from '../model/MetaEntry';
 import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
@@ -36,7 +36,7 @@ export default class BrawlstarsService {
     } ];
   }
 
-  public async getEvents(): ActiveEvent[] {
+  public async getEvents() {
     const response = await request<{ active: BrawlstarsEvent[] }>(
       'events',
       this.apiUnofficial,
@@ -253,20 +253,7 @@ export default class BrawlstarsService {
           }
         }
       }
-    }), <{
-      [event: string]: {
-        mode: string
-        sampleSize: number
-        brawlers: {
-          [brawler: string]: {
-            name: string
-            sampleSize: number
-            stats: {
-              [stat: string]: number
-            }
-          }
-        }
-      }}>{});
+    }), <ModeMetaMap>{});
 
     return modeMeta;
   }

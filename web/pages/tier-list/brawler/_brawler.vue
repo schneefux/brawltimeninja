@@ -1,9 +1,7 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-4xl md:text-center mt-2 font-semibold">
-      {{ brawlerName }} Statistics
-    </h1>
-    <p class="mt-2 md:text-center">
+  <div class="page container">
+    <h1 class="page-h1">{{ brawlerName }} Statistics</h1>
+    <p>
       This Star Power and Gadget Tier List is generated automatically.
       The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
     </p>

@@ -1,31 +1,26 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="page container">
     <div class="section-heading">
-      <h1 class="text-4xl md:text-center font-semibold">
-        Brawler Tier List
-      </h1>
+      <h1 class="page-h1">Brawl Stars Brawler Tier List</h1>
+      <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
+      <p>
+        See also the
+        <nuxt-link to="/tier-list/gadgets" class="link inline-block">
+          Gadget Tier List
+        </nuxt-link> or the
+        <nuxt-link to="/tier-list/starpowers" class="link inline-block">
+          Star Power Tier List
+        </nuxt-link>.
+      </p>
     </div>
-    <p class="mt-2 mb-6 md:text-center">
-      Showing global Tier List. To view specific Tier Lists, load the
-      <nuxt-link to="/tier-list/map" class="link inline-block">
-        Map Tier Lists
-      </nuxt-link>.
-      See also the
-      <nuxt-link to="/tier-list/gadgets" class="link inline-block">
-        Gadget Tier List
-      </nuxt-link> or the
-      <nuxt-link to="/tier-list/starpowers" class="link inline-block">
-        Star Power Tier List
-      </nuxt-link>.
-    </p>
 
     <div class="section-heading">
-      <h2 class="text-2xl font-semibold">Mode Tier Lists</h2>
+      <h2 class="page-h2">Mode Tier Lists</h2>
       <p>Click on a Mode to view the Tier List for it.</p>
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex">
+      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap">
         <nuxt-link
           v-for="(mode, index) in modes"
           :key="mode"
@@ -61,8 +56,9 @@
 
       <div class="mt-2 w-full text-right hidden md:block">
         <button
+          v-show="!showAllModes"
           class="button button-md"
-          @click="showAllModes = true; $ga.event('battlelog', 'load_more', battlePage)"
+          @click="showAllModes = true; $ga.event('meta_brawler', 'load_more', battlePage)"
         >
           Show All Modes
         </button>
@@ -70,8 +66,9 @@
     </div>
 
     <div class="section-heading">
-      <h2 class="text-2xl font-semibold">All Brawlers Tier List</h2>
+      <h2 class="page-h2">Tier List for all Modes</h2>
     </div>
+
     <p class="section text-center mb-2">
       <label>
         Trophy Range:
@@ -109,12 +106,6 @@
       link-text="More Statistics"
       ga-category="brawler_meta"
     />
-
-    <p class="md:text-center">
-      This Brawler Tier List is generated automatically for all Brawlers in Brawl Stars.
-      The data is from Brawl Stars battles in the current season.
-      Click on a link to view the best Star Powers for each Brawler.
-    </p>
   </div>
 </template>
 
@@ -122,7 +113,7 @@
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted } from '../../../lib/util'
-import { MapMetaMap, MetaMapEntry, BrawlerMetaEntry } from '../../../model/MetaEntry'
+import { MapMetaMap, MetaMapEntry, BrawlerMetaEntry, ModeMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'BrawlerMetaPage',
@@ -172,7 +163,7 @@ export default Vue.extend({
       return this.selectedRange == 'all' ? this.allBrawlerMeta : this.rangeMeta
     },
     ...mapState({
-      modeMeta: (state: any) => state.modeMeta as MapMetaMap,
+      modeMeta: (state: any) => state.modeMeta as ModeMetaMap,
       allBrawlerMeta: (state: any) => state.brawlerMeta as BrawlerMetaEntry[],
       ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,

@@ -1,41 +1,72 @@
 <template>
-  <div class="py-4 px-6">
-    <h1 class="text-4xl md:text-center mt-2 mb-6 font-semibold">
-      {{ formatMode(mode) }} Tier List
-    </h1>
+  <div class="page container">
+    <div class="section-heading">
+      <h1 class="page-h1">{{ formatMode(mode) }}</h1>
+      <p>Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps in Brawl Stars.</p>
+    </div>
 
-    <p class="mt-2 mb-6 md:text-center">
-      Showing global Tier List. To view Tier Lists for specific maps, load the
-      <nuxt-link to="/tier-list/map" class="link inline-block">
-        Map Tier Lists
-      </nuxt-link>.
-    </p>
+    <div class="section-heading">
+      <h2 class="page-h2">Map Tier Lists</h2>
+      <p>Click on a Map to view the Tier List for it.</p>
+    </div>
 
-    <p
-      v-if="totalSampleSize < 10000"
-      class="my-8 text-center"
-    >
-      ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-    </p>
+    <div class="section">
+      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap">
+        <nuxt-link
+          v-for="(map, index) in maps"
+          :key="map"
+          :to="`/tier-list/map/${map.id}`"
+          :class="{ 'md:hidden': !showAllMaps && index >= 3 }"
+          class="px-2"
+        >
+          <event :mode="map.mode" :map="map.map">
+            <template v-slot:content>
+              <div class="flex justify-center bg-black">
+                <media-img
+                  :path="`/maps/${map.id}`"
+                  size="384"
+                  clazz="h-48"
+                ></media-img>
+              </div>
+            </template>
+          </event>
+        </nuxt-link>
+      </div>
 
-    <meta-grid
-      :entries="modes"
-      ga-category="mode_meta"
-    />
+      <div class="mt-2 w-full text-right hidden md:block">
+        <button
+          v-show="!showAllMaps"
+          class="button button-md"
+          @click="showAllMaps = true; $ga.event('meta_mode', 'load_more', battlePage)"
+        >
+          Show All {{ formatMode(mode) }} Maps
+        </button>
+      </div>
+    </div>
 
-    <p class="md:text-center mt-4 mb-2 max-w-lg mx-auto">
-      Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps.
-      The data is from Brawl Stars battles in the current season.
-    </p>
+    <div class="section-heading">
+      <h2 class="page-h2">Tier List for all {{ formatMode(mode) }} Maps</h2>
+      <p v-if="totalSampleSize < 10000">
+        ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
+      </p>
+    </div>
+
+    <div class="section">
+      <meta-grid
+        :entries="modes"
+        ga-category="mode_meta"
+      />
+    </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
-import { formatMode } from '~/lib/util'
-import MetaGrid from '~/components/meta-grid.vue'
+import { formatMode, MetaGridEntry } from '../../../lib/util'
+import { MapMetaMap, ModeMetaMap, MapMeta } from '../../../model/MetaEntry'
 
-const kebabToCamel = (s) => {
+const kebabToCamel = (s: string) => {
   return s.replace(/([-_][a-z])/ig, ($1) => {
     return $1.toUpperCase()
       .replace('-', '')
@@ -43,15 +74,16 @@ const kebabToCamel = (s) => {
   })
 }
 
-export default {
-  name: 'BrawlerMetaPage',
-  components: {
-    MetaGrid,
-  },
+interface MapMetaWithId extends MapMeta {
+  id: string
+}
+
+export default Vue.extend({
+  name: 'ModeMetaPage',
   head() {
-    const description = `Brawl Stars ${formatMode(this.mode)} Tier List. Find the best Brawlers for ${formatMode(this.mode)} with Win Rates and Rankings.`
+    const description = `Brawl Stars ${formatMode((<any>this).mode)} Tier List. Find the best Brawlers for ${formatMode((<any>this).mode)} with Win Rates and Rankings.`
     return {
-      title: `${formatMode(this.mode)} Tier List`,
+      title: `${formatMode((<any>this).mode)} Tier List`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -61,50 +93,61 @@ export default {
   data() {
     return {
       formatMode,
+      mode: '',
+      showAllMaps: false,
     }
   },
   asyncData({ params }) {
-    const mode = kebabToCamel(params.mode)
+    const mode = kebabToCamel(params.mode as string)
     return {
       mode,
     }
   },
   computed: {
-    totalSampleSize() {
+    totalSampleSize(): number {
       return this.modes
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
-    modes() {
-      return [...Object.entries(this.modeMeta[this.mode].brawlers)]
+    modes(): MetaGridEntry[] {
+      return [...Object.entries((<ModeMetaMap>this.modeMeta)[this.mode].brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           title: brawler.name,
           brawler: brawlerId,
-          link: `/tier-list/brawler/${brawler.id}`,
+          link: `/tier-list/brawler/${brawlerId}`,
           sampleSize: brawler.sampleSize,
           stats: brawler.stats,
         }))
     },
+    maps(): MapMetaWithId[] {
+      return [...Object.entries(<MapMetaMap>this.mapMeta)]
+        .map(([id, event]) => ({ ...event, id }))
+        .filter((event) => event.mode == this.mode)
+    },
     ...mapState({
-      modeMeta: state => state.modeMeta,
-      ads: state => state.adsEnabled,
-      isApp: state => state.isApp,
+      modeMeta: (state: any) => state.modeMeta as ModeMetaMap,
+      mapMeta: (state: any) => state.mapMeta as MapMetaMap,
+      ads: (state: any) => state.adsEnabled as boolean,
+      isApp: (state: any) => state.isApp as boolean,
     }),
   },
   async fetch({ store }) {
-    if (!process.static) {
+    if (!(<any>process).static) {
       await store.dispatch('loadModeMeta')
+      await store.dispatch('loadMapMeta')
     }
   },
   async created() {
-    if (process.static) {
+    if ((<any>process).static) {
       await this.loadModeMeta()
+      await this.loadMapMeta()
     }
   },
   methods: {
     ...mapActions({
       loadModeMeta: 'loadModeMeta',
+      loadMapMeta: 'loadMapMeta',
     }),
   },
-}
+})
 </script>
