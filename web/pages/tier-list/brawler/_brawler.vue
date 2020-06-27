@@ -1,31 +1,28 @@
 <template>
   <div class="page container">
-    <h1
-      class="page-h1"
+    <div
+      class="section-heading"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'title'),
         once: true,
       }"
-    >{{ brawlerName }} Statistics</h1>
-    <p>
-      This Star Power and Gadget Tier List is generated automatically.
-      The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
-    </p>
-    <p class="mt-2 mb-6 md:text-center">
-      Showing Star Power and Gadget Tier list and best modes for
-      <span class="inline-block text-primary-lighter">
-        {{ brawlerName }}
-      </span>.
-    </p>
-
-    <p
-      v-if="totalSampleSize < 10000"
-      class="my-8 text-center"
     >
-      ⚠ Not enough data for this Brawler yet!
-      Statistics will be inaccurate.
-      Play a few battles and come back later. ⚠
-    </p>
+      <h1 class="page-h1">{{ brawlerName }} Statistics</h1>
+      <p>
+        This Star Power and Gadget Tier List is generated automatically.
+      </p>
+      <p>
+        Showing Star Power and Gadget Tier list and best modes for
+        <span class="inline-block text-primary-lighter">
+          {{ brawlerName }}
+        </span>.
+      </p>
+      <p v-if="totalSampleSize < 10000">
+        ⚠ Not enough data for this Brawler yet!
+        Statistics will be inaccurate.
+        Play a few battles and come back later. ⚠
+      </p>
+    </div>
 
     <div
       class="section-heading"
@@ -34,7 +31,7 @@
         once: true,
       }"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Star Power Tier List
       </h2>
     </div>
@@ -99,7 +96,7 @@
         once: true,
       }"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Gadget Tier List
       </h2>
     </div>
@@ -170,7 +167,7 @@
         once: true,
       }"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Game Mode Statistics
       </h2>
     </div>
