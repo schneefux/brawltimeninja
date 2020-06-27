@@ -65,6 +65,15 @@ export interface MetaMapEntry {
   picks: number;
 }
 
+export interface BrawlerMetaEntry {
+  id: string;
+  name: string;
+  sampleSize: number;
+  stats: {
+    [stat: string]: number;
+  }
+}
+
 export interface MapMeta {
   mode: string
   map: string

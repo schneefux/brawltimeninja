@@ -74,12 +74,6 @@
               Brawler Tier List
             </nuxt-link>
             <nuxt-link
-              to="/tier-list/mode"
-              class="nav-link"
-            >
-              Mode Tier Lists
-            </nuxt-link>
-            <nuxt-link
               to="/tier-list/map"
               class="nav-link"
             >

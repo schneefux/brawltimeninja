@@ -1,5 +1,7 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
+import { MapMetaMap } from "~/model/MetaEntry";
+
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
   s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
@@ -175,11 +177,11 @@ export const metaStatMaps = {
  *  ] }
  * sorted by the preferred prop according to propPriority
  */
-export function getBest(meta: any[]): { [key: string]: MetaGridEntrySorted[] } {
+export function getBest(meta: MapMetaMap): { [key: string]: MetaGridEntrySorted[] } {
   return [...Object.entries(meta)]
     .reduce((top, [key, entry]) => ({
       ...top,
-      [key]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           name: brawler.name,
@@ -191,11 +193,11 @@ export function getBest(meta: any[]): { [key: string]: MetaGridEntrySorted[] } {
     }), {})
 }
 
-export function getMostPopular(meta: any[]): { [key: string]: MetaGridEntrySorted[] } {
+export function getMostPopular(meta: MapMetaMap): { [key: string]: MetaGridEntrySorted[] } {
   return [...Object.entries(meta)]
     .reduce((top, [key, entry]) => ({
       ...top,
-      [key]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           name: brawler.name,
