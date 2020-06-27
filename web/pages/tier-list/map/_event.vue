@@ -96,7 +96,7 @@
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { formatMode, metaStatMaps, camelToKebab, getMostPopular, MetaGridEntry, MetaGridEntrySorted } from '../../../lib/util'
-import { MapMetaMap, MapMeta } from '../../../../api/model/MetaEntry'
+import { MapMetaMap, MapMeta } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'MapMetaPage',

@@ -188,7 +188,7 @@ export default Vue.extend({
       },
       'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
     })
-    const structuredData = [].concat(this.currentEvents, this.upcomingEvents)
+    const structuredData = this.currentEvents.concat(this.upcomingEvents)
       .map((event) => ({
         type: 'application/ld+json',
         innerHTML: JSON.stringify(formatAsJsonLd(event)),
