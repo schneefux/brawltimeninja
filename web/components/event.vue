@@ -9,11 +9,12 @@
         :class="`bg-color-${mode.toLowerCase()}`"
       >
         <div class="flex items-center">
-          <media-img :path="'/modes/' + mode + '/icon'"
-            size="120"
-            clazz="w-10"
-          ></media-img>
-          <div class="ml-2 text-white">
+          <div class="w-10 h-10 my-1 flex justify-center items-center">
+            <media-img :path="'/modes/' + mode + '/icon'"
+              size="120"
+            ></media-img>
+          </div>
+          <div class="ml-3 text-white">
             <p class="text-xl">
               {{ formatMode(mode) }}
             </p>
@@ -26,7 +27,7 @@
           v-if="id"
           :path="`/maps/${id}`"
           size="80"
-          clazz="h-10"
+          clazz="h-12"
         ></media-img>
       </div>
       <div class="relative z-0">

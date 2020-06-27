@@ -20,7 +20,7 @@
           ></media-img>
         </template>
         <template v-slot:content>
-          <div class="brawler-avatars mt-3 mb-2">
+          <div class="brawler-avatars my-4">
             <div
               v-for="brawler in bestByEvent[selectedEvent.id].slice(0, 5)"
               :key="brawler.id"
