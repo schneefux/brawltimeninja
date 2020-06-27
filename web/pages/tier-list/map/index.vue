@@ -29,8 +29,14 @@
           :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
           :map="event.map"
           :id="event.id"
+          infobar
           actions
         >
+          <template v-slot:infobar>
+            <p class="text-right">
+              ends in {{ relativeTimeUntil(event.end) }}
+            </p>
+          </template>
           <template v-slot:content>
             <div class="brawler-avatars my-4">
               <div
@@ -80,8 +86,14 @@
           :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
           :map="event.map"
           :id="event.id"
+          infobar
           actions
         >
+          <template v-slot:infobar>
+            <p class="text-right">
+              starts in {{ relativeTimeUntil(event.start) }}
+            </p>
+          </template>
           <template v-slot:content>
             <div class="brawler-avatars my-4">
               <div
@@ -136,6 +148,26 @@ import { formatMode, metaStatMaps, MetaGridEntrySorted } from '../../../lib/util
 import { MapMetaMap } from '../../../model/MetaEntry'
 import { ActiveEvent } from '../../../model/Brawlstars'
 
+function relativeTimeUntil(timestamp: string): string {
+  const then = new Date(timestamp)
+  const now = new Date()
+  let time = (then.getTime() - now.getTime()) / 1000;
+  let str = ''
+  if (time > 60 * 60 * 24) {
+    const days = Math.floor(time / (60 * 60 * 24))
+    str += days + 'd '
+    time -= days * 60 * 60 * 24
+  }
+  const hours = Math.floor(time / (60 * 60))
+  str += hours + 'h '
+  time -= hours * 60 * 60
+  const minutes = Math.floor(time / 60)
+  str += minutes + 'm '
+  time -= minutes * 60
+  return str
+}
+
+
 export default Vue.extend({
   name: 'MetaSelectMapPage',
   data() {
@@ -143,6 +175,7 @@ export default Vue.extend({
       load: {},
       formatMode,
       metaStatMaps,
+      relativeTimeUntil,
     }
   },
   head() {
