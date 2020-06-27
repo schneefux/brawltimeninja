@@ -117,6 +117,9 @@ export default Vue.extend({
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
     modes(): MetaGridEntry[] {
+      if (!(this.mode in this.modeMeta)) {
+        return []
+      }
       return [...Object.entries((<ModeMetaMap>this.modeMeta)[this.mode].brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
