@@ -883,7 +883,7 @@ export default {
         const best = this.bestByEvent[event.id]
         console.log(worstBrawlers)
         if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
-          console.log(bestBrawlers)
+          console.log(best)
         }
 
         worstBrawlers.forEach((brawler) => {
