@@ -877,18 +877,12 @@ export default {
           return
         }
 
-        // TODO remove this - trying to debug undefined error in prod
-        const best = this.bestByEvent[event.id]
-        if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
-          console.log(JSON.stringify(best))
-        }
-
         worstBrawlers.forEach((brawler) => {
           if (!(event.id in this.bestByEvent)) {
             return
           }
           const bestBrawlers = this.bestByEvent[event.id]
-          const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
+          const rankIndex = bestBrawlers.findIndex(b => b.brawler.toLowerCase() === brawler.name.toLowerCase())
           if (rankIndex === -1) {
             return
           }
@@ -1036,8 +1030,6 @@ export default {
   },
   mounted() {
     if (process.client) {
-      console.log(JSON.stringify(this.player.brawlers)) // TODO remove this
-
       this.$nextTick(() => {
         const playerHours = Math.max(this.player.hoursSpent, 1)
         const animationDuration = 3000
