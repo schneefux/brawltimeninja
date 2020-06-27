@@ -879,7 +879,6 @@ export default {
 
         // TODO remove this - trying to debug undefined error in prod
         const best = this.bestByEvent[event.id]
-        console.log(JSON.stringify(worstBrawlers))
         if (event.id in this.bestByEvent && best.some(b => b.name == undefined)) {
           console.log(JSON.stringify(best))
         }
@@ -1037,6 +1036,8 @@ export default {
   },
   mounted() {
     if (process.client) {
+      console.log(JSON.stringify(this.player.brawlers)) // TODO remove this
+
       this.$nextTick(() => {
         const playerHours = Math.max(this.player.hoursSpent, 1)
         const animationDuration = 3000
