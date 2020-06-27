@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">Game Mode Tier Lists</h1>
       <p>
         Mode Tier Lists for all modes in Brawl Stars.
@@ -17,7 +23,13 @@
       data-full-width-responsive
     />
 
-    <div class="section">
+    <div
+      class="section"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'modes'),
+        once: true,
+      }"
+    >
       <div class="flex flex-wrap justify-center">
         <nuxt-link
           v-for="mode in modes"
@@ -122,6 +134,11 @@ export default {
     }
   },
   methods: {
+    trackScroll(visible, element, section) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('modes', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadModeMeta: 'loadModeMeta',
     }),

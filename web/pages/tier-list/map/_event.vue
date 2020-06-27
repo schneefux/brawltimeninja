@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">{{ formatMode(selectedMode) }}: {{ selectedMap }}</h1>
       <p>Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map in Brawl Stars.</p>
       <p v-if="meta.sampleSize < 1000">
@@ -25,7 +31,14 @@
       data-full-width-responsive
     />
 
-    <div v-if="bestByEvent[selectedEvent.id].length" class="section flex justify-center">
+    <div
+      v-if="bestByEvent[selectedEvent.id].length"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'widget'),
+        once: true,
+      }"
+      class="section flex justify-center"
+    >
       <event
         :mode="selectedEvent.mode"
         :map="selectedEvent.map"
@@ -63,7 +76,13 @@
       </event>
     </div>
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'stats'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Tier List for {{ formatMode(selectedMode) }} - {{ selectedMap }}</h2>
     </div>
 
@@ -156,6 +175,13 @@ export default Vue.extend({
         map: meta.map as string,
       },
     }
+  },
+  methods: {
+    trackScroll(visible: boolean, element: any, section: string) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('map_meta', 'scroll', section)
+      }
+    },
   },
 })
 </script>

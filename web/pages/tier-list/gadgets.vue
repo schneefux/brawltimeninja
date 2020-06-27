@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">Gadget Tier List</h1>
       <p>Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars.</p>
       <p v-if="totalSampleSize < 10000">
@@ -86,6 +92,11 @@ export default {
     }
   },
   methods: {
+    trackScroll(visible, element, section) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('gadget_meta', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadGadgetMeta: 'loadGadgetMeta',
     }),

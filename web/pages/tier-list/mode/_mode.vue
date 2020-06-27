@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">{{ formatMode(mode) }}</h1>
       <p>Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps in Brawl Stars.</p>
     </div>
@@ -14,7 +20,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'maps'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Map Tier Lists</h2>
       <p>Click on a Map to view the Tier List for it.</p>
     </div>
@@ -70,7 +82,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'stats'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Tier List for all {{ formatMode(mode) }} Maps</h2>
       <p v-if="totalSampleSize < 10000">
         ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
@@ -182,6 +200,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    trackScroll(visible: boolean, element: any, section: string) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('mode_meta', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadModeMeta: 'loadModeMeta',
       loadMapMeta: 'loadMapMeta',

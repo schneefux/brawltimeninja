@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">Brawl Stars Brawler Tier List</h1>
       <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
       <p>
@@ -24,7 +30,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'modes'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Mode Tier Lists</h2>
       <p>Click on a Mode to view the Tier List for it.</p>
     </div>
@@ -78,7 +90,7 @@
         <button
           v-show="!showAllModes"
           class="button button-md"
-          @click="showAllModes = true; $ga.event('meta_brawler', 'load_more')"
+          @click="showAllModes = true; $ga.event('brawler_meta', 'load_more')"
         >
           Show All Modes
         </button>
@@ -94,7 +106,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'stats'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Tier List for all Modes</h2>
     </div>
 
@@ -218,6 +236,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    trackScroll(visible: boolean, element: any, section: string) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('brawler_meta', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadBrawlerMeta: 'loadBrawlerMeta',
       loadModeMeta: 'loadModeMeta',

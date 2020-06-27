@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">Map Tier Lists</h1>
       <p>Click on a map to see the best Brawlers for all current Brawl Stars Events.</p>
     </div>
@@ -15,7 +21,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'current_events'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Live Now</h2>
     </div>
 
@@ -81,7 +93,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'upcoming_events'),
+        once: true,
+      }"
+    >
       <h2 class="page-h2">Upcoming Events</h2>
     </div>
 
@@ -226,6 +244,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    trackScroll(visible: boolean, element: any, section: string) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('maps', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadCurrentEvents: 'loadCurrentEvents',
       loadUpcomingEvents: 'loadUpcomingEvents',

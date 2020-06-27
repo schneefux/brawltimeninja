@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <h1 class="page-h1">{{ brawlerName }} Statistics</h1>
+    <h1
+      class="page-h1"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >{{ brawlerName }} Statistics</h1>
     <p>
       This Star Power and Gadget Tier List is generated automatically.
       The data is from Brawl Stars battles played with <span class="text-primary-lighter">{{ brawlerName }}</span> in the current season.
@@ -21,7 +27,13 @@
       Play a few battles and come back later. ⚠
     </p>
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'starpowers'),
+        once: true,
+      }"
+    >
       <h2 class="text-2xl font-semibold">
         Star Power Tier List
       </h2>
@@ -80,7 +92,13 @@
       </template>
     </div>
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'gadgets'),
+        once: true,
+      }"
+    >
       <h2 class="text-2xl font-semibold">
         Gadget Tier List
       </h2>
@@ -145,7 +163,13 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'modes'),
+        once: true,
+      }"
+    >
       <h2 class="text-2xl font-semibold">
         Game Mode Statistics
       </h2>

@@ -1,6 +1,12 @@
 <template>
   <div class="page container">
-    <div class="section-heading">
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'title'),
+        once: true,
+      }"
+    >
       <h1 class="page-h1">Star Power Tier List</h1>
       <p>
         Use the Gadget Tier List to find the best Star Power for all Brawlers in Brawl Stars.
@@ -88,6 +94,11 @@ export default {
     }
   },
   methods: {
+    trackScroll(visible, element, section) {
+      if (visible && '$ga' in this) {
+        this.$ga.event('starpower_meta', 'scroll', section)
+      }
+    },
     ...mapActions({
       loadStarpowerMeta: 'loadStarpowerMeta',
     }),

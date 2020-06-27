@@ -534,7 +534,7 @@ export default Vue.extend({
       this.$ga.event('player', 'search', 'success')
       this.$router.push(this.playerRoute)
     },
-    trackScroll(visible, entry, section) {
+    trackScroll(visible, element, section) {
       if (visible && '$ga' in this) {
         this.$ga.event('home', 'scroll', section)
       }

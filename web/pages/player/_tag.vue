@@ -9,7 +9,8 @@
       data-full-width-responsive
     />
 
-    <div class="section-heading"
+    <div
+      class="section-heading"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
         once: true,
@@ -692,6 +693,10 @@
 
     <div
       v-if="relevantGuides.length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'articles'),
+        once: true,
+      }"
       class="section-heading"
     >
       <h2 class="text-2xl font-semibold">
