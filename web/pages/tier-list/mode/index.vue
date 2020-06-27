@@ -36,10 +36,15 @@
                   </div>
                 </div>
               </div>
-              <div class="text-center py-4">
-                <span class="link bg-black px-3 py-2 rounded-sm">
-                  Open the {{ formatMode(mode) }} Tier List
-                </span>
+            </template>
+            <template v-slot:actions>
+              <div class="flex justify-end">
+                <nuxt-link
+                  :to="`/tier-list/mode/${mode}`"
+                  class="button button-md"
+                >
+                  Open
+                </nuxt-link>
               </div>
             </template>
           </event>
