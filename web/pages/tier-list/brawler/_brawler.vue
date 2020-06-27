@@ -1,5 +1,5 @@
 <template>
-  <div class="py-8 px-6 relative">
+  <div class="container mx-auto p-4">
     <h1 class="text-4xl md:text-center mt-2 font-semibold">
       {{ brawlerName }} Statistics
     </h1>
