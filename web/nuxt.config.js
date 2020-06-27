@@ -30,6 +30,9 @@ export default {
       runtimeCaching: [{
         urlPattern: process.env.MEDIA_URL + '/.*',
         handler: 'staleWhileRevalidate',
+      }, {
+        urlPattern: process.env.API_URL + '/.*',
+        handler: 'networkFirst',
       }],
       // prefix all cache keys with release id
       // write release id to a custom option
