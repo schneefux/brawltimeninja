@@ -889,7 +889,7 @@ export default {
             return
           }
           const bestBrawlers = this.bestByEvent[event.id]
-          const rankIndex = bestBrawlers.findIndex(b => (b.name||'').toLowerCase() === (brawler.name||'').toLowerCase())
+          const rankIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() === brawler.name.toLowerCase())
           if (rankIndex === -1) {
             return
           }
