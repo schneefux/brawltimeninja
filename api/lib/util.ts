@@ -1,5 +1,8 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
+import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
+import { ActiveEvent } from "~/model/Brawlstars";
+
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
   s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
@@ -27,6 +30,25 @@ export function hoursSinceDate(date: string) {
   return Math.floor((now - then) / 1000 / 3600)
 }
 
+export function relativeTimeUntil(timestamp: string): string {
+  const then = new Date(timestamp)
+  const now = new Date()
+  let time = (then.getTime() - now.getTime()) / 1000;
+  let str = ''
+  if (time > 60 * 60 * 24) {
+    const days = Math.floor(time / (60 * 60 * 24))
+    str += days + 'd '
+    time -= days * 60 * 60 * 24
+  }
+  const hours = Math.floor(time / (60 * 60))
+  str += hours + 'h '
+  time -= hours * 60 * 60
+  const minutes = Math.floor(time / 60)
+  str += minutes + 'm '
+  time -= minutes * 60
+  return str
+}
+
 export const brawlerId = (entry: { name: string }) =>
   entry.name.replace(/\.| /g, '_').toLowerCase();
 
@@ -50,6 +72,27 @@ export function formatMode(mode: string) {
 
 export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
+}
+
+/**
+ * Suffix num with SI unit
+ * @param num number
+ * @param digits digits after comma
+ */
+export function formatSI(num: number, digits: number) {
+  const si = [
+    { value: 1, symbol: '' },
+    { value: 1E3, symbol: 'k' },
+    { value: 1E6, symbol: 'M' },
+  ]
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/
+  let i
+  for (i = si.length - 1; i > 0; i--) {
+    if (num >= si[i].value) {
+      break
+    }
+  }
+  return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol
 }
 
 export const metaStatMaps = {
@@ -91,6 +134,7 @@ export const metaStatMaps = {
     winRate: 'The 3v3 Win Rate tells you the % of 3v3 battles this Brawler wins.',
     starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+    duration: 'The Duration tells you how long battles with this Brawler last on average.',
   },
   icons: {
     trophies: 'trophy',
@@ -121,8 +165,8 @@ export const metaStatMaps = {
     duration_boss: (n: number) => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
     rank: (n: number) => n === null ? 'N/A' : n.toFixed(2),
     level: (n: number) => n.toFixed(2),
-    rank1: (n: number) => n,
-    wins: (n: number) => n,
+    rank1: (n: number) => formatSI(n, 1),
+    wins: (n: number) => formatSI(n, 1),
   },
   signs: {
     trophies: -1, // more is better -> sort rank desc
@@ -153,34 +197,71 @@ export const metaStatMaps = {
  *  ] }
  * sorted by the preferred prop according to propPriority
  */
-export function getBestByEvent(mapMeta: any[]) {
-  return [...Object.entries(mapMeta)]
-    .reduce((top, [eventId, entry]) => ({
+export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {
+  return [...Object.entries(meta)]
+    .reduce((top, [key, entry]) => ({
       ...top,
-      [eventId]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
-          name: brawler.name,
-          stats: brawler.stats,
+          title: brawler.name,
+          brawler: brawlerId,
           sampleSize: brawler.sampleSize,
+          stats: brawler.stats,
           sortProp: <string>metaStatMaps.propPriority.find(prop => prop in brawler.stats),
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})
 }
 
-export function getMostPopular(modeMeta: any[]) {
-  return [...Object.entries(modeMeta)]
-    .reduce((top, [eventId, entry]) => ({
+export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {
+  return [...Object.entries(meta)]
+    .reduce((top, [key, entry]) => ({
       ...top,
-      [eventId]: [...Object.entries(<any[]>entry.brawlers)]
+      [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
-          name: brawler.name,
-          stats: brawler.stats,
+          title: brawler.name,
+          brawler: brawlerId,
           sampleSize: brawler.sampleSize,
+          stats: brawler.stats,
           sortProp: 'pickRate',
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})
+}
+
+export interface MetaGridEntry {
+  id: string
+  title: string
+  brawler: string // ID
+  link?: string
+  icon?: string
+  sampleSize: number
+  stats: {
+    [name: string]: string|number
+  }
+}
+
+export interface MetaGridEntrySorted extends MetaGridEntry {
+  sortProp: string
+}
+
+export function formatAsJsonLd(event: ActiveEvent) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    'name': `${formatMode(event.mode)} - ${event.map}`,
+    'startDate': event.start,
+    'endDate': event.end,
+    'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+    'eventStatus': 'https://schema.org/EventScheduled',
+    'url': `/tier-list/map/${event.id}`,
+    'image': [`${process.env.mediaUrl}/tier-list/map/${event.id}.png`],
+    'location': {
+      '@type': 'VirtualLocation',
+      'url': `/tier-list/map/${event.id}`,
+    },
+    'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
+  }
 }

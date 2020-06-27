@@ -39,6 +39,24 @@ export function hoursSinceDate(date) {
     var now = (new Date()).getTime();
     return Math.floor((now - then) / 1000 / 3600);
 }
+export function relativeTimeUntil(timestamp) {
+    var then = new Date(timestamp);
+    var now = new Date();
+    var time = (then.getTime() - now.getTime()) / 1000;
+    var str = '';
+    if (time > 60 * 60 * 24) {
+        var days = Math.floor(time / (60 * 60 * 24));
+        str += days + 'd ';
+        time -= days * 60 * 60 * 24;
+    }
+    var hours = Math.floor(time / (60 * 60));
+    str += hours + 'h ';
+    time -= hours * 60 * 60;
+    var minutes = Math.floor(time / 60);
+    str += minutes + 'm ';
+    time -= minutes * 60;
+    return str;
+}
 export var brawlerId = function (entry) {
     return entry.name.replace(/\.| /g, '_').toLowerCase();
 };
@@ -190,9 +208,10 @@ export function getBest(meta) {
             var brawlerId = _a[0], brawler = _a[1];
             return ({
                 id: brawlerId,
-                name: brawler.name,
-                stats: brawler.stats,
+                title: brawler.name,
+                brawler: brawlerId,
                 sampleSize: brawler.sampleSize,
+                stats: brawler.stats,
                 sortProp: metaStatMaps.propPriority.find(function (prop) { return prop in brawler.stats; })
             });
         })
@@ -207,12 +226,31 @@ export function getMostPopular(meta) {
             var brawlerId = _a[0], brawler = _a[1];
             return ({
                 id: brawlerId,
-                name: brawler.name,
-                stats: brawler.stats,
+                title: brawler.name,
+                brawler: brawlerId,
                 sampleSize: brawler.sampleSize,
+                stats: brawler.stats,
                 sortProp: 'pickRate'
             });
         })
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));
     }, {});
+}
+export function formatAsJsonLd(event) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        'name': formatMode(event.mode) + " - " + event.map,
+        'startDate': event.start,
+        'endDate': event.end,
+        'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+        'eventStatus': 'https://schema.org/EventScheduled',
+        'url': "/tier-list/map/" + event.id,
+        'image': [process.env.mediaUrl + "/tier-list/map/" + event.id + ".png"],
+        'location': {
+            '@type': 'VirtualLocation',
+            'url': "/tier-list/map/" + event.id
+        },
+        'description': event.map + " is a Brawl Stars " + formatMode(event.mode) + " map."
+    };
 }

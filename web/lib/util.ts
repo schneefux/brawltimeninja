@@ -1,6 +1,7 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
+import { ActiveEvent } from "~/model/Brawlstars";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
@@ -27,6 +28,25 @@ export function hoursSinceDate(date: string) {
   const then = Date.parse(date)
   const now = (new Date()).getTime()
   return Math.floor((now - then) / 1000 / 3600)
+}
+
+export function relativeTimeUntil(timestamp: string): string {
+  const then = new Date(timestamp)
+  const now = new Date()
+  let time = (then.getTime() - now.getTime()) / 1000;
+  let str = ''
+  if (time > 60 * 60 * 24) {
+    const days = Math.floor(time / (60 * 60 * 24))
+    str += days + 'd '
+    time -= days * 60 * 60 * 24
+  }
+  const hours = Math.floor(time / (60 * 60))
+  str += hours + 'h '
+  time -= hours * 60 * 60
+  const minutes = Math.floor(time / 60)
+  str += minutes + 'm '
+  time -= minutes * 60
+  return str
 }
 
 export const brawlerId = (entry: { name: string }) =>
@@ -184,9 +204,10 @@ export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGrid
       [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
-          name: brawler.name,
-          stats: brawler.stats,
+          title: brawler.name,
+          brawler: brawlerId,
           sampleSize: brawler.sampleSize,
+          stats: brawler.stats,
           sortProp: <string>metaStatMaps.propPriority.find(prop => prop in brawler.stats),
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
@@ -200,9 +221,10 @@ export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: M
       [key]: [...Object.entries(entry.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
-          name: brawler.name,
-          stats: brawler.stats,
+          title: brawler.name,
+          brawler: brawlerId,
           sampleSize: brawler.sampleSize,
+          stats: brawler.stats,
           sortProp: 'pickRate',
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
@@ -223,4 +245,23 @@ export interface MetaGridEntry {
 
 export interface MetaGridEntrySorted extends MetaGridEntry {
   sortProp: string
+}
+
+export function formatAsJsonLd(event: ActiveEvent) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    'name': `${formatMode(event.mode)} - ${event.map}`,
+    'startDate': event.start,
+    'endDate': event.end,
+    'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+    'eventStatus': 'https://schema.org/EventScheduled',
+    'url': `/tier-list/map/${event.id}`,
+    'image': [`${process.env.mediaUrl}/tier-list/map/${event.id}.png`],
+    'location': {
+      '@type': 'VirtualLocation',
+      'url': `/tier-list/map/${event.id}`,
+    },
+    'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
+  }
 }

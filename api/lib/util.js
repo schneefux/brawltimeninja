@@ -39,6 +39,24 @@ export function hoursSinceDate(date) {
     var now = (new Date()).getTime();
     return Math.floor((now - then) / 1000 / 3600);
 }
+export function relativeTimeUntil(timestamp) {
+    var then = new Date(timestamp);
+    var now = new Date();
+    var time = (then.getTime() - now.getTime()) / 1000;
+    var str = '';
+    if (time > 60 * 60 * 24) {
+        var days = Math.floor(time / (60 * 60 * 24));
+        str += days + 'd ';
+        time -= days * 60 * 60 * 24;
+    }
+    var hours = Math.floor(time / (60 * 60));
+    str += hours + 'h ';
+    time -= hours * 60 * 60;
+    var minutes = Math.floor(time / 60);
+    str += minutes + 'm ';
+    time -= minutes * 60;
+    return str;
+}
 export var brawlerId = function (entry) {
     return entry.name.replace(/\.| /g, '_').toLowerCase();
 };
@@ -60,6 +78,26 @@ export function formatMode(mode) {
 }
 export function xpToHours(xp) {
     return xp / 220; // 145h for 30300 XP as measured by @schneefux
+}
+/**
+ * Suffix num with SI unit
+ * @param num number
+ * @param digits digits after comma
+ */
+export function formatSI(num, digits) {
+    var si = [
+        { value: 1, symbol: '' },
+        { value: 1E3, symbol: 'k' },
+        { value: 1E6, symbol: 'M' },
+    ];
+    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    var i;
+    for (i = si.length - 1; i > 0; i--) {
+        if (num >= si[i].value) {
+            break;
+        }
+    }
+    return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol;
 }
 export var metaStatMaps = {
     labels: {
@@ -99,7 +137,8 @@ export var metaStatMaps = {
         wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
         winRate: 'The 3v3 Win Rate tells you the % of 3v3 battles this Brawler wins.',
         starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-        trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.'
+        trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+        duration: 'The Duration tells you how long battles with this Brawler last on average.'
     },
     icons: {
         trophies: 'trophy',
@@ -130,8 +169,8 @@ export var metaStatMaps = {
         duration_boss: function (n) { return Math.floor(n / 60) + ":" + Math.floor(n % 60).toString().padStart(2, '0'); },
         rank: function (n) { return n === null ? 'N/A' : n.toFixed(2); },
         level: function (n) { return n.toFixed(2); },
-        rank1: function (n) { return n; },
-        wins: function (n) { return n; }
+        rank1: function (n) { return formatSI(n, 1); },
+        wins: function (n) { return formatSI(n, 1); }
     },
     signs: {
         trophies: -1,
@@ -161,37 +200,57 @@ export var metaStatMaps = {
  *  ] }
  * sorted by the preferred prop according to propPriority
  */
-export function getBestByEvent(mapMeta) {
-    return __spreadArrays(Object.entries(mapMeta)).reduce(function (top, _a) {
+export function getBest(meta) {
+    return __spreadArrays(Object.entries(meta)).reduce(function (top, _a) {
         var _b;
-        var eventId = _a[0], entry = _a[1];
-        return (__assign(__assign({}, top), (_b = {}, _b[eventId] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
+        var key = _a[0], entry = _a[1];
+        return (__assign(__assign({}, top), (_b = {}, _b[key] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
             var brawlerId = _a[0], brawler = _a[1];
             return ({
                 id: brawlerId,
-                name: brawler.name,
-                stats: brawler.stats,
+                title: brawler.name,
+                brawler: brawlerId,
                 sampleSize: brawler.sampleSize,
+                stats: brawler.stats,
                 sortProp: metaStatMaps.propPriority.find(function (prop) { return prop in brawler.stats; })
             });
         })
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));
     }, {});
 }
-export function getMostPopular(modeMeta) {
-    return __spreadArrays(Object.entries(modeMeta)).reduce(function (top, _a) {
+export function getMostPopular(meta) {
+    return __spreadArrays(Object.entries(meta)).reduce(function (top, _a) {
         var _b;
-        var eventId = _a[0], entry = _a[1];
-        return (__assign(__assign({}, top), (_b = {}, _b[eventId] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
+        var key = _a[0], entry = _a[1];
+        return (__assign(__assign({}, top), (_b = {}, _b[key] = __spreadArrays(Object.entries(entry.brawlers)).map(function (_a) {
             var brawlerId = _a[0], brawler = _a[1];
             return ({
                 id: brawlerId,
-                name: brawler.name,
-                stats: brawler.stats,
+                title: brawler.name,
+                brawler: brawlerId,
                 sampleSize: brawler.sampleSize,
+                stats: brawler.stats,
                 sortProp: 'pickRate'
             });
         })
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));
     }, {});
+}
+export function formatAsJsonLd(event) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        'name': formatMode(event.mode) + " - " + event.map,
+        'startDate': event.start,
+        'endDate': event.end,
+        'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
+        'eventStatus': 'https://schema.org/EventScheduled',
+        'url': "/tier-list/map/" + event.id,
+        'image': [process.env.mediaUrl + "/tier-list/map/" + event.id + ".png"],
+        'location': {
+            '@type': 'VirtualLocation',
+            'url': "/tier-list/map/" + event.id
+        },
+        'description': event.map + " is a Brawl Stars " + formatMode(event.mode) + " map."
+    };
 }

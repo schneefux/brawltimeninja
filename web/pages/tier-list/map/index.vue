@@ -144,35 +144,14 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState, mapActions } from 'vuex'
-import { formatMode, metaStatMaps, MetaGridEntrySorted } from '../../../lib/util'
+import { formatMode, metaStatMaps, MetaGridEntrySorted, relativeTimeUntil, formatAsJsonLd } from '../../../lib/util'
 import { MapMetaMap } from '../../../model/MetaEntry'
 import { ActiveEvent } from '../../../model/Brawlstars'
-
-function relativeTimeUntil(timestamp: string): string {
-  const then = new Date(timestamp)
-  const now = new Date()
-  let time = (then.getTime() - now.getTime()) / 1000;
-  let str = ''
-  if (time > 60 * 60 * 24) {
-    const days = Math.floor(time / (60 * 60 * 24))
-    str += days + 'd '
-    time -= days * 60 * 60 * 24
-  }
-  const hours = Math.floor(time / (60 * 60))
-  str += hours + 'h '
-  time -= hours * 60 * 60
-  const minutes = Math.floor(time / 60)
-  str += minutes + 'm '
-  time -= minutes * 60
-  return str
-}
-
 
 export default Vue.extend({
   name: 'MetaSelectMapPage',
   data() {
     return {
-      load: {},
       formatMode,
       metaStatMaps,
       relativeTimeUntil,
@@ -180,22 +159,6 @@ export default Vue.extend({
   },
   head() {
     const description = 'Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
-    const formatAsJsonLd = (event: ActiveEvent) => ({
-      '@context': 'https://schema.org',
-      '@type': 'Event',
-      'name': `${formatMode(event.mode)} - ${event.map}`,
-      'startDate': event.start,
-      'endDate': event.end,
-      'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
-      'eventStatus': 'https://schema.org/EventScheduled',
-      'url': `/tier-list/map/${event.id}`,
-      'image': [`${process.env.mediaUrl}/tier-list/map/${event.id}.png`],
-      'location': {
-        '@type': 'VirtualLocation',
-        'url': `/tier-list/map/${event.id}`,
-      },
-      'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
-    })
     const structuredData = this.currentEvents.concat(this.upcomingEvents)
       .map((event) => ({
         type: 'application/ld+json',

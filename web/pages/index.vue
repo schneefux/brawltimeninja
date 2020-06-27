@@ -210,27 +210,59 @@
         <div class="home-section-heading-left">
           Brawl Stars Events
         </div>
-        <div class="home-section-heading-right">
-          <nuxt-link
-            to="/tier-list/map"
-            class="link"
-          >
-            Explore the Map Tier Lists
-          </nuxt-link>
-        </div>
       </div>
 
       <div class="home-section-content">
-        <div
+        <nuxt-link
           v-for="event in currentEvents"
           :key="event.id"
-          class="w-80"
+          :to="`/tier-list/map/${event.id}`"
         >
-          <event-card
-            :event="event"
-            class="rounded-lg"
-          />
-        </div>
+          <event
+            :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
+            :map="event.map"
+            :id="event.id"
+            infobar
+            actions
+          >
+            <template v-slot:infobar>
+              <p class="text-right">
+                ends in {{ relativeTimeUntil(event.end) }}
+              </p>
+            </template>
+            <template v-slot:content>
+              <div class="brawler-avatars my-4">
+                <div
+                  v-for="brawler in bestByEvent[event.id].slice(0, 5)"
+                  :key="brawler.id"
+                  class="brawler-avatars__element"
+                >
+                  <div class="brawler-avatar">
+                    <media-img
+                      :path="`/brawlers/${brawler.id}/avatar`"
+                      size="160"
+                      clazz="brawler-avatar__img"
+                    />
+                    <p class="brawler-avatar__stats">
+                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
+                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <template v-slot:actions>
+              <div class="flex justify-end">
+                <nuxt-link
+                  :to="`/tier-list/map/${event.id}`"
+                  class="button button-md"
+                >
+                  Open
+                </nuxt-link>
+              </div>
+            </template>
+          </event>
+        </nuxt-link>
       </div>
 
       <div
@@ -313,12 +345,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps } from '~/lib/util'
-import EventCard from '~/components/event-card'
-import Youtube from '~/components/youtube'
-import MediaImg from '~/components/media-img'
+import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd } from '../lib/util'
+import { ActiveEvent } from '../model/Brawlstars'
 
 function playerToRoute(player) {
   return {
@@ -329,32 +360,36 @@ function playerToRoute(player) {
   }
 }
 
-export default {
-  components: {
-    EventCard,
-    Youtube,
-    MediaImg,
-  },
+export default Vue.extend({
   head() {
     const description = 'Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
+    const structuredData = this.currentEvents
+      .map((event) => ({
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(formatAsJsonLd(event)),
+      }))
+
     return {
       title: 'Brawl Stars Stats',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
-      ]
+      ],
+      __dangerouslyDisableSanitizers: ['script'],
+      script: structuredData,
     }
   },
   data() {
     return {
       notificationsAllowed: false,
-      tag: undefined,
+      tag: undefined as string|undefined,
       loading: false,
-      error: undefined,
+      error: undefined as string|undefined,
       invalidTagAttempts: 0,
       loadHelpVideo: false,
       playerToRoute,
       metaStatMaps,
+      relativeTimeUntil,
     }
   },
   computed: {
@@ -363,17 +398,17 @@ export default {
         tag: this.cleanedTag,
       })
     },
-    tagRegex() {
+    tagRegex(): RegExp {
       return new RegExp(this.tagPattern)
     },
-    cleanedTag() {
+    cleanedTag(): string {
       return (this.tag || '')
         .trim()
         .replace('#', '')
         .toUpperCase()
         .replace(/O/g, '0')
     },
-    randomHero() {
+    randomHero(): string {
       const heroes = ['crow1', 'crow2', 'crow3']
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
       return '/brawlers/' + hero + '/model';
@@ -382,30 +417,30 @@ export default {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
       return players.slice(0, 3)
     },
-    isInIframe() {
+    isInIframe(): boolean {
       try {
-        return global.window === undefined || global.window.self !== global.window.top
+        return (<any>global).window === undefined || (<any>global).window.self !== (<any>global).window.top
       } catch (e) {
         return true
       }
     },
     ...mapState({
-      ads: state => state.adsEnabled,
-      player: state => state.player,
-      tagPattern: state => state.tagPattern,
-      lastPlayers: state => state.lastPlayers,
-      featuredPlayers: state => state.featuredPlayers,
-      currentEvents: state => state.currentEvents,
-      bsuArticles: state => state.bsuArticles,
-      isApp: state => state.isApp,
-      bestByEvent: state => state.bestByEvent,
+      ads: (state: any) => state.adsEnabled as boolean,
+      player: (state: any) => state.player,
+      tagPattern: (state: any) => state.tagPattern as string,
+      lastPlayers: (state: any) => state.lastPlayers,
+      featuredPlayers: (state: any) => state.featuredPlayers,
+      currentEvents: (state: any) => state.currentEvents as ActiveEvent[],
+      bsuArticles: (state: any) => state.bsuArticles,
+      isApp: (state: any) => state.isApp as boolean,
+      bestByEvent: (state: any) => state.bestByEvent as { [key: string]: MetaGridEntrySorted[] },
     }),
     ...mapGetters({
       topBrawlers: 'topBrawlers',
     }),
   },
   async fetch({ store }) {
-    if (!process.static) {
+    if (!(<any>process).static) {
       await Promise.all([
         store.dispatch('loadCurrentMeta'),
         store.dispatch('loadBrawlerMeta'),
@@ -414,13 +449,13 @@ export default {
     }
   },
   created() {
-    if (process.static) {
+    if ((<any>process).static) {
       this.loadCurrentMeta()
       this.loadBrawlerMeta()
       this.loadBsuArticles()
     }
 
-    if (process.client && 'Notification' in window) {
+    if ((<any>process).client && 'Notification' in window) {
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
   },
@@ -446,7 +481,7 @@ export default {
           const badge = await import(`~/assets/images/mode/icon/${modeId}_optimized.png`).catch(logAndNull)
           const icon = await import(`~/assets/images/map/${event.id.replace(/^1500/, '150')}_small.jpg`).catch(logAndNull)
 
-          const top5 = this.bestByEvent[event.id].slice(0, 5).map(brawler => brawler.name)
+          const top5 = this.bestByEvent[event.id].slice(0, 5).map(entry => entry.title)
 
           sw.showNotification(`${event.mode}: ${top5.join(', ')}`, {
             tag: event.id,
@@ -514,7 +549,7 @@ export default {
       loadBsuArticles: 'loadBsuArticles',
     }),
   },
-}
+})
 </script>
 
 <style>
