@@ -5,21 +5,29 @@
         <slot name="infobar" />
       </div>
       <div
-        class="w-full px-3 py-2 flex font-semibold justify-start items-center"
+        class="w-full px-3 py-2 flex font-semibold justify-between items-center"
         :class="`bg-color-${mode.toLowerCase()}`"
       >
-        <media-img :path="'/modes/' + mode + '/icon'"
-          size="120"
-          clazz="w-10"
-        ></media-img>
-        <div class="ml-2 text-white">
-          <p class="text-xl">
-            {{ formatMode(mode) }}
-          </p>
-          <p v-if="map !== undefined">
-            {{ map }}
-          </p>
+        <div class="flex items-center">
+          <media-img :path="'/modes/' + mode + '/icon'"
+            size="120"
+            clazz="w-10"
+          ></media-img>
+          <div class="ml-2 text-white">
+            <p class="text-xl">
+              {{ formatMode(mode) }}
+            </p>
+            <p v-if="map !== undefined">
+              {{ map }}
+            </p>
+          </div>
         </div>
+        <media-img
+          v-if="id"
+          :path="`/maps/${id}`"
+          size="80"
+          clazz="h-10"
+        ></media-img>
       </div>
       <div class="relative z-0">
         <media-img :path="'/modes/' + mode + '/background'"
@@ -56,13 +64,17 @@ export default {
       type: String,
       required: false
     },
+    id: { // enables map icon top right
+      type: String,
+      required: false,
+    },
     infobar: {
       type: Boolean,
       default: false
     },
     size: {
       type: String, // class
-      default: '',
+      default: 'w-80 md:w-100',
     },
   },
   data() {

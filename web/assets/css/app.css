@@ -156,6 +156,15 @@
   }
 }
 
+/** container for 5 brawler avatars in a w-80 event card */
+.brawler-avatars {
+  @apply flex justify-between mx-1;
+}
+
+.brawler-avatars__element {
+  @apply w-1/5 mx-px flex flex-wrap justify-center overflow-hidden;
+}
+
 /** Brawler avatar with stats below */
 .brawler-avatar {
   @apply bg-black rounded-sm;
@@ -166,5 +175,5 @@
 }
 
 .brawler-avatar__stats {
-  @apply text-xs whitespace-no-wrap m-1;
+  @apply text-xs whitespace-no-wrap tracking-tighter;
 }

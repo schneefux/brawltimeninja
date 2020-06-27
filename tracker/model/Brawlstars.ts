@@ -93,3 +93,11 @@ export interface BattleLog {
   }[]
   paging: {}
 }
+
+export interface ActiveEvent {
+  id: string;
+  map: string;
+  mode: string;
+  start: string;
+  end: string;
+}

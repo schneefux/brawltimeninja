@@ -5,7 +5,7 @@
         {{ formatMode(selectedMode) }}: {{ selectedMap }} Tier List
       </h1>
     </div>
-    <div v-if="bestByEvent[selectedEvent.id].length" class="flex justify-center mt-5">
+    <div v-if="bestByEvent[selectedEvent.id].length" class="flex justify-center section">
       <event
         :mode="selectedEvent.mode"
         :map="selectedEvent.map"
@@ -20,11 +20,11 @@
           ></media-img>
         </template>
         <template v-slot:content>
-          <div class="flex justify-between mt-3 mb-2 mx-2">
+          <div class="brawler-avatars mt-3 mb-2">
             <div
               v-for="brawler in bestByEvent[selectedEvent.id].slice(0, 5)"
               :key="brawler.id"
-              class="w-1/5 mx-1 flex flex-wrap justify-center overflow-hidden"
+              class="brawler-avatars__element"
             >
               <div class="brawler-avatar">
                 <media-img
@@ -42,7 +42,7 @@
         </template>
       </event>
     </div>
-    <p class="mt-6 md:text-center max-w-lg mx-auto">
+    <p class="mt-4 md:text-center max-w-lg mx-auto">
       Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map.
       The data is from Brawl Stars battles in the current season.
     </p>

@@ -15,11 +15,11 @@
         >
           <event :mode="mode">
             <template v-slot:content>
-              <div class="flex justify-between mt-3 mb-2 mx-2">
+              <div class="brawler-avatars mt-3 mb-2">
                 <div
                   v-for="brawler in topBrawlersByMode[mode].slice(0, 5)"
                   :key="brawler.id"
-                  class="w-1/5 mx-1 flex flex-wrap justify-center overflow-hidden"
+                  class="brawler-avatars__element"
                 >
                   <div class="brawler-avatar">
                     <media-img

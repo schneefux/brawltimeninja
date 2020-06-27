@@ -1,4 +1,4 @@
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, ActiveEvent } from '../model/Brawlstars';
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
@@ -36,7 +36,7 @@ export default class BrawlstarsService {
     } ];
   }
 
-  public async getEvents() {
+  public async getEvents(): ActiveEvent[] {
     const response = await request<{ active: BrawlstarsEvent[] }>(
       'events',
       this.apiUnofficial,
@@ -51,7 +51,7 @@ export default class BrawlstarsService {
       mode: event.map.gameMode.name,
       start: event.startTime,
       end: event.endTime,
-    }));
+    }) as ActiveEvent);
   }
 
   // TODO deduplicate this code
@@ -70,7 +70,7 @@ export default class BrawlstarsService {
       mode: event.map.gameMode.name,
       start: event.startTime,
       end: event.endTime,
-    }));
+    }) as ActiveEvent);
   }
 
   public async getHoursLeaderboard() {
