@@ -15,6 +15,16 @@
       </p>
     </div>
 
+    <adsense
+      v-if="ads"
+      root-class="ad-section"
+      id="ezoic-pub-ad-placeholder-112"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="1665534416"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div v-if="bestByEvent[selectedEvent.id].length" class="section flex justify-center">
       <event
         :mode="selectedEvent.mode"
@@ -53,16 +63,6 @@
       </event>
     </div>
 
-    <adsense
-      v-if="ads"
-      id="ezoic-pub-ad-placeholder-112"
-      ins-class="h-24 mb-2 text-center"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="1665534416"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
-
     <div class="section-heading">
       <h2 class="page-h2">Tier List for {{ formatMode(selectedMode) }} - {{ selectedMap }}</h2>
     </div>
@@ -73,6 +73,15 @@
         ga-category="map_meta"
       />
     </div>
+
+    <adsense
+      v-if="ads"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="3536131238"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
   </div>
 </template>
 

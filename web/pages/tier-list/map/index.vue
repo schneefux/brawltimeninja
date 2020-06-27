@@ -8,7 +8,7 @@
     <adsense
       v-if="ads"
       id="ezoic-pub-ad-placeholder-110"
-      ins-class="h-24 mt-6 text-center"
+      root-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="8877810024"
       data-ad-format="auto"
@@ -72,6 +72,15 @@
       </nuxt-link>
     </div>
 
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="4150756245"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section-heading">
       <h2 class="page-h2">Upcoming Events</h2>
     </div>
@@ -132,7 +141,7 @@
     <adsense
       v-if="ads && !isApp"
       id="ezoic-pub-ad-placeholder-111"
-      ins-class="h-24 mt-6 text-center"
+      root-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="3577381889"
       data-ad-format="auto"

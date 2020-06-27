@@ -14,6 +14,16 @@
       </p>
     </div>
 
+    <adsense
+      v-if="ads"
+      id="ezoic-pub-ad-placeholder-107"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="9201379700"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section-heading">
       <h2 class="page-h2">Mode Tier Lists</h2>
       <p>Click on a Mode to view the Tier List for it.</p>
@@ -75,6 +85,15 @@
       </div>
     </div>
 
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="6446102315"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section-heading">
       <h2 class="page-h2">Tier List for all Modes</h2>
     </div>
@@ -101,20 +120,19 @@
       ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
     </p>
 
-    <adsense
-      v-if="ads"
-      id="ezoic-pub-ad-placeholder-107"
-      ins-class="h-24 mb-2 text-center"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="9201379700"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
-
     <meta-grid
       :entries="brawlers"
       link-text="More Statistics"
       ga-category="brawler_meta"
+    />
+
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="7838173054"
+      data-ad-format="auto"
+      data-full-width-responsive
     />
   </div>
 </template>

@@ -5,6 +5,15 @@
       <p>Use the <span class="text-primary-lighter">{{ formatMode(mode) }}</span> Tier List to find the best Brawler for all {{ formatMode(mode) }} maps in Brawl Stars.</p>
     </div>
 
+    <adsense
+      v-if="ads"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="2291234880"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section-heading">
       <h2 class="page-h2">Map Tier Lists</h2>
       <p>Click on a Map to view the Tier List for it.</p>
@@ -52,6 +61,15 @@
       </div>
     </div>
 
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="2263314723"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section-heading">
       <h2 class="page-h2">Tier List for all {{ formatMode(mode) }} Maps</h2>
       <p v-if="totalSampleSize < 10000">
@@ -65,6 +83,15 @@
         ga-category="mode_meta"
       />
     </div>
+
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="8497550588"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
   </div>
 </template>
 

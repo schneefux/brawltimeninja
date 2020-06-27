@@ -190,3 +190,8 @@
 .page-h2 {
   @apply text-2xl font-semibold;
 }
+
+/** ad root-class */
+.ad-section {
+  @apply mt-4;
+}

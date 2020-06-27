@@ -8,6 +8,15 @@
       </p>
     </div>
 
+    <adsense
+      v-if="ads"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="5576993339"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
+
     <div class="section">
       <div class="flex flex-wrap justify-center">
         <nuxt-link
@@ -15,7 +24,7 @@
           :key="mode"
           :to="`/tier-list/mode/${camelToKebab(mode)}`"
         >
-          <event :mode="mode">
+          <event :mode="mode" actions>
             <template v-slot:content>
               <div class="brawler-avatars my-4">
                 <div
@@ -51,6 +60,15 @@
         </nuxt-link>
       </div>
     </div>
+
+    <adsense
+      v-if="ads && !isApp"
+      root-class="ad-section"
+      data-ad-client="ca-pub-6856963757796636"
+      data-ad-slot="6913006175"
+      data-ad-format="auto"
+      data-full-width-responsive
+    />
   </div>
 </template>
 
