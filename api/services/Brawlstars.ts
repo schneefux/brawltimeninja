@@ -280,9 +280,10 @@ export default class BrawlstarsService {
       }), <{ [id: string]: number }>{});
 
       const nonNullStats = (entry: MetaMapEntry) => {
+        const fixed = (n: number) => Number.parseFloat(n.toFixed(4))
         const stats = <{ [stat: string]: number }>{};
         if (!!entry.wins && entry.wins > 0) {
-          stats.winRate = entry.wins / entry.picks;
+          stats.winRate = fixed(entry.wins / entry.picks);
         }
         if (!!entry.rank && entry.rank > 0) {
           stats.rank = entry.rank;
@@ -293,9 +294,9 @@ export default class BrawlstarsService {
         if (!!entry.duration && entry.duration > 0) {
           stats.duration = entry.duration;
         }
-        stats.pickRate = entry.picks / mapTotalPicks[entry.id];
+        stats.pickRate = fixed(entry.picks / mapTotalPicks[entry.id]);
         if (!!entry.starRate && entry.starRate > 0) {
-          stats.starRate = entry.starRate;
+          stats.starRate = fixed(entry.starRate);
         }
         if (!!entry.rank1 && entry.rank1 > 0) {
           stats.rank1 = entry.rank1;
