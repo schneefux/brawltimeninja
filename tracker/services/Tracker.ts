@@ -90,6 +90,8 @@ export default class TrackerService {
             starpower2_name: brawler.starPowers.length <= 1 ? null : brawler.starPowers[1].name,
             gadget1_id: brawler.gadgets.length == 0 ? null : brawler.gadgets[0].id,
             gadget1_name: brawler.gadgets.length == 0 ? null : brawler.gadgets[0].id,
+            gadget2_id: brawler.gadgets.length <= 1 ? null : brawler.gadgets[1].id,
+            gadget2_name: brawler.gadgets.length <= 1 ? null : brawler.gadgets[1].id,
           })
         ));
 
@@ -797,6 +799,16 @@ export default class TrackerService {
         });
       });
       console.log('added disabled to dim brawler starpower');
+    }
+
+    if (!await this.knex.schema.hasColumn('player_brawler', 'gadget2_id')) {
+      await this.knex.transaction(async (txn) => {
+        await txn.schema.table('player_brawler', (table) => {
+          table.integer('gadget2_id').nullable();
+          table.string('gadget2_name').nullable();
+        });
+        console.log('updated player_brawler');
+      })
     }
 
     console.log('all migrations done');
