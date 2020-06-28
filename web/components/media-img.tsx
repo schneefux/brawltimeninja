@@ -1,11 +1,3 @@
-<template>
-  <picture>
-    <source :srcset="url + '.webp' + query" type="image/webp">
-    <img :src="url + (transparent ? '.png': '.jpg') + query" :class="clazz" :style="ztyle" v-bind="$attrs">
-  </picture>
-</template>
-
-<script lang="ts">
 import Vue from 'vue'
 
 function encodeQuery(data: { [key: string]: number|string }) {
@@ -17,7 +9,7 @@ function encodeQuery(data: { [key: string]: number|string }) {
 }
 
 export default Vue.extend({
-  inheritAttrs: false,
+  functional: true,
   props: {
     clazz: {
       type: String,
@@ -39,18 +31,24 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-  },
-  computed: {
-    url(): string {
-      return process.env.mediaUrl + this.path
+    mediaUrl: {
+      type: String,
+      default() {
+        return process.env.mediaUrl
+      }
     },
-    query(): string {
+  },
+  render(h, { props, data }) {
+    function query({ size }: { size: string|number|undefined }): string {
       const opts = {}
-      if (this.size) {
-        opts['size'] = this.size
+      if (size) {
+        opts['size'] = size
       }
       return '?' + encodeQuery(opts)
-    },
-  }
+    }
+    return <picture>
+      <source srcset={props.mediaUrl + props.path + '.webp' + query(props)} type="image/webp" />
+      <img src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)} class={props.clazz} style={props.ztyle} {... { attrs: data.attrs } } />
+    </picture>
+  },
 })
-</script>

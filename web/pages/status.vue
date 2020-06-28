@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import MediaImg from '~/components/media-img'
 import { Timeline } from 'vue-tweet-embed'
 
 export default {
@@ -43,7 +42,6 @@ export default {
   },
   components: {
     Timeline,
-    MediaImg,
   },
   data() {
     return {

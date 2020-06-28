@@ -38,15 +38,8 @@
 </template>
 
 <script>
-import Youtube from '~/components/youtube'
-import MediaImg from '~/components/media-img'
-
 export default {
   layout: 'default',
-  components: {
-    Youtube,
-    MediaImg,
-  },
   props: ['error'],
 }
 </script>

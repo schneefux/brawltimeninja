@@ -73,13 +73,9 @@
 <script>
 import { mapState } from 'vuex'
 import { formatMode, metaStatMaps } from '~/lib/util'
-import MediaImg from '~/components/media-img'
 
 export default {
   name: 'EventCard',
-  components: {
-    MediaImg,
-  },
   props: {
     event: {
       type: Object,

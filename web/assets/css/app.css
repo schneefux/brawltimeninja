@@ -195,3 +195,46 @@
 .ad-section {
   @apply mt-4;
 }
+
+/* purgecss start ignore */
+.bg-color-heist {
+  background-color: #c663cd;
+}
+
+.bg-color-siege {
+  background-color: #ef5132;
+}
+
+.bg-color-soloshowdown,
+.bg-color-duoshowdown {
+  background-color: #81d621;
+}
+
+.bg-color-bounty {
+  background-color: #10b2b7;
+}
+
+.bg-color-brawlball {
+  background-color: #8ca0e0;
+}
+
+.bg-color-gemgrab {
+  background-color: #9b3df3;
+}
+
+.bg-color-biggame {
+  background-color: #dc2423;
+}
+
+.bg-color-roborumble {
+  background-color: #0085fb;
+}
+
+.bg-color-bossfight {
+  background-color: #900020;
+}
+
+.bg-color-hotzone {
+  background-color: #e33c50;
+}
+/* purgecss end ignore */

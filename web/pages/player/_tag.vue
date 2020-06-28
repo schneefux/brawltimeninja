@@ -414,107 +414,110 @@
         </div>
 
         <div class="w-full flex md:flex-wrap">
-          <event
+          <div
             v-for="(battle, index) in player.battles"
             :key="battle.timestamp"
-            :mode="battle.event.mode"
-            :map="battle.event.map"
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
-            size="w-80"
             class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
-            infobar
           >
-            <template v-slot:infobar>
-              <div class="flex justify-between">
-                <div>
-                  <span class="mr-2">
-                    {{ battle.result }}
-                  </span>
-                  <span v-if="battle.trophyChange !== undefined">
-                    <template v-if="battle.trophyChange > 0">
-                      +{{ battle.trophyChange }}
+            <event
+              :mode="battle.event.mode"
+              :map="battle.event.map"
+              size="w-80"
+              infobar
+            >
+              <template v-slot:infobar>
+                <div class="flex justify-between">
+                  <div>
+                    <span class="mr-2">
+                      {{ battle.result }}
+                    </span>
+                    <span v-if="battle.trophyChange !== undefined">
+                      <template v-if="battle.trophyChange > 0">
+                        +{{ battle.trophyChange }}
+                      </template>
+                      <template v-else>
+                        {{ battle.trophyChange }}
+                      </template>
+                      <img
+                        src="~/assets/images/icon/trophy_optimized.png"
+                        class="w-4 inline"
+                      >
+                    </span>
+                  </div>
+                  <span>
+                    <template v-if="hoursSinceDate(battle.timestamp) == 0">
+                      just now
                     </template>
                     <template v-else>
-                      {{ battle.trophyChange }}
+                      {{ hoursSinceDate(battle.timestamp) }}h ago
                     </template>
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="w-4 inline"
-                    >
                   </span>
                 </div>
-                <span>
-                  <template v-if="hoursSinceDate(battle.timestamp) == 0">
-                    just now
-                  </template>
-                  <template v-else>
-                    {{ hoursSinceDate(battle.timestamp) }}h ago
-                  </template>
-                </span>
-              </div>
-            </template>
-            <template v-slot:content>
-              <div class="flex flex-wrap justify-center">
-                <div
-                  v-for="(team, index) in battle.teams"
-                  :key="index"
-                  :class="{
-                    'mt-8': battle.teams.length == 3,
-                    'mx-1 rounded-sm': team.length == 2,
-                  }"
-                  class="flex flex-wrap justify-center z-10 my-1"
-                >
-                  <nuxt-link
-                    v-for="mate in team"
-                    :key="mate.tag"
-                    :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
-                    :to="`/player/${mate.tag}`"
-                    class="w-14 h-14 bg-black py-px relative overflow-hidden"
+              </template>
+              <template v-slot:content>
+                <div class="flex flex-wrap justify-center">
+                  <div
+                    v-for="(team, index) in battle.teams"
+                    :key="index"
                     :class="{
-                      'border-2 border-gray-300': mate.tag == player.tag,
-                      'mx-1 rounded-sm': team.length != 2,
+                      'mt-8': battle.teams.length == 3,
+                      'mx-1 rounded-sm': team.length == 2,
                     }"
+                    class="flex flex-wrap justify-center z-10 my-1"
                   >
-                    <media-img
-                      :path="'/brawlers/' + mate.brawler + '/avatar'"
-                      size="80"
-                      clazz="h-8"
-                    ></media-img>
-                    <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
-                      <div class="w-full flex">
-                        <span
-                          class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
-                        >
-                          {{ mate.brawlerTrophies }}
-                        </span>
-                        <img
-                          src="~/assets/images/icon/trophy_optimized.png"
-                          class="w-4 h-4 ml-px"
-                        >
-                      </div>
-                      <div class="w-full">
-                        <span
-                          v-if="mate.isBigbrawler"
-                          class="text-sm"
-                        >
-                          💀
-                        </span>
-                      </div>
-                    </div>
-                    <span
-                      class="text-xs whitespace-no-wrap m-px"
+                    <nuxt-link
+                      v-for="mate in team"
+                      :key="mate.tag"
+                      :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
+                      :to="`/player/${mate.tag}`"
+                      class="w-14 h-14 bg-black py-px relative overflow-hidden"
                       :class="{
-                        'link': mate.tag != player.tag,
-                        'text-secondary': mate.tag == player.tag,
+                        'border-2 border-gray-300': mate.tag == player.tag,
+                        'mx-1 rounded-sm': team.length != 2,
                       }"
                     >
-                      {{ mate.name }}
-                    </span>
-                  </nuxt-link>
+                      <media-img
+                        :path="'/brawlers/' + mate.brawler + '/avatar'"
+                        size="80"
+                        clazz="h-8"
+                      ></media-img>
+                      <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
+                        <div class="w-full flex">
+                          <span
+                            class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
+                          >
+                            {{ mate.brawlerTrophies }}
+                          </span>
+                          <img
+                            src="~/assets/images/icon/trophy_optimized.png"
+                            class="w-4 h-4 ml-px"
+                          >
+                        </div>
+                        <div class="w-full">
+                          <span
+                            v-if="mate.isBigbrawler"
+                            class="text-sm"
+                          >
+                            💀
+                          </span>
+                        </div>
+                      </div>
+                      <span
+                        class="text-xs whitespace-no-wrap m-px"
+                        :class="{
+                          'link': mate.tag != player.tag,
+                          'text-secondary': mate.tag == player.tag,
+                        }"
+                      >
+                        {{ mate.name }}
+                      </span>
+                    </nuxt-link>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </event>
+              </template>
+            </event>
+          </div>
         </div>
 
         <div
@@ -745,19 +748,9 @@
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate, getBest } from '~/lib/util'
-import Blogroll from '~/components/blogroll'
-import BrawlerCard from '~/components/brawler-card'
-import MediaImg from '~/components/media-img'
-import Event from '~/components/event'
 
 export default {
   name: 'PlayerProfile',
-  components: {
-    Blogroll,
-    BrawlerCard,
-    MediaImg,
-    Event,
-  },
   head() {
     const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
     return {
@@ -772,7 +765,7 @@ export default {
     return {
       error: '',
       battlePage: 1,
-      battlePageSize: 3,
+      battlePageSize: 4,
       refreshSecondsLeft: 180,
       tipsPage: 1,
       tipsPageSize: 3,

@@ -213,56 +213,52 @@
       </div>
 
       <div class="home-section-content">
-        <nuxt-link
+        <event
           v-for="event in currentEvents"
           :key="event.id"
-          :to="`/tier-list/map/${event.id}`"
+          :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
+          :map="event.map"
+          :id="event.id"
+          infobar
+          actions
         >
-          <event
-            :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
-            :map="event.map"
-            :id="event.id"
-            infobar
-            actions
-          >
-            <template v-slot:infobar>
-              <p class="text-right">
-                ends in {{ relativeTimeUntil(event.end) }}
-              </p>
-            </template>
-            <template v-slot:content>
-              <div class="brawler-avatars my-4">
-                <div
-                  v-for="brawler in bestByEvent[event.id].slice(0, 5)"
-                  :key="brawler.id"
-                  class="brawler-avatars__element"
-                >
-                  <div class="brawler-avatar">
-                    <media-img
-                      :path="`/brawlers/${brawler.id}/avatar`"
-                      size="160"
-                      clazz="brawler-avatar__img"
-                    />
-                    <p class="brawler-avatar__stats">
-                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
-                    </p>
-                  </div>
+          <template v-slot:infobar>
+            <p class="text-right">
+              ends in {{ relativeTimeUntil(event.end) }}
+            </p>
+          </template>
+          <template v-slot:content>
+            <div class="brawler-avatars my-4">
+              <div
+                v-for="brawler in bestByEvent[event.id].slice(0, 5)"
+                :key="brawler.id"
+                class="brawler-avatars__element"
+              >
+                <div class="brawler-avatar">
+                  <media-img
+                    :path="`/brawlers/${brawler.id}/avatar`"
+                    size="160"
+                    clazz="brawler-avatar__img"
+                  />
+                  <p class="brawler-avatar__stats">
+                    {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
+                    {{ metaStatMaps.labelsShort[brawler.sortProp] }}
+                  </p>
                 </div>
               </div>
-            </template>
-            <template v-slot:actions>
-              <div class="flex justify-end">
-                <nuxt-link
-                  :to="`/tier-list/map/${event.id}`"
-                  class="button button-md"
-                >
-                  Open
-                </nuxt-link>
-              </div>
-            </template>
-          </event>
-        </nuxt-link>
+            </div>
+          </template>
+          <template v-slot:actions>
+            <div class="flex justify-end">
+              <nuxt-link
+                :to="`/tier-list/map/${event.id}`"
+                class="button button-md"
+              >
+                Open
+              </nuxt-link>
+            </div>
+          </template>
+        </event>
       </div>
 
       <div

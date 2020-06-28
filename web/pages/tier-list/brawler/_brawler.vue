@@ -225,7 +225,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/lib/util'
-import MediaImg from '~/components/media-img'
 
 export default {
   name: 'StarpowerMetaPage',
@@ -238,9 +237,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: description },
       ]
     }
-  },
-  components: {
-    MediaImg,
   },
   data() {
     return {
