@@ -347,9 +347,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd } from '../lib/util'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
+import { BrawlerMetaEntry } from '../model/MetaEntry'
 
 function playerToRoute(player) {
   return {
@@ -360,10 +361,27 @@ function playerToRoute(player) {
   }
 }
 
+function getTopBrawlers(brawlerMeta: BrawlerMetaEntry[]) {
+  const props = Object.keys(metaStatMaps.labels)
+  const max = {} as { [key: string]: BrawlerMetaEntry }
+
+  brawlerMeta.forEach((entry) => {
+    props.forEach((prop) => {
+      if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
+        entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
+        max[prop] = entry
+      }
+    })
+  })
+
+  return max
+}
+
 export default Vue.extend({
   head() {
     const description = 'Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
-    const structuredData = this.currentEvents
+    const currentEvents = this.currentEvents as ActiveEvent[]
+    const structuredData = currentEvents
       .map((event) => ({
         type: 'application/ld+json',
         innerHTML: JSON.stringify(formatAsJsonLd(event)),
@@ -387,6 +405,8 @@ export default Vue.extend({
       error: undefined as string|undefined,
       invalidTagAttempts: 0,
       loadHelpVideo: false,
+      currentEvents: [] as ActiveEvent[],
+      bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       playerToRoute,
       metaStatMaps,
       relativeTimeUntil,
@@ -430,31 +450,24 @@ export default Vue.extend({
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
-      currentEvents: (state: any) => state.currentEvents as ActiveEvent[],
-      bsuArticles: (state: any) => state.bsuArticles,
       isApp: (state: any) => state.isApp as boolean,
-      bestByEvent: (state: any) => state.bestByEvent as { [key: string]: MetaGridEntrySorted[] },
-    }),
-    ...mapGetters({
-      topBrawlers: 'topBrawlers',
     }),
   },
-  async fetch({ store }) {
-    if (!(<any>process).static) {
-      await Promise.all([
-        store.dispatch('loadCurrentMeta'),
-        store.dispatch('loadBrawlerMeta'),
-        store.dispatch('loadBsuArticles'),
-      ])
+  async asyncData({ $axios }) {
+    const events = await $axios.$get('/api/events/active')
+    const mapMeta = await $axios.$get('/api/meta/map/events')
+    const brawlerMeta = await $axios.$get('/api/meta/brawler')
+    const bsuArticles = await $axios.$get('/api/partners/bsu')
+    const bestByEvent = getBest(mapMeta)
+    const topBrawlers = getTopBrawlers(brawlerMeta)
+    return {
+      currentEvents: events.current,
+      bestByEvent,
+      topBrawlers,
+      bsuArticles,
     }
   },
   created() {
-    if ((<any>process).static) {
-      this.loadCurrentMeta()
-      this.loadBrawlerMeta()
-      this.loadBsuArticles()
-    }
-
     if ((<any>process).client && 'Notification' in window) {
       this.notificationsAllowed = Notification.permission !== 'denied'
     }
@@ -543,9 +556,7 @@ export default Vue.extend({
       addLastPlayer: 'addLastPlayer',
     }),
     ...mapActions({
-      loadBrawlerMeta: 'loadBrawlerMeta',
       loadPlayer: 'loadPlayer',
-      loadCurrentMeta: 'loadCurrentMeta',
       loadBsuArticles: 'loadBsuArticles',
     }),
   },

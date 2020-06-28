@@ -148,12 +148,18 @@ export default Vue.extend({
       formatMode,
       mode: '',
       showAllMaps: false,
+      modeMeta: {} as ModeMetaMap,
+      mapMeta: {} as MapMetaMap,
     }
   },
-  asyncData({ params }) {
+  async asyncData({ params, $axios }) {
     const mode = kebabToCamel(params.mode as string)
+    const modeMeta = await $axios.$get('/api/meta/mode')
+    const mapMeta = await $axios.$get('/api/meta/map/mode/' + mode.toLowerCase())
     return {
       mode,
+      modeMeta,
+      mapMeta,
     }
   },
   computed: {
@@ -181,23 +187,9 @@ export default Vue.extend({
         .filter((event) => event.mode == this.mode)
     },
     ...mapState({
-      modeMeta: (state: any) => state.modeMeta as ModeMetaMap,
-      mapMeta: (state: any) => state.mapMeta as MapMetaMap,
       ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  async fetch({ store }) {
-    if (!(<any>process).static) {
-      await store.dispatch('loadModeMeta')
-      await store.dispatch('loadMapMeta')
-    }
-  },
-  async created() {
-    if ((<any>process).static) {
-      await this.loadModeMeta()
-      await this.loadMapMeta()
-    }
   },
   methods: {
     trackScroll(visible: boolean, element: any, section: string) {
@@ -205,10 +197,6 @@ export default Vue.extend({
         this.$ga.event('mode_meta', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadModeMeta: 'loadModeMeta',
-      loadMapMeta: 'loadMapMeta',
-    }),
   },
 })
 </script>

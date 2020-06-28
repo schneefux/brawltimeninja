@@ -744,7 +744,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate } from '~/lib/util'
+import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate, getBest } from '~/lib/util'
 import Blogroll from '~/components/blogroll'
 import BrawlerCard from '~/components/brawler-card'
 import MediaImg from '~/components/media-img'
@@ -780,6 +780,9 @@ export default {
       showAllModes: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
+      currentEvents: [],
+      bestByEvent: {},
+      leaderboard: [],
       hoursSinceDate,
       formatMode,
     }
@@ -1011,10 +1014,8 @@ export default {
       blog: state => state.blog,
       player: state => state.player,
       totalBrawlers: state => state.totalBrawlers,
-      currentEvents: state => state.currentEvents,
       installBannerDismissed: state => state.installBannerDismissed,
       isApp: state => state.isApp,
-      bestByEvent: state => state.bestByEvent,
     }),
     ...mapGetters({
       rank: 'playerRank',
@@ -1051,8 +1052,17 @@ export default {
     if (process.client) {
       this.loadPlayerWinrates()
       this.loadPlayerHistory()
-      this.loadCurrentMeta()
-      this.loadLeaderboard()
+    }
+  },
+  async asyncData({ $axios }) {
+    const events = await $axios.$get('/api/events/active')
+    const mapMeta = await $axios.$get('/api/meta/map/events')
+    const leaderboard = await $axios.$get('/api/leaderboard/hours')
+    const bestByEvent = getBest(mapMeta)
+    return {
+      currentEvents: events.current,
+      leaderboard,
+      bestByEvent,
     }
   },
   mounted() {
@@ -1100,7 +1110,6 @@ export default {
     async refresh() {
       this.refreshSecondsLeft = 180
       await this.refreshPlayer()
-      await this.loadCurrentMeta()
     },
     dismissInstall() {
       this.$ga.event('app', 'dismiss', 'install_banner')
@@ -1154,8 +1163,6 @@ export default {
       refreshPlayer: 'refreshPlayer',
       loadPlayerHistory: 'loadPlayerHistory',
       loadPlayerWinrates: 'loadPlayerWinrates',
-      loadLeaderboard: 'loadLeaderboard',
-      loadCurrentMeta: 'loadCurrentMeta',
       install: 'install',
     }),
   },

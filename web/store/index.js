@@ -1,6 +1,5 @@
 import { exception, event } from 'vue-analytics'
 import payload from './payload.json'
-import { metaStatMaps, getBest } from '~/lib/util'
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -42,11 +41,6 @@ export const state = () => ({
   upcomingEventsLoaded: false,
   leaderboard: [],
   leaderboardLoaded: false,
-  brawlerMeta: [],
-  brawlerMetaLoaded: false,
-  mapMeta: [],
-  mapMetaLoaded: false,
-  mapMetaSlicesLoaded: [],
   bestByEvent: {},
   starpowerMeta: [],
   starpowerMetaLoaded: false,
@@ -74,21 +68,6 @@ export const getters = {
     return state.leaderboard
       .map(({ tag }) => tag)
       .indexOf(state.player.tag) + 1
-  },
-  topBrawlers(state) {
-    const props = Object.keys(metaStatMaps.labels)
-    const max = {}
-
-    state.brawlerMeta.forEach((entry) => {
-      props.forEach((prop) => {
-        if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
-          entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
-          max[prop] = entry
-        }
-      })
-    })
-
-    return max
   },
   isInstallable(state) {
     const isAndroid = process.client && /android/i.test(navigator.userAgent)
@@ -131,16 +110,6 @@ export const mutations = {
     state.leaderboard = leaderboard
     state.leaderboardLoaded = true
   },
-  setBrawlerMeta(state, meta) {
-    state.brawlerMeta = meta
-    state.brawlerMetaLoaded = true
-  },
-  setMapMeta(state, meta) {
-    state.mapMeta = meta
-    state.bestByEvent = getBest(state.mapMeta)
-
-    state.mapMetaLoaded = true
-  },
   setStarpowerMeta(state, meta) {
     state.starpowerMeta = meta
     state.starpowerMetaLoaded = true
@@ -148,16 +117,6 @@ export const mutations = {
   setGadgetMeta(state, meta) {
     state.gadgetMeta = meta
     state.gadgetMetaLoaded = true
-  },
-  addMapMetaSlice(state, metaSlice) {
-    state.mapMeta = {
-      ...state.mapMeta,
-      ...metaSlice,
-    }
-    state.bestByEvent = getBest(state.mapMeta)
-  },
-  setMapMetaSliceLoaded(state, sliceName) {
-    state.mapMetaSlicesLoaded.push(sliceName)
   },
   setModeMeta(state, meta) {
     state.modeMeta = meta
@@ -235,34 +194,6 @@ export const actions = {
     await dispatch('loadPlayerHistory')
     await dispatch('loadPlayerWinrates')
   },
-  async loadCurrentEvents({ state, commit }) {
-    if (state.currentEventsLoaded) {
-      return
-    }
-
-    try {
-      const currentEvents = await this.$axios.$get('/api/current-events')
-      commit('setCurrentEvents', currentEvents)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get events: ' + error.message)
-      console.error('cannot get current events:', error.message)
-    }
-  },
-  async loadUpcomingEvents({ state, commit }) {
-    if (state.upcomingEventsLoaded) {
-      return
-    }
-
-    try {
-      const upcomingEvents = await this.$axios.$get('/api/upcoming-events')
-      commit('setUpcomingEvents', upcomingEvents)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get upcoming events: ' + error.message)
-      console.error('cannot get upcoming events:', error.message)
-    }
-  },
   async loadLeaderboard({ state, commit }) {
     if (state.leaderboardLoaded) {
       return
@@ -276,54 +207,6 @@ export const actions = {
       exception('cannot get leaderboard: ' + error.message)
       console.error('cannot get leaderboard:', error.message)
     }
-  },
-  async loadBrawlerMeta({ state, commit }) {
-    if (state.brawlerMetaLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/brawler')
-      commit('setBrawlerMeta', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get brawler meta: ' + error.message)
-      console.error('cannot get brawler meta:', error.message)
-    }
-  },
-  async loadMapMeta({ state, commit }) {
-    if (state.mapMetaLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/map')
-      commit('setMapMeta', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get map meta: ' + error.message)
-      console.error('cannot get map meta:', error.message)
-    }
-  },
-  async loadMapMetaSlice({ state, commit }, sliceName) {
-    if (state.mapMetaLoaded ||
-        state.mapMetaSlicesLoaded.includes(sliceName)) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/map?' + sliceName)
-      commit('addMapMetaSlice', meta)
-      commit('setMapMetaSliceLoaded', sliceName)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get map meta slice: ' + error.message)
-      console.error('cannot get map meta slice:', error.message)
-    }
-  },
-  async loadCurrentMeta({ dispatch }) {
-    await dispatch('loadCurrentEvents')
-    await dispatch('loadMapMetaSlice', 'current')
   },
   async loadStarpowerMeta({ state, commit }) {
     if (state.starpowerMetaLoaded) {
@@ -365,20 +248,6 @@ export const actions = {
       // not critical, ignore
       exception('cannot get mode meta: ' + error.message)
       console.error('cannot get mode meta:', error.message)
-    }
-  },
-  async loadBsuArticles({ state, commit }) {
-    if (state.bsuArticlesLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/partners/bsu')
-      commit('setBsuArticles', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get bsu articles: ' + error.message)
-      console.error('cannot get bsu articles:', error.message)
     }
   },
   async install({ state, commit }) {

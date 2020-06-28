@@ -45,9 +45,9 @@ router.get('/player/:tag/history', async (ctx, next) => {
   await next();
 });
 
-router.get('/current-events', async (ctx, next) => {
+router.get('/events', async (ctx, next) => {
   try {
-    ctx.body = await service.getEvents();
+    ctx.body = await service.getAllEvents();
     ctx.set('Cache-Control', 'public, max-age=300');
   } catch (error) {
     console.log(error);
@@ -56,9 +56,9 @@ router.get('/current-events', async (ctx, next) => {
   await next();
 });
 
-router.get('/upcoming-events', async (ctx, next) => {
+router.get('/events/active', async (ctx, next) => {
   try {
-    ctx.body = await service.getUpcomingEvents();
+    ctx.body = await service.getActiveEvents();
     ctx.set('Cache-Control', 'public, max-age=300');
   } catch (error) {
     console.log(error);
@@ -125,6 +125,28 @@ router.get('/meta/gadget', async (ctx, next) => {
 router.get('/meta/map', async (ctx, next) => {
   try {
     ctx.body = await service.getMapMeta(ctx.request.query);
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
+router.get('/meta/map/events', async (ctx, next) => {
+  try {
+    ctx.body = await service.getMapMeta({ current: 'true', upcoming: 'true' });
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
+router.get('/meta/map/mode/:mode', async (ctx, next) => {
+  try {
+    ctx.body = await service.getMapMeta({ mode: ctx.params.mode });
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);

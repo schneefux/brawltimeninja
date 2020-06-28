@@ -52,7 +52,7 @@ export default {
   },
   async created() {
     try {
-      await this.$axios.$get('/api/current-events')
+      await this.$axios.$get('/api/events')
       this.status = 'up'
     } catch {
       this.status = 'down'

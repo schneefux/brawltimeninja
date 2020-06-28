@@ -33,7 +33,7 @@
       <div class="flex flex-wrap justify-center">
         <nuxt-link
           v-for="mode in modes"
-          :key="mode"
+          :key="mode.mode"
           :to="`/tier-list/mode/${camelToKebab(mode)}`"
         >
           <event :mode="mode" actions>
@@ -84,13 +84,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
-import { formatMode, camelToKebab } from '~/lib/util'
-import { metaStatMaps } from '~/lib/util'
-import { getMostPopular } from '../../../lib/util'
+import { getMostPopular, metaStatMaps, formatMode, camelToKebab } from '../../../lib/util'
+import { ModeMetaMap } from '../../../model/MetaEntry'
 
-export default {
+export default Vue.extend({
   name: 'ModeMetaPage',
   head() {
     const description = 'Brawl Stars Game Mode Tier Lists. Find the best Brawlers. View Win Rates and Rankings.'
@@ -104,6 +104,7 @@ export default {
   },
   data() {
     return {
+      modeMeta: {} as ModeMetaMap,
       camelToKebab,
       formatMode,
       metaStatMaps,
@@ -111,26 +112,22 @@ export default {
   },
   computed: {
     modes() {
-      return [...Object.keys(this.modeMeta)]
-        .sort((mode1, mode2) => this.modeMeta[mode2].sampleSize - this.modeMeta[mode1].sampleSize)
+      const modeMeta = this.modeMeta as ModeMetaMap
+      return [...Object.keys(modeMeta)]
+        .sort((mode1, mode2) => modeMeta[mode2].sampleSize - modeMeta[mode1].sampleSize)
     },
     topBrawlersByMode() {
-      return getMostPopular(this.modeMeta)
+      return getMostPopular((<any>this).modeMeta as ModeMetaMap)
     },
     ...mapState({
-      modeMeta: state => state.modeMeta,
-      ads: state => state.adsEnabled,
-      isApp: state => state.isApp,
+      ads: (state: any) => state.adsEnabled as boolean,
+      isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadModeMeta')
-    }
-  },
-  async created() {
-    if (process.static) {
-      await this.loadModeMeta()
+  async asyncData({ $axios }) {
+    const modeMeta = await $axios.$get('/api/meta/mode')
+    return {
+      modeMeta,
     }
   },
   methods: {
@@ -139,9 +136,6 @@ export default {
         this.$ga.event('modes', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadModeMeta: 'loadModeMeta',
-    }),
   },
-}
+})
 </script>

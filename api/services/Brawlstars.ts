@@ -2,7 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, ModeMetaMap, MapMetaMap, BrawlerMetaEntry } from '../model/MetaEntry';
+import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, ModeMetaMap, MapMetaMap, BrawlerMetaEntry, MapMap } from '../model/MetaEntry';
 import { PlayerWinRates } from '../model/PlayerWinRates';
 import { cache, request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
@@ -36,8 +36,8 @@ export default class BrawlstarsService {
     } ];
   }
 
-  public async getEvents() {
-    const response = await request<{ active: BrawlstarsEvent[] }>(
+  public async getActiveEvents() {
+    const response = await request<{ active: BrawlstarsEvent[], upcoming: BrawlstarsEvent[] }>(
       'events',
       this.apiUnofficial,
       'fetch_events',
@@ -45,32 +45,33 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenUnofficial }
     );
 
-    return response.active.map((event) => ({
+    const mapper = (events: BrawlstarsEvent[]) => events.map((event) => ({
       id: event.map.id.toString(),
       map: event.map.name,
       mode: event.map.gameMode.name,
       start: event.startTime,
       end: event.endTime,
     }) as ActiveEvent);
+    return {
+      current: mapper(response.active),
+      upcoming: mapper(response.upcoming),
+    }
   }
 
-  // TODO deduplicate this code
-  public async getUpcomingEvents() {
-    const response = await request<{ upcoming: BrawlstarsEvent[] }>(
-      'events',
-      this.apiUnofficial,
-      'fetch_events',
-      { },
-      { 'Authorization': 'Bearer ' + tokenUnofficial }
-    );
-
-    return response.upcoming.map((event) => ({
-      id: event.map.id.toString(),
-      map: event.map.name,
-      mode: event.map.gameMode.name,
-      start: event.startTime,
-      end: event.endTime,
-    }) as ActiveEvent);
+  /**
+   * Return event meta information without actual Brawlers and win rates.
+   */
+  public async getAllEvents() {
+    const meta = await this.getMapMeta({})
+    const metaData = {} as MapMap
+    Object.entries(meta).forEach(([eventId, event]) => {
+      metaData[eventId] = {
+        mode: event.mode,
+        map: event.map,
+        sampleSize: event.sampleSize,
+      };
+    })
+    return metaData
   }
 
   public async getHoursLeaderboard() {
@@ -260,7 +261,7 @@ export default class BrawlstarsService {
 
   public async getMapMeta(filters: { [name: string]: string }) {
     if (trackerUrl == '') {
-      return [];
+      return {};
     }
 
     return cache.wrap(`map-meta-${JSON.stringify(filters)}`, async () => {
@@ -333,27 +334,47 @@ export default class BrawlstarsService {
         }
       }), <MapMetaMap>{});
 
-      if (filters.current !== undefined) {
-        const currentEvents = await this.getEvents();
-        const currentEventIds = currentEvents.map(({ id }) => id);
+      let filterIds = [] as string[];
+      if (filters.current !== undefined || filters.upcoming !== undefined) {
+        const events = await this.getActiveEvents();
+
+        if (filters.current !== undefined) {
+          const eventIds = events.current.map(({ id }) => id);
+          filterIds = filterIds.concat(eventIds)
+        }
+
+        if (filters.upcoming !== undefined) {
+          const eventIds = events.upcoming.map(({ id }) => id);
+          filterIds = filterIds.concat(eventIds)
+        }
+      }
+
+      if (filters.include !== undefined) {
+        const eventIds = filters.include.split(',');
+        filterIds = filterIds.concat(eventIds)
+      }
+
+      if (filterIds.length > 0) {
         Object.keys(mapMeta).forEach((eventId) => {
-          if (!currentEventIds.includes(eventId)) {
+          if (!filterIds.includes(eventId)) {
             delete mapMeta[eventId];
           }
         });
       }
 
-      if (filters.include !== undefined) {
-        const whitelistedIds = filters.include.split(',');
-        Object.keys(mapMeta).forEach((eventId) => {
-          if (!whitelistedIds.includes(eventId)) {
+      if (filters.mode !== undefined) {
+        const mode = filters.mode.toLowerCase()
+          .replace(/ /g, '')
+          .replace(/^showdown$/, 'soloshowdown');
+        Object.entries(mapMeta).forEach(([eventId, event]) => {
+          if (event.mode.toLowerCase().replace(/ /g, '') != mode) {
             delete mapMeta[eventId];
           }
         });
       }
 
       return mapMeta;
-    }, { ttl: 900 }); // 15m
+    }, { ttl: 900 }) as Promise<MapMetaMap>; // 15m
   }
 
   public async getPlayerWinrates(tag: string) {

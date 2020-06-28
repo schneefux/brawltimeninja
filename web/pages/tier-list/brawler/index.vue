@@ -178,14 +178,15 @@ export default Vue.extend({
       metaStatMaps,
       camelToKebab,
       formatMode,
-      rangeMeta: [] as BrawlerMetaEntry[],
+      brawlerMeta: [] as BrawlerMetaEntry[],
+      modeMeta: {} as ModeMetaMap,
       selectedRange: 'all',
       showAllModes: false,
     }
   },
   computed: {
     totalSampleSize(): number {
-      return this.meta
+      return this.brawlerMeta
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
     modes(): string[] {
@@ -196,7 +197,7 @@ export default Vue.extend({
       return getMostPopular(this.modeMeta)
     },
     brawlers(): MetaGridEntry[] {
-      return this.meta.map(brawler => ({
+      return this.brawlerMeta.map(brawler => ({
         id: brawler.id,
         brawler: brawler.id,
         title: brawler.name,
@@ -205,12 +206,7 @@ export default Vue.extend({
         link: `/tier-list/brawler/${brawler.id}`,
       }))
     },
-    meta(): BrawlerMetaEntry[] {
-      return this.selectedRange == 'all' ? this.allBrawlerMeta : this.rangeMeta
-    },
     ...mapState({
-      modeMeta: (state: any) => state.modeMeta as ModeMetaMap,
-      allBrawlerMeta: (state: any) => state.brawlerMeta as BrawlerMetaEntry[],
       ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
@@ -218,21 +214,18 @@ export default Vue.extend({
   watch: {
     async selectedRange(trophyrangeId) {
       if (trophyrangeId == 'all') {
-        return
+        this.brawlerMeta = await this.$axios.$get('/api/meta/brawler')
+      } else {
+        this.brawlerMeta = await this.$axios.$get('/api/meta/brawler?trophyrangeId=' + trophyrangeId)
       }
-      this.rangeMeta = await this.$axios.$get('/api/meta/brawler?trophyrangeId=' + trophyrangeId)
     },
   },
-  async fetch({ store }) {
-    if (!(<any>process).static) {
-      await store.dispatch('loadBrawlerMeta')
-      await store.dispatch('loadModeMeta')
-    }
-  },
-  async created() {
-    if ((<any>process).static) {
-      await this.loadBrawlerMeta()
-      await this.loadModeMeta()
+  async asyncData({ $axios }) {
+    const modeMeta = await $axios.$get('/api/meta/mode')
+    const brawlerMeta = await $axios.$get('/api/meta/brawler')
+    return {
+      modeMeta,
+      brawlerMeta,
     }
   },
   methods: {
@@ -241,10 +234,6 @@ export default Vue.extend({
         this.$ga.event('brawler_meta', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadBrawlerMeta: 'loadBrawlerMeta',
-      loadModeMeta: 'loadModeMeta',
-    }),
   },
 })
 </script>

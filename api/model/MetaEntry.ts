@@ -74,6 +74,12 @@ export interface BrawlerMetaEntry {
   }
 }
 
+export interface Map {
+  map: string;
+  mode: string;
+  sampleSize: number;
+}
+
 export interface ModeMeta {
   mode: string;
   sampleSize: number;
@@ -98,4 +104,8 @@ export interface MapMetaMap {
 
 export interface ModeMetaMap {
   [event: string]: ModeMeta;
+}
+
+export interface MapMap {
+  [event: string]: Map;
 }

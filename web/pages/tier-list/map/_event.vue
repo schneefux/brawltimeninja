@@ -7,9 +7,9 @@
         once: true,
       }"
     >
-      <h1 class="page-h1">{{ formatMode(selectedMode) }}: {{ selectedMap }}</h1>
-      <p>Use the <span class="text-primary-lighter">{{ selectedMap }}</span> Tier List to find the best Brawler for this {{ formatMode(selectedMode) }} map in Brawl Stars.</p>
-      <p v-if="meta.sampleSize < 1000">
+      <h1 class="page-h1">{{ formatMode(event.mode) }}: {{ event.map }}</h1>
+      <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ formatMode(event.mode) }} map in Brawl Stars.</p>
+      <p v-if="mapMeta.sampleSize < 1000">
         ⚠ Not enough data for this event yet!
         <template v-if="brawlers.length < totalBrawlers">
           Some statistics are unavailable.
@@ -32,7 +32,7 @@
     />
 
     <div
-      v-if="bestByEvent[selectedEvent.id].length"
+      v-if="best.length"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'widget'),
         once: true,
@@ -40,13 +40,13 @@
       class="section flex justify-center"
     >
       <event
-        :mode="selectedEvent.mode"
-        :map="selectedEvent.map"
+        :mode="event.mode"
+        :map="event.map"
         infobar
       >
         <template v-slot:infobar>
           <media-img
-            :path="'/maps/' + selectedEvent.id"
+            :path="'/maps/' + event.id"
             size="384"
             clazz="h-48 mx-auto"
             itemprop="image"
@@ -55,7 +55,7 @@
         <template v-slot:content>
           <div class="brawler-avatars my-4">
             <div
-              v-for="brawler in bestByEvent[selectedEvent.id].slice(0, 5)"
+              v-for="brawler in best.slice(0, 5)"
               :key="brawler.id"
               class="brawler-avatars__element"
             >
@@ -83,7 +83,7 @@
         once: true,
       }"
     >
-      <h2 class="page-h2">Tier List for {{ formatMode(selectedMode) }} - {{ selectedMap }}</h2>
+      <h2 class="page-h2">Tier List for {{ formatMode(event.mode) }} - {{ event.map }}</h2>
     </div>
 
     <div class="section">
@@ -107,15 +107,15 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, metaStatMaps, camelToKebab, getMostPopular, MetaGridEntry, MetaGridEntrySorted } from '../../../lib/util'
-import { MapMetaMap, MapMeta } from '../../../model/MetaEntry'
+import { formatMode, metaStatMaps, camelToKebab, getMostPopular, MetaGridEntry, MetaGridEntrySorted, getBest } from '../../../lib/util'
+import { MapMetaMap, MapMeta, Map } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'MapMetaPage',
   head() {
-    const description = `Brawl Stars Tier List for ${formatMode(this.selectedMode as string)}: ${this.selectedMap}. View the best Brawlers with Win Rates and Rankings.`
+    const description = `Brawl Stars Tier List for ${formatMode((<any>this).event.mode as string)}: ${(<any>this).event.map}. View the best Brawlers with Win Rates and Rankings.`
     return {
-      title: `Tier List for ${formatMode(this.selectedMode as string)}: ${this.selectedMap}`,
+      title: `Tier List for ${formatMode((<any>this).event.mode as string)}: ${(<any>this).event.map}`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -127,25 +127,18 @@ export default Vue.extend({
       formatMode,
       metaStatMaps,
       camelToKebab,
-      selectedEvent: {
+      event: {
         id: '',
         mode: '',
         map: '',
       },
+      mapMeta: {} as MapMeta,
+      best: [] as MetaGridEntrySorted[],
     }
   },
   computed: {
-    selectedMode(): string {
-      return this.selectedEvent.mode
-    },
-    selectedMap(): string {
-      return this.selectedEvent.map
-    },
-    meta(): MapMeta {
-      return this.mapMeta[this.selectedEvent.id]
-    },
     brawlers(): MetaGridEntry[] {
-      return [...Object.entries(this.meta.brawlers)]
+      return [...Object.entries(this.mapMeta.brawlers)]
         .map(([brawlerId, brawler]) => ({
           id: brawlerId,
           title: (<any>brawler).name,
@@ -156,23 +149,21 @@ export default Vue.extend({
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
-      bestByEvent: (state: any) => state.bestByEvent as { [key: string]: MetaGridEntrySorted[] },
-      mapMeta: (state: any) => state.mapMeta as MapMetaMap,
       ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async validate({ store, params }) {
-    await store.dispatch('loadMapMetaSlice', `include=${params.event}`)
-    return params.event in store.state.mapMeta
-  },
-  asyncData({ store, params }) {
-    const meta = store.state.mapMeta[params.event]
+  async asyncData({ store, params, $axios }) {
+    const events = await $axios.$get('/api/events')
+    const event = events[params.event] as Map
+    const mapMeta = await $axios.$get('/api/meta/map/mode/' + event.mode)
+    const bestByEvent = getBest(mapMeta)
     return {
-      selectedEvent: {
-        id: params.event as string,
-        mode: meta.mode as string,
-        map: meta.map as string,
+      mapMeta: mapMeta[params.event],
+      best: bestByEvent[params.event],
+      event: {
+        ...event,
+        id: params.event,
       },
     }
   },

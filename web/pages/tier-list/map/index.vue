@@ -171,7 +171,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState, mapActions } from 'vuex'
-import { formatMode, metaStatMaps, MetaGridEntrySorted, relativeTimeUntil, formatAsJsonLd } from '../../../lib/util'
+import { formatMode, metaStatMaps, MetaGridEntrySorted, relativeTimeUntil, formatAsJsonLd, getBest } from '../../../lib/util'
 import { MapMetaMap } from '../../../model/MetaEntry'
 import { ActiveEvent } from '../../../model/Brawlstars'
 
@@ -179,6 +179,10 @@ export default Vue.extend({
   name: 'MetaSelectMapPage',
   data() {
     return {
+      mapMeta: {} as MapMetaMap,
+      bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
+      currentEvents: [] as ActiveEvent[],
+      upcomingEvents: [] as ActiveEvent[],
       formatMode,
       metaStatMaps,
       relativeTimeUntil,
@@ -186,7 +190,7 @@ export default Vue.extend({
   },
   head() {
     const description = 'Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
-    const structuredData = this.currentEvents.concat(this.upcomingEvents)
+    const structuredData = ((<any>this).currentEvents as ActiveEvent[]).concat((<any>this).upcomingEvents as ActiveEvent[])
       .map((event) => ({
         type: 'application/ld+json',
         innerHTML: JSON.stringify(formatAsJsonLd(event)),
@@ -217,30 +221,19 @@ export default Vue.extend({
         }), {})
     },
     ...mapState({
-      currentEvents: (state: any) => state.currentEvents as ActiveEvent[],
-      upcomingEvents: (state: any) => state.upcomingEvents as ActiveEvent[],
-      bestByEvent: (state: any) => state.bestByEvent as { [key: string]: MetaGridEntrySorted[] },
-      mapMeta: (state: any) => state.mapMeta as MapMetaMap,
       ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async fetch({ store }) {
-    if (!(<any>process).static) {
-      await Promise.all([
-        store.dispatch('loadCurrentEvents'),
-        store.dispatch('loadUpcomingEvents'),
-        store.dispatch('loadMapMeta'),
-      ])
-    }
-  },
-  async created() {
-    if ((<any>process).static) {
-      await Promise.all([
-        this.loadCurrentEvents(),
-        this.loadUpcomingEvents(),
-        this.loadMapMeta(),
-      ])
+  async asyncData({ $axios }) {
+    const events = await $axios.$get('/api/events/active')
+    const mapMeta = await $axios.$get('/api/meta/map/events')
+    const bestByEvent = getBest(mapMeta)
+    return {
+      mapMeta,
+      bestByEvent,
+      currentEvents: events.current,
+      upcomingEvents: events.upcoming,
     }
   },
   methods: {
@@ -249,11 +242,6 @@ export default Vue.extend({
         this.$ga.event('maps', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadCurrentEvents: 'loadCurrentEvents',
-      loadUpcomingEvents: 'loadUpcomingEvents',
-      loadMapMeta: 'loadMapMeta',
-    }),
   },
 })
 </script>
