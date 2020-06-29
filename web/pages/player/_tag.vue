@@ -462,7 +462,7 @@
                     :key="index"
                     :class="{
                       'mt-8': battle.teams.length == 3,
-                      'mx-1 rounded-sm': team.length == 2,
+                      'mx-1 rounded-sm flex-col': team.length == 2,
                     }"
                     class="flex flex-wrap justify-center z-10 my-1"
                   >
