@@ -153,8 +153,11 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ store, params, $axios }) {
+  async asyncData({ store, params, error, $axios }) {
     const events = await $axios.$get('/api/events')
+    if (!(params.event in events)) {
+      return error({ statusCode: 404, message: 'Event not found' })
+    }
     const event = events[params.event] as Map
     const mapMeta = await $axios.$get('/api/meta/map/mode/' + event.mode)
     const bestByEvent = getBest(mapMeta)
