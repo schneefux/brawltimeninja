@@ -230,7 +230,7 @@
           <template v-slot:content>
             <div class="brawler-avatars my-4">
               <div
-                v-for="brawler in bestByEvent[event.id].slice(0, 5)"
+                v-for="brawler in (bestByEvent[event.id] || []).slice(0, 5)"
                 :key="brawler.id"
                 class="brawler-avatars__element"
               >
@@ -490,7 +490,7 @@ export default Vue.extend({
           const badge = await import(`~/assets/images/mode/icon/${modeId}_optimized.png`).catch(logAndNull)
           const icon = await import(`~/assets/images/map/${event.id.replace(/^1500/, '150')}_small.jpg`).catch(logAndNull)
 
-          const top5 = this.bestByEvent[event.id].slice(0, 5).map(entry => entry.title)
+          const top5 = (this.bestByEvent[event.id] || []).slice(0, 5).map(entry => entry.title)
 
           sw.showNotification(`${event.mode}: ${top5.join(', ')}`, {
             tag: event.id,

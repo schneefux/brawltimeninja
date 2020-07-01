@@ -52,7 +52,7 @@
           <template v-slot:content>
             <div class="brawler-avatars my-4">
               <div
-                v-for="brawler in bestByEvent[event.id].slice(0, 5)"
+                v-for="brawler in (bestByEvent[event.id] || []).slice(0, 5)"
                 :key="brawler.id"
                 class="brawler-avatars__element"
               >
@@ -124,7 +124,7 @@
           <template v-slot:content>
             <div class="brawler-avatars my-4">
               <div
-                v-for="brawler in bestByEvent[event.id].slice(0, 5)"
+                v-for="brawler in (bestByEvent[event.id] || []).slice(0, 5)"
                 :key="brawler.id"
                 class="brawler-avatars__element"
               >
