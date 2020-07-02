@@ -218,7 +218,7 @@ export default class MediaService {
       return null;
     }
 
-    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.toLowerCase());
+    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.replace(' ', '').toLowerCase());
     if (mode == undefined) {
       console.log('Mode not found (starlist): ' + name);
       return null;
@@ -252,7 +252,7 @@ export default class MediaService {
       return null;
     }
 
-    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.toLowerCase());
+    const mode = modes.find(m => m.name.replace(' ', '').toLowerCase() == name.replace(' ', '').toLowerCase());
     if (mode == undefined) {
       console.log('Mode not found (starlist): ' + name);
       return null;
