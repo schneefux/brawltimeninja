@@ -4,7 +4,6 @@ import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
 import { PlayerWinRates } from '~/model/PlayerWinRates';
-import { parse } from 'path';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -135,7 +134,7 @@ export default class TrackerService {
             timestamp: battleTime,
             player_tags: playerTagsCsv,
             event_id: battle.event.id,
-            event_mode: battle.event.mode,
+            event_mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
             event_map: battle.event.map,
             type: battle.battle.type || null,
           })
@@ -171,7 +170,7 @@ export default class TrackerService {
                 rank: !isMe ? undefined : battle.battle.rank,
                 trophy_change: !isMe ? undefined : battle.battle.trophyChange,
                 battle_event_id: battle.event.id,
-                battle_event_mode: battle.event.mode,
+                battle_event_mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
                 battle_event_map: battle.event.map,
                 battle_type: battle.battle.type || null,
                 starpower_found: myStarpower !== undefined,

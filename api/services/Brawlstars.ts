@@ -634,7 +634,7 @@ export default class BrawlstarsService {
         timestamp: new Date(Date.parse(isoDate)),
         event: {
           id: battle.event.id,
-          mode: battle.event.mode,
+          mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
           map: battle.event.map,
         },
         result,
