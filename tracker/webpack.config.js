@@ -8,6 +8,7 @@ const serverConfig = {
     tracker: './server.ts',
     migrate: './migrate.ts',
     materialize: './materialize.ts',
+    cleanup: './cleanup.ts',
   },
   output: {
     filename: '[name].js',

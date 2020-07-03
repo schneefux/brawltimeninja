@@ -460,6 +460,7 @@ export default class TrackerService {
         table.integer('brawlers_unlocked').unsigned().notNullable();
 
         table.index(['tag', 'timestamp']);
+        table.index(['timestamp'], 'player_timestamp_index');
       });
       console.log('created player table');
     }
@@ -1008,7 +1009,9 @@ export default class TrackerService {
     await this.knex.transaction(async (txn) => {
       await this.fillAggPlayerBattle(txn);
     });
+  }
 
+  public async cleanup() {
     console.log('deleting processed player_battle');
     const lastPbIdRecords = await this.knex('meta_last_processed')
       .select('last_id')

@@ -9,7 +9,8 @@
     "build": "webpack --mode production",
     "start": "node dist/migrate.js && node dist/tracker.js",
     "migrate": "node dist/migrate.js",
-    "materialize": "node dist/materialize.js"
+    "materialize": "node dist/materialize.js",
+    "cleanup": "node dist/cleanup.js"
   },
   "dependencies": {
     "knex": "^0.18.4",
