@@ -244,8 +244,6 @@ export default Vue.extend({
     if ((<any>process).client) {
       if (this.adsAllowed) {
         this.enableAds()
-        // update cookie
-        this.setAdsCookie()
       }
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
@@ -303,7 +301,6 @@ export default Vue.extend({
       this.cookieBannerOpen = false
       this.allowCookies()
       this.allowAds()
-      this.setAdsCookie()
       this.enableAds()
     },
     setAdsCookie() {
@@ -332,6 +329,9 @@ export default Vue.extend({
     },
     enableAds() {
       if (this.adsAllowed && (<any>process).client) {
+        // update cookie
+        this.setAdsCookie()
+
         // update consent preferences
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
