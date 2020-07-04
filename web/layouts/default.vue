@@ -244,6 +244,8 @@ export default Vue.extend({
     if ((<any>process).client) {
       if (this.adsAllowed) {
         this.enableAds()
+      } else {
+        this.hideAds()
       }
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
@@ -290,12 +292,14 @@ export default Vue.extend({
       this.disallowCookies()
       this.disallowAds()
       this.clearAdsCookie()
+      this.hideAds()
     },
     enableCookies() {
       this.cookieBannerOpen = false
       this.allowCookies()
       this.disallowAds()
       this.clearAdsCookie()
+      this.hideAds()
     },
     enableCookiesAndAds() {
       this.cookieBannerOpen = false
@@ -355,6 +359,14 @@ export default Vue.extend({
           this.$ga.set('dimension3', isPwa)
           this.$ga.set('dimension4', isTwa)
         }
+      }
+    },
+    hideAds() {
+      if ((<any>process).client) {
+        const styleSheet = document.createElement('style')
+        styleSheet.type = 'text/css'
+        styleSheet.innerText = `.adswrapper { display: none; }`
+        document.head.appendChild(styleSheet)
       }
     },
     ...mapMutations({
