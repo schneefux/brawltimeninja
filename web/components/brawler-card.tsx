@@ -2,7 +2,6 @@ import Vue from 'vue'
 
 export default Vue.extend({
   functional: true,
-  name: 'BrawlerCard',
   props: {
     title: {
       type: String,
@@ -17,7 +16,7 @@ export default Vue.extend({
       default: '',
     },
   },
-  render(h, { props, slots }) {
+  render(h, { props, scopedSlots }) {
     return <div class="card stats-card">
       <span class="stats-card-title">
         { props.title.toLowerCase() }
@@ -37,10 +36,10 @@ export default Vue.extend({
       }
       <div class="stats-card-content">
         <div>
-          { slots().history }
+          { scopedSlots.history({}) }
         </div>
         <div>
-          { slots().stats }
+          { scopedSlots.stats({}) }
         </div>
       </div>
     </div>

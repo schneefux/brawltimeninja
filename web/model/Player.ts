@@ -34,6 +34,25 @@ export interface PlayerIdentifier {
     name: string;
 }
 
+export interface Battle {
+  timestamp: Date|string;
+  event: {
+    id: number;
+    mode: string;
+    map: string;
+  },
+  result: string;
+  victory: undefined|boolean;
+  trophyChange: undefined|number;
+  teams: {
+    tag: string;
+    name: string;
+    brawler: string;
+    brawlerTrophies: number;
+    isBigbrawler: boolean;
+  }[][]
+}
+
 export interface Player extends PlayerIdentifier {
     hoursSpent: number;
     trophies: number;
@@ -48,5 +67,5 @@ export interface Player extends PlayerIdentifier {
     modes: {
         [id: string]: Mode;
     };
-    battles: any[]; // TODO
+    battles: Battle[];
 }

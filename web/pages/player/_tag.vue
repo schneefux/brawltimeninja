@@ -417,103 +417,7 @@
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
             class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
           >
-            <event
-              :mode="battle.event.mode"
-              :map="battle.event.map"
-              size="w-80"
-              infobar
-            >
-              <template v-slot:infobar>
-                <div class="flex justify-between">
-                  <div>
-                    <span class="mr-2">
-                      {{ battle.result }}
-                    </span>
-                    <span v-if="battle.trophyChange !== undefined">
-                      <template v-if="battle.trophyChange > 0">
-                        +{{ battle.trophyChange }}
-                      </template>
-                      <template v-else>
-                        {{ battle.trophyChange }}
-                      </template>
-                      <img
-                        src="~/assets/images/icon/trophy_optimized.png"
-                        class="w-4 inline"
-                      >
-                    </span>
-                  </div>
-                  <span>
-                    <template v-if="hoursSinceDate(battle.timestamp) == 0">
-                      just now
-                    </template>
-                    <template v-else>
-                      {{ hoursSinceDate(battle.timestamp) }}h ago
-                    </template>
-                  </span>
-                </div>
-              </template>
-              <template v-slot:content>
-                <div class="flex flex-wrap justify-center">
-                  <div
-                    v-for="(team, index) in battle.teams"
-                    :key="index"
-                    :class="{
-                      'mt-8': battle.teams.length == 3,
-                      'mx-1 rounded-sm flex-col': team.length == 2,
-                    }"
-                    class="flex flex-wrap justify-center z-10 my-1"
-                  >
-                    <nuxt-link
-                      v-for="mate in team"
-                      :key="mate.tag"
-                      :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''"
-                      :to="`/player/${mate.tag}`"
-                      class="w-14 h-14 bg-black py-px relative overflow-hidden"
-                      :class="{
-                        'border-2 border-gray-300': mate.tag == player.tag,
-                        'mx-1 rounded-sm': team.length != 2,
-                      }"
-                    >
-                      <media-img
-                        :path="'/brawlers/' + mate.brawler + '/avatar'"
-                        size="80"
-                        clazz="h-8"
-                      ></media-img>
-                      <div class="absolute top-0 right-0 w-12 text-right m-px" v-if="mate.brawlerTrophies">
-                        <div class="w-full flex">
-                          <span
-                            class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
-                          >
-                            {{ mate.brawlerTrophies }}
-                          </span>
-                          <img
-                            src="~/assets/images/icon/trophy_optimized.png"
-                            class="w-4 h-4 ml-px"
-                          >
-                        </div>
-                        <div class="w-full">
-                          <span
-                            v-if="mate.isBigbrawler"
-                            class="text-sm"
-                          >
-                            💀
-                          </span>
-                        </div>
-                      </div>
-                      <span
-                        class="text-xs whitespace-no-wrap m-px"
-                        :class="{
-                          'link': mate.tag != player.tag,
-                          'text-secondary': mate.tag == player.tag,
-                        }"
-                      >
-                        {{ mate.name }}
-                      </span>
-                    </nuxt-link>
-                  </div>
-                </div>
-              </template>
-            </event>
+            <player-battle :battle="battle" :playerTag="player.tag" />
           </div>
         </div>
 
@@ -614,105 +518,7 @@
           :key="brawler.id"
           class="card-wrapper w-full md:flex-1"
         >
-          <brawler-card
-            :title="brawler.name"
-            :brawler="brawler.id"
-          >
-            <template v-slot:history>
-              <div
-                v-if="brawler.id in daysSinceBrawlerHistoryStart && brawler.history.length > 1"
-                class="w-32 relative mx-auto my-2"
-              >
-                <span class="absolute text-sm text-grey-light text-shadow-primary-dark font-semibold left-0 top-0 -mt-2 -ml-1">
-                  {{ brawler.trophies >= brawler.history[0].trophies ? '+' : '' }}{{ brawler.trophies - brawler.history[0].trophies }}
-                </span>
-                <span class="absolute text-xs text-grey-light text-shadow-primary-dark -mb-2 right-0 bottom-0">
-                  since {{ daysSinceBrawlerHistoryStart[brawler.id] }}d ago
-                </span>
-                <svg
-                  viewBox="0 0 128 32"
-                  preserveAspectRatio="none"
-                  class="w-full h-8 overflow-visible"
-                >
-                  <polyline
-                    :points="brawlerHistoryPoints[brawler.id].map(([x, y]) => `${x*128},${(1-y)*32} `)"
-                    fill="none"
-                    stroke="#f2d024"
-                    stroke-width="4"
-                  /> <!-- stroke: secondary-dark -->
-                </svg>
-              </div>
-            </template>
-            <template v-slot:stats>
-              <table>
-                <tr
-                  v-if="brawler.history.length <= 1"
-                  class="card-props"
-                >
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/leaderboards_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.rank }}
-                  </td>
-                  <td class="card-prop-label">
-                    Rank
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.trophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      src="~/assets/images/icon/trophy_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.highestTrophies }}
-                  </td>
-                  <td class="card-prop-label">
-                    Max Trophies
-                  </td>
-                </tr>
-                <tr class="card-props">
-                  <td class="text-center">
-                    <img
-                      v-if="brawler.power < 10"
-                      src="~/assets/images/icon/powerpoint_optimized.png"
-                      class="card-prop-icon"
-                    >
-                    <img
-                      v-else
-                      src="~/assets/images/icon/starpower_optimized.png"
-                      class="card-prop-icon"
-                    >
-                  </td>
-                  <td class="card-prop-value text-right pr-1">
-                    {{ brawler.power }}
-                  </td>
-                  <td class="card-prop-label">
-                    Power Level
-                  </td>
-                </tr>
-              </table>
-            </template>
-          </brawler-card>
+          <player-brawler-card :brawler="brawler" />
         </div>
       </div>
     </div>
@@ -823,21 +629,6 @@ export default {
       const trophiesS = scaleMinMax(trophies)
       return zip(datesS, trophiesS)
     },
-    brawlerHistoryPoints() {
-      const brawlersS = {}
-      Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
-        if (brawler.history.length <= 1) {
-          brawlersS[brawlerId] = []
-          return
-        }
-        const dates = brawler.history.map(({ timestamp }) => Date.parse(timestamp))
-        const datesS = scaleMinMax(dates)
-        const trophies = brawler.history.map(({ trophies }) => trophies)
-        const trophiesS = scaleMinMax(trophies)
-        brawlersS[brawlerId] = zip(datesS, trophiesS)
-      })
-      return brawlersS
-    },
     daysSincePlayerHistoryStart() {
       if (this.player.history.length == 0) {
         return 0
@@ -845,17 +636,6 @@ export default {
       const start = Date.parse(this.player.history[0].timestamp)
       const now = (new Date()).getTime()
       return Math.ceil((now - start) / 1000 / 3600 / 24)
-    },
-    daysSinceBrawlerHistoryStart() {
-      const brawlersMin = {}
-      Object.entries(this.player.brawlers).forEach(([brawlerId, brawler]) => {
-        if (brawler.history.length > 1) {
-          const start = Date.parse(brawler.history[0].timestamp)
-          const now = (new Date()).getTime()
-          brawlersMin[brawlerId] = Math.ceil((now - start) / 1000 / 3600 / 24)
-        }
-      })
-      return brawlersMin
     },
     relevantGuides() {
       // shuffle posts

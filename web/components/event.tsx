@@ -17,25 +17,17 @@ export default Vue.extend({
       type: String,
       required: false,
     },
-    infobar: {
-      type: Boolean,
-      default: false
-    },
-    actions: {
-      type: Boolean,
-      default: false
-    },
     size: {
       type: String, // class
       default: 'w-80 md:w-100',
     },
   },
-  render(h, { props, slots }) {
+  render(h, { props, scopedSlots }) {
     return <div class="card-wrapper">
       <div class="card">
-        { props.infobar ?
+        { 'infobar' in scopedSlots ?
           <div class="bg-black text-primary-lightest w-full px-2 py-1 text-lg font-semibold">
-            { slots().infobar }
+            { scopedSlots.infobar({}) }
           </div>
           : ''
         }
@@ -75,11 +67,11 @@ export default Vue.extend({
           ></media-img>
         </div>
         <div class={'relative z-10 mx-auto ' + props.size}>
-          { slots().content }
+          { scopedSlots.content({}) }
         </div>
-        { props.actions ?
+        { 'actions' in scopedSlots ?
           <div class="relative z-10 bg-black text-primary-lightest w-full px-3 py-2 font-semibold">
-            { slots().actions }
+            { scopedSlots.actions({}) }
           </div>
           : ''
         }

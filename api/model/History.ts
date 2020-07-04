@@ -5,7 +5,7 @@ export interface PlayerHistoryEntry {
 
 export interface BrawlerHistoryEntry {
   name: string;
-  timestamp: Date;
+  timestamp: Date|string;
   trophies: number;
 }
 

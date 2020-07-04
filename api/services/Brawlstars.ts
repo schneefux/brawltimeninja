@@ -1,5 +1,5 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, ActiveEvent } from '../model/Brawlstars';
-import { Brawler, PlayerStatistic, Mode, Player } from '../model/Player';
+import { Brawler, PlayerStatistic, Mode, Player, Battle } from '../model/Player';
 import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
 import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, ModeMetaMap, MapMetaMap, BrawlerMetaEntry, MapMap } from '../model/MetaEntry';
@@ -546,7 +546,7 @@ export default class BrawlstarsService {
     }
 
     interface BrawlerHistoryEntry {
-      timestamp: Date
+      timestamp: Date|string
       trophies: number
     }
     history.brawlerHistory.forEach((b) => b.name = brawlerId(b))
@@ -651,8 +651,8 @@ export default class BrawlstarsService {
         victory,
         trophyChange: battle.battle.trophyChange,
         teams: teams.map(t => t.map(transformPlayer)),
-      }
-    }).sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf());
+      } as Battle
+    }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
     if (trackerUrl != '') {
       console.time('post battles to tracker ' + tag)
