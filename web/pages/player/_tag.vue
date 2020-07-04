@@ -129,12 +129,11 @@
                 /> <!-- stroke: secondary-dark -->
               </svg>
             </div>
-            <span
-              v-else
-              class="md:text-sm italic"
-            >
-              Visit again to see progress charts
-            </span>
+            <div v-else class="h-12 flex flex-col justify-center">
+              <span class="italic">
+                Come back later to see progress charts
+              </span>
+            </div>
           </div>
         </div>
 
@@ -167,7 +166,7 @@
               class="bigstat-tooltip-btn"
             >?</button>
             <p
-              v-show="recentHelpOpen"
+              v-if="recentHelpOpen"
               @click="recentHelpOpen = false"
               class="bigstat-tooltip-text"
             >
@@ -202,10 +201,9 @@
               class="bigstat-tooltip-btn"
             >?</button>
             <p
-              v-show="ratingHelpOpen"
+              v-if="ratingHelpOpen"
               @click="ratingHelpOpen = false"
               class="bigstat-tooltip-text"
-              style="display: none;"
             >
               Ratings are calculated by comparing mean Brawler trophies to all players on Brawl Time Ninja.
               <ul>
