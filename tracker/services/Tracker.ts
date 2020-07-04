@@ -129,12 +129,22 @@ export default class TrackerService {
         if (battleRecord.length == 0) {
           // battle was not registered yet
 
+          let mode = battle.event.mode
+          // FIXME API bug 2020-07-02
+          if (mode == 'unknown') {
+            if (battle.event.map == 'SUPER CITY') {
+              mode = 'superCityRampage'
+            } else {
+              mode = 'hotZone'
+            }
+          }
+
           const battleRecord = await trx('battle').insert({
             /* id, */
             timestamp: battleTime,
             player_tags: playerTagsCsv,
             event_id: battle.event.id,
-            event_mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
+            event_mode: mode,
             event_map: battle.event.map,
             type: battle.battle.type || null,
           })
@@ -148,6 +158,16 @@ export default class TrackerService {
               const myBrawler = !isMe ? undefined : player.brawlers.find((b) => b.name == insertPlayer.brawler.name);
               const myStarpower = myBrawler === undefined || myBrawler.starPowers.length != 1 ? undefined : myBrawler.starPowers[0];
               const myGadget = myBrawler === undefined || myBrawler.gadgets.length != 1 ? undefined : myBrawler.gadgets[0];
+
+              let mode = battle.event.mode
+              // FIXME API bug 2020-07-02
+              if (mode == 'unknown') {
+                if (battle.event.map == 'SUPER CITY') {
+                  mode = 'superCityRampage'
+                } else {
+                  mode = 'hotZone'
+                }
+              }
 
               return trx('player_battle').insert({
                 /* id, */
@@ -170,7 +190,7 @@ export default class TrackerService {
                 rank: !isMe ? undefined : battle.battle.rank,
                 trophy_change: !isMe ? undefined : battle.battle.trophyChange,
                 battle_event_id: battle.event.id,
-                battle_event_mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
+                battle_event_mode: mode,
                 battle_event_map: battle.event.map,
                 battle_type: battle.battle.type || null,
                 starpower_found: myStarpower !== undefined,

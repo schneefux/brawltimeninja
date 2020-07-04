@@ -630,11 +630,21 @@ export default class BrawlstarsService {
       const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
 
+      let mode = battle.event.mode
+      // FIXME API bug 2020-07-02
+      if (mode == 'unknown') {
+        if (battle.event.map == 'SUPER CITY') {
+          mode = 'superCityRampage'
+        } else {
+          mode = 'hotZone'
+        }
+      }
+
       return {
         timestamp: new Date(Date.parse(isoDate)),
         event: {
           id: battle.event.id,
-          mode: battle.event.mode.replace('unknown', 'hotZone'), // FIXME API bug 2020-07-02
+          mode: mode,
           map: battle.event.map,
         },
         result,
