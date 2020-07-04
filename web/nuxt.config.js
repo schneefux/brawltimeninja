@@ -107,7 +107,7 @@ export default {
       ignoreErrors: [/frameElement/],
       release: 'brawltimeninja@' + process.env.GIT_REV,
     },
-    disabled: process.env.NODE_ENV == 'development',
+    disabled: process.env.SENTRY_DISABLED || process.env.NODE_ENV == 'development' || process.env.SENTRY_DSN == undefined,
     publishRelease: true,
     webpackConfig: {
       setCommits: {
