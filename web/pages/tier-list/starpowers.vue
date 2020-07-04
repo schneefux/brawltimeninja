@@ -79,7 +79,6 @@ export default {
     },
     ...mapState({
       starpowerMeta: state => state.starpowerMeta,
-      ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
   },

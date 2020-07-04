@@ -77,7 +77,6 @@ export default {
     },
     ...mapState({
       gadgetMeta: state => state.gadgetMeta,
-      ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
   },

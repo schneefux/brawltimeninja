@@ -1,7 +1,6 @@
 <template>
   <div class="py-4 px-2">
     <adsense
-      v-if="ads"
       id="ezoic-pub-ad-placeholder-105"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="4579727583"
@@ -65,7 +64,7 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       id="ezoic-pub-ad-placeholder-106"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="5140154307"
@@ -93,7 +92,6 @@ export default {
   computed: {
     ...mapState({
       hoursLeaderboard: state => state.leaderboard,
-      ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
   },

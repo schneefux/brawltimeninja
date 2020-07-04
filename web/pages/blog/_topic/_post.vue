@@ -77,7 +77,6 @@ export default {
     },
     ...mapState({
       blog: state => state.blog,
-      ads: state => state.adsEnabled,
     }),
   },
   validate({ store, params }) {

@@ -105,7 +105,7 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       class="container flex justify-center"
       ins-class="w-full"
       data-ad-client="ca-pub-6856963757796636"
@@ -188,7 +188,7 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       id="ezoic-pub-ad-placeholder-104"
       class="container flex justify-center"
       ins-class="w-full"
@@ -277,7 +277,6 @@
     </div>
 
     <adsense
-      v-if="ads"
       id="ezoic-pub-ad-placeholder-103"
       class="home-section container flex justify-center"
       ins-class="w-full"
@@ -441,7 +440,6 @@ export default Vue.extend({
       }
     },
     ...mapState({
-      ads: (state: any) => state.adsEnabled as boolean,
       player: (state: any) => state.player,
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,

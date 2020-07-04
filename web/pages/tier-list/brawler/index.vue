@@ -21,9 +21,8 @@
     </div>
 
     <adsense
-      v-if="ads"
       id="ezoic-pub-ad-placeholder-107"
-      root-class="ad-section"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9201379700"
       data-ad-format="auto"
@@ -98,8 +97,8 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
-      root-class="ad-section"
+      v-if="!isApp"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6446102315"
       data-ad-format="auto"
@@ -145,8 +144,8 @@
     />
 
     <adsense
-      v-if="ads && !isApp"
-      root-class="ad-section"
+      v-if="!isApp"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="7838173054"
       data-ad-format="auto"
@@ -207,7 +206,6 @@ export default Vue.extend({
       }))
     },
     ...mapState({
-      ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },

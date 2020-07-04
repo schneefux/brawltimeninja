@@ -15,8 +15,7 @@
     </div>
 
     <adsense
-      v-if="ads"
-      root-class="ad-section"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="5576993339"
       data-ad-format="auto"
@@ -74,8 +73,8 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
-      root-class="ad-section"
+      v-if="!isApp"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6913006175"
       data-ad-format="auto"
@@ -120,7 +119,6 @@ export default Vue.extend({
       return getMostPopular((<any>this).modeMeta as ModeMetaMap)
     },
     ...mapState({
-      ads: (state: any) => state.adsEnabled as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },

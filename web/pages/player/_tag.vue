@@ -1,8 +1,7 @@
 <template>
   <div class="page container">
     <adsense
-      v-if="ads"
-      root-class="ad-section"
+      ins-class="ad-section"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="9429125351"
       data-ad-format="auto"
@@ -228,10 +227,10 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="3933066188"
-      root-class="w-full ad-section"
+      ins-class="w-full ad-section"
       data-ad-format="auto"
       data-full-width-responsive
     />
@@ -327,11 +326,11 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       id="ezoic-pub-ad-placeholder-101"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="1752268168"
-      root-class="ad-section"
+      ins-class="ad-section"
       data-ad-format="auto"
       data-full-width-responsive
     />
@@ -535,11 +534,11 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp && player.battles.length > 0"
+      v-if="!isApp && player.battles.length > 0"
       id="ezoic-pub-ad-placeholder-102"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="4129048243"
-      root-class="ad-section"
+      ins-class="ad-section"
       data-ad-format="auto"
       data-full-width-responsive
     />
@@ -1003,7 +1002,6 @@ export default {
       return modes[0]
     },
     ...mapState({
-      ads: state => state.adsEnabled,
       blog: state => state.blog,
       player: state => state.player,
       totalBrawlers: state => state.totalBrawlers,

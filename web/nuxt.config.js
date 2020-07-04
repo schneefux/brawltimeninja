@@ -10,6 +10,16 @@ export default {
 
   head: {
     titleTemplate: '%s - Brawl Time Ninja',
+    metaInfo: {
+      script: [
+        { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', async: true },
+        {
+          type: 'text/javascript',
+          innerHtml: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
+        },
+      ],
+    },
+    __dangerouslyDisableSanitizers: ['script'],
   },
 
   meta: {
@@ -78,6 +88,7 @@ export default {
   components: true,
 
   router: {
+    middleware: ['unpack-store'],
   },
 
   axios: {

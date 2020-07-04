@@ -236,16 +236,17 @@ export default Vue.extend({
     // called after vuex-persist has loaded the client's data
     version(version) {
       if (version !== undefined && (<any>process).client) {
-        // open banner if user has not opted in & Ezoic did not load the consent manager popup
-        console.log('ezoic CMP popup visible', (<any>window).__cmp == undefined)
-        this.cookieBannerOpen = !this.cookiesAllowed && (<any>window).__cmp == undefined
-        this.applyAdPreferences()
+        this.cookieBannerOpen = !this.cookiesAllowed
       }
     },
-    adsAllowed: 'applyAdPreferences',
   },
   created() {
     if ((<any>process).client) {
+      if (this.adsAllowed) {
+        this.enableAds()
+        // update cookie
+        this.setAdsCookie()
+      }
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
@@ -255,30 +256,8 @@ export default Vue.extend({
   },
   mounted() {
     window.addEventListener('scroll', () => this.onScroll())
-    if ('update_cookieconsent_options' in window) {
-      // TODO hides Ezoic cookie constent banner
-      console.log('hiding ezoic cookie consent banner')
-      const w = window as any
-      w.update_cookieconsent_options({markup: '<i></i>'})
-    }
-    (<any>window).EzConsentCallback = (consent) => {
-      this.cookieBannerOpen = false
-
-      if (consent.preferences) {
-        this.allowCookies()
-      }
-
-      if (consent.statistics && '$ga' in this) {
-        this.$ga.enable()
-      }
-
-      if (consent.marketing) {
-        this.allowAds()
-      } else {
-        this.disableAds()
-      }
-    }
     this.openMenu()
+    this.checkAdblock()
   },
   methods: {
     onScroll() {
@@ -310,16 +289,28 @@ export default Vue.extend({
     },
     disableCookies() {
       this.cookieBannerOpen = false
+      this.disallowCookies()
+      this.disallowAds()
+      this.clearAdsCookie()
     },
     enableCookies() {
       this.cookieBannerOpen = false
       this.allowCookies()
       this.disallowAds()
+      this.clearAdsCookie()
     },
     enableCookiesAndAds() {
       this.cookieBannerOpen = false
       this.allowCookies()
       this.allowAds()
+      this.setAdsCookie()
+      this.enableAds()
+    },
+    setAdsCookie() {
+      document.cookie = `ads=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+    },
+    clearAdsCookie() {
+      document.cookie = `ads=; expires=${new Date(0)}`
     },
     installed() {
       if ('$ga' in this) {
@@ -332,24 +323,24 @@ export default Vue.extend({
       }
       await this.install()
     },
-    applyAdPreferences() {
-      const allowed = this.adsAllowed
-      if (!allowed && (<any>process).client) {
-        this.disableAds()
+    checkAdblock() {
+      const adsBlocked = (<any>this.$refs['adblock-bait']).clientHeight === 0
+      if ('$ga' in this) {
+        this.$ga.set('dimension2', !adsBlocked)
+        this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
       }
-      if (allowed && (<any>process).client) {
-        const adsBlocked = (<any>this.$refs['adblock-bait']).clientHeight === 0
-        if (!adsBlocked) {
-          this.enableAds()
-          // on Chrome, lazy-loading of ads does not work on first visit
-          // this workaround fixes it
-          if ('adsbygoogle' in window) {
-            (<any>window).adsbygoogle.pauseAdRequests = 0
-          }
-        } else {
-          this.disableAds()
+    },
+    enableAds() {
+      if (this.adsAllowed && (<any>process).client) {
+        // update consent preferences
+        if ('adsbygoogle' in window) {
+          (<any>window).adsbygoogle.pauseAdRequests = 0
+        }
+        if ('$ga' in this) {
+          this.$ga.enable()
         }
 
+        // track some meta data
         // play store allows only 1 ad/page - TWA is detected via referrer
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
         const isTwa = document.referrer.startsWith('android-app')
@@ -359,22 +350,18 @@ export default Vue.extend({
         }
 
         if ('$ga' in this) {
-          this.$ga.enable()
           // set variables for split testing
           this.$ga.set('dimension1', process.env.branch)
-          this.$ga.set('dimension2', !adsBlocked)
           this.$ga.set('dimension3', isPwa)
           this.$ga.set('dimension4', isTwa)
-          this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
         }
       }
     },
     ...mapMutations({
       allowCookies: 'allowCookies',
+      disallowCookies: 'disallowCookies',
       allowAds: 'allowAds',
       disallowAds: 'disallowAds',
-      enableAds: 'enableAds',
-      disableAds: 'disableAds',
       setIsApp: 'setIsApp',
       setInstallPrompt: 'setInstallPrompt',
       clearInstallPrompt: 'clearInstallPrompt',

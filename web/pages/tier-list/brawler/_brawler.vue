@@ -150,10 +150,8 @@
     </div>
 
     <adsense
-      v-if="ads"
       id="ezoic-pub-ad-placeholder-108"
-      root-class="w-full md:w-1/2 mt-4 mx-auto"
-      ins-class="mx-4 h-24"
+      ins-class="w-full md:w-1/2 mt-4 mx-auto"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="8533352178"
       data-ad-format="auto"
@@ -210,10 +208,9 @@
     </div>
 
     <adsense
-      v-if="ads && !isApp"
+      v-if="!isApp"
       id="ezoic-pub-ad-placeholder-109"
-      root-class="w-full mt-6 mx-auto"
-      ins-class="h-32"
+      ins-class="w-full mt-6 mx-auto h-32"
       data-ad-client="ca-pub-6856963757796636"
       data-ad-slot="6837127123"
       data-ad-format="auto"
@@ -278,7 +275,6 @@ export default {
       starpowerMeta: state => state.starpowerMeta,
       gadgetMeta: state => state.gadgetMeta,
       modeMeta: state => state.modeMeta,
-      ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
   },

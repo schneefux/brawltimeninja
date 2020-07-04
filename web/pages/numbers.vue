@@ -71,7 +71,6 @@ export default {
     },
     ...mapState({
       modeMeta: state => state.modeMeta,
-      ads: state => state.adsEnabled,
       isApp: state => state.isApp,
     }),
   },

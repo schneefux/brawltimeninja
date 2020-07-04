@@ -69,7 +69,7 @@ export default {
   methods: {
     withdrawCookieConsent() {
       this.clearCookieSettings()
-      window.location = '/?ez_force_cookie_consent=1'
+      window.location = '/'
     },
     ...mapMutations({
       clearCookieSettings: 'clearCookieSettings',
