@@ -55,6 +55,14 @@ export interface Event {
   modifier: null; // TODO
 }
 
+export interface ActiveEvent {
+  id: string;
+  map: string;
+  mode: string;
+  start: string;
+  end: string;
+}
+
 export interface BattlePlayer {
   tag: string;
   name: string;
