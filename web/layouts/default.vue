@@ -108,12 +108,37 @@
           Cookies? 🍪
         </p>
         <p class="mt-2 mx-2 text-center text-sm">
-          Brawl Time saves your tag in a Cookie. Analytics and Advertisements support the development of this site but usage data is sent to Google.
+          Brawl Time stores your settings in a Cookie.
+          Analytics and Advertisements may set Cookies as well.
         </p>
-        <p class="mt-1 mx-2 text-center">
-          Enable Cookie, Analytics and Ads?
+        <details class="mx-2 text-sm">
+          Data that may be collected:
+          <ul class="ml-2 list-disc list-inside">
+            <li>Your Brawl Stars tag</li>
+            <li>Device and Browser you use</li>
+            <li>Your IP address</li>
+            <li>Pages you open, Buttons you click</li>
+            <li>Content visibility</li>
+            <li>Errors and exceptions</li>
+          </ul>
+          <br>
+          How the data is used:
+          <ul class="ml-2 list-disc list-inside">
+            <li>To generate reports about game statistics</li>
+            <li>Customization of advertisements</li>
+            <li>To improve the reliability of this service</li>
+          </ul>
+          <br>
+          To collect this information, some data will be shared with Google Analytics, Google AdSense and Sentry.
+          Your information will never be sold.
+          <br>
+          Read the privacy policy or update your preferences later <nuxt-link class="link" to="/about">here</nuxt-link>.
+          <summary>More information</summary>
+        </details>
+        <p class="mt-2 mx-2 text-center">
+          Enable Cookies for Settings, Analytics and Ads?
         </p>
-        <div class="mt-2 text-sm flex flex-wrap">
+        <div class="mt-3 text-sm flex flex-wrap">
           <button
             v-show="showCookieOptions"
             class="border rounded-sm py-1 w-24 mx-1 bg-red-600 hover:bg-red-500"
@@ -126,7 +151,7 @@
             class="border rounded-sm py-1 w-24 mx-1 bg-yellow-600 hover:bg-yellow-500"
             @click="enableCookies"
           >
-            Enable Cookie
+            Only Settings
           </button>
           <button
             v-show="!showCookieOptions"
