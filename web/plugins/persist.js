@@ -30,7 +30,16 @@ export default ({ store }) => {
         value.installBannerDismissed = false
       }
 
-      value.version = 6
+      // 6 -> 7: store ads and cookie settings in a cookie
+      if (value.adsAllowed) {
+        document.cookie = `ads=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      }
+
+      if (value.cookiesAllowed) {
+        document.cookie = `cookies=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      }
+
+      value.version = 7
 
       return value
     }

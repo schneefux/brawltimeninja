@@ -68,11 +68,10 @@ export default {
   },
   methods: {
     withdrawCookieConsent() {
-      this.clearCookieSettings()
-      window.location = '/'
+      this.showConsentPopup()
     },
     ...mapMutations({
-      clearCookieSettings: 'clearCookieSettings',
+      showConsentPopup: 'showConsentPopup',
     })
   }
 }

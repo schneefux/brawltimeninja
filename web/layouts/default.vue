@@ -99,7 +99,7 @@
     <nuxt />
 
     <div
-      v-show="cookieBannerOpen"
+      v-if="consentPopupVisible"
       class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
       style="background-color: rgba(0, 0, 0, 0.75)"
     >
@@ -198,7 +198,6 @@ import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 export default Vue.extend({
   data() {
     return {
-      cookieBannerOpen: false,
       showCookieOptions: false,
       lastScrollY: 0,
       lastScrollUpY: 0,
@@ -229,24 +228,25 @@ export default Vue.extend({
       version: (state: any) => state.version as number,
       adsAllowed: (state: any) => state.adsAllowed as boolean,
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
+      consentPopupVisible: (state: any) => state.consentPopupVisible as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  watch: {
-    // called after vuex-persist has loaded the client's data
-    version(version) {
-      if (version !== undefined && (<any>process).client) {
-        this.cookieBannerOpen = !this.cookiesAllowed
-      }
-    },
-  },
   created() {
+    // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
+    // based on cookies
     if ((<any>process).client) {
+      if (this.cookiesAllowed) {
+        this.setCookieCookie() // refresh
+      }
       if (this.adsAllowed) {
         this.enableAds()
-      } else {
+        this.setAdsCookie() // refresh
+      }
+      if (!this.adsAllowed && !this.consentPopupVisible) {
         this.hideAds()
       }
+
       window.addEventListener('appinstalled', this.installed)
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
@@ -288,24 +288,34 @@ export default Vue.extend({
       this.lastScrollUpY = window.scrollY
     },
     disableCookies() {
-      this.cookieBannerOpen = false
+      this.hideConsentPopup()
       this.disallowCookies()
       this.disallowAds()
       this.clearAdsCookie()
+      this.clearCookieCookie()
       this.hideAds()
     },
     enableCookies() {
-      this.cookieBannerOpen = false
+      this.hideConsentPopup()
       this.allowCookies()
       this.disallowAds()
       this.clearAdsCookie()
+      this.setCookieCookie()
       this.hideAds()
     },
     enableCookiesAndAds() {
-      this.cookieBannerOpen = false
+      this.hideConsentPopup()
       this.allowCookies()
       this.allowAds()
+      this.setAdsCookie()
+      this.setCookieCookie()
       this.enableAds()
+    },
+    setCookieCookie() {
+      document.cookie = `cookies=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+    },
+    clearCookieCookie() {
+      document.cookie = `cookies=; expires=${new Date(0)}`
     },
     setAdsCookie() {
       document.cookie = `ads=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
@@ -333,9 +343,6 @@ export default Vue.extend({
     },
     enableAds() {
       if (this.adsAllowed && (<any>process).client) {
-        // update cookie
-        this.setAdsCookie()
-
         // update consent preferences
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
@@ -363,10 +370,10 @@ export default Vue.extend({
     },
     hideAds() {
       if ((<any>process).client) {
-        const styleSheet = document.createElement('style')
-        styleSheet.type = 'text/css'
-        styleSheet.innerText = `.adswrapper { display: none; }`
-        document.head.appendChild(styleSheet)
+        const sheet = document.createElement('style')
+        sheet.type = 'text/css'
+        sheet.innerText = `.adswrapper { display: none; }`
+        document.head.appendChild(sheet)
       }
     },
     ...mapMutations({
@@ -374,6 +381,7 @@ export default Vue.extend({
       disallowCookies: 'disallowCookies',
       allowAds: 'allowAds',
       disallowAds: 'disallowAds',
+      hideConsentPopup: 'hideConsentPopup',
       setIsApp: 'setIsApp',
       setInstallPrompt: 'setInstallPrompt',
       clearInstallPrompt: 'clearInstallPrompt',

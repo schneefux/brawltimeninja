@@ -50,6 +50,7 @@ export const state = () => ({
   modeMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
+  consentPopupVisible: true,
   installBannerDismissed: false,
   totalBrawlers: 37,
   bsuArticles: [],
@@ -133,9 +134,11 @@ export const mutations = {
   disallowCookies(state) {
     state.cookiesAllowed = false
   },
-  clearCookieSettings(state) {
-    state.adsAllowed = false
-    state.cookiesAllowed = false
+  showConsentPopup(state) {
+    state.consentPopupVisible = true
+  },
+  hideConsentPopup(state) {
+    state.consentPopupVisible = false
   },
   dismissInstallBanner(state) {
     state.installBannerDismissed = true
