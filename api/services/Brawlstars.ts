@@ -43,7 +43,9 @@ export default class BrawlstarsService {
       this.apiUnofficial,
       'fetch_events',
       { },
-      { 'Authorization': 'Bearer ' + tokenUnofficial }
+      { 'Authorization': 'Bearer ' + tokenUnofficial },
+      1000,
+      60*15,
     );
 
     const mapper = (events: BrawlstarsEvent[]) => events.map((event) => ({
@@ -104,7 +106,7 @@ export default class BrawlstarsService {
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
       10000,
-      600,
+      60*10,
     );
     return response.items.map((d: any) => ({
       tag: d.tag.replace(/^#/, ''),
@@ -573,7 +575,9 @@ export default class BrawlstarsService {
       this.apiOfficial,
       'fetch_player',
       { },
-      { 'Authorization': 'Bearer ' + tokenOfficial }
+      { 'Authorization': 'Bearer ' + tokenOfficial },
+      1000,
+      60*3,
     );
     // official API: with hash, unofficial API: no hash
     // brawltime assumes no hash
@@ -584,7 +588,9 @@ export default class BrawlstarsService {
       this.apiOfficial,
       'fetch_player_battles',
       { },
-      { 'Authorization': 'Bearer ' + tokenOfficial }
+      { 'Authorization': 'Bearer ' + tokenOfficial },
+      1000,
+      60*3,
     ).catch(() => <BattleLog>({
       items: [],
       paging: [],
