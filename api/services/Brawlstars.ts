@@ -46,7 +46,10 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenUnofficial },
       1000,
       60*15,
-    );
+    ).catch(() => ({
+      active: [],
+      upcoming: [],
+    }));
 
     const mapper = (events: BrawlstarsEvent[]) => events.map((event) => ({
       id: event.map.id.toString(),
