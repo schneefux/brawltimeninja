@@ -305,7 +305,7 @@ export default class ClickerService {
         battle_level_name: battle.battle.level?.name,
         battle_level_id: 'level' in battle.battle ? battle.battle.level?.id : null,
         // calculated
-        battle_victory: floatingVictory,
+        battle_victory: floatingVictory == null ? null : Math.floor(floatingVictory * 10e7) / 10e7, // Decimal(8)
         /* battle starplayer */
         battle_starplayer_brawler_id: battle.battle.starPlayer?.brawler.id,
         battle_starplayer_brawler_name: battle.battle.starPlayer?.brawler.name,
