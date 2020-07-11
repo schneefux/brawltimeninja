@@ -10,6 +10,7 @@ import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const trackerUrl = process.env.TRACKER_URL || '';
+const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
@@ -664,6 +665,18 @@ export default class BrawlstarsService {
         5000)
         .catch(error => console.error(error, tag))
         .finally(() => console.timeEnd('post battles to tracker ' + tag));
+    }
+
+    if (clickerUrl != '') {
+      console.time('post battles to clicker ' + tag)
+      // do not await - process in background and resolve early
+      post<null>(
+        clickerUrl + '/track',
+        { player, battleLog },
+        'upload_battlelog_clicker',
+        5000)
+        .catch(error => console.error(error, tag))
+        .finally(() => console.timeEnd('post battles to clicker ' + tag));
     }
 
     const brawlers = {} as { [id: string]: Brawler };

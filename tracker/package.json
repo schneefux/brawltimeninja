@@ -1,7 +1,6 @@
 {
-  "name": "brawltimeninja",
+  "name": "tracker",
   "version": "1.0.0",
-  "description": "Brawlstars player statistics website",
   "author": "schneefux",
   "private": true,
   "scripts": {

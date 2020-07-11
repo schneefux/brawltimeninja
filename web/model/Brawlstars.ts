@@ -36,7 +36,7 @@ export interface Player {
   duoVictories: number;
   bestRoboRumbleTime: number;
   bestTimeAsBigBrawler: number;
-  club: null | {
+  club?: {
     tag: string;
     name: string;
   };
@@ -92,14 +92,14 @@ export interface BattleLog {
       duration?: number;
       rank?: number;
       trophyChange?: number;
-      level: {
+      level?: {
         name: null;
         id: number;
       }; // bossfight
       starPlayer?: BattlePlayer;
-      teams: BattlePlayer[][]; // 3v3
-      players: BattlePlayer[]; // showdown, bossfight
-      bigBrawler: BattlePlayer; // bossfight
+      teams?: BattlePlayer[][]; // 3v3
+      players?: BattlePlayer[]; // showdown, bossfight
+      bigBrawler?: BattlePlayer; // bossfight
     }
   }[]
   paging: {}

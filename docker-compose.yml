@@ -5,20 +5,19 @@ services:
     build: ./web
     volumes:
       - ./web/:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - 3000:80
     environment:
       HOST: 0.0.0.0
       PORT: 80
       API_URL: http://api/
-      MEDIA_URL: http://media/
+      API_URL_BROWSER: http://localhost:3001/api/
+      MEDIA_URL: http://localhost:3003/
     command: npm run dev
   api:
     build: ./api
     volumes:
       - ./api/:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - 3001:80
     environment:
@@ -27,13 +26,13 @@ services:
       BRAWLAPI_TOKEN: "${BRAWLAPI_TOKEN}"
       BRAWLAPI_URL: "${BRAWLAPI_URL}"
       BRAWLSTARS_URL: "${BRAWLSTARS_URL}"
-      TRACKER_URL: http://tracker/tracker
+      TRACKER_URL: http://clicker/clicker
+      CLICKER_URL: ""
     command: npm run dev
   media:
     build: ./media
     volumes:
       - ./media/:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - 3003:80
     environment:
@@ -45,12 +44,21 @@ services:
     build: ./tracker
     volumes:
       - ./tracker/:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - 3002:80
     environment:
       PORT: 80
       DATABASE_URI: mysql2://brawltime:brawltime@db/brawltime
+    command: npm run dev
+  clicker:
+    build: ./clicker
+    volumes:
+      - ./clicker/:/usr/src/app
+    ports:
+      - 3004:80
+    environment:
+      PORT: 80
+      CLICKHOUSE_HOST: clickhouse
     command: npm run dev
   db:
     image: mariadb:10.5
@@ -64,3 +72,7 @@ services:
     image: adminer
     ports:
       - 8080
+  clickhouse:
+    image: yandex/clickhouse-server:20.5
+    ports:
+      - 8123
