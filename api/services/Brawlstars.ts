@@ -158,7 +158,7 @@ export default class BrawlstarsService {
     );
 
     return meta.map((entry) => ({
-      id: entry.id,
+      id: entry.starpowerId || (<any>entry).id,
       brawlerName: brawlerId({ name: entry.brawlerName }),
       brawlerId: entry.brawlerId,
       starpowerName: entry.starpowerName,
@@ -187,7 +187,7 @@ export default class BrawlstarsService {
     );
 
     return meta.map((entry) => ({
-      id: entry.id,
+      id: entry.gadgetId || (<any>entry).id,
       brawlerName: brawlerId({ name: entry.brawlerName }),
       brawlerId: entry.brawlerId,
       gadgetName: entry.gadgetName,
@@ -628,7 +628,7 @@ export default class BrawlstarsService {
       const time = battle.battleTime;
       const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
 
-      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
+      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]));
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
 
       let mode = battle.event.mode
@@ -724,7 +724,7 @@ export default class BrawlstarsService {
       name: player.name,
       hoursSpent,
       trophies: player.trophies,
-      clubName: player.club === null ? '' : player.club.name,
+      clubName: player.club === null ? '' : player.club!.name,
       history: [], // filled by /history
       totalStats: {}, // filled by /winrates
       brawlers,
