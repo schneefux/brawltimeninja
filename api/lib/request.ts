@@ -80,7 +80,7 @@ export function request<T>(
     })
     .catch(error => {
       stats.increment(metricName + '.cache.miss');
-      if (error.name == 'AbortError') {
+      if (error.type == 'aborted') {
         stats.increment(metricName + '.timeout');
         throw {
           url: url.toString(),
@@ -128,7 +128,7 @@ export function post<T>(
       return response.json();
     })
     .catch(error => {
-      if (error.name == 'AbortError') {
+      if (error.type == 'aborted') {
         stats.increment(metricName + '.timeout');
         throw {
           url: url.toString(),
