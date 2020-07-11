@@ -21,6 +21,9 @@ export interface Player {
   tag: string;
   name: string;
   nameColor: string;
+  icon: {
+    id: number;
+  };
   trophies: number;
   highestTrophies: number;
   powerPlayPoints: number;
