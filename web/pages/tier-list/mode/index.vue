@@ -130,7 +130,7 @@ export default Vue.extend({
   },
   methods: {
     trackScroll(visible, element, section) {
-      if (visible && '$ga' in this) {
+      if (visible) {
         this.$ga.event('modes', 'scroll', section)
       }
     },

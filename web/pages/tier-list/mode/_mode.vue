@@ -191,7 +191,7 @@ export default Vue.extend({
   },
   methods: {
     trackScroll(visible: boolean, element: any, section: string) {
-      if (visible && '$ga' in this) {
+      if (visible) {
         this.$ga.event('mode_meta', 'scroll', section)
       }
     },

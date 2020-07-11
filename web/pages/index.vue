@@ -542,7 +542,7 @@ export default Vue.extend({
       this.$router.push(this.playerRoute)
     },
     trackScroll(visible, element, section) {
-      if (visible && '$ga' in this) {
+      if (visible) {
         this.$ga.event('home', 'scroll', section)
       }
     },

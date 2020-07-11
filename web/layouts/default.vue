@@ -324,22 +324,16 @@ export default Vue.extend({
       document.cookie = `ads=; expires=${new Date(0)}`
     },
     installed() {
-      if ('$ga' in this) {
-        this.$ga.event('app', 'install')
-      }
+      this.$ga.event('app', 'install')
     },
     async clickInstall() {
-      if ('$ga' in this) {
-        this.$ga.event('app', 'click', 'install_header')
-      }
+      this.$ga.event('app', 'click', 'install_header')
       await this.install()
     },
     checkAdblock() {
       const adsBlocked = (<any>this.$refs['adblock-bait']).clientHeight === 0
-      if ('$ga' in this) {
-        this.$ga.set('dimension2', !adsBlocked)
-        this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
-      }
+      this.$ga.set('dimension2', !adsBlocked)
+      this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
     },
     enableAds() {
       if (this.adsAllowed && (<any>process).client) {
@@ -347,9 +341,7 @@ export default Vue.extend({
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
         }
-        if ('$ga' in this) {
-          this.$ga.enable()
-        }
+        this.$ga.enable()
 
         // track some meta data
         // play store allows only 1 ad/page - TWA is detected via referrer
@@ -360,12 +352,10 @@ export default Vue.extend({
           this.setIsApp()
         }
 
-        if ('$ga' in this) {
-          // set variables for split testing
-          this.$ga.set('dimension1', process.env.branch)
-          this.$ga.set('dimension3', isPwa)
-          this.$ga.set('dimension4', isTwa)
-        }
+        // set variables for split testing
+        this.$ga.set('dimension1', process.env.branch)
+        this.$ga.set('dimension3', isPwa)
+        this.$ga.set('dimension4', isTwa)
       }
     },
     hideAds() {
