@@ -4,8 +4,11 @@ import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
 import { PlayerWinRates } from '~/model/PlayerWinRates';
+import StatsD from 'hot-shots'
+import { performance } from 'perf_hooks';
 
 const dbHost = process.env.CLICKHOUSE_HOST || '';
+const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 
 /*
   TODO create materialized views:
@@ -56,6 +59,14 @@ export default class ClickerService {
 
   constructor() {
     this.ch = new ClickHouse(dbHost);
+  }
+
+  private async query<T>(query: string, metricName: string, readonly=true): Promise<T[]> {
+    stats.increment(metricName + '.run')
+    return stats.asyncTimer(() =>
+      this.ch.querying(query, { dataObjects: true, readonly })
+        .then(response => response.data as T[])
+    , metricName + '.timer')()
   }
 
   public async migrate() {
@@ -193,15 +204,18 @@ export default class ClickerService {
     }))
 
     // TODO maybe put this into redis to avoid slow blocking point queries
-    const maxTimestampQueryResult = await this.ch.querying(
+    const maxTimestamp = await this.query<any>(
       `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE ${sliceSeason()} AND player_tag='${player.tag}'`,
-      { dataObjects: true, readonly: true })
-    const lastBattleTimestamp = new Date(Date.parse(maxTimestampQueryResult.data[0].maxTimestamp))
+      'player.get_last')
+    const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
+    const insertStart = performance.now()
     const stream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
 
     // insert records for meta stats
-    await Promise.all(battles.map(async (battle) => {
+    battles.forEach((battle) => {
+      stats.increment('player.insert.run')
+
       if(battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
@@ -339,13 +353,14 @@ export default class ClickerService {
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
       stream.write(record)
-    }))
+    })
 
     stream.end()
+    stats.timing('player.insert.timer', performance.now() - insertStart)
   }
 
   public async getTopByExp(n: number): Promise<LeaderboardEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
       SELECT
         player_name AS name,
         player_tag AS tag,
@@ -355,8 +370,8 @@ export default class ClickerService {
       GROUP BY player_name, player_tag
       ORDER BY total_exp DESC
       LIMIT ${n}
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'leaderboard')
+      .then(data => data.map(row => ({
         ...row,
         tag: row.tag.replace('#', ''),
         total_exp: parseInt(row.total_exp),
@@ -366,7 +381,7 @@ export default class ClickerService {
   public async getHistory(tag: string): Promise<History> {
     tag = validateTag(tag)
 
-    const brawlerHistory = await this.ch.querying(`
+    const brawlerHistory = await this.query<any>(`
       SELECT
         brawler_name AS name,
         toStartOfHour(timestamp) AS timestamp,
@@ -375,13 +390,13 @@ export default class ClickerService {
       WHERE player_tag='${tag}'
       GROUP BY name, timestamp
       ORDER BY timestamp
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'player.brawler_history')
+      .then(data => data.map(row => ({
         ...row,
         trophies: parseInt(row.trophies),
       }) as BrawlerHistoryEntry))
 
-    const playerHistory = await this.ch.querying(`
+    const playerHistory = await this.query<any>(`
       SELECT
         toStartOfHour(timestamp) AS timestamp,
         MAX(player_trophies) AS trophies
@@ -389,8 +404,8 @@ export default class ClickerService {
       WHERE player_tag='${tag}'
       GROUP BY timestamp
       ORDER BY timestamp
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'player.history')
+      .then(data => data.map(row => ({
         ...row,
         trophies: parseInt(row.trophies),
       }) as PlayerHistoryEntry))
@@ -401,7 +416,7 @@ export default class ClickerService {
   public async getPlayerWinrates(tag: string): Promise<PlayerWinRates> {
     tag = validateTag(tag)
 
-    const modeStats = await this.ch.querying(`
+    const modeStats = await this.query<any>(`
         SELECT
           battle_event_mode AS mode,
           COUNT(*) AS picks,
@@ -415,8 +430,8 @@ export default class ClickerService {
         WHERE player_tag='${tag}'
         GROUP BY mode
         ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'player.winrates')
+      .then(data => data.map(row => ({
         ...row,
         picks: parseInt(row.picks),
         winRate: sloppyParseFloat(row.winRate),
@@ -432,7 +447,7 @@ export default class ClickerService {
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaBrawlerEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
       SELECT
         arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) as name,
         COUNT() as picks,
@@ -443,8 +458,8 @@ export default class ClickerService {
       AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
       GROUP BY name
       ORDER BY picks
-    `, { dataObjects: true, readonly: true })
-    .then(response => response.data.map(row => ({
+    `, 'meta.brawler')
+    .then(data => data.map(row => ({
       ...row,
       picks: parseInt(row.picks),
       winRate: sloppyParseFloat(row.winRate),
@@ -453,7 +468,7 @@ export default class ClickerService {
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaStarpowerEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
         SELECT
           brawler_id AS brawlerId,
           brawler_name AS brawlerName,
@@ -468,8 +483,8 @@ export default class ClickerService {
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY brawlerId, brawlerName, starpowerId, starpowerName
         ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'meta.starpower')
+      .then(data => data.map(row => ({
         ...row,
         picks: parseInt(row.picks),
         winRate: sloppyParseFloat(row.winRate),
@@ -479,7 +494,7 @@ export default class ClickerService {
   }
 
   public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaGadgetEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
         SELECT
           brawler_id AS brawlerId,
           brawler_name AS brawlerName,
@@ -494,8 +509,8 @@ export default class ClickerService {
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY brawlerId, brawlerName, gadgetId, gadgetName
         ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'meta.gadget')
+      .then(data => data.map(row => ({
         ...row,
         picks: parseInt(row.picks),
         winRate: sloppyParseFloat(row.winRate),
@@ -505,7 +520,7 @@ export default class ClickerService {
   }
 
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaModeEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
         SELECT
           arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) as name,
           battle_event_mode AS mode,
@@ -520,8 +535,8 @@ export default class ClickerService {
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY name, mode
         ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'meta.mode')
+      .then(data => data.map(row => ({
         ...row,
         picks: parseInt(row.picks),
         rank: sloppyParseFloat(row.rank),
@@ -533,7 +548,7 @@ export default class ClickerService {
   }
 
   public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaMapEntry[]> {
-    return await this.ch.querying(`
+    return await this.query<any>(`
         SELECT
           battle_event_id AS id,
           battle_event_mode AS mode,
@@ -553,8 +568,8 @@ export default class ClickerService {
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY id, mode, map, name, isBigbrawler
         ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
+      `, 'meta.map')
+      .then(data => data.map(row => ({
         ...row,
         picks: parseInt(row.picks),
         duration: sloppyParseFloat(row.duration),

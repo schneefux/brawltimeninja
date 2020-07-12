@@ -11,6 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@apla/clickhouse": "^1.6.3",
+    "hot-shots": "^7.7.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.0.1",
