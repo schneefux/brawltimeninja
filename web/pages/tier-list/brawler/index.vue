@@ -168,7 +168,7 @@ export default Vue.extend({
       formatMode,
       brawlerMeta: [] as BrawlerMetaEntry[],
       modeMeta: {} as ModeMetaMap,
-      trophyRange: [0, 1000],
+      trophyRange: [0, 10],
       showAllModes: false,
     }
   },
