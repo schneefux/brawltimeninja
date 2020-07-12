@@ -31,7 +31,7 @@
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap">
+      <div class="overflow-x-auto scrolling-touch flex justify-center md:flex-wrap">
         <nuxt-link
           v-for="(map, index) in maps"
           :key="map.id"
