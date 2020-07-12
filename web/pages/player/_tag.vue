@@ -248,40 +248,18 @@
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="(mode, index) in Object.values(player.modes)"
-          :key="mode.label"
+          v-for="(mode, modeId, index) in player.modes"
+          :key="modeId"
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
           class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-40 md:h-auto card-wrapper"
         >
-          <div
-            class="card bg-center bg-cover flex flex-wrap justify-between h-full relative"
-            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url(\'' + require(`~/assets/images/mode/background/${mode.background}`) + '\')'"
-          >
-            <div class="card-content">
-              <div class="card-header text-white">
-                {{ mode.label }}
-              </div>
-              <p
-                v-for="(stat, statName) in mode.stats"
-                :key="statName"
-                class="card-props"
-              >
-                <span class="card-prop-value">{{ stat.value }}</span>
-                <span class="card-prop-label">{{ stat.label }}</span>
-              </p>
-            </div>
-            <img
-              v-if="mode.icon"
-              :src="require(`~/assets/images/mode/icon/${mode.icon}`)"
-              class="absolute top-0 right-0 h-12 self-center mr-6 my-4"
-            >
-          </div>
+          <player-mode-card :mode="modeId" :stats="mode.stats"></player-mode-card>
         </div>
 
         <div
-          v-show="!showAllModes"
+          v-show="!showAllModes && Object.keys(player.modes).length > 3"
           class="mt-2 w-full text-right hidden md:block"
         >
           <button

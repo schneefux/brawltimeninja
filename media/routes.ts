@@ -43,13 +43,13 @@ async function respond(ctx: Context, buffer: Buffer|null) {
 const EXT = '.:ext(webp|png|jpg)';
 
 router.get(`/brawlers/:name/avatar${EXT}`, async (ctx, next) => {
-  const buffer = await service.getBrawlerAvatar(ctx.params.name, ctx.req.headers.accept || '');
+  const buffer = await service.getBrawlerAvatar(ctx.params.name.toLowerCase(), ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
 router.get(`/brawlers/:name/model${EXT}`, async (ctx, next) => {
-  const buffer = await service.getBrawlerModel(ctx.params.name, ctx.req.headers.accept || '');
+  const buffer = await service.getBrawlerModel(ctx.params.name.toLowerCase(), ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
@@ -78,20 +78,14 @@ router.get(`/maps/:id${EXT}`, async (ctx, next) => {
 });
 
 router.get(`/modes/:name/icon${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name.replace(/-/g, '')
-  if (name.endsWith('Showdown')) {
-    name = 'Showdown'
-  }
+  let name = ctx.params.name.replace(/-| /g, '').toLowerCase()
   const buffer = await service.getModeIcon(name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
 router.get(`/modes/:name/background${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name.replace(/-/g, '')
-  if (name.endsWith('Showdown')) {
-    name = 'Showdown'
-  }
+  let name = ctx.params.name.replace(/-| /g, '').toLowerCase()
   const buffer = await service.getModeBackground(name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();

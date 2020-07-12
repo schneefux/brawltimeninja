@@ -178,10 +178,16 @@
           class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 card-wrapper mx-auto z-10"
         >
           <div
-            class="items-center card bg-center bg-cover h-full"
-            :style="'background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + require(`~/assets/images/mode/background/${modeToBackgroundId(entry.mode)}.jpg`) + '\')'"
+            class="items-center card bg-center bg-cover h-full relative"
           >
-            <div class="card-content">
+            <media-img
+              :path="'/modes/' + entry.mode + '/background'"
+              clazz="absolute left-0 top-0 h-32 w-full"
+              ztyle="filter: brightness(0.5) grayscale(0.25); transform: scaleX(2.0) scaleY(1.5);"
+              size="1600"
+            ></media-img>
+
+            <div class="relative z-10 card-content">
               <span class="card-header">
                 {{ formatMode(entry.mode) }}
               </span>
@@ -240,6 +246,9 @@ export default {
       metaStatMaps,
       formatMode,
       modeToBackgroundId,
+      starpowerMeta: [],
+      gadgetMeta: [],
+      modeMeta: {},
     }
   },
   computed: {
@@ -272,31 +281,21 @@ export default {
         .sort((m1, m2) => m2.sampleSize - m1.sampleSize)
     },
     ...mapState({
-      starpowerMeta: state => state.starpowerMeta,
-      gadgetMeta: state => state.gadgetMeta,
       modeMeta: state => state.modeMeta,
       isApp: state => state.isApp,
     }),
   },
-  asyncData({ params }) {
+  async asyncData({ params, $axios }) {
+    const starpowerMeta = await $axios.$get('/api/meta/starpower')
+    const gadgetMeta = await $axios.$get('/api/meta/gadget')
+    const modeMeta = await $axios.$get('/api/meta/mode')
     const brawlerId = params.brawler
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')),
-    }
-  },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadStarpowerMeta')
-      await store.dispatch('loadGadgetMeta')
-      await store.dispatch('loadModeMeta')
-    }
-  },
-  async created() {
-    if (process.static) {
-      await this.loadStarpowerMeta()
-      await this.loadGadgetMeta()
-      await this.loadModeMeta()
+      starpowerMeta,
+      gadgetMeta,
+      modeMeta,
     }
   },
   methods: {
