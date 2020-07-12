@@ -41,7 +41,7 @@
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap justify-center">
+      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap md:justify-center">
         <nuxt-link
           v-for="(mode, index) in modes"
           :key="mode"
