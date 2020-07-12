@@ -170,6 +170,12 @@ function compare1(stat: string) {
 }
 
 function groupStatIntoTiers(entries: MetaGridEntry[], stat: string): TierList {
+  if (entries.some(b => !(stat in b.stats))) {
+    return {
+      '?': entries
+    }
+  }
+
   const sign = metaStatMaps.signs[stat] as number
   const stats = entries.map(b => Number.parseFloat(b.stats[stat].toString()))
   const avg = stats.reduce((sum, s) => sum + s, 0) / entries.length
@@ -242,7 +248,7 @@ export default Vue.extend({
       if (this.entries.length == 0) {
         return []
       }
-      return [...Object.keys(this.entries[0].stats)]
+      return Object.keys(this.entries[0].stats)
     },
     sortedEntries(): IndexedMetaGridEntry[] {
       return this.entries.slice()
