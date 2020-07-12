@@ -93,6 +93,32 @@ export interface ModeMeta {
   }
 }
 
+export interface StarpowerMetaEntry {
+  id: string;
+  brawlerName: string;
+  brawlerId: number;
+  starpowerName: string;
+  sampleSize: number;
+  stats: {
+    winRate: number;
+    starRate: number;
+    rank1Rate: number;
+  }
+}
+
+export interface GadgetMetaEntry {
+  id: string;
+  brawlerName: string;
+  brawlerId: number;
+  gadgetName: string;
+  sampleSize: number;
+  stats: {
+    winRate: number;
+    starRate: number;
+    rank1Rate: number;
+  }
+}
+
 export interface MapMeta extends ModeMeta {
   map: string;
 }

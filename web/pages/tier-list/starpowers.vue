@@ -31,15 +31,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaStarpowerEntry } from '../../model/MetaEntry'
+import { MetaGridEntry } from '../../lib/util'
+import { StarpowerMetaEntry } from '../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'StarpowerMetaPage',
   data() {
     return {
-      starpowerMeta: {} as PropType<MetaStarpowerEntry[]>,
+      starpowerMeta: [] as StarpowerMetaEntry[],
       trophyRange: [0, 10],
     }
   },
@@ -54,11 +55,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    totalSampleSize() {
+    totalSampleSize(): number {
       return this.starpowers
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
-    starpowers() {
+    starpowers(): MetaGridEntry[] {
       const statsToDiffs = (starpower) => {
         const brawlerWithout = this.starpowerMeta
           .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
@@ -94,11 +95,11 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`)
+      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`) as StarpowerMetaEntry[]
     },
   },
   async asyncData({ $axios }) {
-    const starpowerMeta = await $axios.$get('/api/meta/starpower')
+    const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaEntry[]
     return {
       starpowerMeta,
     }

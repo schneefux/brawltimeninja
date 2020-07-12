@@ -29,15 +29,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGadgetEntry } from '../../model/MetaEntry'
+import { GadgetMetaEntry } from '../../model/MetaEntry'
+import { MetaGridEntry } from '../../lib/util'
 
 export default Vue.extend({
   name: 'GadgetMetaPage',
   data() {
     return {
-      gadgetMeta: {} as PropType<MetaGadgetEntry[]>,
+      gadgetMeta: [] as GadgetMetaEntry[],
       trophyRange: [0, 10],
     }
   },
@@ -52,11 +53,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    totalSampleSize() {
+    totalSampleSize(): number {
       return this.gadgets
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
     },
-    gadgets() {
+    gadgets(): MetaGridEntry[] {
       const statsToDiffs = (gadget) => {
         const brawlerWithout = this.gadgetMeta
           .find(b => b.gadgetName == '' && b.brawlerId == gadget.brawlerId)
@@ -92,11 +93,11 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      this.gadgetMeta = await this.$axios.$get(`/api/meta/gadget?trophyrange=${lower}-${upper}`)
+      this.gadgetMeta = await this.$axios.$get(`/api/meta/gadget?trophyrange=${lower}-${upper}`) as GadgetMetaEntry[]
     },
   },
   async asyncData({ $axios }) {
-    const gadgetMeta = await $axios.$get('/api/meta/gadget')
+    const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaEntry[]
     return {
       gadgetMeta,
     }
