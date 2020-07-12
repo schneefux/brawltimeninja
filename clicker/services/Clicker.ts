@@ -374,6 +374,7 @@ export default class ClickerService {
       FROM brawltime.battle
       WHERE player_tag='${tag}'
       GROUP BY name, timestamp
+      ORDER BY timestamp
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -387,6 +388,7 @@ export default class ClickerService {
       FROM brawltime.battle
       WHERE player_tag='${tag}'
       GROUP BY timestamp
+      ORDER BY timestamp
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -412,6 +414,7 @@ export default class ClickerService {
         FROM brawltime.battle
         WHERE player_tag='${tag}'
         GROUP BY mode
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -442,6 +445,7 @@ export default class ClickerService {
         WHERE ${sliceSeason()}
         ${trophyrange == 'undefined' || trophyrange == undefined ? '' : 'AND brawler_trophyrange=' + trophyrange }
         GROUP BY name
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -466,6 +470,7 @@ export default class ClickerService {
         FROM brawltime.battle
         WHERE ${sliceSeason()}
         GROUP BY brawlerId, brawlerName, starpowerId, starpowerName
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -490,6 +495,7 @@ export default class ClickerService {
         FROM brawltime.battle
         WHERE ${sliceSeason()}
         GROUP BY brawlerId, brawlerName, gadgetId, gadgetName
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -514,6 +520,7 @@ export default class ClickerService {
         FROM brawltime.battle
         WHERE ${sliceSeason()}
         GROUP BY name, mode
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -545,6 +552,7 @@ export default class ClickerService {
         FROM brawltime.battle
         WHERE ${sliceSeason()}
         GROUP BY id, mode, map, name, isBigbrawler
+        ORDER BY picks
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
