@@ -358,6 +358,7 @@ export default class ClickerService {
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
+        tag: row.tag.replace('#', ''),
         total_exp: parseInt(row.total_exp),
       }) as LeaderboardEntry))
   }
