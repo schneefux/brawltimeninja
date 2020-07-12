@@ -68,7 +68,7 @@ export default class BrawlstarsService {
    * Return event meta information without actual Brawlers and win rates.
    */
   public async getAllEvents() {
-    const meta = await this.getMapMeta({})
+    const meta = await this.getMapMeta({}, '0', '99')
     const metaData = {} as MapMap
     Object.entries(meta).forEach(([eventId, event]) => {
       metaData[eventId] = {
@@ -118,8 +118,7 @@ export default class BrawlstarsService {
     }));
   }
 
-  public async getBrawlerMeta(trophyrangeId: number|null) {
-    if (trackerUrl == '') {
+  public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
       return [];
     }
 
@@ -127,7 +126,7 @@ export default class BrawlstarsService {
       '/meta/brawler',
       trackerUrl,
       'fetch_brawler_meta',
-      { trophyrangeId: `${trophyrangeId}` },
+      { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
       600,
@@ -147,8 +146,7 @@ export default class BrawlstarsService {
     }) as BrawlerMetaEntry)
   }
 
-  public async getStarpowerMeta() {
-    if (trackerUrl == '') {
+  public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
       return [];
     }
 
@@ -156,7 +154,7 @@ export default class BrawlstarsService {
       '/meta/starpower',
       trackerUrl,
       'fetch_starpower_meta',
-      {},
+      { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
       600,
@@ -176,8 +174,7 @@ export default class BrawlstarsService {
     }))
   }
 
-  public async getGadgetMeta() {
-    if (trackerUrl == '') {
+  public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string) {
       return [];
     }
 
@@ -185,7 +182,7 @@ export default class BrawlstarsService {
       '/meta/gadget',
       trackerUrl,
       'fetch_gadget_meta',
-      {},
+      { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
       600,
@@ -205,8 +202,7 @@ export default class BrawlstarsService {
     }))
   }
 
-  public async getModeMeta() {
-    if (trackerUrl == '') {
+  public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
       return [];
     }
 
@@ -214,7 +210,7 @@ export default class BrawlstarsService {
       '/meta/mode',
       trackerUrl,
       'fetch_mode_meta',
-      {},
+      { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
       900, // 15m
@@ -265,17 +261,16 @@ export default class BrawlstarsService {
     return modeMeta;
   }
 
-  public async getMapMeta(filters: { [name: string]: string }) {
-    if (trackerUrl == '') {
+  public async getMapMeta(filters: { [name: string]: string }, trophyrangeLower: string, trophyrangeHigher: string) {
       return {};
     }
 
-    return cache.wrap(`map-meta-${JSON.stringify(filters)}`, async () => {
+    return cache.wrap(`map-meta-${JSON.stringify(filters)}-${trophyrangeLower}-${trophyrangeHigher}`, async () => {
       const meta = await request<MetaMapEntry[]>(
         '/meta/map',
         trackerUrl,
         'fetch_map_meta',
-        {},
+        { trophyrangeLower, trophyrangeHigher },
         {},
         60000,
         900, // 15m
