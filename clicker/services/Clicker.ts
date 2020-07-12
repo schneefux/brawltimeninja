@@ -431,7 +431,7 @@ export default class ClickerService {
     }
   }
 
-  public async getBrawlerMeta(trophyrange: number|undefined|'undefined'): Promise<MetaBrawlerEntry[]> {
+  public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaBrawlerEntry[]> {
     // TODO validate trophyrange
     // TODO trophy range changed
     return await this.ch.querying(`
@@ -443,7 +443,7 @@ export default class ClickerService {
           AVG(battle_is_starplayer) AS starRate
         FROM brawltime.battle
         WHERE ${sliceSeason()}
-        ${trophyrange == 'undefined' || trophyrange == undefined ? '' : 'AND brawler_trophyrange=' + trophyrange }
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY name
         ORDER BY picks
       `, { dataObjects: true, readonly: true })
@@ -456,7 +456,7 @@ export default class ClickerService {
       }) as MetaBrawlerEntry))
   }
 
-  public async getStarpowerMeta(): Promise<MetaStarpowerEntry[]> {
+  public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaStarpowerEntry[]> {
     return await this.ch.querying(`
         SELECT
           brawler_id AS brawlerId,
@@ -469,6 +469,7 @@ export default class ClickerService {
           AVG(battle_is_starplayer) AS starRate
         FROM brawltime.battle
         WHERE ${sliceSeason()}
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY brawlerId, brawlerName, starpowerId, starpowerName
         ORDER BY picks
       `, { dataObjects: true, readonly: true })
@@ -481,7 +482,7 @@ export default class ClickerService {
       }) as MetaStarpowerEntry))
   }
 
-  public async getGadgetMeta(): Promise<MetaGadgetEntry[]> {
+  public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaGadgetEntry[]> {
     return await this.ch.querying(`
         SELECT
           brawler_id AS brawlerId,
@@ -494,6 +495,7 @@ export default class ClickerService {
           AVG(battle_is_starplayer) AS starRate
         FROM brawltime.battle
         WHERE ${sliceSeason()}
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY brawlerId, brawlerName, gadgetId, gadgetName
         ORDER BY picks
       `, { dataObjects: true, readonly: true })
@@ -506,7 +508,7 @@ export default class ClickerService {
       }) as MetaGadgetEntry))
   }
 
-  public async getModeMeta(): Promise<MetaModeEntry[]> {
+  public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaModeEntry[]> {
     return await this.ch.querying(`
         SELECT
           brawler_name AS name,
@@ -519,6 +521,7 @@ export default class ClickerService {
           AVG(battle_is_starplayer) AS starRate
         FROM brawltime.battle
         WHERE ${sliceSeason()}
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY name, mode
         ORDER BY picks
       `, { dataObjects: true, readonly: true })
@@ -533,7 +536,7 @@ export default class ClickerService {
       }) as MetaModeEntry))
   }
 
-  public async getMapMeta(): Promise<MetaMapEntry[]> {
+  public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaMapEntry[]> {
     return await this.ch.querying(`
         SELECT
           battle_event_id AS id,
@@ -551,6 +554,7 @@ export default class ClickerService {
           AVG(battle_level_id) AS level
         FROM brawltime.battle
         WHERE ${sliceSeason()}
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY id, mode, map, name, isBigbrawler
         ORDER BY picks
       `, { dataObjects: true, readonly: true })

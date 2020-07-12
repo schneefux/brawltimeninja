@@ -34,27 +34,27 @@ router.get('/clicker/winrates/:tag', async (ctx, next) => {
 });
 
 router.get('/clicker/meta/brawler', async (ctx, next) => {
-  ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeId);
+  ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   await next();
 });
 
 router.get('/clicker/meta/starpower', async (ctx, next) => {
-  ctx.body = await service.getStarpowerMeta();
+  ctx.body = await service.getStarpowerMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   await next();
 });
 
 router.get('/clicker/meta/gadget', async (ctx, next) => {
-  ctx.body = await service.getGadgetMeta();
+  ctx.body = await service.getGadgetMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   await next();
 });
 
 router.get('/clicker/meta/mode', async (ctx, next) => {
-  ctx.body = await service.getModeMeta();
+  ctx.body = await service.getModeMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   await next();
 });
 
 router.get('/clicker/meta/map', async (ctx, next) => {
-  ctx.body = await service.getMapMeta();
+  ctx.body = await service.getMapMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   await next();
 });
 
