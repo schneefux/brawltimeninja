@@ -140,6 +140,7 @@ export default {
               path.join(__dirname, './components/**/*.vue'),
               path.join(__dirname, './components/**/*.tsx'),
               path.join(__dirname, './store/payload.json'),
+              path.join(__dirname, 'node_modules/vue-range-component/dist/vue-range-slider.js'),
             ],
             defaultExtractor: content =>
               content.match(/[\w-\/:!/]+/g) || [],
