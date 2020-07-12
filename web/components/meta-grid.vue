@@ -56,7 +56,7 @@
                     clazz="h-6 md:h-8 absolute top-0 right-0"
                   />
                   <p class="my-1 font-semibold text-lg text-center">
-                    {{ typeof entry.stats[selectedStat] == 'string' ? entry.stats[selectedStat] : metaStatMaps.formatters[selectedStat](entry.stats[selectedStat]) }}
+                    {{ !(selectedStat in entry.stats) ? '?' : typeof entry.stats[selectedStat] == 'string' ? entry.stats[selectedStat] : metaStatMaps.formatters[selectedStat](entry.stats[selectedStat]) }}
                   </p>
                 </li>
               </nuxt-link>
