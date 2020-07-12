@@ -1,6 +1,5 @@
 export interface MetaBrawlerEntry {
   name: string;
-  trophies: number;
   winRate: number;
   starRate: number;
   picks: number;

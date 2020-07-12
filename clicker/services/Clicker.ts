@@ -432,28 +432,24 @@ export default class ClickerService {
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaBrawlerEntry[]> {
-    // TODO validate trophyrange
-    // TODO trophy range changed
     return await this.ch.querying(`
-        SELECT
-          brawler_name AS name,
-          AVG(brawler_trophies) AS trophies,
-          COUNT(*) AS picks,
-          AVG(battle_victory) AS winRate,
-          AVG(battle_is_starplayer) AS starRate
-        FROM brawltime.battle
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY name
-        ORDER BY picks
-      `, { dataObjects: true, readonly: true })
-      .then(response => response.data.map(row => ({
-        ...row,
-        trophies: sloppyParseFloat(row.trophies),
-        picks: parseInt(row.picks),
-        winRate: sloppyParseFloat(row.winRate),
-        starRate: sloppyParseFloat(row.starRate),
-      }) as MetaBrawlerEntry))
+      SELECT
+        arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) as name,
+        COUNT() as picks,
+        AVG(battle_victory) as winRate,
+        AVG(name=battle_starplayer_brawler_name) as starRate
+      FROM brawltime.battle
+      WHERE ${sliceSeason()}
+      AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
+      GROUP BY name
+      ORDER BY picks
+    `, { dataObjects: true, readonly: true })
+    .then(response => response.data.map(row => ({
+      ...row,
+      picks: parseInt(row.picks),
+      winRate: sloppyParseFloat(row.winRate),
+      starRate: sloppyParseFloat(row.starRate),
+    }) as MetaBrawlerEntry))
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaStarpowerEntry[]> {
@@ -511,14 +507,14 @@ export default class ClickerService {
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaModeEntry[]> {
     return await this.ch.querying(`
         SELECT
-          brawler_name AS name,
+          arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) as name,
           battle_event_mode AS mode,
-          COUNT(*) AS picks,
+          COUNT() as picks,
           AVG(battle_rank) AS rank,
           AVG(battle_rank=1) AS rank1Rate,
           AVG(battle_victory) AS winRate,
           AVG(battle_duration) AS duration,
-          AVG(battle_is_starplayer) AS starRate
+          AVG(name=battle_starplayer_brawler_name) AS starRate
         FROM brawltime.battle
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
@@ -542,11 +538,11 @@ export default class ClickerService {
           battle_event_id AS id,
           battle_event_mode AS mode,
           battle_event_map AS map,
-          brawler_name AS name,
+          arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) AS name,
           battle_is_bigbrawler AS isBigbrawler,
 
           COUNT(*) AS picks,
-          SUM(battle_duration) AS duration,
+          AVG(battle_duration) AS duration,
           AVG(battle_rank) AS rank,
           SUM(battle_rank=1) AS rank1,
           SUM(battle_victory) AS wins,
