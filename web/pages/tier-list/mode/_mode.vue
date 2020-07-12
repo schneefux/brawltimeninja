@@ -34,7 +34,7 @@
       <div class="overflow-x-auto scrolling-touch flex md:flex-wrap">
         <nuxt-link
           v-for="(map, index) in maps"
-          :key="map"
+          :key="map.id"
           :to="`/tier-list/map/${map.id}`"
           :class="{ 'md:hidden': !showAllMaps && index >= 3 }"
           class="px-2"
