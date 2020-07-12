@@ -412,7 +412,7 @@ export default class BrawlstarsService {
       trophiesCount: statsSum.trophiesCount + (entry.trophyChange !== null ? entry.picks : 0),
       wins: statsSum.wins
         + ( entry.winRate !== null ? (entry.picks * entry.winRate) : 0 ) // 3v3
-        + ( entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
+        + ( entry.winRate == null && entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
       winsCount: statsSum.winsCount + (entry.winRate !== null || entry.rank !== null ? entry.picks : 0),
     }), { wins: 0, winsCount: 0, trophies: 0, trophiesCount: 0 });
     const totalStats = { winRate: 0, trophyRate: 0, battles: statsSum.trophiesCount, byMode: statsByMode };
