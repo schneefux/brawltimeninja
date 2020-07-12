@@ -14,6 +14,10 @@
       </p>
     </div>
 
+    <div class="section text-center mb-2">
+      <trophy-slider v-model="trophyRange"></trophy-slider>
+    </div>
+
     <div class="section">
       <meta-grid
         :entries="gadgets"
@@ -24,14 +28,18 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'vuex'
-import MetaGrid from '~/components/meta-grid.vue'
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
+import { MetaGadgetEntry } from '../../model/MetaEntry'
 
-export default {
+export default Vue.extend({
   name: 'GadgetMetaPage',
-  components: {
-    MetaGrid,
+  data() {
+    return {
+      gadgetMeta: {} as PropType<MetaGadgetEntry[]>,
+      trophyRange: [0, 10],
+    }
   },
   head() {
     const description = `Brawl Stars Gadget Tier List. Find the best Gadgets for all Brawlers with Win Rates and Rankings.`
@@ -52,6 +60,9 @@ export default {
       const statsToDiffs = (gadget) => {
         const brawlerWithout = this.gadgetMeta
           .find(b => b.gadgetName == '' && b.brawlerId == gadget.brawlerId)
+        if (brawlerWithout == undefined) {
+          return {}
+        }
 
         const perc = (v) => Math.round(v * 100)
         const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
@@ -59,7 +70,7 @@ export default {
 
         const stats = {}
         Object.entries(gadget.stats)
-          .forEach(([prop, value]) => stats[prop] = format(value - brawlerWithout.stats[prop]))
+          .forEach(([prop, value]) => stats[prop] = format(<number>value - brawlerWithout.stats[prop]))
         return stats
       }
 
@@ -76,18 +87,18 @@ export default {
         }))
     },
     ...mapState({
-      gadgetMeta: state => state.gadgetMeta,
-      isApp: state => state.isApp,
+      isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadGadgetMeta')
-    }
+  watch: {
+    async trophyRange([lower, upper]) {
+      this.gadgetMeta = await this.$axios.$get(`/api/meta/gadget?trophyrange=${lower}-${upper}`)
+    },
   },
-  async created() {
-    if (process.static) {
-      await this.loadGadgetMeta()
+  async asyncData({ $axios }) {
+    const gadgetMeta = await $axios.$get('/api/meta/gadget')
+    return {
+      gadgetMeta,
     }
   },
   methods: {
@@ -96,9 +107,6 @@ export default {
         this.$ga.event('gadget_meta', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadGadgetMeta: 'loadGadgetMeta',
-    }),
   },
-}
+})
 </script>

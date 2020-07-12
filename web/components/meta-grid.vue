@@ -148,7 +148,7 @@
 import Vue, { PropType } from 'vue'
 import { formatMode, metaStatMaps, MetaGridEntry } from '../lib/util'
 
-const sampleSizeThreshold = 300
+const sampleSizeThreshold = 200
 
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
@@ -160,8 +160,8 @@ interface TierList {
 
 function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
   const sign = metaStatMaps.signs[stat] as number
-  const e1stat = Number.parseFloat(entry1.stats[stat].toString())
-  const e2stat = Number.parseFloat(entry2.stats[stat].toString())
+  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
+  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
   return sign * (e1stat - e2stat)
 }
 

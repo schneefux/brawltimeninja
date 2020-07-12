@@ -94,6 +94,10 @@
       </p>
     </div>
 
+    <div class="section text-center mb-2">
+      <trophy-slider v-model="trophyRange"></trophy-slider>
+    </div>
+
     <div class="section">
       <meta-grid
         :entries="modes"
@@ -149,7 +153,13 @@ export default Vue.extend({
       showAllMaps: false,
       modeMeta: {} as ModeMetaMap,
       mapMeta: {} as MapMetaMap,
+      trophyRange: [0, 10],
     }
+  },
+  watch: {
+    async trophyRange([lower, upper]) {
+      this.modeMeta = await this.$axios.$get(`/api/meta/mode?trophyrange=${lower}-${upper}`)
+    },
   },
   async asyncData({ params, $axios }) {
     const mode = kebabToCamel(params.mode as string)

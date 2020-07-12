@@ -42,10 +42,6 @@ export const state = () => ({
   leaderboard: [],
   leaderboardLoaded: false,
   bestByEvent: {},
-  starpowerMeta: [],
-  starpowerMetaLoaded: false,
-  gadgetMeta: [],
-  gadgetMetaLoaded: false,
   modeMeta: [],
   modeMetaLoaded: false,
   cookiesAllowed: false,
@@ -109,14 +105,6 @@ export const mutations = {
   setLeaderboard(state, leaderboard) {
     state.leaderboard = leaderboard
     state.leaderboardLoaded = true
-  },
-  setStarpowerMeta(state, meta) {
-    state.starpowerMeta = meta
-    state.starpowerMetaLoaded = true
-  },
-  setGadgetMeta(state, meta) {
-    state.gadgetMeta = meta
-    state.gadgetMetaLoaded = true
   },
   setModeMeta(state, meta) {
     state.modeMeta = meta
@@ -205,34 +193,6 @@ export const actions = {
       // not critical, ignore
       exception('cannot get leaderboard: ' + error.message)
       console.error('cannot get leaderboard:', error.message)
-    }
-  },
-  async loadStarpowerMeta({ state, commit }) {
-    if (state.starpowerMetaLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/starpower')
-      commit('setStarpowerMeta', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get starpower meta: ' + error.message)
-      console.error('cannot get starpower meta:', error.message)
-    }
-  },
-  async loadGadgetMeta({ state, commit }) {
-    if (state.gadgetMetaLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/gadget')
-      commit('setGadgetMeta', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get gadget meta: ' + error.message)
-      console.error('cannot get gadget meta:', error.message)
     }
   },
   async loadModeMeta({ state, commit }) {

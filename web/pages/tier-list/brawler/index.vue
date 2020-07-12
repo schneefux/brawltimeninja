@@ -41,7 +41,7 @@
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap">
+      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap justify-center">
         <nuxt-link
           v-for="(mode, index) in modes"
           :key="mode"
@@ -115,20 +115,9 @@
       <h2 class="page-h2">Tier List for all Modes</h2>
     </div>
 
-    <p class="section text-center mb-2">
-      <label>
-        Trophy Range:
-        <select
-          v-model="selectedRange"
-          class="bg-primary hover:bg-primary-light rounded py-1 px-2 ml-2"
-        >
-          <option value="all" selected>All</option>
-          <option value="1">Low (0-300)</option>
-          <option value="2">Mid (300-600)</option>
-          <option value="3">High (600+)</option>
-        </select>
-      </label>
-    </p>
+    <div class="section text-center mb-2">
+      <trophy-slider v-model="trophyRange"></trophy-slider>
+    </div>
 
     <p
       v-if="totalSampleSize < 10000"
@@ -179,7 +168,7 @@ export default Vue.extend({
       formatMode,
       brawlerMeta: [] as BrawlerMetaEntry[],
       modeMeta: {} as ModeMetaMap,
-      selectedRange: 'all',
+      trophyRange: [0, 1000],
       showAllModes: false,
     }
   },
@@ -210,12 +199,8 @@ export default Vue.extend({
     }),
   },
   watch: {
-    async selectedRange(trophyrangeId) {
-      if (trophyrangeId == 'all') {
-        this.brawlerMeta = await this.$axios.$get('/api/meta/brawler')
-      } else {
-        this.brawlerMeta = await this.$axios.$get('/api/meta/brawler?trophyrangeId=' + trophyrangeId)
-      }
+    async trophyRange([lower, upper]) {
+      this.brawlerMeta = await this.$axios.$get(`/api/meta/brawler?trophyrange=${lower}-${upper}`)
     },
   },
   async asyncData({ $axios }) {

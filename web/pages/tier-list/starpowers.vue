@@ -16,6 +16,10 @@
       </p>
     </div>
 
+    <div class="section text-center mb-2">
+      <trophy-slider v-model="trophyRange"></trophy-slider>
+    </div>
+
     <div class="section">
       <meta-grid
         :entries="starpowers"
@@ -26,14 +30,18 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'vuex'
-import MetaGrid from '~/components/meta-grid.vue'
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
+import { MetaStarpowerEntry } from '../../model/MetaEntry'
 
-export default {
+export default Vue.extend({
   name: 'StarpowerMetaPage',
-  components: {
-    MetaGrid,
+  data() {
+    return {
+      starpowerMeta: {} as PropType<MetaStarpowerEntry[]>,
+      trophyRange: [0, 10],
+    }
   },
   head() {
     const description = `Brawl Stars Star Power Tier List. Find the best Star Power for all Brawlers with Win Rates and Rankings.`
@@ -54,6 +62,9 @@ export default {
       const statsToDiffs = (starpower) => {
         const brawlerWithout = this.starpowerMeta
           .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
+        if (brawlerWithout == undefined) {
+          return {}
+        }
 
         const perc = (v) => Math.round(v * 100)
         const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
@@ -61,7 +72,7 @@ export default {
 
         const stats = {}
         Object.entries(starpower.stats)
-          .forEach(([prop, value]) => stats[prop] = format(value - brawlerWithout.stats[prop]))
+          .forEach(([prop, value]) => stats[prop] = format(<number>value - brawlerWithout.stats[prop]))
         return stats
       }
 
@@ -78,18 +89,18 @@ export default {
         }))
     },
     ...mapState({
-      starpowerMeta: state => state.starpowerMeta,
-      isApp: state => state.isApp,
+      isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async fetch({ store }) {
-    if (!process.static) {
-      await store.dispatch('loadStarpowerMeta')
-    }
+  watch: {
+    async trophyRange([lower, upper]) {
+      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`)
+    },
   },
-  async created() {
-    if (process.static) {
-      await this.loadStarpowerMeta()
+  async asyncData({ $axios }) {
+    const starpowerMeta = await $axios.$get('/api/meta/starpower')
+    return {
+      starpowerMeta,
     }
   },
   methods: {
@@ -98,9 +109,6 @@ export default {
         this.$ga.event('starpower_meta', 'scroll', section)
       }
     },
-    ...mapActions({
-      loadStarpowerMeta: 'loadStarpowerMeta',
-    }),
   },
-}
+})
 </script>

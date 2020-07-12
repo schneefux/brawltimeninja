@@ -69,6 +69,7 @@ export default {
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/analytics', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
+    { src: '~/plugins/slider', mode: 'client' },
   ],
 
   modules: [

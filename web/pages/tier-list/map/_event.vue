@@ -9,16 +9,6 @@
     >
       <h1 class="page-h1">{{ formatMode(event.mode) }}: {{ event.map }}</h1>
       <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ formatMode(event.mode) }} map in Brawl Stars.</p>
-      <p v-if="mapMeta.sampleSize < 1000">
-        ⚠ Not enough data for this event yet!
-        <template v-if="brawlers.length < totalBrawlers">
-          Some statistics are unavailable.
-        </template>
-        <template v-else>
-          Statistics will be inaccurate.
-        </template>
-        Play a few battles and come back later. ⚠
-      </p>
     </div>
 
     <adsense
@@ -85,6 +75,21 @@
       <h2 class="page-h2">Tier List for {{ formatMode(event.mode) }} - {{ event.map }}</h2>
     </div>
 
+    <div class="section text-center mb-2">
+      <trophy-slider v-model="trophyRange"></trophy-slider>
+    </div>
+
+    <p v-if="mapMeta.sampleSize < 10000">
+      ⚠ Not enough data for this event yet!
+      <template v-if="brawlers.length < totalBrawlers">
+        Some statistics are unavailable.
+      </template>
+      <template v-else>
+        Statistics will be inaccurate.
+      </template>
+      Play a few battles and come back later. ⚠
+    </p>
+
     <div class="section">
       <meta-grid
         :entries="brawlers"
@@ -132,6 +137,7 @@ export default Vue.extend({
       },
       mapMeta: {} as MapMeta,
       best: [] as MetaGridEntrySorted[],
+      trophyRange: [0, 10],
     }
   },
   computed: {
@@ -149,6 +155,14 @@ export default Vue.extend({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
       isApp: (state: any) => state.isApp as boolean,
     }),
+  },
+  watch: {
+    async trophyRange([lower, upper]) {
+      const mapMeta = await this.$axios.$get(`/api/meta/map/mode/${this.event.mode}?trophyrange=${lower}-${upper}`)
+      const bestByEvent = getBest(mapMeta)
+      this.mapMeta = mapMeta[this.event.id]
+      this.best = bestByEvent[this.event.id]
+    },
   },
   async asyncData({ store, params, error, $axios }) {
     const events = await $axios.$get('/api/events')
