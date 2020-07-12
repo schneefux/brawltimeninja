@@ -371,8 +371,8 @@ export default class ClickerService {
         toStartOfHour(timestamp) AS timestamp,
         MAX(brawler_trophies) AS trophies
       FROM brawltime.battle
-      GROUP BY timestamp
-      WHERE player_tag=${tag}
+      WHERE player_tag='${tag}'
+      GROUP BY name, timestamp
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -384,8 +384,8 @@ export default class ClickerService {
         toStartOfHour(timestamp) AS timestamp,
         MAX(player_trophies) AS trophies
       FROM brawltime.battle
+      WHERE player_tag='${tag}'
       GROUP BY timestamp
-      WHERE player_tag=${tag}
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
         ...row,
@@ -407,9 +407,9 @@ export default class ClickerService {
           AVG(battle_rank) AS rank,
           AVG(battle_rank=1) AS rank1Rate,
           AVG(battle_is_starplayer) AS starRate,
-          AVG(trophy_change) AS trophyChange
+          AVG(battle_trophy_change) AS trophyChange
         FROM brawltime.battle
-        WHERE player_tag = ${tag}
+        WHERE player_tag='${tag}'
         GROUP BY mode
       `, { dataObjects: true, readonly: true })
       .then(response => response.data.map(row => ({
