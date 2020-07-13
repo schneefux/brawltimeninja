@@ -7,8 +7,12 @@ import { PlayerWinRates } from '~/model/PlayerWinRates';
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
 
-const dbHost = process.env.CLICKHOUSE_HOST || '';
+const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
+const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
+const seasonSliceStart = getSeasonEnd(balanceChangesDate)
+
+console.log(`querying data >= ${seasonSliceStart}`)
 
 /*
   TODO create materialized views:
@@ -33,8 +37,7 @@ function getSeasonEnd(timestamp: Date) {
  * Get WHERE condition to filter for the current season.
  */
 function sliceSeason() {
-  const seasonEnd = getSeasonEnd(new Date())
-  const seasonEndFormatted = seasonEnd.toISOString()
+  const seasonEndFormatted = seasonSliceStart.toISOString()
     .slice(0, 19) // remove fractions and time zone
     .replace('T', ' ')
   return `trophy_season_end>=toDateTime('${seasonEndFormatted}', 'UTC')`
