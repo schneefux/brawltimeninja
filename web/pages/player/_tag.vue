@@ -446,48 +446,10 @@
       </p>
     </div>
 
-    <div
-      v-if="eventRecommendations.length > 0"
-      class="section md:mx-4 py-4 px-3"
-    >
-      <div class="mb-3">
-        <div class="text-left text-lg">
-          💡
-          Play your lowest Brawlers' strengths
-        </div>
-      </div>
-      <p
-        v-for="tip in eventRecommendations.slice(0, tipsPage * tipsPageSize)"
-        :key="tip.id"
-        class="mt-2 px-3"
-      >
-        {{ tip.phrase }}
-        <span class="capitalize text-primary-lighter">
-          {{ tip.brawler.name.toLowerCase() }}
-        </span>
-        in
-        <nuxt-link
-          :to="`/tier-list/map/${tip.event.id}`"
-          class="link inline-block"
-        >
-          {{ formatMode(tip.event.mode) }} - {{ tip.event.map }}
-        </nuxt-link>.
-      </p>
-      <button
-        v-show="tipsPage * tipsPageSize < eventRecommendations.length"
-        class="mt-3 button button-sm"
-        @click="tipsPage++; $ga.event('tips', 'load_more', tipsPage)"
-      >
-        Load More Tips
-      </button>
-      <button
-        v-show="notificationsAllowed"
-        class="ml-2 button button-sm"
-        @click="notifyTips"
-      >
-        Send as Notification
-      </button>
-    </div>
+    <player-tips
+      :player="player"
+      :activeMapMeta="activeMapMeta"
+    ></player-tips>
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
@@ -548,14 +510,11 @@ export default {
       battlePage: 1,
       battlePageSize: 4,
       refreshSecondsLeft: 180,
-      tipsPage: 1,
-      tipsPageSize: 3,
-      notificationsAllowed: false,
       showAllModes: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
       currentEvents: [],
-      bestByEvent: {},
+      activeMapMeta: {},
       leaderboard: [],
       hoursSinceDate,
       formatMode,
@@ -630,53 +589,6 @@ export default {
     topBrawlerId() {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
       return brawlerIds[0]
-    },
-    eventRecommendations() {
-      const phrases = [
-        'Get more trophies by playing',
-        'You can push',
-        'Try to play',
-        'To gain some trophies, play',
-        'Other players had success with',
-        'You should try',
-        'For easy wins, play',
-      ]
-      const recommendations = []
-      const worstBrawlers = [...Object.values(this.player.brawlers)]
-        .sort((b1, b2) => b1.trophies - b2.trophies)
-
-      // sort by score =
-      // index [ brawlers owned by player, worst first ]
-      // *
-      // index [ brawler in map meta, best first ]
-      this.currentEvents.forEach((event) => {
-        // reject unranked
-        if (['Big Game', 'Boss Fight'].includes(event.mode)) {
-          return
-        }
-
-        worstBrawlers.forEach((brawler) => {
-          if (!(event.id in this.bestByEvent)) {
-            return
-          }
-          const bestBrawlers = this.bestByEvent[event.id]
-          const rankIndex = bestBrawlers.findIndex(b => b.brawler.toLowerCase() === brawler.name.toLowerCase())
-          if (rankIndex === -1) {
-            return
-          }
-
-          const score = (brawler.trophies + 1) * (rankIndex / bestBrawlers.length + 1)
-          recommendations.push({
-            id: `${brawler.name} ${event.id}`,
-            phrase: phrases[Math.round(event.id / 31) % phrases.length],
-            score,
-            brawler,
-            event,
-          })
-        })
-      })
-      recommendations.sort((r1, r2) => r1.score - r2.score)
-      return recommendations.slice(0, 20)
     },
     accountRating() {
       const medTrophies = this.trophiesGoal / this.totalBrawlers
@@ -793,9 +705,6 @@ export default {
     throw lastError
   },
   created() {
-    if (process.client && 'Notification' in window) {
-      this.notificationsAllowed = Notification.permission !== 'denied'
-    }
     if (process.client) {
       this.loadPlayerWinrates()
       this.loadPlayerHistory()
@@ -803,13 +712,12 @@ export default {
   },
   async asyncData({ $axios }) {
     const events = await $axios.$get('/api/events/active')
-    const mapMeta = await $axios.$get('/api/meta/map/events')
+    const activeMapMeta = await $axios.$get('/api/meta/map/events')
     const leaderboard = await $axios.$get('/api/leaderboard/hours')
-    const bestByEvent = getBest(mapMeta)
     return {
       currentEvents: events.current,
       leaderboard,
-      bestByEvent,
+      activeMapMeta,
     }
   },
   mounted() {
@@ -870,36 +778,6 @@ export default {
     trackScroll(visible, entry, section) {
       if (visible) {
         this.$ga.event('profile', 'scroll', section)
-      }
-    },
-    async notifyTips() {
-      if (!(Notification.permission in ['denied', 'granted'])) {
-        await Notification.requestPermission()
-      }
-
-      if (Notification.permission === 'granted') {
-        this.$ga.event('profile', 'send_notification', 'tips')
-        this.notificationsAllowed = true
-
-        const sw = await navigator.serviceWorker.ready
-
-        const eventDescription = event => event.mode + ' - ' + event.map
-        const N = 5
-        const topNByEvent = this.eventRecommendations
-          .reduce((topNByEvent, recommendation) => ({
-            ...topNByEvent,
-            [eventDescription(recommendation.event)]: [
-              ...(topNByEvent[eventDescription(recommendation.event)] || []),
-              capitalizeWords(recommendation.brawler.name.toLowerCase())
-            ].slice(0, N)
-          }), {})
-        const tips = [...Object.entries(topNByEvent)]
-          .map(([eventDescription, topN]) => 'Play ' + topN.join(', ') + ' in ' + eventDescription)
-        sw.showNotification(`Tips for ${this.player.name} by Brawl Time Ninja`, {
-          body: tips.join('\n')
-        })
-      } else {
-        this.notificationsAllowed = false
       }
     },
     ...mapMutations({

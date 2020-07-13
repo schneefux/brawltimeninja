@@ -218,6 +218,16 @@ export function getBest(meta) {
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));
     }, {});
 }
+export function getBestBrawlers(brawlers) {
+    var sampleSizeThreshold = 300;
+    brawlers = brawlers.filter(function (brawler) { return brawler.sampleSize >= sampleSizeThreshold; });
+    if (brawlers.length == 0) {
+        return [];
+    }
+    var sortProp = metaStatMaps.propPriority.find(function (prop) { return prop in brawlers[0].stats; });
+    brawlers.sort(function (brawler1, brawler2) { return brawler2.stats[sortProp] - brawler1.stats[sortProp]; });
+    return brawlers;
+}
 export function getMostPopular(meta) {
     return __spreadArrays(Object.entries(meta)).reduce(function (top, _a) {
         var _b;

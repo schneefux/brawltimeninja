@@ -79,17 +79,19 @@ export interface Map {
   sampleSize: number;
 }
 
+export interface BrawlerMetaStatistics {
+  name: string;
+  sampleSize: number;
+  stats: {
+    [stat: string]: number;
+  }
+}
+
 export interface ModeMeta {
   mode: string;
   sampleSize: number;
   brawlers: {
-    [brawler: string]: {
-      name: string;
-      sampleSize: number;
-      stats: {
-        [stat: string]: number;
-      }
-    }
+    [brawler: string]: BrawlerMetaStatistics
   }
 }
 

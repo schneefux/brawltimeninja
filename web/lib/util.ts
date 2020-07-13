@@ -1,6 +1,6 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
-import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
+import { MapMetaMap, ModeMetaMap, MapMeta, ModeMeta, BrawlerMetaStatistics } from "~/model/MetaEntry";
 import { ActiveEvent } from "~/model/Brawlstars";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -212,6 +212,17 @@ export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGrid
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})
+}
+
+export function getBestBrawlers(brawlers: BrawlerMetaStatistics[]): BrawlerMetaStatistics[] {
+  const sampleSizeThreshold = 300
+  brawlers = brawlers.filter(brawler => brawler.sampleSize >= sampleSizeThreshold)
+  if (brawlers.length == 0) {
+    return []
+  }
+  const sortProp = <string>metaStatMaps.propPriority.find(prop => prop in brawlers[0].stats)
+  brawlers.sort((brawler1, brawler2) => brawler2.stats[sortProp] - brawler1.stats[sortProp])
+  return brawlers
 }
 
 export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {
