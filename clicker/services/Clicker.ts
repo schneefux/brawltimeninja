@@ -564,7 +564,7 @@ export default class ClickerService {
           AVG(battle_rank) AS rank,
           SUM(battle_rank=1) AS rank1,
           SUM(battle_victory) AS wins,
-          AVG(battle_is_starplayer) AS starRate,
+          AVG(name=battle_starplayer_brawler_name) AS starRate,
           AVG(battle_level_id) AS level
         FROM brawltime.battle
         WHERE ${sliceSeason()}
