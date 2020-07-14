@@ -16,7 +16,7 @@ console.log(`querying data >= ${seasonSliceStart}`)
 
 /*
   TODO create materialized views:
-    -- sorting key: all dimensions
+    -- sorting key: all dimensions, smallest to largest
     -- pk must be prefix of sk
     ORDER BY (trophy_season_end, player_tag, brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, brawler_starpower_name, brawler_gadget_name)
 */
@@ -188,6 +188,82 @@ export default class ClickerService {
       -- 25 battles per query
       SETTINGS index_granularity=25
     `)
+
+    // *state must have same data type as source column
+    await this.ch.querying(`
+      CREATE TABLE IF NOT EXISTS brawltime.map_meta (
+        trophy_season_end DateTime,
+        brawler_trophyrange UInt8,
+        brawler_name LowCardinality(String),
+        battle_event_mode LowCardinality(String),
+        battle_event_map LowCardinality(String),
+        battle_event_id UInt32,
+        battle_is_bigbrawler UInt8,
+        picks UInt64,
+        battle_duration_state AggregateFunction(avg, UInt16),
+        battle_rank_state AggregateFunction(avg, UInt8),
+        battle_rank1 UInt64,
+        battle_wins Decimal64(8),
+        battle_starplayer_state AggregateFunction(avg, UInt8),
+        battle_level_state AggregateFunction(avg, UInt16)
+      )
+      ENGINE = SummingMergeTree()
+      PARTITION BY trophy_season_end
+      ORDER BY (brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler)
+    `)
+
+    // mv column names must match table names
+    await this.ch.querying(`
+      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.map_meta_mv
+      TO brawltime.map_meta
+      AS SELECT
+        trophy_season_end,
+        brawler_trophyrange,
+        arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) AS brawler_name,
+        battle_event_mode,
+        battle_event_map,
+        battle_event_id,
+        assumeNotNull(battle_is_bigbrawler) AS battle_is_bigbrawler,
+        COUNT(*) AS picks,
+        avgState(battle_duration) AS battle_duration_state,
+        avgState(battle_rank) AS battle_rank_state,
+        SUM(assumeNotNull(brawltime.battle.battle_rank=1)) AS battle_rank1,
+        SUM(assumeNotNull(battle_victory)) AS battle_wins,
+        avgState(brawler_name=battle_starplayer_brawler_name) AS battle_starplayer_state,
+        avgState(battle_level_id) AS battle_level_state FROM brawltime.battle GROUP BY trophy_season_end,
+        brawler_trophyrange,
+        brawler_name,
+        battle_event_mode,
+        battle_event_map,
+        battle_event_id,
+        battle_is_bigbrawler
+      ORDER BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
+    `)
+
+    const mapMetaCount = await this.ch.querying('SELECT COUNT(*) AS c FROM brawltime.map_meta', { dataObjects: true })
+    if (mapMetaCount.data[0].c == 0) {
+      await this.ch.querying(`
+        INSERT INTO brawltime.map_meta
+        SELECT
+          trophy_season_end,
+          brawler_trophyrange,
+          arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) AS brawler_name,
+          battle_event_mode,
+          battle_event_map,
+          battle_event_id,
+          assumeNotNull(battle_is_bigbrawler),
+          COUNT(*) AS picks,
+          avgState(battle_duration) AS battle_duration,
+          avgState(assumeNotNull(battle_rank)) AS battle_rank,
+          SUM(assumeNotNull(brawltime.battle.battle_rank=1)) AS battle_rank1,
+          SUM(assumeNotNull(battle_victory)) AS battle_wins,
+          avgState(brawler_name=battle_starplayer_brawler_name) AS battle_starplayer,
+          avgState(battle_level_id) AS battle_level
+        FROM brawltime.battle
+        GROUP BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
+        ORDER BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler;
+      `)
+    }
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -556,17 +632,17 @@ export default class ClickerService {
           battle_event_id AS id,
           battle_event_mode AS mode,
           battle_event_map AS map,
-          arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) AS name,
+          brawler_name as name,
           battle_is_bigbrawler AS isBigbrawler,
 
-          COUNT(*) AS picks,
-          AVG(battle_duration) AS duration,
-          AVG(battle_rank) AS rank,
-          SUM(battle_rank=1) AS rank1,
-          SUM(battle_victory) AS wins,
-          AVG(name=battle_starplayer_brawler_name) AS starRate,
-          AVG(battle_level_id) AS level
-        FROM brawltime.battle
+          SUM(picks) AS picks,
+          avgMerge(battle_duration_state) AS duration,
+          avgMerge(battle_rank_state) AS rank,
+          SUM(battle_rank1) AS rank1,
+          SUM(battle_wins) AS wins,
+          avgMerge(battle_starplayer_state) AS starRate,
+          avgMerge(battle_level_state) AS level
+        FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
         GROUP BY id, mode, map, name, isBigbrawler
