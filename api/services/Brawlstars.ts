@@ -130,7 +130,7 @@ export default class BrawlstarsService {
       { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
-      600,
+      900,
     );
 
     const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
@@ -158,7 +158,7 @@ export default class BrawlstarsService {
       { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
-      600,
+      900,
     );
 
     return meta.map((entry) => ({
@@ -187,7 +187,7 @@ export default class BrawlstarsService {
       { trophyrangeLower, trophyrangeHigher },
       {},
       60000,
-      600,
+      900,
     );
 
     return meta.map((entry) => ({
