@@ -509,23 +509,24 @@ export default class ClickerService {
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaBrawlerEntry[]> {
     return await this.query<any>(`
-      SELECT
-        arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) as name,
-        COUNT() as picks,
-        AVG(battle_victory) as winRate,
-        AVG(name=battle_starplayer_brawler_name) as starRate
-      FROM brawltime.battle
-      WHERE ${sliceSeason()}
-      AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-      GROUP BY name
-      ORDER BY picks
-    `, 'meta.brawler')
-    .then(data => data.map(row => ({
-      ...row,
-      picks: parseInt(row.picks),
-      winRate: sloppyParseFloat(row.winRate),
-      starRate: sloppyParseFloat(row.starRate),
-    }) as MetaBrawlerEntry))
+        SELECT
+          brawler_name AS name,
+
+          SUM(picks) AS picks,
+          avgMerge(battle_victory_state) AS winRate,
+          avgMerge(battle_starplayer_state) AS starRate
+        FROM brawltime.map_meta
+        WHERE ${sliceSeason()}
+        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
+        GROUP BY name
+        ORDER BY picks
+      `, 'meta.brawler')
+      .then(data => data.map(row => ({
+        ...row,
+        picks: parseInt(row.picks),
+        winRate: sloppyParseFloat(row.winRate),
+        starRate: sloppyParseFloat(row.starRate),
+      }) as MetaBrawlerEntry))
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaStarpowerEntry[]> {
