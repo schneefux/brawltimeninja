@@ -49,19 +49,11 @@ export interface PlayerMetaModeEntry {
   trophyChange: number;
 }
 
-export interface MetaMapEntry {
+export interface MetaMapEntry extends MetaModeEntry {
   id: number;
-  mode: string;
   map: string;
-  name: string;
   isBigbrawler: number;
   level: number;
-  duration: number;
-  rank1: number;
-  rank: number;
-  wins: number;
-  starRate: number;
-  picks: number;
 }
 
 export interface BrawlerMetaEntry {

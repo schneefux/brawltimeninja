@@ -286,29 +286,27 @@ export default class BrawlstarsService {
       }), <{ [id: string]: number }>{});
 
       const nonNullStats = (entry: MetaMapEntry) => {
-        const fixed = (n: number) => Number.parseFloat(n.toFixed(4))
         const stats = <{ [stat: string]: number }>{};
-        if (!!entry.wins && entry.wins > 0) {
-          stats.winRate = fixed(entry.wins / entry.picks);
-        }
+        stats.pickRate = entry.picks / mapTotalPicks[entry.id];
         if (!!entry.rank && entry.rank > 0) {
           stats.rank = entry.rank;
         }
-        if (!!entry.level && entry.level > 0) {
-          stats.level = entry.level;
+        if (!!entry.rank1Rate && entry.rank1Rate > 0) {
+          stats.rank1Rate = entry.rank1Rate;
+          stats.rank1 = Math.round(entry.rank1Rate * entry.picks);
+        }
+        if (!!entry.winRate && entry.winRate > 0) {
+          stats.winRate = entry.winRate;
+          stats.wins = Math.round(entry.winRate * entry.picks);
         }
         if (!!entry.duration && entry.duration > 0) {
           stats.duration = entry.duration;
         }
-        stats.pickRate = fixed(entry.picks / mapTotalPicks[entry.id]);
         if (!!entry.starRate && entry.starRate > 0) {
-          stats.starRate = fixed(entry.starRate);
+          stats.starRate = entry.starRate;
         }
-        if (!!entry.rank1 && entry.rank1 > 0) {
-          stats.rank1 = entry.rank1;
-        }
-        if (!!entry.wins && entry.wins > 0) {
-          stats.wins = entry.wins;
+        if (!!entry.level && entry.level > 0) {
+          stats.level = entry.level;
         }
 
         if (entry.isBigbrawler === 1) {
