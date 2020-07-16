@@ -71,8 +71,12 @@ services:
   adminer:
     image: adminer
     ports:
-      - 8080
+      - 8080:8080
   clickhouse:
     image: yandex/clickhouse-server:20.5
     ports:
-      - 8123
+      - 8123:8123
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"

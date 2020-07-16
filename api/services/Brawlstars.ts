@@ -269,7 +269,7 @@ export default class BrawlstarsService {
       return {};
     }
 
-    return cache.wrap(`map-meta-${JSON.stringify(filters)}-${trophyrangeLower}-${trophyrangeHigher}`, async () => {
+    return cache.wrap(`map-meta:${JSON.stringify(filters)}-${trophyrangeLower}-${trophyrangeHigher}`, async () => {
       const meta = await request<MetaMapEntry[]>(
         '/meta/map',
         clickerUrl,

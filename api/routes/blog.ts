@@ -79,7 +79,7 @@ export async function renderBlog(): Promise<Blog> {
 const router = new Router();
 
 router.get('/', async (ctx, next) => {
-  ctx.body = await cache.wrap('blog', async () => await renderBlog(), { ttl: 3600 });
+  ctx.body = await cache.wrap('blog:posts', async () => await renderBlog(), { ttl: 3600 });
   ctx.set('Cache-Control', 'public, max-age=3600');
   await next();
 });

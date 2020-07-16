@@ -4,10 +4,10 @@ import { URLSearchParams, URL } from 'url';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import cacheManager from 'cache-manager';
-import fsStore from 'cache-manager-fs-hash';
-import StatsD from 'hot-shots'
+import redisStore from 'cache-manager-redis-store';
+import StatsD from 'hot-shots';
 
-const cachePath = process.env.CACHE_PATH || 'cache';
+const redisHost = process.env.REDIS_HOST || 'localhost';
 const cacheDisable = !!process.env.CACHE_DISABLE;
 
 export const cache = cacheDisable ?
@@ -17,13 +17,17 @@ export const cache = cacheDisable ?
     ttl: 180,
   }) :
   cacheManager.caching(<any>{
-    max: 10000,
-    store: fsStore,
+    store: redisStore,
+    host: redisHost,
     ttl: 180,
-    options: { path: cachePath, subdirs: true, },
   });
 
-const stats = new StatsD({ prefix: 'brawltime.api.' })
+if (!cacheDisable) {
+  // log redis errors
+  (<any>cache).store.getClient().on('error', console.error);
+}
+
+const stats = new StatsD({ prefix: 'brawltime.api.' });
 
 const httpAgent = new HttpAgent({
   keepAlive: true,
@@ -54,7 +58,7 @@ export function request<T>(
   }, timeoutMs);
 
   stats.increment(metricName + '.cache.access')
-  return cache.wrap(urlStr, () => stats.asyncTimer(() => fetch(urlStr, {
+  return cache.wrap(`request:${urlStr}`, () => stats.asyncTimer(() => fetch(urlStr, {
       headers,
       agent,
       compress: true,
