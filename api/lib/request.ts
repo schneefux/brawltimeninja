@@ -35,6 +35,8 @@ export function request<T>(
   }, timeoutMs);
 
   stats.increment(metricName + '.run')
+  stats.increment(metricName + '.cache.access')
+  stats.increment(metricName + '.cache.miss')
   const fun = () => fetch(urlStr, {
       headers,
       agent,
