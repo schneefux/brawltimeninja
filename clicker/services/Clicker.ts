@@ -351,11 +351,11 @@ export default class ClickerService {
         // calculated
         brawler_trophyrange: trophyRange,
         /* brawler starpower */
-        brawler_starpower_found: myStarpower !== undefined,
+        brawler_starpower_found: myStarpower !== null,
         brawler_starpower_id: myStarpower?.id,
         brawler_starpower_name: myStarpower?.name,
         /* brawler gadget */
-        brawler_gadget_found: myGadget !== undefined,
+        brawler_gadget_found: myGadget !== null,
         brawler_gadget_id: myGadget?.id,
         brawler_gadget_name: myGadget?.name,
         /* starpowers (nested) */
