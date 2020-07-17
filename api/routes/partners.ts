@@ -1,16 +1,11 @@
 import Router from 'koa-router';
 import Parser from 'rss-parser';
-import { cache } from '../lib/request'
 
 const router = new Router();
 const parser = new Parser();
 
 router.get('/bsu', async (ctx, next) => {
-  const feed = <Parser.Output> await cache.wrap(
-    'request:https://brawlstarsup.com/feed/',
-    () => parser.parseURL('https://brawlstarsup.com/feed/'),
-    { ttl: 60*60 },
-  );
+  const feed = <Parser.Output> parser.parseURL('https://brawlstarsup.com/feed/');
   if (feed.items === undefined) {
     ctx.body = {};
   } else {

@@ -3,29 +3,7 @@ import AbortController from 'abort-controller';
 import { URLSearchParams, URL } from 'url';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-import cacheManager from 'cache-manager';
-import redisStore from 'cache-manager-redis-store';
 import StatsD from 'hot-shots';
-
-const redisHost = process.env.REDIS_HOST || 'localhost';
-const cacheDisable = !!process.env.CACHE_DISABLE;
-
-export const cache = cacheDisable ?
-  cacheManager.caching({
-    store: 'memory',
-    max: 0,
-    ttl: 180,
-  }) :
-  cacheManager.caching(<any>{
-    store: redisStore,
-    host: redisHost,
-    ttl: 180,
-  });
-
-if (!cacheDisable) {
-  // log redis errors
-  (<any>cache).store.getClient().on('error', console.error);
-}
 
 const stats = new StatsD({ prefix: 'brawltime.api.' });
 
@@ -45,8 +23,7 @@ export function request<T>(
     metricName: string,
     params: { [key: string]: string },
     headers: { [header: string]: string },
-    timeoutMs: number = 10000,
-    ttlS: number = 180): Promise<T> {
+    timeoutMs: number = 10000): Promise<T> {
   const url = new URL(base + path);
   const urlParams = new URLSearchParams(params);
   url.search = urlParams.toString();
@@ -57,15 +34,14 @@ export function request<T>(
     controller.abort();
   }, timeoutMs);
 
-  stats.increment(metricName + '.cache.access')
-  return cache.wrap(`request:${urlStr}`, () => stats.asyncTimer(() => fetch(urlStr, {
+  stats.increment(metricName + '.run')
+  const fun = () => fetch(urlStr, {
       headers,
       agent,
       compress: true,
       signal: controller.signal,
-    }), metricName + '.timer')()
+    })
     .then(response => {
-      stats.increment(metricName + '.cache.miss');
       if (!response.ok) {
         if (response.status == 429) {
           stats.increment(metricName + '.ratelimited');
@@ -80,10 +56,9 @@ export function request<T>(
         };
       }
 
-      return response.json();
+      return response.json() as Promise<T>;
     })
     .catch(error => {
-      stats.increment(metricName + '.cache.miss');
       if (error.type == 'aborted') {
         stats.increment(metricName + '.timeout');
         throw {
@@ -92,9 +67,12 @@ export function request<T>(
           reason: 'API took too long to respond',
         };
       }
+      stats.increment(metricName + '.error');
       throw error
-    }), { ttl: ttlS })
+    })
     .finally(() => clearTimeout(timeout))
+
+  return stats.asyncTimer<[], T>(fun, metricName + '.timer')()
 }
 
 export function post<T>(
@@ -109,14 +87,14 @@ export function post<T>(
   }, timeoutMs);
 
   stats.increment(metricName + '.run')
-  return stats.asyncTimer<[], any>(() => fetch(url, {
+  const fun = () => fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
       agent,
       compress: true,
       signal: controller.signal,
-    }), metricName + '.timer')()
+    })
     .then(response => {
       if (!response.ok) {
         if (response.status >= 500) {
@@ -129,7 +107,7 @@ export function post<T>(
         };
       }
 
-      return response.json();
+      return response.json() as Promise<T>;
     })
     .catch(error => {
       if (error.type == 'aborted') {
@@ -140,7 +118,10 @@ export function post<T>(
           reason: 'API took too long to respond',
         };
       }
+      stats.increment(metricName + '.error');
       throw error
     })
     .finally(() => clearTimeout(timeout))
+
+  return stats.asyncTimer<[], T>(fun, metricName + '.timer')()
 }

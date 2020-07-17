@@ -13,8 +13,6 @@
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "abort-controller": "^3.0.0",
-    "cache-manager": "^2.10.1",
-    "cache-manager-redis-store": "^2.0.0",
     "hot-shots": "^7.6.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
