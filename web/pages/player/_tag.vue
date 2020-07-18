@@ -235,6 +235,22 @@
 
     <div
       v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'lifetime'),
+        once: true,
+      }"
+      class="section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Personal Records
+      </h2>
+    </div>
+
+    <div class="section">
+      <player-lifetime :stats="player.stats"></player-lifetime>
+    </div>
+
+    <div
+      v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'gamemodes'),
         once: true,
       }"

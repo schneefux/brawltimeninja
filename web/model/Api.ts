@@ -61,6 +61,17 @@ export interface Battle {
   }[][]
 }
 
+export interface PlayerLifetimeStats {
+  trophies: number;
+  highestTrophies: number;
+  powerPlayPoints: number;
+  highestPowerPlayPoints: number;
+  expLevel: number;
+  victories: number;
+  soloVictories: number;
+  duoVictories: number;
+}
+
 export interface Player {
   tag: string;
   name: string;
@@ -68,6 +79,7 @@ export interface Player {
   trophies: number;
   winrates: Partial<PlayerWinrates>;
   clubName: string;
+  stats: PlayerLifetimeStats;
   history: PlayerHistoryEntry[];
   brawlers: {
       [id: string]: Brawler;

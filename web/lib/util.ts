@@ -113,6 +113,13 @@ export const metaStatMaps = {
     rank: 'Avg. Rank',
     rank1: '#1 recorded',
     wins: 'Wins recorded',
+    highestTrophies: 'Highest Trophies',
+    powerPlayPoints: 'Power Play Points',
+    highestPowerPlayPoints: 'Highest Power Play Points',
+    expLevel: 'EXP Level',
+    victories: '3v3 Wins',
+    soloVictories: 'Solo Showdown Wins',
+    duoVictories: 'Duo Showdown Wins',
   },
   labelsShort: {
     trophies: 'Trophies',

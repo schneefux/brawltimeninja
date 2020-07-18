@@ -2,7 +2,7 @@ import Vue, { PropType } from 'vue'
 import Event from '~/components/event'
 import { hoursSinceDate } from '~/lib/util'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
-import { Battle } from '~/model/Player'
+import { Battle } from '~/model/Api'
 
 export default Vue.extend({
   functional: true,
