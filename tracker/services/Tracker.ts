@@ -2,8 +2,7 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
-import { PlayerWinRates } from '~/model/PlayerWinRates';
+import { MetaModeEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -69,8 +68,8 @@ export default class TrackerService {
           best_robo_rumble_time: player.bestRoboRumbleTime,
           best_time_as_big_brawler: player.bestTimeAsBigBrawler,
           total_exp: player.expPoints,
-          club_name: player.club === null ? null : player.club.name,
-          club_tag: player.club === null ? null : player.club.tag,
+          club_name: player.club == null ? null : player.club.name,
+          club_tag: player.club == null ? null : player.club.tag,
           brawlers_unlocked: player.brawlers.length,
         });
         const playerId = lastInsert[0];
@@ -100,13 +99,15 @@ export default class TrackerService {
       console.timeEnd('add player record ' + player.tag);
     });
 
+    return // turned off
+
     // insert records for meta stats
     await Promise.all(battleLog.map(async (battle) => {
       let timerId = ''
 
       return this.knex.transaction(async (trx) => {
         const battleTime = parseApiTime(battle.battleTime);
-        const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players.map((p) => [p]));
+        const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]));
         const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
         const playerTagsCsv = teams
           .map((players) => players.map(({ tag }) => tag.replace('#', '')))
@@ -296,7 +297,7 @@ export default class TrackerService {
         })
       ));
 
-    return <PlayerWinRates> {
+    return <any> {
       mode: statsByMode,
     }
   }
@@ -343,7 +344,7 @@ export default class TrackerService {
         where is_current and mode <> 'duoShowdown' and not dim_brawler_starpower.disabled
         group by id, brawler_name, starpower_name
       `).then((response) => response[0].map(
-        (entry: any) => (<MetaStarpowerEntry> {
+        (entry: any) => (<any> {
           id: parseInt(entry.id),
           brawlerId: parseInt(entry.brawler_id),
           brawlerName: entry.brawler_name,
@@ -374,7 +375,7 @@ export default class TrackerService {
         where is_current and mode <> 'duoShowdown' and not dim_brawler_starpower.disabled
         group by id, brawler_name, gadget_name
       `).then((response) => response[0].map(
-        (entry: any) => (<MetaGadgetEntry> {
+        (entry: any) => (<any> {
           id: parseInt(entry.id),
           brawlerName: entry.brawler_name,
           brawlerId: entry.brawler_id,
