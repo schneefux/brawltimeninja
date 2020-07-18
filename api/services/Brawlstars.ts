@@ -1,11 +1,11 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, ActiveEvent } from '../model/Brawlstars';
 import { Brawler, PlayerStatistic, Mode, Player, Battle } from '../model/Player';
-import { LeaderboardEntry } from '../model/Leaderboard';
 import History from '../model/History';
-import { MetaBrawlerEntry, MetaStarpowerEntry, MetaMapEntry, MetaModeEntry, PlayerMetaModeEntry, MetaGadgetEntry, ModeMetaMap, MapMetaMap, BrawlerMetaEntry, MapMap, GadgetMetaEntry, StarpowerMetaEntry } from '../model/MetaEntry';
-import { PlayerWinRates } from '../model/PlayerWinRates';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
+import { MapMap, BrawlerMetaEntry, StarpowerMetaEntry, GadgetMetaEntry, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
+import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow } from '~/model/Clicker';
+import { PlayerWinrates } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -13,6 +13,18 @@ const trackerUrl = process.env.TRACKER_URL || '';
 const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
+
+const pluckBattleMeasures = (row: BattleMeasures) => ({
+  timestamp: row.timestamp,
+  picks: row.picks,
+  duration: row.duration,
+  rank: row.rank,
+  rank1Rate: row.rank1Rate,
+  winRate: row.winRate,
+  starRate: row.starRate,
+  level: row.level,
+  trophyChange: row.trophyChange,
+} as BattleMeasures)
 
 export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
@@ -84,7 +96,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const response = await request<LeaderboardEntry[]>(
+    const response = await request<LeaderboardRow[]>(
       '/top/exp',
       clickerUrl,
       'fetch_leaderboard',
@@ -94,9 +106,9 @@ export default class BrawlstarsService {
     );
 
     return response.map(entry => ({
-      name: entry.name,
-      tag: entry.tag,
-      hours: xpToHours(entry.total_exp),
+      name: entry.playerName,
+      tag: entry.playerTag,
+      hours: xpToHours(entry.expPoints),
     }));
   }
 
@@ -120,7 +132,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaBrawlerEntry[]>(
+    const meta = await request<BrawlerMetaRow[]>(
       '/meta/brawler',
       clickerUrl,
       'fetch_brawler_meta',
@@ -131,8 +143,8 @@ export default class BrawlstarsService {
 
     const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
     return meta.map((entry) => ({
-      id: brawlerId(entry),
-      name: entry.name,
+      id: brawlerId({ name: entry.brawlerName }),
+      name: entry.brawlerName,
       sampleSize: entry.picks,
       stats: {
         winRate: entry.winRate,
@@ -147,7 +159,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaStarpowerEntry[]>(
+    const meta = await request<StarpowerMetaRow[]>(
       '/meta/starpower',
       clickerUrl,
       'fetch_starpower_meta',
@@ -175,7 +187,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaGadgetEntry[]>(
+    const meta = await request<GadgetMetaRow[]>(
       '/meta/gadget',
       clickerUrl,
       'fetch_gadget_meta',
@@ -203,7 +215,7 @@ export default class BrawlstarsService {
       return [];
     }
 
-    const meta = await request<MetaModeEntry[]>(
+    const meta = await request<ModeMetaRow[]>(
       '/meta/mode',
       clickerUrl,
       'fetch_mode_meta',
@@ -212,12 +224,12 @@ export default class BrawlstarsService {
       60000,
     );
 
-    const modeTotalPicks = meta.reduce((modeTotalPicks, entry: MetaModeEntry) => ({
+    const modeTotalPicks = meta.reduce((modeTotalPicks, entry: ModeMetaRow) => ({
       ...modeTotalPicks,
       [entry.mode]: (modeTotalPicks[entry.mode] || 0) + entry.picks,
     }), <{ [id: string]: number }>{});
 
-    const nonNullStats = (entry: MetaModeEntry) => {
+    const nonNullStats = (entry: ModeMetaRow) => {
       const stats = <{ [stat: string]: number }>{};
       if (!!entry.winRate && entry.winRate > 0) {
         stats.winRate = entry.winRate;
@@ -238,15 +250,15 @@ export default class BrawlstarsService {
       return stats;
     };
 
-    const modeMeta = meta.reduce((modeMeta, entry: MetaModeEntry) => ({
+    const modeMeta = meta.reduce((modeMeta, entry: ModeMetaRow) => ({
       ...modeMeta,
       [entry.mode]: {
         mode: entry.mode,
         sampleSize: modeTotalPicks[entry.mode],
         brawlers: {
           ...((modeMeta[entry.mode] || {}).brawlers || {}),
-          [brawlerId(entry)]: {
-            name: capitalizeWords(entry.name.toLowerCase()),
+          [brawlerId({ name: entry.brawlerName })]: {
+            name: capitalizeWords(entry.brawlerName.toLowerCase()),
             sampleSize: entry.picks,
             stats: nonNullStats(entry),
           }
@@ -262,7 +274,7 @@ export default class BrawlstarsService {
       return {};
     }
 
-    const meta = await request<MetaMapEntry[]>(
+    const meta = await request<MapMetaRow[]>(
       '/meta/map',
       clickerUrl,
       'fetch_map_meta',
@@ -271,12 +283,12 @@ export default class BrawlstarsService {
       60000,
     );
 
-    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MetaMapEntry) => ({
+    const mapTotalPicks = meta.reduce((mapTotalPicks, entry: MapMetaRow) => ({
       ...mapTotalPicks,
       [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
     }), <{ [id: string]: number }>{});
 
-    const nonNullStats = (entry: MetaMapEntry) => {
+    const nonNullStats = (entry: MapMetaRow) => {
       const stats = <{ [stat: string]: number }>{};
       stats.pickRate = entry.picks / mapTotalPicks[entry.id];
       if (!!entry.rank && entry.rank > 0) {
@@ -300,14 +312,14 @@ export default class BrawlstarsService {
         stats.level = entry.level;
       }
 
-      if (entry.isBigbrawler === 1) {
+      if (entry.isBigbrawler) {
         return [...Object.entries(stats)]
           .reduce((stats, [prop, value]) => ({ ...stats, [prop + '_boss']: value }), {});
       }
       return stats;
     };
 
-    const mapMeta = meta.reduce((mapMeta, entry: MetaMapEntry) => ({
+    const mapMeta = meta.reduce((mapMeta, entry: MapMetaRow) => ({
       ...mapMeta,
       [entry.id]: {
         mode: entry.mode,
@@ -315,12 +327,12 @@ export default class BrawlstarsService {
         sampleSize: mapTotalPicks[entry.id],
         brawlers: {
           ...((mapMeta[entry.id] || {}).brawlers || {}),
-          [brawlerId(entry)]: {
-            name: capitalizeWords(entry.name.toLowerCase()),
+          [brawlerId({ name: entry.brawlerName })]: {
+            name: capitalizeWords(entry.brawlerName.toLowerCase()),
             sampleSize: entry.picks,
             stats: {
               // boss has two records -> merge, boss stats get a suffix
-              ...(((mapMeta[entry.id] || {}).brawlers || {})[brawlerId(entry)] || {}).stats,
+              ...(((mapMeta[entry.id] || {}).brawlers || {})[brawlerId({ name: entry.brawlerName })] || {}).stats,
               ...nonNullStats(entry),
             }
           }
@@ -373,10 +385,10 @@ export default class BrawlstarsService {
   public async getPlayerWinrates(tag: string) {
     tag = tag.replace(/^#/, '');
 
-    let winRates: PlayerWinRates = { mode: [] };
+    let data: PlayerWinRatesRows = { mode: [], brawler: [], total: [] };
     if (clickerUrl != '') {
       console.time('get winrates from clicker ' + tag);
-      winRates = await request<PlayerWinRates>(
+      data = await request<PlayerWinRatesRows>(
         `/winrates/${tag}`,
         clickerUrl,
         'fetch_player_winrates',
@@ -387,137 +399,21 @@ export default class BrawlstarsService {
       console.timeEnd('get winrates from clicker ' + tag);
     }
 
-    const statsByMode = winRates.mode.reduce((statsByMode, entry) => ({
-      ...statsByMode,
-      [entry.mode]: entry,
-    }), <{ [mode: string]: PlayerMetaModeEntry }>{});
-
-    const rankToWinRate = (entry: PlayerMetaModeEntry) => 1 - (entry.rank - 1) / (entry.mode.includes('duo') ? 4 : 9);
-    // stats are averages, so do `sum (picks * stat) / count`
-    const statsSum = winRates.mode.reduce((statsSum, entry) => ({
-      trophies: statsSum.trophies + (entry.trophyChange * entry.picks || 0),
-      trophiesCount: statsSum.trophiesCount + (entry.trophyChange !== null ? entry.picks : 0),
-      wins: statsSum.wins
-        + ( entry.winRate !== null ? (entry.picks * entry.winRate) : 0 ) // 3v3
-        + ( entry.winRate == null && entry.rank !== null ? (entry.picks * rankToWinRate(entry)) : 0 ), // free for all
-      winsCount: statsSum.winsCount + (entry.winRate !== null || entry.rank !== null ? entry.picks : 0),
-    }), { wins: 0, winsCount: 0, trophies: 0, trophiesCount: 0 });
-    const totalStats = { winRate: 0, trophyRate: 0, battles: statsSum.trophiesCount, byMode: statsByMode };
-    if (statsSum.winsCount > 0) {
-      totalStats.winRate = statsSum.wins / statsSum.winsCount;
-    }
-    if (statsSum.trophiesCount > 0) {
-      totalStats.trophyRate = statsSum.trophies / statsSum.trophiesCount;
-    }
+    const winrates = { brawler: {}, mode: {}, total: {} } as PlayerWinrates;
+    data.brawler.forEach(b =>
+      winrates.brawler[b.brawlerId] = {
+        name: b.brawlerName,
+        stats: pluckBattleMeasures(b),
+      })
+    data.mode.forEach(m =>
+      winrates.mode[m.mode] = {
+        name: m.mode,
+        stats: pluckBattleMeasures(m),
+      })
+    data.total.forEach(t => winrates.total = { stats: pluckBattleMeasures(t) })
 
     return {
-      totalStats,
-      modes: {
-        ...('gemGrab' in statsByMode ? {
-          'gemGrab': {
-            label: 'Gem Grab',
-            icon: 'gemgrab_optimized.png',
-            background: 'gemgrab.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.gemGrab.winRate * 100)}%`,
-              },
-              starPlayerRate: {
-                label: 'Recent Star Player Rate',
-                value: `${Math.round(statsByMode.gemGrab.starRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-        'showdown': {
-          label: 'Showdown',
-          icon: 'showdown_optimized.png',
-          background: 'showdown.jpg',
-          stats: {
-            ...('soloShowdown' in statsByMode ? {
-              soloWinRate: {
-                label: 'Recent Solo Rank 1 Rate',
-                value: `${Math.round(statsByMode.soloShowdown.rank1Rate * 100)}%`,
-              }
-            } : {}),
-            ...('duoShowdown' in statsByMode ? {
-              duoWinRate: {
-                label: 'Recent Duo Rank 1 Rate',
-                value: `${Math.round(statsByMode.duoShowdown.rank1Rate * 100)}%`,
-              }
-            } : {})
-          }
-        } as Mode,
-        ...('brawlBall' in statsByMode ? {
-          'brawlBall': {
-            label: 'Brawl Ball',
-            icon: 'brawlball_optimized.png',
-            background: 'brawlball.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.brawlBall.winRate * 100)}%`,
-              },
-              starPlayerRate: {
-                label: 'Recent Star Player Rate',
-                value: `${Math.round(statsByMode.brawlBall.starRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-        ...('bounty' in statsByMode ? {
-          'bounty': {
-            label: 'Bounty',
-            icon: 'bounty_optimized.png',
-            background: 'bounty.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.bounty.winRate * 100)}%`,
-              },
-              starPlayerRate: {
-                label: 'Recent Star Player Rate',
-                value: `${Math.round(statsByMode.bounty.starRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-        ...('heist' in statsByMode ? {
-          'heist': {
-            label: 'Heist',
-            icon: 'heist_optimized.png',
-            background: 'heist.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.heist.winRate * 100)}%`,
-              },
-              starPlayerRate: {
-                label: 'Recent Star Player Rate',
-                value: `${Math.round(statsByMode.heist.starRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-        ...('siege' in statsByMode ? {
-          'siege': {
-            label: 'Siege',
-            icon: '',
-            background: 'siege.jpg',
-            stats: {
-              winRate: {
-                label: 'Recent Win Rate',
-                value: `${Math.round(statsByMode.siege.winRate * 100)}%`,
-              },
-              starPlayerRate: {
-                label: 'Recent Star Player Rate',
-                value: `${Math.round(statsByMode.siege.starRate * 100)}%`,
-              },
-            }
-          } as Mode
-        } : {}),
-      }
+      winrates
     }
   }
 
@@ -720,7 +616,7 @@ export default class BrawlstarsService {
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club!.name,
       history: [], // filled by /history
-      totalStats: {}, // filled by /winrates
+      winrates: {}, // filled by /winrates
       brawlers,
       heroStats,
       battles,

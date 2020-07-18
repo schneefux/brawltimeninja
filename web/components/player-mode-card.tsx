@@ -1,5 +1,5 @@
 import Vue, { PropType } from 'vue'
-import { formatMode } from '~/lib/util'
+import { formatMode, metaStatMaps } from '~/lib/util'
 
 export default Vue.extend({
   functional: true,
@@ -32,8 +32,8 @@ export default Vue.extend({
               key={name}
               class="card-props"
             >
-              <span class="card-prop-value">{ stat.value }</span>
-              <span class="ml-1 card-prop-label">{ stat.label }</span>
+              <span class="card-prop-value">{ metaStatMaps.formatters[name](stat) }</span>
+              <span class="ml-1 card-prop-label">{ metaStatMaps.labels[name] }</span>
             </li>
           ) }
         </ul>

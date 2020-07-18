@@ -1,4 +1,5 @@
 import { BrawlerHistoryEntry, PlayerHistoryEntry } from "./History";
+import { PlayerWinRates } from "./Clicker";
 
 export interface Statistic {
     label: string;
@@ -56,6 +57,7 @@ export interface Battle {
 export interface Player extends PlayerIdentifier {
     hoursSpent: number;
     trophies: number;
+    winrates: Partial<PlayerWinRates>;
     clubName: string;
     history: PlayerHistoryEntry[];
     brawlers: {

@@ -248,14 +248,14 @@
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="(mode, modeId, index) in player.modes"
+          v-for="(stats, modeId, index) in playerModeStats"
           :key="modeId"
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
           class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-40 md:h-auto card-wrapper"
         >
-          <player-mode-card :mode="modeId" :stats="mode.stats"></player-mode-card>
+          <player-mode-card :mode="modeId" :stats="stats"></player-mode-card>
         </div>
 
         <div
@@ -613,14 +613,14 @@ export default {
       return 'S'
     },
     totalBattles() {
-      if (this.player.totalStats.battles !== undefined) {
-        return this.player.totalStats.battles
+      if (this.player.winrates.total !== undefined) {
+        return this.player.winrates.total.stats.picks
       }
       return this.player.battles.length
     },
     winRate() {
-      if (this.player.totalStats.winRate !== undefined) {
-        return this.player.totalStats.winRate
+      if (this.player.winrates.total !== undefined) {
+        return this.player.winrates.total.stats.winRate
       }
       if (this.player.battles.length == 0) {
         return 0
@@ -633,11 +633,28 @@ export default {
         [battle.event.mode]: [...(battlesByMode[battle.event.mode] || []), battle],
       }), {})
     },
-    trophyRate() {
-      if (this.player.totalStats.trophyRate !== undefined) {
-        return this.player.totalStats.trophyRate
+    playerModeStats() {
+      const statsByMode = {}
+      if (this.player.winrates.mode !== undefined) {
+        for (let mode in this.player.winrates.mode) {
+          const stats = this.player.winrates.mode[mode].stats
+          statsByMode[mode] = {
+            winRate: stats.winRate,
+          }
+        }
+      } else {
+        for (let mode in this.battlesByMode) {
+          statsByMode[mode] = {
+            winRate: this.battlesByMode[mode].filter(b => b.victory).length / this.battlesByMode[mode].length,
+          }
+        }
       }
-      const rankedBattles = (battles) => battles.filter(b => b.trophyChange !== undefined)
+      return statsByMode
+    },
+    trophyRate() {
+      if (this.player.winrates.total !== undefined) {
+        return this.player.winrates.total.stats.trophyChange
+      }
       const trophyChanges = this.player.battles
         .map((battle) => battle.trophyChange)
         .filter((trophyChange) => trophyChange !== undefined)
@@ -648,8 +665,9 @@ export default {
     },
     bestMode() {
       let avgTrophyChangeByMode = []
-      if (this.player.totalStats.byMode !== undefined) {
-        avgTrophyChangeByMode = [...Object.values(this.player.totalStats.byMode || {})]
+      if (this.player.winrates.mode !== undefined) {
+        avgTrophyChangeByMode = Object.values(this.player.winrates.mode || {})
+          .map((m) => ({ mode: m.name, trophyChange: m.stats.trophyChange }))
           .filter((m) => m.trophyChange !== undefined)
       } else {
         const rankedBattles = (battles) => battles.filter(b => b.trophyChange !== undefined)

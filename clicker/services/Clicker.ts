@@ -1,11 +1,9 @@
 import ClickHouse from '@apla/clickhouse';
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
-import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaModeEntry, MetaStarpowerEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry, MetaGadgetEntry } from '~/model/MetaEntry';
-import { PlayerWinRates } from '~/model/PlayerWinRates';
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
+import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows } from '~/model/Clicker';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -51,6 +49,9 @@ function validateTag(tag: string) {
 }
 
 // shared definitions for meta measures
+//
+// battle
+//
 const battleMeasuresDefinition = `
   timestamp_state AggregateFunction(argMax, DateTime, DateTime),
   picks UInt64,
@@ -59,7 +60,8 @@ const battleMeasuresDefinition = `
   battle_rank1_state AggregateFunction(avg, UInt8),
   battle_victory_state AggregateFunction(avg, Decimal32(8)),
   battle_starplayer_state AggregateFunction(avg, UInt8),
-  battle_level_state AggregateFunction(avg, UInt16)
+  battle_level_state AggregateFunction(avg, UInt16),
+  battle_trophy_change_state AggregateFunction(avg, Int8)
 `
 
 const battleMeasuresQuery = `
@@ -70,7 +72,8 @@ const battleMeasuresQuery = `
   avgState(brawltime.battle.battle_rank=1) AS battle_rank1_state,
   avgState(battle_victory) AS battle_victory_state,
   avgState(brawler_name=battle_starplayer_brawler_name) AS battle_starplayer_state,
-  avgState(battle_level_id) AS battle_level_state
+  avgState(battle_level_id) AS battle_level_state,
+  avgState(battle_trophy_change) as battle_trophy_change_state
 `
 
 const battleMeasuresAggregation = `
@@ -81,9 +84,50 @@ const battleMeasuresAggregation = `
   avgMerge(battle_victory_state) AS winRate,
   avgMerge(battle_duration_state) AS duration,
   avgMerge(battle_starplayer_state) AS starRate,
-  avgMerge(battle_level_state) AS level
+  avgMerge(battle_level_state) AS level,
+  avgMerge(battle_trophy_change_state) AS trophyChange
 `
 
+// ! starplayer applies only to player
+const battleMeasuresAggregationRaw = `
+  MAX(timestamp) as timestamp,
+  COUNT(*) AS picks,
+  AVG(battle_rank) AS rank,
+  AVG(battle_rank=1) AS rank1Rate,
+  AVG(battle_victory) AS winRate,
+  AVG(battle_duration) AS duration,
+  AVG(battle_is_starplayer) AS starRate,
+  AVG(battle_level_id) AS level,
+  AVG(battle_trophy_change) AS trophyChange
+`
+
+interface BattleMeasuresAggregation {
+  timestamp: string
+  picks: string
+  rank: string
+  rank1Rate: string
+  winRate: string
+  duration: string
+  starRate: string
+  level: string
+  trophyChange: string
+}
+
+const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
+  timestamp: row.timestamp,
+  duration: sloppyParseFloat(row.duration),
+  level: sloppyParseFloat(row.level),
+  rank: sloppyParseFloat(row.rank),
+  rank1Rate: sloppyParseFloat(row.rank1Rate),
+  picks: parseInt(row.picks),
+  winRate: sloppyParseFloat(row.winRate),
+  starRate: sloppyParseFloat(row.starRate),
+  trophyChange: sloppyParseFloat(row.trophyChange),
+}) as BattleMeasures
+
+//
+// player
+//
 const playerMeasuresDefinition = `
   timestamp_state AggregateFunction(argMax, DateTime, DateTime),
   player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
@@ -106,13 +150,33 @@ const playerMeasuresQuery = `
 
 const playerMeasuresAggregation = `
   argMaxMerge(timestamp_state) as timestamp,
-  argMaxMerge(player_exp_points_state) as player_exp_points,
-  argMaxMerge(player_trophies_state) as player_trophies,
-  argMaxMerge(player_power_play_points_state) as player_power_play_points,
-  argMaxMerge(player_3vs3_victories_state) as player_3vs3_victories,
-  argMaxMerge(player_solo_victories_state) as player_solo_victories,
-  argMaxMerge(player_duo_victories_state) as player_duo_victories
+  argMaxMerge(player_exp_points_state) as expPoints,
+  argMaxMerge(player_trophies_state) as trophies,
+  argMaxMerge(player_power_play_points_state) as powerPlayPoints,
+  argMaxMerge(player_3vs3_victories_state) as victories,
+  argMaxMerge(player_solo_victories_state) as soloVictories,
+  argMaxMerge(player_duo_victories_state) as duoVictories
 `
+
+interface PlayerMeasuresAggregation {
+  timestamp: string
+  expPoints: string
+  trophies: string
+  powerPlayPoints: string
+  victories: string
+  soloVictories: string
+  duoVictories: string
+}
+
+const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
+  timestamp: row.timestamp,
+  expPoints: parseInt(row.expPoints),
+  trophies: parseInt(row.trophies),
+  powerPlayPoints: parseInt(row.powerPlayPoints),
+  victories: parseInt(row.victories),
+  soloVictories: parseInt(row.soloVictories),
+  duoVictories: parseInt(row.duoVictories),
+})
 
 export default class ClickerService {
   private ch: ClickHouse;
@@ -588,23 +652,28 @@ export default class ClickerService {
     stats.timing('player.insert.timer', performance.now() - insertStart)
   }
 
-  public async getTopByExp(n: number): Promise<LeaderboardEntry[]> {
-    return await this.query<any>(`
+  public async getTopByExp(n: number): Promise<LeaderboardRow[]> {
+    interface LeaderboardQuery extends PlayerMeasuresAggregation {
+      playerName: string
+      playerTag: string
+    }
+
+    return await this.query<LeaderboardQuery>(`
       SELECT
-        player_name AS name,
-        player_tag AS tag,
+        player_name AS playerName,
+        player_tag AS playerTag,
         ${playerMeasuresAggregation}
       FROM brawltime.leaderboard
-      GROUP BY player_name, player_tag
+      GROUP BY playerName, playerTag
       HAVING timestamp > now() - interval 1 week
-      ORDER BY player_exp_points DESC
+      ORDER BY expPoints DESC
       LIMIT ${n}
       `, 'leaderboard')
       .then(data => data.map(row => ({
-        ...row,
-        tag: row.tag.replace('#', ''),
-        total_exp: parseInt(row.player_exp_points),
-      }) as LeaderboardEntry))
+        ...parsePlayerMeasures(row),
+        playerName: row.playerName,
+        playerTag: row.playerTag.replace('#', ''),
+      }) as LeaderboardRow))
   }
 
   public async getHistory(tag: string): Promise<History> {
@@ -642,60 +711,94 @@ export default class ClickerService {
     return { brawlerHistory, playerHistory }
   }
 
-  public async getPlayerWinrates(tag: string): Promise<PlayerWinRates> {
+  public async getPlayerWinrates(tag: string) {
     tag = validateTag(tag)
 
-    const modeStats = await this.query<any>(`
+    interface PlayerMetaQuery extends BattleMeasuresAggregation {
+    }
+    const totalStats = await this.query<PlayerMetaQuery>(`
+        SELECT
+          ${battleMeasuresAggregationRaw}
+        FROM brawltime.battle
+        WHERE player_tag='${tag}'
+        ORDER BY picks
+      `, 'player.winrates.total')
+      .then(data => data.map(row => ({
+        ...parseBattleMeasures(row),
+      }) as PlayerMetaRow))
+
+    interface PlayerModeMetaQuery extends BattleMeasuresAggregation {
+      mode: string
+    }
+    const modeStats = await this.query<PlayerModeMetaQuery>(`
         SELECT
           battle_event_mode AS mode,
-          COUNT(*) AS picks,
-          AVG(battle_victory) AS winRate,
-          AVG(battle_duration) AS duration,
-          AVG(battle_rank) AS rank,
-          AVG(battle_rank=1) AS rank1Rate,
-          AVG(battle_is_starplayer) AS starRate,
-          AVG(battle_trophy_change) AS trophyChange
+          ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
         WHERE player_tag='${tag}'
         GROUP BY mode
         ORDER BY picks
-      `, 'player.winrates')
+      `, 'player.winrates.mode')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        winRate: sloppyParseFloat(row.winRate),
-        duration: sloppyParseFloat(row.duration),
-        rank: sloppyParseFloat(row.rank),
-        rank1Rate: sloppyParseFloat(row.rank1Rate),
-        starRate: sloppyParseFloat(row.starRate),
-        trophyChange: sloppyParseFloat(row.trophyChange),
-      }) as PlayerMetaModeEntry))
-    return <PlayerWinRates> {
+        ...parseBattleMeasures(row),
+        mode: row.mode,
+      }) as PlayerModeMetaRow))
+
+    interface PlayerBrawlerMetaQuery extends BattleMeasuresAggregation {
+      brawlerId: string
+      brawlerName: string
+    }
+    const brawlerStats = await this.query<PlayerBrawlerMetaQuery>(`
+        SELECT
+          brawler_id AS brawlerId,
+          brawler_name AS brawlerName,
+          ${battleMeasuresAggregationRaw}
+        FROM brawltime.battle
+        WHERE player_tag='${tag}'
+        GROUP BY brawlerId, brawlerName
+        ORDER BY picks
+      `, 'player.winrates.brawler')
+      .then(data => data.map(row => ({
+        ...parseBattleMeasures(row),
+        brawlerId: parseInt(row.brawlerId),
+        brawlerName: row.brawlerName,
+      }) as PlayerBrawlerMetaRow))
+
+    return <PlayerWinRatesRows> {
+      total: totalStats,
       mode: modeStats,
+      brawler: brawlerStats,
     }
   }
 
-  public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaBrawlerEntry[]> {
-    return await this.query<any>(`
+  public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    interface BrawlerMetaQuery extends BattleMeasuresAggregation {
+      brawlerName: string
+    }
+    return await this.query<BrawlerMetaQuery>(`
         SELECT
-          brawler_name AS name,
+          brawler_name AS brawlerName,
           ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY name
+        GROUP BY brawlerName
         ORDER BY picks
       `, 'meta.brawler')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        winRate: sloppyParseFloat(row.winRate),
-        starRate: sloppyParseFloat(row.starRate),
-      }) as MetaBrawlerEntry))
+        brawlerName: row.brawlerName,
+        ...parseBattleMeasures(row),
+      }) as BrawlerMetaRow))
   }
 
-  public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaStarpowerEntry[]> {
-    return await this.query<any>(`
+  public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    interface StarpowerMetaQuery extends BattleMeasuresAggregation {
+      brawlerId: string
+      brawlerName: string
+      starpowerId: string
+      starpowerName: string
+    }
+    return await this.query<StarpowerMetaQuery>(`
         SELECT
           brawler_id AS brawlerId,
           brawler_name AS brawlerName,
@@ -709,16 +812,22 @@ export default class ClickerService {
         ORDER BY picks
       `, 'meta.starpower')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        winRate: sloppyParseFloat(row.winRate),
-        rank1Rate: sloppyParseFloat(row.rank1Rate),
-        starRate: sloppyParseFloat(row.starRate),
-      }) as MetaStarpowerEntry))
+        ...parseBattleMeasures(row),
+        brawlerId: parseInt(row.brawlerId),
+        brawlerName: row.brawlerName,
+        starpowerId: parseInt(row.starpowerId),
+        starpowerName: row.starpowerName,
+      }) as StarpowerMetaRow))
   }
 
-  public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaGadgetEntry[]> {
-    return await this.query<any>(`
+  public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    interface GadgetMetaQuery extends BattleMeasuresAggregation {
+      brawlerId: string
+      brawlerName: string
+      gadgetId: string
+      gadgetName: string
+    }
+    return await this.query<GadgetMetaQuery>(`
         SELECT
           brawler_id AS brawlerId,
           brawler_name AS brawlerName,
@@ -732,41 +841,48 @@ export default class ClickerService {
         ORDER BY picks
       `, 'meta.gadget')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        winRate: sloppyParseFloat(row.winRate),
-        rank1Rate: sloppyParseFloat(row.rank1Rate),
-        starRate: sloppyParseFloat(row.starRate),
-      }) as MetaGadgetEntry))
+        ...parseBattleMeasures(row),
+        brawlerId: parseInt(row.brawlerId),
+        brawlerName: row.brawlerName,
+        gadgetId: parseInt(row.gadgetId),
+        gadgetName: row.gadgetName,
+      }) as GadgetMetaRow))
   }
 
-  public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaModeEntry[]> {
-    return await this.query<any>(`
+  public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    interface ModeMetaQuery extends BattleMeasuresAggregation {
+      brawlerName: string
+      mode: string
+    }
+    return await this.query<ModeMetaQuery>(`
         SELECT
-          brawler_name AS name,
+          brawler_name AS brawlerName,
           battle_event_mode AS mode,
           ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY name, mode
+        GROUP BY brawlerName, mode
         ORDER BY picks
       `, 'meta.mode')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        rank: sloppyParseFloat(row.rank),
-        rank1Rate: sloppyParseFloat(row.rank1Rate),
-        winRate: sloppyParseFloat(row.winRate),
-        duration: sloppyParseFloat(row.duration),
-        starRate: sloppyParseFloat(row.starRate),
-      }) as MetaModeEntry))
+        ...parseBattleMeasures(row),
+        brawlerName: row.brawlerName,
+        mode: row.mode,
+      }) as ModeMetaRow))
   }
 
-  public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string): Promise<MetaMapEntry[]> {
-    return await this.query<any>(`
+  public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    interface MapMetaQuery extends BattleMeasuresAggregation {
+      brawlerName: string
+      mode: string
+      map: string
+      id: string
+      isBigbrawler: string
+    }
+    return await this.query<MapMetaQuery>(`
         SELECT
-          brawler_name AS name,
+          brawler_name AS brawlerName,
           battle_event_mode AS mode,
           battle_event_map AS map,
           battle_event_id AS id,
@@ -775,18 +891,16 @@ export default class ClickerService {
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY id, mode, map, name, isBigbrawler
+        GROUP BY brawlerName, mode, map, id, isBigbrawler
         ORDER BY picks
       `, 'meta.map')
       .then(data => data.map(row => ({
-        ...row,
-        picks: parseInt(row.picks),
-        rank: sloppyParseFloat(row.rank),
-        rank1Rate: sloppyParseFloat(row.rank1Rate),
-        winRate: sloppyParseFloat(row.winRate),
-        duration: sloppyParseFloat(row.duration),
-        starRate: sloppyParseFloat(row.starRate),
-        level: sloppyParseFloat(row.level),
-      }) as MetaMapEntry))
+        ...parseBattleMeasures(row),
+        brawlerName: row.brawlerName,
+        mode: row.mode,
+        map: row.map,
+        id: parseInt(row.id),
+        isBigbrawler: row.isBigbrawler == '1',
+      }) as MapMetaRow))
   }
 }

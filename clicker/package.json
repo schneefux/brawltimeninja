@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts",
+    "dev:migrate": "ts-node migrate.ts",
     "build": "webpack --mode production",
     "start": "node dist/migrate.js && node dist/clicker.js"
   },
