@@ -1,11 +1,10 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, ActiveEvent } from '../model/Brawlstars';
-import { Brawler, PlayerStatistic, Mode, Player, Battle } from '../model/Player';
 import History from '../model/History';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, BrawlerMetaEntry, StarpowerMetaEntry, GadgetMetaEntry, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
 import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow } from '~/model/Clicker';
-import { PlayerWinrates } from '~/model/Api';
+import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -607,7 +606,7 @@ export default class BrawlstarsService {
         label: 'Average Power Level',
         value: Math.floor(avgProp('power')(player.brawlers))
       },
-    } as { [id: string]: PlayerStatistic };
+    } as { [id: string]: Statistic };
 
     const data = {
       tag: player.tag,
@@ -617,6 +616,16 @@ export default class BrawlstarsService {
       clubName: player.club === null ? '' : player.club!.name,
       history: [], // filled by /history
       winrates: {}, // filled by /winrates
+      stats: {
+        trophies: player.trophies,
+        highestTrophies: player.highestTrophies,
+        powerPlayPoints: player.powerPlayPoints,
+        highestPowerPlayPoints: player.highestPowerPlayPoints,
+        expLevel: player.expLevel,
+        victories: player['3vs3Victories'],
+        soloVictories: player.soloVictories,
+        duoVictories: player.duoVictories,
+      },
       brawlers,
       heroStats,
       battles,
