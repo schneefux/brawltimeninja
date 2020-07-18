@@ -451,7 +451,7 @@ export default class ClickerService {
         return
       }
 
-      if (battle.battleTime < lastBattleTimestamp) {
+      if (battle.battleTime <= lastBattleTimestamp) {
         // duplicate
         return
       }
