@@ -1,6 +1,7 @@
 export interface BattleMeasures {
   timestamp: string;
   picks: number;
+  picksWeighted: number;
   duration: number;
   rank: number;
   rank1Rate: number;

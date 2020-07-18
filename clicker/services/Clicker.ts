@@ -55,6 +55,7 @@ function validateTag(tag: string) {
 const battleMeasuresDefinition = `
   timestamp_state AggregateFunction(argMax, DateTime, DateTime),
   picks UInt64,
+  picks_weighted UInt64,
   battle_duration_state AggregateFunction(avg, UInt16),
   battle_rank_state AggregateFunction(avg, UInt8),
   battle_rank1_state AggregateFunction(avg, UInt8),
@@ -67,6 +68,7 @@ const battleMeasuresDefinition = `
 const battleMeasuresQuery = `
   argMaxState(timestamp, timestamp) as timestamp_state,
   COUNT(*) AS picks,
+  SUM(player_brawlers_length) AS picks_weighted,
   avgState(battle_duration) AS battle_duration_state,
   avgState(battle_rank) AS battle_rank_state,
   avgState(brawltime.battle.battle_rank=1) AS battle_rank1_state,
@@ -79,6 +81,7 @@ const battleMeasuresQuery = `
 const battleMeasuresAggregation = `
   argMaxMerge(timestamp_state) as timestamp,
   SUM(picks) AS picks,
+  SUM(picks_weighted) AS picksWeighted,
   avgMerge(battle_rank_state) AS rank,
   avgMerge(battle_rank1_state) AS rank1Rate,
   avgMerge(battle_victory_state) AS winRate,
@@ -92,6 +95,7 @@ const battleMeasuresAggregation = `
 const battleMeasuresAggregationRaw = `
   MAX(timestamp) as timestamp,
   COUNT(*) AS picks,
+  SUM(player_brawlers_length) AS picksWeighted,
   AVG(battle_rank) AS rank,
   AVG(battle_rank=1) AS rank1Rate,
   AVG(battle_victory) AS winRate,
@@ -104,6 +108,7 @@ const battleMeasuresAggregationRaw = `
 interface BattleMeasuresAggregation {
   timestamp: string
   picks: string
+  picksWeighted: string
   rank: string
   rank1Rate: string
   winRate: string
@@ -115,13 +120,14 @@ interface BattleMeasuresAggregation {
 
 const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
   timestamp: row.timestamp,
-  duration: sloppyParseFloat(row.duration),
-  level: sloppyParseFloat(row.level),
+  picks: parseInt(row.picks),
+  picksWeighted: parseInt(row.picksWeighted),
   rank: sloppyParseFloat(row.rank),
   rank1Rate: sloppyParseFloat(row.rank1Rate),
-  picks: parseInt(row.picks),
   winRate: sloppyParseFloat(row.winRate),
+  duration: sloppyParseFloat(row.duration),
   starRate: sloppyParseFloat(row.starRate),
+  level: sloppyParseFloat(row.level),
   trophyChange: sloppyParseFloat(row.trophyChange),
 }) as BattleMeasures
 
