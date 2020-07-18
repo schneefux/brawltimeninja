@@ -591,8 +591,8 @@ export default class ClickerService {
         player_tag AS tag,
         ${playerMeasuresAggregation}
       FROM brawltime.leaderboard
-      WHERE timestamp > now() - interval 1 week
       GROUP BY player_name, player_tag
+      HAVING timestamp > now() - interval 1 week
       ORDER BY player_exp_points DESC
       LIMIT ${n}
       `, 'leaderboard')
