@@ -294,6 +294,7 @@ export default class ClickerService {
     `)
     const mapMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.map_meta', { dataObjects: true })
     if (mapMetaCount.data[0].c == 0) {
+      console.log('populating map meta')
       await this.ch.querying(`INSERT INTO brawltime.map_meta ${mapMetaQuery}`)
     }
 
@@ -335,6 +336,7 @@ export default class ClickerService {
     `)
     const gadgetMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.gadget_meta', { dataObjects: true })
     if (gadgetMetaCount.data[0].c == 0) {
+      console.log('populating gadget meta')
       await this.ch.querying(`INSERT INTO brawltime.gadget_meta ${gadgetMetaQuery}`)
     }
 
@@ -376,6 +378,7 @@ export default class ClickerService {
     `)
     const starpowerMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.starpower_meta', { dataObjects: true })
     if (starpowerMetaCount.data[0].c == 0) {
+      console.log('populating starpower meta')
       await this.ch.querying(`INSERT INTO brawltime.starpower_meta ${starpowerMetaQuery}`)
     }
 
@@ -408,6 +411,7 @@ export default class ClickerService {
     `)
     const leaderboardCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.leaderboard', { dataObjects: true })
     if (leaderboardCount.data[0].c == 0) {
+      console.log('populating leaderboard')
       await this.ch.querying(`INSERT INTO brawltime.leaderboard ${leaderboardQuery}`)
     }
   }
