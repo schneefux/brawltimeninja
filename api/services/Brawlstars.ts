@@ -374,17 +374,17 @@ export default class BrawlstarsService {
     tag = tag.replace(/^#/, '');
 
     let winRates: PlayerWinRates = { mode: [] };
-    if (trackerUrl != '') {
-      console.time('get winrates from tracker ' + tag);
+    if (clickerUrl != '') {
+      console.time('get winrates from clicker ' + tag);
       winRates = await request<PlayerWinRates>(
         `/winrates/${tag}`,
-        trackerUrl,
+        clickerUrl,
         'fetch_player_winrates',
         {},
         {},
         10000
       );
-      console.timeEnd('get winrates from tracker ' + tag);
+      console.timeEnd('get winrates from clicker ' + tag);
     }
 
     const statsByMode = winRates.mode.reduce((statsByMode, entry) => ({
