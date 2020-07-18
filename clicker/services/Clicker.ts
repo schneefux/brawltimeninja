@@ -14,13 +14,6 @@ const seasonSliceStart = getSeasonEnd(balanceChangesDate)
 
 console.log(`querying data >= ${seasonSliceStart}`)
 
-/*
-  TODO create materialized views:
-    -- sorting key: all dimensions, smallest to largest
-    -- pk must be prefix of sk
-    ORDER BY (trophy_season_end, player_tag, brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, brawler_starpower_name, brawler_gadget_name)
-*/
-
 /**
  * Round timestamp up to next trophy season interval.
  * @param timestamp
@@ -58,7 +51,8 @@ function validateTag(tag: string) {
 }
 
 // shared definitions for meta measures
-const measuresDefinition = `
+const battleMeasuresDefinition = `
+  timestamp_state AggregateFunction(argMax, DateTime, DateTime),
   picks UInt64,
   battle_duration_state AggregateFunction(avg, UInt16),
   battle_rank_state AggregateFunction(avg, UInt8),
@@ -68,7 +62,8 @@ const measuresDefinition = `
   battle_level_state AggregateFunction(avg, UInt16)
 `
 
-const measuresQuery = `
+const battleMeasuresQuery = `
+  argMaxState(timestamp, timestamp) as timestamp_state,
   COUNT(*) AS picks,
   avgState(battle_duration) AS battle_duration_state,
   avgState(battle_rank) AS battle_rank_state,
@@ -78,7 +73,8 @@ const measuresQuery = `
   avgState(battle_level_id) AS battle_level_state
 `
 
-const measuresAggregation = `
+const battleMeasuresAggregation = `
+  argMaxMerge(timestamp_state) as timestamp,
   SUM(picks) AS picks,
   avgMerge(battle_rank_state) AS rank,
   avgMerge(battle_rank1_state) AS rank1Rate,
@@ -86,6 +82,36 @@ const measuresAggregation = `
   avgMerge(battle_duration_state) AS duration,
   avgMerge(battle_starplayer_state) AS starRate,
   avgMerge(battle_level_state) AS level
+`
+
+const playerMeasuresDefinition = `
+  timestamp_state AggregateFunction(argMax, DateTime, DateTime),
+  player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
+  player_trophies_state AggregateFunction(argMax, UInt32, DateTime),
+  player_power_play_points_state AggregateFunction(argMax, UInt16, DateTime),
+  player_3vs3_victories_state AggregateFunction(argMax, UInt32, DateTime),
+  player_solo_victories_state AggregateFunction(argMax, UInt32, DateTime),
+  player_duo_victories_state AggregateFunction(argMax, UInt32, DateTime)
+`
+
+const playerMeasuresQuery = `
+  argMaxState(timestamp, timestamp) as timestamp_state,
+  argMaxState(player_exp_points, timestamp) as player_exp_points_state,
+  argMaxState(player_trophies, timestamp) as player_trophies_state,
+  argMaxState(player_power_play_points, timestamp) as player_power_play_points_state,
+  argMaxState(player_3vs3_victories, timestamp) as player_3vs3_victories_state,
+  argMaxState(player_solo_victories, timestamp) as player_solo_victories_state,
+  argMaxState(player_duo_victories, timestamp) as player_duo_victories_state
+`
+
+const playerMeasuresAggregation = `
+  argMaxMerge(timestamp_state) as timestamp,
+  argMaxMerge(player_exp_points_state) as player_exp_points,
+  argMaxMerge(player_trophies_state) as player_trophies,
+  argMaxMerge(player_power_play_points_state) as player_power_play_points,
+  argMaxMerge(player_3vs3_victories_state) as player_3vs3_victories,
+  argMaxMerge(player_solo_victories_state) as player_solo_victories,
+  argMaxMerge(player_duo_victories_state) as player_duo_victories
 `
 
 export default class ClickerService {
@@ -237,7 +263,7 @@ export default class ClickerService {
         battle_event_map LowCardinality(String),
         battle_event_id UInt32,
         battle_is_bigbrawler UInt8,
-        ${measuresDefinition}
+        ${battleMeasuresDefinition}
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
@@ -253,7 +279,7 @@ export default class ClickerService {
         battle_event_map,
         battle_event_id,
         assumeNotNull(battle_is_bigbrawler) AS battle_is_bigbrawler,
-        ${measuresQuery}
+        ${battleMeasuresQuery}
       FROM brawltime.battle
       GROUP BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
       ORDER BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
@@ -282,7 +308,7 @@ export default class ClickerService {
         brawler_name LowCardinality(String),
         brawler_gadget_id UInt32,
         brawler_gadget_name LowCardinality(String),
-        ${measuresDefinition}
+        ${battleMeasuresDefinition}
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
@@ -297,7 +323,7 @@ export default class ClickerService {
         brawler_name,
         brawler_gadget_id,
         brawler_gadget_name,
-        ${measuresQuery}
+        ${battleMeasuresQuery}
       FROM brawltime.battle
       GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
       ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
@@ -323,7 +349,7 @@ export default class ClickerService {
         brawler_name LowCardinality(String),
         brawler_starpower_id UInt32,
         brawler_starpower_name LowCardinality(String),
-        ${measuresDefinition}
+        ${battleMeasuresDefinition}
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
@@ -338,7 +364,7 @@ export default class ClickerService {
         brawler_name,
         brawler_starpower_id,
         brawler_starpower_name,
-        ${measuresQuery}
+        ${battleMeasuresQuery}
       FROM brawltime.battle
       GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
       ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
@@ -351,6 +377,38 @@ export default class ClickerService {
     const starpowerMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.starpower_meta', { dataObjects: true })
     if (starpowerMetaCount.data[0].c == 0) {
       await this.ch.querying(`INSERT INTO brawltime.starpower_meta ${starpowerMetaQuery}`)
+    }
+
+    //
+    // player leaderboard
+    //
+    await this.ch.querying(`
+      CREATE TABLE IF NOT EXISTS brawltime.leaderboard (
+        player_tag String,
+        player_name String,
+        ${playerMeasuresDefinition}
+      )
+      ENGINE = AggregatingMergeTree()
+      PARTITION BY tuple()
+      ORDER BY (player_tag)
+    `)
+
+    const leaderboardQuery = `
+      SELECT
+        player_tag,
+        player_name,
+        ${playerMeasuresQuery}
+      FROM brawltime.battle
+      GROUP BY player_tag, player_name
+    `
+    await this.ch.querying(`
+      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.leaderboard_mv
+      TO brawltime.leaderboard
+      AS ${leaderboardQuery}
+    `)
+    const leaderboardCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.leaderboard', { dataObjects: true })
+    if (leaderboardCount.data[0].c == 0) {
+      await this.ch.querying(`INSERT INTO brawltime.leaderboard ${leaderboardQuery}`)
     }
   }
 
@@ -531,17 +589,17 @@ export default class ClickerService {
       SELECT
         player_name AS name,
         player_tag AS tag,
-        MAX(player_exp_points) AS total_exp
-      FROM brawltime.battle
-      WHERE ${sliceSeason()}
+        ${playerMeasuresAggregation}
+      FROM brawltime.leaderboard
+      WHERE timestamp > now() - interval 1 week
       GROUP BY player_name, player_tag
-      ORDER BY total_exp DESC
+      ORDER BY player_exp_points DESC
       LIMIT ${n}
       `, 'leaderboard')
       .then(data => data.map(row => ({
         ...row,
         tag: row.tag.replace('#', ''),
-        total_exp: parseInt(row.total_exp),
+        total_exp: parseInt(row.player_exp_points),
       }) as LeaderboardEntry))
   }
 
@@ -617,7 +675,7 @@ export default class ClickerService {
     return await this.query<any>(`
         SELECT
           brawler_name AS name,
-          ${measuresAggregation}
+          ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
@@ -639,7 +697,7 @@ export default class ClickerService {
           brawler_name AS brawlerName,
           brawler_starpower_id AS starpowerId,
           brawler_starpower_name AS starpowerName,
-          ${measuresAggregation}
+          ${battleMeasuresAggregation}
         FROM brawltime.starpower_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
@@ -662,7 +720,7 @@ export default class ClickerService {
           brawler_name AS brawlerName,
           brawler_gadget_id AS gadgetId,
           brawler_gadget_name AS gadgetName,
-          ${measuresAggregation}
+          ${battleMeasuresAggregation}
         FROM brawltime.gadget_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
@@ -683,7 +741,7 @@ export default class ClickerService {
         SELECT
           brawler_name AS name,
           battle_event_mode AS mode,
-          ${measuresAggregation}
+          ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
@@ -709,7 +767,7 @@ export default class ClickerService {
           battle_event_map AS map,
           battle_event_id AS id,
           battle_is_bigbrawler AS isBigbrawler,
-          ${measuresAggregation}
+          ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
         AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
