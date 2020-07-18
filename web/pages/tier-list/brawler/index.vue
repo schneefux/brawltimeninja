@@ -147,7 +147,7 @@
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted } from '../../../lib/util'
-import { MapMetaMap, MetaMapEntry, BrawlerMetaEntry, ModeMetaMap } from '../../../model/MetaEntry'
+import { BrawlerMetaEntry, ModeMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'BrawlerMetaPage',

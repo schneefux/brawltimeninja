@@ -1,7 +1,8 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
-import { MapMetaMap, ModeMetaMap, MapMeta, ModeMeta, BrawlerMetaStatistics } from "~/model/MetaEntry";
+import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 import { ActiveEvent } from "~/model/Brawlstars";
+import { BrawlerMetaStatistics } from "~/model/Web";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
