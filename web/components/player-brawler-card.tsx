@@ -1,11 +1,11 @@
 import Vue, { PropType } from 'vue'
 import { scaleMinMax, zip } from '~/lib/util'
 import BrawlerCard from '~/components/brawler-card'
-import { Brawler } from '~/model/Player'
 import LeaderboardIcon from '~/assets/images/icon/leaderboards_optimized.png'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import PowerPointIcon from '~/assets/images/icon/powerpoint_optimized.png'
 import StarpowerIcon from '~/assets/images/icon/starpower_optimized.png'
+import { Brawler } from '~/model/Api'
 
 interface BrawlerWithId extends Brawler {
   id: string

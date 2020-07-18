@@ -46,10 +46,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { capitalizeWords, getBest, getBestBrawlers, formatMode } from '../lib/util'
-import { Player, Brawler } from '../model/Player'
 import { ActiveEvent } from '../model/Brawlstars'
-import { MapMetaMap, MapMeta } from '../model/MetaEntry'
 import { BrawlerMetaStatistics } from '../model/Web'
+import { MapMeta, MapMetaMap } from '../model/MetaEntry'
+import { Player } from '../model/Api'
 
 interface Recommendation {
   id: string
