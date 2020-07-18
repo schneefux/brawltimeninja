@@ -16,17 +16,13 @@ export default Vue.extend({
   },
   render(h, { props }) {
     const mode = props.mode.replace('3v3', 'gemGrab')
-    // TODO remove transform hack
-    return <div class="card bg-center bg-cover h-full">
-      <div class="relative z-0">
-        <media-img
-          path={'/modes/' + mode + '/background'}
-          clazz="absolute left-0 top-0 h-32"
-          ztyle="filter: brightness(0.5) grayscale(0.25); transform: scaleX(1.75) scaleY(1.75);"
-          size="1600"
-        ></media-img>
-      </div>
-      <div class="relative z-10 card-content">
+    return <div
+      style={{
+        'background-image': `linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${process.env.mediaUrl}/modes/${mode}/background.jpg?size=512')`,
+      }}
+      class="card bg-center bg-cover h-full"
+    >
+      <div class="card-content" >
         <div class="card-header text-white">
           { formatMode(mode) }
         </div>
