@@ -1,46 +1,11 @@
 <template>
-  <div
-    v-if="eventRecommendations.length > 0"
-    class="section md:mx-4 py-4 px-3"
+  <button
+    v-if="eventRecommendations.length > 0 && notificationsAllowed"
+    class="button"
+    @click="notifyTips"
   >
-    <div class="mb-3">
-      <div class="text-left text-lg">
-        💡
-        Play your lowest Brawlers' strengths
-      </div>
-    </div>
-    <p
-      v-for="tip in eventRecommendations.slice(0, tipsPage * tipsPageSize)"
-      :key="tip.id"
-      class="mt-2 px-3"
-    >
-      {{ tip.phrase }}
-      <span class="capitalize text-primary-lighter">
-        {{ tip.brawler.toLowerCase() }}
-      </span>
-      in
-      <nuxt-link
-        :to="`/tier-list/map/${tip.eventId}`"
-        class="link inline-block"
-      >
-        {{ formatMode(tip.mode) }} - {{ tip.map }}
-      </nuxt-link>.
-    </p>
-    <button
-      v-show="tipsPage * tipsPageSize < eventRecommendations.length"
-      class="mt-3 button button-sm"
-      @click="tipsPage++; $ga.event('tips', 'load_more', tipsPage)"
-    >
-      Load More Tips
-    </button>
-    <button
-      v-show="notificationsAllowed"
-      class="ml-2 button button-sm"
-      @click="notifyTips"
-    >
-      Send as Notification
-    </button>
-  </div>
+    Send Notification
+  </button>
 </template>
 
 <script lang="ts">

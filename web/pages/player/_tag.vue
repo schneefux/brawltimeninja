@@ -269,22 +269,38 @@
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
-          class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-40 md:h-auto card-wrapper"
+          class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-48 md:h-auto card-wrapper"
         >
-          <player-mode-card :mode="modeId" :stats="stats"></player-mode-card>
+          <player-mode-card
+            :mode="modeId"
+            :stats="stats"
+            :active-map-meta="activeMapMeta"
+            :player-brawlers="Object.values(player.brawlers)"
+          ></player-mode-card>
         </div>
+      </div>
 
-        <div
-          v-show="!showAllModes && Object.keys(player.modes).length > 3"
-          class="mt-2 w-full text-right hidden md:block"
+      <div class="mt-1 w-full flex justify-end">
+        <button
+          class="mr-3 button md:button-md hidden md:block"
+          :class="{ 'md:block': !showAllModes && Object.keys(player.modes).length > 3 }"
+          @click="showAllModes = true; $ga.event('gamemodes', 'show_all')"
         >
-          <button
-            class="button button-md"
-            @click="showAllModes = true; $ga.event('gamemodes', 'show_all')"
-          >
-            Load all Modes
-          </button>
-        </div>
+          Show More
+        </button>
+
+        <player-tips
+          :player="player"
+          :active-map-meta="activeMapMeta"
+          class="mr-3 button md:button-md"
+        ></player-tips>
+
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/map"
+        >
+          Open Map Tier List
+        </nuxt-link>
       </div>
     </div>
 
@@ -461,11 +477,6 @@
         <span class="md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</span>
       </p>
     </div>
-
-    <player-tips
-      :player="player"
-      :activeMapMeta="activeMapMeta"
-    ></player-tips>
 
     <div class="section">
       <div class="flex flex-wrap justify-between">

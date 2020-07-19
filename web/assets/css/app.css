@@ -73,16 +73,18 @@
   @apply bg-secondary-light border-secondary-light;
 }
 
-.button-sm {
-  @apply border-2;
-}
+@responsive {
+  .button-sm {
+    @apply border-2;
+  }
 
-.button-md {
-  @apply border-4;
-}
+  .button-md {
+    @apply border-4;
+  }
 
-.button-lg {
-  @apply border-8;
+  .button-lg {
+    @apply border-8;
+  }
 }
 
 /* blue card with a title and an image which highlights multiple stats */
