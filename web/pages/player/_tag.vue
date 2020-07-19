@@ -745,9 +745,9 @@ export default {
     }
   },
   async asyncData({ $axios }) {
-    const events = await $axios.$get('/api/events/active')
-    const activeMapMeta = await $axios.$get('/api/meta/map/events')
-    const leaderboard = await $axios.$get('/api/leaderboard/hours')
+    const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] }))
+    const activeMapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({}))
+    const leaderboard = await $axios.$get('/api/leaderboard/hours').catch(() => [])
     return {
       currentEvents: events.current,
       leaderboard,

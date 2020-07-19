@@ -345,7 +345,7 @@ import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
 import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
-import { BrawlerMetaEntry } from '../model/MetaEntry'
+import { BrawlerMetaEntry, MapMetaMap } from '../model/MetaEntry'
 
 function playerToRoute(player) {
   return {
@@ -402,6 +402,8 @@ export default Vue.extend({
       loadHelpVideo: false,
       currentEvents: [] as ActiveEvent[],
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
+      topBrawlers: {} as { [key: string]: BrawlerMetaEntry },
+      bsuArticles: [] as { title: string, link: string, contentSnippet: string }[],
       playerToRoute,
       metaStatMaps,
       relativeTimeUntil,
@@ -448,10 +450,10 @@ export default Vue.extend({
     }),
   },
   async asyncData({ $axios }) {
-    const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] }))
-    const mapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({}))
-    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ({}))
-    const bsuArticles = await $axios.$get('/api/partners/bsu').catch(() => [])
+    const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })) as { current: ActiveEvent[], upcoming: ActiveEvent[] }
+    const mapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
+    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ({})) as BrawlerMetaEntry[]
+    const bsuArticles = await $axios.$get('/api/partners/bsu').catch(() => []) as { title: string, link: string, contentSnippet: string }[]
     const bestByEvent = getBest(mapMeta)
     const topBrawlers = getTopBrawlers(brawlerMeta)
     return {
