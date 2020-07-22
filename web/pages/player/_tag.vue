@@ -680,7 +680,7 @@ export default {
     },
     trophyRate() {
       if (this.player.winrates.total !== undefined) {
-        return this.player.winrates.total.stats.trophyChange
+        return this.player.winrates.total.stats.trophyChange || 0
       }
       const trophyChanges = this.player.battles
         .map((battle) => battle.trophyChange)
