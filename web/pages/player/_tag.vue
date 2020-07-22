@@ -640,13 +640,13 @@ export default {
       return 'S'
     },
     totalBattles() {
-      if (this.player.winrates.total !== undefined) {
+      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
         return this.player.winrates.total.stats.picks
       }
       return this.player.battles.length
     },
     winRate() {
-      if (this.player.winrates.total !== undefined) {
+      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
         return this.player.winrates.total.stats.winRate
       }
       if (this.player.battles.length == 0) {
@@ -662,7 +662,7 @@ export default {
     },
     playerModeStats() {
       const statsByMode = {}
-      if (this.player.winrates.mode !== undefined) {
+      if (this.player.winrates != undefined && this.player.winrates.mode != undefined) {
         for (let mode in this.player.winrates.mode) {
           const stats = this.player.winrates.mode[mode].stats
           statsByMode[mode] = {
@@ -679,12 +679,12 @@ export default {
       return statsByMode
     },
     trophyRate() {
-      if (this.player.winrates.total !== undefined) {
+      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
         return this.player.winrates.total.stats.trophyChange || 0
       }
       const trophyChanges = this.player.battles
         .map((battle) => battle.trophyChange)
-        .filter((trophyChange) => trophyChange !== undefined)
+        .filter((trophyChange) => trophyChange != undefined)
       if (trophyChanges.length == 0) {
         return 0
       }
@@ -692,12 +692,12 @@ export default {
     },
     bestMode() {
       let avgTrophyChangeByMode = []
-      if (this.player.winrates.mode !== undefined) {
+      if (this.player.winrates != undefined && this.player.winrates.mode != undefined) {
         avgTrophyChangeByMode = Object.values(this.player.winrates.mode || {})
           .map((m) => ({ mode: m.name, trophyChange: m.stats.trophyChange }))
-          .filter((m) => m.trophyChange !== undefined)
+          .filter((m) => m.trophyChange != undefined)
       } else {
-        const rankedBattles = (battles) => battles.filter(b => b.trophyChange !== undefined)
+        const rankedBattles = (battles) => battles.filter(b => b.trophyChange != undefined)
         avgTrophyChangeByMode = [...Object.entries(this.battlesByMode)]
           .map(([mode, battles]) => [mode, rankedBattles(battles)])
           .filter(([mode, battles]) => battles.length > 0)
