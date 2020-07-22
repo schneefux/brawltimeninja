@@ -126,7 +126,7 @@ export default Vue.extend({
 
     const brawlerCard = BrawlerCard as any
     return <brawlerCard
-        title={brawler.name}
+        title={brawler.name || ''}
         brawler={brawler.id}
         scopedSlots={slots}
       />
