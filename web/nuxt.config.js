@@ -126,6 +126,10 @@ export default {
   build: {
     extend(config, ctx) {
     },
+    cssSourceMap: true,
+    terser: {
+      sourceMap: true,
+    },
     extractCSS: true,
     postcss: {
       plugins: {
