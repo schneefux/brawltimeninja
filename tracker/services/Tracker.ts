@@ -248,8 +248,8 @@ export default class TrackerService {
 
   public async getHistory(tag: string) {
     // round to hour to reduce high-activity players
-    const timestampRoundedAsTimestamp = this.knex.raw('date_format(timestamp, \'%Y-%m-%d %H:00:00\') as timestamp')
-    const timestampRounded = this.knex.raw('date_format(timestamp, \'%Y-%m-%d %H:00:00\')')
+    const timestampRoundedAsTimestamp = this.knex.raw('date_format(timestamp, \'%Y-%m-%dT%H:00:00.000Z\') as timestamp')
+    const timestampRounded = this.knex.raw('date_format(timestamp, \'%Y-%m-%dT%H:00:00.000Z\')')
     const playerHistory = await this.knex
       .select(timestampRoundedAsTimestamp)
       .max('trophies as trophies')
