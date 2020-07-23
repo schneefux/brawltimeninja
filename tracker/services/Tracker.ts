@@ -2,7 +2,6 @@ import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
-import { MetaModeEntry, MetaBrawlerEntry, MetaMapEntry, PlayerMetaModeEntry } from '~/model/MetaEntry';
 
 const dbUri = process.env.DATABASE_URI || '';
 
@@ -285,7 +284,7 @@ export default class TrackerService {
         where player_tag = ?
         group by mode
       `, tag).then((response) => response[0].map(
-        (entry: any) => (<PlayerMetaModeEntry> {
+        (entry: any) => (<any> {
           mode: entry.mode,
           picks: parseInt(entry.picks),
           winRate: parseFloat(entry.win_rate),
@@ -316,7 +315,7 @@ export default class TrackerService {
         where is_current and (:trophyrange_id = 0 or cur.trophyrange_id = :trophyrange_id) and not dim_brawler_starpower.disabled
         group by name
       `, { trophyrange_id: `${trophyrangeId || 0}` }).then((response) => response[0].map(
-        (entry: any) => (<MetaBrawlerEntry> {
+        (entry: any) => (<any> {
           name: entry.name,
           trophies: parseFloat(entry.trophies),
           winRate: parseFloat(entry.win_rate),
@@ -406,7 +405,7 @@ export default class TrackerService {
         where is_current and not dim_brawler_starpower.disabled
         group by name, mode
       `).then((response) => response[0].map(
-        (entry: any) => (<MetaModeEntry> {
+        (entry: any) => (<any> {
           name: entry.name,
           mode: entry.mode,
           picks: parseInt(entry.picks),
@@ -443,7 +442,7 @@ export default class TrackerService {
         group by id, mode, map, name, is_bigbrawler
       `)
         .then((response) => response[0].map(
-        (entry: any) => (<MetaMapEntry> {
+        (entry: any) => (<any> {
           id: entry.id,
           mode: entry.mode,
           map: entry.map,
