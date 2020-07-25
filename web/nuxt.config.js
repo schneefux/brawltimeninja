@@ -7,7 +7,7 @@ import payload from './store/payload.json'
 export default {
   mode: 'universal',
   telemetry: false,
-  modern: 'server',
+  //modern: 'server',
 
   head: {
     titleTemplate: '%s - Brawl Time Ninja',
