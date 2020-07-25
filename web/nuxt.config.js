@@ -109,6 +109,7 @@ export default {
     },
     disabled: process.env.SENTRY_DISABLED || process.env.NODE_ENV == 'development' || process.env.SENTRY_DSN == undefined,
     publishRelease: true,
+    sourceMapStyle: 'hidden-source-map',
     webpackConfig: {
       setCommits: {
         repo: 'schneefux/brawltimeninja',
@@ -125,10 +126,6 @@ export default {
 
   build: {
     extend(config, ctx) {
-    },
-    cssSourceMap: true,
-    terser: {
-      sourceMap: true,
     },
     extractCSS: true,
     postcss: {
