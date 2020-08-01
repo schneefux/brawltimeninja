@@ -38,14 +38,54 @@ function sloppyParseFloat(number: string) {
   return Math.floor(parseFloat(number) * 100) / 100
 }
 
+/**
+ * Throw if a tag is invalid.
+ * Make sure tag starts with a hash.
+ */
 function validateTag(tag: string) {
-  if (! /^[0289PYLQGRJCUV]{3,}$/.test(tag)) {
-    throw new Error('Invalid tag')
+  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+    throw new Error('Invalid tag ' + tag)
   }
   if (!tag.startsWith('#')) {
     return '#' + tag
   }
   return tag
+}
+
+// in clickhouse SQL:
+/*
+arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_tag)-i-1-1), arraySlice(splitByString('', player_club_tag), 2), range(if(player_club_tag <> '', toUInt64(length(player_club_tag)-1), 0))) as player_club_id,
+*/
+
+/**
+ * Encode tag string into 64bit unsigned integer string.
+ */
+function tagToId(tag: string) {
+  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+    throw new Error('Cannot encode tag ' + tag)
+  }
+  if (tag.startsWith('#')) {
+    tag = tag.substring(1)
+  }
+
+  const result = tag.split('').reduce((sum, c) => sum*BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)), BigInt(0))
+  return result.toString()
+}
+
+/**
+ * Decode 64bit unsigned integer string into tag string with hash.
+ */
+function idToTag(idString: string) {
+  let id = BigInt(idString)
+
+  let tag = ''
+  while (id != BigInt(0)) {
+    const i = Number(id % BigInt(14))
+    tag = '0289PYLQGRJCUV'[i] + tag
+    id /= BigInt(14)
+  }
+
+  return '#' + tag
 }
 
 // shared definitions for meta measures
@@ -207,117 +247,109 @@ export default class ClickerService {
     //
     await this.ch.querying(`
       CREATE TABLE IF NOT EXISTS brawltime.battle (
-        timestamp DateTime,
+          timestamp DateTime Codec(DoubleDelta, LZ4HC),
         -- calculated
-        trophy_season_end DateTime,
+          trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
         -- player
-        player_tag String,
-        player_name String,
-        player_name_color FixedString(10), -- 0x + 8 hex chars
-        player_icon_id UInt32,
-        player_trophies UInt32,
-        player_highest_trophies UInt32,
-        player_power_play_points UInt16,
-        player_highest_power_play_points UInt16,
-        player_exp_points UInt32,
-        player_is_qualified_from_championship_challenge UInt8,
-        player_3vs3_victories UInt32,
-        player_solo_victories UInt32,
-        player_duo_victories UInt32,
-        player_best_robo_rumble_time UInt16,
-        player_best_time_as_big_brawler UInt16,
+          player_id UInt64 Codec(Gorilla, LZ4HC),
+          player_tag String Codec(LZ4HC),
+          player_name String Codec(LZ4HC),
+          player_name_color FixedString(10) Codec(LZ4HC), -- 0x + 8 hex chars
+          player_icon_id UInt32 Codec(Gorilla, LZ4HC),
+          player_trophies UInt32 Codec(Gorilla, LZ4HC),
+          player_highest_trophies UInt32 Codec(Gorilla, LZ4HC),
+          player_power_play_points UInt16 Codec(Gorilla, LZ4HC),
+          player_highest_power_play_points UInt16 Codec(Gorilla, LZ4HC),
+          player_exp_points UInt32 Codec(Gorilla, LZ4HC),
+          player_is_qualified_from_championship_challenge UInt8 Codec(Gorilla, LZ4HC),
+          player_3vs3_victories UInt32 Codec(Gorilla, LZ4HC),
+          player_solo_victories UInt32 Codec(Gorilla, LZ4HC),
+          player_duo_victories UInt32 Codec(Gorilla, LZ4HC),
+          player_best_robo_rumble_time UInt16 Codec(Gorilla, LZ4HC),
+          player_best_time_as_big_brawler UInt16 Codec(Gorilla, LZ4HC),
         -- calculated
-        player_brawlers_length UInt8,
+          player_brawlers_length UInt8 Codec(Gorilla, LZ4HC),
         -- player club
-        player_club_tag String,
-        player_club_name String,
+          player_club_id UInt64 Codec(Gorilla, LZ4HC),
+          player_club_tag String Codec(LZ4HC),
+          player_club_name String Codec(LZ4HC),
         -- player brawler
         -- ommitted, not needed
         -- brawler
-        brawler_id UInt32,
-        brawler_name LowCardinality(String),
-        brawler_power UInt8,
-        brawler_trophies UInt16,
-        brawler_highest_trophies UInt16,
+          brawler_id UInt32 Codec(Gorilla, LZ4HC),
+          brawler_name LowCardinality(String) Codec(LZ4HC),
+          brawler_power UInt8 Codec(Gorilla, LZ4HC),
+          brawler_trophies UInt16 Codec(DoubleDelta, LZ4HC), -- trophy change is mostly constant
+          brawler_highest_trophies UInt16 Codec(DoubleDelta, LZ4HC),
         -- calculated
-        brawler_trophyrange UInt8,
+          brawler_trophyrange UInt8 Codec(Gorilla, LZ4HC),
         -- brawler starpower
-        brawler_starpower_found UInt8,
-        brawler_starpower_id UInt32,
-        brawler_starpower_name LowCardinality(String),
+          brawler_starpower_found UInt8 Codec(Gorilla, LZ4HC),
+          brawler_starpower_id UInt32 Codec(LZ4HC),
+          brawler_starpower_name LowCardinality(String) Codec(LZ4HC),
         -- brawler gadget
-        brawler_gadget_found UInt8,
-        brawler_gadget_id UInt32,
-        brawler_gadget_name LowCardinality(String),
+          brawler_gadget_found UInt8 Codec(Gorilla, LZ4HC),
+          brawler_gadget_id UInt32 Codec(LZ4HC),
+          brawler_gadget_name LowCardinality(String) Codec(LZ4HC),
         -- starpowers (nested)
-        brawler_starpowers Nested (
-          id UInt32,
-          name LowCardinality(String)
-        ),
-        brawler_starpowers_length UInt16,
+          \`brawler_starpowers.id\` Array(UInt32) Codec(LZ4HC),
+          \`brawler_starpowers.name\` Array(LowCardinality(String)) Codec(LZ4HC),
+          brawler_starpowers_length UInt16 Codec(Gorilla, LZ4HC),
         -- gadgets (nested)
-        brawler_gadgets Nested (
-          id UInt32,
-          name LowCardinality(String)
-        ),
-        brawler_gadgets_length UInt16,
+          \`brawler_gadgets.id\` Array(UInt32) Codec(LZ4HC),
+          \`brawler_gadgets.name\` Array(LowCardinality(String)) Codec(LZ4HC),
+          brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC),
         -- battle event
-        battle_event_id UInt32,
-        battle_event_mode LowCardinality(String),
-        battle_event_map LowCardinality(String),
+          battle_event_id UInt32 Codec(Gorilla, LZ4HC),
+          battle_event_mode LowCardinality(String) Codec(LZ4HC),
+          battle_event_map LowCardinality(String) Codec(LZ4HC),
         -- battle
         -- mode: ommitted because duplicate
-        battle_type LowCardinality(String),
-        battle_result LowCardinality(String),
-        battle_duration Nullable(UInt16),
-        battle_rank Nullable(UInt8),
-        battle_trophy_change Nullable(Int8),
-        battle_level_name LowCardinality(String),
-        battle_level_id Nullable(UInt16),
+          battle_type LowCardinality(String) Codec(LZ4HC),
+          battle_result LowCardinality(String) Codec(LZ4HC),
+          -- Nullable + Encoding is not supported
+          battle_duration Nullable(UInt16) Codec(LZ4HC),
+          battle_rank Nullable(UInt8) Codec(LZ4HC),
+          battle_trophy_change Nullable(Int8) Codec(LZ4HC),
+          battle_level_name LowCardinality(String) Codec(LZ4HC),
+          battle_level_id Nullable(UInt16) Codec(LZ4HC),
         -- calculated
-        battle_victory Nullable(Decimal32(8)),
+          battle_victory Nullable(Decimal32(8)) Codec(LZ4HC),
         -- battle starplayer
-        battle_starplayer_brawler_id UInt32,
-        battle_starplayer_brawler_name LowCardinality(String),
-        battle_starplayer_brawler_power UInt8,
-        battle_starplayer_brawler_trophies UInt16,
+          battle_starplayer_brawler_id UInt32 Codec(LZ4HC),
+          battle_starplayer_brawler_name LowCardinality(String) Codec(LZ4HC),
+          battle_starplayer_brawler_power UInt8 Codec(Gorilla, LZ4HC),
+          battle_starplayer_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
         -- calculated
-        battle_is_starplayer Nullable(UInt8),
+          battle_is_starplayer Nullable(UInt8) Codec(LZ4HC),
         -- battle big brawler
-        battle_bigbrawler_brawler_id UInt32,
-        battle_bigbrawler_brawler_name LowCardinality(String),
-        battle_bigbrawler_brawler_power UInt8,
-        battle_bigbrawler_brawler_trophies UInt16,
+          battle_bigbrawler_brawler_id UInt32 Codec(LZ4HC),
+          battle_bigbrawler_brawler_name LowCardinality(String) Codec(LZ4HC),
+          battle_bigbrawler_brawler_power UInt8 Codec(Gorilla, LZ4HC),
+          battle_bigbrawler_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
         -- calculated
-        battle_is_bigbrawler Nullable(UInt8),
+          battle_is_bigbrawler Nullable(UInt8) Codec(LZ4HC),
         -- battle allies and enemies (nested)
-        battle_allies Nested (
-          player_tag String,
-          player_name String,
-          brawler_id UInt32,
-          brawler_name LowCardinality(String),
-          brawler_power UInt8,
-          brawler_trophies UInt16
-        ),
-        battle_enemies Nested (
-          player_tag String,
-          player_name String,
-          brawler_id UInt32,
-          brawler_name LowCardinality(String),
-          brawler_power UInt8,
-          brawler_trophies UInt16
-        )
+          -- player names and tags ommitted, not needed
+          \`battle_allies.brawler_id\` Array(UInt32) Codec(LZ4HC),
+          \`battle_allies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
+          \`battle_allies.brawler_power\` Array(UInt8) Codec(LZ4HC),
+          \`battle_allies.brawler_trophies\` Array(UInt16) Codec(LZ4HC),
+          \`battle_enemies.brawler_id\` Array(UInt32) Codec(LZ4HC),
+          \`battle_enemies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
+          \`battle_enemies.brawler_power\` Array(UInt8) Codec(LZ4HC),
+          \`battle_enemies.brawler_trophies\` Array(UInt16) Codec(LZ4HC)
       )
       ENGINE = MergeTree()
       -- there are no unique checks!
-      -- memory consumption for the index is pk size * pk cardinality / index granularity
-      -- 12B + 8B + 4B, 1B players, 1/25 granualarity -> about 1MB
-      ORDER BY (player_tag, timestamp, cityHash64(player_tag))
+      -- memory consumption for the index is partition cardinality * pk size * pk cardinality / index granularity
+      PRIMARY KEY (player_id)
+      ORDER BY (player_id, timestamp)
       PARTITION BY trophy_season_end
-      SAMPLE BY cityHash64(player_tag)
+      SAMPLE BY player_id
       -- TTL timestamp + INTERVAL 1 MONTH DELETE
-      -- 25 battles per query
-      SETTINGS index_granularity=25
+      -- 25 battles per battle log query
+      SETTINGS index_granularity=25;
     `)
 
     //
@@ -337,7 +369,8 @@ export default class ClickerService {
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
-      ORDER BY (brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler)
+      PRIMARY KEY (brawler_trophyrange)
+      ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, battle_event_id, battle_is_bigbrawler)
     `)
 
     const mapMetaQuery = `
@@ -383,6 +416,7 @@ export default class ClickerService {
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
+      PRIMARY KEY (brawler_trophyrange)
       ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name)
     `)
 
@@ -396,6 +430,7 @@ export default class ClickerService {
         brawler_gadget_name,
         ${battleMeasuresQuery}
       FROM brawltime.battle
+      WHERE brawler_gadgets_length <= 1
       GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
       ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
     `
@@ -425,6 +460,7 @@ export default class ClickerService {
       )
       ENGINE = SummingMergeTree()
       PARTITION BY trophy_season_end
+      PRIMARY KEY (brawler_trophyrange)
       ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name)
     `)
 
@@ -438,6 +474,7 @@ export default class ClickerService {
         brawler_starpower_name,
         ${battleMeasuresQuery}
       FROM brawltime.battle
+      WHERE brawler_starpowers_length <= 1
       GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
       ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
     `
@@ -455,24 +492,25 @@ export default class ClickerService {
     //
     // player leaderboard
     //
+    // TODO: add a TTL
     await this.ch.querying(`
       CREATE TABLE IF NOT EXISTS brawltime.leaderboard (
-        player_tag String,
+        player_id UInt64,
         player_name String,
         ${playerMeasuresDefinition}
       )
       ENGINE = AggregatingMergeTree()
       PARTITION BY tuple()
-      ORDER BY (player_tag)
+      ORDER BY (player_id)
     `)
 
     const leaderboardQuery = `
       SELECT
-        player_tag,
+        player_id,
         player_name,
         ${playerMeasuresQuery}
       FROM brawltime.battle
-      GROUP BY player_tag, player_name
+      GROUP BY player_id, player_name
     `
     await this.ch.querying(`
       CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.leaderboard_mv
@@ -504,8 +542,9 @@ export default class ClickerService {
 
     // TODO maybe put this into redis to avoid slow blocking point queries
     const maxTimestamp = await this.query<any>(
-      `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE ${sliceSeason()} AND player_tag='${player.tag}'`,
+      `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE ${sliceSeason()} AND player_id=${tagToId(player.tag)}`,
       'player.get_last')
+    // if not found, CH defaults to 0000 date
     const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
     const insertStart = performance.now()
@@ -518,11 +557,13 @@ export default class ClickerService {
       if(battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
+        console.log(`ignoring friendly battle for ${player.tag} (${tagToId(player.tag)})`)
         return
       }
 
       if (battle.battleTime <= lastBattleTimestamp) {
         // duplicate
+        console.log(`ignoring old battle (${battle.battleTime.toISOString()} <= ${lastBattleTimestamp.toISOString()}) for ${player.tag} (${tagToId(player.tag)})`)
         return
       }
 
@@ -530,7 +571,8 @@ export default class ClickerService {
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler
 
       const myTeamIndex = teams.findIndex(t => t.find(p => p.tag == player.tag))
-      if(myTeamIndex == -1) {
+      if (myTeamIndex == -1) {
+        console.log(`ignoring bot battle for ${player.tag} (${tagToId(player.tag)})`)
         return // replaced by bot?
       }
 
@@ -558,6 +600,7 @@ export default class ClickerService {
         timestamp: battle.battleTime,
         trophy_season_end: trophySeasonEnd,
         /* player */
+        player_id: tagToId(player.tag),
         player_tag: player.tag,
         player_name: player.name,
         player_name_color: player.nameColor,
@@ -576,6 +619,7 @@ export default class ClickerService {
         // calculated
         player_brawlers_length: player.brawlers.length,
         /* player club */
+        player_club_id: player.club?.tag != undefined ? tagToId(player.club.tag) : undefined,
         player_club_tag: player.club?.tag,
         player_club_name: player.club?.name,
         /* player brawler */
@@ -634,15 +678,11 @@ export default class ClickerService {
         // calculated
         battle_is_bigbrawler: 'bigBrawler' in battle.battle ? battle.battle.bigBrawler?.tag == player.tag : null,
         /* battle allies (nested) */
-        'battle_allies.player_tag': allies.map(a => a.tag),
-        'battle_allies.player_name': allies.map(a => a.name),
         'battle_allies.brawler_id': allies.map(a => a.brawler.id),
         'battle_allies.brawler_name': allies.map(a => a.brawler.name),
         'battle_allies.brawler_power': allies.map(a => a.brawler.power),
         'battle_allies.brawler_trophies': allies.map(a => a.brawler.trophies),
         /* battle enemies (nested) */
-        'battle_enemies.player_tag': enemies.map(e => e.tag),
-        'battle_enemies.player_name': enemies.map(e => e.name),
         'battle_enemies.brawler_id': enemies.map(e => e.brawler.id),
         'battle_enemies.brawler_name': enemies.map(e => e.brawler.name),
         'battle_enemies.brawler_power': enemies.map(e => e.brawler.power),
@@ -652,6 +692,7 @@ export default class ClickerService {
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
       stream.write(record)
+      console.log(`inserted battle for ${player.tag} (${tagToId(player.tag)})`)
     })
 
     stream.end()
@@ -661,16 +702,16 @@ export default class ClickerService {
   public async getTopByExp(n: number): Promise<LeaderboardRow[]> {
     interface LeaderboardQuery extends PlayerMeasuresAggregation {
       playerName: string
-      playerTag: string
+      playerId: string
     }
 
     return await this.query<LeaderboardQuery>(`
       SELECT
         player_name AS playerName,
-        player_tag AS playerTag,
+        player_id AS playerId,
         ${playerMeasuresAggregation}
       FROM brawltime.leaderboard
-      GROUP BY playerName, playerTag
+      GROUP BY playerName, playerId
       HAVING timestamp > now() - interval 1 week
       ORDER BY expPoints DESC
       LIMIT ${n}
@@ -678,7 +719,7 @@ export default class ClickerService {
       .then(data => data.map(row => ({
         ...parsePlayerMeasures(row),
         playerName: row.playerName,
-        playerTag: row.playerTag.replace('#', ''),
+        playerTag: idToTag(row.playerId).replace('#', ''),
       }) as LeaderboardRow))
   }
 
@@ -691,7 +732,7 @@ export default class ClickerService {
         toStartOfHour(timestamp) AS timestamp,
         MAX(brawler_trophies) AS trophies
       FROM brawltime.battle
-      WHERE player_tag='${tag}'
+      WHERE player_id=${tagToId(tag)}
       GROUP BY name, timestamp
       ORDER BY timestamp
       `, 'player.brawler_history')
@@ -705,7 +746,7 @@ export default class ClickerService {
         toStartOfHour(timestamp) AS timestamp,
         MAX(player_trophies) AS trophies
       FROM brawltime.battle
-      WHERE player_tag='${tag}'
+      WHERE player_id=${tagToId(tag)}
       GROUP BY timestamp
       ORDER BY timestamp
       `, 'player.history')
@@ -726,7 +767,7 @@ export default class ClickerService {
         SELECT
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
-        WHERE player_tag='${tag}'
+        WHERE player_id=${tagToId(tag)}
         ORDER BY picks
       `, 'player.winrates.total')
       .then(data => data.map(row => ({
@@ -741,7 +782,7 @@ export default class ClickerService {
           battle_event_mode AS mode,
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
-        WHERE player_tag='${tag}'
+        WHERE player_id=${tagToId(tag)}
         GROUP BY mode
         ORDER BY picks
       `, 'player.winrates.mode')
@@ -760,7 +801,7 @@ export default class ClickerService {
           brawler_name AS brawlerName,
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
-        WHERE player_tag='${tag}'
+        WHERE player_id=${tagToId(tag)}
         GROUP BY brawlerId, brawlerName
         ORDER BY picks
       `, 'player.winrates.brawler')
