@@ -93,7 +93,7 @@
 }
 
 .stats-card-title {
-  @apply z-10 absolute left-0 ml-3 mt-2 font-semibold text-white text-2xl text-shadow whitespace-no-wrap capitalize;
+  @apply z-10 absolute left-0 ml-1 mt-1 font-semibold text-white text-2xl text-shadow whitespace-no-wrap capitalize bg-black bg-opacity-75 rounded-lg px-2;
 }
 
 .stats-card-image {
@@ -107,6 +107,19 @@
 
 .stats-card-content {
   @apply py-2 pr-3 flex flex-col justify-center items-end;
+}
+
+details.stats-card-expander {
+  @apply w-full relative z-10 text-center text-sm py-1 bg-primary-darker;
+}
+
+details.stats-card-expander > summary {
+  @apply cursor-pointer;
+  list-style: none;
+}
+
+details.stats-card-expander > summary::-webkit-details-marker {
+  @apply hidden;
 }
 
 /* transparent card with a title and an image which highlights a single stat */

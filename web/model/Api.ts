@@ -1,19 +1,23 @@
 import { BattleMeasures } from "./Clicker"
 import { PlayerHistoryEntry, BrawlerHistoryEntry } from "./History";
 
+export interface PlayerModeWinrates {
+  [id: string]: {
+    name: string
+    stats: BattleMeasures
+  }
+}
+
+export interface PlayerBrawlerWinrates {
+  [id: string]: {
+    name: string
+    stats: BattleMeasures
+  }
+}
+
 export interface PlayerWinrates {
-  mode: {
-    [id: string]: {
-      name: string
-      stats: BattleMeasures
-    }
-  }
-  brawler: {
-    [id: string]: {
-      name: string
-      stats: BattleMeasures
-    }
-  }
+  mode: PlayerModeWinrates
+  brawler: PlayerBrawlerWinrates
   total: {
     stats: BattleMeasures
   }

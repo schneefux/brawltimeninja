@@ -18,30 +18,36 @@ export default Vue.extend({
   },
   render(h, { props, scopedSlots }) {
     return <div class="card stats-card">
-      <span class="stats-card-title">
-        { props.title.toLowerCase() }
-      </span>
-      <media-img
-        path={'/brawlers/' + props.brawler + '/avatar'}
-        size="160"
-        clazz="stats-card-image"
-      ></media-img>
-      { props.icon !== '' ?
+      <div class="relative">
+        <span class="stats-card-title">
+          { props.title.toLowerCase() }
+        </span>
         <media-img
-          path={props.icon}
-          size="80"
-          clazz="stats-card-icon"
+          path={'/brawlers/' + props.brawler + '/avatar'}
+          size="160"
+          clazz="stats-card-image"
         ></media-img>
-        : ''
-      }
-      <div class="stats-card-content">
-        <div>
-          { scopedSlots.history({}) }
-        </div>
-        <div>
-          { scopedSlots.stats({}) }
+        { props.icon !== '' ?
+          <media-img
+            path={props.icon}
+            size="80"
+            clazz="stats-card-icon"
+          ></media-img>
+          : ''
+        }
+        <div class="stats-card-content">
+          <div>
+            { scopedSlots.stats({}) }
+          </div>
         </div>
       </div>
+      { 'expand' in scopedSlots ?
+        <details class="stats-card-expander">
+          <summary>show more &#x25BC;</summary>
+          { scopedSlots.expand({}) }
+        </details>
+        : ''
+      }
     </div>
   }
 })

@@ -485,7 +485,10 @@
           :key="brawler.id"
           class="card-wrapper w-full md:flex-1"
         >
-          <player-brawler-card :brawler="brawler" />
+          <player-brawler-card
+            :brawler="brawler"
+            :brawler-winrates="player.winrates.brawler"
+          />
         </div>
       </div>
     </div>
