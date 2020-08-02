@@ -1,4 +1,6 @@
 import ClickHouse from '@apla/clickhouse';
+import http from 'http'
+import https from 'https'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import StatsD from 'hot-shots'
@@ -8,7 +10,11 @@ import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRo
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
-const seasonSliceStart = getSeasonEnd(balanceChangesDate)
+const seasonSliceStart = getSeasonEnd(balanceChangesDate);
+
+// enable http keepalive for clickhouse client
+(<any> http.globalAgent).keepAlive = true;
+(<any> https.globalAgent).keepAlive = true;
 
 console.log(`querying data >= ${seasonSliceStart}`)
 
