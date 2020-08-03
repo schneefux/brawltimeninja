@@ -8,6 +8,7 @@ import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player } from '~/mode
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
+const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const trackerUrl = process.env.TRACKER_URL || '';
 const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
@@ -24,6 +25,20 @@ const pluckBattleMeasures = (row: BattleMeasures) => ({
   level: row.level,
   trophyChange: row.trophyChange,
 } as BattleMeasures)
+
+function getApiUrl(tag: string) {
+  const playerId = tag
+    .replace('#', '')
+    .split('')
+    .reduce((sum, c) => sum*BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)), BigInt(0))
+  const high = Number(playerId % BigInt(256))
+  if (high >= 100) {
+    // 100 - 111
+    return apiOfficialCnUrl
+  }
+  // 0 - 23
+  return apiOfficialUrl
+}
 
 export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
@@ -454,7 +469,7 @@ export default class BrawlstarsService {
   public async getPlayerStatistics(tag: string) {
     const player = await request<BrawlstarsPlayer>(
       'players/%23' + tag,
-      this.apiOfficial,
+      getApiUrl(tag),
       'fetch_player',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
@@ -466,7 +481,7 @@ export default class BrawlstarsService {
 
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
-      this.apiOfficial,
+      getApiUrl(tag),
       'fetch_player_battles',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
