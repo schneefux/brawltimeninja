@@ -249,6 +249,17 @@
       <player-lifetime :stats="player.stats"></player-lifetime>
     </div>
 
+    <div class="section-heading flex items-center">
+      <h2 class="text-2xl font-semibold">
+        Info!
+      </h2>
+      <p class="text-xs ml-3">
+        Play times are estimated and not real numbers.
+        Win Rates are based on your last {{ totalBattles }} battles. <br />
+        Check your profile daily to get the most accurate statistics.
+      </p>
+    </div>
+
     <div
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'gamemodes'),
