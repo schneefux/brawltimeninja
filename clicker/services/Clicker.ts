@@ -774,6 +774,7 @@ export default class ClickerService {
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
         WHERE player_id=${tagToId(tag)}
+        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
         ORDER BY picks
       `, 'player.winrates.total')
       .then(data => data.map(row => ({
@@ -789,6 +790,7 @@ export default class ClickerService {
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
         WHERE player_id=${tagToId(tag)}
+        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
         GROUP BY mode
         ORDER BY picks
       `, 'player.winrates.mode')
@@ -808,6 +810,7 @@ export default class ClickerService {
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
         WHERE player_id=${tagToId(tag)}
+        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
         GROUP BY brawlerId, brawlerName
         ORDER BY picks
       `, 'player.winrates.brawler')
