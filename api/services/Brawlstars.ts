@@ -153,6 +153,7 @@ export default class BrawlstarsService {
     );
 
     const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
+    const sumPicksWeighted = meta.reduce((sum, entry) => sum + entry.picksWeighted, 0);
     return meta.map((entry) => ({
       id: brawlerId({ name: entry.brawlerName }),
       name: entry.brawlerName,
@@ -161,6 +162,7 @@ export default class BrawlstarsService {
         winRate: entry.winRate,
         starRate: entry.starRate,
         pickRate: entry.picks / sumPicks,
+        useRate: entry.picksWeighted / sumPicksWeighted,
       },
     }) as BrawlerMetaEntry)
   }
@@ -239,6 +241,10 @@ export default class BrawlstarsService {
       ...modeTotalPicks,
       [entry.mode]: (modeTotalPicks[entry.mode] || 0) + entry.picks,
     }), <{ [id: string]: number }>{});
+    const modeTotalPicksWeighted = meta.reduce((modeTotalPicksWeighted, entry: ModeMetaRow) => ({
+      ...modeTotalPicksWeighted,
+      [entry.mode]: (modeTotalPicksWeighted[entry.mode] || 0) + entry.picksWeighted,
+    }), <{ [id: string]: number }>{});
 
     const nonNullStats = (entry: ModeMetaRow) => {
       const stats = <{ [stat: string]: number }>{};
@@ -252,6 +258,7 @@ export default class BrawlstarsService {
         stats.duration = entry.duration;
       }
       stats.pickRate = entry.picks / modeTotalPicks[entry.mode];
+      stats.useRate = entry.picksWeighted / modeTotalPicksWeighted[entry.mode];
       if (!!entry.starRate && entry.starRate > 0) {
         stats.starRate = entry.starRate;
       }
@@ -298,10 +305,15 @@ export default class BrawlstarsService {
       ...mapTotalPicks,
       [entry.id]: (mapTotalPicks[entry.id] || 0) + entry.picks,
     }), <{ [id: string]: number }>{});
+    const mapTotalPicksWeighted = meta.reduce((mapTotalPicksWeighted, entry: MapMetaRow) => ({
+      ...mapTotalPicksWeighted,
+      [entry.id]: (mapTotalPicksWeighted[entry.id] || 0) + entry.picksWeighted,
+    }), <{ [id: string]: number }>{});
 
     const nonNullStats = (entry: MapMetaRow) => {
       const stats = <{ [stat: string]: number }>{};
       stats.pickRate = entry.picks / mapTotalPicks[entry.id];
+      stats.useRate = entry.picksWeighted / mapTotalPicksWeighted[entry.id];
       if (!!entry.rank && entry.rank > 0) {
         stats.rank = entry.rank;
       }

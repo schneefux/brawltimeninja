@@ -108,13 +108,22 @@ export var metaStatMaps = {
         rank1Rate: '#1 Rate',
         level: 'Avg. Level',
         starRate: 'Star Player',
+        picks: 'Picks',
         pickRate: 'Pick Rate',
         pickRate_boss: 'Boss Pick Rate',
+        useRate: 'Use Rate',
         duration: 'Duration',
         duration_boss: 'Boss Duration',
         rank: 'Avg. Rank',
         rank1: '#1 recorded',
-        wins: 'Wins recorded'
+        wins: 'Wins recorded',
+        highestTrophies: 'Highest Trophies',
+        powerPlayPoints: 'Power Play Points',
+        highestPowerPlayPoints: 'Highest Power Play Points',
+        expLevel: 'EXP Level',
+        victories: '3v3 Wins',
+        soloVictories: 'Solo Showdown Wins',
+        duoVictories: 'Duo Showdown Wins'
     },
     labelsShort: {
         trophies: 'Trophies',
@@ -124,7 +133,9 @@ export var metaStatMaps = {
         rank1Rate: 'SD Won',
         level: 'Level',
         starRate: 'Stars',
+        picks: 'Picks',
         pickRate: 'Picked',
+        useRate: 'Used',
         duration: 'Duration',
         rank: 'Rank',
         rank1: 'Rank 1',
@@ -132,6 +143,7 @@ export var metaStatMaps = {
     },
     descriptions: {
         pickRate: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+        useRate: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
         rank: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
         rank1Rate: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
         wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
@@ -148,6 +160,8 @@ export var metaStatMaps = {
         rank1Rate: '📈',
         level: '🏅',
         starRate: '⭐',
+        picks: '👇',
+        useRate: '🎯',
         pickRate: '👇',
         pickRate_boss: '👇',
         duration: '⏰',
@@ -163,6 +177,8 @@ export var metaStatMaps = {
         winRate: function (n) { return Math.round(100 * n) + "%"; },
         rank1Rate: function (n) { return Math.round(100 * n) + "%"; },
         starRate: function (n) { return Math.round(100 * n) + "%"; },
+        picks: function (n) { return Math.round(100 * n) + "%"; },
+        useRate: function (n) { return Math.round(100 * n) + "%"; },
         pickRate: function (n) { return Math.round(100 * n) + "%"; },
         pickRate_boss: function (n) { return Math.round(100 * n) + "%"; },
         duration: function (n) { return Math.floor(n / 60) + ":" + Math.floor(n % 60).toString().padStart(2, '0'); },
@@ -179,6 +195,7 @@ export var metaStatMaps = {
         winRate: -1,
         rank1Rate: -1,
         starRate: -1,
+        useRate: -1,
         pickRate: -1,
         pickRate_boss: -1,
         duration: +1,
@@ -188,7 +205,7 @@ export var metaStatMaps = {
         rank1: -1,
         wins: -1
     },
-    propPriority: ['winRate', 'wins', 'rank1', 'duration', 'pickRate']
+    propPriority: ['winRate', 'wins', 'rank1', 'duration', 'useRate', 'pickRate']
 };
 /**
  * Get brawlers by event: {
@@ -240,7 +257,7 @@ export function getMostPopular(meta) {
                 brawler: brawlerId,
                 sampleSize: brawler.sampleSize,
                 stats: brawler.stats,
-                sortProp: 'pickRate'
+                sortProp: 'useRate'
             });
         })
             .sort(function (brawler1, brawler2) { return brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp]; }), _b)));

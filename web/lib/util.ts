@@ -108,6 +108,7 @@ export const metaStatMaps = {
     picks: 'Picks',
     pickRate: 'Pick Rate',
     pickRate_boss: 'Boss Pick Rate',
+    useRate: 'Use Rate',
     duration: 'Duration',
     duration_boss: 'Boss Duration',
     rank: 'Avg. Rank',
@@ -131,6 +132,7 @@ export const metaStatMaps = {
     starRate: 'Stars',
     picks: 'Picks',
     pickRate: 'Picked',
+    useRate: 'Used',
     duration: 'Duration',
     rank: 'Rank',
     rank1: 'Rank 1',
@@ -138,6 +140,7 @@ export const metaStatMaps = {
   },
   descriptions: {
     pickRate: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+    useRate: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     rank: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     rank1Rate: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
     wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
@@ -155,6 +158,7 @@ export const metaStatMaps = {
     level: '🏅',
     starRate: '⭐',
     picks: '👇',
+    useRate: '🎯',
     pickRate: '👇',
     pickRate_boss: '👇',
     duration: '⏰',
@@ -171,6 +175,7 @@ export const metaStatMaps = {
     rank1Rate: (n: number) => `${Math.round(100 * n)}%`,
     starRate: (n: number) => `${Math.round(100 * n)}%`,
     picks: (n: number) => `${Math.round(100 * n)}%`,
+    useRate: (n: number) => `${Math.round(100 * n)}%`,
     pickRate: (n: number) => `${Math.round(100 * n)}%`,
     pickRate_boss: (n: number) => `${Math.round(100 * n)}%`,
     duration: (n: number) => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
@@ -187,6 +192,7 @@ export const metaStatMaps = {
     winRate: -1,
     rank1Rate: -1,
     starRate: -1,
+    useRate: -1,
     pickRate: -1,
     pickRate_boss: -1,
     duration: +1, // asc
@@ -196,7 +202,7 @@ export const metaStatMaps = {
     rank1: -1,
     wins: -1,
   },
-  propPriority: ['winRate', 'wins', 'rank1', 'duration', 'pickRate'],
+  propPriority: ['winRate', 'wins', 'rank1', 'duration', 'useRate', 'pickRate'],
 }
 
 /**
@@ -248,7 +254,7 @@ export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: M
           brawler: brawlerId,
           sampleSize: brawler.sampleSize,
           stats: brawler.stats,
-          sortProp: 'pickRate',
+          sortProp: 'useRate',
         }))
         .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
     }), {})
