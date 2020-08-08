@@ -85,6 +85,17 @@ export default {
     '@nuxt/components',
   ],
 
+  loaders: {
+    // fixes hot reloading of tsx components
+    // https://github.com/vuejs/vue-loader/issues/687
+    ts: {
+      transpileOnly: true,
+    },
+    tsx: {
+      transpileOnly: true,
+    },
+  },
+
   components: true,
 
   router: {
