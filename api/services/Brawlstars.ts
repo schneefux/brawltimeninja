@@ -638,6 +638,7 @@ export default class BrawlstarsService {
       hoursSpent,
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club!.name,
+      qualifiedFromChampionshipChallenge: player.isQualifiedFromChampionshipChallenge,
       history: [], // filled by /history
       winrates: {}, // filled by /winrates
       stats: {
