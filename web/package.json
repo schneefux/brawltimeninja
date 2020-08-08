@@ -26,7 +26,8 @@
     "vue-script2": "^2.1.0",
     "vue-tweet-embed": "^2.4.0",
     "vuex-persist": "^2.2.0",
-    "youtube-player": "^5.5.2"
+    "youtube-player": "^5.5.2",
+    "ztable": "^1.0.7"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^2.3.0",

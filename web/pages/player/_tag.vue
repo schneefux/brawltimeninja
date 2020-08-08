@@ -249,13 +249,31 @@
       <player-lifetime :stats="player.stats"></player-lifetime>
     </div>
 
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'pro'),
+        once: true,
+      }"
+      class="section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Are you a Pro?
+      </h2>
+    </div>
+
+    <div class="section">
+      <player-percentiles :player="player"></player-percentiles>
+    </div>
+
     <div class="section-heading flex items-center">
       <h2 class="text-2xl font-semibold">
         Info!
       </h2>
       <p class="text-xs ml-3">
-        Play times are estimated and not real numbers.
-        Win Rates are based on your last {{ totalBattles }} battles. <br />
+        Play times are estimated and statistics are compared against other visitors.
+        They are not official numbers.
+        Win Rates are based on your last {{ totalBattles }} battles.
+        <br />
         Check your profile daily to get the most accurate statistics.
       </p>
     </div>
@@ -639,6 +657,7 @@ export default {
       // 530 - 90%ile
       // 550 - 95%ile
       // 620 - 99%ile
+      // TODO 2020-08-08 end of season data: mu = 457, sigma = 182
       if (medTrophies <= 290) {
         return '?'
       }
