@@ -399,7 +399,7 @@
         </div>
 
         <div class="bigstat-container">
-          <span class="bigstat-left bigstat-number bigstat-number--light whitespace-no-wrap">
+          <span class="bigstat-left bigstat-number bigstat-number--light leading-none">
             {{ formatMode(bestMode) }}
           </span>
           <span class="bigstat-right bigstat-label text-xl">
@@ -915,6 +915,7 @@ export default {
 .bigstat-number--light {
   @apply text-3xl text-primary-light;
 }
+
 .min-width-min-content {
  min-width: min-content;
 }
