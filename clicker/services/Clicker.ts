@@ -697,8 +697,13 @@ export default class ClickerService {
 
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
-      stream.write(record)
-      console.log(`inserted battle for ${player.tag} (${tagToId(player.tag)})`)
+      try {
+        stream.write(record)
+        console.log(`inserted battle for ${player.tag} (${tagToId(player.tag)})`)
+      } catch (e) {
+        stats.increment('player.insert.error')
+        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${e}`)
+      }
     })
 
     stream.end()
