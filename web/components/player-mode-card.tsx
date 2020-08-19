@@ -60,7 +60,7 @@ export default Vue.extend({
     const mode = props.mode
     return <div
       style={{
-        'background-image': `linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.25)), url('${process.env.mediaUrl}/modes/${mode}/background.jpg?size=1024')`,
+        'background-image': `linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('${process.env.mediaUrl}/modes/${mode}/background.jpg?size=1024')`,
       }}
       class="card bg-center bg-cover h-full relative"
     >
