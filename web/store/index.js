@@ -87,6 +87,9 @@ export const mutations = {
   setPlayerWinrates(state, playerWinrates) {
     state.player = mergeDeep(state.player, playerWinrates)
   },
+  setPlayerData(state, { player, history, winrates }) {
+    state.player = mergeDeep(mergeDeep(player, history), winrates)
+  },
   addLastPlayer(state, player) {
     const clone = obj => JSON.parse(JSON.stringify(obj))
 
@@ -175,11 +178,11 @@ export const actions = {
     const playerWinrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
     commit('setPlayerWinrates', playerWinrates)
   },
-  async refreshPlayer({ state, commit, dispatch }) {
+  async refreshPlayer({ state, commit }) {
     const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
-    commit('setPlayer', player)
-    await dispatch('loadPlayerHistory')
-    await dispatch('loadPlayerWinrates')
+    const history = await this.$axios.$get(`/api/player/${state.player.tag}/history`)
+    const winrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
+    commit('setPlayerData', { player, winrates, history })
   },
   async loadLeaderboard({ state, commit }) {
     if (state.leaderboardLoaded) {
