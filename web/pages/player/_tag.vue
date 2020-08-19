@@ -506,8 +506,8 @@
         :key="brawlerName"
         class="md:text-center text-xl my-1 w-full md:w-auto md:mx-auto"
       >
-        <dt class="md:block md:text-2xl font-semibold">{{ stat.label }}</dt>
-        <dl class="md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</dl>
+        <dt class="inline md:block md:text-2xl font-semibold">{{ stat.label }}</dt>
+        <dl class="inline md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</dl>
       </div>
     </dl>
 
