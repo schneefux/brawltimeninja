@@ -1,12 +1,14 @@
 <template>
   <div class="page container">
-    <adsense
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="9429125351"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="9429125351"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -36,7 +38,6 @@
           <dl>
             <dd ref="counter-hours" class="text-5xl text-secondary font-bold">
               ...
-              <!-- set by ref -->
             </dd>
             <dt class="text-3xl text-white">
               hours spent
@@ -63,7 +64,6 @@
           >
             <dd ref="counter-funstats" class="text-3xl text-secondary font-semibold">
               ...
-              <!-- set by ref -->
             </dd>
             <dt class="text-2xl text-grey-lighter">
               {{ stat.label }}
@@ -124,7 +124,7 @@
                   fill="none"
                   stroke="#f2d024"
                   stroke-width="4"
-                /> <!-- stroke: secondary-dark -->
+                />
               </svg>
             </div>
             <div v-else class="h-12 flex flex-col justify-center">
@@ -222,6 +222,7 @@
       </div>
     </div>
 
+<!--
     <adsense
       v-if="!isApp"
       data-ad-client="ca-pub-6856963757796636"
@@ -230,6 +231,7 @@
       data-ad-format="auto"
       data-full-width-responsive
     />
+-->
 
     <div
       v-observe-visibility="{
@@ -360,15 +362,17 @@
       </div>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      id="ezoic-pub-ad-placeholder-101"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="1752268168"
-      ins-class="ad-section"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        id="ezoic-pub-ad-placeholder-101"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1752268168"
+        ins-class="ad-section"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-observe-visibility="{
@@ -472,15 +476,17 @@
       </div>
     </div>
 
-    <adsense
-      v-if="!isApp && player.battles.length > 0"
-      id="ezoic-pub-ad-placeholder-102"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="4129048243"
-      ins-class="ad-section"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp && player.battles.length > 0"
+        id="ezoic-pub-ad-placeholder-102"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="4129048243"
+        ins-class="ad-section"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-observe-visibility="{

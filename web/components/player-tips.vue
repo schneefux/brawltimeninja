@@ -1,11 +1,13 @@
 <template>
-  <button
-    v-if="eventRecommendations.length > 0 && notificationsAllowed"
-    class="button"
-    @click="notifyTips"
-  >
-    Send Notification
-  </button>
+  <client-only>
+    <button
+      v-if="eventRecommendations.length > 0 && notificationsAllowed"
+      class="button"
+      @click="notifyTips"
+    >
+      Send Notification
+    </button>
+  </client-only>
 </template>
 
 <script lang="ts">
