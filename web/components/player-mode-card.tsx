@@ -2,6 +2,7 @@ import Vue, { PropType } from 'vue'
 import { formatMode, metaStatMaps, getBestBrawlers, capitalize } from '~/lib/util'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
 import { Brawler } from '~/model/Api'
+import { PlayerModeStats } from '~/model/Web'
 
 
 export default Vue.extend({
@@ -9,7 +10,7 @@ export default Vue.extend({
   name: 'Event',
   props: {
     stats: {
-      type: Object as PropType<{ [id: string]: { value: number, label: string } }>,
+      type: Object as PropType<PlayerModeStats>,
       required: true
     },
     mode: {
@@ -67,19 +68,13 @@ export default Vue.extend({
         <div class="card-header text-white">
           { formatMode(mode) }
         </div>
-        <table>
-        { Object.entries(props.stats).map(([name, stat]) =>
-          <tr
-            key={name}
-            class="card-props"
-          >
-            <td class="card-prop-value">{ metaStatMaps.formatters[name](stat) }</td>
-            <td class="ml-1 card-prop-label">{ metaStatMaps.labels[name] }</td>
-          </tr>
-        ) }
-        </table>
+        <dl class="flex card-props">
+          <dd class="card-prop-value">{ metaStatMaps.formatters.winRate(props.stats.winRate) }</dd>
+          <dt class="ml-1 card-prop-label">{ metaStatMaps.labels.winRate }</dt>
+        </dl>
+        <p class="text-xs">{ props.stats.wins } Wins / { props.stats.losses } Losses</p>
         { recommendedBrawlers.length > 0 ?
-        <div class="flex justify-between md:flex-row-reverse md:justify-end mt-4 h-24">
+        <div class="flex justify-between md:flex-row-reverse md:justify-end mt-3 h-24">
           <div class="md:ml-2 w-full">
             <div>
               <h6 class="font-semibold">{ meta?.map }</h6>

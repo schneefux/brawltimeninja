@@ -293,15 +293,15 @@
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
         <div
-          v-for="(stats, modeId, index) in playerModeStats"
-          :key="modeId"
+          v-for="(stats, index) in playerModeStats"
+          :key="stats.mode"
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
           class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-48 md:h-auto card-wrapper"
         >
           <player-mode-card
-            :mode="modeId"
+            :mode="stats.mode"
             :stats="stats"
             :active-map-meta="activeMapMeta"
             :player-brawlers="Object.values(player.brawlers)"
@@ -694,21 +694,36 @@ export default {
       }), {})
     },
     playerModeStats() {
-      const statsByMode = {}
+      const statsByMode = []
       if (this.player.winrates != undefined && this.player.winrates.mode != undefined) {
         for (let mode in this.player.winrates.mode) {
           const stats = this.player.winrates.mode[mode].stats
-          statsByMode[mode] = {
+          const wins = Math.floor(stats.winRate * stats.picks)
+          const losses = Math.floor((1 - stats.winRate) * stats.picks)
+          statsByMode.push({
+            mode,
             winRate: stats.winRate,
-          }
+            picks: stats.picks,
+            wins,
+            losses,
+          })
         }
       } else {
         for (let mode in this.battlesByMode) {
-          statsByMode[mode] = {
-            winRate: this.battlesByMode[mode].filter(b => b.victory).length / this.battlesByMode[mode].length,
-          }
+          const picks = this.battlesByMode[mode].length
+          const wins = this.battlesByMode[mode].filter(b => b.victory).length
+          const losses = picks - wins
+          const winRate = wins / picks
+          statsByMode.push({
+            mode,
+            winRate,
+            picks,
+            wins,
+            losses,
+          })
         }
       }
+      statsByMode.sort((m1, m2) => m2.picks - m1.picks)
       return statsByMode
     },
     trophyRate() {
