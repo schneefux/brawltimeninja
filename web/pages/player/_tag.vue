@@ -309,8 +309,8 @@
 
       <div class="mt-1 w-full flex justify-end">
         <button
-          class="mr-3 button md:button-md hidden md:block"
-          :class="{ 'md:block': !showAllModes && Object.keys(player.modes).length > 3 }"
+          class="mr-3 button md:button-md hidden"
+          :class="{ 'md:block': !showAllModes && playerModeStats.length > 3 }"
           @click="showAllModes = true; $ga.event('gamemodes', 'show_all')"
         >
           Show More
