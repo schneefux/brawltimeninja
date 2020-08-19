@@ -113,7 +113,7 @@ export default Vue.extend({
 
       const sw = await navigator.serviceWorker.ready
 
-      const eventDescription = (r: Recommendation) => r.mode + ' - ' + r.map
+      const eventDescription = (r: Recommendation) => formatMode(r.mode) + ' - ' + r.map
       const N = 5
       const topNByEvent = (this.eventRecommendations as Recommendation[])
         .reduce((topNByEvent, recommendation) => ({
