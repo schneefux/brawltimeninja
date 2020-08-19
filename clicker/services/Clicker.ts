@@ -182,6 +182,7 @@ const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
 //
 const playerMeasuresDefinition = `
   timestamp_state AggregateFunction(argMax, DateTime, DateTime),
+  player_name_state AggregateFunction(argMax, String, DateTime),
   player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
   player_trophies_state AggregateFunction(argMax, UInt32, DateTime),
   player_power_play_points_state AggregateFunction(argMax, UInt16, DateTime),
@@ -192,6 +193,7 @@ const playerMeasuresDefinition = `
 
 const playerMeasuresQuery = `
   argMaxState(timestamp, timestamp) as timestamp_state,
+  argMaxState(player_name, timestamp) as player_name_state,
   argMaxState(player_exp_points, timestamp) as player_exp_points_state,
   argMaxState(player_trophies, timestamp) as player_trophies_state,
   argMaxState(player_power_play_points, timestamp) as player_power_play_points_state,
@@ -202,6 +204,7 @@ const playerMeasuresQuery = `
 
 const playerMeasuresAggregation = `
   argMaxMerge(timestamp_state) as timestamp,
+  argMaxMerge(player_name_state) as name,
   argMaxMerge(player_exp_points_state) as expPoints,
   argMaxMerge(player_trophies_state) as trophies,
   argMaxMerge(player_power_play_points_state) as powerPlayPoints,
@@ -211,6 +214,7 @@ const playerMeasuresAggregation = `
 `
 
 interface PlayerMeasuresAggregation {
+  name: string
   timestamp: string
   expPoints: string
   trophies: string
@@ -221,6 +225,7 @@ interface PlayerMeasuresAggregation {
 }
 
 const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
+  name: row.name,
   timestamp: row.timestamp,
   expPoints: parseInt(row.expPoints),
   trophies: parseInt(row.trophies),
@@ -502,7 +507,6 @@ export default class ClickerService {
     await this.ch.querying(`
       CREATE TABLE IF NOT EXISTS brawltime.leaderboard (
         player_id UInt64,
-        player_name String,
         ${playerMeasuresDefinition}
       )
       ENGINE = AggregatingMergeTree()
@@ -513,10 +517,9 @@ export default class ClickerService {
     const leaderboardQuery = `
       SELECT
         player_id,
-        player_name,
         ${playerMeasuresQuery}
       FROM brawltime.battle
-      GROUP BY player_id, player_name
+      GROUP BY player_id
     `
     await this.ch.querying(`
       CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.leaderboard_mv
@@ -712,24 +715,22 @@ export default class ClickerService {
 
   public async getTopByExp(n: number): Promise<LeaderboardRow[]> {
     interface LeaderboardQuery extends PlayerMeasuresAggregation {
-      playerName: string
       playerId: string
     }
 
     return await this.query<LeaderboardQuery>(`
       SELECT
-        player_name AS playerName,
         player_id AS playerId,
         ${playerMeasuresAggregation}
       FROM brawltime.leaderboard
-      GROUP BY playerName, playerId
+      GROUP BY playerId
       HAVING timestamp > now() - interval 1 week
       ORDER BY expPoints DESC
       LIMIT ${n}
       `, 'leaderboard')
       .then(data => data.map(row => ({
         ...parsePlayerMeasures(row),
-        playerName: row.playerName,
+        playerName: row.name,
         playerTag: idToTag(row.playerId).replace('#', ''),
       }) as LeaderboardRow))
   }

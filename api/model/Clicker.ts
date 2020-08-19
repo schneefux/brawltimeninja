@@ -12,6 +12,7 @@ export interface BattleMeasures {
 }
 
 export interface PlayerMeasures {
+  name: string;
   timestamp: string;
   expPoints: number;
   trophies: number;
