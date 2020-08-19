@@ -104,15 +104,17 @@
       </p>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      class="container flex justify-center"
-      ins-class="w-full"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="6067985913"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        class="container flex justify-center"
+        ins-class="w-full"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6067985913"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-show="Object.keys(topBrawlers).length > 0"
@@ -187,16 +189,18 @@
       </div>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      id="ezoic-pub-ad-placeholder-104"
-      class="container flex justify-center"
-      ins-class="w-full"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="6709232983"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        id="ezoic-pub-ad-placeholder-104"
+        class="container flex justify-center"
+        ins-class="w-full"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6709232983"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-show="currentEvents.length > 0"
@@ -276,15 +280,17 @@
       </div>
     </div>
 
-    <adsense
-      id="ezoic-pub-ad-placeholder-103"
-      class="home-section container flex justify-center"
-      ins-class="w-full"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="6736366415"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        id="ezoic-pub-ad-placeholder-103"
+        class="home-section container flex justify-center"
+        ins-class="w-full"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6736366415"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-show="bsuArticles.length > 0 && !isApp"
