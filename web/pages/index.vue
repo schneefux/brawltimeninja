@@ -452,7 +452,7 @@ export default Vue.extend({
   async asyncData({ $axios }) {
     const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })) as { current: ActiveEvent[], upcoming: ActiveEvent[] }
     const mapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
-    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ({})) as BrawlerMetaEntry[]
+    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ([])) as BrawlerMetaEntry[]
     const bsuArticles = await $axios.$get('/api/partners/bsu').catch(() => []) as { title: string, link: string, contentSnippet: string }[]
     const bestByEvent = getBest(mapMeta)
     const topBrawlers = getTopBrawlers(brawlerMeta)
