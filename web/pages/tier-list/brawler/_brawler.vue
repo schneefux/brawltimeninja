@@ -7,21 +7,7 @@
         once: true,
       }"
     >
-      <h1 class="page-h1">{{ brawlerName }} Statistics</h1>
-      <p>
-        This Star Power and Gadget Tier List is generated automatically.
-      </p>
-      <p>
-        Showing Star Power and Gadget Tier list and best modes for
-        <span class="inline-block text-primary-lighter">
-          {{ brawlerName }}
-        </span>.
-      </p>
-      <p v-if="totalSampleSize < 10000">
-        ⚠ Not enough data for this Brawler yet!
-        Statistics will be inaccurate.
-        Play a few battles and come back later. ⚠
-      </p>
+      <h1 class="page-h1">{{ brawlerName }}</h1>
     </div>
 
     <div
@@ -32,7 +18,7 @@
       }"
     >
       <h2 class="page-h2">
-        Star Power Tier List
+        {{ brawlerName }} Star Powers
       </h2>
     </div>
 
@@ -42,50 +28,42 @@
     ></media-img>
 
     <div class="section flex flex-wrap justify-center">
-      <template v-for="prop in ['winRate']">
-        <template v-for="entry in starpowers">
-          <div
-            :key="prop + ' ' + entry.id"
-            class="card-wrapper px-2"
-          >
-            <div class="card prop-card prop-card-md w-48">
-              <span class="prop-card-title">
-                {{ entry.starpowerName || 'No Starpower' }}
-              </span>
-              <span
-                v-if="entry.sampleSize < 1000"
-                class="text-xs absolute bottom-0 right-0 text-grey"
-              >
-                Not enough data yet!
-              </span>
-              <media-img
-                v-if="entry.starpowerName !== ''"
-                :path="'/starpowers/' + entry.id"
-                size="96"
-                clazz="prop-card-image"
-              ></media-img>
-              <media-img
-                v-else
-                :path="'/brawlers/' + brawlerId + '/avatar'"
-                size="96"
-                clazz="prop-card-image"
-              ></media-img>
-              <div class="prop-card-content prop-card-content-md">
-                <div>
-                  <span class="card-prop-icon">
-                    {{ metaStatMaps.icons[prop] }}
-                  </span>
-                  <span class="card-prop-value">
-                    {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
-                  </span>
-                </div>
-                <span class="text-sm">
-                  {{ metaStatMaps.labels[prop] }}
+      <template v-for="entry in starpowers">
+        <div
+          :key="entry.id"
+          class="card-wrapper"
+        >
+          <div class="card prop-card prop-card-md w-48 bg-gray-800">
+            <span class="prop-card-title capitalize">
+              {{ entry.starpowerName.length > 0 ? entry.starpowerName.toLowerCase() : 'No Starpower' }}
+            </span>
+            <media-img
+              v-if="entry.starpowerName.length > 0"
+              :path="'/starpowers/' + entry.id"
+              size="96"
+              clazz="prop-card-image"
+            ></media-img>
+            <media-img
+              v-else
+              :path="'/brawlers/' + brawlerId + '/avatar'"
+              size="96"
+              clazz="prop-card-image"
+            ></media-img>
+            <dl class="prop-card-content prop-card-content-md">
+              <div>
+                <span class="card-prop-icon">
+                  {{ metaStatMaps.icons.winRate }}
                 </span>
+                <dd class="card-prop-value inline">
+                  {{ metaStatMaps.formatters.winRate(entry.stats.winRate) }}
+                </dd>
               </div>
-            </div>
+              <dt class="text-sm">
+                {{ metaStatMaps.labels.winRate }}
+              </dt>
+            </dl>
           </div>
-        </template>
+        </div>
       </template>
     </div>
 
@@ -102,50 +80,42 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <template v-for="prop in ['winRate']">
-        <template v-for="entry in gadgets">
-          <div
-            :key="prop + ' ' + entry.id"
-            class="card-wrapper px-2"
-          >
-            <div class="card prop-card prop-card-md w-48">
-              <span class="prop-card-title">
-                {{ entry.gadgetName || 'No Gadget' }}
-              </span>
-              <span
-                v-if="entry.sampleSize < 1000"
-                class="text-xs absolute bottom-0 right-0 text-grey"
-              >
-                Not enough data yet!
-              </span>
-              <media-img
-                v-if="entry.gadgetName !== ''"
-                :path="'/gadgets/' + entry.id"
-                size="96"
-                clazz="prop-card-image"
-              ></media-img>
-              <media-img
-                v-else
-                :path="'/brawlers/' + brawlerId + '/avatar'"
-                size="96"
-                clazz="prop-card-image"
-              ></media-img>
-              <div class="prop-card-content prop-card-content-md">
-                <div>
-                  <span class="card-prop-icon">
-                    {{ metaStatMaps.icons[prop] }}
-                  </span>
-                  <span class="card-prop-value">
-                    {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
-                  </span>
-                </div>
-                <span class="text-sm">
-                  {{ metaStatMaps.labels[prop] }}
+      <template v-for="entry in gadgets">
+        <div
+          :key="entry.id"
+          class="card-wrapper"
+        >
+          <div class="card prop-card prop-card-md w-48 bg-gray-800">
+            <span class="prop-card-title capitalize">
+              {{ entry.gadgetName.length > 0 ? entry.gadgetName.toLowerCase() : 'No Gadget' }}
+            </span>
+            <media-img
+              v-if="entry.gadgetName.length > 0"
+              :path="'/gadgets/' + entry.id"
+              size="96"
+              clazz="prop-card-image"
+            ></media-img>
+            <media-img
+              v-else
+              :path="'/brawlers/' + brawlerId + '/avatar'"
+              size="96"
+              clazz="prop-card-image"
+            ></media-img>
+            <dl class="prop-card-content prop-card-content-md">
+              <div>
+                <span class="card-prop-icon">
+                  {{ metaStatMaps.icons.winRate }}
                 </span>
+                <dd class="card-prop-value inline">
+                  {{ metaStatMaps.formatters.winRate(entry.stats.winRate) }}
+                </dd>
               </div>
-            </div>
+              <dt class="text-sm">
+                {{ metaStatMaps.labels.winRate }}
+              </dt>
+            </dl>
           </div>
-        </template>
+        </div>
       </template>
     </div>
 
@@ -166,7 +136,7 @@
       }"
     >
       <h2 class="page-h2">
-        Game Mode Statistics
+        Best Modes for {{ brawlerName }}
       </h2>
     </div>
 
@@ -179,14 +149,10 @@
         >
           <div
             class="items-center card bg-center bg-cover h-full relative"
+            :style="{
+              'background-image': `linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('${mediaUrl}/modes/${entry.mode}/background.jpg?size=1024')`,
+            }"
           >
-            <media-img
-              :path="'/modes/' + entry.mode + '/background'"
-              clazz="absolute left-0 top-0 h-32 w-full"
-              ztyle="filter: brightness(0.5) grayscale(0.25); transform: scaleX(2.0) scaleY(1.5);"
-              size="1600"
-            ></media-img>
-
             <div class="relative z-10 card-content">
               <span class="card-header">
                 {{ formatMode(entry.mode) }}
@@ -279,6 +245,9 @@ export default {
         .reduce((allEntries, modeEntries) => allEntries.concat(...modeEntries), [])
         .filter(({ brawlerId }) => brawlerId === this.brawlerId)
         .sort((m1, m2) => m2.sampleSize - m1.sampleSize)
+    },
+    mediaUrl() {
+      return process.env.mediaUrl
     },
     ...mapState({
       modeMeta: state => state.modeMeta,
