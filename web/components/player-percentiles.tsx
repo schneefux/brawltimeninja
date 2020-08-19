@@ -94,17 +94,17 @@ export default Vue.extend({
       return `Better than ${p * base} out of ${base}`
     }
 
-    return <table class="flex flex-wrap justify-center">
+    return <dl class="flex flex-wrap justify-center">
       { achievements.map(achievement =>
-      <tr class="block mx-3 mt-3 bg-gray-300 rounded text-center px-4 py-3 w-full md:w-auto">
-        <td class="block text-black text-xl font-bold">
+      <div class="mx-3 mt-3 bg-gray-300 rounded text-center px-4 py-3 w-full md:w-auto">
+        <dt class="block text-black text-xl font-bold">
           { achievement.metric }
-        </td>
-        <td class="mt-1 block text-primary-dark font-semibold">
+        </dt>
+        <dd class="mt-1 block text-primary-dark font-semibold">
           { formatPercentile(achievement.percentile) }
-        </td>
-      </tr>
+        </dd>
+      </div>
       )}
-    </table>
+    </dl>
     }
   })

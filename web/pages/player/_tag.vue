@@ -33,15 +33,15 @@
     <div class="section leading-tight text-center">
       <div class="section items-center justify-center flex flex-wrap">
         <div class="mx-auto md:mx-0 flex">
-          <div>
-            <p ref="counter-hours" class="text-5xl text-secondary font-bold">
+          <dl>
+            <dd ref="counter-hours" class="text-5xl text-secondary font-bold">
               ...
               <!-- set by ref -->
-            </p>
-            <p class="text-3xl text-white">
+            </dd>
+            <dt class="text-3xl text-white">
               hours spent
-            </p>
-          </div>
+            </dt>
+          </dl>
           <nuxt-link
             v-if="rank !== 0"
             to="/leaderboard"
@@ -55,25 +55,25 @@
           which is about
         </p>
 
-        <div class="hidden md:flex flex-wrap justify-between z-20">
+        <dl class="hidden md:flex flex-wrap justify-between z-20">
           <div
             v-for="(stat, statName) in funStats"
             :key="statName"
             class="mx-auto px-2 my-3"
           >
-            <p ref="counter-funstats" class="text-3xl text-secondary font-semibold">
+            <dd ref="counter-funstats" class="text-3xl text-secondary font-semibold">
               ...
               <!-- set by ref -->
-            </p>
-            <p class="text-2xl text-grey-lighter">
+            </dd>
+            <dt class="text-2xl text-grey-lighter">
               {{ stat.label }}
-            </p>
+            </dt>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="section bigstat-wrapper">
-        <div
+        <dl
           v-if="player.clubName !== undefined && player.clubName != ''"
           class="bigstat-container"
         >
@@ -81,31 +81,29 @@
             <div class="" style="margin-top: -0.125em">
               [
             </div>
-            <div class="mx-2 text-primary-light font-semibold text-center">
+            <dd class="mx-2 text-primary-light font-semibold text-center">
               {{ player.clubName.replace(/ /g, '&nbsp;') }}
-            </div>
+            </dd>
             <div class="" style="margin-top: -0.125em">
               ]
             </div>
           </div>
-          <div class="bigstat-right bigstat-label text-4xl">
+          <dt class="bigstat-right bigstat-label text-4xl">
             Club
-          </div>
-        </div>
+          </dt>
+        </dl>
 
         <div class="bigstat-container">
-          <div class="flex flex-wrap">
-            <div class="bigstat-left bigstat-number">
+          <dl class="flex flex-wrap">
+            <dd class="bigstat-left bigstat-number">
               {{ player.trophies.toLocaleString() }}
-            </div>
-            <div class="bigstat-right bigstat-label text-4xl">
+            </dd>
+            <dt class="bigstat-right bigstat-label text-4xl">
               Trophies
-            </div>
-          </div>
+            </dt>
+          </dl>
 
-          <div
-            class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative"
-          >
+          <div class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative">
             <div
               v-if="player.history.length > 1"
               class="h-12"
@@ -137,30 +135,30 @@
           </div>
         </div>
 
-        <div
+        <dl
           v-if="brawlersUnlocked < totalBrawlers"
           class="bigstat-container"
         >
-          <div class="bigstat-left bigstat-number">
+          <dd class="bigstat-left bigstat-number">
             {{ Math.floor(trophiesGoal).toLocaleString() }}
-          </div>
+          </dd>
           <div class="bigstat-right">
-            <p class="bigstat-label w-48 pt-1">
+            <dt class="bigstat-label w-48 pt-1">
               <span class="text-xl">
                 Potential&nbsp;Trophies
               </span>
               <span class="text-sm">
                 (with&nbsp;all&nbsp;Brawlers&nbsp;unlocked)
               </span>
-            </p>
+            </dt>
           </div>
-        </div>
+        </dl>
 
-        <div class="bigstat-container" v-if="winRate !== 0">
+        <dl class="bigstat-container" v-if="winRate !== 0">
           <div class="bigstat-left relative">
-            <span class="bigstat-number">
+            <dd class="bigstat-number">
               {{ Math.floor(winRate * 100) }}%
-            </span>
+            </dd>
             <button
               @click="recentHelpOpen = true"
               class="bigstat-tooltip-btn"
@@ -176,26 +174,26 @@
             </p>
           </div>
           <div class="bigstat-right bigstat-label text-xl">
-            <p class="w-24">
+            <dt class="w-24">
               Recent Win&nbsp;Rate
-            </p>
+            </dt>
           </div>
-        </div>
+        </dl>
 
-        <div class="bigstat-container" v-if="trophyRate !== 0">
-          <div class="bigstat-left bigstat-number">
+        <dl class="bigstat-container" v-if="trophyRate !== 0">
+          <dd class="bigstat-left bigstat-number">
             {{ trophyRate.toFixed(2) }}
-          </div>
+          </dd>
           <div class="bigstat-right bigstat-label text-xl">
-            <p class="w-24">
+            <dt class="w-24">
               Recent&nbsp;Trophies per&nbsp;battle
-            </p>
+            </dt>
           </div>
-        </div>
+        </dl>
 
-        <div class="bigstat-container">
+        <dl class="bigstat-container">
           <div class="bigstat-left relative">
-            <span class="bigstat-number">{{ accountRating }}</span>
+            <dd class="bigstat-number">{{ accountRating }}</dd>
             <button
               @click="ratingHelpOpen = true"
               class="bigstat-tooltip-btn"
@@ -216,11 +214,11 @@
             </p>
           </div>
           <div class="bigstat-right bigstat-label text-xl">
-            <p class="w-24">
+            <dt class="w-24">
               Account Rating
-            </p>
+            </dt>
           </div>
-        </div>
+        </dl>
       </div>
     </div>
 
@@ -397,34 +395,34 @@
     </div>
 
     <div class="section">
-      <div class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
+      <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
         <div class="bigstat-container">
-          <span class="bigstat-left bigstat-number bigstat-number--light">
+          <dd class="bigstat-left bigstat-number bigstat-number--light">
             {{ totalBattles }}
-          </span>
-          <span class="bigstat-right bigstat-label text-xl">
+          </dd>
+          <dt class="bigstat-right bigstat-label text-xl">
             Battles Recorded
-          </span>
+          </dt>
         </div>
 
         <div class="bigstat-container">
-          <span class="bigstat-left bigstat-number bigstat-number--light">
+          <dd class="bigstat-left bigstat-number bigstat-number--light">
             {{ Math.floor(winRate * 100) }}%
-          </span>
-          <span class="bigstat-right bigstat-label text-xl">
+          </dd>
+          <dt class="bigstat-right bigstat-label text-xl">
             Win&nbsp;Rate
-          </span>
+          </dt>
         </div>
 
         <div class="bigstat-container">
-          <span class="bigstat-left bigstat-number bigstat-number--light leading-none">
+          <dd class="bigstat-left bigstat-number bigstat-number--light leading-none">
             {{ formatMode(bestMode) }}
-          </span>
-          <span class="bigstat-right bigstat-label text-xl">
+          </dd>
+          <dt class="bigstat-right bigstat-label text-xl">
             Best Mode
-          </span>
+          </dt>
         </div>
-      </div>
+      </dl>
 
       <div
         v-if="player.battles.length > 0"
@@ -496,16 +494,16 @@
       </h2>
     </div>
 
-    <div class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
-      <p
+    <dl class="section leading-tight md:mx-4 flex flex-wrap py-4 px-6">
+      <div
         v-for="(stat, brawlerName) in player.heroStats"
         :key="brawlerName"
         class="md:text-center text-xl my-1 w-full md:w-auto md:mx-auto"
       >
-        <span class="md:block md:text-2xl font-semibold">{{ stat.label }}</span>
-        <span class="md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</span>
-      </p>
-    </div>
+        <dt class="md:block md:text-2xl font-semibold">{{ stat.label }}</dt>
+        <dl class="md:block float-right md:float-none text-primary-lighter md:mt-1 font-bold">{{ stat.value }}</dl>
+      </div>
+    </dl>
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
