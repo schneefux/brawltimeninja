@@ -63,6 +63,7 @@
             </ul>
           </li>
         </ul>
+        <p class="text-xs tracking-tight text-gray-600">Tier List by brawltime.ninja, created {{ today }}</p>
       </div>
     </div>
 
@@ -244,6 +245,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    today(): string {
+      return new Date().toLocaleDateString()
+    },
     stats(): string[] {
       if (this.entries.length == 0) {
         return []
