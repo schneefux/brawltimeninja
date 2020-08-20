@@ -180,15 +180,14 @@ export default Vue.extend({
       if (!(this.mode in this.modeMeta)) {
         return []
       }
-      return [...Object.entries((<ModeMetaMap>this.modeMeta)[this.mode].brawlers)]
-        .map(([brawlerId, brawler]) => ({
-          id: brawlerId,
-          title: brawler.name,
-          brawler: brawlerId,
-          link: `/tier-list/brawler/${brawlerId}`,
-          sampleSize: brawler.sampleSize,
-          stats: brawler.stats,
-        }))
+      return Object.entries((<ModeMetaMap>this.modeMeta)[this.mode].brawlers).map(([brawlerId, brawler]) => ({
+        id: brawlerId,
+        brawler: brawlerId,
+        title: brawler.name,
+        stats: brawler.stats,
+        sampleSize: brawler.sampleSize,
+        link: `/tier-list/brawler/${brawlerId}`,
+      }))
     },
     maps(): MapMetaWithId[] {
       return [...Object.entries(<MapMetaMap>this.mapMeta)]

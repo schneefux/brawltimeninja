@@ -142,14 +142,14 @@ export default Vue.extend({
   },
   computed: {
     brawlers(): MetaGridEntry[] {
-      return [...Object.entries(this.mapMeta.brawlers)]
-        .map(([brawlerId, brawler]) => ({
-          id: brawlerId,
-          title: (<any>brawler).name,
-          brawler: brawlerId,
-          sampleSize: (<any>brawler).sampleSize,
-          stats: (<any>brawler).stats,
-        }))
+      return Object.entries(this.mapMeta.brawlers).map(([brawlerId, brawler]) => ({
+        id: brawlerId,
+        brawler: brawlerId,
+        title: (<any>brawler).name,
+        stats: (<any>brawler).stats,
+        sampleSize: (<any>brawler).sampleSize,
+        link: `/tier-list/brawler/${brawlerId}`,
+      }))
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,

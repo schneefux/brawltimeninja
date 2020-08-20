@@ -24,7 +24,7 @@
         <p class="mt-1">
           {{ metaStatMaps.descriptions[selectedStat] }}
         </p>
-        <p v-if="linkText.length">
+        <p v-if="linkText.length == 0">
           Click on a Brawler to learn more about them.
         </p>
         <ul class="mt-2">
