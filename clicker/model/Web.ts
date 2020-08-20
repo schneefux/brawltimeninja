@@ -5,3 +5,10 @@ export interface BrawlerMetaStatistics {
     [stat: string]: number;
   }
 }
+
+export interface PlayerModeStats {
+  picks: number
+  winRate: number
+  wins: number
+  losses: number
+}

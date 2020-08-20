@@ -44,25 +44,6 @@ export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
   private readonly apiOfficial = apiOfficialUrl;
 
-  public getFeaturedPlayers() {
-    return [ {
-      tag: 'V8LLPPC',
-      name: 'xXcuzMePlisThXx',
-    }, {
-      tag: '8PJRRG2C',
-      name: 'TQ|GuilleVGX',
-    }, {
-      tag: 'V9QGJY9',
-      name: 'Landi',
-    }, {
-      tag: '2L892GP',
-      name: 'YAPIMARU_YT',
-    }, {
-      tag: '2Y02L28',
-      name: 'Keith ツ',
-    } ];
-  }
-
   public async getActiveEvents() {
     const response = await request<{ active: BrawlstarsEvent[], upcoming: BrawlstarsEvent[] }>(
       'events',

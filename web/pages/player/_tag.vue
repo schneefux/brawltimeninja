@@ -579,6 +579,7 @@ export default {
       currentEvents: [],
       activeMapMeta: {},
       leaderboard: [],
+      guides: [],
       hoursSinceDate,
       formatMode,
     }
@@ -638,9 +639,7 @@ export default {
       return Math.ceil((now - start) / 1000 / 3600 / 24)
     },
     relevantGuides() {
-      // shuffle posts
-      const posts = this.blog.guides.concat().sort(() => 0.5 - Math.random())
-      return posts.slice(0, 3)
+      return this.guides.slice(0, 3)
     },
     brawlers() {
       const brawlersKV = [...Object.entries(this.player.brawlers)]
@@ -807,14 +806,16 @@ export default {
       this.loadPlayerHistory()
     }
   },
-  async asyncData({ $axios }) {
+  async asyncData({ $axios, $content }) {
     const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] }))
     const activeMapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({}))
     const leaderboard = await $axios.$get('/api/leaderboard/hours').catch(() => [])
+    const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
     return {
       currentEvents: events.current,
       leaderboard,
       activeMapMeta,
+      guides,
     }
   },
   mounted() {

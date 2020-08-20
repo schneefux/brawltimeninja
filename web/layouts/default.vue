@@ -60,12 +60,10 @@
               Leaderboard
             </nuxt-link>
             <nuxt-link
-              v-for="topic in topics"
-              :key="topic"
-              :to="`/blog/${topic}`"
+              to="/blog/guides"
               class="nav-link"
             >
-              {{ topic }}
+              Guides
             </nuxt-link>
             <nuxt-link
               to="/tier-list/brawler"
@@ -205,10 +203,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    topics(): string[] {
-      return Object.keys(this.blog)
-        .map(topic => topic.replace('_', ' '))
-    },
     isDesktop(): boolean {
       return (<any>global).screen !== undefined && screen.width > 720
     },
@@ -224,7 +218,6 @@ export default Vue.extend({
       isInstallable: 'isInstallable',
     }),
     ...mapState({
-      blog: (state: any) => state.blog,
       version: (state: any) => state.version as number,
       adsAllowed: (state: any) => state.adsAllowed as boolean,
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,

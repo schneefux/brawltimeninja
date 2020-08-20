@@ -1,5 +1,4 @@
 import { exception, event } from 'vue-analytics'
-import payload from './payload.json'
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -25,9 +24,22 @@ function mergeDeep(target, source) {
 
 export const state = () => ({
   version: undefined,
-  // fill the store from the payload in static build
-  blog: payload.blog,
-  featuredPlayers: payload.featuredPlayers,
+  featuredPlayers: [ {
+      tag: 'V8LLPPC',
+      name: 'xXcuzMePlisThXx',
+    }, {
+      tag: '8PJRRG2C',
+      name: 'TQ|GuilleVGX',
+    }, {
+      tag: 'V9QGJY9',
+      name: 'Landi',
+    }, {
+      tag: '2L892GP',
+      name: 'YAPIMARU_YT',
+    }, {
+      tag: '2Y02L28',
+      name: 'Keith ツ',
+    } ],
   tagPattern: '^[0289PYLQGRJCUV]{3,}$',
   lastPlayers: [],
   player: {
@@ -72,12 +84,6 @@ export const getters = {
 }
 
 export const mutations = {
-  setBlog(state, blog) {
-    state.blog = blog
-  },
-  setFeaturedPlayers(state, featuredPlayers) {
-    state.featuredPlayers = featuredPlayers
-  },
   setPlayer(state, player) {
     state.player = player
   },
@@ -150,18 +156,6 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit }) {
-    if (process.static) {
-      return
-    }
-
-    // overwrite generated (possibly empty) payload
-    // with current API data when running on server
-    await Promise.all([
-      this.$axios.$get('/api/blog').then(blog => commit('setBlog', blog)),
-      this.$axios.$get('/api/featured-players').then(players => commit('setFeaturedPlayers', players)),
-    ])
-  },
   async loadPlayer({ state, commit }, playerTag) {
     if (playerTag === state.player.tag) {
       return

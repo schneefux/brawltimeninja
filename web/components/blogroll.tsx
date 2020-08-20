@@ -22,12 +22,13 @@ export default Vue.extend({
         >
           <div class="card bg-white h-full">
             <div class="card-content">
-              <nuxt-link to={`/blog/${props.topic}/${post.id}`}>
-                <img
-                  v-show="'mode' in post"
-                  class="h-6 float-right mx-2"
-                  src={'mode' in post ? require(`~/assets/images/mode/icon/${post.mode.toLowerCase().replace(' ', '')}_optimized.png`) : ''}
+              <nuxt-link to={`/blog/${props.topic}/${post.slug}`}>
+                { 'mode' in post ?
+                <media-img
+                  clazz="h-6 float-right mx-2"
+                  path={`/modes/${post.mode}/icon`}
                 />
+                : '' }
                 <h3 class="card-header text-primary-dark">
                   { post.title }
                 </h3>

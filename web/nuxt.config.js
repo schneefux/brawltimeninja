@@ -2,7 +2,6 @@ import path from 'path'
 import axios from 'axios'
 
 import { camelToKebab } from './lib/util'
-import payload from './store/payload.json'
 
 export default {
   mode: 'universal',
@@ -76,8 +75,9 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
-    '@nuxtjs/sitemap',
     '@nuxtjs/sentry',
+    '@nuxt/content',
+    '@nuxtjs/sitemap',
   ],
 
   buildModules: [
@@ -151,7 +151,7 @@ export default {
               path.join(__dirname, './layouts/**/*.vue'),
               path.join(__dirname, './components/**/*.vue'),
               path.join(__dirname, './components/**/*.tsx'),
-              path.join(__dirname, './store/payload.json'),
+              path.join(__dirname, './content/**/*.md'),
               path.join(__dirname, 'node_modules/vue-range-component/dist/vue-range-slider.css'), // whitelist all
             ],
             defaultExtractor: content =>
@@ -171,55 +171,40 @@ export default {
     async routes() {
       const routes = []
 
-      const modes = []
-      payload.events.forEach((event) => {
-        if (!modes.includes(event.mode)) {
-          const mode = camelToKebab(event.mode)
-          modes.push(event.mode)
-          routes.push(`/tier-list/mode/${mode}`)
-        }
-        routes.push(`/tier-list/map/${event.id}`)
-      });
-
-      [...Object.entries(payload.blog)].forEach(([topic, posts]) => {
-        routes.push(`/blog/${topic}`)
-        posts.forEach(post => routes.push(`/blog/${topic}/${post.id}`))
-      })
+      try {
+        const events = await axios.get(`${process.env.API_URL}/api/events`)
+        Object.entries(events.data).forEach(([eventId, event]) => {
+          const modeRoute = `/tier-list/mode/${camelToKebab(event.mode)}`
+          if (!routes.includes(modeRoute)) {
+            routes.push(modeRoute)
+          }
+          routes.push(`/tier-list/map/${eventId}`)
+        })
+      } catch (err) {
+        console.error('error adding events to sitemap', err)
+      }
 
       try {
-        const topTrophies = await axios.get('https://api.brawltime.ninja/api/leaderboard/trophies')
+        const topTrophies = await axios.get(`${process.env.API_URL}/api/leaderboard/trophies`)
         topTrophies.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
-      } catch (err) { }
+      } catch (err) {
+        console.error('error adding trophy leaderboard players to sitemap', err)
+      }
 
       try {
-        const topHours = await axios.get('https://api.brawltime.ninja/api/leaderboard/hours')
+        const topHours = await axios.get(`${process.env.API_URL}/api/leaderboard/hours`)
         topHours.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
-      } catch (err) { }
+      } catch (err) {
+        console.error('error adding exp leaderboard players to sitemap', err)
+      }
 
       return routes
     },
   },
 
-  generate: {
-    fallback: true,
-    routes() {
-      const routes = []
-
-      // do not include meta pages because they require dynamic data
-      routes.push({
-        route: '/',
-      });
-
-      [...Object.entries(payload.blog)].forEach(([topic, posts]) => {
-        routes.push({
-          route: `/blog/${topic}`,
-        })
-        posts.forEach(post => routes.push({
-          route: `/blog/${topic}/${post.id}`,
-        }))
-      })
-
-      return routes
-    },
+  content: {
+    // breaks media-img component registration
+    // https://github.com/nuxt/content/issues/261
+    liveEdit: false,
   },
 }

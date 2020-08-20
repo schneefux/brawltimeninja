@@ -25,12 +25,6 @@ function getTrophyRangeHigher(query: any) {
   return '99'
 }
 
-router.get('/featured-players', async (ctx, next) => {
-  ctx.body = service.getFeaturedPlayers();
-  ctx.set('Cache-Control', 'public, max-age=3600');
-  await next();
-});
-
 router.get('/player/:tag', async (ctx, next) => {
   try {
     ctx.body = await service.getPlayerStatistics(ctx.params.tag);
