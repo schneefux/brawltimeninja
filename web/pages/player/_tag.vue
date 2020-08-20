@@ -402,19 +402,19 @@
       <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
         <div class="bigstat-container">
           <dd class="bigstat-left bigstat-number bigstat-number--light">
-            {{ totalBattles }}
+            {{ Math.floor(winRate * totalBattles) }}
           </dd>
           <dt class="bigstat-right bigstat-label text-xl">
-            Battles Recorded
+            Wins Recorded
           </dt>
         </div>
 
         <div class="bigstat-container">
           <dd class="bigstat-left bigstat-number bigstat-number--light">
-            {{ Math.floor(winRate * 100) }}%
+            {{ Math.floor((1 - winRate) * totalBattles) }}
           </dd>
           <dt class="bigstat-right bigstat-label text-xl">
-            Win&nbsp;Rate
+            Losses Recorded
           </dt>
         </div>
 
