@@ -1,7 +1,6 @@
 <template>
-  <client-only>
+  <client-only v-if="eventRecommendations.length > 0 && notificationsAllowed">
     <button
-      v-if="eventRecommendations.length > 0 && notificationsAllowed"
       class="button"
       @click="notifyTips"
     >
