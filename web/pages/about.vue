@@ -12,9 +12,8 @@
         Send questions or feedback to dev (at) {{ domain }}. Built with ❤️ by <a class="link link-light" href="https://schneefux.xyz">schneefux</a>. You can view this site's source code <a class="link link-light" href="https://github.com/schneefux/brawltimeninja">on GitHub</a>.
       </p>
       <p class="mt-2">
-        With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking <button class="underline" @click="withdrawCookieConsent">
-          this button
-        </button>.
+        With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking
+        <button class="link link-light" @click="withdrawCookieConsent">this button</button>.
       </p>
 
       <h1>Privacy Policy</h1>
