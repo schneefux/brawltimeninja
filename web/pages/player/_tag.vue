@@ -807,10 +807,12 @@ export default {
     }
   },
   async asyncData({ $axios, $content }) {
-    const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] }))
-    const activeMapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({}))
-    const leaderboard = await $axios.$get('/api/leaderboard/hours').catch(() => [])
-    const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
+    const [events, activeMapMeta, leaderboard, guides] = await Promise.all([
+      $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
+      $axios.$get('/api/meta/map/events').catch(() => ({})),
+      $axios.$get('/api/leaderboard/hours').catch(() => []),
+      $content('guides').sortBy('createdAt', 'desc').fetch(),
+    ])
     return {
       currentEvents: events.current,
       leaderboard,
