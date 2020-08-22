@@ -5,7 +5,7 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows } from '~/model/Clicker';
+import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows, BrawlerTrophyMetaRow, TotalTrophyMetaRow, BrawlerStatisticsRows } from '~/model/Clicker';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -851,6 +851,63 @@ export default class ClickerService {
         brawlerName: row.brawlerName,
         ...parseBattleMeasures(row),
       }) as BrawlerMetaRow))
+  }
+
+  public async getBrawlerStatistics(brawlerName: string) {
+    interface BrawlerNameQuery {
+      brawlerName: string
+    }
+    const brawlers = await this.query<BrawlerNameQuery>(
+      `SELECT brawler_name AS brawlerName FROM brawltime.map_meta`,
+      'brawler.names')
+      .then(data => data.map(row => row.brawlerName))
+    if (!brawlers.includes(brawlerName)) {
+      throw new Error('Invalid brawler name ' + brawlerName)
+    }
+
+    interface BrawlerByTrophyQuery extends BattleMeasuresAggregation {
+      brawlerName: string
+      trophyrange: string
+    }
+    const brawlerByTrophies = await this.query<BrawlerByTrophyQuery>(`
+        SELECT
+          brawler_name AS brawlerName,
+          brawler_trophyrange AS trophyrange,
+          ${battleMeasuresAggregation}
+        FROM brawltime.map_meta
+        WHERE ${sliceSeason()}
+        AND brawlerName=${brawlerName}
+        GROUP BY brawler_trophyrange
+        ORDER BY picks
+      `, 'brawler.by-trophies')
+      .then(data => data.map(row => ({
+        brawlerName: row.brawlerName,
+        trophyrange: parseInt(row.trophyrange) * 100,
+        ...parseBattleMeasures(row),
+      }) as BrawlerTrophyMetaRow))
+
+    interface TotalByTrophyQuery extends BattleMeasuresAggregation {
+      trophyrange: string
+    }
+    const totalByTrophies = await this.query<TotalByTrophyQuery>(`
+        SELECT
+          brawler_name AS brawlerName,
+          brawler_trophyrange AS trophyrange,
+          ${battleMeasuresAggregation}
+        FROM brawltime.map_meta
+        WHERE ${sliceSeason()}
+        GROUP BY brawler_trophyrange
+        ORDER BY picks
+      `, 'total.by-trophies')
+      .then(data => data.map(row => ({
+        trophyrange: parseInt(row.trophyrange) * 100,
+        ...parseBattleMeasures(row),
+      }) as TotalTrophyMetaRow))
+
+    return <BrawlerStatisticsRows>{
+      brawlerByTrophies,
+      totalByTrophies,
+    }
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
