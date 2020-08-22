@@ -36,7 +36,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaGridEntry } from '../../lib/util'
-import { StarpowerMetaStatistics } from '../../model/Web'
+import { StarpowerMetaStatistics } from '../../model/Api'
 
 export default Vue.extend({
   name: 'StarpowerMetaPage',

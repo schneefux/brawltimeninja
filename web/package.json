@@ -20,6 +20,7 @@
     "@nuxtjs/sitemap": "^2.4.0",
     "glob-all": "^3.2.1",
     "nuxt": "^2.13.3",
+    "plotly.js": "^1.54.7",
     "vue-analytics": "^5.22.1",
     "vue-google-adsense": "^1.8.3",
     "vue-observe-visibility": "^0.4.6",

@@ -1,7 +1,7 @@
 import Vue, { PropType } from 'vue'
 import { metaStatMaps, capitalize } from '../lib/util'
 import Card from '~/components/card'
-import { BrawlerMetaStatistics } from '~/model/Web'
+import { BrawlerMetaStatistics } from '~/model/Api'
 
 export default Vue.extend({
   functional: true,

@@ -13,9 +13,8 @@
 import Vue, { PropType } from 'vue'
 import { capitalizeWords, getBestBrawlers, formatMode } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
-import { BrawlerMetaStatistics } from '../model/Web'
 import { MapMeta, MapMetaMap } from '../model/MetaEntry'
-import { Player } from '../model/Api'
+import { Player, BrawlerMetaStatistics } from '../model/Api'
 
 interface Recommendation {
   id: string

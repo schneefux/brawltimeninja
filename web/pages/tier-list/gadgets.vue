@@ -35,7 +35,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { GadgetMetaStatistics } from '../../model/Web'
+import { GadgetMetaStatistics } from '../../model/Api'
 import { MetaGridEntry } from '../../lib/util'
 
 export default Vue.extend({

@@ -132,7 +132,7 @@
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted, getBestBrawlersByEachMetric } from '../../../lib/util'
-import { BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Web'
+import { BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Api'
 import { ModeMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({

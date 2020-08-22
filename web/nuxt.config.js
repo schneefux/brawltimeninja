@@ -69,6 +69,7 @@ export default {
     { src: '~/plugins/analytics', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/slider', mode: 'client' },
+    { src: '~/plugins/plotly', mode: 'client' },
     { src: '~/plugins/custom-components' },
   ],
 

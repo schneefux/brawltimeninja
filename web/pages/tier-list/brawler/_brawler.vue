@@ -131,6 +131,47 @@
     <div
       class="section-heading"
       v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'trophy-graphs'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">
+        Trophy Graphs
+      </h2>
+    </div>
+
+    <div class="md:flex md:flex-wrap md:justify-center">
+      <div class="card-wrapper">
+        <plotly
+          :traces="trophiesUseRateChart.traces"
+          :layout="trophiesUseRateChart.layout"
+          :options="trophiesUseRateChart.options"
+          class="h-48 card md:max-w-lg"
+        ></plotly>
+      </div>
+
+      <div class="card-wrapper">
+        <plotly
+          :traces="trophiesWinRateChart.traces"
+          :layout="trophiesWinRateChart.layout"
+          :options="trophiesWinRateChart.options"
+          class="h-48 card md:max-w-lg"
+        ></plotly>
+      </div>
+
+      <div class="card-wrapper">
+        <plotly
+          :traces="trophiesStarRateChart.traces"
+          :layout="trophiesStarRateChart.layout"
+          :options="trophiesStarRateChart.options"
+          class="h-48 card md:max-w-lg"
+        ></plotly>
+      </div>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'modes'),
         once: true,
       }"
@@ -195,6 +236,32 @@
 import { mapState, mapActions } from 'vuex'
 import { metaStatMaps, formatMode, modeToBackgroundId, capitalizeWords } from '~/lib/util'
 
+const trophyGraphLayout = {
+  xaxis: {
+    title: 'Trophies',
+    fixedrange: true,
+    tickcolor: '#ffffff',
+  },
+  yaxis: {
+    title: '',
+    fixedrange: true,
+    tickformat: ',.0%',
+    tickcolor: '#ffffff',
+  },
+  margin: { t: 10, l: 55, b: 65, r: 10 },
+  staticPlot: true,
+  plot_bgcolor: 'rgba(0, 0, 0, 0)',
+  paper_bgcolor: '#2d3748', // black
+  font: {
+    color: '#ffffff',
+  },
+}
+
+const trophyGraphOptions = {
+  displayModeBar: false,
+  responsive: true,
+}
+
 export default {
   name: 'StarpowerMetaPage',
   head() {
@@ -215,6 +282,7 @@ export default {
       starpowerMeta: [],
       gadgetMeta: [],
       modeMeta: {},
+      brawlerStats: {},
     }
   },
   computed: {
@@ -246,11 +314,137 @@ export default {
         .filter(({ brawlerId }) => brawlerId === this.brawlerId)
         .sort((m1, m2) => m2.sampleSize - m1.sampleSize)
     },
+    trophiesUseRateChart() {
+      const trophyranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+      const useRates = trophyranges.map(t =>
+        this.brawlerStats.brawlerByTrophies.find(b => b.trophyrange == t).picksWeighted
+        /
+        this.brawlerStats.totalByTrophies.find(b => b.trophyrange == t).picksWeighted
+     )
+
+      const traces = [{
+        x: trophyranges,
+        y: useRates,
+        text: useRates,
+        mode: 'lines+markers',
+        type: 'scatter',
+      }]
+
+      const layout = {
+        ...trophyGraphLayout,
+        yaxis: {
+          title: 'Use Rate',
+          fixedrange: true,
+          tickformat: ',.0%',
+          tickcolor: '#ffffff',
+        },
+        shapes: [ {
+          type: 'line',
+          x0: 0,
+          y0: 1 / this.totalBrawlers,
+          x1: 1000,
+          y1: 1 / this.totalBrawlers,
+          line: {
+            color: 'grey',
+            width: 1.5,
+            dash: 'dot',
+          },
+        } ],
+      }
+
+      return {
+        traces,
+        layout,
+        options: trophyGraphOptions,
+      }
+    },
+    trophiesWinRateChart() {
+      const trophyranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+      const winRates = trophyranges.map(t => this.brawlerStats.brawlerByTrophies.find(b => b.trophyrange == t).winRate)
+      const avgTotalWinRate = this.brawlerStats.totalByTrophies.reduce((sum, e) => sum + e.winRate * e.picks, 0) / this.brawlerStats.totalByTrophies.reduce((sum, e) => sum + e.picks, 0)
+
+      const traces = [{
+        x: trophyranges,
+        y: winRates,
+        text: winRates,
+        mode: 'lines+markers',
+        type: 'scatter',
+      }]
+
+      const layout = {
+        ...trophyGraphLayout,
+        yaxis: {
+          title: 'Win Rate',
+          fixedrange: true,
+          tickformat: ',.0%',
+          tickcolor: '#ffffff',
+        },
+        shapes: [ {
+          type: 'line',
+          x0: 0,
+          y0: avgTotalWinRate,
+          x1: 1000,
+          y1: avgTotalWinRate,
+          line: {
+            color: 'grey',
+            width: 1.5,
+            dash: 'dot',
+          },
+        } ],
+      }
+
+      return {
+        traces,
+        layout,
+        options: trophyGraphOptions,
+      }
+    },
+    trophiesStarRateChart() {
+      const trophyranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+      const starRates = trophyranges.map(t => this.brawlerStats.brawlerByTrophies.find(b => b.trophyrange == t).starRate)
+      const avgTotalStarRate = this.brawlerStats.totalByTrophies.reduce((sum, e) => sum + e.starRate * e.picks, 0) / this.brawlerStats.totalByTrophies.reduce((sum, e) => sum + e.picks, 0)
+
+      const traces = [{
+        x: trophyranges,
+        y: starRates,
+        text: starRates,
+        mode: 'lines+markers',
+        type: 'scatter',
+      }]
+
+      const layout = {
+        ...trophyGraphLayout,
+        yaxis: {
+          title: 'Star Rate',
+          fixedrange: true,
+          tickformat: ',.0%',
+          tickcolor: '#ffffff',
+        },
+        shapes: [ {
+          type: 'line',
+          x0: 0,
+          y0: avgTotalStarRate,
+          x1: 1000,
+          y1: avgTotalStarRate,
+          line: {
+            color: 'grey',
+            width: 1.5,
+            dash: 'dot',
+          },
+        } ],
+      }
+
+      return {
+        traces,
+        layout,
+        options: trophyGraphOptions,
+      }
+    },
     mediaUrl() {
       return process.env.mediaUrl
     },
     ...mapState({
-      modeMeta: state => state.modeMeta,
+      totalBrawlers: state => state.totalBrawlers,
       isApp: state => state.isApp,
     }),
   },
@@ -259,12 +453,14 @@ export default {
     const gadgetMeta = await $axios.$get('/api/meta/gadget')
     const modeMeta = await $axios.$get('/api/meta/mode')
     const brawlerId = params.brawler
+    const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId)
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')),
       starpowerMeta,
       gadgetMeta,
       modeMeta,
+      brawlerStats,
     }
   },
   methods: {

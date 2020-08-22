@@ -346,7 +346,7 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
-import { BrawlerMetaStatistics } from '../model/Web'
+import { BrawlerMetaStatistics } from '../model/Api'
 
 function playerToRoute(player) {
   return {
