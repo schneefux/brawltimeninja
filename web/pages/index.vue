@@ -106,13 +106,14 @@
 
     <client-only>
       <adsense
-        v-if="!isApp"
+        v-if="!isApp && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
         class="container flex justify-center"
-        ins-class="w-full"
+        ins-class="w-screen md:w-full -mx-4"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6067985913"
-        data-ad-format="auto"
-        data-full-width-responsive
       />
     </client-only>
 
@@ -191,14 +192,15 @@
 
     <client-only>
       <adsense
-        v-if="!isApp"
-        id="ezoic-pub-ad-placeholder-104"
+        v-if="!isApp && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
         class="container flex justify-center"
-        ins-class="w-full"
+        ins-class="w-screen md:w-full -mx-4"
+        id="ezoic-pub-ad-placeholder-104"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6709232983"
-        data-ad-format="auto"
-        data-full-width-responsive
       />
     </client-only>
 
@@ -452,6 +454,7 @@ export default Vue.extend({
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
+      testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },

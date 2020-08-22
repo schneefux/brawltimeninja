@@ -380,13 +380,8 @@ export default Vue.extend({
     version() {
       // custom A/B test flag
       if (this.testGroup == undefined) {
-        if (Math.random() < 0.33) {
-          this.setTestGroup('player-only-top-ad')
-        } else if (Math.random() < 0.33) {
-          this.setTestGroup('player-small-ads')
-        } else {
-          this.setTestGroup('control')
-        }
+        const group = ['player-only-top-ad', 'player-small-ads', 'control'][Math.floor(Math.random() * 3)]
+        this.setTestGroup(group)
         console.log('user assigned to test group', this.testGroup)
       }
       this.$ga.set('dimension5', this.testGroup)

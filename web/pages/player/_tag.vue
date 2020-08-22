@@ -225,12 +225,12 @@
     <client-only>
       <adsense
         v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; height: 100px;' : 'display: block'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
+        ins-class="w-screen md:w-full -mx-4 ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
-        ins-class="w-full ad-section"
-        data-ad-format="horizontal"
-        data-full-width-responsive
       />
     </client-only>
 
@@ -366,13 +366,13 @@
     <client-only>
       <adsense
         v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; height: 100px;' : 'display: block'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
+        ins-class="w-screen md:w-full -mx-4 ad-section"
         id="ezoic-pub-ad-placeholder-101"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
-        ins-class="ad-section"
-        data-ad-format="auto"
-        data-full-width-responsive
       />
     </client-only>
 
@@ -481,13 +481,13 @@
     <client-only>
       <adsense
         v-if="!isApp && player.battles.length > 0 && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; height: 100px;' : 'display: block'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
+        ins-class="w-screen md:w-full -mx-4 ad-section"
         id="ezoic-pub-ad-placeholder-102"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
-        ins-class="ad-section"
-        data-ad-format="auto"
-        data-full-width-responsive
       />
     </client-only>
 
