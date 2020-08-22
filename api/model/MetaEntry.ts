@@ -1,12 +1,3 @@
-export interface BrawlerMetaEntry {
-  id: string;
-  name: string;
-  sampleSize: number;
-  stats: {
-    [stat: string]: number;
-  }
-}
-
 export interface Map {
   map: string;
   mode: string;
@@ -27,7 +18,7 @@ export interface ModeMeta {
   }
 }
 
-export interface StarpowerMetaEntry {
+export interface StarpowerMetaStatistics {
   id: string;
   brawlerName: string;
   brawlerId: number;
@@ -40,7 +31,7 @@ export interface StarpowerMetaEntry {
   }
 }
 
-export interface GadgetMetaEntry {
+export interface GadgetMetaStatistics {
   id: string;
   brawlerName: string;
   brawlerId: number;

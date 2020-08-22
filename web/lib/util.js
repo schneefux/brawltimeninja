@@ -130,9 +130,9 @@ export var metaStatMaps = {
         spTrophies: 'with Star Power',
         trophyChange: 'this season',
         winRate: 'Win',
-        rank1Rate: 'SD Won',
+        rank1Rate: 'SD Win',
         level: 'Level',
-        starRate: 'Stars',
+        starRate: 'Star',
         picks: 'Picks',
         pickRate: 'Picked',
         useRate: 'Used',
@@ -244,6 +244,19 @@ export function getBestBrawlers(brawlers) {
     var sortProp = metaStatMaps.propPriority.find(function (prop) { return prop in brawlers[0].stats; });
     brawlers.sort(function (brawler1, brawler2) { return brawler2.stats[sortProp] - brawler1.stats[sortProp]; });
     return brawlers;
+}
+export function getBestBrawlersByEachMetric(brawlers) {
+    var props = Object.keys(metaStatMaps.labels);
+    var max = {};
+    brawlers.forEach(function (entry) {
+        props.forEach(function (prop) {
+            if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
+                entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
+                max[prop] = entry;
+            }
+        });
+    });
+    return max;
 }
 export function getMostPopular(meta) {
     return __spreadArrays(Object.entries(meta)).reduce(function (top, _a) {

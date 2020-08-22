@@ -36,13 +36,13 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaGridEntry } from '../../lib/util'
-import { StarpowerMetaEntry } from '../../model/MetaEntry'
+import { StarpowerMetaStatistics } from '../../model/Web'
 
 export default Vue.extend({
   name: 'StarpowerMetaPage',
   data() {
     return {
-      starpowerMeta: [] as StarpowerMetaEntry[],
+      starpowerMeta: [] as StarpowerMetaStatistics[],
       trophyRange: [0, 10],
     }
   },
@@ -105,11 +105,11 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`) as StarpowerMetaEntry[]
+      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`) as StarpowerMetaStatistics[]
     },
   },
   async asyncData({ $axios }) {
-    const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaEntry[]
+    const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
     return {
       starpowerMeta,
     }

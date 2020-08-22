@@ -69,6 +69,7 @@ export default {
     { src: '~/plugins/analytics', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/slider', mode: 'client' },
+    { src: '~/plugins/custom-components' },
   ],
 
   modules: [
@@ -96,7 +97,10 @@ export default {
     },
   },
 
-  components: true,
+  components: [ {
+    path: '~/components',
+    ignore: ['**/media-img.tsx'], // loaded by plugin instead
+  } ],
 
   router: {
     middleware: ['unpack-store'],

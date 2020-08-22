@@ -39,7 +39,7 @@
           :class="{ 'md:hidden': !showAllMaps && index >= 3 }"
           class="px-2"
         >
-          <event :mode="map.mode" :map="map.map">
+          <event-card :mode="map.mode" :map="map.map">
             <template v-slot:content>
               <div class="flex justify-center bg-black">
                 <media-img
@@ -57,7 +57,7 @@
                 </nuxt-link>
               </div>
             </template>
-          </event>
+          </event-card>
         </nuxt-link>
       </div>
 

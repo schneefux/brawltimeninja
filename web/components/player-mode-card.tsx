@@ -43,7 +43,7 @@ export default Vue.extend({
       //   index [ brawler in map meta, best first ]
       const worstBrawlers = props.playerBrawlers.slice()
         .sort((b1, b2) => b1.trophies - b2.trophies)
-      const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers))
+      const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers).map(v => ({ ...v, id: v.name })))
       recommendedBrawlers = worstBrawlers
         .map((worstBrawler) => {
           const bestBrawlerIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() == worstBrawler.name.toLowerCase())

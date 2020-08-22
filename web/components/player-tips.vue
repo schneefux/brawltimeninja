@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { capitalizeWords, getBest, getBestBrawlers, formatMode } from '../lib/util'
+import { capitalizeWords, getBestBrawlers, formatMode } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
 import { BrawlerMetaStatistics } from '../model/Web'
 import { MapMeta, MapMetaMap } from '../model/MetaEntry'
@@ -73,7 +73,7 @@ export default Vue.extend({
       Object.entries(this.activeMapMeta).forEach(([id, mapMeta]) => {
         const meta = mapMeta as MapMeta
 
-        const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers)) as BrawlerMetaStatistics[]
+        const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers).map(v => ({ ...v, id: v.name }))) as BrawlerMetaStatistics[]
         worstBrawlers.forEach((worstBrawler, worstBrawlerIndex) => {
           const bestBrawlerIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() == worstBrawler.name.toLowerCase())
           if (bestBrawlerIndex == -1) {

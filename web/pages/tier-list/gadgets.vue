@@ -35,14 +35,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { GadgetMetaEntry } from '../../model/MetaEntry'
+import { GadgetMetaStatistics } from '../../model/Web'
 import { MetaGridEntry } from '../../lib/util'
 
 export default Vue.extend({
   name: 'GadgetMetaPage',
   data() {
     return {
-      gadgetMeta: [] as GadgetMetaEntry[],
+      gadgetMeta: [] as GadgetMetaStatistics[],
       trophyRange: [0, 10],
     }
   },
@@ -105,11 +105,11 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      this.gadgetMeta = await this.$axios.$get(`/api/meta/gadget?trophyrange=${lower}-${upper}`) as GadgetMetaEntry[]
+      this.gadgetMeta = await this.$axios.$get(`/api/meta/gadget?trophyrange=${lower}-${upper}`) as GadgetMetaStatistics[]
     },
   },
   async asyncData({ $axios }) {
-    const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaEntry[]
+    const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
     return {
       gadgetMeta,
     }

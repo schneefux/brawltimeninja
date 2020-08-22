@@ -32,42 +32,13 @@
       <div class="flex flex-wrap justify-center">
         <nuxt-link
           v-for="mode in modes"
-          :key="mode.mode"
+          :key="mode"
           :to="`/tier-list/mode/${camelToKebab(mode)}`"
         >
-          <event :mode="mode" actions>
-            <template v-slot:content>
-              <div class="brawler-avatars my-4">
-                <div
-                  v-for="brawler in topBrawlersByMode[mode].slice(0, 5)"
-                  :key="brawler.id"
-                  class="brawler-avatars__element"
-                >
-                  <div class="brawler-avatar">
-                    <media-img
-                      :path="`/brawlers/${brawler.id}/avatar`"
-                      size="160"
-                      clazz="brawler-avatar__img"
-                    />
-                    <p class="brawler-avatar__stats">
-                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-slot:actions>
-              <div class="flex justify-end">
-                <nuxt-link
-                  :to="`/tier-list/mode/${mode}`"
-                  class="button button-md"
-                >
-                  Open
-                </nuxt-link>
-              </div>
-            </template>
-          </event>
+          <mode-best-brawlers-card
+            :mode="mode"
+            :top-brawlers="topBrawlersByMode[mode]"
+          ></mode-best-brawlers-card>
         </nuxt-link>
       </div>
     </div>
@@ -123,7 +94,7 @@ export default Vue.extend({
     }),
   },
   async asyncData({ $axios }) {
-    const modeMeta = await $axios.$get('/api/meta/mode')
+    const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
     return {
       modeMeta,
     }

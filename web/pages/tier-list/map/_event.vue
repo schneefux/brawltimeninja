@@ -28,41 +28,14 @@
       }"
       class="section flex justify-center"
     >
-      <event
+      <map-best-brawlers-card
         :mode="event.mode"
         :map="event.map"
+        :id="event.id"
+        :top-brawlers="best"
         infobar
       >
-        <template v-slot:infobar>
-          <media-img
-            :path="'/maps/' + event.id"
-            size="384"
-            clazz="h-48 mx-auto"
-            itemprop="image"
-          ></media-img>
-        </template>
-        <template v-slot:content>
-          <div class="brawler-avatars my-4">
-            <div
-              v-for="brawler in best.slice(0, 5)"
-              :key="brawler.id"
-              class="brawler-avatars__element"
-            >
-              <div class="brawler-avatar">
-                <media-img
-                  :path="`/brawlers/${brawler.id}/avatar`"
-                  size="160"
-                  clazz="brawler-avatar__img"
-                />
-                <p class="brawler-avatar__stats">
-                  {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-                  {{ metaStatMaps.labelsShort[brawler.sortProp] }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </template>
-      </event>
+      </map-best-brawlers-card>
     </div>
 
     <div

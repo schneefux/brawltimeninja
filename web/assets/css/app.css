@@ -182,7 +182,7 @@ details.stats-card-expander > summary::-webkit-details-marker {
 
 /** Brawler avatar with stats below */
 .brawler-avatar {
-  @apply bg-black rounded-sm;
+  @apply bg-black rounded-sm max-w-full;
 }
 
 .brawler-avatar__img {
@@ -190,7 +190,7 @@ details.stats-card-expander > summary::-webkit-details-marker {
 }
 
 .brawler-avatar__stats {
-  @apply text-xs whitespace-no-wrap tracking-tighter;
+  @apply text-xs whitespace-no-wrap tracking-tighter text-center;
 }
 
 /** addition to .container */

@@ -83,6 +83,7 @@ export interface Player {
   trophies: number;
   winrates: Partial<PlayerWinrates>;
   clubName: string;
+  qualifiedFromChampionshipChallenge: boolean;
   stats: PlayerLifetimeStats;
   history: PlayerHistoryEntry[];
   brawlers: {

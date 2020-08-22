@@ -1,6 +1,7 @@
 export interface BattleMeasures {
   timestamp: string;
   picks: number;
+  picksWeighted: number;
   duration: number;
   rank: number;
   rank1Rate: number;
@@ -11,6 +12,7 @@ export interface BattleMeasures {
 }
 
 export interface PlayerMeasures {
+  name: string;
   timestamp: string;
   expPoints: number;
   trophies: number;

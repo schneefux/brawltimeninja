@@ -127,9 +127,9 @@ export const metaStatMaps = {
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
     winRate: 'Win',
-    rank1Rate: 'SD Won',
+    rank1Rate: 'SD Win',
     level: 'Level',
-    starRate: 'Stars',
+    starRate: 'Star',
     picks: 'Picks',
     pickRate: 'Picked',
     useRate: 'Used',
@@ -241,6 +241,22 @@ export function getBestBrawlers(brawlers: BrawlerMetaStatistics[]): BrawlerMetaS
   const sortProp = <string>metaStatMaps.propPriority.find(prop => prop in brawlers[0].stats)
   brawlers.sort((brawler1, brawler2) => brawler2.stats[sortProp] - brawler1.stats[sortProp])
   return brawlers
+}
+
+export function getBestBrawlersByEachMetric(brawlers: BrawlerMetaStatistics[]): { [stat: string]: BrawlerMetaStatistics } {
+  const props = Object.keys(metaStatMaps.labels)
+  const max = {} as { [key: string]: BrawlerMetaStatistics }
+
+  brawlers.forEach((entry) => {
+    props.forEach((prop) => {
+      if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
+        entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
+        max[prop] = entry
+      }
+    })
+  })
+
+  return max
 }
 
 export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {

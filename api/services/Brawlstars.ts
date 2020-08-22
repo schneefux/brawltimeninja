@@ -2,7 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import History from '../model/History';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
-import { MapMap, BrawlerMetaEntry, StarpowerMetaEntry, GadgetMetaEntry, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
+import { MapMap, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
 import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow } from '~/model/Clicker';
 import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player } from '~/model/Api';
 
@@ -145,7 +145,7 @@ export default class BrawlstarsService {
         pickRate: entry.picks / sumPicks,
         useRate: entry.picksWeighted / sumPicksWeighted,
       },
-    }) as BrawlerMetaEntry)
+    }) as BrawlerMetaStatistics)
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
@@ -173,7 +173,7 @@ export default class BrawlstarsService {
         starRate: entry.starRate,
         rank1Rate: entry.rank1Rate,
       },
-    }) as StarpowerMetaEntry)
+    }) as StarpowerMetaStatistics)
   }
 
   public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string) {
@@ -201,7 +201,7 @@ export default class BrawlstarsService {
         starRate: entry.starRate,
         rank1Rate: entry.rank1Rate,
       },
-    }) as GadgetMetaEntry)
+    }) as GadgetMetaStatistics)
   }
 
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {

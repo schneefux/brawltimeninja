@@ -9,6 +9,7 @@ function encodeQuery(data: { [key: string]: number|string }) {
 }
 
 export default Vue.extend({
+  name: 'MediaImg',
   functional: true,
   props: {
     clazz: {

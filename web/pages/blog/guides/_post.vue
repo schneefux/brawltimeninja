@@ -50,14 +50,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import MediaImg from '@/components/media-img'
 import { Post } from '../../../model/Web'
 
 export default Vue.extend({
   name: 'PostPage',
-  components: {
-    MediaImg,
-  },
   head() {
     const post = this.post as any
     const description = `Brawl Stars Guides written by ${post.author}. ${post.description}`

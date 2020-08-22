@@ -1,5 +1,5 @@
 import Vue, { PropType } from 'vue'
-import Event from '~/components/event'
+import EventCard from '~/components/event-card'
 import { hoursSinceDate } from '~/lib/util'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import { Battle } from '~/model/Api'
@@ -108,8 +108,8 @@ export default Vue.extend({
       content: () => content,
     }
 
-    const event = Event as any
-    return <event
+    const eventCard = EventCard as any
+    return <eventCard
         mode={battle.event.mode}
         map={battle.event.map}
         size="w-80"

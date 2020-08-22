@@ -219,7 +219,7 @@
       </div>
 
       <div class="home-section-content">
-        <event
+        <event-card
           v-for="event in currentEvents"
           :key="event.id"
           :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
@@ -264,7 +264,7 @@
               </nuxt-link>
             </div>
           </template>
-        </event>
+        </event-card>
       </div>
 
       <div
@@ -351,9 +351,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest } from '../lib/util'
+import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric } from '../lib/util'
 import { ActiveEvent } from '../model/Brawlstars'
-import { BrawlerMetaEntry, MapMetaMap } from '../model/MetaEntry'
+import { MapMetaMap } from '../model/MetaEntry'
+import { BrawlerMetaStatistics } from '../model/Web'
 
 function playerToRoute(player) {
   return {
@@ -362,22 +363,6 @@ function playerToRoute(player) {
       tag: player.tag,
     },
   }
-}
-
-function getTopBrawlers(brawlerMeta: BrawlerMetaEntry[]) {
-  const props = Object.keys(metaStatMaps.labels)
-  const max = {} as { [key: string]: BrawlerMetaEntry }
-
-  brawlerMeta.forEach((entry) => {
-    props.forEach((prop) => {
-      if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
-        entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
-        max[prop] = entry
-      }
-    })
-  })
-
-  return max
 }
 
 export default Vue.extend({
@@ -410,7 +395,7 @@ export default Vue.extend({
       loadHelpVideo: false,
       currentEvents: [] as ActiveEvent[],
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
-      topBrawlers: {} as { [key: string]: BrawlerMetaEntry },
+      topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
       bsuArticles: [] as { title: string, link: string, contentSnippet: string }[],
       playerToRoute,
       metaStatMaps,
@@ -461,10 +446,10 @@ export default Vue.extend({
   async asyncData({ $axios }) {
     const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })) as { current: ActiveEvent[], upcoming: ActiveEvent[] }
     const mapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
-    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ([])) as BrawlerMetaEntry[]
+    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ([])) as BrawlerMetaStatistics[]
     const bsuArticles = await $axios.$get('/api/partners/bsu').catch(() => []) as { title: string, link: string, contentSnippet: string }[]
     const bestByEvent = getBest(mapMeta)
-    const topBrawlers = getTopBrawlers(brawlerMeta)
+    const topBrawlers = getBestBrawlersByEachMetric(brawlerMeta)
     return {
       currentEvents: events.current,
       bestByEvent,

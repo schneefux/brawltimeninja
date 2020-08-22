@@ -9,15 +9,28 @@
     >
       <h1 class="page-h1">Brawl Stars Brawler Tier List</h1>
       <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
-      <p>
-        See also the
-        <nuxt-link to="/tier-list/gadgets" class="link inline-block">
-          Gadget Tier List
-        </nuxt-link> or the
-        <nuxt-link to="/tier-list/starpowers" class="link inline-block">
-          Star Power Tier List
-        </nuxt-link>.
-      </p>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'gadgets'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">Gadget and Star Power Tier List</h2>
+    </div>
+
+    <div class="section flex flex-wrap justify-center">
+      <best-starpowers-card
+        :top-starpowers="topStarpowers"
+        kind="starpowers"
+      ></best-starpowers-card>
+
+      <best-starpowers-card
+        :top-starpowers="topGadgets"
+        kind="gadgets"
+      ></best-starpowers-card>
     </div>
 
     <adsense
@@ -49,39 +62,11 @@
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
           class="px-2"
         >
-          <event :mode="mode" actions>
-            <template v-slot:content>
-              <div class="brawler-avatars my-4">
-                <div
-                  v-for="brawler in topBrawlersByMode[mode].slice(0, 5)"
-                  :key="brawler.id"
-                  class="brawler-avatars__element"
-                >
-                  <div class="brawler-avatar">
-                    <media-img
-                      :path="`/brawlers/${brawler.id}/avatar`"
-                      size="160"
-                      clazz="brawler-avatar__img"
-                    />
-                    <p class="brawler-avatar__stats">
-                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-slot:actions>
-              <div class="flex justify-end">
-                <nuxt-link
-                  :to="`/tier-list/mode/${camelToKebab(mode)}`"
-                  class="button button-md"
-                >
-                  Open
-                </nuxt-link>
-              </div>
-            </template>
-          </event>
+          <mode-best-brawlers-card
+            :mode="mode"
+            :top-brawlers="topBrawlersByMode[mode]"
+          >
+          </mode-best-brawlers-card>
         </nuxt-link>
       </div>
 
@@ -146,8 +131,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
-import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted } from '../../../lib/util'
-import { BrawlerMetaEntry, ModeMetaMap } from '../../../model/MetaEntry'
+import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted, getBestBrawlersByEachMetric } from '../../../lib/util'
+import { BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Web'
+import { ModeMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   name: 'BrawlerMetaPage',
@@ -166,8 +152,10 @@ export default Vue.extend({
       metaStatMaps,
       camelToKebab,
       formatMode,
-      brawlerMeta: [] as BrawlerMetaEntry[],
+      brawlerMeta: [] as BrawlerMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
+      starpowerMeta: [] as StarpowerMetaStatistics[],
+      gadgetMeta: [] as GadgetMetaStatistics[],
       trophyRange: [0, 10],
       showAllModes: false,
     }
@@ -194,6 +182,28 @@ export default Vue.extend({
         link: `/tier-list/brawler/${brawler.id}`,
       }))
     },
+    topStarpowers(): { [stat: string]: BrawlerMetaStatistics } {
+      const starpowers = this.starpowerMeta
+        .filter(s => s.starpowerName !== '')
+        .map(s => ({
+          id: s.id,
+          name: s.starpowerName,
+          sampleSize: s.sampleSize,
+          stats: s.stats,
+        }))
+      return getBestBrawlersByEachMetric(starpowers)
+    },
+    topGadgets(): { [stat: string]: BrawlerMetaStatistics } {
+      const gadgets = this.gadgetMeta
+        .filter(s => s.gadgetName !== '')
+        .map(s => ({
+          id: s.id,
+          name: s.gadgetName,
+          sampleSize: s.sampleSize,
+          stats: s.stats,
+        }))
+      return getBestBrawlersByEachMetric(gadgets)
+    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
@@ -204,11 +214,15 @@ export default Vue.extend({
     },
   },
   async asyncData({ $axios }) {
-    const modeMeta = await $axios.$get('/api/meta/mode')
-    const brawlerMeta = await $axios.$get('/api/meta/brawler')
+    const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
+    const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
+    const starpowerMeta = await $axios.$get(`/api/meta/starpower`) as StarpowerMetaStatistics[]
+    const gadgetMeta = await $axios.$get(`/api/meta/gadget`) as GadgetMetaStatistics[]
     return {
       modeMeta,
       brawlerMeta,
+      starpowerMeta,
+      gadgetMeta,
     }
   },
   methods: {
