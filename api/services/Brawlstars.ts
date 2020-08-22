@@ -2,9 +2,9 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import History from '../model/History';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
-import { MapMap, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
-import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow } from '~/model/Clicker';
-import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player } from '~/model/Api';
+import { MapMap, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
+import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
+import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -146,6 +146,22 @@ export default class BrawlstarsService {
         useRate: entry.picksWeighted / sumPicksWeighted,
       },
     }) as BrawlerMetaStatistics)
+  }
+
+  public async getBrawlerStatistics(name: string) {
+    // name is validated by clicker
+    if (clickerUrl == '') {
+      return [];
+    }
+
+    return await request<BrawlerStatisticsRows>(
+      '/brawler/' + name,
+      clickerUrl,
+      'fetch_brawler_statistics',
+      {},
+      {},
+      60000,
+    );
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {

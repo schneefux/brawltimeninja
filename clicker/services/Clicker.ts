@@ -5,7 +5,7 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows, BrawlerTrophyMetaRow, TotalTrophyMetaRow, BrawlerStatisticsRows } from '~/model/Clicker';
+import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow } from '~/model/Clicker';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -858,40 +858,33 @@ export default class ClickerService {
       brawlerName: string
     }
     const brawlers = await this.query<BrawlerNameQuery>(
-      `SELECT brawler_name AS brawlerName FROM brawltime.map_meta`,
+      `SELECT DISTINCT brawler_name AS brawlerName FROM brawltime.map_meta`,
       'brawler.names')
       .then(data => data.map(row => row.brawlerName))
     if (!brawlers.includes(brawlerName)) {
       throw new Error('Invalid brawler name ' + brawlerName)
     }
 
-    interface BrawlerByTrophyQuery extends BattleMeasuresAggregation {
-      brawlerName: string
+    interface ByTrophyQuery extends BattleMeasuresAggregation {
       trophyrange: string
     }
-    const brawlerByTrophies = await this.query<BrawlerByTrophyQuery>(`
+    const brawlerByTrophies = await this.query<ByTrophyQuery>(`
         SELECT
-          brawler_name AS brawlerName,
           brawler_trophyrange AS trophyrange,
           ${battleMeasuresAggregation}
         FROM brawltime.map_meta
         WHERE ${sliceSeason()}
-        AND brawlerName=${brawlerName}
+        AND brawler_name='${brawlerName}'
         GROUP BY brawler_trophyrange
         ORDER BY picks
       `, 'brawler.by-trophies')
       .then(data => data.map(row => ({
-        brawlerName: row.brawlerName,
         trophyrange: parseInt(row.trophyrange) * 100,
         ...parseBattleMeasures(row),
-      }) as BrawlerTrophyMetaRow))
+      }) as TrophyRow))
 
-    interface TotalByTrophyQuery extends BattleMeasuresAggregation {
-      trophyrange: string
-    }
-    const totalByTrophies = await this.query<TotalByTrophyQuery>(`
+    const totalByTrophies = await this.query<ByTrophyQuery>(`
         SELECT
-          brawler_name AS brawlerName,
           brawler_trophyrange AS trophyrange,
           ${battleMeasuresAggregation}
         FROM brawltime.map_meta
@@ -902,7 +895,7 @@ export default class ClickerService {
       .then(data => data.map(row => ({
         trophyrange: parseInt(row.trophyrange) * 100,
         ...parseBattleMeasures(row),
-      }) as TotalTrophyMetaRow))
+      }) as TrophyRow))
 
     return <BrawlerStatisticsRows>{
       brawlerByTrophies,

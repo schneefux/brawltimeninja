@@ -26,6 +26,15 @@ export interface BrawlerMetaRow extends BattleMeasures {
   brawlerName: string;
 }
 
+export interface TrophyRow extends BattleMeasures {
+  trophyrange: number;
+}
+
+export interface BrawlerStatisticsRows {
+  brawlerByTrophies: TrophyRow[]
+  totalByTrophies: TrophyRow[]
+}
+
 export interface StarpowerMetaRow extends BattleMeasures {
   brawlerId: number;
   brawlerName: string;

@@ -113,6 +113,17 @@ router.get('/meta/brawler', async (ctx, next) => {
   await next();
 });
 
+router.get('/brawler/:name', async (ctx, next) => {
+  try {
+    ctx.body = await service.getBrawlerStatistics(ctx.params.name.toUpperCase());
+    ctx.set('Cache-Control', 'public, max-age=600');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/meta/starpower', async (ctx, next) => {
   try {
     ctx.body = await service.getStarpowerMeta(getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));

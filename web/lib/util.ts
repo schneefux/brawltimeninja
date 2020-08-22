@@ -2,7 +2,7 @@
 
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 import { ActiveEvent } from "~/model/Brawlstars";
-import { BrawlerMetaStatistics } from "~/model/Web";
+import { BrawlerMetaStatistics } from "~/model/Api";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
