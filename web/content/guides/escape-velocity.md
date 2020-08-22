@@ -3,7 +3,7 @@ title: "Gem Grab: Escape Velocity"
 author: kinglionleo
 image: /images/blog/guides/escape-velocity_small.jpg
 description: How to poke your enemy team in Escape Velocity with Gene, Shelly and Carl.
-mode: Gem Grab
+mode: gemGrab
 map: Escape Velocity
 ---
 

@@ -3,7 +3,7 @@ title: "Gem Grab: Undermine"
 author: kinglionleo
 image: /images/blog/guides/undermine_small.jpg
 description: Hide in the bushes and protect the Undermine with Pam, Nita and Leon.
-mode: Gem Grab
+mode: gemGrab
 map: Undermine
 ---
 

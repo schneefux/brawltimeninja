@@ -3,7 +3,7 @@ title: "Heist: Safe Zone"
 author: PedroGuijarro_
 image: /images/blog/guides/safe-zone_small.jpg
 description: Siege or play aggressively with one of three compositions on Safe Zone.
-mode: Heist
+mode: heist
 map: Safe Zone
 ---
 

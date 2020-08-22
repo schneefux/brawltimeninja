@@ -2,7 +2,7 @@
 title: Brawl Ball Tips
 author: nekkedman
 description: Brawl Ball is not just about killing Brawlers.
-mode: Brawl Ball
+mode: brawlBall
 ---
 
 If you learn a few simple tips and tricks, getting goals and defending them will be much easier.

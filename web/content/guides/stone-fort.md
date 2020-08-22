@@ -3,7 +3,7 @@ title: "Gem Grab: Stone Fort"
 author: kinglionleo
 image: /images/blog/guides/stone-fort_small.jpg
 description: Hold the Stone Fort with long range attacks and Frank, Carl and Rico.
-mode: Gem Grab
+mode: gemGrab
 map: Stone Fort
 ---
 

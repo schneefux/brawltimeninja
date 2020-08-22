@@ -2,7 +2,7 @@
 title: Solo Showdown Guide
 author: zeibb
 description: The following guide is a break down of competitive Solo Showdown.
-mode: Solo Showdown
+mode: soloShowdown
 ---
 
 The following guide is a break down of Solo Showdown (SSD), in which my aim is to dissect each aspect of competitive Showdown.
