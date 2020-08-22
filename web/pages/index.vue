@@ -61,24 +61,16 @@
 
     <div class="mt-3 text-center">
       <details
-        ref="videoHelpDropdown"
+        ref="helpDropdown"
         class="mx-6"
       >
-        <summary @click="loadHelpVideo = true">
+        <summary>
           What is my tag?
         </summary>
-        <youtube
-          v-if="loadHelpVideo"
-          ref="helpVideo"
-          class="mt-3 max-w-full"
-          width="480"
-          height="271"
-          video-id="LuUmyorhSIQ"
-          autoplay
-          mute
-          @ready="$ga.event('player', 'play_video', 'search', { nonInteraction: true })"
-          @ended="$refs.helpVideo.player.playVideo()"
-        />
+        <img
+          src="~/assets/images/tag-help.jpg"
+          class="mt-3 w-120 max-w-full"
+        >
       </details>
     </div>
 
@@ -392,7 +384,6 @@ export default Vue.extend({
       loading: false,
       error: undefined as string|undefined,
       invalidTagAttempts: 0,
-      loadHelpVideo: false,
       currentEvents: [] as ActiveEvent[],
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
@@ -506,8 +497,7 @@ export default Vue.extend({
 
         this.invalidTagAttempts++
         if (this.invalidTagAttempts === 1) {
-          this.$refs.videoHelpDropdown.setAttribute('open', '')
-          this.loadHelpVideo = true
+          this.$refs.helpDropdown.setAttribute('open', '')
         }
 
         return
