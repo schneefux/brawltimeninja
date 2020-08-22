@@ -6,7 +6,6 @@ const serverConfig = {
   devtool: false,
   entry: {
     api: './server.ts',
-    generate: './generate.ts',
   },
   output: {
     filename: '[name].js',
