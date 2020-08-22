@@ -224,11 +224,12 @@
 
     <client-only>
       <adsense
-        v-if="!isApp"
+        v-if="!isApp && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%' : 'display: block'"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
         ins-class="w-full ad-section"
-        data-ad-format="auto"
+        data-ad-format="horizontal"
         data-full-width-responsive
       />
     </client-only>
@@ -364,7 +365,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp"
+        v-if="!isApp && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%' : 'display: block'"
         id="ezoic-pub-ad-placeholder-101"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
@@ -478,7 +480,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && player.battles.length > 0"
+        v-if="!isApp && player.battles.length > 0 && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%' : 'display: block'"
         id="ezoic-pub-ad-placeholder-102"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
@@ -770,6 +773,7 @@ export default {
       player: state => state.player,
       totalBrawlers: state => state.totalBrawlers,
       installBannerDismissed: state => state.installBannerDismissed,
+      testGroup: state => state.testGroup,
       isApp: state => state.isApp,
     }),
     ...mapGetters({

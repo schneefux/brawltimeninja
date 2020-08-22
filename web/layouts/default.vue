@@ -222,6 +222,7 @@ export default Vue.extend({
       adsAllowed: (state: any) => state.adsAllowed as boolean,
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
       consentPopupVisible: (state: any) => state.consentPopupVisible as boolean,
+      testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
@@ -368,10 +369,29 @@ export default Vue.extend({
       setIsApp: 'setIsApp',
       setInstallPrompt: 'setInstallPrompt',
       clearInstallPrompt: 'clearInstallPrompt',
+      setTestGroup: 'setTestGroup',
     }),
     ...mapActions({
       install: 'install',
     })
+  },
+  watch: {
+    // called after vuex-persist has loaded
+    version() {
+      // custom A/B test flag
+      if (this.testGroup == undefined) {
+        if (Math.random() < 0.33) {
+          this.setTestGroup('player-only-top-ad')
+        } else if (Math.random() < 0.33) {
+          this.setTestGroup('player-small-ads')
+        } else {
+          this.setTestGroup('control')
+        }
+        console.log('user assigned to test group', this.testGroup)
+      }
+      this.$ga.set('dimension5', this.testGroup)
+      console.log('user is part of test group', this.testGroup)
+    },
   },
 })
 </script>

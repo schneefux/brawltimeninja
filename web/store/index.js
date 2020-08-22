@@ -65,6 +65,7 @@ export const state = () => ({
   bsuArticlesLoaded: false,
   isApp: false,
   installPrompt: undefined,
+  testGroup: undefined,
 })
 
 export const getters = {
@@ -152,6 +153,9 @@ export const mutations = {
   },
   clearInstallPrompt(state) {
     state.installPrompt = undefined
+  },
+  setTestGroup(state, group) {
+    state.testGroup = group
   },
 }
 
