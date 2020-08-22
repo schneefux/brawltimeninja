@@ -41,7 +41,7 @@ function sliceSeason() {
 }
 
 function sloppyParseFloat(number: string) {
-  return Math.floor(parseFloat(number) * 100) / 100
+  return Math.floor(parseFloat(number) * 10000) / 10000
 }
 
 /**
