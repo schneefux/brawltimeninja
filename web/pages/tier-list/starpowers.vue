@@ -24,6 +24,7 @@
     <div class="section">
       <meta-grid
         :entries="starpowers"
+        :sample-size-threshold="1000"
         link-text="More Statistics"
         ga-category="starpower_meta"
       />

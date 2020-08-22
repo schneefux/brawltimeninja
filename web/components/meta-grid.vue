@@ -149,8 +149,6 @@
 import Vue, { PropType } from 'vue'
 import { formatMode, metaStatMaps, MetaGridEntry } from '../lib/util'
 
-const sampleSizeThreshold = 200
-
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
 }
@@ -170,7 +168,7 @@ function compare1(stat: string) {
   return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
 }
 
-function groupStatIntoTiers(entries: MetaGridEntry[], stat: string): TierList {
+function groupStatIntoTiers(entries: MetaGridEntry[], stat: string, sampleSizeThreshold: number): TierList {
   if (entries.some(b => !(stat in b.stats))) {
     return {
       '?': entries
@@ -232,6 +230,10 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    sampleSizeThreshold: {
+      type: Number,
+      default: 200
+    },
   },
   data() {
     const defaultStat = (this.entries.length === 0 ? ''
@@ -241,7 +243,6 @@ export default Vue.extend({
       selectedStat: defaultStat,
       formatMode,
       metaStatMaps,
-      sampleSizeThreshold,
     }
   },
   computed: {
@@ -263,7 +264,7 @@ export default Vue.extend({
         }))
     },
     tiersBySelectedStat(): TierList {
-      return groupStatIntoTiers(this.entries, this.selectedStat)
+      return groupStatIntoTiers(this.entries, this.selectedStat, this.sampleSizeThreshold)
     },
   },
   methods: {

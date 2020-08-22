@@ -24,6 +24,7 @@
     <div class="section">
       <meta-grid
         :entries="gadgets"
+        :sample-size-threshold="1000"
         ga-category="gadget_meta"
         link-text="More Statistics"
       />
