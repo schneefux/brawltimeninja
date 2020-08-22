@@ -68,7 +68,7 @@ export default Vue.extend({
           return {}
         }
 
-        const perc = (v) => Math.round(v * 100)
+        const perc = (v) => Math.round(v * 100 * 100) / 100
         const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
         const format = (v) => signed(perc(v))
 
@@ -77,6 +77,14 @@ export default Vue.extend({
           .forEach(([prop, value]) => stats[prop] = format(<number>value - brawlerWithout.stats[prop]))
         return stats
       }
+      const sampleSize = (gadget) => {
+        const brawlerWithout = this.gadgetMeta
+          .find(b => b.gadgetName == '' && b.brawlerId == gadget.brawlerId)
+        if (brawlerWithout == undefined) {
+          return 0
+        }
+        return Math.min(gadget.sampleSize, brawlerWithout.sampleSize)
+      }
 
       return this.gadgetMeta
         .filter(g => g.gadgetName !== '')
@@ -84,7 +92,7 @@ export default Vue.extend({
           id: gadget.id,
           title: gadget.gadgetName,
           brawler: gadget.brawlerName,
-          sampleSize: gadget.sampleSize,
+          sampleSize: sampleSize(gadget),
           stats: statsToDiffs(gadget),
           icon: `/gadgets/${gadget.id}`,
           link: `/tier-list/brawler/${gadget.brawlerName}`,

@@ -68,7 +68,7 @@ export default Vue.extend({
           return {}
         }
 
-        const perc = (v) => Math.round(v * 100)
+        const perc = (v) => Math.round(v * 100 * 100) / 100
         const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
         const format = (v) => signed(perc(v))
 
@@ -77,6 +77,14 @@ export default Vue.extend({
           .forEach(([prop, value]) => stats[prop] = format(<number>value - brawlerWithout.stats[prop]))
         return stats
       }
+      const sampleSize = (starpower) => {
+        const brawlerWithout = this.starpowerMeta
+          .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
+        if (brawlerWithout == undefined) {
+          return 0
+        }
+        return Math.min(starpower.sampleSize, brawlerWithout.sampleSize)
+      }
 
       return this.starpowerMeta
         .filter(s => s.starpowerName !== '')
@@ -84,7 +92,7 @@ export default Vue.extend({
           id: starpower.id,
           title: starpower.starpowerName,
           brawler: starpower.brawlerName,
-          sampleSize: starpower.sampleSize,
+          sampleSize: sampleSize(starpower),
           stats: statsToDiffs(starpower),
           icon: `/starpowers/${starpower.id}`,
           link: `/tier-list/brawler/${starpower.brawlerName}`,
