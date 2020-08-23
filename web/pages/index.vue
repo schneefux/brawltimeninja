@@ -291,58 +291,6 @@
         data-full-width-responsive
       />
     </client-only>
-
-    <div
-      v-show="bsuArticles.length > 0 && !isApp"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'news_feed'),
-        once: true,
-      }"
-      class="home-section container"
-    >
-      <div class="home-section-heading-container">
-        <div class="home-section-heading-left">
-          News from Brawl Stars UP!
-        </div>
-        <div class="home-section-heading-right">
-          <a
-            href="https://brawlstarsup.com/"
-            class="link"
-            target="_blank"
-            rel="noopener nofollow sponsored"
-            @click="$ga.event('home', 'bsu', 'click_visit')"
-          >
-            Visit BSU
-          </a>
-        </div>
-      </div>
-
-      <div class="home-section-content">
-        <div
-          v-for="article in bsuArticles"
-          :key="article.link"
-          class="link-card flex flex-col"
-        >
-          <a
-            :href="article.link"
-            class="w-64"
-            target="_blank"
-            rel="noopener nofollow sponsored"
-            @click="$ga.event('home', 'bsu', 'click_article')"
-          >
-            <p class="link-light mt-4 text-center text-xl">
-              {{ article.title }}
-            </p>
-            <p class="mt-4 text-black">
-              {{ article.contentSnippet }}…
-              <span class="link-light">
-                Read more
-              </span>
-            </p>
-          </a>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -393,7 +341,6 @@ export default Vue.extend({
       currentEvents: [] as ActiveEvent[],
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
-      bsuArticles: [] as { title: string, link: string, contentSnippet: string }[],
       playerToRoute,
       metaStatMaps,
       relativeTimeUntil,
@@ -444,14 +391,12 @@ export default Vue.extend({
     const events = await $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })) as { current: ActiveEvent[], upcoming: ActiveEvent[] }
     const mapMeta = await $axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
     const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ([])) as BrawlerMetaStatistics[]
-    const bsuArticles = await $axios.$get('/api/partners/bsu').catch(() => []) as { title: string, link: string, contentSnippet: string }[]
     const bestByEvent = getBest(mapMeta)
     const topBrawlers = getBestBrawlersByEachMetric(brawlerMeta)
     return {
       currentEvents: events.current,
       bestByEvent,
       topBrawlers,
-      bsuArticles,
     }
   },
   created() {
@@ -543,7 +488,6 @@ export default Vue.extend({
     }),
     ...mapActions({
       loadPlayer: 'loadPlayer',
-      loadBsuArticles: 'loadBsuArticles',
     }),
   },
 })

@@ -61,8 +61,6 @@ export const state = () => ({
   consentPopupVisible: true,
   installBannerDismissed: false,
   totalBrawlers: 38,
-  bsuArticles: [],
-  bsuArticlesLoaded: false,
   isApp: false,
   installPrompt: undefined,
   testGroup: undefined,
@@ -140,10 +138,6 @@ export const mutations = {
   },
   dismissInstallBanner(state) {
     state.installBannerDismissed = true
-  },
-  setBsuArticles(state, articles) {
-    state.bsuArticles = articles
-    state.bsuArticlesLoaded = true
   },
   setIsApp(state) {
     state.isApp = true

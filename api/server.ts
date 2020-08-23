@@ -4,14 +4,12 @@ import Router from 'koa-router';
 
 import statusRoutes from './routes/status';
 import brawlstarsRoutes from './routes/brawlstars';
-import partnerRoutes from './routes/partners';
 
 const app = new Koa();
 const router = new Router();
 const path = '/api';
 
 router.use(path + '/status', statusRoutes);
-router.use(path + '/partners', partnerRoutes);
 router.use(path, brawlstarsRoutes);
 
 app.use(cors({ origin: '*' })); // TODO for development only
