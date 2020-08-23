@@ -53,7 +53,7 @@
                     v-if="entry.icon"
                     :path="entry.icon"
                     size="80"
-                    clazz="h-6 md:h-8 absolute top-0 right-0"
+                    clazz="h-6 md:h-8 absolute top-0 right-0 bg-black bg-opacity-75 rounded-full p-1"
                   />
                   <p class="my-1 font-semibold text-lg text-center">
                     {{ !(selectedStat in entry.stats) || tier == '?' ? '?' : typeof entry.stats[selectedStat] == 'string' ? entry.stats[selectedStat] : metaStatMaps.formatters[selectedStat](entry.stats[selectedStat]) }}
