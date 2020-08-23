@@ -144,7 +144,7 @@
       }"
     >
       <h2 class="page-h2">
-        Trophy Graphs
+        Surge Trophy Graphs
       </h2>
     </div>
 
