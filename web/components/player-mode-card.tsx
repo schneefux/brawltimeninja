@@ -85,7 +85,7 @@ export default Vue.extend({
               <li class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-black text-center">
                 <media-img
                   path={'/brawlers/' + brawler + '/avatar'}
-                  size="80"
+                  size="160"
                   alt={brawler}
                   clazz="h-8"
                 ></media-img>

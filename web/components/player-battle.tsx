@@ -65,7 +65,7 @@ export default Vue.extend({
             >
               <media-img
                 path={'/brawlers/' + mate.brawler + '/avatar'}
-                size="80"
+                size="160"
                 clazz="h-8"
               ></media-img>
                 <div class="absolute top-0 right-0 w-12 text-right m-px">
