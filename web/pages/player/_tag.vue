@@ -294,9 +294,10 @@
 
     <div class="section">
       <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex md:flex-wrap">
-        <div
+        <lazy
           v-for="(stats, index) in playerModeStats"
           :key="stats.mode"
+          :render="showAllModes || index <= 3"
           :class="{
             'md:hidden': !showAllModes && index > 3,
           }"
@@ -308,7 +309,7 @@
             :active-map-meta="activeMapMeta"
             :player-brawlers="Object.values(player.brawlers)"
           ></player-mode-card>
-        </div>
+        </lazy>
       </div>
 
       <div class="mt-1 w-full flex justify-end">
@@ -455,14 +456,16 @@
         </div>
 
         <div class="w-full flex md:flex-wrap">
-          <div
+          <lazy
             v-for="(battle, index) in player.battles"
             :key="battle.timestamp"
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
+            :render="index <= battlePageSize"
             class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
           >
             <player-battle :battle="battle" :playerTag="player.tag" />
-          </div>
+            <div class="w-80" style="height: 214px" slot="placeholder"></div>
+          </lazy>
         </div>
 
         <div
@@ -517,7 +520,7 @@
 
     <div class="section">
       <div class="flex flex-wrap justify-between">
-        <div
+        <lazy
           v-for="brawler in brawlers"
           :key="brawler.id"
           class="card-wrapper w-full md:flex-1"
@@ -526,7 +529,8 @@
             :brawler="brawler"
             :brawler-winrates="player.winrates.brawler"
           />
-        </div>
+          <div class="w-80" style="height: 107px" slot="placeholder"></div>
+        </lazy>
       </div>
     </div>
 

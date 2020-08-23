@@ -53,7 +53,6 @@ export default Vue.extend({
         src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)}
         class={props.clazz}
         style={props.ztyle}
-        loading="lazy"
         {... { attrs: data.attrs } } />
     </picture>
   },

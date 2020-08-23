@@ -100,7 +100,7 @@ export default {
 
   components: [ {
     path: '~/components',
-    ignore: ['**/media-img.tsx'], // loaded by plugin instead
+    ignore: ['**/media-img.*', '**/lazy.*'], // loaded by plugin instead
   } ],
 
   router: {
