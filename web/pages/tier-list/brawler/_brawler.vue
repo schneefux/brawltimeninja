@@ -337,7 +337,6 @@ export default {
       const traces = [{
         x: trophyranges,
         y: useRates,
-        text: useRates,
         mode: 'lines+markers',
         type: 'scatter',
       }]
@@ -378,7 +377,6 @@ export default {
       const traces = [{
         x: trophyranges,
         y: winRates,
-        text: winRates,
         mode: 'lines+markers',
         type: 'scatter',
       }]
@@ -419,7 +417,6 @@ export default {
       const traces = [{
         x: trophyranges,
         y: starRates,
-        text: starRates,
         mode: 'lines+markers',
         type: 'scatter',
       }]
