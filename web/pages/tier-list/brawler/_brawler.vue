@@ -7,7 +7,7 @@
         once: true,
       }"
     >
-      <h1 class="page-h1">{{ brawlerName }}</h1>
+      <h1 class="page-h1">{{ brawlerName }} Statistics</h1>
     </div>
 
     <div
@@ -68,6 +68,15 @@
           </div>
         </div>
       </template>
+
+      <div class="mt-1 w-full flex justify-end">
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/starpowers"
+        >
+          Open Star Power Tier List
+        </nuxt-link>
+      </div>
     </div>
 
     <div
@@ -123,6 +132,15 @@
           </div>
         </div>
       </template>
+
+      <div class="mt-1 w-full flex justify-end">
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/gadgets"
+        >
+          Open Gadget Tier List
+        </nuxt-link>
+      </div>
     </div>
 
     <client-only>
@@ -174,6 +192,15 @@
           :options="trophiesStarRateChart.options"
           class="h-48 card md:max-w-lg"
         ></plotly>
+      </div>
+
+      <div class="mt-1 w-full flex justify-end">
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/brawler"
+        >
+          Open Brawler Tier List
+        </nuxt-link>
       </div>
     </div>
 
@@ -228,6 +255,15 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-1 w-full flex justify-end">
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/mode"
+        >
+          Open Mode Tier Lists
+        </nuxt-link>
+      </div>
     </div>
 
     <client-only>
@@ -277,9 +313,9 @@ const trophyGraphOptions = {
 export default {
   name: 'StarpowerMetaPage',
   head() {
-    const description = `${this.brawlerName} Brawl Stars stats. Star Power Tier List and Gadget Tier List with win rate and pick rates for all modes.`
+    const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Star Power and Gadget Tier List`,
+      title: `${this.brawlerName} Statistics`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
