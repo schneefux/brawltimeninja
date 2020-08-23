@@ -125,14 +125,16 @@
       </template>
     </div>
 
-    <adsense
-      id="ezoic-pub-ad-placeholder-108"
-      ins-class="w-full md:w-1/2 mt-4 mx-auto"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="8533352178"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        id="ezoic-pub-ad-placeholder-108"
+        ins-class="w-full md:w-1/2 mt-4 mx-auto"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="8533352178"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -206,18 +208,20 @@
               </span>
               <div class="card-props">
                 <table class="w-full">
-                  <tr
-                    v-for="(_, prop) in entry.stats"
-                    :key="prop"
-                    class="card-props whitespace-no-wrap"
-                  >
-                    <td class="card-prop-label">
-                      {{ metaStatMaps.labels[prop] }}
-                    </td>
-                    <td class="card-prop-value text-right pl-1">
-                      {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
-                    </td>
-                  </tr>
+                  <tbody>
+                    <tr
+                      v-for="(_, prop) in entry.stats"
+                      :key="prop"
+                      class="card-props whitespace-no-wrap"
+                    >
+                      <td class="card-prop-label">
+                        {{ metaStatMaps.labels[prop] }}
+                      </td>
+                      <td class="card-prop-value text-right pl-1">
+                        {{ metaStatMaps.formatters[prop](entry.stats[prop]) }}
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -226,15 +230,17 @@
       </div>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      id="ezoic-pub-ad-placeholder-109"
-      ins-class="w-full mt-6 mx-auto h-32"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="6837127123"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        id="ezoic-pub-ad-placeholder-109"
+        ins-class="w-full mt-6 mx-auto h-32"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6837127123"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
   </div>
 </template>
 
