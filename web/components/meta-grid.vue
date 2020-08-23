@@ -24,7 +24,7 @@
         <p class="mt-1">
           {{ metaStatMaps.descriptions[selectedStat] }}
         </p>
-        <p v-if="linkText.length == 0">
+        <p>
           Click on a Brawler to learn more about them.
         </p>
         <ul class="mt-2">
@@ -136,7 +136,7 @@
               class="link"
               itemprop="url"
             >
-              {{ linkText }}
+              More Statistics
             </nuxt-link>
           </template>
         </brawler-card>
@@ -221,10 +221,6 @@ export default Vue.extend({
     entries: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true,
-    },
-    linkText: {
-      type: String,
-      default: '',
     },
     gaCategory: {
       type: String,

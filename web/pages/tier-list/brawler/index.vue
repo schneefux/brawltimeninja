@@ -113,7 +113,6 @@
 
     <meta-grid
       :entries="brawlers"
-      link-text="More Statistics"
       ga-category="brawler_meta"
     />
 
