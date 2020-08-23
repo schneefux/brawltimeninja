@@ -49,7 +49,12 @@ export default Vue.extend({
     }
     return <picture>
       <source srcset={props.mediaUrl + props.path + '.webp' + query(props)} type="image/webp" />
-      <img src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)} class={props.clazz} style={props.ztyle} {... { attrs: data.attrs } } />
+      <img
+        src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)}
+        class={props.clazz}
+        style={props.ztyle}
+        loading="lazy"
+        {... { attrs: data.attrs } } />
     </picture>
   },
 })
