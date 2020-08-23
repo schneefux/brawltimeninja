@@ -162,7 +162,7 @@
       }"
     >
       <h2 class="page-h2">
-        Surge Trophy Graphs
+        {{ brawlerName }} Trophy Graphs
       </h2>
     </div>
 
