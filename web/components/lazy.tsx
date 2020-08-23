@@ -19,6 +19,12 @@ export default Vue.extend({
     }
   },
   render(h) {
+    if (this.render || this.visible) {
+      return <div>
+        { this.$slots.default }
+      </div>
+    }
+
     if (process.server) {
       // TODO it would be better to render the default slot
       // but nuxt re-renders on the client which creates a mismatch
@@ -27,7 +33,7 @@ export default Vue.extend({
       </div>
     }
 
-    if (this.render || this.visible || !('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window)) {
       return <div>
         { this.$slots.default }
       </div>
