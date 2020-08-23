@@ -8,14 +8,26 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    distance: {
+      type: String,
+      default: '500px'
+    },
   },
   data() {
     return {
-      visible: this.render || global.window == undefined || !('IntersectionObserver' in window),
+      visible: this.render,
     }
   },
   render(h) {
-    if (this.render || this.visible) {
+    if (process.server) {
+      // TODO it would be better to render the default slot
+      // but nuxt re-renders on the client which creates a mismatch
+      return <div>
+        { this.$slots.placeholder }
+      </div>
+    }
+
+    if (this.render || this.visible || !('IntersectionObserver' in window)) {
       return <div>
         { this.$slots.default }
       </div>
@@ -28,10 +40,9 @@ export default Vue.extend({
       }
     }
     const intersection = {
-      rootMargin: '500px 500px 500px 500px',
+      rootMargin: `${this.distance} ${this.distance} ${this.distance} ${this.distance}`,
     }
 
-    // TODO skip when SSR
     return <div vObserveVisibility={{ callback, intersection, once: true }}>
       { this.$slots.placeholder }
     </div>

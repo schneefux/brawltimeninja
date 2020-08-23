@@ -302,6 +302,7 @@
             'md:hidden': !showAllModes && index > 3,
           }"
           class="flex-0-auto mx-4 md:mx-auto w-64 md:w-1/2 h-48 md:h-auto card-wrapper"
+          distance="600px"
         >
           <player-mode-card
             :mode="stats.mode"
@@ -462,9 +463,10 @@
             :class="{ 'md:hidden': battlePage * battlePageSize <= index }"
             :render="index <= battlePageSize"
             class="flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2"
+            distance="640px"
           >
-            <player-battle :battle="battle" :playerTag="player.tag" />
             <div class="w-80" style="height: 214px" slot="placeholder"></div>
+            <player-battle :battle="battle" :playerTag="player.tag" />
           </lazy>
         </div>
 
@@ -524,12 +526,13 @@
           v-for="brawler in brawlers"
           :key="brawler.id"
           class="card-wrapper w-full md:flex-1"
+          distance="200px"
         >
+          <div class="w-80" style="height: 107px" slot="placeholder"></div>
           <player-brawler-card
             :brawler="brawler"
             :brawler-winrates="player.winrates.brawler"
           />
-          <div class="w-80" style="height: 107px" slot="placeholder"></div>
         </lazy>
       </div>
     </div>
