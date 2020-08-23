@@ -104,34 +104,17 @@
             </dt>
           </dl>
 
-          <div class="w-full max-w-xs mx-12 md:mx-4 my-3 md:w-40 relative">
-            <div
-              v-if="player.history.length > 1"
-              class="h-12"
-            >
-              <span class="absolute text-primary-light text-shadow-primary-darker text-lg font-semibold left-0 top-0">
-                {{ player.trophies >= player.history[0].trophies ? '+' : '' }}{{ player.trophies - player.history[0].trophies }}
-              </span>
-              <span class="absolute text-sm text-grey-light text-shadow-grey-darkest -mb-2 right-0 bottom-0">
-                since {{ daysSincePlayerHistoryStart }}d ago
-              </span>
-              <svg
-                viewBox="0 0 240 32"
-                preserveAspectRatio="none"
-                class="absolute left-0 bottom-0 w-full h-8 overflow-visible"
-              >
-                <polyline
-                  :points="playerHistoryPoints.map(([x, y]) => `${x*240},${(1-y)*32} `)"
-                  fill="none"
-                  stroke="#f2d024"
-                  stroke-width="4"
-                />
-              </svg>
-            </div>
-            <div v-else class="h-12 flex flex-col justify-center">
-              <span class="italic">
-                Come back later to see progress charts
-              </span>
+          <div class="w-full max-w-xs my-3 md:my-0 md:w-64 relative">
+            <div class="h-24 md:h-20 flex flex-col justify-center">
+              <client-only>
+                <player-history
+                  v-if="player.history.length > 1"
+                  :history="player.history"
+                ></player-history>
+                <span v-else class="italic">
+                  Come back later to see progress charts
+                </span>
+              </client-only>
             </div>
           </div>
         </div>
@@ -564,7 +547,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { formatMode, capitalizeWords, scaleMinMax, zip, hoursSinceDate, getBest } from '~/lib/util'
+import { formatMode, getBest } from '~/lib/util'
 
 export default {
   name: 'PlayerProfile',
@@ -592,7 +575,6 @@ export default {
       leaderboard: [],
       guides: [],
       additionalPlayerDataLoaded: false,
-      hoursSinceDate,
       formatMode,
     }
   },
@@ -634,21 +616,6 @@ export default {
       brawlerTrophies.sort()
       const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
       return medBrawlerTrophies * this.totalBrawlers
-    },
-    playerHistoryPoints() {
-      const dates = this.player.history.map(({ timestamp }) => Date.parse(timestamp))
-      const datesS = scaleMinMax(dates)
-      const trophies = this.player.history.map(({ trophies }) => trophies)
-      const trophiesS = scaleMinMax(trophies)
-      return zip(datesS, trophiesS)
-    },
-    daysSincePlayerHistoryStart() {
-      if (this.player.history.length == 0) {
-        return 0
-      }
-      const start = Date.parse(this.player.history[0].timestamp)
-      const now = (new Date()).getTime()
-      return Math.ceil((now - start) / 1000 / 3600 / 24)
     },
     relevantGuides() {
       return this.guides.slice(0, 3)
