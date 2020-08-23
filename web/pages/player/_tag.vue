@@ -107,10 +107,10 @@
           <div class="w-full max-w-xs my-3 md:my-0 md:w-64 relative">
             <div class="h-24 md:h-20 flex flex-col justify-center">
               <client-only>
-                <player-history
+                <history-graph
                   v-if="player.history.length > 1"
                   :history="player.history"
-                ></player-history>
+                ></history-graph>
                 <span v-else class="italic">
                   Come back later to see progress charts
                 </span>

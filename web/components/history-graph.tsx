@@ -1,6 +1,6 @@
 import Vue, { PropType } from 'vue'
 import { PlayerHistoryEntry } from '~/model/History'
-import { min, max, parseISO, formatRelative, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns'
+import { min, max, parseISO, formatRelative, eachMonthOfInterval } from 'date-fns'
 
 export default Vue.extend({
   functional: true,

@@ -1,6 +1,6 @@
 import Vue, { PropType } from 'vue'
-import { scaleMinMax, zip } from '~/lib/util'
 import BrawlerCard from '~/components/brawler-card'
+import HistoryGraph from '~/components/history-graph'
 import LeaderboardIcon from '~/assets/images/icon/leaderboards_optimized.png'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import PowerPointIcon from '~/assets/images/icon/powerpoint_optimized.png'
@@ -25,42 +25,13 @@ export default Vue.extend({
   },
   render(h, { props }) {
     const brawler = props.brawler
-    let daysSinceBrawlerHistoryStart = undefined as undefined|number
-    let brawlerHistoryPoints = [] as number[][]
     let history = undefined
     if (brawler.history.length > 1) {
-      const start = Date.parse(brawler.history[0].timestamp as string)
-      const now = (new Date()).getTime()
-      daysSinceBrawlerHistoryStart = Math.ceil((now - start) / 1000 / 3600 / 24)
-
-      const dates = brawler.history.map(({ timestamp }) => Date.parse(timestamp as string))
-      const datesS = scaleMinMax(dates)
-      const trophies = brawler.history.map(({ trophies }) => trophies)
-      const trophiesS = scaleMinMax(trophies)
-      brawlerHistoryPoints = zip(datesS, trophiesS)
-
-      history = <div class="flex items-center">
-        <div class="mt-2">
-          <svg
-            viewBox="0 0 128 32"
-            preserveAspectRatio="none"
-            class="w-full h-8 overflow-visible"
-          >
-            <polyline
-              points={brawlerHistoryPoints.map(([x, y]) => `${x*128},${(1-y)*32} `)}
-              fill="none"
-              stroke="#f2d024"
-              stroke-width="3"
-              stroke-linecap="round"
-            /> {/* stroke: secondary-dark */}
-          </svg>
-        </div>
-        <div class="w-24">
-          <p class="text-right text-sm text-grey-light font-semibold">
-            { brawler.trophies >= brawler.history[0].trophies ? '+' : '' }{ brawler.trophies - brawler.history[0].trophies } in { daysSinceBrawlerHistoryStart }d
-          </p>
-        </div>
-      </div>
+      history = <lazy class="w-full h-32 mt-2">
+        <HistoryGraph { ...{ attrs: {
+          history: brawler.history,
+        } } } />
+      </lazy>
     }
     const brawlerWinrate = Object.values(props.brawlerWinrates)
       .find((brawler) => brawler.name == props.brawler.name)
@@ -151,9 +122,9 @@ export default Vue.extend({
 
     const brawlerCard = BrawlerCard as any
     return <brawlerCard
-        title={brawler.name || ''}
-        brawler={brawler.id}
-        scopedSlots={slots}
-      />
+      scopedSlots={slots}
+      title={brawler.name || ''}
+      brawler={brawler.id}
+    />
   }
 })
