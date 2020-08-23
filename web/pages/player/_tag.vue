@@ -588,6 +588,7 @@ export default {
       activeMapMeta: {},
       leaderboard: [],
       guides: [],
+      additionalPlayerDataLoaded: false,
       hoursSinceDate,
       formatMode,
     }
@@ -810,9 +811,10 @@ export default {
     throw lastError
   },
   created() {
-    if (process.client) {
+    if (!this.additionalPlayerDataLoaded) {
       this.loadPlayerWinrates()
       this.loadPlayerHistory()
+      this.additionalPlayerDataLoaded = true
     }
   },
   async asyncData({ $axios, $content }) {
