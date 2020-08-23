@@ -20,6 +20,9 @@
       <h2 class="page-h2">
         {{ brawlerName }} Star Powers
       </h2>
+      <p>
+        The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
+      </p>
     </div>
 
     <media-img
@@ -77,6 +80,9 @@
       <h2 class="page-h2">
         Gadget Tier List
       </h2>
+      <p>
+        The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
+      </p>
     </div>
 
     <div class="section flex flex-wrap justify-center">
