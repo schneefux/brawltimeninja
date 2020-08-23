@@ -2,6 +2,7 @@
   <div class="flex flex-col items-center">
     <media-img
       :path="randomHero"
+      size="500"
       clazz="mt-16 lg:mt-12vh h-32 md:h-48 lg:h-64"
     ></media-img>
 
