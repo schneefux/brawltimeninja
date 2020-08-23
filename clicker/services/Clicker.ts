@@ -576,6 +576,13 @@ export default class ClickerService {
         return
       }
 
+      // FIXME API bug 2020-07-26
+      if (battle.event.mode == 'roboRumble' && battle.battle.result == undefined) {
+        // 'duration' is 1 (loss) or N/A (win)
+        battle.battle.result = !('duration' in battle.battle) ? 'victory' : 'defeat'
+        delete battle.battle.duration
+      }
+
       const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]))
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler
 
