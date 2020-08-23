@@ -8,6 +8,7 @@
         data-ad-format="auto"
         data-full-width-responsive
       />
+      <div style="height: 300px;" class="adswrapper ad-section w-full" slot="placeholder"></div>
     </client-only>
 
     <div
