@@ -148,14 +148,14 @@ export default class BrawlstarsService {
     }) as BrawlerMetaStatistics)
   }
 
-  public async getBrawlerStatistics(name: string) {
+  public async getBrawlerStatistics(id: string) {
     // name is validated by clicker
     if (clickerUrl == '') {
       return [];
     }
 
     return await request<BrawlerStatisticsRows>(
-      '/brawler/' + name,
+      '/brawler/' + id,
       clickerUrl,
       'fetch_brawler_statistics',
       {},

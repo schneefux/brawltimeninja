@@ -6,6 +6,7 @@ import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/Histor
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
 import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow } from '~/model/Clicker';
+import { brawlerId } from '../lib/util';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -860,17 +861,20 @@ export default class ClickerService {
       }) as BrawlerMetaRow))
   }
 
-  public async getBrawlerStatistics(brawlerName: string) {
+  public async getBrawlerStatistics(id: string) {
     interface BrawlerNameQuery {
       brawlerName: string
     }
-    const brawlers = await this.query<BrawlerNameQuery>(
+    const brawlerNames = await this.query<BrawlerNameQuery>(
       `SELECT DISTINCT brawler_name AS brawlerName FROM brawltime.map_meta`,
       'brawler.names')
       .then(data => data.map(row => row.brawlerName))
-    if (!brawlers.includes(brawlerName)) {
-      throw new Error('Invalid brawler name ' + brawlerName)
+
+    const brawlerIds = brawlerNames.map(name => brawlerId({ name }))
+    if (!brawlerIds.includes(id)) {
+      throw new Error('Invalid brawler id ' + id)
     }
+    const brawlerName = brawlerNames[brawlerIds.indexOf(id)]
 
     interface ByTrophyQuery extends BattleMeasuresAggregation {
       trophyrange: string
