@@ -4,6 +4,8 @@ import path from 'path';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 import { StarlistBrawler, StarlistMap, StarlistMode } from '~/model/Starlist';
+import { BrawlerData, DataSkill, DataCharacter, DataCard } from '~/model/Media';
+import { brawlerId } from '../lib/util';
 
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets');
 
@@ -97,6 +99,74 @@ export default class MediaService {
       console.log('Brawler model not found (local): ' + name);
       return null;
     }
+  }
+
+  public async getBrawlerInfo(name: string) {
+    const characters = JSON.parse(await fs.promises.readFile(assetDir + '/data/characters.json', 'utf-8')) as DataCharacter[]
+    const skills = JSON.parse(await fs.promises.readFile(assetDir + '/data/skills.json', 'utf-8')) as DataSkill[]
+    const cards = JSON.parse(await fs.promises.readFile(assetDir + '/data/cards.json', 'utf-8')) as DataCard[]
+    const tids = JSON.parse(await fs.promises.readFile(assetDir + '/data/tid.json', 'utf-8')) as {
+      [key: string]: string
+    }
+
+    const id = brawlerId({ name: name })
+    const character = characters.find(c => brawlerId({ name: (c.itemName || '') }) == id)
+    if (character == undefined) {
+      console.log('brawler not found: ' + name)
+      return null
+    }
+    const characterDescription = tids['TID_' + character.rawTID + '_DESC']
+    const mainSkill = skills.find(s => s.name.startsWith(character.name) + 'Weapon')!
+    const superSkill = skills.find(s => s.name.startsWith(character.name) + 'Ulti')!
+    const mainCard = cards.find(c => c.name == character.name + '_abi')!
+    const superCard = cards.find(c => c.name == character.name + '_ulti')!
+    const starCards = cards.filter(c => c.name.startsWith(character.name + '_unique'))
+    const gadgetCards = cards.filter(c => c.name.startsWith(character.name) && c.iconExportName?.startsWith('icon_item_'))
+    const mainDescription = tids['TID_' + mainCard.rawTID + '_DESC']
+    const superDescription = tids['TID_' + superCard.rawTID + '_DESC']
+    const getDescription = (c: DataCard) =>
+      tids['TID_' + c.rawTID + '_DESC']
+        .replace(/<VALUE1>/g, c.value?.toString() || '')
+        .replace(/<VALUE2>/g, c.value2?.toString() || '')
+        .replace(/<VALUE3>/g, c.value3?.toString() || '')
+        .replace(/<\/?c\w{0,6}>/g, '') // color codes
+    const starpowerDescriptions = starCards.reduce((d, c) => ({
+      ...d,
+      [c.tID]: getDescription(c),
+    }), {} as { [key: string]: string })
+    const gadgetDescriptions = gadgetCards.reduce((d, c) => ({
+      ...d,
+      [c.tID]: getDescription(c),
+    }), {} as { [key: string]: string })
+
+    return {
+      id,
+      scId: character.scId,
+      name: character.itemName,
+      speed: character.speed,
+      health: character.hitpoints,
+      offenseRating: character.offenseRating,
+      defenseRating: character.defenseRating,
+      utilityRating: character.utilityRating,
+      description: characterDescription,
+
+      main: {
+        cooldown: mainSkill.cooldown * 2,
+        rechargeTime: mainSkill.rechargeTime,
+        damage: mainSkill.damage * 5,
+        damageLabel: mainCard.powerNumberTID,
+        description: mainDescription,
+      },
+      super: {
+        cooldown: superSkill.cooldown * 2,
+        rechargeTime: superSkill.rechargeTime,
+        damage: superSkill.damage * 5,
+        damageLabel: superCard.powerNumberTID,
+        description: superDescription,
+      },
+      starpowerDescriptions,
+      gadgetDescriptions,
+    } as BrawlerData
   }
 
   public async getStarpower(id: number, accept: string): Promise<Buffer|null> {

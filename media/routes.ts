@@ -54,6 +54,16 @@ router.get(`/brawlers/:name/model${EXT}`, async (ctx, next) => {
   await next();
 });
 
+router.get(`/brawlers/:name/info`, async (ctx, next) => {
+  ctx.body = await service.getBrawlerInfo(ctx.params.name.toLowerCase());
+  if (ctx.body == null) {
+    ctx.throw(404, ctx.params.name + ' not found')
+  } else {
+    ctx.set('Cache-Control', 'public, max-age=86400'); // 1 day
+  }
+  await next();
+});
+
 router.get(`/starpowers/:id${EXT}`, async (ctx, next) => {
   const buffer = await service.getStarpower(ctx.params.id, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
