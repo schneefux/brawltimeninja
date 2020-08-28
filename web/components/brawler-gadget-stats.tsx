@@ -24,6 +24,7 @@ export default Vue.extend({
     const gadgets = props.gadgetMeta
         .filter(entry => entry.brawlerName === brawlerId)
         .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    const gadgetNames = gadgets.map(s => s.gadgetName)
 
     return <div class="flex flex-wrap justify-center">
       { gadgets.map(gadget =>
@@ -65,7 +66,9 @@ export default Vue.extend({
       { props.descriptions != null ?
       <div class="w-full">
         <dl>
-          { Object.entries(props.descriptions).map(([id, description]) =>
+          { Object.entries(props.descriptions)
+              .filter(([id, description]) => gadgetNames.includes(id))
+              .map(([id, description]) =>
             <div key={id} class="mt-1">
               <dt class="inline font-semibold mr-1">{ capitalize(id.toLowerCase()) }</dt>
               <dd class="inline">

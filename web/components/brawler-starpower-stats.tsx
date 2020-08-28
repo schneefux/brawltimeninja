@@ -25,6 +25,7 @@ export default Vue.extend({
     const starpowers = props.starpowerMeta
         .filter(entry => entry.brawlerName === brawlerId)
         .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    const starpowerNames = starpowers.map(s => s.starpowerName)
 
     return <div class="flex flex-wrap justify-center">
       { starpowers.map(starpower =>
@@ -66,7 +67,9 @@ export default Vue.extend({
       { props.descriptions != null ?
       <div class="w-full">
         <dl>
-          { Object.entries(props.descriptions).map(([id, description]) =>
+          { Object.entries(props.descriptions)
+              .filter(([id, description]) => starpowerNames.includes(id))
+              .map(([id, description]) =>
             <div key={id} class="mt-1">
               <dt class="inline font-semibold mr-1">{ capitalize(id.toLowerCase()) }</dt>
               <dd class="inline">

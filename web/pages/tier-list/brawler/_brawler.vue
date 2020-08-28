@@ -22,7 +22,7 @@
         </div>
         <div class="flex w-full mx-2 my-1">
           <dt class="w-3/4">Health (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.health * 1.4 }}</dd>
+          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.health * 1.4) }}</dd>
         </div>
         <div class="flex w-full mx-2 my-1">
           <dt class="w-3/4">Speed</dt>
@@ -34,11 +34,11 @@
         </div>
         <div class="flex w-full mx-2 my-1">
           <dt class="w-3/4">Main {{ brawlerData.main.damageLabel }} (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.main.damage * 1.4 }}</dd>
+          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.main.damage * 1.4) }}</dd>
         </div>
         <div class="flex w-full mx-2 my-1">
           <dt class="w-3/4">Super {{ brawlerData.super.damageLabel }} (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.super.damage * 1.4 }}</dd>
+          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.super.damage * 1.4) }}</dd>
         </div>
       </dl>
     </div>
