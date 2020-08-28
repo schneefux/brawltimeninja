@@ -199,7 +199,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { capitalize, capitalizeWords } from '../../../lib/util'
-import { ModeMetaMap } from '../../../../api/model/MetaEntry'
+import { ModeMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
 import { StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Api'
 import { BrawlerData } from '../../../model/Media'
@@ -207,9 +207,9 @@ import { BrawlerData } from '../../../model/Media'
 export default Vue.extend({
   name: 'BrawlerPage',
   head() {
-    const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
+    const description = `${(<any>this).brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${(<any>this).brawlerName} with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Statistics`,
+      title: `${(<any>this).brawlerName} Statistics`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -218,6 +218,8 @@ export default Vue.extend({
   },
   data() {
     return {
+      brawlerId: '',
+      brawlerName: '',
       starpowerMeta: [] as StarpowerMetaStatistics[],
       gadgetMeta: [] as GadgetMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
@@ -250,7 +252,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    trackScroll(visible, element, section) {
+    trackScroll(visible: boolean, element: any, section: string): void {
       if (visible) {
         this.$ga.event('brawler', 'scroll', section)
       }

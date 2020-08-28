@@ -225,7 +225,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    trackScroll(visible: boolean, element: any, section: string) {
+    trackScroll(visible: boolean, element: any, section: string): void {
       if (visible) {
         this.$ga.event('brawler_meta', 'scroll', section)
       }
