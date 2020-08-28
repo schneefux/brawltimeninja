@@ -116,8 +116,8 @@ export default class MediaService {
       return null
     }
     const characterDescription = tids['TID_' + character.rawTID + '_DESC']
-    const mainSkill = skills.find(s => s.name.startsWith(character.name) + 'Weapon')!
-    const superSkill = skills.find(s => s.name.startsWith(character.name) + 'Ulti')!
+    const mainSkill = skills.find(s => s.name == character.name + 'Weapon')!
+    const superSkill = skills.find(s => s.name == character.name + 'Ulti')!
     const mainCard = cards.find(c => c.name == character.name + '_abi')!
     const superCard = cards.find(c => c.name == character.name + '_ulti')!
     const starCards = cards.filter(c => c.name.startsWith(character.name + '_unique'))

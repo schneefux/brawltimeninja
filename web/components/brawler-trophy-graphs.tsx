@@ -154,32 +154,34 @@ export default Vue.extend({
     }
 
     return <div class="md:flex md:flex-wrap md:justify-center">
-      <div class="card-wrapper">
-        <plotly
-          traces={trophiesUseRateChart.traces}
-          layout={trophiesUseRateChart.layout}
-          options={trophiesUseRateChart.options}
-          class="h-48 card md:max-w-lg"
-        ></plotly>
-      </div>
+      <client-only>
+        <div class="card-wrapper">
+          <plotly
+            traces={trophiesUseRateChart.traces}
+            layout={trophiesUseRateChart.layout}
+            options={trophiesUseRateChart.options}
+            class="h-48 card md:max-w-lg"
+          ></plotly>
+        </div>
 
-      <div class="card-wrapper">
-        <plotly
-          traces={trophiesWinRateChart.traces}
-          layout={trophiesWinRateChart.layout}
-          options={trophiesWinRateChart.options}
-          class="h-48 card md:max-w-lg"
-        ></plotly>
-      </div>
+        <div class="card-wrapper">
+          <plotly
+            traces={trophiesWinRateChart.traces}
+            layout={trophiesWinRateChart.layout}
+            options={trophiesWinRateChart.options}
+            class="h-48 card md:max-w-lg"
+          ></plotly>
+        </div>
 
-      <div class="card-wrapper">
-        <plotly
-          traces={trophiesStarRateChart.traces}
-          layout={trophiesStarRateChart.layout}
-          options={trophiesStarRateChart.options}
-          class="h-48 card md:max-w-lg"
-        ></plotly>
-      </div>
+        <div class="card-wrapper">
+          <plotly
+            traces={trophiesStarRateChart.traces}
+            layout={trophiesStarRateChart.layout}
+            options={trophiesStarRateChart.options}
+            class="h-48 card md:max-w-lg"
+          ></plotly>
+        </div>
+      </client-only>
     </div>
   }
 })

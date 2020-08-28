@@ -550,6 +550,9 @@ module.exports = {
   },
   corePlugins: {},
   plugins: [
-    require('tailwindcss-typography')({ })
+    // for 'prose'
+    require('@tailwindcss/typography')({ }),
+    // for text shadows etc.
+    require('tailwindcss-typography')({ }),
   ],
 }

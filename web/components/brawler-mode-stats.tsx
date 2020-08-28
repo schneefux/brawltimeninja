@@ -52,7 +52,6 @@ export default Vue.extend({
                 <tbody>
                   { Object.keys(entry.stats).map(prop =>
                   <tr
-                    v-for="(_, prop) in entry.stats"
                     key={prop}
                     class="card-props whitespace-no-wrap"
                   >
