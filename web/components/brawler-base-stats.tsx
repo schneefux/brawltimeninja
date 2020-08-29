@@ -78,7 +78,7 @@ export default Vue.extend({
         key={attack}
         class="card card--dark card--sm card__content"
       >
-        <dl class="flex flex-col h-full">
+        <dl>
           <dt class="card__header">{ attack == 'main' ? 'Main Attack' : 'Super' }</dt>
           <dd class="card__text mb-3 h-full whitespace-pre-line">
             { brawlerData[attack].description }
@@ -87,6 +87,30 @@ export default Vue.extend({
           <div class="flex justify-between">
             <dt class="font-semibold">Reload Speed</dt>
             <dd>{ brawlerData[attack].rechargeTime }ms</dd>
+          </div>
+          : '' }
+          { brawlerData[attack].range != null ?
+          <div class="flex justify-between">
+            <dt class="font-semibold">Range</dt>
+            <dd>{ brawlerData[attack].range.toFixed(1) } Tiles</dd>
+          </div>
+          : '' }
+          { brawlerData[attack].damageCount != null ?
+          <div class="flex justify-between">
+            <dt class="font-semibold">Projectiles</dt>
+            <dd>{ brawlerData[attack].damageCount }</dd>
+          </div>
+          : '' }
+          { brawlerData[attack].charges != null ?
+          <div class="flex justify-between">
+            <dt class="font-semibold">Ammo</dt>
+            <dd>{ brawlerData[attack].charges }</dd>
+          </div>
+          : '' }
+          { brawlerData[attack].spread != null ?
+          <div class="flex justify-between">
+            <dt class="font-semibold">Spread</dt>
+            <dd>{ brawlerData[attack].spread }°</dd>
           </div>
           : '' }
           { brawlerData[attack].damage != null ?

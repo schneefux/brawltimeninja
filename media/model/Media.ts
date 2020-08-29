@@ -2,8 +2,9 @@ interface Skill {
   cooldown: number
   rechargeTime: number
   damage: number|null
-  description: string
+  damageCount: number|null
   damageLabel: string
+  description: string
   range: number|null
   charges: number|null
   spread: number|null
@@ -67,6 +68,8 @@ export interface DataSkill {
 export interface DataCharacter {
   name: string // internal name, prefix of skills
   itemName: string|null // lower case, no space
+  weaponSkill: string // reference to DataSkill.name
+  ultimateSkill: string // reference to DataSkill.name
   tID: string // upper case, with space
   speed: number // /300 for tiles/s
   hitpoints: number // multiply by 1.4 for max level
