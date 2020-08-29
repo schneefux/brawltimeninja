@@ -131,7 +131,7 @@ export default class MediaService {
     const getSkillDescription = (c: DataCard, s: DataSkill) =>
       tids['TID_' + c.rawTID + '_DESC']
         .replace(/<time>/g, s.activeTime != null ? (s.activeTime / 1000).toString() : '')
-        .replace(/<num>/g, s.msBetweenAttacks.toString() || '')
+        .replace(/<num>/g, s.msBetweenAttacks?.toString() || '')
     const starpowerDescriptions = starCards.reduce((d, c) => ({
       ...d,
       [c.tID]: getCardDescription(c),
