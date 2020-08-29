@@ -64,11 +64,11 @@ export default Vue.extend({
       }}
       class="card bg-center bg-cover h-full relative"
     >
-      <div class="card-content">
-        <div class="card-header text-white">
+      <div class="card__content">
+        <div class="card__header text-white">
           { formatMode(mode) }
         </div>
-        <dl class="flex card-props">
+        <dl class="flex card__props">
           <dd class="card-prop-value">{ metaStatMaps.formatters.winRate(props.stats.winRate) }</dd>
           <dt class="ml-1 card-prop-label">{ metaStatMaps.labels.winRate }</dt>
         </dl>

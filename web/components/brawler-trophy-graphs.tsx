@@ -48,7 +48,7 @@ export default Vue.extend({
       margin: { t: 10, l: 55, b: 65, r: 10 },
       staticPlot: true,
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
-      paper_bgcolor: '#2d3748', // black
+      paper_bgcolor: 'rgba(0, 0, 0, 0)',
       font: {
         color: '#ffffff',
       },
@@ -160,7 +160,7 @@ export default Vue.extend({
             traces={trophiesUseRateChart.traces}
             layout={trophiesUseRateChart.layout}
             options={trophiesUseRateChart.options}
-            class="h-48 card md:max-w-lg"
+            class="h-48 card card--dark md:max-w-lg"
           ></plotly>
         </div>
 
@@ -169,7 +169,7 @@ export default Vue.extend({
             traces={trophiesWinRateChart.traces}
             layout={trophiesWinRateChart.layout}
             options={trophiesWinRateChart.options}
-            class="h-48 card md:max-w-lg"
+            class="h-48 card card--dark md:max-w-lg"
           ></plotly>
         </div>
 
@@ -178,7 +178,7 @@ export default Vue.extend({
             traces={trophiesStarRateChart.traces}
             layout={trophiesStarRateChart.layout}
             options={trophiesStarRateChart.options}
-            class="h-48 card md:max-w-lg"
+            class="h-48 card card--dark md:max-w-lg"
           ></plotly>
         </div>
       </client-only>

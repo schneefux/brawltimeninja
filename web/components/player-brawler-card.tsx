@@ -38,7 +38,7 @@ export default Vue.extend({
 
     const stats = <table slot="stats">
       <tbody>
-        <tr class="card-props">
+        <tr class="card__props">
           <td class="text-center">
             <img
               src={LeaderboardIcon}
@@ -52,7 +52,7 @@ export default Vue.extend({
             Rank
           </td>
         </tr>
-        <tr class="card-props">
+        <tr class="card__props">
           <td class="text-center">
             <img
               src={TrophyIcon}
@@ -66,7 +66,7 @@ export default Vue.extend({
             Trophies
           </td>
         </tr>
-        <tr class="card-props">
+        <tr class="card__props">
           <td class="text-center">
             <img
               src={ brawler.power < 10 ? PowerPointIcon : StarpowerIcon }

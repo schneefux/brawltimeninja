@@ -1,7 +1,7 @@
 interface Skill {
   cooldown: number
   rechargeTime: number
-  damage: number
+  damage: number|null
   description: string
   damageLabel: string
 }
@@ -51,7 +51,9 @@ export interface DataSkill {
   canAutoShoot: boolean,
   cooldown: number // *2 for ms
   rechargeTime: number // ms
-  damage: number // *5, *1.4 for max level
+  damage: number|null // *5, *1.4 for max level
+  activeTime: number|null
+  msBetweenAttacks: number
   // ...and more...
 }
 

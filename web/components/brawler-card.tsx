@@ -35,7 +35,7 @@ export default Vue.extend({
           ></media-img>
           : ''
         }
-        <div class="stats-card-content">
+        <div class="stats-card__content">
           <div>
             { scopedSlots.stats({}) }
           </div>

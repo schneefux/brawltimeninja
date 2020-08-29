@@ -10,66 +10,46 @@
       <h1 class="page-h1">{{ brawlerName }}</h1>
     </div>
 
-    <div class="section" v-if="brawlerData != null">
-      <blockquote class="italic">
-        {{ brawlerData.description }}
-      </blockquote>
-
-      <dl class="mt-4 max-w-sm bg-gray-800 rounded flex flex-wrap justify-center mx-auto">
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Health (Level 1)</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.health }}</dd>
-        </div>
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Health (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.health * 1.4) }}</dd>
-        </div>
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Speed</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.speed }}</dd>
-        </div>
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Reload Speed</dt>
-          <dd class="w-1/4 text-right">{{ brawlerData.main.rechargeTime }}ms</dd>
-        </div>
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Main {{ brawlerData.main.damageLabel }} (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.main.damage * 1.4) }}</dd>
-        </div>
-        <div class="flex w-full mx-2 my-1">
-          <dt class="w-3/4">Super {{ brawlerData.super.damageLabel }} (Level 10)</dt>
-          <dd class="w-1/4 text-right">{{ Math.round(brawlerData.super.damage * 1.4) }}</dd>
-        </div>
-      </dl>
-    </div>
-
     <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'starpowers'),
-        once: true,
-      }"
+      v-if="brawlerData != null"
+      class="section flex flex-wrap justify-around"
     >
-      <h2 class="page-h2">
-        {{ brawlerName }} Star Powers
-      </h2>
-      <p class="mt-1">
-        The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
-      </p>
-    </div>
-
-    <media-img
-      :path="'/brawlers/' + brawlerId + '/model'"
-      clazz="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
-    ></media-img>
-
-    <div class="section flex flex-wrap justify-center">
-      <brawler-starpower-stats
+      <brawler-base-stats
         :starpower-meta="starpowerMeta"
+        :gadget-meta="gadgetMeta"
+        :brawler-data="brawlerData"
         :brawler-id="brawlerId"
-        :descriptions="(brawlerData||{}).starpowerDescriptions"
+        :brawler-name="brawlerName"
+        :stats="stats"
+      ></brawler-base-stats>
+
+      <brawler-starpower-stats
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'starpowers'),
+          once: true,
+        }"
+        :brawler-id="brawlerId"
+        :descriptions="brawlerData != null ? brawlerData.starpowerDescriptions : null"
+        :starpower-meta="starpowerMeta"
+        kind="starpowers"
       ></brawler-starpower-stats>
 
+      <brawler-starpower-stats
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gadgets'),
+          once: true,
+        }"
+        :brawler-id="brawlerId"
+        :descriptions="brawlerData != null ? brawlerData.gadgetDescriptions : null"
+        :starpower-meta="gadgetMeta"
+        kind="gadgets"
+      ></brawler-starpower-stats>
+
+      <p class="mt-4">
+        Info:
+        Star Power statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
+        Gadget statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
+      </p>
 
       <div class="mt-2 w-full flex justify-end">
         <nuxt-link
@@ -78,35 +58,9 @@
         >
           Open Star Power Tier List
         </nuxt-link>
-      </div>
-    </div>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'gadgets'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2">
-        Gadget Tier List
-      </h2>
-      <p class="mt-1">
-        The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
-      </p>
-    </div>
-
-    <div class="section flex flex-wrap justify-center">
-      <brawler-gadget-stats
-        :gadget-meta="gadgetMeta"
-        :brawler-id="brawlerId"
-        :descriptions="(brawlerData||{}).gadgetDescriptions"
-      ></brawler-gadget-stats>
-
-
-      <div class="mt-2 w-full flex justify-end">
         <nuxt-link
-          class="button md:button-md"
+          class="button md:button-md ml-3"
           to="/tier-list/gadgets"
         >
           Open Gadget Tier List
@@ -133,15 +87,21 @@
       }"
     >
       <h2 class="page-h2">
-        {{ brawlerName }} Trophy Graphs
+        {{ brawlerName }} Statistics by Trophies
       </h2>
     </div>
 
-    <div class="section flex flex-wrap justify-center">
+    <div class="section">
       <brawler-trophy-graphs
         :brawler-stats="brawlerStats"
         :total-brawlers="totalBrawlers"
       ></brawler-trophy-graphs>
+
+      <p class="mt-4">
+        Info:
+        Statistics are generated with data from Brawl Time Ninja's visitors.
+        These players are usually above average.
+      </p>
 
       <div class="mt-1 w-full flex justify-end">
         <nuxt-link
@@ -198,10 +158,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { capitalize, capitalizeWords } from '../../../lib/util'
+import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
 import { ModeMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
-import { StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Api'
+import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics } from '../../../model/Api'
 import { BrawlerData } from '../../../model/Media'
 
 export default Vue.extend({
@@ -220,15 +180,30 @@ export default Vue.extend({
     return {
       brawlerId: '',
       brawlerName: '',
+      brawlerMeta: [] as BrawlerMetaStatistics[],
       starpowerMeta: [] as StarpowerMetaStatistics[],
       gadgetMeta: [] as GadgetMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
       brawlerStats: {} as BrawlerStatisticsRows,
       brawlerData: null as BrawlerData|null,
       capitalize,
+      metaStatMaps,
     }
   },
   computed: {
+    starpowers(): StarpowerMetaStatistics[] {
+      return this.starpowerMeta
+          .filter(entry => entry.brawlerName === this.brawlerId)
+          .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    },
+    gadgets(): GadgetMetaStatistics[] {
+      return this.gadgetMeta
+          .filter(entry => entry.brawlerName === this.brawlerId)
+          .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    },
+    stats(): BrawlerMetaStatistics {
+      return this.brawlerMeta.find(entry => entry.id == this.brawlerId)
+    },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
       isApp: (state: any) => state.isApp as boolean,
@@ -236,6 +211,7 @@ export default Vue.extend({
   },
   async asyncData({ params, $axios }) {
     const brawlerId = params.brawler
+    const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
     const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
     const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
     const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
@@ -244,6 +220,7 @@ export default Vue.extend({
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
+      brawlerMeta,
       starpowerMeta,
       gadgetMeta,
       modeMeta,

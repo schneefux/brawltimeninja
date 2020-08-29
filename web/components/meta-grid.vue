@@ -103,7 +103,7 @@
               <tr
                 v-for="stat in stats"
                 :key="stat"
-                class="card-props whitespace-no-wrap"
+                class="card__props whitespace-no-wrap"
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >

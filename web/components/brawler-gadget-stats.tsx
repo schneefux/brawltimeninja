@@ -46,7 +46,7 @@ export default Vue.extend({
             clazz="prop-card-image"
           ></media-img>
           }
-          <dl class="prop-card-content prop-card-content-md">
+          <dl class="prop-card__content prop-card__content-md">
             <div>
               <span class="card-prop-icon">
                 { metaStatMaps.icons.winRate }

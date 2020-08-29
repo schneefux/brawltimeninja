@@ -152,7 +152,7 @@
                 itemprop="image"
               ></media-img>
               <div
-                class="prop-card-content"
+                class="prop-card__content"
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >

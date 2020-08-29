@@ -11,15 +11,27 @@
   @apply rounded overflow-hidden shadow-lg;
 }
 
-.card-content {
-  @apply mx-6 my-4;
+.card--dark {
+  @apply bg-gray-800; /* px-4 py-3; */
 }
 
-.card-header {
+.card--sm {
+  @apply mt-3 mx-1 w-full max-w-sm;
+}
+
+.card__content {
+  @apply px-6 py-4;
+}
+
+.card__header {
   @apply font-semibold text-xl;
 }
 
-.card-props {
+.card__text {
+  @apply mt-2;
+}
+
+.card__props {
   @apply mt-2 text-grey-lighter;
 }
 
@@ -58,7 +70,7 @@
 }
 
 .link-card {
-  @apply bg-grey-lighter rounded shadow-lg py-6 px-4 card-content text-black;
+  @apply bg-grey-lighter rounded shadow-lg py-6 px-4 card__content text-black;
 }
 
 .button {
@@ -105,7 +117,7 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-.stats-card-content {
+.stats-card__content {
   @apply py-2 pr-3 flex flex-col justify-center items-end;
 }
 
@@ -157,16 +169,16 @@ details.stats-card-expander > summary::-webkit-details-marker {
   }
 }
 
-.prop-card-content {
+.prop-card__content {
   @apply w-24 py-1 pr-1 absolute right-0 h-full flex flex-col justify-center items-center text-center;
 }
 
 @responsive {
-  .prop-card-content-md {
+  .prop-card__content-md {
     @apply py-2;
   }
 
-  .prop-card-content-lg {
+  .prop-card__content-lg {
     @apply w-32 py-2 pr-2;
   }
 }

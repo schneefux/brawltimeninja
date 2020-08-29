@@ -43,17 +43,17 @@ export default Vue.extend({
             'background-image': `linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('${mediaUrl}/modes/${entry.mode}/background.jpg?size=1024')`,
           }}
         >
-          <div class="relative z-10 card-content">
-            <span class="card-header">
+          <div class="relative z-10 card__content">
+            <span class="card__header">
               { formatMode(entry.mode) }
             </span>
-            <div class="card-props">
+            <div class="card__props">
               <table class="w-full">
                 <tbody>
                   { Object.keys(entry.stats).map(prop =>
                   <tr
                     key={prop}
-                    class="card-props whitespace-no-wrap"
+                    class="card__props whitespace-no-wrap"
                   >
                     <td class="card-prop-label">
                       { metaStatMaps.labels[prop] }
