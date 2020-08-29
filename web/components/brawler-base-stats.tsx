@@ -53,7 +53,7 @@ export default Vue.extend({
             ></media-img>
             <dl class="w-full">
               <dt class="card__header">{ brawlerName }</dt>
-              <dd class="card__text mb-3">
+              <dd class="card__text mb-3 whitespace-pre-line">
                 { brawlerData.description }
               </dd>
               <div class="flex justify-between">
@@ -80,7 +80,7 @@ export default Vue.extend({
       >
         <dl class="flex flex-col h-full">
           <dt class="card__header">{ attack == 'main' ? 'Main Attack' : 'Super' }</dt>
-          <dd class="card__text mb-3 h-full">
+          <dd class="card__text mb-3 h-full whitespace-pre-line">
             { brawlerData[attack].description }
           </dd>
           { brawlerData[attack].rechargeTime != null ?
