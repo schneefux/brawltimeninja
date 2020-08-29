@@ -122,22 +122,26 @@ export default class MediaService {
     const superCard = cards.find(c => c.name == character.name + '_ulti')!
     const starCards = cards.filter(c => c.name.startsWith(character.name + '_unique'))
     const gadgetCards = cards.filter(c => c.name.startsWith(character.name) && c.iconExportName?.startsWith('icon_item_'))
-    const mainDescription = tids['TID_' + mainCard.rawTID + '_DESC']
-    const superDescription = tids['TID_' + superCard.rawTID + '_DESC']
-    const getDescription = (c: DataCard) =>
+    const getCardDescription = (c: DataCard) =>
       tids['TID_' + c.rawTID + '_DESC']
         .replace(/<VALUE1>/g, c.value?.toString() || '')
         .replace(/<VALUE2>/g, c.value2?.toString() || '')
         .replace(/<VALUE3>/g, c.value3?.toString() || '')
         .replace(/<\/?c\w{0,6}>/g, '') // color codes
+    const getSkillDescription = (c: DataCard, s: DataSkill) =>
+      tids['TID_' + c.rawTID + '_DESC']
+        .replace(/<time>/g, s.activeTime != null ? (s.activeTime / 1000).toString() : '')
+        .replace(/<num>/g, s.msBetweenAttacks.toString() || '')
     const starpowerDescriptions = starCards.reduce((d, c) => ({
       ...d,
-      [c.tID]: getDescription(c),
+      [c.tID]: getCardDescription(c),
     }), {} as { [key: string]: string })
     const gadgetDescriptions = gadgetCards.reduce((d, c) => ({
       ...d,
-      [c.tID]: getDescription(c),
+      [c.tID]: getCardDescription(c),
     }), {} as { [key: string]: string })
+    const mainDescription = getSkillDescription(mainCard, mainSkill)
+    const superDescription = getSkillDescription(superCard, superSkill)
 
     return {
       id,
@@ -153,14 +157,14 @@ export default class MediaService {
       main: {
         cooldown: mainSkill.cooldown * 2,
         rechargeTime: mainSkill.rechargeTime,
-        damage: mainSkill.damage * 5,
+        damage: mainSkill.damage != null ? mainSkill.damage * 5 : null,
         damageLabel: mainCard.powerNumberTID,
         description: mainDescription,
       },
       super: {
         cooldown: superSkill.cooldown * 2,
         rechargeTime: superSkill.rechargeTime,
-        damage: superSkill.damage * 5,
+        damage: superSkill.damage != null ? superSkill.damage * 5 : null,
         damageLabel: superCard.powerNumberTID,
         description: superDescription,
       },
