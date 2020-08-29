@@ -31,6 +31,7 @@ export default Vue.extend({
   render(h, { props }) {
     const maps = Object.values(props.activeEvents)
       .filter(event => event.id in props.mapMeta)
+      .filter(event => props.brawlerId in props.mapMeta[event.id].brawlers)
       .map(event => ({
         ...event,
         ...props.mapMeta[event.id],

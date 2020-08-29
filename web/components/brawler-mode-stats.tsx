@@ -32,6 +32,7 @@ export default Vue.extend({
 
     // add current brawler as `.brawler` to map meta and mode meta values
     const maps = Object.entries(props.mapMeta)
+        .filter(([mapId, map]) => props.brawlerId in map.brawlers)
         .map(([mapId, map]) => ({
           ...map,
           brawlers: {},
@@ -39,6 +40,7 @@ export default Vue.extend({
           mapId,
         }))
     const modes = Object.entries(props.modeMeta)
+        .filter(([modeId, mode]) => props.brawlerId in mode.brawlers)
         .map(([modeId, mode]) => ({
           ...mode,
           brawlers: {},

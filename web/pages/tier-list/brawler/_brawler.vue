@@ -119,6 +119,7 @@
 
     <div
       class="section-heading"
+      v-if="brawlerStats != null"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'trophy-graphs'),
         once: true,
@@ -129,7 +130,10 @@
       </h2>
     </div>
 
-    <div class="section">
+    <div
+      v-if="brawlerStats != null"
+      class="section"
+    >
       <brawler-trophy-graphs
         :brawler-stats="brawlerStats"
         :total-brawlers="totalBrawlers"
@@ -234,7 +238,7 @@ export default Vue.extend({
       gadgetMeta: [] as GadgetMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
       mapMeta: {} as MapMetaMap,
-      brawlerStats: {} as BrawlerStatisticsRows,
+      brawlerStats: null as BrawlerStatisticsRows|null,
       brawlerData: null as BrawlerData|null,
       showAllModes: false,
       showAllMaps: false,
@@ -243,16 +247,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    starpowers(): StarpowerMetaStatistics[] {
-      return this.starpowerMeta
-          .filter(entry => entry.brawlerName === this.brawlerId)
-          .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
-    },
-    gadgets(): GadgetMetaStatistics[] {
-      return this.gadgetMeta
-          .filter(entry => entry.brawlerName === this.brawlerId)
-          .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
-    },
     stats(): BrawlerMetaStatistics|undefined {
       return this.brawlerMeta.find(entry => entry.id == this.brawlerId)
     },
@@ -261,7 +255,7 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ params, $axios }) {
+  async asyncData({ params, $axios, error }) {
     const brawlerId = params.brawler
     const activeEvents = await $axios.$get('/api/events/active') as ActiveEvent[]
     const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
@@ -269,8 +263,8 @@ export default Vue.extend({
     const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
     const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
     const mapMeta = await $axios.$get('/api/meta/map') as MapMetaMap
-    const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId) as BrawlerStatisticsRows
     const brawlerData = await $axios.$get(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null) as BrawlerData|null
+    const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId).catch(() => null) as BrawlerStatisticsRows|null
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
