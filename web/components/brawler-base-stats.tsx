@@ -66,7 +66,7 @@ export default Vue.extend({
               </div>
               <div class="flex justify-between">
                 <dt class="font-semibold">Speed</dt>
-                <dd>{ brawlerData.speed }</dd>
+                <dd>{ brawlerData.speed } Tiles/s</dd>
               </div>
             </dl>
           </div>

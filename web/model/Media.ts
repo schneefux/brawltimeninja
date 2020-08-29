@@ -4,6 +4,9 @@ interface Skill {
   damage: number|null
   description: string
   damageLabel: string
+  range: number|null
+  charges: number|null
+  spread: number|null
 }
 
 export interface BrawlerData {
@@ -51,9 +54,13 @@ export interface DataSkill {
   canAutoShoot: boolean,
   cooldown: number // *2 for ms
   rechargeTime: number // ms
-  damage: number|null // *5, *1.4 for max level
+  damage: number|null // per bullet, *1.4 for max level
   activeTime: number|null
   msBetweenAttacks: number
+  castingRange: number|null // /3 for tiles/s
+  numBulletsInOneAttack: number|null
+  maxCharge: number|null
+  spread: number|null // /2 for deg
   // ...and more...
 }
 
@@ -61,7 +68,7 @@ export interface DataCharacter {
   name: string // internal name, prefix of skills
   itemName: string|null // lower case, no space
   tID: string // upper case, with space
-  speed: number
+  speed: number // /300 for tiles/s
   hitpoints: number // multiply by 1.4 for max level
   autoAttackSpeedMs: number|null
   autoAttackDamage: number|null
