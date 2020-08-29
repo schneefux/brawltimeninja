@@ -128,10 +128,12 @@ export default class MediaService {
         .replace(/<VALUE2>/g, c.value2?.toString() || '')
         .replace(/<VALUE3>/g, c.value3?.toString() || '')
         .replace(/<\/?c\w{0,6}>/g, '') // color codes
+        .replace(/\\n/g, '\n')
     const getSkillDescription = (c: DataCard, s: DataSkill) =>
       tids['TID_' + c.rawTID + '_DESC']
         .replace(/<time>/g, s.activeTime != null ? (s.activeTime / 1000).toString() : '')
         .replace(/<num>/g, s.msBetweenAttacks?.toString() || '')
+        .replace(/\\n/g, '\n')
     const starpowerDescriptions = starCards.reduce((d, c) => ({
       ...d,
       [c.tID]: getCardDescription(c),
