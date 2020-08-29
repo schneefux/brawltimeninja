@@ -1,5 +1,5 @@
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps, camelToKebab } from '~/lib/util';
+import { metaStatMaps, camelToKebab } from '~/lib/util';
 import { ModeMetaMap, MapMetaMap, MapMeta, ModeMeta } from '~/model/MetaEntry';
 import EventCard from '~/components/event-card'
 
@@ -73,11 +73,13 @@ export default Vue.extend({
       </div>,
       content: () => <div class="my-4 flex">
         <div class="flex justify-center bg-black rounded mx-auto">
-          <media-img
-            path={`/brawlers/${props.brawlerId}/avatar`}
-            size="384"
-            clazz="w-16"
-          ></media-img>
+          <div class="flex flex-col justify-end mr-2">
+            <media-img
+              path={`/brawlers/${props.brawlerId}/avatar`}
+              size="128"
+              clazz="w-16"
+            ></media-img>
+          </div>
           { mode.sampleSize > 3000 ?
           <dl class="w-48 px-3 py-2">
             <div class="flex justify-between">

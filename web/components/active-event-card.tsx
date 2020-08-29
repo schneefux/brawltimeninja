@@ -5,7 +5,6 @@ import { ActiveEvent } from '~/model/Brawlstars'
 
 export default Vue.extend({
   functional: true,
-  name: 'ModeBestBrawlersCard',
   props: {
     event: {
       type: Object as PropType<ActiveEvent>,

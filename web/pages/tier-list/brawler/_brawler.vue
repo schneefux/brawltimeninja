@@ -82,6 +82,44 @@
     <div
       class="section-heading"
       v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'current-maps'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">
+        Current Maps for {{ brawlerName }}
+      </h2>
+    </div>
+
+    <div class="section">
+      <brawler-active-events
+        :active-events="activeEvents.current"
+        :map-meta="mapMeta"
+        :brawler-id="brawlerId"
+        :show-all-maps="showAllMaps"
+        :total-brawlers="totalBrawlers"
+      ></brawler-active-events>
+
+      <div class="mt-1 w-full flex justify-end">
+        <button
+          @click="showAllMaps = true"
+          :class="{ 'md:block': !showAllMaps }"
+          class="mr-3 button md:button-md hidden"
+        >
+          Show More
+        </button>
+        <nuxt-link
+          class="button md:button-md"
+          to="/tier-list/map"
+        >
+          Open Map Tier Lists
+        </nuxt-link>
+      </div>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'trophy-graphs'),
         once: true,
       }"
@@ -172,6 +210,7 @@ import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
 import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics } from '../../../model/Api'
 import { BrawlerData } from '../../../model/Media'
+import { ActiveEvent } from '../../../model/Brawlstars'
 
 export default Vue.extend({
   name: 'BrawlerPage',
@@ -189,6 +228,7 @@ export default Vue.extend({
     return {
       brawlerId: '',
       brawlerName: '',
+      activeEvents: [] as ActiveEvent[],
       brawlerMeta: [] as BrawlerMetaStatistics[],
       starpowerMeta: [] as StarpowerMetaStatistics[],
       gadgetMeta: [] as GadgetMetaStatistics[],
@@ -197,6 +237,7 @@ export default Vue.extend({
       brawlerStats: {} as BrawlerStatisticsRows,
       brawlerData: null as BrawlerData|null,
       showAllModes: false,
+      showAllMaps: false,
       capitalize,
       metaStatMaps,
     }
@@ -222,6 +263,7 @@ export default Vue.extend({
   },
   async asyncData({ params, $axios }) {
     const brawlerId = params.brawler
+    const activeEvents = await $axios.$get('/api/events/active') as ActiveEvent[]
     const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
     const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
     const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
@@ -232,6 +274,7 @@ export default Vue.extend({
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
+      activeEvents,
       brawlerMeta,
       starpowerMeta,
       gadgetMeta,
