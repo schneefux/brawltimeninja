@@ -100,7 +100,7 @@
       <p class="mt-4">
         Info:
         Statistics are generated with data from Brawl Time Ninja's visitors.
-        These players are usually above average.
+        These players are usually better than the average.
       </p>
 
       <div class="mt-1 w-full flex justify-end">
@@ -128,10 +128,19 @@
     <div class="section">
       <brawler-mode-stats
         :mode-meta="modeMeta"
+        :map-meta="mapMeta"
         :brawler-id="brawlerId"
+        :show-all-modes="showAllModes"
       ></brawler-mode-stats>
 
       <div class="mt-1 w-full flex justify-end">
+        <button
+          @click="showAllModes = true"
+          :class="{ 'md:block': !showAllModes }"
+          class="mr-3 button md:button-md hidden"
+        >
+          Show More
+        </button>
         <nuxt-link
           class="button md:button-md"
           to="/tier-list/mode"
@@ -159,7 +168,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
-import { ModeMetaMap } from '../../../model/MetaEntry'
+import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
 import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics } from '../../../model/Api'
 import { BrawlerData } from '../../../model/Media'
@@ -184,8 +193,10 @@ export default Vue.extend({
       starpowerMeta: [] as StarpowerMetaStatistics[],
       gadgetMeta: [] as GadgetMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
+      mapMeta: {} as MapMetaMap,
       brawlerStats: {} as BrawlerStatisticsRows,
       brawlerData: null as BrawlerData|null,
+      showAllModes: false,
       capitalize,
       metaStatMaps,
     }
@@ -201,7 +212,7 @@ export default Vue.extend({
           .filter(entry => entry.brawlerName === this.brawlerId)
           .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
     },
-    stats(): BrawlerMetaStatistics {
+    stats(): BrawlerMetaStatistics|undefined {
       return this.brawlerMeta.find(entry => entry.id == this.brawlerId)
     },
     ...mapState({
@@ -215,6 +226,7 @@ export default Vue.extend({
     const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
     const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
     const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
+    const mapMeta = await $axios.$get('/api/meta/map') as MapMetaMap
     const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId) as BrawlerStatisticsRows
     const brawlerData = await $axios.$get(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null) as BrawlerData|null
     return {
@@ -224,6 +236,7 @@ export default Vue.extend({
       starpowerMeta,
       gadgetMeta,
       modeMeta,
+      mapMeta,
       brawlerStats,
       brawlerData,
     }
