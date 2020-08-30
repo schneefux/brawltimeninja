@@ -6,14 +6,6 @@ import { BrawlerData } from '~/model/Media'
 export default Vue.extend({
   functional: true,
   props: {
-    starpowerMeta: {
-      type: Array as PropType<StarpowerMetaStatistics[]>,
-      default: [],
-    },
-    gadgetMeta: {
-      type: Array as PropType<GadgetMetaStatistics[]>,
-      default: [],
-    },
     brawlerId: {
       type: String,
       required: true
@@ -37,10 +29,6 @@ export default Vue.extend({
     const brawlerName = props.brawlerName
     const stats = props.stats
     // TODO update brawler endpoint to return this data
-    const noStarpowerStats = props.starpowerMeta
-        .find(entry => entry.brawlerName === brawlerId && entry.starpowerName.length == 0)
-    const noGadgetStats = props.gadgetMeta
-        .find(entry => entry.brawlerName === brawlerId && entry.gadgetName.length == 0)
 
     return <div class="flex flex-wrap justify-around">
       <div class="w-full flex justify-center">
@@ -148,18 +136,6 @@ export default Vue.extend({
           <div class="flex justify-between">
             <dt class="font-semibold">Win Rate</dt>
             <dd>{ metaStatMaps.formatters.winRate(stats.stats.winRate) }</dd>
-          </div>
-          : '' }
-          { noStarpowerStats != null ?
-          <div class="flex justify-between">
-            <dt class="font-semibold">Win Rate without Star Power</dt>
-            <dd>{ metaStatMaps.formatters.winRate(noStarpowerStats.stats.winRate) }</dd>
-          </div>
-          : '' }
-          { noGadgetStats != null ?
-          <div class="flex justify-between">
-            <dt class="font-semibold">Win Rate without Gadget</dt>
-            <dd>{ metaStatMaps.formatters.winRate(noGadgetStats.stats.winRate) }</dd>
           </div>
           : '' }
         </dl>

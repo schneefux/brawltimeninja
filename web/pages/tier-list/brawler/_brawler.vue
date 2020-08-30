@@ -15,8 +15,6 @@
       class="section flex flex-wrap justify-around"
     >
       <brawler-base-stats
-        :starpower-meta="starpowerMeta"
-        :gadget-meta="gadgetMeta"
         :brawler-data="brawlerData"
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"

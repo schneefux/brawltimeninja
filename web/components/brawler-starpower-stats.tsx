@@ -33,6 +33,8 @@ export default Vue.extend({
     const starpowers = props.starpowerMeta
         .filter(entry => entry.brawlerName === brawlerId && getName(entry).length > 0)
         .sort((e1, e2) => e2.sampleSize - e1.sampleSize)
+    const noStarpowerStats = props.starpowerMeta
+        .find(entry => entry.brawlerName === brawlerId && getName(entry).length == 0)
 
     return <div class="flex flex-wrap justify-around">
       { starpowers.map(entry =>
@@ -51,6 +53,12 @@ export default Vue.extend({
           <dd class="card__text mb-3 h-full">
             { descriptions[getName(entry)] }
           </dd>
+          : '' }
+          { noStarpowerStats != undefined ?
+          <div class="flex justify-between">
+            <dt class="font-semibold">No { kind == 'gadgets' ? 'Gadget' : 'Star Power' } Win Rate</dt>
+            <dd>{ metaStatMaps.formatters.winRate(noStarpowerStats.stats.winRate) }</dd>
+          </div>
           : '' }
           <div class="flex justify-between">
             <dt class="font-semibold">{ capitalize(getName(entry).toLowerCase()) } Win Rate</dt>
