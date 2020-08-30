@@ -52,6 +52,7 @@ export default Vue.extend({
       font: {
         color: '#ffffff',
       },
+      dragmode: false,
     }
 
     const trophyGraphOptions = {
