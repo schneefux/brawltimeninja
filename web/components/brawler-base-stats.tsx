@@ -54,7 +54,7 @@ export default Vue.extend({
               </div>
               <div class="flex justify-between">
                 <dt class="font-semibold">Speed</dt>
-                <dd>{ brawlerData.speed } Tiles/s</dd>
+                <dd>{ Math.round(brawlerData.speed * 100) / 100 } Tiles/s</dd>
               </div>
             </dl>
           </div>
@@ -83,7 +83,7 @@ export default Vue.extend({
             <dd>{ brawlerData[attack].range.toFixed(1) } Tiles</dd>
           </div>
           : '' }
-          { brawlerData[attack].damageCount != null ?
+          { brawlerData[attack].damageCount != null && brawlerData[attack].damageCount > 1 ?
           <div class="flex justify-between">
             <dt class="font-semibold">Projectiles</dt>
             <dd>{ brawlerData[attack].damageCount }</dd>
@@ -95,7 +95,7 @@ export default Vue.extend({
             <dd>{ brawlerData[attack].charges }</dd>
           </div>
           : '' }
-          { brawlerData[attack].spread != null ?
+          { brawlerData[attack].spread != null && brawlerData[attack].spread != 0 ?
           <div class="flex justify-between">
             <dt class="font-semibold">Spread</dt>
             <dd>{ brawlerData[attack].spread }°</dd>
