@@ -213,10 +213,10 @@ export default Vue.extend({
     },
   },
   async asyncData({ $axios }) {
-    const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
     const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
-    const starpowerMeta = await $axios.$get(`/api/meta/starpower`) as StarpowerMetaStatistics[]
-    const gadgetMeta = await $axios.$get(`/api/meta/gadget`) as GadgetMetaStatistics[]
+    const modeMeta = await $axios.$get('/api/meta/mode').catch(() => ({})) as ModeMetaMap
+    const starpowerMeta = await $axios.$get(`/api/meta/starpower`).catch(() => []) as StarpowerMetaStatistics[]
+    const gadgetMeta = await $axios.$get(`/api/meta/gadget`).catch(() => []) as GadgetMetaStatistics[]
     return {
       modeMeta,
       brawlerMeta,

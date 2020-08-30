@@ -255,12 +255,12 @@ export default Vue.extend({
   },
   async asyncData({ params, $axios, error }) {
     const brawlerId = params.brawler
-    const activeEvents = await $axios.$get('/api/events/active') as ActiveEvent[]
-    const brawlerMeta = await $axios.$get('/api/meta/brawler') as BrawlerMetaStatistics[]
-    const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
-    const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
-    const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
-    const mapMeta = await $axios.$get('/api/meta/map') as MapMetaMap
+    const activeEvents = await $axios.$get('/api/events/active').catch(() => []) as ActiveEvent[]
+    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ({})) as BrawlerMetaStatistics[]
+    const starpowerMeta = await $axios.$get('/api/meta/starpower').catch(() => []) as StarpowerMetaStatistics[]
+    const gadgetMeta = await $axios.$get('/api/meta/gadget').catch(() => []) as GadgetMetaStatistics[]
+    const modeMeta = await $axios.$get('/api/meta/mode').catch(() => ({})) as ModeMetaMap
+    const mapMeta = await $axios.$get('/api/meta/map').catch(() => ({})) as MapMetaMap
     const brawlerData = await $axios.$get(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null) as BrawlerData|null
     const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId).catch(() => null) as BrawlerStatisticsRows|null
     return {
