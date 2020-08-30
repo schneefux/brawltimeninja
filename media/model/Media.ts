@@ -86,3 +86,15 @@ export interface DataCharacter {
   rawTID: string
   // ...and more...
 }
+
+export interface DataAccessory {
+  name: string // internal name
+  chargeCount: number
+  customValue1: number
+  customValue2: number
+  customValue3: number
+  customValue4: number
+  customValue5: number
+  customValue6: number
+  // ...and more...
+}

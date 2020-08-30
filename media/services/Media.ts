@@ -4,7 +4,7 @@ import path from 'path';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 import { StarlistBrawler, StarlistMap, StarlistMode } from '~/model/Starlist';
-import { BrawlerData, DataSkill, DataCharacter, DataCard } from '~/model/Media';
+import { BrawlerData, DataSkill, DataCharacter, DataCard, DataAccessory } from '~/model/Media';
 import { brawlerId } from '../lib/util';
 
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets');
@@ -104,13 +104,16 @@ export default class MediaService {
   public async getBrawlerInfo(name: string) {
     const characters = JSON.parse(await fs.promises.readFile(assetDir + '/data/characters.json', 'utf-8')) as DataCharacter[]
     const skills = JSON.parse(await fs.promises.readFile(assetDir + '/data/skills.json', 'utf-8')) as DataSkill[]
+    // unlocks
     const cards = JSON.parse(await fs.promises.readFile(assetDir + '/data/cards.json', 'utf-8')) as DataCard[]
+    // gadgets
+    const accessories = JSON.parse(await fs.promises.readFile(assetDir + '/data/accessories.json', 'utf-8')) as DataAccessory[]
     const tids = JSON.parse(await fs.promises.readFile(assetDir + '/data/tid.json', 'utf-8')) as {
       [key: string]: string
     }
 
     const id = brawlerId({ name: name })
-    const character = characters.find(c => (c.itemName || '').replace(/\.-/g, '').replace('ricochet', 'rico') == id.replace(/_/g, ''))
+    const character = characters.find(c => (c.itemName || '').replace(/[.-]/g, '').replace('ricochet', 'rico') == id.replace(/_/g, ''))
     if (character == undefined) {
       console.log('brawler not found: ' + name)
       return null
@@ -122,11 +125,22 @@ export default class MediaService {
     const superCard = cards.find(c => c.name == character.name + '_ulti')!
     const starCards = cards.filter(c => c.name.startsWith(character.name + '_unique'))
     const gadgetCards = cards.filter(c => c.name.startsWith(character.name) && c.iconExportName?.startsWith('icon_item_'))
-    const getCardDescription = (c: DataCard) =>
+    const gadgetAccessories = gadgetCards.map(g => accessories.find(a => a.name == g.name)!)
+    const getStarpowerDescription = (c: DataCard) =>
       tids['TID_' + c.rawTID + '_DESC']
         .replace(/<VALUE1>/g, c.value?.toString() || '')
         .replace(/<VALUE2>/g, c.value2?.toString() || '')
         .replace(/<VALUE3>/g, c.value3?.toString() || '')
+        .replace(/<\/?c\w{0,6}>/g, '') // color codes
+        .replace(/\\n/g, '\n')
+    const getGadgetDescription = (c: DataCard, a: DataAccessory) =>
+      tids['TID_' + c.rawTID + '_DESC']
+        .replace(/<VALUE1>/g, a.customValue1?.toString() || '')
+        .replace(/<VALUE2>/g, a.customValue2?.toString() || '')
+        .replace(/<VALUE3>/g, a.customValue3?.toString() || '')
+        .replace(/<VALUE4>/g, a.customValue4?.toString() || '')
+        .replace(/<VALUE5>/g, a.customValue5?.toString() || '')
+        .replace(/<VALUE6>/g, a.customValue6?.toString() || '')
         .replace(/<\/?c\w{0,6}>/g, '') // color codes
         .replace(/\\n/g, '\n')
     const getSkillDescription = (c: DataCard, s: DataSkill) =>
@@ -136,11 +150,11 @@ export default class MediaService {
         .replace(/\\n/g, '\n')
     const starpowerDescriptions = starCards.reduce((d, c) => ({
       ...d,
-      [c.tID]: getCardDescription(c),
+      [c.tID]: getStarpowerDescription(c),
     }), {} as { [key: string]: string })
-    const gadgetDescriptions = gadgetCards.reduce((d, c) => ({
+    const gadgetDescriptions = gadgetCards.reduce((d, c, index) => ({
       ...d,
-      [c.tID]: getCardDescription(c),
+      [c.tID]: getGadgetDescription(c, gadgetAccessories[index]),
     }), {} as { [key: string]: string })
     const mainDescription = getSkillDescription(mainCard, mainSkill)
     const superDescription = getSkillDescription(superCard, superSkill)
