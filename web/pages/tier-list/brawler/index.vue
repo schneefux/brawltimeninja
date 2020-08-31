@@ -73,7 +73,7 @@
       <div class="mt-2 w-full text-right hidden md:block">
         <button
           v-show="!showAllModes"
-          class="button button-md"
+          class="button button--md"
           @click="showAllModes = true; $ga.event('brawler_meta', 'load_more')"
         >
           Show All Modes

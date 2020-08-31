@@ -1,3 +1,7 @@
+.min-width-min-content {
+ min-width: min-content;
+}
+
 .card-wrapper {
   @apply my-3;
 }
@@ -90,18 +94,18 @@
     @apply border-2;
   }
 
-  .button-md {
+  .button--md {
     @apply border-4;
   }
 
-  .button-lg {
+  .button--lg {
     @apply border-8;
   }
 }
 
 /* blue card with a title and an image which highlights multiple stats */
 .stats-card {
-  @apply w-80 bg-primary-dark mx-auto relative;
+  @apply w-80 max-w-full bg-primary-dark mx-auto relative;
 }
 
 .stats-card-title {
@@ -216,6 +220,10 @@ details.stats-card-expander > summary::-webkit-details-marker {
 
 .page-h2 {
   @apply text-2xl font-semibold;
+}
+
+.subpage {
+  @apply -mx-2 p-2 bg-gray-800 rounded;
 }
 
 /** ad root-class */

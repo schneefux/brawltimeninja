@@ -28,6 +28,7 @@
     "vue-observe-visibility": "^0.4.6",
     "vue-range-component": "git+https://github.com/xwpongithub/vue-range-slider.git",
     "vue-script2": "^2.1.0",
+    "vue-scrollto": "^2.18.2",
     "vue-tweet-embed": "^2.4.0",
     "vuex-persist": "^2.2.0",
     "youtube-player": "^5.5.2",

@@ -1,0 +1,85 @@
+<template>
+  <div class="subpage">
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'lifetime'),
+        once: true,
+      }"
+      class="section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Personal Records
+      </h2>
+    </div>
+
+    <div class="section">
+      <player-lifetime :stats="player.stats"></player-lifetime>
+    </div>
+
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'pro'),
+        once: true,
+      }"
+      class="section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Are you a Pro?
+      </h2>
+    </div>
+
+    <div class="section">
+      <player-percentiles :player="player"></player-percentiles>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
+import { Player } from '../../../model/Api'
+
+export default Vue.extend({
+  head() {
+    return {}
+    // TODO
+    /*
+    const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
+    return {
+      title: this.player.name,
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
+    }
+    */
+  },
+  props: {
+    player: {
+      type: Object as PropType<Player>,
+      required: true
+    },
+  },
+  data() {
+    return {
+    }
+  },
+  mounted() {
+    // workaround for https://github.com/nuxt/nuxt.js/issues/5359
+    this.$scrollTo(this.$el, 0, { offset: -96 })
+  },
+  computed: {
+    ...mapState({
+      testGroup: (state: any) => state.testGroup as string,
+      isApp: (state: any) => state.isApp as boolean,
+    }),
+  },
+  methods: {
+    trackScroll(visible, entry, section) {
+      if (visible) {
+        this.$ga.event('profile', 'scroll', section)
+      }
+    },
+  },
+})
+</script>

@@ -51,7 +51,7 @@
               <div class="absolute bottom-0 right-0 mb-4 mr-2">
                 <nuxt-link
                   :to="`/tier-list/map/${map.id}`"
-                  class="button button-md"
+                  class="button button--md"
                 >
                   Open
                 </nuxt-link>
@@ -64,7 +64,7 @@
       <div class="mt-2 w-full text-right hidden md:block">
         <button
           v-show="!showAllMaps"
-          class="button button-md"
+          class="button button--md"
           @click="showAllMaps = true; $ga.event('meta_mode', 'load_more')"
         >
           Show All {{ formatMode(mode) }} Maps

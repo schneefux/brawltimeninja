@@ -40,7 +40,7 @@
             >
             <input
               type="submit"
-              class="button button-lg flex-shrink-0 mr-3"
+              class="button button--lg flex-shrink-0 mr-3"
               value="Search"
             >
           </div>
@@ -255,7 +255,7 @@
               <div class="flex justify-end">
                 <nuxt-link
                   :to="`/tier-list/map/${event.id}`"
-                  class="button button-md"
+                  class="button button--md"
                 >
                   Open
                 </nuxt-link>

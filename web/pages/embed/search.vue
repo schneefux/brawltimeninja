@@ -16,7 +16,7 @@
         >
         <input
           type="submit"
-          class="button button-lg mr-3"
+          class="button button--lg mr-3"
           value="Search"
         >
       </div>

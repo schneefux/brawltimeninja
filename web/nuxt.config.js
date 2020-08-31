@@ -71,6 +71,7 @@ export default {
     { src: '~/plugins/slider', mode: 'client' },
     { src: '~/plugins/plotly', mode: 'client' },
     { src: '~/plugins/custom-components' },
+    { src: '~/plugins/scrollto', mode: 'client' },
   ],
 
   modules: [
@@ -105,6 +106,7 @@ export default {
 
   router: {
     middleware: ['unpack-store'],
+    // scroll to anchor does not work - https://github.com/nuxt/nuxt.js/issues/5359
   },
 
   axios: {

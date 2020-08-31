@@ -68,7 +68,7 @@ export default Vue.extend({
       actions: () => <div class="flex justify-end">
         <nuxt-link
           to={`/tier-list/mode/${camelToKebab(mode.mode)}`}
-          class="button button-md"
+          class="button button--md"
         >
           Open
         </nuxt-link>

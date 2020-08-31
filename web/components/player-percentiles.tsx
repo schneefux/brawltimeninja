@@ -1,7 +1,6 @@
 import Vue, { PropType } from 'vue'
 import { Player } from '~/model/Api'
 import * as ztable from 'ztable'
-import playerBattle from './player-battle'
 
 export default Vue.extend({
   functional: true,
