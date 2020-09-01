@@ -5,9 +5,9 @@
         callback: (v, e) => trackScroll(v, e, 'battles'),
         once: true,
       }"
-      class="section-heading flex flex-wrap items-center"
+      class="subpage__title section-heading flex flex-wrap items-center"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Battle Log
       </h2>
 
@@ -22,53 +22,46 @@
           Refresh now
         </button>
       </div>
+
+      <p>
+        See your latest battles and calculate your Win Rate.
+      </p>
     </div>
 
-    <div class="section">
-      <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
-        <div class="bigstat-container">
-          <dd class="bigstat-left bigstat-number bigstat-number--light">
-            {{ Math.floor(winRate * totalBattles) }}
-          </dd>
-          <dt class="bigstat-right bigstat-label text-xl">
-            Wins Recorded
-          </dt>
-        </div>
+    <div class="subpage__content">
+      <div class="section">
+        <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
+          <div class="bigstat-container">
+            <dd class="bigstat-left bigstat-number bigstat-number--light">
+              {{ Math.floor(winRate * totalBattles) }}
+            </dd>
+            <dt class="bigstat-right bigstat-label text-xl">
+              Wins Recorded
+            </dt>
+          </div>
 
-        <div class="bigstat-container">
-          <dd class="bigstat-left bigstat-number bigstat-number--light">
-            {{ Math.floor((1 - winRate) * totalBattles) }}
-          </dd>
-          <dt class="bigstat-right bigstat-label text-xl">
-            Losses Recorded
-          </dt>
-        </div>
+          <div class="bigstat-container">
+            <dd class="bigstat-left bigstat-number bigstat-number--light">
+              {{ Math.floor((1 - winRate) * totalBattles) }}
+            </dd>
+            <dt class="bigstat-right bigstat-label text-xl">
+              Losses Recorded
+            </dt>
+          </div>
 
-        <div class="bigstat-container">
-          <dd class="bigstat-left bigstat-number bigstat-number--light leading-none">
-            {{ formatMode(bestMode) }}
-          </dd>
-          <dt class="bigstat-right bigstat-label text-xl">
-            Best Mode
-          </dt>
-        </div>
-      </dl>
+          <div class="bigstat-container">
+            <dd class="bigstat-left bigstat-number bigstat-number--light leading-none">
+              {{ formatMode(bestMode) }}
+            </dd>
+            <dt class="bigstat-right bigstat-label text-xl">
+              Best Mode
+            </dt>
+          </div>
+        </dl>
 
-      <player-battles
-        :player="player"
-        :battlePage="battlePage"
-      ></player-battles>
-
-      <div
-        v-show="battlePage * battlePageSize < player.battles.length"
-        class="mt-2 w-full text-right hidden md:block"
-      >
-        <button
-          class="button button--md"
-          @click="battlePage++; $ga.event('battlelog', 'load_more', battlePage)"
-        >
-          Load More Battles
-        </button>
+        <player-battles
+          :player="player"
+        ></player-battles>
       </div>
     </div>
   </div>
@@ -107,8 +100,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      battlePage: 1,
-      battlePageSize: 4,
       formatMode,
     }
   },

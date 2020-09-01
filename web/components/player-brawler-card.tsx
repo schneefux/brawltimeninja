@@ -22,6 +22,10 @@ export default Vue.extend({
       type: Object as PropType<PlayerBrawlerWinrates>,
       default: () => ({} as PlayerBrawlerWinrates),
     },
+    expandable: {
+      type: Boolean,
+      default: true
+    },
   },
   render(h, { props }) {
     const brawler = props.brawler
@@ -117,7 +121,9 @@ export default Vue.extend({
 
     const slots = {
       stats: () => stats,
-      expand: () => expand,
+      ...(props.expandable ? {
+        expand: () => expand,
+      } : {}),
     }
 
     const brawlerCard = BrawlerCard as any

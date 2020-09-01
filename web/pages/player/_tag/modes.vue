@@ -5,45 +5,40 @@
         callback: (v, e) => trackScroll(v, e, 'gamemodes'),
         once: true,
       }"
-      class="section-heading"
+      class="subpage__title section-heading"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Game Mode Win Rates
       </h2>
+
+      <p>
+        View your win rate in different modes and get personalized recommendations.
+      </p>
     </div>
 
-    <div class="section">
-      <player-mode-winrates
-        :player="player"
-        :battles-by-mode="battlesByMode"
-        :active-map-meta="activeMapMeta"
-        :show-all-modes="showAllModes"
-      ></player-mode-winrates>
-    </div>
+    <div class="subpage__content">
+      <div class="section">
+        <player-mode-winrates
+          :player="player"
+          :battles="player.battles"
+          :active-map-meta="activeMapMeta"
+        ></player-mode-winrates>
+      </div>
 
-    <div class="mt-1 w-full flex justify-end">
-      <button
-        :class="{
-          'md:block': !this.showAllModes,
-          'mr-3 button md:button--md hidden': true,
-        }"
-        @click="showAllModes = true; $ga.event('gamemodes', 'show_all')"
-      >
-        Show More
-      </button>
+      <div class="mt-1 w-full flex justify-end">
+        <player-tips
+          :player="player"
+          :active-map-meta="activeMapMeta"
+          class="mr-3 button md:button--md"
+        ></player-tips>
 
-      <player-tips
-        :player="player"
-        :active-map-meta="activeMapMeta"
-        class="mr-3 button md:button--md"
-      ></player-tips>
-
-      <nuxt-link
-        class="button md:button--md"
-        to="/tier-list/map"
-      >
-        Open Map Tier List
-      </nuxt-link>
+        <nuxt-link
+          class="button md:button--md"
+          to="/tier-list/map"
+        >
+          Open Map Tier List
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </template>
@@ -52,6 +47,7 @@
 import Vue, { PropType } from 'vue'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { Player } from '../../../model/Api'
+import { MapMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   head() {
@@ -69,11 +65,13 @@ export default Vue.extend({
       type: Object as PropType<Player>,
       required: true
     },
+    activeMapMeta: {
+      type: Object as PropType<MapMetaMap>,
+      default: {}
+    },
   },
   data() {
     return {
-      showAllModes: false,
-      activeMapMeta: {},
     }
   },
   mounted() {
@@ -81,12 +79,6 @@ export default Vue.extend({
     this.$scrollTo(this.$el, 0, { offset: -96 })
   },
   computed: {
-    battlesByMode() {
-      return this.player.battles.reduce((battlesByMode, battle) => ({
-        ...battlesByMode,
-        [battle.event.mode]: [...(battlesByMode[battle.event.mode] || []), battle],
-      }), {})
-    },
     ...mapState({
       testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,

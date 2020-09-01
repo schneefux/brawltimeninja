@@ -5,31 +5,37 @@
         callback: (v, e) => trackScroll(v, e, 'lifetime'),
         once: true,
       }"
-      class="section-heading"
+      class="subpage__title section-heading"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Personal Records
       </h2>
+
+      <p>
+        Compare your profile statistics against pro players.
+      </p>
     </div>
 
-    <div class="section">
-      <player-lifetime :stats="player.stats"></player-lifetime>
-    </div>
+    <div class="subpage__content">
+      <div class="section">
+        <player-lifetime :stats="player.stats"></player-lifetime>
+      </div>
 
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'pro'),
-        once: true,
-      }"
-      class="section-heading"
-    >
-      <h2 class="text-2xl font-semibold">
-        Are you a Pro?
-      </h2>
-    </div>
+      <div
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'pro'),
+          once: true,
+        }"
+        class="section-heading"
+      >
+        <h3 class="page-h3">
+          Are you a Pro?
+        </h3>
+      </div>
 
-    <div class="section">
-      <player-percentiles :player="player"></player-percentiles>
+      <div class="section">
+        <player-percentiles :player="player"></player-percentiles>
+      </div>
     </div>
   </div>
 </template>
@@ -64,15 +70,15 @@ export default Vue.extend({
     return {
     }
   },
-  mounted() {
-    // workaround for https://github.com/nuxt/nuxt.js/issues/5359
-    this.$scrollTo(this.$el, 0, { offset: -96 })
-  },
   computed: {
     ...mapState({
       testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
+  },
+  mounted() {
+    // workaround for https://github.com/nuxt/nuxt.js/issues/5359
+    this.$scrollTo(this.$el, 0, { offset: -96 })
   },
   methods: {
     trackScroll(visible, entry, section) {

@@ -61,7 +61,7 @@
         class="button button--lg"
         :to="`/player/${player.tag}`"
       >
-        Back
+        Close
       </nuxt-link>
     </div>
     <nuxt-child

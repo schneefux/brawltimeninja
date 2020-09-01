@@ -7,14 +7,16 @@
       }"
       class="section-heading"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="page-h2">
         Brawlers
       </h2>
     </div>
 
-    <player-brawlers
-      :player="player"
-    ></player-brawlers>
+    <div class="subpage__content">
+      <player-brawlers
+        :player="player"
+      ></player-brawlers>
+    </div>
   </div>
 </template>
 

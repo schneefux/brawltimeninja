@@ -9,14 +9,6 @@ export default Vue.extend({
       type: Object as PropType<Player>,
       required: true,
     },
-    battlePageSize: {
-      type: Number,
-      default: 5
-    },
-    battlePage: {
-      type: Number,
-      required: true
-    },
     tease: {
       type: Boolean,
       default: false
@@ -25,12 +17,10 @@ export default Vue.extend({
   render(h, { props }) {
     const player = props.player
     const tease = props.tease
-    const battlePage = props.battlePage
-    const battlePageSize = props.battlePageSize
 
-    return <div class="overflow-x-auto -mx-4 overflow-y-hidden scrolling-touch flex flex-wrap flex-1">
-      <div class="w-full mx-2 mb-2 flex md:flex-wrap min-width-min-content">
-        { player.battles.filter((battle, index) => !tease || index < 5).map((battle, index) =>
+    return <div>
+      <div class="flex flex-wrap">
+        { player.battles.filter((battle, index) => !tease || index < 6).map((battle, index) =>
         <div
           key={battle.timestamp}
           class={{
@@ -51,15 +41,13 @@ export default Vue.extend({
       </div>
 
       { !tease ?
-      <div class="w-full flex md:flex-wrap">
+      <div class="mt-2 flex flex-wrap justify-center">
         { player.battles.map((battle, index) =>
         <lazy
           key={battle.timestamp}
           class={{
-            'md:hidden': battlePage * battlePageSize <= index,
-            'flex-0-auto md:flex-initial md:w-1/2 lg:w-1/2 px-2': true,
+            'md:w-1/2 lg:w-1/2 px-2': true,
           }}
-          render={index <= battlePageSize}
           distance="640px"
         >
           <div class="w-80" style="height: 214px" slot="placeholder"></div>

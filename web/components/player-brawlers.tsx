@@ -55,6 +55,7 @@ export default Vue.extend({
               { ...{ attrs: {
                 brawler: brawler,
                 'brawler-winrates': player.winrates.brawler,
+                expandable: !tease,
               } } }
             ></PlayerBrawlerCard>
           </lazy>

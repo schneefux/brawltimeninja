@@ -222,6 +222,10 @@ details.stats-card-expander > summary::-webkit-details-marker {
   @apply text-2xl font-semibold;
 }
 
+.page-h3 {
+  @apply text-xl font-semibold;
+}
+
 .subpage {
   @apply -mx-2 p-2 bg-gray-800 rounded;
 }

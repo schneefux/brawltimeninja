@@ -1,4 +1,12 @@
 module.exports = {
+  experimental: {
+    applyComplexClasses: true,
+    // defaultLineHeights: true, // TODO
+    // uniformColorPalette: true, // TODO
+  },
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
   purge: {
     enabled: false,
   },

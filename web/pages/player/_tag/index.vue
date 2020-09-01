@@ -1,6 +1,13 @@
 <template>
-  <div class="flex flex-wrap">
-    <div class="w-full md:w-1/2 card-wrapper">
+  <div class="flex flex-wrap justify-center">
+    <div
+      :class="{
+        'w-full md:w-1/2 card-wrapper': true,
+        'opening': opening.records,
+        'not-opening': !opening.records,
+      }"
+      ref="records"
+    >
       <div class="card card--dark card__content">
         <h3 class="card__header">
           Personal Records
@@ -15,18 +22,15 @@
             :stats="player.stats"
             tease
           ></player-lifetime>
-          <div class="card__hider">
-          </div>
+          <div class="card__hider"></div>
         </div>
 
         <div class="card__more">
           <nuxt-link
             class="button button--md"
-            :to="{
-              path: `/player/${player.tag}/records`,
-              hash: '#top',
-            }">
-            Open
+            :to="`/player/${player.tag}/records`"
+          >
+            Show
           </nuxt-link>
         </div>
       </div>
@@ -34,7 +38,12 @@
 
     <div
       v-if="player.battles.length > 0"
-      class="w-full md:w-1/2 card-wrapper"
+      :class="{
+        'w-full md:w-1/2 card-wrapper': true,
+        'opening': opening.battles,
+        'not-opening': !opening.battles,
+      }"
+      ref="battles"
     >
       <div class="card card--dark card__content">
         <h3 class="card__header">
@@ -60,13 +69,20 @@
             class="button button--md"
             :to="`/player/${player.tag}/battles`"
           >
-            Open
+            Show
           </nuxt-link>
         </div>
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 card-wrapper">
+    <div
+      :class="{
+        'w-full md:w-1/2 card-wrapper': true,
+        'opening': opening.modes,
+        'not-opening': !opening.modes,
+      }"
+      ref="modes"
+    >
       <div class="card card--dark card__content">
         <h3 class="card__header">
           Game Mode Win Rates
@@ -79,9 +95,8 @@
         <div class="card__teaser relative">
           <player-mode-winrates
             :player="player"
-            :battles-by-mode="battlesByMode"
+            :battles="player.battles"
             :active-map-meta="activeMapMeta"
-            :show-all-modes="false"
             tease
           ></player-mode-winrates>
           <div class="card__hider">
@@ -93,13 +108,20 @@
             class="button button--md"
             :to="`/player/${player.tag}/modes`"
           >
-            Open
+            Show
           </nuxt-link>
         </div>
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 card-wrapper">
+    <div
+      :class="{
+        'w-full md:w-1/2 card-wrapper': true,
+        'opening': opening.brawlers,
+        'not-opening': !opening.brawlers,
+      }"
+      ref="brawlers"
+    >
       <div class="card card--dark card__content">
         <h3 class="card__header">
           Brawlers
@@ -123,7 +145,7 @@
             class="button button--md"
             :to="`/player/${player.tag}/brawlers`"
           >
-            Open
+            Show
           </nuxt-link>
         </div>
       </div>
@@ -159,13 +181,17 @@ export default Vue.extend({
       default: {}
     },
   },
+  data() {
+    return {
+      opening: {
+        battles: false,
+        brawlers: false,
+        modes: false,
+        records: false,
+      }
+    }
+  },
   computed: {
-    battlesByMode() {
-      return this.player.battles.reduce((battlesByMode, battle) => ({
-        ...battlesByMode,
-        [battle.event.mode]: [...(battlesByMode[battle.event.mode] || []), battle],
-      }), {})
-    },
     ...mapState({
       testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
@@ -178,6 +204,25 @@ export default Vue.extend({
       }
     },
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.name != undefined && to.name.startsWith('player-tag-')) {
+      const page = to.name.replace('player-tag-', '')
+      this.$set(this.opening, page, true)
+      const card = this.$refs[page] as HTMLElement
+      // 100ms = duration of enter transition
+      this.$scrollTo(card, 100, {
+        offset: -96, // menu (expanded)
+      })
+    }
+    next()
+  },
+  transition(to, from) {
+    if (from != undefined && to.name != undefined &&
+        from.name == 'player-tag' && to.name.startsWith('player-tag-')) {
+      return 'open-card'
+    }
+    return 'page' // default
+  },
 })
 </script>
 
@@ -187,11 +232,92 @@ export default Vue.extend({
 }
 
 .card__hider {
-  @apply absolute bottom-0 left-0 w-full h-full;
+  @apply absolute top-0 left-0 w-full h-full;
   background: linear-gradient(to bottom, rgba(45, 55, 72, 0.0) 0%, rgba(45, 55, 72, 0.9) 75%);
 }
 
 .card__more {
   @apply -mt-4 flex justify-center relative z-10;
+}
+</style>
+
+<style>
+/* does nothing - tells vue how long to wait */
+.open-card-leave-active {
+  transition-duration: 100ms;
+}
+
+.open-card-leave-active .opening.card-wrapper,
+.open-card-leave-active .opening .card,
+.open-card-leave-active .opening .card__header,
+.open-card-leave-active .opening .card__text,
+.open-card-leave-active .opening .card__teaser,
+.open-card-leave-active .opening .card__hider,
+.open-card-leave-active .opening .card__more {
+  transition-property: all;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in;
+}
+
+/* morph the clicked card and its contents into a subpage layout */
+.open-card-leave-to .opening.card-wrapper {
+  /* @apply w-full m-0 p-0; */
+}
+
+.open-card-leave-to .not-opening .card {
+  @apply opacity-0;
+}
+
+.open-card-leave-to .opening .card {
+  /* revert .card-wrapper styles */
+  @apply -my-3;
+  /* .subpage styles */
+  @apply -mx-2 p-2 bg-gray-800 rounded;
+  @apply pb-80;
+}
+.open-card-leave-to .opening .card__header {
+  /* .open-card-h2 styles */
+  @apply text-2xl font-semibold;
+  /* .section-heading styles */
+  @apply mt-8;
+}
+.open-card-leave-to .opening .card__text {
+  @apply mt-0;
+}
+.open-card-leave-to .opening .card__teaser {
+  /* .section styles */
+  @apply mt-4;
+}
+.open-card-leave-to .opening .card__hider {
+  @apply opacity-0;
+}
+.open-card-leave-to .opening .card__more {
+  @apply opacity-0;
+}
+
+/* make the subpage contents appear */
+/* does nothing - tells vue how long to wait */
+.open-card-enter-active {
+  transition-duration: 50ms;
+}
+
+.open-card-enter-active,
+.open-card-enter-active.subpage,
+.open-card-enter-active .subpage__content {
+  transition-property: all;
+  transition-duration: 50ms;
+  transition-timing-function: linear;
+}
+
+.open-card-enter .subpage__content {
+  max-height: 8rem; /* about same as old card height */
+  @apply h-full overflow-y-hidden;
+}
+.open-card-enter-to .subpage__content {
+  @apply max-h-screen mb-0 h-full overflow-y-hidden;
+}
+
+.open-card-enter.subpage {
+  @apply pb-80; /* pb reserved by card after leave transition end */
 }
 </style>
