@@ -200,6 +200,7 @@ export default Vue.extend({
       lastScrollY: 0,
       lastScrollUpY: 0,
       menuButtonVisible: false,
+      menuLocked: false,
     }
   },
   computed: {
@@ -255,11 +256,18 @@ export default Vue.extend({
   },
   methods: {
     onScroll() {
+      if (this.menuLocked) {
+        // ignore
+        this.lastScrollY = window.scrollY
+        this.lastScrollUpY = window.scrollY
+        return
+      }
+
       if (Math.abs(window.scrollY - this.lastScrollY) < 10) {
         return
       }
 
-      const menu = this.$refs.menu as any
+      const menu = this.$refs.menu as HTMLElement
       if (window.scrollY < this.lastScrollY) {
         // scrolled up
         menu.style['margin-top'] = '0px'
@@ -386,6 +394,14 @@ export default Vue.extend({
       }
       this.$ga.set('dimension5', this.testGroup)
       console.log('user is part of test group', this.testGroup)
+    },
+    $route(to, from) {
+      if (to.name != undefined && to.name.startsWith('player-tag-')) {
+        // ignore scroll events triggered by vue-scroll
+        this.menuLocked = true
+        // wait a bit longer than the page transitions
+        setTimeout(() => this.menuLocked = false, 1000)
+      }
     },
   },
 })

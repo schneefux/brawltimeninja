@@ -10,6 +10,10 @@
       <h2 class="page-h2">
         Brawlers
       </h2>
+
+      <p>
+        View Trophy Graphs and Win Rates for all of your Brawlers.
+      </p>
     </div>
 
     <div class="subpage__content">
