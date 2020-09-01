@@ -150,6 +150,29 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="relevantGuides.length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'articles'),
+        once: true,
+      }"
+      class="section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Guides from the Blog
+      </h2>
+    </div>
+
+    <div
+      v-if="relevantGuides.length > 0"
+      class="section"
+    >
+      <blogroll
+        :posts="relevantGuides"
+        topic="guides"
+      />
+    </div>
   </div>
 </template>
 
@@ -158,6 +181,7 @@ import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { MapMetaMap } from '../../../model/MetaEntry'
 import { Player } from '../../../model/Api'
+import { Post } from '../../../model/Web'
 
 export default Vue.extend({
   head() {
@@ -188,10 +212,20 @@ export default Vue.extend({
         brawlers: false,
         modes: false,
         records: false,
-      }
+      },
+      guides: [] as Post[],
+    }
+  },
+  async asyncData({ $axios, $content }: any) {
+    const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
+    return {
+      guides,
     }
   },
   computed: {
+    relevantGuides(): Post[] {
+      return this.guides.slice(0, 3)
+    },
     ...mapState({
       testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,

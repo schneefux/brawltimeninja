@@ -52,40 +52,6 @@
     </client-only>
 
     <div
-      :class="{
-        'hidden': $route.path == `/player/${player.tag}`,
-        'sticky top-0 pt-28 -mt-28 z-20': true,
-      }"
-    >
-      <nuxt-link
-        class="button button--lg"
-        :to="`/player/${player.tag}`"
-      >
-        Close
-      </nuxt-link>
-    </div>
-    <nuxt-child
-      :player="player"
-      :current-events="currentEvents"
-      :active-map-meta="activeMapMeta"
-      :refresh-seconds-left="refreshSecondsLeft"
-      @refresh="refreshPlayer"
-    ></nuxt-child>
-
-    <div class="section-heading flex items-center">
-      <h2 class="text-2xl font-semibold">
-        Info!
-      </h2>
-      <p class="text-xs ml-3">
-        Play times are estimated and statistics are compared against other visitors.
-        They are not official numbers.
-        Win Rates are based on your last {{ totalBattles }} battles.
-        <br />
-        Check your profile daily to get the most accurate statistics.
-      </p>
-    </div>
-
-    <div
       v-show="isInstallable && !installBannerDismissed"
       class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight"
     >
@@ -115,27 +81,25 @@
     </div>
 
     <div
-      v-if="relevantGuides.length > 0"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'articles'),
-        once: true,
+      :class="{
+        'hidden': $route.path == `/player/${player.tag}`,
+        'sticky top-0 text-right pt-20 -mt-20 z-20': true,
       }"
-      class="section-heading"
     >
-      <h2 class="text-2xl font-semibold">
-        Guides from the Blog
-      </h2>
+      <nuxt-link
+        class="button button--lg"
+        :to="`/player/${player.tag}`"
+      >
+        Close
+      </nuxt-link>
     </div>
-
-    <div
-      v-if="relevantGuides.length > 0"
-      class="section"
-    >
-      <blogroll
-        :posts="relevantGuides"
-        topic="guides"
-      />
-    </div>
+    <nuxt-child
+      :player="player"
+      :current-events="currentEvents"
+      :active-map-meta="activeMapMeta"
+      :refresh-seconds-left="refreshSecondsLeft"
+      @refresh="refreshPlayer"
+    ></nuxt-child>
   </div>
 </template>
 
@@ -163,23 +127,13 @@ export default Vue.extend({
       refreshSecondsLeft: 180,
       currentEvents: [] as ActiveEvent[],
       activeMapMeta: {} as MapMetaMap,
-      guides: [] as Post[],
       additionalPlayerDataLoaded: false,
     }
   },
   computed: {
-    relevantGuides(): Post[] {
-      return this.guides.slice(0, 3)
-    },
     topBrawlerId(): string {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
       return brawlerIds[0]
-    },
-    totalBattles(): number {
-      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
-        return this.player.winrates.total.stats.picks
-      }
-      return this.player.battles.length
     },
     ...mapState({
       player: (state: any) => state.player,
@@ -222,15 +176,13 @@ export default Vue.extend({
     }
   },
   async asyncData({ $axios, $content }: any) {
-    const [events, activeMapMeta, guides] = await Promise.all([
+    const [events, activeMapMeta] = await Promise.all([
       $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
       $axios.$get('/api/meta/map/events').catch(() => ({})),
-      $content('guides').sortBy('createdAt', 'desc').fetch(),
     ])
     return {
       currentEvents: events.current,
       activeMapMeta,
-      guides,
     }
   },
   methods: {
