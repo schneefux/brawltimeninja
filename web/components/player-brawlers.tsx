@@ -44,7 +44,7 @@ export default Vue.extend({
 
       <div class="section">
         <div class="flex flex-wrap justify-between">
-          { brawlers.filter((brawler, index) => !tease || index == 0).map(brawler =>
+          { brawlers.filter((brawler, index) => !tease || index < 2).map(brawler =>
           <lazy
             key={brawler.id}
             class="card-wrapper w-full md:flex-1"

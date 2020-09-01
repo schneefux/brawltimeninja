@@ -1,43 +1,52 @@
 <template>
-  <div class="subpage">
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'gamemodes'),
-        once: true,
-      }"
-      class="subpage__title section-heading"
-    >
-      <h2 class="page-h2">
-        Game Mode Win Rates
-      </h2>
+  <div class="subpage-wrapper">
+    <div class="subpage">
+      <nuxt-link
+        class="subpage-back"
+        :to="`/player/${player.tag}`"
+      >
+        Close
+      </nuxt-link>
 
-      <p>
-        View your win rate in different modes and get personalized recommendations.
-      </p>
-    </div>
+      <div
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gamemodes'),
+          once: true,
+        }"
+        class="subpage__title section-heading"
+      >
+        <h2 class="page-h2">
+          Game Mode Win Rates
+        </h2>
 
-    <div class="subpage__content">
-      <div class="section">
-        <player-mode-winrates
-          :player="player"
-          :battles="player.battles"
-          :active-map-meta="activeMapMeta"
-        ></player-mode-winrates>
+        <p>
+          View your win rate in different modes and get personalized recommendations.
+        </p>
       </div>
 
-      <div class="mt-1 w-full flex justify-end">
-        <player-tips
-          :player="player"
-          :active-map-meta="activeMapMeta"
-          class="mr-3 button md:button--md"
-        ></player-tips>
+      <div class="subpage__content">
+        <div class="section">
+          <player-mode-winrates
+            :player="player"
+            :battles="player.battles"
+            :active-map-meta="activeMapMeta"
+          ></player-mode-winrates>
+        </div>
 
-        <nuxt-link
-          class="button md:button--md"
-          to="/tier-list/map"
-        >
-          Open Map Tier List
-        </nuxt-link>
+        <div class="mt-1 w-full flex justify-end">
+          <player-tips
+            :player="player"
+            :active-map-meta="activeMapMeta"
+            class="mr-3 button md:button--md"
+          ></player-tips>
+
+          <nuxt-link
+            class="button md:button--md"
+            to="/tier-list/map"
+          >
+            Open Map Tier List
+          </nuxt-link>
+        </div>
       </div>
     </div>
   </div>
@@ -76,7 +85,7 @@ export default Vue.extend({
   },
   mounted() {
     // workaround for https://github.com/nuxt/nuxt.js/issues/5359
-    this.$scrollTo(this.$el, 0, { offset: -96 })
+    this.$scrollTo(this.$el, 50, { offset: -96 })
   },
   computed: {
     ...mapState({

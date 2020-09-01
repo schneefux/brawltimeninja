@@ -24,8 +24,7 @@
 
         <div
           v-show="lightboxOpen"
-          class="fixed inset-0 z-50"
-          style="background-color: rgba(0, 0, 0, 0.75)"
+          class="fixed inset-0 z-50 bg-black bg-opacity-75"
         >
           <button
             class="absolute top-0 right-0 mr-10 mt-4 text-white text-5xl"

@@ -4,11 +4,10 @@
       :class="{
         'w-full md:w-1/2 card-wrapper': true,
         'opening': opening.records,
-        'not-opening': !opening.records,
       }"
       ref="records"
     >
-      <div class="card card--dark card__content">
+      <div class="card card--dark card__content h-full">
         <h3 class="card__header">
           Personal Records
         </h3>
@@ -41,11 +40,10 @@
       :class="{
         'w-full md:w-1/2 card-wrapper': true,
         'opening': opening.battles,
-        'not-opening': !opening.battles,
       }"
       ref="battles"
     >
-      <div class="card card--dark card__content">
+      <div class="card card--dark card__content h-full">
         <h3 class="card__header">
           Battle Log
         </h3>
@@ -79,11 +77,10 @@
       :class="{
         'w-full md:w-1/2 card-wrapper': true,
         'opening': opening.modes,
-        'not-opening': !opening.modes,
       }"
       ref="modes"
     >
-      <div class="card card--dark card__content">
+      <div class="card card--dark card__content h-full">
         <h3 class="card__header">
           Game Mode Win Rates
         </h3>
@@ -118,11 +115,10 @@
       :class="{
         'w-full md:w-1/2 card-wrapper': true,
         'opening': opening.brawlers,
-        'not-opening': !opening.brawlers,
       }"
       ref="brawlers"
     >
-      <div class="card card--dark card__content">
+      <div class="card card--dark card__content h-full">
         <h3 class="card__header">
           Brawlers
         </h3>
@@ -151,13 +147,26 @@
       </div>
     </div>
 
+    <div class="w-full section-heading flex items-center">
+      <h2 class="text-2xl font-semibold">
+        Info!
+      </h2>
+      <p class="text-xs ml-3">
+        Play times are estimated and statistics are compared against other visitors.
+        They are not official numbers.
+        Win Rates are based on your last {{ totalBattles }} battles.
+        <br />
+        Check your profile daily to get the most accurate statistics.
+      </p>
+    </div>
+
     <div
       v-if="relevantGuides.length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'articles'),
         once: true,
       }"
-      class="section-heading"
+      class="w-full section-heading"
     >
       <h2 class="text-2xl font-semibold">
         Guides from the Blog
@@ -226,6 +235,12 @@ export default Vue.extend({
     relevantGuides(): Post[] {
       return this.guides.slice(0, 3)
     },
+    totalBattles(): number {
+      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
+        return this.player.winrates.total.stats.picks
+      }
+      return this.player.battles.length
+    },
     ...mapState({
       testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
@@ -280,6 +295,13 @@ export default Vue.extend({
 .open-card-leave-active {
   transition-duration: 100ms;
 }
+/* transitions are mobile-only for now */
+@screen md {
+  .open-card-leave-active {
+    transition-duration: 0ms;
+  }
+}
+
 
 .open-card-leave-active .opening.card-wrapper,
 .open-card-leave-active .opening .card,
@@ -294,13 +316,6 @@ export default Vue.extend({
 }
 
 /* morph the clicked card and its contents into a subpage layout */
-.open-card-leave-to .opening.card-wrapper {
-  /* @apply w-full m-0 p-0; */
-}
-
-.open-card-leave-to .not-opening .card {
-  @apply opacity-0;
-}
 
 .open-card-leave-to .opening .card {
   /* revert .card-wrapper styles */
@@ -322,10 +337,8 @@ export default Vue.extend({
   /* .section styles */
   @apply mt-4;
 }
+.open-card-leave-to .opening .card__more,
 .open-card-leave-to .opening .card__hider {
-  @apply opacity-0;
-}
-.open-card-leave-to .opening .card__more {
   @apply opacity-0;
 }
 
@@ -334,9 +347,17 @@ export default Vue.extend({
 .open-card-enter-active {
   transition-duration: 50ms;
 }
+/* transitions are mobile-only for now */
+@screen md {
+  .open-card-enter-active {
+    transition-duration: 0ms;
+  }
+}
 
 .open-card-enter-active,
-.open-card-enter-active.subpage,
+.open-card-enter-active.subpage-wrapper,
+.open-card-enter-active .subpage-back,
+.open-card-enter-active .subpage,
 .open-card-enter-active .subpage__content {
   transition-property: all;
   transition-duration: 50ms;
@@ -348,10 +369,14 @@ export default Vue.extend({
   @apply h-full overflow-y-hidden;
 }
 .open-card-enter-to .subpage__content {
-  @apply max-h-screen mb-0 h-full overflow-y-hidden;
+  @apply h-full max-h-screen overflow-y-hidden;
 }
 
-.open-card-enter.subpage {
+.open-card-enter .subpage {
   @apply pb-80; /* pb reserved by card after leave transition end */
+}
+
+.open-card-enter .subpage-back {
+  @apply opacity-0;
 }
 </style>

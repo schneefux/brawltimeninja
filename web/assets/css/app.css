@@ -230,6 +230,37 @@ details.stats-card-expander > summary::-webkit-details-marker {
   @apply -mx-2 p-2 bg-gray-800 rounded;
 }
 
+.subpage-back {
+  top: calc(54px + 0.5rem - 1px); /* collapsed menu height + space + some pixel fuckup */
+  @apply sticky text-right z-20;
+  @apply button button--md;
+}
+
+/* on desktop, turn container into a fullscreen modal */
+@screen md {
+  .subpage-wrapper {
+    @apply fixed inset-0 z-50 bg-opacity-75 bg-black;
+  }
+
+  .subpage {
+    @apply mx-auto mb-auto my-32 max-w-5xl relative px-6 pb-4;
+  }
+
+  .subpage__title {
+    @apply pb-3;
+  }
+
+  .subpage__content {
+    /* 100% - margin top/bottom - title height */
+    @apply overflow-y-auto;
+    max-height: calc(100vh - 2*8rem - 6.5rem);
+  }
+
+  .subpage-back {
+    @apply absolute top-0 left-0;
+  }
+}
+
 /** ad root-class */
 .ad-section {
   @apply mt-4 text-center;

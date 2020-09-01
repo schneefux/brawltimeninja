@@ -80,19 +80,6 @@
       </div>
     </div>
 
-    <div
-      :class="{
-        'hidden': $route.path == `/player/${player.tag}`,
-        'sticky top-0 text-right pt-20 -mt-20 z-20': true,
-      }"
-    >
-      <nuxt-link
-        class="button button--lg"
-        :to="`/player/${player.tag}`"
-      >
-        Close
-      </nuxt-link>
-    </div>
     <nuxt-child
       :player="player"
       :current-events="currentEvents"

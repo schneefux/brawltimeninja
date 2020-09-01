@@ -1,25 +1,34 @@
 <template>
-  <div class="subpage">
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'brawlers'),
-        once: true,
-      }"
-      class="section-heading"
-    >
-      <h2 class="page-h2">
-        Brawlers
-      </h2>
+  <div class="subpage-wrapper">
+    <div class="subpage">
+      <nuxt-link
+        class="subpage-back"
+        :to="`/player/${player.tag}`"
+      >
+        Close
+      </nuxt-link>
 
-      <p>
-        View Trophy Graphs and Win Rates for all of your Brawlers.
-      </p>
-    </div>
+      <div
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'brawlers'),
+          once: true,
+        }"
+        class="section-heading"
+      >
+        <h2 class="page-h2">
+          Brawlers
+        </h2>
 
-    <div class="subpage__content">
-      <player-brawlers
-        :player="player"
-      ></player-brawlers>
+        <p>
+          View Trophy Graphs and Win Rates for all of your Brawlers.
+        </p>
+      </div>
+
+      <div class="subpage__content">
+        <player-brawlers
+          :player="player"
+        ></player-brawlers>
+      </div>
     </div>
   </div>
 </template>
@@ -56,7 +65,7 @@ export default Vue.extend({
   },
   mounted() {
     // workaround for https://github.com/nuxt/nuxt.js/issues/5359
-    this.$scrollTo(this.$el, 0, { offset: -96 })
+    this.$scrollTo(this.$el, 50, { offset: -96 })
   },
   computed: {
     ...mapState({

@@ -1,67 +1,76 @@
 <template>
-  <div class="subpage">
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'battles'),
-        once: true,
-      }"
-      class="subpage__title section-heading flex flex-wrap items-center"
-    >
-      <h2 class="page-h2">
-        Battle Log
-      </h2>
+  <div class="subpage-wrapper">
+    <div class="subpage">
+      <nuxt-link
+        class="subpage-back"
+        :to="`/player/${player.tag}`"
+      >
+        Close
+      </nuxt-link>
 
-      <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
-        <span class="text-sm text-grey-lighter">
-          Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
-        </span>
-        <button
-          class="ml-auto md:ml-4 button button-sm"
-          @click="$emit('refresh')"
-        >
-          Refresh now
-        </button>
+      <div
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'battles'),
+          once: true,
+        }"
+        class="subpage__title section-heading flex flex-wrap items-center"
+      >
+        <h2 class="page-h2">
+          Battle Log
+        </h2>
+
+        <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
+          <span class="text-sm text-grey-lighter">
+            Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
+          </span>
+          <button
+            class="ml-auto md:ml-4 button button-sm"
+            @click="$emit('refresh')"
+          >
+            Refresh now
+          </button>
+        </div>
+
+        <p class="w-full">
+          See your latest battles and calculate your Win Rate.
+        </p>
       </div>
 
-      <p>
-        See your latest battles and calculate your Win Rate.
-      </p>
-    </div>
+      <div class="subpage__content">
+        <div class="section">
+          <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
+            <div class="bigstat-container">
+              <dd class="bigstat-left bigstat-number bigstat-number--light">
+                {{ Math.floor(winRate * totalBattles) }}
+              </dd>
+              <dt class="bigstat-right bigstat-label text-xl">
+                Wins Recorded
+              </dt>
+            </div>
 
-    <div class="subpage__content">
-      <div class="section">
-        <dl class="mt-3 mb-6 bigstat-wrapper" v-if="totalBattles !== 0">
-          <div class="bigstat-container">
-            <dd class="bigstat-left bigstat-number bigstat-number--light">
-              {{ Math.floor(winRate * totalBattles) }}
-            </dd>
-            <dt class="bigstat-right bigstat-label text-xl">
-              Wins Recorded
-            </dt>
-          </div>
+            <div class="bigstat-container">
+              <dd class="bigstat-left bigstat-number bigstat-number--light">
+                {{ Math.floor((1 - winRate) * totalBattles) }}
+              </dd>
+              <dt class="bigstat-right bigstat-label text-xl">
+                Losses Recorded
+              </dt>
+            </div>
 
-          <div class="bigstat-container">
-            <dd class="bigstat-left bigstat-number bigstat-number--light">
-              {{ Math.floor((1 - winRate) * totalBattles) }}
-            </dd>
-            <dt class="bigstat-right bigstat-label text-xl">
-              Losses Recorded
-            </dt>
-          </div>
+            <div class="bigstat-container">
+              <dd class="bigstat-left bigstat-number bigstat-number--light leading-none">
+                {{ formatMode(bestMode) }}
+              </dd>
+              <dt class="bigstat-right bigstat-label text-xl">
+                Best Mode
+              </dt>
+            </div>
+          </dl>
 
-          <div class="bigstat-container">
-            <dd class="bigstat-left bigstat-number bigstat-number--light leading-none">
-              {{ formatMode(bestMode) }}
-            </dd>
-            <dt class="bigstat-right bigstat-label text-xl">
-              Best Mode
-            </dt>
-          </div>
-        </dl>
-
-        <player-battles
-          :player="player"
-        ></player-battles>
+          <player-battles
+            :player="player"
+          ></player-battles>
+        </div>
       </div>
     </div>
   </div>
@@ -105,7 +114,7 @@ export default Vue.extend({
   },
   mounted() {
     // workaround for https://github.com/nuxt/nuxt.js/issues/5359
-    this.$scrollTo(this.$el, 0, { offset: -96 })
+    this.$scrollTo(this.$el, 50, { offset: -96 })
   },
   computed: {
     totalBattles() {
@@ -229,9 +238,5 @@ export default Vue.extend({
 
 .bigstat-number--light {
   @apply text-3xl text-primary-light;
-}
-
-.min-width-min-content {
- min-width: min-content;
 }
 </style>
