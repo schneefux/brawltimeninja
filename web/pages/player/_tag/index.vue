@@ -291,6 +291,8 @@ export default Vue.extend({
 </style>
 
 <style>
+/* purgecss start ignore */
+
 /* does nothing - tells vue how long to wait */
 .open-card-leave-active {
   transition-duration: 100ms;
@@ -301,7 +303,6 @@ export default Vue.extend({
     transition-duration: 0ms;
   }
 }
-
 
 .open-card-leave-active .opening.card-wrapper,
 .open-card-leave-active .opening .card,
@@ -379,4 +380,5 @@ export default Vue.extend({
 .open-card-enter .subpage-back {
   @apply opacity-0;
 }
+/* purgecss end ignore */
 </style>
