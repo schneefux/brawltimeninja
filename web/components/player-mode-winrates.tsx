@@ -65,8 +65,13 @@ export default Vue.extend({
     }
     playerModeStats.sort((m1, m2) => m2.picks - m1.picks)
 
-    return <div class="flex flex-wrap justify-center">
-      { playerModeStats.filter((stats, index) => !tease || index == 0).map((stats, index) =>
+    return <div
+      class={{
+        '-my-2 flex flex-wrap justify-center': true,
+        'h-56 overflow-y-hidden': tease,
+      }}
+    >
+      { playerModeStats.filter((stats, index) => !tease || index < 2).map((stats, index) =>
       <lazy
         key={stats.mode}
         render={index <= 3}

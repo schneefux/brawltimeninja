@@ -45,15 +45,103 @@
         :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
         :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
         data-full-width-responsive="false"
-        ins-class="w-screen md:w-full -mx-4 ad-section"
+        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
       />
     </client-only>
 
+    <player-teaser-card
+      v-slot="props"
+      title="Personal Records"
+      description="Compare your profile statistics against pro players."
+      class="card-wrapper"
+    >
+      <player-lifetime
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'lifetime'),
+          once: true,
+        }"
+        :stats="player.stats"
+        :tease="!props.open"
+      ></player-lifetime>
+
+      <template v-if="props.open">
+        <h3
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'pro'),
+            once: true,
+          }"
+          class="card__header mt-3"
+        >
+          Are you a Pro?
+        </h3>
+
+        <player-percentiles
+          :player="player"
+          class="card__text"
+        ></player-percentiles>
+      </template>
+    </player-teaser-card>
+
+    <div class="card-wrapper">
+      <div class="mx-1 md:m-6 flex items-center">
+        <h2 class="text-2xl font-semibold">
+          Info!
+        </h2>
+        <p class="text-xs ml-3">
+          Play times are estimated and statistics are compared against other visitors.
+          They are not official numbers.
+          Win Rates are based on your last {{ totalBattles }} battles.
+          <br />
+          Check your profile daily to get the most accurate statistics.
+        </p>
+      </div>
+    </div>
+
+    <player-teaser-card
+      v-if="player.battles.length > 0"
+      v-slot="props"
+      title="Battle Log"
+      description="See your latest battles and calculate your Win Rate."
+      class="card-wrapper"
+    >
+      <player-battles-squares
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'battles'),
+          once: true,
+        }"
+        :battles="player.battles"
+        :tease="!props.open"
+      ></player-battles-squares>
+
+      <template v-if="props.open">
+        <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
+          <span class="text-sm text-grey-lighter">
+            Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
+          </span>
+          <button
+            class="ml-auto md:ml-4 button button-sm"
+            @click="$emit('refresh')"
+          >
+            Refresh now
+          </button>
+        </div>
+
+        <player-battles-stats
+          :winrates="player.winrates"
+          :battles="player.battles"
+        ></player-battles-stats>
+
+        <player-battles
+          :player="player"
+        ></player-battles>
+      </template>
+    </player-teaser-card>
+
     <div
       v-show="isInstallable && !installBannerDismissed"
-      class="mt-10 w-full md:w-1/2 mx-auto text-center leading-tight"
+      class="card-wrapper md:w-1/2 mx-auto text-center leading-tight"
     >
       <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
         <button
@@ -80,13 +168,101 @@
       </div>
     </div>
 
-    <nuxt-child
-      :player="player"
-      :current-events="currentEvents"
-      :active-map-meta="activeMapMeta"
-      :refresh-seconds-left="refreshSecondsLeft"
-      @refresh="refreshPlayer"
-    ></nuxt-child>
+    <client-only>
+      <adsense
+        v-if="!isApp && player.battles.length > 0 && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
+        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
+        id="ezoic-pub-ad-placeholder-102"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="4129048243"
+      />
+    </client-only>
+
+    <player-teaser-card
+      v-slot="props"
+      title="Game Modes"
+      description="View your win rate in different modes and get personalized recommendations."
+      class="card-wrapper"
+    >
+      <player-mode-winrates
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gamemodes'),
+          once: true,
+        }"
+        :player="player"
+        :battles="player.battles"
+        :active-map-meta="activeMapMeta"
+        :tease="!props.open"
+      ></player-mode-winrates>
+
+      <template v-if="props.open">
+        <div class="mt-1 w-full flex justify-end">
+          <player-tips
+            :player="player"
+            :active-map-meta="activeMapMeta"
+            class="mr-3 button md:button--md"
+          ></player-tips>
+
+          <nuxt-link
+            class="button md:button--md"
+            to="/tier-list/map"
+          >
+            Open Map Tier List
+          </nuxt-link>
+        </div>
+      </template>
+    </player-teaser-card>
+
+    <client-only>
+      <adsense
+        v-if="!isApp && testGroup != 'player-only-top-ad'"
+        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
+        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        data-full-width-responsive="false"
+        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
+        id="ezoic-pub-ad-placeholder-101"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1752268168"
+      />
+    </client-only>
+
+    <player-teaser-card
+      v-slot="props"
+      title="Brawlers"
+      description="View Trophy Graphs and Win Rates for all of your Brawlers."
+      class="card-wrapper"
+    >
+      <player-brawlers
+        :player="player"
+        :tease="!props.open"
+      ></player-brawlers>
+    </player-teaser-card>
+
+    <div
+      v-if="relevantGuides.length > 0"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'articles'),
+        once: true,
+      }"
+      class="w-full section-heading"
+    >
+      <h2 class="text-2xl font-semibold">
+        Guides from the Blog
+      </h2>
+    </div>
+
+    <div
+      v-if="relevantGuides.length > 0"
+      class="section"
+    >
+      <blogroll
+        :posts="relevantGuides"
+        topic="guides"
+      />
+    </div>
   </div>
 </template>
 
@@ -114,10 +290,20 @@ export default Vue.extend({
       refreshSecondsLeft: 180,
       currentEvents: [] as ActiveEvent[],
       activeMapMeta: {} as MapMetaMap,
+      guides: [] as Post[],
       additionalPlayerDataLoaded: false,
     }
   },
   computed: {
+    relevantGuides(): Post[] {
+      return this.guides.slice(0, 3)
+    },
+    totalBattles(): number {
+      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
+        return this.player.winrates.total.stats.picks
+      }
+      return this.player.battles.length
+    },
     topBrawlerId(): string {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
       return brawlerIds[0]
@@ -163,11 +349,13 @@ export default Vue.extend({
     }
   },
   async asyncData({ $axios, $content }: any) {
+    const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
     const [events, activeMapMeta] = await Promise.all([
       $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
       $axios.$get('/api/meta/map/events').catch(() => ({})),
     ])
     return {
+      guides,
       currentEvents: events.current,
       activeMapMeta,
     }

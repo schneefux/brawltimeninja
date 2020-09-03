@@ -16,11 +16,18 @@ export default Vue.extend({
   },
   render(h, { props }) {
     const stats = props.stats
-    return <dl class="flex flex-wrap flex-col md:flex-row justify-center">
-      { Object.entries(stats).filter(([name, value], index) => !props.tease || index < 3).map(([name, value]) =>
+    const tease = props.tease
+    return <dl
+      class={{
+        'flex flex-col md:flex-row md:flex-wrap md:justify-center': true,
+        'flex-wrap justify-center': !tease,
+        'h-28 md:h-10 overflow-hidden': tease,
+      }}
+    >
+      { Object.entries(stats).map(([name, value]) =>
         <div class="bg-black rounded px-3 py-1 mx-2 mt-1 text-lg flex h-8">
           <dd class="text-primary-light font-semibold w-16 md:w-auto text-right">{ value }</dd>
-          <dt class="ml-2 w-full">{ metaStatMaps.labels[name] }</dt>
+          <dt class="ml-2 w-full overflow-hidden">{ metaStatMaps.labels[name] }</dt>
         </div>
       )}
     </dl>
