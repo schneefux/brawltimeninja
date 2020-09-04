@@ -68,9 +68,15 @@
         <summary>
           What is my tag?
         </summary>
+        <p class="mt-2 font-semibold">Click on your profile icon</p>
         <img
-          src="~/assets/images/tag-help.jpg"
-          class="mt-3 w-120 max-w-full"
+          src="~/assets/images/tag/tag-1.jpg"
+          class="mt-1 w-80 max-w-full"
+        >
+        <p class="mt-2 font-semibold">The string starting with "#" is your tag.</p>
+        <img
+          src="~/assets/images/tag/tag-2.jpg"
+          class="mt-1 w-80 max-w-full"
         >
       </details>
     </div>
@@ -335,7 +341,6 @@ export default Vue.extend({
       tag: undefined as string|undefined,
       loading: false,
       error: undefined as string|undefined,
-      invalidTagAttempts: 0,
       currentEvents: [] as ActiveEvent[],
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
@@ -443,12 +448,8 @@ export default Vue.extend({
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.$ga.event('player', 'search', 'error_invalid')
         this.error = 'This is not a tag'
-
-        this.invalidTagAttempts++
-        if (this.invalidTagAttempts === 1) {
-          this.$refs.helpDropdown.setAttribute('open', '')
-        }
-
+        this.$refs.helpDropdown.setAttribute('open', '')
+        this.$scrollTo(this.$refs.helpDropdown, 1000, { offset: -96 })
         return
       }
 
