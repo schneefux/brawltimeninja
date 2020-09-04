@@ -99,9 +99,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
-        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        v-if="!isApp"
+        data-ad-format="auto"
         data-full-width-responsive="false"
         class="container flex justify-center"
         ins-class="w-screen md:w-full -mx-4"
@@ -185,9 +184,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
-        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        v-if="!isApp"
+        data-ad-format="auto"
         data-full-width-responsive="false"
         class="container flex justify-center"
         ins-class="w-screen md:w-full -mx-4"
@@ -383,7 +381,6 @@ export default Vue.extend({
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
-      testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },

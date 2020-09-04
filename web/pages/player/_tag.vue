@@ -41,9 +41,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
-        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        v-if="!isApp"
+        data-ad-format="auto"
         data-full-width-responsive="false"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         data-ad-client="ca-pub-6856963757796636"
@@ -170,9 +169,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && player.battles.length > 0 && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
-        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        v-if="!isApp && player.battles.length > 0"
+        data-ad-format="auto"
         data-full-width-responsive="false"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         id="ezoic-pub-ad-placeholder-102"
@@ -218,9 +216,8 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && testGroup != 'player-only-top-ad'"
-        :ins-style="testGroup == 'player-small-ads' ? 'display: block; max-height: 100px; height: 100%;' : 'display: block'"
-        :data-ad-format="testGroup == 'player-small-ads' ? 'horizontal' : 'auto'"
+        v-if="!isApp"
+        data-ad-format="auto"
         data-full-width-responsive="false"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         id="ezoic-pub-ad-placeholder-101"
@@ -311,7 +308,6 @@ export default Vue.extend({
     ...mapState({
       player: (state: any) => state.player,
       installBannerDismissed: (state: any) => state.installBannerDismissed as boolean,
-      testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
     ...mapGetters({
