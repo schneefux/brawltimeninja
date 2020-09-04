@@ -152,7 +152,7 @@
           </svg>
         </button>
         <p>
-          Install the App for instant access.
+          Add the web app to your home screen.
           Track your trophies easily. Light, fast and free.
         </p>
         <div class="mt-3">

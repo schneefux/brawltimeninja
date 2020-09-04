@@ -22,6 +22,23 @@ function mergeDeep(target, source) {
   return output;
 }
 
+function detectAndroid() {
+  return /android/i.test(navigator.userAgent)
+}
+
+function detectIOS() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  // iPad on iOS 13 detection
+  || (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+}
+
 export const state = () => ({
   version: undefined,
   featuredPlayers: [ {
@@ -77,8 +94,16 @@ export const getters = {
       .indexOf(state.player.tag) + 1
   },
   isInstallable(state) {
-    const isAndroid = process.client && /android/i.test(navigator.userAgent)
-    return state.installPrompt !== undefined || (!state.isApp && isAndroid)
+    if (state.isApp) {
+      return false
+    }
+    if (!process.client) {
+      return false
+    }
+    if (state.installPrompt !== undefined) {
+      return true
+    }
+    return detectAndroid() || detectIOS()
   },
 }
 
@@ -206,15 +231,25 @@ export const actions = {
   },
   async install({ state, commit }) {
     const pwaSupported = state.installPrompt !== undefined
-    if (!pwaSupported) {
-      const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      event('app', 'redirect_store', 'fallback')
-      window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
-    } else {
+    if (pwaSupported) {
       state.installPrompt.prompt()
       const choice = await state.installPrompt.userChoice
       event('app', 'prompt', choice.outcome)
       commit('clearInstallPrompt')
+      return
+    }
+
+    if (detectAndroid()) {
+      const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
+      event('app', 'redirect_store', 'fallback')
+      window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
+      return
+    }
+
+    if (detectIOS()) {
+      event('app', 'redirect_guide', 'ios')
+      this.$router.push('/install/ios')
+      return
     }
   },
 }
