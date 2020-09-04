@@ -76,7 +76,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 h1 {
   @apply text-3xl mt-4 mb-2;
 }

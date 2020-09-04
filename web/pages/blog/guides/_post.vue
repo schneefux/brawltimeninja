@@ -93,7 +93,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .nuxt-content {
   @apply leading-normal;
 }

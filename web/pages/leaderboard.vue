@@ -132,7 +132,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .table th {
   @apply py-2 px-2;
 }

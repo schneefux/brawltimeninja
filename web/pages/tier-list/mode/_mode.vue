@@ -158,13 +158,13 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      this.modeMeta = await this.$axios.$get(`/api/meta/mode?trophyrange=${lower}-${upper}`)
+      this.modeMeta = await this.$axios.$get(`/api/meta/mode?trophyrange=${lower}-${upper}`) as ModeMetaMap
     },
   },
   async asyncData({ params, $axios }) {
     const mode = kebabToCamel(params.mode as string)
-    const modeMeta = await $axios.$get('/api/meta/mode')
-    const mapMeta = await $axios.$get('/api/meta/map/mode/' + mode.toLowerCase())
+    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode')
+    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/mode/' + mode.toLowerCase())
     return {
       mode,
       modeMeta,

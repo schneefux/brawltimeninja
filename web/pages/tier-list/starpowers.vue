@@ -108,7 +108,7 @@ export default Vue.extend({
     },
   },
   async asyncData({ $axios }) {
-    const starpowerMeta = await $axios.$get('/api/meta/starpower') as StarpowerMetaStatistics[]
+    const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>('/api/meta/starpower')
     return {
       starpowerMeta,
     }

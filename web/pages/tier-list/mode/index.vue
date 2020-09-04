@@ -94,7 +94,7 @@ export default Vue.extend({
     }),
   },
   async asyncData({ $axios }) {
-    const modeMeta = await $axios.$get('/api/meta/mode') as ModeMetaMap
+    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode')
     return {
       modeMeta,
     }

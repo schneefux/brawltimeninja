@@ -108,7 +108,7 @@ export default Vue.extend({
     },
   },
   async asyncData({ $axios }) {
-    const gadgetMeta = await $axios.$get('/api/meta/gadget') as GadgetMetaStatistics[]
+    const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>('/api/meta/gadget')
     return {
       gadgetMeta,
     }

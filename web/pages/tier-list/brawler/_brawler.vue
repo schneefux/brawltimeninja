@@ -255,14 +255,14 @@ export default Vue.extend({
   },
   async asyncData({ params, $axios, error }) {
     const brawlerId = params.brawler
-    const activeEvents = await $axios.$get('/api/events/active').catch(() => []) as ActiveEvent[]
-    const brawlerMeta = await $axios.$get('/api/meta/brawler').catch(() => ({})) as BrawlerMetaStatistics[]
-    const starpowerMeta = await $axios.$get('/api/meta/starpower').catch(() => []) as StarpowerMetaStatistics[]
-    const gadgetMeta = await $axios.$get('/api/meta/gadget').catch(() => []) as GadgetMetaStatistics[]
-    const modeMeta = await $axios.$get('/api/meta/mode').catch(() => ({})) as ModeMetaMap
-    const mapMeta = await $axios.$get('/api/meta/map').catch(() => ({})) as MapMetaMap
-    const brawlerData = await $axios.$get(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null) as BrawlerData|null
-    const brawlerStats = await $axios.$get('/api/brawler/' + brawlerId).catch(() => null) as BrawlerStatisticsRows|null
+    const activeEvents = await $axios.$get<ActiveEvent[]>('/api/events/active').catch(() => [])
+    const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ({}))
+    const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>('/api/meta/starpower').catch(() => [])
+    const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>('/api/meta/gadget').catch(() => [])
+    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode').catch(() => ({}))
+    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map').catch(() => ({}))
+    const brawlerData = await $axios.$get<BrawlerData|null>(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null)
+    const brawlerStats = await $axios.$get<BrawlerStatisticsRows|null>('/api/brawler/' + brawlerId).catch(() => null)
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
