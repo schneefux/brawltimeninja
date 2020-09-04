@@ -399,19 +399,11 @@ export default Vue.extend({
       console.log('user is part of test group', this.testGroup)
       */
     },
-    $route(to, from) {
-      if (to.name != undefined && to.name.startsWith('player-tag-')) {
-        // ignore scroll events triggered by vue-scroll
-        this.menuLocked = true
-        // wait a bit longer than the page transitions
-        setTimeout(() => this.menuLocked = false, 1000)
-      }
-    },
   },
 })
 </script>
 
-<style>
+<style lang="postcss">
 .bg-top-y {
   background-position-y: top;
 }
