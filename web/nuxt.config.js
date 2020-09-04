@@ -192,6 +192,13 @@ export default {
       }
 
       try {
+        const brawlers = await axios.get(`${process.env.API_URL}/api/meta/brawler`)
+        brawlers.data.forEach(({ id }) => routes.push(`/tier-list/brawler/${id}`))
+      } catch (err) {
+        console.error('error adding brawlers to sitemap', err)
+      }
+
+      try {
         const topTrophies = await axios.get(`${process.env.API_URL}/api/leaderboard/trophies`)
         topTrophies.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
       } catch (err) {
