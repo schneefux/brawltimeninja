@@ -40,6 +40,10 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 * Upload new maps: `web/assets/images/bs-assets/map_images`
 * `update dim_season set is_current = 0` for all seasons older than the current balance changes
 
+## Deployment
+
+* Dokku Docker options to connect services: `docker-options:add brawltime.ninja build,deploy,run "--add-host api.brawltime.ninja:host-gateway`
+
 ## Processing images
 
 * `for f in web/assets/images/hero/icon/*.png; do magick.exe "$f" -strip -resize x192 "${f%.png}_optimized.png"; done`
