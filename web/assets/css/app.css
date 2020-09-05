@@ -125,19 +125,6 @@
   @apply py-2 pr-3 flex flex-col justify-center items-end;
 }
 
-details.stats-card-expander {
-  @apply w-full relative z-10 text-center text-sm py-1 bg-primary-darker;
-}
-
-details.stats-card-expander > summary {
-  @apply cursor-pointer;
-  list-style: none;
-}
-
-details.stats-card-expander > summary::-webkit-details-marker {
-  @apply hidden;
-}
-
 /* transparent card with a title and an image which highlights a single stat */
 .prop-card {
   @apply w-40 h-14 border-primary-darker border-2 mx-auto relative;

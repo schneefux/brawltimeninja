@@ -41,13 +41,7 @@ export default Vue.extend({
           </div>
         </div>
       </div>
-      { 'expand' in scopedSlots ?
-        <details class="stats-card-expander">
-          <summary>show more &#x25BC;</summary>
-          { scopedSlots.expand({}) }
-        </details>
-        : ''
-      }
+      { 'expand' in scopedSlots ? scopedSlots.expand({}) : '' }
     </div>
   }
 })

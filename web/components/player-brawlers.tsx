@@ -39,7 +39,7 @@ export default Vue.extend({
         <PlayerBrawlerCard
           { ...{ attrs: {
             brawler: brawler,
-            'brawler-winrates': player.winrates.brawler,
+            brawlerWinrates: player.winrates.brawler,
           } } }
         ></PlayerBrawlerCard>
       </lazy>
