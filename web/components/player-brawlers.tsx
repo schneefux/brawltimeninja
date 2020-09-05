@@ -13,10 +13,15 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    limit: {
+      type: Number,
+      required: false
+    },
   },
   render(h, { props }) {
     const player = props.player
     const tease = props.tease
+    const limit = tease ? 3 : props.limit
     const brawlersKV = [...Object.entries(player.brawlers)]
     const brawlers = brawlersKV.map(([brawlerId, brawler]) => ({
       id: brawlerId,
@@ -24,7 +29,7 @@ export default Vue.extend({
     }))
 
     return <div class="-my-2 flex flex-wrap justify-between">
-      { brawlers.filter((brawler, index) => !tease || index < 3).map(brawler =>
+      { brawlers.slice(0, limit).map(brawler =>
       <lazy
         key={brawler.id}
         class="card-wrapper w-full md:flex-1"

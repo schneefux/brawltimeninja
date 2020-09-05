@@ -9,12 +9,17 @@ export default Vue.extend({
       type: Object as PropType<Player>,
       required: true
     },
+    limit: {
+      type: Number,
+      required: false
+    },
   },
   render(h, { props }) {
     const player = props.player
+    const limit = props.limit
 
     return <div class="mt-2 flex flex-wrap justify-center">
-      { player.battles.map(battle =>
+      { player.battles.slice(0, limit).map(battle =>
       <lazy
         key={battle.timestamp}
         class={{

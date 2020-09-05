@@ -101,6 +101,7 @@
     <player-teaser-card
       v-if="player.battles.length > 0"
       v-slot="props"
+      :pages="Math.ceil(player.battles.length / 6)"
       title="Battle Log"
       description="See your latest battles and calculate your Win Rate."
       class="card-wrapper"
@@ -134,6 +135,7 @@
 
         <player-battles
           :player="player"
+          :limit="props.page * 6"
         ></player-battles>
       </template>
     </player-teaser-card>
@@ -228,6 +230,7 @@
 
     <player-teaser-card
       v-slot="props"
+      :pages="Math.ceil(Object.keys(player.brawlers).length) / 9"
       title="Brawlers"
       description="View Trophy Graphs and Win Rates for all of your Brawlers."
       class="card-wrapper"
@@ -235,6 +238,7 @@
       <player-brawlers
         :player="player"
         :tease="!props.open"
+        :limit="props.page * 9"
       ></player-brawlers>
     </player-teaser-card>
 
