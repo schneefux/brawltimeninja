@@ -1,5 +1,9 @@
 .min-width-min-content {
- min-width: min-content;
+  min-width: min-content;
+}
+
+.w-fit-content {
+  width: fit-content;
 }
 
 .card-wrapper {
@@ -101,28 +105,6 @@
   .button--lg {
     @apply border-8;
   }
-}
-
-/* blue card with a title and an image which highlights multiple stats */
-.stats-card {
-  @apply w-80 max-w-full bg-primary-dark mx-auto relative;
-}
-
-.stats-card-title {
-  @apply z-10 absolute left-0 ml-1 mt-1 font-semibold text-white text-2xl text-shadow capitalize bg-black bg-opacity-75 rounded-lg px-2;
-}
-
-.stats-card-image {
-  @apply z-0 absolute bottom-0 h-20;
-}
-
-.stats-card-icon {
-  @apply absolute bottom-0 h-10 rounded-full p-1 ml-20;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.stats-card__content {
-  @apply py-2 pr-3 flex flex-col justify-center items-end;
 }
 
 /* transparent card with a title and an image which highlights a single stat */
