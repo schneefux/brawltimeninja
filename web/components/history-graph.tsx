@@ -49,13 +49,14 @@ export default Vue.extend({
         ticklen: 3,
         tickangle: 0,
       },
-      margin: { t: 5, l: 50, b: 25, r: 20 },
+      margin: { t: 5, l: 50, b: 25, r: 25 },
       staticPlot: true,
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
-      paper_bgcolor: 'rgba(0, 0, 0, 0)', // black
+      paper_bgcolor: 'rgba(0, 0, 0, 0)',
       font: {
         color: '#ffffff',
       },
+      dragmode: false,
     }
 
     const options = {
