@@ -6,26 +6,38 @@
 
     <div class="section flex justify-center">
       <ol>
-        <li class="mt-6">
-          <p class="page-h2 mb-2">Tap the "Share" Icon</p>
-          <img
-            src="~/assets/images/install/ios-1_arrow.jpg"
-            class="max-w-xs"
-          >
+        <li class="card-wrapper">
+          <div class="card card--dark card--sm card__content">
+            <h2 class="card__header">1. Tap the "Share" Icon</h2>
+            <div class="card__text flex justify-center">
+              <img
+                src="~/assets/images/install/ios-1_arrow.jpg"
+                class="w-full max-w-xs"
+              >
+            </div>
+          </div>
         </li>
-        <li class="mt-6">
-          <p class="page-h2 mb-2">"Add to Home Screen"</p>
-          <img
-            src="~/assets/images/install/ios-2_arrow.jpg"
-            class="max-w-xs"
-          >
+        <li class="card-wrapper">
+          <div class="card card--dark card--sm card__content">
+            <h2 class="card__header">2. "Add to Home Screen"</h2>
+            <div class="card__text flex justify-center">
+              <img
+                src="~/assets/images/install/ios-2_arrow.jpg"
+                class="w-full max-w-xs"
+              >
+            </div>
+          </div>
         </li>
-        <li class="mt-6">
-          <p class="page-h2 mb-2">"Add"</p>
-          <img
-            src="~/assets/images/install/ios-3_arrow.jpg"
-            class="max-w-xs"
-          >
+        <li class="card-wrapper">
+          <div class="card card--dark card--sm card__content">
+            <h2 class="card__header">3. "Add"</h2>
+            <div class="card__text flex justify-center">
+              <img
+                src="~/assets/images/install/ios-3_arrow.jpg"
+                class="w-full max-w-xs"
+              >
+            </div>
+          </div>
         </li>
       </ol>
     </div>
