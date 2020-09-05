@@ -183,6 +183,7 @@
 
     <player-teaser-card
       v-slot="props"
+      v-if="player.battles.length > 0 || player.winrates != undefined && player.winrates.mode != undefined"
       title="Game Modes"
       description="View your win rate in different modes and get personalized recommendations."
       class="card-wrapper"
