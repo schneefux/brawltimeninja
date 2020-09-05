@@ -147,7 +147,7 @@
             itemscope
             itemtype="http://schema.org/Person"
           >
-            <div class="card prop-card md:prop-card-lg">
+            <div class="card card--dark prop-card md:prop-card-lg">
               <span class="prop-card-title md:prop-card-title-lg" itemprop="name">
                 {{ brawler.name.toLowerCase() }}
               </span>
