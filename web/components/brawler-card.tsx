@@ -19,10 +19,13 @@ export default Vue.extend({
   render(h, { props, scopedSlots }) {
     return <div class="card stats-card">
       <div class="relative">
-        <span class="stats-card-title">
-          { props.title.toLowerCase() }
-        </span>
-        <media-img
+        <div class="z-10 absolute left-0 ml-1 mt-1 w-5/12">
+          <div class="bg-black bg-opacity-75 rounded-lg px-2">
+            <span class="font-semibold text-white text-2xl text-shadow capitalize ">
+              { props.title.toLowerCase() }
+            </span>
+          </div>
+        </div>        <media-img
           path={'/brawlers/' + props.brawler + '/avatar'}
           size="160"
           clazz="stats-card-image"

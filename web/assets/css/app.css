@@ -109,7 +109,7 @@
 }
 
 .stats-card-title {
-  @apply z-10 absolute left-0 ml-1 mt-1 font-semibold text-white text-2xl text-shadow whitespace-no-wrap capitalize bg-black bg-opacity-75 rounded-lg px-2;
+  @apply z-10 absolute left-0 ml-1 mt-1 font-semibold text-white text-2xl text-shadow capitalize bg-black bg-opacity-75 rounded-lg px-2;
 }
 
 .stats-card-image {
