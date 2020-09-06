@@ -722,9 +722,6 @@ export default class ClickerService {
   }
 
   public async getTopByMetric(metric: string, limit: number): Promise<LeaderboardRow[]> {
-    if (metric == 'exp') {
-      metric = 'expPoints' // backwards compatibility
-    }
     const metrics = [
       'expPoints',
       'trophies',

@@ -86,9 +86,41 @@ export default class BrawlstarsService {
   public async getLeaderboard(metric: string): Promise<Leaderboard> {
     let entries = [] as LeaderboardEntry[]
 
+    if (metric == 'trophies') {
+      const response = await request<any>('rankings/global/players',
+        this.apiOfficial,
+        'fetch_trophies_leaderboard',
+        { },
+        { 'Authorization': 'Bearer ' + tokenOfficial },
+        10000,
+      );
+
+      entries = response.items.map((d: any) => ({
+        tag: d.tag.replace(/^#/, ''),
+        name: d.name,
+        metric: d.trophies,
+      }));
+    }
+
+    if (metric == 'powerPlayPoints') {
+      const response = await request<any>('rankings/global/powerplay/seasons/latest',
+        this.apiOfficial,
+        'fetch_powerplay_leaderboard',
+        { },
+        { 'Authorization': 'Bearer ' + tokenOfficial },
+        10000,
+      );
+
+      entries = response.items.map((d: any) => ({
+        tag: d.tag.replace(/^#/, ''),
+        name: d.name,
+        metric: d.trophies,
+      }));
+    }
+
     if (metric == 'hours' && clickerUrl != '') {
       const response = await request<LeaderboardRow[]>(
-        '/top/exp',
+        '/top/expPoints',
         clickerUrl,
         'fetch_leaderboard',
         {},
@@ -103,19 +135,20 @@ export default class BrawlstarsService {
       }));
     }
 
-    if (metric == 'trophies') {
-      const response = await request<any>('rankings/global/players',
-        this.apiOfficial,
-        'fetch_trophies_leaderboard',
-        { },
-        { 'Authorization': 'Bearer ' + tokenOfficial },
-        10000,
+    if (entries.length == 0 && clickerUrl != '') {
+      const response = await request<LeaderboardRow[]>(
+        '/top/' + metric,
+        clickerUrl,
+        'fetch_leaderboard_' + metric,
+        {},
+        {},
+        60000,
       );
 
-      entries = response.items.map((d: any) => ({
-        tag: d.tag.replace(/^#/, ''),
-        name: d.name,
-        metric: d.trophies,
+      entries = response.map(entry => ({
+        name: entry.playerName,
+        tag: entry.playerTag,
+        metric: entry[metric as keyof LeaderboardRow] as number,
       }));
     }
 
