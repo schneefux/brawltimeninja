@@ -11,14 +11,16 @@
       <p>Click on a map to see the best Brawlers for all current Brawl Stars Events.</p>
     </div>
 
-    <adsense
-      id="ezoic-pub-ad-placeholder-110"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="8877810024"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        id="ezoic-pub-ad-placeholder-110"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="8877810024"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -45,14 +47,16 @@
       </nuxt-link>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="4150756245"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="4150756245"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -79,15 +83,17 @@
       </nuxt-link>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      id="ezoic-pub-ad-placeholder-111"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="3577381889"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        id="ezoic-pub-ad-placeholder-111"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="3577381889"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
   </div>
 </template>
 
@@ -99,7 +105,6 @@ import { MapMetaMap } from '../../../model/MetaEntry'
 import { ActiveEvent } from '../../../model/Brawlstars'
 
 export default Vue.extend({
-  name: 'MetaSelectMapPage',
   data() {
     return {
       mapMeta: {} as MapMetaMap,
