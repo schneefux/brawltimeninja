@@ -88,22 +88,18 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { mapState, mapActions } from 'vuex'
-import { formatMode, metaStatMaps, MetaGridEntrySorted, relativeTimeUntil, formatAsJsonLd, getBest } from '../../../lib/util'
+import Vue from 'vue'
+import { mapState } from 'vuex'
+import { MetaGridEntrySorted, formatAsJsonLd, getBest } from '../../../lib/util'
+import { CurrentAndUpcomingEvents, ActiveEvent } from '../../../model/Api'
 import { MapMetaMap } from '../../../model/MetaEntry'
-import { ActiveEvent } from '../../../model/Brawlstars'
 
 export default Vue.extend({
   data() {
     return {
-      mapMeta: {} as MapMetaMap,
       bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       currentEvents: [] as ActiveEvent[],
       upcomingEvents: [] as ActiveEvent[],
-      formatMode,
-      metaStatMaps,
-      relativeTimeUntil,
     }
   },
   head() {
@@ -130,11 +126,10 @@ export default Vue.extend({
     }),
   },
   async asyncData({ $axios }) {
-    const events = await $axios.$get('/api/events/active')
-    const mapMeta = await $axios.$get('/api/meta/map/events')
+    const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
+    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/events')
     const bestByEvent = getBest(mapMeta)
     return {
-      mapMeta,
       bestByEvent,
       currentEvents: events.current,
       upcomingEvents: events.upcoming,

@@ -272,8 +272,9 @@
 import Vue from 'vue'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { MapMetaMap } from '../../model/MetaEntry'
-import { ActiveEvent } from '../../model/Brawlstars'
 import { Post } from '../../model/Web'
+import { ActiveEvent, CurrentAndUpcomingEvents } from '../../model/Api'
+import { NuxtAxiosInstance } from '@nuxtjs/axios'
 
 export default Vue.extend({
   head() {
@@ -349,15 +350,18 @@ export default Vue.extend({
       this.additionalPlayerDataLoaded = true
     }
   },
-  async asyncData({ $axios, $content }: any) {
+  async asyncData(context) {
+    const $axios = context.$axios
+    const $content = (<any>context).$content
+
     const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
     const [events, activeMapMeta] = await Promise.all([
-      $axios.$get('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
-      $axios.$get('/api/meta/map/events').catch(() => ({})),
+      $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
+      $axios.$get<MapMetaMap>('/api/meta/map/events').catch(() => ({})),
     ])
     return {
       guides,
-      currentEvents: events.current,
+      currentEvents: (<CurrentAndUpcomingEvents> events).current,
       activeMapMeta,
     }
   },

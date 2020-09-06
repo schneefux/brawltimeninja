@@ -1,7 +1,7 @@
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, MetaGridEntrySorted, relativeTimeUntil } from '../lib/util'
+import { metaStatMaps, relativeTimeUntil } from '../lib/util'
 import EventCard from '~/components/event-card'
-import { ActiveEvent } from '~/model/Brawlstars'
+import { ActiveEvent } from '~/model/Api'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
 
 export default Vue.extend({

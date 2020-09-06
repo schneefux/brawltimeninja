@@ -91,7 +91,7 @@
 
     <div class="section">
       <brawler-active-events
-        :active-events="activeEvents.current"
+        :active-events="currentEvents"
         :map-meta="mapMeta"
         :brawler-id="brawlerId"
         :show-all-maps="showAllMaps"
@@ -210,9 +210,8 @@ import { mapState } from 'vuex'
 import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
 import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
-import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics } from '../../../model/Api'
+import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
 import { BrawlerData } from '../../../model/Media'
-import { ActiveEvent } from '../../../model/Brawlstars'
 
 export default Vue.extend({
   name: 'BrawlerPage',
@@ -230,7 +229,7 @@ export default Vue.extend({
     return {
       brawlerId: '',
       brawlerName: '',
-      activeEvents: [] as ActiveEvent[],
+      currentEvents: [] as ActiveEvent[],
       brawlerMeta: [] as BrawlerMetaStatistics[],
       starpowerMeta: [] as StarpowerMetaStatistics[],
       gadgetMeta: [] as GadgetMetaStatistics[],
@@ -255,7 +254,7 @@ export default Vue.extend({
   },
   async asyncData({ params, $axios, error }) {
     const brawlerId = params.brawler
-    const activeEvents = await $axios.$get<ActiveEvent[]>('/api/events/active').catch(() => [])
+    const activeEvents = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ current: [], upcoming: [] }))
     const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ({}))
     const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>('/api/meta/starpower').catch(() => [])
     const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>('/api/meta/gadget').catch(() => [])
@@ -266,7 +265,7 @@ export default Vue.extend({
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
-      activeEvents,
+      currentEvents: activeEvents.current,
       brawlerMeta,
       starpowerMeta,
       gadgetMeta,

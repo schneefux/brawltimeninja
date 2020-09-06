@@ -306,9 +306,9 @@
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
 import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric } from '../lib/util'
-import { ActiveEvent, Player } from '../model/Brawlstars'
+import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
-import { BrawlerMetaStatistics } from '../model/Api'
+import { BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../model/Api'
 
 function playerToRoute(player) {
   return {
@@ -394,7 +394,7 @@ export default Vue.extend({
     }),
   },
   async asyncData({ $axios }) {
-    const events = await $axios.$get<{ current: ActiveEvent[], upcoming: ActiveEvent[] }>('/api/events/active')
+    const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
       .catch(() => ({ current: [], upcoming: [] }))
     const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/events').catch(() => ({}))
     const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ([]))

@@ -1,10 +1,10 @@
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, ActiveEvent } from '../model/Brawlstars';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
 import History from '../model/History';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
 import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
-import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '~/model/Api';
+import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, ActiveEvent } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';

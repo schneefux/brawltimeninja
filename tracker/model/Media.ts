@@ -2,8 +2,9 @@ interface Skill {
   cooldown: number
   rechargeTime: number
   damage: number|null
-  description: string
+  damageCount: number|null
   damageLabel: string
+  description: string
   range: number|null
   charges: number|null
   spread: number|null

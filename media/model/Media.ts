@@ -68,8 +68,6 @@ export interface DataSkill {
 export interface DataCharacter {
   name: string // internal name, prefix of skills
   itemName: string|null // lower case, no space
-  weaponSkill: string // reference to DataSkill.name
-  ultimateSkill: string // reference to DataSkill.name
   tID: string // upper case, with space
   speed: number // /300 for tiles/s
   hitpoints: number // multiply by 1.4 for max level
@@ -84,17 +82,5 @@ export interface DataCharacter {
   utilityRating: number
   scId: number
   rawTID: string
-  // ...and more...
-}
-
-export interface DataAccessory {
-  name: string // internal name
-  chargeCount: number
-  customValue1: number
-  customValue2: number
-  customValue3: number
-  customValue4: number
-  customValue5: number
-  customValue6: number
   // ...and more...
 }
