@@ -54,10 +54,10 @@
               Profile Search
             </nuxt-link>
             <nuxt-link
-              to="/leaderboard"
+              to="/leaderboard/hours"
               class="nav-link"
             >
-              Leaderboard
+              Leaderboards
             </nuxt-link>
             <nuxt-link
               to="/blog/guides"

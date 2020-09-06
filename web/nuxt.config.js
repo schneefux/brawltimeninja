@@ -117,6 +117,7 @@ export default {
     { from: '^/meta$', to: '/tier-list/brawler', statusCode: 301 },
     { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
     { from: '^/leaderboard$', to: '/leaderboard/hours', statusCode: 301 },
+    { from: '^/leaderboard/$', to: '/leaderboard/hours', statusCode: 301 },
   ],
 
   sentry: {
