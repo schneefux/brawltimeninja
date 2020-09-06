@@ -18,8 +18,8 @@ router.post('/clicker/track', async (ctx, next) => {
   await next();
 });
 
-router.get('/clicker/top/exp', async (ctx, next) => {
-  ctx.body = await service.getTopByExp(100);
+router.get('/clicker/top/:metric', async (ctx, next) => {
+  ctx.body = await service.getTopByMetric(ctx.params.metric, parseInt(ctx.query.limit) || 100);
   ctx.set('Cache-Control', 'public, max-age=60');
   await next();
 });

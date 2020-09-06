@@ -721,7 +721,22 @@ export default class ClickerService {
     stats.timing('player.insert.timer', performance.now() - insertStart)
   }
 
-  public async getTopByExp(n: number): Promise<LeaderboardRow[]> {
+  public async getTopByMetric(metric: string, limit: number): Promise<LeaderboardRow[]> {
+    if (metric == 'exp') {
+      metric = 'expPoints' // backwards compatibility
+    }
+    const metrics = [
+      'expPoints',
+      'trophies',
+      'powerPlayPoints',
+      'victories',
+      'soloVictories',
+      'duoVictories',
+    ]
+    if (!metrics.includes(metric)) {
+      return []
+    }
+
     interface LeaderboardQuery extends PlayerMeasuresAggregation {
       playerId: string
     }
@@ -733,8 +748,8 @@ export default class ClickerService {
       FROM brawltime.leaderboard
       GROUP BY playerId
       HAVING timestamp > now() - interval 1 week
-      ORDER BY expPoints DESC
-      LIMIT ${n}
+      ORDER BY ${metric} DESC
+      LIMIT ${limit}
       `, 'leaderboard')
       .then(data => data.map(row => ({
         ...parsePlayerMeasures(row),
