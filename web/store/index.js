@@ -1,4 +1,4 @@
-import { exception, event } from 'vue-analytics'
+import { event } from 'vue-analytics'
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -61,18 +61,7 @@ export const state = () => ({
   lastPlayers: [],
   player: {
     tag: '',
-    modes: [],
-    heroes: [],
   },
-  currentEvents: [],
-  currentEventsLoaded: false,
-  upcomingEvents: [],
-  upcomingEventsLoaded: false,
-  leaderboard: [],
-  leaderboardLoaded: false,
-  bestByEvent: {},
-  modeMeta: [],
-  modeMetaLoaded: false,
   cookiesAllowed: false,
   adsAllowed: false,
   consentPopupVisible: true,
@@ -200,34 +189,6 @@ export const actions = {
     const history = await this.$axios.$get(`/api/player/${state.player.tag}/history`)
     const winrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
     commit('setPlayerData', { player, winrates, history })
-  },
-  async loadLeaderboard({ state, commit }) {
-    if (state.leaderboardLoaded) {
-      return
-    }
-
-    try {
-      const leaderboard = await this.$axios.$get('/api/leaderboard/hours')
-      commit('setLeaderboard', leaderboard)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get leaderboard: ' + error.message)
-      console.error('cannot get leaderboard:', error.message)
-    }
-  },
-  async loadModeMeta({ state, commit }) {
-    if (state.modeMetaLoaded) {
-      return
-    }
-
-    try {
-      const meta = await this.$axios.$get('/api/meta/mode')
-      commit('setModeMeta', meta)
-    } catch (error) {
-      // not critical, ignore
-      exception('cannot get mode meta: ' + error.message)
-      console.error('cannot get mode meta:', error.message)
-    }
   },
   async install({ state, commit }) {
     const pwaSupported = state.installPrompt !== undefined

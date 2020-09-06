@@ -12,7 +12,7 @@
         </dl>
         <nuxt-link
           v-if="rank !== 0"
-          to="/leaderboard"
+          to="/leaderboard/hours"
           class="text-4xl -ml-4 text-primary-light font-bold"
         >
           #{{ rank }}
@@ -175,8 +175,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { mapState, mapActions, mapGetters } from 'vuex'
-import { Player } from '../model/Api'
+import { Player, LeaderboardEntry } from '../model/Api'
 
 export default Vue.extend({
   props: {
@@ -184,12 +183,19 @@ export default Vue.extend({
       type: Object as PropType<Player>,
       required: true
     },
+    hoursLeaderboard: {
+      type: Array as PropType<LeaderboardEntry[]>,
+      default: []
+    },
+    totalBrawlers: {
+      type: Number,
+      required: true
+    },
   },
   data() {
     return {
       ratingHelpOpen: false,
       recentHelpOpen: false,
-      refreshSecondsLeft: 180, // TODO deduplicate with parent
     }
   },
   mounted() {
@@ -226,26 +232,15 @@ export default Vue.extend({
         hoursTimer()
       })
     }
-
-    setTimeout(() => this.refreshTimer(), 15 * 1000)
-  },
-  methods: {
-    async refreshTimer() {
-      this.refreshSecondsLeft -= 15
-      if (this.refreshSecondsLeft <= 0) {
-        await this.refresh()
-      }
-      setTimeout(() => this.refreshTimer(), 15 * 1000)
-    },
-    async refresh() {
-      this.refreshSecondsLeft = 180
-      await this.refreshPlayer()
-    },
-    ...mapActions({
-      refreshPlayer: 'refreshPlayer',
-    })
   },
   computed: {
+    rank(): number|undefined {
+      const rank = this.hoursLeaderboard.findIndex(e => e.tag == this.player.tag)
+      if (rank == undefined) {
+        return undefined
+      }
+      return rank + 1
+    },
     brawlersUnlocked(): number {
       return Object.keys(this.player.brawlers).length
     },
@@ -325,12 +320,6 @@ export default Vue.extend({
         },
       }
     },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers as number,
-    }),
-    ...mapGetters({
-      rank: 'playerRank',
-    })
   },
 })
 </script>

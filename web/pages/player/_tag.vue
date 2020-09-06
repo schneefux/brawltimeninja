@@ -36,6 +36,8 @@
     <div class="section leading-tight text-center">
       <player-hype-stats
         :player="player"
+        :total-brawlers="totalBrawlers"
+        :hours-leaderboard="hoursLeaderboard"
       ></player-hype-stats>
     </div>
 
@@ -273,7 +275,7 @@ import Vue from 'vue'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { MapMetaMap } from '../../model/MetaEntry'
 import { Post } from '../../model/Web'
-import { ActiveEvent, CurrentAndUpcomingEvents } from '../../model/Api'
+import { ActiveEvent, CurrentAndUpcomingEvents, Leaderboard, LeaderboardEntry } from '../../model/Api'
 import { NuxtAxiosInstance } from '@nuxtjs/axios'
 
 export default Vue.extend({
@@ -289,11 +291,10 @@ export default Vue.extend({
   },
   data() {
     return {
-      error: '',
       refreshSecondsLeft: 180,
-      currentEvents: [] as ActiveEvent[],
       activeMapMeta: {} as MapMetaMap,
       guides: [] as Post[],
+      hoursLeaderboard: [] as LeaderboardEntry[],
       additionalPlayerDataLoaded: false,
     }
   },
@@ -313,6 +314,7 @@ export default Vue.extend({
     },
     ...mapState({
       player: (state: any) => state.player,
+      totalBrawlers: (state: any) => state.totalBrawlers,
       installBannerDismissed: (state: any) => state.installBannerDismissed as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),
@@ -350,22 +352,37 @@ export default Vue.extend({
       this.additionalPlayerDataLoaded = true
     }
   },
+  mounted() {
+    setTimeout(() => this.refreshTimer(), 15 * 1000)
+  },
   async asyncData(context) {
     const $axios = context.$axios
     const $content = (<any>context).$content
 
-    const guides = await $content('guides').sortBy('createdAt', 'desc').fetch()
-    const [events, activeMapMeta] = await Promise.all([
-      $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ active: [], upcoming: [] })),
+    const [guides, activeMapMeta, hoursLeaderboard] = await Promise.all([
+      $content('guides').sortBy('createdAt', 'desc').fetch(),
       $axios.$get<MapMetaMap>('/api/meta/map/events').catch(() => ({})),
+      $axios.$get<Leaderboard>('/api/leaderboard/hours').catch(() => ({ metric: 'hours', entries: [] })),
     ])
+
     return {
-      guides,
-      currentEvents: (<CurrentAndUpcomingEvents> events).current,
+      guides: guides as Post[],
+      hoursLeaderboard: (<Leaderboard>hoursLeaderboard).entries as LeaderboardEntry[],
       activeMapMeta,
     }
   },
   methods: {
+    async refreshTimer() {
+      this.refreshSecondsLeft -= 15
+      if (this.refreshSecondsLeft <= 0) {
+        await this.refresh()
+      }
+      setTimeout(() => this.refreshTimer(), 15 * 1000)
+    },
+    async refresh() {
+      this.refreshSecondsLeft = 180
+      await this.refreshPlayer()
+    },
     dismissInstall() {
       this.$ga.event('app', 'dismiss', 'install_banner')
       this.clearInstallPrompt()
