@@ -7,18 +7,20 @@
         once: true,
       }"
     >
-      <h1 class="page-h1">{{ formatMode(event.mode) }}: {{ event.map }}</h1>
-      <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ formatMode(event.mode) }} map in Brawl Stars.</p>
+      <h1 class="page-h1">{{ event.modeName }}: {{ event.map }}</h1>
+      <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
     </div>
 
-    <adsense
-      ins-class="ad-section"
-      id="ezoic-pub-ad-placeholder-112"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="1665534416"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        ins-class="ad-section"
+        id="ezoic-pub-ad-placeholder-112"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1665534416"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       v-if="best.length"
@@ -45,23 +47,25 @@
         once: true,
       }"
     >
-      <h2 class="page-h2">Tier List for {{ formatMode(event.mode) }} - {{ event.map }}</h2>
+      <h2 class="page-h2">Tier List for {{ event.modeName }} - {{ event.map }}</h2>
+      <p>
+        Using over {{ formatSI(event.sampleSize) }} battles.
+        <template v-if="mapMeta.sampleSize < 10000">
+          ⚠ Not enough data for this event yet!
+          <template v-if="brawlers.length < totalBrawlers">
+            Some statistics are unavailable.
+          </template>
+          <template v-else>
+            Statistics will be inaccurate.
+          </template>
+          Play a few battles and come back later. ⚠
+        </template>
+      </p>
     </div>
 
     <div class="section text-center mb-2">
       <trophy-slider v-model="trophyRange"></trophy-slider>
     </div>
-
-    <p v-if="mapMeta.sampleSize < 10000">
-      ⚠ Not enough data for this event yet!
-      <template v-if="brawlers.length < totalBrawlers">
-        Some statistics are unavailable.
-      </template>
-      <template v-else>
-        Statistics will be inaccurate.
-      </template>
-      Play a few battles and come back later. ⚠
-    </p>
 
     <div class="section">
       <meta-grid
@@ -70,28 +74,35 @@
       />
     </div>
 
-    <adsense
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="3536131238"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="3536131238"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, metaStatMaps, camelToKebab, getMostPopular, MetaGridEntry, MetaGridEntrySorted, getBest } from '../../../lib/util'
-import { MapMetaMap, MapMeta, Map } from '../../../model/MetaEntry'
+import { formatMode, formatSI, MetaGridEntry, MetaGridEntrySorted, getBest } from '../../../lib/util'
+import { MapMetaMap, MapMap, MapMeta, Map } from '../../../model/MetaEntry'
+
+interface MapWithId extends Map {
+  id: string
+  modeName: string
+}
 
 export default Vue.extend({
-  name: 'MapMetaPage',
   head() {
-    const description = `Brawl Stars Tier List for ${formatMode((<any>this).event.mode as string)}: ${(<any>this).event.map}. View the best Brawlers with Win Rates and Rankings.`
+    const description = `Brawl Stars Tier List for ${(<any>this).event.modeName}: ${(<any>this).event.map}. View the best Brawlers with Win Rates and Rankings.`
     return {
-      title: `Tier List for ${formatMode((<any>this).event.mode as string)}: ${(<any>this).event.map}`,
+      title: `Tier List for ${(<any>this).event.modeName}: ${(<any>this).event.map}`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -100,17 +111,16 @@ export default Vue.extend({
   },
   data() {
     return {
-      formatMode,
-      metaStatMaps,
-      camelToKebab,
       event: {
         id: '',
         mode: '',
+        modeName: '',
         map: '',
-      },
+      } as MapWithId,
       mapMeta: {} as MapMeta,
       best: [] as MetaGridEntrySorted[],
       trophyRange: [0, 10],
+      formatSI,
     }
   },
   computed: {
@@ -131,19 +141,19 @@ export default Vue.extend({
   },
   watch: {
     async trophyRange([lower, upper]) {
-      const mapMeta = await this.$axios.$get(`/api/meta/map/mode/${this.event.mode}?trophyrange=${lower}-${upper}`)
+      const mapMeta = await this.$axios.$get(`/api/meta/map/mode/${this.event.mode}?trophyrange=${lower}-${upper}`) as MapMetaMap
       const bestByEvent = getBest(mapMeta)
       this.mapMeta = mapMeta[this.event.id]
       this.best = bestByEvent[this.event.id]
     },
   },
   async asyncData({ store, params, error, $axios }) {
-    const events = await $axios.$get('/api/events')
+    const events = await $axios.$get<MapMap>('/api/events')
     if (!(params.event in events)) {
       return error({ statusCode: 404, message: 'Event not found' })
     }
-    const event = events[params.event] as Map
-    const mapMeta = await $axios.$get('/api/meta/map/mode/' + event.mode)
+    const event = events[params.event]
+    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/mode/' + event.mode)
     const bestByEvent = getBest(mapMeta)
     return {
       mapMeta: mapMeta[params.event],
@@ -151,7 +161,8 @@ export default Vue.extend({
       event: {
         ...event,
         id: params.event,
-      },
+        modeName: formatMode(event.mode),
+      } as MapWithId,
     }
   },
   methods: {

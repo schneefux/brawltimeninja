@@ -96,7 +96,7 @@
     >
       <h2 class="page-h2">Tier List for all {{ modeName }} Maps</h2>
       <p>
-        Using {{ formatSI(totalSampleSize) }} battles.
+        Using over {{ formatSI(totalSampleSize) }} battles.
         <template v-if="totalSampleSize < 10000">
           ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
         </template>
