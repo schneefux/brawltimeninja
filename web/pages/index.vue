@@ -71,11 +71,13 @@
         <div class="mt-2 card card--dark card__content">
           <p class="font-semibold">Tap on your profile icon.</p>
           <img
+            loading="lazy"
             src="~/assets/images/tag/tag-1.jpg"
             class="mt-1 w-80 max-w-full"
           >
           <p class="mt-3 font-semibold">The string starting with "#" is your tag.</p>
           <img
+            loading="lazy"
             src="~/assets/images/tag/tag-2.jpg"
             class="mt-1 w-80 max-w-full"
           >
