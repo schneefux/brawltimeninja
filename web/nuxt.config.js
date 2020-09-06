@@ -200,18 +200,21 @@ export default {
         console.error('error adding brawlers to sitemap', err)
       }
 
-      try {
-        const topTrophies = await axios.get(`${process.env.API_URL}/api/leaderboard/trophies`)
-        topTrophies.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
-      } catch (err) {
-        console.error('error adding trophy leaderboard players to sitemap', err)
-      }
-
-      try {
-        const topHours = await axios.get(`${process.env.API_URL}/api/leaderboard/hours`)
-        topHours.data.forEach(({ tag }) => routes.push(`/player/${tag}`))
-      } catch (err) {
-        console.error('error adding exp leaderboard players to sitemap', err)
+      const metrics = [
+        'hours',
+        'trophies',
+        'powerPlayPoints',
+        'victories',
+        'soloVictories',
+        'duoVictories',
+      ]
+      for (const metric of metrics) {
+        try {
+          const top = await axios.get(`${process.env.API_URL}/api/leaderboard/${metric}`)
+          top.data.entries.forEach(({ tag }) => routes.push(`/player/${tag}`))
+        } catch (err) {
+          console.error(`error adding ${metric} leaderboard players to sitemap`, err)
+        }
       }
 
       return routes

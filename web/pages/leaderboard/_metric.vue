@@ -17,14 +17,14 @@
         The best players are ranked by {{ metricName }} in this leaderboard.
       </p>
 
-      <div class="mt-2 flex flex-wrap justify-center md:justify-start">
+      <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
         <nuxt-link
           v-for="metric in metrics"
           :key="metric"
-          class="button button--md mt-2 md:mr-2"
+          class="button button--md mt-2 mr-2 whitespace-no-wrap"
           :to="`/leaderboard/${metric}`"
         >
-          Open {{ capitalize(metric) }} Leaderboard
+          {{ formatMetric(metric) }} Leaderboard
         </nuxt-link>
       </div>
     </div>
@@ -88,7 +88,11 @@
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '../../model/Api'
-import { capitalize } from '../../lib/util'
+import { camelToSnakeCase, capitalizeWords } from '../../lib/util'
+
+function formatMetric(m: string) {
+  return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))
+}
 
 export default Vue.extend({
   head() {
@@ -103,9 +107,16 @@ export default Vue.extend({
   },
   data() {
     return {
-      capitalize,
+      formatMetric,
       metricName: '',
-      metrics: ['hours', 'trophies'],
+      metrics: [
+        'hours',
+        'trophies',
+        'powerPlayPoints',
+        'victories',
+        'soloVictories',
+        'duoVictories',
+      ],
       leaderboard: [] as LeaderboardEntry[],
     }
   },
@@ -114,7 +125,7 @@ export default Vue.extend({
     const leaderboard = await $axios.$get<Leaderboard>(`/api/leaderboard/${metric}`)
 
     return {
-      metricName: capitalize(metric),
+      metricName: formatMetric(metric),
       leaderboard: leaderboard.entries,
     }
   },
