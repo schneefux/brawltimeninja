@@ -70,6 +70,7 @@
     <div class="section-heading">
       <h5 class="w-full text-xl font-semibold">All Statistics</h5>
     </div>
+
     <div class="section flex flex-wrap justify-center">
       <div
         v-for="entry in sortedEntries"
@@ -100,35 +101,37 @@
           </template>
           <template v-slot:stats>
             <table>
-              <tr
-                v-for="stat in stats"
-                :key="stat"
-                class="card__props whitespace-no-wrap"
-                itemscope
-                itemtype="http://schema.org/QuantitativeValue"
-              >
-                <td class="text-center">
-                  <img
-                    v-if="metaStatMaps.icons[stat].length > 2"
-                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[stat]}_optimized.png`)"
-                    :alt="stat"
-                    class="card-prop-icon inline"
-                  >
-                  <!-- use emojis (length 2) -->
-                  <span
-                    v-else
-                    class="card-prop-icon"
-                  >
-                    {{ metaStatMaps.icons[stat] }}
-                  </span>
-                </td>
-                <td class="card-prop-value text-right pr-1" itemprop="unitText">
-                  {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
-                </td>
-                <td class="card-prop-label" itemprop="value">
-                  {{ metaStatMaps.labels[stat] }}
-                </td>
-              </tr>
+              <tbody>
+                <tr
+                  v-for="stat in stats"
+                  :key="stat"
+                  class="card__props whitespace-no-wrap"
+                  itemscope
+                  itemtype="http://schema.org/QuantitativeValue"
+                >
+                  <td class="text-center">
+                    <img
+                      v-if="metaStatMaps.icons[stat].length > 2"
+                      :src="require(`~/assets/images/icon/${metaStatMaps.icons[stat]}_optimized.png`)"
+                      :alt="stat"
+                      class="card-prop-icon inline"
+                    >
+                    <!-- use emojis (length 2) -->
+                    <span
+                      v-else
+                      class="card-prop-icon"
+                    >
+                      {{ metaStatMaps.icons[stat] }}
+                    </span>
+                  </td>
+                  <td class="card-prop-value text-right pr-1" itemprop="unitText">
+                    {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
+                  </td>
+                  <td class="card-prop-label" itemprop="value">
+                    {{ metaStatMaps.labels[stat] }}
+                  </td>
+                </tr>
+              </tbody>
             </table>
             <nuxt-link
               v-if="entry.link !== undefined"
