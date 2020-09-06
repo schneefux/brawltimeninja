@@ -25,6 +25,7 @@
     "plotly.js": "^1.54.7",
     "vue-analytics": "^5.22.1",
     "vue-google-adsense": "^1.8.3",
+    "vue-lazy-hydration": "^1.0.0-beta.14",
     "vue-observe-visibility": "^0.4.6",
     "vue-range-component": "git+https://github.com/xwpongithub/vue-range-slider.git",
     "vue-script2": "^2.1.0",

@@ -72,6 +72,7 @@ export default {
     { src: '~/plugins/plotly', mode: 'client' },
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/scrollto', mode: 'client' },
+    { src: '~/plugins/lazy-hydrate' },
   ],
 
   modules: [
