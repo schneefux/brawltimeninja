@@ -145,3 +145,14 @@ export interface CurrentAndUpcomingEvents {
   current: ActiveEvent[]
   upcoming: ActiveEvent[]
 }
+
+export interface LeaderboardEntry {
+  name: string;
+  tag: string;
+  metric: number;
+}
+
+export interface Leaderboard {
+  metric: string
+  entries: LeaderboardEntry[]
+}
