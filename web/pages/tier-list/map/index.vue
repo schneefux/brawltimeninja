@@ -8,7 +8,7 @@
       }"
     >
       <h1 class="page-h1">Map Tier Lists</h1>
-      <p>Click on a map to see the best Brawlers for all current Brawl Stars Events.</p>
+      <p>Open on a map to see the best Brawlers for all current and upcoming Brawl Stars Events.</p>
     </div>
 
     <client-only>
@@ -33,18 +33,13 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <nuxt-link
+      <active-event-card
         v-for="event in currentEvents"
         :key="event.id"
-        :to="`/tier-list/map/${event.id}`"
-      >
-        <active-event-card
-          :event="event"
-          :best-brawlers="bestByEvent[event.id]"
-          :upcoming="false"
-        >
-        </active-event-card>
-      </nuxt-link>
+        :event="event"
+        :best-brawlers="bestByEvent[event.id]"
+        :upcoming="false"
+      ></active-event-card>
     </div>
 
     <client-only>
@@ -69,18 +64,13 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <nuxt-link
+      <active-event-card
         v-for="event in upcomingEvents"
         :key="event.id"
-        :to="`/tier-list/map/${event.id}`"
-      >
-        <active-event-card
-          :event="event"
-          :best-brawlers="bestByEvent[event.id]"
-          :upcoming="true"
-        >
-        </active-event-card>
-      </nuxt-link>
+        :event="event"
+        :best-brawlers="bestByEvent[event.id]"
+        :upcoming="true"
+      ></active-event-card>
     </div>
 
     <client-only>
@@ -135,19 +125,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    events(): { [mode: string]: { id: string, mode: string, map: string } } {
-      return [...Object.entries(this.mapMeta as MapMetaMap)]
-        .map(([eventId, event]) => ({
-          id: eventId,
-          mode: event.mode,
-          map: event.map,
-        }))
-        .sort((e1, e2) => e1.map > e2.map ? 1 : e1.map < e2.map ? -1 : 0)
-        .reduce((eventsByMode, event) => ({
-          ...eventsByMode,
-          [event.mode]: (eventsByMode[event.mode] || []).concat([event]),
-        }), {})
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
