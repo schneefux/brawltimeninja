@@ -80,20 +80,9 @@ router.get('/events/active', async (ctx, next) => {
   await next();
 });
 
-router.get('/leaderboard/hours', async (ctx, next) => {
+router.get('/leaderboard/:metric', async (ctx, next) => {
   try {
-    ctx.body = await service.getHoursLeaderboard();
-    ctx.set('Cache-Control', 'public, max-age=600');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
-router.get('/leaderboard/trophies', async (ctx, next) => {
-  try {
-    ctx.body = await service.getTrophiesLeaderboard();
+    ctx.body = await service.getLeaderboard(ctx.params.metric);
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);

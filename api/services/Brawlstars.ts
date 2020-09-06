@@ -4,7 +4,7 @@ import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
 import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
-import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, ActiveEvent } from '~/model/Api';
+import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -83,40 +83,46 @@ export default class BrawlstarsService {
     return metaData
   }
 
-  public async getHoursLeaderboard() {
-    if (clickerUrl == '') {
-      return [];
+  public async getLeaderboard(metric: string): Promise<Leaderboard> {
+    let entries = [] as LeaderboardEntry[]
+
+    if (metric == 'hours' && clickerUrl != '') {
+      const response = await request<LeaderboardRow[]>(
+        '/top/exp',
+        clickerUrl,
+        'fetch_leaderboard',
+        {},
+        {},
+        60000,
+      );
+
+      entries = response.map(entry => ({
+        name: entry.playerName,
+        tag: entry.playerTag,
+        metric: xpToHours(entry.expPoints),
+      }));
     }
 
-    const response = await request<LeaderboardRow[]>(
-      '/top/exp',
-      clickerUrl,
-      'fetch_leaderboard',
-      {},
-      {},
-      60000,
-    );
+    if (metric == 'trophies') {
+      const response = await request<any>('rankings/global/players',
+        this.apiOfficial,
+        'fetch_trophies_leaderboard',
+        { },
+        { 'Authorization': 'Bearer ' + tokenOfficial },
+        10000,
+      );
 
-    return response.map(entry => ({
-      name: entry.playerName,
-      tag: entry.playerTag,
-      hours: xpToHours(entry.expPoints),
-    }));
-  }
+      entries = response.items.map((d: any) => ({
+        tag: d.tag.replace(/^#/, ''),
+        name: d.name,
+        metric: d.trophies,
+      }));
+    }
 
-  public async getTrophiesLeaderboard() {
-    const response = await request<any>('rankings/global/players',
-      this.apiOfficial,
-      'fetch_trophies_leaderboard',
-      { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
-      10000,
-    );
-    return response.items.map((d: any) => ({
-      tag: d.tag.replace(/^#/, ''),
-      name: d.name,
-      trophies: d.trophies,
-    }));
+    return {
+      metric,
+      entries,
+    };
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
