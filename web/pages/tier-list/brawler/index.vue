@@ -33,14 +33,16 @@
       ></best-starpowers-card>
     </div>
 
-    <adsense
-      id="ezoic-pub-ad-placeholder-107"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="9201379700"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        id="ezoic-pub-ad-placeholder-107"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="9201379700"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -50,15 +52,14 @@
       }"
     >
       <h2 class="page-h2">Mode Tier Lists</h2>
-      <p>Click on a Mode to view the Tier List for it.</p>
+      <p>Open a Mode to view the Tier List for it.</p>
     </div>
 
     <div class="section">
       <div class="overflow-x-auto scrolling-touch flex md:flex-wrap md:justify-center">
-        <nuxt-link
+        <div
           v-for="(mode, index) in modes"
           :key="mode"
-          :to="`/tier-list/mode/${camelToKebab(mode)}`"
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
           class="px-2"
         >
@@ -67,7 +68,7 @@
             :top-brawlers="topBrawlersByMode[mode]"
           >
           </mode-best-brawlers-card>
-        </nuxt-link>
+        </div>
       </div>
 
       <div class="mt-2 w-full text-right hidden md:block">
@@ -81,14 +82,16 @@
       </div>
     </div>
 
-    <adsense
-      v-if="!isApp"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="6446102315"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6446102315"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
 
     <div
       class="section-heading"
@@ -97,40 +100,41 @@
         once: true,
       }"
     >
-      <h2 class="page-h2">Tier List for all Modes</h2>
+      <h2 class="page-h2">Tier List for all Maps and Modes</h2>
+      <p>
+        Using over {{ formatSI(totalSampleSize) }} battles.
+        <template v-if="totalSampleSize < 10000">
+          ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
+        </template>
+      </p>
     </div>
 
     <div class="section text-center mb-2">
       <trophy-slider v-model="trophyRange"></trophy-slider>
     </div>
 
-    <p
-      v-if="totalSampleSize < 10000"
-      class="my-8 text-center"
-    >
-      ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-    </p>
-
     <meta-grid
       :entries="brawlers"
       ga-category="brawler_meta"
     />
 
-    <adsense
-      v-if="!isApp"
-      ins-class="ad-section"
-      data-ad-client="ca-pub-6856963757796636"
-      data-ad-slot="7838173054"
-      data-ad-format="auto"
-      data-full-width-responsive
-    />
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="7838173054"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </client-only>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState, mapActions } from 'vuex'
-import { metaStatMaps, MetaGridEntry, camelToKebab, getMostPopular, formatMode, MetaGridEntrySorted, getBestBrawlersByEachMetric } from '../../../lib/util'
+import { mapState } from 'vuex'
+import { MetaGridEntry, camelToKebab, formatSI, getMostPopular, MetaGridEntrySorted, getBestBrawlersByEachMetric } from '../../../lib/util'
 import { BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Api'
 import { ModeMetaMap } from '../../../model/MetaEntry'
 
@@ -148,13 +152,13 @@ export default Vue.extend({
   },
   data() {
     return {
-      metaStatMaps,
       camelToKebab,
-      formatMode,
+      formatSI,
       brawlerMeta: [] as BrawlerMetaStatistics[],
-      modeMeta: {} as ModeMetaMap,
-      starpowerMeta: [] as StarpowerMetaStatistics[],
-      gadgetMeta: [] as GadgetMetaStatistics[],
+      modes: [] as string[],
+      topBrawlersByMode: {} as { [key: string]: MetaGridEntrySorted[] },
+      topGadgets: {} as { [stat: string]: BrawlerMetaStatistics },
+      topStarpowers: {} as { [stat: string]: BrawlerMetaStatistics },
       trophyRange: [0, 10],
       showAllModes: false,
     }
@@ -163,13 +167,6 @@ export default Vue.extend({
     totalSampleSize(): number {
       return this.brawlerMeta
         .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
-    },
-    modes(): string[] {
-      return [...Object.keys(this.modeMeta)]
-        .sort((mode1, mode2) => this.modeMeta[mode2].sampleSize - this.modeMeta[mode1].sampleSize)
-    },
-    topBrawlersByMode(): { [key: string]: MetaGridEntrySorted[] } {
-      return getMostPopular(this.modeMeta)
     },
     brawlers(): MetaGridEntry[] {
       return this.brawlerMeta.map(brawler => ({
@@ -180,28 +177,6 @@ export default Vue.extend({
         sampleSize: brawler.sampleSize,
         link: `/tier-list/brawler/${brawler.id}`,
       }))
-    },
-    topStarpowers(): { [stat: string]: BrawlerMetaStatistics } {
-      const starpowers = this.starpowerMeta
-        .filter(s => s.starpowerName !== '')
-        .map(s => ({
-          id: s.id,
-          name: s.starpowerName,
-          sampleSize: s.sampleSize,
-          stats: s.stats,
-        }))
-      return getBestBrawlersByEachMetric(starpowers)
-    },
-    topGadgets(): { [stat: string]: BrawlerMetaStatistics } {
-      const gadgets = this.gadgetMeta
-        .filter(s => s.gadgetName !== '')
-        .map(s => ({
-          id: s.id,
-          name: s.gadgetName,
-          sampleSize: s.sampleSize,
-          stats: s.stats,
-        }))
-      return getBestBrawlersByEachMetric(gadgets)
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
@@ -217,11 +192,38 @@ export default Vue.extend({
     const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode').catch(() => ({}))
     const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>(`/api/meta/starpower`).catch(() => [])
     const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>(`/api/meta/gadget`).catch(() => [])
+
+    const modes = [...Object.keys(modeMeta)]
+      .sort((mode1, mode2) => modeMeta[mode2].sampleSize - modeMeta[mode1].sampleSize)
+    const topBrawlersByMode = getMostPopular(modeMeta)
+
+    const gadgets = gadgetMeta
+      .filter(s => s.gadgetName !== '')
+      .map(s => ({
+        id: s.id,
+        name: s.gadgetName,
+        sampleSize: s.sampleSize,
+        stats: s.stats,
+      }))
+    const topGadgets = getBestBrawlersByEachMetric(gadgets)
+
+    const starpowers = starpowerMeta
+      .filter(s => s.starpowerName !== '')
+      .map(s => ({
+        id: s.id,
+        name: s.starpowerName,
+        sampleSize: s.sampleSize,
+        stats: s.stats,
+      }))
+    const topStarpowers = getBestBrawlersByEachMetric(starpowers)
+
     return {
+      modes,
+      topBrawlersByMode,
       modeMeta,
       brawlerMeta,
-      starpowerMeta,
-      gadgetMeta,
+      topStarpowers,
+      topGadgets,
     }
   },
   methods: {
