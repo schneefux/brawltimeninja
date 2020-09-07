@@ -218,6 +218,8 @@ export default {
         }
       }
 
+      routes.push('/tier-list/brawler/colette')
+
       return routes
     },
   },

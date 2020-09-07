@@ -25,35 +25,37 @@ export default Vue.extend({
     },
   },
   render(h, { props }) {
+    interface MapMetaSelectBrawler extends MapMeta {
+      brawler: MapMeta['brawlers']['someone']|undefined
+      mapId: string
+    }
     interface ModeMetaSelectBrawler extends ModeMeta {
-      brawler: ModeMeta['brawlers']['someone']
+      brawler: ModeMeta['brawlers']['someone']|undefined
       modeId: string
     }
 
     // add current brawler as `.brawler` to map meta and mode meta values
     const maps = Object.entries(props.mapMeta)
-        .filter(([mapId, map]) => props.brawlerId in map.brawlers)
         .map(([mapId, map]) => ({
           ...map,
           brawlers: {},
           brawler: map.brawlers[props.brawlerId],
           mapId,
-        }))
+        }) as MapMetaSelectBrawler)
     const modes = Object.entries(props.modeMeta)
-        .filter(([modeId, mode]) => props.brawlerId in mode.brawlers)
         .map(([modeId, mode]) => ({
           ...mode,
           brawlers: {},
           brawler: mode.brawlers[props.brawlerId],
           modeId,
-        }))
+        }) as ModeMetaSelectBrawler)
         .sort((m1, m2) => m2.sampleSize - m1.sampleSize)
 
     // filter maps where this brawler has above average win rate
     const aboveAverageWinRateMaps = maps
         .filter(map => map.brawler != undefined && map.brawler.stats.winRate != undefined)
-        .filter(map => map.brawler.sampleSize > 300)
-        .filter(map => map.brawler.stats.winRate > 0.55) // TODO approx.
+        .filter(map => map.brawler!.sampleSize > 300)
+        .filter(map => map.brawler!.stats.winRate > 0.55) // TODO approx.
     // group { map: { brawlers } } by mode
     const groupByMode = (maps: MapMeta[]) =>
         maps.reduce((group, map) => ({
@@ -82,7 +84,7 @@ export default Vue.extend({
               clazz="w-16"
             ></media-img>
           </div>
-          { mode.sampleSize > 3000 ?
+          { mode.brawler != undefined && mode.sampleSize > 3000 ?
           <dl class="w-48 px-3 py-2">
             <div class="flex justify-between">
               <dt>Use Rate</dt>
@@ -101,7 +103,7 @@ export default Vue.extend({
             </div>
             : '' }
           </dl>
-          : '' }
+          : <p class="m-auto">No Data yet.</p> }
         </div>
       </div>,
     })

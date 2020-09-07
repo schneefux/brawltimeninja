@@ -29,18 +29,18 @@ export default Vue.extend({
     },
   },
   render(h, { props }) {
+    interface MapStats extends MapMeta, ActiveEvent {
+      brawler: MapMeta['brawlers']['someone']|undefined
+    }
+
     const maps = Object.values(props.activeEvents)
       .filter(event => event.id in props.mapMeta)
-      .filter(event => props.brawlerId in props.mapMeta[event.id].brawlers)
       .map(event => ({
         ...event,
         ...props.mapMeta[event.id],
         brawler: props.mapMeta[event.id].brawlers[props.brawlerId],
-      }))
-      .sort((e1, e2) => e2.brawler.sampleSize - e1.brawler.sampleSize)
-    interface MapStats extends MapMeta, ActiveEvent {
-      brawler: MapMeta['brawlers']['someone']
-    }
+      }) as MapStats)
+      .sort((e1, e2) => (e2.brawler != undefined ? e2.brawler.sampleSize : 0) - (e1.brawler != undefined ? e1.brawler.sampleSize : 0))
 
     const slots = (event: MapStats) => ({
       infobar: () => <p class="text-right">
@@ -59,12 +59,12 @@ export default Vue.extend({
           <div class="flex flex-col justify-end mr-2">
             <media-img
               path={`/brawlers/${props.brawlerId}/avatar`}
-              alt={event.brawler.name}
+              alt={event.brawler?.name}
               size="128"
               clazz="w-16"
             ></media-img>
           </div>
-          { event.sampleSize > 3000 ?
+          { event.brawler != undefined && event.sampleSize > 3000 ?
           <dl class="w-48 px-3 py-2">
             <div class="flex justify-between">
               <dt>Use Rate</dt>
@@ -83,7 +83,7 @@ export default Vue.extend({
             </div>
             : '' }
           </dl>
-          : '' }
+          : <p class="m-auto">No data yet.</p> }
         </div>
       </div>,
     })
