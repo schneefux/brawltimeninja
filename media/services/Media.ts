@@ -114,6 +114,43 @@ export default class MediaService {
 
     const id = brawlerId({ name: name })
     const character = characters.find(c => (c.itemName || '').replace(/[.-]/g, '').replace('ricochet', 'rico') == id.replace(/_/g, ''))
+    if (character == undefined && name == 'colette') {
+      return <BrawlerData>{
+        id: 'colette',
+        scId: 9999,
+        speed: 0,
+        health: 0,
+        offenseRating: 0,
+        defenseRating: 0,
+        utilityRating: 0,
+        name: 'Colette',
+        description: 'Colette will overtake its enemies! It puts the health of opponents under strain and has unusual techniques in addition.',
+        main: {
+          description: 'Colette fires a shot that kills whoever you are attacking.',
+          cooldown: 0,
+          rechargeTime: 0,
+          damage: 0,
+          damageLabel: 'Damage',
+          damageCount: null,
+          range: null,
+          charges: null,
+          spread: null,
+        },
+        super: {
+          description: 'Colette dashes back and forth, damaging everyone in her path, damage based on their maximum health.',
+          cooldown: 0,
+          rechargeTime: 0,
+          damage: 0,
+          damageLabel: 'Damage',
+          damageCount: null,
+          range: null,
+          charges: null,
+          spread: null,
+        },
+        starpowerDescriptions: {},
+        gadgetDescriptions: {},
+      }
+    }
     if (character == undefined) {
       console.log('brawler not found: ' + name)
       return null

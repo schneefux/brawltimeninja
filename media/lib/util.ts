@@ -1,8 +1,7 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
-import { ActiveEvent } from "~/model/Brawlstars";
-import { BrawlerMetaStatistics } from "~/model/Api";
+import { BrawlerMetaStatistics, ActiveEvent } from "~/model/Api";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
@@ -171,12 +170,12 @@ export const metaStatMaps = {
     trophies: (n: number) => Math.round(n),
     spTrophies: (n: number) => Math.round(n),
     trophyChange: (n: number) => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
-    winRate: (n: number) => `${Math.round(100 * n)}%`,
-    rank1Rate: (n: number) => `${Math.round(100 * n)}%`,
-    starRate: (n: number) => `${Math.round(100 * n)}%`,
+    winRate: (n: number) => `${Math.round(100 * n * 10) / 10}%`,
+    rank1Rate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
+    starRate: (n: number) => `${Math.round(100 * n* 10) / 10}%`,
     picks: (n: number) => `${Math.round(100 * n)}%`,
-    useRate: (n: number) => `${Math.round(100 * n)}%`,
-    pickRate: (n: number) => `${Math.round(100 * n)}%`,
+    useRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
+    pickRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     pickRate_boss: (n: number) => `${Math.round(100 * n)}%`,
     duration: (n: number) => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
     duration_boss: (n: number) => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
