@@ -554,9 +554,8 @@ export default class ClickerService {
     const maxTimestamp = await this.query<any>(
       `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE ${sliceSeason()} AND player_id=${tagToId(player.tag)}`,
       'player.get_last')
-    // if not found, CH defaults to 0000 date
-    const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp))
-
+    // if not found, CH defaults to 0000 date (Date.parse returns NaN)
+    const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp) || 0)
     const insertStart = performance.now()
     const stream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
 
@@ -564,7 +563,7 @@ export default class ClickerService {
     battles.forEach((battle) => {
       stats.increment('player.insert.run')
 
-      if(battle.battle.type == 'friendly') {
+      if (battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
         console.log(`ignoring friendly battle for ${player.tag} (${tagToId(player.tag)})`)
