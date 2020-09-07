@@ -11,15 +11,25 @@ export interface BattleMeasures {
   trophyChange: number;
 }
 
-export interface PlayerMeasures {
+interface PlayerDimensions {
   name: string;
   timestamp: string;
+}
+
+export interface PlayerMeasures extends PlayerDimensions {
   expPoints: number;
   trophies: number;
   powerPlayPoints: number;
   victories: number;
   soloVictories: number;
   duoVictories: number;
+}
+
+export interface BrawlerMeasures extends PlayerDimensions {
+  brawlerName: string;
+  power: number
+  trophies: number
+  highestTrophies: number
 }
 
 export interface BrawlerMetaRow extends BattleMeasures {
@@ -78,8 +88,12 @@ export interface PlayerBrawlerMetaRow extends BattleMeasures {
 }
 
 export interface LeaderboardRow extends PlayerMeasures {
-  playerTag: string;
-  playerName: string;
+  tag: string;
+}
+
+export interface BrawlerLeaderboardRow extends BrawlerMeasures {
+  tag: string;
+  brawlerName: string;
 }
 
 export interface PlayerWinRatesRows {

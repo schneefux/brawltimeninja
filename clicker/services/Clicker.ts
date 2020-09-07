@@ -5,7 +5,7 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import StatsD from 'hot-shots'
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow } from '~/model/Clicker';
+import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow } from '~/model/Clicker';
 import { brawlerId } from '../lib/util';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
@@ -181,9 +181,12 @@ const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
 //
 // player
 //
+const playerDimensionsDefinition = (dateType: string) => `
+  timestamp_state AggregateFunction(argMax, ${dateType}, ${dateType}),
+  player_name_state AggregateFunction(argMax, String, ${dateType})
+`
 const playerMeasuresDefinition = `
-  timestamp_state AggregateFunction(argMax, DateTime, DateTime),
-  player_name_state AggregateFunction(argMax, String, DateTime),
+  ${playerDimensionsDefinition('DateTime')},
   player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
   player_trophies_state AggregateFunction(argMax, UInt32, DateTime),
   player_power_play_points_state AggregateFunction(argMax, UInt16, DateTime),
@@ -192,9 +195,12 @@ const playerMeasuresDefinition = `
   player_duo_victories_state AggregateFunction(argMax, UInt32, DateTime)
 `
 
-const playerMeasuresQuery = `
+const playerDimensionsQuery = `
   argMaxState(timestamp, timestamp) as timestamp_state,
-  argMaxState(player_name, timestamp) as player_name_state,
+  argMaxState(player_name, timestamp) as player_name_state
+`
+const playerMeasuresQuery = `
+  ${playerDimensionsQuery},
   argMaxState(player_exp_points, timestamp) as player_exp_points_state,
   argMaxState(player_trophies, timestamp) as player_trophies_state,
   argMaxState(player_power_play_points, timestamp) as player_power_play_points_state,
@@ -203,9 +209,12 @@ const playerMeasuresQuery = `
   argMaxState(player_duo_victories, timestamp) as player_duo_victories_state
 `
 
-const playerMeasuresAggregation = `
+const playerDimensionsAggregation = `
   argMaxMerge(timestamp_state) as timestamp,
-  argMaxMerge(player_name_state) as name,
+  argMaxMerge(player_name_state) as name
+`
+const playerMeasuresAggregation = `
+  ${playerDimensionsAggregation},
   argMaxMerge(player_exp_points_state) as expPoints,
   argMaxMerge(player_trophies_state) as trophies,
   argMaxMerge(player_power_play_points_state) as powerPlayPoints,
@@ -214,9 +223,12 @@ const playerMeasuresAggregation = `
   argMaxMerge(player_duo_victories_state) as duoVictories
 `
 
-interface PlayerMeasuresAggregation {
+interface PLayerDimensionsAggregation {
   name: string
   timestamp: string
+}
+
+interface PlayerMeasuresAggregation extends PLayerDimensionsAggregation {
   expPoints: string
   trophies: string
   powerPlayPoints: string
@@ -225,9 +237,12 @@ interface PlayerMeasuresAggregation {
   duoVictories: string
 }
 
-const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
+const parsePlayerDimensions = (row: PLayerDimensionsAggregation) => ({
   name: row.name,
   timestamp: row.timestamp,
+})
+const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
+  ...parsePlayerDimensions(row),
   expPoints: parseInt(row.expPoints),
   trophies: parseInt(row.trophies),
   powerPlayPoints: parseInt(row.powerPlayPoints),
@@ -235,6 +250,49 @@ const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
   soloVictories: parseInt(row.soloVictories),
   duoVictories: parseInt(row.duoVictories),
 })
+
+//
+// player brawler
+//
+const brawlerMeasuresDefinition = `
+  ${playerDimensionsDefinition('Date')},
+  brawler_name_state AggregateFunction(argMax, String, Date),
+  brawler_power_state AggregateFunction(argMax, UInt8, Date),
+  brawler_trophies_state AggregateFunction(argMax, UInt16, Date),
+  brawler_highest_trophies_state AggregateFunction(argMax, UInt16, Date)
+`
+
+const brawlerMeasuresQuery = `
+  ${playerDimensionsQuery},
+  argMaxState(brawler_name, timestamp) as brawler_name_state,
+  argMaxState(brawler_power, timestamp) as brawler_power_state,
+  argMaxState(brawler_trophies, timestamp) as brawler_trophies_state,
+  argMaxState(brawler_highest_trophies, timestamp) as brawler_highest_trophies_state
+`
+
+const brawlerMeasuresAggregation = `
+  ${playerDimensionsAggregation},
+  argMaxMerge(brawler_name_state) as brawlerName,
+  argMaxMerge(brawler_power_state) as power,
+  argMaxMerge(brawler_trophies_state) as trophies,
+  argMaxMerge(brawler_highest_trophies_state) as highestTrophies
+`
+
+interface BrawlerMeasuresAggregation extends PLayerDimensionsAggregation {
+  brawlerName: string
+  power: string
+  trophies: string
+  highestTrophies: string
+}
+
+const parseBrawlerMeasures = (row: BrawlerMeasuresAggregation) => ({
+  ...parsePlayerDimensions(row),
+  brawlerName: row.brawlerName,
+  power: parseInt(row.power),
+  trophies: parseInt(row.trophies),
+  highestTrophies: parseInt(row.highestTrophies),
+})
+
 
 export default class ClickerService {
   private ch: ClickHouse;
@@ -254,103 +312,112 @@ export default class ClickerService {
   public async migrate() {
     await this.ch.querying('CREATE DATABASE IF NOT EXISTS brawltime')
 
+    const playerColumns = `
+      -- player
+      player_id UInt64 Codec(Gorilla, LZ4HC),
+      player_tag String Codec(LZ4HC),
+      player_name String Codec(LZ4HC),
+      player_name_color FixedString(10) Codec(LZ4HC), -- 0x + 8 hex chars
+      player_icon_id UInt32 Codec(Gorilla, LZ4HC),
+      player_trophies UInt32 Codec(Gorilla, LZ4HC),
+      player_highest_trophies UInt32 Codec(Gorilla, LZ4HC),
+      player_power_play_points UInt16 Codec(Gorilla, LZ4HC),
+      player_highest_power_play_points UInt16 Codec(Gorilla, LZ4HC),
+      player_exp_points UInt32 Codec(Gorilla, LZ4HC),
+      player_is_qualified_from_championship_challenge UInt8 Codec(Gorilla, LZ4HC),
+      player_3vs3_victories UInt32 Codec(Gorilla, LZ4HC),
+      player_solo_victories UInt32 Codec(Gorilla, LZ4HC),
+      player_duo_victories UInt32 Codec(Gorilla, LZ4HC),
+      player_best_robo_rumble_time UInt16 Codec(Gorilla, LZ4HC),
+      player_best_time_as_big_brawler UInt16 Codec(Gorilla, LZ4HC),
+      -- calculated
+      player_brawlers_length UInt8 Codec(Gorilla, LZ4HC),
+      -- player club
+      player_club_id UInt64 Codec(Gorilla, LZ4HC),
+      player_club_tag String Codec(LZ4HC),
+      player_club_name String Codec(LZ4HC)
+    `
+
+    const brawlerColumns = `
+      -- brawler
+      brawler_id UInt32 Codec(Gorilla, LZ4HC),
+      brawler_name LowCardinality(String) Codec(LZ4HC),
+      brawler_power UInt8 Codec(Gorilla, LZ4HC),
+      brawler_trophies UInt16 Codec(DoubleDelta, LZ4HC), -- trophy change is mostly constant
+      brawler_highest_trophies UInt16 Codec(DoubleDelta, LZ4HC),
+      -- calculated
+      brawler_trophyrange UInt8 Codec(Gorilla, LZ4HC),
+      -- starpowers (nested)
+      \`brawler_starpowers.id\` Array(UInt32) Codec(LZ4HC),
+      \`brawler_starpowers.name\` Array(LowCardinality(String)) Codec(LZ4HC),
+      brawler_starpowers_length UInt16 Codec(Gorilla, LZ4HC),
+      -- gadgets (nested)
+      \`brawler_gadgets.id\` Array(UInt32) Codec(LZ4HC),
+      \`brawler_gadgets.name\` Array(LowCardinality(String)) Codec(LZ4HC),
+      brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC)
+    `
+
     //
-    // main table
+    // battle table
     //
+    // TODO on next table rewrite, use ReplacingMergeTree
     await this.ch.querying(`
       CREATE TABLE IF NOT EXISTS brawltime.battle (
-          timestamp DateTime Codec(DoubleDelta, LZ4HC),
+        timestamp DateTime Codec(DoubleDelta, LZ4HC),
         -- calculated
-          trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
-        -- player
-          player_id UInt64 Codec(Gorilla, LZ4HC),
-          player_tag String Codec(LZ4HC),
-          player_name String Codec(LZ4HC),
-          player_name_color FixedString(10) Codec(LZ4HC), -- 0x + 8 hex chars
-          player_icon_id UInt32 Codec(Gorilla, LZ4HC),
-          player_trophies UInt32 Codec(Gorilla, LZ4HC),
-          player_highest_trophies UInt32 Codec(Gorilla, LZ4HC),
-          player_power_play_points UInt16 Codec(Gorilla, LZ4HC),
-          player_highest_power_play_points UInt16 Codec(Gorilla, LZ4HC),
-          player_exp_points UInt32 Codec(Gorilla, LZ4HC),
-          player_is_qualified_from_championship_challenge UInt8 Codec(Gorilla, LZ4HC),
-          player_3vs3_victories UInt32 Codec(Gorilla, LZ4HC),
-          player_solo_victories UInt32 Codec(Gorilla, LZ4HC),
-          player_duo_victories UInt32 Codec(Gorilla, LZ4HC),
-          player_best_robo_rumble_time UInt16 Codec(Gorilla, LZ4HC),
-          player_best_time_as_big_brawler UInt16 Codec(Gorilla, LZ4HC),
-        -- calculated
-          player_brawlers_length UInt8 Codec(Gorilla, LZ4HC),
-        -- player club
-          player_club_id UInt64 Codec(Gorilla, LZ4HC),
-          player_club_tag String Codec(LZ4HC),
-          player_club_name String Codec(LZ4HC),
+        trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
+        ${playerColumns},
         -- player brawler
-        -- ommitted, not needed
-        -- brawler
-          brawler_id UInt32 Codec(Gorilla, LZ4HC),
-          brawler_name LowCardinality(String) Codec(LZ4HC),
-          brawler_power UInt8 Codec(Gorilla, LZ4HC),
-          brawler_trophies UInt16 Codec(DoubleDelta, LZ4HC), -- trophy change is mostly constant
-          brawler_highest_trophies UInt16 Codec(DoubleDelta, LZ4HC),
-        -- calculated
-          brawler_trophyrange UInt8 Codec(Gorilla, LZ4HC),
-        -- brawler starpower
-          brawler_starpower_found UInt8 Codec(Gorilla, LZ4HC),
-          brawler_starpower_id UInt32 Codec(LZ4HC),
-          brawler_starpower_name LowCardinality(String) Codec(LZ4HC),
-        -- brawler gadget
-          brawler_gadget_found UInt8 Codec(Gorilla, LZ4HC),
-          brawler_gadget_id UInt32 Codec(LZ4HC),
-          brawler_gadget_name LowCardinality(String) Codec(LZ4HC),
-        -- starpowers (nested)
-          \`brawler_starpowers.id\` Array(UInt32) Codec(LZ4HC),
-          \`brawler_starpowers.name\` Array(LowCardinality(String)) Codec(LZ4HC),
-          brawler_starpowers_length UInt16 Codec(Gorilla, LZ4HC),
-        -- gadgets (nested)
-          \`brawler_gadgets.id\` Array(UInt32) Codec(LZ4HC),
-          \`brawler_gadgets.name\` Array(LowCardinality(String)) Codec(LZ4HC),
-          brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC),
+        -- see other table
+        ${brawlerColumns},
+        -- brawler active starpower
+        brawler_starpower_found UInt8 Codec(Gorilla, LZ4HC),
+        brawler_starpower_id UInt32 Codec(LZ4HC),
+        brawler_starpower_name LowCardinality(String) Codec(LZ4HC),
+        -- brawler active gadget
+        brawler_gadget_found UInt8 Codec(Gorilla, LZ4HC),
+        brawler_gadget_id UInt32 Codec(LZ4HC),
+        brawler_gadget_name LowCardinality(String) Codec(LZ4HC),
         -- battle event
-          battle_event_id UInt32 Codec(Gorilla, LZ4HC),
-          battle_event_mode LowCardinality(String) Codec(LZ4HC),
-          battle_event_map LowCardinality(String) Codec(LZ4HC),
+        battle_event_id UInt32 Codec(Gorilla, LZ4HC),
+        battle_event_mode LowCardinality(String) Codec(LZ4HC),
+        battle_event_map LowCardinality(String) Codec(LZ4HC),
         -- battle
         -- mode: ommitted because duplicate
-          battle_type LowCardinality(String) Codec(LZ4HC),
-          battle_result LowCardinality(String) Codec(LZ4HC),
-          -- Nullable + Encoding is not supported
-          battle_duration Nullable(UInt16) Codec(LZ4HC),
-          battle_rank Nullable(UInt8) Codec(LZ4HC),
-          battle_trophy_change Nullable(Int8) Codec(LZ4HC),
-          battle_level_name LowCardinality(String) Codec(LZ4HC),
-          battle_level_id Nullable(UInt16) Codec(LZ4HC),
+        battle_type LowCardinality(String) Codec(LZ4HC),
+        battle_result LowCardinality(String) Codec(LZ4HC),
+        -- Nullable + Encoding is not supported
+        battle_duration Nullable(UInt16) Codec(LZ4HC),
+        battle_rank Nullable(UInt8) Codec(LZ4HC),
+        battle_trophy_change Nullable(Int8) Codec(LZ4HC),
+        battle_level_name LowCardinality(String) Codec(LZ4HC),
+        battle_level_id Nullable(UInt16) Codec(LZ4HC),
         -- calculated
-          battle_victory Nullable(Decimal32(8)) Codec(LZ4HC),
+        battle_victory Nullable(Decimal32(8)) Codec(LZ4HC),
         -- battle starplayer
-          battle_starplayer_brawler_id UInt32 Codec(LZ4HC),
-          battle_starplayer_brawler_name LowCardinality(String) Codec(LZ4HC),
-          battle_starplayer_brawler_power UInt8 Codec(Gorilla, LZ4HC),
-          battle_starplayer_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
+        battle_starplayer_brawler_id UInt32 Codec(LZ4HC),
+        battle_starplayer_brawler_name LowCardinality(String) Codec(LZ4HC),
+        battle_starplayer_brawler_power UInt8 Codec(Gorilla, LZ4HC),
+        battle_starplayer_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
         -- calculated
-          battle_is_starplayer Nullable(UInt8) Codec(LZ4HC),
+        battle_is_starplayer Nullable(UInt8) Codec(LZ4HC),
         -- battle big brawler
-          battle_bigbrawler_brawler_id UInt32 Codec(LZ4HC),
-          battle_bigbrawler_brawler_name LowCardinality(String) Codec(LZ4HC),
-          battle_bigbrawler_brawler_power UInt8 Codec(Gorilla, LZ4HC),
-          battle_bigbrawler_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
+        battle_bigbrawler_brawler_id UInt32 Codec(LZ4HC),
+        battle_bigbrawler_brawler_name LowCardinality(String) Codec(LZ4HC),
+        battle_bigbrawler_brawler_power UInt8 Codec(Gorilla, LZ4HC),
+        battle_bigbrawler_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
         -- calculated
-          battle_is_bigbrawler Nullable(UInt8) Codec(LZ4HC),
+        battle_is_bigbrawler Nullable(UInt8) Codec(LZ4HC),
         -- battle allies and enemies (nested)
-          -- player names and tags ommitted, not needed
-          \`battle_allies.brawler_id\` Array(UInt32) Codec(LZ4HC),
-          \`battle_allies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
-          \`battle_allies.brawler_power\` Array(UInt8) Codec(LZ4HC),
-          \`battle_allies.brawler_trophies\` Array(UInt16) Codec(LZ4HC),
-          \`battle_enemies.brawler_id\` Array(UInt32) Codec(LZ4HC),
-          \`battle_enemies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
-          \`battle_enemies.brawler_power\` Array(UInt8) Codec(LZ4HC),
-          \`battle_enemies.brawler_trophies\` Array(UInt16) Codec(LZ4HC)
+        -- player names and tags ommitted, not needed
+        \`battle_allies.brawler_id\` Array(UInt32) Codec(LZ4HC),
+        \`battle_allies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
+        \`battle_allies.brawler_power\` Array(UInt8) Codec(LZ4HC),
+        \`battle_allies.brawler_trophies\` Array(UInt16) Codec(LZ4HC),
+        \`battle_enemies.brawler_id\` Array(UInt32) Codec(LZ4HC),
+        \`battle_enemies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
+        \`battle_enemies.brawler_power\` Array(UInt8) Codec(LZ4HC),
+        \`battle_enemies.brawler_trophies\` Array(UInt16) Codec(LZ4HC)
       )
       ENGINE = MergeTree()
       -- there are no unique checks!
@@ -358,10 +425,34 @@ export default class ClickerService {
       PRIMARY KEY (player_id)
       ORDER BY (player_id, timestamp)
       PARTITION BY trophy_season_end
-      SAMPLE BY player_id
+      SAMPLE BY (player_id)
       -- TTL timestamp + INTERVAL 1 MONTH DELETE
       -- 25 battles per battle log query
       SETTINGS index_granularity=25;
+    `)
+
+    //
+    // player brawler table
+    //
+    await this.ch.querying(`
+      CREATE TABLE IF NOT EXISTS brawltime.brawler (
+        -- day without time = 1 record/day
+        timestamp Date Codec(DoubleDelta, LZ4HC),
+        -- calculated
+        trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
+        ${playerColumns},
+        ${brawlerColumns}
+      )
+      -- will keep latest version by sorting key
+      -- syncs in background so duplicates are possible
+      ENGINE = ReplacingMergeTree(timestamp)
+      PRIMARY KEY (player_id)
+      ORDER BY (player_id, timestamp, brawler_id)
+      PARTITION BY trophy_season_end
+      SAMPLE BY (player_id)
+      -- TTL timestamp + INTERVAL 6 MONTH DELETE
+      -- ca. 30 brawlers per player, 30 days
+      SETTINGS index_granularity=1024;
     `)
 
     //
@@ -504,7 +595,7 @@ export default class ClickerService {
     //
     // player leaderboard
     //
-    // TODO: add a TTL
+    // TODO: add a TTL and compression
     await this.ch.querying(`
       CREATE TABLE IF NOT EXISTS brawltime.leaderboard (
         player_id UInt64,
@@ -532,6 +623,40 @@ export default class ClickerService {
       console.log('populating leaderboard')
       await this.ch.querying(`INSERT INTO brawltime.leaderboard ${leaderboardQuery}`)
     }
+
+    //
+    // player brawler leaderboard
+    //
+    // TODO: add a TTL
+    await this.ch.querying(`
+      CREATE TABLE IF NOT EXISTS brawltime.brawler_leaderboard (
+        player_id UInt64,
+        brawler_id UInt32,
+        ${brawlerMeasuresDefinition}
+      )
+      ENGINE = AggregatingMergeTree()
+      PARTITION BY tuple()
+      ORDER BY (brawler_id, player_id)
+    `)
+
+    const brawlerLeaderboardQuery = `
+      SELECT
+        player_id,
+        brawler_id,
+        ${brawlerMeasuresQuery}
+      FROM brawltime.brawler
+      GROUP BY player_id, brawler_id
+    `
+    await this.ch.querying(`
+      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.brawler_leaderboard_mv
+      TO brawltime.brawler_leaderboard
+      AS ${brawlerLeaderboardQuery}
+    `)
+    const brawlerLeaderboardCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.brawler_leaderboard', { dataObjects: true })
+    if (brawlerLeaderboardCount.data[0].c == 0) {
+      console.log('populating brawler leaderboard')
+      await this.ch.querying(`INSERT INTO brawltime.brawler_leaderboard ${brawlerLeaderboardQuery}`)
+    }
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -556,8 +681,34 @@ export default class ClickerService {
       'player.get_last')
     // if not found, CH defaults to 0000 date (Date.parse returns NaN)
     const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp) || 0)
-    const insertStart = performance.now()
-    const stream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
+
+    const battleInsertStart = performance.now()
+    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
+
+    const playerFacts = {
+      player_id: tagToId(player.tag),
+      player_tag: player.tag,
+      player_name: player.name,
+      player_name_color: player.nameColor,
+      player_icon_id: player.icon.id,
+      player_trophies: player.trophies,
+      player_highest_trophies: player.highestTrophies,
+      player_power_play_points: player.powerPlayPoints,
+      player_highest_power_play_points: player.highestPowerPlayPoints,
+      player_exp_points: player.expPoints,
+      player_is_qualified_from_championship_challenge: player.isQualifiedFromChampionshipChallenge,
+      player_3vs3_victories: player['3vs3Victories'],
+      player_solo_victories: player.soloVictories,
+      player_duo_victories: player.duoVictories,
+      player_best_robo_rumble_time: player.bestRoboRumbleTime,
+      player_best_time_as_big_brawler: player.bestTimeAsBigBrawler,
+      // calculated
+      player_brawlers_length: player.brawlers.length,
+      /* player club */
+      player_club_id: player.club?.tag != undefined ? tagToId(player.club.tag) : undefined,
+      player_club_tag: player.club?.tag,
+      player_club_name: player.club?.name,
+    }
 
     // insert records for meta stats
     battles.forEach((battle) => {
@@ -615,31 +766,9 @@ export default class ClickerService {
       const record = {
         timestamp: battle.battleTime,
         trophy_season_end: trophySeasonEnd,
-        /* player */
-        player_id: tagToId(player.tag),
-        player_tag: player.tag,
-        player_name: player.name,
-        player_name_color: player.nameColor,
-        player_icon_id: player.icon.id,
-        player_trophies: player.trophies,
-        player_highest_trophies: player.highestTrophies,
-        player_power_play_points: player.powerPlayPoints,
-        player_highest_power_play_points: player.highestPowerPlayPoints,
-        player_exp_points: player.expPoints,
-        player_is_qualified_from_championship_challenge: player.isQualifiedFromChampionshipChallenge,
-        player_3vs3_victories: player['3vs3Victories'],
-        player_solo_victories: player.soloVictories,
-        player_duo_victories: player.duoVictories,
-        player_best_robo_rumble_time: player.bestRoboRumbleTime,
-        player_best_time_as_big_brawler: player.bestTimeAsBigBrawler,
-        // calculated
-        player_brawlers_length: player.brawlers.length,
-        /* player club */
-        player_club_id: player.club?.tag != undefined ? tagToId(player.club.tag) : undefined,
-        player_club_tag: player.club?.tag,
-        player_club_name: player.club?.name,
+        ...playerFacts,
         /* player brawler */
-        // ommitted, not needed
+        // see other table
         /* brawler */
         brawler_id: myBrawler.id,
         brawler_name: myBrawler.name || 'NANI', // FIXME API bug 2020-06-06
@@ -708,7 +837,7 @@ export default class ClickerService {
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
       try {
-        stream.write(record)
+        battleStream.write(record)
         console.log(`inserted battle for ${player.tag} (${tagToId(player.tag)})`)
       } catch (e) {
         stats.increment('player.insert.error')
@@ -716,8 +845,46 @@ export default class ClickerService {
       }
     })
 
-    stream.end()
-    stats.timing('player.insert.timer', performance.now() - insertStart)
+    stats.timing('player.insert.timer', performance.now() - battleInsertStart)
+
+    const justNow = new Date()
+    justNow.setMinutes(justNow.getMinutes() - 10)
+
+    const brawlerInsertStart = performance.now()
+    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' })
+
+    player.brawlers.forEach(brawler => {
+      stats.increment('brawler.insert.run')
+
+      const record = {
+        timestamp: new Date().toISOString().substring(0, 10),
+        ...playerFacts,
+        brawler_id: brawler.id,
+        brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
+        brawler_power: brawler.power,
+        brawler_trophies: brawler.trophies,
+        brawler_highest_trophies: brawler.highestTrophies,
+        /* starpowers (nested) */
+        'brawler_starpowers.id': brawler.starPowers.map(sp => sp.id),
+        'brawler_starpowers.name': brawler.starPowers.map(sp => sp.name),
+        brawler_starpowers_length: brawler.starPowers.length,
+        /* gadgets (nested) */
+        'brawler_gadgets.id': brawler.gadgets.map(g => g.id),
+        'brawler_gadgets.name': brawler.gadgets.map(g => g.name),
+        brawler_gadgets_length: brawler.gadgets.length,
+      }
+
+      try {
+        brawlerStream.write(record)
+        console.log(`inserted brawler for ${player.tag} (${tagToId(player.tag)})`)
+      } catch (e) {
+        stats.increment('brawler.insert.error')
+        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${e}`)
+      }
+    })
+
+    brawlerStream.end()
+    stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
   }
 
   public async getTopByMetric(metric: string, limit: number): Promise<LeaderboardRow[]> {
@@ -730,6 +897,7 @@ export default class ClickerService {
       'duoVictories',
     ]
     if (!metrics.includes(metric)) {
+      console.error('invalid metric', metric)
       return []
     }
 
@@ -747,11 +915,47 @@ export default class ClickerService {
       ORDER BY ${metric} DESC
       LIMIT ${limit}
       `, 'leaderboard')
-      .then(data => data.map(row => ({
+      .then(data => data.map(row => <LeaderboardRow>({
         ...parsePlayerMeasures(row),
-        playerName: row.name,
-        playerTag: idToTag(row.playerId).replace('#', ''),
-      }) as LeaderboardRow))
+        tag: idToTag(row.playerId).replace('#', ''),
+      })))
+  }
+
+  public async getTopBrawlerByMetric(brawlerId: string, metric: string, limit: number): Promise<BrawlerLeaderboardRow[]> {
+    const metrics = [
+      'trophies',
+      'highestTrophies',
+    ]
+    if (!metrics.includes(metric)) {
+      console.error('invalid metric', metric)
+      return []
+    }
+
+    if (isNaN(parseInt(brawlerId))) {
+      console.error('invalid brawlerId', brawlerId)
+      return []
+    }
+
+    interface LeaderboardQuery extends BrawlerMeasuresAggregation {
+      playerId: string
+      brawlerId: string
+    }
+
+    return await this.query<LeaderboardQuery>(`
+      SELECT
+        player_id AS playerId,
+        ${brawlerMeasuresAggregation}
+      FROM brawltime.brawler_leaderboard
+      WHERE brawler_id=${brawlerId}
+      GROUP BY playerId
+      HAVING timestamp > now() - interval 1 week
+      ORDER BY ${metric} DESC
+      LIMIT ${limit}
+      `, 'brawler_leaderboard')
+      .then(data => data.map(row => <BrawlerLeaderboardRow>({
+        ...parseBrawlerMeasures(row),
+        tag: idToTag(row.playerId).replace('#', ''),
+      })))
   }
 
   public async getHistory(tag: string): Promise<History> {

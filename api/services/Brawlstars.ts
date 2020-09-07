@@ -129,8 +129,8 @@ export default class BrawlstarsService {
       );
 
       entries = response.map(entry => ({
-        name: entry.playerName,
-        tag: entry.playerTag,
+        name: entry.name,
+        tag: entry.tag,
         metric: xpToHours(entry.expPoints),
       }));
     }
@@ -146,8 +146,8 @@ export default class BrawlstarsService {
       );
 
       entries = response.map(entry => ({
-        name: entry.playerName,
-        tag: entry.playerTag,
+        name: entry.name,
+        tag: entry.tag,
         metric: entry[metric as keyof LeaderboardRow] as number,
       }));
     }
