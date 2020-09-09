@@ -1,6 +1,5 @@
 import Knex from 'knex';
 import { Player, BattleLog } from '~/model/Brawlstars';
-import { LeaderboardEntry } from '~/model/Leaderboard';
 import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 
 const dbUri = process.env.DATABASE_URI || '';
@@ -233,6 +232,7 @@ export default class TrackerService {
     }));
   }
 
+  /*
   public async getTopByExp(n: number) {
     return await this.knex
       .select('name', 'tag')
@@ -244,6 +244,7 @@ export default class TrackerService {
       .orderBy('total_exp', 'desc')
       .limit(n) as LeaderboardEntry[];
   }
+  */
 
   public async getHistory(tag: string) {
     // round to hour to reduce high-activity players
@@ -301,6 +302,7 @@ export default class TrackerService {
     }
   }
 
+  /*
   public async getBrawlerMeta(trophyrangeId: number|null) {
     return await this.knex.raw(`
         select
@@ -458,6 +460,7 @@ export default class TrackerService {
         })
       ));
     }
+    */
 
     public async migrate() {
       // disabled
@@ -837,6 +840,7 @@ export default class TrackerService {
     console.log('all migrations done');
   }
 
+  /*
   private async fillDimEvent(txn: Knex.Transaction) {
     const lastIdRecords = await txn('meta_last_processed')
       .select('last_id')
@@ -939,7 +943,7 @@ export default class TrackerService {
     console.timeEnd('fill dim_season');
   }
 
-  /** aggregate player_battle facts */
+  // aggregate player_battle facts
   private async fillAggPlayerBattle(txn: Knex.Transaction) {
     const lastIdRecords = await txn('meta_last_processed')
       .select('last_id')
@@ -1018,8 +1022,10 @@ export default class TrackerService {
 
     console.timeEnd('materialize from ' + lastProcessedId + ' to ' + lastId);
   }
+  */
 
   public async materialize() {
+    /*
     await this.knex.transaction(async (txn) => {
       await this.fillDimEvent(txn);
     });
@@ -1032,9 +1038,11 @@ export default class TrackerService {
     await this.knex.transaction(async (txn) => {
       await this.fillAggPlayerBattle(txn);
     });
+    */
   }
 
   public async cleanup() {
+    /*
     console.log('deleting processed player_battle');
     const lastPbIdRecords = await this.knex('meta_last_processed')
       .select('last_id')
@@ -1066,5 +1074,6 @@ export default class TrackerService {
       delete from player_brawler
       where timestamp < now() - interval 30 day
     `);
+    */
   }
 }

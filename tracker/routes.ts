@@ -18,10 +18,12 @@ router.post('/tracker/track', async (ctx, next) => {
   await next();
 });
 
+/*
 router.get('/tracker/top/exp', async (ctx, next) => {
   ctx.body = await service.getTopByExp(100);
   await next();
 });
+*/
 
 router.get('/tracker/history/:tag', async (ctx, next) => {
   ctx.body = await service.getHistory(ctx.params.tag);
@@ -33,6 +35,7 @@ router.get('/tracker/winrates/:tag', async (ctx, next) => {
   await next();
 });
 
+/*
 router.get('/tracker/meta/brawler', async (ctx, next) => {
   ctx.body = await service.getBrawlerMeta(ctx.request.query.trophyrangeId);
   await next();
@@ -57,5 +60,6 @@ router.get('/tracker/meta/map', async (ctx, next) => {
   ctx.body = await service.getMapMeta();
   await next();
 });
+*/
 
 export default router.routes();
