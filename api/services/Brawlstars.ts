@@ -493,8 +493,10 @@ export default class BrawlstarsService {
       10000
     )
 
-    history.brawlerHistory.forEach(b => b.name = brawlerId(b))
-    const brawlers = history.brawlerHistory.reduce((brawlers, entry) => ({
+    const brawlers = history.brawlerHistory.map(b => ({
+      ...b,
+      name: brawlerId(b),
+    })).reduce((brawlers, entry) => ({
       ...brawlers,
       [entry.name]: {
         history: [...(brawlers[entry.name]?.history || [] as TrophiesRow[]), {

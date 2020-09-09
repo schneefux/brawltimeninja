@@ -4,6 +4,7 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
 import { brawlerId } from '../lib/util';
+import { timeStamp } from 'console';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -957,6 +958,11 @@ export default class ClickerService {
   public async getHistory(tag: string): Promise<PlayerHistoryRows> {
     tag = validateTag(tag)
 
+    // assumes sort by timestamp
+    const differentFromDayBefore = (row: TrophiesRow, index: number, all: TrophiesRow[]) =>
+      index == 0 || all[index - 1].trophies != row.trophies
+
+    // database does not guarantee that there are no duplicates -> group by start of day
     interface PlayerHistoryQuery {
       timestamp: string
       trophies: string
@@ -972,8 +978,13 @@ export default class ClickerService {
       `, 'player.history')
       .then(data => data.map(row => ({
         ...row,
+        timestamp: row.timestamp.slice(0, 10),
         trophies: parseInt(row.trophies),
-      }) as TrophiesRow))
+      }) as TrophiesRow).filter(differentFromDayBefore))
+
+    // assumes sort by id, then timestamp
+    const differentFromDayBeforeBrawler = (row: BrawlerTrophiesRow, index: number, all: BrawlerTrophiesRow[]) =>
+      index == 0 || all[index - 1].id != row.id || all[index - 1].trophies != row.trophies
 
     interface BrawlerHistoryQuery {
       id: string
@@ -985,17 +996,18 @@ export default class ClickerService {
       SELECT
         brawler_id AS id,
         brawler_name AS name,
-        timestamp,
+        toStartOfDay(timestamp) AS timestamp,
         MAX(brawler_trophies) as trophies
       FROM brawltime.brawler
       WHERE player_id=${tagToId(tag)}
       GROUP BY id, name, timestamp
-      ORDER BY timestamp
+      ORDER BY id, name, timestamp
       `, 'player.brawler_history')
       .then(data => data.map(row => ({
         ...row,
+        timestamp: row.timestamp.slice(0, 10),
         trophies: parseInt(row.trophies),
-      }) as BrawlerTrophiesRow))
+      }) as BrawlerTrophiesRow).filter(differentFromDayBeforeBrawler))
 
     return { playerHistory, brawlerHistory }
   }
