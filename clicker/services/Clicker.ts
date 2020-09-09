@@ -683,7 +683,14 @@ export default class ClickerService {
     const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp) || 0)
 
     const battleInsertStart = performance.now()
-    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
+    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' }, (error) => {
+      if (error != undefined) {
+        stats.increment('player.insert.error')
+        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+      } else {
+        stats.timing('player.insert.timer', performance.now() - battleInsertStart)
+      }
+    })
 
     const playerFacts = {
       player_id: tagToId(player.tag),
@@ -836,22 +843,21 @@ export default class ClickerService {
 
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
-      try {
-        battleStream.write(record)
-        console.log(`inserted battle for ${player.tag} (${tagToId(player.tag)})`)
-      } catch (e) {
-        stats.increment('player.insert.error')
-        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${e}`)
-      }
+      battleStream.write(record)
     })
-
-    stats.timing('player.insert.timer', performance.now() - battleInsertStart)
 
     const justNow = new Date()
     justNow.setMinutes(justNow.getMinutes() - 10)
 
     const brawlerInsertStart = performance.now()
-    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' })
+    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' }, (error) => {
+      if (error != undefined) {
+        stats.increment('brawler.insert.error')
+        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+      } else {
+        stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
+      }
+    })
 
     player.brawlers.forEach(brawler => {
       stats.increment('brawler.insert.run')
@@ -874,17 +880,10 @@ export default class ClickerService {
         brawler_gadgets_length: brawler.gadgets.length,
       }
 
-      try {
-        brawlerStream.write(record)
-        console.log(`inserted brawler for ${player.tag} (${tagToId(player.tag)})`)
-      } catch (e) {
-        stats.increment('brawler.insert.error')
-        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${e}`)
-      }
+      brawlerStream.write(record)
     })
 
     brawlerStream.end()
-    stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
   }
 
   public async getTopByMetric(metric: string, limit: number): Promise<LeaderboardRow[]> {
