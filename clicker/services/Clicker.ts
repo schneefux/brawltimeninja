@@ -439,7 +439,7 @@ export default class ClickerService {
         -- day without time = 1 record/day
         timestamp Date Codec(DoubleDelta, LZ4HC),
         -- calculated
-        trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
+        trophy_season_end Date Codec(DoubleDelta, LZ4HC),
         ${playerColumns},
         ${brawlerColumns}
       )
@@ -447,7 +447,7 @@ export default class ClickerService {
       -- syncs in background so duplicates are possible
       ENGINE = ReplacingMergeTree(timestamp)
       PRIMARY KEY (player_id)
-      ORDER BY (player_id, timestamp, brawler_id)
+      ORDER BY (player_id, brawler_id, timestamp)
       PARTITION BY trophy_season_end
       SAMPLE BY (player_id)
       -- TTL timestamp + INTERVAL 6 MONTH DELETE
@@ -846,9 +846,6 @@ export default class ClickerService {
       battleStream.write(record)
     })
 
-    const justNow = new Date()
-    justNow.setMinutes(justNow.getMinutes() - 10)
-
     const brawlerInsertStart = performance.now()
     const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' }, (error) => {
       if (error != undefined) {
@@ -864,6 +861,7 @@ export default class ClickerService {
 
       const record = {
         timestamp: new Date().toISOString().substring(0, 10),
+        trophy_season_end: getSeasonEnd(new Date()).toISOString().substring(0, 10),
         ...playerFacts,
         brawler_id: brawler.id,
         brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
