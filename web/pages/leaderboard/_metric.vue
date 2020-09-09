@@ -96,7 +96,7 @@ function formatMetric(m: string) {
 
 export default Vue.extend({
   head() {
-    const description = `Brawl Stars ${(<any>this).metricName} Leaderboard. Players rankinged by most ${(<any>this).metricName}.`
+    const description = `Brawl Stars ${(<any>this).metricName} Leaderboard. Players ranked by most ${(<any>this).metricName}.`
     return {
       title: `Brawl Stars ${(<any>this).metricName} Leaderboard`,
       meta: [
