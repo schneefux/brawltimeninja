@@ -1,16 +1,16 @@
 import Vue, { PropType } from 'vue'
-import { PlayerHistoryEntry } from '~/model/History'
 import { min, max, parseISO, formatRelative, eachMonthOfInterval } from 'date-fns'
+import { TrophiesRow } from '~/model/Clicker'
 
 export default Vue.extend({
   functional: true,
   props: {
     history: {
-      type: Array as PropType<PlayerHistoryEntry[]>,
+      type: Array as PropType<TrophiesRow[]>,
       required: true,
     },
   },
-  render(h, { props, data }) {
+  render(h, { props }) {
     const dates = props.history.map(({ timestamp }) => timestamp as unknown as string)
     const datesD = dates.map(d => parseISO(d))
     const trophies = props.history.map(({ trophies }) => trophies)

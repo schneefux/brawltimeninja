@@ -1,15 +1,13 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
-import History from '../model/History';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
-import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
+import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows, PlayerHistoryRows, BrawlerTrophiesRow, TrophiesRow } from '~/model/Clicker';
 import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
-const trackerUrl = process.env.TRACKER_URL || '';
 const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
@@ -477,41 +475,39 @@ export default class BrawlstarsService {
   }
 
   public async getPlayerHistory(tag: string) {
-    tag = tag.replace(/^#/, '');
+    tag = tag.replace(/^#/, '')
 
-    let history: History = { playerHistory: [], brawlerHistory: [] };
-    if (trackerUrl != '') {
-      console.time('get history from tracker ' + tag);
-      history = await request<History>(
-        `/history/${tag}`,
-        trackerUrl,
-        'fetch_player_history',
-        {},
-        {},
-        10000
-      );
-      console.timeEnd('get history from tracker ' + tag);
+    if (clickerUrl == '') {
+      return {
+        playerHistory: [],
+        brawlerHistory: {},
+      }
     }
 
-    interface BrawlerHistoryEntry {
-      timestamp: Date|string
-      trophies: number
-    }
-    history.brawlerHistory.forEach((b) => b.name = brawlerId(b))
+    const history = await request<PlayerHistoryRows>(
+      `/history/${tag}`,
+      clickerUrl,
+      'fetch_player_history',
+      {},
+      {},
+      10000
+    )
+
+    history.brawlerHistory.forEach(b => b.name = brawlerId(b))
     const brawlers = history.brawlerHistory.reduce((brawlers, entry) => ({
       ...brawlers,
       [entry.name]: {
-        history: [...(brawlers[entry.name]?.history || [] as BrawlerHistoryEntry[]), {
+        history: [...(brawlers[entry.name]?.history || [] as TrophiesRow[]), {
           timestamp: entry.timestamp,
           trophies: entry.trophies,
         }]
       },
-    }), {} as { [id: string]: { history: BrawlerHistoryEntry[] } })
+    }), {} as { [id: string]: { history: TrophiesRow[] } })
 
     return {
       history: history.playerHistory,
       brawlers,
-    };
+    }
   }
 
   public async getPlayerStatistics(tag: string) {
@@ -601,18 +597,6 @@ export default class BrawlstarsService {
         teams: teams.map(t => t.map(transformPlayer)),
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
-
-    if (trackerUrl != '') {
-      console.time('post battles to tracker ' + tag)
-      // do not await - process in background and resolve early
-      post<null>(
-        trackerUrl + '/track',
-        { player, battleLog },
-        'upload_battlelog',
-        5000)
-        .catch(error => console.error(error, tag))
-        .finally(() => console.timeEnd('post battles to tracker ' + tag));
-    }
 
     if (clickerUrl != '') {
       console.time('post battles to clicker ' + tag)

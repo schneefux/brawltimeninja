@@ -24,8 +24,8 @@ router.get('/clicker/top/:metric', async (ctx, next) => {
   await next();
 });
 
-router.get('/clicker/top/:metric/brawler/:brawler', async (ctx, next) => {
-  ctx.body = await service.getTopBrawlerByMetric(ctx.params.brawler, ctx.params.metric, parseInt(ctx.query.limit) || 100);
+router.get('/clicker/top/:metric/brawler/:brawlerId', async (ctx, next) => {
+  ctx.body = await service.getTopBrawlerByMetric(ctx.params.brawlerId, ctx.params.metric, parseInt(ctx.query.limit) || 100);
   ctx.set('Cache-Control', 'public, max-age=60');
   await next();
 });

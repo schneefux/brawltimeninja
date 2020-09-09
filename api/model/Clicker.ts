@@ -101,3 +101,18 @@ export interface PlayerWinRatesRows {
   mode: PlayerModeMetaRow[];
   brawler: PlayerBrawlerMetaRow[];
 }
+
+export interface TrophiesRow {
+  timestamp: string
+  trophies: number
+}
+
+export interface BrawlerTrophiesRow extends TrophiesRow {
+  name: string
+  id: string
+}
+
+export interface PlayerHistoryRows {
+  playerHistory: TrophiesRow[]
+  brawlerHistory: BrawlerTrophiesRow[]
+}

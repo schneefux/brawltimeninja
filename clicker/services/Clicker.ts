@@ -1,11 +1,8 @@
 import ClickHouse from '@apla/clickhouse';
-import http from 'http'
-import https from 'https'
-import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
-import History, { PlayerHistoryEntry, BrawlerHistoryEntry } from '~/model/History';
 import StatsD from 'hot-shots'
+import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow } from '~/model/Clicker';
+import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
 import { brawlerId } from '../lib/util';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
@@ -13,12 +10,14 @@ const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
 const seasonSliceStart = getSeasonEnd(balanceChangesDate);
 
-// enable http keepalive for clickhouse client
-(<any> http.globalAgent).keepAlive = true;
-(<any> https.globalAgent).keepAlive = true;
-
 console.log(`querying data >= ${seasonSliceStart}`)
 
+/*
+  in SQL:
+    date_add(from_days(ceil(to_days(date_sub(date_sub(timestamp, interval 8 hour), interval 1 day)) / 14) * 14 + 2), interval 8 hour)
+  in clickhouse SQL:
+    addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
+*/
 /**
  * Round timestamp up to next trophy season interval.
  * @param timestamp
@@ -59,7 +58,7 @@ function validateTag(tag: string) {
   return tag
 }
 
-// in clickhouse SQL:
+// in clickhouse SQL (tag has to start with '#'):
 /*
 arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_tag)-i-1-1), arraySlice(splitByString('', player_club_tag), 2), range(if(player_club_tag <> '', toUInt64(length(player_club_tag)-1), 0))) as player_club_id,
 */
@@ -955,29 +954,18 @@ export default class ClickerService {
       })))
   }
 
-  public async getHistory(tag: string): Promise<History> {
+  public async getHistory(tag: string): Promise<PlayerHistoryRows> {
     tag = validateTag(tag)
 
-    const brawlerHistory = await this.query<any>(`
+    interface PlayerHistoryQuery {
+      timestamp: string
+      trophies: string
+    }
+    const playerHistory = await this.query<PlayerHistoryQuery>(`
       SELECT
-        brawler_name AS name,
-        toStartOfHour(timestamp) AS timestamp,
-        MAX(brawler_trophies) AS trophies
-      FROM brawltime.battle
-      WHERE player_id=${tagToId(tag)}
-      GROUP BY name, timestamp
-      ORDER BY timestamp
-      `, 'player.brawler_history')
-      .then(data => data.map(row => ({
-        ...row,
-        trophies: parseInt(row.trophies),
-      }) as BrawlerHistoryEntry))
-
-    const playerHistory = await this.query<any>(`
-      SELECT
-        toStartOfHour(timestamp) AS timestamp,
+        toStartOfDay(timestamp) AS timestamp,
         MAX(player_trophies) AS trophies
-      FROM brawltime.battle
+      FROM brawltime.brawler
       WHERE player_id=${tagToId(tag)}
       GROUP BY timestamp
       ORDER BY timestamp
@@ -985,9 +973,31 @@ export default class ClickerService {
       .then(data => data.map(row => ({
         ...row,
         trophies: parseInt(row.trophies),
-      }) as PlayerHistoryEntry))
+      }) as TrophiesRow))
 
-    return { brawlerHistory, playerHistory }
+    interface BrawlerHistoryQuery {
+      id: string
+      name: string
+      timestamp: string
+      trophies: string
+    }
+    const brawlerHistory = await this.query<BrawlerHistoryQuery>(`
+      SELECT
+        brawler_id AS id,
+        brawler_name AS name,
+        timestamp,
+        MAX(brawler_trophies) as trophies
+      FROM brawltime.brawler
+      WHERE player_id=${tagToId(tag)}
+      GROUP BY id, name, timestamp
+      ORDER BY timestamp
+      `, 'player.brawler_history')
+      .then(data => data.map(row => ({
+        ...row,
+        trophies: parseInt(row.trophies),
+      }) as BrawlerTrophiesRow))
+
+    return { playerHistory, brawlerHistory }
   }
 
   public async getPlayerWinrates(tag: string) {

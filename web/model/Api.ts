@@ -1,5 +1,4 @@
-import { BattleMeasures } from "./Clicker"
-import { PlayerHistoryEntry, BrawlerHistoryEntry } from "./History";
+import { BattleMeasures, TrophiesRow } from "./Clicker"
 
 export interface PlayerModeWinrates {
   [id: string]: {
@@ -24,26 +23,26 @@ export interface PlayerWinrates {
 }
 
 export interface Brawler {
-    name: string;
-    trophies: number;
-    highestTrophies: number;
-    power: number;
-    rank: number;
-    history: BrawlerHistoryEntry[];
+  name: string;
+  trophies: number;
+  highestTrophies: number;
+  power: number;
+  rank: number;
+  history: TrophiesRow[];
 }
 
 export interface Statistic {
-    label: string;
-    value: number | string;
+  label: string;
+  value: number | string;
 }
 
 export interface Mode {
-    label: string;
-    icon: string;
-    background: string;
-    stats: {
-        [id: string]: Statistic;
-    };
+  label: string;
+  icon: string;
+  background: string;
+  stats: {
+      [id: string]: Statistic;
+  };
 }
 
 export interface Battle {
@@ -85,34 +84,36 @@ export interface Player {
   clubName: string;
   qualifiedFromChampionshipChallenge: boolean;
   stats: PlayerLifetimeStats;
-  history: PlayerHistoryEntry[];
+  history: TrophiesRow[];
   brawlers: {
-      [id: string]: Brawler;
+    [id: string]: Brawler;
   };
   heroStats: {
-      [id: string]: Statistic;
+    [id: string]: Statistic;
   }
   modes: {
-      [id: string]: Mode;
+    [id: string]: Mode;
   };
   battles: Battle[];
 }
 
-export interface BrawlerMetaStatistics {
-  id: string;
-  name: string;
+interface Sample {
   sampleSize: number;
   stats: {
     [stat: string]: number;
   }
 }
 
-export interface StarpowerMetaStatistics {
+export interface BrawlerMetaStatistics extends Sample {
+  id: string;
+  name: string;
+}
+
+export interface StarpowerMetaStatistics extends Sample {
   id: string;
   brawlerName: string;
   brawlerId: number;
   starpowerName: string;
-  sampleSize: number;
   stats: {
     winRate: number;
     starRate: number;
@@ -120,12 +121,11 @@ export interface StarpowerMetaStatistics {
   }
 }
 
-export interface GadgetMetaStatistics {
+export interface GadgetMetaStatistics extends Sample {
   id: string;
   brawlerName: string;
   brawlerId: number;
   gadgetName: string;
-  sampleSize: number;
   stats: {
     winRate: number;
     starRate: number;
