@@ -70,7 +70,7 @@
           </dt>
         </dl>
 
-        <div class="w-full max-w-xs my-3 md:my-0 md:w-64 relative">
+        <div class="w-full max-w-xs my-3 md:my-0 md:w-80 relative">
           <div class="h-24 md:h-20 flex flex-col justify-center">
             <client-only>
               <history-graph

@@ -1,5 +1,4 @@
 import Vue, { PropType } from 'vue'
-import { min, max, parseISO, formatRelative, eachMonthOfInterval } from 'date-fns'
 import { TrophiesRow } from '~/model/Clicker'
 
 export default Vue.extend({
@@ -12,13 +11,7 @@ export default Vue.extend({
   },
   render(h, { props }) {
     const dates = props.history.map(({ timestamp }) => timestamp as unknown as string)
-    const datesD = dates.map(d => parseISO(d))
     const trophies = props.history.map(({ trophies }) => trophies)
-    const start = min(datesD)
-    const end = max(datesD)
-    // TODO use trophy season end dates
-    const ticks = eachMonthOfInterval({ start, end })
-    const ticksText = ticks.map(d => formatRelative(d, new Date()))
 
     const traces = [{
       x: dates,
@@ -37,8 +30,9 @@ export default Vue.extend({
       xaxis: {
         fixedrange: true,
         tickcolor: 'rgba(255, 255, 255, 0.75)',
-        tickvals: ticks,
-        ticktext: ticksText,
+        tickmode: 'linear',
+        tick0: '2020-07-12', // season start
+        dtick: 1000*60*60*24*14, // 2 weeks
         ticklen: 3,
         tickangle: 0,
       },
@@ -49,7 +43,7 @@ export default Vue.extend({
         ticklen: 3,
         tickangle: 0,
       },
-      margin: { t: 5, l: 50, b: 25, r: 25 },
+      margin: { t: 5, l: 50, b: 24, r: 25 },
       staticPlot: true,
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
