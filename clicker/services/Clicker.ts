@@ -724,13 +724,13 @@ export default class ClickerService {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
         console.log(`ignoring friendly battle for ${player.tag} (${tagToId(player.tag)})`)
-        return
+        continue
       }
 
       if (battle.battleTime <= lastBattleTimestamp) {
         // duplicate
         console.log(`ignoring old battle (${battle.battleTime.toISOString()} <= ${lastBattleTimestamp.toISOString()}) for ${player.tag} (${tagToId(player.tag)})`)
-        return
+        continue
       }
 
       // FIXME API bug 2020-07-26
@@ -746,7 +746,7 @@ export default class ClickerService {
       const myTeamIndex = teams.findIndex(t => t.find(p => p.tag == player.tag))
       if (myTeamIndex == -1) {
         console.log(`ignoring bot battle for ${player.tag} (${tagToId(player.tag)})`)
-        return // replaced by bot?
+        continue // replaced by bot?
       }
 
       const myTeam = teams[myTeamIndex]
