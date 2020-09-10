@@ -863,6 +863,8 @@ export default class ClickerService {
       })
     }
 
+    battleStream.end()
+
     const brawlerInsertStart = performance.now()
     const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' })
 
