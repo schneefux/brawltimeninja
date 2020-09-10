@@ -4,7 +4,6 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
 import { brawlerId } from '../lib/util';
-import { timeStamp } from 'console';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -683,15 +682,13 @@ export default class ClickerService {
     const lastBattleTimestamp = new Date(Date.parse(maxTimestamp[0].maxTimestamp) || seasonSliceStart)
 
     const battleInsertStart = performance.now()
-    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' })
-
-    battleStream.on('error', (error) => {
-      stats.increment('player.insert.error')
-      console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-    })
-
-    battleStream.on('end', () => {
-      stats.timing('player.insert.timer', performance.now() - battleInsertStart)
+    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' }, (error) => {
+      if (error) {
+        stats.increment('player.insert.error')
+        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+      } else {
+        stats.timing('player.insert.timer', performance.now() - battleInsertStart)
+      }
     })
 
     const playerFacts = {
@@ -866,15 +863,13 @@ export default class ClickerService {
     battleStream.end()
 
     const brawlerInsertStart = performance.now()
-    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' })
-
-    brawlerStream.on('error', (error) => {
-      stats.increment('brawler.insert.error')
-      console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-    })
-
-    brawlerStream.on('end', () => {
-      stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
+    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' }, (error) => {
+      if (error) {
+        stats.increment('brawler.insert.error')
+        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+      } else {
+        stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
+      }
     })
 
     for (const brawler of player.brawlers) {
