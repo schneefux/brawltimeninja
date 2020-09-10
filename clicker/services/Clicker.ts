@@ -718,18 +718,18 @@ export default class ClickerService {
 
     // insert records for meta stats
     for (const battle of battles) {
-      stats.increment('player.insert.run')
-
       if (battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
         console.log(`ignoring friendly battle for ${player.tag} (${tagToId(player.tag)})`)
+        stats.increment('player.insert.skip')
         continue
       }
 
       if (battle.battleTime <= lastBattleTimestamp) {
         // duplicate
         console.log(`ignoring old battle (${battle.battleTime.toISOString()} <= ${lastBattleTimestamp.toISOString()}) for ${player.tag} (${tagToId(player.tag)})`)
+        stats.increment('player.insert.skip')
         continue
       }
 
@@ -746,6 +746,7 @@ export default class ClickerService {
       const myTeamIndex = teams.findIndex(t => t.find(p => p.tag == player.tag))
       if (myTeamIndex == -1) {
         console.log(`ignoring bot battle for ${player.tag} (${tagToId(player.tag)})`)
+        stats.increment('player.insert.skip')
         continue // replaced by bot?
       }
 
@@ -843,6 +844,7 @@ export default class ClickerService {
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
       await new Promise((resolve, reject) => {
+        stats.increment('player.insert.run')
         if (battleStream.write(record)) {
           return resolve()
         }
@@ -873,8 +875,6 @@ export default class ClickerService {
     })
 
     for (const brawler of player.brawlers) {
-      stats.increment('brawler.insert.run')
-
       const record = {
         timestamp: new Date().toISOString().substring(0, 10),
         trophy_season_end: getSeasonEnd(new Date()).toISOString().substring(0, 10),
@@ -895,6 +895,7 @@ export default class ClickerService {
       }
 
       await new Promise((resolve, reject) => {
+        stats.increment('brawler.insert.run')
         if (brawlerStream.write(record)) {
           return resolve()
         }
