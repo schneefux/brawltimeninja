@@ -970,10 +970,9 @@ export default class ClickerService {
     const playerHistory = await this.query<PlayerHistoryQuery>(`
       SELECT
         toStartOfDay(timestamp) AS timestamp,
-        MAX(player_trophies) AS trophies
+        player_trophies AS trophies
       FROM brawltime.brawler
       WHERE player_id=${tagToId(tag)}
-      GROUP BY timestamp
       ORDER BY timestamp
       `, 'player.history')
       .then(data => data.map(row => ({
@@ -997,10 +996,9 @@ export default class ClickerService {
         brawler_id AS id,
         brawler_name AS name,
         toStartOfDay(timestamp) AS timestamp,
-        MAX(brawler_trophies) as trophies
+        brawler_trophies as trophies
       FROM brawltime.brawler
       WHERE player_id=${tagToId(tag)}
-      GROUP BY id, name, timestamp
       ORDER BY id, name, timestamp
       `, 'player.brawler_history')
       .then(data => data.map(row => ({
