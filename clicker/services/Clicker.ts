@@ -3,12 +3,21 @@ import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
-import { brawlerId } from '../lib/util';
+import { brawlerId, sloppyParseFloat, idToTag, tagToId, validateTag } from '../lib/util';
+import MapMetaCube from './MapMetaCube';
+import GadgetMetaCube from './GadgetMetaCube';
+import StarpowerMetaCube from './StarpowerMetaCube';
+import LeaderboardCube, { LeaderboardCubeRow } from './LeaderboardCube';
+import Cube, { Order } from './Cube';
+import BrawlerLeaderboardCube, { BrawlerLeaderboardCubeRow } from './BrawlerLeaderboardCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
 const seasonSliceStart = getSeasonEnd(balanceChangesDate);
+const seasonEndFormatted = seasonSliceStart.toISOString()
+  .slice(0, 19) // remove fractions and time zone
+  .replace('T', ' ')
 
 console.log(`querying data >= ${seasonSliceStart}`)
 
@@ -39,103 +48,6 @@ function sliceSeason() {
     .replace('T', ' ')
   return `trophy_season_end>=toDateTime('${seasonEndFormatted}', 'UTC')`
 }
-
-function sloppyParseFloat(number: string) {
-  return Math.floor(parseFloat(number) * 10000) / 10000
-}
-
-/**
- * Throw if a tag is invalid.
- * Make sure tag starts with a hash.
- */
-function validateTag(tag: string) {
-  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
-    throw new Error('Invalid tag ' + tag)
-  }
-  if (!tag.startsWith('#')) {
-    return '#' + tag
-  }
-  return tag
-}
-
-// in clickhouse SQL (tag has to start with '#'):
-/*
-arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_tag)-i-1-1), arraySlice(splitByString('', player_club_tag), 2), range(if(player_club_tag <> '', toUInt64(length(player_club_tag)-1), 0))) as player_club_id,
-*/
-
-/**
- * Encode tag string into 64bit unsigned integer string.
- */
-function tagToId(tag: string) {
-  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
-    throw new Error('Cannot encode tag ' + tag)
-  }
-  if (tag.startsWith('#')) {
-    tag = tag.substring(1)
-  }
-
-  const result = tag.split('').reduce((sum, c) => sum*BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)), BigInt(0))
-  return result.toString()
-}
-
-/**
- * Decode 64bit unsigned integer string into tag string with hash.
- */
-function idToTag(idString: string) {
-  let id = BigInt(idString)
-
-  let tag = ''
-  while (id != BigInt(0)) {
-    const i = Number(id % BigInt(14))
-    tag = '0289PYLQGRJCUV'[i] + tag
-    id /= BigInt(14)
-  }
-
-  return '#' + tag
-}
-
-// shared definitions for meta measures
-//
-// battle
-//
-const battleMeasuresDefinition = `
-  timestamp_state AggregateFunction(argMax, DateTime, DateTime),
-  picks UInt64,
-  picks_weighted UInt64,
-  battle_duration_state AggregateFunction(avg, UInt16),
-  battle_rank_state AggregateFunction(avg, UInt8),
-  battle_rank1_state AggregateFunction(avg, UInt8),
-  battle_victory_state AggregateFunction(avg, Decimal32(8)),
-  battle_starplayer_state AggregateFunction(avg, UInt8),
-  battle_level_state AggregateFunction(avg, UInt16),
-  battle_trophy_change_state AggregateFunction(avg, Int8)
-`
-
-const battleMeasuresQuery = `
-  argMaxState(timestamp, timestamp) as timestamp_state,
-  COUNT(*) AS picks,
-  SUM(player_brawlers_length) AS picks_weighted,
-  avgState(battle_duration) AS battle_duration_state,
-  avgState(battle_rank) AS battle_rank_state,
-  avgState(brawltime.battle.battle_rank=1) AS battle_rank1_state,
-  avgState(battle_victory) AS battle_victory_state,
-  avgState(brawler_name=battle_starplayer_brawler_name) AS battle_starplayer_state,
-  avgState(battle_level_id) AS battle_level_state,
-  avgState(battle_trophy_change) as battle_trophy_change_state
-`
-
-const battleMeasuresAggregation = `
-  argMaxMerge(timestamp_state) as timestamp,
-  SUM(picks) AS picks,
-  SUM(picks_weighted) AS picksWeighted,
-  avgMerge(battle_rank_state) AS rank,
-  avgMerge(battle_rank1_state) AS rank1Rate,
-  avgMerge(battle_victory_state) AS winRate,
-  avgMerge(battle_duration_state) AS duration,
-  avgMerge(battle_starplayer_state) AS starRate,
-  avgMerge(battle_level_state) AS level,
-  avgMerge(battle_trophy_change_state) AS trophyChange
-`
 
 // ! starplayer applies only to player
 const battleMeasuresAggregationRaw = `
@@ -177,127 +89,18 @@ const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
   trophyChange: sloppyParseFloat(row.trophyChange),
 }) as BattleMeasures
 
-//
-// player
-//
-const playerDimensionsDefinition = (dateType: string) => `
-  timestamp_state AggregateFunction(argMax, ${dateType}, ${dateType}),
-  player_name_state AggregateFunction(argMax, String, ${dateType})
-`
-const playerMeasuresDefinition = `
-  ${playerDimensionsDefinition('DateTime')},
-  player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
-  player_trophies_state AggregateFunction(argMax, UInt32, DateTime),
-  player_power_play_points_state AggregateFunction(argMax, UInt16, DateTime),
-  player_3vs3_victories_state AggregateFunction(argMax, UInt32, DateTime),
-  player_solo_victories_state AggregateFunction(argMax, UInt32, DateTime),
-  player_duo_victories_state AggregateFunction(argMax, UInt32, DateTime)
-`
-
-const playerDimensionsQuery = `
-  argMaxState(timestamp, timestamp) as timestamp_state,
-  argMaxState(player_name, timestamp) as player_name_state
-`
-const playerMeasuresQuery = `
-  ${playerDimensionsQuery},
-  argMaxState(player_exp_points, timestamp) as player_exp_points_state,
-  argMaxState(player_trophies, timestamp) as player_trophies_state,
-  argMaxState(player_power_play_points, timestamp) as player_power_play_points_state,
-  argMaxState(player_3vs3_victories, timestamp) as player_3vs3_victories_state,
-  argMaxState(player_solo_victories, timestamp) as player_solo_victories_state,
-  argMaxState(player_duo_victories, timestamp) as player_duo_victories_state
-`
-
-const playerDimensionsAggregation = `
-  argMaxMerge(timestamp_state) as timestamp,
-  argMaxMerge(player_name_state) as name
-`
-const playerMeasuresAggregation = `
-  ${playerDimensionsAggregation},
-  argMaxMerge(player_exp_points_state) as expPoints,
-  argMaxMerge(player_trophies_state) as trophies,
-  argMaxMerge(player_power_play_points_state) as powerPlayPoints,
-  argMaxMerge(player_3vs3_victories_state) as victories,
-  argMaxMerge(player_solo_victories_state) as soloVictories,
-  argMaxMerge(player_duo_victories_state) as duoVictories
-`
-
-interface PLayerDimensionsAggregation {
-  name: string
-  timestamp: string
-}
-
-interface PlayerMeasuresAggregation extends PLayerDimensionsAggregation {
-  expPoints: string
-  trophies: string
-  powerPlayPoints: string
-  victories: string
-  soloVictories: string
-  duoVictories: string
-}
-
-const parsePlayerDimensions = (row: PLayerDimensionsAggregation) => ({
-  name: row.name,
-  timestamp: row.timestamp,
-})
-const parsePlayerMeasures = (row: PlayerMeasuresAggregation) => ({
-  ...parsePlayerDimensions(row),
-  expPoints: parseInt(row.expPoints),
-  trophies: parseInt(row.trophies),
-  powerPlayPoints: parseInt(row.powerPlayPoints),
-  victories: parseInt(row.victories),
-  soloVictories: parseInt(row.soloVictories),
-  duoVictories: parseInt(row.duoVictories),
-})
-
-//
-// player brawler
-//
-const brawlerMeasuresDefinition = `
-  ${playerDimensionsDefinition('Date')},
-  brawler_name_state AggregateFunction(argMax, String, Date),
-  brawler_power_state AggregateFunction(argMax, UInt8, Date),
-  brawler_trophies_state AggregateFunction(argMax, UInt16, Date),
-  brawler_highest_trophies_state AggregateFunction(argMax, UInt16, Date)
-`
-
-const brawlerMeasuresQuery = `
-  ${playerDimensionsQuery},
-  argMaxState(brawler_name, timestamp) as brawler_name_state,
-  argMaxState(brawler_power, timestamp) as brawler_power_state,
-  argMaxState(brawler_trophies, timestamp) as brawler_trophies_state,
-  argMaxState(brawler_highest_trophies, timestamp) as brawler_highest_trophies_state
-`
-
-const brawlerMeasuresAggregation = `
-  ${playerDimensionsAggregation},
-  argMaxMerge(brawler_name_state) as brawlerName,
-  argMaxMerge(brawler_power_state) as power,
-  argMaxMerge(brawler_trophies_state) as trophies,
-  argMaxMerge(brawler_highest_trophies_state) as highestTrophies
-`
-
-interface BrawlerMeasuresAggregation extends PLayerDimensionsAggregation {
-  brawlerName: string
-  power: string
-  trophies: string
-  highestTrophies: string
-}
-
-const parseBrawlerMeasures = (row: BrawlerMeasuresAggregation) => ({
-  ...parsePlayerDimensions(row),
-  brawlerName: row.brawlerName,
-  power: parseInt(row.power),
-  trophies: parseInt(row.trophies),
-  highestTrophies: parseInt(row.highestTrophies),
-})
-
 
 export default class ClickerService {
   private ch: ClickHouse;
 
+  private mapMetaCube = new MapMetaCube()
+  private gadgetMetaCube = new GadgetMetaCube()
+  private starpowerMetaCube = new StarpowerMetaCube()
+  private leaderboardCube = new LeaderboardCube()
+  private brawlerLeaderboardCube = new BrawlerLeaderboardCube()
+
   constructor() {
-    this.ch = new ClickHouse(dbHost);
+    this.ch = new ClickHouse(dbHost)
   }
 
   private async query<T>(query: string, metricName: string, readonly=true): Promise<T[]> {
@@ -454,208 +257,11 @@ export default class ClickerService {
       SETTINGS index_granularity=1024;
     `)
 
-    //
-    // map meta
-    //
-    // *state must have same data type as source column
-    await this.ch.querying(`
-      CREATE TABLE IF NOT EXISTS brawltime.map_meta (
-        trophy_season_end DateTime,
-        brawler_trophyrange UInt8,
-        brawler_name LowCardinality(String),
-        battle_event_mode LowCardinality(String),
-        battle_event_map LowCardinality(String),
-        battle_event_id UInt32,
-        battle_is_bigbrawler UInt8,
-        ${battleMeasuresDefinition}
-      )
-      ENGINE = SummingMergeTree()
-      PARTITION BY trophy_season_end
-      PRIMARY KEY (brawler_trophyrange)
-      ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, battle_event_id, battle_is_bigbrawler)
-    `)
-
-    const mapMetaQuery = `
-      SELECT
-        trophy_season_end,
-        brawler_trophyrange,
-        arrayJoin(arrayConcat(battle_allies.brawler_name, [brawler_name])) AS brawler_name,
-        battle_event_mode,
-        battle_event_map,
-        battle_event_id,
-        assumeNotNull(battle_is_bigbrawler) AS battle_is_bigbrawler,
-        ${battleMeasuresQuery}
-      FROM brawltime.battle
-      GROUP BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
-      ORDER BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_is_bigbrawler
-    `
-    // mv column names must match table column names
-    // errors are thrown on INSERT!
-    // query from table (not from view) or decimals are messed up (?)
-    await this.ch.querying(`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.map_meta_mv
-      TO brawltime.map_meta
-      AS ${mapMetaQuery}
-    `)
-    const mapMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.map_meta', { dataObjects: true })
-    if (mapMetaCount.data[0].c == 0) {
-      console.log('populating map meta')
-      await this.ch.querying(`INSERT INTO brawltime.map_meta ${mapMetaQuery}`)
-    }
-
-    //
-    // gadget meta
-    //
-    await this.ch.querying(`
-      CREATE TABLE IF NOT EXISTS brawltime.gadget_meta (
-        trophy_season_end DateTime,
-        brawler_trophyrange UInt8,
-        brawler_id UInt32,
-        brawler_name LowCardinality(String),
-        brawler_gadget_id UInt32,
-        brawler_gadget_name LowCardinality(String),
-        ${battleMeasuresDefinition}
-      )
-      ENGINE = SummingMergeTree()
-      PARTITION BY trophy_season_end
-      PRIMARY KEY (brawler_trophyrange)
-      ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name)
-    `)
-
-    const gadgetMetaQuery = `
-      SELECT
-        trophy_season_end,
-        brawler_trophyrange,
-        brawler_id,
-        brawler_name,
-        brawler_gadget_id,
-        brawler_gadget_name,
-        ${battleMeasuresQuery}
-      FROM brawltime.battle
-      WHERE brawler_gadgets_length <= 1
-      GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
-      ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
-    `
-    await this.ch.querying(`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.gadget_meta_mv
-      TO brawltime.gadget_meta
-      AS ${gadgetMetaQuery}
-    `)
-    const gadgetMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.gadget_meta', { dataObjects: true })
-    if (gadgetMetaCount.data[0].c == 0) {
-      console.log('populating gadget meta')
-      await this.ch.querying(`INSERT INTO brawltime.gadget_meta ${gadgetMetaQuery}`)
-    }
-
-    //
-    // starpower meta
-    //
-    await this.ch.querying(`
-      CREATE TABLE IF NOT EXISTS brawltime.starpower_meta (
-        trophy_season_end DateTime,
-        brawler_trophyrange UInt8,
-        brawler_id UInt32,
-        brawler_name LowCardinality(String),
-        brawler_starpower_id UInt32,
-        brawler_starpower_name LowCardinality(String),
-        ${battleMeasuresDefinition}
-      )
-      ENGINE = SummingMergeTree()
-      PARTITION BY trophy_season_end
-      PRIMARY KEY (brawler_trophyrange)
-      ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name)
-    `)
-
-    const starpowerMetaQuery = `
-      SELECT
-        trophy_season_end,
-        brawler_trophyrange,
-        brawler_id,
-        brawler_name,
-        brawler_starpower_id,
-        brawler_starpower_name,
-        ${battleMeasuresQuery}
-      FROM brawltime.battle
-      WHERE brawler_starpowers_length <= 1
-      GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
-      ORDER BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
-    `
-    await this.ch.querying(`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.starpower_meta_mv
-      TO brawltime.starpower_meta
-      AS ${starpowerMetaQuery}
-    `)
-    const starpowerMetaCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.starpower_meta', { dataObjects: true })
-    if (starpowerMetaCount.data[0].c == 0) {
-      console.log('populating starpower meta')
-      await this.ch.querying(`INSERT INTO brawltime.starpower_meta ${starpowerMetaQuery}`)
-    }
-
-    //
-    // player leaderboard
-    //
-    // TODO: add a TTL and compression
-    await this.ch.querying(`
-      CREATE TABLE IF NOT EXISTS brawltime.leaderboard (
-        player_id UInt64,
-        ${playerMeasuresDefinition}
-      )
-      ENGINE = AggregatingMergeTree()
-      PARTITION BY tuple()
-      ORDER BY (player_id)
-    `)
-
-    const leaderboardQuery = `
-      SELECT
-        player_id,
-        ${playerMeasuresQuery}
-      FROM brawltime.battle
-      GROUP BY player_id
-    `
-    await this.ch.querying(`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.leaderboard_mv
-      TO brawltime.leaderboard
-      AS ${leaderboardQuery}
-    `)
-    const leaderboardCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.leaderboard', { dataObjects: true })
-    if (leaderboardCount.data[0].c == 0) {
-      console.log('populating leaderboard')
-      await this.ch.querying(`INSERT INTO brawltime.leaderboard ${leaderboardQuery}`)
-    }
-
-    //
-    // player brawler leaderboard
-    //
-    // TODO: add a TTL
-    await this.ch.querying(`
-      CREATE TABLE IF NOT EXISTS brawltime.brawler_leaderboard (
-        player_id UInt64,
-        brawler_id UInt32,
-        ${brawlerMeasuresDefinition}
-      )
-      ENGINE = AggregatingMergeTree()
-      PARTITION BY tuple()
-      ORDER BY (brawler_id, player_id)
-    `)
-
-    const brawlerLeaderboardQuery = `
-      SELECT
-        player_id,
-        brawler_id,
-        ${brawlerMeasuresQuery}
-      FROM brawltime.brawler
-      GROUP BY player_id, brawler_id
-    `
-    await this.ch.querying(`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS brawltime.brawler_leaderboard_mv
-      TO brawltime.brawler_leaderboard
-      AS ${brawlerLeaderboardQuery}
-    `)
-    const brawlerLeaderboardCount = await this.ch.querying('SELECT COUNT() AS c FROM brawltime.brawler_leaderboard', { dataObjects: true })
-    if (brawlerLeaderboardCount.data[0].c == 0) {
-      console.log('populating brawler leaderboard')
-      await this.ch.querying(`INSERT INTO brawltime.brawler_leaderboard ${brawlerLeaderboardQuery}`)
-    }
+    await this.mapMetaCube.up(this.ch)
+    await this.gadgetMetaCube.up(this.ch)
+    await this.starpowerMetaCube.up(this.ch)
+    await this.leaderboardCube.up(this.ch)
+    await this.brawlerLeaderboardCube.up(this.ch)
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -916,48 +522,43 @@ export default class ClickerService {
     brawlerStream.end()
   }
 
-  public async getTopByMetric(metric: string, limit: number): Promise<LeaderboardRow[]> {
-    const metrics = [
-      'expPoints',
-      'trophies',
-      'powerPlayPoints',
-      'victories',
-      'soloVictories',
-      'duoVictories',
-    ]
-    if (!metrics.includes(metric)) {
-      console.error('invalid metric', metric)
-      return []
+  public async getTopByMetric(metric: string, limit: number) {
+    const metrics = {
+      'expPoints': 'player_exp_points',
+      'trophies': 'player_trophies',
+      'powerPlayPoints': 'player_power_play_points',
+      'victories': 'player_3vs3_victories',
+      'soloVictories': 'player_solo_victories',
+      'duoVictories': 'player_duo_victories',
     }
 
-    interface LeaderboardQuery extends PlayerMeasuresAggregation {
-      playerId: string
-    }
+    const metricMeasure = ((<any>metrics)[metric] || metric) as any
+    const oneWeekAgo = new Date()
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    return await this.query<LeaderboardQuery>(`
-      SELECT
-        player_id AS playerId,
-        ${playerMeasuresAggregation}
-      FROM brawltime.leaderboard
-      GROUP BY playerId
-      HAVING timestamp > now() - interval 1 week
-      ORDER BY ${metric} DESC
-      LIMIT ${limit}
-      `, 'leaderboard')
-      .then(data => data.map(row => <LeaderboardRow>({
-        ...parsePlayerMeasures(row),
-        tag: idToTag(row.playerId).replace('#', ''),
-      })))
+    const rows = await this.leaderboardCube.query(this.ch,
+      'leaderboard',
+      [metricMeasure],
+      ['player_id', 'player_name'],
+      {
+        'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
+      },
+      { [metricMeasure]: 'desc' },
+      limit,
+    )
+
+    return rows.map(r => (<Partial<LeaderboardRow>>{
+      name: r.player_name,
+      tag: idToTag(r.player_id).replace('#', ''),
+      id: r.player_id,
+      [metric]: r[metricMeasure],
+    }))
   }
 
-  public async getTopBrawlerByMetric(brawlerId: string, metric: string, limit: number): Promise<BrawlerLeaderboardRow[]> {
-    const metrics = [
-      'trophies',
-      'highestTrophies',
-    ]
-    if (!metrics.includes(metric)) {
-      console.error('invalid metric', metric)
-      return []
+  public async getTopBrawlerByMetric(brawlerId: string, metric: string, limit: number) {
+    const metrics = {
+      'trophies': 'brawler_trophies',
+      'highestTrophies': 'brawler_highest_trophies',
     }
 
     if (isNaN(parseInt(brawlerId))) {
@@ -965,26 +566,28 @@ export default class ClickerService {
       return []
     }
 
-    interface LeaderboardQuery extends BrawlerMeasuresAggregation {
-      playerId: string
-      brawlerId: string
-    }
+    const metricMeasure = ((<any>metrics)[metric] || metric) as any
+    const oneWeekAgo = new Date()
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    return await this.query<LeaderboardQuery>(`
-      SELECT
-        player_id AS playerId,
-        ${brawlerMeasuresAggregation}
-      FROM brawltime.brawler_leaderboard
-      WHERE brawler_id=${brawlerId}
-      GROUP BY playerId
-      HAVING timestamp > now() - interval 1 week
-      ORDER BY ${metric} DESC
-      LIMIT ${limit}
-      `, 'brawler_leaderboard')
-      .then(data => data.map(row => <BrawlerLeaderboardRow>({
-        ...parseBrawlerMeasures(row),
-        tag: idToTag(row.playerId).replace('#', ''),
-      })))
+    const rows = await this.brawlerLeaderboardCube.query(this.ch,
+      'brawler_leaderboard',
+      [metricMeasure],
+      ['player_id', 'player_name'],
+      {
+        'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
+      },
+      { [metricMeasure]: 'desc' },
+      limit,
+    )
+
+    return rows.map(r => (<Partial<BrawlerLeaderboardRow>>{
+      name: r.player_name,
+      brawlerName: r.brawler_name,
+      tag: idToTag(r.player_id).replace('#', ''),
+      id: r.player_id,
+      [metric]: r[metricMeasure],
+    }))
   }
 
   public async getHistory(tag: string): Promise<PlayerHistoryRows> {
@@ -1106,23 +709,30 @@ export default class ClickerService {
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    interface BrawlerMetaQuery extends BattleMeasuresAggregation {
-      brawlerName: string
-    }
-    return await this.query<BrawlerMetaQuery>(`
-        SELECT
-          brawler_name AS brawlerName,
-          ${battleMeasuresAggregation}
-        FROM brawltime.map_meta
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY brawlerName
-        ORDER BY picks
-      `, 'meta.brawler')
-      .then(data => data.map(row => ({
-        brawlerName: row.brawlerName,
-        ...parseBattleMeasures(row),
-      }) as BrawlerMetaRow))
+    const rows = await this.mapMetaCube.query(this.ch,
+      'meta.brawler',
+      ['*'],
+      ['brawler_name'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.map(r => (<BrawlerMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
   }
 
   public async getBrawlerStatistics(id: string) {
@@ -1140,37 +750,52 @@ export default class ClickerService {
     }
     const brawlerName = brawlerNames[brawlerIds.indexOf(id)]
 
-    interface ByTrophyQuery extends BattleMeasuresAggregation {
-      trophyrange: string
-    }
-    const brawlerByTrophies = await this.query<ByTrophyQuery>(`
-        SELECT
-          brawler_trophyrange AS trophyrange,
-          ${battleMeasuresAggregation}
-        FROM brawltime.map_meta
-        WHERE ${sliceSeason()}
-        AND brawler_name='${brawlerName}'
-        GROUP BY brawler_trophyrange
-        ORDER BY picks
-      `, 'brawler.by-trophies')
-      .then(data => data.map(row => ({
-        trophyrange: parseInt(row.trophyrange) * 100,
-        ...parseBattleMeasures(row),
-      }) as TrophyRow))
+    const trophyRows = await this.mapMetaCube.query(this.ch,
+      'brawler.by-trophies',
+      ['*'],
+      ['brawler_trophyrange'],
+      {
+        'trophy_season_end': [seasonEndFormatted],
+        'brawler_name': [brawlerName],
+      },
+      { 'picks': 'asc' },
+    )
+    const brawlerByTrophies = trophyRows.map(r => (<TrophyRow>{
+      trophyrange: r.brawler_trophyrange * 100,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
 
-    const totalByTrophies = await this.query<ByTrophyQuery>(`
-        SELECT
-          brawler_trophyrange AS trophyrange,
-          ${battleMeasuresAggregation}
-        FROM brawltime.map_meta
-        WHERE ${sliceSeason()}
-        GROUP BY brawler_trophyrange
-        ORDER BY picks
-      `, 'total.by-trophies')
-      .then(data => data.map(row => ({
-        trophyrange: parseInt(row.trophyrange) * 100,
-        ...parseBattleMeasures(row),
-      }) as TrophyRow))
+    const totalRows = await this.mapMetaCube.query(this.ch,
+      'total.by-trophies',
+      ['*'],
+      ['brawler_trophyrange'],
+      {
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+    const totalByTrophies = totalRows.map(r => (<TrophyRow>{
+      trophyrange: r.brawler_trophyrange * 100,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
 
     return <BrawlerStatisticsRows>{
       brawlerByTrophies,
@@ -1179,115 +804,161 @@ export default class ClickerService {
   }
 
   public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    interface StarpowerMetaQuery extends BattleMeasuresAggregation {
-      brawlerId: string
-      brawlerName: string
-      starpowerId: string
-      starpowerName: string
-    }
-    return await this.query<StarpowerMetaQuery>(`
-        SELECT
-          brawler_id AS brawlerId,
-          brawler_name AS brawlerName,
-          brawler_starpower_id AS starpowerId,
-          brawler_starpower_name AS starpowerName,
-          ${battleMeasuresAggregation}
-        FROM brawltime.starpower_meta
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY brawlerId, brawlerName, starpowerId, starpowerName
-        ORDER BY picks
-      `, 'meta.starpower')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        brawlerId: parseInt(row.brawlerId),
-        brawlerName: row.brawlerName,
-        starpowerId: parseInt(row.starpowerId),
-        starpowerName: row.starpowerName,
-      }) as StarpowerMetaRow))
+    const rows = await this.starpowerMetaCube.query(this.ch,
+      'meta.starpower',
+      ['*'],
+      ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.map(r => (<StarpowerMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+      brawlerId: r.brawler_id,
+      starpowerId: r.brawler_starpower_id,
+      starpowerName: r.brawler_starpower_name,
+    }))
   }
 
   public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    interface GadgetMetaQuery extends BattleMeasuresAggregation {
-      brawlerId: string
-      brawlerName: string
-      gadgetId: string
-      gadgetName: string
-    }
-    return await this.query<GadgetMetaQuery>(`
-        SELECT
-          brawler_id AS brawlerId,
-          brawler_name AS brawlerName,
-          brawler_gadget_id AS gadgetId,
-          brawler_gadget_name AS gadgetName,
-          ${battleMeasuresAggregation}
-        FROM brawltime.gadget_meta
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY brawlerId, brawlerName, gadgetId, gadgetName
-        ORDER BY picks
-      `, 'meta.gadget')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        brawlerId: parseInt(row.brawlerId),
-        brawlerName: row.brawlerName,
-        gadgetId: parseInt(row.gadgetId),
-        gadgetName: row.gadgetName,
-      }) as GadgetMetaRow))
+    const rows = await this.gadgetMetaCube.query(this.ch,
+      'meta.gadget',
+      ['*'],
+      ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.map(r => (<GadgetMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+      brawlerId: r.brawler_id,
+      gadgetId: r.brawler_gadget_id,
+      gadgetName: r.brawler_gadget_name,
+    }))
   }
 
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    interface ModeMetaQuery extends BattleMeasuresAggregation {
-      brawlerName: string
-      mode: string
-    }
-    return await this.query<ModeMetaQuery>(`
-        SELECT
-          brawler_name AS brawlerName,
-          battle_event_mode AS mode,
-          ${battleMeasuresAggregation}
-        FROM brawltime.map_meta
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY brawlerName, mode
-        ORDER BY picks
-      `, 'meta.mode')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        brawlerName: row.brawlerName,
-        mode: row.mode,
-      }) as ModeMetaRow))
+    const rows = await this.mapMetaCube.query(this.ch,
+      'meta.mode',
+      ['*'],
+      ['brawler_name', 'battle_event_mode'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.map(r => (<ModeMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      level: r.battle_level,
+      mode: r.battle_event_mode,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
   }
 
   public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    interface MapMetaQuery extends BattleMeasuresAggregation {
-      brawlerName: string
-      mode: string
-      map: string
-      id: string
-      isBigbrawler: string
+    const rows = await this.mapMetaCube.query(this.ch,
+      'meta.map',
+      ['*'],
+      ['brawler_name', 'battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_is_bigbrawler'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': [seasonEndFormatted],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.map(r => (<MapMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      id: r.battle_event_id,
+      isBigbrawler: r.battle_is_bigbrawler,
+      level: r.battle_level,
+      map: r.battle_event_map,
+      mode: r.battle_event_mode,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
+  }
+
+  public async queryCube(cubeName: string,
+      measures: string[],
+      dimensions: string[],
+      slices: { [name: string]: string[] },
+      order: { [column: string]: Order },
+      limit: number) {
+    let cube: Cube<any>
+    switch (cubeName) {
+      case 'player':
+        cube = this.leaderboardCube
+        break
+      case 'brawler':
+        cube = this.brawlerLeaderboardCube
+        break
+      case 'map':
+        cube = this.mapMetaCube
+        break
+      case 'gadget':
+        cube = this.gadgetMetaCube
+        break
+      case 'starpower':
+        cube = this.starpowerMetaCube
+        break
+      default:
+        throw new Error('Invalid cube: ' + cubeName)
     }
-    return await this.query<MapMetaQuery>(`
-        SELECT
-          brawler_name AS brawlerName,
-          battle_event_mode AS mode,
-          battle_event_map AS map,
-          battle_event_id AS id,
-          battle_is_bigbrawler AS isBigbrawler,
-          ${battleMeasuresAggregation}
-        FROM brawltime.map_meta
-        WHERE ${sliceSeason()}
-        AND brawler_trophyrange>=${trophyrangeLower} AND brawler_trophyrange<${trophyrangeHigher}
-        GROUP BY brawlerName, mode, map, id, isBigbrawler
-        ORDER BY picks
-      `, 'meta.map')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        brawlerName: row.brawlerName,
-        mode: row.mode,
-        map: row.map,
-        id: parseInt(row.id),
-        isBigbrawler: row.isBigbrawler == '1',
-      }) as MapMetaRow))
+
+    limit = Math.min(1000, limit)
+
+    console.log('executing cube query', cubeName, measures, dimensions, slices, order, limit)
+    return await cube.query(this.ch,
+      'cube.' + cubeName + '.' + dimensions.join(','),
+      measures,
+      dimensions,
+      slices,
+      order,
+      limit,
+    )
   }
 }

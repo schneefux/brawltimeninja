@@ -309,3 +309,57 @@ export function formatAsJsonLd(event: ActiveEvent) {
     'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
   }
 }
+
+export function sloppyParseFloat(number: string) {
+  return Math.floor(parseFloat(number) * 10000) / 10000
+}
+
+/**
+ * Throw if a tag is invalid.
+ * Make sure tag starts with a hash.
+ */
+export function validateTag(tag: string) {
+  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+    throw new Error('Invalid tag ' + tag)
+  }
+  if (!tag.startsWith('#')) {
+    return '#' + tag
+  }
+  return tag
+}
+
+// in clickhouse SQL (tag has to start with '#'):
+/*
+arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_tag)-i-1-1), arraySlice(splitByString('', player_club_tag), 2), range(if(player_club_tag <> '', toUInt64(length(player_club_tag)-1), 0))) as player_club_id,
+*/
+
+/**
+ * Encode tag string into 64bit unsigned integer string.
+ */
+export function tagToId(tag: string) {
+  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+    throw new Error('Cannot encode tag ' + tag)
+  }
+  if (tag.startsWith('#')) {
+    tag = tag.substring(1)
+  }
+
+  const result = tag.split('').reduce((sum, c) => sum*BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)), BigInt(0))
+  return result.toString()
+}
+
+/**
+ * Decode 64bit unsigned integer string into tag string with hash.
+ */
+export function idToTag(idString: string) {
+  let id = BigInt(idString)
+
+  let tag = ''
+  while (id != BigInt(0)) {
+    const i = Number(id % BigInt(14))
+    tag = '0289PYLQGRJCUV'[i] + tag
+    id /= BigInt(14)
+  }
+
+  return '#' + tag
+}

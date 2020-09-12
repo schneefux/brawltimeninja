@@ -24,6 +24,9 @@ const serverConfig = {
   resolve: {
     extensions: [ '.ts', '.js', '.json' ],
   },
+  externals: {
+    knex: 'commonjs knex',
+  },
 }
 
 module.exports = [serverConfig]
