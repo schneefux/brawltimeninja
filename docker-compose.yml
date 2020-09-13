@@ -59,7 +59,7 @@ services:
     environment:
       PORT: 80
       CLICKHOUSE_HOST: clickhouse
-    command: npm run dev
+    command: npm run dev:migrate && npm run dev
   db:
     image: mariadb:10.5
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

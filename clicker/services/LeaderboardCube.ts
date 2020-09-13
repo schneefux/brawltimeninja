@@ -27,7 +27,6 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
 
   dimensions = [
     'player_id',
-    'player_name',
   ]
   dimensionsDefinition = stripIndent`
     player_id UInt64
@@ -35,6 +34,7 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
 
   measures = {
     'timestamp': 'max',
+    'player_name': 'max',
     'player_exp_points': 'max',
     'player_trophies': 'max',
     'player_power_play_points': 'max',
