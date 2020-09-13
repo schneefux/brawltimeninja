@@ -29,46 +29,48 @@
       </div>
     </div>
 
-    <div class="section card card--dark card__content">
-      <table class="mx-auto w-64 max-w-full table">
-        <caption class="mb-1">
-          Top {{ leaderboard.length }} players, updated hourly
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col" class="text-right">
-              #
-            </th>
-            <th scope="col" class="text-left">
-              Name
-            </th>
-            <th scope="col" class="text-right">
-              {{ metricName }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(entry, index) in leaderboard"
-            :key="entry.tag"
-          >
-            <th scope="row" class="text-right">
-              {{ index + 1 }}
-            </th>
-            <td class="font-semibold">
-              <nuxt-link
-                :to="`/player/${entry.tag}`"
-                class="link"
-              >
-                {{ entry.name }}
-              </nuxt-link>
-            </td>
-            <td class="text-right">
-              {{ Math.floor(entry.metric) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="section flex justify-center">
+      <div class="card card--dark card__content">
+        <table class="w-64 max-w-full table">
+          <caption class="mb-1">
+            Top {{ leaderboard.length }} players, updated hourly
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col" class="text-right">
+                #
+              </th>
+              <th scope="col" class="text-left">
+                Name
+              </th>
+              <th scope="col" class="text-right">
+                {{ metricName }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(entry, index) in leaderboard"
+              :key="entry.tag"
+            >
+              <th scope="row" class="text-right">
+                {{ index + 1 }}
+              </th>
+              <td class="font-semibold">
+                <nuxt-link
+                  :to="`/player/${entry.tag}`"
+                  class="link"
+                >
+                  {{ entry.name }}
+                </nuxt-link>
+              </td>
+              <td class="text-right">
+                {{ Math.floor(entry.metric) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <client-only>
