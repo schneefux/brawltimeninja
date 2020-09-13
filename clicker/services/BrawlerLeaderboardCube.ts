@@ -27,9 +27,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
 
   dimensions = [
     'player_id',
-    'player_name',
     'brawler_id',
-    'brawler_name',
   ]
   dimensionsDefinition = `
     player_id UInt64,
@@ -38,6 +36,8 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
 
   measures = {
     'timestamp': 'max',
+    'player_name': 'max',
+    'brawler_name': 'max',
     'brawler_power': 'max',
     'brawler_trophies': 'max',
     'brawler_highest_trophies': 'max',
