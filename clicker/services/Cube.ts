@@ -65,7 +65,7 @@ export default abstract class Cube<R> {
       dimensions: E,
       slices: Partial<Record<string, string[]>> = {} as any,
       order: Partial<Record<keyof R, Order>> = {},
-      limit?: number): Promise<Pick<R, N[number]|E[number]>[]> {
+      limit?: number): Promise<{ data: Pick<R, N[number]|E[number]>[], totals: Pick<R, N[number]|E[number]> }> {
     if (measures.length == 1 && measures[0] == '*') {
       // TODO this destroys the return type!
       measures = Object.keys(this.measures) as any
@@ -115,13 +115,20 @@ export default abstract class Cube<R> {
       query = query.limit(limit)
     }
 
-    const sql = query.toString()
+    if (dimensions.length > 0) {
+      query = query.groupByRaw('PLACEHOLDER')
+    }
+
+    const sql = query.toString().replace(', PLACEHOLDER', ' with totals')
     console.log('executing', sql)
 
     this.stats.increment(name + '.run')
     return this.stats.asyncTimer(() =>
       ch.querying(sql, { dataObjects: true, readonly: true })
-        .then(rows => rows.data.map(r => this.parse<Pick<R, N[number]|E[number]>>(r)))
+        .then(rows => ({
+          data: rows.data.map(r => this.parse<Pick<R, N[number]|E[number]>>(r)),
+          totals: this.parse<Pick<R, N[number]|E[number]>>(rows.totals),
+        }))
     , name + '.timer')()
   }
 

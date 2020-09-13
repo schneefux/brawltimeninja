@@ -1,6 +1,7 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
 import { DataType } from "./Cube"
 import { stripIndent } from "common-tags"
+import { QueryBuilder } from "knex"
 
 export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
   battle_event_mode: string
@@ -51,6 +52,26 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     FROM brawltime.battle
     GROUP BY ${this.dimensions.join(', ')}
   `
+
+  slices = {
+    'battle_event_mode': 1,
+    'battle_event_map': 1,
+    'battle_event_id': 1,
+    ...super.slices
+  }
+
+  slice(query: QueryBuilder, name: string, args: string[]) {
+    switch (name) {
+      case 'battle_event_mode':
+        return query.where('battle_event_mode', '=', args[0])
+      case 'battle_event_map':
+        return query.where('battle_event_map', '=', args[0])
+      case 'battle_event_id':
+        return query.where('battle_event_id', '=', parseInt(args[0]))
+    }
+    super.slice(query, name, args)
+    throw new Error('Unknown slice name: ' + name)
+  }
 
   mappers = {
     ...BrawlerBattleCube.mappers,

@@ -548,7 +548,7 @@ export default class ClickerService {
       limit,
     )
 
-    return rows.map(r => (<Partial<LeaderboardRow>>{
+    return rows.data.map(r => (<Partial<LeaderboardRow>>{
       name: r.player_name,
       tag: idToTag(r.player_id).replace('#', ''),
       id: r.player_id,
@@ -582,7 +582,7 @@ export default class ClickerService {
       limit,
     )
 
-    return rows.map(r => (<Partial<BrawlerLeaderboardRow>>{
+    return rows.data.map(r => (<Partial<BrawlerLeaderboardRow>>{
       name: r.player_name,
       brawlerName: r.brawler_name,
       tag: idToTag(r.player_id).replace('#', ''),
@@ -721,7 +721,7 @@ export default class ClickerService {
       { 'picks': 'asc' },
     )
 
-    return rows.map(r => (<BrawlerMetaRow>{
+    return rows.data.map(r => (<BrawlerMetaRow>{
       brawlerName: r.brawler_name,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -761,7 +761,7 @@ export default class ClickerService {
       },
       { 'picks': 'asc' },
     )
-    const brawlerByTrophies = trophyRows.map(r => (<TrophyRow>{
+    const brawlerByTrophies = trophyRows.data.map(r => (<TrophyRow>{
       trophyrange: r.brawler_trophyrange * 100,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -784,7 +784,7 @@ export default class ClickerService {
       },
       { 'picks': 'asc' },
     )
-    const totalByTrophies = totalRows.map(r => (<TrophyRow>{
+    const totalByTrophies = totalRows.data.map(r => (<TrophyRow>{
       trophyrange: r.brawler_trophyrange * 100,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -816,7 +816,7 @@ export default class ClickerService {
       { 'picks': 'asc' },
     )
 
-    return rows.map(r => (<StarpowerMetaRow>{
+    return rows.data.map(r => (<StarpowerMetaRow>{
       brawlerName: r.brawler_name,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -846,7 +846,7 @@ export default class ClickerService {
       { 'picks': 'asc' },
     )
 
-    return rows.map(r => (<GadgetMetaRow>{
+    return rows.data.map(r => (<GadgetMetaRow>{
       brawlerName: r.brawler_name,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -876,7 +876,7 @@ export default class ClickerService {
       { 'picks': 'asc' },
     )
 
-    return rows.map(r => (<ModeMetaRow>{
+    return rows.data.map(r => (<ModeMetaRow>{
       brawlerName: r.brawler_name,
       duration: r.battle_duration,
       level: r.battle_level,
@@ -904,7 +904,7 @@ export default class ClickerService {
       { 'picks': 'asc' },
     )
 
-    return rows.map(r => (<MapMetaRow>{
+    return rows.data.map(r => (<MapMetaRow>{
       brawlerName: r.brawler_name,
       duration: r.battle_duration,
       id: r.battle_event_id,
