@@ -58,7 +58,7 @@ export default abstract class Cube<R> {
     const count = await ch.querying(`SELECT COUNT() AS c FROM ${this.table}`, { dataObjects: true })
     if (count.data[0].c == 0) {
       console.log(`populating ${this.table}`)
-      await ch.querying(`INSERT INTO ${this.table} ${this.seedQuery}`)
+      await this.execute(ch, `INSERT INTO ${this.table} ${this.seedQuery}`)
     }
 
     await this.execute(ch, stripIndent`

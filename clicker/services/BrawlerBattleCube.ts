@@ -56,7 +56,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'trophy_season_end':
-        return query.where('trophy_season_end', '>=', args[0])
+        return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
         return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])
       case 'brawler_name':

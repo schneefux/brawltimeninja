@@ -83,7 +83,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'timestamp':
-        return query.where('timestamp', '>=', args[0])
+        return query.where('timestamp', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }
