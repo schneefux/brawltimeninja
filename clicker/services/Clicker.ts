@@ -341,7 +341,7 @@ export default class ClickerService {
       }
 
       // FIXME API bug 2020-07-26
-      if (battle.event.mode == 'roboRumble' && battle.battle.result == undefined) {
+      if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
         // 'duration' is 1 (loss) or N/A (win)
         battle.battle.result = !('duration' in battle.battle) ? 'victory' : 'defeat'
         delete battle.battle.duration

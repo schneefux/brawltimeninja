@@ -579,7 +579,7 @@ export default class BrawlstarsService {
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
 
       // FIXME API bug 2020-07-26
-      if (battle.event.mode == 'roboRumble' && battle.battle.result == undefined) {
+      if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
         // 'duration' is 1 (loss) or N/A (win)
         victory = !('duration' in battle.battle)
         result = victory ? 'Victory' : 'Defeat'
