@@ -1,5 +1,6 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube";
 import { DataType } from "./Cube";
+import { stripIndent } from "common-tags";
 
 export interface GadgetMetaCubeRow extends BrawlerBattleCubeRow {
   brawler_id: number
@@ -9,7 +10,7 @@ export interface GadgetMetaCubeRow extends BrawlerBattleCubeRow {
 
 export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow> {
   table = 'brawltime.gadget_meta'
-  engineDefinition = `
+  engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()
     PARTITION BY trophy_season_end
     PRIMARY KEY (brawler_trophyrange)
@@ -24,7 +25,7 @@ export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow>
     'brawler_gadget_id',
     'brawler_gadget_name',
   ]
-  dimensionsDefinition = `
+  dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
     brawler_id UInt32,
@@ -33,7 +34,7 @@ export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow>
     brawler_gadget_name LowCardinality(String)
   `
 
-  seedQuery = `
+  seedQuery = stripIndent`
     SELECT
       trophy_season_end,
       brawler_trophyrange,

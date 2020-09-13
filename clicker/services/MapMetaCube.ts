@@ -1,5 +1,6 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
 import { DataType } from "./Cube"
+import { stripIndent } from "common-tags"
 
 export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
   battle_event_mode: string
@@ -11,7 +12,7 @@ export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
 export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
   // TODO add brawler_id to dimensions
   table = 'brawltime.map_meta'
-  engineDefinition = `
+  engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()
     PARTITION BY trophy_season_end
     PRIMARY KEY (brawler_trophyrange)
@@ -27,7 +28,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     'battle_event_id',
     'battle_is_bigbrawler',
   ]
-  dimensionsDefinition = `
+  dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
     brawler_name LowCardinality(String),
@@ -37,7 +38,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     battle_is_bigbrawler UInt8
   `
 
-  seedQuery = `
+  seedQuery = stripIndent`
     SELECT
       trophy_season_end,
       brawler_trophyrange,

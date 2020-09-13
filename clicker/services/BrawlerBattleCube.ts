@@ -1,5 +1,6 @@
 import Cube, { Aggregation, DataType } from "./Cube";
 import { QueryBuilder } from "knex";
+import { stripIndent } from "common-tags";
 
 export interface BrawlerBattleCubeMeasures {
   timestamp: string
@@ -82,7 +83,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     battle_trophy_change: 'float',
   } as Record<string, DataType>
 
-  measuresDefinition = `
+  measuresDefinition = stripIndent`
     timestamp_state AggregateFunction(argMax, DateTime, DateTime),
     picks UInt64,
     picks_weighted UInt64,
@@ -96,7 +97,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
   `
 
   // *state must have same data type as source column
-  measuresQuery = `
+  measuresQuery = stripIndent`
     argMaxState(timestamp, timestamp) as timestamp_state,
     COUNT(*) AS picks,
     SUM(player_brawlers_length) AS picks_weighted,
@@ -108,7 +109,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     avgState(battle_level_id) AS battle_level_state,
     avgState(battle_trophy_change) as battle_trophy_change_state
   `
-  measuresAggregation = `
+  measuresAggregation = stripIndent`
     argMaxMerge(timestamp_state) as timestamp,
     SUM(picks) AS picks,
     SUM(picks_weighted) AS picks_weighted,

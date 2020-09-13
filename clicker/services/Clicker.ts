@@ -7,9 +7,10 @@ import { brawlerId, sloppyParseFloat, idToTag, tagToId, validateTag } from '../l
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
-import LeaderboardCube, { LeaderboardCubeRow } from './LeaderboardCube';
+import LeaderboardCube from './LeaderboardCube';
 import Cube, { Order } from './Cube';
-import BrawlerLeaderboardCube, { BrawlerLeaderboardCubeRow } from './BrawlerLeaderboardCube';
+import BrawlerLeaderboardCube from './BrawlerLeaderboardCube';
+import { stripIndent } from 'common-tags';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -50,7 +51,7 @@ function sliceSeason() {
 }
 
 // ! starplayer applies only to player
-const battleMeasuresAggregationRaw = `
+const battleMeasuresAggregationRaw = stripIndent`
   MAX(timestamp) as timestamp,
   COUNT(*) AS picks,
   SUM(player_brawlers_length) AS picksWeighted,
@@ -114,7 +115,7 @@ export default class ClickerService {
   public async migrate() {
     await this.ch.querying('CREATE DATABASE IF NOT EXISTS brawltime')
 
-    const playerColumns = `
+    const playerColumns = stripIndent`
       -- player
       player_id UInt64 Codec(Gorilla, LZ4HC),
       player_tag String Codec(LZ4HC),
@@ -140,7 +141,7 @@ export default class ClickerService {
       player_club_name String Codec(LZ4HC)
     `
 
-    const brawlerColumns = `
+    const brawlerColumns = stripIndent`
       -- brawler
       brawler_id UInt32 Codec(Gorilla, LZ4HC),
       brawler_name LowCardinality(String) Codec(LZ4HC),
@@ -163,7 +164,7 @@ export default class ClickerService {
     // battle table
     //
     // TODO on next table rewrite, use ReplacingMergeTree
-    await this.ch.querying(`
+    await this.ch.querying(stripIndent`
       CREATE TABLE IF NOT EXISTS brawltime.battle (
         timestamp DateTime Codec(DoubleDelta, LZ4HC),
         -- calculated
@@ -236,7 +237,7 @@ export default class ClickerService {
     //
     // player brawler table
     //
-    await this.ch.querying(`
+    await this.ch.querying(stripIndent`
       CREATE TABLE IF NOT EXISTS brawltime.brawler (
         -- day without time = 1 record/day
         timestamp Date Codec(DoubleDelta, LZ4HC),
@@ -602,7 +603,7 @@ export default class ClickerService {
       timestamp: string
       trophies: string
     }
-    const playerHistory = await this.query<PlayerHistoryQuery>(`
+    const playerHistory = await this.query<PlayerHistoryQuery>(stripIndent`
       SELECT
         toStartOfDay(timestamp) AS timestamp,
         player_trophies AS trophies
@@ -626,7 +627,7 @@ export default class ClickerService {
       timestamp: string
       trophies: string
     }
-    const brawlerHistory = await this.query<BrawlerHistoryQuery>(`
+    const brawlerHistory = await this.query<BrawlerHistoryQuery>(stripIndent`
       SELECT
         brawler_id AS id,
         brawler_name AS name,
@@ -650,7 +651,7 @@ export default class ClickerService {
 
     interface PlayerMetaQuery extends BattleMeasuresAggregation {
     }
-    const totalStats = await this.query<PlayerMetaQuery>(`
+    const totalStats = await this.query<PlayerMetaQuery>(stripIndent`
         SELECT
           ${battleMeasuresAggregationRaw}
         FROM brawltime.battle
@@ -665,7 +666,7 @@ export default class ClickerService {
     interface PlayerModeMetaQuery extends BattleMeasuresAggregation {
       mode: string
     }
-    const modeStats = await this.query<PlayerModeMetaQuery>(`
+    const modeStats = await this.query<PlayerModeMetaQuery>(stripIndent`
         SELECT
           battle_event_mode AS mode,
           ${battleMeasuresAggregationRaw}
@@ -684,7 +685,7 @@ export default class ClickerService {
       brawlerId: string
       brawlerName: string
     }
-    const brawlerStats = await this.query<PlayerBrawlerMetaQuery>(`
+    const brawlerStats = await this.query<PlayerBrawlerMetaQuery>(stripIndent`
         SELECT
           brawler_id AS brawlerId,
           brawler_name AS brawlerName,

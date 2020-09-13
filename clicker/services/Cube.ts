@@ -1,6 +1,7 @@
 import ClickHouse from "@apla/clickhouse"
 import Knex, { QueryBuilder } from "knex"
 import { StatsD } from "hot-shots"
+import { stripIndent } from "common-tags"
 
 export type Aggregation = 'min'|'max'|'sum'|'count'|'avg'
 export type Order = 'asc'|'desc'
@@ -27,7 +28,7 @@ export default abstract class Cube<R> {
 
   private async execute(ch: ClickHouse, sql: string) {
     console.log('executing', sql)
-    return await ch.querying(`
+    return await ch.querying(stripIndent`
       CREATE TABLE IF NOT EXISTS ${this.table} (
         ${this.dimensionsDefinition},
         ${this.measuresDefinition}
@@ -43,7 +44,7 @@ export default abstract class Cube<R> {
    * and create a view for the target table (`table_v`).
    */
   public async up(ch: ClickHouse) {
-    await this.execute(ch, `
+    await this.execute(ch, stripIndent`
       CREATE TABLE IF NOT EXISTS ${this.table} (
         ${this.dimensionsDefinition},
         ${this.measuresDefinition}
@@ -54,7 +55,7 @@ export default abstract class Cube<R> {
     // mv column names must match table column names
     // errors are thrown on INSERT!
     // query from table (not from mview) or decimals are messed up (?)
-    await this.execute(ch, `
+    await this.execute(ch, stripIndent`
       CREATE MATERIALIZED VIEW IF NOT EXISTS ${this.table}_mv
       TO ${this.table}
       AS ${this.seedQuery}
@@ -66,7 +67,7 @@ export default abstract class Cube<R> {
       await ch.querying(`INSERT INTO ${this.table} ${this.seedQuery}`)
     }
 
-    await this.execute(ch, `
+    await this.execute(ch, stripIndent`
       CREATE VIEW IF NOT EXISTS ${this.table}_v
       AS SELECT
        ${this.dimensions.join(',\n')},

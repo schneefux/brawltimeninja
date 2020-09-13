@@ -1,6 +1,7 @@
 import Cube, { Aggregation, DataType } from "./Cube";
 import { QueryBuilder } from "knex";
 import { idToTag } from "../lib/util";
+import { stripIndent } from "common-tags";
 
 export interface BrawlerLeaderboardCubeRow {
   timestamp: string
@@ -18,7 +19,7 @@ export interface BrawlerLeaderboardCubeRow {
 export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeRow> {
   // TODO: add a TTL and compression
   table = 'brawltime.brawler_leaderboard'
-  engineDefinition = `
+  engineDefinition = stripIndent`
     ENGINE = AggregatingMergeTree()
     PARTITION BY tuple()
     ORDER BY (brawler_id, player_id)
@@ -42,7 +43,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
     'brawler_highest_trophies': 'max',
   } as Record<string, Aggregation>
 
-  measuresDefinition = `
+  measuresDefinition = stripIndent`
     timestamp_state AggregateFunction(argMax, Date, Date),
     player_name_state AggregateFunction(argMax, String, Date),
     brawler_name_state AggregateFunction(argMax, String, Date),
@@ -50,7 +51,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
     brawler_trophies_state AggregateFunction(argMax, UInt16, Date),
     brawler_highest_trophies_state AggregateFunction(argMax, UInt16, Date)
   `
-  measuresQuery = `
+  measuresQuery = stripIndent`
     argMaxState(timestamp, timestamp) as timestamp_state,
     argMaxState(player_name, timestamp) as player_name_state,
     argMaxState(brawler_name, timestamp) as brawler_name_state,
@@ -58,7 +59,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
     argMaxState(brawler_trophies, timestamp) as brawler_trophies_state,
     argMaxState(brawler_highest_trophies, timestamp) as brawler_highest_trophies_state
   `
-  measuresAggregation = `
+  measuresAggregation = stripIndent`
     argMaxMerge(timestamp_state) as timestamp,
     argMaxMerge(player_name_state) as player_name,
     argMaxMerge(brawler_name_state) as brawler_name,
@@ -71,7 +72,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
     'timestamp': 1,
   }
 
-  seedQuery = `
+  seedQuery = stripIndent`
     SELECT
       ${this.dimensions.join(',\n')},
       ${this.measuresQuery}
