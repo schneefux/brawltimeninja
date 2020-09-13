@@ -28,13 +28,7 @@ export default abstract class Cube<R> {
 
   private async execute(ch: ClickHouse, sql: string) {
     console.log('executing', sql)
-    return await ch.querying(stripIndent`
-      CREATE TABLE IF NOT EXISTS ${this.table} (
-        ${this.dimensionsDefinition},
-        ${this.measuresDefinition}
-      )
-      ${this.engineDefinition}
-    `)
+    return await ch.querying(sql)
   }
 
   /**
