@@ -47,11 +47,13 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     'brawler_name',
   ]
 
-  slices = {
+  static defaultSlices = {
     'trophy_season_end': 1,
     'brawler_trophyrange': 2,
     'brawler_name': 1,
   }
+
+  slices = BrawlerBattleCube.defaultSlices
 
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {

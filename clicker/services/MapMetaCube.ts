@@ -57,7 +57,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     'battle_event_mode': 1,
     'battle_event_map': 1,
     'battle_event_id': 1,
-    ...super.slices
+    ...BrawlerBattleCube.defaultSlices,
   }
 
   slice(query: QueryBuilder, name: string, args: string[]) {
@@ -69,8 +69,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
       case 'battle_event_id':
         return query.where('battle_event_id', '=', parseInt(args[0]))
     }
-    super.slice(query, name, args)
-    throw new Error('Unknown slice name: ' + name)
+    return super.slice(query, name, args)
   }
 
   mappers = {
