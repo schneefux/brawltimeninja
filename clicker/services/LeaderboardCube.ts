@@ -1,4 +1,4 @@
-import Cube, { Aggregation, DataType } from "./Cube";
+import Cube, { DataType } from "./Cube";
 import { QueryBuilder } from "knex";
 import { idToTag } from "../lib/util";
 import { stripIndent } from "common-tags";
@@ -33,15 +33,15 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   `
 
   measures = {
-    'timestamp': 'max',
-    'player_name': 'max',
-    'player_exp_points': 'max',
-    'player_trophies': 'max',
-    'player_power_play_points': 'max',
-    'player_3vs3_victories': 'max',
-    'player_solo_victories': 'max',
-    'player_duo_victories': 'max',
-  } as Record<string, Aggregation>
+    'timestamp': 'argMaxMerge(timestamp_state)',
+    'player_name': 'argMaxMerge(player_name_state)',
+    'player_exp_points': 'argMaxMerge(player_exp_points_state)',
+    'player_trophies': 'argMaxMerge(player_trophies_state)',
+    'player_power_play_points': 'argMaxMerge(player_power_play_points_state)',
+    'player_3vs3_victories': 'argMaxMerge(player_3vs3_victories_state)',
+    'player_solo_victories': 'argMaxMerge(player_solo_victories_state)',
+    'player_duo_victories': 'argMaxMerge(player_duo_victories_state)',
+  }
 
   measuresDefinition = stripIndent`
     timestamp_state AggregateFunction(argMax, DateTime, DateTime),
@@ -63,16 +63,6 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
     argMaxState(player_solo_victories, timestamp) as player_solo_victories_state,
     argMaxState(player_duo_victories, timestamp) as player_duo_victories_state
   `
-  measuresAggregation = stripIndent`
-    argMaxMerge(timestamp_state) as timestamp,
-    argMaxMerge(player_name_state) as player_name,
-    argMaxMerge(player_exp_points_state) as player_exp_points,
-    argMaxMerge(player_trophies_state) as player_trophies,
-    argMaxMerge(player_power_play_points_state) as player_power_play_points,
-    argMaxMerge(player_3vs3_victories_state) as player_3vs3_victories,
-    argMaxMerge(player_solo_victories_state) as player_solo_victories,
-    argMaxMerge(player_duo_victories_state) as player_duo_victories
-  `
 
   slices = {
     'timestamp': 1,
@@ -89,7 +79,7 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'timestamp':
-        return query.where('timestamp', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.having(query.client.raw('argMaxMerge(timestamp_state)'), '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }

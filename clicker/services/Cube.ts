@@ -3,7 +3,6 @@ import Knex, { QueryBuilder } from "knex"
 import { StatsD } from "hot-shots"
 import { stripIndent } from "common-tags"
 
-export type Aggregation = 'min'|'max'|'sum'|'count'|'avg'
 export type Order = 'asc'|'desc'
 export type DataType = 'string'|'int'|'float'|'bool'|((row: Record<string, string>) => any)
 
@@ -13,10 +12,9 @@ export default abstract class Cube<R> {
   abstract dimensionsDefinition: string
   abstract measuresDefinition: string
   abstract measuresQuery: string
-  abstract measuresAggregation: string
   abstract seedQuery: string
 
-  abstract measures: Record<string, Aggregation>
+  abstract measures: Record<string, string>
   abstract dimensions: string[]
   abstract slices: Record<string, number>
   abstract mappers: Record<string, DataType>
@@ -33,9 +31,8 @@ export default abstract class Cube<R> {
 
   /**
    * Create a target table (`table`),
-   * an insert trigger (`table_mv`),
-   * run a seed query if `table` is empty,
-   * and create a view for the target table (`table_v`).
+   * an insert trigger (`table_mv`)
+   * and run a seed query if `table` is empty.
    */
   public async up(ch: ClickHouse) {
     await this.execute(ch, stripIndent`
@@ -48,7 +45,6 @@ export default abstract class Cube<R> {
 
     // mv column names must match table column names
     // errors are thrown on INSERT!
-    // query from table (not from mview) or decimals are messed up (?)
     await this.execute(ch, stripIndent`
       CREATE MATERIALIZED VIEW IF NOT EXISTS ${this.table}_mv
       TO ${this.table}
@@ -60,15 +56,6 @@ export default abstract class Cube<R> {
       console.log(`populating ${this.table}`)
       await this.execute(ch, `INSERT INTO ${this.table} ${this.seedQuery}`)
     }
-
-    await this.execute(ch, stripIndent`
-      CREATE VIEW IF NOT EXISTS ${this.table}_v
-      AS SELECT
-       ${this.dimensions.join(',\n')},
-       ${this.measuresAggregation}
-      FROM ${this.table}
-      GROUP BY ${this.dimensions.join(', ')}
-    `)
   }
 
   public async query<N extends (keyof R)[], E extends (keyof R)[]>(
@@ -84,8 +71,8 @@ export default abstract class Cube<R> {
       measures = Object.keys(this.measures) as any
     }
 
-    let query = this.knex(this.table + '_v')
-    const aggregateMode = dimensions.length > 0
+    // query from table (not from mview) or decimals are messed up (?)
+    let query = this.knex(this.table)
 
     for (const dimension of dimensions) {
       if (!this.dimensions.includes(dimension as string)) {
@@ -100,38 +87,11 @@ export default abstract class Cube<R> {
       if (dimensions.includes(measure as any)) {
         continue
       }
-      if (this.dimensions.includes(measure) && !aggregateMode) {
-        query = query.select(measure)
-        continue
-      }
       if (!(measure in this.measures)) {
         throw new Error('Invalid measure: ' + measure)
       }
-      if (aggregateMode) {
-        const method = this.measures[measure]
-        const arg = { [measure]: measure }
-        switch (method) {
-          case 'min':
-            query = query.min(arg)
-            break
-          case 'max':
-            query = query.max(arg)
-            break
-          case 'sum':
-            query = query.sum(arg)
-            break
-          case 'count':
-            query = query.count(arg)
-            break
-          case 'avg':
-            query = query.avg(arg)
-            break
-          default:
-            throw new Error('Measure defined invalid aggregation method: ' + method)
-        }
-      } else {
-        query = query.select(measure)
-      }
+
+      query = query.select({ [measure]: this.knex.raw(this.measures[measure]) })
     }
 
     for (const [orderColumn, orderDirection] of Object.entries(order)) {

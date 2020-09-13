@@ -1,4 +1,4 @@
-import Cube, { Aggregation, DataType } from "./Cube";
+import Cube, { DataType } from "./Cube";
 import { QueryBuilder } from "knex";
 import { idToTag } from "../lib/util";
 import { stripIndent } from "common-tags";
@@ -35,13 +35,13 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   `
 
   measures = {
-    'timestamp': 'max',
-    'player_name': 'max',
-    'brawler_name': 'max',
-    'brawler_power': 'max',
-    'brawler_trophies': 'max',
-    'brawler_highest_trophies': 'max',
-  } as Record<string, Aggregation>
+    'timestamp': 'argMaxMerge(timestamp_state)',
+    'player_name': 'argMaxMerge(player_name_state)',
+    'brawler_name': 'argaMaxMerge(brawler_name_state)',
+    'brawler_power': 'argMaxMerge(brawler_power_state)',
+    'brawler_trophies': 'argMaxMerge(brawler_trophies_state)',
+    'brawler_highest_trophies': 'argMaxMerge(brawler_highest_trophies_state)',
+  }
 
   measuresDefinition = stripIndent`
     timestamp_state AggregateFunction(argMax, Date, Date),
@@ -58,14 +58,6 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
     argMaxState(brawler_power, timestamp) as brawler_power_state,
     argMaxState(brawler_trophies, timestamp) as brawler_trophies_state,
     argMaxState(brawler_highest_trophies, timestamp) as brawler_highest_trophies_state
-  `
-  measuresAggregation = stripIndent`
-    argMaxMerge(timestamp_state) as timestamp,
-    argMaxMerge(player_name_state) as player_name,
-    argMaxMerge(brawler_name_state) as brawler_name,
-    argMaxMerge(brawler_power_state) as brawler_power,
-    argMaxMerge(brawler_trophies_state) as brawler_trophies,
-    argMaxMerge(brawler_highest_trophies_state) as brawler_highest_trophies
   `
 
   slices = {

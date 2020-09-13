@@ -1,4 +1,4 @@
-import Cube, { Aggregation, DataType } from "./Cube";
+import Cube, { DataType } from "./Cube";
 import { QueryBuilder } from "knex";
 import { stripIndent } from "common-tags";
 
@@ -29,17 +29,17 @@ export interface BrawlerBattleCubeRow extends BrawlerBattleCubeMeasures, Brawler
  */
 export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> extends Cube<R> {
   measures = {
-    'timestamp': 'max',
-    'picks': 'count',
-    'picks_weighted': 'sum',
-    'battle_rank': 'avg',
-    'battle_rank1': 'avg',
-    'battle_victory': 'avg',
-    'battle_duration': 'avg',
-    'battle_starplayer': 'avg',
-    'battle_level': 'avg',
-    'battle_trophy_change': 'avg',
-  } as { [name: string]: Aggregation }
+    'timestamp': 'argMaxMerge(timestamp_state)',
+    'picks': 'SUM(picks)',
+    'picks_weighted': 'SUM(picks_weighted)',
+    'battle_rank': 'avgMerge(battle_rank_state)',
+    'battle_rank1': 'avgMerge(battle_rank1_state)',
+    'battle_victory': 'avgMerge(battle_victory_state)',
+    'battle_duration': 'avgMerge(battle_duration_state)',
+    'battle_starplayer': 'avgMerge(battle_starplayer_state)',
+    'battle_level': 'avgMerge(battle_level_state)',
+    'battle_trophy_change': 'avgMerge(battle_trophy_change_state)',
+  }
 
   dimensions = [
     'trophy_season_end',
@@ -108,17 +108,5 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     avgState(brawler_name=battle_starplayer_brawler_name) AS battle_starplayer_state,
     avgState(battle_level_id) AS battle_level_state,
     avgState(battle_trophy_change) as battle_trophy_change_state
-  `
-  measuresAggregation = stripIndent`
-    argMaxMerge(timestamp_state) as timestamp,
-    SUM(picks) AS picks,
-    SUM(picks_weighted) AS picks_weighted,
-    avgMerge(battle_rank_state) AS battle_rank,
-    avgMerge(battle_rank1_state) AS battle_rank1,
-    avgMerge(battle_victory_state) AS battle_victory,
-    avgMerge(battle_duration_state) AS battle_duration,
-    avgMerge(battle_starplayer_state) AS battle_starplayer,
-    avgMerge(battle_level_state) AS battle_level,
-    avgMerge(battle_trophy_change_state) AS battle_trophy_change
   `
 }
