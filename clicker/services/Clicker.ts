@@ -539,8 +539,8 @@ export default class ClickerService {
 
     const rows = await this.leaderboardCube.query(this.ch,
       'leaderboard',
-      [metricMeasure],
-      ['player_id', 'player_name'],
+      [metricMeasure, 'player_name'],
+      ['player_id'],
       {
         'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
       },
@@ -573,8 +573,8 @@ export default class ClickerService {
 
     const rows = await this.brawlerLeaderboardCube.query(this.ch,
       'brawler_leaderboard',
-      [metricMeasure],
-      ['player_id', 'player_name'],
+      [metricMeasure, 'player_name'],
+      ['player_id'],
       {
         'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
       },
