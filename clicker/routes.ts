@@ -85,9 +85,9 @@ router.get('/clicker/cube/:cube/:dimensions', async (ctx, next) => {
   const cubeName = ctx.params.cube
   const dimensions = split(ctx.params.dimensions)
   const query = (ctx.query || {}) as { [name: string]: string }
-  const measures = split(query['select'] || '*')
+  const measures = split(query['include'] || '*')
   const slices = Object.entries(query)
-    .filter(([name, value]) => name.startsWith('filter[') && name.endsWith(']'))
+    .filter(([name, value]) => name.startsWith('slice[') && name.endsWith(']'))
     .reduce((slices, [name, value]) => ({ ...slices, [name.slice(7, -1)]: value.split(',') }), {} as { [name: string]: string[] })
   const order = split(query['sort'] || '')
     .filter((name) => name.length > 0)
@@ -96,6 +96,7 @@ router.get('/clicker/cube/:cube/:dimensions', async (ctx, next) => {
       ...((name.startsWith('-') ? ({ [name.slice(1)]: 'desc' }) : ({ [name]: 'asc' })) as { [name: string]: Order }),
     }), {} as { [name: string]: Order })
   const limit = parseInt(query['limit']) || 1000
+  const cache = parseInt(query['cache']) || 60
 
   try {
     ctx.body = await service.queryCube(cubeName, measures, dimensions, slices, order, limit)
@@ -110,7 +111,7 @@ router.get('/clicker/cube/:cube/:dimensions', async (ctx, next) => {
     ctx.status = 400
   }
 
-  ctx.set('Cache-Control', 'public, max-age=60')
+  ctx.set('Cache-Control', `public, max-age=${Math.min(Math.max(60*60*24, cache), 60)}`)
   await next()
 });
 
