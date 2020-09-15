@@ -923,33 +923,39 @@ export default class ClickerService {
     }))
   }
 
+  private getCubeByName(cubeName: string): Cube<any> {
+    switch (cubeName) {
+      case 'player':
+        return this.leaderboardCube
+      case 'brawler':
+        return this.brawlerLeaderboardCube
+      case 'map':
+        return this.mapMetaCube
+      case 'gadget':
+        return this.gadgetMetaCube
+      case 'starpower':
+        return this.starpowerMetaCube
+      default:
+        throw new Error('Invalid cube: ' + cubeName)
+    }
+  }
+
+  public getCubeMetadata(cubeName: string) {
+    const cube = this.getCubeByName(cubeName)
+    return {
+      dimensions: cube.dimensions,
+      measures: Object.keys(cube.measures),
+      slices: cube.slices,
+    }
+  }
+
   public async queryCube(cubeName: string,
       measures: string[],
       dimensions: string[],
       slices: { [name: string]: string[] },
       order: { [column: string]: Order },
       limit: number) {
-    let cube: Cube<any>
-    switch (cubeName) {
-      case 'player':
-        cube = this.leaderboardCube
-        break
-      case 'brawler':
-        cube = this.brawlerLeaderboardCube
-        break
-      case 'map':
-        cube = this.mapMetaCube
-        break
-      case 'gadget':
-        cube = this.gadgetMetaCube
-        break
-      case 'starpower':
-        cube = this.starpowerMetaCube
-        break
-      default:
-        throw new Error('Invalid cube: ' + cubeName)
-    }
-
+    const cube = this.getCubeByName(cubeName)
     limit = Math.min(1000, limit)
 
     console.log('executing cube query', cubeName, measures, dimensions, slices, order, limit)

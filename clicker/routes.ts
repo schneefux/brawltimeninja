@@ -79,7 +79,13 @@ router.get('/clicker/meta/map', async (ctx, next) => {
   await next();
 });
 
-router.get('/clicker/cube/:cube/:dimensions', async (ctx, next) => {
+router.get('/clicker/cube/:cube/metadata', async (ctx, next) => {
+  ctx.body = service.getCubeMetadata(ctx.params.cube)
+  ctx.set('Cache-Control', 'public, max-age=3600');
+  await next();
+});
+
+router.get('/clicker/cube/:cube/query/:dimensions', async (ctx, next) => {
   const split = (n: string) => n.split(',').filter(p => p.length > 0)
 
   const cubeName = ctx.params.cube
