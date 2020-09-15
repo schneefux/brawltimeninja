@@ -142,6 +142,7 @@ export default {
   env: {
     branch: process.env.BRANCH || '',
     mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''), // replace trailing slash
+    clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''), // replace trailing slash
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
 

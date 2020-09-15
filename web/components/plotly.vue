@@ -28,13 +28,15 @@ export default {
       this.refresh()
     }
   },
-  updated() {
-    this.refresh()
-  },
   methods: {
     refresh() {
       this.$plotly.react(this.$refs.graph, this.traces, this.layout, this.options)
     },
+  },
+  watch: {
+    traces: 'refresh',
+    layout: 'refresh',
+    options: 'refresh',
   },
 }
 </script>
