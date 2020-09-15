@@ -1,13 +1,16 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
 
 export const cubes = ['player', 'brawler', 'map', 'starpower', 'gadget']
-// TODO request these from clicker
-export const metrics = ['battle_victory', 'battle_starplayer', 'battle_rank', 'battle_rank1']
-export const dimensions = ['brawler_name', 'battle_event_mode', 'battle_event_map']
 
-export default function query<M extends typeof metrics[number], D extends typeof dimensions[number]>(
+export function queryMetadata(
     context: { $axios: NuxtAxiosInstance, env: Record<string, string|undefined> }, // TODO move to plugin
-    cube: typeof cubes,
+    cube: typeof cubes[number]): Promise<{ dimensions: string[], measures: string[], slices: Record<string, number> }> {
+  return context.$axios.$get(context.env.clickerUrl + '/clicker/cube/' + cube + '/metadata')
+}
+
+export default function query<M extends string, D extends string>(
+    context: { $axios: NuxtAxiosInstance, env: Record<string, string|undefined> }, // TODO move to plugin
+    cube: typeof cubes[number],
     dimensions: D[],
     measures: M[],
     slices: Record<string, string[]>,
@@ -29,7 +32,7 @@ export default function query<M extends typeof metrics[number], D extends typeof
     query.append('cache', options.cache.toString())
   }
   Object.entries(slices).forEach(([name, args]) => query.append('slice[' + name + ']', args.join(',')))
-  const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/' + dimensions.join(',') + '?' + query.toString()
+  const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
   console.log('querying clicker: ' + url)
   return context.$axios.$get(url)
 }

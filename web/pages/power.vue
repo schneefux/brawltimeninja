@@ -24,7 +24,7 @@
           class="select"
         >
           <option
-            v-for="metric in availableMetrics"
+            v-for="metric in availableMeasures"
             :key="metric"
             :value="metric"
           >
@@ -40,7 +40,7 @@
           class="select"
         >
           <option
-            v-for="metric in availableMetrics"
+            v-for="metric in availableMeasures"
             :key="metric"
             :value="metric"
           >
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import query, { cubes, metrics, dimensions } from '../lib/query'
+import query, { queryMetadata, cubes } from '../lib/query'
 
 export default Vue.extend({
   data() {
@@ -117,30 +117,43 @@ export default Vue.extend({
       error: '',
       availableCubes: cubes,
       selectedCube: 'map',
-      availableMetrics: metrics,
+      availableMeasures: [] as string[],
       selectedMetric: 'battle_victory',
       selectedSort: 'battle_victory',
-      availableDimensions: dimensions,
+      availableDimensions: [] as string[],
       selectedDimension: 'brawler_name',
     }
   },
   watch: {
-    selectedCube: 'query',
+    selectedCube: 'queryMetadata',
     selectedMetric: 'query',
     selectedSort: 'query',
     selectedDimension: 'query',
   },
   created() {
+    this.queryMetadata()
     this.query()
   },
   methods: {
+    async queryMetadata() {
+      const metadata = await queryMetadata({
+        $axios: this.$axios,
+        env: { clickerUrl: process.env.clickerUrl } },
+        this.selectedCube)
+      this.availableMeasures = metadata.measures
+      this.availableDimensions = metadata.dimensions
+
+      this.selectedMetric = this.availableMeasures[0]
+      this.selectedSort = this.availableMeasures[0]
+      this.selectedDimension = this.availableDimensions[0]
+    },
     async query() {
       try {
         this.error = ''
         const response = await query({
-          $axios: this.$axios,
-          env: { clickerUrl: process.env.clickerUrl } },
-          [this.selectedCube],
+            $axios: this.$axios,
+            env: { clickerUrl: process.env.clickerUrl } },
+          this.selectedCube,
           [this.selectedDimension],
           [this.selectedMetric],
           {},
