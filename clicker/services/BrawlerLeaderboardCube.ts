@@ -37,7 +37,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   measures = {
     'timestamp': 'argMaxMerge(timestamp_state)',
     'player_name': 'argMaxMerge(player_name_state)',
-    'brawler_name': 'argaMaxMerge(brawler_name_state)',
+    'brawler_name': 'argMaxMerge(brawler_name_state)',
     'brawler_power': 'argMaxMerge(brawler_power_state)',
     'brawler_trophies': 'argMaxMerge(brawler_trophies_state)',
     'brawler_highest_trophies': 'argMaxMerge(brawler_highest_trophies_state)',
