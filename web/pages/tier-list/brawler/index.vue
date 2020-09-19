@@ -23,12 +23,10 @@
 
     <div class="section flex flex-wrap justify-center">
       <best-starpowers-card
-        :top-starpowers="topStarpowers"
         kind="starpowers"
       ></best-starpowers-card>
 
       <best-starpowers-card
-        :top-starpowers="topGadgets"
         kind="gadgets"
       ></best-starpowers-card>
     </div>
@@ -63,11 +61,7 @@
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
           class="px-2"
         >
-          <mode-best-brawlers-card
-            :mode="mode"
-            :top-brawlers="topBrawlersByMode[mode]"
-          >
-          </mode-best-brawlers-card>
+          <mode-best-brawlers-card :mode="mode"></mode-best-brawlers-card>
         </div>
       </div>
 
@@ -101,22 +95,20 @@
       }"
     >
       <h2 class="page-h2">Tier List for all Maps and Modes</h2>
-      <p>
-        Using over {{ formatSI(totalSampleSize) }} battles.
-        <template v-if="totalSampleSize < 10000">
-          ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-        </template>
-      </p>
     </div>
 
-    <div class="section text-center mb-2">
-      <trophy-slider v-model="trophyRange"></trophy-slider>
+    <div class="section">
+      <meta-slicers
+        v-model="slices"
+        :sample="totalSampleSize"
+        :sample-min="100000"
+      ></meta-slicers>
+      <meta-grid
+        :entries="brawlers"
+        default-stat="winRate"
+        ga-category="brawler_meta"
+      ></meta-grid>
     </div>
-
-    <meta-grid
-      :entries="brawlers"
-      ga-category="brawler_meta"
-    />
 
     <client-only>
       <adsense
@@ -134,12 +126,20 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, camelToKebab, formatSI, getMostPopular, MetaGridEntrySorted, getBestBrawlersByEachMetric } from '../../../lib/util'
-import { BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics } from '../../../model/Api'
-import { ModeMetaMap } from '../../../model/MetaEntry'
+import { MetaGridEntry, brawlerId } from '../../../lib/util'
+
+interface Row {
+  brawler_name: string
+  battle_event_mode: number
+  picks: number
+  picks_weighted: number
+  battle_victory: number
+  battle_duration: number
+  battle_starplayer: number
+  battle_rank1: number
+}
 
 export default Vue.extend({
-  name: 'BrawlerMetaPage',
   head() {
     const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.'
     return {
@@ -152,78 +152,62 @@ export default Vue.extend({
   },
   data() {
     return {
-      camelToKebab,
-      formatSI,
-      brawlerMeta: [] as BrawlerMetaStatistics[],
       modes: [] as string[],
-      topBrawlersByMode: {} as { [key: string]: MetaGridEntrySorted[] },
-      topGadgets: {} as { [stat: string]: BrawlerMetaStatistics },
-      topStarpowers: {} as { [stat: string]: BrawlerMetaStatistics },
-      trophyRange: [0, 10],
       showAllModes: false,
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+      },
+      data: [] as Row[],
+      totals: {} as Row,
     }
   },
   computed: {
     totalSampleSize(): number {
-      return this.brawlerMeta
-        .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
+      return this.totals.picks
     },
     brawlers(): MetaGridEntry[] {
-      return this.brawlerMeta.map(brawler => ({
-        id: brawler.id,
-        brawler: brawler.id,
-        title: brawler.name,
-        stats: brawler.stats,
-        sampleSize: brawler.sampleSize,
-        link: `/tier-list/brawler/${brawler.id}`,
-      }))
+      return this.data.map(row => ({
+        id: row.brawler_name,
+        brawler: row.brawler_name,
+        title: row.brawler_name,
+        stats: {
+          winRate: row.battle_victory,
+          useRate: row.picks_weighted / this.totals.picks_weighted,
+          pickRate: row.picks / this.totals.picks,
+          starRate: row.battle_starplayer,
+          rank1Rate: row.battle_rank1 / this.totals.battle_rank1,
+          duration: row.battle_duration,
+        },
+        sampleSize: row.picks,
+        link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+      }) as MetaGridEntry)
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
   watch: {
-    async trophyRange([lower, upper]) {
-      this.brawlerMeta = await this.$axios.$get(`/api/meta/brawler?trophyrange=${lower}-${upper}`)
-    },
+    slices: '$fetch',
   },
-  async asyncData({ $axios }) {
-    const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler')
-    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode').catch(() => ({}))
-    const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>(`/api/meta/starpower`).catch(() => [])
-    const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>(`/api/meta/gadget`).catch(() => [])
-
-    const modes = [...Object.keys(modeMeta)]
-      .sort((mode1, mode2) => modeMeta[mode2].sampleSize - modeMeta[mode1].sampleSize)
-    const topBrawlersByMode = getMostPopular(modeMeta)
-
-    const gadgets = gadgetMeta
-      .filter(s => s.gadgetName !== '')
-      .map(s => ({
-        id: s.id,
-        name: s.gadgetName,
-        sampleSize: s.sampleSize,
-        stats: s.stats,
-      }))
-    const topGadgets = getBestBrawlersByEachMetric(gadgets)
-
-    const starpowers = starpowerMeta
-      .filter(s => s.starpowerName !== '')
-      .map(s => ({
-        id: s.id,
-        name: s.starpowerName,
-        sampleSize: s.sampleSize,
-        stats: s.stats,
-      }))
-    const topStarpowers = getBestBrawlersByEachMetric(starpowers)
+  async fetch() {
+    const data = await this.$clicker.query('map',
+      ['brawler_name'],
+      ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      this.slices,
+      { sort: { picks: 'desc' }, cache: 60*60 })
+    this.data = data.data
+    this.totals = data.totals
+  },
+  async asyncData({ $clicker }) {
+    const modes = await $clicker.query('map',
+      ['battle_event_mode'],
+      ['battle_event_mode'],
+      { trophy_season_end: ['balance'] },
+      { cache: 60*60*24 })
 
     return {
-      modes,
-      topBrawlersByMode,
-      modeMeta,
-      brawlerMeta,
-      topStarpowers,
-      topGadgets,
+      modes: modes.data.map(row => row.battle_event_mode),
     }
   },
   methods: {

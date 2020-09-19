@@ -57,7 +57,7 @@
         :entries="brawlers"
         default-stat="winRate"
         ga-category="map_meta"
-      />
+      ></meta-grid>
     </div>
 
     <client-only>
@@ -76,7 +76,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, MetaGridEntry, MetaGridEntrySorted, getBest, brawlerId } from '../../../lib/util'
+import { formatMode, MetaGridEntry, getBest, brawlerId } from '../../../lib/util'
 import { MapMetaMap, MapMap, Map } from '../../../model/MetaEntry'
 
 interface MapWithId extends Map {
@@ -114,8 +114,6 @@ export default Vue.extend({
         modeName: '',
         map: '',
       } as MapWithId,
-      best: [] as MetaGridEntrySorted[],
-      trophyRange: [0, 10],
       slices: {
         brawler_trophyrange: [0, 10],
         trophy_season_end: ['balance'],

@@ -9,7 +9,6 @@
           :step="1"
           :min-range="1"
           :value="value"
-          lazy
           @input="e => $emit('input', e)"
         >
           <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
