@@ -9,7 +9,7 @@
           :step="1"
           :min-range="1"
           :value="value"
-          @input="e => $emit('input', e)"
+          @input="slide"
         >
           <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
             {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
@@ -35,7 +35,20 @@ export default Vue.extend({
       format(n: number) {
         return n == 10 ? '1000+' : n * 100
       },
+      timeout: undefined as undefined|ReturnType<typeof setTimeout>,
     }
+  },
+  methods: {
+    slide(e: number[]) {
+      // debounce
+      if (this.timeout != undefined) {
+        clearTimeout(this.timeout)
+      }
+      this.timeout = setTimeout(() => {
+        this.$emit('input', e)
+        this.timeout = undefined
+      }, 200)
+    },
   },
 })
 </script>
