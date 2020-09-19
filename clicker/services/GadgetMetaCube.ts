@@ -1,6 +1,7 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube";
 import { DataType } from "./Cube";
 import { stripIndent } from "common-tags";
+import { QueryBuilder } from "knex";
 
 export interface GadgetMetaCubeRow extends BrawlerBattleCubeRow {
   brawler_id: number
@@ -47,6 +48,19 @@ export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow>
     WHERE brawler_gadgets_length <= 1
     GROUP BY ${this.dimensions.join(', ')}
   `
+
+  slices = {
+    'with_gadget': 1,
+    ...BrawlerBattleCube.defaultSlices,
+  }
+
+  slice(query: QueryBuilder, name: string, args: string[]) {
+    switch (name) {
+      case 'with_gadget':
+        return query.where('brawler_gadget_id', args[0] == 'true' ? '<>' : '=', '0')
+    }
+    return super.slice(query, name, args)
+  }
 
   mappers = {
     ...BrawlerBattleCube.mappers,

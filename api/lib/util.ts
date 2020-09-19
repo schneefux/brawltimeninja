@@ -363,3 +363,37 @@ export function idToTag(idString: string) {
 
   return '#' + tag
 }
+
+/*
+  in SQL:
+    date_add(from_days(ceil(to_days(date_sub(date_sub(timestamp, interval 8 hour), interval 1 day)) / 14) * 14 + 2), interval 8 hour)
+  in clickhouse SQL:
+    addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
+*/
+/**
+ * Round timestamp up to next trophy season interval.
+ * @param timestamp
+ */
+export function getSeasonEnd(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
+  return trophySeasonEnd
+}
+
+export function getCurrentSeasonEnd() {
+  return getSeasonEnd(new Date())
+}
+
+export function formatClickhouse(timestamp: Date) {
+  return timestamp.toISOString()
+    .slice(0, 19) // remove fractions and time zone
+    .replace('T', ' ')
+}
+
+export function formatClickhouseDate(timestamp: Date) {
+  return timestamp.toISOString()
+    .slice(0, 10) // remove fractions, day and time zone
+    .replace('T', ' ')
+}

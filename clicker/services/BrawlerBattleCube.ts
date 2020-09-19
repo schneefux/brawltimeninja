@@ -1,6 +1,9 @@
 import Cube, { DataType } from "./Cube";
 import { QueryBuilder } from "knex";
 import { stripIndent } from "common-tags";
+import { formatClickhouse, getCurrentSeasonEnd } from "../lib/util";
+
+const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
 
 export interface BrawlerBattleCubeMeasures {
   timestamp: string
@@ -58,6 +61,17 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'trophy_season_end':
+        if (args[0] == 'current') {
+          args[0] = formatClickhouse(getCurrentSeasonEnd())
+        }
+        if (args[0] == 'balance') {
+          args[0] = formatClickhouse(balanceChangesDate)
+        }
+        if (args[0] == 'month') {
+          const oneMonthAgo = new Date()
+          oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
+          args[0] = formatClickhouse(oneMonthAgo)
+        }
         return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
         return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])

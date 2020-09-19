@@ -3,7 +3,7 @@ import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
-import { brawlerId, sloppyParseFloat, idToTag, tagToId, validateTag } from '../lib/util';
+import { brawlerId, sloppyParseFloat, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
@@ -16,39 +16,8 @@ const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
 const seasonSliceStart = getSeasonEnd(balanceChangesDate);
-const seasonEndFormatted = seasonSliceStart.toISOString()
-  .slice(0, 19) // remove fractions and time zone
-  .replace('T', ' ')
 
 console.log(`querying data >= ${seasonSliceStart}`)
-
-/*
-  in SQL:
-    date_add(from_days(ceil(to_days(date_sub(date_sub(timestamp, interval 8 hour), interval 1 day)) / 14) * 14 + 2), interval 8 hour)
-  in clickhouse SQL:
-    addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
-*/
-/**
- * Round timestamp up to next trophy season interval.
- * @param timestamp
- */
-function getSeasonEnd(timestamp: Date) {
-  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
-  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
-  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
-  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
-  return trophySeasonEnd
-}
-
-/**
- * Get WHERE condition to filter for the current season.
- */
-function sliceSeason() {
-  const seasonEndFormatted = seasonSliceStart.toISOString()
-    .slice(0, 19) // remove fractions and time zone
-    .replace('T', ' ')
-  return `trophy_season_end>=toDateTime('${seasonEndFormatted}', 'UTC')`
-}
 
 // ! starplayer applies only to player
 const battleMeasuresAggregationRaw = stripIndent`
@@ -283,7 +252,7 @@ export default class ClickerService {
 
     // TODO maybe put this into redis to avoid slow blocking point queries
     const maxTimestamp = await this.query<any>(
-      `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE ${sliceSeason()} AND player_id=${tagToId(player.tag)}`,
+      `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
       'player.get_last')
     // if not found, clickhouse max() defaults to 0000 date (Date.parse returns NaN)
     const lastBattleTimestamp = maxTimestamp[0].maxTimestamp.startsWith('0000') ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
@@ -370,7 +339,6 @@ export default class ClickerService {
         : 'rank' in battle.battle ? 1 - (battle.battle.rank! - 1) / (teams.length - 1)
         : null
 
-      const trophySeasonEnd = getSeasonEnd(battle.battleTime)
       const trophyRange = Math.floor(me.brawler.trophies / 100)
 
       const allies = myTeam.filter(p => p.tag !== player.tag)
@@ -379,7 +347,7 @@ export default class ClickerService {
       // TODO determine powerplay y/n
       const record = {
         timestamp: battle.battleTime,
-        trophy_season_end: trophySeasonEnd,
+        trophy_season_end: formatClickhouse(getSeasonEnd(battle.battleTime)),
         ...playerFacts,
         /* player brawler */
         // see other table
@@ -483,8 +451,8 @@ export default class ClickerService {
 
     for (const brawler of player.brawlers) {
       const record = {
-        timestamp: new Date().toISOString().substring(0, 10),
-        trophy_season_end: getSeasonEnd(new Date()).toISOString().substring(0, 10),
+        timestamp: formatClickhouseDate(new Date()),
+        trophy_season_end: formatClickhouseDate(getCurrentSeasonEnd()),
         ...playerFacts,
         brawler_id: brawler.id,
         brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
@@ -542,7 +510,7 @@ export default class ClickerService {
       [metricMeasure, 'player_name'],
       ['player_id'],
       {
-        'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
+        'timestamp': [formatClickhouse(oneWeekAgo)],
       },
       { [metricMeasure]: 'desc' },
       limit,
@@ -576,7 +544,7 @@ export default class ClickerService {
       [metricMeasure, 'player_name'],
       ['player_id'],
       {
-        'timestamp': [oneWeekAgo.toISOString().slice(0, 19).replace('T', ' ')],
+        'timestamp': [formatClickhouse(oneWeekAgo)],
       },
       { [metricMeasure]: 'desc' },
       limit,
@@ -716,7 +684,7 @@ export default class ClickerService {
       ['brawler_name'],
       {
         'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
@@ -756,7 +724,7 @@ export default class ClickerService {
       ['*'],
       ['brawler_trophyrange'],
       {
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
         'brawler_name': [brawlerName],
       },
       { 'picks': 'asc' },
@@ -780,7 +748,7 @@ export default class ClickerService {
       ['*'],
       ['brawler_trophyrange'],
       {
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
@@ -811,7 +779,7 @@ export default class ClickerService {
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
       {
         'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
@@ -841,7 +809,7 @@ export default class ClickerService {
       ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
       {
         'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
@@ -871,7 +839,7 @@ export default class ClickerService {
       ['brawler_name', 'battle_event_mode'],
       {
         'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
@@ -899,7 +867,7 @@ export default class ClickerService {
       ['brawler_name', 'battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_is_bigbrawler'],
       {
         'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
-        'trophy_season_end': [seasonEndFormatted],
+        'trophy_season_end': ['balance'],
       },
       { 'picks': 'asc' },
     )
