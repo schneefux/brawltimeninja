@@ -76,6 +76,10 @@ export function formatMode(mode) {
         .map(function (w) { return capitalize(w); })
         .join(' ');
 }
+export function unformatMode(mode) {
+    var uncapitalize = function (str) { return str.replace(/(?:^|\s)\S/g, function (a) { return a.toLowerCase(); }); };
+    return uncapitalize(mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join(''));
+}
 export function xpToHours(xp) {
     return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
@@ -293,4 +297,80 @@ export function formatAsJsonLd(event) {
         },
         'description': event.map + " is a Brawl Stars " + formatMode(event.mode) + " map."
     };
+}
+export function sloppyParseFloat(number) {
+    return Math.floor(parseFloat(number) * 10000) / 10000;
+}
+/**
+ * Throw if a tag is invalid.
+ * Make sure tag starts with a hash.
+ */
+export function validateTag(tag) {
+    if (!/^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+        throw new Error('Invalid tag ' + tag);
+    }
+    if (!tag.startsWith('#')) {
+        return '#' + tag;
+    }
+    return tag;
+}
+// in clickhouse SQL (tag has to start with '#'):
+/*
+arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_tag)-i-1-1), arraySlice(splitByString('', player_club_tag), 2), range(if(player_club_tag <> '', toUInt64(length(player_club_tag)-1), 0))) as player_club_id,
+*/
+/**
+ * Encode tag string into 64bit unsigned integer string.
+ */
+export function tagToId(tag) {
+    if (!/^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+        throw new Error('Cannot encode tag ' + tag);
+    }
+    if (tag.startsWith('#')) {
+        tag = tag.substring(1);
+    }
+    var result = tag.split('').reduce(function (sum, c) { return sum * BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)); }, BigInt(0));
+    return result.toString();
+}
+/**
+ * Decode 64bit unsigned integer string into tag string with hash.
+ */
+export function idToTag(idString) {
+    var id = BigInt(idString);
+    var tag = '';
+    while (id != BigInt(0)) {
+        var i = Number(id % BigInt(14));
+        tag = '0289PYLQGRJCUV'[i] + tag;
+        id /= BigInt(14);
+    }
+    return '#' + tag;
+}
+/*
+  in SQL:
+    date_add(from_days(ceil(to_days(date_sub(date_sub(timestamp, interval 8 hour), interval 1 day)) / 14) * 14 + 2), interval 8 hour)
+  in clickhouse SQL:
+    addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
+*/
+/**
+ * Round timestamp up to next trophy season interval.
+ * @param timestamp
+ */
+export function getSeasonEnd(timestamp) {
+    var trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'));
+    var diff = timestamp.getTime() - trophySeasonEnd.getTime();
+    var seasonsSince = Math.ceil(diff / 1000 / 60 / 60 / 24 / 7 / 2);
+    trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince * 7 * 2);
+    return trophySeasonEnd;
+}
+export function getCurrentSeasonEnd() {
+    return getSeasonEnd(new Date());
+}
+export function formatClickhouse(timestamp) {
+    return timestamp.toISOString()
+        .slice(0, 19) // remove fractions and time zone
+        .replace('T', ' ');
+}
+export function formatClickhouseDate(timestamp) {
+    return timestamp.toISOString()
+        .slice(0, 10) // remove fractions, day and time zone
+        .replace('T', ' ');
 }

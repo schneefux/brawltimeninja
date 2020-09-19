@@ -33,6 +33,7 @@
         :mode="event.mode"
         :map="event.map"
         :id="event.id"
+        large
       ></map-best-brawlers-card>
     </div>
 
@@ -50,7 +51,7 @@
       <meta-slicers
         v-model="slices"
         :sample="totalSampleSize"
-        :sample-min="300000"
+        :sample-min="100000"
       ></meta-slicers>
       <meta-grid
         :entries="brawlers"
@@ -76,7 +77,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { formatMode, MetaGridEntry, MetaGridEntrySorted, getBest, brawlerId } from '../../../lib/util'
-import { MapMetaMap, MapMap, MapMeta, Map } from '../../../model/MetaEntry'
+import { MapMetaMap, MapMap, Map } from '../../../model/MetaEntry'
 
 interface MapWithId extends Map {
   id: string
@@ -113,7 +114,6 @@ export default Vue.extend({
         modeName: '',
         map: '',
       } as MapWithId,
-      mapMeta: {} as MapMeta,
       best: [] as MetaGridEntrySorted[],
       trophyRange: [0, 10],
       slices: {
@@ -161,19 +161,23 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ store, params, error, $axios }) {
-    const events = await $axios.$get<MapMap>('/api/events')
-    if (!(params.event in events)) {
+  async asyncData({ store, params, error, $clicker }) {
+    const events = await $clicker.query('map',
+      ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
+      ['battle_event_id'],
+      { battle_event_id: [params.event] },
+      { cache: 60*60*24 })
+    if (events.data.length == 0) {
       return error({ statusCode: 404, message: 'Event not found' })
     }
-    const event = events[params.event]
-    // const bestByEvent = getBest(mapMeta)
+    const event = events.data[0]
+
     return {
-      // best: bestByEvent[params.event],
       event: {
-        ...event,
         id: params.event,
-        modeName: formatMode(event.mode),
+        map: event.battle_event_map,
+        mode: event.battle_event_mode,
+        modeName: formatMode(event.battle_event_mode as string),
       } as MapWithId,
       slices: {
         brawler_trophyrange: [0, 10],

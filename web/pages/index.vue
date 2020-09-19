@@ -220,57 +220,15 @@
       </div>
 
       <div class="home-section-content">
-        <lazy
+        <lazy-map-best-brawlers-card
           v-for="event in currentEvents"
           :key="event.id"
-          distance="320px"
-        >
-          <div style="height: 320px; width: 320px" slot="placeholder"></div>
-          <event-card
-            :mode="event.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')"
-            :map="event.map"
-            :id="event.id"
-            infobar
-            actions
-          >
-            <template v-slot:infobar>
-              <p class="text-right">
-                ends in {{ relativeTimeUntil(event.end) }}
-              </p>
-            </template>
-            <template v-slot:content>
-              <div class="brawler-avatars my-4">
-                <div
-                  v-for="brawler in (bestByEvent[event.id] || []).slice(0, 5)"
-                  :key="brawler.id"
-                  class="brawler-avatars__element"
-                >
-                  <div class="brawler-avatar">
-                    <media-img
-                      :path="`/brawlers/${brawler.id}/avatar`"
-                      size="160"
-                      clazz="brawler-avatar__img"
-                    />
-                    <p class="brawler-avatar__stats">
-                      {{ metaStatMaps.formatters[brawler.sortProp](brawler.stats[brawler.sortProp]) }}
-                      {{ metaStatMaps.labelsShort[brawler.sortProp] }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-slot:actions>
-              <div class="flex justify-end">
-                <nuxt-link
-                  :to="`/tier-list/map/${event.id}`"
-                  class="button button--md"
-                >
-                  Open
-                </nuxt-link>
-              </div>
-            </template>
-          </event-card>
-        </lazy>
+          :mode="unformatMode(event.mode)"
+          :map="event.map"
+          :id="event.id"
+          :end-date="event.end"
+          link
+        ></lazy-map-best-brawlers-card>
       </div>
 
       <div
@@ -305,7 +263,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps, relativeTimeUntil, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric } from '../lib/util'
+import { metaStatMaps, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric, unformatMode } from '../lib/util'
 import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
 import { BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../model/Api'
@@ -346,11 +304,10 @@ export default Vue.extend({
       loading: false,
       error: undefined as string|undefined,
       currentEvents: [] as ActiveEvent[],
-      bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
       playerToRoute,
       metaStatMaps,
-      relativeTimeUntil,
+      unformatMode,
     }
   },
   computed: {
@@ -396,13 +353,10 @@ export default Vue.extend({
   async asyncData({ $axios }) {
     const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
       .catch(() => ({ current: [], upcoming: [] }))
-    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/events').catch(() => ({}))
     const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ([]))
-    const bestByEvent = getBest(mapMeta)
     const topBrawlers = getBestBrawlersByEachMetric(brawlerMeta)
     return {
       currentEvents: events.current,
-      bestByEvent,
       topBrawlers,
     }
   },
@@ -423,6 +377,9 @@ export default Vue.extend({
 
         const sw = await navigator.serviceWorker.ready
 
+        const mapMeta = await this.$axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
+        const bestByEvent = getBest(mapMeta)
+
         await Promise.all(this.currentEvents.map(async (event) => {
           const logAndNull = (e) => {
             this.$ga.exception('cannot load image: ' + e.message)
@@ -433,7 +390,7 @@ export default Vue.extend({
           const badge = await import(`~/assets/images/mode/icon/${modeId}_optimized.png`).catch(logAndNull)
           const icon = await import(`~/assets/images/map/${event.id.replace(/^1500/, '150')}_small.jpg`).catch(logAndNull)
 
-          const top5 = (this.bestByEvent[event.id] || []).slice(0, 5).map(entry => entry.title)
+          const top5 = (bestByEvent[event.id] || []).slice(0, 5).map(entry => entry.title)
 
           sw.showNotification(`${event.mode}: ${top5.join(', ')}`, {
             tag: event.id,

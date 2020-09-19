@@ -33,13 +33,15 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <active-event-card
+      <map-best-brawlers-card
         v-for="event in currentEvents"
         :key="event.id"
-        :event="event"
-        :best-brawlers="bestByEvent[event.id]"
-        :upcoming="false"
-      ></active-event-card>
+        :id="event.id"
+        :mode="unformatMode(event.mode)"
+        :map="event.map"
+        :end-date="event.end"
+        link
+      ></map-best-brawlers-card>
     </div>
 
     <client-only>
@@ -64,13 +66,15 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <active-event-card
-        v-for="event in upcomingEvents"
+      <lazy-map-best-brawlers-card
+        v-for="event in currentEvents"
         :key="event.id"
-        :event="event"
-        :best-brawlers="bestByEvent[event.id]"
-        :upcoming="true"
-      ></active-event-card>
+        :id="event.id"
+        :mode="unformatMode(event.mode)"
+        :map="event.map"
+        :start-date="event.start"
+        link
+      ></lazy-map-best-brawlers-card>
     </div>
 
     <client-only>
@@ -90,16 +94,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntrySorted, formatAsJsonLd, getBest } from '../../../lib/util'
+import { formatAsJsonLd, unformatMode } from '../../../lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '../../../model/Api'
-import { MapMetaMap } from '../../../model/MetaEntry'
 
 export default Vue.extend({
   data() {
     return {
-      bestByEvent: {} as { [key: string]: MetaGridEntrySorted[] },
       currentEvents: [] as ActiveEvent[],
       upcomingEvents: [] as ActiveEvent[],
+      unformatMode,
     }
   },
   head() {
@@ -127,10 +130,7 @@ export default Vue.extend({
   },
   async asyncData({ $axios }) {
     const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
-    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/events')
-    const bestByEvent = getBest(mapMeta)
     return {
-      bestByEvent,
       currentEvents: events.current,
       upcomingEvents: events.upcoming,
     }

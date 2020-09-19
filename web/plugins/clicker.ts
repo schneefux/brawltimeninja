@@ -46,13 +46,13 @@ export default (context, inject) => {
       const query = new URLSearchParams({
         include: measures.join(','),
       })
-      if (options.sort) {
+      if (options.sort != undefined) {
         query.append('sort', Object.entries(options.sort || {}).map(([name, order]) => (order == 'desc' ? '-' : '') + name).join(','))
       }
-      if (options.limit) {
+      if (options.limit != undefined) {
         query.append('limit', options.limit.toString())
       }
-      if (options.cache) {
+      if (options.cache != undefined) {
         query.append('cache', options.cache.toString())
       }
       Object.entries(slices).forEach(([name, args]) => query.append('slice[' + name + ']', args.join(',')))

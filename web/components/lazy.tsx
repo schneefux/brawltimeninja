@@ -42,7 +42,7 @@ export default Vue.extend({
     const callback = (visible) => {
       if (visible) {
         this.visible = true
-        this.$emit('input', true)
+        this.$emit('visible', true)
       }
     }
     const intersection = {

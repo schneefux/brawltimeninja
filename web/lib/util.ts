@@ -70,6 +70,11 @@ export function formatMode(mode: string) {
     .join(' ')
 }
 
+export function unformatMode(mode: string) {
+  const uncapitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toLowerCase())
+  return uncapitalize(mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join(''))
+}
+
 export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }
