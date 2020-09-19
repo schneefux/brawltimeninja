@@ -548,6 +548,14 @@ export default class BrawlstarsService {
 
       let result = undefined as undefined|string;
       let victory = undefined as undefined|boolean;
+
+      // FIXME API bug 2020-07-26
+      if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
+        // 'duration' is 1 (loss) or N/A (win)
+        battle.battle.result = battle.battle.duration == undefined ? 'victory' : 'defeat'
+        delete battle.battle.duration
+      }
+
       if (battle.battle.duration !== undefined) {
         // bossfight, gem grab, ...
         const minutes = Math.floor(battle.battle.duration / 60);
@@ -577,14 +585,6 @@ export default class BrawlstarsService {
 
       const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]));
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
-
-      // FIXME API bug 2020-07-26
-      if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
-        // 'duration' is 1 (loss) or N/A (win)
-        victory = !('duration' in battle.battle)
-        result = victory ? 'Victory' : 'Defeat'
-        delete battle.battle.duration
-      }
 
       return {
         timestamp: new Date(Date.parse(isoDate)),
