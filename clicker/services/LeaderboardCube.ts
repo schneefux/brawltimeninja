@@ -33,7 +33,7 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   `
 
   measures = {
-    'timestamp': 'argMaxMerge(timestamp_state)',
+    'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'player_name': 'argMaxMerge(player_name_state)',
     'player_exp_points': 'argMaxMerge(player_exp_points_state)',
     'player_trophies': 'argMaxMerge(player_trophies_state)',

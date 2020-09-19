@@ -252,7 +252,7 @@ export default class ClickerService {
 
     // TODO maybe put this into redis to avoid slow blocking point queries
     const maxTimestamp = await this.query<any>(
-      `SELECT MAX(timestamp) AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
+      `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
       'player.get_last')
     // if not found, clickhouse max() defaults to 0000 date (Date.parse returns NaN)
     const lastBattleTimestamp = maxTimestamp[0].maxTimestamp.startsWith('0000') ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
@@ -294,6 +294,8 @@ export default class ClickerService {
 
     // insert records for meta stats
     for (const battle of battles) {
+      stats.increment('player.insert.prepare')
+
       if (battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
@@ -450,6 +452,8 @@ export default class ClickerService {
     })
 
     for (const brawler of player.brawlers) {
+      stats.increment('brawler.insert.prepare')
+
       const record = {
         timestamp: formatClickhouseDate(new Date()),
         trophy_season_end: getCurrentSeasonEnd(), // will be formatted by node-clickhouse

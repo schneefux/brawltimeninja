@@ -32,7 +32,7 @@ export interface BrawlerBattleCubeRow extends BrawlerBattleCubeMeasures, Brawler
  */
 export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> extends Cube<R> {
   measures = {
-    'timestamp': 'argMaxMerge(timestamp_state)',
+    'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'picks': 'SUM(picks)',
     'picks_weighted': 'SUM(picks_weighted)',
     'battle_rank': 'avgMerge(battle_rank_state)',

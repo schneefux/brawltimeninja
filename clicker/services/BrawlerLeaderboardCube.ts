@@ -35,7 +35,7 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   `
 
   measures = {
-    'timestamp': 'argMaxMerge(timestamp_state)',
+    'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'player_name': 'argMaxMerge(player_name_state)',
     'brawler_name': 'argMaxMerge(brawler_name_state)',
     'brawler_power': 'argMaxMerge(brawler_power_state)',
