@@ -347,7 +347,7 @@ export default class ClickerService {
       // TODO determine powerplay y/n
       const record = {
         timestamp: battle.battleTime,
-        trophy_season_end: formatClickhouse(getSeasonEnd(battle.battleTime)),
+        trophy_season_end: getSeasonEnd(battle.battleTime),
         ...playerFacts,
         /* player brawler */
         // see other table
@@ -452,7 +452,7 @@ export default class ClickerService {
     for (const brawler of player.brawlers) {
       const record = {
         timestamp: formatClickhouseDate(new Date()),
-        trophy_season_end: formatClickhouseDate(getCurrentSeasonEnd()),
+        trophy_season_end: getCurrentSeasonEnd(), // will be formatted by node-clickhouse
         ...playerFacts,
         brawler_id: brawler.id,
         brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
