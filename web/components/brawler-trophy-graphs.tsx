@@ -2,7 +2,6 @@ import Vue, { PropType } from 'vue'
 import { BrawlerStatisticsRows } from '~/model/Clicker'
 
 export default Vue.extend({
-  functional: true,
   props: {
     brawlerStats: {
       type: Object as PropType<BrawlerStatisticsRows>,
@@ -13,9 +12,9 @@ export default Vue.extend({
       required: true
     },
   },
-  render(h, { props }) {
-    const brawlerStats = props.brawlerStats
-    const totalBrawlers = props.totalBrawlers
+  render(h) {
+    const brawlerStats = this.brawlerStats
+    const totalBrawlers = this.totalBrawlers
 
     const trophyranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 
