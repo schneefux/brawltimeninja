@@ -23,7 +23,6 @@
     </client-only>
 
     <div
-      v-if="best.length"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'widget'),
         once: true,
@@ -34,10 +33,7 @@
         :mode="event.mode"
         :map="event.map"
         :id="event.id"
-        :top-brawlers="best"
-        infobar
-      >
-      </map-best-brawlers-card>
+      ></map-best-brawlers-card>
     </div>
 
     <div
@@ -48,28 +44,17 @@
       }"
     >
       <h2 class="page-h2">Tier List for {{ event.modeName }} - {{ event.map }}</h2>
-      <p>
-        Using over {{ formatSI(event.sampleSize) }} battles.
-        <template v-if="mapMeta.sampleSize < 10000">
-          ⚠ Not enough data for this event yet!
-          <template v-if="brawlers.length < totalBrawlers">
-            Some statistics are unavailable.
-          </template>
-          <template v-else>
-            Statistics will be inaccurate.
-          </template>
-          Play a few battles and come back later. ⚠
-        </template>
-      </p>
-    </div>
-
-    <div class="section text-center mb-2">
-      <trophy-slider v-model="trophyRange"></trophy-slider>
     </div>
 
     <div class="section">
+      <meta-slicers
+        v-model="slices"
+        :sample="totalSampleSize"
+        :sample-min="300000"
+      ></meta-slicers>
       <meta-grid
         :entries="brawlers"
+        default-stat="winRate"
         ga-category="map_meta"
       />
     </div>
@@ -90,12 +75,23 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, formatSI, MetaGridEntry, MetaGridEntrySorted, getBest } from '../../../lib/util'
+import { formatMode, MetaGridEntry, MetaGridEntrySorted, getBest, brawlerId } from '../../../lib/util'
 import { MapMetaMap, MapMap, MapMeta, Map } from '../../../model/MetaEntry'
 
 interface MapWithId extends Map {
   id: string
   modeName: string
+}
+
+interface Row {
+  brawler_name: string
+  battle_event_mode: number
+  picks: number
+  picks_weighted: number
+  battle_victory: number
+  battle_duration: number
+  battle_starplayer: number
+  battle_rank1: number
 }
 
 export default Vue.extend({
@@ -120,32 +116,50 @@ export default Vue.extend({
       mapMeta: {} as MapMeta,
       best: [] as MetaGridEntrySorted[],
       trophyRange: [0, 10],
-      formatSI,
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+      },
+      data: [] as Row[],
+      totals: {} as Row,
     }
   },
+  watch: {
+    slices: '$fetch',
+  },
+  async fetch() {
+    const data = await this.$clicker.query('map',
+      ['brawler_name'],
+      ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      this.slices,
+      { sort: { picks: 'desc' }, cache: 60*60 })
+    this.data = data.data
+    this.totals = data.totals
+  },
   computed: {
+    totalSampleSize(): number {
+      return this.totals.picks
+    },
     brawlers(): MetaGridEntry[] {
-      return Object.entries(this.mapMeta.brawlers).map(([brawlerId, brawler]) => ({
-        id: brawlerId,
-        brawler: brawlerId,
-        title: (<any>brawler).name,
-        stats: (<any>brawler).stats,
-        sampleSize: (<any>brawler).sampleSize,
-        link: `/tier-list/brawler/${brawlerId}`,
-      }))
+      return this.data.map(row => ({
+        id: row.brawler_name,
+        brawler: row.brawler_name,
+        title: row.brawler_name,
+        stats: {
+          winRate: row.battle_victory,
+          useRate: row.picks_weighted / this.totals.picks_weighted,
+          pickRate: row.picks / this.totals.picks,
+          starRate: row.battle_starplayer,
+          rank1Rate: row.battle_rank1 / this.totals.battle_rank1,
+          duration: row.battle_duration,
+        },
+        sampleSize: row.picks,
+        link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+      }) as MetaGridEntry)
     },
     ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers as number,
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  watch: {
-    async trophyRange([lower, upper]) {
-      const mapMeta = await this.$axios.$get(`/api/meta/map/mode/${this.event.mode}?trophyrange=${lower}-${upper}`) as MapMetaMap
-      const bestByEvent = getBest(mapMeta)
-      this.mapMeta = mapMeta[this.event.id]
-      this.best = bestByEvent[this.event.id]
-    },
   },
   async asyncData({ store, params, error, $axios }) {
     const events = await $axios.$get<MapMap>('/api/events')
@@ -153,16 +167,19 @@ export default Vue.extend({
       return error({ statusCode: 404, message: 'Event not found' })
     }
     const event = events[params.event]
-    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/mode/' + event.mode)
-    const bestByEvent = getBest(mapMeta)
+    // const bestByEvent = getBest(mapMeta)
     return {
-      mapMeta: mapMeta[params.event],
-      best: bestByEvent[params.event],
+      // best: bestByEvent[params.event],
       event: {
         ...event,
         id: params.event,
         modeName: formatMode(event.mode),
       } as MapWithId,
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+        battle_event_id: [params.event],
+      },
     }
   },
   methods: {

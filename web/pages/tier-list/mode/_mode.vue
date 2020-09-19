@@ -41,7 +41,7 @@
           class="px-2"
         >
           <event-card
-            :mode="map.mode"
+            :mode="mode"
             :map="map.map"
           >
             <template v-slot:content>
@@ -95,21 +95,17 @@
       }"
     >
       <h2 class="page-h2">Tier List for all {{ modeName }} Maps</h2>
-      <p>
-        Using over {{ formatSI(totalSampleSize) }} battles.
-        <template v-if="totalSampleSize < 10000">
-          ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-        </template>
-      </p>
-    </div>
-
-    <div class="section text-center mb-2">
-      <trophy-slider v-model="trophyRange"></trophy-slider>
     </div>
 
     <div class="section">
+      <meta-slicers
+        v-model="slices"
+        :sample="totalSampleSize"
+        :sample-min="300000"
+      ></meta-slicers>
       <meta-grid
         :entries="modes"
+        default-stat="winRate"
         ga-category="mode_meta"
       />
     </div>
@@ -130,8 +126,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, MetaGridEntry, formatSI } from '../../../lib/util'
-import { MapMetaMap, ModeMetaMap, MapMeta } from '../../../model/MetaEntry'
+import { formatMode, MetaGridEntry, brawlerId } from '../../../lib/util'
 
 const kebabToCamel = (s: string) => {
   return s.replace(/([-_][a-z])/ig, ($1) => {
@@ -141,8 +136,20 @@ const kebabToCamel = (s: string) => {
   })
 }
 
-interface MapMetaWithId extends MapMeta {
-  id: string
+interface Row {
+  brawler_name: string
+  battle_event_mode: number
+  picks: number
+  picks_weighted: number
+  battle_victory: number
+  battle_duration: number
+  battle_starplayer: number
+  battle_rank1: number
+}
+
+interface EventIdAndMap {
+  id: number
+  map: string
 }
 
 export default Vue.extend({
@@ -158,53 +165,73 @@ export default Vue.extend({
   },
   data() {
     return {
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+      },
       showAllMaps: false,
-      trophyRange: [0, 10],
       mode: '',
       modeName: '',
-      modeMeta: {} as ModeMetaMap,
-      mapMeta: {} as MapMetaMap,
-      formatSI,
+      maps: [] as EventIdAndMap[],
+      data: [] as Row[],
+      totals: {} as Row,
     }
   },
   watch: {
-    async trophyRange([lower, upper]) {
-      this.modeMeta = await this.$axios.$get(`/api/meta/mode?trophyrange=${lower}-${upper}`) as ModeMetaMap
-    },
+    slices: '$fetch',
   },
-  async asyncData({ params, $axios }) {
+  async fetch() {
+    const data = await this.$clicker.query('map',
+      ['brawler_name'],
+      ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      this.slices,
+      { sort: { picks: 'desc' }, cache: 60*60 })
+    this.data = data.data
+    this.totals = data.totals
+  },
+  async asyncData({ params, $clicker }) {
     const mode = kebabToCamel(params.mode as string)
     const modeName = formatMode(mode)
-    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode')
-    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map/mode/' + mode.toLowerCase())
+    const events = await $clicker.query('map',
+      ['battle_event_id', 'battle_event_map'],
+      ['battle_event_id'],
+      { battle_event_mode: [mode] },
+      { cache: 60*60*24 })
 
     return {
       mode,
       modeName,
-      modeMeta,
-      mapMeta,
+      maps: events.data.map(e => ({
+        id: e.battle_event_id,
+        map: e.battle_event_map,
+      })),
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+        battle_event_mode: [mode],
+      },
     }
   },
   computed: {
     totalSampleSize(): number {
-      return this.modes
-        .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
+      return this.totals.picks
     },
     modes(): MetaGridEntry[] {
-      const brawlers = this.mode in this.modeMeta ? Object.entries(this.modeMeta[this.mode].brawlers) : []
-      return brawlers.map(([brawlerId, brawler]) => ({
-        id: brawlerId,
-        brawler: brawlerId,
-        title: brawler.name,
-        stats: brawler.stats,
-        sampleSize: brawler.sampleSize,
-        link: `/tier-list/brawler/${brawlerId}`,
+      return this.data.map(row => ({
+        id: row.brawler_name,
+        brawler: row.brawler_name,
+        title: row.brawler_name,
+        stats: {
+          winRate: row.battle_victory,
+          useRate: row.picks_weighted / this.totals.picks_weighted,
+          pickRate: row.picks / this.totals.picks,
+          starRate: row.battle_starplayer,
+          rank1Rate: row.battle_rank1 / this.totals.battle_rank1,
+          duration: row.battle_duration,
+        },
+        sampleSize: row.picks,
+        link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
       }) as MetaGridEntry)
-    },
-    maps(): MapMetaWithId[] {
-      return [...Object.entries(<MapMetaMap>this.mapMeta)]
-        .map(([id, event]) => ({ ...event, id }))
-        .filter((event) => event.mode == this.mode)
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

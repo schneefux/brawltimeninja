@@ -107,7 +107,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import query, { queryMetadata, cubes } from '../lib/query'
 
 export default Vue.extend({
   data() {
@@ -115,7 +114,6 @@ export default Vue.extend({
       data: [] as any[],
       totals: {} as any,
       error: '',
-      availableCubes: cubes,
       selectedCube: 'map',
       availableMeasures: [] as string[],
       selectedMetric: 'battle_victory',
@@ -136,10 +134,7 @@ export default Vue.extend({
   },
   methods: {
     async queryMetadata() {
-      const metadata = await queryMetadata({
-        $axios: this.$axios,
-        env: { clickerUrl: process.env.clickerUrl } },
-        this.selectedCube)
+      const metadata = await this.$clicker.queryMetadata(this.selectedCube)
       this.availableMeasures = metadata.measures
       this.availableDimensions = metadata.dimensions
 
@@ -150,9 +145,7 @@ export default Vue.extend({
     async query() {
       try {
         this.error = ''
-        const response = await query({
-            $axios: this.$axios,
-            env: { clickerUrl: process.env.clickerUrl } },
+        const response = await this.$clicker.query(
           this.selectedCube,
           [this.selectedDimension],
           [this.selectedMetric],
@@ -171,6 +164,9 @@ export default Vue.extend({
     },
   },
   computed: {
+    availableCubes() {
+      return this.$clicker.cubes
+    },
     graphLayout(): object {
       return {
         xaxis: {

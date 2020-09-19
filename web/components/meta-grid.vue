@@ -219,11 +219,14 @@ function groupStatIntoTiers(entries: MetaGridEntry[], stat: string, sampleSizeTh
 }
 
 export default Vue.extend({
-  name: 'MapMetaPage',
   props: {
     entries: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true,
+    },
+    defaultStat: {
+      type: String,
+      required: false
     },
     gaCategory: {
       type: String,
@@ -235,7 +238,7 @@ export default Vue.extend({
     },
   },
   data() {
-    const defaultStat = (this.entries.length === 0 ? ''
+    const defaultStat = this.defaultStat || (this.entries.length === 0 ? ''
       : metaStatMaps.propPriority.find(prop => prop in this.entries[0].stats)) as string
 
     return {
@@ -253,6 +256,8 @@ export default Vue.extend({
         return []
       }
       return Object.keys(this.entries[0].stats)
+        .filter((key) => this.entries[0].stats[key] != undefined
+          && !isNaN(parseFloat(this.entries[0].stats[key].toString())))
     },
     sortedEntries(): IndexedMetaGridEntry[] {
       return this.entries.slice()

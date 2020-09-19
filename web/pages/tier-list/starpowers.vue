@@ -12,19 +12,18 @@
         Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars. <br />
         The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
       </p>
-      <p v-if="totalSampleSize < 10000">
-        ⚠ Not enough data for this yet! Statistics will be inaccurate. Play a few battles and come back later. ⚠
-      </p>
-    </div>
-
-    <div class="section text-center mb-2">
-      <trophy-slider v-model="trophyRange"></trophy-slider>
     </div>
 
     <div class="section">
+      <meta-slicers
+        v-model="slices"
+        :sample="totalSampleSize"
+        :sample-min="300000"
+      ></meta-slicers>
       <meta-grid
         :entries="starpowers"
         :sample-size-threshold="1000"
+        default-stat="winRate"
         ga-category="starpower_meta"
       />
     </div>
@@ -34,15 +33,28 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry } from '../../lib/util'
-import { StarpowerMetaStatistics } from '../../model/Api'
+import { MetaGridEntry, brawlerId } from '../../lib/util'
+
+interface Row {
+  brawler_id: number
+  brawler_name: string
+  brawler_starpower_id: number
+  brawler_starpower_name: string
+  picks: number
+  battle_victory: number
+  battle_starplayer: number
+  battle_rank1: number
+}
 
 export default Vue.extend({
-  name: 'StarpowerMetaPage',
   data() {
     return {
-      starpowerMeta: [] as StarpowerMetaStatistics[],
-      trophyRange: [0, 10],
+      slices: {
+        brawler_trophyrange: [0, 10],
+        trophy_season_end: ['balance'],
+      },
+      data: [] as Row[],
+      totals: {} as Row,
     }
   },
   head() {
@@ -57,45 +69,49 @@ export default Vue.extend({
   },
   computed: {
     totalSampleSize(): number {
-      return this.starpowers
-        .reduce((sampleSize, entry) => sampleSize + entry.sampleSize, 0)
+      return this.totals.picks
     },
     starpowers(): MetaGridEntry[] {
-      const statsToDiffs = (starpower) => {
-        const brawlerWithout = this.starpowerMeta
-          .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
-        if (brawlerWithout == undefined) {
-          return {}
-        }
-
+      const statsToDiffs = (starpower: Row) => {
+        const brawlerWithout = this.data
+          .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
         const perc = (v) => Math.round(v * 100 * 100) / 100
         const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
         const format = (v) => signed(perc(v))
 
-        const stats = {}
-        Object.entries(starpower.stats)
-          .forEach(([prop, value]) => stats[prop] = format(<number>value - brawlerWithout.stats[prop]))
-        return stats
+        if (brawlerWithout == undefined) {
+          return {
+            winRate: perc(starpower.battle_victory),
+            starRate: perc(starpower.battle_starplayer),
+            rank1Rate: perc(starpower.battle_rank1),
+          }
+        }
+
+        return {
+          winRate: format(starpower.battle_victory - brawlerWithout.battle_victory),
+          starRate: format(starpower.battle_starplayer - brawlerWithout.battle_starplayer),
+          rank1Rate: format(starpower.battle_rank1 - brawlerWithout.battle_rank1),
+        }
       }
-      const sampleSize = (starpower) => {
-        const brawlerWithout = this.starpowerMeta
-          .find(b => b.starpowerName == '' && b.brawlerId == starpower.brawlerId)
+      const sampleSize = (starpower: Row) => {
+        const brawlerWithout = this.data
+          .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
         if (brawlerWithout == undefined) {
           return 0
         }
-        return Math.min(starpower.sampleSize, brawlerWithout.sampleSize)
+        return Math.min(starpower.picks, brawlerWithout.picks)
       }
 
-      return this.starpowerMeta
-        .filter(s => s.starpowerName !== '')
+      return this.data
+        .filter(s => s.brawler_starpower_name !== '')
         .map((starpower) => ({
-          id: starpower.id,
-          title: starpower.starpowerName,
-          brawler: starpower.brawlerName,
+          id: `${starpower.brawler_id}-${starpower.brawler_starpower_name}`,
+          title: starpower.brawler_starpower_name,
+          brawler: starpower.brawler_name,
           sampleSize: sampleSize(starpower),
           stats: statsToDiffs(starpower),
-          icon: `/starpowers/${starpower.id}`,
-          link: `/tier-list/brawler/${starpower.brawlerName}`,
+          icon: `/starpowers/${starpower.brawler_starpower_id}`,
+          link: `/tier-list/brawler/${brawlerId({ name: starpower.brawler_name })}`,
         }))
     },
     ...mapState({
@@ -103,15 +119,16 @@ export default Vue.extend({
     }),
   },
   watch: {
-    async trophyRange([lower, upper]) {
-      this.starpowerMeta = await this.$axios.$get(`/api/meta/starpower?trophyrange=${lower}-${upper}`) as StarpowerMetaStatistics[]
-    },
+    slices: '$fetch',
   },
-  async asyncData({ $axios }) {
-    const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>('/api/meta/starpower')
-    return {
-      starpowerMeta,
-    }
+  async fetch() {
+    const data = await this.$clicker.query('starpower',
+      ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
+      ['battle_victory', 'battle_starplayer', 'battle_rank1', 'picks'],
+      this.slices,
+      { sort: { picks: 'desc' }, cache: 60*60 })
+    this.data = data.data
+    this.totals = data.totals
   },
   methods: {
     trackScroll(visible, element, section) {

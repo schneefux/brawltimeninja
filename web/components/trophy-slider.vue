@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center align-items-center mt-10">
+  <div class="flex justify-center align-items-center mt-8">
     <span class="ml-4">Trophies:</span>
     <div class="w-full max-w-xs mx-4">
       <client-only>

@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   experimental: {
     applyComplexClasses: true,
@@ -8,7 +10,16 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
   },
   purge: {
-    enabled: false,
+    enabled: true,
+    content: [
+      path.join(__dirname, './pages/**/*.vue'),
+      path.join(__dirname, './layouts/**/*.vue'),
+      path.join(__dirname, './components/**/*.vue'),
+      path.join(__dirname, './components/**/*.tsx'),
+      path.join(__dirname, './content/**/*.md'),
+      path.join(__dirname, 'node_modules/vue-range-component/dist/vue-range-slider.css'), // whitelist all
+    ],
+    whitelist: ['html', 'body', 'nuxt-progress']
   },
   prefix: '',
   important: false,

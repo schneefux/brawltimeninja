@@ -73,6 +73,7 @@ export default {
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/scrollto', mode: 'client' },
     { src: '~/plugins/lazy-hydrate' },
+    { src: '~/plugins/clicker' },
   ],
 
   modules: [
@@ -152,26 +153,8 @@ export default {
     extractCSS: true,
     postcss: {
       plugins: {
-        tailwindcss: path.resolve('./tailwind.config.js'),
-        autoprefixer: {},
-        ...(process.env.NODE_ENV === 'production'
-        ? {
-          '@fullhuman/postcss-purgecss': {
-            content: [
-              path.join(__dirname, './pages/**/*.vue'),
-              path.join(__dirname, './layouts/**/*.vue'),
-              path.join(__dirname, './components/**/*.vue'),
-              path.join(__dirname, './components/**/*.tsx'),
-              path.join(__dirname, './content/**/*.md'),
-              path.join(__dirname, 'node_modules/vue-range-component/dist/vue-range-slider.css'), // whitelist all
-            ],
-            defaultExtractor: content =>
-              content.match(/[\w-\/:!/]+/g) || [],
-            whitelist: ['html', 'body', 'nuxt-progress']
-          }
-        }: {})
+        tailwindcss: path.join(__dirname, './tailwind.config.js'),
       },
-      preset: { autoprefixer: { grid: true } },
     },
   },
 
