@@ -4,7 +4,6 @@ import { stripIndent } from "common-tags";
 import { QueryBuilder } from "knex";
 
 export interface GadgetMetaCubeRow extends BrawlerBattleCubeRow {
-  brawler_id: number
   brawler_gadget_id: number
   brawler_gadget_name: string
 }
@@ -19,10 +18,9 @@ export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow>
   `
 
   dimensions = [
+    ...BrawlerBattleCube.defaultDimensions,
     'trophy_season_end',
     'brawler_trophyrange',
-    'brawler_id',
-    'brawler_name',
     'brawler_gadget_id',
     'brawler_gadget_name',
   ]
@@ -64,7 +62,6 @@ export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow>
 
   mappers = {
     ...BrawlerBattleCube.mappers,
-    brawler_id: 'int',
     brawler_gadget_id: 'int',
     brawler_gadget_name: 'string',
   } as Record<string, DataType>

@@ -21,6 +21,7 @@ export interface BrawlerBattleCubeMeasures {
 export interface BrawlerBattleCubeDimensions {
   trophy_season_end: string
   brawler_trophyrange: number
+  brawler_id: number
   brawler_name: string
 }
 
@@ -44,15 +45,17 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     'battle_trophy_change': 'avgMerge(battle_trophy_change_state)',
   }
 
-  dimensions = [
+  static defaultDimensions = [
     'trophy_season_end',
     'brawler_trophyrange',
+    'brawler_id',
     'brawler_name',
   ]
 
   static defaultSlices = {
     'trophy_season_end': 1,
     'brawler_trophyrange': 2,
+    'brawler_id': 1,
     'brawler_name': 1,
   }
 
@@ -77,6 +80,8 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
         return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])
       case 'brawler_name':
         return query.where('brawler_name', '=', args[0])
+      case 'brawler_id':
+        return query.where('brawler_id', '=', args[0])
     }
     throw new Error('Unknown slice name: ' + name)
   }
@@ -85,6 +90,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     trophy_season_end: 'string',
     brawler_trophyrange: 'int',
     brawler_name: 'string',
+    brawler_id: 'int',
 
     timestamp: 'string',
 

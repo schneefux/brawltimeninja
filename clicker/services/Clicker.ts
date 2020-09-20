@@ -154,6 +154,7 @@ export default class ClickerService {
         battle_event_id UInt32 Codec(Gorilla, LZ4HC),
         battle_event_mode LowCardinality(String) Codec(LZ4HC),
         battle_event_map LowCardinality(String) Codec(LZ4HC),
+        battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC),
         -- battle
         -- mode: ommitted because duplicate
         battle_type LowCardinality(String) Codec(LZ4HC),
@@ -201,6 +202,10 @@ export default class ClickerService {
       -- TTL timestamp + INTERVAL 1 MONTH DELETE
       -- 25 battles per battle log query
       SETTINGS index_granularity=25;
+    `)
+
+    await this.ch.querying(stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC) AFTER battle_event_map
     `)
 
     //
@@ -339,7 +344,25 @@ export default class ClickerService {
       const allies = myTeam.filter(p => p.tag !== player.tag)
       const enemies = (<BattlePlayer[]>[]).concat(...teams.filter(t => t !== myTeam))
 
-      // TODO determine powerplay y/n
+      const isPowerplay = floatingVictory != null && battle.battle.trophyChange != null
+        // all brawlers use a star power
+        && allies.every(a => a.brawler.power == 10) && enemies.every(a => a.brawler.power == 10)
+        // victory
+        //   - regular battles give +11 max (+10 +3 underdog) on victory
+        //   - power play at least 18
+        // draw
+        //   - regular battles +3 max (0 +3 underdog)
+        //   - power play 18 or 15
+        // defeat
+        //   - regular battles max +3 (0 +3 underdog) in Showdown <50 trophies
+        //   - power play at least 2
+        //   - this is not 100% accurate but a collision is unlikely
+        // https://brawlstars.fandom.com/wiki/Power_Play
+        // https://brawlstars.fandom.com/wiki/Trophies
+        && (floatingVictory > 0.5 && battle.battle.trophyChange >= 15
+          || floatingVictory == 0.5 && battle.battle.trophyChange >= 5
+          || floatingVictory < 0.5 && battle.battle.trophyChange >= 2)
+
       const record = {
         timestamp: battle.battleTime,
         trophy_season_end: getSeasonEnd(battle.battleTime),
@@ -374,6 +397,7 @@ export default class ClickerService {
         battle_event_id: battle.event.id,
         battle_event_mode: battle.event.mode,
         battle_event_map: battle.event.map,
+        battle_event_powerplay: isPowerplay,
         /* battle */
         // mode: ommitted because duplicate
         battle_type: battle.battle.type,

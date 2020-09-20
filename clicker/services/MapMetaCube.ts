@@ -11,13 +11,12 @@ export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
 }
 
 export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
-  // TODO add brawler_id to dimensions
   table = 'brawltime.map_meta'
   engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()
     PARTITION BY trophy_season_end
     PRIMARY KEY (brawler_trophyrange)
-    ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, battle_event_id, battle_is_bigbrawler)
+    ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, battle_event_id, battle_event_powerplay, battle_is_bigbrawler)
   `
 
   dimensions = [
@@ -27,6 +26,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     'battle_event_mode',
     'battle_event_map',
     'battle_event_id',
+    'battle_event_powerplay',
     'battle_is_bigbrawler',
   ]
   dimensionsDefinition = stripIndent`
@@ -36,9 +36,14 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     battle_event_mode LowCardinality(String),
     battle_event_map LowCardinality(String),
     battle_event_id UInt32,
+    battle_event_powerplay UInt8,
     battle_is_bigbrawler UInt8
   `
 
+  // FIXME this gives every ally the same trophyrange, trophychange and pick weight which might not be true
+  // ally bigbrawler being the same is ok because the bigbrawler is in the opposing team or has no allies
+  // TODO add brawler_id to dimensions
+  // materialized views do not support UNION so can't add brawler to allies
   seedQuery = stripIndent`
     SELECT
       trophy_season_end,
@@ -47,6 +52,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
       battle_event_mode,
       battle_event_map,
       battle_event_id,
+      battle_event_powerplay,
       assumeNotNull(battle_is_bigbrawler) AS battle_is_bigbrawler,
       ${this.measuresQuery}
     FROM brawltime.battle
@@ -57,6 +63,8 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     'battle_event_mode': 1,
     'battle_event_map': 1,
     'battle_event_id': 1,
+    'battle_event_powerplay': 1,
+    'battle_battle_is_bigbrawler': 1,
     ...BrawlerBattleCube.defaultSlices,
   }
 
@@ -68,6 +76,10 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
         return query.where('battle_event_map', '=', args[0])
       case 'battle_event_id':
         return query.where('battle_event_id', '=', parseInt(args[0]))
+      case 'battle_event_powerplay':
+        return query.where('battle_event_powerplay', '=', args[0] == 'true' ? 1 : 0)
+      case 'battle_is_bigbrawler':
+        return query.where('battle_is_bigbrawler', '=', args[0] == 'true' ? 1 : 0)
     }
     return super.slice(query, name, args)
   }
@@ -77,6 +89,7 @@ export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
     battle_event_mode: 'string',
     battle_event_map: 'string',
     battle_event_id: 'int',
+    battle_event_powerplay: 'bool',
     battle_is_bigbrawler: 'bool',
   } as Record<string, DataType>
 }
