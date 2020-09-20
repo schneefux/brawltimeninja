@@ -945,13 +945,14 @@ export default class ClickerService {
       dimensions: string[],
       slices: { [name: string]: string[] },
       order: { [column: string]: Order },
-      limit: number) {
+      limit: number,
+      name: string|undefined) {
     const cube = this.getCubeByName(cubeName)
     limit = Math.min(1000, limit)
 
     console.log('executing cube query', cubeName, measures, dimensions, slices, order, limit)
     return await cube.query(this.ch,
-      'cube.' + cubeName + '.' + dimensions.join(','),
+      name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
       dimensions,
       slices,
