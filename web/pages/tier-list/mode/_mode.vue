@@ -226,7 +226,7 @@ export default Vue.extend({
           useRate: row.picks_weighted / this.totals.picks_weighted,
           pickRate: row.picks / this.totals.picks,
           starRate: row.battle_starplayer,
-          rank1Rate: row.battle_rank1 / this.totals.battle_rank1,
+          rank1Rate: row.battle_rank1,
           duration: row.battle_duration,
         },
         sampleSize: row.picks,
