@@ -78,7 +78,7 @@ export default Vue.extend({
             : '' }
             { event.brawler.stats.winRate != undefined ?
             <div class="flex justify-between">
-              <dt>Recommended</dt>
+              <dt>Above Average</dt>
               <dd>{ event.brawler.stats.winRate * event.brawler.stats.useRate > 0.55 * 1.0/props.totalBrawlers ? 'Yes' : 'No' }</dd>
             </div>
             : '' }

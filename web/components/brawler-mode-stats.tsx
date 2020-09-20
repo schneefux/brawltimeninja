@@ -98,7 +98,7 @@ export default Vue.extend({
             : '' }
             { mode.modeId in mapsByMode ?
             <div class="flex justify-between">
-              <dt>Good Maps</dt>
+              <dt>Above Average</dt>
               <dd>{ (aboveAverageWinRateMapsByMode[mode.modeId]||[]).length }/{ mapsByMode[mode.modeId].length }</dd>
             </div>
             : '' }
