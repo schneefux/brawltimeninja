@@ -13,13 +13,13 @@
       </nuxt-link>
     </div>
 
-    <div slot="content" class="brawler-avatars my-4">
-      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder"></div>
+    <div slot="content" class="brawler-avatars">
+      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
       <div
         v-for="entry in topStarpowers"
         :key="entry.id"
         :style="`width: ${100 / Object.keys(topStarpowers).length}%`"
-        class="brawler-avatars__element"
+        class="brawler-avatars__element my-4"
       >
         <div class="brawler-avatar">
           <media-img

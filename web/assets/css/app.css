@@ -168,15 +168,12 @@
 }
 
 .brawler-avatars__placeholder {
-  @apply w-full -my-4; /* TODO decouple my-4 from brawler-avatars or card */
-  height: calc(55px + 2*1rem);
+  @apply w-full;
 }
 
 .brawler-avatars__placeholder::before {
   content: '';
-  @apply block absolute;
-  height: calc(100% + 2*1rem); /* TODO */
-  top: -1rem; /* TODO */
+  @apply block absolute h-full top-0;
   left: -200px;
   width: 200px;
   /* bg-gray-800 */
@@ -189,7 +186,7 @@
   from {
     left: -150px;
   }
-  to   {
+  to {
     left: 100%;
   }
 }
