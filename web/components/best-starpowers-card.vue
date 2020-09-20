@@ -14,6 +14,7 @@
     </div>
 
     <div slot="content" class="brawler-avatars my-4">
+      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder"></div>
       <div
         v-for="entry in topStarpowers"
         :key="entry.id"

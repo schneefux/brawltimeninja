@@ -167,6 +167,33 @@
   @apply flex justify-between mx-1;
 }
 
+.brawler-avatars__placeholder {
+  @apply w-full -my-4; /* TODO decouple my-4 from brawler-avatars or card */
+  height: calc(55px + 2*1rem);
+}
+
+.brawler-avatars__placeholder::before {
+  content: '';
+  @apply block absolute;
+  height: calc(100% + 2*1rem); /* TODO */
+  top: -1rem; /* TODO */
+  left: -200px;
+  width: 200px;
+  /* bg-gray-800 */
+  background: linear-gradient(to right, transparent 0%, #2d3748 50%, transparent 100%);
+  animation: load 1s ease;
+  animation-iteration-count: infinite;
+}
+
+@keyframes load {
+  from {
+    left: -150px;
+  }
+  to   {
+    left: 100%;
+  }
+}
+
 .brawler-avatars__element {
   @apply w-1/5 mx-px flex flex-wrap justify-center overflow-hidden;
 }

@@ -12,6 +12,7 @@
     </div>
 
     <div slot="content" class="brawler-avatars my-4">
+      <div v-if=" $fetchState.pending" class="brawler-avatars__placeholder"></div>
       <div
         v-for="brawler in data"
         :key="brawler.id"
