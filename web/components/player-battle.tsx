@@ -2,6 +2,7 @@ import Vue, { PropType } from 'vue'
 import EventCard from '~/components/event-card'
 import { hoursSinceDate } from '~/lib/util'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import PowerPlayIcon from '~/assets/images/icon/power_play_optimized.png'
 import { Battle } from '~/model/Api'
 
 export default Vue.extend({
@@ -20,6 +21,10 @@ export default Vue.extend({
     const battle = props.battle
     const playerTag = props.playerTag
 
+    // TODO receive this from backend
+    const isPowerplay = battle.victory != undefined && battle.trophyChange != undefined
+      && (battle.victory && battle.trophyChange > 11 || !battle.victory && battle.trophyChange > 3)
+
     const hoursSinceBattle = hoursSinceDate(battle.timestamp as string)
     const infobar = <div class="flex justify-between">
         <div>
@@ -30,7 +35,7 @@ export default Vue.extend({
             <span>
               { battle.trophyChange > 0 ? '+' : ''}{ battle.trophyChange }
               <img
-                src={TrophyIcon}
+                src={isPowerplay ? PowerPlayIcon : TrophyIcon}
                 class="w-4 inline"
               />
             </span>
@@ -77,7 +82,7 @@ export default Vue.extend({
                       { mate.brawlerTrophies }
                     </span>
                     <img
-                      src={TrophyIcon}
+                      src={isPowerplay ? PowerPlayIcon : TrophyIcon}
                       class="w-4 h-4 ml-px"
                     />
                   </div>
