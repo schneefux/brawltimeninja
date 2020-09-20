@@ -10,7 +10,7 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
   },
   purge: {
-    enabled: true,
+    enabled: process.env.NODE_ENV == 'production',
     content: [
       path.join(__dirname, './pages/**/*.vue'),
       path.join(__dirname, './layouts/**/*.vue'),
