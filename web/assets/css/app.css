@@ -176,8 +176,7 @@
   @apply block absolute h-full top-0;
   left: -200px;
   width: 200px;
-  /* bg-gray-800 */
-  background: linear-gradient(to right, transparent 0%, #2d3748 50%, transparent 100%);
+  background: linear-gradient(to right, transparent 0%, theme('colors.bg-gray-800') 50%, transparent 100%);
   animation: load 1s ease;
   animation-iteration-count: infinite;
 }
