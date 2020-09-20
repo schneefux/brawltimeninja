@@ -15,6 +15,7 @@ interface Clicker {
   cubes: typeof cubes[number][]
   queryMetadata(cube: typeof cubes[number]): Promise<{ dimensions: string[], measures: string[], slices: Record<string, number> }>
   query<M extends string, D extends string>(
+    name: string,
     cube: typeof cubes[number],
     dimensions: D[],
     measures: M[],
@@ -56,10 +57,13 @@ export default (context, inject) => {
     queryMetadata(cube) {
       return context.$axios.$get(context.env.clickerUrl + '/clicker/cube/' + cube + '/metadata')
     },
-    query(cube, dimensions, measures, slices, options = {}) {
+    query(name, cube, dimensions, measures, slices, options = {}) {
       const query = new URLSearchParams({
         include: measures.join(','),
       })
+      if (name != undefined) {
+        query.append('name', name)
+      }
       if (options.sort != undefined) {
         query.append('sort', Object.entries(options.sort || {}).map(([name, order]) => (order == 'desc' ? '-' : '') + name).join(','))
       }

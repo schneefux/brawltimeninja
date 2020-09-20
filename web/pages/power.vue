@@ -145,7 +145,7 @@ export default Vue.extend({
     async query() {
       try {
         this.error = ''
-        const response = await this.$clicker.query(
+        const response = await this.$clicker.query('power',
           this.selectedCube,
           [this.selectedDimension],
           [this.selectedMetric],

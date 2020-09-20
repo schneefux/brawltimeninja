@@ -137,7 +137,7 @@ export default Vue.extend({
     },
   },
   async fetch() {
-    const data = await this.$clicker.query('map',
+    const data = await this.$clicker.query('meta.map.widget', 'map',
       ['brawler_name'],
       ['battle_victory'],
       {

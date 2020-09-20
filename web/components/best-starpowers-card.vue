@@ -68,7 +68,7 @@ export default Vue.extend({
   async fetch() {
     const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
     const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
-    const data = await this.$clicker.query(cube,
+    const data = await this.$clicker.query('meta.starpower.widget', cube,
       ['brawler_id', 'brawler_name', ...dimensions],
       ['battle_victory'],
       {

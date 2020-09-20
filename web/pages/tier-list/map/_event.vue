@@ -124,7 +124,7 @@ export default Vue.extend({
     slices: '$fetch',
   },
   async fetch() {
-    const data = await this.$clicker.query('map',
+    const data = await this.$clicker.query('meta.map', 'map',
       ['brawler_name'],
       ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
       this.slices,
@@ -158,7 +158,7 @@ export default Vue.extend({
     }),
   },
   async asyncData({ store, params, error, $clicker }) {
-    const events = await $clicker.query('map',
+    const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
       ['battle_event_id'],
       { battle_event_id: [params.event] },

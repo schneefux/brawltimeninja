@@ -120,7 +120,7 @@ export default Vue.extend({
     slices: '$fetch',
   },
   async fetch() {
-    const data = await this.$clicker.query('starpower',
+    const data = await this.$clicker.query('meta.starpower', 'starpower',
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
       ['battle_victory', 'battle_starplayer', 'battle_rank1', 'picks'],
       this.slices,
