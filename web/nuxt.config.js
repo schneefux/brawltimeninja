@@ -42,6 +42,9 @@ export default {
       }, {
         urlPattern: process.env.API_URL + '/.*',
         handler: 'networkFirst',
+      }, {
+        urlPattern: process.env.CLICKER_URL + '/.*',
+        handler: 'networkFirst',
       }],
       // prefix all cache keys with release id
       // write release id to a custom option
