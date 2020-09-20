@@ -155,7 +155,7 @@ export default Vue.extend({
     return {
       modes: [] as string[],
       showAllModes: false,
-      slices: {} as any,
+      slices: this.$clicker.defaultSlices('map'),
       data: [] as Row[],
       totals: {} as Row,
     }

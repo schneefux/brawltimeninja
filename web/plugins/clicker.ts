@@ -1,6 +1,17 @@
 const cubes = ['player', 'brawler', 'map', 'starpower', 'gadget']
 
+const defaultSlices = {
+  trophy_season_end: ['balance'],
+  brawler_trophyrange: ['0', '10'],
+}
+
+const defaultMapSlices = {
+  ...defaultSlices,
+  battle_event_powerplay: ['false'],
+}
+
 interface Clicker {
+  defaultSlices(cube: string): typeof defaultSlices | typeof defaultMapSlices
   cubes: typeof cubes[number][]
   queryMetadata(cube: typeof cubes[number]): Promise<{ dimensions: string[], measures: string[], slices: Record<string, number> }>
   query<M extends string, D extends string>(
@@ -38,6 +49,9 @@ declare module 'vuex/types/index' {
 
 export default (context, inject) => {
   inject('clicker', <Clicker>{
+    defaultSlices(cube) {
+      return cube == 'map' ? defaultMapSlices : defaultSlices
+    },
     cubes,
     queryMetadata(cube) {
       return context.$axios.$get(context.env.clickerUrl + '/clicker/cube/' + cube + '/metadata')

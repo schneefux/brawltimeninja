@@ -3,7 +3,7 @@
   <div class="card card--dark px-3 py-4 md:card__content max-w-sm mx-auto">
     <div class="flex items-center">
       <div class="w-24">
-        <span>Time</span>
+        <span>Timespan</span>
       </div>
       <div class="flex flex-wrap">
         <button
@@ -45,7 +45,7 @@
       v-if="sample != undefined"
       class="mt-2"
     >
-      Data is based on over {{ formatSI(sample) }} battles.
+      Statistics are based on over {{ formatSI(sample) }} battles.
     </p>
     <p
       v-if="sample != undefined && sampleMin != undefined && sample < sampleMin"
@@ -61,13 +61,15 @@ import Vue, { PropType } from 'vue'
 import { formatSI } from '../lib/util'
 import { format } from 'path'
 
+// TODO add big brawler
+
 export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<{
-        trophy_season_end?: string[],
-        brawler_trophyrange?: string[],
-        battle_event_powerplay?: string[],
+        trophy_season_end: string[],
+        brawler_trophyrange: string[],
+        battle_event_powerplay: string[],
       }>,
       required: true
     },
@@ -99,7 +101,7 @@ export default Vue.extend({
     },
     trophyRange: {
       get(): number[] {
-        return (this.value.brawler_trophyrange || ['0', '10']).map(n => parseInt(n))
+        return this.value.brawler_trophyrange.map(n => parseInt(n))
       },
       set(v: number[]) {
         this.$emit('input', {
@@ -110,7 +112,7 @@ export default Vue.extend({
     },
     timeRange: {
       get(): string {
-        return (this.value.trophy_season_end || 'balance')[0]
+        return this.value.trophy_season_end[0]
       },
       set(v: string) {
         this.$emit('input', {
@@ -121,7 +123,7 @@ export default Vue.extend({
     },
     powerPlayActive: {
       get(): boolean {
-        return (this.value.battle_event_powerplay || 'false')[0] == 'true'
+        return this.value.battle_event_powerplay[0] == 'true'
       },
       set(v: boolean) {
         this.$emit('input', {

@@ -166,7 +166,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      slices: {} as any,
+      slices: this.$clicker.defaultSlices('map'),
       showAllMaps: false,
       mode: '',
       modeName: '',
@@ -204,6 +204,7 @@ export default Vue.extend({
         map: e.battle_event_map,
       })),
       slices: {
+        ...$clicker.defaultSlices('map'),
         battle_event_mode: [mode],
       } as any,
     }

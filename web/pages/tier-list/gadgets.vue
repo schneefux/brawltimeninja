@@ -50,7 +50,7 @@ interface Row {
 export default Vue.extend({
   data() {
     return {
-      slices: {} as any,
+      slices: this.$clicker.defaultSlices('gadget'),
       data: [] as Row[],
       totals: {} as Row,
     }

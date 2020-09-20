@@ -115,7 +115,7 @@ export default Vue.extend({
         modeName: '',
         map: '',
       } as MapWithId,
-      slices: {} as any,
+      slices: this.$clicker.defaultSlices('map'),
       data: [] as Row[],
       totals: {} as Row,
     }
@@ -176,6 +176,7 @@ export default Vue.extend({
         modeName: formatMode(event.battle_event_mode as string),
       } as MapWithId,
       slices: {
+        ...$clicker.defaultSlices('map'),
         battle_event_id: [params.event],
       } as any,
     }
