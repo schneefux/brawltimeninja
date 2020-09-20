@@ -118,7 +118,7 @@ router.get('/clicker/cube/:cube/query/:dimensions', async (ctx, next) => {
     ctx.status = 400
   }
 
-  ctx.set('Cache-Control', `public, max-age=${Math.min(Math.max(60*60*24, cache), 60)}`)
+  ctx.set('Cache-Control', `public, max-age=${Math.max(Math.min(60*60*24, cache), 60)}`)
   await next()
 });
 
