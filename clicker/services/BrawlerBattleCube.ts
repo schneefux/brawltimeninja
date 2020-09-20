@@ -77,6 +77,9 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
         }
         return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
+        if (args[1] == '10') {
+          args[1] = '999'
+        }
         return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])
       case 'brawler_name':
         return query.where('brawler_name', '=', args[0])
