@@ -142,6 +142,15 @@
         </brawler-card>
       </div>
     </div>
+
+    <div class="mt-2 w-full text-right hidden md:block">
+      <button
+        class="button button--md"
+        @click="downloadCsv()"
+      >
+        Download Data
+      </button>
+    </div>
   </div>
 </template>
 
@@ -269,6 +278,17 @@ export default Vue.extend({
     },
   },
   methods: {
+    downloadCsv() {
+      this.$ga.event(this.gaCategory, 'click', 'download_csv')
+
+      const csv = 'title,brawler,sampleSize,' + this.stats.join(',') + '\n'
+        + this.sortedEntries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.stats.map(stat => entry.stats[stat]).join(',')).join('\n')
+      const downloader = document.createElement('a')
+      downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
+      downloader.target = '_blank'
+      downloader.download = 'export.csv'
+      downloader.click()
+    },
     sortBy(stat: string) {
       this.selectedStat = stat
       this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedStat}`)
