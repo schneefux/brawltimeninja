@@ -81,9 +81,9 @@ export default Vue.extend({
 
         if (brawlerWithout == undefined) {
           return {
-            winRate: perc(starpower.battle_victory),
-            starRate: perc(starpower.battle_starplayer),
-            rank1Rate: perc(starpower.battle_rank1),
+            winRate: starpower.battle_victory,
+            starRate: starpower.battle_starplayer,
+            rank1Rate: starpower.battle_rank1,
           }
         }
 
