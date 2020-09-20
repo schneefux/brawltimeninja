@@ -1,19 +1,23 @@
 <template>
   <div class="mt-6">
-    <div class="text-center w-full">
-      <span class="mr-2">Sort By</span>
-      <button
-        v-for="stat in stats"
-        :key="stat"
-        class="mr-3 mb-2 button button-sm"
-        :class="{ 'button--selected': selectedStat == stat }"
-        @click="sortBy(stat)"
-      >
-        {{ metaStatMaps.labels[stat] }}
-      </button>
+    <div class="flex items-center justify-center">
+      <div class="w-16 flex-shrink-0">
+        <span>Sort By</span>
+      </div>
+      <div class="flex flex-wrap">
+        <button
+          v-for="stat in stats"
+          :key="stat"
+          class="mr-3 my-1 button button-sm"
+          :class="{ 'button--selected': selectedStat == stat }"
+          @click="sortBy(stat)"
+        >
+          {{ metaStatMaps.labels[stat] }}
+        </button>
+      </div>
     </div>
 
-    <div class="mt-4 container mx-auto">
+    <div class="container mx-auto">
       <div class="section-heading">
         <h5 class="text-xl font-semibold">Tier List</h5>
       </div>

@@ -1,26 +1,56 @@
 <template>
-  <div class="section text-center">
-    <div>
-      <span class="mr-1">Time:</span>
-      <button
-        v-for="(label, t) in timeRangeLabel"
-        :key="t"
-        class="mr-1 mb-1 button button-sm"
-        :class="{ 'button--selected': timeRange == t }"
-        @click="timeRange = t"
-      >
-        {{ label }}
-      </button>
+  <!-- a bit less px than card__content on sm so that the time buttons fit -->
+  <div class="card card--dark px-3 py-4 md:card__content max-w-sm mx-auto">
+    <div class="flex items-center">
+      <div class="w-24">
+        <span>Time</span>
+      </div>
+      <div class="flex flex-wrap">
+        <button
+          v-for="(label, t) in timeRangeLabel"
+          :key="t"
+          class="mr-2 my-1 button button-sm"
+          :class="{ 'button--selected': timeRange == t }"
+          @click="timeRange = t"
+        >
+          {{ label }}
+        </button>
+      </div>
     </div>
 
-    <div>
-      <trophy-slider v-model="trophyRange"></trophy-slider>
-    </div>
+    <label
+      v-if="cube == 'map'"
+      class="flex items-center mt-2"
+    >
+      <div class="w-24">
+        <span>Power Play</span>
+      </div>
+      <div class="relative">
+        <input
+          v-model="powerPlayActive"
+          type="checkbox"
+          class="hidden"
+        >
+        <div class="toggle__line w-10 h-4 bg-primary rounded-full shadow-inner"></div>
+        <div class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
+      </div>
+    </label>
 
-    <p v-if="sample != undefined">
+    <trophy-slider
+      v-model="trophyRange"
+      :name="powerPlayActive ? 'Points' : undefined"
+    ></trophy-slider>
+
+    <p
+      v-if="sample != undefined"
+      class="mt-2"
+    >
       Data is based on over {{ formatSI(sample) }} battles.
     </p>
-    <p v-if="sample != undefined && sampleMin != undefined && sample < sampleMin">
+    <p
+      v-if="sample != undefined && sampleMin != undefined && sample < sampleMin"
+      class="text-red-400"
+    >
       Not enough data! Select a broader filter or come back later.
     </p>
   </div>
@@ -35,8 +65,9 @@ export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<{
-        trophy_season_end: string[],
-        brawler_trophyrange: number[],
+        trophy_season_end?: string[],
+        brawler_trophyrange?: string[],
+        battle_event_powerplay?: string[],
       }>,
       required: true
     },
@@ -48,12 +79,16 @@ export default Vue.extend({
       type: Number,
       default: false
     },
+    cube: {
+      type: String,
+      required: false
+    },
   },
   data() {
     return {
       timeRangeLabel: {
         'current': 'Season',
-        'balance': 'Last Update',
+        'balance': 'Update',
         'month': 'Month',
       },
     }
@@ -64,18 +99,18 @@ export default Vue.extend({
     },
     trophyRange: {
       get(): number[] {
-        return this.value.brawler_trophyrange
+        return (this.value.brawler_trophyrange || ['0', '10']).map(n => parseInt(n))
       },
       set(v: number[]) {
         this.$emit('input', {
           ...this.value,
-          brawler_trophyrange: v,
+          brawler_trophyrange: v.map(n => n.toString()),
         })
       }
     },
     timeRange: {
       get(): string {
-        return this.value.trophy_season_end[0]
+        return (this.value.trophy_season_end || 'balance')[0]
       },
       set(v: string) {
         this.$emit('input', {
@@ -84,6 +119,30 @@ export default Vue.extend({
         })
       }
     },
+    powerPlayActive: {
+      get(): boolean {
+        return (this.value.battle_event_powerplay || 'false')[0] == 'true'
+      },
+      set(v: boolean) {
+        this.$emit('input', {
+          ...this.value,
+          battle_event_powerplay: [v ? 'true' : 'false'],
+        })
+      }
+    },
   },
 })
 </script>
+
+<style scoped lang="postcss">
+.toggle__dot {
+  top: -.25rem;
+  left: -.25rem;
+  transition: all 0.3s ease-in-out;
+}
+
+input:checked ~ .toggle__dot {
+  transform: translateX(100%);
+  @apply bg-primary-lighter;
+}
+</style>

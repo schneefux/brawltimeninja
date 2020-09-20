@@ -27,8 +27,10 @@
   @apply mt-3 mx-1 w-full max-w-sm;
 }
 
-.card__content {
-  @apply px-6 py-4;
+@responsive {
+  .card__content {
+    @apply px-6 py-4;
+  }
 }
 
 .card__header {

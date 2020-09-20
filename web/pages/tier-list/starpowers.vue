@@ -19,6 +19,7 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
+        cube="starpower"
       ></meta-slicers>
       <meta-grid
         :entries="starpowers"
@@ -49,10 +50,7 @@ interface Row {
 export default Vue.extend({
   data() {
     return {
-      slices: {
-        brawler_trophyrange: [0, 10],
-        trophy_season_end: ['balance'],
-      },
+      slices: {} as any,
       data: [] as Row[],
       totals: {} as Row,
     }

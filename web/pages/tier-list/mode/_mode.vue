@@ -102,6 +102,7 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
+        cube="map"
       ></meta-slicers>
       <meta-grid
         :entries="modes"
@@ -165,10 +166,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      slices: {
-        brawler_trophyrange: [0, 10],
-        trophy_season_end: ['balance'],
-      },
+      slices: {} as any,
       showAllMaps: false,
       mode: '',
       modeName: '',
@@ -206,10 +204,8 @@ export default Vue.extend({
         map: e.battle_event_map,
       })),
       slices: {
-        brawler_trophyrange: [0, 10],
-        trophy_season_end: ['balance'],
         battle_event_mode: [mode],
-      },
+      } as any,
     }
   },
   computed: {

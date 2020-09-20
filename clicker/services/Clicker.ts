@@ -362,6 +362,8 @@ export default class ClickerService {
         && (floatingVictory > 0.5 && battle.battle.trophyChange >= 15
           || floatingVictory == 0.5 && battle.battle.trophyChange >= 5
           || floatingVictory < 0.5 && battle.battle.trophyChange >= 2)
+      // retroactively applied on 2020-09-20T11:45 with
+      // alter table battle update battle_event_powerplay=1 where player_highest_power_play_points>0 and brawler_power=10 and (battle_victory>toDecimal32(0.5, 8) and battle_trophy_change>=15 or battle_victory=toDecimal32(0.5, 8) and battle_trophy_change>=5 or battle_victory<toDecimal32(0.5, 8) and battle_trophy_change>=2)
 
       const record = {
         timestamp: battle.battleTime,
