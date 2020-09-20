@@ -96,6 +96,10 @@
 }
 
 @responsive {
+  .button-xs {
+    @apply py-px px-1;
+  }
+
   .button-sm {
     @apply border-2;
   }

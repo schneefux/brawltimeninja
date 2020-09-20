@@ -1,5 +1,5 @@
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps, getBestBrawlers, capitalize } from '~/lib/util'
+import { formatMode, metaStatMaps, getBestBrawlers, capitalize, brawlerId } from '~/lib/util'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
 import { Brawler } from '~/model/Api'
 import { PlayerModeStats } from '~/model/Web'
@@ -83,13 +83,15 @@ export default Vue.extend({
             <ol class="flex mt-1 w-32">
             { recommendedBrawlers.map((brawler) =>
               <li class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-black text-center">
-                <media-img
-                  path={'/brawlers/' + brawler + '/avatar'}
-                  size="160"
-                  alt={brawler}
-                  clazz="h-8"
-                ></media-img>
-                <span class="text-xs">{ capitalize(brawler) }</span>
+                <router-link to={'/tier-list/brawler/' + brawlerId({ name:  brawler })}>
+                  <media-img
+                    path={'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'}
+                    size="160"
+                    alt={brawler}
+                    clazz="h-8"
+                  ></media-img>
+                  <span class="text-xs">{ capitalize(brawler) }</span>
+                </router-link>
               </li>
             ) }
             </ol>
@@ -101,9 +103,24 @@ export default Vue.extend({
               clazz="px-1"
               ztyle="max-height: 100%;"
             ></media-img>
+            <router-link
+              to={`/tier-list/map/${eventId}`}
+              class="mx-auto button button-xs"
+            >
+              Open
+            </router-link>
           </div>
         </div>
-        : '' }
+        :
+        <div class="mt-2">
+          <router-link
+            to={`/tier-list/mode/${mode}`}
+            class="button button-xs"
+          >
+            Open Tier List
+          </router-link>
+        </div>
+        }
       </div>
       <div class="absolute top-0 right-0 mr-6 my-4">
         <media-img
