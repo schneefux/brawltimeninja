@@ -86,21 +86,8 @@
           :icon="entry.icon"
           class="h-auto"
         >
-          <template v-slot:history>
-            <div class="mb-auto text-right">
-              <span
-                v-if="entry.sampleSize < sampleSizeThreshold"
-                class="align-text-top mr-1 text-sm text-grey-light"
-              >
-                Not enough data
-              </span>
-              <span class="font-semibold text-white text-2xl text-shadow">
-                #{{ entry.index }}
-              </span>
-            </div>
-          </template>
           <template v-slot:stats>
-            <table>
+            <table v-if="entry.sampleSize >= sampleSizeThreshold">
               <tbody>
                 <tr
                   v-for="stat in stats"
@@ -133,6 +120,12 @@
                 </tr>
               </tbody>
             </table>
+            <div
+              v-else
+              class="h-16 flex"
+            >
+              <span class="m-auto">Not enough data.</span>
+            </div>
             <nuxt-link
               v-if="entry.link !== undefined"
               :to="entry.link"
