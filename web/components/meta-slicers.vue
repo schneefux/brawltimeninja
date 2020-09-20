@@ -69,7 +69,7 @@ export default Vue.extend({
       type: Object as PropType<{
         trophy_season_end: string[],
         brawler_trophyrange: string[],
-        battle_event_powerplay: string[],
+        battle_event_powerplay?: string[],
       }>,
       required: true
     },
@@ -123,7 +123,7 @@ export default Vue.extend({
     },
     powerPlayActive: {
       get(): boolean {
-        return this.value.battle_event_powerplay[0] == 'true'
+        return (this.value.battle_event_powerplay || [])[0] == 'true'
       },
       set(v: boolean) {
         this.$emit('input', {
