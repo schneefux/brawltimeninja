@@ -233,7 +233,7 @@
 
     <player-teaser-card
       v-slot="props"
-      :pages="Math.ceil(Object.keys(player.brawlers).length) / 9"
+      :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
       title="Brawlers"
       description="View Trophy Graphs and Win Rates for all of your Brawlers."
       class="card-wrapper"
@@ -241,7 +241,7 @@
       <player-brawlers
         :player="player"
         :tease="!props.open"
-        :limit="props.page * 9"
+        :limit="props.page * 15"
       ></player-brawlers>
     </player-teaser-card>
 
