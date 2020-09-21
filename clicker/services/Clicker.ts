@@ -11,6 +11,7 @@ import LeaderboardCube from './LeaderboardCube';
 import Cube, { Order } from './Cube';
 import BrawlerLeaderboardCube from './BrawlerLeaderboardCube';
 import { stripIndent } from 'common-tags';
+import SynergyMetaCube from './SynergyCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -66,6 +67,7 @@ export default class ClickerService {
   private mapMetaCube = new MapMetaCube()
   private gadgetMetaCube = new GadgetMetaCube()
   private starpowerMetaCube = new StarpowerMetaCube()
+  private synergyMetaCube = new SynergyMetaCube()
   private leaderboardCube = new LeaderboardCube()
   private brawlerLeaderboardCube = new BrawlerLeaderboardCube()
 
@@ -204,6 +206,7 @@ export default class ClickerService {
       SETTINGS index_granularity=25;
     `)
 
+    // backwards compat
     await this.ch.querying(stripIndent`
       ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC) AFTER battle_event_map
     `)
@@ -235,6 +238,7 @@ export default class ClickerService {
     await this.mapMetaCube.up(this.ch)
     await this.gadgetMetaCube.up(this.ch)
     await this.starpowerMetaCube.up(this.ch)
+    await this.synergyMetaCube.up(this.ch)
     await this.leaderboardCube.up(this.ch)
     await this.brawlerLeaderboardCube.up(this.ch)
   }
@@ -922,6 +926,8 @@ export default class ClickerService {
         return this.brawlerLeaderboardCube
       case 'map':
         return this.mapMetaCube
+      case 'synergy':
+        return this.synergyMetaCube
       case 'gadget':
         return this.gadgetMetaCube
       case 'starpower':
@@ -950,7 +956,7 @@ export default class ClickerService {
     const cube = this.getCubeByName(cubeName)
     limit = Math.min(1000, limit)
 
-    console.log('executing cube query', cubeName, measures, dimensions, slices, order, limit)
+    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit)
     return await cube.query(this.ch,
       name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
