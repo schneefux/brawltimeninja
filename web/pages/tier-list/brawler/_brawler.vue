@@ -80,6 +80,26 @@
     <div
       class="section-heading"
       v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'synergies'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">
+        Synergies for {{ brawlerName }}
+      </h2>
+    </div>
+
+    <div class="section">
+      <div class="flex justify-center">
+        <brawler-synergies-card
+          :brawler="brawlerName"
+        ></brawler-synergies-card>
+      </div>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'current-maps'),
         once: true,
       }"
@@ -264,7 +284,7 @@ export default Vue.extend({
     const brawlerStats = await $axios.$get<BrawlerStatisticsRows|null>('/api/brawler/' + brawlerId).catch(() => null)
     return {
       brawlerId,
-      brawlerName: capitalizeWords(brawlerId.replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P)
+      brawlerName: capitalizeWords(brawlerId.replace(/__/g, '. ').replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
       currentEvents: activeEvents.current,
       brawlerMeta,
       starpowerMeta,
