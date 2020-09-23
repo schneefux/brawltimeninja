@@ -14,7 +14,11 @@
         data-ad-slot="6887845661"
       />
 
-      <article class="link-card" itemscope itemtype="http://schema.org/AnalysisNewsArticle">
+      <article
+        class="link-card my-4"
+        itemscope
+        itemtype="http://schema.org/AnalysisNewsArticle"
+      >
         <nuxt-link
           :to="`/blog/guides/${post.slug}`"
           class="link-light"
@@ -22,7 +26,7 @@
         >
           <h2 class="text-2xl font-semibold">
             <span itemprop="headline">{{ post.title }}</span>
-            <span class="text-sm block mt-1 md:float-right align-middle text-grey-darker" rel="author">{{ post.author }}</span>
+            <span class="text-sm block mt-1 md:float-right align-middle text-gray-700" rel="author">{{ post.author }}</span>
           </h2>
         </nuxt-link>
         <p class="mt-3" itemprop="abstract">

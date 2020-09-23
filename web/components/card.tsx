@@ -86,7 +86,7 @@ export default Vue.extend({
           { scopedSlots.content({ open, page }) }
         </div>
         { 'actions' in scopedSlots ?
-          <div class="relative z-10 bg-black text-primary-lightest w-full px-3 py-2 font-semibold">
+          <div class="relative z-10 bg-gray-800 text-primary-lightest w-full px-3 py-2 font-semibold">
             { scopedSlots.actions({}) }
           </div>
           : ''

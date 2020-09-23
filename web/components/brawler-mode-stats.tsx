@@ -76,7 +76,7 @@ export default Vue.extend({
         </nuxt-link>
       </div>,
       content: () => <div class="my-4 flex">
-        <div class="flex justify-center bg-black rounded mx-auto">
+        <div class="flex justify-center bg-gray-800 rounded mx-auto">
           <div class="flex flex-col justify-end mr-2">
             <media-img
               path={`/brawlers/${props.brawlerId}/avatar`}

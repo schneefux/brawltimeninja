@@ -82,7 +82,7 @@ export default Vue.extend({
             </div>
             <ol class="flex mt-1 w-32">
             { recommendedBrawlers.map((brawler) =>
-              <li class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-black text-center">
+              <li class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-gray-800 text-center">
                 <router-link to={'/tier-list/brawler/' + brawlerId({ name:  brawler })}>
                   <media-img
                     path={'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'}

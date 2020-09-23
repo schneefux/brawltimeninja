@@ -30,7 +30,7 @@ export default Vue.extend({
           'rounded-r': index == battles.length - 1,
           'bg-red-500': battle.victory === false,
           'bg-green-500': battle.victory === true,
-          'border-r-2 border-t-2 border-b-2 border-black w-12 h-12 bg-primary-dark flex justify-center items-center': true,
+          'border-r-2 border-t-2 border-b-2 border-gray-900 w-12 h-12 bg-primary-dark flex justify-center items-center': true,
         }}
       >
         <media-img

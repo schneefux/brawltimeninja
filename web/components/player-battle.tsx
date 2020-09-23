@@ -63,7 +63,7 @@ export default Vue.extend({
               rel={mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''}
               to={`/player/${mate.tag}`}
               class={
-                'w-14 h-14 bg-black py-px relative overflow-hidden '
+                'w-14 h-14 bg-gray-800 py-px relative overflow-hidden '
                 + (mate.tag == playerTag ? 'border-2 border-gray-300 ' : '')
                 + (team.length != 2 ? 'mx-1 rounded-sm ' : '')
               }

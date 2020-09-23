@@ -20,7 +20,7 @@ export default Vue.extend({
     return <div class="card w-80 max-w-full bg-primary-dark mx-auto relative">
       <div class="relative">
         <div class="z-10 absolute left-0 ml-1 mt-1 w-5/12">
-          <div class="bg-black bg-opacity-75 rounded-lg px-2 w-fit-content">
+          <div class="bg-gray-800 bg-opacity-75 rounded-lg px-2 w-fit-content">
             <span class="font-semibold text-white text-2xl text-shadow capitalize">
               { props.title.toLowerCase() }
             </span>
@@ -35,7 +35,7 @@ export default Vue.extend({
           <media-img
             path={props.icon}
             size="80"
-            clazz="absolute bottom-0 h-10 rounded-full p-1 ml-20 bg-black bg-opacity-50"
+            clazz="absolute bottom-0 h-10 rounded-full p-1 ml-20 bg-gray-800 bg-opacity-50"
           ></media-img>
           : ''
         }

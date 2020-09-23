@@ -45,7 +45,7 @@
             :map="map.map"
           >
             <template v-slot:content>
-              <div class="flex justify-center bg-black">
+              <div class="flex justify-center bg-gray-800">
                 <media-img
                   :path="`/maps/${map.id}`"
                   size="384"

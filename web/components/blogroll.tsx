@@ -33,7 +33,7 @@ export default Vue.extend({
                   { post.title }
                 </h3>
               </nuxt-link>
-              <p class="card__text text-grey-darkest">
+              <p class="card__text text-black">
                 { post.description }
               </p>
             </div>

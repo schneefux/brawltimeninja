@@ -196,7 +196,7 @@
 
 /** Brawler avatar with stats below */
 .brawler-avatar {
-  @apply bg-black rounded-sm max-w-full;
+  @apply bg-gray-800 rounded-sm max-w-full;
 }
 
 .brawler-avatar__img {
@@ -237,7 +237,7 @@
 /* on desktop, turn container into a fullscreen modal */
 @screen md {
   .subpage-wrapper {
-    @apply fixed inset-0 z-50 bg-opacity-75 bg-black;
+    @apply fixed inset-0 z-50 bg-opacity-75 bg-gray-800;
   }
 
   .subpage {
@@ -366,7 +366,7 @@
 }
 
 .bigstat-tooltip-text {
-  @apply absolute top-0 left-0 text-sm w-48 bg-black text-grey-lighter rounded px-2 py-1 ml-2 text-left;
+  @apply absolute top-0 left-0 text-sm w-48 bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left;
 }
 
 .bigstat-tooltip-close {

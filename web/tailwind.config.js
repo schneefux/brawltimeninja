@@ -37,12 +37,9 @@ module.exports = {
     colors: {
       transparent: 'transparent',
 
-      /*
       black: '#000',
       white: '#fff',
-      */
 
-      'black': '#22292f',
       'grey-darkest': '#3d4852',
       'grey-darker': '#606f7b',
       'grey-dark': '#8795a1',
@@ -50,7 +47,6 @@ module.exports = {
       'grey-light': '#dae1e7',
       'grey-lighter': '#f1f5f8',
       'grey-lightest': '#f8fafc',
-      'white': '#ffffff',
 
       'red-lighter': '#f9acaa',
 

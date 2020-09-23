@@ -13,7 +13,7 @@
       />
       <h1 class="text-4xl font-semibold">
         <span class="text-primary-dark" itemprop="headline">{{ post.title }}</span>
-        <span class="text-sm block mt-4 md:float-right align-middle text-grey-darker" rel="author">{{ post.author }}</span>
+        <span class="text-sm block mt-4 md:float-right align-middle text-900" rel="author">{{ post.author }}</span>
       </h1>
       <div class="mt-2">
         <nuxt-content
@@ -24,7 +24,7 @@
 
         <div
           v-show="lightboxOpen"
-          class="fixed inset-0 z-50 bg-black bg-opacity-75"
+          class="fixed inset-0 z-50 bg-gray-900 bg-opacity-75"
         >
           <button
             class="absolute top-0 right-0 mr-10 mt-4 text-white text-5xl"
