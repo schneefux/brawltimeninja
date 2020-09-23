@@ -3,36 +3,39 @@
     :title="brawler + ' on your team'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :size="size"
+    :pages="Math.ceil(data.length / 10)"
   >
-    <div slot="content" class="brawler-avatars overflow-x-auto scrolling-touch">
-      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
-      <div
-        v-for="brawler in data"
-        :key="brawler.brawler_name"
-        class="flex-shrink-0 brawler-avatars__element my-4"
-      >
-        <nuxt-link
-          :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-          :router="$router"
-          class="brawler-avatar"
+    <template v-slot:content="{ page }">
+      <div class="brawler-avatars flex-wrap my-2">
+        <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
+        <div
+          v-for="brawler in data.slice(0, 5 + page * 10)"
+          :key="brawler.brawler_name"
+          class="brawler-avatars__element my-2"
         >
-          <media-img
-            :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
-            size="160"
-            clazz="brawler-avatar__img"
-          ></media-img>
-          <p class="brawler-avatar__stats">
-            <template v-if="brawler.picks >= sampleSizeThreshold">
-              {{ brawler.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-              {{ metaStatMaps.labelsShort.winRate }}
-            </template>
-            <template v-else>
-              ?
-            </template>
-          </p>
-        </nuxt-link>
+          <nuxt-link
+            :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
+            :router="$router"
+            class="brawler-avatar"
+          >
+            <media-img
+              :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
+              size="160"
+              clazz="brawler-avatar__img"
+            ></media-img>
+            <p class="brawler-avatar__stats">
+              <template v-if="brawler.picks >= sampleSizeThreshold">
+                {{ brawler.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
+                {{ metaStatMaps.labelsShort.winRate }}
+              </template>
+              <template v-else>
+                ?
+              </template>
+            </p>
+          </nuxt-link>
+        </div>
       </div>
-    </div>
+    </template>
   </card>
 </template>
 
@@ -60,6 +63,18 @@ export default Vue.extend({
       type: String,
       required: false
     },
+    mode: {
+      type: String,
+      required: false
+    },
+    map: {
+      type: String,
+      required: false
+    },
+    id: {
+      type: String,
+      required: false
+    },
   },
   data() {
     return {
@@ -84,7 +99,7 @@ export default Vue.extend({
       ['brawler_name'],
       ['picks', 'battle_victory'],
       {
-        trophy_season_end: ['balance'],
+        ...this.$clicker.defaultSlices('synergy'),
         ally_brawler_name: [this.brawler.toUpperCase()],
       },
       { cache: 60*60 }) as any
@@ -93,9 +108,7 @@ export default Vue.extend({
     const baselines = await this.$clicker.query('meta.synergy.widget.all', 'synergy',
         ['brawler_name'],
         ['picks', 'battle_victory'],
-        {
-          trophy_season_end: ['balance'],
-        },
+        this.$clicker.defaultSlices('synergy'),
         { cache: 60*60 }) as any
 
     const baselineMap = baselines.data.reduce((map, row) => ({

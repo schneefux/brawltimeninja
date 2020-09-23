@@ -2,7 +2,6 @@
   <card
     :title="title"
     size="w-64"
-    scopedSlots={slots}
   >
     <div slot="actions" class="flex justify-end">
       <nuxt-link

@@ -95,15 +95,15 @@ export default Vue.extend({
       type: String,
       required: false
     },
-    id: {
-      type: String,
-      required: false
-    },
     mode: {
       type: String,
       required: true
     },
     map: {
+      type: String,
+      required: false
+    },
+    id: {
       type: String,
       required: false
     },
@@ -145,7 +145,7 @@ export default Vue.extend({
       ['brawler_name'],
       ['battle_victory'],
       {
-        trophy_season_end: ['balance'],
+        ...this.$clicker.defaultSlices('synergy'),
         ...(this.map != undefined ? {
           battle_event_map: [this.map],
         } : {}),

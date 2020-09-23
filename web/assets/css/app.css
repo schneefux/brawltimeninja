@@ -191,7 +191,7 @@
 }
 
 .brawler-avatars__element {
-  @apply w-1/5 mx-px flex flex-wrap justify-center overflow-hidden;
+  @apply w-1/5 px-px flex flex-wrap justify-center overflow-hidden;
 }
 
 /** Brawler avatar with stats below */

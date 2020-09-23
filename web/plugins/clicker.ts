@@ -1,4 +1,4 @@
-const cubes = ['player', 'brawler', 'map', 'starpower', 'gadget']
+const cubes = ['player', 'brawler', 'map', 'synergy', 'starpower', 'gadget']
 
 const defaultSlices = {
   trophy_season_end: ['balance'],
