@@ -18,7 +18,11 @@
         :key="brawler.id"
         class="brawler-avatars__element my-4"
       >
-        <div class="brawler-avatar">
+        <nuxt-link
+          :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
+          :router="$router"
+          class="brawler-avatar"
+        >
           <media-img
             :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
             size="160"
@@ -29,7 +33,7 @@
             &nbsp;
             {{ metaStatMaps.labelsShort.winRate }}
           </p>
-        </div>
+        </nuxt-link>
       </div>
     </div>
   </event-card>
