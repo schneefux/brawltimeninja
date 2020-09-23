@@ -55,6 +55,7 @@
         cube="map"
       ></meta-slicers>
       <meta-grid
+        v-if="totalSampleSize > 0"
         :entries="brawlers"
         default-stat="winRate"
         ga-category="map_meta"

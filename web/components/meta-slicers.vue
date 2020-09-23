@@ -39,19 +39,24 @@
     <trophy-slider
       v-model="trophyRange"
       :name="powerPlayActive ? 'Points' : undefined"
+      class="mb-2"
     ></trophy-slider>
 
-    <p
-      v-if="sample != undefined"
-      class="mt-2"
-    >
+    <p v-if="sample != undefined && sample > 0">
       Statistics are based on over {{ formatSI(sample) }} battles.
     </p>
     <p
       v-if="sample != undefined && sampleMin != undefined && sample < sampleMin"
       class="text-red-400"
     >
-      Not enough data! Select a broader filter or come back later.
+      <template v-if="sample > 0">
+        Not enough data!
+        Select a broader filter or come back later.
+      </template>
+      <template v-else>
+        No data!
+        Select a different filter.
+      </template>
     </p>
   </div>
 </template>
