@@ -67,7 +67,7 @@
 
     <div class="section flex flex-wrap justify-center">
       <lazy-map-best-brawlers-card
-        v-for="event in currentEvents"
+        v-for="event in upcomingEvents"
         :key="event.id"
         :id="event.id"
         :mode="unformatMode(event.mode)"
