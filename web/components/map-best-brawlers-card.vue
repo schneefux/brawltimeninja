@@ -2,11 +2,11 @@
   <event-card
     :mode="this.mode"
     :map="this.map"
-    :id="large ? undefined : id"
+    :id="!large && id != undefined ? id : undefined"
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
-      v-if="large"
+      v-if="large && id != undefined"
       slot="infobar"
       :path="'/maps/' + this.id"
       size="384"
@@ -57,7 +57,7 @@
     <template v-if="link" v-slot:actions>
       <div class="flex justify-end">
         <nuxt-link
-          :to="`/tier-list/map/${id}`"
+          :to="id != undefined ? `/tier-list/map/${id}` : `/tier-list/mode/${camelToKebab(mode)}`"
           class="button button--md"
         >
           Open
@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { metaStatMaps, brawlerId } from '../lib/util'
+import { metaStatMaps, brawlerId, camelToKebab } from '../lib/util'
 import { parseISO, formatDistance } from 'date-fns'
 
 interface Row {
@@ -97,7 +97,7 @@ export default Vue.extend({
     },
     id: {
       type: String,
-      required: true
+      required: false
     },
     mode: {
       type: String,
@@ -105,7 +105,7 @@ export default Vue.extend({
     },
     map: {
       type: String,
-      required: true
+      required: false
     },
   },
   data() {
@@ -119,6 +119,9 @@ export default Vue.extend({
     },
     metaStatMaps() {
       return metaStatMaps
+    },
+    camelToKebab() {
+      return camelToKebab
     },
     endDateString(): string {
       if (this.endDate == undefined) {
@@ -143,7 +146,9 @@ export default Vue.extend({
       ['battle_victory'],
       {
         trophy_season_end: ['balance'],
-        battle_event_map: [this.map],
+        ...(this.map != undefined ? {
+          battle_event_map: [this.map],
+        } : {}),
         battle_event_mode: [this.mode],
       },
       {

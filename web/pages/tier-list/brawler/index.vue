@@ -61,7 +61,10 @@
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
           class="px-2"
         >
-          <mode-best-brawlers-card :mode="mode"></mode-best-brawlers-card>
+          <map-best-brawlers-card
+            :mode="mode"
+            link
+          ></map-best-brawlers-card>
         </div>
       </div>
 
