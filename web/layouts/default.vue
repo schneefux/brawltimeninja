@@ -14,7 +14,7 @@
         <div class="lg:hidden float-right">
           <button
             v-show="isInstallable"
-            class="px-2 py-1 border rounded border-primary-light text-primary-lightest"
+            class="px-2 py-1 -my-1 border rounded border-primary-light text-primary-lightest"
             @click="clickInstall"
           >
             <span class="mr-1">📥</span>
