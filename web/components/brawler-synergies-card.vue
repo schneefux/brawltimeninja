@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="brawler + ' on your team'"
+    :title="brawler + ' with another Brawler'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :size="size"
     :pages="Math.ceil(data.length / 10)"
@@ -42,6 +42,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { metaStatMaps, brawlerId } from '../lib/util'
+
+interface SynergyRow {
+  ally_brawler_name: string
+  battle_victory: number
+  picks: number
+}
 
 interface Row {
   brawler_name: string
@@ -95,31 +101,31 @@ export default Vue.extend({
     // how much better is the actual winrate(AxB) than
     // Naive Bayes sqrt(winrate(A)*winrate(B))?
     // get winrate(AxB)
-    const synergies = await this.$clicker.query('meta.synergy.widget', 'synergy',
-      ['brawler_name'],
+    const synergies = await this.$clicker.query<SynergyRow>('meta.synergy.widget', 'synergy',
+      ['ally_brawler_name'],
       ['picks', 'battle_victory'],
       {
         ...this.$clicker.defaultSlices('synergy'),
-        ally_brawler_name: [this.brawler.toUpperCase()],
+        brawler_name: [this.brawler.toUpperCase()],
       },
-      { cache: 60*60 }) as any
+      { cache: 60*60 })
 
     // get winrate(A) and winrate(B)
-    const baselines = await this.$clicker.query('meta.synergy.widget.all', 'synergy',
+    const baselines = await this.$clicker.query<Row>('meta.synergy.widget.all', 'synergy',
         ['brawler_name'],
         ['picks', 'battle_victory'],
         this.$clicker.defaultSlices('synergy'),
-        { cache: 60*60 }) as any
+        { cache: 60*60 })
 
     const baselineMap = baselines.data.reduce((map, row) => ({
       ...map,
       [row.brawler_name]: row.battle_victory,
-    }), {} as any)
+    }), {} as Record<string, number>)
 
-    const data = synergies.data.map((row) => ({
-      brawler_name: row.brawler_name,
+    const data = synergies.data.map((row) => (<Row>{
+      brawler_name: row.ally_brawler_name,
       picks: row.picks,
-      battle_victory: row.battle_victory - Math.sqrt(baselineMap[this.brawler.toUpperCase()] * baselineMap[row.brawler_name]),
+      battle_victory: row.battle_victory - Math.sqrt(baselineMap[this.brawler.toUpperCase()] * baselineMap[row.ally_brawler_name]),
     }))
 
     data.sort((e1, e2) => e2.picks >= this.sampleSizeThreshold && e1.picks >= this.sampleSizeThreshold ? e2.battle_victory - e1.battle_victory : e2.picks - e1.picks)
