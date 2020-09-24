@@ -49,24 +49,6 @@ router.get('/clicker/meta/brawler', async (ctx, next) => {
   await next();
 });
 
-router.get('/clicker/brawler/:name', async (ctx, next) => {
-  ctx.body = await service.getBrawlerStatistics(ctx.params.name);
-  ctx.set('Cache-Control', 'public, max-age=60');
-  await next();
-});
-
-router.get('/clicker/meta/starpower', async (ctx, next) => {
-  ctx.body = await service.getStarpowerMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
-  ctx.set('Cache-Control', 'public, max-age=60');
-  await next();
-});
-
-router.get('/clicker/meta/gadget', async (ctx, next) => {
-  ctx.body = await service.getGadgetMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
-  ctx.set('Cache-Control', 'public, max-age=60');
-  await next();
-});
-
 router.get('/clicker/meta/mode', async (ctx, next) => {
   ctx.body = await service.getModeMeta(ctx.request.query.trophyrangeLower || '0', ctx.request.query.trophyrangeHigher || '9999');
   ctx.set('Cache-Control', 'public, max-age=60');
