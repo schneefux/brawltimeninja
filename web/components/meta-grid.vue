@@ -48,7 +48,7 @@
               >
                 <li class="mt-1 mr-2 w-16 md:w-20 bg-gray-900 rounded-sm relative">
                   <media-img
-                    :path="`/brawlers/${entry.brawler}/avatar`"
+                    :path="`/brawlers/${brawlerId({ name: entry.brawler })}/avatar`"
                     :alt="entry.brawler"
                     size="160"
                     clazz="h-12 md:h-16"
@@ -156,7 +156,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps, MetaGridEntry } from '../lib/util'
+import { formatMode, metaStatMaps, MetaGridEntry, brawlerId } from '../lib/util'
 
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
@@ -251,6 +251,7 @@ export default Vue.extend({
       selectedStat: defaultStat,
       formatMode,
       metaStatMaps,
+      brawlerId,
     }
   },
   computed: {

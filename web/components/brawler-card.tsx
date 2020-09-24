@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { brawlerId } from '~/lib/util'
 
 export default Vue.extend({
   functional: true,
@@ -27,7 +28,7 @@ export default Vue.extend({
           </div>
         </div>
         <media-img
-          path={'/brawlers/' + props.brawler + '/avatar'}
+          path={'/brawlers/' + brawlerId({ name: props.brawler }) + '/avatar'}
           size="160"
           clazz="z-0 absolute bottom-0 h-20"
         ></media-img>
