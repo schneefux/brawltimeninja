@@ -14,17 +14,17 @@ interface Clicker {
   defaultSlices(cube: string): typeof defaultSlices | typeof defaultMapSlices
   cubes: typeof cubes[number][]
   queryMetadata(cube: typeof cubes[number]): Promise<{ dimensions: string[], measures: string[], slices: Record<string, number> }>
-  query<M extends string, D extends string>(
+  query<T=any>(
     name: string,
     cube: typeof cubes[number],
-    dimensions: D[],
-    measures: M[],
+    dimensions: string[],
+    measures: string[],
     slices: Record<string, string[]>,
     options: {
       sort?: Record<string, string>,
       limit?: number,
       cache?: number,
-    }): Promise<{ data: Record<M|D, string|number>[], totals: Record<M|D, string|number> }>
+    }): Promise<{ data: T[], totals: T }>
 }
 
 declare module 'vue/types/vue' {

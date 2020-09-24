@@ -11,11 +11,9 @@
     </div>
 
     <div
-      v-if="brawlerData != null"
       class="section flex flex-wrap justify-around"
     >
       <brawler-base-stats
-        :brawler-data="brawlerData"
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
         :stats="stats"
@@ -27,8 +25,7 @@
           once: true,
         }"
         :brawler-id="brawlerId"
-        :descriptions="brawlerData != null ? brawlerData.starpowerDescriptions : null"
-        :starpower-meta="starpowerMeta"
+        :brawler-name="brawlerName"
         kind="starpowers"
       ></brawler-starpower-stats>
 
@@ -38,8 +35,7 @@
           once: true,
         }"
         :brawler-id="brawlerId"
-        :descriptions="brawlerData != null ? brawlerData.gadgetDescriptions : null"
-        :starpower-meta="gadgetMeta"
+        :brawler-name="brawlerName"
         kind="gadgets"
       ></brawler-starpower-stats>
 
@@ -137,7 +133,6 @@
 
     <div
       class="section-heading"
-      v-if="brawlerStats != null"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'trophy-graphs'),
         once: true,
@@ -148,12 +143,9 @@
       </h2>
     </div>
 
-    <div
-      v-if="brawlerStats != null"
-      class="section"
-    >
+    <div class="section">
       <brawler-trophy-graphs
-        :brawler-stats="brawlerStats"
+        :brawler-name="brawlerName"
         :total-brawlers="totalBrawlers"
       ></brawler-trophy-graphs>
 
@@ -231,7 +223,6 @@ import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
 import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
 import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
-import { BrawlerData } from '../../../model/Media'
 
 export default Vue.extend({
   name: 'BrawlerPage',
@@ -251,12 +242,8 @@ export default Vue.extend({
       brawlerName: '',
       currentEvents: [] as ActiveEvent[],
       brawlerMeta: [] as BrawlerMetaStatistics[],
-      starpowerMeta: [] as StarpowerMetaStatistics[],
-      gadgetMeta: [] as GadgetMetaStatistics[],
       modeMeta: {} as ModeMetaMap,
       mapMeta: {} as MapMetaMap,
-      brawlerStats: null as BrawlerStatisticsRows|null,
-      brawlerData: null as BrawlerData|null,
       showAllModes: false,
       showAllMaps: false,
       capitalize,
@@ -276,23 +263,15 @@ export default Vue.extend({
     const brawlerId = params.brawler
     const activeEvents = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ current: [], upcoming: [] }))
     const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ({}))
-    const starpowerMeta = await $axios.$get<StarpowerMetaStatistics[]>('/api/meta/starpower').catch(() => [])
-    const gadgetMeta = await $axios.$get<GadgetMetaStatistics[]>('/api/meta/gadget').catch(() => [])
     const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode').catch(() => ({}))
     const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map').catch(() => ({}))
-    const brawlerData = await $axios.$get<BrawlerData|null>(`${process.env.mediaUrl}/brawlers/${brawlerId}/info`).catch(() => null)
-    const brawlerStats = await $axios.$get<BrawlerStatisticsRows|null>('/api/brawler/' + brawlerId).catch(() => null)
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/__/g, '. ').replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
       currentEvents: activeEvents.current,
       brawlerMeta,
-      starpowerMeta,
-      gadgetMeta,
       modeMeta,
       mapMeta,
-      brawlerStats,
-      brawlerData,
     }
   },
   methods: {

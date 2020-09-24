@@ -72,8 +72,8 @@ export default Vue.extend({
       ['brawler_id', 'brawler_name', ...dimensions],
       ['battle_victory'],
       {
+        ...this.$clicker.defaultSlices('starpower'),
         [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['true'],
-        'trophy_season_end': ['balance'],
       },
       { sort: { picks: 'desc' }, limit: 3, cache: 60*60 })
     this.topStarpowers = data.data.map(e => (<Row>{
