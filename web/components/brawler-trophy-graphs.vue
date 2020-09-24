@@ -121,7 +121,7 @@ export default Vue.extend({
     this.totals = totalData.data
   },
   computed: {
-    trophiesStarRateChart() {
+    trophiesStarRateChart(): any {
       if (this.data.length == 0 || this.totals.length == 0) {
         return undefined
       }
@@ -160,7 +160,7 @@ export default Vue.extend({
         options: trophyGraphOptions,
       }
     },
-    trophiesUseRateChart() {
+    trophiesUseRateChart(): any {
       if (this.data.length == 0 || this.totals.length == 0) {
         return undefined
       }
@@ -201,7 +201,7 @@ export default Vue.extend({
         options: trophyGraphOptions,
       }
     },
-    trophiesWinRateChart() {
+    trophiesWinRateChart(): any {
       if (this.data.length == 0 || this.totals.length == 0) {
         return undefined
       }
