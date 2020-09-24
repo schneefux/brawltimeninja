@@ -124,7 +124,7 @@
           </span>
           <button
             class="ml-auto md:ml-4 button button-sm"
-            @click="$emit('refresh')"
+            @click="refresh"
           >
             Refresh now
           </button>
