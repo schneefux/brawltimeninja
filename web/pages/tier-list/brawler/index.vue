@@ -105,12 +105,34 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="100000"
+        :measurements="['winRate', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
+        :measurement="measurement"
         cube="map"
+        @select="(m) => measurement = m"
       ></meta-slicers>
+      <tier-list
+        :entries="entries"
+        :stat="measurement"
+      ></tier-list>
+
+      <div
+        v-if="!legacy"
+        class="mt-3 w-full text-right"
+      >
+        <button
+          class="button button--md"
+          @click="legacy = true; $ga.event('brawler_meta', 'click', 'show_legacy')"
+        >
+          Load old Grid View
+        </button>
+      </div>
       <meta-grid
-        :entries="brawlers"
-        default-stat="winRate"
+        v-if="legacy"
+        :entries="entries"
+        :key="measurement"
+        :default-stat="measurement"
         ga-category="brawler_meta"
+        embedded
       ></meta-grid>
     </div>
 
@@ -143,6 +165,24 @@ interface Row {
   battle_rank1: number
 }
 
+const measurementMap = {
+  winRate: 'battle_victory',
+  useRate: 'picks_weighted',
+  pickRate: 'picks',
+  starRate: 'battle_starplayer',
+  rank1Rate: 'battle_rank1',
+  duration: 'battle_duration',
+}
+
+const measurementOfTotal = {
+  winRate: false,
+  useRate: true,
+  pickRate: true,
+  starRate: false,
+  rank1Rate: false,
+  duration: false,
+}
+
 export default Vue.extend({
   head() {
     const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.'
@@ -159,46 +199,48 @@ export default Vue.extend({
       modes: [] as string[],
       showAllModes: false,
       slices: this.$clicker.defaultSlices('map'),
-      data: [] as Row[],
-      totals: {} as Row,
+      entries: [] as MetaGridEntry[],
+      measurement: 'winRate',
+      totalSampleSize: 0,
+      legacy: false,
     }
   },
   computed: {
-    totalSampleSize(): number {
-      return this.totals.picks
-    },
-    brawlers(): MetaGridEntry[] {
-      return this.data.map(row => ({
-        id: row.brawler_name,
-        brawler: row.brawler_name,
-        title: row.brawler_name,
-        stats: {
-          winRate: row.battle_victory,
-          useRate: row.picks_weighted / this.totals.picks_weighted,
-          pickRate: row.picks / this.totals.picks,
-          starRate: row.battle_starplayer,
-          rank1Rate: row.battle_rank1,
-          duration: row.battle_duration,
-        },
-        sampleSize: row.picks,
-        link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-      }) as MetaGridEntry)
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
   watch: {
     slices: '$fetch',
+    measurement: '$fetch',
+    legacy: '$fetch',
   },
   async fetch() {
     const data = await this.$clicker.query('meta.brawler', 'map',
       ['brawler_name'],
-      ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      !this.legacy ? [measurementMap[this.measurement], 'picks'] : ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
-    this.data = data.data
-    this.totals = data.totals
+
+    this.entries = data.data.map(row => ({
+      id: row.brawler_name,
+      brawler: row.brawler_name,
+      title: row.brawler_name,
+      stats: !this.legacy ? {
+        [this.measurement]: row[measurementMap[this.measurement]]
+          / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
+      } : {
+        winRate: row.battle_victory,
+        useRate: row.picks_weighted / data.totals.picks_weighted,
+        pickRate: row.picks / data.totals.picks,
+        starRate: row.battle_starplayer,
+        rank1Rate: row.battle_rank1,
+        duration: row.battle_duration,
+      },
+      sampleSize: row.picks,
+      link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+    }) as MetaGridEntry)
+    this.totalSampleSize = data.totals.picks
   },
   async asyncData({ $clicker }) {
     const modes = await $clicker.query('all.modes', 'map',

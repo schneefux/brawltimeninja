@@ -60,12 +60,32 @@
         Select a different filter.
       </template>
     </p>
+
+    <div
+      v-if="measurements.length > 0"
+      class="flex mt-2"
+    >
+      <div class="w-24 flex-shrink-0">
+        <span>Metric</span>
+      </div>
+      <div class="flex flex-wrap">
+        <button
+          v-for="stat in measurements"
+          :key="stat"
+          class="mr-2 my-1 button button-sm"
+          :class="{ 'button--selected': selectedMeasurement == stat }"
+          @click="selectedMeasurement = stat"
+        >
+          {{ metaStatMaps.labels[stat] }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatSI } from '../lib/util'
+import { formatSI, metaStatMaps } from '../lib/util'
 import { format } from 'path'
 
 // TODO add big brawler
@@ -92,6 +112,14 @@ export default Vue.extend({
       type: String,
       required: false
     },
+    measurement: {
+      type: String,
+      required: false
+    },
+    measurements: {
+      type: Array as PropType<string[]>,
+      default: []
+    },
   },
   data() {
     return {
@@ -105,6 +133,17 @@ export default Vue.extend({
   computed: {
     formatSI() {
       return formatSI
+    },
+    metaStatMaps() {
+      return metaStatMaps
+    },
+    selectedMeasurement: {
+      get(): string {
+        return this.measurement
+      },
+      set(v: string) {
+        this.$emit('select', v)
+      }
     },
     trophyRange: {
       get(): number[] {
