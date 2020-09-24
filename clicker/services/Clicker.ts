@@ -824,12 +824,13 @@ export default class ClickerService {
       slices: { [name: string]: string[] },
       order: { [column: string]: Order },
       limit: number,
-      name: string|undefined) {
+      name: string|undefined,
+      format: string|undefined) {
     const cube = this.getCubeByName(cubeName)
     limit = Math.min(1000, limit)
 
-    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit)
-    return await cube.query(this.ch,
+    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, format)
+    const data = await cube.query(this.ch,
       name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
       dimensions,
@@ -837,5 +838,18 @@ export default class ClickerService {
       order,
       limit,
     )
+
+    switch (format) {
+      case 'data':
+        return data.data
+      case 'totals':
+        return data.totals
+      case 'csv':
+        const attrs = [...dimensions, ...measures, ...Object.keys(order)]
+        return attrs.join(',') + '\n'
+          + data.data.map(row => attrs.map(a => row[a]).join(',')).join('\n')
+      default:
+        return data
+    }
   }
 }

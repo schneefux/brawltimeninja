@@ -86,9 +86,10 @@ router.get('/clicker/cube/:cube/query/:dimensions', async (ctx, next) => {
   const limit = parseInt(query['limit']) || 1000
   const cache = parseInt(query['cache']) || 60
   const name = query['name']
+  const format = query['format']
 
   try {
-    ctx.body = await service.queryCube(cubeName, measures, dimensions, slices, order, limit, name)
+    ctx.body = await service.queryCube(cubeName, measures, dimensions, slices, order, limit, name, format)
   } catch (error) {
     console.error('error executing query', error)
     if (error instanceof Error) {
