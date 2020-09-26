@@ -1,7 +1,7 @@
 <template>
   <client-only v-if="eventRecommendations.length > 0 && notificationsAllowed">
     <button
-      class="button"
+      class="button button--secondary"
       @click="notifyTips"
     >
       Send Notification

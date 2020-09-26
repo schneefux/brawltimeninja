@@ -45,6 +45,10 @@
   @apply mt-2 text-grey-lighter;
 }
 
+.card__action {
+  @apply button button--md button--secondary;
+}
+
 .card-prop-icon {
   @apply h-5 align-middle mr-1;
 }
@@ -84,23 +88,29 @@
 }
 
 .button {
-  @apply rounded bg-secondary border-secondary text-black font-semibold text-sm py-1 px-2;
+  @apply rounded font-semibold py-1 px-2 border-2;
+  @apply text-sm;
+  @apply bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-primary text-white;
+}
+
+.button--secondary {
+  @apply bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-black;
 }
 
 .button--selected {
+  @apply bg-gray-900 hover:bg-gray-700 border-primary-dark;
+}
+
+.button--secondary-selected {
   @apply bg-secondary-light border-primary;
 }
 
-.button:hover {
-  @apply bg-secondary-light border-secondary-light;
-}
-
 @responsive {
-  .button-xs {
+  .button--xs {
     @apply py-px px-1;
   }
 
-  .button-sm {
+  .button--sm {
     @apply border-2;
   }
 

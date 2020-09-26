@@ -49,7 +49,7 @@ export default Vue.extend({
       actions: () => <div class="flex justify-end">
         <nuxt-link
           to={`/tier-list/map/${event.id}`}
-          class="button button--md"
+          class="card__action"
         >
           Open
         </nuxt-link>

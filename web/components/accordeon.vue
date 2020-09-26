@@ -18,14 +18,14 @@
       -->
       <button
         v-if="page > 0"
-        class="button button--md mx-2"
+        class="button button--md button--secondary mx-2"
         @click="collapse"
       >
         Show Less
       </button>
       <button
         v-if="page < pages"
-        class="button button--md mx-2"
+        class="button button--md button--secondary mx-2"
         @click="expand"
       >
         Show More

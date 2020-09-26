@@ -40,7 +40,7 @@
             >
             <input
               type="submit"
-              class="button button--lg flex-shrink-0 mr-3"
+              class="button button--lg button--secondary flex-shrink-0 mr-3"
               value="Search"
             >
           </div>
@@ -237,7 +237,7 @@
       >
         <div class="mx-5">
           <button
-            class="mt-1 button button-sm"
+            class="mt-1 button button--sm button--secondary"
             @click="notifyCurrentEventMeta"
           >
             Send a Notification with Map Tier List

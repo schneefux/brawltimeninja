@@ -11,8 +11,8 @@
         <button
           v-for="stat in stats"
           :key="stat"
-          class="mr-3 my-1 button button-sm"
-          :class="{ 'button--selected': selectedStat == stat }"
+          class="mr-3 my-1 button button--sm button--secondary"
+          :class="{ 'button--secondary-selected': selectedStat == stat }"
           @click="sortBy(stat)"
         >
           {{ metaStatMaps.labels[stat] }}

@@ -9,7 +9,7 @@
         <button
           v-for="(label, t) in timeRangeLabel"
           :key="t"
-          class="mr-2 my-1 button button-sm"
+          class="mr-2 my-1 button button--sm"
           :class="{ 'button--selected': timeRange == t }"
           @click="timeRange = t"
         >
@@ -72,7 +72,7 @@
         <button
           v-for="stat in measurements"
           :key="stat"
-          class="mr-2 my-1 button button-sm"
+          class="mr-2 my-1 button button--sm"
           :class="{ 'button--selected': selectedMeasurement == stat }"
           @click="selectedMeasurement = stat"
         >

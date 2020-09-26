@@ -105,7 +105,7 @@ export default Vue.extend({
             ></media-img>
             <router-link
               to={`/tier-list/map/${eventId}`}
-              class="mx-auto button button-xs"
+              class="mx-auto button button--xs button--secondary"
             >
               Open
             </router-link>
@@ -115,7 +115,7 @@ export default Vue.extend({
         <div class="mt-2">
           <router-link
             to={`/tier-list/mode/${mode}`}
-            class="button button-xs"
+            class="button button--xs button--secondary"
           >
             Open Tier List
           </router-link>

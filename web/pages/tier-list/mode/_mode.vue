@@ -68,7 +68,7 @@
       <div class="mt-2 w-full text-right hidden md:block">
         <button
           v-show="!showAllMaps"
-          class="button button--md"
+          class="button button--md button--secondary"
           @click="showAllMaps = true; $ga.event('meta_mode', 'load_more')"
         >
           Show All {{ modeName }} Maps

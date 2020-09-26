@@ -123,7 +123,7 @@
             Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
           </span>
           <button
-            class="ml-auto md:ml-4 button button-sm"
+            class="ml-auto md:ml-4 button button--sm button--secondary"
             @click="refresh"
           >
             Refresh now
@@ -161,7 +161,7 @@
         </p>
         <div class="mt-3">
           <button
-            class="button button--md"
+            class="button button--md button--secondary"
             @click="clickInstall"
           >
             <span class="mr-1">📥</span>
@@ -210,7 +210,7 @@
           ></player-tips>
 
           <nuxt-link
-            class="button md:button--md"
+            class="button md:button--md button--secondary"
             to="/tier-list/map"
           >
             Open Map Tier List

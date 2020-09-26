@@ -47,14 +47,14 @@
 
       <div class="mt-2 w-full flex justify-end">
         <nuxt-link
-          class="button md:button--md"
+          class="button md:button--md button--secondary"
           to="/tier-list/starpowers"
         >
           Open Star Power Tier List
         </nuxt-link>
 
         <nuxt-link
-          class="button md:button--md ml-3"
+          class="button md:button--md ml-3 button--secondary"
           to="/tier-list/gadgets"
         >
           Open Gadget Tier List
@@ -118,12 +118,12 @@
         <button
           @click="showAllMaps = true"
           :class="{ 'md:block': !showAllMaps }"
-          class="mr-3 button md:button--md hidden"
+          class="mr-3 button md:button--md button--secondary hidden"
         >
           Show More
         </button>
         <nuxt-link
-          class="button md:button--md"
+          class="button md:button--md button--secondary"
           to="/tier-list/map"
         >
           Open Map Tier Lists
@@ -157,7 +157,7 @@
 
       <div class="mt-1 w-full flex justify-end">
         <nuxt-link
-          class="button md:button--md"
+          class="button md:button--md button--secondary"
           to="/tier-list/brawler"
         >
           Open Brawler Tier List
@@ -189,12 +189,12 @@
         <button
           @click="showAllModes = true"
           :class="{ 'md:block': !showAllModes }"
-          class="mr-3 button md:button--md hidden"
+          class="mr-3 button md:button--md button--secondary hidden"
         >
           Show More
         </button>
         <nuxt-link
-          class="button md:button--md"
+          class="button md:button--md button--secondary"
           to="/tier-list/mode"
         >
           Open Mode Tier Lists

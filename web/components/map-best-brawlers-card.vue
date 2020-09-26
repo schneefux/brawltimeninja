@@ -58,7 +58,7 @@
       <div class="flex justify-end">
         <nuxt-link
           :to="id != undefined ? `/tier-list/map/${id}` : `/tier-list/mode/${camelToKebab(mode)}`"
-          class="button button--md"
+          class="card__action"
         >
           Open
         </nuxt-link>

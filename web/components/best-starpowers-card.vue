@@ -6,7 +6,7 @@
     <div slot="actions" class="flex justify-end">
       <nuxt-link
         :to="`/tier-list/${kind}`"
-        class="button button--md"
+        class="card__action"
       >
         Open
       </nuxt-link>
