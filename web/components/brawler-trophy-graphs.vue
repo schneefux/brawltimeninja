@@ -72,7 +72,15 @@ const trophyGraphLayout = {
     color: '#ffffff',
   },
   dragmode: false,
-  showlegend: false,
+  showlegend: true,
+  legend: {
+    x: 0,
+    y: 1,
+    bgcolor: 'rgba(0, 0, 0, 0.5)',
+    font: {
+      size: 10,
+    },
+  },
 }
 
 const trophyGraphOptions = {
@@ -133,11 +141,13 @@ export default Vue.extend({
 
       return {
         traces: [{
+          name: this.brawlerName,
           x: trophyranges.map(t => t * 100),
           y: starRates,
           mode: 'lines+markers',
           type: 'scatter',
         }, {
+          name: 'Average',
           x: trophyranges.map(t => t * 100),
           y: avgStarRates,
           mode: 'lines',
@@ -172,10 +182,22 @@ export default Vue.extend({
 
       return {
         traces: [{
+          name: this.brawlerName,
           x: trophyranges.map(t => t * 100),
           y: useRates,
           mode: 'lines+markers',
           type: 'scatter',
+        }, {
+          name: 'Average',
+          x: trophyranges.map(t => t * 100),
+          y: trophyranges.map(t => 1 / this.totalBrawlers),
+          mode: 'lines',
+          type: 'scatter',
+          line: {
+            color: 'grey',
+            dash: 'dot',
+            width: 1,
+          },
         }],
         layout: {
           ...trophyGraphLayout,
@@ -185,18 +207,6 @@ export default Vue.extend({
             tickformat: ',.0%',
             tickcolor: '#ffffff',
           },
-          shapes: [ {
-            type: 'line',
-            x0: 0,
-            y0: 1 / this.totalBrawlers,
-            x1: 1000,
-            y1: 1 / this.totalBrawlers,
-            line: {
-              color: 'grey',
-              width: 1.5,
-              dash: 'dot',
-            },
-          } ],
         },
         options: trophyGraphOptions,
       }
@@ -213,11 +223,13 @@ export default Vue.extend({
 
       return {
         traces: [{
+          name: this.brawlerName,
           x: trophyranges.map(t => t * 100),
           y: winRates,
           mode: 'lines+markers',
           type: 'scatter',
         }, {
+          name: 'Average',
           x: trophyranges.map(t => t * 100),
           y: avgWinRates,
           mode: 'lines',
