@@ -37,7 +37,7 @@ export default Vue.extend({
     const content = ({ open, page }: {open: boolean, page: number}) => {
       return <div>
         { 'infobar' in scopedSlots ?
-          <div class="text-primary-lightest w-full px-2 py-1 text-lg font-semibold">
+          <div class="text-primary-lightest bg-gray-900 w-full px-2 py-1 text-lg font-semibold">
             { scopedSlots.infobar({}) }
           </div>
         : ''
