@@ -63,7 +63,7 @@
 
     <div
       v-if="measurements.length > 0"
-      class="flex mt-2"
+      class="mt-2 flex"
     >
       <div class="w-24 flex-shrink-0">
         <span>Metric</span>
@@ -72,7 +72,7 @@
         <button
           v-for="stat in measurements"
           :key="stat"
-          class="mr-2 my-1 button button--sm"
+          class="mr-2 mb-1 button button--sm"
           :class="{ 'button--selected': selectedMeasurement == stat }"
           @click="selectedMeasurement = stat"
         >

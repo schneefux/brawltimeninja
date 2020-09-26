@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto">
-    <div class="section bg-gray-800 px-3 py-2">
+    <div class="section card card--dark px-3 py-2">
       <h6 class="text-lg font-semibold">
         Best Brawlers by {{ metaStatMaps.labels[stat] }}
       </h6>

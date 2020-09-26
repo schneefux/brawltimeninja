@@ -110,30 +110,50 @@
         cube="map"
         @select="(m) => measurement = m"
       ></meta-slicers>
+
+      <div class="section mt-4 card px-3 py-2 card--dark">
+        <span class="mr-2">View</span>
+        <button
+          class="button mr-2"
+          :class="{
+            'button--selected': view == 'tierlist',
+          }"
+          @click="view = 'tierlist'; $ga.event('brawler_meta', 'click', 'show_tierlist')"
+        >Tier List</button>
+        <button
+          class="button mr-2"
+          :class="{
+            'button--selected': view == 'grid',
+          }"
+          @click="view = 'grid'; $ga.event('brawler_meta', 'click', 'show_legacy')"
+        >Grid</button>
+        <button
+          class="button mr-2"
+          :class="{
+            'button--selected': view == 'table',
+          }"
+          @click="view = 'table'; $ga.event('brawler_meta', 'click', 'show_table')"
+        >Table</button>
+      </div>
+
       <tier-list
+        v-if="view == 'tierlist'"
         :entries="entries"
         :stat="measurement"
       ></tier-list>
-
-      <div
-        v-if="!legacy"
-        class="mt-3 w-full text-right"
-      >
-        <button
-          class="button button--md"
-          @click="legacy = true; $ga.event('brawler_meta', 'click', 'show_legacy')"
-        >
-          Load old Grid View
-        </button>
-      </div>
       <meta-grid
-        v-if="legacy"
+        v-if="view == 'grid'"
         :entries="entries"
         :key="measurement"
         :default-stat="measurement"
         ga-category="brawler_meta"
         embedded
       ></meta-grid>
+      <meta-table
+        v-if="view == 'table'"
+        :entries="entries"
+        :stat="measurement"
+      ></meta-table>
     </div>
 
     <client-only>
@@ -152,7 +172,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, brawlerId } from '../../../lib/util'
+import { MetaGridEntry, brawlerId, capitalize, capitalizeWords } from '../../../lib/util'
 
 interface Row {
   brawler_name: string
@@ -202,7 +222,7 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       measurement: 'winRate',
       totalSampleSize: 0,
-      legacy: false,
+      view: 'tierlist',
     }
   },
   computed: {
@@ -213,20 +233,24 @@ export default Vue.extend({
   watch: {
     slices: '$fetch',
     measurement: '$fetch',
-    legacy: '$fetch',
+    view(v: string) {
+      if (v == 'grid') {
+        this.$fetch()
+      }
+    },
   },
   async fetch() {
     const data = await this.$clicker.query('meta.brawler', 'map',
       ['brawler_name'],
-      !this.legacy ? [measurementMap[this.measurement], 'picks'] : ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      this.view != 'grid' ? [measurementMap[this.measurement], 'picks'] : ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
 
     this.entries = data.data.map(row => ({
       id: row.brawler_name,
       brawler: row.brawler_name,
-      title: row.brawler_name,
-      stats: !this.legacy ? {
+      title: capitalizeWords(row.brawler_name.toLowerCase()),
+      stats: this.view != 'grid' ? {
         [this.measurement]: row[measurementMap[this.measurement]]
           / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
       } : {
