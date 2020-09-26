@@ -28,7 +28,6 @@
           />
           <p class="brawler-avatar__stats">
             {{ metaStatMaps.formatters.winRate(entry.battle_victory) }}
-            &nbsp;
             {{ metaStatMaps.labelsShort.winRate }}
           </p>
         </div>

@@ -214,7 +214,7 @@
 }
 
 .brawler-avatar__stats {
-  @apply text-xs whitespace-no-wrap tracking-tighter text-center;
+  @apply text-xs whitespace-no-wrap tracking-tighter text-center px-px;
 }
 
 /** addition to .container */

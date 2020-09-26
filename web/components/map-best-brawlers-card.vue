@@ -47,7 +47,6 @@
           ></media-img>
           <p class="brawler-avatar__stats">
             {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-            &nbsp;
             {{ metaStatMaps.labelsShort.winRate }}
           </p>
         </nuxt-link>
