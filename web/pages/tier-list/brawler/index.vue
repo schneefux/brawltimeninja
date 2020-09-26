@@ -112,7 +112,7 @@
       ></meta-slicers>
 
       <div class="section mt-4 card px-3 py-2 card--dark">
-        <span class="mr-2">View</span>
+        <span class="mr-2">View Mode</span>
         <button
           class="button mr-2"
           :class="{
