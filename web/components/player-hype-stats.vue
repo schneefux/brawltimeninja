@@ -19,11 +19,29 @@
         </nuxt-link>
       </div>
 
-      <p class="hidden md:block w-full md:w-auto text-xl my-4 mx-auto">
+      <div
+        v-show="!showAll"
+        class="w-full md:hidden mt-1"
+      >
+        <button
+          class="relative z-10 button button--secondary button--xs text-sm"
+          @click="showAll = true"
+        >
+          &#9660; show fun facts
+        </button>
+      </div>
+
+      <p
+        v-show="showAll"
+        class="md:block w-full md:w-auto text-xl my-4 mx-auto"
+      >
         which is about
       </p>
 
-      <dl class="hidden md:flex flex-wrap justify-between z-20">
+      <dl
+        v-show="showAll"
+        class="md:flex flex-wrap justify-between z-20"
+      >
         <div
           v-for="(stat, statName) in funStats"
           :key="statName"
@@ -194,6 +212,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
     }
