@@ -28,7 +28,7 @@
           <button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2"
+            class="button button--secondary button--md mx-2 w-1/3"
             @click="setOpenness(rating)"
           >
             <template v-if="rating == 5">
@@ -52,14 +52,14 @@
           <button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2"
+            class="button button--secondary button--md mx-2 w-1/3"
             @click="setExtraversion(rating)"
           >
             <template v-if="rating == 5">
               Attacker!
             </template>
             <template v-if="rating == 3">
-              Both
+              Both!
             </template>
             <template v-if="rating == 1">
               Defender!
@@ -76,17 +76,17 @@
           <button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2"
+            class="button button--secondary button--md mx-2 w-1/3"
             @click="setNeurotic(rating)"
           >
             <template v-if="rating == 5">
-              Yes
+              Yes!
             </template>
             <template v-if="rating == 3">
-              Sometimes
+              Sometimes.
             </template>
             <template v-if="rating == 1">
-              No
+              No.
             </template>
           </button>
         </div>
@@ -94,7 +94,7 @@
 
       <template v-if="step == 4">
         <p>
-          Processing your statistics and answers...
+          Processing profile statistics and answers...
         </p>
         <div class="spinner mt-1 mx-auto">
           <div class="double-bounce1"></div>
@@ -104,7 +104,7 @@
 
       <template v-if="step == 5">
         <div
-          class="absolute left-0 bottom-0"
+          class="absolute left-0 bottom-0 ml-2 mb-1"
         >
           <button
             class="button button--secondary mr-1"
@@ -121,12 +121,12 @@
           </button>
         </div>
         <media-img
-          :path="'/brawlers/' + brawlerId({ name: personalityTestResult }) + '/model'"
+          :path="'/brawlers/' + brawlerId({ name: result }) + '/model'"
           size="128"
           clazz="absolute right-0 top-0 h-28 mt-3 mr-2"
         ></media-img>
         <div class="absolute inset-0 flex justify-center items-center pointer-events-none">
-          <span class="text-4xl font-bold mt-3">{{ personalityTestResult }}</span>
+          <span class="text-4xl font-bold text-shadow mt-3">{{ result }}</span>
         </div>
       </template>
     </div>
@@ -163,7 +163,7 @@ function similarity(t1: Trait, t2: Trait) {
   // weight difficulty more than the other attributes
   // so players are more likely
   // to get a personality at their skill level
-  const difficultyWeight = 3
+  const difficultyWeight = 2
   const sum1 = sqr(colorMatches ? 5 : 1) +
     sqr(t1.difficulty * difficultyWeight) +
     sqr(t1.open) +
@@ -209,6 +209,7 @@ export default Vue.extend({
       userOpenness: undefined as number|undefined,
       userExtraversion: undefined as number|undefined,
       userNeuroticism: undefined as number|undefined,
+      result: undefined as undefined|string,
     }
   },
   /*
@@ -303,9 +304,10 @@ export default Vue.extend({
       const trophyCeiling = 8000 // last Brawler unlock
       const difficulty = 1 + 4 * Math.min(trophyCeiling, this.player.stats.highestTrophies) / trophyCeiling
       const brawlers = Object.values(this.player.brawlers)
+      // calculate coefficient of variation for brawler trophies
       const brawlerTrophyAvg = brawlers.reduce((sum, b) => sum + b.highestTrophies, 0) / brawlers.length
-      const brawlerTrophyStd = brawlers.reduce((sum, b) => sum + Math.pow(b.highestTrophies - brawlerTrophyAvg, 2), 0) / brawlers.length
-      const conscientious = 1 + 4 * brawlerTrophyStd / brawlerTrophyAvg
+      const brawlerTrophyStd = Math.sqrt(brawlers.reduce((sum, b) => sum + Math.pow(b.highestTrophies - brawlerTrophyAvg, 2), 0) / brawlers.length)
+      const conscientious = 1 + 4 * (1 - brawlerTrophyStd / brawlerTrophyAvg)
       const agreeable = 1 + 4 * this.player.stats.victories / (this.player.stats.victories + this.player.stats.soloVictories + this.player.stats.duoVictories)
 
       return {
@@ -345,15 +347,18 @@ export default Vue.extend({
     setNeurotic(n: number) {
       this.userNeuroticism = n
       this.step++
-      setTimeout(() =>
-        this.setPersonalityTestResult(
-          closestBrawler(this.userTrait).name), 4000)
+      setTimeout(() => {
+        const result = closestBrawler(this.userTrait).name
+        this.setPersonalityTestResult(result)
+        this.result = result
+        this.step++
+      }, 4000)
     },
     async share() {
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
       await navigator.share({
-        title: `I am a ${this.personalityTestResult} person!`,
-        text: `My Brawler personality is ${this.personalityTestResult}! What's yours?\nTake the test on https://brawltime.ninja`,
+        title: `I am a ${this.result} person!`,
+        text: `My Brawler personality is ${this.result}! What's yours?`,
         url: 'https://brawltime.ninja',
       })
     },
@@ -363,6 +368,7 @@ export default Vue.extend({
   },
   watch: {
     personalityTestResult(p: string) {
+      this.result = p
       this.step = 5
     },
     step(s: number) {
@@ -733,7 +739,7 @@ brawlerTraits.forEach(b => {
 }
 
 .double-bounce1, .double-bounce2 {
-  @apply w-full h-full rounded-full absolute top-0 left-0 bg-gray-800 opacity-50;
+  @apply w-full h-full rounded-full absolute top-0 left-0 bg-secondary-dark opacity-50;
   animation: bounce 2.0s infinite ease-in-out;
 }
 
