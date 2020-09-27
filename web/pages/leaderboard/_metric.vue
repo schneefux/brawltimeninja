@@ -21,7 +21,7 @@
         <nuxt-link
           v-for="metric in metrics"
           :key="metric"
-          class="button button--md mt-2 mr-2 whitespace-no-wrap"
+          class="button button--secondary button--md mt-2 mr-2 whitespace-no-wrap"
           :to="`/leaderboard/${metric}`"
         >
           {{ formatMetric(metric) }} Leaderboard
