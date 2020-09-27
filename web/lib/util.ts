@@ -402,3 +402,32 @@ export function formatClickhouseDate(timestamp: Date) {
     .slice(0, 10) // remove fractions, day and time zone
     .replace('T', ' ')
 }
+
+export const measurementMap = {
+  winRate: 'battle_victory',
+  useRate: 'picks_weighted',
+  pickRate: 'picks',
+  starRate: 'battle_starplayer',
+  rank1Rate: 'battle_rank1',
+  duration: 'battle_duration',
+}
+
+export const measurementOfTotal = {
+  winRate: false,
+  useRate: true,
+  pickRate: true,
+  starRate: false,
+  rank1Rate: false,
+  duration: false,
+}
+
+export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
+  const sign = metaStatMaps.signs[stat] as number
+  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
+  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
+  return sign * (e1stat - e2stat)
+}
+
+export function compare1(stat: string) {
+  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
+}

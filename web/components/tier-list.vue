@@ -53,21 +53,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, MetaGridEntry, brawlerId } from '../lib/util'
+import { metaStatMaps, MetaGridEntry, brawlerId, compare1 } from '../lib/util'
 
 interface TierList {
   [tier: string]: MetaGridEntry[]
-}
-
-function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
-  const sign = metaStatMaps.signs[stat] as number
-  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
-  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
-  return sign * (e1stat - e2stat)
-}
-
-function compare1(stat: string) {
-  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
 }
 
 function groupStatIntoTiers(entries: MetaGridEntry[], stat: string, sampleSizeThreshold: number): TierList {

@@ -98,7 +98,7 @@ export default Vue.extend({
     <div class="w-full relative z-10 text-center text-sm bg-primary-darker">
       <button
         onClick={() => this.open = !open}
-        class="w-full py-1 px-2 bg-primary-light hover:bg-primary-lighter text-black font-semibold border-t-2 border-primary-darkest"
+        class="w-full py-1 px-2 bg-primary-dark hover:bg-primary text-gray-400 font-semibold border-t-2 border-primary-darkest"
       >
         { open ? 'Hide' : 'Show' } Details
       </button>

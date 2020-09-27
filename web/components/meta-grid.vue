@@ -1,45 +1,6 @@
 <template>
-  <div class="mt-6">
-    <div
-      v-if="!embedded"
-      class="flex items-center justify-center"
-    >
-      <div class="w-16 flex-shrink-0">
-        <span>Sort By</span>
-      </div>
-      <div class="flex flex-wrap">
-        <button
-          v-for="stat in stats"
-          :key="stat"
-          class="mr-3 my-1 button button--sm button--secondary"
-          :class="{ 'button--secondary-selected': selectedStat == stat }"
-          @click="sortBy(stat)"
-        >
-          {{ metaStatMaps.labels[stat] }}
-        </button>
-      </div>
-    </div>
-
-    <div
-      v-if="!embedded"
-      class="section-heading"
-    >
-      <h5 class="text-xl font-semibold">Tier List</h5>
-    </div>
-    <tier-list
-      v-if="!embedded"
-      :stat="selectedStat"
-      :entries="entries"
-    ></tier-list>
-
-    <div
-      v-if="!embedded"
-      class="section-heading"
-    >
-      <h5 class="w-full text-xl font-semibold">All Statistics</h5>
-    </div>
-
-    <div class="section flex flex-wrap justify-center">
+  <div>
+    <div class="flex flex-wrap justify-center">
       <div
         v-for="entry in sortedEntries"
         :key="entry.id"
@@ -48,7 +9,6 @@
         itemtype="http://schema.org/Person"
       >
         <brawler-card
-          v-if="entry.adSlot === undefined"
           :title="entry.title"
           :brawler="entry.brawler"
           :icon="entry.icon"
@@ -94,10 +54,12 @@
             >
               <span class="m-auto">Not enough data.</span>
             </div>
+          </template>
+          <template v-slot:link>
             <nuxt-link
               v-if="entry.link !== undefined"
               :to="entry.link"
-              class="link"
+              class="mt-2 button button--secondary button--xs"
               itemprop="url"
             >
               More Statistics
@@ -107,9 +69,9 @@
       </div>
     </div>
 
-    <div class="mt-2 w-full text-right hidden md:block">
+    <div class="mt-2 w-full text-right">
       <button
-        class="button button--md"
+        class="button button--md button--secondary"
         @click="downloadCsv()"
       >
         Download Data
@@ -120,21 +82,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, MetaGridEntry } from '../lib/util'
+import { metaStatMaps, MetaGridEntry, compare1 } from '../lib/util'
 
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
-}
-
-function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
-  const sign = metaStatMaps.signs[stat] as number
-  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
-  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
-  return sign * (e1stat - e2stat)
-}
-
-function compare1(stat: string) {
-  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
 }
 
 export default Vue.extend({
@@ -154,12 +105,6 @@ export default Vue.extend({
     sampleSizeThreshold: {
       type: Number,
       default: 200
-    },
-    embedded: {
-      // backwards compat
-      // enabled: show just the grid
-      type: Boolean,
-      default: false
     },
   },
   data() {

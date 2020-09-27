@@ -19,14 +19,20 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
+        :measurements="measurements"
+        :measurement="measurement"
+        :loading="$fetchState.pending"
         cube="starpower"
+        @select="m => measurement = m"
       ></meta-slicers>
-      <meta-grid
-        :entries="starpowers"
-        :sample-size-threshold="1000"
-        default-stat="winRate"
+
+      <meta-views
+        v-if="totalSampleSize > 0"
+        :entries="entries"
+        :measurement="measurement"
         ga-category="starpower_meta"
-      />
+        @view="v => loadAll = (v == 'legacy')"
+      ></meta-views>
     </div>
   </div>
 </template>
@@ -34,25 +40,72 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, brawlerId } from '../../lib/util'
+import { MetaGridEntry, brawlerId, measurementMap, capitalizeWords } from '../../lib/util'
 
 interface Row {
-  brawler_id: number
+  picks: number;
+  brawler_id: string
   brawler_name: string
   brawler_starpower_id: number
   brawler_starpower_name: string
-  picks: number
   battle_victory: number
   battle_starplayer: number
   battle_rank1: number
+}
+
+function calculateDiffs(rows: Row[]) {
+  const statsToDiffs = (starpower: Row) => {
+    const brawlerWithout = rows
+      .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
+    const perc = (v) => Math.round(v * 100 * 100) / 100
+    const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
+    const format = (v) => signed(perc(v))
+
+    if (brawlerWithout == undefined) {
+      return {
+        winRate: starpower.battle_victory,
+        starRate: starpower.battle_starplayer,
+        rank1Rate: starpower.battle_rank1,
+      }
+    }
+
+    return {
+      winRate: format(starpower.battle_victory - brawlerWithout.battle_victory),
+      starRate: format(starpower.battle_starplayer - brawlerWithout.battle_starplayer),
+      rank1Rate: format(starpower.battle_rank1 - brawlerWithout.battle_rank1),
+    }
+  }
+  const sampleSize = (starpower: Row) => {
+    const brawlerWithout = rows
+      .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
+    if (brawlerWithout == undefined) {
+      return 0
+    }
+    return Math.min(starpower.picks, brawlerWithout.picks)
+  }
+
+  return rows
+    .filter(s => s.brawler_starpower_name !== '')
+    .map((starpower) => (<MetaGridEntry>{
+      id: `${starpower.brawler_id}-${starpower.brawler_starpower_name}`,
+      title: capitalizeWords(starpower.brawler_starpower_name.toLowerCase()),
+      brawler: starpower.brawler_name,
+      sampleSize: sampleSize(starpower),
+      stats: statsToDiffs(starpower),
+      icon: `/starpowers/${starpower.brawler_starpower_id}`,
+      link: `/tier-list/brawler/${brawlerId({ name: starpower.brawler_name })}`,
+    }))
 }
 
 export default Vue.extend({
   data() {
     return {
       slices: this.$clicker.defaultSlices('starpower'),
-      data: [] as Row[],
-      totals: {} as Row,
+      entries: [] as MetaGridEntry[],
+      measurements: ['winRate', 'starRate', 'rank1Rate'],
+      measurement: 'winRate',
+      totalSampleSize: 0,
+      loadAll: false,
     }
   },
   head() {
@@ -66,67 +119,28 @@ export default Vue.extend({
     }
   },
   computed: {
-    totalSampleSize(): number {
-      return this.totals.picks
-    },
-    starpowers(): MetaGridEntry[] {
-      const statsToDiffs = (starpower: Row) => {
-        const brawlerWithout = this.data
-          .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
-        const perc = (v) => Math.round(v * 100 * 100) / 100
-        const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
-        const format = (v) => signed(perc(v))
-
-        if (brawlerWithout == undefined) {
-          return {
-            winRate: starpower.battle_victory,
-            starRate: starpower.battle_starplayer,
-            rank1Rate: starpower.battle_rank1,
-          }
-        }
-
-        return {
-          winRate: format(starpower.battle_victory - brawlerWithout.battle_victory),
-          starRate: format(starpower.battle_starplayer - brawlerWithout.battle_starplayer),
-          rank1Rate: format(starpower.battle_rank1 - brawlerWithout.battle_rank1),
-        }
-      }
-      const sampleSize = (starpower: Row) => {
-        const brawlerWithout = this.data
-          .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
-        if (brawlerWithout == undefined) {
-          return 0
-        }
-        return Math.min(starpower.picks, brawlerWithout.picks)
-      }
-
-      return this.data
-        .filter(s => s.brawler_starpower_name !== '')
-        .map((starpower) => ({
-          id: `${starpower.brawler_id}-${starpower.brawler_starpower_name}`,
-          title: starpower.brawler_starpower_name,
-          brawler: starpower.brawler_name,
-          sampleSize: sampleSize(starpower),
-          stats: statsToDiffs(starpower),
-          icon: `/starpowers/${starpower.brawler_starpower_id}`,
-          link: `/tier-list/brawler/${brawlerId({ name: starpower.brawler_name })}`,
-        }))
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
   watch: {
     slices: '$fetch',
+    measurement: '$fetch',
+    loadAll(l: boolean) {
+      if (l) {
+        this.$fetch()
+      }
+    },
   },
   async fetch() {
+    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : [...this.measurements.map(m => measurementMap[m]), 'picks']
     const data = await this.$clicker.query('meta.starpower', 'starpower',
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
-      ['battle_victory', 'battle_starplayer', 'battle_rank1', 'picks'],
+      measurements,
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
-    this.data = data.data
-    this.totals = data.totals
+    this.entries = calculateDiffs(data.data)
+    this.totalSampleSize = data.totals.picks
   },
   methods: {
     trackScroll(visible, element, section) {

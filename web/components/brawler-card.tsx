@@ -18,7 +18,7 @@ export default Vue.extend({
     },
   },
   render(h, { props, scopedSlots }) {
-    return <div class="card w-80 max-w-full bg-primary-dark mx-auto relative">
+    return <div class="card w-80 max-w-full bg-primary-darker mx-auto relative">
       <div class="relative">
         <div class="z-10 absolute left-0 ml-1 mt-1 w-5/12">
           <div class="bg-gray-800 bg-opacity-75 rounded-lg px-2 w-fit-content">
@@ -44,6 +44,9 @@ export default Vue.extend({
           <div>
             { scopedSlots.stats({}) }
           </div>
+          { 'link' in scopedSlots ?
+            scopedSlots.link({})
+          : '' }
         </div>
       </div>
       { 'expand' in scopedSlots ? scopedSlots.expand({}) : '' }

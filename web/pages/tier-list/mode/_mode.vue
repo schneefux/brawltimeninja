@@ -102,13 +102,19 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
+        :measurements="measurements"
+        :measurement="measurement"
+        :loading="$fetchState.pending"
         cube="map"
+        @select="(m) => measurement = m"
       ></meta-slicers>
-      <meta-grid
-        :entries="modes"
-        default-stat="winRate"
+      <meta-views
+        v-if="totalSampleSize > 0"
+        :entries="entries"
+        :measurement="measurement"
+        @view="v => loadAll = (v == 'legacy')"
         ga-category="mode_meta"
-      />
+      ></meta-views>
     </div>
 
     <client-only>
@@ -127,7 +133,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, MetaGridEntry, brawlerId } from '../../../lib/util'
+import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal } from '../../../lib/util'
 
 const kebabToCamel = (s: string) => {
   return s.replace(/([-_][a-z])/ig, ($1) => {
@@ -135,17 +141,6 @@ const kebabToCamel = (s: string) => {
       .replace('-', '')
       .replace('_', '');
   })
-}
-
-interface Row {
-  brawler_name: string
-  battle_event_mode: number
-  picks: number
-  picks_weighted: number
-  battle_victory: number
-  battle_duration: number
-  battle_starplayer: number
-  battle_rank1: number
 }
 
 interface EventIdAndMap {
@@ -171,21 +166,48 @@ export default Vue.extend({
       mode: '',
       modeName: '',
       maps: [] as EventIdAndMap[],
-      data: [] as Row[],
-      totals: {} as Row,
+      entries: [] as MetaGridEntry[],
+      measurement: 'winRate',
+      totalSampleSize: 0,
+      loadAll: false,
     }
   },
   watch: {
     slices: '$fetch',
+    measurement: '$fetch',
+    loadAll(l: boolean) {
+      if (l) {
+        this.$fetch()
+      }
+    },
   },
   async fetch() {
+    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : [...this.measurements.map(m => measurementMap[m]), 'picks']
     const data = await this.$clicker.query('meta.mode', 'map',
       ['brawler_name'],
-      ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      measurements,
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
-    this.data = data.data
-    this.totals = data.totals
+
+    this.entries = data.data.map(row => ({
+      id: row.brawler_name,
+      brawler: row.brawler_name,
+      title: capitalizeWords(row.brawler_name.toLowerCase()),
+      stats: !this.loadAll ? {
+        [this.measurement]: row[measurementMap[this.measurement]]
+          / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
+      } : {
+        winRate: row.battle_victory,
+        useRate: row.picks_weighted / data.totals.picks_weighted,
+        pickRate: row.picks / data.totals.picks,
+        starRate: row.battle_starplayer,
+        rank1Rate: row.battle_rank1,
+        duration: row.battle_duration,
+      },
+      sampleSize: row.picks,
+      link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+    }) as MetaGridEntry)
+    this.totalSampleSize = data.totals.picks
   },
   async asyncData({ params, $clicker }) {
     const mode = kebabToCamel(params.mode as string)
@@ -210,25 +232,18 @@ export default Vue.extend({
     }
   },
   computed: {
-    totalSampleSize(): number {
-      return this.totals.picks
-    },
-    modes(): MetaGridEntry[] {
-      return this.data.map(row => ({
-        id: row.brawler_name,
-        brawler: row.brawler_name,
-        title: row.brawler_name,
-        stats: {
-          winRate: row.battle_victory,
-          useRate: row.picks_weighted / this.totals.picks_weighted,
-          pickRate: row.picks / this.totals.picks,
-          starRate: row.battle_starplayer,
-          rank1Rate: row.battle_rank1,
-          duration: row.battle_duration,
-        },
-        sampleSize: row.picks,
-        link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-      }) as MetaGridEntry)
+    measurements(): string[] {
+      let measurements = ['winRate', 'useRate', 'pickRate']
+      if (this.mode == 'heist' || this.mode == 'bounty') {
+        measurements = [...measurements, 'starRate']
+      }
+      if (this.mode == 'gemGrab') {
+        measurements = [...measurements, 'starRate', 'duration']
+      }
+      if (this.mode.endsWith('howdown')) {
+        measurements = [...measurements, 'rank1Rate']
+      }
+      return measurements
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

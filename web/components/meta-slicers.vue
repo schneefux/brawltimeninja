@@ -1,6 +1,11 @@
 <template>
   <!-- a bit less px than card__content on sm so that the time buttons fit -->
-  <div class="card card--dark px-3 py-4 md:card__content max-w-sm mx-auto">
+  <div
+    class="card card--dark px-3 py-4 md:card__content max-w-sm mx-auto"
+    :class="{
+      'card--loading': loading,
+    }"
+  >
     <div class="flex items-center">
       <div class="w-24">
         <span>Timespan</span>
@@ -61,10 +66,7 @@
       </template>
     </p>
 
-    <div
-      v-if="measurements.length > 0"
-      class="mt-2 flex"
-    >
+    <div class="mt-2 flex">
       <div class="w-24 flex-shrink-0">
         <span>Metric</span>
       </div>
@@ -118,7 +120,11 @@ export default Vue.extend({
     },
     measurements: {
       type: Array as PropType<string[]>,
-      default: []
+      required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
   },
   data() {

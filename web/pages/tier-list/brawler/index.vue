@@ -107,54 +107,20 @@
         :sample-min="100000"
         :measurements="['winRate', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
         :measurement="measurement"
+        :loading="$fetchState.pending"
         cube="map"
         @select="(m) => measurement = m"
       ></meta-slicers>
 
-      <div class="section mt-4 card px-3 py-2 card--dark">
-        <span class="mr-2">View Mode</span>
-        <button
-          class="button mr-2"
-          :class="{
-            'button--selected': view == 'tierlist',
-          }"
-          @click="view = 'tierlist'; $ga.event('brawler_meta', 'click', 'show_tierlist')"
-        >Tier List</button>
-        <button
-          class="button mr-2"
-          :class="{
-            'button--selected': view == 'grid',
-          }"
-          @click="view = 'grid'; $ga.event('brawler_meta', 'click', 'show_legacy')"
-        >Grid</button>
-        <button
-          class="button mr-2"
-          :class="{
-            'button--selected': view == 'table',
-          }"
-          @click="view = 'table'; $ga.event('brawler_meta', 'click', 'show_table')"
-        >Table</button>
-      </div>
-
-      <tier-list
-        v-if="view == 'tierlist'"
+      <meta-views
+        v-if="totalSampleSize > 0"
         :entries="entries"
-        :stat="measurement"
-      ></tier-list>
-      <meta-grid
-        v-if="view == 'grid'"
-        :entries="entries"
-        :key="measurement"
-        :default-stat="measurement"
+        :measurement="measurement"
+        @view="v => loadAll = (v == 'legacy')"
         ga-category="brawler_meta"
-        embedded
-      ></meta-grid>
-      <meta-table
-        v-if="view == 'table'"
-        :entries="entries"
-        :stat="measurement"
-      ></meta-table>
+      ></meta-views>
     </div>
+
 
     <client-only>
       <adsense
@@ -172,36 +138,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, brawlerId, capitalize, capitalizeWords } from '../../../lib/util'
-
-interface Row {
-  brawler_name: string
-  battle_event_mode: number
-  picks: number
-  picks_weighted: number
-  battle_victory: number
-  battle_duration: number
-  battle_starplayer: number
-  battle_rank1: number
-}
-
-const measurementMap = {
-  winRate: 'battle_victory',
-  useRate: 'picks_weighted',
-  pickRate: 'picks',
-  starRate: 'battle_starplayer',
-  rank1Rate: 'battle_rank1',
-  duration: 'battle_duration',
-}
-
-const measurementOfTotal = {
-  winRate: false,
-  useRate: true,
-  pickRate: true,
-  starRate: false,
-  rank1Rate: false,
-  duration: false,
-}
+import { MetaGridEntry, brawlerId, capitalize, capitalizeWords, measurementMap, measurementOfTotal } from '../../../lib/util'
 
 export default Vue.extend({
   head() {
@@ -222,7 +159,7 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       measurement: 'winRate',
       totalSampleSize: 0,
-      view: 'tierlist',
+      loadAll: false,
     }
   },
   computed: {
@@ -233,16 +170,17 @@ export default Vue.extend({
   watch: {
     slices: '$fetch',
     measurement: '$fetch',
-    view(v: string) {
-      if (v == 'grid') {
+    loadAll(l: boolean) {
+      if (l) {
         this.$fetch()
       }
     },
   },
   async fetch() {
+    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1']
     const data = await this.$clicker.query('meta.brawler', 'map',
       ['brawler_name'],
-      this.view != 'grid' ? [measurementMap[this.measurement], 'picks'] : ['picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1'],
+      measurements,
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
 
@@ -250,7 +188,7 @@ export default Vue.extend({
       id: row.brawler_name,
       brawler: row.brawler_name,
       title: capitalizeWords(row.brawler_name.toLowerCase()),
-      stats: this.view != 'grid' ? {
+      stats: !this.loadAll ? {
         [this.measurement]: row[measurementMap[this.measurement]]
           / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
       } : {

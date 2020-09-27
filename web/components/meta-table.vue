@@ -40,7 +40,7 @@
                     v-if="entry.icon"
                     :path="entry.icon"
                     size="80"
-                    clazz="h-2 md:h-4 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-px"
+                    clazz="h-5 md:h-6 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-px"
                   />
                 </div>
                 <span class="font-semibold text-lg">{{ entry.title }}</span>
@@ -58,18 +58,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, MetaGridEntry, brawlerId } from '../lib/util'
-
-function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
-  const sign = metaStatMaps.signs[stat] as number
-  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
-  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
-  return sign * (e1stat - e2stat)
-}
-
-function compare1(stat: string) {
-  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
-}
+import { metaStatMaps, MetaGridEntry, brawlerId, compare1 } from '../lib/util'
 
 export default Vue.extend({
   props: {

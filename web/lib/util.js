@@ -374,3 +374,28 @@ export function formatClickhouseDate(timestamp) {
         .slice(0, 10) // remove fractions, day and time zone
         .replace('T', ' ');
 }
+export var measurementMap = {
+    winRate: 'battle_victory',
+    useRate: 'picks_weighted',
+    pickRate: 'picks',
+    starRate: 'battle_starplayer',
+    rank1Rate: 'battle_rank1',
+    duration: 'battle_duration'
+};
+export var measurementOfTotal = {
+    winRate: false,
+    useRate: true,
+    pickRate: true,
+    starRate: false,
+    rank1Rate: false,
+    duration: false
+};
+export function compare(entry1, entry2, stat) {
+    var sign = metaStatMaps.signs[stat];
+    var e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString());
+    var e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString());
+    return sign * (e1stat - e2stat);
+}
+export function compare1(stat) {
+    return function (entry1, entry2) { return compare(entry1, entry2, stat); };
+}
