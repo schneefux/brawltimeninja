@@ -10,6 +10,7 @@ export default ({ store }) => {
       adsAllowed: state.adsAllowed,
       installBannerDismissed: state.installBannerDismissed,
       testGroup: state.testGroup,
+      personalityTestResult: state.personalityTestResult,
     }),
     restoreState: (key, storage) => {
       // pass through (https://github.com/championswimmer/vuex-persist/blob/master/src/index.ts#L189)

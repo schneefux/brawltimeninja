@@ -62,6 +62,7 @@ export const state = () => ({
   player: {
     tag: '',
   },
+  personalityTestResult: undefined,
   cookiesAllowed: false,
   adsAllowed: false,
   consentPopupVisible: true,
@@ -164,6 +165,9 @@ export const mutations = {
   },
   setTestGroup(state, group) {
     state.testGroup = group
+  },
+  setPersonalityTestResult(state, result) {
+    state.personalityTestResult = result
   },
 }
 

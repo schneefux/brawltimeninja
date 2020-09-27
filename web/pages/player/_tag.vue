@@ -41,6 +41,18 @@
       ></player-hype-stats>
     </div>
 
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'quiz'),
+        once: true,
+      }"
+      class="card-wrapper"
+    >
+      <player-quiz
+        :player="player"
+      ></player-quiz>
+    </div>
+
     <client-only>
       <adsense
         v-if="!isApp"

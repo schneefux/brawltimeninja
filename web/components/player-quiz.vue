@@ -1,0 +1,751 @@
+<template>
+  <div class="card card__content bg-primary-dark relative max-w-md mx-auto">
+    <h3 class="card__header">
+      Brawler Personality Test
+    </h3>
+
+    <div class="card__text h-16">
+      <template v-if="step == 0">
+        <p class="question">
+          What is your favorite color?
+        </p>
+        <div class="answers">
+          <button
+            v-for="(clss, color) in colors"
+            :key="color"
+            class="w-8 h-8 mx-1 border-2 rounded border-black"
+            :class="clss"
+            @click="setColor(color)"
+          ></button>
+        </div>
+      </template>
+
+      <template v-if="step == 1">
+        <p class="question">
+          Do you always play the new Brawler?
+        </p>
+        <div class="answers">
+          <button
+            v-for="rating in [5, 3, 1]"
+            :key="rating"
+            class="button button--secondary button--md mx-2"
+            @click="setOpenness(rating)"
+          >
+            <template v-if="rating == 5">
+              Yes!
+            </template>
+            <template v-if="rating == 3">
+              Sometimes.
+            </template>
+            <template v-if="rating == 1">
+              No.
+            </template>
+          </button>
+        </div>
+      </template>
+
+      <template v-if="step == 2">
+        <p class="question">
+          Are you an Attacker or a Defender?
+        </p>
+        <div class="answers">
+          <button
+            v-for="rating in [5, 3, 1]"
+            :key="rating"
+            class="button button--secondary button--md mx-2"
+            @click="setExtraversion(rating)"
+          >
+            <template v-if="rating == 5">
+              Attacker!
+            </template>
+            <template v-if="rating == 3">
+              Both
+            </template>
+            <template v-if="rating == 1">
+              Defender!
+            </template>
+          </button>
+        </div>
+      </template>
+
+      <template v-if="step == 3">
+        <p class="question">
+          Are you very upset when you lose?
+        </p>
+        <div class="answers">
+          <button
+            v-for="rating in [5, 3, 1]"
+            :key="rating"
+            class="button button--secondary button--md mx-2"
+            @click="setNeurotic(rating)"
+          >
+            <template v-if="rating == 5">
+              Yes
+            </template>
+            <template v-if="rating == 3">
+              Sometimes
+            </template>
+            <template v-if="rating == 1">
+              No
+            </template>
+          </button>
+        </div>
+      </template>
+
+      <template v-if="step == 4">
+        <p>
+          Processing your statistics and answers...
+        </p>
+        <div class="spinner mt-1 mx-auto">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+      </template>
+
+      <template v-if="step == 5">
+        <div
+          class="absolute left-0 bottom-0"
+        >
+          <button
+            class="button button--secondary mr-1"
+            @click="step = 0"
+          >
+            Restart
+          </button>
+          <button
+            v-if="supportsShareApi"
+            class="button button--secondary"
+            @click="share"
+          >
+            Share
+          </button>
+        </div>
+        <media-img
+          :path="'/brawlers/' + brawlerId({ name: personalityTestResult }) + '/model'"
+          size="128"
+          clazz="absolute right-0 top-0 h-28 mt-3 mr-2"
+        ></media-img>
+        <div class="absolute inset-0 flex justify-center items-center pointer-events-none">
+          <span class="text-4xl font-bold mt-3">{{ personalityTestResult }}</span>
+        </div>
+      </template>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { mapState, mapMutations } from 'vuex'
+import { Player } from '../model/Api'
+import { brawlerId } from '../lib/util'
+
+type Color = 'optimism'|'friendly'|'excitement'|'creative'|'trust'|'peaceful'|'balance'
+
+interface Trait {
+  name: string
+  color: Color
+  // [1, 5] = rarity (or depending on trophy road %)
+  difficulty: number
+  // each [-2, 2]
+  open: number
+  conscientious: number
+  extravert: number
+  agreeable: number
+  neurotic: number
+}
+
+/**
+ * Calculate the cosine similarity between two traits.
+ */
+function similarity(t1: Trait, t2: Trait) {
+  const colorMatches = t1.color == t2.color
+  const sqr = (n: number) => Math.pow(n, 2)
+  // weight difficulty more than the other attributes
+  // so players are more likely
+  // to get a personality at their skill level
+  const difficultyWeight = 3
+  const sum1 = sqr(colorMatches ? 5 : 1) +
+    sqr(t1.difficulty * difficultyWeight) +
+    sqr(t1.open) +
+    sqr(t1.conscientious) +
+    sqr(t1.extravert) +
+    sqr(t1.agreeable) +
+    sqr(t1.neurotic)
+  const sum2 = sqr(colorMatches ? 5 : 1) +
+    sqr(t2.difficulty * difficultyWeight) +
+    sqr(t2.open) +
+    sqr(t2.conscientious) +
+    sqr(t2.extravert) +
+    sqr(t2.agreeable) +
+    sqr(t2.neurotic)
+  const dotProduct =
+    (colorMatches ? 5 * 5 : 1) +
+    t1.difficulty * difficultyWeight * t2.difficulty * difficultyWeight +
+    t1.open * t2.open +
+    t1.conscientious * t2.conscientious +
+    t1.extravert * t2.extravert +
+    t1.agreeable * t2.agreeable +
+    t1.neurotic * t2.neurotic
+  return dotProduct / (Math.sqrt(sum1) * Math.sqrt(sum2))
+}
+
+function closestBrawler(t: Trait) {
+  return brawlerTraits
+    .sort((t1, t2) => similarity(t, t2) - similarity(t, t1))
+    [0]
+}
+
+export default Vue.extend({
+  props: {
+    player: {
+      type: Object as PropType<Player>,
+      required: true
+    },
+  },
+  data() {
+    return {
+      step: 0,
+      userColor: undefined as Color|undefined,
+      userOpenness: undefined as number|undefined,
+      userExtraversion: undefined as number|undefined,
+      userNeuroticism: undefined as number|undefined,
+    }
+  },
+  /*
+  // debugging traits:
+  created() {
+    const occurences = {} as Record<string, number>
+    for (const color of ['optimism', 'friendly', 'excitement', 'creative', 'trust', 'peaceful', 'balance']) {
+      for (const difficulty of [1, 2, 3, 4, 5]) {
+        for (const open of [1, 3, 5]) {
+          for (const conscientious of [1, 3, 5]) {
+            for (const extravert of [1, 3, 5]) {
+              for (const agreeable of [1, 3, 5]) {
+                for (const neurotic of [1, 3, 5]) {
+                  const t: Trait = {
+                    name: 'me',
+                    color: color as any,
+                    difficulty,
+                    conscientious,
+                    open,
+                    extravert,
+                    agreeable,
+                    neurotic,
+                  }
+                  const order = brawlerTraits
+                    .map(b => ({
+                      name: b.name,
+                      sim: similarity(b, t),
+                    }))
+                    .sort((b1, b2) => b2.sim - b1.sim)
+                  if (order[0].sim == order[1].sim) {
+                    console.log('collision detected', t, order[0], order[1])
+                  }
+                  occurences[order[0].name] = (occurences[order[0].name] || 0) + 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log(occurences)
+    brawlerTraits.forEach(t1 => {
+      if (!(t1.name in occurences)) {
+        throw new Error('Missing brawler: ' + t1.name)
+      }
+      const dupe = brawlerTraits.find(t2 => t1 != t2 && similarity(t1, t2) == 1)
+      if (dupe != undefined) {
+        throw new Error('Found duplicate: ' + t1.name + ' ' + dupe.name)
+      }
+    })
+  },
+  */
+  computed: {
+    colors(): Record<Color, string> {
+      return {
+        'optimism': 'bg-yellow-500',
+        'friendly': 'bg-orange-500',
+        'excitement': 'bg-red-500',
+        'creative': 'bg-purple-500',
+        'trust': 'bg-blue-500',
+        'peaceful': 'bg-green-500',
+        'balance': 'bg-white',
+      }
+    },
+    userTrait(): Trait {
+      /*
+        https://bigthink.com/mind-brain/color-personality-psychology
+        yellow: optimism
+        orange: friendly
+        red: excitement
+        purple: creative
+        blue: trust
+        green: peaceful
+        white: balance
+      */
+      /*
+        https://en.wikipedia.org/wiki/Big_Five_personality_traits
+        openness
+        conscientiousness
+        extraversion
+        agreeableness
+        neuroticism
+      */
+
+      // color personality = ask
+      // difficulty = trophies
+      // openness = curious for new brawler?
+      // conscientiousness = brawlers pushed equally
+      // extraversion = attack or defense?
+      // agreeableness = 3v3 or solo
+      // neuroticism = nervous player?
+      const trophyCeiling = 8000 // last Brawler unlock
+      const difficulty = 1 + 4 * Math.min(trophyCeiling, this.player.stats.highestTrophies) / trophyCeiling
+      const brawlers = Object.values(this.player.brawlers)
+      const brawlerTrophyAvg = brawlers.reduce((sum, b) => sum + b.highestTrophies, 0) / brawlers.length
+      const brawlerTrophyStd = brawlers.reduce((sum, b) => sum + Math.pow(b.highestTrophies - brawlerTrophyAvg, 2), 0) / brawlers.length
+      const conscientious = 1 + 4 * brawlerTrophyStd / brawlerTrophyAvg
+      const agreeable = 1 + 4 * this.player.stats.victories / (this.player.stats.victories + this.player.stats.soloVictories + this.player.stats.duoVictories)
+
+      return {
+        name: 'user',
+        color: this.userColor as Color,
+        difficulty,
+        open: this.userOpenness!,
+        conscientious,
+        extravert: this.userExtraversion!,
+        agreeable,
+        neurotic: this.userNeuroticism!,
+      }
+    },
+    brawlerId() {
+      return brawlerId
+    },
+    supportsShareApi() {
+      return 'share' in navigator
+    },
+    ...mapState({
+      personalityTestResult: (state: any) => state.personalityTestResult as string|undefined,
+    })
+  },
+  methods: {
+    setColor(c: Color) {
+      this.userColor = c
+      this.step++
+    },
+    setOpenness(o: number) {
+      this.userOpenness = o
+      this.step++
+    },
+    setExtraversion(e: number) {
+      this.userExtraversion = e
+      this.step++
+    },
+    setNeurotic(n: number) {
+      this.userNeuroticism = n
+      this.step++
+      setTimeout(() =>
+        this.setPersonalityTestResult(
+          closestBrawler(this.userTrait).name), 4000)
+    },
+    async share() {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
+      await navigator.share({
+        title: `I am a ${this.personalityTestResult} person!`,
+        text: `My Brawler personality is ${this.personalityTestResult}! What's yours?\nTake the test on https://brawltime.ninja`,
+        url: 'https://brawltime.ninja',
+      })
+    },
+    ...mapMutations({
+      setPersonalityTestResult: 'setPersonalityTestResult',
+    })
+  },
+  watch: {
+    personalityTestResult(p: string) {
+      this.step = 5
+    },
+    step(s: number) {
+      this.$ga.event('quiz', 'step', s.toString())
+    },
+  },
+})
+
+const brawlerTraits: Trait[] = [{
+  name: '8-Bit',
+  color: 'trust',
+  difficulty: 5,
+  open: 0,
+  conscientious: 0,
+  extravert: -2,
+  agreeable: 2,
+  neurotic: 1,
+}, {
+  name: 'Barley',
+  color: 'balance',
+  difficulty: 1,
+  open: -1,
+  conscientious: 0,
+  extravert: 1,
+  agreeable: -2,
+  neurotic: -1,
+}, {
+  name: 'Bea',
+  color: 'excitement',
+  difficulty: 3,
+  open: 2,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: -1,
+  neurotic: -1,
+}, {
+  name: 'Bibi',
+  color: 'optimism',
+  difficulty: 3,
+  open: 0,
+  conscientious: -2,
+  extravert: 1,
+  agreeable: -2,
+  neurotic: 0,
+}, {
+  name: 'Bo',
+  color: 'friendly',
+  difficulty: 4,
+  open: -1,
+  conscientious: -1,
+  extravert: -1,
+  agreeable: 1,
+  neurotic: -1,
+}, {
+  name: 'Brock',
+  color: 'optimism',
+  difficulty: 3,
+  open: 2,
+  conscientious: -2,
+  extravert: 2,
+  agreeable: -1,
+  neurotic: 2,
+}, {
+  name: 'Bull',
+  color: 'trust',
+  difficulty: 2,
+  open: -1,
+  conscientious: 2,
+  extravert: 0,
+  agreeable: -2,
+  neurotic: 0,
+}, {
+  name: 'Carl',
+  color: 'creative',
+  difficulty: 2,
+  open: 2,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 1,
+  neurotic: 0,
+}, {
+  name: 'Colt',
+  color: 'friendly',
+  difficulty: 1,
+  open: 0,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Crow',
+  color: 'creative',
+  difficulty: 5,
+  open: 0,
+  conscientious: 2,
+  extravert: -2,
+  agreeable: -1,
+  neurotic: 2,
+}, {
+  name: 'Darryl',
+  color: 'friendly',
+  difficulty: 2,
+  open: 2,
+  conscientious: 0,
+  extravert: 2,
+  agreeable: -1,
+  neurotic: 0,
+}, {
+  name: 'Dynamike',
+  color: 'creative',
+  difficulty: 4,
+  open: 0,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 1,
+  neurotic: -1,
+}, {
+  name: 'El Primo',
+  color: 'peaceful',
+  difficulty: 1,
+  open: 2,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 1,
+  neurotic: -1,
+}, {
+  name: 'Emz',
+  color: 'creative',
+  difficulty: 5,
+  open: 0,
+  conscientious: 2,
+  extravert: 2,
+  agreeable: -2,
+  neurotic: 2,
+}, {
+  name: 'Frank',
+  color: 'peaceful',
+  difficulty: 3,
+  open: 0,
+  conscientious: -1,
+  extravert: -2,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Gale',
+  color: 'friendly',
+  difficulty: 5,
+  open: -1,
+  conscientious: -1,
+  extravert: -2,
+  agreeable: -1,
+  neurotic: 1,
+}, {
+  name: 'Gene',
+  color: 'friendly',
+  difficulty: 4,
+  open: 2,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Jacky',
+  color: 'optimism',
+  difficulty: 2,
+  open: 0,
+  conscientious: -2,
+  extravert: 1,
+  agreeable: 1,
+  neurotic: 0,
+}, {
+  name: 'Jessie',
+  color: 'optimism',
+  difficulty: 3,
+  open: 1,
+  conscientious: 0,
+  extravert: 1,
+  agreeable: 2,
+  neurotic: 1,
+}, {
+  name: 'Leon',
+  color: 'excitement',
+  difficulty: 5,
+  open: 2,
+  conscientious: 2,
+  extravert: 2,
+  agreeable: -2,
+  neurotic: 2,
+}, {
+  name: 'Max',
+  color: 'excitement',
+  difficulty: 4,
+  open: 2,
+  conscientious: 1,
+  extravert: 2,
+  agreeable: 2,
+  neurotic: 2,
+}, {
+  name: 'Mortis',
+  color: 'balance',
+  difficulty: 4,
+  open: -1,
+  conscientious: 1,
+  extravert: -1,
+  agreeable: -2,
+  neurotic: 2,
+}, {
+  name: 'Mr. P',
+  color: 'peaceful',
+  difficulty: 4,
+  open: -1,
+  conscientious: -2,
+  extravert: 1,
+  agreeable: -1,
+  neurotic: -1,
+}, {
+  name: 'Nani',
+  color: 'optimism',
+  difficulty: 3,
+  open: 2,
+  conscientious: -1,
+  extravert: 1,
+  agreeable: 1,
+  neurotic: 1,
+}, {
+  name: 'Nita',
+  color: 'friendly',
+  difficulty: 1,
+  open: 2,
+  conscientious: -2,
+  extravert: 2,
+  agreeable: 1,
+  neurotic: 2,
+}, {
+  name: 'Pam',
+  color: 'friendly',
+  difficulty: 3,
+  open: 1,
+  conscientious: 0,
+  extravert: -1,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Penny',
+  color: 'creative',
+  difficulty: 2,
+  open: 0,
+  conscientious: 0,
+  extravert: 1,
+  agreeable: 1,
+  neurotic: -1,
+}, {
+  name: 'Piper',
+  color: 'balance',
+  difficulty: 3,
+  open: 0,
+  conscientious: 0,
+  extravert: 2,
+  agreeable: -2,
+  neurotic: 1,
+}, {
+  name: 'Poco',
+  color: 'creative',
+  difficulty: 1,
+  open: 2,
+  conscientious: -1,
+  extravert: 2,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Rico',
+  color: 'trust',
+  difficulty: 2,
+  open: -2,
+  conscientious: 0,
+  extravert: 1,
+  agreeable: 2,
+  neurotic: 1,
+}, {
+  name: 'Sandy',
+  color: 'peaceful',
+  difficulty: 5,
+  open: -2,
+  conscientious: 0,
+  extravert: -2,
+  agreeable: 2,
+  neurotic: 0,
+}, {
+  name: 'Shelly',
+  color: 'excitement',
+  difficulty: 1,
+  open: -2,
+  conscientious: -1,
+  extravert: 1,
+  agreeable: -2,
+  neurotic: -1,
+}, {
+  name: 'Spike',
+  color: 'friendly',
+  difficulty: 5,
+  open: 0,
+  conscientious: -2,
+  extravert: -2,
+  agreeable: 1,
+  neurotic: -2,
+}, {
+  name: 'Sprout',
+  color: 'optimism',
+  difficulty: 4,
+  open: 1,
+  conscientious: -2,
+  extravert: 1,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Surge',
+  color: 'peaceful',
+  difficulty: 5,
+  open: 1,
+  conscientious: -2,
+  extravert: 2,
+  agreeable: 1,
+  neurotic: -1,
+}, {
+  name: 'Tara',
+  color: 'creative',
+  difficulty: 4,
+  open: 0,
+  conscientious: 0,
+  extravert: -2,
+  agreeable: 2,
+  neurotic: -1,
+}, {
+  name: 'Tick',
+  color: 'peaceful',
+  difficulty: 4,
+  open: -2,
+  conscientious: 0,
+  extravert: -2,
+  agreeable: 2,
+  neurotic: 0,
+}]
+
+// name: 'Colette' ???
+
+// rescale all attributes [1, 5]
+brawlerTraits.forEach(b => {
+  b.open += 3
+  b.conscientious += 3
+  b.extravert += 3
+  b.agreeable += 3
+  b.neurotic += 3
+})
+</script>
+
+<style scoped lang="postcss">
+.question {
+  @apply font-semibold text-center;
+}
+
+.answers {
+  @apply mt-3 flex justify-center;
+}
+
+/* https://tobiasahlin.com/spinkit/ */
+.spinner {
+  @apply w-12 h-12 relative;
+}
+
+.double-bounce1, .double-bounce2 {
+  @apply w-full h-full rounded-full absolute top-0 left-0 bg-gray-800 opacity-50;
+  animation: bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  animation-delay: -1.0s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(0.0);
+  } 50% {
+    transform: scale(1.0);
+  }
+}
+</style>
