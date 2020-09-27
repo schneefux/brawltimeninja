@@ -1,1 +1,3 @@
+TIMEOUT=300
+ATTEMPTS=20
 /clicker/status ok
