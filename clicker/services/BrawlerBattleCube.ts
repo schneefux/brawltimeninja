@@ -134,4 +134,8 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
     avgState(battle_level_id) AS battle_level_state,
     avgState(battle_trophy_change) as battle_trophy_change_state
   `
+
+  mapVirtual(row: Record<string, string>) {
+    return {}
+  }
 }

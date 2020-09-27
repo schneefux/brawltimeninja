@@ -17,12 +17,13 @@ export interface BrawlerLeaderboardCubeRow {
 }
 
 export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeRow> {
-  // TODO: add a TTL and compression
+  // similar to LeaderboardCube
   table = 'brawltime.brawler_leaderboard'
   engineDefinition = stripIndent`
     ENGINE = AggregatingMergeTree()
     PARTITION BY tuple()
     ORDER BY (brawler_id, player_id)
+    TTL timestamp + INTERVAL 1 MONTH
   `
 
   dimensions = [
@@ -35,29 +36,23 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   `
 
   measures = {
-    'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
-    'player_name': 'argMaxMerge(player_name_state)',
-    'brawler_name': 'argMaxMerge(brawler_name_state)',
-    'brawler_power': 'argMaxMerge(brawler_power_state)',
-    'brawler_trophies': 'argMaxMerge(brawler_trophies_state)',
-    'brawler_highest_trophies': 'argMaxMerge(brawler_highest_trophies_state)',
+    'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
+    'player_name': 'any(player_name)',
+    'brawler_name': 'any(brawler_name)',
+    'brawler_highest_trophies': 'MAX(brawler_highest_trophies)',
   }
 
   measuresDefinition = stripIndent`
-    timestamp_state AggregateFunction(argMax, Date, Date),
-    player_name_state AggregateFunction(argMax, String, Date),
-    brawler_name_state AggregateFunction(argMax, String, Date),
-    brawler_power_state AggregateFunction(argMax, UInt8, Date),
-    brawler_trophies_state AggregateFunction(argMax, UInt16, Date),
-    brawler_highest_trophies_state AggregateFunction(argMax, UInt16, Date)
+    timestamp Date,
+    player_name SimpleAggregateFunction(any, String),
+    brawler_name SimpleAggregateFunction(any, String),
+    brawler_highest_trophies SimpleAggregateFunction(MAX, UInt16)
   `
   measuresQuery = stripIndent`
-    argMaxState(timestamp, timestamp) as timestamp_state,
-    argMaxState(player_name, timestamp) as player_name_state,
-    argMaxState(brawler_name, timestamp) as brawler_name_state,
-    argMaxState(brawler_power, timestamp) as brawler_power_state,
-    argMaxState(brawler_trophies, timestamp) as brawler_trophies_state,
-    argMaxState(brawler_highest_trophies, timestamp) as brawler_highest_trophies_state
+    MAX(timestamp) as timestamp,
+    any(player_name) as player_name,
+    any(brawler_name) as brawler_name,
+    MAX(brawler_highest_trophies) as brawler_highest_trophies
   `
 
   slices = {
@@ -83,13 +78,18 @@ export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeR
   mappers = {
     timestamp: 'string',
     player_id: 'string',
-    // TODO how to select tag? add virtual measures to array
-    player_tag: (row: Record<string, string>) => idToTag(row.player_id),
     player_name: 'string',
     brawler_id: 'string',
     brawler_name: 'string',
-    brawler_power: 'int',
-    brawler_trophies: 'int',
     brawler_highest_trophies: 'int',
   } as Record<string, DataType>
+
+  mapVirtual(row: Record<string, string>): Record<string, string> {
+    if ('player_id' in row) {
+      return {
+        player_tag: idToTag(row.player_id),
+      }
+    }
+    return {}
+  }
 }

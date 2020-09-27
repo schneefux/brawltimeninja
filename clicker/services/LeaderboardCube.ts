@@ -9,20 +9,19 @@ export interface LeaderboardCubeRow {
   player_tag: string
   player_name: string
   player_exp_points: number
-  player_trophies: number
-  player_power_play_points: number
   player_3vs3_victories: number
   player_solo_victories: number
   player_duo_victories: number
 }
 
 export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
-  // TODO: add a TTL and compression
   table = 'brawltime.leaderboard'
+  // no partitions so that players do not end up in duplicate buckets
   engineDefinition = stripIndent`
     ENGINE = AggregatingMergeTree()
     PARTITION BY tuple()
     ORDER BY (player_id)
+    TTL timestamp + INTERVAL 1 MONTH
   `
 
   dimensions = [
@@ -33,35 +32,32 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   `
 
   measures = {
-    'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
-    'player_name': 'argMaxMerge(player_name_state)',
-    'player_exp_points': 'argMaxMerge(player_exp_points_state)',
-    'player_trophies': 'argMaxMerge(player_trophies_state)',
-    'player_power_play_points': 'argMaxMerge(player_power_play_points_state)',
-    'player_3vs3_victories': 'argMaxMerge(player_3vs3_victories_state)',
-    'player_solo_victories': 'argMaxMerge(player_solo_victories_state)',
-    'player_duo_victories': 'argMaxMerge(player_duo_victories_state)',
+    'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
+    'player_name': 'any(player_name)',
+    'player_exp_points': 'MAX(player_exp_points)',
+    'player_3vs3_victories': 'MAX(player_3vs3_victories)',
+    'player_solo_victories': 'MAX(player_solo_victories)',
+    'player_duo_victories': 'MAX(player_duo_victories)',
   }
 
+  // use SimpleAggregateFunction to store only the max
+  // this is allowed because exp & victories are increasing counters
+  // `any` name will update the name over time
   measuresDefinition = stripIndent`
-    timestamp_state AggregateFunction(argMax, DateTime, DateTime),
-    player_name_state AggregateFunction(argMax, String, DateTime),
-    player_exp_points_state AggregateFunction(argMax, UInt32, DateTime),
-    player_trophies_state AggregateFunction(argMax, UInt32, DateTime),
-    player_power_play_points_state AggregateFunction(argMax, UInt16, DateTime),
-    player_3vs3_victories_state AggregateFunction(argMax, UInt32, DateTime),
-    player_solo_victories_state AggregateFunction(argMax, UInt32, DateTime),
-    player_duo_victories_state AggregateFunction(argMax, UInt32, DateTime)
+    timestamp DateTime,
+    player_name SimpleAggregateFunction(any, String),
+    player_exp_points SimpleAggregateFunction(max, UInt32),
+    player_3vs3_victories SimpleAggregateFunction(max, UInt32),
+    player_solo_victories SimpleAggregateFunction(max, UInt32),
+    player_duo_victories SimpleAggregateFunction(max, UInt32)
   `
   measuresQuery = stripIndent`
-    argMaxState(timestamp, timestamp) as timestamp_state,
-    argMaxState(player_name, timestamp) as player_name_state,
-    argMaxState(player_exp_points, timestamp) as player_exp_points_state,
-    argMaxState(player_trophies, timestamp) as player_trophies_state,
-    argMaxState(player_power_play_points, timestamp) as player_power_play_points_state,
-    argMaxState(player_3vs3_victories, timestamp) as player_3vs3_victories_state,
-    argMaxState(player_solo_victories, timestamp) as player_solo_victories_state,
-    argMaxState(player_duo_victories, timestamp) as player_duo_victories_state
+    MAX(timestamp),
+    any(player_name) as player_name,
+    MAX(player_exp_points) as player_exp_points,
+    MAX(player_3vs3_victories) as player_3vs3_victories,
+    MAX(player_solo_victories) as player_solo_victories,
+    MAX(player_duo_victories) as player_duo_victories
   `
 
   slices = {
@@ -79,7 +75,7 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'timestamp':
-        return query.having(query.client.raw('argMaxMerge(timestamp_state)'), '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.having(query.client.raw('timestamp'), '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }
@@ -87,14 +83,19 @@ export default class LeaderboardCube extends Cube<LeaderboardCubeRow> {
   mappers = {
     timestamp: 'string',
     player_id: 'string',
-    // TODO how to select tag? add virtual measures to array
-    player_tag: (row: Record<string, string>) => idToTag(row.player_id),
     player_name: 'string',
     player_exp_points: 'int',
-    player_trophies: 'int',
-    player_power_play_points: 'int',
     player_3vs3_victories: 'int',
     player_solo_victories: 'int',
     player_duo_victories: 'int',
   } as Record<string, DataType>
+
+  mapVirtual(row: Record<string, string>): Record<string, string> {
+    if ('player_id' in row) {
+      return {
+        player_tag: idToTag(row.player_id),
+      }
+    }
+    return {}
+  }
 }

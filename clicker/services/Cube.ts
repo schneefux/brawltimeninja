@@ -4,7 +4,7 @@ import { StatsD } from "hot-shots"
 import { stripIndent } from "common-tags"
 
 export type Order = 'asc'|'desc'
-export type DataType = 'string'|'int'|'float'|'bool'|((row: Record<string, string>) => any)
+export type DataType = 'string'|'int'|'float'|'bool'
 
 export default abstract class Cube<R> {
   abstract table: string
@@ -18,6 +18,7 @@ export default abstract class Cube<R> {
   abstract dimensions: string[]
   abstract slices: Record<string, number>
   abstract mappers: Record<string, DataType>
+  abstract mapVirtual(row: Record<string, string>): Record<string, string|number|boolean>
 
   abstract slice(query: QueryBuilder, name: string, args: string[]): QueryBuilder
 
@@ -145,17 +146,16 @@ export default abstract class Cube<R> {
         case 'bool':
           return value == '1'
         default:
-          if (typeof type == 'function') {
-            return type(row)
-          }
           throw new Error('Could not map column: ' + column + ' ' + type)
       }
     }
-
-    return Object.entries(row)
-      .reduce((object, [key, value]) => ({
-        ...object,
-        [key]: map(key, value),
-      }), {} as P)
+    return {
+      ...Object.entries(row)
+        .reduce((object, [key, value]) => ({
+          ...object,
+          [key]: map(key, value),
+        }), {} as P),
+      ...this.mapVirtual(row),
+    }
   }
 }
