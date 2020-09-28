@@ -117,16 +117,16 @@
             size="256"
             clazz="h-24 mt-3 mr-2"
           ></media-img>
-          <div class="w-full flex h-6 justify-end pointer-events-auto">
+          <div class="w-full flex h-6 justify-end">
             <button
               v-if="supportsShareApi"
-              class="button button--secondary button--xs mr-1"
+              class="button button--secondary button--xs mr-1 pointer-events-auto"
               @click="share"
             >
               Share
             </button>
             <button
-              class="button button--secondary button--xs mr-1"
+              class="button button--secondary button--xs mr-1 pointer-events-auto"
               @click="restart"
             >
               Restart
