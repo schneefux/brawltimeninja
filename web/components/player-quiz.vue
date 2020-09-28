@@ -290,6 +290,12 @@ export default Vue.extend({
       showFullDescription: false,
     }
   },
+  created() {
+    if (this.personalityTestResult != undefined) {
+      this.result = this.personalityTestResult
+      this.step = 5
+    }
+  },
   /*
   // debugging traits:
   created() {
