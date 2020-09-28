@@ -427,15 +427,15 @@ export default Vue.extend({
       const difficultyRelative = difficultyMap[this.userTrait.difficulty]
       const difficultySentence = `As a player, ${difficultyRelative}.`
 
-      const conscientiousSentence = this.userTrait.conscientious > 0 ? 'You are disciplined. '
-        : this.userTrait.conscientious < 0 ? 'You do what you want. '
+      const conscientiousSentence = this.userTrait.conscientious > 3 ? 'You are disciplined. '
+        : this.userTrait.conscientious < 3 ? 'You do what you want. '
         : ''
 
-      const opennessSentence = this.userTrait.open > 0 ? 'New things excite you. '
-        : this.userTrait.open < 0 ? 'You stick with what you know.'
+      const opennessSentence = this.userTrait.open > 3 ? 'New things excite you. '
+        : this.userTrait.open < 3 ? 'You stick with what you know.'
         : ''
-      const extraversionSentence = this.userTrait.extravert > 0 ? 'When you attack, your team follows.'
-        : this.userTrait.extravert < 0 ? '\'Observe and Attack\' is your motto.'
+      const extraversionSentence = this.userTrait.extravert > 3 ? 'When you attack, your team follows.'
+        : this.userTrait.extravert < 3 ? '\'Observe and Attack\' is your motto.'
         : ''
 
       const agreeableMap = {
@@ -447,8 +447,8 @@ export default Vue.extend({
       }
       const agreeableSentence = agreeableMap[Math.floor(this.userTrait.agreeable)]
 
-      const neuroticSentence = this.userTrait.neurotic > 0 ? 'You think a lot about yourself and your team.'
-        : this.userTrait.neurotic < 0 ? 'You are confident about your game performance.'
+      const neuroticSentence = this.userTrait.neurotic > 3 ? 'You think a lot about yourself and your team.'
+        : this.userTrait.neurotic < 3 ? 'You are confident about your game performance.'
         : ''
 
       return [colorSentence, difficultySentence, conscientiousSentence, opennessSentence, extraversionSentence, agreeableSentence, neuroticSentence]
