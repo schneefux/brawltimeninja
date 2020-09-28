@@ -352,7 +352,7 @@ export default Vue.extend({
         'balance': 'bg-white',
       }
     },
-    userTrait(): Trait|undefined {
+    userTrait(): Trait {
       /*
         https://bigthink.com/mind-brain/color-personality-psychology
         yellow: optimism
@@ -399,7 +399,7 @@ export default Vue.extend({
         neurotic: this.userNeuroticism!,
       }
     },
-    description() {
+    description(): string[] {
       if (this.userTrait.color == undefined) {
         return []
       }
@@ -431,8 +431,8 @@ export default Vue.extend({
         : this.userTrait.conscientious < 0 ? 'You do what you want. '
         : ''
 
-      const opennessSentence = this.userTrait.openness > 0 ? 'New things excite you. '
-        : this.userTrait.openness < 0 ? 'You stick with what you know.'
+      const opennessSentence = this.userTrait.open > 0 ? 'New things excite you. '
+        : this.userTrait.open < 0 ? 'You stick with what you know.'
         : ''
       const extraversionSentence = this.userTrait.extravert > 0 ? 'When you attack, your team follows.'
         : this.userTrait.extravert < 0 ? '\'Observe and Attack\' is your motto.'
