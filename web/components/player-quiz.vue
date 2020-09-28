@@ -4,7 +4,12 @@
       Brawler Personality Test
     </h3>
 
-    <div class="card__text h-16">
+    <div
+      class="card__text"
+      :class="{
+        'h-20': !showFullDescription,
+      }"
+    >
       <template v-if="step == 0">
         <p class="question">
           What is your favorite color?
@@ -102,33 +107,105 @@
         </div>
       </template>
 
-      <template v-if="step == 5">
-        <div
-          class="absolute left-0 bottom-0 ml-2 mb-1"
+      <div
+        v-if="step == 5 && !showFullDescription"
+        class="flex flex-wrap"
+      >
+        <div class="absolute top-0 right-0 w-1/3 h-full flex flex-wrap justify-end pointer-events-none">
+          <media-img
+            :path="'/brawlers/' + brawlerId({ name: result }) + '/model'"
+            size="256"
+            clazz="h-24 mt-3 mr-2"
+          ></media-img>
+          <div class="w-full flex h-6 justify-end pointer-events-auto">
+            <button
+              v-if="supportsShareApi"
+              class="button button--secondary button--xs mr-1"
+              @click="share"
+            >
+              Share
+            </button>
+            <button
+              class="button button--secondary button--xs mr-1"
+              @click="restart"
+            >
+              Restart
+            </button>
+          </div>
+        </div>
+        <p
+          class="relative w-full text-4xl text-center font-bold text-shadow"
+          :class="{
+            'mt-2': description.length == 0,
+            '-mt-2': description.length > 0,
+          }"
         >
+          {{ result }}
+        </p>
+        <p
+          v-if="description.length > 0"
+          class="w-10/12"
+        >
+          {{ description[0] }}
           <button
-            class="button button--secondary mr-1"
-            @click="step = 0"
+            class="underline"
+            @click="showFullDescription = true"
+          >More...</button>
+        </p>
+      </div>
+      <div v-if="step == 5 && showFullDescription">
+        <p class="w-full text-4xl text-center font-bold text-shadow">
+          {{ result }}
+        </p>
+        <div class="flex mt-2 items-center">
+          <p>
+            {{ description.join(' ') }}
+          </p>
+          <div class="ml-2 flex flex-col justify-center">
+            <media-img
+              :path="'/brawlers/' + brawlerId({ name: result }) + '/model'"
+              size="256"
+            ></media-img>
+          </div>
+        </div>
+        <div class="flex mt-3 justify-center">
+          <button
+            class="button button--secondary mx-1"
+            @click="restart"
           >
             Restart
           </button>
           <button
             v-if="supportsShareApi"
-            class="button button--secondary"
+            class="button button--secondary mx-1"
             @click="share"
           >
             Share
           </button>
         </div>
-        <media-img
-          :path="'/brawlers/' + brawlerId({ name: result }) + '/model'"
-          size="128"
-          clazz="absolute right-0 top-0 h-28 mt-3 mr-2"
-        ></media-img>
-        <div class="absolute inset-0 flex justify-center items-center pointer-events-none">
-          <span class="text-4xl font-bold text-shadow mt-3">{{ result }}</span>
-        </div>
-      </template>
+      </div>
+
+      <div
+        v-if="step < 4"
+        class="-mb-4 h-8 w-full flex justify-center items-center"
+      >
+        <button
+          v-for="i in [0, 1, 2, 3]"
+          :key="i"
+          class="w-4 h-4 mx-1"
+          @click="i < step ? step = i : undefined"
+        >
+          <div
+            class="rounded-full"
+            :class="{
+              'w-2 h-2 mx-1': step != i,
+              'w-4 h-4 bg-primary-lighter': step == i,
+              'bg-green-300': step > i,
+              'bg-gray-300': step < i,
+            }"
+          ></div>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -210,6 +287,7 @@ export default Vue.extend({
       userExtraversion: undefined as number|undefined,
       userNeuroticism: undefined as number|undefined,
       result: undefined as undefined|string,
+      showFullDescription: false,
     }
   },
   /*
@@ -274,7 +352,7 @@ export default Vue.extend({
         'balance': 'bg-white',
       }
     },
-    userTrait(): Trait {
+    userTrait(): Trait|undefined {
       /*
         https://bigthink.com/mind-brain/color-personality-psychology
         yellow: optimism
@@ -321,6 +399,63 @@ export default Vue.extend({
         neurotic: this.userNeuroticism!,
       }
     },
+    description() {
+      if (this.userTrait.color == undefined) {
+        return []
+      }
+
+      const colorMap = {
+        'optimism': ['an optimistic', 'a warm'],
+        'friendly': ['a friendly', 'a cheerful', 'a confident'],
+        'excitement': ['an exciting'],
+        'creative': ['a creative', 'a wise'],
+        'trust': ['a trustworthy', 'a strong'],
+        'peaceful': ['a peaceful'],
+        'balance': ['a balanced', 'a neutral', 'a calm'],
+      } as Record<Color, string[]>
+      const colorAdjectives = colorMap[this.userTrait.color]
+      const colorAdjective = colorAdjectives[Math.floor(Math.random() * colorAdjectives.length)]
+      const colorSentence = `You are ${colorAdjective} person.`
+
+      const difficultyMap = {
+        1: 'you are a beginner',
+        2: 'you are learning',
+        3: 'you are improving',
+        4: 'you are skilled',
+        5: 'you are a pro',
+      }
+      const difficultyRelative = difficultyMap[this.userTrait.difficulty]
+      const difficultySentence = `As a player, ${difficultyRelative}.`
+
+      const conscientiousSentence = this.userTrait.conscientious > 0 ? 'You are disciplined. '
+        : this.userTrait.conscientious < 0 ? 'You do what you want. '
+        : ''
+
+      const opennessSentence = this.userTrait.openness > 0 ? 'New things excite you. '
+        : this.userTrait.openness < 0 ? 'You stick with what you know.'
+        : ''
+      const extraversionSentence = this.userTrait.extravert > 0 ? 'When you attack, your team follows.'
+        : this.userTrait.extravert < 0 ? '\'Observe and Attack\' is your motto.'
+        : ''
+
+      const agreeableMap = {
+        1: 'One should not fight you 1v1.',
+        2: 'You prefer to play alone.',
+        3: 'In a team, you are an all-rounder.',
+        4: 'You think you carry your team.',
+        5: 'You are a team player.',
+      }
+      const agreeableSentence = agreeableMap[Math.floor(this.userTrait.agreeable)]
+
+      const neuroticSentence = this.userTrait.neurotic > 0 ? 'You think a lot about yourself and your team.'
+        : this.userTrait.neurotic < 0 ? 'You are confident about your game performance.'
+        : ''
+
+      return [colorSentence, difficultySentence, conscientiousSentence, opennessSentence, extraversionSentence, agreeableSentence, neuroticSentence]
+        .filter(s => s.length > 0)
+        .sort((s1, s2) => 0.5 - Math.random())
+        .slice(0, 4)
+    },
     brawlerId() {
       return brawlerId
     },
@@ -352,7 +487,12 @@ export default Vue.extend({
         this.setPersonalityTestResult(result)
         this.result = result
         this.step++
-      }, 4000)
+      }, 1.3000)
+    },
+    restart() {
+      this.step = 0
+      this.showFullDescription = false
+      this.$ga.event('quiz', 'click', 'restart')
     },
     async share() {
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
@@ -361,6 +501,7 @@ export default Vue.extend({
         text: `My Brawler personality is ${this.result}! What's yours?`,
         url: 'https://brawltime.ninja',
       })
+      this.$ga.event('quiz', 'click', 'share')
     },
     ...mapMutations({
       setPersonalityTestResult: 'setPersonalityTestResult',
