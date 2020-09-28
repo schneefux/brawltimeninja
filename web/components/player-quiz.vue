@@ -109,7 +109,7 @@
 
       <div
         v-if="step == 5 && !showFullDescription"
-        class="flex flex-wrap"
+        class="flex flex-wrap h-full items-center"
       >
         <div class="absolute top-0 right-0 w-1/3 h-full flex flex-wrap justify-end pointer-events-none">
           <media-img
