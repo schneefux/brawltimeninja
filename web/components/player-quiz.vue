@@ -136,7 +136,7 @@
         <p
           class="relative w-full text-4xl text-center font-bold text-shadow"
           :class="{
-            'mt-2': description.length == 0,
+            'mb-8': description.length == 0,
             '-mt-2': description.length > 0,
           }"
         >
