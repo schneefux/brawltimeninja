@@ -448,8 +448,8 @@ export default Vue.extend({
         1: 'One should not fight you 1v1.',
         2: 'You prefer to play alone.',
         3: 'In a team, you are an all-rounder.',
-        4: 'You think you carry your team.',
-        5: 'You are a team player.',
+        4: 'You are a team player.',
+        5: 'You enjoy playing with others.',
       }
       const agreeableSentence = agreeableMap[Math.floor(this.userTrait.agreeable)]
 
@@ -460,7 +460,7 @@ export default Vue.extend({
       return [colorSentence, difficultySentence, conscientiousSentence, opennessSentence, extraversionSentence, agreeableSentence, neuroticSentence]
         .filter(s => s.length > 0)
         .sort((s1, s2) => 0.5 - Math.random())
-        .slice(0, 4)
+        .slice(0, 5)
     },
     brawlerId() {
       return brawlerId
