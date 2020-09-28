@@ -22,7 +22,7 @@
             class="pt-1"
           >
             <th scope="row" class="text-right pr-2">
-              {{ index + 1 }}
+              {{ entry.sampleSize < sampleSizeThreshold ? '?' : index + 1 }}
             </th>
             <td>
               <nuxt-link
@@ -47,7 +47,7 @@
               </nuxt-link>
             </td>
             <td class="text-left font-semibold text-lg">
-              {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
+              {{ entry.sampleSize < sampleSizeThreshold ? '?' : typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
             </td>
           </tr>
         </tbody>
@@ -86,8 +86,10 @@ export default Vue.extend({
       return new Date().toLocaleDateString()
     },
     sortedEntries(): MetaGridEntry[] {
-      return this.entries.slice()
-        .sort(compare1(this.stat))
+      const aboveThreshold = this.entries.filter(e => e.sampleSize >= this.sampleSizeThreshold)
+      const belowThreshold = this.entries.filter(e => e.sampleSize < this.sampleSizeThreshold)
+      return aboveThreshold.sort(compare1(this.stat))
+        .concat(belowThreshold)
     },
   },
 })
