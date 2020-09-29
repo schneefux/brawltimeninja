@@ -1,4 +1,5 @@
-import ClickHouse from "@apla/clickhouse"
+import ClickHouse from '@apla/clickhouse';
+import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import Knex, { QueryBuilder } from "knex"
 import { StatsD } from "hot-shots"
 import { stripIndent } from "common-tags"
@@ -60,7 +61,7 @@ export default abstract class Cube<R> {
   }
 
   public async query<N extends (keyof R)[], E extends (keyof R)[]>(
-      ch: ClickHouse,
+      ch2: ClickHouse2,
       name: string,
       measures: N|['*'],
       dimensions: E,
@@ -125,10 +126,11 @@ export default abstract class Cube<R> {
 
     this.stats.increment(name + '.run')
     return this.stats.asyncTimer(() =>
-      ch.querying(sql, { dataObjects: true, readonly: true })
-        .then(rows => ({
-          data: rows.data.map(r => this.parse<Pick<R, N[number]|E[number]>>(r)),
-          totals: this.parse<Pick<R, N[number]|E[number]>>(rows.totals),
+      // ch2 has shitty typings
+      ((ch2.query(sql) as any).withTotals().toPromise() as Promise<{ data: Record<string, string>[], totals: Record<string, string>}>)
+        .then(result => ({
+          data: result.data.map(r => this.parse<Pick<R, N[number]|E[number]>>(r)),
+          totals: this.parse<Pick<R, N[number]|E[number]>>(result.totals),
         }))
     , name + '.timer')()
   }

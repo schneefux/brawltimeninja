@@ -16,6 +16,7 @@
   "dependencies": {
     "@apla/clickhouse": "^1.6.3",
     "@koa/cors": "^3.1.0",
+    "clickhouse": "^2.1.5",
     "common-tags": "^1.8.0",
     "hot-shots": "^7.7.1",
     "knex": "^0.21.5",

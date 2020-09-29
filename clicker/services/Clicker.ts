@@ -1,9 +1,10 @@
 import ClickHouse from '@apla/clickhouse';
+import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, StarpowerMetaRow, GadgetMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, BrawlerStatisticsRows, TrophyRow, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
-import { brawlerId, sloppyParseFloat, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
+import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
+import { sloppyParseFloat, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
@@ -62,7 +63,11 @@ const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
 
 
 export default class ClickerService {
+  // nice insert API, but buggy af
+  // operates on a single session/connection and times out after 60s
   private ch: ClickHouse;
+  // hopefully better performance
+  private ch2: ClickHouse2;
 
   private mapMetaCube = new MapMetaCube()
   private gadgetMetaCube = new GadgetMetaCube()
@@ -73,13 +78,20 @@ export default class ClickerService {
 
   constructor() {
     this.ch = new ClickHouse(dbHost)
+    this.ch2 = new ClickHouse2({
+      url: `http://${dbHost}`,
+      config: {
+        readonly: 1,
+      },
+      // clickhouse allows only a single query per session!
+      isSessionPerQuery: true,
+    })
   }
 
-  private async query<T>(query: string, metricName: string, readonly=true): Promise<T[]> {
+  private async query<T>(query: string, metricName: string): Promise<T[]> {
     stats.increment(metricName + '.run')
     return stats.asyncTimer(() =>
-      this.ch.querying(query, { dataObjects: true, readonly })
-        .then(response => response.data as T[])
+      this.ch2.query(query).toPromise() as Promise<T[]>
     , metricName + '.timer')()
   }
 
@@ -532,7 +544,7 @@ export default class ClickerService {
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    const rows = await this.leaderboardCube.query(this.ch,
+    const rows = await this.leaderboardCube.query(this.ch2,
       'leaderboard',
       [metricMeasure, 'player_name'],
       ['player_id'],
@@ -566,7 +578,7 @@ export default class ClickerService {
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    const rows = await this.brawlerLeaderboardCube.query(this.ch,
+    const rows = await this.brawlerLeaderboardCube.query(this.ch2,
       'brawler_leaderboard',
       [metricMeasure, 'player_name'],
       ['player_id'],
@@ -705,7 +717,7 @@ export default class ClickerService {
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch,
+    const rows = await this.mapMetaCube.query(this.ch2,
       'meta.brawler',
       ['*'],
       ['brawler_name'],
@@ -732,7 +744,7 @@ export default class ClickerService {
   }
 
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch,
+    const rows = await this.mapMetaCube.query(this.ch2,
       'meta.mode',
       ['*'],
       ['brawler_name', 'battle_event_mode'],
@@ -760,7 +772,7 @@ export default class ClickerService {
   }
 
   public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch,
+    const rows = await this.mapMetaCube.query(this.ch2,
       'meta.map',
       ['*'],
       ['brawler_name', 'battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_is_bigbrawler'],
@@ -830,7 +842,7 @@ export default class ClickerService {
     limit = Math.min(1000, limit)
 
     console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, format)
-    const data = await cube.query(this.ch,
+    const data = await cube.query(this.ch2,
       name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
       dimensions,
