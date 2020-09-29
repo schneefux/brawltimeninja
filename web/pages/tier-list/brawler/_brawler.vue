@@ -16,7 +16,6 @@
       <brawler-base-stats
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
-        :stats="stats"
       ></brawler-base-stats>
 
       <brawler-starpower-stats
@@ -178,12 +177,17 @@
     </div>
 
     <div class="section">
-      <brawler-mode-stats
-        :mode-meta="modeMeta"
-        :map-meta="mapMeta"
+      <brawler-modes-stats
         :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
         :show-all-modes="showAllModes"
-      ></brawler-mode-stats>
+        :total-brawlers="totalBrawlers"
+      ></brawler-modes-stats>
+
+      <p class="mt-2">
+        Info:
+        A Brawler is considered viable on a map if the Brawler has an above average number of wins on that map.
+      </p>
 
       <div class="mt-1 w-full flex justify-end">
         <button
@@ -241,8 +245,6 @@ export default Vue.extend({
       brawlerId: '',
       brawlerName: '',
       currentEvents: [] as ActiveEvent[],
-      brawlerMeta: [] as BrawlerMetaStatistics[],
-      modeMeta: {} as ModeMetaMap,
       mapMeta: {} as MapMetaMap,
       showAllModes: false,
       showAllMaps: false,
@@ -251,9 +253,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    stats(): BrawlerMetaStatistics|undefined {
-      return this.brawlerMeta.find(entry => entry.id == this.brawlerId)
-    },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
       isApp: (state: any) => state.isApp as boolean,
@@ -262,15 +261,11 @@ export default Vue.extend({
   async asyncData({ params, $axios, error }) {
     const brawlerId = params.brawler
     const activeEvents = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ current: [], upcoming: [] }))
-    const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ({}))
-    const modeMeta = await $axios.$get<ModeMetaMap>('/api/meta/mode').catch(() => ({}))
     const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map').catch(() => ({}))
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/__/g, '. ').replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
       currentEvents: activeEvents.current,
-      brawlerMeta,
-      modeMeta,
       mapMeta,
     }
   },
