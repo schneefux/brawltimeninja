@@ -276,7 +276,8 @@ export default class ClickerService {
       `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
       'player.get_last')
     // if not found, clickhouse max() defaults to 0000 date (Date.parse returns NaN)
-    const lastBattleTimestamp = maxTimestamp[0].maxTimestamp.startsWith('0000') ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
+    // changed to 1970 in 20.7
+    const lastBattleTimestamp = (maxTimestamp[0].maxTimestamp.startsWith('0000') || maxTimestamp[0].maxTimestamp.startsWith('1970')) ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
     const battleInsertStart = performance.now()
     const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' }, (error) => {
