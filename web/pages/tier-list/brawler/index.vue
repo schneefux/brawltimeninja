@@ -168,8 +168,12 @@ export default Vue.extend({
     }),
   },
   watch: {
-    slices: '$fetch',
-    measurement: '$fetch',
+    slices() {
+      this.$fetch()
+    },
+    measurement() {
+      this.$fetch()
+    },
     loadAll(l: boolean) {
       if (l) {
         this.$fetch()
