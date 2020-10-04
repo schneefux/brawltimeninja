@@ -36,28 +36,6 @@ router.get('/player/:tag', async (ctx, next) => {
   await next();
 });
 
-router.get('/player/:tag/winrates', async (ctx, next) => {
-  try {
-    ctx.body = await service.getPlayerWinrates(ctx.params.tag);
-    ctx.set('Cache-Control', 'public, max-age=180');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
-router.get('/player/:tag/history', async (ctx, next) => {
-  try {
-    ctx.body = await service.getPlayerHistory(ctx.params.tag);
-    ctx.set('Cache-Control', 'public, max-age=180');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
 router.get('/events', async (ctx, next) => {
   try {
     ctx.body = await service.getAllEvents();
@@ -113,28 +91,6 @@ router.get('/brawler/:id', async (ctx, next) => {
   await next();
 });
 
-router.get('/meta/starpower', async (ctx, next) => {
-  try {
-    ctx.body = await service.getStarpowerMeta(getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
-    ctx.set('Cache-Control', 'public, max-age=600');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
-router.get('/meta/gadget', async (ctx, next) => {
-  try {
-    ctx.body = await service.getGadgetMeta(getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
-    ctx.set('Cache-Control', 'public, max-age=600');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
 router.get('/meta/map', async (ctx, next) => {
   try {
     ctx.body = await service.getMapMeta({ ...ctx.request.query }, getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
@@ -149,28 +105,6 @@ router.get('/meta/map', async (ctx, next) => {
 router.get('/meta/map/events', async (ctx, next) => {
   try {
     ctx.body = await service.getMapMeta({ current: 'true', upcoming: 'true' }, getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
-    ctx.set('Cache-Control', 'public, max-age=600');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
-router.get('/meta/map/mode/:mode', async (ctx, next) => {
-  try {
-    ctx.body = await service.getMapMeta({ mode: ctx.params.mode }, getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
-    ctx.set('Cache-Control', 'public, max-age=600');
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason);
-  }
-  await next();
-});
-
-router.get('/meta/mode', async (ctx, next) => {
-  try {
-    ctx.body = await service.getModeMeta(getTrophyRangeLower(ctx.request.query), getTrophyRangeHigher(ctx.request.query));
     ctx.set('Cache-Control', 'public, max-age=600');
   } catch (error) {
     console.log(error);

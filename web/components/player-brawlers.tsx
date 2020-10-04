@@ -17,6 +17,10 @@ export default Vue.extend({
       type: Number,
       required: false
     },
+    enableClickerStats: {
+      type: Boolean,
+      required: true
+    },
   },
   render(h, { props }) {
     const player = props.player
@@ -27,6 +31,7 @@ export default Vue.extend({
       id: brawlerId,
       ...brawler
     }))
+    const enableClickerStats = props.enableClickerStats
 
     return <div class="-my-2 flex flex-wrap justify-between">
       { brawlers.slice(0, limit).map(brawler =>
@@ -39,7 +44,8 @@ export default Vue.extend({
         <PlayerBrawlerCard
           { ...{ attrs: {
             brawler: brawler,
-            brawlerWinrates: player.winrates.brawler,
+            playerTag: player.tag,
+            enableClickerStats: enableClickerStats,
           } } }
         ></PlayerBrawlerCard>
       </lazy>

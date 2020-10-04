@@ -92,8 +92,8 @@
           <div class="h-24 md:h-20 flex flex-col justify-center">
             <client-only>
               <history-graph
-                v-if="player.history.length > 1"
-                :history="player.history"
+                v-if="history.length > 1"
+                :history="history"
               ></history-graph>
               <span v-else class="italic">
                 Come back later to see progress charts
@@ -194,6 +194,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Player, LeaderboardEntry } from '../model/Api'
+import { TrophiesRow } from '../model/Clicker'
 
 export default Vue.extend({
   props: {
@@ -209,13 +210,40 @@ export default Vue.extend({
       type: Number,
       required: true
     },
+    enableClickerStats: {
+      type: Boolean,
+      required: true
+    },
   },
   data() {
     return {
       showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
+      history: [] as TrophiesRow[],
     }
+  },
+  watch: {
+    enableClickerStats: '$fetch',
+  },
+  async fetch() {
+    if (!this.enableClickerStats) {
+      return
+    }
+
+    const data = await this.$clicker.query('player.history',
+      'brawler',
+      ['timestamp'],
+      ['timestamp', 'player_trophies'],
+      {
+        ...this.$clicker.defaultSlices('brawler'),
+        player_tag: [this.player.tag],
+      },
+      { cache: 60*60 })
+    this.history = data.data.map(b => ({
+      timestamp: b.timestamp,
+      trophies: b.player_trophies,
+    } as TrophiesRow))
   },
   mounted() {
     if ((<any>process).client) {

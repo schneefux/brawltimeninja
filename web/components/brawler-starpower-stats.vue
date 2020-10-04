@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { StarpowerMetaStatistics, GadgetMetaStatistics } from '~/model/Api'
 import { metaStatMaps, capitalize } from '~/lib/util'
 import { BrawlerStatisticsRows } from '../model/Clicker'
 import { BrawlerData } from '../model/Media'

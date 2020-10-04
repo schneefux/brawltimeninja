@@ -226,7 +226,7 @@ import { mapState } from 'vuex'
 import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
 import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
-import { StarpowerMetaStatistics, GadgetMetaStatistics, BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
+import { ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
 
 export default Vue.extend({
   name: 'BrawlerPage',

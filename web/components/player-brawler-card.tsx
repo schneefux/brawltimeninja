@@ -5,7 +5,8 @@ import LeaderboardIcon from '~/assets/images/icon/leaderboards_optimized.png'
 import TrophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import PowerPointIcon from '~/assets/images/icon/powerpoint_optimized.png'
 import StarpowerIcon from '~/assets/images/icon/starpower_optimized.png'
-import { Brawler, PlayerBrawlerWinrates } from '~/model/Api'
+import { Brawler } from '~/model/Api'
+import { TrophiesRow } from '~/model/Clicker'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -13,40 +14,84 @@ interface BrawlerWithId extends Brawler {
 
 export default Vue.extend({
   props: {
+    playerTag: {
+      type: String,
+      required: true
+    },
     brawler: {
       type: Object as PropType<BrawlerWithId>,
       required: true,
-    },
-    brawlerWinrates: {
-      type: Object as PropType<PlayerBrawlerWinrates>,
-      default: () => ({} as PlayerBrawlerWinrates),
     },
     defaultOpen: {
       type: Boolean,
       default: false
     },
+    enableClickerStats: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       open: this.defaultOpen,
+      winrate: 0,
+      picks: 0,
+      history: [] as TrophiesRow[],
     }
+  },
+  watch: {
+    enableClickerStats: '$fetch',
+  },
+  async fetch() {
+    if (!this.open || !this.enableClickerStats) {
+      return
+    }
+
+    const battleData = await this.$clicker.query('player.winrates.brawler',
+      'battle',
+      [],
+      ['picks', 'battle_victory'],
+      {
+        ...this.$clicker.defaultSlices('battle'),
+        // TODO use ID
+        brawler_name: [this.brawler.name.toUpperCase()],
+        player_tag: [this.playerTag],
+      },
+      { cache: 60 })
+    this.winrate = battleData.data[0].battle_victory
+    this.picks = battleData.data[0].picks
+
+    const brawlerData = await this.$clicker.query('player.brawler_history',
+      'brawler',
+      ['timestamp'],
+      ['timestamp', 'brawler_trophies'],
+      {
+        ...this.$clicker.defaultSlices('brawler'),
+        // TODO use ID
+        brawler_name: [this.brawler.name.toUpperCase()],
+        player_tag: [this.playerTag],
+      },
+      { cache: 60*60 })
+    this.history = brawlerData.data.map(b => ({
+      timestamp: b.timestamp,
+      trophies: b.brawler_trophies,
+    } as TrophiesRow))
+  },
+  watch: {
+    open: '$fetch',
   },
   render(h) {
     const brawler = this.brawler
-    const brawlerWinrates = this.brawlerWinrates
     const open = this.open
 
-    let history = undefined
-    if (brawler.history.length > 1) {
+    let history: any
+    if (this.history.length > 1) {
       history = <lazy class="w-full h-32 mt-2">
         <HistoryGraph { ...{ attrs: {
-          history: brawler.history,
+          history: this.history,
         } } } />
       </lazy>
     }
-    const brawlerWinrate = Object.values(brawlerWinrates)
-      .find((b) => b.name == brawler.name)
-
     const stats = <table slot="stats">
       <tbody>
         <tr class="card__props">
@@ -112,7 +157,7 @@ export default Vue.extend({
             <tbody>
               <tr class="flex text-2xl">
                 <td class="w-1/2 pr-1 text-right text-primary-light">Win Rate</td>
-                <td class="w-1/2 pl-1 text-left text-secondary">{ brawlerWinrate == undefined ? '?' : Math.round(brawlerWinrate.stats.winRate * 100) + '%' }</td>
+                <td class="w-1/2 pl-1 text-left text-secondary">{ this.picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }</td>
               </tr>
               <tr class="flex text-lg">
                 <td class="w-1/2 pr-1 text-right text-primary-light">Highest Trophies</td>
@@ -120,14 +165,14 @@ export default Vue.extend({
               </tr>
             </tbody>
           </table>
-          { brawlerWinrate != undefined ?
+          { this.picks > 0 ?
             <p class="font-semibold">
               <span class="text-green-500">
-                { Math.floor(brawlerWinrate.stats.winRate * brawlerWinrate.stats.picks) }W
+                { Math.floor(this.winrate * this.picks) }W
               </span>
               <span class="px-1">-</span>
               <span class="text-red-500">
-                { Math.floor((1-brawlerWinrate.stats.winRate) * brawlerWinrate.stats.picks) }L
+                { Math.floor((1-this.winrate) * this.picks) }L
               </span>
             </p>
             : ''

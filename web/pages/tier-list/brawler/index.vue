@@ -205,14 +205,10 @@ export default Vue.extend({
     this.totalSampleSize = data.totals.picks
   },
   async asyncData({ $clicker }) {
-    const modes = await $clicker.query('all.modes', 'map',
-      ['battle_event_mode'],
-      ['battle_event_mode'],
-      { trophy_season_end: ['balance'] },
-      { cache: 60*60*24 })
+    const modes = await this.$clicker.queryAllModes()
 
     return {
-      modes: modes.data.map(row => row.battle_event_mode),
+      modes,
     }
   },
   methods: {

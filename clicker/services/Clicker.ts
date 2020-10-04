@@ -3,7 +3,7 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows, TrophiesRow, PlayerHistoryRows, BrawlerTrophiesRow } from '~/model/Clicker';
+import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows } from '~/model/Clicker';
 import { sloppyParseFloat, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
@@ -22,47 +22,6 @@ const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE 
 const seasonSliceStart = getSeasonEnd(balanceChangesDate);
 
 console.log(`querying data >= ${seasonSliceStart}`)
-
-// ! starplayer applies only to player
-const battleMeasuresAggregationRaw = stripIndent`
-  MAX(timestamp) as timestamp,
-  COUNT(*) AS picks,
-  SUM(player_brawlers_length) AS picksWeighted,
-  AVG(battle_rank) AS rank,
-  AVG(battle_rank=1) AS rank1Rate,
-  AVG(battle_victory) AS winRate,
-  AVG(battle_duration) AS duration,
-  AVG(battle_is_starplayer) AS starRate,
-  AVG(battle_level_id) AS level,
-  AVG(battle_trophy_change) AS trophyChange
-`
-
-interface BattleMeasuresAggregation {
-  timestamp: string
-  picks: string
-  picksWeighted: string
-  rank: string
-  rank1Rate: string
-  winRate: string
-  duration: string
-  starRate: string
-  level: string
-  trophyChange: string
-}
-
-const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
-  timestamp: row.timestamp,
-  picks: parseInt(row.picks),
-  picksWeighted: parseInt(row.picksWeighted),
-  rank: sloppyParseFloat(row.rank),
-  rank1Rate: sloppyParseFloat(row.rank1Rate),
-  winRate: sloppyParseFloat(row.winRate),
-  duration: sloppyParseFloat(row.duration),
-  starRate: sloppyParseFloat(row.starRate),
-  level: sloppyParseFloat(row.level),
-  trophyChange: sloppyParseFloat(row.trophyChange),
-}) as BattleMeasures
-
 
 export default class ClickerService {
   // readonly
@@ -480,124 +439,6 @@ export default class ClickerService {
       id: r.player_id,
       [metric]: r[metricMeasure],
     }))
-  }
-
-  public async getHistory(tag: string): Promise<PlayerHistoryRows> {
-    tag = validateTag(tag)
-
-    // assumes sort by timestamp
-    const differentFromDayBefore = (row: TrophiesRow, index: number, all: TrophiesRow[]) =>
-      index == 0 || all[index - 1].trophies != row.trophies
-
-    // database does not guarantee that there are no duplicates -> group by start of day
-    interface PlayerHistoryQuery {
-      timestamp: string
-      trophies: string
-    }
-    const playerHistory = await this.query<PlayerHistoryQuery>(stripIndent`
-      SELECT
-        toStartOfDay(timestamp) AS timestamp,
-        player_trophies AS trophies
-      FROM brawltime.brawler
-      WHERE player_id=${tagToId(tag)}
-      ORDER BY timestamp
-      `, 'player.history')
-      .then(data => data.map(row => ({
-        ...row,
-        timestamp: row.timestamp.slice(0, 10),
-        trophies: parseInt(row.trophies),
-      }) as TrophiesRow).filter(differentFromDayBefore))
-
-    // assumes sort by id, then timestamp
-    const differentFromDayBeforeBrawler = (row: BrawlerTrophiesRow, index: number, all: BrawlerTrophiesRow[]) =>
-      index == 0 || all[index - 1].id != row.id || all[index - 1].trophies != row.trophies
-
-    interface BrawlerHistoryQuery {
-      id: string
-      name: string
-      timestamp: string
-      trophies: string
-    }
-    const brawlerHistory = await this.query<BrawlerHistoryQuery>(stripIndent`
-      SELECT
-        brawler_id AS id,
-        brawler_name AS name,
-        toStartOfDay(timestamp) AS timestamp,
-        brawler_trophies as trophies
-      FROM brawltime.brawler
-      WHERE player_id=${tagToId(tag)}
-      ORDER BY id, name, timestamp
-      `, 'player.brawler_history')
-      .then(data => data.map(row => ({
-        ...row,
-        timestamp: row.timestamp.slice(0, 10),
-        trophies: parseInt(row.trophies),
-      }) as BrawlerTrophiesRow).filter(differentFromDayBeforeBrawler))
-
-    return { playerHistory, brawlerHistory }
-  }
-
-  public async getPlayerWinrates(tag: string) {
-    tag = validateTag(tag)
-
-    interface PlayerMetaQuery extends BattleMeasuresAggregation {
-    }
-    const totalStats = await this.query<PlayerMetaQuery>(stripIndent`
-        SELECT
-          ${battleMeasuresAggregationRaw}
-        FROM brawltime.battle
-        WHERE player_id=${tagToId(tag)}
-        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
-        ORDER BY picks
-      `, 'player.winrates.total')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-      }) as PlayerMetaRow))
-
-    interface PlayerModeMetaQuery extends BattleMeasuresAggregation {
-      mode: string
-    }
-    const modeStats = await this.query<PlayerModeMetaQuery>(stripIndent`
-        SELECT
-          battle_event_mode AS mode,
-          ${battleMeasuresAggregationRaw}
-        FROM brawltime.battle
-        WHERE player_id=${tagToId(tag)}
-        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
-        GROUP BY mode
-        ORDER BY picks
-      `, 'player.winrates.mode')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        mode: row.mode,
-      }) as PlayerModeMetaRow))
-
-    interface PlayerBrawlerMetaQuery extends BattleMeasuresAggregation {
-      brawlerId: string
-      brawlerName: string
-    }
-    const brawlerStats = await this.query<PlayerBrawlerMetaQuery>(stripIndent`
-        SELECT
-          brawler_id AS brawlerId,
-          brawler_name AS brawlerName,
-          ${battleMeasuresAggregationRaw}
-        FROM brawltime.battle
-        WHERE player_id=${tagToId(tag)}
-        AND trophy_season_end>=NOW() - INTERVAL 1 MONTH
-        GROUP BY brawlerId, brawlerName
-        ORDER BY picks
-      `, 'player.winrates.brawler')
-      .then(data => data.map(row => ({
-        ...parseBattleMeasures(row),
-        brawlerId: parseInt(row.brawlerId),
-        brawlerName: row.brawlerName,
-      }) as PlayerBrawlerMetaRow))
-
-    return <PlayerWinRatesRows> {
-      total: totalStats,
-      mode: modeStats,
-      brawler: brawlerStats,
-    }
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {

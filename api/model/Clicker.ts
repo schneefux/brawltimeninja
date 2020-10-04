@@ -112,7 +112,3 @@ export interface BrawlerTrophiesRow extends TrophiesRow {
   id: string
 }
 
-export interface PlayerHistoryRows {
-  playerHistory: TrophiesRow[]
-  brawlerHistory: BrawlerTrophiesRow[]
-}

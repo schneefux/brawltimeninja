@@ -1,9 +1,9 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
-import { MapMap, MapMetaMap, ModeMetaMap } from '~/model/MetaEntry';
-import { StarpowerMetaRow, GadgetMetaRow, BrawlerMetaRow, ModeMetaRow, MapMetaRow, BattleMeasures, PlayerWinRatesRows, LeaderboardRow, BrawlerStatisticsRows, PlayerHistoryRows, BrawlerTrophiesRow, TrophiesRow } from '~/model/Clicker';
-import { PlayerWinrates, Battle, Brawler, Statistic, Mode, Player, BrawlerMetaStatistics, StarpowerMetaStatistics, GadgetMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
+import { MapMap, MapMetaMap } from '~/model/MetaEntry';
+import { BrawlerMetaRow, MapMetaRow, BattleMeasures, LeaderboardRow, BrawlerStatisticsRows, TrophiesRow } from '~/model/Clicker';
+import { Battle, Brawler, Player, BrawlerMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -11,18 +11,6 @@ const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstar
 const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
-
-const pluckBattleMeasures = (row: BattleMeasures) => ({
-  timestamp: row.timestamp,
-  picks: row.picks,
-  duration: row.duration,
-  rank: row.rank,
-  rank1Rate: row.rank1Rate,
-  winRate: row.winRate,
-  starRate: row.starRate,
-  level: row.level,
-  trophyChange: row.trophyChange,
-} as BattleMeasures)
 
 function getApiUrl(tag: string) {
   const playerId = tag
@@ -201,126 +189,6 @@ export default class BrawlstarsService {
     );
   }
 
-  public async getStarpowerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    if (clickerUrl == '') {
-      return [];
-    }
-
-    const meta = await request<StarpowerMetaRow[]>(
-      '/meta/starpower',
-      clickerUrl,
-      'fetch_starpower_meta',
-      { trophyrangeLower, trophyrangeHigher },
-      {},
-      60000,
-    );
-
-    return meta.map((entry) => ({
-      id: entry.starpowerId || (<any>entry).id,
-      brawlerName: brawlerId({ name: entry.brawlerName }),
-      brawlerId: entry.brawlerId,
-      starpowerName: entry.starpowerName,
-      sampleSize: entry.picks,
-      stats: {
-        winRate: entry.winRate,
-        starRate: entry.starRate,
-        rank1Rate: entry.rank1Rate,
-      },
-    }) as StarpowerMetaStatistics)
-  }
-
-  public async getGadgetMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    if (clickerUrl == '') {
-      return [];
-    }
-
-    const meta = await request<GadgetMetaRow[]>(
-      '/meta/gadget',
-      clickerUrl,
-      'fetch_gadget_meta',
-      { trophyrangeLower, trophyrangeHigher },
-      {},
-      60000,
-    );
-
-    return meta.map((entry) => ({
-      id: entry.gadgetId || (<any>entry).id,
-      brawlerName: brawlerId({ name: entry.brawlerName }),
-      brawlerId: entry.brawlerId,
-      gadgetName: entry.gadgetName,
-      sampleSize: entry.picks,
-      stats: {
-        winRate: entry.winRate,
-        starRate: entry.starRate,
-        rank1Rate: entry.rank1Rate,
-      },
-    }) as GadgetMetaStatistics)
-  }
-
-  public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    if (clickerUrl == '') {
-      return [];
-    }
-
-    const meta = await request<ModeMetaRow[]>(
-      '/meta/mode',
-      clickerUrl,
-      'fetch_mode_meta',
-      { trophyrangeLower, trophyrangeHigher },
-      {},
-      60000,
-    );
-
-    const modeTotalPicks = meta.reduce((modeTotalPicks, entry: ModeMetaRow) => ({
-      ...modeTotalPicks,
-      [entry.mode]: (modeTotalPicks[entry.mode] || 0) + entry.picks,
-    }), <{ [id: string]: number }>{});
-    const modeTotalPicksWeighted = meta.reduce((modeTotalPicksWeighted, entry: ModeMetaRow) => ({
-      ...modeTotalPicksWeighted,
-      [entry.mode]: (modeTotalPicksWeighted[entry.mode] || 0) + entry.picksWeighted,
-    }), <{ [id: string]: number }>{});
-
-    const nonNullStats = (entry: ModeMetaRow) => {
-      const stats = <{ [stat: string]: number }>{};
-      if (!!entry.winRate && entry.winRate > 0) {
-        stats.winRate = entry.winRate;
-      }
-      if (!!entry.rank && entry.rank > 0) {
-        stats.rank = entry.rank;
-      }
-      if (!!entry.duration && entry.duration > 0) {
-        stats.duration = entry.duration;
-      }
-      stats.pickRate = entry.picks / modeTotalPicks[entry.mode];
-      stats.useRate = entry.picksWeighted / modeTotalPicksWeighted[entry.mode];
-      if (!!entry.starRate && entry.starRate > 0) {
-        stats.starRate = entry.starRate;
-      }
-      if (!!entry.rank1Rate && entry.rank1Rate > 0) {
-        stats.rank1Rate = entry.rank1Rate;
-      }
-      return stats;
-    };
-
-    const modeMeta = meta.reduce((modeMeta, entry: ModeMetaRow) => ({
-      ...modeMeta,
-      [entry.mode]: {
-        mode: entry.mode,
-        sampleSize: modeTotalPicks[entry.mode],
-        brawlers: {
-          ...((modeMeta[entry.mode] || {}).brawlers || {}),
-          [brawlerId({ name: entry.brawlerName })]: {
-            name: capitalizeWords(entry.brawlerName.toLowerCase()),
-            sampleSize: entry.picks,
-            stats: nonNullStats(entry),
-          }
-        }
-      }
-    }), <ModeMetaMap>{});
-
-    return modeMeta;
-  }
-
   public async getMapMeta(filters: { [name: string]: string }, trophyrangeLower: string, trophyrangeHigher: string) {
     if (clickerUrl == '') {
       return {};
@@ -439,79 +307,6 @@ export default class BrawlstarsService {
     return mapMeta;
   }
 
-  public async getPlayerWinrates(tag: string) {
-    tag = tag.replace(/^#/, '');
-
-    let data: PlayerWinRatesRows = { mode: [], brawler: [], total: [] };
-    if (clickerUrl != '') {
-      console.time('get winrates from clicker ' + tag);
-      data = await request<PlayerWinRatesRows>(
-        `/winrates/${tag}`,
-        clickerUrl,
-        'fetch_player_winrates',
-        {},
-        {},
-        10000
-      );
-      console.timeEnd('get winrates from clicker ' + tag);
-    }
-
-    const winrates = { brawler: {}, mode: {}, total: {} } as PlayerWinrates;
-    data.brawler.forEach(b =>
-      winrates.brawler[b.brawlerId] = {
-        name: b.brawlerName,
-        stats: pluckBattleMeasures(b),
-      })
-    data.mode.forEach(m =>
-      winrates.mode[m.mode] = {
-        name: m.mode,
-        stats: pluckBattleMeasures(m),
-      })
-    data.total.forEach(t => winrates.total = { stats: pluckBattleMeasures(t) })
-
-    return {
-      winrates
-    }
-  }
-
-  public async getPlayerHistory(tag: string) {
-    tag = tag.replace(/^#/, '')
-
-    if (clickerUrl == '') {
-      return {
-        playerHistory: [],
-        brawlerHistory: {},
-      }
-    }
-
-    const history = await request<PlayerHistoryRows>(
-      `/history/${tag}`,
-      clickerUrl,
-      'fetch_player_history',
-      {},
-      {},
-      10000
-    )
-
-    const brawlers = history.brawlerHistory.map(b => ({
-      ...b,
-      name: brawlerId(b),
-    })).reduce((brawlers, entry) => ({
-      ...brawlers,
-      [entry.name]: {
-        history: [...(brawlers[entry.name]?.history || [] as TrophiesRow[]), {
-          timestamp: entry.timestamp,
-          trophies: entry.trophies,
-        }]
-      },
-    }), {} as { [id: string]: { history: TrophiesRow[] } })
-
-    return {
-      history: history.playerHistory,
-      brawlers,
-    }
-  }
-
   public async getPlayerStatistics(tag: string) {
     const player = await request<BrawlstarsPlayer>(
       'players/%23' + tag,
@@ -622,7 +417,6 @@ export default class BrawlstarsService {
           trophies: brawler.trophies,
           highestTrophies: brawler.highestTrophies,
           power: brawler.power,
-          history: [],
         } as Brawler;
       });
 
@@ -633,25 +427,6 @@ export default class BrawlstarsService {
       .reduce((agg, cur) => agg + cur, 0)
       / arr.length;
 
-    const heroStats = {
-      averageVictories: {
-        label: 'Average 3v3 Victories',
-        value: Math.floor(player["3vs3Victories"] / player.brawlers.length)
-      },
-      averageTrophies: {
-        label: 'Average Trophies',
-        value: Math.floor(avgProp('trophies')(player.brawlers))
-      },
-      averageRank: {
-        label: 'Average Rank',
-        value: Math.floor(avgProp('rank')(player.brawlers))
-      },
-      averagePower: {
-        label: 'Average Power Level',
-        value: Math.floor(avgProp('power')(player.brawlers))
-      },
-    } as { [id: string]: Statistic };
-
     const data = {
       tag: player.tag,
       name: player.name,
@@ -659,8 +434,6 @@ export default class BrawlstarsService {
       trophies: player.trophies,
       clubName: player.club === null ? '' : player.club!.name,
       qualifiedFromChampionshipChallenge: player.isQualifiedFromChampionshipChallenge,
-      history: [], // filled by /history
-      winrates: {}, // filled by /winrates
       stats: {
         trophies: player.trophies,
         highestTrophies: player.highestTrophies,
@@ -672,36 +445,7 @@ export default class BrawlstarsService {
         duoVictories: player.duoVictories,
       },
       brawlers,
-      heroStats,
       battles,
-      modes: {
-        'showdown': {
-          label: 'Showdown',
-          icon: 'showdown_optimized.png',
-          background: 'showdown.jpg',
-          stats: {
-            victories: {
-              label: 'Solo Victories',
-              value: player.soloVictories,
-            },
-            duoVictories: {
-              label: 'Duo Victories',
-              value: player.duoVictories,
-            },
-          }
-        } as Mode,
-        '3v3': {
-          label: 'All 3v3',
-          icon: 'gemgrab_optimized.png',
-          background: 'gemgrab.jpg',
-          stats: {
-            victories: {
-              label: 'Victories',
-              value: player['3vs3Victories'],
-            },
-          }
-        } as Mode,
-      },
     } as Player;
 
     return data;

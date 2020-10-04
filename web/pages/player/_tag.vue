@@ -38,6 +38,7 @@
         :player="player"
         :total-brawlers="totalBrawlers"
         :hours-leaderboard="hoursLeaderboard"
+        :enable-clicker-stats="enableClickerStats"
       ></player-hype-stats>
     </div>
 
@@ -143,7 +144,7 @@
         </div>
 
         <player-battles-stats
-          :winrates="player.winrates"
+          :battle-totals="battleTotals"
           :battles="player.battles"
         ></player-battles-stats>
 
@@ -197,7 +198,6 @@
 
     <player-teaser-card
       v-slot="props"
-      v-if="player.battles.length > 0 || player.winrates != undefined && player.winrates.mode != undefined"
       title="Game Modes"
       description="View your win rate in different modes and get personalized recommendations."
       class="card-wrapper"
@@ -211,6 +211,7 @@
         :battles="player.battles"
         :active-map-meta="activeMapMeta"
         :tease="!props.open"
+        :enable-clicker-stats="enableClickerStats"
       ></player-mode-winrates>
 
       <template v-if="props.open">
@@ -254,6 +255,7 @@
         :player="player"
         :tease="!props.open"
         :limit="props.page * 15"
+        :enable-clicker-stats="enableClickerStats"
       ></player-brawlers>
     </player-teaser-card>
 
@@ -289,6 +291,7 @@ import { MapMetaMap } from '../../model/MetaEntry'
 import { Post } from '../../model/Web'
 import { ActiveEvent, CurrentAndUpcomingEvents, Leaderboard, LeaderboardEntry } from '../../model/Api'
 import { NuxtAxiosInstance } from '@nuxtjs/axios'
+import { BattleTotalRow } from '../../components/player-battles-stats.vue'
 
 export default Vue.extend({
   head() {
@@ -307,7 +310,7 @@ export default Vue.extend({
       activeMapMeta: {} as MapMetaMap,
       guides: [] as Post[],
       hoursLeaderboard: [] as LeaderboardEntry[],
-      additionalPlayerDataLoaded: false,
+      battleTotals: {} as BattleTotalRow,
     }
   },
   computed: {
@@ -315,10 +318,11 @@ export default Vue.extend({
       return this.guides.slice(0, 3)
     },
     totalBattles(): number {
-      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
-        return this.player.winrates.total.stats.picks
-      }
-      return this.player.battles.length
+      return this.battleTotals.picks || this.player.battles.length
+    },
+    enableClickerStats() {
+      // do not send queries to backend if user has no battle history in database
+      return this.battleTotals.picks != undefined && this.battleTotals.picks > 25
     },
     topBrawlerId(): string {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
@@ -357,13 +361,6 @@ export default Vue.extend({
 
     throw lastError
   },
-  created() {
-    if (!this.additionalPlayerDataLoaded) {
-      this.loadPlayerWinrates()
-      this.loadPlayerHistory()
-      this.additionalPlayerDataLoaded = true
-    }
-  },
   mounted() {
     setTimeout(() => this.refreshTimer(), 15 * 1000)
   },
@@ -383,11 +380,27 @@ export default Vue.extend({
       activeMapMeta,
     }
   },
+  async fetch() {
+    const battleData = await this.$clicker.query('player.winrates.total',
+      'battle',
+      [],
+      ['picks', 'battle_victory', 'battle_trophy_change'],
+      {
+        ...this.$clicker.defaultSlices('battle'),
+        player_tag: [this.player.tag],
+      },
+      { sort: { picks: 'desc' }, cache: 60 })
+
+    if (battleData.data[0].picks != undefined) {
+      this.battleTotals = battleData.data[0]
+    }
+  },
   methods: {
     async refreshTimer() {
       this.refreshSecondsLeft -= 15
       if (this.refreshSecondsLeft <= 0) {
         await this.refresh()
+        await this.$fetch()
       }
       setTimeout(() => this.refreshTimer(), 15 * 1000)
     },
@@ -415,8 +428,6 @@ export default Vue.extend({
     }),
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
-      loadPlayerHistory: 'loadPlayerHistory',
-      loadPlayerWinrates: 'loadPlayerWinrates',
       install: 'install',
     }),
   },

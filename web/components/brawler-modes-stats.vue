@@ -49,12 +49,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const modes = await this.$clicker.query('all.modes', 'map',
-      ['battle_event_mode'],
-      ['battle_event_mode'],
-      { trophy_season_end: ['balance'] },
-      { cache: 60*60*24 })
-    this.modes = modes.data.map(row => row.battle_event_mode)
+    this.modes = await this.$clicker.queryAllModes()
   },
 });
 </script>

@@ -101,15 +101,6 @@ export const mutations = {
   setPlayer(state, player) {
     state.player = player
   },
-  setPlayerHistory(state, playerHistory) {
-    state.player = mergeDeep(state.player, playerHistory)
-  },
-  setPlayerWinrates(state, playerWinrates) {
-    state.player = mergeDeep(state.player, playerWinrates)
-  },
-  setPlayerData(state, { player, history, winrates }) {
-    state.player = mergeDeep(mergeDeep(player, history), winrates)
-  },
   addLastPlayer(state, player) {
     const clone = obj => JSON.parse(JSON.stringify(obj))
 
@@ -180,19 +171,9 @@ export const actions = {
     const player = await this.$axios.$get(`/api/player/${playerTag}`)
     commit('setPlayer', player)
   },
-  async loadPlayerHistory({ state, commit }) {
-    const playerHistory = await this.$axios.$get(`/api/player/${state.player.tag}/history`)
-    commit('setPlayerHistory', playerHistory)
-  },
-  async loadPlayerWinrates({ state, commit }) {
-    const playerWinrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
-    commit('setPlayerWinrates', playerWinrates)
-  },
   async refreshPlayer({ state, commit }) {
     const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
-    const history = await this.$axios.$get(`/api/player/${state.player.tag}/history`)
-    const winrates = await this.$axios.$get(`/api/player/${state.player.tag}/winrates`)
-    commit('setPlayerData', { player, winrates, history })
+    commit('setPlayer', player)
   },
   async install({ state, commit }) {
     const pwaSupported = state.installPrompt !== undefined
