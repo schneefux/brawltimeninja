@@ -39,9 +39,6 @@ export default Vue.extend({
       history: [] as TrophiesRow[],
     }
   },
-  watch: {
-    enableClickerStats: '$fetch',
-  },
   async fetch() {
     if (!this.open || !this.enableClickerStats) {
       return
@@ -79,6 +76,7 @@ export default Vue.extend({
   },
   watch: {
     open: '$fetch',
+    enableClickerStats: '$fetch',
   },
   render(h) {
     const brawler = this.brawler

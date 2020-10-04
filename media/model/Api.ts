@@ -14,35 +14,12 @@ export interface PlayerBrawlerWinrates {
   }
 }
 
-export interface PlayerWinrates {
-  mode: PlayerModeWinrates
-  brawler: PlayerBrawlerWinrates
-  total: {
-    stats: BattleMeasures
-  }
-}
-
 export interface Brawler {
   name: string;
   trophies: number;
   highestTrophies: number;
   power: number;
   rank: number;
-  history: TrophiesRow[];
-}
-
-export interface Statistic {
-  label: string;
-  value: number | string;
-}
-
-export interface Mode {
-  label: string;
-  icon: string;
-  background: string;
-  stats: {
-      [id: string]: Statistic;
-  };
 }
 
 export interface Battle {
@@ -80,19 +57,11 @@ export interface Player {
   name: string;
   hoursSpent: number;
   trophies: number;
-  winrates: Partial<PlayerWinrates>;
   clubName: string;
   qualifiedFromChampionshipChallenge: boolean;
   stats: PlayerLifetimeStats;
-  history: TrophiesRow[];
   brawlers: {
     [id: string]: Brawler;
-  };
-  heroStats: {
-    [id: string]: Statistic;
-  }
-  modes: {
-    [id: string]: Mode;
   };
   battles: Battle[];
 }
@@ -107,30 +76,6 @@ interface Sample {
 export interface BrawlerMetaStatistics extends Sample {
   id: string;
   name: string;
-}
-
-export interface StarpowerMetaStatistics extends Sample {
-  id: string;
-  brawlerName: string;
-  brawlerId: number;
-  starpowerName: string;
-  stats: {
-    winRate: number;
-    starRate: number;
-    rank1Rate: number;
-  }
-}
-
-export interface GadgetMetaStatistics extends Sample {
-  id: string;
-  brawlerName: string;
-  brawlerId: number;
-  gadgetName: string;
-  stats: {
-    winRate: number;
-    starRate: number;
-    rank1Rate: number;
-  }
 }
 
 export interface ActiveEvent {

@@ -320,7 +320,7 @@ export default Vue.extend({
     totalBattles(): number {
       return this.battleTotals.picks || this.player.battles.length
     },
-    enableClickerStats() {
+    enableClickerStats(): boolean {
       // do not send queries to backend if user has no battle history in database
       return this.battleTotals.picks != undefined && this.battleTotals.picks > 25
     },
