@@ -39,6 +39,7 @@
         :total-brawlers="totalBrawlers"
         :hours-leaderboard="hoursLeaderboard"
         :enable-clicker-stats="enableClickerStats"
+        :battle-totals="battleTotals"
       ></player-hype-stats>
     </div>
 

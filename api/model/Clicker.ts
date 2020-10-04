@@ -96,12 +96,6 @@ export interface BrawlerLeaderboardRow extends BrawlerMeasures {
   brawlerName: string;
 }
 
-export interface PlayerWinRatesRows {
-  total: PlayerMetaRow[];
-  mode: PlayerModeMetaRow[];
-  brawler: PlayerBrawlerMetaRow[];
-}
-
 export interface TrophiesRow {
   timestamp: string
   trophies: number

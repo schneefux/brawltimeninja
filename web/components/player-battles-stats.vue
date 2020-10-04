@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { PlayerWinrates, Battle } from '~/model/Api'
+import { Battle } from '~/model/Api'
 
 export interface BattleTotalRow {
   picks: number

@@ -195,6 +195,7 @@
 import Vue, { PropType } from 'vue'
 import { Player, LeaderboardEntry } from '../model/Api'
 import { TrophiesRow } from '../model/Clicker'
+import { BattleTotalRow } from './player-battles-stats.vue'
 
 export default Vue.extend({
   props: {
@@ -209,6 +210,10 @@ export default Vue.extend({
     totalBrawlers: {
       type: Number,
       required: true
+    },
+    battleTotals: {
+      type: Object as PropType<BattleTotalRow>,
+      required: false
     },
     enableClickerStats: {
       type: Boolean,
@@ -299,9 +304,10 @@ export default Vue.extend({
       return medBrawlerTrophies * this.totalBrawlers
     },
     trophyRate(): number {
-      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
-        return this.player.winrates.total.stats.trophyChange || 0
+      if (this.battleTotals != undefined && this.battleTotals != undefined) {
+        return this.battleTotals.battle_trophy_change || 0
       }
+
       const trophyChanges = this.player.battles
         .map((battle) => battle.trophyChange!)
         .filter((trophyChange) => trophyChange != undefined)
@@ -311,13 +317,16 @@ export default Vue.extend({
       return trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
     },
     winRate(): number {
-      if (this.player.winrates != undefined && this.player.winrates.total != undefined) {
-        return this.player.winrates.total.stats.winRate
+      if (this.battleTotals != undefined && this.battleTotals.battle_victory != undefined) {
+        return this.battleTotals.battle_victory
       }
       if (this.player.battles.length == 0) {
         return 0
       }
       return this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
+    },
+    totalBattles(): number {
+      return this.battleTotals.picks || this.player.battles.length
     },
     accountRating(): string {
       const medTrophies = this.trophiesGoal / this.totalBrawlers
