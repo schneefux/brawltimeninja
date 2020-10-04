@@ -1,9 +1,8 @@
-import Cube, { DataType } from "./Cube";
+import Cube from "./MaterializedCube";
 import { QueryBuilder } from "knex";
 import { stripIndent } from "common-tags";
 import { formatClickhouse, getCurrentSeasonEnd } from "../lib/util";
-
-const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
+import { DataType } from "./Cube";
 
 export interface BrawlerBattleCubeMeasures {
   timestamp: string
@@ -31,7 +30,7 @@ export interface BrawlerBattleCubeRow extends BrawlerBattleCubeMeasures, Brawler
 /**
  * All Brawler Battle cubes share the same measures and have common dimensions.
  */
-export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> extends Cube<R> {
+export default abstract class BrawlerBattleCube extends Cube {
   measures = {
     'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'picks': 'SUM(picks)',
@@ -68,7 +67,7 @@ export default abstract class BrawlerBattleCube<R extends BrawlerBattleCubeRow> 
           args[0] = formatClickhouse(getCurrentSeasonEnd())
         }
         if (args[0] == 'balance') {
-          args[0] = formatClickhouse(balanceChangesDate)
+          args[0] = formatClickhouse(this.balanceChangesDate)
         }
         if (args[0] == 'month') {
           const oneMonthAgo = new Date()

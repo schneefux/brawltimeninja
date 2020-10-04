@@ -1,7 +1,7 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
-import { DataType } from "./Cube"
 import { stripIndent } from "common-tags"
 import { QueryBuilder } from "knex"
+import { DataType } from "./Cube"
 
 export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
   battle_event_mode: string
@@ -11,7 +11,7 @@ export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
   battle_is_bigbrawler: boolean
 }
 
-export default class MapMetaCube extends BrawlerBattleCube<MapMetaCubeRow> {
+export default class MapMetaCube extends BrawlerBattleCube {
   table = 'brawltime.map_meta'
   engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()

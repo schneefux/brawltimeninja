@@ -1,7 +1,7 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
-import { DataType } from "./Cube"
 import { stripIndent } from "common-tags"
 import { QueryBuilder } from "knex"
+import { DataType } from "./Cube"
 
 export interface SynergyMetaCubeRow extends BrawlerBattleCubeRow {
   battle_event_mode: string
@@ -11,7 +11,7 @@ export interface SynergyMetaCubeRow extends BrawlerBattleCubeRow {
   ally_brawler_name: string
 }
 
-export default class SynergyMetaCube extends BrawlerBattleCube<SynergyMetaCubeRow> {
+export default class SynergyMetaCube extends BrawlerBattleCube {
   table = 'brawltime.synergy_meta'
   engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()

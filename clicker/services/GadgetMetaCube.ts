@@ -1,14 +1,14 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube";
-import { DataType } from "./Cube";
 import { stripIndent } from "common-tags";
 import { QueryBuilder } from "knex";
+import { DataType } from "./Cube";
 
 export interface GadgetMetaCubeRow extends BrawlerBattleCubeRow {
   brawler_gadget_id: number
   brawler_gadget_name: string
 }
 
-export default class GadgetMetaCube extends BrawlerBattleCube<GadgetMetaCubeRow> {
+export default class GadgetMetaCube extends BrawlerBattleCube {
   table = 'brawltime.gadget_meta'
   engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()

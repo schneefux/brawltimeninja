@@ -1,14 +1,14 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube";
-import { DataType } from "./Cube";
 import { stripIndent } from "common-tags";
 import { QueryBuilder } from "knex";
+import { DataType } from "./Cube";
 
 export interface StarpowerMetaCubeRow extends BrawlerBattleCubeRow {
   brawler_starpower_id: number
   brawler_starpower_name: string
 }
 
-export default class StarpowerMetaCube extends BrawlerBattleCube<StarpowerMetaCubeRow> {
+export default class StarpowerMetaCube extends BrawlerBattleCube {
   table = 'brawltime.starpower_meta'
   engineDefinition = stripIndent`
     ENGINE = SummingMergeTree()

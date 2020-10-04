@@ -1,7 +1,8 @@
-import Cube, { DataType } from "./Cube";
+import MaterializedCube from "./MaterializedCube";
 import { QueryBuilder } from "knex";
 import { idToTag } from "../lib/util";
 import { stripIndent } from "common-tags";
+import { DataType } from "./Cube";
 
 export interface BrawlerLeaderboardCubeRow {
   timestamp: string
@@ -16,7 +17,7 @@ export interface BrawlerLeaderboardCubeRow {
   player_duo_victories: number
 }
 
-export default class BrawlerLeaderboardCube extends Cube<BrawlerLeaderboardCubeRow> {
+export default class BrawlerLeaderboardCube extends MaterializedCube {
   // similar to LeaderboardCube
   table = 'brawltime.brawler_leaderboard'
   engineDefinition = stripIndent`

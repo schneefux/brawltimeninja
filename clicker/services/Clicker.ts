@@ -9,10 +9,12 @@ import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
 import LeaderboardCube from './LeaderboardCube';
-import Cube, { Order } from './Cube';
 import BrawlerLeaderboardCube from './BrawlerLeaderboardCube';
 import { stripIndent } from 'common-tags';
 import SynergyMetaCube from './SynergyCube';
+import PlayerBrawlerCube from './PlayerBrawlerCube';
+import PlayerBattleCube from './PlayerBattleCube';
+import Cube, { Order } from './Cube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -63,29 +65,29 @@ const parseBattleMeasures = (row: BattleMeasuresAggregation) => ({
 
 
 export default class ClickerService {
-  // nice insert API, but buggy af
-  // operates on a single session/connection and times out after 60s
-  private ch: ClickHouse;
-  // hopefully better performance
-  private ch2: ClickHouse2;
+  // readonly
+  private chRo: ClickHouse2;
+  // readwrite
+  private chRw: ClickHouse2;
 
-  private mapMetaCube = new MapMetaCube()
-  private gadgetMetaCube = new GadgetMetaCube()
-  private starpowerMetaCube = new StarpowerMetaCube()
-  private synergyMetaCube = new SynergyMetaCube()
-  private leaderboardCube = new LeaderboardCube()
-  private brawlerLeaderboardCube = new BrawlerLeaderboardCube()
+  private playerBrawlerCube: PlayerBrawlerCube
+  private playerBattleCube: PlayerBattleCube
+  private mapMetaCube: MapMetaCube
+  private gadgetMetaCube: GadgetMetaCube
+  private starpowerMetaCube: StarpowerMetaCube
+  private synergyMetaCube: SynergyMetaCube
+  private leaderboardCube: LeaderboardCube
+  private brawlerLeaderboardCube: BrawlerLeaderboardCube
 
   constructor() {
-    // most queries are small -> use 1 thread to avoid context switch
-    this.ch = new ClickHouse({
-      host: dbHost,
-      queryOptions: {
-        max_threads: 1,
-      },
+    this.chRw = new ClickHouse2({
+      url: dbHost,
+      isSessionPerQuery: true,
     })
-    this.ch2 = new ClickHouse2({
-      url: `http://${dbHost}`,
+    // use 1 thread -> server can handle more queries
+    // player queries take about 25% longer than with 4 threads
+    this.chRo = new ClickHouse2({
+      url: dbHost,
       config: {
         readonly: 1,
         max_threads: 1,
@@ -93,173 +95,47 @@ export default class ClickerService {
       // clickhouse allows only a single query per session!
       isSessionPerQuery: true,
     })
+
+    this.playerBrawlerCube = new PlayerBrawlerCube(this.chRo)
+    this.playerBattleCube = new PlayerBattleCube(this.chRo)
+    this.mapMetaCube = new MapMetaCube(this.chRo)
+    this.gadgetMetaCube = new GadgetMetaCube(this.chRo)
+    this.starpowerMetaCube = new StarpowerMetaCube(this.chRo)
+    this.synergyMetaCube = new SynergyMetaCube(this.chRo)
+    this.leaderboardCube = new LeaderboardCube(this.chRo)
+    this.brawlerLeaderboardCube = new BrawlerLeaderboardCube(this.chRo)
   }
 
+  private insert(sql: string) {
+    // only this client supports JSON insert streams
+    // this client has no support for sessions
+    // => create a new client = create a new session
+    const ch = new ClickHouse(dbHost)
+    return ch.query(sql, { format: 'JSONEachRow' })
+  }
+
+  // ro query
   private async query<T>(query: string, metricName: string): Promise<T[]> {
     stats.increment(metricName + '.run')
     return stats.asyncTimer(() =>
-      this.ch2.query(query).toPromise() as Promise<T[]>
+      this.chRo.query(query).toPromise() as Promise<T[]>
     , metricName + '.timer')()
   }
 
+  // rw query
+  private async exec(query: string): Promise<any[]> {
+    return await this.chRw.query(query).toPromise()
+  }
+
   public async migrate() {
-    await this.ch.querying('CREATE DATABASE IF NOT EXISTS brawltime')
+    await this.exec('CREATE DATABASE IF NOT EXISTS brawltime')
 
-    const playerColumns = stripIndent`
-      -- player
-      player_id UInt64 Codec(Gorilla, LZ4HC),
-      player_tag String Codec(LZ4HC),
-      player_name String Codec(LZ4HC),
-      player_name_color FixedString(10) Codec(LZ4HC), -- 0x + 8 hex chars
-      player_icon_id UInt32 Codec(Gorilla, LZ4HC),
-      player_trophies UInt32 Codec(Gorilla, LZ4HC),
-      player_highest_trophies UInt32 Codec(Gorilla, LZ4HC),
-      player_power_play_points UInt16 Codec(Gorilla, LZ4HC),
-      player_highest_power_play_points UInt16 Codec(Gorilla, LZ4HC),
-      player_exp_points UInt32 Codec(Gorilla, LZ4HC),
-      player_is_qualified_from_championship_challenge UInt8 Codec(Gorilla, LZ4HC),
-      player_3vs3_victories UInt32 Codec(Gorilla, LZ4HC),
-      player_solo_victories UInt32 Codec(Gorilla, LZ4HC),
-      player_duo_victories UInt32 Codec(Gorilla, LZ4HC),
-      player_best_robo_rumble_time UInt16 Codec(Gorilla, LZ4HC),
-      player_best_time_as_big_brawler UInt16 Codec(Gorilla, LZ4HC),
-      -- calculated
-      player_brawlers_length UInt8 Codec(Gorilla, LZ4HC),
-      -- player club
-      player_club_id UInt64 Codec(Gorilla, LZ4HC),
-      player_club_tag String Codec(LZ4HC),
-      player_club_name String Codec(LZ4HC)
-    `
-
-    const brawlerColumns = stripIndent`
-      -- brawler
-      brawler_id UInt32 Codec(Gorilla, LZ4HC),
-      brawler_name LowCardinality(String) Codec(LZ4HC),
-      brawler_power UInt8 Codec(Gorilla, LZ4HC),
-      brawler_trophies UInt16 Codec(DoubleDelta, LZ4HC), -- trophy change is mostly constant
-      brawler_highest_trophies UInt16 Codec(DoubleDelta, LZ4HC),
-      -- calculated
-      brawler_trophyrange UInt8 Codec(Gorilla, LZ4HC),
-      -- starpowers (nested)
-      \`brawler_starpowers.id\` Array(UInt32) Codec(LZ4HC),
-      \`brawler_starpowers.name\` Array(LowCardinality(String)) Codec(LZ4HC),
-      brawler_starpowers_length UInt16 Codec(Gorilla, LZ4HC),
-      -- gadgets (nested)
-      \`brawler_gadgets.id\` Array(UInt32) Codec(LZ4HC),
-      \`brawler_gadgets.name\` Array(LowCardinality(String)) Codec(LZ4HC),
-      brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC)
-    `
-
-    //
-    // battle table
-    //
-    // TODO on next table rewrite, use ReplacingMergeTree
-    await this.ch.querying(stripIndent`
-      CREATE TABLE IF NOT EXISTS brawltime.battle (
-        timestamp DateTime Codec(DoubleDelta, LZ4HC),
-        -- calculated
-        trophy_season_end DateTime Codec(DoubleDelta, LZ4HC),
-        ${playerColumns},
-        -- player brawler
-        -- see other table
-        ${brawlerColumns},
-        -- brawler active starpower
-        brawler_starpower_found UInt8 Codec(Gorilla, LZ4HC),
-        brawler_starpower_id UInt32 Codec(LZ4HC),
-        brawler_starpower_name LowCardinality(String) Codec(LZ4HC),
-        -- brawler active gadget
-        brawler_gadget_found UInt8 Codec(Gorilla, LZ4HC),
-        brawler_gadget_id UInt32 Codec(LZ4HC),
-        brawler_gadget_name LowCardinality(String) Codec(LZ4HC),
-        -- battle event
-        battle_event_id UInt32 Codec(Gorilla, LZ4HC),
-        battle_event_mode LowCardinality(String) Codec(LZ4HC),
-        battle_event_map LowCardinality(String) Codec(LZ4HC),
-        battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC),
-        -- battle
-        -- mode: ommitted because duplicate
-        battle_type LowCardinality(String) Codec(LZ4HC),
-        battle_result LowCardinality(String) Codec(LZ4HC),
-        -- Nullable + Encoding is not supported
-        battle_duration Nullable(UInt16) Codec(LZ4HC),
-        battle_rank Nullable(UInt8) Codec(LZ4HC),
-        battle_trophy_change Nullable(Int8) Codec(LZ4HC),
-        battle_level_name LowCardinality(String) Codec(LZ4HC),
-        battle_level_id Nullable(UInt16) Codec(LZ4HC),
-        -- calculated
-        battle_victory Nullable(Decimal32(8)) Codec(LZ4HC),
-        -- battle starplayer
-        battle_starplayer_brawler_id UInt32 Codec(LZ4HC),
-        battle_starplayer_brawler_name LowCardinality(String) Codec(LZ4HC),
-        battle_starplayer_brawler_power UInt8 Codec(Gorilla, LZ4HC),
-        battle_starplayer_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
-        -- calculated
-        battle_is_starplayer Nullable(UInt8) Codec(LZ4HC),
-        -- battle big brawler
-        battle_bigbrawler_brawler_id UInt32 Codec(LZ4HC),
-        battle_bigbrawler_brawler_name LowCardinality(String) Codec(LZ4HC),
-        battle_bigbrawler_brawler_power UInt8 Codec(Gorilla, LZ4HC),
-        battle_bigbrawler_brawler_trophies UInt16 Codec(Gorilla, LZ4HC),
-        -- calculated
-        battle_is_bigbrawler Nullable(UInt8) Codec(LZ4HC),
-        -- battle allies and enemies (nested)
-        -- player names and tags ommitted, not needed
-        \`battle_allies.brawler_id\` Array(UInt32) Codec(LZ4HC),
-        \`battle_allies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
-        \`battle_allies.brawler_power\` Array(UInt8) Codec(LZ4HC),
-        \`battle_allies.brawler_trophies\` Array(UInt16) Codec(LZ4HC),
-        \`battle_enemies.brawler_id\` Array(UInt32) Codec(LZ4HC),
-        \`battle_enemies.brawler_name\` Array(LowCardinality(String)) Codec(LZ4HC),
-        \`battle_enemies.brawler_power\` Array(UInt8) Codec(LZ4HC),
-        \`battle_enemies.brawler_trophies\` Array(UInt16) Codec(LZ4HC)
-      )
-      ENGINE = MergeTree()
-      -- there are no unique checks!
-      -- memory consumption for the index is partition cardinality * pk size * pk cardinality / index granularity
-      PRIMARY KEY (player_id)
-      ORDER BY (player_id, timestamp)
-      PARTITION BY trophy_season_end
-      SAMPLE BY (player_id)
-      -- TTL timestamp + INTERVAL 1 MONTH DELETE
-      -- 25 battles per battle log query
-      SETTINGS index_granularity=25;
-    `)
-
-    // backwards compat
-    await this.ch.querying(stripIndent`
-      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC) AFTER battle_event_map
-    `)
-
-    //
-    // player brawler table
-    //
-    await this.ch.querying(stripIndent`
-      CREATE TABLE IF NOT EXISTS brawltime.brawler (
-        -- day without time = 1 record/day
-        timestamp Date Codec(DoubleDelta, LZ4HC),
-        -- calculated
-        trophy_season_end Date Codec(DoubleDelta, LZ4HC),
-        ${playerColumns},
-        ${brawlerColumns}
-      )
-      -- will keep latest version by sorting key
-      -- syncs in background so duplicates are possible
-      ENGINE = ReplacingMergeTree(timestamp)
-      PRIMARY KEY (player_id)
-      ORDER BY (player_id, brawler_id, timestamp)
-      PARTITION BY trophy_season_end
-      SAMPLE BY (player_id)
-      -- TTL timestamp + INTERVAL 6 MONTH DELETE
-      -- ca. 30 brawlers per player, 30 days
-      SETTINGS index_granularity=1024;
-    `)
-
-    await this.mapMetaCube.up(this.ch)
-    await this.gadgetMetaCube.up(this.ch)
-    await this.starpowerMetaCube.up(this.ch)
-    await this.synergyMetaCube.up(this.ch)
-    await this.leaderboardCube.up(this.ch)
-    await this.brawlerLeaderboardCube.up(this.ch)
+    await this.mapMetaCube.up(this.chRw)
+    await this.gadgetMetaCube.up(this.chRw)
+    await this.starpowerMetaCube.up(this.chRw)
+    await this.synergyMetaCube.up(this.chRw)
+    await this.leaderboardCube.up(this.chRw)
+    await this.brawlerLeaderboardCube.up(this.chRw)
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -287,13 +163,13 @@ export default class ClickerService {
     const lastBattleTimestamp = (maxTimestamp[0].maxTimestamp.startsWith('0000') || maxTimestamp[0].maxTimestamp.startsWith('1970')) ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
     const battleInsertStart = performance.now()
-    const battleStream = this.ch.query('INSERT INTO brawltime.battle', { format: 'JSONEachRow' }, (error) => {
-      if (error) {
-        stats.increment('player.insert.error')
-        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-      } else {
-        stats.timing('player.insert.timer', performance.now() - battleInsertStart)
-      }
+    const battleStream = this.insert('INSERT INTO brawltime.battle')
+    battleStream.on('error', (error) => {
+      stats.increment('player.insert.error')
+      console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+    })
+    battleStream.on('end', () => {
+      stats.timing('player.insert.timer', performance.now() - battleInsertStart)
     })
 
     const playerFacts = {
@@ -485,13 +361,13 @@ export default class ClickerService {
     battleStream.end()
 
     const brawlerInsertStart = performance.now()
-    const brawlerStream = this.ch.query('INSERT INTO brawltime.brawler', { format: 'JSONEachRow' }, (error) => {
-      if (error) {
-        stats.increment('brawler.insert.error')
-        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-      } else {
-        stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
-      }
+    const brawlerStream = this.insert('INSERT INTO brawltime.brawler')
+    brawlerStream.on('error', (error) => {
+      stats.increment('brawler.insert.error')
+      console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
+    })
+    brawlerStream.on('end', () => {
+      stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
     })
 
     for (const brawler of player.brawlers) {
@@ -552,7 +428,7 @@ export default class ClickerService {
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    const rows = await this.leaderboardCube.query(this.ch2,
+    const rows = await this.leaderboardCube.query(
       'leaderboard',
       [metricMeasure, 'player_name'],
       ['player_id'],
@@ -565,7 +441,7 @@ export default class ClickerService {
 
     return rows.data.map(r => (<Partial<LeaderboardRow>>{
       name: r.player_name,
-      tag: idToTag(r.player_id).replace('#', ''),
+      tag: idToTag(r.player_id as string).replace('#', ''),
       id: r.player_id,
       [metric]: r[metricMeasure],
     }))
@@ -586,7 +462,7 @@ export default class ClickerService {
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-    const rows = await this.brawlerLeaderboardCube.query(this.ch2,
+    const rows = await this.brawlerLeaderboardCube.query(
       'brawler_leaderboard',
       [metricMeasure, 'player_name'],
       ['player_id'],
@@ -600,7 +476,7 @@ export default class ClickerService {
     return rows.data.map(r => (<Partial<BrawlerLeaderboardRow>>{
       name: r.player_name,
       brawlerName: r.brawler_name,
-      tag: idToTag(r.player_id).replace('#', ''),
+      tag: idToTag(r.player_id as string).replace('#', ''),
       id: r.player_id,
       [metric]: r[metricMeasure],
     }))
@@ -725,7 +601,7 @@ export default class ClickerService {
   }
 
   public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch2,
+    const rows = await this.mapMetaCube.query(
       'meta.brawler',
       ['*'],
       ['brawler_name'],
@@ -752,7 +628,7 @@ export default class ClickerService {
   }
 
   public async getModeMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch2,
+    const rows = await this.mapMetaCube.query(
       'meta.mode',
       ['*'],
       ['brawler_name', 'battle_event_mode'],
@@ -780,7 +656,7 @@ export default class ClickerService {
   }
 
   public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    const rows = await this.mapMetaCube.query(this.ch2,
+    const rows = await this.mapMetaCube.query(
       'meta.map',
       ['*'],
       ['brawler_name', 'battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_is_bigbrawler'],
@@ -810,11 +686,17 @@ export default class ClickerService {
     }))
   }
 
-  private getCubeByName(cubeName: string): Cube<any> {
+  private getCubeByName(cubeName: string): Cube {
     switch (cubeName) {
+      // raw cubes
+      case 'battle':
+        return this.playerBattleCube
+      case 'brawler':
+        return this.playerBrawlerCube
+      // materialized cubes
       case 'player':
         return this.leaderboardCube
-      case 'brawler':
+      case 'player_brawler':
         return this.brawlerLeaderboardCube
       case 'map':
         return this.mapMetaCube
@@ -850,7 +732,7 @@ export default class ClickerService {
     limit = Math.min(1000, limit)
 
     console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, format)
-    const data = await cube.query(this.ch2,
+    const data = await cube.query(
       name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
       dimensions,
@@ -862,6 +744,8 @@ export default class ClickerService {
     switch (format) {
       case 'data':
         return data.data
+      case 'first':
+        return data.data[0]
       case 'totals':
         return data.totals
       case 'csv':

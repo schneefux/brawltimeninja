@@ -1,20 +1,12 @@
-import ClickHouse from '@apla/clickhouse';
 import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import Knex, { QueryBuilder } from "knex"
 import { StatsD } from "hot-shots"
-import { stripIndent } from "common-tags"
 
 export type Order = 'asc'|'desc'
 export type DataType = 'string'|'int'|'float'|'bool'
 
-export default abstract class Cube<R> {
+export default abstract class Cube {
   abstract table: string
-  abstract engineDefinition: string
-  abstract dimensionsDefinition: string
-  abstract measuresDefinition: string
-  abstract measuresQuery: string
-  abstract seedQuery: string
-
   abstract measures: Record<string, string>
   abstract dimensions: string[]
   abstract slices: Record<string, number>
@@ -26,51 +18,27 @@ export default abstract class Cube<R> {
   private knex = Knex({ client: 'mysql' })
   private stats = new StatsD({ prefix: 'brawltime.clicker.' })
 
-  private async execute(ch: ClickHouse, sql: string) {
+  public balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
+
+  constructor(private ch: ClickHouse2) {
+  }
+
+  public async execute<T extends Record<string, string|number>>(ch2: ClickHouse2, sql: string): Promise<T[]> {
     console.log('executing', sql)
-    return await ch.querying(sql)
+    return await ch2.query(sql).toPromise() as T[]
   }
 
-  /**
-   * Create a target table (`table`),
-   * an insert trigger (`table_mv`)
-   * and run a seed query if `table` is empty.
-   */
-  public async up(ch: ClickHouse) {
-    await this.execute(ch, stripIndent`
-      CREATE TABLE IF NOT EXISTS ${this.table} (
-        ${this.dimensionsDefinition},
-        ${this.measuresDefinition}
-      )
-      ${this.engineDefinition}
-    `)
+  public abstract async up(ch2: ClickHouse2): Promise<void>
 
-    // mv column names must match table column names
-    // errors are thrown on INSERT!
-    await this.execute(ch, stripIndent`
-      CREATE MATERIALIZED VIEW IF NOT EXISTS ${this.table}_mv
-      TO ${this.table}
-      AS ${this.seedQuery}
-    `)
-
-    const count = await ch.querying(`SELECT COUNT() AS c FROM ${this.table}`, { dataObjects: true })
-    if (count.data[0].c == 0) {
-      console.log(`populating ${this.table}`)
-      await this.execute(ch, `INSERT INTO ${this.table} ${this.seedQuery}`)
-    }
-  }
-
-  public async query<N extends (keyof R)[], E extends (keyof R)[]>(
-      ch2: ClickHouse2,
+  public async query<R extends Record<string, string|number|boolean>>(
       name: string,
-      measures: N|['*'],
-      dimensions: E,
+      measures: string[]|['*'],
+      dimensions: string[],
       slices: Partial<Record<string, string[]>> = {} as any,
-      order: Partial<Record<keyof R, Order>> = {},
-      limit?: number): Promise<{ data: Pick<R, N[number]|E[number]>[], totals: Pick<R, N[number]|E[number]> }> {
+      order: Partial<Record<string, Order>> = {},
+      limit?: number): Promise<{ data: R[], totals: R }> {
     if (measures.length == 1 && measures[0] == '*') {
-      // TODO this destroys the return type!
-      measures = Object.keys(this.measures) as any
+      measures = Object.keys(this.measures)
     }
 
     // query from table (not from mview) or decimals are messed up (?)
@@ -127,10 +95,10 @@ export default abstract class Cube<R> {
     this.stats.increment(name + '.run')
     return this.stats.asyncTimer(() =>
       // ch2 has shitty typings
-      ((ch2.query(sql) as any).withTotals().toPromise() as Promise<{ data: Record<string, string>[], totals: Record<string, string>}>)
+      ((this.ch.query(sql) as any).withTotals().toPromise() as Promise<{ data: Record<string, string>[], totals: Record<string, string>}>)
         .then(result => ({
-          data: result.data.map(r => this.parse<Pick<R, N[number]|E[number]>>(r)),
-          totals: this.parse<Pick<R, N[number]|E[number]>>(result.totals),
+          data: result.data.map(r => this.parse<R>(r)),
+          totals: this.parse<R>(result.totals || {}),
         }))
     , name + '.timer')()
   }

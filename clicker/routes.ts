@@ -67,11 +67,11 @@ router.get('/clicker/cube/:cube/metadata', async (ctx, next) => {
   await next();
 });
 
-router.get('/clicker/cube/:cube/query/:dimensions', async (ctx, next) => {
+router.get('/clicker/cube/:cube/query/:dimensions?', async (ctx, next) => {
   const split = (n: string) => n.split(',').filter(p => p.length > 0)
 
   const cubeName = ctx.params.cube
-  const dimensions = split(ctx.params.dimensions)
+  const dimensions = split(ctx.params.dimensions || '')
   const query = (ctx.query || {}) as { [name: string]: string }
   const measures = split(query['include'] || '*')
   const slices = Object.entries(query)
@@ -82,7 +82,7 @@ router.get('/clicker/cube/:cube/query/:dimensions', async (ctx, next) => {
     .reduce((order, name) => ({
       ...order,
       ...((name.startsWith('-') ? ({ [name.slice(1)]: 'desc' }) : ({ [name]: 'asc' })) as { [name: string]: Order }),
-    }), {} as { [name: string]: Order })
+    }), {} as Record<string, Order>)
   const limit = parseInt(query['limit']) || 1000
   const cache = parseInt(query['cache']) || 60
   const name = query['name']
