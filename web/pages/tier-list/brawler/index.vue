@@ -205,7 +205,7 @@ export default Vue.extend({
     this.totalSampleSize = data.totals.picks
   },
   async asyncData({ $clicker }) {
-    const modes = await this.$clicker.queryAllModes()
+    const modes = await $clicker.queryAllModes()
 
     return {
       modes,

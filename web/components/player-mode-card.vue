@@ -9,15 +9,15 @@
       <div class="card__header text-white">
         {{ formatMode(mode) }}
       </div>
-      <dl v-if="stats.picks > 5" class="flex card__props">
+      <dl class="flex card__props">
         <dd class="card-prop-value">
-          {{ metaStatMaps.formatters.winRate(stats.winRate) }}
+          {{ stats.picks > 5 ? metaStatMaps.formatters.winRate(stats.winRate) : '?' }}
         </dd>
         <dt class="ml-1 card-prop-label">
           {{ metaStatMaps.labels.winRate }}
         </dt>
       </dl>
-      <p v-if="stats.picks > 0" class="text-xs">
+      <p class="text-xs">
         {{ stats.wins }} Wins / {{ stats.losses }} Losses</p>
       <div
         v-if="recommendedBrawlers.length > 0"
@@ -129,7 +129,7 @@ export default Vue.extend({
     },
     enableClickerStats: {
       type: Boolean,
-      required: false
+      required: true
     },
   },
   data() {
