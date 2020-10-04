@@ -77,11 +77,18 @@ export default class ClickerService {
   private brawlerLeaderboardCube = new BrawlerLeaderboardCube()
 
   constructor() {
-    this.ch = new ClickHouse(dbHost)
+    // most queries are small -> use 1 thread to avoid context switch
+    this.ch = new ClickHouse({
+      host: dbHost,
+      queryOptions: {
+        max_threads: 1,
+      },
+    })
     this.ch2 = new ClickHouse2({
       url: `http://${dbHost}`,
       config: {
         readonly: 1,
+        max_threads: 1,
       },
       // clickhouse allows only a single query per session!
       isSessionPerQuery: true,
