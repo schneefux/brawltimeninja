@@ -167,7 +167,7 @@ export default Vue.extend({
       modeName: '',
       maps: [] as EventIdAndMap[],
       entries: [] as MetaGridEntry[],
-      measurement: 'winRate',
+      measurement: 'wins',
       totalSampleSize: 0,
       loadAll: false,
     }
@@ -201,6 +201,7 @@ export default Vue.extend({
         [this.measurement]: row[measurementMap[this.measurement]]
           / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
       } : {
+        wins: row.wins,
         winRate: row.battle_victory,
         useRate: row.picks_weighted / data.totals.picks_weighted,
         pickRate: row.picks / data.totals.picks,
@@ -237,7 +238,7 @@ export default Vue.extend({
   },
   computed: {
     measurements(): string[] {
-      let measurements = ['winRate', 'useRate', 'pickRate']
+      let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
       if (this.mode == 'heist' || this.mode == 'bounty') {
         measurements = [...measurements, 'starRate']
       }

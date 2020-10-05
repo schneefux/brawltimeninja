@@ -405,6 +405,7 @@ export function formatClickhouseDate(timestamp: Date) {
 
 export const measurementMap = {
   winRate: 'battle_victory',
+  wins: 'wins',
   useRate: 'picks_weighted',
   pickRate: 'picks',
   starRate: 'battle_starplayer',
@@ -414,6 +415,7 @@ export const measurementMap = {
 
 export const measurementOfTotal = {
   winRate: false,
+  wins: false,
   useRate: true,
   pickRate: true,
   starRate: false,

@@ -1,7 +1,7 @@
 import path from 'path'
 import axios from 'axios'
 
-import { camelToKebab } from './lib/util'
+const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
 
 export default {
   mode: 'universal',
@@ -204,8 +204,6 @@ export default {
           console.error(`error adding ${metric} leaderboard players to sitemap`, err)
         }
       }
-
-      routes.push('/tier-list/brawler/colette')
 
       return routes
     },
