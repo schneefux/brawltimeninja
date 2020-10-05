@@ -78,8 +78,10 @@ export default Vue.extend({
     open() {
       this.$fetch()
     },
-    enableClickerStats() {
-      this.$fetch()
+    enableClickerStats(enable: boolean) {
+      if (enable) {
+        this.$fetch()
+      }
     },
   },
   render(h) {
