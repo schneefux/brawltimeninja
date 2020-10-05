@@ -218,7 +218,9 @@ export default class PlayerBrawlerCube extends Cube {
     throw new Error('Unknown slice name: ' + name)
   }
 
-  mapVirtual(row: Record<string, string>) {
+  virtuals = {} as Record<string, string[]>
+
+  mapVirtual(row: Record<string, string>): Record<string, string|number> {
     return {}
   }
 }

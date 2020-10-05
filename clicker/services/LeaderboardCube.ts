@@ -91,6 +91,10 @@ export default class LeaderboardCube extends MaterializedCube {
     player_duo_victories: 'int',
   } as Record<string, DataType>
 
+  virtuals = {
+    player_tag: ['player_id'],
+  } as Record<string, string[]>
+
   mapVirtual(row: Record<string, string>): Record<string, string> {
     if ('player_id' in row) {
       return {

@@ -11,6 +11,7 @@ export default abstract class Cube {
   abstract dimensions: string[]
   abstract slices: Record<string, number>
   abstract mappers: Record<string, DataType>
+  abstract virtuals: Record<string, string[]>
   abstract mapVirtual(row: Record<string, string>): Record<string, string|number|boolean>
 
   abstract slice(query: QueryBuilder, name: string, args: string[]): QueryBuilder
@@ -53,8 +54,14 @@ export default abstract class Cube {
         .groupBy(dimension)
     }
 
-    for (const measure of (<string[]>measures).concat(Object.keys(order))) {
-      if (dimensions.includes(measure as any)) {
+    for (const measure of measures) {
+      if (dimensions.includes(measure)) {
+        continue
+      }
+      if (measure in this.virtuals) {
+        for (const m of this.virtuals[measure]) {
+          query = query.select({ [m]: this.knex.raw(this.measures[m]) })
+        }
         continue
       }
       if (!(measure in this.measures)) {
@@ -65,9 +72,17 @@ export default abstract class Cube {
     }
 
     for (const [orderColumn, orderDirection] of Object.entries(order)) {
+      if (!(orderColumn in this.measures)) {
+        throw new Error('Invalid order column: ' + orderColumn)
+      }
       if (!['asc', 'desc'].includes(orderDirection as string)) {
         throw new Error('Invalid order direction: ' + orderDirection + ' for ' + orderColumn)
       }
+
+      if (!dimensions.includes(orderColumn)) {
+        query = query.select({ [orderColumn]: this.knex.raw(this.measures[orderColumn]) })
+      }
+
       query = query.orderBy(orderColumn, orderDirection as string)
     }
 
@@ -78,6 +93,7 @@ export default abstract class Cube {
       if ((<string[]>sliceArgs).length != this.slices[sliceName]) {
         throw new Error('Wrong number of slice args: ' + sliceArgs + ' for ' + sliceName)
       }
+
       query = this.slice(query, sliceName, <string[]>sliceArgs)
     }
 

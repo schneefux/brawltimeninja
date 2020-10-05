@@ -134,6 +134,10 @@ export default abstract class BrawlerBattleCube extends Cube {
     avgState(battle_trophy_change) as battle_trophy_change_state
   `
 
+  virtuals = {
+    wins: ['picks', 'battle_victory'],
+  } as Record<string, string[]>
+
   mapVirtual(row: Record<string, string>): Record<string, string|number> {
     if ('picks' in row && 'battle_victory' in row) {
       return {
