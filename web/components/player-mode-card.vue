@@ -75,9 +75,9 @@
     <div class="absolute top-0 right-0 mr-6 my-4">
       <media-img
         :path="'/modes/' + mode + '/icon'"
+        :alt="mode"
         size="120"
         clazz="w-12 mr-1"
-        alt={mode}
       ></media-img>
     </div>
   </div>

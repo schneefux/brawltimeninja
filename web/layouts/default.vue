@@ -387,17 +387,14 @@ export default Vue.extend({
     // called after vuex-persist has loaded
     version() {
       // custom A/B test flag
-      /*
-      // don't forget to clear out the old test group
-      if (this.testGroup == undefined) {
-        const groups = ['control']
+      const groups = ['control', 'control', 'control', 'quicktip']
+      if (!groups.includes(this.testGroup)) {
         const group = groups[Math.floor(Math.random() * groups.length)]
         this.setTestGroup(group)
         console.log('user assigned to test group', this.testGroup)
       }
       this.$ga.set('dimension5', this.testGroup)
       console.log('user is part of test group', this.testGroup)
-      */
     },
   },
 })

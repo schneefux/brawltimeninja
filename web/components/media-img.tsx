@@ -13,7 +13,7 @@ export default Vue.extend({
   functional: true,
   props: {
     clazz: {
-      type: String,
+      type: [String, Object],
       default: ''
     },
     ztyle: {

@@ -1,12 +1,22 @@
 <template>
   <div class="flex flex-col items-center">
+    <quick-tip
+      v-if="showQuickTip"
+      :player-tag="lastPlayers[0].tag"
+      @close="closeQuickTip"
+      class="mx-auto px-4 mt-4 max-w-2xl"
+    ></quick-tip>
     <media-img
       :path="randomHero"
       size="500"
-      clazz="mt-16 lg:mt-12vh h-32 md:h-48 lg:h-64"
+      :clazz="{
+        'mx-auto': true,
+        'hidden md:mt-12 md:block md:h-32 lg:h-48': showQuickTip,
+        'mt-16 h-32 md:h-48 lg:h-64': !showQuickTip,
+      }"
     ></media-img>
 
-    <div class="mt-10 lg:mt-8vh text-center mx-2">
+    <div class="mt-6 md:mt-10 text-center mx-2">
       <h1 class="text-4xl font-bold">
         How much time on Brawl Stars?
       </h1>
@@ -206,7 +216,7 @@
     </client-only>
 
     <div
-      v-show="currentEvents.length > 0"
+      v-if="currentEvents.length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'live_events'),
         once: true,
@@ -299,6 +309,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      closedQuickTip: false,
       notificationsAllowed: false,
       tag: undefined as string|undefined,
       loading: false,
@@ -342,12 +353,16 @@ export default Vue.extend({
         return true
       }
     },
+    showQuickTip(): boolean {
+      return this.testGroup == 'quicktip' && this.lastPlayers.length > 0 && this.closedQuickTip == false && this.loading == false
+    },
     ...mapState({
       player: (state: any) => state.player as Player,
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
       isApp: (state: any) => state.isApp as boolean,
+      testGroup: (state: any) => state.testGroup as string,
     }),
   },
   async asyncData({ $axios }) {
@@ -437,6 +452,10 @@ export default Vue.extend({
 
       this.$ga.event('player', 'search', 'success')
       this.$router.push(this.playerRoute)
+    },
+    closeQuickTip() {
+      this.closedQuickTip = true
+      this.$ga.event('home', 'close', 'quick-tip')
     },
     trackScroll(visible, element, section) {
       if (visible) {

@@ -6,7 +6,7 @@ export default Vue.extend({
   props: {
     battles: {
       type: Array as PropType<Battle[]>,
-      default: []
+      default: () => []
     },
     tease: {
       type: Boolean,

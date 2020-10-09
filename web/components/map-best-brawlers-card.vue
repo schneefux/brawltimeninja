@@ -144,7 +144,7 @@ export default Vue.extend({
       ['brawler_name'],
       ['battle_victory'],
       {
-        ...this.$clicker.defaultSlices('synergy'),
+        ...this.$clicker.defaultSlices('map'),
         ...(this.map != undefined ? {
           battle_event_map: [this.map],
         } : {}),
