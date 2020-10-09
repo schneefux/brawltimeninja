@@ -24,6 +24,7 @@
               v-for="entry in entries"
               :key="entry.id"
               :to="entry.link || ''"
+              :title="entry.title"
             >
               <li class="mt-1 mr-2 w-16 md:w-20 bg-gray-900 rounded-sm relative">
                 <media-img
@@ -35,6 +36,7 @@
                 <media-img
                   v-if="entry.icon"
                   :path="entry.icon"
+                  :alt="entry.title"
                   size="80"
                   clazz="h-6 md:h-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
                 />

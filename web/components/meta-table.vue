@@ -27,6 +27,7 @@
             <td>
               <nuxt-link
                 :to="entry.link || ''"
+                :title="entry.title"
                 class="flex items-center"
               >
                 <div class="mr-2 w-12 md:w-12 bg-gray-900 rounded-sm relative">
@@ -39,6 +40,7 @@
                   <media-img
                     v-if="entry.icon"
                     :path="entry.icon"
+                    :alt="entry.title"
                     size="80"
                     clazz="h-5 md:h-6 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-px"
                   />
