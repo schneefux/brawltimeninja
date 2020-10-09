@@ -381,6 +381,7 @@ export default Vue.extend({
       activeMapMeta,
     }
   },
+  fetchDelay: 0,
   async fetch() {
     const battleData = await this.$clicker.query('player.winrates.total',
       'battle',

@@ -75,15 +75,10 @@ export default Vue.extend({
     } as TrophiesRow))
   },
   watch: {
-    open() {
-      this.$fetch()
-    },
-    enableClickerStats(enable: boolean) {
-      if (enable) {
-        this.$fetch()
-      }
-    },
+    open: '$fetch',
+    enableClickerStats: '$fetch',
   },
+  fetchDelay: 0,
   render(h) {
     const brawler = this.brawler
     const open = this.open

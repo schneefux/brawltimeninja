@@ -124,18 +124,11 @@ export default Vue.extend({
     }),
   },
   watch: {
-    slices() {
-      this.$fetch()
-    },
-    measurement() {
-      this.$fetch()
-    },
-    loadAll(l: boolean) {
-      if (l) {
-        this.$fetch()
-      }
-    },
+    slices: '$fetch',
+    measurement: '$fetch',
+    loadAll: '$fetch',
   },
+  fetchDelay: 0,
   async fetch() {
     const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : [...this.measurements.map(m => measurementMap[m]), 'picks']
     const data = await this.$clicker.query('meta.starpower', 'starpower',
