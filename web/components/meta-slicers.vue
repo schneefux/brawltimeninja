@@ -91,7 +91,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { formatSI, metaStatMaps } from '../lib/util'
-import { parseISO, formatRelative } from 'date-fns'
+import { parseISO, formatDistanceToNow } from 'date-fns'
 
 // TODO add big brawler
 
@@ -151,7 +151,7 @@ export default Vue.extend({
       return metaStatMaps
     },
     lastUpdate(): string {
-      return formatRelative(parseISO(this.timestamp), new Date())
+      return formatDistanceToNow(parseISO(this.timestamp), { addSuffix: true })
     },
     selectedMeasurement: {
       get(): string {
