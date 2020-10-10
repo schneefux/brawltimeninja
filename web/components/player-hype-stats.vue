@@ -59,20 +59,23 @@
 
     <div class="section bigstat-wrapper">
       <dl
-        v-if="player.clubName !== undefined && player.clubName != ''"
+        v-if="player.club !== undefined"
         class="bigstat-container"
       >
-        <div class="bigstat-left text-5vw md:text-4xl!">
-          <div class="" style="margin-top: -0.125em">
+        <nuxt-link
+          :to="`/club/${player.club.tag}`"
+          class="block bigstat-left text-5vw md:text-4xl!"
+        >
+          <div style="margin-top: -0.125em">
             [
           </div>
           <dd class="mx-2 text-primary-light font-semibold text-center">
-            {{ player.clubName.replace(/ /g, '&nbsp;') }}
+            {{ player.club.name.replace(/ /g, '&nbsp;') }}
           </dd>
-          <div class="" style="margin-top: -0.125em">
+          <div style="margin-top: -0.125em">
             ]
           </div>
-        </div>
+        </nuxt-link>
         <dt class="bigstat-right bigstat-label text-4xl">
           Club
         </dt>

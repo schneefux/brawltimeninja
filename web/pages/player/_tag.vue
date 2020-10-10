@@ -77,7 +77,7 @@
           callback: (v, e) => trackScroll(v, e, 'lifetime'),
           once: true,
         }"
-        :stats="player.stats"
+        :player="player"
         :tease="!props.open"
       ></player-lifetime>
 

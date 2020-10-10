@@ -52,25 +52,8 @@ export interface Battle {
   }[][]
 }
 
-export interface PlayerLifetimeStats {
-  trophies: number;
-  highestTrophies: number;
-  powerPlayPoints: number;
-  highestPowerPlayPoints: number;
-  expLevel: number;
-  victories: number;
-  soloVictories: number;
-  duoVictories: number;
-}
-
 export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
-  tag: string;
-  name: string;
   hoursSpent: number;
-  trophies: number;
-  clubName: string;
-  qualifiedFromChampionshipChallenge: boolean;
-  stats: PlayerLifetimeStats;
   brawlers: Record<string, Brawler>
   battles: Battle[];
 }

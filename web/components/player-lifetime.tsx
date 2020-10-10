@@ -1,12 +1,12 @@
 import Vue, { PropType } from 'vue'
-import { PlayerLifetimeStats } from '~/model/Api'
 import { metaStatMaps } from '~/lib/util.ts'
+import { Player } from '~/model/Brawlstars'
 
 export default Vue.extend({
   functional: true,
   props: {
-    stats: {
-      type: Object as PropType<PlayerLifetimeStats>,
+    player: {
+      type: Object as PropType<Player>,
       required: true,
     },
     tease: {
@@ -15,7 +15,18 @@ export default Vue.extend({
     },
   },
   render(h, { props }) {
-    const stats = props.stats
+    const player = props.player
+    const stats = {
+      trophies: player.trophies,
+      highestTrophies: player.highestTrophies,
+      powerPlayPoints: player.powerPlayPoints,
+      highestPowerPlayPoints: player.highestPowerPlayPoints,
+      expLevel: player.expLevel,
+      victories: player['3vs3Victories'],
+      soloVictories: player.soloVictories,
+      duoVictories: player.duoVictories,
+    }
+
     const tease = props.tease
     return <dl
       class={{

@@ -386,13 +386,13 @@ export default Vue.extend({
       // agreeableness = 3v3 or solo
       // neuroticism = nervous player?
       const trophyCeiling = 8000 // last Brawler unlock
-      const difficulty = 1 + 4 * Math.min(trophyCeiling, this.player.stats.highestTrophies) / trophyCeiling
+      const difficulty = 1 + 4 * Math.min(trophyCeiling, this.player.highestTrophies) / trophyCeiling
       const brawlers = Object.values(this.player.brawlers)
       // calculate coefficient of variation for brawler trophies
       const brawlerTrophyAvg = brawlers.reduce((sum, b) => sum + b.highestTrophies, 0) / brawlers.length
       const brawlerTrophyStd = Math.sqrt(brawlers.reduce((sum, b) => sum + Math.pow(b.highestTrophies - brawlerTrophyAvg, 2), 0) / brawlers.length)
       const conscientious = 1 + 4 * (1 - brawlerTrophyStd / brawlerTrophyAvg)
-      const agreeable = 1 + 4 * this.player.stats.victories / (this.player.stats.victories + this.player.stats.soloVictories + this.player.stats.duoVictories)
+      const agreeable = 1 + 4 * this.player['3vs3Victories'] / (this.player['3vs3Victories'] + this.player.soloVictories + this.player.duoVictories)
 
       return {
         name: 'user',

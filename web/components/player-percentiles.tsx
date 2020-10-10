@@ -16,12 +16,12 @@ export default Vue.extend({
     // 2020-08-08 highest trophies
     const trophiesMu = 15390
     const trophiesSigma = 5433
-    const trophiesZ = (player.stats.highestTrophies - trophiesMu) / trophiesSigma
+    const trophiesZ = (player.highestTrophies - trophiesMu) / trophiesSigma
 
     // 2020-08-08 highest power play points only considering players with all brawlers
     const ppMu = 835
     const ppSigma = 229
-    const ppZ = ((player.stats.highestPowerPlayPoints || 0) - ppMu) / ppSigma
+    const ppZ = ((player.highestPowerPlayPoints || 0) - ppMu) / ppSigma
 
     // 2020-08-08 max highest brawler trophies
     const brawlerMu = 640
@@ -33,18 +33,18 @@ export default Vue.extend({
     // 2020-08-08
     const victoriesMu = 2577
     const victoriesSigma = 2940
-    const victoryZ = (player.stats.victories - victoriesMu) / victoriesSigma
+    const victoryZ = (player['3vs3Victories'] - victoriesMu) / victoriesSigma
 
     const soloMu = 437
     const soloSigma = 441
-    const soloZ = (player.stats.soloVictories - soloMu) / soloSigma
+    const soloZ = (player.soloVictories - soloMu) / soloSigma
 
     const duoMu = 698
     const duoSigma = 695
-    const duoZ = (player.stats.duoVictories - duoMu) / duoSigma
+    const duoZ = (player.duoVictories - duoMu) / duoSigma
 
     // 2020-08-08 championship challenge
-    const ccPercentile = player.qualifiedFromChampionshipChallenge ? 0.95 : 0.05
+    const ccPercentile = player.isQualifiedFromChampionshipChallenge ? 0.95 : 0.05
 
     // TODO create an endpoint?
     const allAchievements = [{

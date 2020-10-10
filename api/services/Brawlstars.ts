@@ -418,28 +418,13 @@ export default class BrawlstarsService {
 
     const hoursSpent = xpToHours(player.expPoints);
 
-    const data = {
+    return {
       ...player,
       hoursSpent,
-      // backwards compat
-      qualifiedFromChampionshipChallenge: player.isQualifiedFromChampionshipChallenge,
-      clubName: player.club === null ? '' : player.club!.name,
-      stats: {
-        trophies: player.trophies,
-        highestTrophies: player.highestTrophies,
-        powerPlayPoints: player.powerPlayPoints,
-        highestPowerPlayPoints: player.highestPowerPlayPoints,
-        expLevel: player.expLevel,
-        victories: player['3vs3Victories'],
-        soloVictories: player.soloVictories,
-        duoVictories: player.duoVictories,
-      },
       // overwrite brawlers
       brawlers,
       battles,
     } as Player;
-
-    return data;
   }
 
   public async getClubStatistics(tag: string) {
