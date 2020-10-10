@@ -60,7 +60,7 @@ export default Vue.extend({
           { team.map((mate) =>
             <nuxt-link
               key={mate.tag}
-              rel={mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1300 ? 'nofollow' : ''}
+              rel={mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1000 ? 'nofollow' : ''}
               to={`/player/${mate.tag}`}
               class={
                 'w-14 h-14 bg-gray-800 py-px relative overflow-hidden '
