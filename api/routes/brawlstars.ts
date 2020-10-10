@@ -36,6 +36,17 @@ router.get('/player/:tag', async (ctx, next) => {
   await next();
 });
 
+router.get('/club/:tag', async (ctx, next) => {
+  try {
+    ctx.body = await service.getClubStatistics(ctx.params.tag);
+    ctx.set('Cache-Control', 'public, max-age=180');
+  } catch (error) {
+    console.log(error);
+    ctx.throw(error.status, error.reason);
+  }
+  await next();
+});
+
 router.get('/events', async (ctx, next) => {
   try {
     ctx.body = await service.getAllEvents();

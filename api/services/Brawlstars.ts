@@ -1,4 +1,4 @@
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer } from '../model/Brawlstars';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, MapMetaMap } from '~/model/MetaEntry';
@@ -319,6 +319,9 @@ export default class BrawlstarsService {
     // official API: with hash, unofficial API: no hash
     // brawltime assumes no hash
     player.tag = player.tag.replace(/^#/, '');
+    if (player.club?.tag != undefined) {
+      player.club.tag = player.club.tag.replace(/^#/, '');
+    }
 
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
@@ -383,11 +386,7 @@ export default class BrawlstarsService {
 
       return {
         timestamp: new Date(Date.parse(isoDate)),
-        event: {
-          id: battle.event.id,
-          mode: battle.event.mode,
-          map: battle.event.map,
-        },
+        event: battle.event,
         result,
         victory,
         trophyChange: battle.battle.trophyChange,
@@ -407,33 +406,24 @@ export default class BrawlstarsService {
         .finally(() => console.timeEnd('post battles to clicker ' + tag));
     }
 
-    const brawlers = {} as { [id: string]: Brawler };
-    player.brawlers
+    const brawlers = player.brawlers
       .sort((b1, b2) => b2.trophies - b1.trophies)
-      .forEach((brawler) => {
-        brawlers[brawler.name === null ? 'nani' : brawlerId(brawler)] = { // FIXME
+      .reduce((brawlers, brawler) => ({
+        ...brawlers,
+        [brawler.name === null ? 'nani' : brawlerId(brawler)]: { // FIXME
+          ...brawler,
           name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
-          rank: brawler.rank,
-          trophies: brawler.trophies,
-          highestTrophies: brawler.highestTrophies,
-          power: brawler.power,
-        } as Brawler;
-      });
+        } as Brawler,
+      }), {} as Record<string, Brawler>);
 
     const hoursSpent = xpToHours(player.expPoints);
 
-    const avgProp = <K extends string>(prop: K) => <T extends Record<K, any>>(arr: T[]) => arr
-      .map((o) => o[prop])
-      .reduce((agg, cur) => agg + cur, 0)
-      / arr.length;
-
     const data = {
-      tag: player.tag,
-      name: player.name,
+      ...player,
       hoursSpent,
-      trophies: player.trophies,
-      clubName: player.club === null ? '' : player.club!.name,
+      // backwards compat
       qualifiedFromChampionshipChallenge: player.isQualifiedFromChampionshipChallenge,
+      clubName: player.club === null ? '' : player.club!.name,
       stats: {
         trophies: player.trophies,
         highestTrophies: player.highestTrophies,
@@ -444,10 +434,28 @@ export default class BrawlstarsService {
         soloVictories: player.soloVictories,
         duoVictories: player.duoVictories,
       },
+      // overwrite brawlers
       brawlers,
       battles,
     } as Player;
 
     return data;
+  }
+
+  public async getClubStatistics(tag: string) {
+    const club = await request<Club>(
+      'clubs/%23' + tag,
+      getApiUrl(tag),
+      'fetch_club',
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial },
+      1000,
+    )
+    console.log(club)
+    // official API: with hash, unofficial API: no hash
+    // brawltime assumes no hash
+    club.tag = club.tag.replace(/^#/, '')
+    club.members.forEach(m => m.tag = m.tag.replace(/^#/, ''))
+    return club
   }
 }

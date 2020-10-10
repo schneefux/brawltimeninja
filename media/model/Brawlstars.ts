@@ -96,3 +96,24 @@ export interface BattleLog {
   }[]
   paging: {}
 }
+
+export interface ClubMember {
+  tag: string
+  name: string
+  nameColor: string
+  trophies: number
+  icon: {
+    id: number
+  }
+}
+
+export interface Club {
+  tag: string
+  name: string
+  description: string
+  type: string // 'open'
+  badgeId: number
+  requiredTrophies: number
+  trophies: number
+  members: ClubMember[]
+}

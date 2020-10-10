@@ -1,4 +1,5 @@
-import { BattleMeasures, TrophiesRow } from "./Clicker"
+import { BattleMeasures } from "./Clicker"
+import { Player as BrawlstarsPlayer } from "./Brawlstars"
 
 export interface PlayerModeWinrates {
   [id: string]: {
@@ -14,12 +15,22 @@ export interface PlayerBrawlerWinrates {
   }
 }
 
+export interface StarPower {
+  id: number
+  name: string
+}
+
+export interface Gadget extends StarPower {
+}
+
 export interface Brawler {
   name: string;
   trophies: number;
   highestTrophies: number;
   power: number;
   rank: number;
+  starPowers: StarPower[];
+  gadgets: Gadget[];
 }
 
 export interface Battle {
@@ -52,7 +63,7 @@ export interface PlayerLifetimeStats {
   duoVictories: number;
 }
 
-export interface Player {
+export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
   tag: string;
   name: string;
   hoursSpent: number;
@@ -60,9 +71,7 @@ export interface Player {
   clubName: string;
   qualifiedFromChampionshipChallenge: boolean;
   stats: PlayerLifetimeStats;
-  brawlers: {
-    [id: string]: Brawler;
-  };
+  brawlers: Record<string, Brawler>
   battles: Battle[];
 }
 
