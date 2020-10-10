@@ -72,24 +72,26 @@
 
     <div class="mt-3 text-center">
       <details
-        ref="helpDropdown"
+        ref="help-dropdown"
         class="mx-6"
       >
         <summary>
           What is my tag?
         </summary>
         <div class="mt-2 card card--dark card__content">
-          <p class="font-semibold">Tap on your profile icon.</p>
+          <h2 class="card__header">How to find your tag</h2>
+          <p class="mt-2">Open the game.</p>
+          <p class="mt-1">Tap on your profile icon.</p>
           <img
             loading="lazy"
             src="~/assets/images/tag/tag-1.jpg"
-            class="mt-1 w-80 max-w-full"
+            class="px-8 mt-1 w-80 max-w-full"
           >
-          <p class="mt-3 font-semibold">The string starting with "#" is your tag.</p>
+          <p class="mt-3">The string starting with "#" is your tag.</p>
           <img
             loading="lazy"
             src="~/assets/images/tag/tag-2.jpg"
-            class="mt-1 w-80 max-w-full"
+            class="px-8 mt-1 w-80 max-w-full"
           >
         </div>
       </details>
@@ -424,8 +426,9 @@ export default Vue.extend({
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.$ga.event('player', 'search', 'error_invalid')
         this.error = 'This is not a tag'
-        this.$refs.helpDropdown.setAttribute('open', '')
-        this.$scrollTo(this.$refs.helpDropdown, 1000, { offset: -96 })
+        this.$refs['help-dropdown'].setAttribute('open', '')
+        // key events would cancel scroll
+        this.$scrollTo(this.$refs['help-dropdown'], 1000, { cancelable: false, offset: -300 })
         return
       }
 
