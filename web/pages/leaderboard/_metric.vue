@@ -6,7 +6,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4579727583"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
 
@@ -80,7 +80,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="5140154307"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
   </div>

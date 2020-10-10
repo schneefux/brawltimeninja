@@ -6,7 +6,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="9429125351"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
       <div style="height: 300px;" class="adswrapper ad-section w-full" slot="placeholder"></div>
     </client-only>
@@ -59,7 +59,7 @@
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
-        data-full-width-responsive="false"
+        data-full-width-responsive="no"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
@@ -189,7 +189,7 @@
       <adsense
         v-if="!isApp && player.battles.length > 0"
         data-ad-format="auto"
-        data-full-width-responsive="false"
+        data-full-width-responsive="no"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         id="ezoic-pub-ad-placeholder-102"
         data-ad-client="ca-pub-6856963757796636"
@@ -237,7 +237,7 @@
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
-        data-full-width-responsive="false"
+        data-full-width-responsive="no"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
         id="ezoic-pub-ad-placeholder-101"
         data-ad-client="ca-pub-6856963757796636"

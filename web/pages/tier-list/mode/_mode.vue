@@ -17,7 +17,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="2291234880"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
 
@@ -83,7 +83,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="2263314723"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
 
@@ -124,7 +124,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="8497550588"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
   </div>

@@ -121,7 +121,7 @@
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
-        data-full-width-responsive="false"
+        data-full-width-responsive="no"
         class="container flex justify-center"
         ins-class="w-screen md:w-full -mx-4"
         data-ad-client="ca-pub-6856963757796636"
@@ -206,7 +206,7 @@
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
-        data-full-width-responsive="false"
+        data-full-width-responsive="no"
         class="container flex justify-center"
         ins-class="w-screen md:w-full -mx-4"
         id="ezoic-pub-ad-placeholder-104"
@@ -264,7 +264,7 @@
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6736366415"
         data-ad-format="auto"
-        data-full-width-responsive
+        data-full-width-responsive="yes"
       />
     </client-only>
   </div>
