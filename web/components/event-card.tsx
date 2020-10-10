@@ -7,6 +7,7 @@ export default Vue.extend({
   name: 'EventCard',
   props: {
     mode: {
+      // camel case
       type: String,
       required: true
     },
@@ -14,12 +15,14 @@ export default Vue.extend({
       type: String,
       required: false
     },
-    id: { // enables map icon top right
+    id: {
+      // enables map icon top right
       type: String,
       required: false,
     },
     size: {
-      type: String, // class
+      // class
+      type: String,
       default: 'w-80 md:w-100',
     },
   },

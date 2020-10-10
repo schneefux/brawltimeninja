@@ -1,5 +1,5 @@
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, relativeTimeUntil } from '../lib/util'
+import { camelToKebab, metaStatMaps, relativeTimeUntil, slugify } from '../lib/util'
 import EventCard from '~/components/event-card'
 import { ActiveEvent } from '~/model/Api'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
@@ -48,7 +48,7 @@ export default Vue.extend({
       </p>,
       actions: () => <div class="flex justify-end">
         <nuxt-link
-          to={`/tier-list/map/${event.id}`}
+          to={`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`}
           class="card__action"
         >
           Open
@@ -88,6 +88,7 @@ export default Vue.extend({
       </div>,
     })
 
+    // starlist returns 'Solo Showdown' as 'Showdown'
     const eventCard = EventCard as any
     return <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
       { maps.map((map, index) =>

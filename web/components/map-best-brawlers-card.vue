@@ -56,7 +56,7 @@
     <template v-if="link" v-slot:actions>
       <div class="flex justify-end">
         <nuxt-link
-          :to="id != undefined ? `/tier-list/map/${id}` : `/tier-list/mode/${camelToKebab(mode)}`"
+          :to="id != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
           class="card__action"
         >
           Open
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { metaStatMaps, brawlerId, camelToKebab } from '../lib/util'
+import { metaStatMaps, brawlerId, camelToKebab, slugify } from '../lib/util'
 import { parseISO, formatDistance } from 'date-fns'
 
 interface Row {
@@ -95,6 +95,7 @@ export default Vue.extend({
       required: false
     },
     mode: {
+      // camel case
       type: String,
       required: true
     },
@@ -103,7 +104,7 @@ export default Vue.extend({
       required: false
     },
     id: {
-      type: String,
+      type: [Number, String],
       required: false
     },
   },
@@ -121,6 +122,9 @@ export default Vue.extend({
     },
     camelToKebab() {
       return camelToKebab
+    },
+    slugify() {
+      return slugify
     },
     endDateString(): string {
       if (this.endDate == undefined) {

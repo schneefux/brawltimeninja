@@ -2,6 +2,7 @@ import path from 'path'
 import axios from 'axios'
 
 const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
+const slugify = (str) => str.split(' ').join('-')
 
 export default {
   mode: 'universal',
@@ -170,12 +171,12 @@ export default {
 
       try {
         const events = await axios.get(`${process.env.API_URL}/api/events`)
-        Object.entries(events.data).forEach(([eventId, event]) => {
+        Object.values(events.data).forEach(event => {
           const modeRoute = `/tier-list/mode/${camelToKebab(event.mode)}`
           if (!routes.includes(modeRoute)) {
             routes.push(modeRoute)
           }
-          routes.push(`/tier-list/map/${eventId}`)
+          routes.push(`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`)
         })
       } catch (err) {
         console.error('error adding events to sitemap', err)

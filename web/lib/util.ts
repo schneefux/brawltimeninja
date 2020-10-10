@@ -6,8 +6,14 @@ import { BrawlerMetaStatistics, ActiveEvent } from "~/model/Api";
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
   s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+export const kebabToCamel = (s: string) =>
+  s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
+      .replace('-', '')
+      .replace('_', ''))
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 export const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
+export const slugify = (str: string) => str.split(' ').join('-')
+export const deslugify = (str: string) => str.split('-').join(' ')
 
 export function scaleMinMax(values: number[]) {
   const min = Math.min.apply(Math, values)
@@ -297,21 +303,22 @@ export interface MetaGridEntrySorted extends MetaGridEntry {
 }
 
 export function formatAsJsonLd(event: ActiveEvent) {
+  const url = `/tier-list/mode/${slugify(event.mode)})}/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    'name': `${formatMode(event.mode)} - ${event.map}`,
+    'name': `${event.mode} - ${event.map}`,
     'startDate': event.start,
     'endDate': event.end,
     'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'eventStatus': 'https://schema.org/EventScheduled',
-    'url': `/tier-list/map/${event.id}`,
-    'image': [`${process.env.mediaUrl}/tier-list/map/${event.id}.png`],
+    'url': url,
+    'image': [`${process.env.mediaUrl}/map/${event.id}.png`],
     'location': {
       '@type': 'VirtualLocation',
-      'url': `/tier-list/map/${event.id}`,
+      'url': url,
     },
-    'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
+    'description': `${event.map} is a Brawl Stars ${event.mode} map.`,
   }
 }
 

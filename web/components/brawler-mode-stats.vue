@@ -79,6 +79,7 @@ export default Vue.extend({
       required: true
     },
     mode: {
+      // camel case
       type: String,
       required: true
     },

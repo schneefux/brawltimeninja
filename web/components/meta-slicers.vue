@@ -52,6 +52,9 @@
     <p v-if="sample != undefined && sample > 0">
       Statistics are based on over {{ formatSI(sample) }} battles.
     </p>
+    <p v-if="timestamp != undefined">
+      Last updated {{ lastUpdate }}.
+    </p>
     <p
       v-if="sample != undefined && sampleMin != undefined && sample < sampleMin"
       class="text-red-400"
@@ -88,7 +91,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { formatSI, metaStatMaps } from '../lib/util'
-import { format } from 'path'
+import { parseISO, formatRelative } from 'date-fns'
 
 // TODO add big brawler
 
@@ -104,6 +107,10 @@ export default Vue.extend({
     },
     sample: {
       type: Number,
+      required: false
+    },
+    timestamp: {
+      type: String,
       required: false
     },
     sampleMin: {
@@ -142,6 +149,9 @@ export default Vue.extend({
     },
     metaStatMaps() {
       return metaStatMaps
+    },
+    lastUpdate(): string {
+      return formatRelative(parseISO(this.timestamp), new Date())
     },
     selectedMeasurement: {
       get(): string {

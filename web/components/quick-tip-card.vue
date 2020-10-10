@@ -24,7 +24,7 @@
       </li>
       <div class="flex items-center">
         <nuxt-link
-          :to="`/tier-list/map/${id}`"
+          :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
           class="card__action button--xs"
         >
           Open Tier List
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { brawlerId, capitalize, formatMode, metaStatMaps } from '../lib/util'
+import { brawlerId, camelToKebab, capitalize, formatMode, metaStatMaps, slugify } from '../lib/util'
 import { Player } from '../model/Api'
 
 interface Row {
@@ -51,6 +51,7 @@ export default Vue.extend({
       required: true,
     },
     mode: {
+      // camel case
       type: String,
       required: true
     },
@@ -121,6 +122,12 @@ export default Vue.extend({
     },
     capitalize() {
       return capitalize
+    },
+    camelToKebab() {
+      return camelToKebab
+    },
+    slugify() {
+      return slugify
     },
   },
 })

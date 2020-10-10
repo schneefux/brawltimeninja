@@ -36,7 +36,7 @@
       <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
         <div
           v-for="(map, index) in maps"
-          :key="map.id"
+          :key="map.map"
           :class="{ 'md:hidden': !showAllMaps && index >= 3 }"
           class="px-2"
         >
@@ -54,8 +54,8 @@
               </div>
               <div class="absolute bottom-0 right-0 mb-4 mr-2">
                 <nuxt-link
-                  :to="`/tier-list/map/${map.id}`"
-                  class="button button--md"
+                  :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
+                  class="card__action"
                 >
                   Open
                 </nuxt-link>
@@ -133,15 +133,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal } from '../../../lib/util'
-
-const kebabToCamel = (s: string) => {
-  return s.replace(/([-_][a-z])/ig, ($1) => {
-    return $1.toUpperCase()
-      .replace('-', '')
-      .replace('_', '');
-  })
-}
+import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal, kebabToCamel } from '~/lib/util'
+import { camelToKebab, slugify } from '../../../../lib/util'
 
 interface EventIdAndMap {
   id: number
@@ -212,9 +205,12 @@ export default Vue.extend({
     const modeName = formatMode(mode)
     const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_map'],
-      ['battle_event_id'],
+      ['battle_event_id', 'battle_event_map'],
       { battle_event_mode: [mode] },
-      { cache: 60*60*24 })
+      {
+        sort: { timestamp: 'desc' },
+        cache: 60*60*24,
+      })
 
     return {
       mode,
@@ -242,6 +238,12 @@ export default Vue.extend({
         measurements = [...measurements, 'rank1Rate']
       }
       return measurements
+    },
+    camelToKebab() {
+      return camelToKebab
+    },
+    slugify() {
+      return slugify
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

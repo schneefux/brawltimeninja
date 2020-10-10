@@ -56,7 +56,7 @@
             ztyle="max-height: 100%;"
           ></media-img>
           <router-link
-            :to="`/tier-list/map/${activeMap.id}`"
+            :to="`/tier-list/mode/${camelToKebab(activeMap.mode)}/map/${slugify(activeMap.map)}`"
             class="mx-auto button button--xs button--secondary"
           >
             Open
@@ -65,7 +65,7 @@
       </div>
       <div v-else class="mt-2">
         <router-link
-          :to="`/tier-list/mode/${mode}`"
+          :to="`/tier-list/mode/${camelToKebab(mode)}`"
           class="button button--xs button--secondary"
         >
           Open Tier List
@@ -88,6 +88,7 @@ import Vue, { PropType } from 'vue'
 import { formatMode, metaStatMaps, getBestBrawlers, capitalize, brawlerId } from '~/lib/util'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
 import { Brawler, Battle } from '~/model/Api'
+import { camelToKebab, slugify } from '../lib/util'
 
 interface Row {
   picks: number
@@ -234,6 +235,12 @@ export default Vue.extend({
     },
     capitalize() {
       return capitalize
+    },
+    camelToKebab() {
+      return camelToKebab
+    },
+    slugify() {
+      return slugify
     },
   },
 })
