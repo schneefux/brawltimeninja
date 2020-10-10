@@ -59,7 +59,7 @@
 
     <div class="section bigstat-wrapper">
       <dl
-        v-if="player.club !== undefined"
+        v-if="player.club.tag != undefined"
         class="bigstat-container"
       >
         <nuxt-link
