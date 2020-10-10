@@ -191,7 +191,7 @@ export default Vue.extend({
     return <brawlerCard
       scopedSlots={slots}
       title={capitalizeWords(brawler.name.toLowerCase()) || ''}
-      brawler={brawler.id}
+      brawler={brawler.name}
     />
   }
 })
