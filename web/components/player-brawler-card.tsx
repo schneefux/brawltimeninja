@@ -7,6 +7,7 @@ import PowerPointIcon from '~/assets/images/icon/powerpoint_optimized.png'
 import StarpowerIcon from '~/assets/images/icon/starpower_optimized.png'
 import { Brawler } from '~/model/Api'
 import { TrophiesRow } from '~/model/Clicker'
+import { capitalizeWords } from '~/lib/util'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -189,7 +190,7 @@ export default Vue.extend({
     const brawlerCard = BrawlerCard as any
     return <brawlerCard
       scopedSlots={slots}
-      title={brawler.name || ''}
+      title={capitalizeWords(brawler.name.toLowerCase()) || ''}
       brawler={brawler.id}
     />
   }
