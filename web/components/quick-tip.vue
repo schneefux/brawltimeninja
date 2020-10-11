@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="!$fetchState.pending"
+    v-if="!$fetchState.pending"
     class="w-full"
   >
     <div class="card bg-gray-800 card__content relative">
@@ -11,9 +11,16 @@
         &times;
       </button>
 
-      <p class="card__header text-primary-lighter">
-        {{ player.name }}
-      </p>
+      <nuxt-link
+        :to="`/player/${player.tag}`"
+        class="card__header"
+      >
+        <media-img
+          :path="`/avatars/${player.icon.id}`"
+          clazz="h-8 inline mr-1"
+        ></media-img>
+        <span class="text-primary-lighter">{{ player.name }}</span>
+      </nuxt-link>
 
       <div class="flex justify-between items-center">
         <p class="text-sm">
