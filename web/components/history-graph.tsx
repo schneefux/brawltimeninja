@@ -1,3 +1,4 @@
+import { differenceInWeeks, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { TrophiesRow } from '~/model/Clicker'
 
@@ -10,8 +11,12 @@ export default Vue.extend({
     },
   },
   render(h, { props }) {
-    const dates = props.history.map(({ timestamp }) => timestamp as unknown as string)
+    const dates = props.history.map(({ timestamp }) => timestamp as unknown as string).sort()
     const trophies = props.history.map(({ trophies }) => trophies)
+
+    const biweekly = 1000*60*60*24*14
+    const monthly = biweekly * 2
+    const interval = dates.length > 0 && differenceInWeeks(new Date(), parseISO(dates[0])) > 8 ? monthly : biweekly
 
     const traces = [{
       x: dates,
@@ -32,7 +37,7 @@ export default Vue.extend({
         tickcolor: 'rgba(255, 255, 255, 0.75)',
         tickmode: 'linear',
         tick0: '2020-07-12', // season start
-        dtick: 1000*60*60*24*14, // 2 weeks
+        dtick: interval,
         ticklen: 3,
         tickangle: 0,
       },

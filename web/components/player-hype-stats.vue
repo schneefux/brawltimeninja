@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative">
     <div class="section items-center justify-center flex flex-wrap">
       <div class="mx-auto md:mx-0 flex">
         <dl>
@@ -55,6 +55,27 @@
           </dt>
         </div>
       </dl>
+    </div>
+
+    <div class="absolute top-0 left-0 z-0 -mt-2 md:-mt-8">
+      <button
+        v-if="!triggerShare"
+        @click="triggerShare = true"
+        class="button button--secondary"
+      >Share</button>
+      <span
+        v-if="triggerShare"
+        class="italic"
+      >Generating your Sharepic...</span>
+      <lazy-player-sharepic
+        v-if="triggerShare"
+        :player="player"
+        :win-rate="winRate"
+        :total-battles="totalBattles"
+        :account-rating="accountRating"
+        :history="history"
+        @done="triggerShare = false"
+      ></lazy-player-sharepic>
     </div>
 
     <div class="section bigstat-wrapper">
@@ -209,7 +230,7 @@ export default Vue.extend({
     },
     hoursLeaderboard: {
       type: Array as PropType<LeaderboardEntry[]>,
-      default: []
+      default: () => []
     },
     battleTotals: {
       type: Object as PropType<BattleTotalRow>,
@@ -226,15 +247,13 @@ export default Vue.extend({
       ratingHelpOpen: false,
       recentHelpOpen: false,
       history: [] as TrophiesRow[],
+      triggerShare: false,
     }
   },
   watch: {
-    enableClickerStats(enable: boolean) {
-      if (enable) {
-        this.$fetch()
-      }
-    },
+    enableClickerStats: '$fetch',
   },
+  fetchDelay: 0,
   async fetch() {
     if (!this.enableClickerStats) {
       return
@@ -288,6 +307,11 @@ export default Vue.extend({
         hoursTimer()
       })
     }
+  },
+  methods: {
+    share() {
+      this.triggerShare = true
+    },
   },
   computed: {
     rank(): number|undefined {
