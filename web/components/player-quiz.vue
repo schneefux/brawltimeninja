@@ -392,7 +392,9 @@ export default Vue.extend({
       const brawlerTrophyAvg = brawlers.reduce((sum, b) => sum + b.highestTrophies, 0) / brawlers.length
       const brawlerTrophyStd = Math.sqrt(brawlers.reduce((sum, b) => sum + Math.pow(b.highestTrophies - brawlerTrophyAvg, 2), 0) / brawlers.length)
       const conscientious = 1 + 4 * (1 - brawlerTrophyStd / brawlerTrophyAvg)
-      const agreeable = 1 + 4 * this.player['3vs3Victories'] / (this.player['3vs3Victories'] + this.player.soloVictories + this.player.duoVictories)
+      const teamBattles = this.player['3vs3Victories'] * 2 // 50% expected win rate
+      const soloBattles = this.player.soloVictories * 10 // 10% expected win rate
+      const agreeable = 1 + 4 * teamBattles / (teamBattles + soloBattles)
 
       return {
         name: 'user',
