@@ -101,4 +101,10 @@ router.get(`/modes/:name/background${EXT}`, async (ctx, next) => {
   await next();
 });
 
+router.get(`/avatars/:id${EXT}`, async (ctx, next) => {
+  const buffer = await service.getAvatarIcon(ctx.params.id, ctx.req.headers.accept || '');
+  await respond(ctx, buffer);
+  await next();
+});
+
 export default router.routes();

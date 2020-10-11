@@ -78,3 +78,10 @@ export interface StarlistMap {
   };
   gameMode: StarlistMode;
 }
+
+export interface StarlistIcon {
+  id: number;
+  imageUrl: string;
+  imageUrl2: string; // low-res
+  brawler: number|null;
+}

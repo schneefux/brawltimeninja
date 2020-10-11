@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
-import { StarlistBrawler, StarlistMap, StarlistMode } from '~/model/Starlist';
+import { StarlistBrawler, StarlistIcon, StarlistMap, StarlistMode } from '~/model/Starlist';
 import { BrawlerData, DataSkill, DataCharacter, DataCard, DataAccessory } from '~/model/Media';
 import { brawlerId } from '../lib/util';
 
@@ -366,6 +366,32 @@ export default class MediaService {
     }
   }
 
+  public async getAvatarIcon(id: string, accept: string): Promise<Buffer|null> {
+    let icons: Record<string, StarlistIcon>;
+
+    try {
+      icons = (await this.getStarlistIcons()).player;
+    } catch(err) {
+      console.log('Icons API error: ' + err);
+      return null;
+    }
+
+    const icon = icons[id]
+    if (icon == undefined) {
+      console.log('Icon not found (starlist): ' + id);
+      return null;
+    }
+
+    const url = icon.imageUrl;
+    try {
+      return await fetch(url, { headers: { accept } })
+        .then(res => res.buffer());
+    } catch (err) {
+      console.log('Icon fetch error: ' + err);
+      return null;
+    }
+  }
+
   private getStarlistBrawlers(): Promise<{ list: StarlistBrawler[] }> {
     return request(starlistUrl + '/brawlers');
   }
@@ -380,5 +406,9 @@ export default class MediaService {
 
   private getStarlistModes(): Promise<{ list: StarlistMode[] }> {
     return request(starlistUrl + '/gamemodes');
+  }
+
+  private getStarlistIcons(): Promise<{ player: Record<string, StarlistIcon> }> {
+    return request(starlistUrl + '/icons');
   }
 }
