@@ -65,17 +65,8 @@ export default class MediaService {
       console.log('Brawler avatar not found (local): ' + name);
     }
 
-    let brawlers: StarlistBrawler[];
-    try {
-      brawlers = (await this.getStarlistBrawlers()).list;
-    } catch (err) {
-      console.log('Brawler avatar API error: ' + err);
-      return null;
-    }
-
-    const convert = (name: string) => name.toLowerCase().replace(/[^a-z]/g, '');
-    const brawler = brawlers.find(b => convert(b.name) == convert(name));
-    if (brawler == undefined) {
+    const brawler = await this.getStarlistBrawler(name)
+    if (brawler == null) {
       console.log('Brawler avatar not found (starlist): ' + name);
       return null;
     }
@@ -158,6 +149,23 @@ export default class MediaService {
     }), {} as { [key: string]: string })
     const mainDescription = getSkillDescription(mainCard, mainSkill)
     const superDescription = getSkillDescription(superCard, superSkill)
+
+    // TODO values in starpower/gadget descriptions
+    // need custom formatting based on some type attribute (implemented client-side)
+    const brawler = await this.getStarlistBrawler(name)
+    if (brawler != null) {
+      const starlistStarpowerDescriptions = brawler.starPowers.reduce((d, s) => ({
+        ...d,
+        [s.name.toUpperCase()]: s.description,
+      }), {} as Record<string, string>)
+      Object.assign(starpowerDescriptions, starlistStarpowerDescriptions)
+
+      const starlistGadgetDescriptions = brawler.gadgets.reduce((d, g) => ({
+        ...d,
+        [g.name.toUpperCase()]: g.description,
+      }), {} as Record<string, string>)
+      Object.assign(gadgetDescriptions, starlistGadgetDescriptions)
+    }
 
     return {
       id,
@@ -410,5 +418,18 @@ export default class MediaService {
 
   private getStarlistIcons(): Promise<{ player: Record<string, StarlistIcon> }> {
     return request(starlistUrl + '/icons');
+  }
+
+  private async getStarlistBrawler(name: string): Promise<StarlistBrawler|null> {
+    let brawlers: StarlistBrawler[];
+    try {
+      brawlers = (await this.getStarlistBrawlers()).list;
+    } catch (err) {
+      console.log('Brawler API error: ' + err);
+      return null;
+    }
+
+    const convert = (name: string) => name.toLowerCase().replace(/[^a-z]/g, '');
+    return brawlers.find(b => convert(b.name) == convert(name)) || null;
   }
 }
