@@ -33,7 +33,11 @@
                 :title="member.name"
                 class="flex items-center"
               >
-                {{ member.name }}
+                <media-img
+                  :path="`/avatars/${member.icon.id}`"
+                  clazz="h-8 mr-1"
+                ></media-img>
+                <span>{{ member.name }}</span>
               </nuxt-link>
             </th>
             <td>
