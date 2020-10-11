@@ -57,7 +57,7 @@
       </dl>
     </div>
 
-    <div class="absolute top-0 left-0 z-0 -mt-2 md:-mt-8">
+    <div class="absolute w-16 top-0 left-0 z-0 -mt-2 md:-ml-8">
       <button
         v-if="!triggerShare"
         @click="triggerShare = true"

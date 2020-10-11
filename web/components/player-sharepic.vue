@@ -40,7 +40,7 @@
           </p>
 
           <div class="mt-1 flex text-3xl">
-            <span class="w-20 text-center text-secondary font-bold">
+            <span class="w-24 text-right text-secondary font-bold">
               {{ Math.floor(player.hoursSpent) }}
             </span>
             <span class="ml-2">
@@ -48,8 +48,25 @@
             </span>
           </div>
 
-          <div class="mt-1 flex">
-            <span class="w-20 text-center text-3xl text-secondary font-bold">
+          <div class="flex text-3xl">
+            <span class="w-24 text-right text-secondary font-bold">
+              {{ Math.floor(player.trophies) }}
+            </span>
+            <span class="ml-2">
+              Trophies
+            </span>
+          </div>
+
+          <div v-if="history.length > 1" class="mt-2 -ml-4 h-28 w-80">
+            <history-graph
+              :history="history"
+            ></history-graph>
+          </div>
+        </div>
+
+        <div class="w-1/2 pl-1">
+          <div class="w-full mt-1 flex justify-center">
+            <span class="text-3xl text-secondary font-bold">
               {{ Math.floor(winRate * 100) }}%
             </span>
             <div class="ml-2 flex flex-col justify-center items-center">
@@ -62,22 +79,6 @@
             </div>
           </div>
 
-          <div v-if="history.length > 1" class="mt-2 -ml-4 h-28 w-80">
-            <history-graph
-              :history="history"
-            ></history-graph>
-          </div>
-        </div>
-
-        <div class="w-1/2 pl-1">
-          <div class="flex text-3xl">
-            <span class="text-secondary font-bold">
-              {{ Math.floor(player.trophies) }}
-            </span>
-            <span class="ml-2">
-              Trophies
-            </span>
-          </div>
 
           <div class="mt-1">
             <span class="text-lg">Best Brawlers:</span>
@@ -151,15 +152,15 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    const content = this.$refs['sharepic']
+    const content = this.$refs['sharepic'] as HTMLElement
     const canvas = await html2canvas(content, {
       // fixes image loading from media domain
       useCORS: true,
       scale: 2,
     })
 
-    const blob = await new Promise<Blob>((res, rej) => canvas.toBlob(res)!)
-    const files = [blob]
+    const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
+    const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
     if ((<any>navigator).canShare && (<any>navigator).canShare({ files })) {
       await navigator.share({
         files,
