@@ -11,6 +11,7 @@ export const kebabToCamel = (s: string) =>
       .replace('-', '')
       .replace('_', ''))
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+export const decapitalizeFirstLetter = (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
 export const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
 export const slugify = (str: string) => str.split(' ').join('-')
 export const deslugify = (str: string) => str.split('-').join(' ')

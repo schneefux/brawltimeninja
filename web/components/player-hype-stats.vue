@@ -196,6 +196,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
 import { Player, LeaderboardEntry } from '../model/Api'
 import { TrophiesRow } from '../model/Clicker'
 import { BattleTotalRow } from './player-battles-stats.vue'
@@ -209,10 +210,6 @@ export default Vue.extend({
     hoursLeaderboard: {
       type: Array as PropType<LeaderboardEntry[]>,
       default: []
-    },
-    totalBrawlers: {
-      type: Number,
-      required: true
     },
     battleTotals: {
       type: Object as PropType<BattleTotalRow>,
@@ -383,6 +380,9 @@ export default Vue.extend({
         },
       }
     },
+    ...mapState({
+      totalBrawlers: (state: any) => state.totalBrawlers as number,
+    })
   },
 })
 </script>

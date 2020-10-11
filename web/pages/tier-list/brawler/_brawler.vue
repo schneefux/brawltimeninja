@@ -106,11 +106,8 @@
 
     <div class="section">
       <brawler-active-events
-        :active-events="currentEvents"
-        :map-meta="mapMeta"
-        :brawler-id="brawlerId"
         :show-all-maps="showAllMaps"
-        :total-brawlers="totalBrawlers"
+        :brawler-name="brawlerName"
       ></brawler-active-events>
 
       <div class="mt-1 w-full flex justify-end">
@@ -145,7 +142,6 @@
     <div class="section">
       <brawler-trophy-graphs
         :brawler-name="brawlerName"
-        :total-brawlers="totalBrawlers"
       ></brawler-trophy-graphs>
 
       <p class="mt-4">
@@ -181,7 +177,6 @@
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
         :show-all-modes="showAllModes"
-        :total-brawlers="totalBrawlers"
       ></brawler-modes-stats>
 
       <p class="mt-2">
@@ -223,17 +218,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { MetaInfo } from 'vue-meta'
 import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
 import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
 import { BrawlerStatisticsRows } from '../../../model/Clicker'
 import { ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
 
 export default Vue.extend({
-  name: 'BrawlerPage',
-  head() {
-    const description = `${(<any>this).brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${(<any>this).brawlerName} with win rate and pick rates for all modes.`
+  head(): MetaInfo {
+    const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
     return {
-      title: `${(<any>this).brawlerName} Statistics`,
+      title: `${this.brawlerName} Statistics`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -244,8 +239,6 @@ export default Vue.extend({
     return {
       brawlerId: '',
       brawlerName: '',
-      currentEvents: [] as ActiveEvent[],
-      mapMeta: {} as MapMetaMap,
       showAllModes: false,
       showAllMaps: false,
       capitalize,
@@ -254,19 +247,14 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers as number,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ params, $axios, error }) {
+  async asyncData({ params }) {
     const brawlerId = params.brawler
-    const activeEvents = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active').catch(() => ({ current: [], upcoming: [] }))
-    const mapMeta = await $axios.$get<MapMetaMap>('/api/meta/map').catch(() => ({}))
     return {
       brawlerId,
       brawlerName: capitalizeWords(brawlerId.replace(/__/g, '. ').replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
-      currentEvents: activeEvents.current,
-      mapMeta,
     }
   },
   methods: {

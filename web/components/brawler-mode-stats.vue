@@ -49,6 +49,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
 import { metaStatMaps, camelToKebab } from '../lib/util';
 import { ModeMetaMap, MapMetaMap, MapMeta, ModeMeta } from '../model/MetaEntry';
 
@@ -83,10 +84,6 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    totalBrawlers: {
-      type: Number,
-      required: true
-    },
   },
   data() {
     return {
@@ -96,6 +93,8 @@ export default Vue.extend({
       mapTotals: [] as MapRow[],
     }
   },
+  fetchDelay: 0,
+  fetchOnServer: false,
   async fetch() {
     // TODO use brawler ID
 
@@ -158,6 +157,9 @@ export default Vue.extend({
     metaStatMaps() {
       return metaStatMaps
     },
+    ...mapState({
+      totalBrawlers: (state: any) => state.totalBrawlers as number,
+    })
   },
 });
 </script>

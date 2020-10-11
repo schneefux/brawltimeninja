@@ -36,7 +36,6 @@
     <div class="section leading-tight text-center">
       <player-hype-stats
         :player="player"
-        :total-brawlers="totalBrawlers"
         :hours-leaderboard="hoursLeaderboard"
         :enable-clicker-stats="enableClickerStats"
         :battle-totals="battleTotals"
@@ -331,7 +330,6 @@ export default Vue.extend({
     },
     ...mapState({
       player: (state: any) => state.player,
-      totalBrawlers: (state: any) => state.totalBrawlers,
       installBannerDismissed: (state: any) => state.installBannerDismissed as boolean,
       isApp: (state: any) => state.isApp as boolean,
     }),

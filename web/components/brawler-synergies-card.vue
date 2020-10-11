@@ -95,6 +95,8 @@ export default Vue.extend({
       return metaStatMaps
     },
   },
+  fetchDelay: 0,
+  fetchOnServer: false,
   async fetch() {
     // TODO use brawler_id
 

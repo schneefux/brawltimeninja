@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { decapitalizeFirstLetter } from '../lib/util'
 import { ActiveEvent, CurrentAndUpcomingEvents, Player } from '../model/Api'
 
 export default Vue.extend({
@@ -79,10 +80,6 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    function decapitalizeFirstLetter(str: string) {
-      return str.charAt(0).toLowerCase() + str.slice(1);
-    }
-
     this.player = await this.$axios.$get('/api/player/' + this.playerTag) as Player
 
     const modePopularity = this.player.battles.reduce((map, b) => ({

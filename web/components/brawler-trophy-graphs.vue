@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
 import { BrawlerStatisticsRows } from '~/model/Clicker'
 
 interface Row {
@@ -96,10 +97,6 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    totalBrawlers: {
-      type: Number,
-      required: true
-    },
   },
   data() {
     return {
@@ -107,6 +104,8 @@ export default Vue.extend({
       totals: [] as Row[],
     }
   },
+  fetchDelay: 0,
+  fetchOnServer: false,
   async fetch() {
     const brawlerData = await this.$clicker.query<Row>('meta.brawler.by-trophies-widget', 'map',
       ['brawler_trophyrange'],
@@ -252,6 +251,9 @@ export default Vue.extend({
         options: trophyGraphOptions,
       }
     },
+    ...mapState({
+      totalBrawlers: (state: any) => state.totalBrawlers as number,
+    })
   }
 })
 </script>

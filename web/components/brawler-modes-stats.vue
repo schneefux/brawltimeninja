@@ -15,7 +15,6 @@
         :mode="mode"
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
-        :total-brawlers="totalBrawlers"
       ></brawler-mode-stats>
     </lazy>
   </div>
@@ -37,10 +36,6 @@ export default Vue.extend({
     showAllModes: {
       type: Boolean,
       default: false
-    },
-    totalBrawlers: {
-      type: Number,
-      required: true
     },
   },
   data() {
