@@ -12,16 +12,15 @@
     </client-only>
 
     <div
-      class="section-heading"
+      class="section-heading relative"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
         once: true,
       }"
     >
       <media-img
-        v-if="Object.keys(player.brawlers).length > 0"
-        :path="'/brawlers/' + topBrawlerId + '/model'"
-        clazz="absolute w-1/3 md:w-1/6 mr-2 md:mr-10 right-0 z-0 opacity-25"
+        :path="`/avatars/${player.icon.id}`"
+        clazz="absolute w-16 md:w-24 lg:w-32 xl:w-40 right-0 z-0"
       ></media-img>
       <h1 class="text-4xl font-semibold relative z-10">
         Statistics for
