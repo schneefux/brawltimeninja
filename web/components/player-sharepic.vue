@@ -125,6 +125,7 @@ import Vue, { PropType } from 'vue'
 import html2canvas from 'html2canvas'
 import { Player } from '../model/Brawlstars'
 import { TrophiesRow } from '../model/Clicker'
+import { Brawler } from '../model/Api'
 
 export default Vue.extend({
   props: {
@@ -176,7 +177,7 @@ export default Vue.extend({
     this.$ga.event('profile', 'click', 'share')
   },
   computed: {
-    bestBrawlers() {
+    bestBrawlers(): Brawler[] {
       return Object.entries(this.player.brawlers)
         .map(([id, brawler]) => ({
           ...brawler,
