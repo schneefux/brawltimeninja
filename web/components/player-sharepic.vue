@@ -151,18 +151,14 @@ export default Vue.extend({
       required: true
     },
   },
-  data() {
-    return {
-      openImageHandler: undefined as any,
-    }
-  },
   mounted() {
-    let w: Window
+    let w = null as Window|null
     if ((<any>navigator).canShare == undefined) {
       // Safari needs sync click event handler to open tab
       w = window.open('', '_blank')
-      w.document.write('Generating your Sharepic, please wait a few seconds...')
+      w!.document.write('Generating your Sharepic, please wait a few seconds...')
     }
+
     this.shareImage(w)
   },
   computed: {
@@ -179,7 +175,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    async shareImage(w: Window|undefined) {
+    async shareImage(w: Window|null) {
       const content = this.$refs['sharepic'] as HTMLElement
       const canvas = await html2canvas(content, {
         // fixes image loading from media domain
@@ -199,8 +195,8 @@ export default Vue.extend({
       } else {
         const image = new Image()
         image.src = canvas.toDataURL()
-        w.document.open() // clear loading message
-        w.document.write(image.outerHTML)
+        w!.document.open() // clear loading message
+        w!.document.write(image.outerHTML)
       }
 
       this.$emit('done')

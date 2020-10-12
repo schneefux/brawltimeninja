@@ -229,14 +229,14 @@ export default Vue.extend({
     measurements(): string[] {
       let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
       // all 3v3: star player
-      if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.event.mode)) {
+      if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.mode)) {
         measurements = [...measurements, 'starRate']
       }
       // all 3v3 except bounty: duration
-      if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(this.event.mode)) {
+      if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(this.mode)) {
         measurements = [...measurements, 'duration']
       }
-      if (this.event.mode.endsWith('howdown')) {
+      if (this.mode.endsWith('howdown')) {
         measurements = [...measurements, 'rank1Rate']
       }
       return measurements
