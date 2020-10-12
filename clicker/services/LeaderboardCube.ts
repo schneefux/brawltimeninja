@@ -45,7 +45,7 @@ export default class LeaderboardCube extends MaterializedCube {
   // this is allowed because exp & victories are increasing counters
   // `any` name will update the name over time
   measuresDefinition = stripIndent`
-    timestamp DateTime,
+    timestamp SimpleAggregateFunction(max, DateTime),
     player_name SimpleAggregateFunction(any, String),
     player_exp_points SimpleAggregateFunction(max, UInt32),
     player_3vs3_victories SimpleAggregateFunction(max, UInt32),
@@ -53,7 +53,7 @@ export default class LeaderboardCube extends MaterializedCube {
     player_duo_victories SimpleAggregateFunction(max, UInt32)
   `
   measuresQuery = stripIndent`
-    MAX(timestamp),
+    MAX(timestamp) as timestamp,
     any(player_name) as player_name,
     MAX(player_exp_points) as player_exp_points,
     MAX(player_3vs3_victories) as player_3vs3_victories,

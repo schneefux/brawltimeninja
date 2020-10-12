@@ -44,10 +44,10 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
   }
 
   measuresDefinition = stripIndent`
-    timestamp Date,
+    timestamp SimpleAggregateFunction(max, Date),
     player_name SimpleAggregateFunction(any, String),
     brawler_name SimpleAggregateFunction(any, String),
-    brawler_highest_trophies SimpleAggregateFunction(MAX, UInt16)
+    brawler_highest_trophies SimpleAggregateFunction(max, UInt16)
   `
   measuresQuery = stripIndent`
     MAX(timestamp) as timestamp,
