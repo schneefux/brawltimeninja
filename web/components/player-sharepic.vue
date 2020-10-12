@@ -151,15 +151,37 @@ export default Vue.extend({
       required: true
     },
   },
-  mounted() {
-    let w = null as Window|null
-    if ((<any>navigator).canShare == undefined) {
-      // Safari needs sync click event handler to open tab
-      w = window.open('', '_blank')
-      w!.document.write('Generating your Sharepic, please wait a few seconds...')
+  async mounted() {
+    const content = this.$refs['sharepic'] as HTMLElement
+    const canvas = await html2canvas(content, {
+      // fixes image loading from media domain
+      useCORS: true,
+      scale: 2,
+    })
+
+    const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
+    const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
+    if ((<any>navigator).canShare != undefined && (<any>navigator).canShare({ files })) {
+      await navigator.share({
+        files,
+        url: window.location,
+      } as any)
+      this.$emit('done')
+      this.$ga.event('profile', 'click', 'share')
+    } else {
+      let w = window.open('', '_blank')
+      if (w == null) {
+        // opening a window from async is blocked in Safari
+        w = window
+      }
+
+      const image = new Image()
+      image.src = canvas.toDataURL()
+      w!.document.write(image.outerHTML)
     }
 
-    this.shareImage(w)
+    this.$emit('done')
+    this.$ga.event('profile', 'click', 'share')
   },
   computed: {
     bestBrawlers(): Brawler[] {
@@ -172,35 +194,6 @@ export default Vue.extend({
     },
     mediaUrl(): string {
       return process.env.mediaUrl!
-    },
-  },
-  methods: {
-    async shareImage(w: Window|null) {
-      const content = this.$refs['sharepic'] as HTMLElement
-      const canvas = await html2canvas(content, {
-        // fixes image loading from media domain
-        useCORS: true,
-        scale: 2,
-      })
-
-      const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
-      const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
-      if ((<any>navigator).canShare != undefined && (<any>navigator).canShare({ files })) {
-        await navigator.share({
-          files,
-          url: window.location,
-        } as any)
-        this.$emit('done')
-        this.$ga.event('profile', 'click', 'share')
-      } else {
-        const image = new Image()
-        image.src = canvas.toDataURL()
-        w!.document.open() // clear loading message
-        w!.document.write(image.outerHTML)
-      }
-
-      this.$emit('done')
-      this.$ga.event('profile', 'click', 'share')
     },
   },
 })
