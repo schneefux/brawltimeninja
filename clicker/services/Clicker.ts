@@ -3,14 +3,13 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, PlayerMetaRow, PlayerModeMetaRow, PlayerBrawlerMetaRow, BattleMeasures, LeaderboardRow, BrawlerLeaderboardRow, PlayerWinRatesRows } from '~/model/Clicker';
-import { sloppyParseFloat, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
+import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
+import { idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
 import LeaderboardCube from './LeaderboardCube';
 import BrawlerLeaderboardCube from './BrawlerLeaderboardCube';
-import { stripIndent } from 'common-tags';
 import SynergyMetaCube from './SynergyCube';
 import PlayerBrawlerCube from './PlayerBrawlerCube';
 import PlayerBattleCube from './PlayerBattleCube';
@@ -387,7 +386,7 @@ export default class ClickerService {
 
     const rows = await this.leaderboardCube.query(
       'leaderboard',
-      [metricMeasure, 'player_name'],
+      [metricMeasure, 'player_name', 'player_icon_id'],
       ['player_id'],
       {
         'timestamp': [formatClickhouse(oneWeekAgo)],
@@ -400,6 +399,7 @@ export default class ClickerService {
       name: r.player_name,
       tag: idToTag(r.player_id as string).replace('#', ''),
       id: r.player_id,
+      icon: r.player_icon_id,
       [metric]: r[metricMeasure],
     }))
   }
@@ -435,6 +435,7 @@ export default class ClickerService {
       brawlerName: r.brawler_name,
       tag: idToTag(r.player_id as string).replace('#', ''),
       id: r.player_id,
+      icon: r.player_icon_id,
       [metric]: r[metricMeasure],
     }))
   }

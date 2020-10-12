@@ -39,6 +39,7 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
   measures = {
     'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
     'player_name': 'any(player_name)',
+    'player_icon_id': 'any(player_icon_id)',
     'brawler_name': 'any(brawler_name)',
     'brawler_highest_trophies': 'MAX(brawler_highest_trophies)',
   }
@@ -46,12 +47,14 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
   measuresDefinition = stripIndent`
     timestamp SimpleAggregateFunction(max, Date),
     player_name SimpleAggregateFunction(any, String),
+    player_icon_id SimpleAggregateFunction(any, UInt32),
     brawler_name SimpleAggregateFunction(any, String),
     brawler_highest_trophies SimpleAggregateFunction(max, UInt16)
   `
   measuresQuery = stripIndent`
     MAX(timestamp) as timestamp,
     any(player_name) as player_name,
+    any(player_icon_id) as player_icon_id,
     any(brawler_name) as brawler_name,
     MAX(brawler_highest_trophies) as brawler_highest_trophies
   `
@@ -80,6 +83,7 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
     timestamp: 'string',
     player_id: 'string',
     player_name: 'string',
+    player_icon_id: 'int',
     brawler_id: 'string',
     brawler_name: 'string',
     brawler_highest_trophies: 'int',

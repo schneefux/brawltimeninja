@@ -35,6 +35,7 @@ export default class LeaderboardCube extends MaterializedCube {
   measures = {
     'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
     'player_name': 'any(player_name)',
+    'player_icon_id': 'any(player_icon_id)',
     'player_exp_points': 'MAX(player_exp_points)',
     'player_3vs3_victories': 'MAX(player_3vs3_victories)',
     'player_solo_victories': 'MAX(player_solo_victories)',
@@ -47,6 +48,7 @@ export default class LeaderboardCube extends MaterializedCube {
   measuresDefinition = stripIndent`
     timestamp SimpleAggregateFunction(max, DateTime),
     player_name SimpleAggregateFunction(any, String),
+    player_icon_id SimpleAggregateFunction(any, UInt32),
     player_exp_points SimpleAggregateFunction(max, UInt32),
     player_3vs3_victories SimpleAggregateFunction(max, UInt32),
     player_solo_victories SimpleAggregateFunction(max, UInt32),
@@ -55,6 +57,7 @@ export default class LeaderboardCube extends MaterializedCube {
   measuresQuery = stripIndent`
     MAX(timestamp) as timestamp,
     any(player_name) as player_name,
+    any(player_icon_id) as player_icon_id,
     MAX(player_exp_points) as player_exp_points,
     MAX(player_3vs3_victories) as player_3vs3_victories,
     MAX(player_solo_victories) as player_solo_victories,
@@ -85,6 +88,7 @@ export default class LeaderboardCube extends MaterializedCube {
     timestamp: 'string',
     player_id: 'string',
     player_name: 'string',
+    player_icon_id: 'int',
     player_exp_points: 'int',
     player_3vs3_victories: 'int',
     player_solo_victories: 'int',

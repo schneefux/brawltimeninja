@@ -89,6 +89,7 @@ export interface PlayerBrawlerMetaRow extends BattleMeasures {
 
 export interface LeaderboardRow extends PlayerMeasures {
   tag: string;
+  icon: number;
 }
 
 export interface BrawlerLeaderboardRow extends BrawlerMeasures {

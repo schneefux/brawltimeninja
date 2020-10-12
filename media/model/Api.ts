@@ -86,6 +86,7 @@ export interface CurrentAndUpcomingEvents {
 export interface LeaderboardEntry {
   name: string;
   tag: string;
+  icon: number;
   metric: number;
 }
 

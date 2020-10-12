@@ -2,7 +2,7 @@ import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, Battle
 import { request, post } from '../lib/request';
 import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
 import { MapMap, MapMetaMap } from '~/model/MetaEntry';
-import { BrawlerMetaRow, MapMetaRow, BattleMeasures, LeaderboardRow, BrawlerStatisticsRows, TrophiesRow } from '~/model/Clicker';
+import { BrawlerMetaRow, MapMetaRow, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
 import { Battle, Brawler, Player, BrawlerMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
@@ -84,6 +84,7 @@ export default class BrawlstarsService {
       entries = response.items.map((d: any) => ({
         tag: d.tag.replace(/^#/, ''),
         name: d.name,
+        icon: d.icon.id,
         metric: d.trophies,
       }));
     }
@@ -100,6 +101,7 @@ export default class BrawlstarsService {
       entries = response.items.map((d: any) => ({
         tag: d.tag.replace(/^#/, ''),
         name: d.name,
+        icon: d.icon.id,
         metric: d.trophies,
       }));
     }
@@ -117,6 +119,7 @@ export default class BrawlstarsService {
       entries = response.map(entry => ({
         name: entry.name,
         tag: entry.tag,
+        icon: entry.icon,
         metric: xpToHours(entry.expPoints),
       }));
     }
@@ -134,6 +137,7 @@ export default class BrawlstarsService {
       entries = response.map(entry => ({
         name: entry.name,
         tag: entry.tag,
+        icon: entry.icon,
         metric: entry[metric as keyof LeaderboardRow] as number,
       }));
     }
