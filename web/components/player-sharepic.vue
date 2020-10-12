@@ -167,11 +167,10 @@ export default Vue.extend({
         url: window.location,
       } as any)
     } else {
-      const image = new Image();
-      image.src = canvas.toDataURL();
-
-      const w = window.open('')!;
-      w.document.write(image.outerHTML);
+      const link = document.createElement('a')
+      link.setAttribute('download', 'brawltime-ninja.png')
+      link.href = canvas.toDataURL()
+      link.click()
     }
 
     this.$emit('done')
