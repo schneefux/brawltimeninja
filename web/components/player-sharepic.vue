@@ -151,30 +151,19 @@ export default Vue.extend({
       required: true
     },
   },
-  async mounted() {
-    const content = this.$refs['sharepic'] as HTMLElement
-    const canvas = await html2canvas(content, {
-      // fixes image loading from media domain
-      useCORS: true,
-      scale: 2,
-    })
-
-    const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
-    const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
-    if ((<any>navigator).canShare && (<any>navigator).canShare({ files })) {
-      await navigator.share({
-        files,
-        url: window.location,
-      } as any)
-    } else {
-      const link = document.createElement('a')
-      link.setAttribute('download', 'brawltime-ninja.png')
-      link.href = canvas.toDataURL()
-      link.click()
+  data() {
+    return {
+      openImageHandler: undefined as any,
     }
-
-    this.$emit('done')
-    this.$ga.event('profile', 'click', 'share')
+  },
+  mounted() {
+    let w: Window
+    if ((<any>navigator).canShare == undefined) {
+      // Safari needs sync click event handler to open tab
+      w = window.open('', '_blank')
+      w.document.write('Generating your Sharepic, please wait a few seconds...')
+    }
+    this.shareImage(w)
   },
   computed: {
     bestBrawlers(): Brawler[] {
@@ -187,6 +176,35 @@ export default Vue.extend({
     },
     mediaUrl(): string {
       return process.env.mediaUrl!
+    },
+  },
+  methods: {
+    async shareImage(w: Window|undefined) {
+      const content = this.$refs['sharepic'] as HTMLElement
+      const canvas = await html2canvas(content, {
+        // fixes image loading from media domain
+        useCORS: true,
+        scale: 2,
+      })
+
+      const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
+      const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
+      if ((<any>navigator).canShare != undefined && (<any>navigator).canShare({ files })) {
+        await navigator.share({
+          files,
+          url: window.location,
+        } as any)
+        this.$emit('done')
+        this.$ga.event('profile', 'click', 'share')
+      } else {
+        const image = new Image()
+        image.src = canvas.toDataURL()
+        w.document.open() // clear loading message
+        w.document.write(image.outerHTML)
+      }
+
+      this.$emit('done')
+      this.$ga.event('profile', 'click', 'share')
     },
   },
 })
