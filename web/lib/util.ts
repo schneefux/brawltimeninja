@@ -185,7 +185,6 @@ export const metaStatMaps = {
     winRate: (n: number) => `${Math.round(100 * n * 10) / 10}%`,
     rank1Rate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     starRate: (n: number) => `${Math.round(100 * n* 10) / 10}%`,
-    picks: (n: number) => `${Math.round(100 * n)}%`,
     useRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     pickRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     pickRate_boss: (n: number) => `${Math.round(100 * n)}%`,
@@ -195,6 +194,7 @@ export const metaStatMaps = {
     level: (n: number) => n.toFixed(2),
     rank1: (n: number) => formatSI(n, 1),
     wins: (n: number) => formatSI(n, 1),
+    picks: (n: number) => formatSI(n, 1),
   },
   signs: {
     trophies: -1, // more is better -> sort rank desc

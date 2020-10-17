@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="section mt-4 card px-3 py-2 card--dark">
-      <span class="mr-2">View Mode</span>
+      <span class="mr-2">Layout</span>
       <button
         class="button mr-2"
         :class="{

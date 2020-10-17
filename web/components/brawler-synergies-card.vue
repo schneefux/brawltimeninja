@@ -100,9 +100,18 @@ export default Vue.extend({
   async fetch() {
     // TODO use brawler_id
 
-    // how much better is the actual winrate(AxB) than
-    // Naive Bayes sqrt(winrate(A)*winrate(B))?
-    // get winrate(AxB)
+    /*
+      Let A, B be Brawlers and H(x) the number of wins.
+      How much better is P(A,B) than P(A)*P(B)?
+      We know:
+        P(A,B) = P(A) * P(B|A)
+        P(A) = H(A) / H
+        P(B|A) = H(B,A) / H(A)
+      so:
+        P(A,B) = H(B,A) * H(B) / H(A) / H
+    */
+    // TODO: Apply the above, fix the base rate fallacy present in this code
+
     const synergies = await this.$clicker.query<SynergyRow>('meta.synergy.widget', 'synergy',
       ['ally_brawler_name'],
       ['picks', 'battle_victory'],

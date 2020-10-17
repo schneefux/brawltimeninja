@@ -1,7 +1,7 @@
 <template>
   <!-- a bit less px than card__content on sm so that the time buttons fit -->
   <div
-    class="card card--dark px-3 py-4 md:card__content max-w-sm mx-auto"
+    class="card card--dark px-3 py-4 md:card__content w-full max-w-sm mx-auto"
     :class="{
       'card--loading': loading,
     }"
@@ -44,6 +44,7 @@
     </label>
 
     <trophy-slider
+      v-if="cube != 'synergy'"
       v-model="trophyRange"
       :name="powerPlayActive ? 'Points' : undefined"
       class="mb-2"
@@ -69,7 +70,10 @@
       </template>
     </p>
 
-    <div class="mt-2 flex">
+    <div
+      v-if="measurements != undefined"
+      class="mt-2 flex"
+    >
       <div class="w-24 flex-shrink-0">
         <span>Metric</span>
       </div>
@@ -115,7 +119,7 @@ export default Vue.extend({
     },
     sampleMin: {
       type: Number,
-      default: false
+      required: false
     },
     cube: {
       type: String,
@@ -127,7 +131,7 @@ export default Vue.extend({
     },
     measurements: {
       type: Array as PropType<string[]>,
-      required: true
+      required: false
     },
     loading: {
       type: Boolean,

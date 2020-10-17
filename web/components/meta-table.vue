@@ -19,9 +19,8 @@
           <tr
             v-for="(entry, index) in sortedEntries"
             :key="entry.id"
-            class="pt-1"
           >
-            <th scope="row" class="text-right pr-2">
+            <th scope="row" class="text-right pr-2 pt-1">
               {{ entry.sampleSize < sampleSizeThreshold ? '?' : index + 1 }}
             </th>
             <td>

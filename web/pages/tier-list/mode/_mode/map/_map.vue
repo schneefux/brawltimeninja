@@ -38,36 +38,27 @@
     </div>
 
     <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'stats'),
-        once: true,
-      }"
+      v-if="event.mode != 'soloShowdown'"
+      class="section flex justify-center"
     >
-      <h2 class="page-h2">Tier List for {{ event.modeName }} - {{ event.map }}</h2>
+      <div class="card card__content card--dark max-w-sm w-full flex justify-center">
+        <nuxt-link
+          :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
+          class="button mx-2 button--md"
+          active-class="button--selected"
+          exact
+        >Best Brawlers</nuxt-link>
+        <nuxt-link
+          :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
+          class="button mx-2 button--md"
+          active-class="button--selected"
+        >Best Teams</nuxt-link>
+      </div>
     </div>
 
-    <div class="section">
-      <meta-slicers
-        v-model="slices"
-        :sample="totalSampleSize"
-        :timestamp="totalTimestamp"
-        :sample-min="100000"
-        :measurements="measurements"
-        :measurement="measurement"
-        :loading="$fetchState.pending"
-        cube="map"
-        @select="m => measurement = m"
-      ></meta-slicers>
-
-      <meta-views
-        v-if="totalSampleSize > 0"
-        :entries="entries"
-        :measurement="measurement"
-        ga-category="map_meta"
-        @view="v => loadAll = (v == 'legacy')"
-      ></meta-views>
-    </div>
+    <nuxt-child
+      :event="event"
+    ></nuxt-child>
 
     <div
       class="section-heading"
@@ -102,8 +93,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { deslugify, kebabToCamel, formatMode, MetaGridEntry, getBest, brawlerId, measurementMap, capitalizeWords, measurementOfTotal } from '~/lib/util'
+import { deslugify, kebabToCamel, formatMode, camelToKebab, slugify } from '~/lib/util'
 
 interface Map {
   id: string
@@ -113,10 +105,10 @@ interface Map {
 }
 
 export default Vue.extend({
-  head() {
-    const description = `Brawl Stars Tier List for ${(<any>this).event.modeName}: ${(<any>this).event.map}. View the best Brawlers with Win Rates and Rankings.`
+  head(): MetaInfo {
+    const description = `Brawl Stars Tier List for ${this.event.modeName}: ${this.event.map}. View the best Brawlers with Win Rates and Rankings.`
     return {
-      title: `Tier List for ${(<any>this).event.modeName}: ${(<any>this).event.map}`,
+      title: `Tier List for ${this.event.modeName}: ${this.event.map}`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -131,65 +123,14 @@ export default Vue.extend({
         modeName: '',
         map: '',
       } as Map,
-      slices: this.$clicker.defaultSlices('map'),
-      entries: [] as MetaGridEntry[],
-      measurement: 'wins',
-      totalSampleSize: 0,
-      totalTimestamp: undefined as string|undefined,
-      loadAll: false,
     }
   },
-  watch: {
-    slices: '$fetch',
-    measurement: '$fetch',
-    loadAll: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks', 'timestamp'] : [...this.measurements.map(m => measurementMap[m]), 'picks', 'timestamp']
-    const data = await this.$clicker.query('meta.map', 'map',
-      ['brawler_name'],
-      measurements,
-      this.slices,
-      { sort: { picks: 'desc' }, cache: 60*60 })
-
-    this.entries = data.data.map(row => ({
-      id: row.brawler_name,
-      brawler: row.brawler_name,
-      title: capitalizeWords(row.brawler_name.toLowerCase()),
-      stats: !this.loadAll ? {
-        [this.measurement]: row[measurementMap[this.measurement]]
-          / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
-      } : {
-        wins: row.wins,
-        winRate: row.battle_victory,
-        useRate: row.picks_weighted / data.totals.picks_weighted,
-        pickRate: row.picks / data.totals.picks,
-        starRate: row.battle_starplayer,
-        rank1Rate: row.battle_rank1,
-        duration: row.battle_duration,
-      },
-      sampleSize: row.picks,
-      link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-    }) as MetaGridEntry)
-    this.totalSampleSize = data.totals.picks
-    this.totalTimestamp = data.totals.timestamp
-  },
   computed: {
-    measurements(): string[] {
-      let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
-      // all 3v3: star player
-      if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.event.mode)) {
-        measurements = [...measurements, 'starRate']
-      }
-      // all 3v3 except bounty: duration
-      if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(this.event.mode)) {
-        measurements = [...measurements, 'duration']
-      }
-      if (this.event.mode.endsWith('howdown')) {
-        measurements = [...measurements, 'rank1Rate']
-      }
-      return measurements
+    camelToKebab() {
+      return camelToKebab
+    },
+    slugify() {
+      return slugify
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
@@ -198,14 +139,13 @@ export default Vue.extend({
   async asyncData({ store, params, error, $clicker }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
-    const slices = {
-      battle_event_mode: [mode],
-      battle_event_map: [map],
-    }
     const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
       ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
-      slices,
+      {
+        battle_event_mode: [mode],
+        battle_event_map: [map],
+      },
       { cache: 60*60*24 })
     if (events.data.length == 0) {
       return error({ statusCode: 404, message: 'Map not found' })
@@ -219,10 +159,6 @@ export default Vue.extend({
         mode,
         modeName: formatMode(mode),
       } as Map,
-      slices: {
-        ...$clicker.defaultSlices('map'),
-        ...slices,
-      } as any,
     }
   },
   methods: {
