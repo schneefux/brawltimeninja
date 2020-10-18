@@ -31,6 +31,7 @@
       v-if="totalSampleSize > 0"
       :entries="entries"
       :measurement="measurement"
+      :description="description"
       ga-category="map_meta"
       @view="v => loadAll = (v == 'legacy')"
     ></meta-views>
@@ -132,6 +133,14 @@ export default Vue.extend({
         measurements = [...measurements, 'rank1Rate']
       }
       return measurements
+    },
+    description(): string {
+      const slices = {
+        ...this.slices,
+        battle_event_mode: [this.event.mode],
+        battle_event_map: [this.event.map],
+      }
+      return this.$clicker.describeSlices(slices, this.totalTimestamp)
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

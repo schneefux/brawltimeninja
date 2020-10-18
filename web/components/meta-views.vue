@@ -25,11 +25,12 @@
       >Grid</button>
     </div>
 
-    <tier-list
+    <meta-tier-list
       v-if="view == 'tierlist'"
       :entries="entries"
       :stat="measurement"
-    ></tier-list>
+      :description="description"
+    ></meta-tier-list>
     <meta-table
       v-if="view == 'table'"
       :entries="entries"
@@ -62,6 +63,10 @@ export default Vue.extend({
     gaCategory: {
       type: String,
       required: true
+    },
+    description: {
+      type: String,
+      required: false
     },
   },
   data() {

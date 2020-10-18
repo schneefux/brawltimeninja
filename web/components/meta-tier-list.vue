@@ -48,7 +48,14 @@
           </ul>
         </li>
       </ul>
-      <p class="text-xs tracking-tight text-gray-600">Tier List by brawltime.ninja, created {{ today }}</p>
+
+      <div class="mt-2">
+        <meta-tier-list-sharepic
+          :tiers="tiers"
+          :stat="stat"
+          :description="description"
+        ></meta-tier-list-sharepic>
+      </div>
     </div>
   </div>
 </template>
@@ -122,6 +129,10 @@ export default Vue.extend({
       type: Number,
       default: 200
     },
+    description: {
+      type: String,
+      required: false
+    },
   },
   computed: {
     metaStatMaps() {
@@ -129,9 +140,6 @@ export default Vue.extend({
     },
     brawlerId() {
       return brawlerId
-    },
-    today(): string {
-      return new Date().toLocaleDateString()
     },
     tiers(): TierList {
       return groupStatIntoTiers(this.entries, this.stat, this.sampleSizeThreshold)

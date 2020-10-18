@@ -105,6 +105,7 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="100000"
+        :timestamp="totalTimestamp"
         :measurements="['winRate', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
         :measurement="measurement"
         :loading="$fetchState.pending"
@@ -116,11 +117,11 @@
         v-if="totalSampleSize > 0"
         :entries="entries"
         :measurement="measurement"
+        :description="description"
         @view="v => loadAll = (v == 'legacy')"
         ga-category="brawler_meta"
       ></meta-views>
     </div>
-
 
     <client-only>
       <adsense
@@ -159,10 +160,14 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       measurement: 'wins',
       totalSampleSize: 0,
+      totalTimestamp: undefined as undefined|string,
       loadAll: false,
     }
   },
   computed: {
+    description(): string {
+      return this.$clicker.describeSlices(this.slices, this.totalTimestamp)
+    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
@@ -174,7 +179,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : ['wins', 'picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1']
+    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks', 'timestamp'] : ['wins', 'picks', 'picks_weighted', 'battle_victory', 'battle_duration', 'battle_starplayer', 'battle_rank1', 'timestamp']
     const data = await this.$clicker.query('meta.brawler', 'map',
       ['brawler_name'],
       measurements,
@@ -201,6 +206,7 @@ export default Vue.extend({
       link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
     }) as MetaGridEntry)
     this.totalSampleSize = data.totals.picks
+    this.totalTimestamp = data.totals.timestamp
   },
   async asyncData({ $clicker }) {
     const modes = await $clicker.queryAllModes()

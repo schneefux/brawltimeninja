@@ -58,24 +58,13 @@
     </div>
 
     <div class="absolute w-16 top-0 left-0 z-0 -mt-2 md:-ml-8">
-      <button
-        v-if="!triggerShare"
-        @click="triggerShare = true"
-        class="button button--secondary"
-      >Share</button>
-      <span
-        v-if="triggerShare"
-        class="italic"
-      >Generating your Sharepic...</span>
-      <lazy-player-sharepic
-        v-if="triggerShare"
+      <player-sharepic
         :player="player"
         :win-rate="winRate"
         :total-battles="totalBattles"
         :account-rating="accountRating"
         :history="history"
-        @done="triggerShare = false"
-      ></lazy-player-sharepic>
+      ></player-sharepic>
     </div>
 
     <div class="section bigstat-wrapper">
@@ -247,7 +236,6 @@ export default Vue.extend({
       ratingHelpOpen: false,
       recentHelpOpen: false,
       history: [] as TrophiesRow[],
-      triggerShare: false,
     }
   },
   watch: {
@@ -307,11 +295,6 @@ export default Vue.extend({
         hoursTimer()
       })
     }
-  },
-  methods: {
-    share() {
-      this.triggerShare = true
-    },
   },
   computed: {
     rank(): number|undefined {

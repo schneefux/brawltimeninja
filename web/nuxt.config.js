@@ -5,7 +5,6 @@ const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').t
 const slugify = (str) => str.split(' ').join('-')
 
 export default {
-  mode: 'universal',
   telemetry: false,
   modern: 'server',
 
@@ -101,10 +100,6 @@ export default {
 
   router: {
     middleware: ['unpack-store'],
-    // scroll to anchor does not work - https://github.com/nuxt/nuxt.js/issues/5359
-  },
-
-  axios: {
   },
 
   redirect: [
@@ -141,9 +136,7 @@ export default {
   },
 
   build: {
-    extend(config, ctx) {
-    },
-    extractCSS: true,
+    extractCSS: true, // ~1 CSS per component
     postcss: {
       plugins: {
         tailwindcss: path.join(__dirname, './tailwind.config.js'),

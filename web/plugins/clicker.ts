@@ -1,3 +1,6 @@
+import { parseISO } from "date-fns"
+import { formatMode } from "~/lib/util"
+
 const cubes = ['player', 'brawler', 'map', 'synergy', 'starpower', 'gadget']
 
 interface Clicker {
@@ -16,6 +19,7 @@ interface Clicker {
       cache?: number,
     }): Promise<{ data: T[], totals: T }>
   queryAllModes(): Promise<string[]>
+  describeSlices(slices: Record<string, string[]>, timestamp?: string): string
 }
 
 declare module 'vue/types/vue' {
@@ -95,6 +99,54 @@ export default (context, inject) => {
         { trophy_season_end: ['balance'] },
         { sort: { picks: 'desc' }, cache: 60*60*24 })
       return modes.data.map(row => row.battle_event_mode)
+    },
+    describeSlices(slices: Record<string, string[]>, timestamp?: string) {
+      let description: string[] = []
+
+      const powerplay = 'battle_event_powerplay' in slices && slices.battle_event_powerplay[0] == 'true'
+
+      if ('battle_event_mode' in slices) {
+        let mapName = formatMode(slices.battle_event_mode[0])
+        if ('battle_event_map' in slices) {
+          mapName += ' - ' + slices.battle_event_map[0]
+        }
+        if (powerplay) {
+          mapName += ' (Power Play)'
+        }
+        description.push(mapName)
+      } else {
+        if (powerplay) {
+          description.push('Power Play')
+        }
+      }
+
+      if ('brawler_trophyrange' in slices) {
+        let trophyName = ''
+        if (slices.brawler_trophyrange[0] == '0' && slices.brawler_trophyrange[1] == '10') {
+          trophyName = 'all '
+        } else {
+          const lower = slices.brawler_trophyrange[0] + '00'
+          const upper = slices.brawler_trophyrange[1] == '10' ? '+' : ('-' + slices.brawler_trophyrange[1] + '00')
+          trophyName = lower + upper + ' '
+        }
+        trophyName += powerplay ? 'Points' : 'Trophies'
+        description.push(trophyName)
+      }
+
+      const seasonDescription = {
+        balance: 'update',
+        month: 'month',
+        season: 'season',
+      }
+      if ('trophy_season_end' in slices && slices.trophy_season_end[0] in seasonDescription) {
+        description.push('current ' + seasonDescription[slices.trophy_season_end[0]])
+      }
+
+      if (timestamp != undefined) {
+        description.push('created ' + parseISO(timestamp).toLocaleDateString())
+      }
+
+      return description.join(', ')
     },
   })
 }

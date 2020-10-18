@@ -1,14 +1,6 @@
 <template>
-  <div
-    class="opacity-0 pointer-events-none fixed"
-    style="width: 600px; height: 314px; bottom: -9999px; left: -9999px;"
-  >
-    <!-- aspect ratio 1.91 : 1 -->
-    <!-- https://www.business2community.com/brandviews/presto-media/best-social-media-image-sizes-photo-sharing-every-major-social-network-01911894 -->
-    <div
-      class="card__content h-full w-full flex flex-wrap bg-gray-800"
-      ref="sharepic"
-    >
+  <sharepic @done="done">
+    <div class="h-full w-full card--dark card__content flex flex-wrap">
       <div class="w-full flex items-center">
         <img
           :src="`${mediaUrl}/avatars/${player.icon.id}.png?size=112`"
@@ -119,12 +111,11 @@
         </p>
       </div>
     </div>
-  </div>
+  </sharepic>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import html2canvas from 'html2canvas'
 import { Player } from '../model/Brawlstars'
 import { TrophiesRow } from '../model/Clicker'
 import { Brawler } from '../model/Api'
@@ -152,38 +143,6 @@ export default Vue.extend({
       required: true
     },
   },
-  async mounted() {
-    const content = this.$refs['sharepic'] as HTMLElement
-    const canvas = await html2canvas(content, {
-      // fix image loading from media domain
-      useCORS: true,
-      scale: 2,
-    })
-
-    const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
-    const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
-    if ((<any>navigator).canShare != undefined && (<any>navigator).canShare({ files })) {
-      await navigator.share({
-        files,
-        url: window.location,
-      } as any)
-      this.$emit('done')
-      this.$ga.event('profile', 'click', 'share')
-    } else {
-      let w = window.open('', '_blank')
-      if (w == null) {
-        // opening a window from async is blocked in Safari
-        w = window
-      }
-
-      const image = new Image()
-      image.src = canvas.toDataURL()
-      w!.document.write(image.outerHTML)
-    }
-
-    //this.$emit('done')
-    this.$ga.event('profile', 'click', 'share')
-  },
   computed: {
     bestBrawlers(): Brawler[] {
       return Object.entries(this.player.brawlers)
@@ -195,6 +154,11 @@ export default Vue.extend({
     },
     mediaUrl(): string {
       return process.env.mediaUrl!
+    },
+  },
+  methods: {
+    done() {
+      this.$ga.event('profile', 'click', 'share')
     },
   },
 })

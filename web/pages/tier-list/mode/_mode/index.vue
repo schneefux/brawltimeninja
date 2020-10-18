@@ -102,6 +102,7 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
+        :timestamp="totalTimestamp"
         :measurements="measurements"
         :measurement="measurement"
         :loading="$fetchState.pending"
@@ -112,6 +113,7 @@
         v-if="totalSampleSize > 0"
         :entries="entries"
         :measurement="measurement"
+        :description="description"
         @view="v => loadAll = (v == 'legacy')"
         ga-category="mode_meta"
       ></meta-views>
@@ -162,6 +164,7 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       measurement: 'wins',
       totalSampleSize: 0,
+      totalTimestamp: undefined as string|undefined,
       loadAll: false,
     }
   },
@@ -172,7 +175,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : [...this.measurements.map(m => measurementMap[m]), 'picks']
+    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks', 'timestamp'] : [...this.measurements.map(m => measurementMap[m]), 'picks', 'timestamp']
     const data = await this.$clicker.query('meta.mode', 'map',
       ['brawler_name'],
       measurements,
@@ -199,6 +202,7 @@ export default Vue.extend({
       link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
     }) as MetaGridEntry)
     this.totalSampleSize = data.totals.picks
+    this.totalTimestamp = data.totals.timestamp
   },
   async asyncData({ params, $clicker }) {
     const mode = kebabToCamel(params.mode as string)
@@ -240,6 +244,9 @@ export default Vue.extend({
         measurements = [...measurements, 'rank1Rate']
       }
       return measurements
+    },
+    description(): string {
+      return this.$clicker.describeSlices(this.slices, this.totalTimestamp)
     },
     camelToKebab() {
       return camelToKebab
