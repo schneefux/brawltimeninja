@@ -60,6 +60,10 @@ interface TierList {
   [tier: string]: MetaGridEntry[]
 }
 
+// note: Using <media-img> is ok for this component
+// because all images are already loaded by the parent tier list component.
+// Usually, prefer <img> because html2canvas will not load <picture>s.
+
 export default Vue.extend({
   props: {
     tiers: {
