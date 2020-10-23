@@ -453,7 +453,6 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenOfficial },
       1000,
     )
-    console.log(club)
     // official API: with hash, unofficial API: no hash
     // brawltime assumes no hash
     club.tag = club.tag.replace(/^#/, '')
