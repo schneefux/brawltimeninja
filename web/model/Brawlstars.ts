@@ -72,10 +72,10 @@ export interface BattlePlayer {
 export interface BattleLog {
   items: {
     battleTime: string;
-    event: {
-      id: number;
-      mode: string;
-      map: string;
+    event?: { // not present for custom maps
+      id?: number;
+      mode?: string; // removed 2020-10-22
+      map?: string;
     }
     battle: {
       mode: string;

@@ -351,6 +351,19 @@ export default class BrawlstarsService {
       let result = undefined as undefined|string;
       let victory = undefined as undefined|boolean;
 
+      // TODO battle log database was cleared 2020-10-22,
+      // all workarounds from before that date can be removed
+
+      // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
+      // 2020-10-22, custom maps do not have the event attribute
+      if (!('event' in battle) || battle.event == undefined) {
+        battle.event = {}
+      }
+      battle.event.id = battle.event.id || 0
+      battle.event.map = battle.event.map || ''
+      // patch for backwards compatiblity
+      battle.event.mode = battle.event.mode || battle.battle.mode
+
       // FIXME API bug 2020-07-26
       if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
         // 'duration' is 1 (loss) or N/A (win)
