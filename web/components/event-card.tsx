@@ -39,9 +39,9 @@ export default Vue.extend({
     const card = Card as any
     return <card
       title={formatMode(props.mode)}
-      title-link={props.mode != undefined ? `/tier-list/${camelToKebab(props.mode)}` : undefined}
+      title-link={props.mode != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}` : undefined}
       subtitle={props.map}
-      subtitle-link={props.map != undefined ? `/tier-list/${camelToKebab(props.mode)}/${slugify(props.map)}` : undefined}
+      subtitle-link={props.map != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}` : undefined}
       background={'/modes/' + props.mode + '/background'}
       icon={'/modes/' + props.mode + '/icon'}
       size={props.size}
