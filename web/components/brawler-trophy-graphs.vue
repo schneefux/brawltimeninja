@@ -66,7 +66,6 @@ const trophyGraphLayout = {
     tickcolor: '#ffffff',
   },
   margin: { t: 10, l: 55, b: 65, r: 10 },
-  staticPlot: true,
   plot_bgcolor: 'rgba(0, 0, 0, 0)',
   paper_bgcolor: 'rgba(0, 0, 0, 0)',
   font: {

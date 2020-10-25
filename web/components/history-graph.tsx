@@ -49,7 +49,6 @@ export default Vue.extend({
         tickangle: 0,
       },
       margin: { t: 5, l: 50, b: 24, r: 25 },
-      staticPlot: true,
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
       font: {

@@ -3,26 +3,33 @@
     <div class="section mt-4 card px-3 py-2 card--dark">
       <span class="mr-2">Layout</span>
       <button
-        class="button mr-2"
+        class="button mr-1"
         :class="{
           'button--selected': view == 'tierlist',
         }"
         @click="setView('tierlist')"
       >Tier List</button>
       <button
-        class="button mr-2"
+        class="button mr-1"
         :class="{
           'button--selected': view == 'table',
         }"
         @click="setView('table')"
       >Table</button>
       <button
-        class="button mr-2"
+        class="button mr-1"
         :class="{
           'button--selected': view == 'legacy',
         }"
         @click="setView('legacy')"
       >Grid</button>
+      <button
+        class="button mr-1"
+        :class="{
+          'button--selected': view == 'graph',
+        }"
+        @click="setView('graph')"
+      >Graph</button>
     </div>
 
     <meta-tier-list
@@ -43,6 +50,11 @@
       :default-stat="measurement"
       :ga-category="gaCategory"
     ></meta-grid>
+    <meta-graph
+      v-if="view == 'graph'"
+      :entries="entries"
+      :stat="measurement"
+    ></meta-graph>
   </div>
 </template>
 
