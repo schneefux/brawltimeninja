@@ -23,7 +23,7 @@ export default Vue.extend({
     size: {
       // class
       type: String,
-      default: 'w-80 md:w-100',
+      default: 'w-80',
     },
   },
   render(h, { props, scopedSlots }) {

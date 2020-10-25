@@ -232,6 +232,19 @@
       </div>
 
       <div class="home-section-content">
+        <card title="Brawl-o-ween">
+          <p slot="content" class="card__content">
+            The Brawl-o-ween Challenge is starting soon! <br>
+            Prepare yourself and pick the best Brawlers and Teams from the Brawl-o-ween Tier Lists.
+          </p>
+          <div slot="actions" class="flex justify-end">
+            <nuxt-link
+              to="/tier-list/brawloween"
+              class="card__action"
+            >Open</nuxt-link>
+          </div>
+        </card>
+
         <lazy-map-best-brawlers-card
           v-for="event in currentEvents"
           :key="event.id"

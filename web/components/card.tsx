@@ -6,7 +6,7 @@ export default Vue.extend({
   props: {
     size: {
       type: String, // class
-      default: 'w-80 md:w-100',
+      default: 'w-80',
     },
     title: {
       type: String,
