@@ -12,7 +12,15 @@ export default Vue.extend({
       type: String,
       required: false
     },
+    titleLink: {
+      type: String,
+      required: false
+    },
     subtitle: {
+      type: String,
+      required: false
+    },
+    subtitleLink: {
       type: String,
       required: false
     },
@@ -57,11 +65,25 @@ export default Vue.extend({
               }
               { props.title != undefined ?
                 <div class="ml-3 text-white">
-                  <p class="text-xl">
-                    { props.title }
-                  </p>
-                  { props.subtitle != undefined ?
-                    <p>{ props.subtitle }</p>
+                  { props.titleLink != undefined ?
+                    <router-link to={props.titleLink} class="block text-xl">
+                      { props.title }
+                    </router-link>
+                  :
+                    <p class="text-xl">
+                      { props.title }
+                    </p>
+                  }
+                  { props.subtitle != undefined && props.subtitleLink == undefined ?
+                    <p class="text-xl">
+                      { props.subtitle }
+                    </p>
+                  : ''
+                  }
+                  { props.subtitle != undefined && props.subtitleLink != undefined ?
+                    <router-link to={props.subtitleLink} class="block text-xl">
+                      { props.subtitle }
+                    </router-link>
                   : ''
                   }
                 </div>

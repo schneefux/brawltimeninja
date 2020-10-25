@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { formatMode } from '../lib/util'
+import { camelToKebab, formatMode, slugify } from '../lib/util'
 import Card from '~/components/card'
 
 export default Vue.extend({
@@ -39,13 +39,14 @@ export default Vue.extend({
     const card = Card as any
     return <card
       title={formatMode(props.mode)}
+      title-link={props.mode != undefined ? `/tier-list/${camelToKebab(props.mode)}` : undefined}
       subtitle={props.map}
+      subtitle-link={props.map != undefined ? `/tier-list/${camelToKebab(props.mode)}/${slugify(props.map)}` : undefined}
       background={'/modes/' + props.mode + '/background'}
       icon={'/modes/' + props.mode + '/icon'}
       size={props.size}
       color={'color-' + props.mode.toLowerCase()}
       scopedSlots={slots}
-    >
-    </card>
+    ></card>
   }
 })
