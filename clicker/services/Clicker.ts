@@ -88,6 +88,8 @@ export default class ClickerService {
   public async migrate() {
     await this.exec('CREATE DATABASE IF NOT EXISTS brawltime')
 
+    await this.playerBattleCube.up(this.chRw)
+    await this.playerBrawlerCube.up(this.chRw)
     await this.mapMetaCube.up(this.chRw)
     await this.gadgetMetaCube.up(this.chRw)
     await this.starpowerMetaCube.up(this.chRw)
