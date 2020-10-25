@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center">
     <quick-tip
       v-if="showQuickTip"
-      :player-tag="lastPlayers[0].tag"
+      :player-tag="userTag || lastPlayers[0].tag"
       @close="closeQuickTip"
       class="mx-auto px-4 mt-4 max-w-2xl"
     ></quick-tip>
@@ -317,15 +317,17 @@ export default Vue.extend({
       }
     },
     showQuickTip(): boolean {
-      return this.testGroup == 'quicktip' && this.lastPlayers.length > 0 && this.closedQuickTip == false && this.loading == false
+      return this.testGroup == 'quicktip' && (this.userTag != undefined || this.lastPlayers.length > 0) && this.closedQuickTip == false && this.loading == false
     },
     ...mapState({
       player: (state: any) => state.player as Player,
+      userTag: (state: any) => state.userTag as undefined|string,
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
       isApp: (state: any) => state.isApp as boolean,
       testGroup: (state: any) => state.testGroup as string,
+      cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
     }),
   },
   async asyncData({ $axios }) {
@@ -413,6 +415,9 @@ export default Vue.extend({
       }
 
       this.$ga.event('player', 'search', 'success')
+      if (this.cookiesAllowed) {
+        document.cookie = `usertag=${this.cleanedTag}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      }
       this.$router.push(this.playerRoute)
     },
     closeQuickTip() {

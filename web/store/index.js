@@ -61,7 +61,8 @@ export const state = () => ({
   lastPlayers: [],
   player: {
     tag: '',
-  },
+  }, // cached API response
+  userTag: undefined, // personal tag (last searched)
   personalityTestResult: undefined,
   cookiesAllowed: false,
   adsAllowed: false,

@@ -9,5 +9,9 @@ export default function ({ req, store }) {
       store.state.cookiesAllowed = true
       store.state.consentPopupVisible = false
     }
+    if (req.headers.cookie.includes('usertag=')) {
+      const cookie = RegExp('usertag=[^;]+').exec(req.headers.cookie)
+      store.state.userTag = decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./, '') : '')
+    }
   }
 }
