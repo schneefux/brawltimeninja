@@ -88,14 +88,14 @@ router.get(`/maps/:id${EXT}`, async (ctx, next) => {
 });
 
 router.get(`/modes/:name/icon${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name.replace(/-| /g, '').toLowerCase()
+  const name = ctx.params.name.replace(/-| /g, '').toLowerCase().replace(/soloshowdown/, 'showdown')
   const buffer = await service.getModeIcon(name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
 });
 
 router.get(`/modes/:name/background${EXT}`, async (ctx, next) => {
-  let name = ctx.params.name.replace(/-| /g, '').toLowerCase()
+  const name = ctx.params.name.replace(/-| /g, '').toLowerCase().replace(/soloshowdown/, 'showdown')
   const buffer = await service.getModeBackground(name, ctx.req.headers.accept || '');
   await respond(ctx, buffer);
   await next();
