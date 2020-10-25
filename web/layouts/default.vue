@@ -174,9 +174,12 @@
         ({{ releaseVersion }})
       </p>
       <p>
-        Discord Server: <a class="link" href="https://discord.gg/uYfgznq">uYfgznq</a>
+        Support Me:
+        <a class="link" href="https://discord.gg/uYfgznq">Discord</a>
         &mdash;
-        Twitter: <a class="link" href="https://twitter.com/brawltimeninja">@BrawlTimeNinja</a>
+        <a class="link" href="https://twitter.com/brawltimeninja">Twitter</a>
+        &mdash;
+        <a class="link" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y9TKS7F2E2A2E">PayPal</a>
       </p>
       <p class="text-xs leading-tight">
         This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
