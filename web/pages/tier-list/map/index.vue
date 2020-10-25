@@ -94,6 +94,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd, unformatMode } from '../../../lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '../../../model/Api'
 
@@ -105,12 +106,12 @@ export default Vue.extend({
       unformatMode,
     }
   },
-  head() {
+  head(): MetaInfo {
     const description = 'Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
-    const structuredData = ((<any>this).currentEvents as ActiveEvent[]).concat((<any>this).upcomingEvents as ActiveEvent[])
+    const structuredData = this.currentEvents.concat(this.upcomingEvents)
       .map((event) => ({
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(formatAsJsonLd(event)),
+        json: formatAsJsonLd(event),
       }))
 
     return {
@@ -119,7 +120,6 @@ export default Vue.extend({
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
       ],
-      __dangerouslyDisableSanitizers: ['script'],
       script: structuredData,
     }
   },

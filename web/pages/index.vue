@@ -239,6 +239,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
+import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd, getBest, unformatMode } from '../lib/util'
 import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
@@ -254,13 +255,12 @@ function playerToRoute(player) {
 }
 
 export default Vue.extend({
-  head() {
+  head(): MetaInfo {
     const description = 'Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
-    const currentEvents = this.currentEvents as ActiveEvent[]
-    const structuredData = currentEvents
+    const structuredData = this.currentEvents
       .map((event) => ({
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(formatAsJsonLd(event)),
+        json: formatAsJsonLd(event),
       }))
 
     return {
@@ -269,7 +269,6 @@ export default Vue.extend({
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
       ],
-      __dangerouslyDisableSanitizers: ['script'],
       script: structuredData,
     }
   },
@@ -286,7 +285,7 @@ export default Vue.extend({
     }
   },
   computed: {
-    playerRoute() {
+    playerRoute(): any {
       return playerToRoute({
         tag: this.cleanedTag,
       })
@@ -306,7 +305,7 @@ export default Vue.extend({
       const hero = heroes[Math.floor(Math.random() * heroes.length)]
       return '/brawlers/' + hero + '/model';
     },
-    randomPlayers() {
+    randomPlayers(): string[] {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
       return players.slice(0, 3)
     },
@@ -385,9 +384,10 @@ export default Vue.extend({
       if (!this.tagRegex.test(this.cleanedTag)) {
         this.$ga.event('player', 'search', 'error_invalid')
         this.error = 'This is not a tag'
-        this.$refs['help-dropdown'].setAttribute('open', '')
+        const dropdown = this.$refs['help-dropdown'] as HTMLElement
+        dropdown.setAttribute('open', '')
         // key events would cancel scroll
-        this.$scrollTo(this.$refs['help-dropdown'], 1000, { cancelable: false, offset: -300 })
+        this.$scrollTo(dropdown, 1000, { cancelable: false, offset: -300 })
         return
       }
 

@@ -84,7 +84,7 @@ export default Vue.extend({
     const structuredData = this.events
       .map((event) => ({
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(formatAsJsonLd(event)),
+        json: formatAsJsonLd(event),
       }))
 
     return {
@@ -93,7 +93,6 @@ export default Vue.extend({
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
       ],
-      __dangerouslyDisableSanitizers: ['script'],
       script: structuredData,
     }
   },
