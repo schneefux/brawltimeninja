@@ -61,6 +61,11 @@
                   :to="`/player/${entry.tag}`"
                   class="link"
                 >
+                  <media-img
+                    v-if="entry.icon"
+                    :path="`/avatars/${entry.icon}`"
+                    clazz="h-8 inline mr-1"
+                  ></media-img>
                   {{ entry.name }}
                 </nuxt-link>
               </td>
