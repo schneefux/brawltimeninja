@@ -6,7 +6,7 @@ const slugify = (str) => str.split(' ').join('-')
 
 export default {
   telemetry: false,
-  modern: 'server',
+  modern: process.env.NODE_ENV == 'development' ? false : 'server',
 
   head: {
     titleTemplate: '%s - Brawl Time Ninja',
