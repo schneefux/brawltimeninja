@@ -13,8 +13,8 @@ export default {
     script: [
       { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', async: true },
       {
-        type: 'text/javascript',
         innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
+        async: false,
       },
     ],
     __dangerouslyDisableSanitizers: ['script'],

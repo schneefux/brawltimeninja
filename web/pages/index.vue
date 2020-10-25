@@ -164,7 +164,6 @@
         data-full-width-responsive="no"
         class="container flex justify-center"
         ins-class="w-screen md:w-full -mx-4"
-        id="ezoic-pub-ad-placeholder-104"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6709232983"
       />
@@ -226,7 +225,6 @@
 
     <client-only>
       <adsense
-        id="ezoic-pub-ad-placeholder-103"
         class="home-section container flex justify-center"
         ins-class="w-full"
         data-ad-client="ca-pub-6856963757796636"

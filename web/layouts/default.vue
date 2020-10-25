@@ -365,9 +365,10 @@ export default Vue.extend({
     },
     hideAds() {
       if ((<any>process).client) {
+        (<any>window).adsbygoogle.pauseAdRequests = 1
         const sheet = document.createElement('style')
         sheet.type = 'text/css'
-        sheet.innerText = `.adswrapper { display: none; }`
+        sheet.innerText = '.adswrapper { display: none; }'
         document.head.appendChild(sheet)
       }
     },
