@@ -132,7 +132,6 @@
     </client-only>
 
     <div
-      v-show="Object.keys(topBrawlers).length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,
@@ -154,53 +153,7 @@
       </div>
 
       <div class="home-section-content">
-        <template v-for="(brawler, prop) in topBrawlers">
-          <div
-            :key="prop"
-            class="card-wrapper px-2"
-            itemscope
-            itemtype="http://schema.org/Person"
-          >
-            <div class="card card--dark prop-card md:prop-card-lg">
-              <span class="prop-card-title md:prop-card-title-lg" itemprop="name">
-                {{ brawler.name.toLowerCase() }}
-              </span>
-              <media-img
-                :path="'/brawlers/' + brawler.id + '/avatar'"
-                :alt="brawler.name"
-                size="128"
-                clazz="prop-card-image md:prop-card-image-lg"
-                itemprop="image"
-              ></media-img>
-              <div
-                class="prop-card__content"
-                itemscope
-                itemtype="http://schema.org/QuantitativeValue"
-              >
-                <div>
-                  <img
-                    v-if="metaStatMaps.icons[prop].length > 2"
-                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[prop]}_optimized.png`)"
-                    class="card-prop-icon inline"
-                  >
-                  <!-- use emojis (length 2) -->
-                  <span
-                    v-else
-                    class="card-prop-icon"
-                  >
-                    {{ metaStatMaps.icons[prop] }}
-                  </span>
-                  <span class="card-prop-value" itemprop="value">
-                    {{ metaStatMaps.formatters[prop](brawler.stats[prop]) }}
-                  </span>
-                </div>
-                <span class="text-xs md:text-sm" itemprop="unitText">
-                  {{ metaStatMaps.labels[prop] }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </template>
+        <top-brawlers></top-brawlers>
       </div>
     </div>
 
@@ -288,7 +241,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { metaStatMaps, MetaGridEntrySorted, formatAsJsonLd, getBest, getBestBrawlersByEachMetric, unformatMode } from '../lib/util'
+import { formatAsJsonLd, getBest, unformatMode } from '../lib/util'
 import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
 import { BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '../model/Api'
@@ -330,9 +283,7 @@ export default Vue.extend({
       loading: false,
       error: undefined as string|undefined,
       currentEvents: [] as ActiveEvent[],
-      topBrawlers: {} as { [key: string]: BrawlerMetaStatistics },
       playerToRoute,
-      metaStatMaps,
       unformatMode,
     }
   },
@@ -383,11 +334,8 @@ export default Vue.extend({
   async asyncData({ $axios }) {
     const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
       .catch(() => ({ current: [], upcoming: [] }))
-    const brawlerMeta = await $axios.$get<BrawlerMetaStatistics[]>('/api/meta/brawler').catch(() => ([]))
-    const topBrawlers = getBestBrawlersByEachMetric(brawlerMeta)
     return {
       currentEvents: events.current,
-      topBrawlers,
     }
   },
   created() {
