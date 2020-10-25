@@ -153,5 +153,6 @@ export default Vue.extend({
       }
     },
   },
+  scrollToTop: true,
 })
 </script>
