@@ -168,6 +168,13 @@ export default class ClickerService {
         continue
       }
 
+      if (battle.event == undefined) {
+        // ignore
+        console.log(`ignoring battle without event for ${player.tag} (${tagToId(player.tag)})`)
+        stats.increment('player.insert.skip')
+        continue
+      }
+
       if (battle.battleTime <= lastBattleTimestamp) {
         // duplicate
         console.log(`ignoring old battle (${battle.battleTime.toISOString()} <= ${lastBattleTimestamp.toISOString()}) for ${player.tag} (${tagToId(player.tag)})`)
