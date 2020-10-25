@@ -405,7 +405,7 @@
 }
 
 .bigstat-tooltip-text {
-  @apply absolute top-0 left-0 text-sm w-48 bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left;
+  @apply absolute top-0 left-0 text-sm w-48 bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left z-10;
 }
 
 .bigstat-tooltip-close {
