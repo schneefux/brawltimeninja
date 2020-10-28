@@ -504,12 +504,17 @@ export default Vue.extend({
     },
     async share() {
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
-      await navigator.share({
-        title: `I am a ${this.result} person!`,
-        text: `My Brawler personality is ${this.result}! What's yours?`,
-        url: 'https://brawltime.ninja',
-      })
-      this.$ga.event('quiz', 'click', 'share')
+      try {
+        await navigator.share({
+          title: `I am a ${this.result} person!`,
+          text: `My Brawler personality is ${this.result}! What's yours?`,
+          url: 'https://brawltime.ninja',
+        })
+        this.$ga.event('quiz', 'click', 'share')
+      } catch (err) {
+        console.error(err);
+        this.$ga.event('quiz', 'click', 'share_error')
+      }
     },
     ...mapMutations({
       setPersonalityTestResult: 'setPersonalityTestResult',
