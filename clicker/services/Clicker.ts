@@ -449,6 +449,38 @@ export default class ClickerService {
     }))
   }
 
+  public async getMapMeta(trophyrangeLower: string, trophyrangeHigher: string) {
+    const rows = await this.mapMetaCube.query(
+      'meta.map',
+      ['*'],
+      ['brawler_name', 'battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_is_bigbrawler'],
+      {
+        'brawler_trophyrange': [trophyrangeLower, trophyrangeHigher],
+        'trophy_season_end': ['balance'],
+      },
+      { 'picks': 'asc' },
+    )
+
+    return rows.data.map(r => (<MapMetaRow>{
+      brawlerName: r.brawler_name,
+      duration: r.battle_duration,
+      id: r.battle_event_id,
+      isBigbrawler: r.battle_is_bigbrawler,
+      level: r.battle_level,
+      map: r.battle_event_map,
+      mode: r.battle_event_mode,
+      picks: r.picks,
+      picksWeighted: r.picks_weighted,
+      rank: r.battle_rank,
+      rank1Rate: r.battle_rank1,
+      starRate: r.battle_starplayer,
+      timestamp: r.timestamp,
+      trophyChange: r.battle_trophy_change,
+      winRate: r.battle_victory,
+    }))
+  }
+
+
   private getCubeByName(cubeName: string): Cube {
     switch (cubeName) {
       // raw cubes

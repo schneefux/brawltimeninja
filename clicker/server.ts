@@ -38,6 +38,11 @@ app.get('/clicker/top/:metric/brawler/:brawlerId', asyncMiddleware(async (req, r
   res.json(await service.getTopBrawlerByMetric(req.params.brawlerId, req.params.metric, parseInt(req.query.limit as string) || 100))
 }))
 
+app.get('/clicker/meta/map', async (req, res) => {
+  res.header('Cache-Control', 'public, max-age=60')
+  res.json(await service.getMapMeta(req.query.trophyrangeLower as string || '0', req.query.trophyrangeHigher as string || '9999'))
+})
+
 app.get('/clicker/cube/:cube/metadata', asyncMiddleware(async (req, res) => {
   res.header('Cache-Control', 'public, max-age=3600')
   res.json(service.getCubeMetadata(req.params.cube))
