@@ -89,7 +89,7 @@ export default (context, inject) => {
       }
       Object.entries(slices).forEach(([name, args]) => query.append('slice[' + name + ']', args.join(',')))
       const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
-      console.log('querying clicker: ' + url)
+      console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url)
     },
     async queryAllModes() {
