@@ -113,7 +113,7 @@
       <meta-views
         v-if="totalSampleSize > 0"
         :entries="entries"
-        :measurements="['winRate', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
+        :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
         :description="description"
         ga-category="brawler_meta"
         @measurements="ms => selectedMeasurements = ms"
