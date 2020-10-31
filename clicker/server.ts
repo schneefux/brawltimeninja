@@ -51,18 +51,21 @@ app.get('/clicker/cube/:cube/metadata', asyncMiddleware(async (req, res) => {
 app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, res) => {
   const split = (n: string) => n.split(',').filter(p => p.length > 0)
 
+  console.log(req.query)
+
   const cubeName = req.params.cube
   const dimensions = split(req.params.dimensions || '')
-  const query = (req.query || {}) as { [name: string]: string }
+  const query = (req.query || {}) as Record<string, string>
   const measures = split(query['include'] || '*')
-  const slices = Object.entries(query)
-    .filter(([name, value]) => name.startsWith('slice[') && name.endsWith(']'))
-    .reduce((slices, [name, value]) => ({ ...slices, [name.slice('slice['.length, -']'.length)]: value.split(',') }), {} as { [name: string]: string[] })
+  // koa: keeps `slice[name]` = value
+  // express: automatically parses bracket syntax, creates `slice` = { [name]: value }
+  const slices = Object.entries((query.slice || {}) as Record<string, string>)
+    .reduce((slices, [name, value]) => ({ ...slices, [name]: value.split(',') }), {} as Record<string, string[]>)
   const order = split(query['sort'] || '')
     .filter((name) => name.length > 0)
     .reduce((order, name) => ({
       ...order,
-      ...((name.startsWith('-') ? ({ [name.slice(1)]: 'desc' }) : ({ [name]: 'asc' })) as { [name: string]: Order }),
+      ...((name.startsWith('-') ? ({ [name.slice(1)]: 'desc' }) : ({ [name]: 'asc' })) as Record<string, Order>),
     }), {} as Record<string, Order>)
   const limit = parseInt(query['limit']) || 1000
   const cache = parseInt(query['cache']) || 60
