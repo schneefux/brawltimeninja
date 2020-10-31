@@ -1,8 +1,10 @@
 import path from 'path'
 import axios from 'axios'
 
+// TODO migrate this file to ts and import from util
 const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
 const slugify = (str) => str.split(' ').join('-')
+const brawlerId = (entry) => entry.name.replace(/\.| /g, '_').toLowerCase()
 
 export default {
   telemetry: false,
@@ -165,8 +167,8 @@ export default {
       }
 
       try {
-        const brawlers = await axios.get(`${process.env.API_URL}/api/meta/brawler`)
-        brawlers.data.forEach(({ id }) => routes.push(`/tier-list/brawler/${id}`))
+        const brawlers = await axios.get(`${process.env.CLICKER_URL}/clicker/cube/map/query/brawler_name?include=brawler_name`)
+        brawlers.data.forEach((b) => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
       } catch (err) {
         console.error('error adding brawlers to sitemap', err)
       }
