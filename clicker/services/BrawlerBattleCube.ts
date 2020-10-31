@@ -1,4 +1,4 @@
-import Cube from "./MaterializedCube";
+import MaterializedCube from "./MaterializedCube";
 import { QueryBuilder } from "knex";
 import { stripIndent } from "common-tags";
 import { formatClickhouse, getCurrentSeasonEnd } from "../lib/util";
@@ -27,10 +27,34 @@ export interface BrawlerBattleCubeDimensions {
 export interface BrawlerBattleCubeRow extends BrawlerBattleCubeMeasures, BrawlerBattleCubeDimensions {
 }
 
+/*
+ * Win rate z-score calculation:
+ *  n = sample size = picks
+ *  p = average win rate (expectation)
+ *  x = actual wins (observation)
+ *
+ *  mu = expected wins
+ *  normal approximation (valid for n>50 and np>5 and n(1-p)>5):
+ *  sigma^2 = np(1-p)
+ *
+ *  z-score:
+ *  z = (x - mu) / sigma
+ *    = (x - np) / (sqrt(np(1-p)))
+ */
+
+const picks = 'SUM($TABLE.picks)'
+const wins = `toFloat64(avgMerge(battle_victory_state)) * ${picks}`
+const zN = picks
+// cheap approximation
+const zP = '((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55)'
+const zX = wins
+const zScoreConditions = `${zN}>=50 and ${zN}*${zP}>5 and ${zN}*(1-${zP})>5`
+const zScore = `(${zX}-${zN}*${zP})/SQRT(${zN}*${zP}*(1-${zP}))`
+
 /**
  * All Brawler Battle cubes share the same measures and have common dimensions.
  */
-export default abstract class BrawlerBattleCube extends Cube {
+export default abstract class BrawlerBattleCube extends MaterializedCube {
   measures = {
     'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'picks': 'SUM(picks)',
@@ -38,6 +62,8 @@ export default abstract class BrawlerBattleCube extends Cube {
     'battle_rank': 'avgMerge(battle_rank_state)',
     'battle_rank1': 'avgMerge(battle_rank1_state)',
     'battle_victory': 'avgMerge(battle_victory_state)',
+    'wins': `floor(${wins})`,
+    'wins_zscore': `if(${zScoreConditions}, ${zScore}, null)`,
     'battle_duration': 'avgMerge(battle_duration_state)',
     'battle_starplayer': 'avgMerge(battle_starplayer_state)',
     'battle_level': 'avgMerge(battle_level_state)',
@@ -101,6 +127,8 @@ export default abstract class BrawlerBattleCube extends Cube {
     battle_rank: 'float',
     battle_rank1: 'float',
     battle_victory: 'float',
+    wins: 'int',
+    wins_zscore: 'float',
     battle_duration: 'float',
     battle_starplayer: 'float',
     battle_level: 'float',
@@ -134,16 +162,9 @@ export default abstract class BrawlerBattleCube extends Cube {
     avgState(battle_trophy_change) as battle_trophy_change_state
   `
 
-  virtuals = {
-    wins: ['picks', 'battle_victory'],
-  } as Record<string, string[]>
+  virtuals = {} as Record<string, string[]>
 
   mapVirtual(row: Record<string, string>): Record<string, string|number> {
-    if ('picks' in row && 'battle_victory' in row) {
-      return {
-        wins: Math.floor(parseInt(row.picks) * parseFloat(row.battle_victory)),
-      }
-    }
     return {}
   }
 }

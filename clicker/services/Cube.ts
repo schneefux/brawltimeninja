@@ -31,6 +31,10 @@ export default abstract class Cube {
 
   public abstract async up(ch2: ClickHouse2): Promise<void>
 
+  private measureQuery(key: string) {
+    return this.knex.raw(this.measures[key].replace(/\$TABLE/g, this.table))
+  }
+
   public async query<R extends Record<string, string|number|boolean>>(
       name: string,
       measures: string[]|['*'],
@@ -60,7 +64,7 @@ export default abstract class Cube {
       }
       if (measure in this.virtuals) {
         for (const m of this.virtuals[measure]) {
-          query = query.select({ [m]: this.knex.raw(this.measures[m]) })
+          query = query.select({ [m]: this.measureQuery(m) })
         }
         continue
       }
@@ -68,7 +72,7 @@ export default abstract class Cube {
         throw new Error('Invalid measure: ' + measure)
       }
 
-      query = query.select({ [measure]: this.knex.raw(this.measures[measure]) })
+      query = query.select({ [measure]: this.measureQuery(measure) })
     }
 
     for (const [orderColumn, orderDirection] of Object.entries(order)) {
@@ -80,7 +84,7 @@ export default abstract class Cube {
       }
 
       if (!dimensions.includes(orderColumn)) {
-        query = query.select({ [orderColumn]: this.knex.raw(this.measures[orderColumn]) })
+        query = query.select({ [orderColumn]: this.measureQuery(orderColumn) })
       }
 
       query = query.orderBy(orderColumn, orderDirection as string)
