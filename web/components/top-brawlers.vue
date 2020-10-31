@@ -65,7 +65,7 @@ export default Vue.extend({
         trophy_season_end: ['current'],
       },
       {
-        sort: { battle_victory: 'desc' },
+        sort: { wins_zscore: 'desc' },
         limit: 4,
         cache: 60*60,
       })

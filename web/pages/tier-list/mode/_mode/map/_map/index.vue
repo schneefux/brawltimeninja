@@ -19,21 +19,18 @@
         :sample="totalSampleSize"
         :sample-min="100000"
         :timestamp="totalTimestamp"
-        :measurements="measurements"
-        :measurement="measurement"
         :loading="$fetchState.pending"
         cube="map"
-        @select="m => measurement = m"
       ></meta-slicers>
     </div>
 
     <meta-views
       v-if="totalSampleSize > 0"
       :entries="entries"
-      :measurement="measurement"
       :description="description"
+      :measurements="measurements"
       ga-category="map_meta"
-      @view="v => loadAll = (v == 'legacy')"
+      @measurements="ms => selectedMeasurements = ms"
     ></meta-views>
   </div>
 </template>
@@ -72,23 +69,20 @@ export default Vue.extend({
     return {
       slices: this.$clicker.defaultSlices('map'),
       entries: [] as MetaGridEntry[],
-      measurement: 'wins',
+      selectedMeasurements: ['winsZScore'],
       totalSampleSize: 0,
       totalTimestamp: undefined as string|undefined,
-      loadAll: false,
     }
   },
   watch: {
     slices: '$fetch',
-    measurement: '$fetch',
-    loadAll: '$fetch',
+    selectedMeasurements: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
-    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks', 'timestamp'] : [...this.measurements.map(m => measurementMap[m]), 'picks', 'timestamp']
     const data = await this.$clicker.query('meta.map', 'map',
       ['brawler_name'],
-      measurements,
+      this.selectedMeasurements.map(m => measurementMap[m]),
       {
         ...this.slices,
         battle_event_mode: [this.event.mode],
@@ -100,18 +94,10 @@ export default Vue.extend({
       id: row.brawler_name,
       brawler: row.brawler_name,
       title: capitalizeWords(row.brawler_name.toLowerCase()),
-      stats: !this.loadAll ? {
-        [this.measurement]: row[measurementMap[this.measurement]]
-          / (measurementOfTotal[this.measurement] ? data.totals[measurementMap[this.measurement]] : 1),
-      } : {
-        wins: row.wins,
-        winRate: row.battle_victory,
-        useRate: row.picks_weighted / data.totals.picks_weighted,
-        pickRate: row.picks / data.totals.picks,
-        starRate: row.battle_starplayer,
-        rank1Rate: row.battle_rank1,
-        duration: row.battle_duration,
-      },
+      stats: this.selectedMeasurements.reduce((stats, m) => ({
+        ...stats,
+        [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
+      }), {} as Record<string, number>),
       sampleSize: row.picks,
       link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
     }) as MetaGridEntry)

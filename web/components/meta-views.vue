@@ -1,41 +1,56 @@
 <template>
   <div>
     <div class="section mt-4 card px-3 py-2 card--dark">
-      <span class="mr-2">Layout</span>
-      <button
-        class="button mr-1"
-        :class="{
-          'button--selected': view == 'tierlist',
-        }"
-        @click="setView('tierlist')"
-      >Tier List</button>
-      <button
-        class="button mr-1"
-        :class="{
-          'button--selected': view == 'table',
-        }"
-        @click="setView('table')"
-      >Table</button>
-      <button
-        class="button mr-1"
-        :class="{
-          'button--selected': view == 'legacy',
-        }"
-        @click="setView('legacy')"
-      >Grid</button>
-      <button
-        class="button mr-1"
-        :class="{
-          'button--selected': view == 'graph',
-        }"
-        @click="setView('graph')"
-      >Graph</button>
+      <div class="w-full flex">
+        <div class="w-14 flex-shrink-0 mt-1">
+          <span>Layout</span>
+        </div>
+        <div class="flex flex-wrap">
+          <button
+            v-for="(name, key) in views"
+            :key="key"
+            :class="{
+              'button--selected': view == key,
+            }"
+            class="button mr-1"
+            @click="setView(key)"
+          >
+            {{ name }}
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="showMetricSelector"
+        class="w-full mt-3 flex"
+      >
+        <div class="w-14 flex-shrink-0 mt-1">
+          <span>Metric</span>
+        </div>
+        <div class="flex flex-wrap">
+          <button
+            v-for="m in measurements"
+            :key="m"
+            class="mr-2 mb-1 button button--sm"
+            :class="{ 'button--selected': measurement == m }"
+            @click="setMeasurement(m)"
+          >
+            {{ metaStatMaps.labels[m] }}
+          </button>
+        </div>
+      </div>
+
+      <p
+        v-if="showMetricSelector"
+        class="w-full mt-2"
+      >
+        {{ metaStatMaps.descriptions[measurement] }}
+      </p>
     </div>
 
     <meta-tier-list
       v-if="view == 'tierlist'"
       :entries="entries"
-      :stat="measurement"
       :description="description"
     ></meta-tier-list>
     <meta-table
@@ -60,7 +75,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MetaGridEntry } from '../lib/util'
+import { measurementMap, MetaGridEntry, metaStatMaps } from '../lib/util'
 
 export default Vue.extend({
   props: {
@@ -68,9 +83,9 @@ export default Vue.extend({
       type: Array as PropType<MetaGridEntry[]>,
       required: true
     },
-    measurement: {
-      type: String,
-      required: true
+    measurements: {
+      type: Array as PropType<string[]>,
+      required: false
     },
     gaCategory: {
       type: String,
@@ -83,14 +98,56 @@ export default Vue.extend({
   },
   data() {
     return {
+      views: {
+        tierlist: 'Tier List',
+        table: 'Table',
+        legacy: 'Details',
+        graph: 'Graph',
+      },
       view: 'tierlist',
+      nextView: undefined as string|undefined,
+      measurement: 'winRate',
+      nextMeasurement: undefined as string|undefined,
     }
   },
+  watch: {
+    entries() {
+      // delay component rerendering until data has been refreshed
+      if (this.nextView != undefined) {
+        this.view = this.nextView
+        this.nextView = undefined
+      }
+      if (this.nextMeasurement != undefined) {
+        this.measurement = this.nextMeasurement
+        this.nextMeasurement = undefined
+      }
+    },
+  },
   methods: {
-    setView(v: string) {
-      this.$emit('view', v)
-      this.view = v
+    setView(v: string, old: string) {
+      if (v == 'legacy') {
+        this.$emit('measurements', this.measurements, 'picks', 'timestamp')
+      }
+      if (v == 'tierlist') {
+        this.$emit('measurements', ['winsZScore'])
+      }
+      if (['table', 'graph'].includes(v) && !['table', 'graph'].includes(old)) {
+        this.setMeasurement(this.measurements[0])
+      }
+      this.nextView = v
       this.$ga.event(this.gaCategory, 'click', 'show_' + v)
+    },
+    setMeasurement(m: string) {
+      this.$emit('measurements', [m])
+      this.nextMeasurement = m
+    }
+  },
+  computed: {
+    metaStatMaps() {
+      return metaStatMaps
+    },
+    showMetricSelector(): boolean {
+      return ['table', 'graph', 'legacy'].includes(this.view) && this.measurements != undefined
     },
   },
 })

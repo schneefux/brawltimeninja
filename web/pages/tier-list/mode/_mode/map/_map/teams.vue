@@ -19,12 +19,28 @@
         :sample="totalSampleSize"
         :sample-min="100000"
         :timestamp="totalTimestamp"
-        :measurements="['wins', 'winRate', 'picks']"
-        :measurement="measurement"
         :loading="$fetchState.pending"
         cube="synergy"
-        @select="m => measurement = m"
       ></meta-slicers>
+    </div>
+
+    <div class="section w-full">
+      <div class="mx-auto max-w-md card card--dark px-3 py-2 flex">
+        <div class="w-14 flex-shrink-0 mt-1">
+          <span>Metric</span>
+        </div>
+        <div class="flex flex-wrap">
+          <button
+            v-for="m in ['wins', 'winRate', 'picks']"
+            :key="m"
+            class="mr-2 mb-1 button button--sm"
+            :class="{ 'button--selected': measurement == m }"
+            @click="measurement = m"
+          >
+            {{ metaStatMaps.labels[m] }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="section w-full max-w-md card card--dark px-3 py-2">

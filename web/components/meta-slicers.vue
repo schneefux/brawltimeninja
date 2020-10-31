@@ -7,7 +7,7 @@
     }"
   >
     <div class="flex items-center">
-      <div class="w-24">
+      <div class="w-20">
         <span>Timespan</span>
       </div>
       <div class="flex flex-wrap">
@@ -27,7 +27,7 @@
       v-if="cube == 'map'"
       class="flex items-center mt-2"
     >
-      <div class="w-24">
+      <div class="w-20">
         <span>Setting</span>
       </div>
       <span class="mr-3 text-xs">Regular</span>
@@ -69,32 +69,12 @@
         Select a different filter.
       </template>
     </p>
-
-    <div
-      v-if="measurements != undefined"
-      class="mt-2 flex"
-    >
-      <div class="w-24 flex-shrink-0">
-        <span>Metric</span>
-      </div>
-      <div class="flex flex-wrap">
-        <button
-          v-for="stat in measurements"
-          :key="stat"
-          class="mr-2 mb-1 button button--sm"
-          :class="{ 'button--selected': selectedMeasurement == stat }"
-          @click="selectedMeasurement = stat"
-        >
-          {{ metaStatMaps.labels[stat] }}
-        </button>
-      </div>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatSI, metaStatMaps } from '../lib/util'
+import { formatSI } from '../lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 
 // TODO add big brawler
@@ -125,14 +105,6 @@ export default Vue.extend({
       type: String,
       required: false
     },
-    measurement: {
-      type: String,
-      required: false
-    },
-    measurements: {
-      type: Array as PropType<string[]>,
-      required: false
-    },
     loading: {
       type: Boolean,
       default: false
@@ -151,19 +123,8 @@ export default Vue.extend({
     formatSI() {
       return formatSI
     },
-    metaStatMaps() {
-      return metaStatMaps
-    },
     lastUpdate(): string {
       return formatDistanceToNow(parseISO(this.timestamp), { addSuffix: true })
-    },
-    selectedMeasurement: {
-      get(): string {
-        return this.measurement
-      },
-      set(v: string) {
-        this.$emit('select', v)
-      }
     },
     trophyRange: {
       get(): number[] {

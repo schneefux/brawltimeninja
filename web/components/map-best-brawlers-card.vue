@@ -155,7 +155,7 @@ export default Vue.extend({
         battle_event_mode: [this.mode],
       },
       {
-        sort: { battle_victory: 'desc' },
+        sort: { wins_zscore: 'desc' },
         limit: 5,
         cache: 60*30,
       })

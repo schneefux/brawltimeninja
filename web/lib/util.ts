@@ -414,6 +414,7 @@ export function formatClickhouseDate(timestamp: Date) {
 export const measurementMap = {
   winRate: 'battle_victory',
   wins: 'wins',
+  winsZScore: 'wins_zscore',
   useRate: 'picks_weighted',
   pickRate: 'picks',
   starRate: 'battle_starplayer',
@@ -424,6 +425,7 @@ export const measurementMap = {
 export const measurementOfTotal = {
   winRate: false,
   wins: false,
+  winsZScore: false,
   useRate: true,
   pickRate: true,
   starRate: false,
@@ -440,4 +442,67 @@ export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: stri
 
 export function compare1(stat: string) {
   return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
+}
+
+interface DiffRow {
+  brawler_id: string
+  brawler_name: string
+  picks: number
+  battle_victory: number
+  battle_starplayer: number
+  battle_rank1: number
+}
+
+// calculate diff stats between brawlers with & without starpower/gadget
+export function calculateDiffs(rows: DiffRow[], accessoryNameKey: string, accessoryIdKey: string, includeZScore: boolean) {
+  const statsToDiffs = (accessory: DiffRow) => {
+    const brawlerWithout = rows
+      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
+    const perc = (v: number) => Math.round(v * 100 * 100) / 100
+    const signed = (v: number) => v > 0 ? `+${v}%` : `${v}%`
+    const format = (v: number) => signed(perc(v))
+
+    if (brawlerWithout == undefined) {
+      return {
+        ...(includeZScore ? { winsZScore: undefined } : {}),
+        winRate: accessory.battle_victory,
+        starRate: accessory.battle_starplayer,
+        rank1Rate: accessory.battle_rank1,
+      }
+    }
+
+    // calculate z-score, testing with star power wins against without star power wins
+    const zX = accessory.battle_victory * accessory.picks
+    const zN = accessory.picks
+    const zP = brawlerWithout.battle_victory
+    const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
+    const z = zCondition ? (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP)) : undefined
+
+    return {
+        ...(includeZScore ? { winsZScore: z } : {}),
+      winRate: format(accessory.battle_victory - brawlerWithout.battle_victory),
+      starRate: format(accessory.battle_starplayer - brawlerWithout.battle_starplayer),
+      rank1Rate: format(accessory.battle_rank1 - brawlerWithout.battle_rank1),
+    }
+  }
+  const sampleSize = (accessory: DiffRow) => {
+    const brawlerWithout = rows
+      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
+    if (brawlerWithout == undefined) {
+      return 0
+    }
+    return Math.min(accessory.picks, brawlerWithout.picks)
+  }
+
+  return rows
+    .filter(s => s[accessoryNameKey] !== '')
+    .map((accessory) => (<MetaGridEntry>{
+      id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
+      title: capitalizeWords(accessory[accessoryNameKey].toLowerCase()),
+      brawler: accessory.brawler_name,
+      sampleSize: sampleSize(accessory),
+      stats: statsToDiffs(accessory),
+      icon: `/gadgets/${accessory[accessoryIdKey]}`,
+      link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
+    }))
 }

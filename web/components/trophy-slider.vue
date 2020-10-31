@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center mt-4">
-    <div class="w-24 flex-shrink-0">
+    <div class="w-20 flex-shrink-0">
       <span>{{ name }}</span>
     </div>
     <div class="flex w-full">

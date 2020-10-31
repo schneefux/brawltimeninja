@@ -19,19 +19,16 @@
         v-model="slices"
         :sample="totalSampleSize"
         :sample-min="300000"
-        :measurements="measurements"
-        :measurement="measurement"
         :loading="$fetchState.pending"
         cube="starpower"
-        @select="m => measurement = m"
       ></meta-slicers>
 
       <meta-views
         v-if="totalSampleSize > 0"
         :entries="entries"
-        :measurement="measurement"
+        :measurements="measurements"
         ga-category="starpower_meta"
-        @view="v => loadAll = (v == 'legacy')"
+        @measurements="ms => selectedMeasurements = ms"
       ></meta-views>
     </div>
   </div>
@@ -40,62 +37,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, brawlerId, measurementMap, capitalizeWords } from '../../lib/util'
-
-interface Row {
-  picks: number;
-  brawler_id: string
-  brawler_name: string
-  brawler_starpower_id: number
-  brawler_starpower_name: string
-  battle_victory: number
-  battle_starplayer: number
-  battle_rank1: number
-}
-
-function calculateDiffs(rows: Row[]) {
-  const statsToDiffs = (starpower: Row) => {
-    const brawlerWithout = rows
-      .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
-    const perc = (v) => Math.round(v * 100 * 100) / 100
-    const signed = (v) => v > 0 ? `+${v}%` : `${v}%`
-    const format = (v) => signed(perc(v))
-
-    if (brawlerWithout == undefined) {
-      return {
-        winRate: starpower.battle_victory,
-        starRate: starpower.battle_starplayer,
-        rank1Rate: starpower.battle_rank1,
-      }
-    }
-
-    return {
-      winRate: format(starpower.battle_victory - brawlerWithout.battle_victory),
-      starRate: format(starpower.battle_starplayer - brawlerWithout.battle_starplayer),
-      rank1Rate: format(starpower.battle_rank1 - brawlerWithout.battle_rank1),
-    }
-  }
-  const sampleSize = (starpower: Row) => {
-    const brawlerWithout = rows
-      .find(b => b.brawler_starpower_name == '' && b.brawler_id == starpower.brawler_id)
-    if (brawlerWithout == undefined) {
-      return 0
-    }
-    return Math.min(starpower.picks, brawlerWithout.picks)
-  }
-
-  return rows
-    .filter(s => s.brawler_starpower_name !== '')
-    .map((starpower) => (<MetaGridEntry>{
-      id: `${starpower.brawler_id}-${starpower.brawler_starpower_name}`,
-      title: capitalizeWords(starpower.brawler_starpower_name.toLowerCase()),
-      brawler: starpower.brawler_name,
-      sampleSize: sampleSize(starpower),
-      stats: statsToDiffs(starpower),
-      icon: `/starpowers/${starpower.brawler_starpower_id}`,
-      link: `/tier-list/brawler/${brawlerId({ name: starpower.brawler_name })}`,
-    }))
-}
+import { MetaGridEntry, brawlerId, measurementMap, capitalizeWords, calculateDiffs } from '../../lib/util'
 
 export default Vue.extend({
   data() {
@@ -103,9 +45,8 @@ export default Vue.extend({
       slices: this.$clicker.defaultSlices('starpower'),
       entries: [] as MetaGridEntry[],
       measurements: ['winRate', 'starRate', 'rank1Rate'],
-      measurement: 'winRate',
+      selectedMeasurements: ['winsZScore'],
       totalSampleSize: 0,
-      loadAll: false,
     }
   },
   head() {
@@ -125,18 +66,17 @@ export default Vue.extend({
   },
   watch: {
     slices: '$fetch',
-    measurement: '$fetch',
-    loadAll: '$fetch',
+    selectedMeasurements: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
-    const measurements = !this.loadAll ? [measurementMap[this.measurement], 'picks'] : [...this.measurements.map(m => measurementMap[m]), 'picks']
+    const calculateZScore = this.selectedMeasurements[0] == 'winsZScore'
     const data = await this.$clicker.query('meta.starpower', 'starpower',
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
-      measurements,
+      calculateZScore ? ['battle_victory', 'picks'] : this.selectedMeasurements.map(m => measurementMap[m]),
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
-    this.entries = calculateDiffs(data.data)
+    this.entries = calculateDiffs(data.data, 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
     this.totalSampleSize = data.totals.picks
   },
   methods: {
