@@ -184,12 +184,12 @@
             @click="ratingHelpOpen = false"
             class="bigstat-tooltip-text"
           >
-            Ratings are calculated by comparing mean Brawler trophies to all players on Brawl Time Ninja.
+            The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
             <ul>
-              <li>C: Better than 50%</li>
-              <li>B: Better than 90%</li>
-              <li>A: Better than 95%</li>
-              <li>S: Better than 99%</li>
+              <li
+                v-for="(info, rating) in ratingPercentiles"
+                :key="rating"
+              >{{ rating }}: Better than {{ info[0] * 100 }}% (&leq;{{ info[1] }} Trophies)</li>
             </ul>
             <span class="bigstat-tooltip-close">x</span>
           </p>
@@ -236,6 +236,16 @@ export default Vue.extend({
       ratingHelpOpen: false,
       recentHelpOpen: false,
       history: [] as TrophiesRow[],
+      ratingPercentiles: {
+        // key: percentile, trophy boundary
+        '?': [0, 480],
+        'D': [0.25, 500],
+        'C': [0.375, 520],
+        'B': [0.5, 590],
+        'A': [0.9, 630],
+        'S': [0.95, 730],
+        'S+': [0.99, Infinity],
+      },
     }
   },
   watch: {
@@ -341,26 +351,14 @@ export default Vue.extend({
     },
     accountRating(): string {
       const medTrophies = this.trophiesGoal / this.totalBrawlers
-      // end of Jan 2019 season *average* (not med!) trophies per brawler:
-      // 290 - 25%ile
-      // 380 - 50%ile
-      // 530 - 90%ile
-      // 550 - 95%ile
-      // 620 - 99%ile
-      // TODO 2020-08-08 end of season data: mu = 457, sigma = 182
-      if (medTrophies <= 290) {
-        return '?'
+      // measured on 2020-11-01 with data from 2020-10-01
+      // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
+      for (const key in this.ratingPercentiles) {
+        if (medTrophies <= this.ratingPercentiles[key][1]) {
+          return key
+        }
       }
-      if (medTrophies <= 380) {
-        return 'C'
-      }
-      if (medTrophies <= 530) {
-        return 'B'
-      }
-      if (medTrophies <= 550) {
-        return 'A'
-      }
-      return 'S'
+      return '?'
     },
     funStats(): { [name: string]: { label: string, value: (n: number) => number } } {
       return {
