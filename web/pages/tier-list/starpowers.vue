@@ -73,7 +73,7 @@ export default Vue.extend({
     const calculateZScore = this.selectedMeasurements[0] == 'winsZScore'
     const data = await this.$clicker.query('meta.starpower', 'starpower',
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
-      calculateZScore ? ['battle_victory', 'picks'] : this.selectedMeasurements.map(m => measurementMap[m]),
+      [...(calculateZScore ? ['battle_victory'] : this.selectedMeasurements.map(m => measurementMap[m])), 'picks', 'timestamp'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
     this.entries = calculateDiffs(data.data, 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)

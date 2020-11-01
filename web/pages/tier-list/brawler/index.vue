@@ -176,7 +176,7 @@ export default Vue.extend({
   async fetch() {
     const data = await this.$clicker.query('meta.brawler', 'map',
       ['brawler_name'],
-      this.selectedMeasurements.map(m => measurementMap[m]),
+      [...this.selectedMeasurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
 

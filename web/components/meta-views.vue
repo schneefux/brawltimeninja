@@ -126,7 +126,7 @@ export default Vue.extend({
   methods: {
     setView(v: string, old: string) {
       if (v == 'legacy') {
-        this.$emit('measurements', this.measurements, 'picks', 'timestamp')
+        this.$emit('measurements', this.measurements)
       }
       if (v == 'tierlist') {
         this.$emit('measurements', ['winsZScore'])
@@ -138,8 +138,13 @@ export default Vue.extend({
       this.$ga.event(this.gaCategory, 'click', 'show_' + v)
     },
     setMeasurement(m: string) {
-      this.$emit('measurements', [m])
-      this.nextMeasurement = m
+      if (this.view == 'legacy') {
+        // do not refetch, just update the sort
+        this.measurement = m
+      } else {
+        this.$emit('measurements', [m])
+        this.nextMeasurement = m
+      }
     }
   },
   computed: {
