@@ -129,7 +129,7 @@ export default Vue.extend({
         this.$emit('measurements', this.measurements)
       }
       if (v == 'tierlist') {
-        this.$emit('measurements', ['winsZScore'])
+        this.$emit('measurements', ['winRateAdj'])
       }
       if (['table', 'graph'].includes(v) && !['table', 'graph'].includes(old)) {
         this.setMeasurement(this.measurements[0])

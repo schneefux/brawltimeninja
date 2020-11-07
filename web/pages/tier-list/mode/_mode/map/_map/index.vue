@@ -69,7 +69,7 @@ export default Vue.extend({
     return {
       slices: this.$clicker.defaultSlices('map'),
       entries: [] as MetaGridEntry[],
-      selectedMeasurements: ['winsZScore'],
+      selectedMeasurements: ['winRateAdj'],
       totalSampleSize: 0,
       totalTimestamp: undefined as string|undefined,
     }

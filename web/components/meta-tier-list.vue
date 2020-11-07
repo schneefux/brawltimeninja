@@ -57,8 +57,9 @@ import { TierList, TierListEntry } from '~/model/Web'
 import { brawlerId, capitalizeWords } from '../lib/util'
 
 function groupTiers(entries: TierListEntry[]): TierList {
-  // min-max scale z-scores into the 5 tiers and put nulls into '?' tier
-  const scores = entries.map(e => e.stats.winsZScore).filter(e => e != undefined)
+  const getStat = (e: TierListEntry) => e.stats.winRateAdj
+  // min-max scale stat into the 5 tiers and put nulls into '?' tier
+  const scores = entries.map(getStat).filter(e => e != undefined)
   const max = Math.max(...scores)
   const min = Math.min(...scores)
   const minMax = (v: number) => (v - min) / (max - min)
@@ -67,8 +68,8 @@ function groupTiers(entries: TierListEntry[]): TierList {
 
   for (const entry of entries) {
     let key = '?'
-    if (entry.stats.winsZScore != undefined) {
-      const index = (tiers.length - 1) - Math.floor(minMax(entry.stats.winsZScore) * (tiers.length - 1))
+    if (getStat(entry) != undefined) {
+      const index = (tiers.length - 1) - Math.floor(minMax(getStat(entry)) * (tiers.length - 1))
       key = tiers[index]
     }
 
@@ -80,7 +81,7 @@ function groupTiers(entries: TierListEntry[]): TierList {
   }
 
   for (const key in tierMap) {
-    tierMap[key].sort((e1, e2) => e2.stats.winsZScore - e1.stats.winsZScore)
+    tierMap[key].sort((e1, e2) => getStat(e2) - getStat(e1))
   }
 
   return tierMap

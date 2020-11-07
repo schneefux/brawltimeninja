@@ -160,7 +160,7 @@ export default Vue.extend({
       modeName: '',
       maps: [] as EventIdAndMap[],
       entries: [] as MetaGridEntry[],
-      selectedMeasurements: ['winsZScore'],
+      selectedMeasurements: ['winRateAdj'],
       totalSampleSize: 0,
       totalTimestamp: undefined as string|undefined,
     }
