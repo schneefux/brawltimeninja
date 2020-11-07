@@ -28,28 +28,61 @@ export interface BrawlerBattleCubeRow extends BrawlerBattleCubeMeasures, Brawler
 }
 
 /*
- * Win rate z-score calculation:
- *  n = sample size = picks
- *  p = average win rate (expectation)
- *  x = actual wins (observation)
- *
- *  mu = expected wins
- *  normal approximation (valid for n>50 and np>5 and n(1-p)>5):
- *  sigma^2 = np(1-p)
- *
- *  z-score:
- *  z = (x - mu) / sigma
- *    = (x - np) / (sqrt(np(1-p)))
+   Win rate z-score calculation:
+    n = sample size = picks
+    p = average win rate (expectation)
+    x = actual wins (observation)
+
+    mu = expected wins
+    normal approximation (valid for n>50 and np>5 and n(1-p)>5):
+    sigma^2 = np(1-p)
+
+    z-score:
+    z = (x - mu) / sigma
+      = (x - np) / (sqrt(np(1-p)))
  */
 
 const picks = 'SUM($TABLE.picks)'
-const wins = `toFloat64(avgMerge(battle_victory_state)) * ${picks}`
+const winRate = `toFloat64(avgMerge(battle_victory_state))`
+const wins = `${winRate} * ${picks}`
 const zN = picks
 // cheap approximation
 const zP = '((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55)'
 const zX = wins
 const zScoreConditions = `${zN}>=50 and ${zN}*${zP}>5 and ${zN}*(1-${zP})>5`
 const zScore = `(${zX}-${zN}*${zP})/SQRT(${zN}*${zP}*(1-${zP}))`
+
+/*
+  The average Brawler win rate is p0=55%, it varies by +/- 7.5%p.
+  We want to sort into 5 tiers, so we want to be accurate by 1.5%p.
+  We'll use a beta distribution to take this a priori into account.
+  Estimate the distribution's parameters using R and a 95% confidence interval:
+    install.packages("rriskDistributions")
+    library(rriskDistributions)
+    p <- 0.55
+    delta <- 0.075/5
+    get.beta.par(p = c(0.025, 0.5, 0.975), q = c(p-delta, p, p+delta))
+  -> alpha=1583, beta=1295
+
+  So our a priori distribution is beta(alpha, beta)
+  and our a posteriori distribution beta(alpha+wins, beta+losses).
+  For a beta distribution, mu = alpha/(alpha+beta)
+  so winrate_post = (alpha+winrate*picks)/(alpha+beta+picks)
+
+  Win rate has a high correlation to average trophies,
+  so we improve our prior by fitting a regression:
+    winrate_pri = (trophies_mean/100-5)^2/100+0.55
+  We do not want to run R on the server, so we estimate one of the parameters:
+    mu=alpha/(alpha+beta)=winrate_pri
+    beta=alpha/winrate_pri-alpha
+
+  Which gives us:
+    winrate_post = (1583+winrate*picks)/(1583/((trophies_mean/100-5)^2/100+0.55)+picks)
+
+  see https://stats.stackexchange.com/a/58792
+  see https://stats.stackexchange.com/a/47782
+*/
+const winratePosterior = `(1583+${wins})/(1583/${zP}+${picks})`
 
 /**
  * All Brawler Battle cubes share the same measures and have common dimensions.
@@ -62,6 +95,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
     'battle_rank': 'avgMerge(battle_rank_state)',
     'battle_rank1': 'avgMerge(battle_rank1_state)',
     'battle_victory': 'avgMerge(battle_victory_state)',
+    'battle_victory_adj': winratePosterior,
     'wins': `floor(${wins})`,
     'wins_zscore': `if(${zScoreConditions}, ${zScore}, null)`,
     'battle_duration': 'avgMerge(battle_duration_state)',
@@ -127,6 +161,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
     battle_rank: 'float',
     battle_rank1: 'float',
     battle_victory: 'float',
+    battle_victory_adj: 'float',
     wins: 'int',
     wins_zscore: 'float',
     battle_duration: 'float',
