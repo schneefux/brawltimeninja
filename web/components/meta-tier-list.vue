@@ -2,7 +2,7 @@
   <div class="container mx-auto">
     <div class="section card card--dark px-3 py-2">
       <p>
-        Tiers are calculated from win rates and pick rates using a z-score outlier detection. <br>
+        Tiers are calculated from win rates using Bayesian inference. <br>
         Click on a Brawler to learn more about them.
       </p>
       <ul class="mt-2">
