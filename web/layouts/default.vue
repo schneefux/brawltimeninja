@@ -54,18 +54,6 @@
               Profile Search
             </nuxt-link>
             <nuxt-link
-              to="/leaderboard/hours"
-              class="nav-link"
-            >
-              Leaderboards
-            </nuxt-link>
-            <nuxt-link
-              to="/blog/guides"
-              class="nav-link"
-            >
-              Guides
-            </nuxt-link>
-            <nuxt-link
               to="/tier-list/brawler"
               class="nav-link"
             >
@@ -76,6 +64,18 @@
               class="nav-link"
             >
               Map Tier Lists
+            </nuxt-link>
+            <nuxt-link
+              to="/leaderboard/hours"
+              class="nav-link"
+            >
+              Leaderboards
+            </nuxt-link>
+            <nuxt-link
+              to="/blog/guides"
+              class="nav-link"
+            >
+              Guides
             </nuxt-link>
             <nuxt-link
               to="/status"
