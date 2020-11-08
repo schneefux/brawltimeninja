@@ -133,8 +133,10 @@ export default Vue.extend({
       }
       if (['table', 'graph'].includes(v) && !['table', 'graph'].includes(old)) {
         this.setMeasurement(this.measurements[0])
+        this.view = v
+      } else {
+        this.nextView = v
       }
-      this.nextView = v
       this.$ga.event(this.gaCategory, 'click', 'show_' + v)
     },
     setMeasurement(m: string) {
