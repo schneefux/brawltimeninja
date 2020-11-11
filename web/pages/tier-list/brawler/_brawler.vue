@@ -40,8 +40,7 @@
 
       <p class="mt-4">
         Info:
-        Star Power statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
-        Gadget statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
+        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power / Gadget and a Brawler with zero Star Powers / Gadgets.
       </p>
 
       <div class="mt-2 w-full flex justify-end">
@@ -228,7 +227,7 @@ export default Vue.extend({
   head(): MetaInfo {
     const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
     return {
-      title: `${this.brawlerName} Statistics`,
+      title: `${this.brawlerName} in Brawl Stars`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

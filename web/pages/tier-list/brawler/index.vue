@@ -142,7 +142,7 @@ export default Vue.extend({
   head() {
     const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.'
     return {
-      title: 'All Brawlers Tier List',
+      title: 'Brawler Tier List',
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
