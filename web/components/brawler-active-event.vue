@@ -19,7 +19,7 @@
           ></media-img>
         </div>
         <dl
-          v-if="data.picks > 3000"
+          v-if="data.picks > 1000"
           class="w-48 px-3 py-2"
         >
           <div class="flex justify-between">
