@@ -41,18 +41,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PicksWins } from '~/plugins/clicker'
 import { metaStatMaps, brawlerId } from '../lib/util'
-
-interface SynergyRow {
-  ally_brawler_name: string
-  battle_victory: number
-  picks: number
-}
 
 interface Row {
   brawler_name: string
-  battle_victory: number
   picks: number
+  battle_victory: number
 }
 
 export default Vue.extend({
@@ -98,46 +93,47 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    // TODO use brawler_id
-
     /*
-      Let A, B be Brawlers and H(x) the number of wins.
-      How much better is P(A,B) than P(A)*P(B)?
-      We know:
-        P(A,B) = P(A) * P(B|A)
-        P(A) = H(A) / H
-        P(B|A) = H(B,A) / H(A)
-      so:
-        P(A,B) = H(B,A) * H(B) / H(A) / H
+      Calculate the difference between
+      assumed independence: P(brawler,ally) = P(brawler) * P(ally) = H(brawler) * H(ally) / H^2
+      and observation:      P(brawler,ally) = H(brawler,ally) / H
     */
-    // TODO: Apply the above, fix the base rate fallacy present in this code
 
-    const synergies = await this.$clicker.query<SynergyRow>('meta.synergy.widget', 'synergy',
-      ['ally_brawler_name'],
-      ['picks', 'battle_victory'],
-      {
-        ...this.$clicker.defaultSlices('synergy'),
-        brawler_name: [this.brawler.toUpperCase()],
-      },
-      { cache: 60*60 })
+    const slices = this.$clicker.defaultSlices('synergy')
 
-    // get winrate(A) and winrate(B)
-    const baselines = await this.$clicker.query<Row>('meta.synergy.widget.all', 'synergy',
-        ['brawler_name'],
-        ['picks', 'battle_victory'],
-        this.$clicker.defaultSlices('synergy'),
-        { cache: 60*60 })
+    const bayesStats = await this.$clicker.calculateBayesSynergies(slices, 'meta.synergy.widget', this.brawler)
 
-    const baselineMap = baselines.data.reduce((map, row) => ({
-      ...map,
-      [row.brawler_name]: row.battle_victory,
-    }), {} as Record<string, number>)
+    const data: Row[] = []
+    const brawler = this.brawler.toUpperCase()
+    bayesStats.pairData.get(brawler)!.forEach((picksWins, allyBrawler) => {
+      if (brawler == allyBrawler) {
+        return
+      }
 
-    const data = synergies.data.map((row) => (<Row>{
-      brawler_name: row.ally_brawler_name,
-      picks: row.picks,
-      battle_victory: row.battle_victory - Math.sqrt(baselineMap[this.brawler.toUpperCase()] * baselineMap[row.ally_brawler_name]),
-    }))
+      const hBrawler = bayesStats.data.get(brawler)!
+      const hAlly = bayesStats.data.get(allyBrawler)!
+      const hBrawlerAlly = picksWins
+      const h = bayesStats.totals
+      const h2: PicksWins = {
+        wins: bayesStats.totals.wins * bayesStats.totals.wins,
+        picks: bayesStats.totals.picks * bayesStats.totals.picks,
+      }
+
+      const assumption: PicksWins = {
+        picks: hBrawler.picks * hAlly.picks / h2.picks,
+        wins: hBrawler.wins * hAlly.wins / h2.wins,
+      }
+      const observation: PicksWins = {
+        picks: hBrawlerAlly.picks / h.picks,
+        wins: hBrawlerAlly.wins / h.wins,
+      }
+
+      data.push({
+        brawler_name: allyBrawler,
+        picks: bayesStats.sampleSize,
+        battle_victory: observation.wins / observation.picks - assumption.wins / assumption.picks,
+      })
+    })
 
     data.sort((e1, e2) => e2.picks >= this.sampleSizeThreshold && e1.picks >= this.sampleSizeThreshold ? e2.battle_victory - e1.battle_victory : e2.picks - e1.picks)
     this.data = data

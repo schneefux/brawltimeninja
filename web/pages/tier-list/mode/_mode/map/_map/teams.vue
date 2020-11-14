@@ -98,6 +98,7 @@
 import Vue, { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { brawlerId, capitalizeWords, metaStatMaps } from '~/lib/util'
+import { PicksWins } from '~/plugins/clicker'
 
 interface Row {
   brawler_name: string
@@ -119,7 +120,6 @@ interface Team {
   picks: number
   wins: number
   winRate: number
-  pickRate: number
 }
 
 export default Vue.extend({
@@ -161,131 +161,71 @@ export default Vue.extend({
       battle_event_mode: [this.event.mode],
       battle_event_map: [this.event.map],
     }
-    const pairData = await this.$clicker.query('meta.map.teams', 'synergy',
-      ['brawler_name', 'ally_brawler_name'],
-      ['wins', 'picks'],
-      slices,
-      { cache: 60*60 })
-    // TODO - might be possible to hit the cheaper map endpoint instead
-    const singleData = await this.$clicker.query('meta.map.teams', 'synergy',
-      ['brawler_name'],
-      ['wins', 'picks', 'timestamp'],
-      slices,
-      { cache: 60*60 })
-    const singleDataRev = await this.$clicker.query('meta.map.teams', 'synergy',
-      ['ally_brawler_name'],
-      ['wins', 'picks'],
-      slices,
-      { cache: 60*60 })
 
-    this.totalSampleSize = pairData.totals.picks
-    this.totalTimestamp = singleData.totals.timestamp
+    const bayesStats = await this.$clicker.calculateBayesSynergies(slices, 'meta.map.teams')
+
+    this.totalSampleSize = bayesStats.sampleSize
+    this.totalTimestamp = bayesStats.timestamp
 
     /*
-      Let A, B, C be the three Brawlers and H(x) the number of wins.
+      Let A, B, C be the three Brawlers and H(x) the number of wins or picks.
       We are interested in P(A,B,C).
       We know P(A,B,C) = P(A) * P(B|A) * P(C|A,B).
       Collecting data for H(A,B,C) is expensive (n brawlers -> n^3 permutations)
-      but we have singles H(x) and pairs H(x,y), so we know:
-        P(A) = H(A) / H  [1]
-        P(B|A) = H(B,A) / H(A)  [2]
+      but we have H(x) and H(x,y), so we know:
+        P(A) = H(A) / H
+        P(B,A) = H(B,A) / H
+        P(B|A) = P(B,A) / P(A)
+               = H(B,A) / H(A)
       We we are missing P(C|A,B).
-      Bayes theorem states: P(C|A,B) = P(A,B|C) * P(C) / P(A,B)  [3]
-      We can look up:
-        P(C) = H(C) / H  [4]
-        P(A,B) = H(A,B) / H  [5]
-      Since we don't have P(C|A,B), we need to cheat and assume
-      that (A,B) and (C) are independent:  [*]
-        P(A,B|C) = P(A,B) * P(C) / P(C) = P(A,B)  [6]
+      We will cheat and calculate it as the weighted average of P(C|A) and P(C|B):
+        P(C|A,B) = (P(C|A) * P(A) + P(C|B) * P(B)) / (P(A) + P(B))
+                  = (H(C,A) / H(A) * H(A) / H + H(C,B) / H(B) * H(B) / H) / (H(A) / H + H(B) / H)
+                  = (H(C,A) + H(C,B)) / (H(A) + H(B))
       This leaves us with
-        P_i(A,B,C) =
-          [1]    (H(A) / H) *
-          [2]    (H(B,A) / H(A)) *
-          [3,6]  (H(A,B) / H) *
-          [3,4]  (H(C) / H) /
-          [3,5]  (H(A,B) / H)
+        P(A,B,C) = H(A) / H * H(B,A) / H(A) * (H(C,A) + H(C,B)) / (H(A) + H(B))
       Simplify:
-        P_i(A,B,C) = H(B,A) * H(C) / H^2
-      To smooth out the error at [*], we calculate the average
-      over all variations:
-        P(A,B,C) = (P_i(A,B,C) + P_i(A,C,B) + P_i(B,A,C) + P_i(B,C,A) + P_i(C,A,B) + P_i(C,B,A)) / 6
-      The pairs are symmetrical, since H(A,B) = H(B,A) this leads to:
-        P(A,B,C) = (2 * H(A,B) * H(C) / H^2 + 2 * H(B,C) * H(A) / H^2 + 2 * H(A,C) * H(B) / H^2) / 6
-      Simplify:
-        P(A,B,C) = (H(A,B) * H(C) + H(B,C) * H(A) + H(A,C) * H(B)) / 3 / H^2
+        P(A,B,C) = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
     */
-
-    interface Stats {
-      picks: number
-      wins: number
-    }
-    const key = (...names: string[]) => names.sort().join('+')
-    const merge = (map: Map<string, Stats>, row: Stats, key: string) => {
-      if (!map.has(key)) {
-        map.set(key, { picks: 0, wins: 0 })
-      }
-      map.get(key)!.picks += row.picks
-      map.get(key)!.wins += row.wins
-      return map
-    }
 
     // duoShowdown is an exception because it has 2 player teams
     if (this.event.mode == 'duoShowdown') {
-      const pairs = new Map<string, Stats>()
-      pairData.data.forEach((row) => merge(pairs, row, key(row.brawler_name, row.ally_brawler_name)))
-      this.teams = [...pairs.entries()]
+      const teams = new Map<string, PicksWins>()
+      bayesStats.pairData.forEach((data, brawler1) => data.forEach((picksWins, brawler2) => {
+        bayesStats.addToMap(teams, picksWins, bayesStats.key(brawler1, brawler2))
+      }))
+      this.teams = [...teams.entries()]
         .map(([id, s]) => ({
           name: id,
-          brawlers: id.split('+').map(b => capitalizeWords(b.toLowerCase())),
+          brawlers: bayesStats.unkey(id).map(b => capitalizeWords(b.toLowerCase())),
           picks: s.picks,
           wins: s.wins,
           winRate: s.wins / s.picks,
-          pickRate: s.picks / pairData.totals.picks,
         }))
         .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])
       return
     }
 
-    // H(A)
-    const singleH = new Map<string, Stats>()
-    singleData.data.forEach((row) => merge(singleH, row, row.brawler_name))
-    singleDataRev.data.forEach((row) => merge(singleH, row, row.ally_brawler_name))
-    // H
-    const singleTotal = {
-      picks: singleData.totals.picks + singleDataRev.totals.picks,
-      wins: singleData.totals.wins + singleDataRev.totals.wins,
-    }
+    const tripleP = new Map<string, PicksWins>()
 
-    // H(A,B) = H(B,A)
-    const rowKey = (row: Row) => key(row.brawler_name, row.ally_brawler_name)
-    const pairH = new Map<string, Stats>()
-    pairData.data.forEach((row) => merge(pairH, row, rowKey(row)))
-
-    const tripleP = new Map<string, Stats>()
-
-    const h2: Stats = {
-      wins: singleTotal.wins * singleTotal.wins,
-      picks: singleTotal.picks * singleTotal.picks,
-    }
-    for (const [a, hA] of singleH) {
-      for (const [b, hB] of singleH) {
-        const hBA = pairH.get(key(b, a))
-        // disqualify no data
-        if (hBA == undefined) {
-          continue
-        }
-
-        for (const [c, hC] of singleH) {
-          // disqualify Brawler duplicates
-          if (a == b || b == c || c == a) {
+    for (const [c, hC] of bayesStats.data) {
+      for (const [b, hB] of bayesStats.data) {
+        for (const [a, hA] of bayesStats.data) {
+          const hBA = bayesStats.pairData.get(a)?.get(b)
+          const hCA = bayesStats.pairData.get(c)?.get(a)
+          const hCB = bayesStats.pairData.get(c)?.get(b)
+          // disqualify no data or Brawler duplicates
+          if (hBA == undefined || hCA == undefined || hCB == undefined
+           || a == b || b == c || c == a) {
             continue
           }
-          // P(A,B,C) = (H(A,B) * H(C) + H(B,C) * H(A) + H(A,C) * H(B)) / 3 / H^2
-          const data = {
-            wins: hBA.wins * hC.wins / 3 / h2.wins,
-            picks: hBA.picks * hC.picks / 3 / h2.picks,
+          // = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
+          // since we would multiply with H later, skip the division
+          const data: PicksWins = {
+            wins: hBA.wins * (hCA.wins + hCB.wins) / (hA.wins + hB.wins),
+            picks: hBA.picks * (hCA.picks + hCB.picks) / (hA.picks + hB.picks),
           }
-          merge(tripleP, data, key(a, b, c))
+          bayesStats.addToMap(tripleP, data, bayesStats.key(a, b, c))
         }
       }
     }
@@ -293,11 +233,10 @@ export default Vue.extend({
     this.teams = [...tripleP.entries()]
       .map(([id, s]) => ({
         name: id,
-        brawlers: id.split('+').map(b => capitalizeWords(b.toLowerCase())),
-        picks: Math.round(s.picks * singleTotal.picks),
-        wins: Math.round(s.wins * singleTotal.wins),
-        winRate: (s.wins * singleTotal.wins) / (s.picks * singleTotal.picks),
-        pickRate: s.picks,
+        brawlers: bayesStats.unkey(id).map(b => capitalizeWords(b.toLowerCase())),
+        picks: Math.round(s.picks),
+        wins: Math.round(s.wins),
+        winRate: s.wins / s.picks,
       }))
       .filter((t) => t.picks >= 10)
       .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])

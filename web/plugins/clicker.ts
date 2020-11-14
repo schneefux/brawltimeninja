@@ -3,6 +3,11 @@ import { formatMode } from "~/lib/util"
 
 const cubes = ['player', 'brawler', 'map', 'synergy', 'starpower', 'gadget']
 
+export interface PicksWins {
+  picks: number
+  wins: number
+}
+
 interface Clicker {
   defaultSlices(cube: string): Record<string, string[]>
   cubes: typeof cubes[number][]
@@ -20,6 +25,23 @@ interface Clicker {
     }): Promise<{ data: T[], totals: T }>
   queryAllModes(): Promise<string[]>
   describeSlices(slices: Record<string, string[]>, timestamp?: string): string
+  calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string): Promise<{
+    sampleSize: number,
+    timestamp: string,
+    // H
+    totals: PicksWins,
+    // H(brawler)
+    data: Map<string, PicksWins>,
+    // H(ally_brawler,brawler)
+    pairData: Map<string, Map<string, PicksWins>>,
+    // utility functions:
+    // join brawler names
+    key: (...names: string[]) => string,
+    // split
+    unkey: (key: string) => string[],
+    // accumulator
+    addToMap: (map: Map<string, PicksWins>, row: PicksWins, key: string) => Map<string, PicksWins>,
+  }>
 }
 
 declare module 'vue/types/vue' {
@@ -147,6 +169,67 @@ export default (context, inject) => {
       }
 
       return description.join(', ')
+    },
+    async calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string) {
+      // H(ally_brawler,brawler)
+      const pairData = await this.query(tag, 'synergy',
+        ['brawler_name', 'ally_brawler_name'],
+        ['wins', 'picks'],
+        {
+          ...slices,
+          ...(brawler == undefined ? {} : { brawler_name: [brawler.toUpperCase()] }),
+        },
+        { cache: 60*60 })
+      // H(brawler) and H
+      const data = await this.query(tag, 'map',
+        ['brawler_name'],
+        ['wins', 'picks', 'timestamp'],
+        slices,
+        { cache: 60*60 })
+
+      const totalSampleSize = data.totals.picks
+      const totalTimestamp = data.totals.timestamp
+
+      const key = (...names: string[]) => names.sort().join('+')
+      const addToMap = (map: Map<string, PicksWins>, row: PicksWins, key: string) => {
+        if (!map.has(key)) {
+          map.set(key, { picks: 0, wins: 0 })
+        }
+        map.get(key)!.picks += row.picks
+        map.get(key)!.wins += row.wins
+        return map
+      }
+
+      // H(ally_brawler,brawler)
+      const pairMap = new Map<string, Map<string, PicksWins>>()
+      pairData.data.forEach((row) => {
+        if (!pairMap.has(row.brawler_name)) {
+          pairMap.set(row.brawler_name, new Map<string, PicksWins>())
+        }
+        pairMap.get(row.brawler_name)!.set(row.ally_brawler_name, {
+          picks: row.picks,
+          wins: row.wins,
+        })
+      })
+      // H(brawler)
+      const dataMap = new Map<string, PicksWins>()
+      data.data.forEach((row) => dataMap.set(row.brawler_name, row))
+      // H
+      const totals: PicksWins = {
+        picks: data.totals.picks,
+        wins: data.totals.wins,
+      }
+
+      return {
+        totals,
+        data: dataMap,
+        pairData: pairMap,
+        sampleSize: totalSampleSize,
+        timestamp: totalTimestamp,
+        key,
+        unkey: (id: string) => id.split('+'),
+        addToMap,
+      }
     },
   })
 }
