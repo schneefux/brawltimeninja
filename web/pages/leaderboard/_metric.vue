@@ -14,7 +14,7 @@
       <h1 class="page-h1">Brawl Stars {{ metricName }} Leaderboard</h1>
 
       <p>
-        The best players are ranked by {{ metricName }} in this leaderboard.
+        The best players, ranked by {{ metricName }}.
       </p>
 
       <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
@@ -59,14 +59,17 @@
               <td class="font-semibold">
                 <nuxt-link
                   :to="`/player/${entry.tag}`"
-                  class="link"
+                  class="flex items-center"
                 >
                   <media-img
                     v-if="entry.icon"
                     :path="`/avatars/${entry.icon}`"
-                    clazz="h-8 inline mr-1"
+                    clazz="h-8"
+                    wrapper-class="flex-shrink-0"
                   ></media-img>
-                  {{ entry.name }}
+                  <span class="link ml-2">
+                    {{ entry.name }}
+                  </span>
                 </nuxt-link>
               </td>
               <td class="text-right">

@@ -135,30 +135,30 @@
         </div>
       </dl>
 
-      <dl class="bigstat-container" v-if="winRate !== 0">
+      <dl class="bigstat-container bigstat-tooltip-container" v-if="winRate !== 0">
         <div class="bigstat-left relative">
           <dd class="bigstat-number">
             {{ Math.floor(winRate * 100) }}%
           </dd>
           <button
             @click="recentHelpOpen = true"
-            class="bigstat-tooltip-btn"
+            class="bigstat-tooltip__btn"
           >?</button>
-          <p
-            v-if="recentHelpOpen"
-            @click="recentHelpOpen = false"
-            class="bigstat-tooltip-text"
-          >
-            Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
-            The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
-            <span class="bigstat-tooltip-close">x</span>
-          </p>
         </div>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
             Recent Win&nbsp;Rate
           </dt>
         </div>
+        <p
+          v-if="recentHelpOpen"
+          @click="recentHelpOpen = false"
+          class="bigstat-tooltip__text"
+        >
+          Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
+          The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
+          <span class="bigstat-tooltip__close">x</span>
+        </p>
       </dl>
 
       <dl class="bigstat-container" v-if="trophyRate !== 0">
@@ -172,33 +172,33 @@
         </div>
       </dl>
 
-      <dl class="bigstat-container">
+      <dl class="bigstat-container bigstat-tooltip-container">
         <div class="bigstat-left relative">
           <dd class="bigstat-number">{{ accountRating }}</dd>
           <button
             @click="ratingHelpOpen = true"
-            class="bigstat-tooltip-btn"
+            class="bigstat-tooltip__btn"
           >?</button>
-          <p
-            v-if="ratingHelpOpen"
-            @click="ratingHelpOpen = false"
-            class="bigstat-tooltip-text"
-          >
-            The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
-            <ul>
-              <li
-                v-for="(info, rating) in ratingPercentiles"
-                :key="rating"
-              >{{ rating }}: Better than {{ info[0] * 100 }}% (&leq;{{ info[1] }} Trophies)</li>
-            </ul>
-            <span class="bigstat-tooltip-close">x</span>
-          </p>
         </div>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
             Account Rating
           </dt>
         </div>
+        <p
+          v-if="ratingHelpOpen"
+          @click="ratingHelpOpen = false"
+          class="bigstat-tooltip__text"
+        >
+          The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
+          <ul>
+            <li
+              v-for="(info, rating) in ratingPercentiles"
+              :key="rating"
+            >{{ rating }}: Better than {{ info[0] * 100 }}% (up to {{ info[1] }} Trophies)</li>
+          </ul>
+          <span class="bigstat-tooltip__close">x</span>
+        </p>
       </dl>
     </div>
   </div>

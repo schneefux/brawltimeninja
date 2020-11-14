@@ -16,6 +16,10 @@ export default Vue.extend({
       type: [String, Object],
       default: ''
     },
+    wrapperClass: {
+      type: [String, Object],
+      default: ''
+    },
     ztyle: {
       type: String,
       default: ''
@@ -47,7 +51,7 @@ export default Vue.extend({
       }
       return '?' + encodeQuery(opts)
     }
-    return <picture>
+    return <picture class={props.wrapperClass}>
       <source srcset={props.mediaUrl + props.path + '.webp' + query(props)} type="image/webp" />
       <img
         src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)}

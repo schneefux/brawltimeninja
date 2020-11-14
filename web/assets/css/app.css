@@ -400,14 +400,18 @@
   @apply text-3xl text-primary-light;
 }
 
-.bigstat-tooltip-btn {
+.bigstat-tooltip-container {
+  @apply relative;
+}
+
+.bigstat-tooltip__btn {
   @apply absolute mt-2 mr-1 text-primary-light font-semibold underline top-0 right-0;
 }
 
-.bigstat-tooltip-text {
-  @apply absolute top-0 left-0 text-sm w-48 bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left z-10;
+.bigstat-tooltip__text {
+  @apply absolute top-0 left-0 text-sm bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left z-10;
 }
 
-.bigstat-tooltip-close {
+.bigstat-tooltip__close {
   @apply text-primary-light font-semibold absolute top-0 right-0 mr-1 cursor-pointer;
 }
