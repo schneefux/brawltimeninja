@@ -119,7 +119,7 @@ export default (context, inject) => {
         ['battle_event_mode'],
         ['battle_event_mode'],
         { trophy_season_end: ['balance'] },
-        { sort: { picks: 'desc' }, cache: 60*60*24 })
+        { sort: { picks: 'desc' }, cache: 60*60 })
       return modes.data.map(row => row.battle_event_mode)
     },
     describeSlices(slices: Record<string, string[]>, timestamp?: string) {

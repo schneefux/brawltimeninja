@@ -10,7 +10,7 @@ export default Vue.extend({
       {
         battle_event_id: [params.event],
       },
-      { cache: 60*60*24 })
+      { cache: 60*60 })
     if (events.data.length == 0) {
       error({ statusCode: 404, message: 'Event not found' })
       return true

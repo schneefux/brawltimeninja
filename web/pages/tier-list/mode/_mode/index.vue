@@ -200,7 +200,7 @@ export default Vue.extend({
       { battle_event_mode: [mode] },
       {
         sort: { timestamp: 'desc' },
-        cache: 60*60*24,
+        cache: 60*60,
       })
 
     return {
