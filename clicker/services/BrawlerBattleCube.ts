@@ -113,6 +113,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
 
   static defaultSlices = {
     'trophy_season_end': 1,
+    'trophy_season_end_exact': 1,
     'brawler_trophyrange': 2,
     'brawler_id': 1,
     'brawler_name': 1,
@@ -135,6 +136,8 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
           args[0] = formatClickhouse(oneMonthAgo)
         }
         return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+      case 'trophy_season_end_exact':
+        return query.where('trophy_season_end', '=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
         if (args[1] == '10') {
           args[1] = '999'
