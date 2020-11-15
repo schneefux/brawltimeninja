@@ -2,8 +2,11 @@
 import Vue from 'vue'
 import Plotly from 'plotly.js/lib/core'
 import PlotlyComponent from '~/components/plotly'
+import PlotlyPie from 'plotly.js/lib/pie'
 
-Plotly.register([])
+Plotly.register([
+  PlotlyPie,
+])
 Vue.component('plotly', PlotlyComponent)
 
 export default (context, inject) => {

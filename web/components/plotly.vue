@@ -11,26 +11,34 @@ export default {
     },
     layout: {
       type: Object,
-      default: {}
+      default: () => {}
     },
     options: {
       type: Object,
-      default: {}
+      default: () => {}
     },
   },
-  data() {
-    return {
-      plot: undefined,
-    }
-  },
   mounted() {
-    if (process.client) {
-      this.refresh()
-    }
+    this.refresh()
   },
   methods: {
     refresh() {
-      this.$plotly.react(this.$refs.graph, this.traces, this.layout, this.options)
+      if (!process.client) {
+        return
+      }
+      this.$plotly.react(this.$refs.graph, this.traces, {
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+        font: {
+          color: '#ffffff',
+        },
+        dragmode: false,
+        ...this.layout
+      }, {
+        displayModeBar: false,
+        responsive: true,
+        ...this.options,
+      })
     },
   },
   watch: {

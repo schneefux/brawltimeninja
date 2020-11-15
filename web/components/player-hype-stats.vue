@@ -103,15 +103,13 @@
 
         <div class="w-full max-w-xs my-3 md:my-0 md:w-80 relative">
           <div class="h-24 md:h-20 flex flex-col justify-center">
-            <client-only>
-              <history-graph
-                v-if="history.length > 1"
-                :history="history"
-              ></history-graph>
-              <span v-else class="italic">
-                Come back later to see progress charts
-              </span>
-            </client-only>
+            <history-graph
+              v-if="history.length > 1"
+              :history="history"
+            ></history-graph>
+            <span v-else class="italic">
+              Come back later to see progress charts
+            </span>
           </div>
         </div>
       </div>

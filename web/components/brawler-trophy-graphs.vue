@@ -1,42 +1,40 @@
 <template>
   <div class="md:flex md:flex-wrap md:justify-center">
-    <client-only>
-      <div
-        v-if="trophiesUseRateChart != undefined"
-        class="card-wrapper"
-      >
-        <plotly
-          :traces="trophiesUseRateChart.traces"
-          :layout="trophiesUseRateChart.layout"
-          :options="trophiesUseRateChart.options"
-          class="h-48 card card--dark md:max-w-lg"
-        ></plotly>
-      </div>
+    <div
+      v-if="trophiesUseRateChart != undefined"
+      class="card-wrapper"
+    >
+      <plotly
+        :traces="trophiesUseRateChart.traces"
+        :layout="trophiesUseRateChart.layout"
+        :options="trophiesUseRateChart.options"
+        class="h-48 card card--dark md:max-w-lg"
+      ></plotly>
+    </div>
 
-      <div
-        v-if="trophiesWinRateChart != undefined"
-        class="card-wrapper"
-      >
-        <plotly
-          :traces="trophiesWinRateChart.traces"
-          :layout="trophiesWinRateChart.layout"
-          :options="trophiesWinRateChart.options"
-          class="h-48 card card--dark md:max-w-lg"
-        ></plotly>
-      </div>
+    <div
+      v-if="trophiesWinRateChart != undefined"
+      class="card-wrapper"
+    >
+      <plotly
+        :traces="trophiesWinRateChart.traces"
+        :layout="trophiesWinRateChart.layout"
+        :options="trophiesWinRateChart.options"
+        class="h-48 card card--dark md:max-w-lg"
+      ></plotly>
+    </div>
 
-      <div
-        v-if="trophiesStarRateChart != undefined"
-        class="card-wrapper"
-      >
-        <plotly
-          :traces="trophiesStarRateChart.traces"
-          :layout="trophiesStarRateChart.layout"
-          :options="trophiesStarRateChart.options"
-          class="h-48 card card--dark md:max-w-lg"
-        ></plotly>
-      </div>
-    </client-only>
+    <div
+      v-if="trophiesStarRateChart != undefined"
+      class="card-wrapper"
+    >
+      <plotly
+        :traces="trophiesStarRateChart.traces"
+        :layout="trophiesStarRateChart.layout"
+        :options="trophiesStarRateChart.options"
+        class="h-48 card card--dark md:max-w-lg"
+      ></plotly>
+    </div>
   </div>
 </template>
 
@@ -66,12 +64,6 @@ const trophyGraphLayout = {
     tickcolor: '#ffffff',
   },
   margin: { t: 10, l: 55, b: 65, r: 10 },
-  plot_bgcolor: 'rgba(0, 0, 0, 0)',
-  paper_bgcolor: 'rgba(0, 0, 0, 0)',
-  font: {
-    color: '#ffffff',
-  },
-  dragmode: false,
   showlegend: true,
   legend: {
     x: 0,
@@ -81,11 +73,6 @@ const trophyGraphLayout = {
       size: 10,
     },
   },
-}
-
-const trophyGraphOptions = {
-  displayModeBar: false,
-  responsive: true,
 }
 
 const trophyranges = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -165,7 +152,6 @@ export default Vue.extend({
             tickcolor: '#ffffff',
           },
         },
-        options: trophyGraphOptions,
       }
     },
     trophiesUseRateChart(): any {
@@ -206,7 +192,6 @@ export default Vue.extend({
             tickcolor: '#ffffff',
           },
         },
-        options: trophyGraphOptions,
       }
     },
     trophiesWinRateChart(): any {
@@ -247,7 +232,6 @@ export default Vue.extend({
             tickcolor: '#ffffff',
           },
         },
-        options: trophyGraphOptions,
       }
     },
     ...mapState({

@@ -49,23 +49,11 @@ export default Vue.extend({
         tickangle: 0,
       },
       margin: { t: 5, l: 50, b: 24, r: 25 },
-      plot_bgcolor: 'rgba(0, 0, 0, 0)',
-      paper_bgcolor: 'rgba(0, 0, 0, 0)',
-      font: {
-        color: '#ffffff',
-      },
-      dragmode: false,
-    }
-
-    const options = {
-      displayModeBar: false,
-      responsive: true,
     }
 
     return <plotly
       traces={traces}
       layout={layout}
-      options={options}
       class="h-full"
     ></plotly>
   }
