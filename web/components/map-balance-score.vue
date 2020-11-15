@@ -34,11 +34,19 @@ export default Vue.extend({
     map: {
       type: String,
     },
+    season: {
+      type: String,
+    },
   },
   data() {
     return {
       data: [] as Row[],
     }
+  },
+  watch: {
+    map: '$fetch',
+    mode: '$fetch',
+    season: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
@@ -47,12 +55,16 @@ export default Vue.extend({
       ['wins'],
       {
         ...this.$clicker.defaultSlices('map'),
+        ...(this.map != undefined ? {
+          battle_event_map: [this.map],
+        } : {}),
         ...(this.mode != undefined ? {
           battle_event_mode: [this.mode],
         } : {}),
-        ...(this.map != undefined ? {
-          battle_event_map: [this.map],
-        } : {})
+        ...(this.season != undefined ? {
+          trophy_season_end: undefined,
+          trophy_season_end_exact: [this.season],
+        } : {}),
       },
       { cache: 60*60 })
     this.data = data.data

@@ -45,7 +45,6 @@ export default Vue.extend({
       format(n: number) {
         return n == 10 ? '1000+' : n * 100
       },
-      timeout: undefined as undefined|ReturnType<typeof setTimeout>,
     }
   },
 })

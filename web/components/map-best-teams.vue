@@ -55,6 +55,9 @@ export default Vue.extend({
     mode: {
       type: String,
     },
+    season: {
+      type: String,
+    },
     limit: {
       type: Number,
       default: 2,
@@ -64,6 +67,11 @@ export default Vue.extend({
     return {
       teams: [] as Team[],
     }
+  },
+  watch: {
+    map: '$fetch',
+    mode: '$fetch',
+    season: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
@@ -75,7 +83,12 @@ export default Vue.extend({
       ...(this.mode != undefined ? {
         battle_event_mode: [this.mode],
       } : {}),
+      ...(this.season != undefined ? {
+        trophy_season_end: undefined,
+        trophy_season_end_exact: [this.season],
+      } : {}),
     }
+    this.teams = []
 
     // save bandwith and computation time by approximating top N
     const teams = await this.$clicker.calculateTeams(slices, 'meta.map.best-teams', this.limit * this.totalBrawlers)

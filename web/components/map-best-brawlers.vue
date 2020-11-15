@@ -45,6 +45,9 @@ export default Vue.extend({
     mode: {
       type: String,
     },
+    season: {
+      type: String,
+    },
     limit: {
       type: Number,
       default: 5
@@ -55,8 +58,15 @@ export default Vue.extend({
       data: [] as Row[],
     }
   },
+  watch: {
+    map: '$fetch',
+    mode: '$fetch',
+    season: '$fetch',
+  },
   fetchDelay: 0,
   async fetch() {
+    this.data = []
+
     const data = await this.$clicker.query('meta.map.best', 'map',
       ['brawler_name'],
       ['battle_victory'],
@@ -67,6 +77,10 @@ export default Vue.extend({
         } : {}),
         ...(this.mode != undefined ? {
           battle_event_mode: [this.mode],
+        } : {}),
+        ...(this.season != undefined ? {
+          trophy_season_end: undefined,
+          trophy_season_end_exact: [this.season],
         } : {}),
       },
       {

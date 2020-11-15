@@ -29,7 +29,7 @@ function addToMap(map: Map<string, PicksWins>, row: PicksWins, teamToKey: string
   return map
 }
 
-interface Slices extends Record<string, string[]> {}
+interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
   defaultSlices(cube: string): Record<string, string[]>
@@ -40,7 +40,7 @@ interface Clicker {
     cube: typeof cubes[number],
     dimensions: string[],
     measures: string[],
-    slices: Record<string, string[]>,
+    slices: Slices,
     options: {
       sort?: Record<string, string>,
       limit?: number,
@@ -131,7 +131,9 @@ export default (context, inject) => {
       if (options.cache != undefined) {
         query.append('cache', options.cache.toString())
       }
-      Object.entries(slices).forEach(([name, args]) => query.append('slice[' + name + ']', args.join(',')))
+      Object.entries(slices)
+        .filter(([name, args]) => args != undefined)
+        .forEach(([name, args]) => query.append('slice[' + name + ']', args!.join(',')))
       const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url)

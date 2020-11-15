@@ -30,6 +30,7 @@
           <map-balance-score
             :mode="mode"
             :map="map"
+            :season="season"
             class="darkbox stat"
           ></map-balance-score>
 
@@ -40,6 +41,7 @@
             <map-best-brawlers
               :mode="mode"
               :map="map"
+              :season="season"
               class="mt-2 mb-1"
             ></map-best-brawlers>
           </div>
@@ -54,6 +56,7 @@
             <map-best-teams
               :mode="mode"
               :map="map"
+              :season="season"
               class="mt-2 mb-1"
             ></map-best-teams>
           </div>
@@ -80,6 +83,9 @@ export default Vue.extend({
     },
     timestamp: {
       type: String,
+    },
+    season: {
+      type: String
     },
   },
   computed: {

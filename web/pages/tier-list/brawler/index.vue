@@ -93,11 +93,18 @@
     <div
       class="section-heading"
       v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'stats'),
+        callback: (v, e) => trackScroll(v, e, 'widget'),
         once: true,
       }"
     >
-      <h2 class="page-h2">Tier List for all Maps and Modes</h2>
+      <h2 class="page-h2">State of the Meta</h2>
+      <p>
+        Curious about the past?
+        <nuxt-link
+          to="/tier-list/history"
+          class="link"
+        >Explore the Time Capsule.</nuxt-link>
+      </p>
     </div>
 
     <div
@@ -108,6 +115,16 @@
       class="section flex justify-center"
     >
       <map-detail-card></map-detail-card>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'stats'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">Tier List for all Maps and Modes</h2>
     </div>
 
     <div class="section">
