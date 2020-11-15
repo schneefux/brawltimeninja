@@ -43,6 +43,7 @@
           <event-card
             :mode="mode"
             :map="map.map"
+            nobackground
           >
             <template v-slot:content>
               <div class="flex justify-center bg-gray-800">

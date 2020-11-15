@@ -73,10 +73,10 @@
                       :alt="brawler"
                       size="160"
                       clazz="h-6 md:h-8"
-                    />
+                    ></media-img>
                   </div>
                 </div>
-                <span class="text-sm md:text-lg">{{ team.brawlers.join(', ') }}</span>
+                <span class="text-sm md:text-lg">{{ capitalizeWords(team.brawlers.join(', ').toLowerCase()) }}</span>
               </div>
             </td>
             <td class="text-right font-semibold text-lg">
@@ -98,14 +98,6 @@
 import Vue, { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { brawlerId, capitalizeWords, metaStatMaps } from '~/lib/util'
-import { PicksWins } from '~/plugins/clicker'
-
-interface Row {
-  brawler_name: string
-  ally_brawler_name: string
-  wins: number
-  picks: number
-}
 
 interface BMap {
   id: string
@@ -162,86 +154,22 @@ export default Vue.extend({
       battle_event_map: [this.event.map],
     }
 
-    const bayesStats = await this.$clicker.calculateBayesSynergies(slices, 'meta.map.teams')
-
-    this.totalSampleSize = bayesStats.sampleSize
-    this.totalTimestamp = bayesStats.timestamp
-
-    /*
-      Let A, B, C be the three Brawlers and H(x) the number of wins or picks.
-      We are interested in P(A,B,C).
-      We know P(A,B,C) = P(A) * P(B|A) * P(C|A,B).
-      Collecting data for H(A,B,C) is expensive (n brawlers -> n^3 permutations)
-      but we have H(x) and H(x,y), so we know:
-        P(A) = H(A) / H
-        P(B,A) = H(B,A) / H
-        P(B|A) = P(B,A) / P(A)
-               = H(B,A) / H(A)
-      We we are missing P(C|A,B).
-      We will cheat and calculate it as the weighted average of P(C|A) and P(C|B):
-        P(C|A,B) = (P(C|A) * P(A) + P(C|B) * P(B)) / (P(A) + P(B))
-                  = (H(C,A) / H(A) * H(A) / H + H(C,B) / H(B) * H(B) / H) / (H(A) / H + H(B) / H)
-                  = (H(C,A) + H(C,B)) / (H(A) + H(B))
-      This leaves us with
-        P(A,B,C) = H(A) / H * H(B,A) / H(A) * (H(C,A) + H(C,B)) / (H(A) + H(B))
-      Simplify:
-        P(A,B,C) = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
-    */
-
-    // duoShowdown is an exception because it has 2 player teams
-    if (this.event.mode == 'duoShowdown') {
-      const teams = new Map<string, PicksWins>()
-      bayesStats.pairData.forEach((data, brawler1) => data.forEach((picksWins, brawler2) => {
-        bayesStats.addToMap(teams, picksWins, bayesStats.key(brawler1, brawler2))
-      }))
-      this.teams = [...teams.entries()]
-        .map(([id, s]) => ({
-          name: id,
-          brawlers: bayesStats.unkey(id).map(b => capitalizeWords(b.toLowerCase())),
-          picks: s.picks,
-          wins: s.wins,
-          winRate: s.wins / s.picks,
-        }))
-        .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])
-      return
-    }
-
-    const tripleP = new Map<string, PicksWins>()
-
-    for (const [c, hC] of bayesStats.data) {
-      for (const [b, hB] of bayesStats.data) {
-        for (const [a, hA] of bayesStats.data) {
-          const hBA = bayesStats.pairData.get(a)?.get(b)
-          const hCA = bayesStats.pairData.get(c)?.get(a)
-          const hCB = bayesStats.pairData.get(c)?.get(b)
-          // disqualify no data or Brawler duplicates
-          if (hBA == undefined || hCA == undefined || hCB == undefined
-           || a == b || b == c || c == a) {
-            continue
-          }
-          // = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
-          // since we would multiply with H later, skip the division
-          const data: PicksWins = {
-            wins: hBA.wins * (hCA.wins + hCB.wins) / (hA.wins + hB.wins),
-            picks: hBA.picks * (hCA.picks + hCB.picks) / (hA.picks + hB.picks),
-          }
-          bayesStats.addToMap(tripleP, data, bayesStats.key(a, b, c))
-        }
-      }
-    }
-
-    this.teams = [...tripleP.entries()]
-      .map(([id, s]) => ({
-        name: id,
-        brawlers: bayesStats.unkey(id).map(b => capitalizeWords(b.toLowerCase())),
-        picks: Math.round(s.picks),
-        wins: Math.round(s.wins),
-        winRate: s.wins / s.picks,
+    const teams = await this.$clicker.calculateTeams(slices, 'meta.map.teams')
+    this.teams = teams.teams
+      .map((teamPicksWins) => ({
+        name: teamPicksWins.brawlers.join('+'),
+        brawlers: teamPicksWins.brawlers,
+        picks: Math.round(teamPicksWins.picks),
+        wins: Math.round(teamPicksWins.wins),
+        winRate: teamPicksWins.wins / teamPicksWins.picks,
       }))
       .filter((t) => t.picks >= 10)
       .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])
   },
   computed: {
+    capitalizeWords() {
+      return capitalizeWords
+    },
     brawlerId() {
       return brawlerId
     },

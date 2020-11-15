@@ -12,7 +12,7 @@
             :class="{
               'button--selected': view == key,
             }"
-            class="button mr-1"
+            class="button mr-1 mb-1"
             @click="setView(key)"
           >
             {{ name }}

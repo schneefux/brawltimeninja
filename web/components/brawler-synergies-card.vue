@@ -11,7 +11,7 @@
         <div
           v-for="brawler in data.slice(0, 5 + page * 10)"
           :key="brawler.brawler_name"
-          class="brawler-avatars__element my-2"
+          class="brawler-avatars__element w-1/5 my-2"
         >
           <nuxt-link
             :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"

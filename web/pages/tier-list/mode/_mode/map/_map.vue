@@ -29,19 +29,12 @@
       }"
       class="section flex justify-center"
     >
-      <map-best-brawlers-card
+      <map-detail-card
         :mode="event.mode"
         :map="event.map"
         :id="event.id"
-        large
-      ></map-best-brawlers-card>
-    </div>
-
-    <div class="section flex justify-center">
-      <meta-balance-score
-        :mode="event.mode"
-        :map="event.map"
-      ></meta-balance-score>
+        :timestamp="event.timestamp"
+      ></map-detail-card>
     </div>
 
     <div
@@ -148,7 +141,7 @@ export default Vue.extend({
     const map = deslugify(params.map)
     const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
-      ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
+      ['battle_event_id', 'battle_event_mode', 'battle_event_map', 'timestamp'],
       {
         battle_event_mode: [mode],
         battle_event_map: [map],
@@ -165,6 +158,7 @@ export default Vue.extend({
         map,
         mode,
         modeName: formatMode(mode),
+        timestamp: event.timestamp,
       } as Map,
     }
   },

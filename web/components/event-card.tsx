@@ -25,6 +25,10 @@ export default Vue.extend({
       type: String,
       default: 'w-80',
     },
+    nobackground: {
+      type: Boolean,
+      default: false
+    },
   },
   render(h, { props, scopedSlots }) {
     const slots = {
@@ -42,7 +46,7 @@ export default Vue.extend({
       title-link={props.mode != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}` : undefined}
       subtitle={props.map}
       subtitle-link={props.map != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}` : undefined}
-      background={'/modes/' + props.mode + '/background'}
+      background={props.nobackground ? undefined : '/modes/' + props.mode + '/background'}
       icon={'/modes/' + props.mode + '/icon'}
       size={props.size}
       color={'color-' + props.mode.toLowerCase()}

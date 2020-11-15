@@ -1,23 +1,21 @@
 <template>
-  <div class="card card--dark card__content max-w-sm w-full">
-    <dl class="flex justify-around items-center">
-      <dt class="text-center mr-2">
-        <span class="text-lg font-semibold">Balance Rating:</span><br>
-        <span class="text-sm">How diverse is the Meta?</span>
-      </dt>
-      <dd class="text-center ml-2">
-        <span
-          class="text-lg font-bold"
-          :class="{
-            'text-red-500': score > 0.4,
-            'text-orange-400': score > 0.3 && score <= 0.4,
-            'text-green-400': score <= 0.3,
-          }"
-        >{{ score == undefined ? '?' : scoreWords[Math.floor(score * 10)] }}</span><br>
-        <span class="text-sm">Gini Coefficient: {{ score == undefined ? '?' : score.toFixed(2) }}</span>
-      </dd>
-    </dl>
-  </div>
+  <dl class="flex justify-between">
+    <dt class="text-center mr-1">
+      <span class="text-lg font-semibold">Balance Rating:</span><br>
+      <span class="text-xs">How diverse is the Meta?</span>
+    </dt>
+    <dd class="text-center ml-1">
+      <span
+        class="text-lg font-bold"
+        :class="{
+          'text-red-500': score > 0.4,
+          'text-orange-400': score > 0.3 && score <= 0.4,
+          'text-green-400': score <= 0.3,
+        }"
+      >{{ score == undefined ? '?' : scoreWords[Math.floor(score * 10)] }}</span><br>
+      <span class="text-xs">Gini Coefficient: {{ score == undefined ? '?' : score.toFixed(2) }}</span>
+    </dd>
+  </dl>
 </template>
 
 <script lang="ts">

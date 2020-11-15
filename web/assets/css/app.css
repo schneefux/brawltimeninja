@@ -201,9 +201,8 @@
   }
 }
 
-/** container for 5 brawler avatars in a w-80 event card */
 .brawler-avatars {
-  @apply flex justify-between mx-1;
+  @apply flex justify-around mx-1;
 }
 
 .brawler-avatars__placeholder {
@@ -230,7 +229,7 @@
 }
 
 .brawler-avatars__element {
-  @apply w-1/5 px-px flex flex-wrap justify-center overflow-hidden;
+  @apply px-px flex flex-wrap justify-center overflow-hidden;
 }
 
 /** Brawler avatar with stats below */
@@ -414,4 +413,8 @@
 
 .bigstat-tooltip__close {
   @apply text-primary-light font-semibold absolute top-0 right-0 mr-1 cursor-pointer;
+}
+
+.darkbox {
+  @apply bg-gray-900 rounded px-3 py-1
 }

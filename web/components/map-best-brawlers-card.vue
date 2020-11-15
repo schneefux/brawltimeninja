@@ -1,14 +1,14 @@
 <template>
   <event-card
-    :mode="this.mode"
-    :map="this.map"
+    :mode="mode"
+    :map="map"
     :id="!large && id != undefined ? id : undefined"
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
       v-if="large && id != undefined"
       slot="infobar"
-      :path="'/maps/' + this.id"
+      :path="'/maps/' + id"
       size="384"
       clazz="h-48 mx-auto"
       itemprop="image"
@@ -28,30 +28,12 @@
       {{ startDateString }}
     </p>
 
-    <div slot="content" class="brawler-avatars">
-      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
-      <div
-        v-for="brawler in data"
-        :key="brawler.brawler_name"
-        class="brawler-avatars__element my-4"
-      >
-        <nuxt-link
-          :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-          :router="$router"
-          class="brawler-avatar"
-        >
-          <media-img
-            :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
-            size="160"
-            clazz="brawler-avatar__img"
-          ></media-img>
-          <p class="brawler-avatar__stats">
-            {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-            {{ metaStatMaps.labelsShort.winRate }}
-          </p>
-        </nuxt-link>
-      </div>
-    </div>
+    <map-best-brawlers
+      slot="content"
+      :mode="mode"
+      :map="map"
+      class="my-4"
+    ></map-best-brawlers>
 
     <template v-if="link" v-slot:actions>
       <div class="flex justify-end">
@@ -68,13 +50,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { metaStatMaps, brawlerId, camelToKebab, slugify } from '../lib/util'
-import { parseISO, formatDistance } from 'date-fns'
-
-interface Row {
-  brawler_name: string
-  battle_victory: number
-}
+import { camelToKebab, slugify } from '../lib/util'
+import { parseISO, formatDistanceToNow } from 'date-fns'
 
 export default Vue.extend({
   props: {
@@ -108,18 +85,7 @@ export default Vue.extend({
       required: false
     },
   },
-  data() {
-    return {
-      data: [] as Row[],
-    }
-  },
   computed: {
-    brawlerId() {
-      return brawlerId
-    },
-    metaStatMaps() {
-      return metaStatMaps
-    },
     camelToKebab() {
       return camelToKebab
     },
@@ -132,7 +98,7 @@ export default Vue.extend({
       }
 
       const date = parseISO(this.endDate)
-      return 'ends in ' + formatDistance(date, new Date())
+      return 'ends in ' + formatDistanceToNow(date)
     },
     startDateString(): string {
       if (this.startDate == undefined) {
@@ -140,26 +106,8 @@ export default Vue.extend({
       }
 
       const date = parseISO(this.startDate)
-      return 'starts in ' + formatDistance(date, new Date())
+      return 'starts in ' + formatDistanceToNow(date)
     },
-  },
-  async fetch() {
-    const data = await this.$clicker.query('meta.map.widget', 'map',
-      ['brawler_name'],
-      ['battle_victory'],
-      {
-        ...this.$clicker.defaultSlices('map'),
-        ...(this.map != undefined ? {
-          battle_event_map: [this.map],
-        } : {}),
-        battle_event_mode: [this.mode],
-      },
-      {
-        sort: { wins_zscore: 'desc' },
-        limit: 5,
-        cache: 60*30,
-      })
-    this.data = data.data as any
   },
 })
 </script>

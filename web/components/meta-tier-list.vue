@@ -54,7 +54,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TierList, TierListEntry } from '~/model/Web'
-import { brawlerId, capitalizeWords } from '../lib/util'
+import { brawlerId } from '../lib/util'
 
 function groupTiers(entries: TierListEntry[]): TierList {
   const getStat = (e: TierListEntry) => e.stats.winRateAdj

@@ -8,6 +8,29 @@ export interface PicksWins {
   wins: number
 }
 
+export interface TeamPicksWins extends PicksWins {
+  brawlers: string[]
+}
+
+function keyToTeam(id: string) {
+  return id.split('+')
+}
+
+function teamToKey(...names: string[]) {
+  return names.sort().join('+')
+}
+
+function addToMap(map: Map<string, PicksWins>, row: PicksWins, teamToKey: string) {
+  if (!map.has(teamToKey)) {
+    map.set(teamToKey, { picks: 0, wins: 0 })
+  }
+  map.get(teamToKey)!.picks += row.picks
+  map.get(teamToKey)!.wins += row.wins
+  return map
+}
+
+interface Slices extends Record<string, string[]> {}
+
 interface Clicker {
   defaultSlices(cube: string): Record<string, string[]>
   cubes: typeof cubes[number][]
@@ -24,8 +47,8 @@ interface Clicker {
       cache?: number,
     }): Promise<{ data: T[], totals: T }>
   queryAllModes(): Promise<string[]>
-  describeSlices(slices: Record<string, string[]>, timestamp?: string): string
-  calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string): Promise<{
+  describeSlices(slices: Slices, timestamp?: string): string
+  calculateBayesSynergies(slices: Slices, tag: string, brawler?: string, limit?: number): Promise<{
     sampleSize: number,
     timestamp: string,
     // H
@@ -34,13 +57,12 @@ interface Clicker {
     data: Map<string, PicksWins>,
     // H(ally_brawler,brawler)
     pairData: Map<string, Map<string, PicksWins>>,
-    // utility functions:
-    // join brawler names
-    key: (...names: string[]) => string,
-    // split
-    unkey: (key: string) => string[],
-    // accumulator
-    addToMap: (map: Map<string, PicksWins>, row: PicksWins, key: string) => Map<string, PicksWins>,
+  }>
+  // use limit to approximate top N
+  calculateTeams(slices: Slices, tag: string, limit?: number): Promise<{
+    sampleSize: number,
+    timestamp: string,
+    teams: TeamPicksWins[],
   }>
 }
 
@@ -170,7 +192,7 @@ export default (context, inject) => {
 
       return description.join(', ')
     },
-    async calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string) {
+    async calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string, limit?: number) {
       // H(ally_brawler,brawler)
       const pairData = await this.query(tag, 'synergy',
         ['brawler_name', 'ally_brawler_name'],
@@ -179,7 +201,11 @@ export default (context, inject) => {
           ...slices,
           ...(brawler == undefined ? {} : { brawler_name: [brawler.toUpperCase()] }),
         },
-        { cache: 60*60 })
+        {
+          cache: 60*60,
+          sort: { wins: 'desc' },
+          limit,
+        })
       // H(brawler) and H
       const data = await this.query(tag, 'map',
         ['brawler_name'],
@@ -189,16 +215,6 @@ export default (context, inject) => {
 
       const totalSampleSize = data.totals.picks
       const totalTimestamp = data.totals.timestamp
-
-      const key = (...names: string[]) => names.sort().join('+')
-      const addToMap = (map: Map<string, PicksWins>, row: PicksWins, key: string) => {
-        if (!map.has(key)) {
-          map.set(key, { picks: 0, wins: 0 })
-        }
-        map.get(key)!.picks += row.picks
-        map.get(key)!.wins += row.wins
-        return map
-      }
 
       // H(ally_brawler,brawler)
       const pairMap = new Map<string, Map<string, PicksWins>>()
@@ -226,10 +242,78 @@ export default (context, inject) => {
         pairData: pairMap,
         sampleSize: totalSampleSize,
         timestamp: totalTimestamp,
-        key,
-        unkey: (id: string) => id.split('+'),
-        addToMap,
       }
     },
+    async calculateTeams(slices: Record<string, string[]>, tag: string, limit?: number) {
+      const bayesStats = await this.calculateBayesSynergies(slices, tag, undefined, limit)
+
+      /*
+        Let A, B, C be the three Brawlers and H(x) the number of wins or picks.
+        We are interested in P(A,B,C).
+        We know P(A,B,C) = P(A) * P(B|A) * P(C|A,B).
+        Collecting data for H(A,B,C) is expensive (n brawlers -> n^3 permutations)
+        but we have H(x) and H(x,y), so we know:
+          P(A) = H(A) / H
+          P(B,A) = H(B,A) / H
+          P(B|A) = P(B,A) / P(A)
+                = H(B,A) / H(A)
+        We we are missing P(C|A,B).
+        We will cheat and calculate it as the weighted average of P(C|A) and P(C|B):
+          P(C|A,B) = (P(C|A) * P(A) + P(C|B) * P(B)) / (P(A) + P(B))
+                    = (H(C,A) / H(A) * H(A) / H + H(C,B) / H(B) * H(B) / H) / (H(A) / H + H(B) / H)
+                    = (H(C,A) + H(C,B)) / (H(A) + H(B))
+        This leaves us with
+          P(A,B,C) = H(A) / H * H(B,A) / H(A) * (H(C,A) + H(C,B)) / (H(A) + H(B))
+        Simplify:
+          P(A,B,C) = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
+      */
+
+      let teams: [string, PicksWins][] = []
+
+      // duoShowdown is an exception because it has 2 player teams
+      if ('battle_event_mode' in slices && slices.battle_event_mode[0] == 'duoShowdown') {
+        const pairs = new Map<string, PicksWins>()
+        bayesStats.pairData.forEach((data, brawler1) => data.forEach((picksWins, brawler2) => {
+          addToMap(pairs, picksWins, teamToKey(brawler1, brawler2))
+        }))
+        teams = [...pairs.entries()]
+      } else {
+        const tripleP = new Map<string, PicksWins>()
+
+        for (const [c, hC] of bayesStats.data) {
+          for (const [b, hB] of bayesStats.data) {
+            for (const [a, hA] of bayesStats.data) {
+              const hBA = bayesStats.pairData.get(a)?.get(b)
+              const hCA = bayesStats.pairData.get(c)?.get(a)
+              const hCB = bayesStats.pairData.get(c)?.get(b)
+              // disqualify no data or Brawler duplicates
+              if (hBA == undefined || hCA == undefined || hCB == undefined) {
+                continue
+              }
+              // = H(B,A) * (H(C,A) + H(C,B)) / (H(A) + H(B)) / H
+              // since we would multiply with H later, skip the division
+              const data: PicksWins = {
+                wins: hBA.wins * (hCA.wins + hCB.wins) / (hA.wins + hB.wins),
+                picks: hBA.picks * (hCA.picks + hCB.picks) / (hA.picks + hB.picks),
+              }
+              addToMap(tripleP, data, teamToKey(a, b, c))
+            }
+          }
+        }
+
+        teams = [...tripleP.entries()]
+      }
+
+      const teamsPicksWins: TeamPicksWins[] = teams.map(([id, s]) => ({
+        ...s,
+        brawlers: keyToTeam(id),
+      }))
+
+      return {
+        sampleSize: bayesStats.sampleSize,
+        timestamp: bayesStats.timestamp,
+        teams: teamsPicksWins,
+      }
+    }
   })
 }
