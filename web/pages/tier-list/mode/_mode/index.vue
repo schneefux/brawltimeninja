@@ -22,6 +22,19 @@
     </client-only>
 
     <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'widget'),
+        once: true,
+      }"
+      class="section flex justify-center"
+    >
+      <map-detail-card
+        :mode="mode"
+        :timestamp="totalTimestamp"
+      ></map-detail-card>
+    </div>
+
+    <div
       class="section-heading"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'maps'),

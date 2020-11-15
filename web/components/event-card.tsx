@@ -9,16 +9,13 @@ export default Vue.extend({
     mode: {
       // camel case
       type: String,
-      required: true
     },
     map: {
       type: String,
-      required: false
     },
     id: {
       // enables map icon top right
       type: String,
-      required: false,
     },
     size: {
       // class
@@ -33,23 +30,25 @@ export default Vue.extend({
   render(h, { props, scopedSlots }) {
     const slots = {
       ...scopedSlots,
-      preview: () => <media-img
-          path={`/maps/${props.id}`}
-          size="80"
-          clazz="h-12"
-        ></media-img>,
+      ...(props.id != undefined ? {
+        preview: () => <media-img
+            path={`/maps/${props.id}`}
+            size="80"
+            clazz="h-12"
+          ></media-img>,
+      } : {}),
     }
 
     const card = Card as any
     return <card
-      title={formatMode(props.mode)}
+      title={props.mode != undefined ? formatMode(props.mode) : undefined}
       title-link={props.mode != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}` : undefined}
       subtitle={props.map}
       subtitle-link={props.map != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}` : undefined}
       background={props.nobackground ? undefined : '/modes/' + props.mode + '/background'}
-      icon={'/modes/' + props.mode + '/icon'}
+      icon={props.mode != undefined ? '/modes/' + props.mode + '/icon' : undefined}
       size={props.size}
-      color={'color-' + props.mode.toLowerCase()}
+      color={props.mode != undefined ? 'color-' + props.mode.toLowerCase() : undefined}
       scopedSlots={slots}
     ></card>
   }

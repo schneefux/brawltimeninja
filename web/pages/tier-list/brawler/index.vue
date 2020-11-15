@@ -100,6 +100,16 @@
       <h2 class="page-h2">Tier List for all Maps and Modes</h2>
     </div>
 
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'widget'),
+        once: true,
+      }"
+      class="section flex justify-center"
+    >
+      <map-detail-card></map-detail-card>
+    </div>
+
     <div class="section">
       <meta-slicers
         v-model="slices"

@@ -30,11 +30,9 @@ export default Vue.extend({
   props: {
     mode: {
       type: String,
-      required: true
     },
     map: {
       type: String,
-      required: true
     },
   },
   data() {
@@ -49,8 +47,12 @@ export default Vue.extend({
       ['wins'],
       {
         ...this.$clicker.defaultSlices('map'),
-        battle_event_mode: [this.mode],
-        battle_event_map: [this.map],
+        ...(this.mode != undefined ? {
+          battle_event_mode: [this.mode],
+        } : {}),
+        ...(this.map != undefined ? {
+          battle_event_map: [this.map],
+        } : {})
       },
       { cache: 60*60 })
     this.data = data.data

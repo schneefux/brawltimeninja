@@ -10,35 +10,27 @@ export default Vue.extend({
     },
     title: {
       type: String,
-      required: false
     },
     titleLink: {
       type: String,
-      required: false
     },
     subtitle: {
       type: String,
-      required: false
     },
     subtitleLink: {
       type: String,
-      required: false
     },
     background: {
       type: String,
-      required: false
     },
     icon: {
       type: String,
-      required: false
     },
     color: {
       type: String,
-      required: false
     },
     pages: {
       type: Number,
-      required: false
     },
   },
   render(h, { props, scopedSlots }) {
@@ -55,7 +47,7 @@ export default Vue.extend({
             class={'w-full px-3 py-2 flex font-semibold justify-between items-center ' + (props.color !== undefined ? `bg-${props.color}` : '')}
           >
             <div class="flex items-center">
-              { props.icon !== undefined ?
+              { props.icon != undefined ?
                 <div class="w-10 h-10 my-1 flex justify-center items-center">
                   <media-img path={props.icon}
                     size="120"
