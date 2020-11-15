@@ -37,6 +37,13 @@
       ></map-best-brawlers-card>
     </div>
 
+    <div class="section flex justify-center">
+      <meta-balance-score
+        :mode="event.mode"
+        :map="event.map"
+      ></meta-balance-score>
+    </div>
+
     <div
       v-if="event.mode != 'soloShowdown'"
       class="section flex justify-center"

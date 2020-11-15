@@ -1,0 +1,98 @@
+<template>
+  <div class="card card--dark card__content max-w-sm w-full">
+    <dl class="flex justify-around items-center">
+      <dt class="text-center mr-2">
+        <span class="text-lg font-semibold">Balance Rating:</span><br>
+        <span class="text-sm">How diverse is the Meta?</span>
+      </dt>
+      <dd class="text-center ml-2">
+        <span
+          class="text-lg font-bold"
+          :class="{
+            'text-red-500': score > 0.4,
+            'text-orange-400': score > 0.3 && score <= 0.4,
+            'text-green-400': score <= 0.3,
+          }"
+        >{{ score == undefined ? '?' : scoreWords[Math.floor(score * 10)] }}</span><br>
+        <span class="text-sm">Gini Coefficient: {{ score == undefined ? '?' : score.toFixed(2) }}</span>
+      </dd>
+    </dl>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+interface Row {
+  picks: number
+  wins: number
+}
+
+export default Vue.extend({
+  props: {
+    mode: {
+      type: String,
+      required: true
+    },
+    map: {
+      type: String,
+      required: true
+    },
+  },
+  data() {
+    return {
+      data: [] as Row[],
+    }
+  },
+  fetchDelay: 0,
+  async fetch() {
+    const data = await this.$clicker.query('meta.map', 'map',
+      ['brawler_name'],
+      ['wins'],
+      {
+        ...this.$clicker.defaultSlices('map'),
+        battle_event_mode: [this.mode],
+        battle_event_map: [this.map],
+      },
+      { cache: 60*60 })
+    this.data = data.data
+  },
+  computed: {
+    score(): number|undefined {
+      if (this.data.length == 0) {
+        return undefined
+      }
+
+      // calculate Gini coefficient
+      let absoluteDifference = 0
+      let arithmeticMean = 0
+      for (const e1 of this.data) {
+        arithmeticMean += e1.wins / this.data.length
+        for (const e2 of this.data) {
+          absoluteDifference += Math.abs(e1.wins - e2.wins)
+        }
+      }
+      return absoluteDifference / (2 * Math.pow(this.data.length, 2) * arithmeticMean)
+    },
+    scoreWords(): string[] {
+      // results from a hand-drawn sample of different maps and modes:
+      // 25%ile 0.225
+      // 50%ile 0.32
+      // 75%ile 0.425
+      // words chosen from http://www.mcdonald.me.uk/storytelling/lichert_article.htm
+      return [
+        'Amazing',
+        'Excellent',
+        'Good',
+        'Fair',
+        'Mediocre',
+        'Poor',
+        'Bad',
+        'Awful',
+        'Awful',
+        'Awful',
+      ]
+    },
+  },
+})
+</script>
