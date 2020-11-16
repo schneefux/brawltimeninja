@@ -22,6 +22,7 @@ export interface TierListEntry extends MetaGridEntry {
   brawler: string
   title: string
   stats: {
+    winRateAdj: number
     winsZScore: number
   }
   link: string

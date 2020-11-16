@@ -23,6 +23,7 @@ export interface TierListEntry extends MetaGridEntry {
   title: string
   stats: {
     winRateAdj: number
+    winsZScore: number
   }
   link: string
 }

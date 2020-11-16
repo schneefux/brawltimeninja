@@ -57,7 +57,7 @@ import { TierList, TierListEntry } from '~/model/Web'
 import { brawlerId } from '../lib/util'
 
 function groupTiers(entries: TierListEntry[]): TierList {
-  const getStat = (e: TierListEntry) => e.stats.winRateAdj
+  const getStat = (e: TierListEntry) => (e.stats.winRateAdj || e.stats.winsZScore)
   // min-max scale stat into the 5 tiers and put nulls into '?' tier
   const scores = entries.map(getStat).filter(e => e != undefined)
   const max = Math.max(...scores)
