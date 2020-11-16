@@ -53,7 +53,7 @@ export default class StarpowerMetaCube extends BrawlerBattleCube {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'with_starpower':
-        return query.where('brawler_starpower_id', args[0] == 'true' ? '<>' : '=', '0')
+        return query.where(`${this.table}.brawler_starpower_id`, args[0] == 'true' ? '<>' : '=', '0')
     }
     return super.slice(query, name, args)
   }

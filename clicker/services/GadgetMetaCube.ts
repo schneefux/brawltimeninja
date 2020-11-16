@@ -55,7 +55,7 @@ export default class GadgetMetaCube extends BrawlerBattleCube {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'with_gadget':
-        return query.where('brawler_gadget_id', args[0] == 'true' ? '<>' : '=', '0')
+        return query.where(`${this.table}.brawler_gadget_id`, args[0] == 'true' ? '<>' : '=', '0')
     }
     return super.slice(query, name, args)
   }

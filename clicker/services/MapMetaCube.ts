@@ -72,15 +72,15 @@ export default class MapMetaCube extends BrawlerBattleCube {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'battle_event_mode':
-        return query.where('battle_event_mode', '=', args[0])
+        return query.where(`${this.table}.battle_event_mode`, '=', args[0])
       case 'battle_event_map':
-        return query.where('battle_event_map', '=', args[0])
+        return query.where(`${this.table}.battle_event_map`, '=', args[0])
       case 'battle_event_id':
-        return query.where('battle_event_id', '=', parseInt(args[0]))
+        return query.where(`${this.table}.battle_event_id`, '=', parseInt(args[0]))
       case 'battle_event_powerplay':
-        return query.where('battle_event_powerplay', '=', args[0] == 'true' ? 1 : 0)
+        return query.where(`${this.table}.battle_event_powerplay`, '=', args[0] == 'true' ? 1 : 0)
       case 'battle_is_bigbrawler':
-        return query.where('battle_is_bigbrawler', '=', args[0] == 'true' ? 1 : 0)
+        return query.where(`${this.table}.battle_is_bigbrawler`, '=', args[0] == 'true' ? 1 : 0)
     }
     return super.slice(query, name, args)
   }

@@ -55,20 +55,17 @@ export default abstract class Cube {
       }
       query = query
         .select(dimension)
-        .groupBy(dimension)
+        .groupBy(this.table + '.' + dimension)
     }
 
     for (const measure of measures) {
-      if (dimensions.includes(measure)) {
-        continue
-      }
       if (measure in this.virtuals) {
         for (const m of this.virtuals[measure]) {
           query = query.select({ [m]: this.measureQuery(m) })
         }
         continue
       }
-      if (!(measure in this.measures)) {
+      if (!(measure in this.measures) && !this.dimensions.includes(measure)) {
         throw new Error('Invalid measure: ' + measure)
       }
 

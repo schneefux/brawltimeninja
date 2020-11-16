@@ -74,7 +74,7 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'timestamp':
-        return query.where('timestamp', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.where(`${this.table}.timestamp`, '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }

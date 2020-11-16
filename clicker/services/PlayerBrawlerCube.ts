@@ -80,6 +80,7 @@ export default class PlayerBrawlerCube extends Cube {
 
   static defaultMeasures = {
     'picks': 'COUNT(*)',
+    'trophy_season_end': 'formatDateTime(MAX(trophy_season_end), \'%FT%TZ\', \'UTC\')',
     'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
 
     'player_name': 'any(player_name)',
@@ -200,20 +201,20 @@ export default class PlayerBrawlerCube extends Cube {
           oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
           args[0] = formatClickhouse(oneMonthAgo)
         }
-        return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.where(`${this.table}.trophy_season_end`, '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
         if (args[1] == '10') {
           args[1] = '999'
         }
-        return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])
+        return query.whereBetween(`${this.table}.brawler_trophyrange`, [parseInt(args[0]), parseInt(args[1])])
       case 'brawler_name':
-        return query.where('brawler_name', '=', args[0])
+        return query.where(`${this.table}.brawler_name`, '=', args[0])
       case 'brawler_id':
-        return query.where('brawler_id', '=', args[0])
+        return query.where(`${this.table}.brawler_id`, '=', args[0])
       case 'player_id':
-        return query.where('player_id', '=', args[0])
+        return query.where(`${this.table}.player_id`, '=', args[0])
       case 'player_tag':
-        return query.where('player_id', '=', tagToId(args[0]))
+        return query.where(`${this.table}.player_id`, '=', tagToId(args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }

@@ -71,15 +71,15 @@ export default class SynergyMetaCube extends BrawlerBattleCube {
   slice(query: QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'battle_event_mode':
-        return query.where('battle_event_mode', '=', args[0])
+        return query.where(`${this.table}.battle_event_mode`, '=', args[0])
       case 'battle_event_map':
-        return query.where('battle_event_map', '=', args[0])
+        return query.where(`${this.table}.attle_event_map`, '=', args[0])
       case 'battle_event_id':
-        return query.where('battle_event_id', '=', parseInt(args[0]))
+        return query.where(`${this.table}.attle_event_id`, '=', parseInt(args[0]))
       case 'ally_brawler_name':
-        return query.where('ally_brawler_name', '=', args[0])
+        return query.where(`${this.table}.lly_brawler_name`, '=', args[0])
       case 'ally_brawler_id':
-        return query.where('ally_brawler_id', '=', args[0])
+        return query.where(`${this.table}.lly_brawler_id`, '=', args[0])
     }
     return super.slice(query, name, args)
   }

@@ -89,6 +89,7 @@ const winratePosterior = `(1583+${wins})/(1583/${zP}+${picks})`
  */
 export default abstract class BrawlerBattleCube extends MaterializedCube {
   measures = {
+    'trophy_season_end': 'formatDateTime(MAX(trophy_season_end), \'%FT%TZ\', \'UTC\')',
     'timestamp': 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
     'picks': 'SUM(picks)',
     'picks_weighted': 'SUM(picks_weighted)',
@@ -135,18 +136,18 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
           oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
           args[0] = formatClickhouse(oneMonthAgo)
         }
-        return query.where('trophy_season_end', '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.where(`${this.table}.trophy_season_end`, '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'trophy_season_end_exact':
-        return query.where('trophy_season_end', '=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
+        return query.where(`${this.table}.trophy_season_end`, '=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))
       case 'brawler_trophyrange':
         if (args[1] == '10') {
           args[1] = '999'
         }
-        return query.whereBetween('brawler_trophyrange', [parseInt(args[0]), parseInt(args[1])])
+        return query.whereBetween(`${this.table}.brawler_trophyrange`, [parseInt(args[0]), parseInt(args[1])])
       case 'brawler_name':
-        return query.where('brawler_name', '=', args[0])
+        return query.where(`${this.table}.brawler_name`, '=', args[0])
       case 'brawler_id':
-        return query.where('brawler_id', '=', args[0])
+        return query.where(`${this.table}.brawler_id`, '=', args[0])
     }
     throw new Error('Unknown slice name: ' + name)
   }
