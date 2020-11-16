@@ -456,7 +456,7 @@ interface DiffRow {
 }
 
 // calculate diff stats between brawlers with & without starpower/gadget
-export function calculateDiffs(rows: DiffRow[], accessoryNameKey: string, accessoryIdKey: string, includeZScore: boolean) {
+export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: string, accessoryIdKey: string, includeZScore: boolean) {
   const statsToDiffs = (accessory: DiffRow) => {
     const brawlerWithout = rows
       .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
@@ -504,7 +504,7 @@ export function calculateDiffs(rows: DiffRow[], accessoryNameKey: string, access
       brawler: accessory.brawler_name,
       sampleSize: sampleSize(accessory),
       stats: statsToDiffs(accessory),
-      icon: `/gadgets/${accessory[accessoryIdKey]}`,
+      icon: `/${accessoryType}/${accessory[accessoryIdKey]}`,
       link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
     }))
 }

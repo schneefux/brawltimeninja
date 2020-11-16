@@ -76,7 +76,7 @@ export default Vue.extend({
       [...(calculateZScore ? ['battle_victory'] : this.selectedMeasurements.map(m => measurementMap[m])), 'picks', 'timestamp'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
-    this.entries = calculateDiffs(data.data, 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
+    this.entries = calculateDiffs(data.data, 'starpowers', 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
     this.totalSampleSize = data.totals.picks
   },
   methods: {
