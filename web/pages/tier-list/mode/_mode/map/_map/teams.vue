@@ -165,6 +165,8 @@ export default Vue.extend({
       }))
       .filter((t) => t.picks >= 10)
       .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])
+    this.totalSampleSize = teams.sampleSize
+    this.totalTimestamp = teams.timestamp
   },
   computed: {
     capitalizeWords() {
