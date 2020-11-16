@@ -65,7 +65,10 @@ export default abstract class Cube {
         }
         continue
       }
-      if (!(measure in this.measures) && !this.dimensions.includes(measure)) {
+      if (!(measure in this.measures)) {
+        if (this.dimensions.includes(measure)) {
+          continue
+        }
         throw new Error('Invalid measure: ' + measure)
       }
 
