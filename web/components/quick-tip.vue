@@ -49,16 +49,16 @@
       <div class="pl-4 -mx-6 flex overflow-x-auto scrolling-touch">
         <lazy
           v-for="(event, index) in events"
-          :key="event.mode + event.map"
+          :key="event.battle_event_mode + event.battle_event_map"
           :render="index <= 2"
           class="mx-2"
           distance="600px"
         >
           <div class="w-80" style="height: 120px" slot="placeholder"></div>
           <quick-tip-card
-            :mode="event.mode"
-            :map="event.map"
-            :id="event.id"
+            :mode="event.battle_event_mode"
+            :map="event.battle_event_map"
+            :id="event.battle_event_id"
             :player="player"
           ></quick-tip-card>
         </lazy>
@@ -69,8 +69,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { EventMetadata } from '~/plugins/clicker'
 import { decapitalizeFirstLetter } from '../lib/util'
-import { ActiveEvent, CurrentAndUpcomingEvents, Player } from '../model/Api'
+import { CurrentAndUpcomingEvents, Player } from '../model/Api'
 
 export default Vue.extend({
   props: {
@@ -82,7 +83,7 @@ export default Vue.extend({
   data() {
     return {
       show: true,
-      events: [] as ActiveEvent[],
+      events: [] as EventMetadata[],
       player: {} as Player,
     }
   },
@@ -94,14 +95,10 @@ export default Vue.extend({
       [b.event.mode]: (map[b.event.mode] || 0) + (b.victory ? 1 : 0.5),
     }), {} as Record<string, number>)
 
-    const events = await this.$axios.$get('/api/events/active') as CurrentAndUpcomingEvents
-    this.events = events.current
-      .map(e => ({
-        ...e,
-        mode: decapitalizeFirstLetter(e.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')),
-      }))
-      .filter(e => !['roboRumble', 'bigGame', 'superCity'].includes(e.mode))
-      .sort((e1, e2) => (modePopularity[e2.mode] || 0) - (modePopularity[e1.mode] || 0))
+    const events = await this.$clicker.queryActiveEvents()
+    this.events = events
+      .filter(e => !e.battle_event_powerplay && !['roboRumble', 'bigGame', 'superCity'].includes(e.battle_event_mode))
+      .sort((e1, e2) => (modePopularity[e2.battle_event_mode] || 0) - (modePopularity[e1.battle_event_mode] || 0))
   },
   computed: {
     wins(): number {

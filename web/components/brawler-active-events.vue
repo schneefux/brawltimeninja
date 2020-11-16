@@ -2,7 +2,7 @@
   <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
     <lazy
       v-for="(event, index) in events"
-      :key="event.mode + event.map"
+      :key="event.battle_event_mode + event.battle_event_map"
       :render="showAllMaps || index <= 2"
       :class="{
         'md:hidden': !showAllMaps && index > 2,
@@ -12,9 +12,9 @@
     >
       <div class="w-80" style="height: 230px" slot="placeholder"></div>
       <brawler-active-event
-        :mode="event.mode"
-        :map="event.map"
-        :id="event.id"
+        :mode="event.battle_event_mode"
+        :map="event.battle_event_map"
+        :id="event.battle_event_id"
         :end="event.end"
         :brawler-name="brawlerName"
       ></brawler-active-event>
@@ -24,8 +24,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { EventMetadata } from '~/plugins/clicker'
 import { decapitalizeFirstLetter } from '../lib/util'
-import { ActiveEvent, CurrentAndUpcomingEvents } from '../model/Api'
+import { CurrentAndUpcomingEvents } from '../model/Api'
 
 export default Vue.extend({
   props: {
@@ -41,18 +42,12 @@ export default Vue.extend({
   },
   data() {
     return {
-      events: [] as ActiveEvent[],
+      events: [] as EventMetadata[],
     }
   },
   fetchDelay: 0,
   async fetch() {
-    const events = await this.$axios.$get('/api/events/active') as CurrentAndUpcomingEvents
-    this.events = events.current
-      .map(e => ({
-        ...e,
-        // starlist returns 'Solo Showdown' as 'Showdown'
-        mode: decapitalizeFirstLetter(e.mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join('')),
-      }))
+    this.events = await this.$clicker.queryActiveEvents()
   },
 })
 </script>

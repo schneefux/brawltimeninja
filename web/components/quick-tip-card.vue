@@ -60,7 +60,7 @@ export default Vue.extend({
       required: true,
     },
     id: {
-      type: String,
+      type: [String, Number],
       required: true
     },
   },

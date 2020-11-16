@@ -1,5 +1,6 @@
-import { parseISO } from "date-fns"
+import { differenceInMinutes, parseISO } from "date-fns"
 import { formatMode } from "~/lib/util"
+import { CurrentAndUpcomingEvents } from "~/model/Api"
 
 const cubes = ['player', 'brawler', 'map', 'synergy', 'starpower', 'gadget']
 
@@ -10,6 +11,17 @@ export interface PicksWins {
 
 export interface TeamPicksWins extends PicksWins {
   brawlers: string[]
+}
+
+export interface EventMetadata {
+  battle_event_id: number
+  battle_event_map: string
+  battle_event_mode: string
+  battle_event_powerplay: boolean
+  timestamp: string
+  picks: number
+  start?: string
+  end?: string
 }
 
 function keyToTeam(id: string) {
@@ -46,6 +58,7 @@ interface Clicker {
       limit?: number,
       cache?: number,
     }): Promise<{ data: T[], totals: T }>
+  queryActiveEvents(): Promise<EventMetadata[]>,
   queryAllModes(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
   calculateBayesSynergies(slices: Slices, tag: string, brawler?: string, limit?: number): Promise<{
@@ -137,6 +150,33 @@ export default (context, inject) => {
       const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url)
+    },
+    async queryActiveEvents() {
+      const events = await this.query<EventMetadata>('active.events', 'map',
+        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay'],
+        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay', 'timestamp', 'picks'],
+        { trophy_season_end: ['current'] },
+        {
+          sort: { timestamp: 'desc' },
+          cache: 60*5,
+          limit: 10,
+        })
+
+      const lastEvents = events.data
+        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= 30)
+        .sort((e1, e2) => e2.picks - e1.picks)
+
+      const starlistData = await context.$axios.$get('/api/events/active')
+        .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents
+      starlistData.current.forEach(s => {
+        const match = lastEvents.find(e => e.battle_event_id.toString() == s.id)
+        if (match) {
+          match.start = s.start
+          match.end = s.end
+        }
+      })
+
+      return lastEvents
     },
     async queryAllModes() {
       const modes = await this.query<{ battle_event_mode: string }>('all.modes', 'map',

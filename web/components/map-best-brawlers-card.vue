@@ -13,20 +13,20 @@
       clazz="h-48 mx-auto"
       itemprop="image"
     ></media-img>
-    <p
-      v-if="endDate != undefined"
+    <div
       slot="infobar"
-      class="text-right"
+      class="flex justify-end"
     >
-      {{ endDateString }}
-    </p>
-    <p
-      v-if="startDate != undefined"
-      slot="infobar"
-      class="text-right"
-    >
-      {{ startDateString }}
-    </p>
+      <span v-if="powerplay" class="mr-auto">
+        Power Play
+      </span>
+      <span v-if="endDate != undefined">
+        {{ endDateString }}
+      </span>
+      <span v-if="startDate != undefined">
+        {{ startDateString }}
+      </span>
+    </div>
 
     <map-best-brawlers
       slot="content"
@@ -82,6 +82,10 @@ export default Vue.extend({
     },
     id: {
       type: [Number, String],
+      required: false
+    },
+    powerplay: {
+      type: Boolean,
       required: false
     },
   },

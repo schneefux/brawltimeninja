@@ -15,7 +15,7 @@ export default Vue.extend({
     },
     id: {
       // enables map icon top right
-      type: String,
+      type: [String, Number],
     },
     size: {
       // class

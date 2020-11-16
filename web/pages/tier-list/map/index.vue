@@ -33,15 +33,7 @@
     </div>
 
     <div class="section flex flex-wrap justify-center">
-      <map-best-brawlers-card
-        v-for="event in currentEvents"
-        :key="event.id"
-        :id="event.id"
-        :mode="unformatMode(event.mode)"
-        :map="event.map"
-        :end-date="event.end"
-        link
-      ></map-best-brawlers-card>
+      <active-events eager></active-events>
     </div>
 
     <client-only>

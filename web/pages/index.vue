@@ -184,15 +184,7 @@
       </div>
 
       <div class="home-section-content">
-        <lazy-map-best-brawlers-card
-          v-for="event in currentEvents"
-          :key="event.id"
-          :mode="unformatMode(event.mode)"
-          :map="event.map"
-          :id="event.id"
-          :end-date="event.end"
-          link
-        ></lazy-map-best-brawlers-card>
+        <active-events></active-events>
       </div>
 
       <div
