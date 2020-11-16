@@ -27,7 +27,7 @@ export default Vue.extend({
   async fetch() {
     const data = await this.$clicker.query('stats.popularity.mode-history', 'map',
       ['battle_event_mode', 'trophy_season_end'],
-      ['picks'], {
+      ['picks', 'trophy_season_end'], {
         ...this.$clicker.defaultSlices('map'),
         trophy_season_end: ['2020-06-15 08:00:00'],
       }, {
