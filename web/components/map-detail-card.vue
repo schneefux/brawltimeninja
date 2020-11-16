@@ -95,7 +95,7 @@ export default Vue.extend({
       }
       const date = parseISO(this.timestamp)
       if (differenceInMinutes(new Date(), date) < 60) {
-        return 'Currently Active'
+        return 'Active'
       }
       return formatDistanceToNow(date, { addSuffix: true })
     },

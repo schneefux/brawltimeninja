@@ -189,7 +189,7 @@ export default Vue.extend({
       ['brawler_name'],
       [...this.selectedMeasurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
       this.slices,
-      { sort: { picks: 'desc' }, cache: 60*60 })
+      { sort: { picks: 'desc' }, cache: 60*30 })
 
     this.entries = data.data.map(row => ({
       id: row.brawler_name,
