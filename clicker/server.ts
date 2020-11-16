@@ -76,14 +76,13 @@ app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, re
   try {
     res.json(await service.queryCube(cubeName, measures, dimensions, slices, order, limit, name, format))
   } catch (error) {
+    res.status(400)
     console.error('error executing query', error)
     if (error instanceof Error) {
       res.json({ message: error.message })
     } else {
       res.json(error)
     }
-
-    res.status(400)
   }
 }))
 
