@@ -11,7 +11,10 @@ export interface StarlistBrawler {
   imageUrl2: string; // avatar without border
   imageUrl3: string; // emote
   class: string;
-  rarity: string;
+  rarity: {
+    id: number;
+    name: string;
+  };
   unlock: number; // trophies
   description: string;
   starPowers: {

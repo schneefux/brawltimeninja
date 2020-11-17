@@ -4,7 +4,7 @@ import path from 'path';
 import cacheManager from 'cache-manager';
 import fsStore from 'cache-manager-fs-hash';
 import { StarlistBrawler, StarlistIcon, StarlistMap, StarlistMode } from '~/model/Starlist';
-import { BrawlerData, DataSkill, DataCharacter, DataCard, DataAccessory } from '~/model/Media';
+import { BrawlerData, DataSkill, DataCharacter, DataCard, DataAccessory, RARITY } from '~/model/Media';
 import { brawlerId } from '../lib/util';
 
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets');
@@ -112,6 +112,7 @@ export default class MediaService {
     const characterDescription = tids['TID_' + character.rawTID + '_DESC']
     const mainSkill = skills.find(s => s.name == character.weaponSkill)!
     const superSkill = skills.find(s => s.name == character.ultimateSkill)!
+    const characterUnlockCard = cards.find(c => c.name == character.name + '_unlock')
     const mainCard = cards.find(c => c.name == character.name + '_abi')!
     const superCard = cards.find(c => c.name == character.name + '_ulti')!
     const starCards = cards.filter(c => c.name.startsWith(character.name + '_unique'))
@@ -167,6 +168,16 @@ export default class MediaService {
       Object.assign(gadgetDescriptions, starlistGadgetDescriptions)
     }
 
+    const rarityMap: Record<RARITY, string> = {
+      common: 'Common',
+      epic: 'Epic',
+      legendary: 'Legendary',
+      mega_epic: 'Mythic',
+      super_rare: 'Super Rare',
+    }
+    const rarity = characterUnlockCard == undefined ? undefined :
+      characterUnlockCard.dynamicRarityStartSeason != null ? 'Chromatic' : rarityMap[characterUnlockCard.rarity]
+
     return {
       id,
       scId: character.scId,
@@ -177,6 +188,9 @@ export default class MediaService {
       defenseRating: character.defenseRating,
       utilityRating: character.utilityRating,
       description: characterDescription,
+      rarity: rarity || brawler?.rarity.name,
+      class: brawler?.class,
+      unlock: brawler?.unlock,
 
       main: {
         cooldown: mainSkill.cooldown * 2,

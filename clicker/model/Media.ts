@@ -20,6 +20,9 @@ export interface BrawlerData {
   defenseRating: number
   utilityRating: number
   description: string
+  rarity: string
+  class?: string
+  unlock?: null|number
 
   main: Skill
   super: Skill
@@ -34,10 +37,13 @@ export interface BrawlerData {
 
 // from the game files
 
+export type RARITY = 'common'|'super_rare'|'epic'|'mega_epic'|'legendary'
+
 export interface DataCard {
   name: string // internal name
   target: string // internal character name
-  rarity: string // 'common'
+  dynamicRarityStartSeason: null|number // chromatic?
+  rarity: RARITY
   tID: string // 'BUCKSHOT'
   powerNumberTID: string // 'Damage per shell'
   value: null|number
