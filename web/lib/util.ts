@@ -435,14 +435,14 @@ export const measurementOfTotal = {
   duration: false,
 }
 
-export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: string): number {
-  const sign = metaStatMaps.signs[stat] as number
+export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: keyof typeof metaStatMaps.signs): number {
+  const sign = metaStatMaps.signs[stat]
   const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
   const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
   return sign * (e1stat - e2stat)
 }
 
-export function compare1(stat: string) {
+export function compare1(stat: keyof typeof metaStatMaps.signs) {
   return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
 }
 
@@ -453,10 +453,14 @@ interface DiffRow {
   battle_victory: number
   battle_starplayer: number
   battle_rank1: number
+  starpower_name?: string
+  starpower_id?: number
+  gadget_name?: string
+  gadget_id?: number
 }
 
 // calculate diff stats between brawlers with & without starpower/gadget
-export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: string, accessoryIdKey: string, includeZScore: boolean) {
+export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'starpower_name'|'gadget_name', accessoryIdKey: 'starpower_id'|'gadget_id', includeZScore: boolean) {
   const statsToDiffs = (accessory: DiffRow) => {
     const brawlerWithout = rows
       .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
@@ -500,7 +504,7 @@ export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessory
     .filter(s => s[accessoryNameKey] !== '')
     .map((accessory) => (<MetaGridEntry>{
       id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
-      title: capitalizeWords(accessory[accessoryNameKey].toLowerCase()),
+      title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
       brawler: accessory.brawler_name,
       sampleSize: sampleSize(accessory),
       stats: statsToDiffs(accessory),
