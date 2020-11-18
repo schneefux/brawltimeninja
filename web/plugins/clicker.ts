@@ -158,12 +158,12 @@ export default (context, inject) => {
         { trophy_season_end: ['current'] },
         {
           sort: { timestamp: 'desc' },
-          cache: 60*5,
+          cache: 60*10,
           limit: 10,
         })
 
       const lastEvents = events.data
-        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= 30)
+        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= 60)
         .sort((e1, e2) => e2.picks - e1.picks)
 
       const starlistData = await context.$axios.$get('/api/events/active')
