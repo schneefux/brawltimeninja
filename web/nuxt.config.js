@@ -168,7 +168,7 @@ export default {
 
       try {
         const brawlers = await axios.get(`${process.env.CLICKER_URL}/clicker/cube/map/query/brawler_name?include=brawler_name`)
-        brawlers.data.forEach((b) => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
+        brawlers.data.data.forEach((b) => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
       } catch (err) {
         console.error('error adding brawlers to sitemap', err)
       }
