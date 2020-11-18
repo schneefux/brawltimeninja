@@ -146,7 +146,7 @@ export default Vue.extend({
         battle_event_mode: [mode],
         battle_event_map: [map],
       },
-      { cache: 60*30 })
+      { cache: 60*10 })
     if (events.data.length == 0) {
       return error({ statusCode: 404, message: 'Map not found' })
     }
