@@ -8,7 +8,7 @@
     <template v-slot:content>
       <div class="flex flex-wrap justify-center items-center bg-gray-800 px-3 pb-2">
         <media-img
-          v-if="id != undefined"
+          v-if="id != undefined && id != 0"
           :path="`/maps/${id}`"
           size="512"
           clazz="h-80 mt-2"

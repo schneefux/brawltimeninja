@@ -2,11 +2,11 @@
   <event-card
     :mode="mode"
     :map="map"
-    :id="!large && id != undefined ? id : undefined"
+    :id="!large && id != undefined && id != 0 ? id : undefined"
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
-      v-if="large && id != undefined"
+      v-if="large && id != undefined && id != 0"
       slot="infobar"
       :path="'/maps/' + id"
       size="384"
@@ -39,7 +39,7 @@
     <template v-if="link" v-slot:actions>
       <div class="flex justify-end">
         <nuxt-link
-          :to="id != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
+          :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
           class="card__action"
         >
           Open
@@ -66,11 +66,9 @@ export default Vue.extend({
     },
     endDate: {
       type: String,
-      required: false
     },
     startDate: {
       type: String,
-      required: false
     },
     mode: {
       // camel case
@@ -79,15 +77,12 @@ export default Vue.extend({
     },
     map: {
       type: String,
-      required: false
     },
     id: {
       type: [Number, String],
-      required: false
     },
     powerplay: {
       type: Boolean,
-      required: false
     },
   },
   computed: {

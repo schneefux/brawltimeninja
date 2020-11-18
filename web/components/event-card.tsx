@@ -30,7 +30,7 @@ export default Vue.extend({
   render(h, { props, scopedSlots }) {
     const slots = {
       ...scopedSlots,
-      ...(props.id != undefined ? {
+      ...(props.id != undefined && props.id != 0 ? {
         preview: () => <media-img
             path={`/maps/${props.id}`}
             size="80"
