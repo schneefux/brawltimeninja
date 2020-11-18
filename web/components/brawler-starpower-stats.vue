@@ -82,12 +82,14 @@ export default Vue.extend({
         brawler_name: [this.brawlerName.toUpperCase()], // TODO use the ID
         [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['true'],
       },
-      { sort: { picks: 'desc' }, cache: 60*60 })
+      { sort: { timestamp: 'desc' }, cache: 60*60 })
 
     this.data = (data.data as unknown as Row[]).map(r => ({
       ...r,
       id: this.kind == 'starpowers' ? r.brawler_starpower_id : r.brawler_gadget_id,
     }))
+      // in case of duplicate IDs, use the first (most recent)
+      .filter((el, index, all) => all.findIndex(e => e.id == el.id) == index)
     this.totals = data.totals as unknown as Row
 
     const info = await this.$axios.$get(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null) as BrawlerData|null

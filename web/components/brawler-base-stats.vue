@@ -247,7 +247,7 @@ export default Vue.extend({
       const overallWords = [
         `Unless you know how to play ${this.brawlerName} well, you should pick a different Brawler.`,
         `${this.brawlerName} is not the best choice at the moment.`,
-        `Overall, ${this.brawlerName} is a solid pick.`,
+        `Overall, this makes ${this.brawlerName} a solid pick.`,
         `Playing ${this.brawlerName} is a good Brawler at the moment.`,
         `${this.brawlerName} belongs to the best Brawlers overall.`,
       ]
