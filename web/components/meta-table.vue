@@ -89,7 +89,7 @@ export default Vue.extend({
     sortedEntries(): MetaGridEntry[] {
       const aboveThreshold = this.entries.filter(e => e.sampleSize >= this.sampleSizeThreshold)
       const belowThreshold = this.entries.filter(e => e.sampleSize < this.sampleSizeThreshold)
-      return aboveThreshold.sort(compare1(this.stat))
+      return aboveThreshold.sort(compare1(this.stat as any))
         .concat(belowThreshold)
     },
   },

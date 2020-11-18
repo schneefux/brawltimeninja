@@ -127,7 +127,7 @@ export default Vue.extend({
     },
     sortedEntries(): IndexedMetaGridEntry[] {
       return this.entries.slice()
-        .sort(compare1(this.selectedStat))
+        .sort(compare1(this.selectedStat as any))
         .map((entry, index) => ({
           ...entry,
           index: index + 1,

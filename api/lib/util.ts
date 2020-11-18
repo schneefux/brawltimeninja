@@ -471,14 +471,14 @@ interface DiffRow {
   battle_victory: number
   battle_starplayer: number
   battle_rank1: number
-  starpower_name?: string
-  starpower_id?: number
-  gadget_name?: string
-  gadget_id?: number
+  brawler_starpower_name?: string
+  brawler_starpower_id?: number
+  brawler_gadget_name?: string
+  brawler_gadget_id?: number
 }
 
 // calculate diff stats between brawlers with & without starpower/gadget
-export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'starpower_name'|'gadget_name', accessoryIdKey: 'starpower_id'|'gadget_id', includeZScore: boolean) {
+export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'brawler_starpower_name'|'brawler_gadget_name', accessoryIdKey: 'brawler_starpower_id'|'brawler_gadget_id', includeZScore: boolean) {
   const statsToDiffs = (accessory: DiffRow) => {
     const brawlerWithout = rows
       .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)

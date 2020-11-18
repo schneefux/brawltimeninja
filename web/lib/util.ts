@@ -395,6 +395,18 @@ export function getSeasonEnd(timestamp: Date) {
   return trophySeasonEnd
 }
 
+/*
+ * Round timestamp down to start of day.
+ * @param timestamp
+ */
+export function getDayStart(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const daysSince = Math.ceil(diff/1000/60/60/24)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + daysSince - 1)
+  return trophySeasonEnd
+}
+
 export function getCurrentSeasonEnd() {
   return getSeasonEnd(new Date())
 }
@@ -409,6 +421,12 @@ export function formatClickhouseDate(timestamp: Date) {
   return timestamp.toISOString()
     .slice(0, 10) // remove fractions, day and time zone
     .replace('T', ' ')
+}
+
+/** Parse API time format */
+const parseTime = (time: string) => new Date(Date.parse(time))
+export const parseApiTime = (time: string) => {
+  return parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
 }
 
 export const measurementMap = {
@@ -453,14 +471,14 @@ interface DiffRow {
   battle_victory: number
   battle_starplayer: number
   battle_rank1: number
-  starpower_name?: string
-  starpower_id?: number
-  gadget_name?: string
-  gadget_id?: number
+  brawler_starpower_name?: string
+  brawler_starpower_id?: number
+  brawler_gadget_name?: string
+  brawler_gadget_id?: number
 }
 
 // calculate diff stats between brawlers with & without starpower/gadget
-export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'starpower_name'|'gadget_name', accessoryIdKey: 'starpower_id'|'gadget_id', includeZScore: boolean) {
+export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'brawler_starpower_name'|'brawler_gadget_name', accessoryIdKey: 'brawler_starpower_id'|'brawler_gadget_id', includeZScore: boolean) {
   const statsToDiffs = (accessory: DiffRow) => {
     const brawlerWithout = rows
       .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)

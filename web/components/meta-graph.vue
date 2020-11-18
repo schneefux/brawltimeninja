@@ -28,7 +28,7 @@ export default Vue.extend({
   },
   computed: {
     chart(): any {
-      const entries = this.entries.sort(compare1(this.stat))
+      const entries = this.entries.sort(compare1(this.stat as any))
 
       return {
         traces: [{
