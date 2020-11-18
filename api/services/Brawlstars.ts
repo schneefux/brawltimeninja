@@ -1,6 +1,6 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
-import { xpToHours, brawlerId, capitalizeWords, capitalize } from '../lib/util';
+import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getDayStart } from '../lib/util';
 import { MapMap, MapMetaMap } from '~/model/MetaEntry';
 import { BrawlerMetaRow, MapMetaRow, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
 import { Battle, Brawler, Player, BrawlerMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
@@ -354,14 +354,17 @@ export default class BrawlstarsService {
       // TODO battle log database was cleared 2020-10-22,
       // all workarounds from before that date can be removed
 
-      // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
-      // 2020-10-22, custom maps do not have the event attribute
-      if (!('event' in battle) || battle.event == undefined) {
-        battle.event = {}
+      // 2020-10-22, competition maps: event={id: 0, map: null}, trophychange=N/A
+      if (battle.event.id == 0 && battle.event.map == null && !('trophyChange' in battle.battle)) {
+        battle.event.map = 'Competition Entry'
+      }
+      // competition winners: event={id: 0, map: null}, trophychange=number
+      if (battle.event.id == 0 && battle.event.map == null && 'trophyChange' in battle.battle) {
+        battle.event.map = `Competition Winner ${getDayStart(parseApiTime(battle.battleTime)).toISOString().slice(0, 10)}`
       }
       battle.event.id = battle.event.id || 0
       battle.event.map = battle.event.map || ''
-      // patch for backwards compatiblity
+      // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
       battle.event.mode = battle.event.mode || battle.battle.mode
 
       // FIXME API bug 2020-07-26

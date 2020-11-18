@@ -3,8 +3,8 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { BrawlerMetaRow, ModeMetaRow, MapMetaRow, LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
-import { idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
+import { MapMetaRow, LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
+import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './MapMetaCube';
 import GadgetMetaCube from './GadgetMetaCube';
 import StarpowerMetaCube from './StarpowerMetaCube';
@@ -102,12 +102,6 @@ export default class ClickerService {
     const player = entry.player
     player.tag = validateTag(player.tag)
 
-    /** Parse API time format */
-    const parseTime = (time: string) => new Date(Date.parse(time))
-    const parseApiTime = (time: string) => {
-      return parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
-    }
-
     // parse dates
     const battles = entry.battleLog.items.map(battle => ({
       ...battle,
@@ -160,6 +154,7 @@ export default class ClickerService {
     for (const battle of battles) {
       stats.increment('player.insert.prepare')
 
+      // note: battle is patched by api service
       if (battle.battle.type == 'friendly') {
         // ignore
         // in friendlies, players can play brawlers without owning them -> myBrawler is undefined
@@ -169,7 +164,6 @@ export default class ClickerService {
       }
 
       if (battle.event == undefined || battle.event.map == null) {
-        // competition map: event = { id=0, map=null }
         console.log(`ignoring battle without event for ${player.tag} (${tagToId(player.tag)})`)
         stats.increment('player.insert.skip')
         continue

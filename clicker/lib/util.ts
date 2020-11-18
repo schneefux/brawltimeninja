@@ -6,8 +6,15 @@ import { BrawlerMetaStatistics, ActiveEvent } from "~/model/Api";
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 export const camelToKebab = (s: string) =>
   s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+export const kebabToCamel = (s: string) =>
+  s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
+      .replace('-', '')
+      .replace('_', ''))
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
-export const capitalizeWords = (str: string) => str.split(' ').map(w => capitalize(w)).join(' ')
+export const decapitalizeFirstLetter = (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
+export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
+export const slugify = (str: string) => str.split(' ').join('-')
+export const deslugify = (str: string) => str.split('-').join(' ')
 
 export function scaleMinMax(values: number[]) {
   const min = Math.min.apply(Math, values)
@@ -178,7 +185,6 @@ export const metaStatMaps = {
     winRate: (n: number) => `${Math.round(100 * n * 10) / 10}%`,
     rank1Rate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     starRate: (n: number) => `${Math.round(100 * n* 10) / 10}%`,
-    picks: (n: number) => `${Math.round(100 * n)}%`,
     useRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     pickRate: (n: number) => `${Math.round(100 * n * 100) / 100}%`,
     pickRate_boss: (n: number) => `${Math.round(100 * n)}%`,
@@ -188,6 +194,7 @@ export const metaStatMaps = {
     level: (n: number) => n.toFixed(2),
     rank1: (n: number) => formatSI(n, 1),
     wins: (n: number) => formatSI(n, 1),
+    picks: (n: number) => formatSI(n, 1),
   },
   signs: {
     trophies: -1, // more is better -> sort rank desc
@@ -297,21 +304,22 @@ export interface MetaGridEntrySorted extends MetaGridEntry {
 }
 
 export function formatAsJsonLd(event: ActiveEvent) {
+  const url = `/tier-list/mode/${slugify(event.mode)})}/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    'name': `${formatMode(event.mode)} - ${event.map}`,
+    'name': `${event.mode} - ${event.map}`,
     'startDate': event.start,
     'endDate': event.end,
     'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'eventStatus': 'https://schema.org/EventScheduled',
-    'url': `/tier-list/map/${event.id}`,
-    'image': [`${process.env.mediaUrl}/tier-list/map/${event.id}.png`],
+    'url': url,
+    'image': [`${process.env.mediaUrl}/map/${event.id}.png`],
     'location': {
       '@type': 'VirtualLocation',
-      'url': `/tier-list/map/${event.id}`,
+      'url': url,
     },
-    'description': `${event.map} is a Brawl Stars ${formatMode(event.mode)} map.`,
+    'description': `${event.map} is a Brawl Stars ${event.mode} map.`,
   }
 }
 
@@ -387,6 +395,18 @@ export function getSeasonEnd(timestamp: Date) {
   return trophySeasonEnd
 }
 
+/*
+ * Round timestamp down to start of day.
+ * @param timestamp
+ */
+export function getDayStart(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const daysSince = Math.ceil(diff/1000/60/60/24)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + daysSince - 1)
+  return trophySeasonEnd
+}
+
 export function getCurrentSeasonEnd() {
   return getSeasonEnd(new Date())
 }
@@ -401,4 +421,112 @@ export function formatClickhouseDate(timestamp: Date) {
   return timestamp.toISOString()
     .slice(0, 10) // remove fractions, day and time zone
     .replace('T', ' ')
+}
+
+/** Parse API time format */
+const parseTime = (time: string) => new Date(Date.parse(time))
+export const parseApiTime = (time: string) => {
+  return parseTime(`${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`)
+}
+
+export const measurementMap = {
+  winRate: 'battle_victory',
+  winRateAdj: 'battle_victory_adj',
+  wins: 'wins',
+  winsZScore: 'wins_zscore',
+  useRate: 'picks_weighted',
+  pickRate: 'picks',
+  starRate: 'battle_starplayer',
+  rank1Rate: 'battle_rank1',
+  duration: 'battle_duration',
+}
+
+export const measurementOfTotal = {
+  winRate: false,
+  winRateAdj: false,
+  wins: false,
+  winsZScore: false,
+  useRate: true,
+  pickRate: true,
+  starRate: false,
+  rank1Rate: false,
+  duration: false,
+}
+
+export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: keyof typeof metaStatMaps.signs): number {
+  const sign = metaStatMaps.signs[stat]
+  const e1stat = Number.parseFloat((entry1.stats[stat] || 0).toString())
+  const e2stat = Number.parseFloat((entry2.stats[stat] || 0).toString())
+  return sign * (e1stat - e2stat)
+}
+
+export function compare1(stat: keyof typeof metaStatMaps.signs) {
+  return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, stat)
+}
+
+interface DiffRow {
+  brawler_id: string
+  brawler_name: string
+  picks: number
+  battle_victory: number
+  battle_starplayer: number
+  battle_rank1: number
+  starpower_name?: string
+  starpower_id?: number
+  gadget_name?: string
+  gadget_id?: number
+}
+
+// calculate diff stats between brawlers with & without starpower/gadget
+export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'starpower_name'|'gadget_name', accessoryIdKey: 'starpower_id'|'gadget_id', includeZScore: boolean) {
+  const statsToDiffs = (accessory: DiffRow) => {
+    const brawlerWithout = rows
+      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
+    const perc = (v: number) => Math.round(v * 100 * 100) / 100
+    const signed = (v: number) => v > 0 ? `+${v}%` : `${v}%`
+    const format = (v: number) => signed(perc(v))
+
+    if (brawlerWithout == undefined) {
+      return {
+        ...(includeZScore ? { winsZScore: undefined } : {}),
+        winRate: accessory.battle_victory,
+        starRate: accessory.battle_starplayer,
+        rank1Rate: accessory.battle_rank1,
+      }
+    }
+
+    // calculate z-score, testing with star power wins against without star power wins
+    const zX = accessory.battle_victory * accessory.picks
+    const zN = accessory.picks
+    const zP = brawlerWithout.battle_victory
+    const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
+    const z = zCondition ? (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP)) : undefined
+
+    return {
+        ...(includeZScore ? { winsZScore: z } : {}),
+      winRate: format(accessory.battle_victory - brawlerWithout.battle_victory),
+      starRate: format(accessory.battle_starplayer - brawlerWithout.battle_starplayer),
+      rank1Rate: format(accessory.battle_rank1 - brawlerWithout.battle_rank1),
+    }
+  }
+  const sampleSize = (accessory: DiffRow) => {
+    const brawlerWithout = rows
+      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
+    if (brawlerWithout == undefined) {
+      return 0
+    }
+    return Math.min(accessory.picks, brawlerWithout.picks)
+  }
+
+  return rows
+    .filter(s => s[accessoryNameKey] !== '')
+    .map((accessory) => (<MetaGridEntry>{
+      id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
+      title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
+      brawler: accessory.brawler_name,
+      sampleSize: sampleSize(accessory),
+      stats: statsToDiffs(accessory),
+      icon: `/${accessoryType}/${accessory[accessoryIdKey]}`,
+      link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
+    }))
 }
