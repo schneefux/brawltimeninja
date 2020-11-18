@@ -14,6 +14,7 @@
       itemprop="image"
     ></media-img>
     <div
+      v-if="powerplay || endDate != undefined || startDate != undefined"
       slot="infobar"
       class="flex justify-end"
     >
