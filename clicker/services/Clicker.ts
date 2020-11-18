@@ -168,8 +168,8 @@ export default class ClickerService {
         continue
       }
 
-      if (battle.event == undefined) {
-        // ignore
+      if (battle.event == undefined || battle.event.map == null) {
+        // competition map: event = { id=0, map=null }
         console.log(`ignoring battle without event for ${player.tag} (${tagToId(player.tag)})`)
         stats.increment('player.insert.skip')
         continue
