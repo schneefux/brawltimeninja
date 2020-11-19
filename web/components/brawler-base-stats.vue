@@ -125,6 +125,7 @@
 </template>
 
 <script lang="ts">
+import { IContentDocument } from '@nuxt/content/types/content'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { capitalize, metaStatMaps } from '~/lib/util'
@@ -141,7 +142,6 @@ interface Content {
   brawler?: string
   main?: string
   super?: string
-
   gender: string
   pronoun: string
   possessivePronoun: string
@@ -196,8 +196,8 @@ export default Vue.extend({
       't': 'their',
     }
 
-    const gender = detectGender(this.info?.description || '')
-    const content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => ({}))
+    const content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => ({})) as IContentDocument
+    const gender = content.gender || detectGender(this.info?.description || '')
     this.content = {
       gender,
       pronoun: pronouns[gender],
@@ -246,12 +246,14 @@ export default Vue.extend({
 
       const overallWords = [
         `Unless you know how to play ${this.brawlerName} well, you should pick a different Brawler.`,
-        `${this.brawlerName} is not the best choice at the moment.`,
+        `Overall, ${this.brawlerName} is not a good choice at the moment.`,
         `Overall, this makes ${this.brawlerName} a solid pick.`,
-        `Playing ${this.brawlerName} is a good Brawler at the moment.`,
-        `${this.brawlerName} belongs to the best Brawlers overall.`,
+        `Overall, ${this.brawlerName} is a good Brawler at the moment.`,
+        `${this.brawlerName} belongs to the best Brawlers right now.`,
       ]
-      const overall = overallWords[scaleInto(0.02*0.55, 0.03*0.60, overallWords.length - 1, useRate * this.data.battle_victory)]
+      const totalWinsRate = Math.sqrt(useRate * this.data.battle_victory)
+      const overall = overallWords[
+        scaleInto(Math.sqrt(0.02*0.55), Math.sqrt(0.03*0.60), overallWords.length - 1, totalWinsRate)]
 
       return `
         ${this.brawlerName} is, judging by ${this.content.possessivePronoun} Use Rate, a ${popularity} Brawler.\
