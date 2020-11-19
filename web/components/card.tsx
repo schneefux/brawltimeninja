@@ -67,13 +67,20 @@ export default Vue.extend({
                     </p>
                   }
                   { props.subtitle != undefined && props.subtitleLink == undefined ?
-                    <p class="text-xl">
+                    <p class={{
+                      'text-xl': props.subtitle.length < 20,
+                    }}>
                       { props.subtitle }
                     </p>
                   : ''
                   }
                   { props.subtitle != undefined && props.subtitleLink != undefined ?
-                    <router-link to={props.subtitleLink} class="block text-xl">
+                    <router-link
+                      to={props.subtitleLink}
+                      class={{
+                        'block': true,
+                        'text-xl': props.subtitle.length < 20,
+                      }}>
                       { props.subtitle }
                     </router-link>
                   : ''
