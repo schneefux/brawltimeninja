@@ -18,7 +18,8 @@
           v-if="descriptions != null"
           class="card__text mb-3 h-full"
         >
-          {{ descriptions[getName(entry)] }}
+          {{ descriptions[getName(entry)] }}<br>
+          {{ description(entry) }}
         </dd>
         <div class="flex justify-between">
           <dt class="font-semibold">No {{ kind == 'gadgets' ? 'Gadget' : 'Star Power' }} Win Rate</dt>
@@ -35,7 +36,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, capitalize } from '~/lib/util'
+import { metaStatMaps, capitalize, scaleInto } from '~/lib/util'
 import { BrawlerStatisticsRows } from '../model/Clicker'
 import { BrawlerData } from '../model/Media'
 
@@ -71,10 +72,13 @@ export default Vue.extend({
       descriptions: null as Record<string, string>|null,
     }
   },
+  fetchDelay: 0,
   async fetch() {
     const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
     const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
-    const data = await this.$clicker.query('meta.starpower.brawler-widget', cube,
+
+    // TODO queries could be combined
+    const dataWith = await this.$clicker.query('meta.starpower.brawler-widget', cube,
       dimensions,
       ['battle_victory'],
       {
@@ -84,13 +88,24 @@ export default Vue.extend({
       },
       { sort: { timestamp: 'desc' }, cache: 60*60 })
 
-    this.data = (data.data as unknown as Row[]).map(r => ({
+    const dataWithout = await this.$clicker.query('meta.starpower.brawler-widget', cube,
+      dimensions,
+      ['battle_victory'],
+      {
+        ...this.$clicker.defaultSlices('starpower'),
+        brawler_name: [this.brawlerName.toUpperCase()], // TODO use the ID
+        [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['false'],
+      },
+      { sort: { timestamp: 'desc' }, cache: 60*60 })
+
+    this.data = (dataWith.data as unknown as Row[]).map(r => ({
       ...r,
       id: this.kind == 'starpowers' ? r.brawler_starpower_id : r.brawler_gadget_id,
     }))
       // in case of duplicate IDs, use the first (most recent)
       .filter((el, index, all) => all.findIndex(e => e.id == el.id) == index)
-    this.totals = data.totals as unknown as Row
+
+    this.totals = dataWithout.data[0]
 
     const info = await this.$axios.$get(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null) as BrawlerData|null
     if (info != null) {
@@ -110,6 +125,19 @@ export default Vue.extend({
     },
     getName() {
       return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_name : entry.brawler_starpower_name
+    },
+    description() {
+      return (entry: Row) => {
+        if (this.data.length == 0 || this.totals == undefined) {
+          return ''
+        }
+
+        const diff = entry.battle_victory - this.totals.battle_victory
+        const differenceTexts = ['has no noticable impact on the win rate', 'provides a small advantage', 'provides a noticable advantage', 'improves the chances of winning a lot']
+        const differenceText = differenceTexts[scaleInto(0, 0.05, differenceTexts.length - 1, diff)]
+
+        return `${capitalize(this.getName(entry)?.toLowerCase() || '')} ${differenceText}.`
+      }
     },
   },
 })

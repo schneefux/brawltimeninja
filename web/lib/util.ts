@@ -83,6 +83,12 @@ export function unformatMode(mode: string) {
   return uncapitalize(mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join(''))
 }
 
+export const formatList = (l: string[], joiner = 'or') => l.slice(0, l.length - 1).join(', ') + ' ' + joiner + ' ' + l[l.length - 1]
+export const clamp = (min: number, max: number, n: number) => Math.min(max, Math.max(min, n))
+export const minMaxScale = (fromMin: number, fromMax: number, n: number) => (n - fromMin) / (fromMax - fromMin)
+export const scaleInto = (fromMin: number, fromMax: number, toMax: number, n: number) => clamp(0, toMax, Math.floor(minMaxScale(fromMin, fromMax, n) * toMax))
+
+
 export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
 }

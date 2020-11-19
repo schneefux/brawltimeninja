@@ -40,7 +40,7 @@
 
       <p class="mt-4">
         Info:
-        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power / Gadget and a Brawler with zero Star Powers / Gadgets.
+        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
       </p>
 
       <div class="mt-2 w-full flex justify-end">

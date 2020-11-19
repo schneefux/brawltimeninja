@@ -59,6 +59,7 @@ interface Clicker {
       cache?: number,
     }): Promise<{ data: T[], totals: T }>
   queryActiveEvents(): Promise<EventMetadata[]>,
+  queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
   calculateBayesSynergies(slices: Slices, tag: string, brawler?: string, limit?: number): Promise<{
@@ -151,11 +152,14 @@ export default (context, inject) => {
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url)
     },
-    async queryActiveEvents() {
+    async queryActiveEvents(measures = [], slices = {}, maxage = 60) {
       const events = await this.query<EventMetadata>('active.events', 'map',
         ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay'],
-        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay', 'timestamp', 'picks'],
-        { trophy_season_end: ['current'] },
+        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay', 'timestamp', 'picks', ...measures],
+        {
+          trophy_season_end: ['current'],
+          ...slices,
+        },
         {
           sort: { timestamp: 'desc' },
           cache: 60*10,
@@ -163,7 +167,7 @@ export default (context, inject) => {
         })
 
       const lastEvents = events.data
-        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= 60)
+        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
         .sort((e1, e2) => e2.picks - e1.picks)
 
       const starlistData = await context.$axios.$get('/api/events/active')

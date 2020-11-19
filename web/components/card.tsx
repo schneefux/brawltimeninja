@@ -103,11 +103,11 @@ export default Vue.extend({
           </div>
           : ''
         }
-        <div class={'relative z-10 mx-auto ' + props.size}>
+        <div class={'px-3 relative z-10 mx-auto ' + props.size}>
           { scopedSlots.content({ open, page }) }
         </div>
         { 'actions' in scopedSlots ?
-          <div class="relative z-10 bg-gray-800 text-primary-lightest w-full px-3 py-2 font-semibold">
+          <div class="px-3 relative z-10 bg-gray-800 text-primary-lightest w-full py-2 font-semibold">
             { scopedSlots.actions({}) }
           </div>
           : ''

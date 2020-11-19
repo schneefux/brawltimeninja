@@ -6,10 +6,13 @@
     :pages="Math.ceil(data.length / 10)"
   >
     <template v-slot:content="{ page }">
+      <p>
+        {{ description }}
+      </p>
       <div class="brawler-avatars flex-wrap my-2">
         <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
         <div
-          v-for="brawler in data.slice(0, 5 + page * 10)"
+          v-for="brawler in data.slice(0, 5 + page * 20)"
           :key="brawler.brawler_name"
           class="brawler-avatars__element w-1/5 my-2"
         >
@@ -42,7 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PicksWins } from '~/plugins/clicker'
-import { metaStatMaps, brawlerId } from '../lib/util'
+import { metaStatMaps, brawlerId, capitalizeWords, formatList } from '../lib/util'
 
 interface Row {
   brawler_name: string
@@ -88,6 +91,15 @@ export default Vue.extend({
     },
     metaStatMaps() {
       return metaStatMaps
+    },
+    description(): string {
+      if (this.data.length < 5) {
+        return ''
+      }
+      const formatName = (r: Row) => capitalizeWords(r.brawler_name.toLowerCase())
+      const topText = formatList(this.data.slice(0, 4).map(formatName))
+      const bottomText = formatList(this.data.slice(-3).map(formatName))
+      return `${this.brawler} performs best together with ${topText}. Playing with ${bottomText} puts ${this.brawler} at disadvantage.`
     },
   },
   fetchDelay: 0,

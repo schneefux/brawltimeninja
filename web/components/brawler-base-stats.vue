@@ -15,7 +15,7 @@
             class="w-full"
           >
             <dt class="card__header">{{ brawlerName }}</dt>
-            <dd class="card__text mb-3 whitespace-pre-line">{{ brawlerDescription }}</dd>
+            <dd class="card__text mb-3">{{ brawlerDescription }}</dd>
             <div class="flex justify-between">
               <dt class="font-semibold">Health at Level 1</dt>
               <dd>{{ info.health }}</dd>
@@ -44,7 +44,7 @@
         <dt class="card__header">
           {{ attack == 'main' ? 'Main Attack' : 'Super' }}
         </dt>
-        <dd class="card__text mb-3 h-full whitespace-pre-line">
+        <dd class="card__text mb-3 h-full">
           {{ info[attack].description }}
           {{ content[attack] }}
         </dd>
@@ -106,7 +106,7 @@
     >
       <dl>
         <dt class="card__header">{{ brawlerName }} Statistics</dt>
-        <dd class="card__text mb-3 whitespace-pre-line">{{ statisticsDescription }}</dd>
+        <dd class="card__text mb-3">{{ statisticsDescription }}</dd>
         <div class="flex justify-between">
           <dt class="font-semibold">Use Rate</dt>
           <dd>{{ metaStatMaps.formatters.useRate(data.picks_weighted / totals.picks_weighted) }}</dd>
@@ -128,7 +128,7 @@
 import { IContentDocument } from '@nuxt/content/types/content'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { capitalize, metaStatMaps } from '~/lib/util'
+import { capitalize, metaStatMaps, scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
 
 interface Row {
@@ -233,10 +233,6 @@ export default Vue.extend({
         return ''
       }
 
-      const clamp = (min: number, max: number, n: number) => Math.min(max, Math.max(min, n))
-      const minMaxScale = (fromMin: number, fromMax: number, n: number) => (n - fromMin) / (fromMax - fromMin)
-      const scaleInto = (fromMin: number, fromMax: number, toMax: number, n: number) => clamp(0, toMax, Math.floor(minMaxScale(fromMin, fromMax, n) * toMax))
-
       const popularityWords = ['niche', 'not so popular', 'moderately popular', 'very popular']
       const useRate = this.data.picks_weighted / this.totals.picks_weighted
       const popularity = popularityWords[scaleInto(0.02, 0.03, popularityWords.length - 1, useRate)]
@@ -247,7 +243,7 @@ export default Vue.extend({
       const overallWords = [
         `Unless you know how to play ${this.brawlerName} well, you should pick a different Brawler.`,
         `Overall, ${this.brawlerName} is not a good choice at the moment.`,
-        `Overall, this makes ${this.brawlerName} a solid pick.`,
+        `Overall, ${this.brawlerName} is a solid pick.`,
         `Overall, ${this.brawlerName} is a good Brawler at the moment.`,
         `${this.brawlerName} belongs to the best Brawlers right now.`,
       ]

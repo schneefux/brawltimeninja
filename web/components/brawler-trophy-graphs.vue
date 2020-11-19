@@ -1,5 +1,9 @@
 <template>
   <div class="md:flex md:flex-wrap md:justify-center">
+    <div class="w-full mb-2">
+      <p>{{ description }}</p>
+    </div>
+
     <div
       v-if="trophiesUseRateChart != undefined"
       class="card-wrapper"
@@ -41,6 +45,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
+import { scaleInto } from '~/lib/util'
 import { BrawlerStatisticsRows } from '~/model/Clicker'
 
 interface Row {
@@ -114,6 +119,30 @@ export default Vue.extend({
     this.totals = totalData.data
   },
   computed: {
+    useRates(): number[] {
+      if (this.data.length == 0 || this.totals.length == 0) {
+        return []
+      }
+      return trophyranges.map(t =>
+        this.data.find(b => b.brawler_trophyrange == t)!.picks_weighted
+        / this.totals.find(b => b.brawler_trophyrange == t)!.picks_weighted
+      )
+    },
+    description(): string {
+      if (this.useRates.length == 0) {
+        return ''
+      }
+
+      const sum = (ns: number[]) => ns.reduce((sum, n) => sum + n, 0)
+      const lowerSum = sum(this.useRates.slice(0, 4))
+      const upperSum = sum(this.useRates.slice(6, 10))
+      const slope = (upperSum - lowerSum) / (lowerSum + upperSum)
+      const slopeWords = ['less popular than', 'just popular as', 'more popular than']
+      const slopeWord = slopeWords[scaleInto(-0.25, 0.25, slopeWords.length - 1, slope)]
+      return `
+        In high trophy battles, ${this.brawlerName} is ${slopeWord} than in low trophy battles.
+      `
+    },
     trophiesStarRateChart(): any {
       if (this.data.length == 0 || this.totals.length == 0) {
         return undefined
@@ -159,16 +188,11 @@ export default Vue.extend({
         return undefined
       }
 
-      const useRates = trophyranges.map(t =>
-        this.data.find(b => b.brawler_trophyrange == t)!.picks_weighted
-        / this.totals.find(b => b.brawler_trophyrange == t)!.picks_weighted
-      )
-
       return {
         traces: [{
           name: this.brawlerName,
           x: trophyranges.map(t => t * 100),
-          y: useRates,
+          y: this.useRates,
           mode: 'lines+markers',
           type: 'scatter',
         }, {
