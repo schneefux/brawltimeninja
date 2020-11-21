@@ -143,7 +143,7 @@ export default class PlayerBrawlerCube extends Cube {
     trophy_season_end: 'string',
     timestamp: 'string',
 
-    player_id: 'int',
+    player_id: 'string',
     player_tag: 'string',
     player_name: 'string',
     player_name_color: 'string',
