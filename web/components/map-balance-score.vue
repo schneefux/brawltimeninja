@@ -22,8 +22,7 @@
 import Vue from 'vue'
 
 interface Row {
-  picks: number
-  wins: number
+  picks_weighted: number
 }
 
 export default Vue.extend({
@@ -52,7 +51,7 @@ export default Vue.extend({
   async fetch() {
     const data = await this.$clicker.query('meta.map', 'map',
       ['brawler_name'],
-      ['wins'],
+      ['picks_weighted'],
       {
         ...this.$clicker.defaultSlices('map'),
         ...(this.map != undefined ? {
@@ -74,14 +73,15 @@ export default Vue.extend({
       if (this.data.length == 0) {
         return undefined
       }
+      const getStat = (r: Row) => r.picks_weighted
 
       // calculate Gini coefficient
       let absoluteDifference = 0
       let arithmeticMean = 0
       for (const e1 of this.data) {
-        arithmeticMean += e1.wins / this.data.length
+        arithmeticMean += getStat(e1) / this.data.length
         for (const e2 of this.data) {
-          absoluteDifference += Math.abs(e1.wins - e2.wins)
+          absoluteDifference += Math.abs(getStat(e1) - getStat(e2))
         }
       }
       return absoluteDifference / (2 * Math.pow(this.data.length, 2) * arithmeticMean)
