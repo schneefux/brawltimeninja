@@ -41,7 +41,7 @@ export default abstract class Cube {
       dimensions: string[],
       slices: Partial<Record<string, string[]>> = {} as any,
       order: Partial<Record<string, Order>> = {},
-      limit?: number): Promise<{ data: R[], totals: R }> {
+      limit?: number): Promise<{ data: R[], totals: R, statistics: Record<string, number> }> {
     if (measures.length == 1 && measures[0] == '*') {
       measures = Object.keys(this.measures)
     }
@@ -115,11 +115,17 @@ export default abstract class Cube {
     this.stats.increment(name + '.run')
     return this.stats.asyncTimer(() =>
       // ch2 has shitty typings
-      ((this.ch.query(sql) as any).withTotals().toPromise() as Promise<{ data: Record<string, string>[], totals: Record<string, string>}>)
-        .then(result => ({
-          data: result.data.map(r => this.parse<R>(r)),
-          totals: this.parse<R>(result.totals || {}),
-        }))
+      ((this.ch.query(sql) as any).withTotals().toPromise() as Promise<{
+        data: Record<string, string>[],
+        totals: Record<string, string>,
+        rows: number,
+        rows_before_limit_at_least: number,
+        statistics: { elapsed: number, rows_read: number, bytes_read: number },
+      }>).then(result => ({
+        data: result.data.map(r => this.parse<R>(r)),
+        totals: this.parse<R>(result.totals || {}),
+        statistics: result.statistics,
+      }))
     , name + '.timer')()
   }
 
