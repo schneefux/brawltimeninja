@@ -140,6 +140,7 @@ export default class PlayerBrawlerCube extends Cube {
   static defaultMappers = {
     picks: 'int',
     users: 'int',
+    trophy_season_end: 'string',
     timestamp: 'string',
 
     player_id: 'int',
