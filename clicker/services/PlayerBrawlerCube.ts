@@ -127,6 +127,7 @@ export default class PlayerBrawlerCube extends Cube {
   static defaultSlices = {
     'player_id': 1,
     'player_tag': 1,
+    'player_name_like': 1,
     'trophy_season_end': 1,
     'brawler_trophyrange': 2,
     'brawler_id': 1,
@@ -200,6 +201,8 @@ export default class PlayerBrawlerCube extends Cube {
         return query.where(`${this.table}.player_id`, '=', args[0])
       case 'player_tag':
         return query.where(`${this.table}.player_id`, '=', tagToId(args[0]))
+      case 'player_name_like':
+        return query.where(`${this.table}.player_name`, 'LIKE', args[0])
     }
     throw new Error('Unknown slice name: ' + name)
   }
