@@ -100,17 +100,18 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
 
   measures = {
     ...PlayerBrawlerCube.defaultMeasures,
-    'brawler_starpower_found': 'MAX(brawler_starpower_found)',
-    'brawler_starpower_id': 'MAX(brawler_starpower_id)',
-    'brawler_starpower_name': 'any(brawler_starpower_name)',
-    'brawler_gadget_found': 'MAX(brawler_gadget_found)',
-    'brawler_gadget_id': 'MAX(brawler_gadget_id)',
-    'brawler_gadget_name': 'any(brawler_gadget_name)',
-    'battle_event_powerplay': 'AVG(battle_event_powerplay)',
-    'battle_duration': 'AVG(battle_duration)',
-    'battle_rank': 'AVG(battle_rank)',
-    'battle_trophy_change': 'AVG(battle_trophy_change)',
-    'battle_victory': 'AVG(battle_victory)',
+    'brawler_starpower_found': `MAX(${this.table}.brawler_starpower_found)`,
+    'brawler_starpower_id': `MAX(${this.table}.brawler_starpower_id)`,
+    'brawler_starpower_name': `any(${this.table}.brawler_starpower_name)`,
+    'brawler_gadget_found': `MAX(${this.table}.brawler_gadget_found)`,
+    'brawler_gadget_id': `MAX(${this.table}.brawler_gadget_id)`,
+    'brawler_gadget_name': `any(${this.table}.brawler_gadget_name)`,
+    'battle_event_powerplay': `AVG(${this.table}.battle_event_powerplay)`,
+    'battle_duration': `AVG(${this.table}.battle_duration)`,
+    'battle_rank': `AVG(${this.table}.battle_rank)`,
+    'battle_trophy_change': `AVG(${this.table}.battle_trophy_change)`,
+    'battle_victory': `AVG(${this.table}.battle_victory)`,
+    'wins': `SUM(${this.table}.battle_victory)`,
   }
 
   mappers = {
@@ -131,6 +132,7 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
     'battle_rank': 'float',
     'battle_trophy_change': 'float',
     'battle_victory': 'float',
+    'wins': 'float',
     // ...TODO
   } as Record<string, DataType>
 

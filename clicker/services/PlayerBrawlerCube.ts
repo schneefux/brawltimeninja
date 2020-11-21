@@ -1,8 +1,8 @@
 import { ClickHouse } from "clickhouse";
 import { stripIndent } from "common-tags";
 import { QueryBuilder } from "knex";
-import { formatClickhouse, getCurrentSeasonEnd, tagToId } from "../lib/util";
-import Cube, { DataType, Order } from "./Cube";
+import { formatClickhouse, getCurrentSeasonEnd, idToTag, tagToId } from "../lib/util";
+import Cube, { DataType } from "./Cube";
 
 /**
  * Player Brawler facts cube
@@ -204,9 +204,16 @@ export default class PlayerBrawlerCube extends Cube {
     throw new Error('Unknown slice name: ' + name)
   }
 
-  virtuals = {} as Record<string, string[]>
+  virtuals = {
+    player_tag: ['player_id'],
+  } as Record<string, string[]>
 
   mapVirtual(row: Record<string, string>): Record<string, string|number> {
+    if ('player_id' in row) {
+      return {
+        player_tag: idToTag(row.player_id),
+      }
+    }
     return {}
   }
 }
