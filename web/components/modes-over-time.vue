@@ -42,11 +42,18 @@ export default Vue.extend({
       const modeSeasonMap = new Map<string, Map<string, number>>()
 
       this.data.forEach((e) => {
+        // with every battle, allies are added to map meta as well,
+        // so manually correct the totals
+        const picks =
+          e.battle_event_mode == 'soloShowdown' ? e.picks
+          : e.battle_event_mode == 'duoShowdown' ? e.picks / 2
+          : e.picks / 3
+
         let total = 0
         if (seasonTotalMap.has(e.trophy_season_end)) {
           total = seasonTotalMap.get(e.trophy_season_end)!
         }
-        seasonTotalMap.set(e.trophy_season_end, total + e.picks)
+        seasonTotalMap.set(e.trophy_season_end, total + picks)
 
         if (!modeSeasonMap.has(e.battle_event_mode)) {
           modeSeasonMap.set(e.battle_event_mode, new Map<string, number>())
@@ -56,7 +63,7 @@ export default Vue.extend({
         if (seasonMap.has(e.trophy_season_end)) {
           current = seasonMap.get(e.trophy_season_end)!
         }
-        seasonMap.set(e.trophy_season_end, current + e.picks)
+        seasonMap.set(e.trophy_season_end, current + picks)
       })
 
       const modes = [...modeSeasonMap.keys()]

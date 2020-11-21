@@ -41,7 +41,13 @@ export default Vue.extend({
       return {
         traces: [{
           labels: entries.map(e => formatMode(e.battle_event_mode)),
-          values: entries.map(e => e.picks),
+          values: entries.map(e => {
+            // with every battle, allies are added to map meta as well,
+            // so manually correct the totals
+            return e.battle_event_mode == 'soloShowdown' ? e.picks
+              : e.battle_event_mode == 'duoShowdown' ? e.picks / 2
+              : e.picks / 3
+          }),
           type: 'pie',
           textinfo: 'label+percent',
           textposition: 'inside',
