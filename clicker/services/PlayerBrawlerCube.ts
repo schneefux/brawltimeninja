@@ -124,21 +124,6 @@ export default class PlayerBrawlerCube extends Cube {
 
   dimensions = PlayerBrawlerCube.defaultDimensions as string[]
 
-  public async query<R extends Record<string, string|number|boolean>>(
-      name: string,
-      measures: string[]|['*'],
-      dimensions: string[],
-      slices: Partial<Record<string, string[]>> = {} as any,
-      order: Partial<Record<string, Order>> = {},
-      limit?: number): Promise<{ data: R[], totals: R }> {
-    // force queries to always slice by player_id
-    // to prevent resource exhaustion
-    if (!('player_id' in slices) && !('player_tag' in slices)) {
-      throw new Error('Raw cubes must be sliced by player_id or player_tag')
-    }
-    return super.query<R>(name, measures, dimensions, slices, order, limit)
-  }
-
   static defaultSlices = {
     'player_id': 1,
     'player_tag': 1,
