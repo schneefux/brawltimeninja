@@ -90,7 +90,7 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
   }
 
   dimensions = [
-    PlayerBrawlerCube.defaultDimensions,
+    ...PlayerBrawlerCube.defaultDimensions,
     'battle_event_id',
     'battle_event_mode',
     'battle_event_map',
@@ -100,7 +100,6 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
 
   measures = {
     ...PlayerBrawlerCube.defaultMeasures,
-
     'brawler_starpower_found': 'MAX(brawler_starpower_found)',
     'brawler_starpower_id': 'MAX(brawler_starpower_id)',
     'brawler_starpower_name': 'any(brawler_starpower_name)',
