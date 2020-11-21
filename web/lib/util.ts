@@ -406,12 +406,12 @@ export function getSeasonEnd(timestamp: Date) {
  * Round timestamp down to start of day.
  * @param timestamp
  */
-export function getDayStart(timestamp: Date) {
-  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
-  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+export function getCompetitionMapDayStart(timestamp: Date) {
+  const dayStart = new Date(Date.parse('2020-07-13T09:30:00Z'))
+  const diff = timestamp.getTime() - dayStart.getTime()
   const daysSince = Math.ceil(diff/1000/60/60/24)
-  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + daysSince - 1)
-  return trophySeasonEnd
+  dayStart.setUTCDate(dayStart.getUTCDate() + daysSince - 1)
+  return dayStart
 }
 
 export function getCurrentSeasonEnd() {

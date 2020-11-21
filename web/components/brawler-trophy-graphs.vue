@@ -137,7 +137,7 @@ export default Vue.extend({
       const lowerSum = sum(this.useRates.slice(0, 4))
       const upperSum = sum(this.useRates.slice(6, 10))
       const slope = (upperSum - lowerSum) / (lowerSum + upperSum)
-      const slopeWords = ['less popular than', 'just popular as', 'more popular than']
+      const slopeWords = ['less popular than', 'about as popular as', 'more popular than']
       const slopeWord = slopeWords[scaleInto(-0.25, 0.25, slopeWords.length - 1, slope)]
       return `
         In high trophy battles, ${this.brawlerName} is ${slopeWord} than in low trophy battles.
