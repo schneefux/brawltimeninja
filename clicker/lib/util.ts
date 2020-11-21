@@ -14,7 +14,8 @@ export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.t
 export const decapitalizeFirstLetter = (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 export const slugify = (str: string) => str.split(' ').join('-')
-export const deslugify = (str: string) => str.split('-').join(' ')
+// special case: transform "Competition-Winner-2021-01-01" to "Competition Winner 2021-01-01"
+export const deslugify = (str: string) => str.startsWith('Competition-Winner-') ? str.replace('Competition-Winner-', 'Competition Winner ') : str.split('-').join(' ')
 
 export function scaleMinMax(values: number[]) {
   const min = Math.min.apply(Math, values)
@@ -81,6 +82,12 @@ export function unformatMode(mode: string) {
   const uncapitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toLowerCase())
   return uncapitalize(mode.replace(/^Showdown$/, 'Solo Showdown').split(' ').join(''))
 }
+
+export const formatList = (l: string[], joiner = 'or') => l.slice(0, l.length - 1).join(', ') + ' ' + joiner + ' ' + l[l.length - 1]
+export const clamp = (min: number, max: number, n: number) => Math.min(max, Math.max(min, n))
+export const minMaxScale = (fromMin: number, fromMax: number, n: number) => (n - fromMin) / (fromMax - fromMin)
+export const scaleInto = (fromMin: number, fromMax: number, toMax: number, n: number) => clamp(0, toMax, Math.floor(minMaxScale(fromMin, fromMax, n) * toMax))
+
 
 export function xpToHours(xp: number) {
   return xp / 220; // 145h for 30300 XP as measured by @schneefux
@@ -399,12 +406,12 @@ export function getSeasonEnd(timestamp: Date) {
  * Round timestamp down to start of day.
  * @param timestamp
  */
-export function getDayStart(timestamp: Date) {
-  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
-  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+export function getCompetitionMapDayStart(timestamp: Date) {
+  const dayStart = new Date(Date.parse('2020-07-13T09:30:00Z'))
+  const diff = timestamp.getTime() - dayStart.getTime()
   const daysSince = Math.ceil(diff/1000/60/60/24)
-  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + daysSince - 1)
-  return trophySeasonEnd
+  dayStart.setUTCDate(dayStart.getUTCDate() + daysSince - 1)
+  return dayStart
 }
 
 export function getCurrentSeasonEnd() {
