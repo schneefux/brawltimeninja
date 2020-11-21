@@ -51,12 +51,10 @@ app.get('/clicker/cube/:cube/metadata', asyncMiddleware(async (req, res) => {
 app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, res) => {
   const split = (n: string) => n.split(',').filter(p => p.length > 0)
 
-  console.log(req.query)
-
   const cubeName = req.params.cube
   const dimensions = split(req.params.dimensions || '')
   const query = (req.query || {}) as Record<string, string>
-  const measures = split(query['include'])
+  const measures = split(query['include'] || '')
   // koa: keeps `slice[name]` = value
   // express: automatically parses bracket syntax, creates `slice` = { [name]: value }
   const slices = Object.entries((query.slice || {}) as Record<string, string>)
