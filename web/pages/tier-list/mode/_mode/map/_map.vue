@@ -22,19 +22,28 @@
       />
     </client-only>
 
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
-      class="section flex justify-center"
-    >
+    <div class="section flex flex-wrap justify-center items-center">
       <map-detail-card
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'widget'),
+          once: true,
+        }"
         :mode="event.mode"
         :map="event.map"
         :id="event.id"
         :timestamp="event.timestamp"
       ></map-detail-card>
+
+      <map-leaderboard-card
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'leaderboard'),
+          once: true,
+        }"
+        :mode="event.mode"
+        :map="event.map"
+        :id="event.id"
+        :timestamp="event.timestamp"
+      ></map-leaderboard-card>
     </div>
 
     <div

@@ -18,7 +18,7 @@
         v-for="entry in topStarpowers"
         :key="entry.id"
         :style="`width: ${100 / Object.keys(topStarpowers).length}%`"
-        class="brawler-avatars__element w-1/5 my-4"
+        class="brawler-avatars__element w-1/5 my-2"
       >
         <div class="brawler-avatar">
           <media-img

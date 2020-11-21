@@ -8,7 +8,7 @@
       ends in {{ timeTillEnd }}
     </p>
 
-    <div slot="content" class="my-4 flex">
+    <div slot="content" class="my-2 flex">
       <div class="flex justify-center bg-gray-800 rounded mx-auto">
         <div class="flex flex-col justify-end mr-2">
           <media-img

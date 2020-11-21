@@ -56,7 +56,12 @@ export default Vue.extend({
               : ''
               }
               { props.title != undefined ?
-                <div class="ml-3 text-white">
+                <div
+                  class={{
+                    'ml-3': props.icon != undefined,
+                    'text-white': true,
+                  }}
+                >
                   { props.titleLink != undefined ?
                     <router-link to={props.titleLink} class="block text-xl">
                       { props.title }
@@ -69,6 +74,7 @@ export default Vue.extend({
                   { props.subtitle != undefined && props.subtitleLink == undefined ?
                     <p class={{
                       'text-xl': props.subtitle.length < 20,
+                      'text-xs': props.subtitle.length > 40,
                     }}>
                       { props.subtitle }
                     </p>
@@ -103,11 +109,11 @@ export default Vue.extend({
           </div>
           : ''
         }
-        <div class={'px-3 relative z-10 mx-auto ' + props.size}>
+        <div class={'px-3 py-2 relative z-10 mx-auto ' + props.size}>
           { scopedSlots.content({ open, page }) }
         </div>
         { 'actions' in scopedSlots ?
-          <div class="px-3 relative z-10 bg-gray-800 text-primary-lightest w-full py-2 font-semibold">
+          <div class="px-3 py-2 relative z-10 bg-gray-800 text-primary-lightest w-full font-semibold">
             { scopedSlots.actions({}) }
           </div>
           : ''

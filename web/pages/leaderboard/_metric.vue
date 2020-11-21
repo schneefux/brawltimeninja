@@ -30,55 +30,20 @@
     </div>
 
     <div class="section flex justify-center">
-      <div class="card card--dark card__content">
-        <table class="w-64 max-w-full table">
-          <caption class="mb-1">
-            Top {{ leaderboard.length }} players, updated hourly
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col" class="text-right">
-                #
-              </th>
-              <th scope="col" class="text-left">
-                Name
-              </th>
-              <th scope="col" class="text-right">
-                {{ metricName }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(entry, index) in leaderboard"
-              :key="entry.tag"
-            >
-              <th scope="row" class="text-right">
-                {{ index + 1 }}
-              </th>
-              <td class="font-semibold">
-                <nuxt-link
-                  :to="`/player/${entry.tag}`"
-                  class="flex items-center"
-                >
-                  <media-img
-                    v-if="entry.icon"
-                    :path="`/avatars/${entry.icon}`"
-                    clazz="h-8"
-                    wrapper-class="flex-shrink-0"
-                  ></media-img>
-                  <span class="link ml-2">
-                    {{ entry.name }}
-                  </span>
-                </nuxt-link>
-              </td>
-              <td class="text-right">
-                {{ Math.floor(entry.metric) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <card :title="`Best Players by ${metricName}`">
+        <template v-slot:content>
+          <p class="mb-1">
+            Top {{ leaderboard.length }} players on Brawl Time Ninja, updated hourly
+          </p>
+          <div class="mt-2">
+            <player-rank-table
+              :columns="[metric]"
+              :column-names="[metricName]"
+              :rows="rows"
+            ></player-rank-table>
+          </div>
+        </template>
+      </card>
     </div>
 
     <client-only>
@@ -96,19 +61,21 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '../../model/Api'
 import { camelToSnakeCase, capitalizeWords } from '../../lib/util'
+import { PlayerRankTableRow } from '~/components/player-rank-table.vue'
 
 function formatMetric(m: string) {
   return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))
 }
 
 export default Vue.extend({
-  head() {
-    const description = `Brawl Stars ${(<any>this).metricName} Leaderboard. Players ranked by most ${(<any>this).metricName}.`
+  head(): MetaInfo {
+    const description = `Brawl Stars ${this.metricName} Leaderboard. Players ranked by most ${this.metricName}.`
     return {
-      title: `Brawl Stars ${(<any>this).metricName} Leaderboard`,
+      title: `Brawl Stars ${this.metricName} Leaderboard`,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -118,6 +85,7 @@ export default Vue.extend({
   data() {
     return {
       formatMetric,
+      metric: '',
       metricName: '',
       metrics: [
         'hours',
@@ -135,11 +103,20 @@ export default Vue.extend({
     const leaderboard = await $axios.$get<Leaderboard>(`/api/leaderboard/${metric}`)
 
     return {
+      metric,
       metricName: formatMetric(metric),
       leaderboard: leaderboard.entries,
     }
   },
   computed: {
+    rows(): PlayerRankTableRow[] {
+      return this.leaderboard.map(e => ({
+        player_name: e.name,
+        player_tag: e.tag,
+        player_icon_id: e.icon,
+        [this.metric]: Math.floor(e.metric),
+      }))
+    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
