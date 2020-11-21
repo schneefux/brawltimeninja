@@ -1,19 +1,9 @@
 <template>
   <div class="flex flex-col items-center">
-    <quick-tip
-      v-if="showQuickTip"
-      :player-tag="userTag || lastPlayers[0].tag"
-      @close="closeQuickTip"
-      class="mx-auto px-4 mt-4 max-w-2xl"
-    ></quick-tip>
     <media-img
       :path="randomHero"
       size="500"
-      :clazz="{
-        'mx-auto': true,
-        'hidden md:mt-12 md:block md:h-32 lg:h-48': showQuickTip,
-        'mt-16 h-32 md:h-48 lg:h-64': !showQuickTip,
-      }"
+      clazz="mx-auto mt-16 h-32 md:h-48 lg:h-64"
     ></media-img>
 
     <div class="mt-6 md:mt-10 text-center mx-2">
@@ -253,7 +243,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      closedQuickTip: false,
       notificationsAllowed: false,
       tag: undefined as string|undefined,
       loading: false,
@@ -294,9 +283,6 @@ export default Vue.extend({
       } catch (e) {
         return true
       }
-    },
-    showQuickTip(): boolean {
-      return this.testGroup == 'quicktip' && (this.userTag != undefined || this.lastPlayers.length > 0) && this.closedQuickTip == false && this.loading == false
     },
     ...mapState({
       player: (state: any) => state.player as Player,
@@ -398,10 +384,6 @@ export default Vue.extend({
         document.cookie = `usertag=${this.cleanedTag}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
       this.$router.push(this.playerRoute)
-    },
-    closeQuickTip() {
-      this.closedQuickTip = true
-      this.$ga.event('home', 'close', 'quick-tip')
     },
     trackScroll(visible, element, section) {
       if (visible) {
