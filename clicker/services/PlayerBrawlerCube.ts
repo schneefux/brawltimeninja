@@ -80,6 +80,7 @@ export default class PlayerBrawlerCube extends Cube {
 
   static defaultMeasures = {
     'picks': 'COUNT(*)',
+    'users': 'uniqCombined(player_id)',
     'trophy_season_end': 'formatDateTime(MAX(trophy_season_end), \'%FT%TZ\', \'UTC\')',
     'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
 
@@ -138,6 +139,7 @@ export default class PlayerBrawlerCube extends Cube {
 
   static defaultMappers = {
     picks: 'int',
+    users: 'int',
     timestamp: 'string',
 
     player_id: 'int',
