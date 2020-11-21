@@ -57,7 +57,7 @@ interface Clicker {
       sort?: Record<string, string>,
       limit?: number,
       cache?: number,
-    }): Promise<{ data: T[], totals: T }>
+    }): Promise<{ data: T[], totals: T, statistics: Record<string, number> }>
   queryActiveEvents(): Promise<EventMetadata[]>,
   queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>

@@ -15,6 +15,9 @@
       <h2 class="page-h2">Hours played today</h2>
       <hours-spent-today></hours-spent-today>
     </div>
+
+
+    <clan-search></clan-search>
   </div>
 </template>
 

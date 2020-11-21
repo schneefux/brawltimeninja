@@ -568,6 +568,9 @@ module.exports = {
   plugins: [
     // for 'prose'
     require('@tailwindcss/typography')({ }),
+    // prettier checkboxes etc.
+    // https://tailwindcss-custom-forms.netlify.app/
+    require('@tailwindcss/custom-forms'),
     // for text shadows etc.
     require('tailwindcss-typography')({ }),
   ],
