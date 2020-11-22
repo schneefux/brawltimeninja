@@ -3,7 +3,7 @@
     <p>
       {{ description }}
     </p>
-    <div class="mt-2 overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
+    <div class="mt-2 overflow-x-auto scrolling-touch flex items-center md:justify-center md:flex-wrap">
       <lazy
         v-for="(event, index) in events"
         :key="event.battle_event_mode + event.battle_event_map"
@@ -72,14 +72,14 @@ export default Vue.extend({
 
       const formatEvent = (r: Row) => `${formatMode(r.battle_event_mode)} - ${r.battle_event_map}`
 
-      const bestMap = formatEvent(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode))[0])
+      const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => e.battle_victory_adj > 0.55).length
       const viableWords = ['no', 'some', 'a few', 'all']
       const viableWord = viableWords[scaleInto(0, 1, viableWords.length - 1, viableMaps / bestEvents.length)]
 
       return `
         ${this.brawlerName} has a good win rate on ${viableWord} maps today.
-        If you want to play ${this.brawlerName}, the best map is ${bestMap}.
+        If you want to play ${this.brawlerName}, the best maps are ${bestMaps}.
       `
     },
   },

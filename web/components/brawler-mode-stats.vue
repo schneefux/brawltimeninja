@@ -19,7 +19,7 @@
           ></media-img>
         </div>
         <dl
-          v-if="!$fetchState.pending && modeData.picks > 1000"
+          v-if="!$fetchState.pending && modeData.picks > 500"
           class="w-48 px-3 py-2"
         >
           <div class="flex justify-between">
@@ -40,7 +40,7 @@
           class="w-48 flex"
           style="height: 76px;"
         >
-          <p class="m-auto">No Data yet.</p>
+          <p class="m-auto">Not enough data yet.</p>
         </div>
       </div>
     </div>,

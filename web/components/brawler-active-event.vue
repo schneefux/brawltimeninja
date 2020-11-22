@@ -19,7 +19,7 @@
           ></media-img>
         </div>
         <dl
-          v-if="data.picks > 1000"
+          v-if="data.picks > 500"
           class="w-48 px-3 py-2"
         >
           <div class="flex justify-between">
@@ -35,7 +35,7 @@
             <dd>{{ data.battle_victory * useRate > 0.55 * 1.0/totalBrawlers ? 'Yes' : 'No' }}</dd>
           </div>
         </dl>
-        <p v-else class="m-auto">No data yet.</p>
+        <p v-else class="m-auto">Not enough data yet.</p>
       </div>
     </div>
 
