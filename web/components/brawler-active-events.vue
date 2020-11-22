@@ -31,7 +31,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { EventMetadata } from '~/plugins/clicker'
-import { decapitalizeFirstLetter, formatList, formatMode, scaleInto } from '../lib/util'
+import { decapitalizeFirstLetter, formatList, formatMode, isSpecialEvent, scaleInto } from '../lib/util'
 import { CurrentAndUpcomingEvents } from '../model/Api'
 
 interface Row extends EventMetadata {
@@ -72,7 +72,7 @@ export default Vue.extend({
 
       const formatEvent = (r: Row) => `${formatMode(r.battle_event_mode)} - ${r.battle_event_map}`
 
-      const bestMap = formatEvent(bestEvents[0])
+      const bestMap = formatEvent(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode))[0])
       const viableMaps = bestEvents.filter(e => e.battle_victory_adj > 0.55).length
       const viableWords = ['no', 'some', 'a few', 'all']
       const viableWord = viableWords[scaleInto(0, 1, viableWords.length - 1, viableMaps / bestEvents.length)]

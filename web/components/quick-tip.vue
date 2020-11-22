@@ -70,7 +70,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { EventMetadata } from '~/plugins/clicker'
-import { decapitalizeFirstLetter } from '../lib/util'
+import { decapitalizeFirstLetter, isSpecialEvent } from '../lib/util'
 import { CurrentAndUpcomingEvents, Player } from '../model/Api'
 
 export default Vue.extend({
@@ -97,7 +97,7 @@ export default Vue.extend({
 
     const events = await this.$clicker.queryActiveEvents()
     this.events = events
-      .filter(e => !e.battle_event_powerplay && !['roboRumble', 'bigGame', 'superCity'].includes(e.battle_event_mode))
+      .filter(e => !e.battle_event_powerplay && !isSpecialEvent(e.battle_event_mode))
       .sort((e1, e2) => (modePopularity[e2.battle_event_mode] || 0) - (modePopularity[e1.battle_event_mode] || 0))
   },
   computed: {

@@ -545,3 +545,10 @@ export function encodeQuery(data: { [key: string]: number|string }) {
    }
    return ret.join('&')
 }
+
+/*
+ * @returns true if a mode is a weekend mode
+ */
+export function isSpecialEvent(mode: string) {
+  return ['roboRumble', 'bigGame', 'superCity'].includes(mode)
+}
