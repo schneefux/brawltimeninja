@@ -128,7 +128,7 @@ export default class PlayerBrawlerCube extends Cube {
   static defaultSlices = {
     'player_id': 1,
     'player_tag': 1,
-    'player_name_like': 1,
+    'player_name_ilike': 1,
     'trophy_season_end': 1,
     'brawler_trophyrange': 2,
     'brawler_id': 1,
