@@ -240,21 +240,9 @@ export default Vue.extend({
       const metanessWords = ['not that good', 'below average', 'average', 'above average', 'excellent']
       const metaness = metanessWords[scaleInto(0.55, 0.60, metanessWords.length - 1, this.data.battle_victory)]
 
-      const overallWords = [
-        `Unless you know how to play ${this.brawlerName} well, you should pick a different Brawler.`,
-        `Overall, ${this.brawlerName} is not a good choice at the moment.`,
-        `Overall, ${this.brawlerName} is a solid pick.`,
-        `Overall, ${this.brawlerName} is a good Brawler at the moment.`,
-        `${this.brawlerName} belongs to the best Brawlers right now.`,
-      ]
-      const totalWinsRate = Math.sqrt(useRate * this.data.battle_victory)
-      const overall = overallWords[
-        scaleInto(Math.sqrt(0.02*0.55), Math.sqrt(0.03*0.60), overallWords.length - 1, totalWinsRate)]
-
       return `
         ${this.brawlerName} is, judging by ${this.content.possessivePronoun} Use Rate, a ${popularity} Brawler.\
-        Looking at ${this.content.possessivePronoun} Win Rate, ${this.content.pronoun} is ${metaness} in the current Meta.\
-        ${overall}
+        Looking at ${this.content.possessivePronoun} Win Rate, ${this.content.pronoun} is ${metaness} in the current Meta.
       `
     },
     metaStatMaps() {
