@@ -2,73 +2,84 @@
   <event-card
     :mode="mode"
     :map="map"
-    size=""
+    :size="horizontal ? 'w-160 md:w-auto' : ''"
     nobackground
   >
-    <template v-slot:content>
-      <div class="flex flex-wrap justify-center items-center">
-        <media-img
-          v-if="id != undefined && id != 0"
-          :path="`/maps/${id}`"
-          size="512"
-          clazz="h-64"
-        ></media-img>
+    <div
+      slot="content"
+      class="flex flex-wrap justify-evenly items-center"
+    >
+      <media-img
+        v-if="id != undefined && id != 0"
+        :path="`/maps/${id}`"
+        size="512"
+        clazz="h-64"
+      ></media-img>
 
-        <div>
-          <dl
-            v-if="timestamp != undefined"
-            class="darkbox stat flex justify-between"
-          >
-            <dt class="text-left font-semibold mr-1">
-              Last Online:
-            </dt>
-            <dd class="text-right ml-1">
-              {{ lastOnlineString }}
-            </dd>
-          </dl>
+      <div>
+        <dl
+          v-if="timestamp != undefined"
+          class="darkbox stat flex justify-between"
+        >
+          <dt class="text-left font-semibold mr-1">
+            Last Online:
+          </dt>
+          <dd class="text-right ml-1">
+            {{ lastOnlineString }}
+          </dd>
+        </dl>
 
-          <map-balance-score
+        <map-balance-score
+          :mode="mode"
+          :map="map"
+          :season="season"
+          class="darkbox stat"
+        ></map-balance-score>
+
+        <div class="darkbox stat">
+          <div class="text-lg font-semibold text-center">
+            Best Brawlers
+          </div>
+          <map-best-brawlers
             :mode="mode"
             :map="map"
             :season="season"
-            class="darkbox stat"
-          ></map-balance-score>
+            class="mt-2 mb-1"
+          ></map-best-brawlers>
+        </div>
 
-          <div class="darkbox stat">
-            <div class="text-lg font-semibold text-center">
-              Best Brawlers
-            </div>
-            <map-best-brawlers
-              :mode="mode"
-              :map="map"
-              :season="season"
-              class="mt-2 mb-1"
-            ></map-best-brawlers>
+        <div
+          v-if="mode != 'soloShowdown'"
+          class="darkbox stat"
+        >
+          <div class="text-lg font-semibold text-center">
+            Teams with most Wins
           </div>
-
-          <div
-            v-if="mode != 'soloShowdown'"
-            class="darkbox stat"
-          >
-            <div class="text-lg font-semibold text-center">
-              Teams with most Wins
-            </div>
-            <map-best-teams
-              :mode="mode"
-              :map="map"
-              :season="season"
-              class="mt-2 mb-1"
-            ></map-best-teams>
-          </div>
+          <map-best-teams
+            :mode="mode"
+            :map="map"
+            :season="season"
+            class="mt-2 mb-1"
+          ></map-best-teams>
         </div>
       </div>
-    </template>
+    </div>
+
+    <div v-if="link" slot="actions" class="flex justify-end">
+      <router-link
+        :to="linkTarget"
+        class="card__action"
+      >
+        Open
+      </router-link>
+    </div>
   </event-card>
 </template>
 
 <script lang="ts">
 import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
+import { camelToKebab, slugify } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -85,7 +96,16 @@ export default Vue.extend({
       type: String,
     },
     season: {
-      type: String
+      type: String,
+    },
+    link: {
+      type: Boolean,
+      default: false
+    },
+    horizontal: {
+      // force horizontal layout on mobile
+      type: Boolean,
+      default: false
     },
   },
   computed: {
@@ -98,6 +118,17 @@ export default Vue.extend({
         return 'Active'
       }
       return formatDistanceToNow(date, { addSuffix: true })
+    },
+    linkTarget(): string {
+      if (this.mode == undefined) {
+        return '/tier-list/brawler'
+      }
+
+      if (this.map == undefined) {
+        return `/tier-list/mode/${camelToKebab(this.mode)}`
+      }
+
+      return `/tier-list/mode/${camelToKebab(this.mode)}/map/${slugify(this.map)}`
     },
   },
 })

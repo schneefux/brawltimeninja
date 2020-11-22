@@ -47,13 +47,28 @@
 
     <div class="section">
       <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
-        <div
+        <lazy
           v-for="(map, index) in maps"
           :key="map.map"
-          :class="{ 'md:hidden': !showAllMaps && index >= 3 }"
-          class="px-2"
+          :render="showAllMaps || index <= 1"
+          :class="{
+            'md:hidden': !showAllMaps && index > 1,
+            'mx-4': true,
+          }"
+          distance="600px"
         >
+          <div class="w-80" style="height: 420px" slot="placeholder"></div>
+          <map-detail-card
+            v-if="map.recent"
+            :mode="mode"
+            :map="map.map"
+            :id="map.id"
+            :timestamp="map.timestamp"
+            link
+            horizontal
+          ></map-detail-card>
           <event-card
+            v-else
             :mode="mode"
             :map="map.map"
             nobackground
@@ -62,21 +77,21 @@
               <div class="flex justify-center bg-gray-800">
                 <media-img
                   :path="`/maps/${map.id}`"
-                  size="384"
-                  clazz="h-48"
+                  size="512"
+                  clazz="h-80"
                 ></media-img>
               </div>
               <div class="absolute bottom-0 right-0 mb-4 mr-2">
-                <nuxt-link
+                <router-link
                   :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
                   class="card__action"
                 >
                   Open
-                </nuxt-link>
+                </router-link>
               </div>
             </template>
           </event-card>
-        </div>
+        </lazy>
       </div>
 
       <div class="mt-2 w-full text-right hidden md:block">
@@ -145,6 +160,7 @@
 </template>
 
 <script lang="ts">
+import { differenceInDays, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal, kebabToCamel } from '~/lib/util'
@@ -210,7 +226,7 @@ export default Vue.extend({
     const modeName = formatMode(mode)
     const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_map'],
-      ['battle_event_id', 'battle_event_map'],
+      ['battle_event_id', 'battle_event_map', 'picks', 'timestamp'],
       { battle_event_mode: [mode] },
       {
         sort: { timestamp: 'desc' },
@@ -220,10 +236,14 @@ export default Vue.extend({
     return {
       mode,
       modeName,
-      maps: events.data.map(e => ({
-        id: e.battle_event_id,
-        map: e.battle_event_map,
-      })),
+      maps: events.data
+        .filter(e => e.picks > 1000)
+        .map(e => ({
+          id: e.battle_event_id,
+          map: e.battle_event_map,
+          timestamp: e.timestamp,
+          recent: differenceInDays(new Date(), parseISO(e.timestamp)) < 7,
+        })),
       slices: {
         ...$clicker.defaultSlices('map'),
         battle_event_mode: [mode],

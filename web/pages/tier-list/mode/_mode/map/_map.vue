@@ -9,6 +9,13 @@
     >
       <h1 class="page-h1">{{ event.modeName }}: {{ event.map }}</h1>
       <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
+      <p v-if="event.map.startsWith('Competition Winner')">
+        A new Competition Winner Map is voted by the community every day.
+        <nuxt-link
+          to="/tier-list/competition-winners"
+          class="link"
+        >Compare them here.</nuxt-link>
+      </p>
     </div>
 
     <client-only>

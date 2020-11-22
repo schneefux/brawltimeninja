@@ -1,6 +1,10 @@
 <template>
   <div class="brawler-avatars">
-    <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 55px"></div>
+    <div
+      v-if="$fetchState.pending"
+      class="brawler-avatars__placeholder"
+      style="height: 55px; width: 300px;"
+    ></div>
     <div
       v-for="brawler in data"
       :key="brawler.brawler_name"
