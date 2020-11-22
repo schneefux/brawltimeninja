@@ -58,7 +58,7 @@ export default Vue.extend({
       [], ['picks', 'users', 'battle_victory'], {
         ...this.$clicker.defaultSlices('battle'),
         trophy_season_end: ['current'],
-        player_name_like: ['%' + this.pattern + '%'],
+        player_name_ilike: ['%' + this.pattern + '%'],
       }, {
         cache: 60*60,
       })
