@@ -2,8 +2,8 @@
   <card
     :title="brawler + ' with another Brawler'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
-    :size="size"
     :pages="Math.ceil(data.length / 10)"
+    size="w-80"
   >
     <template v-slot:content="{ page }">
       <p>
@@ -62,10 +62,6 @@ export default Vue.extend({
     sampleSizeThreshold: {
       type: Number,
       default: 1000
-    },
-    size: {
-      type: String,
-      required: false
     },
     mode: {
       type: String,
