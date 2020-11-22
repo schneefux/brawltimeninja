@@ -4,12 +4,13 @@
     :subtitle="subtitle"
   >
     <template v-slot:content>
-      <p>
-        Players with most wins recorded by Brawl Time Ninja this season.
+      <p class="w-64">
+        {{ isShowdown ? 'Most successful players' : 'Players with most wins'}}
+        recorded by Brawl Time Ninja this season.
       </p>
       <div class="mt-2 darkbox">
         <player-rank-table
-          :columns="['wins', 'winRate']"
+          :columns="columns"
           :column-names="columnNames"
           :rows="rows"
         ></player-rank-table>
@@ -27,8 +28,10 @@ interface Row {
   player_name: string
   player_tag: string
   player_icon_id: number
+  picks: number
   wins: number
   battle_victory: number
+  battle_rank: number
 }
 
 export default Vue.extend({
@@ -51,12 +54,15 @@ export default Vue.extend({
       data: [] as Row[],
     }
   },
+  watch: {
+    isShowdown: '$fetch',
+  },
   fetchDelay: 0,
   async fetch() {
     const data = await this.$clicker.query('mode.leaderboard',
       'battle',
       ['player_id'],
-      ['player_name', 'player_icon_id' , 'wins', 'battle_victory'], {
+      ['player_name', 'player_icon_id' , ...(this.isShowdown? ['picks', 'battle_rank'] : ['wins', 'battle_victory'])], {
         ...this.$clicker.defaultSlices('battle'),
         trophy_season_end: ['current'],
         ...(this.map != undefined ? {
@@ -84,12 +90,22 @@ export default Vue.extend({
         player_name: r.player_name,
         player_tag: r.player_tag,
         player_icon_id: r.player_icon_id,
-        wins: metaStatMaps.formatters.wins(r.wins),
-        winRate: metaStatMaps.formatters.winRate(r.battle_victory),
+        ...(this.isShowdown ? {
+          picks: metaStatMaps.formatters.picks(r.picks),
+          rank: metaStatMaps.formatters.rank(r.battle_rank),
+        } : {
+          wins: metaStatMaps.formatters.wins(r.wins),
+          winRate: metaStatMaps.formatters.winRate(r.battle_victory),
+        }),
       }))
     },
-    columnNames() {
-      return [metaStatMaps.labelsShort.wins, metaStatMaps.labelsShort.winRate]
+    columns(): string[] {
+      return this.isShowdown ? ['picks', 'rank'] : ['wins', 'winRate']
+    },
+    columnNames(): string[] {
+      return this.isShowdown ?
+        [metaStatMaps.labelsShort.picks, metaStatMaps.labelsShort.rank]
+        : [metaStatMaps.labelsShort.wins, metaStatMaps.labelsShort.winRate]
     },
     subtitle(): string {
       if (this.mode == undefined) {
@@ -99,6 +115,9 @@ export default Vue.extend({
         return `in ${formatMode(this.mode)}`
       }
       return `in ${formatMode(this.mode)} - ${this.map}`
+    },
+    isShowdown(): boolean {
+      return this.mode != undefined && this.mode.toLowerCase().includes('showdown')
     },
   },
 })
