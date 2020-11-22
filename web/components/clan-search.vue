@@ -1,5 +1,8 @@
 <template>
-  <card title="Name Search">
+  <card
+    title="Name Search"
+    subtitle="Search common player names or Clans"
+  >
     <template v-slot:content>
       <form @submit.prevent="$fetch">
         <input

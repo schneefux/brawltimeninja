@@ -567,7 +567,7 @@ module.exports = {
   corePlugins: {},
   plugins: [
     // for 'prose'
-    require('@tailwindcss/typography')({ }),
+    require('@tailwindcss/typography'),
     // prettier checkboxes etc.
     // https://tailwindcss-custom-forms.netlify.app/
     require('@tailwindcss/custom-forms'),

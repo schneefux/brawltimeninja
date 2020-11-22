@@ -1,12 +1,5 @@
 import Vue from 'vue'
-
-function encodeQuery(data: { [key: string]: number|string }) {
-   const ret = [] as string[]
-   for (let d in data) {
-     ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]))
-   }
-   return ret.join('&')
-}
+import { encodeQuery } from '~/lib/util'
 
 export default Vue.extend({
   name: 'MediaImg',

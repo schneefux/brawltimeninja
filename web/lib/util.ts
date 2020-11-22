@@ -537,3 +537,11 @@ export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessory
       link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
     }))
 }
+
+export function encodeQuery(data: { [key: string]: number|string }) {
+   const ret = [] as string[]
+   for (let d in data) {
+     ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]))
+   }
+   return ret.join('&')
+}
