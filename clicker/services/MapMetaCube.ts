@@ -63,6 +63,7 @@ export default class MapMetaCube extends BrawlerBattleCube {
   slices = {
     'battle_event_mode': 1,
     'battle_event_map': 1,
+    'battle_event_map_like': 1,
     'battle_event_id': 1,
     'battle_event_powerplay': 1,
     'battle_battle_is_bigbrawler': 1,
@@ -75,6 +76,8 @@ export default class MapMetaCube extends BrawlerBattleCube {
         return query.where(`${this.table}.battle_event_mode`, '=', args[0])
       case 'battle_event_map':
         return query.where(`${this.table}.battle_event_map`, '=', args[0])
+      case 'battle_event_map_like':
+        return query.where(`${this.table}.battle_event_map`, 'LIKE', args[0])
       case 'battle_event_id':
         return query.where(`${this.table}.battle_event_id`, '=', parseInt(args[0]))
       case 'battle_event_powerplay':
