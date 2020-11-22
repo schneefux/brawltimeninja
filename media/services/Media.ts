@@ -206,7 +206,7 @@ export default class MediaService {
       super: {
         cooldown: superSkill.cooldown * 2,
         rechargeTime: superSkill.rechargeTime,
-        damage: superSkill.damage != null ? superSkill.damage * 5 : null,
+        damage: superSkill.damage != null ? superSkill.damage : null,
         damageCount: superSkill.numBulletsInOneAttack,
         damageLabel: superCard.powerNumberTID,
         description: superDescription,
