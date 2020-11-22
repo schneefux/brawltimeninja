@@ -204,8 +204,9 @@ export default class PlayerBrawlerCube extends Cube {
         return query.where(`${this.table}.player_id`, '=', args[0])
       case 'player_tag':
         return query.where(`${this.table}.player_id`, '=', tagToId(args[0]))
-      case 'player_name_like':
-        return query.where(`${this.table}.player_name`, 'LIKE', args[0])
+      case 'player_name_ilike':
+        // TODO: Replace by ILIKE after upgrading clickhouse
+        return query.where(`lower(${this.table}.player_name)`, 'ILIKE', query.client.raw(`lower(?)`, args[0]))
     }
     throw new Error('Unknown slice name: ' + name)
   }
