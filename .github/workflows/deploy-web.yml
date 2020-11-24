@@ -1,0 +1,22 @@
+name: Deploy web to production
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "web/**"
+
+jobs:
+  deploy-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: idoberko2/dokku-deploy-github-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          dokku-host: schneefux.xyz
+          app-name: brawltime.ninja
+          git-push-flags: "--force"
