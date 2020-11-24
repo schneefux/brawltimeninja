@@ -15,7 +15,6 @@
         v-for="(map, index) in maps"
         :key="map.mode + map.map"
         :render="index < 3"
-        :class="{ 'md:hidden': !showAll && index >= 3 }"
       >
         <map-detail-card
           :map="map.map"
