@@ -15,6 +15,11 @@
         size="512"
         clazz="h-64"
       ></media-img>
+      <img
+        v-if="staticImageUrl != undefined"
+        :src="staticImageUrl"
+        style="max-height: 16rem"
+      >
 
       <div>
         <dl
@@ -109,6 +114,14 @@ export default Vue.extend({
     },
   },
   computed: {
+    staticImageUrl(): string|undefined {
+      if (this.map.startsWith('Competition Winner ')) {
+        const id = this.map!.replace('Competition Winner ', '')
+        return `/images/maps/${id}.jpg`
+      } else {
+        return undefined
+      }
+    },
     lastOnlineString(): string {
       if (this.timestamp == undefined) {
         return ''

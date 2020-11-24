@@ -14,10 +14,13 @@
       itemprop="image"
     ></media-img>
     <div
-      v-if="powerplay || endDate != undefined || startDate != undefined"
+      v-if="powerplay || id == 0 || endDate != undefined || startDate != undefined"
       slot="infobar"
       class="flex justify-end"
     >
+      <span v-if="id == 0" class="mr-auto">
+        Competition Winner
+      </span>
       <span v-if="powerplay" class="mr-auto">
         Power Play
       </span>

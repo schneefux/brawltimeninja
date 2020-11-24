@@ -2,7 +2,7 @@
   <card
     :title="mode != undefined ? formatMode(mode) : undefined"
     :title-link="mode != undefined ? `/tier-list/mode/${camelToKebab(mode)}` : undefined"
-    :subtitle="map"
+    :subtitle="mapName"
     :subtitle-link="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
@@ -16,6 +16,12 @@
       size="80"
       clazz="h-12"
     ></media-img>
+    <img
+      slot="preview"
+      v-if="staticImageUrl != undefined"
+      :src="staticImageUrl"
+      style="max-height: 3rem"
+    >
 
     <template
       v-for="(_, slot) of $scopedSlots"
@@ -30,6 +36,7 @@
 </template>
 
 <script lang="ts">
+import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
 import { camelToKebab, formatMode, slugify } from '../lib/util'
 
@@ -56,7 +63,27 @@ export default Vue.extend({
       default: false
     },
   },
+  data() {
+    return {
+      staticImageUrl: undefined as undefined|string,
+      mapOverride: undefined as undefined|string,
+    }
+  },
+  // TODO find a better solution to this hack
+  // move it into media or at least move it to the parent
+  fetchDelay: 0,
+  async fetch() {
+    if (this.map?.startsWith('Competition Winner ')) {
+      const id = this.map.replace('Competition Winner ', '')
+      const content = await this.$content(`/maps/${id}`).fetch().catch(err => ({})) as IContentDocument
+      this.mapOverride = content.map
+      this.staticImageUrl = `/images/maps/${id}.png`
+    }
+  },
   computed: {
+    mapName(): string|undefined {
+      return this.mapOverride || this.map
+    },
     formatMode() {
       return formatMode
     },
@@ -66,7 +93,7 @@ export default Vue.extend({
     slugify() {
       return slugify
     },
-    background() {
+    background(): string|undefined {
       if (this.nobackground) {
         return undefined
       }
