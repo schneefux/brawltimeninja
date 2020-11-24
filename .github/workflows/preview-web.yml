@@ -8,7 +8,7 @@ on:
 # Alternatively, we could deploy one app per PR.
 # I doubt that we'll need that though.
 # In case you want to add this later, make sure
-# clone or to set all environment variables
+# to clone or to set all environment variables
 # and to update `.dokku-monorepo`.
 jobs:
   deploy-web-staging:
