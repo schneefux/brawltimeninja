@@ -19,6 +19,6 @@ jobs:
       - uses: idoberko2/dokku-deploy-github-action@v1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          dokku-host: schneefux.xyz
-          app-name: testing.brawltime.ninja
+          dokku-host: "brawltime.ninja"
+          app-name: "testing.brawltime.ninja"
           git-push-flags: "--force"
