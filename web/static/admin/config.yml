@@ -74,6 +74,7 @@ collections:
     create: true
     identifier_field: date
     preview_path: "tier-list/{{mode}}/{{date}}"
+    sortable_fields: [date]
     fields:
       - name: date
         pattern: ["\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])", "Must be a YYYY-MM-DD date string"]
