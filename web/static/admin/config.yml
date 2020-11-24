@@ -71,11 +71,10 @@ collections:
     folder: web/content/maps
     format: yml
     create: true
-    identifier_field: id
-    preview_path: "tier-list/{{mode}}/{{id}}"
+    identifier_field: date
+    preview_path: "tier-list/{{mode}}/{{date}}"
     fields:
-      - name: id
-        label: Date
+      - name: date
         pattern: ["\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])", "Must be a YYYY-MM-DD date string"]
         widget: string
       - name: mode
