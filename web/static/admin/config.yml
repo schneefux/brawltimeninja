@@ -81,7 +81,10 @@ collections:
         required: false
         widget: select
         options: [gemGrab, brawlBall, heist, bounty, siege, soloShowdown, duoShowdown, superCity, roboRumble, bigGame]
-      - name: name
+      - name: map
+        widget: string
+      - name: author
+        required: false
         widget: string
       - name: image
         required: false
