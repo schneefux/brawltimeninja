@@ -1,7 +1,8 @@
 ---
+id: deep-siege
 title: "Gem Grab: Deep Siege"
 author: kinglionleo
-image: /images/blog/guides/deep-siege_small.jpg
+image: /images/guides/deep-siege_small.jpg
 description: Use walls to your advantage in Deep Siege with Jessie, Mortis and Dynamike.
 mode: gemGrab
 map: Stone Fort
@@ -71,6 +72,6 @@ Dynamike can control an entire area aronud him. He should push up when the enemy
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/deep-siege.jpg">
+<img class="lightbox" src="/images/guides/deep-siege.jpg">
 
 Click to enlarge

@@ -1,4 +1,5 @@
 ---
+id: solo-showdown
 title: Solo Showdown Guide
 author: zeibb
 description: The following guide is a break down of competitive Solo Showdown.
@@ -53,7 +54,7 @@ The Art of Camping
 
 An entire post can be made revolving around camping, however, I'll summarize this for 1 reason: camping is largely ineffective in **competitive** Solos. Despite this, there are a few takeaways, which are extremely adequate especially in ED.
 
-<img class="lightbox" src="/images/blog/guides/camping.png">
+<img class="lightbox" src="/images/guides/camping.png">
 
 As shown in the diagram, Pink isn't an ideal place to camp as it's exposed towards the centre bush. In contrast, Red is far more ideal as the walls serve as a "meat shield". From this we can deduce 2 criteria for a good bush:
 

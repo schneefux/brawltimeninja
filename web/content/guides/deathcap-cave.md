@@ -1,7 +1,8 @@
 ---
+id: deathcap-cave
 title: "Gem Grab: Deathcap Cave"
 author: kinglionleo
-image: /images/blog/guides/deathcap-cave_small.jpg
+image: /images/guides/deathcap-cave_small.jpg
 description: Keep control of Deathcap Cave with Pam, Nita and Barley.
 mode: gemGrab
 map: Deathcap Cave
@@ -87,6 +88,6 @@ Barley should try to regain control of the area south-east to the mine if an ene
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/deathcap-cave.jpg">
+<img class="lightbox" src="/images/guides/deathcap-cave.jpg">
 
 Click to enlarge

@@ -1,7 +1,8 @@
 ---
+id: safe-zone
 title: "Heist: Safe Zone"
 author: PedroGuijarro_
-image: /images/blog/guides/safe-zone_small.jpg
+image: /images/guides/safe-zone_small.jpg
 description: Siege or play aggressively with one of three compositions on Safe Zone.
 mode: heist
 map: Safe Zone
@@ -70,6 +71,6 @@ Dive when possible, team up for a bigger push.
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/safe-zone.jpg">
+<img class="lightbox" src="/images/guides/safe-zone.jpg">
 
 Click to enlarge

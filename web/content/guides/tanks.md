@@ -1,4 +1,5 @@
 ---
+id: tanks
 title: "Brawl Stars Classes: Tanks"
 author: XaviorKeyz
 description: Learn more about Tanks, the heaviest Brawlers in Brawl Stars.

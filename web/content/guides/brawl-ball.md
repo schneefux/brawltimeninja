@@ -1,4 +1,5 @@
 ---
+id: brawl-ball
 title: Brawl Ball Tips
 author: nekkedman
 description: Brawl Ball is not just about killing Brawlers.

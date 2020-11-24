@@ -1,7 +1,8 @@
 ---
+id: undermine
 title: "Gem Grab: Undermine"
 author: kinglionleo
-image: /images/blog/guides/undermine_small.jpg
+image: /images/guides/undermine_small.jpg
 description: Hide in the bushes and protect the Undermine with Pam, Nita and Leon.
 mode: gemGrab
 map: Undermine
@@ -85,6 +86,6 @@ Generally speaking, one lane will usually be lost. Pam needs to play around this
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/undermine.jpg">
+<img class="lightbox" src="/images/guides/undermine.jpg">
 
 Click to enlarge

@@ -1,7 +1,8 @@
 ---
+id: minecart-madness
 title: "Gem Grab: Minecart Madness"
 author: kinglionleo
-image: /images/blog/guides/minecart-madness_small.jpg
+image: /images/guides/minecart-madness_small.jpg
 description: Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.
 mode: gemGrab
 map: Minecart Madness
@@ -77,6 +78,6 @@ The more you play this map, the better you will get with recognizing opportuniti
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/minecart-madness.jpg">
+<img class="lightbox" src="/images/guides/minecart-madness.jpg">
 
 Click to enlarge

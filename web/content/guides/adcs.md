@@ -1,4 +1,5 @@
 ---
+id: adcs
 title: "Brawl Stars Character Classes: ADC"
 author: XaviorKeyz
 description: Tips on playing long-ranged Brawlers.

@@ -1,7 +1,8 @@
 ---
+id: four-squared
 title: "Gem Grab: Four Squared"
 author: kinglionleo
-image: /images/blog/guides/four-squared_small.jpg
+image: /images/guides/four-squared_small.jpg
 description: Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.
 mode: gemGrab
 map: Four Squared
@@ -67,6 +68,6 @@ West of the mine: General area for Mortis to control. He should fall back to her
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/four-squared.jpg">
+<img class="lightbox" src="/images/guides/four-squared.jpg">
 
 Click to enlarge

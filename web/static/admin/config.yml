@@ -1,0 +1,79 @@
+site_url: https://brawltime.ninja
+logo_url: https://brawltime.ninja/icon.png
+
+backend:
+  name: github
+  repo: schneefux/brawltimeninja
+  open_authoring: true
+
+publish_mode: editorial_workflow
+
+media_folder: web/static/images
+public_folder: /images
+
+# ref. https://www.netlifycms.org/docs/configuration-options/#collections
+collections:
+  - name: guides
+    label: "Guides"
+    label_singular: "Guide"
+    folder: web/content/guides
+    media_folder: "{{media_folder}}/guides"
+    public_folder: "{{public_folder}}/guides"
+    create: true
+    identifier_field: id
+    preview_path: "blog/guides/{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - name: id
+        widget: string
+      - name: title
+        widget: string
+      - name: author
+        widget: string
+      - name: description
+        widget: string
+      - name: body
+        widget: markdown
+      - name: image
+        required: false
+        widget: image
+      - name: mode
+        required: false
+        widget: select
+        options: [gemGrab, brawlBall, heist, bounty, siege, showdown, superCity, roboRumble, bigGame]
+      - name: map
+        required: false
+        widget: string
+  - name: brawlers
+    label: "Brawlers"
+    label_singular: "Brawler"
+    folder: web/content/brawlers
+    format: yml
+    create: true
+    identifier_field: name
+    preview_path: "tier-list/brawlers/{{slug}}"
+    fields:
+      - name: name
+        widget: string
+      - name: main
+        widget: string
+      - name: super
+        widget: string
+      - name: gender
+        required: false
+        widget: select
+        options: [f, m, t]
+  - name: faq
+    label: "Questions & Answers"
+    label_singular: "Question"
+    folder: web/content/faq
+    create: true
+    identifier_field: id
+    #preview_path:
+    fields:
+      - name: id
+        widget: string
+      - name: question
+        widget: string
+      - name: answer
+        widget: markdown

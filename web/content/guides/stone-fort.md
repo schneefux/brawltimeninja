@@ -1,7 +1,8 @@
 ---
+id: stone-fort
 title: "Gem Grab: Stone Fort"
 author: kinglionleo
-image: /images/blog/guides/stone-fort_small.jpg
+image: /images/guides/stone-fort_small.jpg
 description: Hold the Stone Fort with long range attacks and Frank, Carl and Rico.
 mode: gemGrab
 map: Stone Fort
@@ -84,6 +85,6 @@ Sometimes the enemy will "double up" on mid. This means that one lane will be fr
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/stone-fort.jpg">
+<img class="lightbox" src="/images/guides/stone-fort.jpg">
 
 Click to enlarge

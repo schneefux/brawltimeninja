@@ -1,7 +1,8 @@
 ---
+id: escape-velocity
 title: "Gem Grab: Escape Velocity"
 author: kinglionleo
-image: /images/blog/guides/escape-velocity_small.jpg
+image: /images/guides/escape-velocity_small.jpg
 description: How to poke your enemy team in Escape Velocity with Gene, Shelly and Carl.
 mode: gemGrab
 map: Escape Velocity
@@ -78,6 +79,6 @@ Gene can assist either lane by positioning himself in mid. However, he should fo
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/escape-velocity.jpg">
+<img class="lightbox" src="/images/guides/escape-velocity.jpg">
 
 Click to enlarge

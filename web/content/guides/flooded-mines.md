@@ -1,7 +1,8 @@
 ---
+id: flooded-mines
 title: "Gem Grab: Flooded Mines"
 author: kinglionleo
-image: /images/blog/guides/flooded-mines_small.jpg
+image: /images/guides/flooded-mines_small.jpg
 description: Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.
 mode: gemGrab
 map: Flooded Mines
@@ -78,6 +79,6 @@ Nita should play passively in the south bush until mid can help assist her in ta
 Graphic
 ---
 
-<img class="lightbox" src="/images/blog/guides/flooded-mines.jpg">
+<img class="lightbox" src="/images/guides/flooded-mines.jpg">
 
 Click to enlarge
