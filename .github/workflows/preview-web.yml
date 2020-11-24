@@ -1,0 +1,24 @@
+name: Deploy PR to staging
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+
+# Alternatively, we could deploy one app per PR.
+# I doubt that we'll need that though.
+# In case you want to add this later, make sure
+# clone or to set all environment variables.
+jobs:
+  deploy-web-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: idoberko2/dokku-deploy-github-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          dokku-host: schneefux.xyz
+          app-name: testing.brawltime.ninja
+          git-push-flags: "--force"
