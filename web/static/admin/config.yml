@@ -5,6 +5,7 @@ backend:
   name: github
   repo: schneefux/brawltimeninja
   open_authoring: true
+  base_url: https://auth.brawltime.ninja
 
 publish_mode: editorial_workflow
 

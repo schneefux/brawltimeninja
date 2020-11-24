@@ -56,3 +56,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 ## Assets
 
 https://www.dropbox.com/sh/mhed0l7szljxvgv/AAAf-YPn4nXS_cuozHX09URoa
+
+## Netlify CMS setup
+
+See: http://www.vxk.cz/tips/2017/05/18/netlify-cms/
