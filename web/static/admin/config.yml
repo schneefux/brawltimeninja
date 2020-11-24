@@ -78,11 +78,13 @@ collections:
         pattern: ["\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])", "Must be a YYYY-MM-DD date string"]
         widget: string
       - name: mode
+        required: false
         widget: select
         options: [gemGrab, brawlBall, heist, bounty, siege, soloShowdown, duoShowdown, superCity, roboRumble, bigGame]
       - name: name
         widget: string
       - name: image
+        required: false
         widget: image
         media_folder: "{{media_folder}}/maps"
         public_folder: "{{public_folder}}/maps"
