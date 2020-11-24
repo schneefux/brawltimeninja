@@ -56,8 +56,10 @@ collections:
       - name: name
         widget: string
       - name: main
+        required: false
         widget: string
       - name: super
+        required: false
         widget: string
       - name: gender
         required: false
