@@ -19,7 +19,7 @@
       class="flex justify-end"
     >
       <span v-if="id == 0" class="mr-auto">
-        Competition Winner
+        Competition Map
       </span>
       <span v-if="powerplay" class="mr-auto">
         Power Play
