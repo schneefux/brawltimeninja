@@ -139,7 +139,11 @@ export default Vue.extend({
       return formatSI
     },
     lastUpdate(): string {
-      return formatDistanceToNow(parseISO(this.timestamp), { addSuffix: true })
+      const timestamp = parseISO(this.timestamp)
+      if (timestamp.valueOf() == 0) {
+        return 'never'
+      }
+      return formatDistanceToNow(timestamp, { addSuffix: true })
     },
     moe(): number|undefined {
       if (this.sample == undefined) {
