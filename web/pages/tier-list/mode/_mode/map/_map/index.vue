@@ -54,6 +54,11 @@ export default Vue.extend({
     const description = `Brawl Stars Tier List for ${this.event.modeName}: ${this.event.map}. View the best Brawlers with Win Rates and Rankings.`
     return {
       title: `Tier List for ${this.event.modeName}: ${this.event.map}`,
+      link: [ {
+        // do not differentiate by query strings (slices)
+        rel: 'canonical',
+        href: this.$route.path,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
