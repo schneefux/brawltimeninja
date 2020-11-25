@@ -69,7 +69,7 @@ export default Vue.extend({
         brawler_name: [this.brawler.name.toUpperCase()],
         player_tag: [this.playerTag],
       },
-      { cache: 60*60 })
+      { cache: 60 })
     this.history = brawlerData.data.map(b => ({
       timestamp: b.timestamp,
       trophies: b.brawler_trophies,

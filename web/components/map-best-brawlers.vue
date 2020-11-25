@@ -90,7 +90,7 @@ export default Vue.extend({
       {
         sort: { battle_victory_adj: 'desc' },
         limit: this.limit,
-        cache: 60*15,
+        cache: 60*10,
       })
     this.data = data.data as any
   },

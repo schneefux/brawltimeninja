@@ -78,7 +78,7 @@ export default Vue.extend({
         battle_event_map: [this.map],
         battle_event_mode: [this.mode],
       },
-      { cache: 60*30 })
+      { cache: 60*10 })
 
     this.data = data.data
       .map(b => ({ ...b }))

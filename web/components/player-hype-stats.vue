@@ -263,7 +263,7 @@ export default Vue.extend({
         ...this.$clicker.defaultSlices('brawler'),
         player_tag: [this.player.tag],
       },
-      { cache: 60*60 })
+      { cache: 60 })
     this.history = data.data.map(b => ({
       timestamp: b.timestamp,
       trophies: b.player_trophies,

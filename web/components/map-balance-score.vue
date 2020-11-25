@@ -65,7 +65,7 @@ export default Vue.extend({
           trophy_season_end_exact: [this.season],
         } : {}),
       },
-      { cache: 60*60 })
+      { cache: 60*10 })
     this.data = data.data
   },
   computed: {

@@ -88,7 +88,7 @@ export default Vue.extend({
         battle_event_mode: [this.event.mode],
         battle_event_map: [this.event.map],
       },
-      { sort: { picks: 'desc' }, cache: 60*60 })
+      { sort: { picks: 'desc' }, cache: 60*10 })
 
     this.entries = data.data.map(row => ({
       id: row.brawler_name,
