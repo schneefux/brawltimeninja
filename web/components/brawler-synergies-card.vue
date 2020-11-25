@@ -16,9 +16,8 @@
           :key="brawler.brawler_name"
           class="brawler-avatars__element w-1/5 my-2"
         >
-          <nuxt-link
+          <router-link
             :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-            :router="$router"
             class="brawler-avatar"
           >
             <media-img
@@ -35,7 +34,7 @@
                 ?
               </template>
             </p>
-          </nuxt-link>
+          </router-link>
         </div>
       </div>
     </template>

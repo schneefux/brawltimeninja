@@ -7,7 +7,7 @@
       itemscope
       itemtype="http://schema.org/Person"
     >
-      <nuxt-link
+      <router-link
         class="block card card--dark prop-card md:prop-card-lg"
         :to="`/tier-list/brawler/${brawler.id}`"
       >
@@ -33,7 +33,7 @@
             {{ metaStatMaps.labels.winRate }}
           </span>
         </div>
-      </nuxt-link>
+      </router-link>
     </div>
   </div>
 </template>

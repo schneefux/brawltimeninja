@@ -15,9 +15,8 @@
           'w-1/3': team.brawlers.length == 3,
         }"
       >
-        <nuxt-link
+        <router-link
           :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
-          :router="$router"
         >
           <media-img
             :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
@@ -25,7 +24,7 @@
             size="160"
             clazz="brawler-avatar__img"
           ></media-img>
-        </nuxt-link>
+        </router-link>
       </div>
     </div>
     <p v-if="!$fetchState.pending && teams.length == 0">

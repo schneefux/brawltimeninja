@@ -27,7 +27,7 @@
             :key="member.tag"
             class="pt-1"
           >
-            <nuxt-link
+            <router-link
               :to="`/player/${member.tag}`"
               :title="member.name"
               tag="th"
@@ -39,7 +39,7 @@
                 clazz="h-8 mr-1 inline"
               ></media-img>
               <span>{{ member.name }}</span>
-            </nuxt-link>
+            </router-link>
             <td>
               {{ capitalize(member.role).replace('VicePresident', 'Vice President') }}
             </td>

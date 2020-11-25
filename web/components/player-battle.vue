@@ -37,7 +37,7 @@
           + (team.length == 2 ? 'mx-1 rounded-sm flex-col ' : '')
         "
       >
-        <nuxt-link
+        <router-link
           v-for="mate in team"
           :key="mate.tag"
           :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 1000 ? 'nofollow' : ''"
@@ -76,7 +76,7 @@
             ">
               {{ mate.name }}
             </span>
-          </nuxt-link>
+          </router-link>
       </div>
     </div>
   </event-card>

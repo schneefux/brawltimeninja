@@ -15,7 +15,7 @@
             <span class="text-3xl font-bold">{{ tier }}</span>
           </div>
           <ul class="w-full flex flex-wrap justify-start">
-            <nuxt-link
+            <router-link
               v-for="entry in entries"
               :key="entry.id"
               :to="entry.link || ''"
@@ -36,7 +36,7 @@
                   clazz="h-6 md:h-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
                 />
               </li>
-            </nuxt-link>
+            </router-link>
           </ul>
         </li>
       </ul>

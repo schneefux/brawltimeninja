@@ -10,9 +10,8 @@
       :key="brawler.brawler_name"
       class="brawler-avatars__element w-1/5"
     >
-      <nuxt-link
+      <router-link
         :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-        :router="$router"
         class="brawler-avatar"
       >
         <media-img
@@ -24,7 +23,7 @@
           {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
           {{ metaStatMaps.labelsShort.winRate }}
         </p>
-      </nuxt-link>
+      </router-link>
     </div>
     <p v-if="!$fetchState.pending && data.length == 0">
       No data.

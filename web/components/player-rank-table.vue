@@ -27,7 +27,7 @@
           {{ index+1 }}
         </th>
         <td class="font-semibold">
-          <nuxt-link
+          <router-link
             :to="`/player/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`"
             class="flex items-center"
           >
@@ -39,7 +39,7 @@
             <span class="link ml-2">
               {{ row.player_name }}
             </span>
-          </nuxt-link>
+          </router-link>
         </td>
         <td
           v-for="column in columns"

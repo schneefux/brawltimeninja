@@ -56,14 +56,14 @@
             </div>
           </template>
           <template v-slot:link>
-            <nuxt-link
+            <router-link
               v-if="entry.link !== undefined"
               :to="entry.link"
               class="mt-2 button button--secondary button--xs"
               itemprop="url"
             >
               More Statistics
-            </nuxt-link>
+            </router-link>
           </template>
         </brawler-card>
       </div>
