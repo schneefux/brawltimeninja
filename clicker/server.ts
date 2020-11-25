@@ -70,7 +70,9 @@ app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, re
   const name = query['name']
   const format = query['format']
 
-  res.header('Cache-Control', `public, max-age=${Math.max(Math.min(60*60*24, cache), 60)}`)
+  res.header('Cache-Control', `public, stale-while-revalidate=${cache/10}, stale-if-error=${cache}`)
+  res.header('Last-Modified', new Date().toUTCString())
+  res.header('Expires', new Date(Date.now() + cache * 1000).toUTCString())
   try {
     res.json(await service.queryCube(cubeName, measures, dimensions, slices, order, limit, name, format))
   } catch (error) {
