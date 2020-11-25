@@ -34,6 +34,7 @@ export default Vue.extend({
         traces: [{
           x: entries.map(e => e.title),
           y: entries.map(e => e.stats[this.stat]),
+          text: entries.map(e => e.title),
           mode: 'lines+markers',
           type: 'scatter',
         }],
