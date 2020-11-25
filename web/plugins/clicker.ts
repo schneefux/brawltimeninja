@@ -133,24 +133,26 @@ export default (context, inject) => {
       const query = new URLSearchParams({
         include: measures.join(','),
       })
-      if (name != undefined) {
-        query.append('name', name)
-      }
+      const headers = {} as Record<string, string>
       if (options.sort != undefined) {
         query.append('sort', Object.entries(options.sort || {}).map(([name, order]) => (order == 'desc' ? '-' : '') + name).join(','))
       }
       if (options.limit != undefined) {
         query.append('limit', options.limit.toString())
       }
+      if (name != undefined) {
+        headers['x-brawltime-tag'] = name
+      }
       if (options.cache != undefined) {
-        query.append('cache', options.cache.toString())
+        headers['x-brawltime-cache'] = options.cache.toString()
       }
       Object.entries(slices)
         .filter(([name, args]) => args != undefined)
         .forEach(([name, args]) => query.append('slice[' + name + ']', args!.join(',')))
+      query.sort()
       const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
-      return context.$axios.$get(url)
+      return context.$axios.$get(url, { headers })
     },
     async queryActiveEvents(measures = [], slices = {}, maxage = 60) {
       const events = await this.query<EventMetadata>('active.events', 'map',
