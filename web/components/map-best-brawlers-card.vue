@@ -42,7 +42,7 @@
     <template v-if="link" v-slot:actions>
       <div class="flex justify-end">
         <nuxt-link
-          :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
+          :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
           class="card__action"
         >
           Open
