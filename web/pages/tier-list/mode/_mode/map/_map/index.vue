@@ -112,13 +112,10 @@ export default Vue.extend({
   computed: {
     slices: {
       get(): Slices {
-        return {
-          ...this.$clicker.defaultSlices('map'),
-          ...this.$clicker.routeToSlices(this.$route),
-        }
+        return this.$clicker.routeToSlices(this.$route, this.$clicker.defaultSlices('map'))
       },
       set(slices: Slices) {
-        this.$router.replace(this.$clicker.slicesToLocation(slices)).catch(error => {
+        this.$router.replace(this.$clicker.slicesToLocation(slices, this.$clicker.defaultSlices('map'))).catch(error => {
           if (error.name != 'NavigationDuplicated') {
             throw error
           }

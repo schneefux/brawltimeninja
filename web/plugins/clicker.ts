@@ -79,8 +79,8 @@ interface Clicker {
     timestamp: string,
     teams: TeamPicksWins[],
   }>
-  routeToSlices(route: Route): Slices
-  slicesToLocation(slices: Slices): Location
+  routeToSlices(route: Route, defaults?: Slices): Slices
+  slicesToLocation(slices: Slices, defaults?: Slices): Location
 }
 
 declare module 'vue/types/vue' {
@@ -366,8 +366,9 @@ export default (context, inject) => {
         teams: teamsPicksWins,
       }
     },
-    routeToSlices(route) {
+    routeToSlices(route, defaults={}) {
       return {
+        ...defaults,
         ...('powerplay' in route.query ? {
           battle_event_powerplay: [route.query['powerplay'] as string],
         } : {}),
@@ -379,17 +380,23 @@ export default (context, inject) => {
         } : {}),
       }
     },
-    slicesToLocation(slices) {
+    slicesToLocation(slices, defaults={}) {
+      const diff = Object.fromEntries(
+        Object.entries(slices)
+          .filter(([name, params]) => !(name in defaults && JSON.stringify(defaults[name]) == JSON.stringify(params))
+      ))
+
       const query = {} as Record<string, string[]>
-      if ('battle_event_powerplay' in slices) {
-        query['powerplay'] = slices.battle_event_powerplay!
+      if ('battle_event_powerplay' in diff) {
+        query['powerplay'] = diff.battle_event_powerplay!
       }
-      if ('trophy_season_end' in slices) {
-        query['season'] = slices.trophy_season_end!
+      if ('trophy_season_end' in diff) {
+        query['season'] = diff.trophy_season_end!
       }
-      if ('brawler_trophyrange' in slices) {
-        query['range'] = slices.brawler_trophyrange!
+      if ('brawler_trophyrange' in diff) {
+        query['range'] = diff.brawler_trophyrange!
       }
+
       return { query }
     }
   })
