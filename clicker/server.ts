@@ -66,8 +66,8 @@ app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, re
       ...((name.startsWith('-') ? ({ [name.slice(1)]: 'desc' }) : ({ [name]: 'asc' })) as Record<string, Order>),
     }), {} as Record<string, Order>)
   const limit = parseInt(query['limit']) || 1000
-  const cache = parseInt(query['cache']) || 60
-  const name = query['name']
+  const cache = parseInt(query['cache'] || req.header('x-brawltime-cache') || '60')
+  const name = query['name'] || req.header('x-brawltime-tag')
   const format = query['format']
 
   res.header('Cache-Control', `public, stale-while-revalidate=${cache/10}, stale-if-error=${cache}`)
