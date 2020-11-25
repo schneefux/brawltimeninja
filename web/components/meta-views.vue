@@ -124,28 +124,30 @@ export default Vue.extend({
     },
   },
   methods: {
-    setView(v: string, old: string) {
-      if (v == 'legacy') {
+    setView(to: string) {
+      this.$ga.event(this.gaCategory, 'click', 'show_' + to)
+
+      this.nextView = to
+
+      if (to == 'legacy') {
         this.$emit('measurements', this.measurements)
       }
-      if (v == 'tierlist') {
+
+      if (to == 'tierlist') {
         this.$emit('measurements', ['winRateAdj'])
       }
-      if (['table', 'graph'].includes(v) && !['table', 'graph'].includes(old)) {
-        this.setMeasurement(this.measurements[0])
-        this.view = v
-      } else {
-        this.nextView = v
+
+      if (['table', 'graph'].includes(to)) {
+        this.$emit('measurements', [this.measurement])
       }
-      this.$ga.event(this.gaCategory, 'click', 'show_' + v)
     },
     setMeasurement(m: string) {
       if (this.view == 'legacy') {
-        // do not refetch, just update the sort
+        // all data is already present, just update the sort
         this.measurement = m
       } else {
-        this.$emit('measurements', [m])
         this.nextMeasurement = m
+        this.$emit('measurements', [m])
       }
     }
   },
