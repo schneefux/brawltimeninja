@@ -50,30 +50,45 @@
       class="mb-2"
     ></trophy-slider>
 
-    <p v-if="sample != undefined && sample > 0">
-      Statistics are based on over {{ formatSI(sample) }} battles.
-    </p>
-    <p v-if="timestamp != undefined">
-      Last updated {{ lastUpdate }}.
-    </p>
-    <p
-      v-if="sample != undefined && sampleMin != undefined && sample < sampleMin"
-      class="text-red-400"
-    >
-      <template v-if="sample > 0">
-        Not enough data!
-        Select a broader filter or come back later.
+    <p>
+      <template v-if="sample != undefined && sample > 0">
+        Statistics are based on over {{ formatSI(sample) }} battles.
       </template>
-      <template v-else>
+      <br>
+      <template v-if="timestamp != undefined">
+        Last updated: {{ lastUpdate }}
+      </template>
+      <br>
+      <template v-if="sample > 0">
+        Average margin of error:
+        <template v-if="moe <= 0.005">
+          <span class="text-green-400">{{ moePercent }}</span>
+          (perfect accuracy)
+        </template>
+        <template v-if="moe > 0.005 && moe <= 0.01">
+          <span class="text-green-400">{{ moePercent }}</span>
+          (good accuracy)
+        </template>
+        <template v-if="moe > 0.01 && moe <= 0.025">
+          <span class="text-orange-400">{{ moePercent }}</span>
+          (mediocre accuracy)
+        </template>
+        <template v-if="moe > 0.025">
+          <span class="text-red-400">{{ moePercent }}</span>
+          (poor accuracy)
+        </template>
+      </template>
+      <span v-if="sample == 0" class="text-red-400">
         No data!
         Select a different filter.
-      </template>
+      </span>
     </p>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapState } from 'vuex'
 import { formatSI } from '../lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 
@@ -126,6 +141,25 @@ export default Vue.extend({
     lastUpdate(): string {
       return formatDistanceToNow(parseISO(this.timestamp), { addSuffix: true })
     },
+    moe(): number|undefined {
+      if (this.sample == undefined) {
+        return undefined
+      }
+      // margin of error
+      // moe = z * standard error
+      // for binomial (normal approximation):
+      // moe = z * Math.sqrt(p*(1-p)/n)
+      // worst case, p=50%
+      // best case, n = sample / brawlers
+      // (TODO: Assumes we are slicing Brawlers!)
+      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (this.sample / this.totalBrawlers))
+    },
+    moePercent(): string|undefined {
+      if (this.moe == undefined) {
+        return undefined
+      }
+      return (this.moe * 100).toFixed(2) + '%'
+    },
     trophyRange: {
       get(): number[] {
         return this.value.brawler_trophyrange.map(n => parseInt(n))
@@ -159,6 +193,9 @@ export default Vue.extend({
         })
       }
     },
+    ...mapState({
+      totalBrawlers: (state: any) => state.totalBrawlers as number,
+    })
   },
 })
 </script>
