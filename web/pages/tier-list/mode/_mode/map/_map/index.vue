@@ -40,6 +40,7 @@ import Vue, { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
 import { brawlerId, capitalizeWords, deslugify, kebabToCamel, measurementMap, measurementOfTotal, MetaGridEntry } from '~/lib/util'
+import { Slices } from '~/plugins/clicker'
 
 interface Map {
   id: string
@@ -67,7 +68,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      slices: this.$clicker.defaultSlices('map'),
       entries: [] as MetaGridEntry[],
       selectedMeasurements: ['winRateAdj'],
       totalSampleSize: 0,
@@ -105,6 +105,21 @@ export default Vue.extend({
     this.totalTimestamp = data.totals.timestamp
   },
   computed: {
+    slices: {
+      get(): Slices {
+        return {
+          ...this.$clicker.defaultSlices('map'),
+          ...this.$clicker.routeToSlices(this.$route),
+        }
+      },
+      set(slices: Slices) {
+        this.$router.replace(this.$clicker.slicesToLocation(slices)).catch(error => {
+          if (error.name != 'NavigationDuplicated') {
+            throw error
+          }
+        })
+      }
+    },
     measurements(): string[] {
       let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
       // all 3v3: star player

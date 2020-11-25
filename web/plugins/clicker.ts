@@ -1,6 +1,7 @@
 import { differenceInMinutes, parseISO } from "date-fns"
 import { formatMode } from "~/lib/util"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
+import { Route, Location } from "vue-router"
 
 const cubes = ['player', 'brawler', 'map', 'synergy', 'starpower', 'gadget']
 
@@ -41,7 +42,7 @@ function addToMap(map: Map<string, PicksWins>, row: PicksWins, teamToKey: string
   return map
 }
 
-interface Slices extends Record<string, string[]|undefined> {}
+export interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
   defaultSlices(cube: string): Record<string, string[]>
@@ -78,6 +79,8 @@ interface Clicker {
     timestamp: string,
     teams: TeamPicksWins[],
   }>
+  routeToSlices(route: Route): Slices
+  slicesToLocation(slices: Slices): Location
 }
 
 declare module 'vue/types/vue' {
@@ -362,6 +365,32 @@ export default (context, inject) => {
         timestamp: bayesStats.timestamp,
         teams: teamsPicksWins,
       }
+    },
+    routeToSlices(route) {
+      return {
+        ...('powerplay' in route.query ? {
+          battle_event_powerplay: [route.query['powerplay'] as string],
+        } : {}),
+        ...('season' in route.query ? {
+          trophy_season_end: [route.query['season'] as string],
+        } : {}),
+        ...('range' in route.query ? {
+          brawler_trophyrange: route.query['range'] as string[],
+        } : {}),
+      }
+    },
+    slicesToLocation(slices) {
+      const query = {} as Record<string, string[]>
+      if ('battle_event_powerplay' in slices) {
+        query['powerplay'] = slices.battle_event_powerplay!
+      }
+      if ('trophy_season_end' in slices) {
+        query['season'] = slices.trophy_season_end!
+      }
+      if ('brawler_trophyrange' in slices) {
+        query['range'] = slices.brawler_trophyrange!
+      }
+      return { query }
     }
   })
 }
