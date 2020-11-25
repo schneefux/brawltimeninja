@@ -527,6 +527,8 @@ export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessory
 
   return rows
     .filter(s => s[accessoryNameKey] !== '')
+    // in case of duplicate IDs, use the first (most picks)
+    .filter((e1, index, all) => all.findIndex(e2 => e1[accessoryIdKey] == e2[accessoryIdKey]) == index)
     .map((accessory) => (<MetaGridEntry>{
       id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
       title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
