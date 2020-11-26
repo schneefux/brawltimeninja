@@ -26,5 +26,8 @@ answer: >-
   ![](/images/cms_brawler_edit.png)
 
 
-  When you are done, click "Save". At this point, your changes can be reviewed. Shortly after they have been accepted, they will be available on the website. Cool!
+  When you are done, click "Save". When you are done, set the status to "Ready".
+
+
+  Shortly after your changes have been accepted, they will be available on the website. Cool!
 ---
