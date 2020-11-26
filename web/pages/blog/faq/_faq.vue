@@ -71,4 +71,10 @@ export default Vue.extend({
 .nuxt-content /deep/ a {
   @apply underline text-primary-dark;
 }
+
+.nuxt-content /deep/ img {
+  max-height: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>

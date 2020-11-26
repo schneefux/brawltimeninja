@@ -123,4 +123,9 @@ export default Vue.extend({
 .nuxt-content /deep/ a {
   @apply underline text-primary-dark;
 }
+
+.nuxt-content /deep/ img {
+  @apply mx-auto my-2;
+  max-height: 30rem;
+}
 </style>
