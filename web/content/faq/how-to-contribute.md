@@ -20,4 +20,4 @@ Select the Brawler or create a new entry if there is none. Fill the data, for ex
 
 ![](/images/cms_brawler_edit.png)
 
-When you are done, click "Save". When you are done, set the status to "Ready". Shortly after your changes have been accepted, they will be available on the website. Cool!
+When you are done, click "Save". When you are done, set the status to "In Review". Shortly after your changes have been accepted, they will be available on the website. Cool!
