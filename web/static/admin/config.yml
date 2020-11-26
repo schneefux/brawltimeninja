@@ -6,6 +6,7 @@ backend:
   repo: schneefux/brawltimeninja
   open_authoring: true
   base_url: https://auth.brawltime.ninja
+  auth_scope: public_repo
 
 publish_mode: editorial_workflow
 
@@ -102,6 +103,8 @@ collections:
     #preview_path:
     fields:
       - name: id
+        widget: string
+      - name: title
         widget: string
       - name: question
         widget: string
