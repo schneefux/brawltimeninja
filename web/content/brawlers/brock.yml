@@ -1,0 +1,10 @@
+name: Brock
+main: Brock's main attack is Rockin' Rocket which fires a single rocket from his
+  rocket launcher. This rocket deals $damage upon impact and will travel $range
+  before exploding. Brock takes $rechargetime to charge one attack back up,
+  which is the 4th slowest reload speed in the game.
+super: Brock's super is rocket rain. He sends a barrage of 9 rockets within a 5
+  2/3 radius of where he selects that deal a little less than Brock's main
+  attack. It takes 4 hits from his main attack or 5 from his super to charge the
+  super to full.
+gender: m
