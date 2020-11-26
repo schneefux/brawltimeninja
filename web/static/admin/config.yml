@@ -102,7 +102,7 @@ collections:
     folder: web/content/faq
     media_folder: "{{media_folder}}/faq"
     public_folder: "{{public_folder}}/faq"
-    format: md
+    format: frontmatter
     create: true
     identifier_field: id
     #preview_path:
@@ -113,5 +113,5 @@ collections:
         widget: string
       - name: question
         widget: string
-      - name: answer
+      - name: body
         widget: markdown
