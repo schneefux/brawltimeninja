@@ -60,3 +60,5 @@ https://www.dropbox.com/sh/mhed0l7szljxvgv/AAAf-YPn4nXS_cuozHX09URoa
 ## Netlify CMS setup
 
 See: http://www.vxk.cz/tips/2017/05/18/netlify-cms/
+
+Optionally, set `SCOPES="public_repo,user"` to reduce the required permissions (see also https://github.com/netlify/netlify-cms/issues/4329).
