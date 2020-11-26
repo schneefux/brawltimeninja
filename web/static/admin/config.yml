@@ -58,9 +58,11 @@ collections:
       - name: name
         widget: string
       - name: main
+        label: "Main attack description"
         required: false
         widget: string
       - name: super
+        label: "Super attack description"
         required: false
         widget: string
       - name: gender
@@ -100,7 +102,7 @@ collections:
     folder: web/content/faq
     media_folder: "{{media_folder}}/faq"
     public_folder: "{{public_folder}}/faq"
-    format: markdown
+    format: md
     create: true
     identifier_field: id
     #preview_path:
