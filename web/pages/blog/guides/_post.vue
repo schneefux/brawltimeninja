@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto py-4 px-2">
+  <div class="page container">
     <article
       class="bg-grey-lighter py-8 px-6 my-8 text-black"
       itemscop
@@ -11,7 +11,7 @@
         class="h-48 bg-cover bg-center mb-6"
         itemprop="thumbnailUrl"
       />
-      <h1 class="text-4xl font-semibold">
+      <h1 class="page-h1">
         <span class="text-primary-dark" itemprop="headline">{{ post.title }}</span>
         <span class="text-sm block mt-4 md:float-right align-middle text-900" rel="author">{{ post.author }}</span>
       </h1>
@@ -49,15 +49,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Post } from '../../../model/Web'
+import { MetaInfo } from 'vue-meta'
+import { Post } from '~/model/Web'
 
 export default Vue.extend({
-  name: 'PostPage',
-  head() {
-    const post = this.post as any
-    const description = `Brawl Stars Guides written by ${post.author}. ${post.description}`
+  head(): MetaInfo {
+    if (this.post == undefined) {
+      return {}
+    }
+    const description = `Brawl Stars Guides written by ${this.post.author}. ${this.post.description}`
     return {
-      title: post.title,
+      title: this.post.title,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -83,7 +85,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.$refs.content.querySelectorAll('img.lightbox').forEach((img) => {
+    (<any>this.$refs.content).querySelectorAll('img.lightbox').forEach((img) => {
       img.addEventListener('click', () => {
         this.lightboxImage = img.src
         this.lightboxOpen = true

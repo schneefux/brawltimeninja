@@ -98,6 +98,9 @@ collections:
     label: "Questions & Answers"
     label_singular: "Question"
     folder: web/content/faq
+    media_folder: "{{media_folder}}/faq"
+    public_folder: "{{public_folder}}/faq"
+    format: markdown
     create: true
     identifier_field: id
     #preview_path:
