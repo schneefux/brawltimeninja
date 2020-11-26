@@ -57,6 +57,14 @@ collections:
     fields:
       - name: name
         widget: string
+      - name: gender
+        required: false
+        widget: select
+        options: [f, m, t]
+      - name: description
+        label: "Brawler description"
+        required: false
+        widget: string
       - name: main
         label: "Main attack description"
         required: false
@@ -65,10 +73,38 @@ collections:
         label: "Super attack description"
         required: false
         widget: string
-      - name: gender
+      - name: starpower1_name
+        label: "Star Power 1 name"
         required: false
-        widget: select
-        options: [f, m, t]
+        widget: string
+      - name: starpower1_description
+        label: "Star Power 1 description"
+        required: false
+        widget: string
+      - name: starpower2_name
+        label: "Star Power 2 name"
+        required: false
+        widget: string
+      - name: starpower2_description
+        label: "Star Power 2 description"
+        required: false
+        widget: string
+      - name: gadget1_name
+        label: "Gadget 1 Name"
+        required: false
+        widget: string
+      - name: gadget1_description
+        label: "Gadget 1 description"
+        required: false
+        widget: string
+      - name: gadget2_name
+        label: "Gadget 2 Name"
+        required: false
+        widget: string
+      - name: gadget2_description
+        label: "Gadget 2 description"
+        required: false
+        widget: string
   - name: maps
     label: "Competition Winner Maps"
     label_singular: "Competition Winner Map"
