@@ -13,26 +13,30 @@
       v-if="faqs.length > 0"
       class="section flex flex-wrap justify-center"
     >
-      <article
+      <div
         v-for="faq in faqs"
         :key="faq.id"
-        class="link-card my-4 w-full md:w-80"
-        itemscope
-        itemtype="http://schema.org/AnalysisNewsArticle"
+        class="card-wrapper"
       >
-        <nuxt-link
-          :to="`/blog/faq/${faq.slug}`"
-          class="link-light"
-          itemprop="url"
+        <article
+          class="link-card w-full md:w-80 h-full"
+          itemscope
+          itemtype="http://schema.org/AnalysisNewsArticle"
         >
-          <h2 class="page-h2">
-            <span itemprop="headline">{{ faq.title }}</span>
-          </h2>
-        </nuxt-link>
-        <p class="mt-3" itemprop="abstract">
-          {{ faq.question }}
-        </p>
-      </article>
+          <nuxt-link
+            :to="`/blog/faq/${faq.slug}`"
+            class="link-light"
+            itemprop="url"
+          >
+            <h2 class="page-h2">
+              <span itemprop="headline">{{ faq.title }}</span>
+            </h2>
+          </nuxt-link>
+          <p class="mt-3" itemprop="abstract">
+            {{ faq.question }}
+          </p>
+        </article>
+      </div>
     </div>
 
     <div class="section-heading">
