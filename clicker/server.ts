@@ -48,6 +48,12 @@ app.get('/clicker/cube/:cube/metadata', asyncMiddleware(async (req, res) => {
   res.json(service.getCubeMetadata(req.params.cube))
 }))
 
+app.options('/clicker/cube/:cube/query/:dimensions?', cors({
+  origin: '*', // TODO for development only
+  allowedHeaders: ['x-brawltime-cache', 'x-brawltime-tag'],
+  maxAge: 86400, // 24h max, capped by Firefox
+}))
+
 app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, res) => {
   const split = (n: string) => n.split(',').filter(p => p.length > 0)
 
