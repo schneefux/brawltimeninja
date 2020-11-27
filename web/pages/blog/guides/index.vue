@@ -24,7 +24,7 @@
           itemtype="http://schema.org/AnalysisNewsArticle"
         >
           <nuxt-link
-            :to="`/blog/faq/${faq.slug}`"
+            :to="`/faq/${faq.slug}`"
             class="link-light"
             itemprop="url"
           >
