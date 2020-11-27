@@ -6,7 +6,7 @@
           <div class="w-32 md:w-48 md:pr-6 h-64 flex justify-center items-center">
             <media-img
               :path="'/brawlers/' + brawlerId + '/model'"
-              clazz=""
+              :alt="brawlerName"
               size="500"
             ></media-img>
           </div>
@@ -15,7 +15,17 @@
             class="w-full"
           >
             <dt class="card__header">{{ brawlerName }}</dt>
-            <dd class="card__text mb-3">{{ brawlerDescription }}</dd>
+            <dd class="card__text mb-3">
+              <q class="italic">{{ gamefileDescription }}</q>
+              <template v-if="content != null">
+                <br>
+                {{ content.description || '' }}
+              </template>
+              <template v-if="generatedDescription != ''">
+                <br>
+                {{ generatedDescription }}
+              </template>
+            </dd>
             <div class="flex justify-between">
               <dt class="font-semibold">Health at Level 1</dt>
               <dd>{{ info.health }}</dd>
@@ -45,8 +55,11 @@
           {{ attack == 'main' ? 'Main Attack' : 'Super' }}
         </dt>
         <dd class="card__text mb-3 h-full">
-          {{ info[attack].description }}
-          {{ content[attack] }}
+          <q class="italic">{{ info[attack].description }}</q>
+          <template v-if="content != null">
+            <br>
+            {{ content[attack] || '' }}
+          </template>
         </dd>
         <div
           v-if="info[attack].rechargeTime != null"
@@ -130,6 +143,7 @@ import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { capitalize, metaStatMaps, scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
+import { BrawlerContent } from '~/model/Web'
 
 interface Row {
   brawler_name: string
@@ -138,13 +152,38 @@ interface Row {
   battle_starplayer: number
 }
 
-interface Content {
-  brawler?: string
-  main?: string
-  super?: string
-  gender: string
-  pronoun: string
-  possessivePronoun: string
+function expandContentWithInfo(content: BrawlerContent, info: BrawlerData) {
+  function detectGender() {
+    const text = info.description.toLowerCase()
+    if (text.includes(' she ') || text.includes(' her ')) {
+      return 'f'
+    }
+    if (text.includes(' he ') || text.includes(' his ') || text.includes(' him ')) {
+      return 'm'
+    }
+    return 't'
+  }
+
+  function replaceSkillKeys(text: string, skill: 'main'|'super') {
+    const formatSeconds = (n: number) => n / 1000 + 's'
+    return text
+      .replace('$damage', info[skill].damage?.toString() || '')
+      .replace('$rechargetime', formatSeconds(info[skill].rechargeTime))
+      .replace('$range', info[skill].range?.toString() || '')
+  }
+
+  if (content.gender == undefined) {
+    content.gender = detectGender()
+  }
+
+  if (content.main != undefined) {
+    content.main = replaceSkillKeys(content.main, 'main')
+  }
+  if (content.super != undefined) {
+    content.super = replaceSkillKeys(content.super, 'super')
+  }
+
+  return content
 }
 
 export default Vue.extend({
@@ -160,50 +199,27 @@ export default Vue.extend({
   },
   data() {
     return {
+      // game files
       info: null as BrawlerData|null,
+      // cms
+      content: null as BrawlerContent|null,
+      // clicker data
       data: null as Row|null,
       totals: null as Row|null,
-      content: {
-        gender: 't',
-        pronoun: 'they',
-        possessivePronoun: 'their',
-      } as Content,
     }
   },
   fetchDelay: 0,
   async fetch() {
-    this.info = await this.$axios.$get<BrawlerData|null>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null)
+    const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null)
+    this.info = info
 
-    const detectGender = (str: string) => {
-      const text = str.toLowerCase()
-      if (text.includes(' she ') || text.includes(' her ')) {
-        return 'f'
-      }
-      if (text.includes(' he ') || text.includes(' his ') || text.includes(' him ')) {
-        return 'm'
-      }
-      return 't'
+    let content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => null) as BrawlerContent|null
+
+    if (content != null && info != null) {
+      content = expandContentWithInfo(content, info)
     }
 
-    const pronouns = {
-      'm': 'he',
-      'f': 'she',
-      't': 'they',
-    }
-    const possessivePronouns = {
-      'm': 'his',
-      'f': 'her',
-      't': 'their',
-    }
-
-    const content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => ({})) as IContentDocument
-    const gender = content.gender || detectGender(this.info?.description || '')
-    this.content = {
-      gender,
-      pronoun: pronouns[gender],
-      possessivePronoun: possessivePronouns[gender],
-      ...content,
-    }
+    this.content = content
 
     const data = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
       ['brawler_name'],
@@ -212,21 +228,45 @@ export default Vue.extend({
         ...this.$clicker.defaultSlices('map'),
       },
       { sort: { picks: 'desc' }, cache: 60*60 })
+
     // TODO use ID
     this.data = data.data.find(r => r.brawler_name == this.brawlerName.toUpperCase()) || null
     this.totals = data.totals
   },
   computed: {
-    brawlerDescription(): string {
+    pronoun(): string {
+      if (this.content == undefined) {
+        return this.brawlerName
+      }
+
+      return {
+        'm': 'he',
+        'f': 'she',
+        't': 'they',
+      }[this.content.gender]
+    },
+    possessivePronoun(): string {
+      if (this.content == undefined) {
+        return this.brawlerName + '\'s'
+      }
+
+      return {
+        'm': 'his',
+        'f': 'her',
+        't': 'their',
+      }[this.content.gender]
+    },
+    gamefileDescription(): string {
+      return this.info?.description || ''
+    },
+    generatedDescription(): string {
       if (this.info == null) {
         return ''
       }
       return `
-        ${this.info.description}
         ${this.info.class ? `${this.brawlerName} is a ${this.info.class}${this.info.rarity && ` with ${this.info.rarity} Rarity.`}` : (this.info.rarity && `${this.brawlerName}'s Rarity is ${this.info.rarity}.`)}\
-        ${capitalize(this.content.pronoun)} is unlocked ${this.info.unlock ? this.info.unlock == 0 ? `when starting the game` : `upon reaching ${this.info.unlock} Trophies` : `by opening Brawl Boxes`}.
-        ${this.content?.brawler || ''}\
-      `
+        ${capitalize(this.pronoun)} is unlocked ${this.info.unlock ? this.info.unlock == 0 ? `when starting the game` : `upon reaching ${this.info.unlock} Trophies` : `by opening Brawl Boxes`}.
+      `.trim()
     },
     statisticsDescription(): string {
       if (this.data == undefined || this.totals == undefined) {
@@ -241,8 +281,8 @@ export default Vue.extend({
       const metaness = metanessWords[scaleInto(0.55, 0.60, metanessWords.length - 1, this.data.battle_victory)]
 
       return `
-        ${this.brawlerName} is, judging by ${this.content.possessivePronoun} Use Rate, a ${popularity} Brawler.\
-        Looking at ${this.content.possessivePronoun} Win Rate, ${this.content.pronoun} is ${metaness} in the current Meta.
+        ${this.brawlerName} is, judging by ${this.possessivePronoun} Use Rate, a ${popularity} Brawler.\
+        Looking at ${this.possessivePronoun} Win Rate, ${this.pronoun} is ${metaness} in the current Meta.
       `
     },
     metaStatMaps() {

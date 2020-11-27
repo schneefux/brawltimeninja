@@ -5,28 +5,38 @@
       :key="entry.id"
       class="card card--dark card--sm card__content flex items-center"
     >
-      <media-img
-        :path="`/${kind}/${entry.id}`"
-        clazz="w-20 pr-6"
-        size="140"
-      ></media-img>
       <dl class="w-full flex flex-col h-full">
-        <dt class="card__header">
-          {{ kind == 'gadgets' ? 'Gadget' : 'Star Power' }}: {{ capitalize(getName(entry).toLowerCase()) }}
-        </dt>
+        <div class="flex items-center">
+          <media-img
+            :path="`/${kind}/${entry.id}`"
+            :alt="`${brawlerName}'s ${formatKind} ${formatName(entry)}`"
+            clazz="h-12 pr-4"
+            size="140"
+          ></media-img>
+          <dt class="card__header">
+            {{ formatKind }}: {{ formatName(entry) }}
+          </dt>
+        </div>
         <dd
           v-if="descriptions != null"
-          class="card__text mb-3 h-full"
+          class="card__text my-3 h-full"
         >
-          {{ descriptions[getName(entry)] }}<br>
-          {{ description(entry) }}
+          <q class="italic">{{ gameFileDescription(entry) }}</q>
+          <template v-if="contentDescription(entry) != ''">
+            <br>
+            {{ contentDescription(entry) }}
+          </template>
+          <template v-if="metaDescription(entry) != ''">
+            <br>
+            {{ metaDescription(entry) }}
+          </template>
         </dd>
         <div class="flex justify-between">
-          <dt class="font-semibold">No {{ kind == 'gadgets' ? 'Gadget' : 'Star Power' }} Win Rate</dt>
+          <dt class="font-semibold">No {{ formatKind }} Win Rate</dt>
           <dd>{{ metaStatMaps.formatters.winRate(totals.battle_victory) }}</dd>
         </div>
         <div class="flex justify-between">
-          <dt class="font-semibold">{{ capitalize(getName(entry).toLowerCase()) }} Win Rate</dt>
+          <dt class="font-semibold">{{ formatName(entry) }} Win Rate</dt>
           <dd>{{ metaStatMaps.formatters.winRate(entry.battle_victory) }}</dd>
         </div>
       </dl>
@@ -37,6 +47,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { metaStatMaps, capitalize, scaleInto } from '~/lib/util'
+import { BrawlerContent } from '~/model/Web'
 import { BrawlerStatisticsRows } from '../model/Clicker'
 import { BrawlerData } from '../model/Media'
 
@@ -67,6 +78,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      content: null as BrawlerContent|null,
       data: [] as Row[],
       totals: null as Row|null,
       descriptions: null as Record<string, string>|null,
@@ -74,6 +86,8 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
+    this.content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => null) as BrawlerContent|null
+
     const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
     const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
 
@@ -123,10 +137,25 @@ export default Vue.extend({
     metaStatMaps() {
       return metaStatMaps
     },
+    formatKind(): string {
+      return this.kind == 'gadgets' ? 'Gadget' : 'Star Power'
+    },
+    // TODO turn concrete gadgets into subcomponent to avoid these loops
     getName() {
       return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_name : entry.brawler_starpower_name
     },
-    description() {
+    formatName() {
+      return (entry: Row) => capitalize(this.getName(entry)?.toLowerCase() || '')
+    },
+    gameFileDescription() {
+      return (entry: Row) => {
+        if (this.descriptions == undefined || this.getName(entry) == undefined) {
+          return ''
+        }
+        return this.descriptions[this.getName(entry)!]
+      }
+    },
+    metaDescription() {
       return (entry: Row) => {
         if (this.data.length == 0 || this.totals == undefined) {
           return ''
@@ -136,7 +165,30 @@ export default Vue.extend({
         const differenceTexts = ['has no noticable impact on the win rate', 'provides a small advantage', 'provides a noticable advantage', 'improves the chances of winning a lot']
         const differenceText = differenceTexts[scaleInto(0, 0.05, differenceTexts.length - 1, diff)]
 
-        return `${capitalize(this.getName(entry)?.toLowerCase() || '')} ${differenceText}.`
+        return `${this.formatName(entry)} ${differenceText}.`
+      }
+    },
+    contentDescription() {
+      return (entry: Row) => {
+        if (this.content == null) {
+          return ''
+        }
+
+        const map = {} as Record<string, string>
+        if (this.content.starpower1_name != undefined) {
+          map[this.content.starpower1_name] = this.content.starpower1_description!
+        }
+        if (this.content.starpower2_name != undefined) {
+          map[this.content.starpower2_name] = this.content.starpower2_description!
+        }
+        if (this.content.gadget1_name != undefined) {
+          map[this.content.gadget1_name] = this.content.gadget1_description!
+        }
+        if (this.content.gadget2_name != undefined) {
+          map[this.content.gadget2_name] = this.content.gadget2_description!
+        }
+
+        return map[this.formatName(entry)] || ''
       }
     },
   },
