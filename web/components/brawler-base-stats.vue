@@ -223,15 +223,22 @@ export default Vue.extend({
 
     const data = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
       ['brawler_name'],
-      ['battle_victory', 'battle_starplayer', 'picks_weighted'],
-      {
+      ['battle_victory', 'battle_starplayer', 'picks_weighted'], {
+        ...this.$clicker.defaultSlices('map'),
+        brawler_name: [this.brawlerName.toUpperCase()],
+      },
+      { sort: { picks: 'desc' }, cache: 60*60 })
+
+    const totalData = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
+      [],
+      ['battle_victory', 'battle_starplayer', 'picks_weighted'], {
         ...this.$clicker.defaultSlices('map'),
       },
       { sort: { picks: 'desc' }, cache: 60*60 })
 
     // TODO use ID
-    this.data = data.data.find(r => r.brawler_name == this.brawlerName.toUpperCase()) || null
-    this.totals = data.totals
+    this.data = data.data[0]
+    this.totals = totalData.data[0]
   },
   computed: {
     pronoun(): string {
