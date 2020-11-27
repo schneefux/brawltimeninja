@@ -94,7 +94,7 @@ export default Vue.extend({
           picks: metaStatMaps.formatters.picks(r.picks),
           rank: metaStatMaps.formatters.rank(r.battle_rank),
         } : {
-          wins: metaStatMaps.formatters.wins(r.wins),
+          wins: metaStatMaps.formatters.wins(Math.floor(r.wins)),
           winRate: metaStatMaps.formatters.winRate(r.battle_victory),
         }),
       }))
