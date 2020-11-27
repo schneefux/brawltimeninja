@@ -1,5 +1,5 @@
 <template>
-  <table>
+  <table class="w-full">
     <thead>
       <tr class="h-8 border-b border-gray-600">
         <th scope="col" class="text-right pr-2 font-semibold">
@@ -19,6 +19,17 @@
       </tr>
     </thead>
     <tbody>
+      <tr
+        v-if="rows.length == 0"
+        class="w-full"
+      >
+        <td
+          :colspan="2 + columns.length"
+          class="text-center"
+        >
+          No data
+        </td>
+      </tr>
       <tr
         v-for="(row, index) in rows"
         :key="row.player_tag"
