@@ -129,6 +129,10 @@ export default {
         commit: process.env.GIT_REV,
       },
     },
+    // requires @sentry/tracing
+    tracing: {
+      tracesSampleRate: 0.1,
+    },
   },
 
   env: {
