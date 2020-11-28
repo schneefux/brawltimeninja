@@ -1,7 +1,7 @@
 import { ClickHouse } from "clickhouse";
 import { stripIndent } from "common-tags";
 import { QueryBuilder } from "knex";
-import { formatClickhouse, getCurrentSeasonEnd, idToTag, tagToId } from "../lib/util";
+import { formatClickhouse, getCurrentSeasonEnd, idToTag, tagToId } from "../../lib/util";
 import Cube, { DataType } from "./Cube";
 
 /**

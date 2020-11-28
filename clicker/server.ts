@@ -8,7 +8,7 @@ const ClickhouseDriver: any = require('@cubejs-backend/clickhouse-driver')
 
 import ClickerService from './services/Clicker';
 import { Player, BattleLog } from '~/model/Brawlstars';
-import { Order } from './services/Cube';
+import { Order } from './services/cubes/Cube';
 
 const service = new ClickerService();
 

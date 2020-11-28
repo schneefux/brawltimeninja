@@ -1,7 +1,7 @@
 import MaterializedCube from "./MaterializedCube";
 import { QueryBuilder } from "knex";
 import { stripIndent } from "common-tags";
-import { formatClickhouse, getCurrentSeasonEnd } from "../lib/util";
+import { formatClickhouse, getCurrentSeasonEnd } from "../../lib/util";
 import { DataType } from "./Cube";
 
 export interface BrawlerBattleCubeMeasures {

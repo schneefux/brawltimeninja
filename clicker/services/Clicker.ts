@@ -5,15 +5,16 @@ import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { MapMetaRow, LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
 import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
-import MapMetaCube from './MapMetaCube';
-import GadgetMetaCube from './GadgetMetaCube';
-import StarpowerMetaCube from './StarpowerMetaCube';
-import LeaderboardCube from './LeaderboardCube';
-import BrawlerLeaderboardCube from './BrawlerLeaderboardCube';
-import SynergyMetaCube from './SynergyCube';
-import PlayerBrawlerCube from './PlayerBrawlerCube';
-import PlayerBattleCube from './PlayerBattleCube';
-import Cube, { Order } from './Cube';
+import MapMetaCube from './cubes/MapMetaCube';
+import GadgetMetaCube from './cubes/GadgetMetaCube';
+import StarpowerMetaCube from './cubes/StarpowerMetaCube';
+import LeaderboardCube from './cubes/LeaderboardCube';
+import BrawlerLeaderboardCube from './cubes/BrawlerLeaderboardCube';
+import SynergyMetaCube from './cubes/SynergyCube';
+import PlayerBrawlerCube from './cubes/PlayerBrawlerCube';
+import PlayerBattleCube from './cubes/PlayerBattleCube';
+import Cube, { Order } from './cubes/Cube';
+import { TeamCube } from './cubes/TeamCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -36,6 +37,7 @@ export default class ClickerService {
   private synergyMetaCube: SynergyMetaCube
   private leaderboardCube: LeaderboardCube
   private brawlerLeaderboardCube: BrawlerLeaderboardCube
+  private teamCube: TeamCube
 
   constructor() {
     this.chRw = new ClickHouse2({
@@ -63,6 +65,7 @@ export default class ClickerService {
     this.synergyMetaCube = new SynergyMetaCube(this.chRo)
     this.leaderboardCube = new LeaderboardCube(this.chRo)
     this.brawlerLeaderboardCube = new BrawlerLeaderboardCube(this.chRo)
+    this.teamCube = new TeamCube(this.synergyMetaCube, this.mapMetaCube, this.chRo)
   }
 
   private insert(sql: string, callback: (error?: Error) => void) {
@@ -97,6 +100,7 @@ export default class ClickerService {
     await this.synergyMetaCube.up(this.chRw)
     await this.leaderboardCube.up(this.chRw)
     await this.brawlerLeaderboardCube.up(this.chRw)
+    await this.teamCube.up(this.chRw)
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -496,6 +500,9 @@ export default class ClickerService {
         return this.gadgetMetaCube
       case 'starpower':
         return this.starpowerMetaCube
+      // virtual cubes
+      case 'team':
+        return this.teamCube
       default:
         throw new Error('Invalid cube: ' + cubeName)
     }

@@ -1,6 +1,6 @@
 import MaterializedCube from "./MaterializedCube";
 import { QueryBuilder } from "knex";
-import { idToTag } from "../lib/util";
+import { idToTag } from "../../lib/util";
 import { stripIndent } from "common-tags";
 import { DataType } from "./Cube";
 

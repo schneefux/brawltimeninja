@@ -40,16 +40,6 @@ services:
       BRAWLAPI_TOKEN: "${BRAWLAPI_TOKEN}"
       BRAWLAPI_URL: "${BRAWLAPI_URL}"
     command: npm run dev
-  tracker:
-    build: ./tracker
-    volumes:
-      - ./tracker/:/usr/src/app
-    ports:
-      - 3002:80
-    environment:
-      PORT: 80
-      DATABASE_URI: mysql2://brawltime:brawltime@db/brawltime
-    command: npm run dev
   clicker:
     build: ./clicker
     volumes:
