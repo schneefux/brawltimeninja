@@ -1,9 +1,9 @@
 name: Dynamike
 gender: null
-description: "Dynamike is a squishy thrower with $health HP. He throws two
-  sticks of dynamite for his main attack and a whole barrel of dynamite for his
-  super. Brawler fact: Dynamike dislikes the auto-aim feature, so don't use it
-  unless you want to make Mike VERY UPSET ‘(T∩T)’."
+description: "Dynamike is a thrower with $health HP. He throws two sticks of
+  dynamite for his main attack and a whole barrel of dynamite for his super.
+  Brawler fact: Dynamike dislikes the auto-aim feature, so don't use it unless
+  you want to make Mike VERY UPSET ‘(T∩T)’."
 main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
   damage. His attack can go over walls and has a range of $range tiles. The
   farther away Mike throws his sticks, the faster they explode. The sticks'
