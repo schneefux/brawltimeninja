@@ -27,6 +27,12 @@ super: KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
 starpower1_name: Dyna-jump
 starpower2_name: Demolition
 gadget1_name: Fidget Spinner
+gadget1_description: Dynamike spins around and throws sticks of dynamite around
+  himself while also gaining a speed boost. Each stick of dynamite deals
+  $damage, and because of its inconsistencies, best used to finish a brawler
+  off. The increased movement speed allows Mike to get away from enemies and
+  inversely, get back in action or another destination such as the goal faster.
+  Fidget Spinner also serves as area denial.
 gadget2_name: Satchel Charge
 gadget2_description: The next regular attack will stun enemies in place for 1.5
   seconds if landed successfully. Satchel Charge allows for Dynamike and his
