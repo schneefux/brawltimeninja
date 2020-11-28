@@ -5,6 +5,6 @@ description: "Dynamike is a squishy thrower with $health HP. He throws two
   super. Fun fact: Dynamike dislikes the auto-aim feature, so don't use it
   unless you want to make Mike VERY UPSET ‘(T∩T)’."
 main: Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
-  damage. He has a range of $range tiles and can attack over walls. The farther
-  away Mike throws his sticks, the faster they explode. The sticks' spread also
-  increases the farther away they are thrown.
+  damage. His attack can go over walls and has a range of $range tiles. The
+  farther away Mike throws his sticks, the faster they explode. The sticks'
+  spread also increases the farther away they are thrown.
