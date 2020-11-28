@@ -63,8 +63,6 @@ export default {
   loading: { color: '#ffed4a' }, // secondary
 
   css: [
-    '~/assets/css/tailwind.css',
-    '~/assets/css/app.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
 
@@ -94,6 +92,7 @@ export default {
   buildModules: [
     '@nuxt/typescript-build',
     '@nuxt/components',
+    '@nuxtjs/tailwindcss',
   ],
 
   components: [ {
@@ -144,11 +143,6 @@ export default {
 
   build: {
     extractCSS: true, // ~1 CSS per component
-    postcss: {
-      plugins: {
-        tailwindcss: path.join(__dirname, './tailwind.config.js'),
-      },
-    },
   },
 
   sitemap: {

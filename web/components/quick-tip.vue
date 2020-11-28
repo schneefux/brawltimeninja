@@ -46,7 +46,7 @@
       <p class="mt-4 text-sm">
         Recommendations based on Brawler Trophies and current Map Tier Lists:
       </p>
-      <div class="pl-4 -mx-6 flex overflow-x-auto scrolling-touch">
+      <div class="pl-4 -mx-6 flex overflow-x-auto">
         <lazy
           v-for="(event, index) in events"
           :key="event.battle_event_mode + event.battle_event_map"

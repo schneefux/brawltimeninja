@@ -33,7 +33,7 @@
           Club
         </p>
 
-        <div class="mt-1 flex text-3xl">
+        <div class="flex text-3xl">
           <span class="w-24 text-right text-secondary font-bold">
             {{ Math.floor(player.hoursSpent) }}
           </span>
@@ -59,7 +59,7 @@
       </div>
 
       <div class="w-1/2 pl-1">
-        <div class="w-full mt-1 flex justify-center">
+        <div class="w-full flex justify-center">
           <span class="text-3xl text-secondary font-bold">
             {{ Math.floor(winRate * 100) }}%
           </span>
@@ -73,10 +73,10 @@
           </div>
         </div>
 
-        <div class="mt-1">
+        <div>
           <span class="text-lg">Best Brawlers:</span>
 
-          <div class="mt-1 w-full flex flex-wrap">
+          <div class="w-full flex flex-wrap">
             <div
               v-for="brawler in bestBrawlers.slice(0, 6)"
               :key="brawler.id"
@@ -98,7 +98,7 @@
                     {{ brawler.trophies }}
                   </span>
                 </div>
-                <span class="w-full -mt-1 capitalize text-center text-xs">
+                <span class="w-full -mt-2 capitalize text-center text-xs">
                   {{ brawler.name.toLowerCase() }}
                 </span>
               </div>

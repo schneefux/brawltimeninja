@@ -46,7 +46,7 @@
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
+      <div class="overflow-x-auto flex md:justify-center md:flex-wrap">
         <lazy
           v-for="(map, index) in maps"
           :key="map.map"

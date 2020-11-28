@@ -156,11 +156,11 @@ export default Vue.extend({
           <table class="mt-4 px-4 w-full font-semibold">
             <tbody>
               <tr class="flex text-2xl">
-                <td class="w-1/2 pr-1 text-right text-primary-light">Win Rate</td>
+                <td class="w-1/2 pr-1 text-right text-primary-light leading-none">Win Rate</td>
                 <td class="w-1/2 pl-1 text-left text-secondary">{ this.picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }</td>
               </tr>
               <tr class="flex text-lg">
-                <td class="w-1/2 pr-1 text-right text-primary-light">Highest Trophies</td>
+                <td class="w-1/2 pr-1 text-right text-primary-light leading-none">Highest Trophies</td>
                 <td class="w-1/2 pl-1 text-left text-secondary">{ brawler.highestTrophies }</td>
               </tr>
             </tbody>

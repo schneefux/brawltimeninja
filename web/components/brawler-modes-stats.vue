@@ -3,7 +3,7 @@
     <p>
       {{ description }}
     </p>
-    <div class="mt-2 overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
+    <div class="mt-2 overflow-x-auto flex md:justify-center md:flex-wrap">
       <lazy
         v-for="(mode, index) in data"
         :key="mode.battle_event_mode"

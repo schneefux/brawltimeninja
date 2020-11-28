@@ -36,7 +36,7 @@ export default Vue.extend({
       }}
     >
       { Object.entries(stats).map(([name, value]) =>
-        <div class="darkbox mx-2 mt-1 text-lg flex flex-shrink-0 h-8">
+        <div class="darkbox mx-2 mt-1 text-lg flex flex-shrink-0 h-8 leading-tight">
           <dd class="text-primary-light font-semibold w-16 md:w-auto text-right">{ value }</dd>
           <dt class="ml-2 w-full overflow-hidden">{ metaStatMaps.labels[name] }</dt>
         </div>

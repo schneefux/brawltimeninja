@@ -71,7 +71,7 @@
             </div>
           </div>
           <span
-            :class="'text-xs whitespace-no-wrap m-px '
+            :class="'text-xs whitespace-nowrap m-px '
               + (mate.tag != playerTag ? 'link ' : 'text-secondary')
             ">
               {{ mate.name }}

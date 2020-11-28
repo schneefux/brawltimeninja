@@ -30,7 +30,7 @@
         @submit="search"
       >
         <div class="w-full flex justify-center">
-          <div class="mt-3 py-2 border-2 rounded-lg border-primary-dark">
+          <div class="py-2 border-2 rounded-lg border-primary-dark">
             <input
               v-model="tag"
               placeholder="Enter your Tag"
@@ -60,7 +60,7 @@
       </form>
     </div>
 
-    <div class="mt-3 text-center">
+    <div class="mt-2 text-center">
       <details
         ref="help-dropdown"
         class="mx-6"
@@ -87,7 +87,7 @@
       </details>
     </div>
 
-    <div class="my-4 text-center max-w-sm">
+    <div class="my-2 text-center max-w-sm">
       <p class="text-grey">
         <span v-show="lastPlayers.length === 0">
           Or check one of these profiles:
@@ -96,7 +96,7 @@
           Recently searched:
         </span>
       </p>
-      <p class="mt-2 mx-auto">
+      <p class="mx-auto">
         <nuxt-link
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
@@ -414,11 +414,11 @@ export default Vue.extend({
 }
 
 .home-section-heading-left {
-  @apply text-left text-lg ml-5;
+  @apply text-left text-lg ml-5 leading-none;
 }
 
 .home-section-heading-right {
-  @apply text-right text-sm absolute bottom-0 right-0 mr-5;
+  @apply text-right text-sm absolute bottom-0 right-0 mr-5 leading-none;
 }
 
 .home-section-content {

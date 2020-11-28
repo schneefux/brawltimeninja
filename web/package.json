@@ -20,6 +20,7 @@
     "@nuxtjs/sentry": "^4.5.0",
     "@nuxtjs/sitemap": "^2.4.0",
     "@sentry/tracing": "^5.27.6",
+    "@tailwindcss/forms": "^0.2.1",
     "date-fns": "^2.16.1",
     "glob-all": "^3.2.1",
     "html2canvas": "^1.0.0-rc.7",
@@ -38,13 +39,12 @@
     "ztable": "^1.0.7"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^2.3.0",
     "@nuxt/types": "^2.14.6",
     "@nuxt/typescript-build": "^2.0.3",
     "@nuxtjs/eslint-config": "^3.1.0",
     "@nuxtjs/eslint-config-typescript": "^2.0.0",
-    "@tailwindcss/custom-forms": "^0.2.1",
-    "@tailwindcss/typography": "^0.2.0",
+    "@nuxtjs/tailwindcss": "^3.2.0",
+    "@tailwindcss/typography": "^0.3.1",
     "autoprefixer": "^9.8.6",
     "eslint": "^7.11.0",
     "eslint-config-standard": "^14.1.1",
@@ -54,8 +54,9 @@
     "eslint-plugin-promise": ">=4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
+    "postcss": "^7.0.35",
     "purgecss-webpack-plugin": "^2.3.0",
-    "tailwindcss": "^1.8.13",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.1",
     "tailwindcss-typography": "^3.1.0"
   }
 }

@@ -54,7 +54,7 @@
     </div>
 
     <div class="section">
-      <div class="overflow-x-auto scrolling-touch flex md:flex-wrap md:justify-center">
+      <div class="overflow-x-auto flex md:flex-wrap md:justify-center">
         <div
           v-for="(mode, index) in modes"
           :key="mode"

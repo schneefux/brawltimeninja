@@ -17,11 +17,11 @@
         The best players, ranked by {{ metricName }}.
       </p>
 
-      <div class="overflow-x-auto scrolling-touch flex md:justify-center md:flex-wrap">
+      <div class="overflow-x-auto flex md:justify-center md:flex-wrap">
         <nuxt-link
           v-for="metric in metrics"
           :key="metric"
-          class="button button--secondary button--md mt-2 mr-2 whitespace-no-wrap"
+          class="button button--secondary button--md mt-2 mr-2 whitespace-nowrap"
           :to="`/leaderboard/${metric}`"
         >
           {{ formatMetric(metric) }} Leaderboard

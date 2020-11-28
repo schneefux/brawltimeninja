@@ -34,7 +34,7 @@
         ref="menu"
         class="w-full lg:w-auto relative z-0"
       >
-        <div class="overflow-x-auto overflow-y-hidden scrolling-touch whitespace-no-wrap">
+        <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap">
           <div class="pt-3 pb-3 lg:py-0 lg:my-0">
             <div class="hidden lg:inline-block">
               <button
