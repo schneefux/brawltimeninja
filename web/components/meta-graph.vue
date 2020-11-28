@@ -5,7 +5,7 @@
         :traces="chart.traces"
         :layout="chart.layout"
         :options="chart.options"
-        class="h-64"
+        class="h-80"
       ></plotly>
     </div>
   </div>
@@ -35,22 +35,29 @@ export default Vue.extend({
           x: entries.map(e => e.title),
           y: entries.map(e => e.stats[this.stat]),
           text: entries.map(e => e.title),
-          mode: 'lines+markers',
-          type: 'scatter',
+          type: 'bar',
         }],
         layout: {
-          margin: { t: 10, l: 50, b: 80, r: 10 },
+          margin: { t: 0, l: 0, b: 0, r: 0 },
           showlegend: false,
           xaxis: {
-            title: 'Brawler',
+            title: {
+              text: 'Brawler',
+              standoff: 10,
+            },
             fixedrange: true,
             tickcolor: '#ffffff',
+            automargin: true,
           },
           yaxis: {
-            title: metaStatMaps.labels[this.stat],
+            title: {
+              text: metaStatMaps.labels[this.stat],
+              standoff: 10,
+            },
             fixedrange: true,
-            tickformat: metaStatMaps.formatters[this.stat],
+            tickformat: metaStatMaps.d3formatters[this.stat],
             tickcolor: '#ffffff',
+            automargin: true,
           },
         },
       }

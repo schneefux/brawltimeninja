@@ -203,6 +203,25 @@ export const metaStatMaps = {
     wins: (n: number) => formatSI(n, 1),
     picks: (n: number) => formatSI(n, 1),
   },
+  // TODO replace formatting functions above by d3-format
+  d3formatters: {
+    trophies: '',
+    spTrophies: '',
+    trophyChange: '+',
+    winRate: '.1p',
+    rank1Rate: '.2p',
+    starRate: '.1p',
+    useRate: '.2p',
+    pickRate: '.2p',
+    pickRate_boss: '.2p',
+    duration: '',
+    duration_boss: '',
+    rank: '2f',
+    level: '2f',
+    rank1: '1s',
+    wins: '1s',
+    picks: '1s',
+  },
   signs: {
     trophies: -1, // more is better -> sort rank desc
     spTrophies: -1,
