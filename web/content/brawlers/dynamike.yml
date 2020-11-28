@@ -1,0 +1,7 @@
+name: Dynamike
+gender: null
+description: ""
+main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
+  damage. He has a range of $range tiles and can attack over walls. The farther
+  away Mike throws his sticks, the faster they explode. The sticks' spread also
+  increases the farther away they are thrown. "
