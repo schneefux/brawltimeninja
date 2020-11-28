@@ -8,36 +8,42 @@
       v-if="trophiesUseRateChart != undefined"
       class="card-wrapper"
     >
-      <plotly
-        :traces="trophiesUseRateChart.traces"
-        :layout="trophiesUseRateChart.layout"
-        :options="trophiesUseRateChart.options"
-        class="h-48 card card--dark md:max-w-lg"
-      ></plotly>
+      <div class="card card--dark card__content">
+        <plotly
+          :traces="trophiesUseRateChart.traces"
+          :layout="trophiesUseRateChart.layout"
+          :options="trophiesUseRateChart.options"
+          class="h-48 md:max-w-lg"
+        ></plotly>
+      </div>
     </div>
 
     <div
       v-if="trophiesWinRateChart != undefined"
       class="card-wrapper"
     >
-      <plotly
-        :traces="trophiesWinRateChart.traces"
-        :layout="trophiesWinRateChart.layout"
-        :options="trophiesWinRateChart.options"
-        class="h-48 card card--dark md:max-w-lg"
-      ></plotly>
+      <div class="card card--dark card__content">
+        <plotly
+          :traces="trophiesWinRateChart.traces"
+          :layout="trophiesWinRateChart.layout"
+          :options="trophiesWinRateChart.options"
+          class="h-48 md:max-w-lg"
+        ></plotly>
+      </div>
     </div>
 
     <div
       v-if="trophiesStarRateChart != undefined"
       class="card-wrapper"
     >
-      <plotly
-        :traces="trophiesStarRateChart.traces"
-        :layout="trophiesStarRateChart.layout"
-        :options="trophiesStarRateChart.options"
-        class="h-48 card card--dark md:max-w-lg"
-      ></plotly>
+      <div class="card card--dark card__content">
+        <plotly
+          :traces="trophiesStarRateChart.traces"
+          :layout="trophiesStarRateChart.layout"
+          :options="trophiesStarRateChart.options"
+          class="h-48 md:max-w-lg"
+        ></plotly>
+      </div>
     </div>
   </div>
 </template>
@@ -58,17 +64,15 @@ interface Row {
 
 const trophyGraphLayout = {
   xaxis: {
-    title: 'Trophies',
+    title: {
+      text: 'Trophies',
+      standoff: 10,
+    },
     fixedrange: true,
     tickcolor: '#ffffff',
+    automargin: true,
   },
-  yaxis: {
-    title: '',
-    fixedrange: true,
-    tickformat: ',.0%',
-    tickcolor: '#ffffff',
-  },
-  margin: { t: 10, l: 55, b: 65, r: 10 },
+  margin: { t: 0, l: 0, b: 0, r: 0 },
   showlegend: true,
   legend: {
     x: 0,
@@ -175,10 +179,14 @@ export default Vue.extend({
         layout: {
           ...trophyGraphLayout,
           yaxis: {
-            title: 'Star Rate',
+            title: {
+              text: 'Star Rate',
+              standoff: 10,
+            },
             fixedrange: true,
             tickformat: ',.0%',
             tickcolor: '#ffffff',
+            automargin: true,
           },
         },
       }
@@ -210,10 +218,14 @@ export default Vue.extend({
         layout: {
           ...trophyGraphLayout,
           yaxis: {
-            title: 'Use Rate',
+            title: {
+              text: 'Use Rate',
+              standoff: 10,
+            },
             fixedrange: true,
             tickformat: ',.0%',
             tickcolor: '#ffffff',
+            automargin: true,
           },
         },
       }
@@ -250,10 +262,14 @@ export default Vue.extend({
         layout: {
           ...trophyGraphLayout,
           yaxis: {
-            title: 'Win Rate',
+            title: {
+              text: 'Win Rate',
+              standoff: 10,
+            },
             fixedrange: true,
             tickformat: ',.0%',
             tickcolor: '#ffffff',
+            automargin: true,
           },
         },
       }

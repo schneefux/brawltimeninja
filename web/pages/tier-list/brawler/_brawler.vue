@@ -10,9 +10,7 @@
       <h1 class="page-h1">{{ brawlerName }}</h1>
     </div>
 
-    <div
-      class="section flex flex-wrap justify-around"
-    >
+    <div class="section flex flex-wrap justify-center">
       <brawler-base-stats
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
@@ -124,6 +122,27 @@
           Open Map Tier Lists
         </nuxt-link>
       </div>
+    </div>
+
+    <div
+      class="section-heading"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'trends'),
+        once: true,
+      }"
+    >
+      <h2 class="page-h2">
+        {{ brawlerName }} Trends
+      </h2>
+      <p>
+        See how {{ brawlerName }} has performed this month.
+      </p>
+    </div>
+
+    <div class="section">
+      <brawler-trends-card
+        :brawler="brawlerName"
+      ></brawler-trends-card>
     </div>
 
     <div

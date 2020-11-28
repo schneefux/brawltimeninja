@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-wrap justify-around w-full md:w-auto">
+  <div class="flex flex-wrap justify-center w-full md:w-auto">
     <div class="w-full flex justify-center">
       <div class="w-full max-w-2xl card card--dark md:py-10">
-        <div class="card__content max-w-md flex flex-wrap md:flex-nowrap justify-center items-center mx-auto">
+        <div class="card__content max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto">
           <div class="w-32 md:w-48 md:pr-6 h-64 flex justify-center items-center">
             <media-img
               :path="'/brawlers/' + brawlerId + '/model'"
