@@ -103,8 +103,8 @@ export default class PlayerBrawlerCube extends Cube {
     'player_club_tag': 'any(player_club_tag)',
     'player_club_name': 'any(player_club_name)',
 
-    'brawler_id': 'any(brawler_id)',
-    'brawler_name': 'any(brawler_name)',
+    'brawler_id': 'anyHeavy(brawler_id)',
+    'brawler_name': 'anyHeavy(brawler_name)',
     'brawler_power': 'MAX(brawler_power)',
     'brawler_trophies': 'MAX(brawler_trophies)',
     'brawler_highest_trophies': 'MAX(brawler_highest_trophies)',
