@@ -17,13 +17,11 @@ export default class GadgetMetaCube extends BrawlerBattleCube {
     ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name)
   `
 
-  dimensions = [
+  dimensions = {
     ...BrawlerBattleCube.defaultDimensions,
-    'trophy_season_end',
-    'brawler_trophyrange',
-    'brawler_gadget_id',
-    'brawler_gadget_name',
-  ]
+    'brawler_gadget_id': 'brawler_gadget_id',
+    'brawler_gadget_name': 'brawler_gadget_name',
+  }
   dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
@@ -44,7 +42,7 @@ export default class GadgetMetaCube extends BrawlerBattleCube {
       ${this.measuresQuery}
     FROM brawltime.battle
     WHERE brawler_gadgets_length <= 1
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_gadget_id, brawler_gadget_name
   `
 
   slices = {

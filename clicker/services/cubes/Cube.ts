@@ -8,7 +8,7 @@ export type DataType = 'string'|'int'|'float'|'bool'
 export default abstract class Cube {
   abstract table: string
   abstract measures: Record<string, string>
-  abstract dimensions: string[]
+  abstract dimensions: Record<string, string>
   abstract slices: Record<string, number>
   abstract mappers: Record<string, DataType>
   abstract virtuals: Record<string, string[]>
@@ -50,12 +50,15 @@ export default abstract class Cube {
     let query = this.knex(this.table)
 
     for (const dimension of dimensions) {
-      if (!this.dimensions.includes(dimension as string)) {
+      if (!(dimension in this.dimensions)) {
         throw new Error('Invalid dimension: ' + dimension)
       }
+      const grouper = this.dimensions[dimension]
+      const target = (grouper == dimension) ? this.table + '.' + grouper : this.knex.raw(grouper)
+      // else: group by is an expression and not a column name
       query = query
-        .select(dimension)
-        .groupBy(this.table + '.' + dimension)
+        .select({ [dimension]: target })
+        .groupBy(dimension)
     }
 
     for (const measure of measures) {
@@ -65,10 +68,10 @@ export default abstract class Cube {
         }
         continue
       }
+      if (dimensions.includes(measure)) {
+        continue
+      }
       if (!(measure in this.measures)) {
-        if (this.dimensions.includes(measure)) {
-          continue
-        }
         throw new Error('Invalid measure: ' + measure)
       }
 

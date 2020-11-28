@@ -89,14 +89,14 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
     `)
   }
 
-  dimensions = [
+  dimensions = {
     ...PlayerBrawlerCube.defaultDimensions,
-    'battle_event_id',
-    'battle_event_mode',
-    'battle_event_map',
-    'battle_event_powerplay',
+    'battle_event_id': 'battle_event_id',
+    'battle_event_mode': 'battle_event_mode',
+    'battle_event_map': 'battle_event_map',
+    'battle_event_powerplay': 'battle_event_powerplay',
     // TODO add allies and enemies as dimensions?
-  ] as string[]
+   }
 
   measures = {
     ...PlayerBrawlerCube.defaultMeasures,

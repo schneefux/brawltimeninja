@@ -27,10 +27,10 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
     TTL timestamp + INTERVAL 1 MONTH
   `
 
-  dimensions = [
-    'player_id',
-    'brawler_id',
-  ]
+  dimensions = {
+    'player_id': 'player_id',
+    'brawler_id': 'brawler_id',
+  }
   dimensionsDefinition = `
     player_id UInt64,
     brawler_id UInt32
@@ -65,10 +65,11 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
 
   seedQuery = stripIndent`
     SELECT
-      ${this.dimensions.join(',\n')},
+      player_id,
+      brawler_id,
       ${this.measuresQuery}
     FROM brawltime.brawler
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY player_id, brawler_id
   `
 
   slice(query: QueryBuilder, name: string, args: string[]) {

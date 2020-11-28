@@ -17,11 +17,11 @@ export default class StarpowerMetaCube extends BrawlerBattleCube {
     ORDER BY (brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name)
   `
 
-  dimensions = [
+  dimensions = {
     ...BrawlerBattleCube.defaultDimensions,
-    'brawler_starpower_id',
-    'brawler_starpower_name',
-  ]
+    'brawler_starpower_id': 'brawler_starpower_id',
+    'brawler_starpower_name': 'brawler_starpower_name',
+  }
   dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
@@ -42,7 +42,7 @@ export default class StarpowerMetaCube extends BrawlerBattleCube {
       ${this.measuresQuery}
     FROM brawltime.battle
     WHERE brawler_starpowers_length <= 1
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, brawler_starpower_id, brawler_starpower_name
   `
 
   slices = {

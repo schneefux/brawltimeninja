@@ -20,16 +20,16 @@ export default class MapMetaCube extends BrawlerBattleCube {
     ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_name, battle_event_id, battle_event_powerplay, battle_is_bigbrawler)
   `
 
-  dimensions = [
-    'trophy_season_end',
-    'brawler_trophyrange',
-    'brawler_name',
-    'battle_event_mode',
-    'battle_event_map',
-    'battle_event_id',
-    'battle_event_powerplay',
-    'battle_is_bigbrawler',
-  ]
+  dimensions = {
+    'trophy_season_end': 'trophy_season_end',
+    'brawler_trophyrange': 'brawler_trophyrange',
+    'brawler_name': 'brawler_name',
+    'battle_event_mode': 'battle_event_mode',
+    'battle_event_map': 'battle_event_map',
+    'battle_event_id': 'battle_event_id',
+    'battle_event_powerplay': 'battle_event_powerplay',
+    'battle_is_bigbrawler': 'battle_is_bigbrawler',
+  }
   dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
@@ -57,7 +57,7 @@ export default class MapMetaCube extends BrawlerBattleCube {
       assumeNotNull(battle_is_bigbrawler) AS battle_is_bigbrawler,
       ${this.measuresQuery}
     FROM brawltime.battle
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY trophy_season_end, brawler_trophyrange, brawler_name, battle_event_mode, battle_event_map, battle_event_id, battle_event_powerplay, battle_is_bigbrawler
   `
 
   slices = {

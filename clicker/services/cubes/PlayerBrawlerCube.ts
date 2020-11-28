@@ -83,6 +83,7 @@ export default class PlayerBrawlerCube extends Cube {
     'users': 'uniqCombined(player_id)',
     'trophy_season_end': 'formatDateTime(MAX(trophy_season_end), \'%FT%TZ\', \'UTC\')',
     'timestamp': 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
+    'timestamp_day': 'formatDateTime(MAX(toStartOfDay(timestamp)), \'%FT%TZ\', \'UTC\')',
 
     'player_name': 'any(player_name)',
     'player_name_color': 'any(player_name_color)',
@@ -115,15 +116,16 @@ export default class PlayerBrawlerCube extends Cube {
 
   measures = PlayerBrawlerCube.defaultMeasures
 
-  static defaultDimensions = [
-    'trophy_season_end',
-    'timestamp',
-    'player_id',
-    'brawler_id',
-    'brawler_name',
-  ]
+  static defaultDimensions = {
+    'trophy_season_end': 'trophy_season_end',
+    'timestamp': 'timestamp',
+    'timestamp_day': 'toStartOfDay(timestamp)',
+    'player_id': 'player_id',
+    'brawler_id': 'brawler_id',
+    'brawler_name': 'brawler_name',
+  }
 
-  dimensions = PlayerBrawlerCube.defaultDimensions as string[]
+  dimensions = PlayerBrawlerCube.defaultDimensions
 
   static defaultSlices = {
     'player_id': 1,
@@ -142,6 +144,7 @@ export default class PlayerBrawlerCube extends Cube {
     users: 'int',
     trophy_season_end: 'string',
     timestamp: 'string',
+    timestamp_day: 'string',
 
     player_id: 'string',
     player_tag: 'string',

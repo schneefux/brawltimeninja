@@ -105,12 +105,12 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
     'battle_trophy_change': 'avgMerge(battle_trophy_change_state)',
   }
 
-  static defaultDimensions = [
-    'trophy_season_end',
-    'brawler_trophyrange',
-    'brawler_id',
-    'brawler_name',
-  ]
+  static defaultDimensions = {
+    'trophy_season_end': 'trophy_season_end',
+    'brawler_trophyrange': 'brawler_trophyrange',
+    'brawler_id': 'brawler_id',
+    'brawler_name': 'brawler_name',
+  }
 
   static defaultSlices = {
     'trophy_season_end': 1,

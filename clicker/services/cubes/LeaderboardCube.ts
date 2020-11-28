@@ -25,9 +25,9 @@ export default class LeaderboardCube extends MaterializedCube {
     TTL timestamp + INTERVAL 1 MONTH
   `
 
-  dimensions = [
-    'player_id',
-  ]
+  dimensions = {
+    'player_id': 'player_id',
+  }
   dimensionsDefinition = stripIndent`
     player_id UInt64
   `
@@ -70,10 +70,10 @@ export default class LeaderboardCube extends MaterializedCube {
 
   seedQuery = stripIndent`
     SELECT
-      ${this.dimensions.join(',\n')},
+      player_id,
       ${this.measuresQuery}
     FROM brawltime.battle
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY player_id
   `
 
   slice(query: QueryBuilder, name: string, args: string[]) {

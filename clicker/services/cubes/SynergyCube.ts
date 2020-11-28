@@ -20,14 +20,14 @@ export default class SynergyMetaCube extends BrawlerBattleCube {
     ORDER BY (brawler_trophyrange, battle_event_mode, battle_event_map, brawler_id, brawler_name, battle_event_id, ally_brawler_id, ally_brawler_name)
   `
 
-  dimensions = [
+  dimensions = {
     ...BrawlerBattleCube.defaultDimensions,
-    'battle_event_mode',
-    'battle_event_map',
-    'battle_event_id',
-    'ally_brawler_id',
-    'ally_brawler_name',
-  ]
+    'battle_event_mode': 'battle_event_mode',
+    'battle_event_map': 'battle_event_map',
+    'battle_event_id': 'battle_event_id',
+    'ally_brawler_id': 'ally_brawler_id',
+    'ally_brawler_name': 'ally_brawler_name',
+  }
   dimensionsDefinition = stripIndent`
     trophy_season_end DateTime,
     brawler_trophyrange UInt8,
@@ -55,7 +55,7 @@ export default class SynergyMetaCube extends BrawlerBattleCube {
       ${this.measuresQuery}
     FROM brawltime.battle
     ARRAY JOIN battle_allies
-    GROUP BY ${this.dimensions.join(', ')}
+    GROUP BY trophy_season_end, brawler_trophyrange, brawler_id, brawler_name, battle_event_mode, battle_event_map, battle_event_id, ally_brawler_id, ally_brawler_name
   `
 
   slices = {
