@@ -20,6 +20,7 @@ module.exports = {
         'default': '-1px 0 #22292f, 0 1px #22292f, 1px 0 #22292f, 0 -1px #22292f',
       },
       colors: {
+        ...colors,
         /*
         // TODO: migrate
         'grey-darkest': colors.gray['800'],
