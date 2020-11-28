@@ -12,11 +12,19 @@ main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
   going to go rather than where they were. Each stick of dynamite landed on a
   brawler charges Mike's super up by 25% for a maximum of 50% per attack on a
   single enemy. In other words, Mike's super can be charged up by 2-4 attacks. "
-super: "KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
+super: KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
   $damage damage and blowing up cover while also knocking surviving enemies
   back. His super has a bigger spread than his main attack and it charges up his
   next super by 50% per brawler hit. This means that landing a super on two+
   brawlers at once will give Mike the next super back immediately, making
   Dynamike one of the fastest brawlers to charge their supers. In fact, even if
-  Mike only hit one brawler, he can gain his next super back by having two
-  sticks land on the opposing team. "
+  Mike only hit one brawler, he can gain his next super back within 1-2
+  successful attacks. Because of how frequently Mike gets his super, it is
+  recommended to use it as soon as possible and not save it like Tara's super.
+  Because Mike's super can break cover, it can be used to open up space for
+  long-ranged brawlers to attack along with reducing the effectiveness of enemy
+  throwers. Just make sure you don't blow up your own walls.
+starpower1_name: Dyna-jump
+starpower2_name: Demolition
+gadget1_name: Fidget Spinner
+gadget2_name: Satchel Charge
