@@ -1,7 +1,10 @@
 name: Dynamike
 gender: null
-description: ""
-main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
+description: "Dynamike is a squishy thrower with $health HP. He throws two
+  sticks of dynamite for his main attack and a whole barrel of dynamite for his
+  super. Fun fact: Dynamike dislikes the auto-aim feature, so don't use it
+  unless you want to make Mike VERY UPSET ‘(T∩T)’."
+main: Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
   damage. He has a range of $range tiles and can attack over walls. The farther
   away Mike throws his sticks, the faster they explode. The sticks' spread also
-  increases the farther away they are thrown. "
+  increases the farther away they are thrown.
