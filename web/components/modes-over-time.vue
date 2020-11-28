@@ -1,10 +1,12 @@
 <template>
-  <plotly
-    :traces="chart.traces"
-    :layout="chart.layout"
-    :options="chart.options"
-    class="h-80 card card--dark"
-  ></plotly>
+  <div class="w-full card card--dark px-3 py-2">
+    <plotly
+      :traces="chart.traces"
+      :layout="chart.layout"
+      :options="chart.options"
+      class="h-80"
+    ></plotly>
+  </div>
 </template>
 
 <script lang="ts">
@@ -80,18 +82,27 @@ export default Vue.extend({
           }
         }),
         layout: {
+          margin: { t: 0, l: 0, b: 0, r: 0 },
           xaxis: {
-            title: 'Trophy Season',
+            title: {
+              text: 'Trophy Season',
+              standoff: 10,
+            },
             fixedrange: true,
             tickcolor: '#ffffff',
+            automargin: true,
           },
           yaxis: {
             title: '',
             tickformat: ',.0%',
             tickcolor: '#ffffff',
+            automargin: true,
           },
-          margin: { t: 10, l: 55, b: 80, r: 10 },
           showlegend: true,
+          legend: {
+            itemclick: false,
+            itemdoubleclick: false,
+          },
         },
       }
     },
