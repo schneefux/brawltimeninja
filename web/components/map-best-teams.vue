@@ -6,26 +6,27 @@
       :key="team.id"
       class="brawler-avatars__element w-1/2 mx-1"
     >
-      <div
+      <router-link
         v-for="brawler in team.brawlers"
         :key="brawler"
-        class="brawler-avatar"
+        :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
         :class="{
           'w-1/2': team.brawlers.length == 2,
           'w-1/3': team.brawlers.length == 3,
         }"
+        class="brawler-avatar"
       >
-        <router-link
-          :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
-        >
-          <media-img
-            :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
-            :alt="brawler"
-            size="160"
-            clazz="brawler-avatar__img"
-          ></media-img>
-        </router-link>
-      </div>
+        <media-img
+          :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
+          :alt="brawler"
+          size="160"
+          clazz="brawler-avatar__img"
+        ></media-img>
+      </router-link>
+      <p class="brawler-avatar__stats">
+        {{ metaStatMaps.formatters.wins(team.wins) }}
+        {{ metaStatMaps.labelsShort.wins }}
+      </p>
     </div>
     <p v-if="!$fetchState.pending && teams.length == 0">
       No data.
@@ -89,16 +90,17 @@ export default Vue.extend({
     }
     this.teams = []
 
-    // save bandwith and computation time by approximating top N
-    const teams = await this.$clicker.calculateTeams(slices, 'meta.map.best-teams', this.limit * this.totalBrawlers)
-    this.teams = teams.teams
-      .sort((t1, t2) => t2.wins - t1.wins)
-      .map((t) => (<Team>{
-        id: t.brawlers.join('+'),
-        brawlers: t.brawlers,
-        wins: t.wins,
-        winRate: t.wins / t.picks,
-      }))
+    const data = await this.$clicker.query('meta.map.best-teams', 'team', ['brawler_names'], ['picks', 'wins', 'battle_victory'], slices, {
+      cache: 60*15,
+      sort: { wins: 'desc' },
+      limit: this.limit,
+    })
+    this.teams = data.data.map((t) => (<Team>{
+      id: t.brawler_names.join('+'),
+      brawlers: t.brawler_names,
+      wins: Math.floor(t.wins),
+      winRate: t.wins / t.picks,
+    }))
   },
   computed: {
     brawlerId() {

@@ -97,7 +97,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { brawlerId, capitalizeWords, metaStatMaps } from '~/lib/util'
+import { brawlerId, capitalizeWords, measurementMap, metaStatMaps } from '~/lib/util'
 
 interface BMap {
   id: string
@@ -154,19 +154,22 @@ export default Vue.extend({
       battle_event_map: [this.event.map],
     }
 
-    const teams = await this.$clicker.calculateTeams(slices, 'meta.map.teams')
-    this.teams = teams.teams
+    const sortingKey = this.measurement == 'winRate' ? 'battle_victory' : this.measurement
+    const data = await this.$clicker.query('meta.map.teams', 'team', ['brawler_names'], ['picks', 'wins', 'battle_victory'], slices, {
+      cache: 60*15,
+      sort: { [sortingKey]: 'desc' },
+    })
+    this.teams = data.data
       .map((teamPicksWins) => ({
-        name: teamPicksWins.brawlers.join('+'),
-        brawlers: teamPicksWins.brawlers,
+        name: teamPicksWins.brawler_names.join('+'),
+        brawlers: teamPicksWins.brawler_names,
         picks: Math.round(teamPicksWins.picks),
         wins: Math.round(teamPicksWins.wins),
         winRate: teamPicksWins.wins / teamPicksWins.picks,
       }))
       .filter((t) => t.picks >= 10)
-      .sort((t1, t2) => t2[this.measurement] - t1[this.measurement])
-    this.totalSampleSize = teams.sampleSize
-    this.totalTimestamp = teams.timestamp
+    this.totalSampleSize = data.totals.picks
+    this.totalTimestamp = data.totals.timestamp
   },
   computed: {
     capitalizeWords() {
