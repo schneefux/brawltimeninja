@@ -117,7 +117,7 @@
             <li>Your IP address</li>
             <li>Pages you open, Buttons you click</li>
             <li>Content visibility</li>
-            <li>Errors and exceptions</li>
+            <li>Errors and performance metrics</li>
           </ul>
           <br>
           How the data is used:
@@ -127,7 +127,7 @@
             <li>To improve the reliability of this service</li>
           </ul>
           <br>
-          To collect this information, some data will be shared with Google Analytics, Google AdSense and Sentry.
+          To collect this information, some data will be shared with Cloudflare, Google Analytics, Google AdSense and Sentry.
           Your information will never be sold.
           <br>
           Read the privacy policy or update your preferences later <nuxt-link class="link" to="/about">here</nuxt-link>.
