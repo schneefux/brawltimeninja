@@ -77,7 +77,7 @@ export default Vue.extend({
       const id = this.map.replace('Competition Winner ', '')
       const content = await this.$content(`/maps/${id}`).fetch().catch(err => ({})) as IContentDocument
       this.mapOverride = content.map
-      this.staticImageUrl = `/images/maps/${id}.png`
+      this.staticImageUrl = `/images/maps/${id}.jpg`
     }
   },
   computed: {
