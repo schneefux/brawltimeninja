@@ -98,7 +98,7 @@ export default Vue.extend({
         brawler_name: [this.brawler.toUpperCase()],
       },
       { sort: { timestamp_day: 'asc' }, cache: 60*60 })
-    this.data = brawlerData.data
+    this.data = brawlerData.data.filter(r => r.picks > 100)
 
     const totalData = await this.$clicker.query<Row>('brawler.trend', 'battle',
       ['timestamp_day'],
