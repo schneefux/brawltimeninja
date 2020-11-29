@@ -20,10 +20,24 @@
 </template>
 
 <script lang="ts">
-import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
+import { IContentDocument } from '@nuxt/content/types/content'
+import { MetaInfo } from 'vue-meta'
 
 export default Vue.extend({
+  head(): MetaInfo {
+    if (this.faq == undefined) {
+      return {}
+    }
+    const description = `${this.faq.question}`
+    return {
+      title: this.faq.title,
+      meta: [
+        { hid: 'description', name: 'description', content: description },
+        { hid: 'og:description', property: 'og:description', content: description },
+      ]
+    }
+  },
   data() {
     return {
       faq: undefined as undefined|IContentDocument,
