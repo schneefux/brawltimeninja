@@ -1,25 +1,18 @@
 <template>
   <div class="flex flex-wrap justify-around">
-    <div
+    <card
       v-for="entry in data"
       :key="entry.id"
-      class="card card--dark card--sm card__content flex items-center"
+      :title="formatKind + ': ' + formatName(entry)"
+      :icon="`/${kind}/${entry.id}`"
+      :icon-alt="`${brawlerName}'s ${formatKind} ${formatName(entry)}`"
+      full-height
+      md
     >
-      <dl class="w-full flex flex-col h-full">
-        <div class="flex items-center">
-          <media-img
-            :path="`/${kind}/${entry.id}`"
-            :alt="`${brawlerName}'s ${formatKind} ${formatName(entry)}`"
-            clazz="h-12 pr-4"
-            size="140"
-          ></media-img>
-          <dt class="card__header">
-            {{ formatKind }}: {{ formatName(entry) }}
-          </dt>
-        </div>
-        <dd
+      <dl slot="content">
+        <p
           v-if="descriptions != null"
-          class="card__text my-3 h-full"
+          class="mb-3 h-full"
         >
           <q class="italic">{{ gameFileDescription(entry) }}</q>
           <template v-if="contentDescription(entry) != ''">
@@ -30,7 +23,7 @@
             <br>
             {{ metaDescription(entry) }}
           </template>
-        </dd>
+        </p>
         <div class="flex justify-between">
           <dt class="font-semibold">No {{ formatKind }} Win Rate</dt>
           <dd>{{ metaStatMaps.formatters.winRate(totals.battle_victory) }}</dd>
@@ -40,7 +33,7 @@
           <dd>{{ metaStatMaps.formatters.winRate(entry.battle_victory) }}</dd>
         </div>
       </dl>
-    </div>
+    </card>
   </div>
 </template>
 

@@ -14,23 +14,22 @@
       </p>
     </div>
 
-    <div class="section">
-      <meta-slicers
-        v-model="slices"
-        :sample="totalSampleSize"
-        :sample-min="300000"
-        :loading="$fetchState.pending"
-        cube="starpower"
-      ></meta-slicers>
+    <meta-slicers
+      v-model="slices"
+      :sample="totalSampleSize"
+      :sample-min="300000"
+      :loading="$fetchState.pending"
+      cube="starpower"
+      class="mx-auto"
+    ></meta-slicers>
 
-      <meta-views
-        v-if="totalSampleSize > 0"
-        :entries="entries"
-        :measurements="measurements"
-        ga-category="starpower_meta"
-        @measurements="ms => selectedMeasurements = ms"
-      ></meta-views>
-    </div>
+    <meta-views
+      v-if="totalSampleSize > 0"
+      :entries="entries"
+      :measurements="measurements"
+      ga-category="starpower_meta"
+      @measurements="ms => selectedMeasurements = ms"
+    ></meta-views>
   </div>
 </template>
 

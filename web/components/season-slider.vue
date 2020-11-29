@@ -1,28 +1,30 @@
 <template>
-  <div>
-    <p class="text-center">Trophy Season</p>
-    <div class="flex w-full">
-      <div class="w-full mx-12 mt-10">
-        <client-only>
-          <vue-range-slider
-            v-if="season != undefined && seasons.length > 0"
-            :min="0"
-            :max="seasons.length - 2"
-            :step="1"
-            :value="season"
-            @input="e => season = e"
-            tooltip-dir="top"
-            piecewise
-            lazy
-          >
-            <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
-              starting {{ formatDate(value) }}
-            </span>
-          </vue-range-slider>
-        </client-only>
+  <card>
+    <template v-slot:content>
+      <p class="text-center">Trophy Season</p>
+      <div class="flex w-full">
+        <div class="w-full mx-12 mt-10">
+          <client-only>
+            <vue-range-slider
+              v-if="season != undefined && seasons.length > 0"
+              :min="0"
+              :max="seasons.length - 2"
+              :step="1"
+              :value="season"
+              @input="e => season = e"
+              tooltip-dir="top"
+              piecewise
+              lazy
+            >
+              <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
+                starting {{ formatDate(value) }}
+              </span>
+            </vue-range-slider>
+          </client-only>
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </card>
 </template>
 
 <script lang="ts">

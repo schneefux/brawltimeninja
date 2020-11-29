@@ -2,7 +2,7 @@
   <event-card
     :mode="battle.event.mode"
     :map="battle.event.map"
-    size="w-80"
+    size="w-80 md:w-120"
   >
     <div
       slot="infobar"

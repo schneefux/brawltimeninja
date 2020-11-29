@@ -1,5 +1,8 @@
 <template functional>
-  <div>
+  <div
+    :class="[data.class, data.staticClass]"
+    :style="data.staticStyle"
+  >
     <div
       v-if="'infobar' in $scopedSlots"
       class="text-primary-lightest bg-gray-900 w-full px-2 py-1 text-lg font-semibold">
@@ -17,6 +20,7 @@
         >
           <media-img
             :path="props.icon"
+            :alt="iconAlt"
             size="120"
           ></media-img>
         </div>
@@ -24,7 +28,6 @@
           v-if="props.title != undefined"
           :class="{
             'ml-3': props.icon != undefined,
-            'text-white': true,
           }"
         >
           <router-link
@@ -64,17 +67,17 @@
     <div
       v-if="'content' in $scopedSlots"
       :class="{
-        'px-3 py-2 mx-auto': true,
-        [props.size]: true,
+        'px-3 py-2': true,
         'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
       }"
-      :style="props.background != undefined ? {
-        'background-image': `url('${props.background}')`,
-      } : {}"
+      :style="{
+        'background-image': props.background != undefined ? `url('${props.background}')` : undefined,
+      }"
     >
-      <div class="relative z-20">
+      <div v-if="props.background != undefined" class="relative z-20">
         <slot name="content"></slot>
       </div>
+      <slot v-else name="content"></slot>
     </div>
     <div
       v-if="'actions' in $scopedSlots"
@@ -91,10 +94,6 @@ import Vue from 'vue'
 export default Vue.extend({
   functional: true,
   props: {
-    size: {
-      type: String, // class
-      default: ''
-    },
     title: {
       type: String,
     },
@@ -111,6 +110,9 @@ export default Vue.extend({
       type: String,
     },
     icon: {
+      type: String,
+    },
+    iconAlt: {
       type: String,
     },
     color: {

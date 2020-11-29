@@ -82,11 +82,10 @@
     </div>
 
     <div class="section">
-      <div class="flex justify-center">
-        <brawler-synergies-card
-          :brawler="brawlerName"
-        ></brawler-synergies-card>
-      </div>
+      <brawler-synergies-card
+        :brawler="brawlerName"
+        class="mx-auto"
+      ></brawler-synergies-card>
     </div>
 
     <div

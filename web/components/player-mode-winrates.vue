@@ -2,14 +2,14 @@
   <div
     :class="{
       '-my-2 flex flex-wrap justify-center': true,
-      'h-56 overflow-y-hidden': tease,
+      'h-72 overflow-y-hidden': tease,
     }"
   >
     <lazy
       v-for="(mode, index) in modes.slice(0, tease ? 3 : undefined)"
       :key="mode"
       :render="index <= 3"
-      class="md:mx-auto w-full md:w-1/2 h-auto card-wrapper"
+      class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
       distance="600px"
     >
       <player-mode-card

@@ -127,25 +127,24 @@
       <h2 class="page-h2">Tier List for all Maps and Modes</h2>
     </div>
 
-    <div class="section">
-      <meta-slicers
-        v-model="slices"
-        :sample="totalSampleSize"
-        :sample-min="100000"
-        :timestamp="totalTimestamp"
-        :loading="$fetchState.pending"
-        cube="map"
-      ></meta-slicers>
+    <meta-slicers
+      v-model="slices"
+      :sample="totalSampleSize"
+      :sample-min="100000"
+      :timestamp="totalTimestamp"
+      :loading="$fetchState.pending"
+      cube="map"
+      class="mx-auto"
+    ></meta-slicers>
 
-      <meta-views
-        v-if="totalSampleSize > 0"
-        :entries="entries"
-        :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
-        :description="description"
-        ga-category="brawler_meta"
-        @measurements="ms => selectedMeasurements = ms"
-      ></meta-views>
-    </div>
+    <meta-views
+      v-if="totalSampleSize > 0"
+      :entries="entries"
+      :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
+      :description="description"
+      ga-category="brawler_meta"
+      @measurements="ms => selectedMeasurements = ms"
+    ></meta-views>
 
     <client-only>
       <adsense

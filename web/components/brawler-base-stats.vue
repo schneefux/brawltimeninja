@@ -1,8 +1,11 @@
 <template>
   <div class="flex flex-wrap justify-center w-full md:w-auto">
     <div class="w-full flex justify-center">
-      <div class="w-full max-w-2xl card card--dark md:py-10">
-        <div class="card__content max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto">
+      <card full-height xxl>
+        <div
+          slot="content"
+          class="max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto md:py-10 md:px-6"
+        >
           <div class="w-32 md:w-48 md:pr-6 h-64 flex justify-center items-center">
             <media-img
               :path="'/brawlers/' + brawlerId + '/model'"
@@ -41,20 +44,19 @@
           </dl>
           <div v-else class="w-full"></div>
         </div>
-      </div>
+      </card>
     </div>
 
-    <div
+    <card
       v-if="info != null"
       v-for="attack in ['main', 'super']"
       :key="attack"
-      class="card card--dark card--sm card__content"
+      :title="attack == 'main' ? 'Main Attack' : 'Super'"
+      full-height
+      md
     >
-      <dl>
-        <dt class="card__header">
-          {{ attack == 'main' ? 'Main Attack' : 'Super' }}
-        </dt>
-        <dd class="card__text mb-3 h-full">
+      <dl slot="content">
+        <dd class="mb-3">
           <q class="italic">{{ info[attack].description }}</q>
           <template v-if="content != null">
             <br>
@@ -111,15 +113,16 @@
           <dd>{{ Math.round(info[attack].damage * 1.4) }}</dd>
         </div>
       </dl>
-    </div>
+    </card>
 
-    <div
+    <card
       v-if="data != null"
-      class="card card--dark card--sm card__content"
+      :title="brawlerName + ' Statistics'"
+      full-height
+      md
     >
-      <dl>
-        <dt class="card__header">{{ brawlerName }} Statistics</dt>
-        <dd class="card__text mb-3">{{ statisticsDescription }}</dd>
+      <dl slot="content">
+        <p class="mb-3">{{ statisticsDescription }}</p>
         <div class="flex justify-between">
           <dt class="font-semibold">Use Rate</dt>
           <dd>{{ metaStatMaps.formatters.useRate(data.picks_weighted / totals.picks_weighted) }}</dd>
@@ -133,7 +136,7 @@
           <dd>{{ metaStatMaps.formatters.winRate(data.battle_victory) }}</dd>
         </div>
       </dl>
-    </div>
+    </card>
   </div>
 </template>
 

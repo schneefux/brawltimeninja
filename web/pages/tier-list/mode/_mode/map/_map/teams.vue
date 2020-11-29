@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap justify-center">
+  <div>
     <div
       class="section w-full"
       v-observe-visibility="{
@@ -13,19 +13,21 @@
       </p>
     </div>
 
-    <div class="section w-full">
-      <meta-slicers
-        v-model="slices"
-        :sample="totalSampleSize"
-        :sample-min="100000"
-        :timestamp="totalTimestamp"
-        :loading="$fetchState.pending"
-        cube="synergy"
-      ></meta-slicers>
-    </div>
+    <meta-slicers
+      v-model="slices"
+      :sample="totalSampleSize"
+      :sample-min="100000"
+      :timestamp="totalTimestamp"
+      :loading="$fetchState.pending"
+      cube="synergy"
+      class="mx-auto"
+    ></meta-slicers>
 
-    <div class="section w-full">
-      <div class="mx-auto max-w-md card card--dark px-3 py-2 flex">
+    <card
+      class="mx-auto"
+      md
+    >
+      <div slot="content" class="flex">
         <div class="w-14 flex-shrink-0 mt-1">
           <span>Metric</span>
         </div>
@@ -41,10 +43,13 @@
           </button>
         </div>
       </div>
-    </div>
+    </card>
 
-    <div class="section w-full max-w-md card card--dark px-3 py-2">
-      <table class="w-full">
+    <card
+      class="mx-auto"
+      md
+    >
+      <table slot="content" class="w-full">
         <thead>
           <tr class="h-8 border-b border-gray-600">
             <th scope="col" class="text-left">
@@ -90,7 +95,7 @@
         class="mt-2 button button--secondary"
         @click="page++"
       >Load More</button>
-    </div>
+    </card>
   </div>
 </template>
 

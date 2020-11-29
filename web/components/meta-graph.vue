@@ -1,14 +1,13 @@
 <template>
-  <div class="container">
-    <div class="section card card--dark px-3 py-2">
-      <plotly
-        :traces="chart.traces"
-        :layout="chart.layout"
-        :options="chart.options"
-        class="h-80"
-      ></plotly>
-    </div>
-  </div>
+  <card>
+    <plotly
+      slot="content"
+      :traces="chart.traces"
+      :layout="chart.layout"
+      :options="chart.options"
+      class="h-80"
+    ></plotly>
+  </card>
 </template>
 
 <script lang="ts">

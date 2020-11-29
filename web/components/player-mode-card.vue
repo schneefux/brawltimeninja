@@ -1,14 +1,9 @@
 <template>
-  <div
-    :style="{
-      'background-image': `linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url('${mediaUrl}/modes/${mode}/background.jpg?size=1024')`,
-    }"
-    class="card bg-center bg-cover h-full relative"
+  <event-card
+    :mode="mode"
+    size=""
   >
-    <div class="card__content">
-      <div class="card__header text-white">
-        {{ formatMode(mode) }}
-      </div>
+    <div slot="content">
       <dl class="flex card__props">
         <dd class="card-prop-value">
           {{ stats.picks > 5 ? metaStatMaps.formatters.winRate(stats.winRate) : '?' }}
@@ -21,18 +16,18 @@
         {{ stats.wins }} Wins / {{ stats.losses }} Losses</p>
       <div
         v-if="recommendedBrawlers.length > 0"
-        class="flex justify-between md:flex-row-reverse md:justify-end mt-3 h-24"
+        class="flex justify-between md:flex-row-reverse md:justify-end my-3 h-32"
       >
         <div class="md:ml-2 w-full">
           <div>
             <h6 class="font-semibold">{{ activeMap.map }}</h6>
             <p class="text-xs">Recommended for you:</p>
           </div>
-          <ol class="flex mt-1 w-32">
+          <ol class="flex mt-2 w-32">
             <li
               v-for="brawler in recommendedBrawlers"
               :key="brawler"
-              class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-gray-800 text-center"
+              class="flex-shrink-0 w-10 h-12 leading-none mr-1 bg-gray-800 text-center"
             >
               <router-link
                 :to="'/tier-list/brawler/' + brawlerId({ name:  brawler })"
@@ -80,7 +75,7 @@
         clazz="w-12 mr-1"
       ></media-img>
     </div>
-  </div>
+  </event-card>
 </template>
 
 <script lang="ts">

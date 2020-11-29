@@ -1,32 +1,30 @@
 <template>
   <div class="md:flex md:flex-wrap md:justify-center">
-    <div
+    <card
       v-if="useRateTrendGraph != undefined"
-      class="card-wrapper"
+      size="w-full md:w-120"
     >
-      <div class="card card--dark card__content">
-        <plotly
-          :traces="useRateTrendGraph.traces"
-          :layout="useRateTrendGraph.layout"
-          :options="useRateTrendGraph.options"
-          class="h-48 md:max-w-lg"
-        ></plotly>
-      </div>
-    </div>
+      <plotly
+        slot="content"
+        :traces="useRateTrendGraph.traces"
+        :layout="useRateTrendGraph.layout"
+        :options="useRateTrendGraph.options"
+        class="h-48"
+      ></plotly>
+    </card>
 
-    <div
+    <card
       v-if="winRateTrendGraph != undefined"
-      class="card-wrapper"
+      size="w-full md:w-120"
     >
-      <div class="card card--dark card__content">
-        <plotly
-          :traces="winRateTrendGraph.traces"
-          :layout="winRateTrendGraph.layout"
-          :options="winRateTrendGraph.options"
-          class="h-48 md:max-w-lg"
-        ></plotly>
-      </div>
-    </div>
+      <plotly
+        slot="content"
+        :traces="winRateTrendGraph.traces"
+        :layout="winRateTrendGraph.layout"
+        :options="winRateTrendGraph.options"
+        class="h-48"
+      ></plotly>
+    </card>
   </div>
 </template>
 

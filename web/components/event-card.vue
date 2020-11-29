@@ -8,6 +8,8 @@
     :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
     :size="size"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
+    :md="size == undefined"
+    full-height
   >
     <media-img
       slot="preview"
@@ -56,7 +58,6 @@ export default Vue.extend({
     size: {
       // class
       type: String,
-      default: 'w-80',
     },
     nobackground: {
       type: Boolean,

@@ -3,6 +3,7 @@
     :mode="mode"
     :map="map"
     :id="id"
+    size="w-80"
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
       ends in {{ timeTillEnd }}

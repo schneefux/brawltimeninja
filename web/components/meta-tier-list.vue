@@ -1,6 +1,6 @@
 <template>
-  <div class="container mx-auto">
-    <div class="section card card--dark px-3 py-2">
+  <card>
+    <template v-slot:content>
       <p>
         Tiers are calculated from win rates using Bayesian inference. <br>
         Click on a Brawler to learn more about them.
@@ -47,8 +47,8 @@
           :description="description"
         ></meta-tier-list-sharepic>
       </div>
-    </div>
-  </div>
+    </template>
+  </card>
 </template>
 
 <script lang="ts">

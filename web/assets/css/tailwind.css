@@ -22,6 +22,10 @@
   @apply bg-gray-800; /* px-4 py-3; */
 }
 
+.card--light {
+  @apply bg-gray-200 text-gray-900; /* px-4 py-3; */
+}
+
 .card--sm {
   @apply mt-3 mx-1 w-full max-w-sm;
 }
@@ -405,4 +409,12 @@
 
 .darkbox {
   @apply bg-gray-900 rounded px-3 py-1
+}
+
+.m-0\! {
+  margin: 0 !important;
+}
+
+.p-0\! {
+  padding: 0 !important;
 }

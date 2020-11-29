@@ -1,21 +1,10 @@
 <template>
-  <div class="page container">
-    <article
-      class="bg-grey-lighter py-8 px-6 my-8 text-black"
-      itemscop
-      itemtype="http://schema.org/AnalysisNewsArticle"
-    >
-      <h1 class="page-h1">
-        <span class="text-primary-dark" itemprop="headline">{{ faq.title }}</span>
-      </h1>
-      <div class="mt-2">
-        <nuxt-content
-          :document="faq"
-          ref="content"
-          itemprop="articleBody"
-        />
-      </div>
-    </article>
+  <div class="page container flex justify-center">
+    <article-card
+      :title="faq.title"
+      :document="faq"
+      author="schneefux"
+    ></article-card>
   </div>
 </template>
 
@@ -47,7 +36,7 @@ export default Vue.extend({
     const faq = await $content(`faq/${params.faq}`).fetch()
 
     if (faq == undefined) {
-      return error({ statusCode: 404, message: 'FaQ entry not found' })
+      return error({ statusCode: 404, message: 'FAQ entry not found' })
     }
 
     return {
@@ -56,39 +45,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.nuxt-content {
-  @apply leading-normal;
-}
-
-.nuxt-content /deep/ h2 {
-  @apply text-3xl mt-3 mb-2;
-}
-
-.nuxt-content /deep/ h3 {
-  @apply text-2xl mt-2 mb-1;
-}
-
-.nuxt-content /deep/ p {
-  @apply mt-3;
-}
-
-.nuxt-content /deep/ ul {
-  @apply list-disc list-inside;
-}
-
-.nuxt-content /deep/ li {
-  @apply mt-2;
-}
-
-.nuxt-content /deep/ a {
-  @apply underline text-primary-dark;
-}
-
-.nuxt-content /deep/ img {
-  max-height: 30rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>

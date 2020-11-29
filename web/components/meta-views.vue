@@ -1,52 +1,54 @@
 <template>
   <div>
-    <div class="section mt-4 card px-3 py-2 card--dark">
-      <div class="w-full flex">
-        <div class="w-14 flex-shrink-0 mt-1">
-          <span>Layout</span>
+    <card>
+      <template v-slot:content>
+        <div class="w-full flex">
+          <div class="w-14 flex-shrink-0 mt-1">
+            <span>Layout</span>
+          </div>
+          <div class="flex flex-wrap">
+            <button
+              v-for="(name, key) in views"
+              :key="key"
+              :class="{
+                'button--selected': view == key,
+              }"
+              class="button mr-1 mb-1"
+              @click="setView(key)"
+            >
+              {{ name }}
+            </button>
+          </div>
         </div>
-        <div class="flex flex-wrap">
-          <button
-            v-for="(name, key) in views"
-            :key="key"
-            :class="{
-              'button--selected': view == key,
-            }"
-            class="button mr-1 mb-1"
-            @click="setView(key)"
-          >
-            {{ name }}
-          </button>
-        </div>
-      </div>
 
-      <div
-        v-if="showMetricSelector"
-        class="w-full mt-3 flex"
-      >
-        <div class="w-14 flex-shrink-0 mt-1">
-          <span>Metric</span>
+        <div
+          v-if="showMetricSelector"
+          class="w-full mt-3 flex"
+        >
+          <div class="w-14 flex-shrink-0 mt-1">
+            <span>Metric</span>
+          </div>
+          <div class="flex flex-wrap">
+            <button
+              v-for="m in measurements"
+              :key="m"
+              class="mr-2 mb-1 button button--sm"
+              :class="{ 'button--selected': measurement == m }"
+              @click="setMeasurement(m)"
+            >
+              {{ metaStatMaps.labels[m] }}
+            </button>
+          </div>
         </div>
-        <div class="flex flex-wrap">
-          <button
-            v-for="m in measurements"
-            :key="m"
-            class="mr-2 mb-1 button button--sm"
-            :class="{ 'button--selected': measurement == m }"
-            @click="setMeasurement(m)"
-          >
-            {{ metaStatMaps.labels[m] }}
-          </button>
-        </div>
-      </div>
 
-      <p
-        v-if="showMetricSelector"
-        class="w-full mt-2"
-      >
-        {{ metaStatMaps.descriptions[measurement] }}
-      </p>
-    </div>
+        <p
+          v-if="showMetricSelector"
+          class="w-full mt-2"
+        >
+          {{ metaStatMaps.descriptions[measurement] }}
+        </p>
+      </template>
+    </card>
 
     <meta-tier-list
       v-if="view == 'tierlist'"
@@ -57,6 +59,7 @@
       v-if="view == 'table'"
       :entries="entries"
       :stat="measurement"
+      class="mx-auto"
     ></meta-table>
     <meta-grid
       v-if="view == 'legacy'"

@@ -13,16 +13,15 @@
       </p>
     </div>
 
-    <div class="section">
-      <meta-slicers
-        v-model="slices"
-        :sample="totalSampleSize"
-        :sample-min="100000"
-        :timestamp="totalTimestamp"
-        :loading="$fetchState.pending"
-        cube="map"
-      ></meta-slicers>
-    </div>
+    <meta-slicers
+      v-model="slices"
+      :sample="totalSampleSize"
+      :sample-min="100000"
+      :timestamp="totalTimestamp"
+      :loading="$fetchState.pending"
+      cube="map"
+      class="mx-auto"
+    ></meta-slicers>
 
     <meta-views
       v-if="totalSampleSize > 0"

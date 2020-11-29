@@ -68,22 +68,26 @@
         <summary>
           What is my tag?
         </summary>
-        <div class="mt-2 card card--dark card__content">
-          <h2 class="card__header">How to find your tag</h2>
-          <p class="mt-2">Open the game.</p>
-          <p class="mt-1">Tap on your profile icon.</p>
-          <img
-            loading="lazy"
-            src="~/assets/images/tag/tag-1.jpg"
-            class="px-8 mt-1 w-80 max-w-full"
-          >
-          <p class="mt-3">The string starting with "#" is your tag.</p>
-          <img
-            loading="lazy"
-            src="~/assets/images/tag/tag-2.jpg"
-            class="px-8 mt-1 w-80 max-w-full"
-          >
-        </div>
+        <card
+          title="How to find your tag"
+          class="mt-2"
+        >
+          <template v-slot:content>
+            <p>Open the game.</p>
+            <p>Tap on your profile icon.</p>
+            <img
+              loading="lazy"
+              src="~/assets/images/tag/tag-1.jpg"
+              class="px-8 mt-1 w-80 max-w-full"
+            >
+            <p class="mt-3">The string starting with "#" is your tag.</p>
+            <img
+              loading="lazy"
+              src="~/assets/images/tag/tag-2.jpg"
+              class="px-8 mt-1 w-80 max-w-full"
+            >
+          </template>
+        </card>
       </details>
     </div>
 

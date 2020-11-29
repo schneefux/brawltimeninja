@@ -1,12 +1,13 @@
 <template>
-  <div class="w-full card card--dark px-3 py-2">
+  <card size="w-full">
     <plotly
+      slot="content"
       :traces="chart.traces"
       :layout="chart.layout"
       :options="chart.options"
       class="h-80"
     ></plotly>
-  </div>
+  </card>
 </template>
 
 <script lang="ts">

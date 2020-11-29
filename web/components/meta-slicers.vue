@@ -1,89 +1,89 @@
 <template>
   <!-- a bit less px than card__content on sm so that the time buttons fit -->
-  <div
-    class="card card--dark px-3 py-4 md:card__content w-full max-w-sm mx-auto"
-    :class="{
-      'card--loading': loading,
-    }"
+  <card
+    :loading="loading"
+    md
   >
-    <div class="flex items-center">
-      <div class="w-20">
-        <span>Timespan</span>
+    <template v-slot:content>
+      <div class="flex items-center">
+        <div class="w-20">
+          <span>Timespan</span>
+        </div>
+        <div class="flex flex-wrap">
+          <button
+            v-for="(label, t) in timeRangeLabel"
+            :key="t"
+            class="mr-2 my-1 button button--sm"
+            :class="{ 'button--selected': timeRange == t }"
+            @click="timeRange = t"
+          >
+            {{ label }}
+          </button>
+        </div>
       </div>
-      <div class="flex flex-wrap">
-        <button
-          v-for="(label, t) in timeRangeLabel"
-          :key="t"
-          class="mr-2 my-1 button button--sm"
-          :class="{ 'button--selected': timeRange == t }"
-          @click="timeRange = t"
-        >
-          {{ label }}
-        </button>
-      </div>
-    </div>
 
-    <label
-      v-if="cube == 'map'"
-      class="flex items-center mt-2"
-    >
-      <div class="w-20">
-        <span>Setting</span>
-      </div>
-      <span class="mr-3 text-xs">Regular</span>
-      <div class="relative">
-        <input
-          v-model="powerPlayActive"
-          type="checkbox"
-          class="hidden"
-        >
-        <div class="toggle__line w-10 h-4 bg-primary rounded-full shadow-inner"></div>
-        <div class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
-      </div>
-      <span class="ml-3 text-xs">Power Play</span>
-    </label>
+      <label
+        v-if="cube == 'map'"
+        class="flex items-center mt-2"
+      >
+        <div class="w-20">
+          <span>Setting</span>
+        </div>
+        <span class="mr-3 text-xs">Regular</span>
+        <div class="relative">
+          <input
+            v-model="powerPlayActive"
+            type="checkbox"
+            class="hidden"
+          >
+          <div class="toggle__line w-10 h-4 bg-primary rounded-full shadow-inner"></div>
+          <div class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
+        </div>
+        <span class="ml-3 text-xs">Power Play</span>
+      </label>
 
-    <trophy-slider
-      v-if="cube != 'synergy'"
-      v-model="trophyRange"
-      :name="powerPlayActive ? 'Points' : undefined"
-      class="mb-2"
-    ></trophy-slider>
+      <trophy-slider
+        v-if="cube != 'synergy'"
+        v-model="trophyRange"
+        :name="powerPlayActive ? 'Points' : undefined"
+        class="mb-2"
+      ></trophy-slider>
 
-    <p>
-      <template v-if="sample != undefined && sample > 0">
-        Statistics are based on over {{ formatSI(sample) }} battles.
-      </template>
-      <br>
-      <template v-if="timestamp != undefined">
-        Last updated: {{ lastUpdate }}
-      </template>
-      <br>
-      <template v-if="sample > 0">
-        Average margin of error:
-        <template v-if="moe <= 0.005">
-          <span class="text-green-400">{{ moePercent }}</span>
-          (perfect accuracy)
+      <p>
+        <template v-if="sample != undefined && sample > 0">
+          Statistics are based on over {{ formatSI(sample) }} battles.
+          <br>
         </template>
-        <template v-if="moe > 0.005 && moe <= 0.01">
-          <span class="text-green-400">{{ moePercent }}</span>
-          (good accuracy)
+        <template v-if="timestamp != undefined">
+          Last updated: {{ lastUpdate }}
+          <br>
         </template>
-        <template v-if="moe > 0.01 && moe <= 0.025">
-          <span class="text-orange-400">{{ moePercent }}</span>
-          (mediocre accuracy)
+        <template v-if="sample > 0">
+          Average margin of error:
+          <template v-if="moe <= 0.005">
+            <span class="text-green-400">{{ moePercent }}</span>
+            (perfect accuracy)
+          </template>
+          <template v-if="moe > 0.005 && moe <= 0.01">
+            <span class="text-green-400">{{ moePercent }}</span>
+            (good accuracy)
+          </template>
+          <template v-if="moe > 0.01 && moe <= 0.025">
+            <span class="text-orange-400">{{ moePercent }}</span>
+            (mediocre accuracy)
+          </template>
+          <template v-if="moe > 0.025">
+            <span class="text-red-400">{{ moePercent }}</span>
+            (poor accuracy)
+          </template>
         </template>
-        <template v-if="moe > 0.025">
-          <span class="text-red-400">{{ moePercent }}</span>
-          (poor accuracy)
-        </template>
-      </template>
-      <span v-if="sample == 0" class="text-red-400">
-        No data!
-        Select a different filter.
-      </span>
-    </p>
-  </div>
+        <span v-if="sample == 0" class="text-red-400">
+          No data!
+          Select a different filter.
+        </span>
+      </p>
+    </template>
+  </card>
 </template>
 
 <script lang="ts">

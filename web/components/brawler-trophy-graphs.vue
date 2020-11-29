@@ -4,47 +4,44 @@
       <p>{{ description }}</p>
     </div>
 
-    <div
+    <card
       v-if="trophiesUseRateChart != undefined"
-      class="card-wrapper"
+      size="w-full md:w-120"
     >
-      <div class="card card--dark card__content">
-        <plotly
-          :traces="trophiesUseRateChart.traces"
-          :layout="trophiesUseRateChart.layout"
-          :options="trophiesUseRateChart.options"
-          class="h-48 md:max-w-lg"
-        ></plotly>
-      </div>
-    </div>
+      <plotly
+        slot="content"
+        :traces="trophiesUseRateChart.traces"
+        :layout="trophiesUseRateChart.layout"
+        :options="trophiesUseRateChart.options"
+        class="h-48"
+      ></plotly>
+    </card>
 
-    <div
+    <card
       v-if="trophiesWinRateChart != undefined"
-      class="card-wrapper"
+      size="w-full md:w-120"
     >
-      <div class="card card--dark card__content">
-        <plotly
-          :traces="trophiesWinRateChart.traces"
-          :layout="trophiesWinRateChart.layout"
-          :options="trophiesWinRateChart.options"
-          class="h-48 md:max-w-lg"
-        ></plotly>
-      </div>
-    </div>
+      <plotly
+        slot="content"
+        :traces="trophiesWinRateChart.traces"
+        :layout="trophiesWinRateChart.layout"
+        :options="trophiesWinRateChart.options"
+        class="h-48"
+      ></plotly>
+    </card>
 
-    <div
+    <card
       v-if="trophiesStarRateChart != undefined"
-      class="card-wrapper"
+      size="w-full md:w-120"
     >
-      <div class="card card--dark card__content">
-        <plotly
-          :traces="trophiesStarRateChart.traces"
-          :layout="trophiesStarRateChart.layout"
-          :options="trophiesStarRateChart.options"
-          class="h-48 md:max-w-lg"
-        ></plotly>
-      </div>
-    </div>
+      <plotly
+        slot="content"
+        :traces="trophiesStarRateChart.traces"
+        :layout="trophiesStarRateChart.layout"
+        :options="trophiesStarRateChart.options"
+        class="h-48"
+      ></plotly>
+    </card>
   </div>
 </template>
 

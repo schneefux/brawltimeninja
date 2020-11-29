@@ -10,7 +10,6 @@
         :render="showAllMaps || index <= 2"
         :class="{
           'md:hidden': !showAllMaps && index > 2,
-          'mx-4': true,
         }"
         distance="600px"
       >

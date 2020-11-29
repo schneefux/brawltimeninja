@@ -3,7 +3,6 @@
     <lazy
       v-for="battle in player.battles.slice(0, limit)"
       :key="battle.timestamp"
-      class="md:w-1/2 lg:w-1/2"
       distance="640px"
     >
       <div class="w-80" style="height: 214px" slot="placeholder"></div>

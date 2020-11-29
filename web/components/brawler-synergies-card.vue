@@ -3,7 +3,7 @@
     :title="brawler + ' with another Brawler'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :pages="Math.ceil(data.length / 10)"
-    size="w-80"
+    sm
   >
     <template v-slot:content="{ page }">
       <p>

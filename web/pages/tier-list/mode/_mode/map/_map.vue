@@ -53,23 +53,26 @@
       ></map-leaderboard-card>
     </div>
 
-    <div
-      v-if="event.mode != 'soloShowdown'"
-      class="section flex justify-center"
-    >
-      <div class="card card__content card--dark max-w-sm w-full flex justify-center">
-        <nuxt-link
-          :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
-          class="button mx-2 button--md"
-          active-class="button--selected"
-          exact
-        >Best Brawlers</nuxt-link>
-        <nuxt-link
-          :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
-          class="button mx-2 button--md"
-          active-class="button--selected"
-        >Best Teams</nuxt-link>
-      </div>
+    <div class="flex justify-center">
+      <card
+        v-if="event.mode != 'soloShowdown'"
+        class="mx-auto"
+        md
+      >
+        <div slot="content" class="flex justify-center">
+          <nuxt-link
+            :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
+            class="button mx-2 button--md"
+            active-class="button--selected"
+            exact
+          >Best Brawlers</nuxt-link>
+          <nuxt-link
+            :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
+            class="button mx-2 button--md"
+            active-class="button--selected"
+          >Best Teams</nuxt-link>
+        </div>
+      </card>
     </div>
 
     <nuxt-child

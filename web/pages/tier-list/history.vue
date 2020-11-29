@@ -46,11 +46,12 @@
     >
       <season-slider
         v-model="selectedSeason"
-        class="w-full card card--dark card__content"
+        class="w-full"
       ></season-slider>
 
       <map-detail-card
         :season="selectedSeason"
+        class="mx-auto"
       ></map-detail-card>
     </div>
   </div>
