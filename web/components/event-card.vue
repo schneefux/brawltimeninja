@@ -10,7 +10,6 @@
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
     :md="size == undefined"
     :loading="loading"
-    full-height
   >
     <media-img
       slot="preview"

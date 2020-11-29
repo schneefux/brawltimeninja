@@ -2,6 +2,7 @@
   <event-card
     :mode="mode"
     :loading="$fetchState.pending"
+    size="w-80"
   >
     <div slot="actions" class="flex justify-end">
       <nuxt-link

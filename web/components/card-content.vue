@@ -68,7 +68,7 @@
       v-if="'content' in $scopedSlots"
       :class="{
         'px-3 py-2': true,
-        'bg-cover bg-center bg-filter relative z-10 h-full': props.background != undefined,
+        'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
       }"
       :style="{
         'background-image': props.background != undefined ? `url('${props.background}')` : undefined,

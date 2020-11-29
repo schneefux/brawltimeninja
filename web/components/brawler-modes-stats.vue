@@ -9,7 +9,7 @@
         :key="mode.battle_event_mode"
         :render="showAllModes || index <= 2"
         distance="600px"
-        translucent
+        class="mx-2"
       >
         <div
           class="w-80"

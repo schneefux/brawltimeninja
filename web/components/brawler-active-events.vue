@@ -3,13 +3,13 @@
     <p>
       {{ description }}
     </p>
-    <div class="mt-2 overflow-x-auto flex items-center md:justify-center md:flex-wrap">
+    <div class="mt-2 overflow-x-auto flex items-center md:items-end md:justify-center md:flex-wrap">
       <lazy
         v-for="(event, index) in events"
         :key="event.battle_event_mode + event.battle_event_map"
         :render="showAllMaps || index <= 2"
         distance="600px"
-        translucent
+        class="mx-2"
       >
         <div
           class="w-80"
