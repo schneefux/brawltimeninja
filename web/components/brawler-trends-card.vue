@@ -93,8 +93,7 @@ export default Vue.extend({
       ['timestamp_day'],
       ['wins', 'picks', 'picks_weighted'],
       {
-        ...this.$clicker.defaultSlices('map'),
-        trophy_season_end: ['month'],
+        ...this.$clicker.defaultSlices('battle'),
         // TODO use ID
         brawler_name: [this.brawler.toUpperCase()],
       },
@@ -105,8 +104,7 @@ export default Vue.extend({
       ['timestamp_day'],
       ['picks_weighted'],
       {
-        ...this.$clicker.defaultSlices('map'),
-        trophy_season_end: ['month'],
+        ...this.$clicker.defaultSlices('battle'),
       },
       { sort: { timestamp_day: 'asc' }, cache: 60*60 })
     this.totals = totalData.data
