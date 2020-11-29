@@ -24,7 +24,7 @@
                 <br>
                 {{ content.description || '' }}
               </template>
-              <template v-if="generatedDescription != ''">
+              <template v-if="content == null && generatedDescription != ''">
                 <br>
                 {{ generatedDescription }}
               </template>
@@ -170,7 +170,7 @@ function expandContentWithInfo(content: BrawlerContent, info: BrawlerData) {
   function replaceSkillKeys(text: string, skill: 'main'|'super') {
     const formatSeconds = (n: number) => n / 1000 + 's'
     return text
-      .replace('$damage', info[skill].damage?.toString() || '')
+      .replace('$damage', info[skill]?.damage != undefined ? (info[skill].damage! * 1.4).toString() : '')
       .replace('$rechargetime', formatSeconds(info[skill].rechargeTime))
       .replace('$range', info[skill].range?.toString() || '')
   }

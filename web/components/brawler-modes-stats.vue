@@ -10,7 +10,6 @@
         :render="showAllModes || index <= 2"
         :class="{
           'md:hidden': !showAllModes && index > 2,
-          'mx-4': true,
         }"
         distance="600px"
       >
@@ -55,6 +54,7 @@ export default Vue.extend({
     }
   },
   fetchDelay: 0,
+  fetchOnServer: false,
   async fetch() {
     const data = await this.$clicker.query<Row>('all.modes-brawler', 'map',
       ['battle_event_mode'],

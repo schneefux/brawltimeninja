@@ -155,10 +155,10 @@ export default Vue.extend({
         }
 
         const diff = entry.battle_victory - this.totals.battle_victory
-        const differenceTexts = ['has no noticable impact on the win rate', 'provides a small advantage', 'provides a noticable advantage', 'improves the chances of winning a lot']
+        const differenceTexts = ['has no noticable impact', 'provides a small advantage', 'provides a noticable advantage', 'improves the chances of winning a lot']
         const differenceText = differenceTexts[scaleInto(0, 0.05, differenceTexts.length - 1, diff)]
 
-        return `${this.formatName(entry)} ${differenceText}.`
+        return `Looking at the Win Rates, ${this.formatName(entry)} ${differenceText}.`
       }
     },
     contentDescription() {

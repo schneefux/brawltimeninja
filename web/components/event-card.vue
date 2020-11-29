@@ -9,6 +9,7 @@
     :size="size"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
     :md="size == undefined"
+    :loading="loading"
     full-height
   >
     <media-img
@@ -60,8 +61,10 @@ export default Vue.extend({
       type: String,
     },
     nobackground: {
-      type: Boolean,
-      default: false
+      type: Boolean
+    },
+    loading: {
+      type: Boolean
     },
   },
   data() {

@@ -123,7 +123,7 @@ export const metaStatMaps = {
     rank1Rate: '#1 Rate',
     level: 'Avg. Level',
     starRate: 'Star Player',
-    picks: 'Picks',
+    picks: 'Picks recorded',
     pickRate: 'Pick Rate',
     pickRate_boss: 'Boss Pick Rate',
     useRate: 'Use Rate',

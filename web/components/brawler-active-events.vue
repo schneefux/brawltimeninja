@@ -56,6 +56,7 @@ export default Vue.extend({
     }
   },
   fetchDelay: 0,
+  fetchOnServer: false,
   async fetch() {
     this.events = await this.$clicker.queryActiveEvents<Row>(
       ['battle_victory_adj', 'battle_victory', 'picks_weighted', 'wins'], {
