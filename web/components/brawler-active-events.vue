@@ -8,12 +8,17 @@
         v-for="(event, index) in events"
         :key="event.battle_event_mode + event.battle_event_map"
         :render="showAllMaps || index <= 2"
-        :class="{
-          'md:hidden': !showAllMaps && index > 2,
-        }"
         distance="600px"
+        translucent
       >
-        <div class="w-80" style="height: 230px" slot="placeholder"></div>
+        <div
+          class="w-80"
+          style="height: 230px"
+          slot="placeholder"
+          :class="{
+            'md:hidden': !showAllMaps && index > 2,
+          }"
+        ></div>
         <brawler-active-event
           :mode="event.battle_event_mode"
           :map="event.battle_event_map"
@@ -21,6 +26,9 @@
           :end="event.end"
           :brawler-name="brawlerName"
           :data="event"
+          :class="{
+            'md:hidden': !showAllMaps && index > 2,
+          }"
         ></brawler-active-event>
       </lazy>
     </div>

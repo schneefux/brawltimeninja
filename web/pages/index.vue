@@ -177,7 +177,7 @@
         </div>
       </div>
 
-      <div class="home-section-content">
+      <div class="home-section-content px-2">
         <active-events></active-events>
       </div>
 

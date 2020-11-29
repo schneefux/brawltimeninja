@@ -8,16 +8,24 @@
         v-for="(mode, index) in data"
         :key="mode.battle_event_mode"
         :render="showAllModes || index <= 2"
-        :class="{
-          'md:hidden': !showAllModes && index > 2,
-        }"
         distance="600px"
+        translucent
       >
-        <div class="w-80" style="height: 221px" slot="placeholder"></div>
+        <div
+          class="w-80"
+          style="height: 221px"
+          slot="placeholder"
+          :class="{
+            'md:hidden': !showAllModes && index > 2,
+          }"
+        ></div>
         <brawler-mode-stats
           :mode="mode.battle_event_mode"
           :brawler-id="brawlerId"
           :brawler-name="brawlerName"
+          :class="{
+            'md:hidden': !showAllModes && index > 2,
+          }"
         ></brawler-mode-stats>
       </lazy>
     </div>

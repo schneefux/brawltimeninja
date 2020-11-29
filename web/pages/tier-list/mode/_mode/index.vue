@@ -51,13 +51,16 @@
           v-for="(map, index) in maps"
           :key="map.map"
           :render="showAllMaps || index <= 1"
-          :class="{
-            'md:hidden': !showAllMaps && index > 1,
-            'mx-4': true,
-          }"
           distance="600px"
         >
-          <div class="w-80" style="height: 420px" slot="placeholder"></div>
+          <div
+            class="w-80"
+            style="height: 420px"
+            slot="placeholder"
+            :class="['mx-4', {
+              'md:hidden': !showAllMaps && index > 1,
+            }]"
+          ></div>
           <map-detail-card
             v-if="map.recent"
             :mode="mode"
@@ -66,12 +69,18 @@
             :timestamp="map.timestamp"
             link
             horizontal
+            :class="['mx-4', {
+              'md:hidden': !showAllMaps && index > 1,
+            }]"
           ></map-detail-card>
           <event-card
             v-else
             :mode="mode"
             :map="map.map"
             nobackground
+            :class="['mx-4', {
+              'md:hidden': !showAllMaps && index > 1,
+            }]"
           >
             <template v-slot:content>
               <div class="flex justify-center bg-gray-800">

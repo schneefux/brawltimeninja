@@ -1,5 +1,9 @@
 <template>
-  <lazy distance="320px" :render="eager">
+  <lazy
+    distance="320px"
+    :render="eager"
+    translucent
+  >
     <div style="height: 320px; width: 320px" slot="placeholder"></div>
     <map-best-brawlers-card v-bind="$attrs"></map-best-brawlers-card>
   </lazy>

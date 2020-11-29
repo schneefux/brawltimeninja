@@ -12,6 +12,9 @@ export default Vue.extend({
       type: String,
       default: '500px'
     },
+    translucent: {
+      type: Boolean
+    },
   },
   data() {
     return {
@@ -20,7 +23,7 @@ export default Vue.extend({
   },
   render(h) {
     if (this.render || this.visible) {
-      return <div>
+      return <div class={{ 'contents': this.translucent }}>
         { this.$slots.default }
       </div>
     }
@@ -34,7 +37,7 @@ export default Vue.extend({
     }
 
     if (!('IntersectionObserver' in window)) {
-      return <div>
+      return <div class={{ 'contents': this.translucent }}>
         { this.$slots.default }
       </div>
     }

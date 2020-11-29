@@ -51,8 +51,8 @@
           v-for="(event, index) in events"
           :key="event.battle_event_mode + event.battle_event_map"
           :render="index <= 2"
-          class="mx-2"
           distance="600px"
+          translucent
         >
           <div class="w-80" style="height: 120px" slot="placeholder"></div>
           <quick-tip-card
