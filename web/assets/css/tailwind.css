@@ -200,7 +200,7 @@
 }
 
 .brawler-avatars {
-  @apply flex justify-around mx-1;
+  @apply flex justify-around mx-1 relative;
 }
 
 .brawler-avatars__placeholder {
