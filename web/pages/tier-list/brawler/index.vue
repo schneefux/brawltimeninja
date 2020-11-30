@@ -59,6 +59,7 @@
           v-for="(mode, index) in modes"
           :key="mode"
           :class="{ 'md:hidden': !showAllModes && index >= 3 }"
+          class="mx-2"
         >
           <map-best-brawlers-card
             :mode="mode"

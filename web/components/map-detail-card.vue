@@ -2,7 +2,8 @@
   <event-card
     :mode="mode"
     :map="map"
-    :size="horizontal ? 'w-160 md:w-auto' : ''"
+    :md="!horizontal"
+    :size="horizontal ? 'w-180' : undefined"
     nobackground
   >
     <div

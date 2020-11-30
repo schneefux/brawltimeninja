@@ -58,7 +58,7 @@
         />
 
         <article
-          class="link-card my-4"
+          class="link-card my-4 max-w-xl mx-auto"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
         >

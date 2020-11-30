@@ -15,7 +15,6 @@
         v-for="(map, index) in maps"
         :key="map.mode + map.map"
         :render="index < 3"
-        translucent
       >
         <map-detail-card
           :map="map.map"

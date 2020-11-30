@@ -57,8 +57,8 @@
             class="w-80"
             style="height: 420px"
             slot="placeholder"
-            :class="['mx-4', {
-              'md:hidden': !showAllMaps && index > 1,
+            :class="['mx-2', {
+              'md:hidden': !showAllMaps && index > 0,
             }]"
           ></div>
           <map-detail-card
@@ -69,8 +69,8 @@
             :timestamp="map.timestamp"
             link
             horizontal
-            :class="['mx-4', {
-              'md:hidden': !showAllMaps && index > 1,
+            :class="['mx-2', {
+              'md:hidden': !showAllMaps && index > 0,
             }]"
           ></map-detail-card>
           <event-card
@@ -78,19 +78,21 @@
             :mode="mode"
             :map="map.map"
             nobackground
-            :class="['mx-4', {
-              'md:hidden': !showAllMaps && index > 1,
+            :class="['mx-2', {
+              'md:hidden': !showAllMaps && index > 0,
             }]"
+            size="w-80"
           >
             <template v-slot:content>
-              <div class="flex justify-center bg-gray-800">
-                <media-img
-                  :path="`/maps/${map.id}`"
-                  size="512"
-                  clazz="h-80"
-                ></media-img>
-              </div>
-              <div class="absolute bottom-0 right-0 mb-4 mr-2">
+              <media-img
+                :path="`/maps/${map.id}`"
+                size="512"
+                clazz="mx-auto"
+                ztyle="max-height: 20rem"
+              ></media-img>
+            </template>
+            <template v-slot:actions>
+              <div class="flex justify-end">
                 <router-link
                   :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
                   class="card__action"
@@ -143,6 +145,7 @@
         :timestamp="totalTimestamp"
         :loading="$fetchState.pending"
         cube="map"
+        class="mx-auto"
       ></meta-slicers>
 
       <meta-views

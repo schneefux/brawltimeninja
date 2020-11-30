@@ -2,12 +2,12 @@
   <div
     class="card-wrapper"
     :class="[data.class, data.staticClass, props.size, {
-      'w-full max-w-xs': props.xs,
-      'w-full max-w-sm': props.sm,
-      'w-full max-w-md': props.md,
-      'w-full max-w-lg': props.lg,
-      'w-full max-w-xl': props.xl,
-      'w-full max-w-2xl': props.xxl,
+      'w-full xs:w-xs': props.xs,
+      'w-full sm:w-sm': props.sm,
+      'w-full md:w-md': props.md,
+      'w-full lg:w-lg': props.lg,
+      'w-full xl:w-xl': props.xl,
+      'w-full 2xl:w-2xl': props.xxl,
     }]"
   >
     <accordeon
@@ -104,3 +104,31 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+@responsive {
+  .w-xs {
+    width: 20rem;
+  }
+
+  .w-sm {
+    width: 24rem;
+  }
+
+  .w-md {
+    width: 28rem;
+  }
+
+  .w-lg {
+    width: 32rem;
+  }
+
+  .w-xl {
+    width: 36rem;
+  }
+
+  .w-2xl {
+    width: 38rem;
+  }
+}
+</style>

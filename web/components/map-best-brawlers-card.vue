@@ -3,6 +3,7 @@
     :mode="mode"
     :map="map"
     :id="!large && id != undefined && id != 0 ? id : undefined"
+    xs
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
