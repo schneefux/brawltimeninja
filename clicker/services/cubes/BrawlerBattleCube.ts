@@ -106,7 +106,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
   }
 
   static defaultDimensions = {
-    'trophy_season_end': 'trophy_season_end',
+    'trophy_season_end': 'formatDateTime(trophy_season_end, \'%FT%TZ\', \'UTC\')',
     'brawler_trophyrange': 'brawler_trophyrange',
     'brawler_id': 'brawler_id',
     'brawler_name': 'brawler_name',

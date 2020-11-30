@@ -21,7 +21,7 @@ export default class MapMetaCube extends BrawlerBattleCube {
   `
 
   dimensions = {
-    'trophy_season_end': 'trophy_season_end',
+    'trophy_season_end': 'formatDateTime(trophy_season_end, \'%FT%TZ\', \'UTC\')',
     'brawler_trophyrange': 'brawler_trophyrange',
     'brawler_name': 'brawler_name',
     'battle_event_mode': 'battle_event_mode',
