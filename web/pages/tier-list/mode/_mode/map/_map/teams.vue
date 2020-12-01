@@ -136,6 +136,7 @@ export default Vue.extend({
       required: true
     },
   },
+  middleware: ['cached'],
   data() {
     return {
       teams: [] as Team[],

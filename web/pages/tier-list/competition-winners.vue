@@ -46,6 +46,7 @@ export default Vue.extend({
       maps: [] as Event[],
     }
   },
+  middleware: ['cached'],
   fetchDelay: 0,
   async fetch() {
     const data = await this.$clicker.query('meta.mode.competition', 'map',

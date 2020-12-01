@@ -69,6 +69,7 @@ export default Vue.extend({
       selectedSeason: undefined as string|undefined,
     }
   },
+  middleware: ['cached'],
   computed: {
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

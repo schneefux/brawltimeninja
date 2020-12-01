@@ -175,6 +175,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       modes: [] as string[],

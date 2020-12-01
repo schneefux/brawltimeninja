@@ -134,6 +134,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       event: {

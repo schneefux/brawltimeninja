@@ -40,6 +40,7 @@ export default {
       ]
     }
   },
+  middleware: ['cached'],
   components: {
     Timeline,
   },

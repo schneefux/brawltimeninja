@@ -27,6 +27,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       faq: undefined as undefined|IContentDocument,

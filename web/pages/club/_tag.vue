@@ -76,6 +76,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       club: {} as Club,

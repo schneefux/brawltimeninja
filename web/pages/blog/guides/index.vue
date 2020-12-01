@@ -98,6 +98,7 @@ export default Vue.extend({
       title: 'Guides',
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       posts: [] as Post[],

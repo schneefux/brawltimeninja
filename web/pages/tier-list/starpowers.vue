@@ -48,6 +48,7 @@ export default Vue.extend({
       totalSampleSize: 0,
     }
   },
+  middleware: ['cached'],
   head() {
     const description = `Brawl Stars Star Power Tier List. Find the best Star Power for all Brawlers with Win Rates and Rankings.`
     return {

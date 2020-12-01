@@ -115,6 +115,7 @@ export default Vue.extend({
       script: structuredData,
     }
   },
+  middleware: ['cached'],
   computed: {
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

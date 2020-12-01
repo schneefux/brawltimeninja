@@ -28,6 +28,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       post: undefined as undefined|Post,

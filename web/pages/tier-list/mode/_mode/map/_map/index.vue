@@ -64,6 +64,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   props: {
     event: {
       type: Object as PropType<Map>,

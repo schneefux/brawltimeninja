@@ -58,6 +58,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   computed: {
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

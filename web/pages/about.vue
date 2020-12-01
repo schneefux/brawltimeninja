@@ -56,6 +56,7 @@ import { mapMutations } from 'vuex'
 
 export default {
   name: 'AboutPage',
+  middleware: ['cached'],
   computed: {
     domain() {
       if (global.window !== undefined) {

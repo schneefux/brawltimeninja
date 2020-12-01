@@ -245,6 +245,7 @@ export default Vue.extend({
       script: structuredData,
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       notificationsAllowed: false,

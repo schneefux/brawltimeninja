@@ -194,6 +194,7 @@ export default Vue.extend({
       ]
     }
   },
+  middleware: ['cached'],
   data() {
     return {
       slices: this.$clicker.defaultSlices('map'),
