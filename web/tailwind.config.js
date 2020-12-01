@@ -1,19 +1,18 @@
 const colors = require('tailwindcss/colors')
-const path = require('path')
 
 module.exports = {
   purge: {
     enabled: process.env.NODE_ENV == 'production',
     content: [
-      path.join(__dirname, './pages/**/*.vue'),
-      path.join(__dirname, './layouts/**/*.vue'),
-      path.join(__dirname, './components/**/*.vue'),
-      path.join(__dirname, './components/**/*.tsx'),
-      path.join(__dirname, './content/**/*.md'),
-      path.join(__dirname, 'node_modules/vue-range-component/dist/vue-range-slider.css'), // whitelist all
+      './pages/**/*.vue',
+      './layouts/**/*.vue',
+      './components/**/*.vue',
+      './components/**/*.tsx',
+      './content/**/*.md',
+      'node_modules/vue-range-component/dist/vue-range-slider.css', // whitelist all
     ],
-    safelist: ['html', 'body', 'nuxt-progress']
   },
+  darkMode: false,
   theme: {
     extend: {
       textShadow: {
@@ -95,6 +94,7 @@ module.exports = {
       },
     },
   },
+  variants: {},
   plugins: [
     // for 'prose'
     require('@tailwindcss/typography'),
