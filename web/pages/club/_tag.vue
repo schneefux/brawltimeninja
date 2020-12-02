@@ -30,19 +30,18 @@
               :key="member.tag"
               class="pt-1"
             >
-              <router-link
-                :to="`/player/${member.tag}`"
-                :title="member.name"
-                tag="th"
-                scope="row"
-                class="pr-2 text-left"
-              >
-                <media-img
-                  :path="`/avatars/${member.icon.id}`"
-                  clazz="h-8 mr-1 inline"
-                ></media-img>
-                <span>{{ member.name }}</span>
-              </router-link>
+              <th scope="row" class="pr-2 text-left">
+                <router-link
+                  :to="`/player/${member.tag}`"
+                  :title="member.name"
+                >
+                  <media-img
+                    :path="`/avatars/${member.icon.id}`"
+                    clazz="h-8 mr-1 inline"
+                  ></media-img>
+                  <span>{{ member.name }}</span>
+                </router-link>
+              </th>
               <td>
                 {{ capitalize(member.role).replace('VicePresident', 'Vice President') }}
               </td>

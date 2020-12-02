@@ -72,20 +72,22 @@
         v-if="player.club.tag != undefined"
         class="bigstat-container"
       >
-        <nuxt-link
-          :to="`/club/${player.club.tag}`"
-          class="block bigstat-left text-5vw md:text-4xl!"
-        >
+        <div class="bigstat-left text-5vw md:text-4xl!">
           <div style="margin-top: -0.125em">
             [
           </div>
-          <dd class="mx-2 text-primary-light font-semibold text-center">
-            {{ player.club.name.replace(/ /g, '&nbsp;') }}
+          <dd class="mx-2">
+            <nuxt-link
+              :to="`/club/${player.club.tag}`"
+              class="underline text-primary-light font-semibold text-center"
+            >
+              {{ player.club.name.replace(/ /g, '&nbsp;') }}
+            </nuxt-link>
           </dd>
           <div style="margin-top: -0.125em">
             ]
           </div>
-        </nuxt-link>
+        </div>
         <dt class="bigstat-right bigstat-label text-4xl">
           Club
         </dt>
