@@ -1,7 +1,6 @@
 name: Brock
 gender: m
-description: Brock is a trophy road brawler unlocked at 1000 trophies. He is a
-  sharpshooter that sends a single rocket towards his enemies. His super sends a
+description: He is a sharpshooter that sends a single rocket towards his enemies. His super sends a
   barrage of rockets that can destroy enemies in its area.
 main: Brock's main attack is Rockin' Rocket which fires a single rocket from his
   rocket launcher. This rocket deals $damage upon impact and will travel $range
@@ -11,18 +10,13 @@ super: Brock's super is rocket rain. He sends a barrage of 9 rockets within a 5
   2/3 radius of where he selects that deal a little less than Brock's main
   attack. The rockets will destroy blocks they hit. It takes 4 hits from his
   main attack or 5 from his super to charge the super to full.
-starpower1_name: Incendiary
-starpower1_description: When Brock's rocket from his main attack explodes, sets
-  the ground on fire in a 1 tile radius of the explosion. Standing in this fire
-  deals 600 damage to enemy brawlers per second. The fire lasts for 2 seconds.
-starpower2_name: Rocket No. 4
-starpower2_description: Brock gets rid of the thermos bottle in his 4th rocket
-  slot and gets a 4th ammo slot. This additional ammo slot is permanent as long
-  as you have the star power selected.
-gadget1_name: Rocket Laces
-gadget1_description: Brock jumps into the air and travels 4 blocks jumping over
-  walls and attacks. Any enemies within 2 tiles of him when he activates the
-  gadget take 500 damage.
-gadget2_name: Rocket Fuel
-gadget2_description: Brock's next attack is a mega rocket. It deals double
-  damage, can break walls, explodes with a larger radius and travels faster.
+starpowers:
+  - name: Incendiary
+    description: When Brock's rocket from his main attack explodes, sets the ground on fire in a 1 tile radius of the explosion. Standing in this fire deals 600 damage to enemy brawlers per second. The fire lasts for 2 seconds.
+  - name: Rocket No. 4
+    description: Brock gets rid of the thermos bottle in his 4th rocket slot and gets a 4th ammo slot. This additional ammo slot is permanent as long as you have the star power selected.
+gadgets:
+  - name: Rocket Laces
+    description: Brock jumps into the air and travels 4 blocks jumping over walls and attacks. Any enemies within 2 tiles of him when he activates the gadget take 500 damage.
+  - name: Rocket Fuel
+    description: Brock's next attack is a mega rocket. It deals double damage, can break walls, explodes with a larger radius and travels faster.

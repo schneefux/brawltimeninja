@@ -168,17 +168,11 @@ export default Vue.extend({
         }
 
         const map = {} as Record<string, string>
-        if (this.content.starpower1_name != undefined) {
-          map[this.content.starpower1_name] = this.content.starpower1_description!
+        if (this.content.starpowers != undefined) {
+          this.content.starpowers.forEach(sp => map[sp.name] = sp.description)
         }
-        if (this.content.starpower2_name != undefined) {
-          map[this.content.starpower2_name] = this.content.starpower2_description!
-        }
-        if (this.content.gadget1_name != undefined) {
-          map[this.content.gadget1_name] = this.content.gadget1_description!
-        }
-        if (this.content.gadget2_name != undefined) {
-          map[this.content.gadget2_name] = this.content.gadget2_description!
+        if (this.content.gadgets != undefined) {
+          this.content.gadgets.forEach(g => map[g.name] = g.description)
         }
 
         return map[this.formatName(entry)] || ''

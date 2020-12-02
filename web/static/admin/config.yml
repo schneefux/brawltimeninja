@@ -105,6 +105,64 @@ collections:
         label: "Gadget 2 description"
         required: false
         widget: string
+      - name: gadgets
+        required: false
+        widget: list
+        summary: "{{fields.name}}"
+        fields:
+          - name: name
+            widget: string
+          - name: description
+            widget: string
+      - name: starpowers
+        required: false
+        widget: list
+        summary: "{{fields.name}}"
+        fields:
+          - name: name
+            widget: string
+          - name: description
+            widget: string
+      - name: voicelines
+        required: false
+        widget: list
+      - name: voiceactor
+        required: false
+        widget: string
+      - name: skins
+        required: false
+        widget: list
+        summary: "{{fields.name}}"
+        fields:
+          - name: name
+            widget: string
+          - name: model
+            widget: image
+          - name: gems
+            required: false
+            widget: number
+            value_type: int
+            min: 0
+          - name: starpoints
+            required: false
+            widget: number
+            value_type: int
+            min: 0
+          - name: archived
+            required: false
+            widget: boolean
+          - name: brawlpass
+            required: false
+            widget: boolean
+          - name: lunarbrawl
+            required: false
+            widget: boolean
+          - name: note
+            required: false
+            widget: string
+          - name: description
+            required: false
+            widget: string
   - name: maps
     label: "Competition Winner Maps"
     label_singular: "Competition Winner Map"

@@ -39,12 +39,12 @@ export interface BrawlerContent {
   description?: string
   main?: string
   super?: string
-  starpower1_name?: string
-  starpower1_description?: string
-  starpower2_name?: string
-  starpower2_description?: string
-  gadget1_name?: string
-  gadget1_description?: string
-  gadget2_name?: string
-  gadget2_description?: string
+  starpowers?: {
+    name: string
+    description: string
+  }[]
+  gadgets?: {
+    name: string
+    description: string
+  }[]
 }

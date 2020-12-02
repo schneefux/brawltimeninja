@@ -10,16 +10,13 @@ main: Max's main attack sends energy projectiles flying the enemies way. They
   fastest reload speeds in the game.
 super: Max's super speeds up all friendly brawlers within 3 tiles of her. This
   lasts for 4 seconds and takes 3 attacks or 12 projectiles to charge.
-starpower1_name: Super Charged
-starpower1_description: Max charges her super anytime she's loving. It takes 32
-  seconds of just moving to charge her super up all the way.
-starpower2_name: Run n Gun
-starpower2_description: Max's reload speed is increased by 10% anytime she is moving.
-gadget1_name: Phase Shifter
-gadget1_description: Max dashes 3 tiles in the direction she was last moving in.
-  While dashing, she has a shield that blocks all damage, all though she can
-  still be stunned or slowed.
-gadget2_name: Sneaky Sneakers
-gadget2_description: Max places down a thunderbolt icon. After 4 seconds, Max
-  teleports to this icon with the same amount of health she had when she placed
-  it down. Max keeps any gems or bolts she picked up before she teleported.
+starpowers:
+  - name: Super Charged
+    description: Max charges her super anytime she's loving. It takes 32 seconds of just moving to charge her super up all the way.
+  - name: Run n Gun
+    description: Max's reload speed is increased by 10% anytime she is moving.
+gadgets:
+  - name: Phase Shifter
+    description: Max dashes 3 tiles in the direction she was last moving in. While dashing, she has a shield that blocks all damage, all though she can still be stunned or slowed.
+  - name: Sneaky Sneakers
+    description: Max places down a thunderbolt icon. After 4 seconds, Max teleports to this icon with the same amount of health she had when she placed it down. Max keeps any gems or bolts she picked up before she teleported.
