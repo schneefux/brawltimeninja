@@ -129,9 +129,12 @@ export default {
       },
     },
     // requires @sentry/tracing
+    // enable for performance metrics
+    /*
     tracing: {
-      tracesSampleRate: 0.1,
+      tracesSampleRate: 0.001,
     },
+    */
   },
 
   env: {
