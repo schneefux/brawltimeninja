@@ -1,5 +1,5 @@
 <template>
-  <div class="page container">
+  <page>
     <client-only>
       <adsense
         ins-class="ad-section"
@@ -280,7 +280,7 @@
         topic="guides"
       />
     </div>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

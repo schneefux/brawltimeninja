@@ -265,14 +265,6 @@
   }
 
   /** addition to .container */
-  .page {
-    @apply mx-auto p-4;
-  }
-
-  .page-h1 {
-    @apply text-3xl font-semibold;
-  }
-
   .page-h2 {
     @apply text-2xl font-semibold;
   }

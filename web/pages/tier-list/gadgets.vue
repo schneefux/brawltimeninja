@@ -1,18 +1,9 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">Gadget Tier List</h1>
-      <p>
-        Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars. <br />
-        The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
-      </p>
-    </div>
+  <page title="Gadget Tier List">
+    <p>
+      Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars. <br />
+      The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
+    </p>
 
     <meta-slicers
       v-model="slices"
@@ -30,7 +21,7 @@
       ga-category="gadget_meta"
       @measurements="ms => selectedMeasurements = ms"
     ></meta-views>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">
@@ -78,13 +69,6 @@ export default Vue.extend({
       { sort: { picks: 'desc' }, cache: 60*60 })
     this.entries = calculateDiffs(data.data, 'gadgets', 'brawler_gadget_name', 'brawler_gadget_id', calculateZScore)
     this.totalSampleSize = data.totals.picks
-  },
-  methods: {
-    trackScroll(visible, element, section) {
-      if (visible) {
-        this.$ga.event('gadget_meta', 'scroll', section)
-      }
-    },
   },
 })
 </script>

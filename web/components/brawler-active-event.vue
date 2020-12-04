@@ -10,45 +10,39 @@
       ends in {{ timeTillEnd }}
     </p>
 
-    <div slot="content" class="my-2 flex">
-      <div class="flex justify-center bg-gray-800 rounded mx-auto">
-        <div class="flex flex-col justify-end mr-2">
-          <media-img
-            :path="`/brawlers/${brawlerId}/avatar`"
-            :alt="brawlerName"
-            size="128"
-            clazz="w-16"
-          ></media-img>
-        </div>
-        <dl
+    <div
+      slot="content"
+      class="flex justify-center"
+    >
+      <div class="flex items-end bg-gray-800 rounded">
+        <media-img
+          :path="`/brawlers/${brawlerId}/avatar`"
+          :alt="brawlerName"
+          size="128"
+          clazz="w-16 mr-2"
+        ></media-img>
+        <kv-table
           v-if="data.picks > 0"
           class="w-48 px-3 py-2"
+          :data="table"
+        ></kv-table>
+        <div
+          v-else
+          class="w-48 flex"
+          style="height: 112px;"
         >
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.picks }}</dt>
-            <dd>{{ metaStatMaps.formatters.picks(data.picks) }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.useRate }}</dt>
-            <dd>{{ metaStatMaps.formatters.useRate(useRate) }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.winRate }}</dt>
-            <dd>{{ metaStatMaps.formatters.winRate(data.battle_victory) }}</dd>
-          </div>
-        </dl>
-        <p v-else class="m-auto">No data available.</p>
+          <p class="m-auto">No data available.</p>
+        </div>
       </div>
     </div>
 
-    <div slot="actions" class="flex justify-end">
-      <nuxt-link
-        :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
-        class="card__action"
-      >
-        Open
-      </nuxt-link>
-    </div>
+    <nuxt-link
+      slot="actions"
+      :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
+      class="card__action"
+    >
+      Open
+    </nuxt-link>
   </event-card>
 </template>
 
@@ -139,6 +133,13 @@ export default Vue.extend({
         return ''
       }
       return formatDistanceToNow(parseISO(this.end))
+    },
+    table(): string[][] {
+      return [
+        [ metaStatMaps.labels.picks, metaStatMaps.formatters.picks(this.data.picks) ],
+        [ metaStatMaps.labels.useRate, metaStatMaps.formatters.useRate(this.useRate) ],
+        [ metaStatMaps.labels.winRate, metaStatMaps.formatters.winRate(this.data.battle_victory) ],
+      ]
     },
     brawlerId(): string {
       return brawlerId({ name: this.brawlerName })

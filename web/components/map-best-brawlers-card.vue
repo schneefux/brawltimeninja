@@ -40,16 +40,14 @@
       class="my-4"
     ></map-best-brawlers>
 
-    <template v-if="link" v-slot:actions>
-      <div class="flex justify-end">
-        <nuxt-link
-          :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
-          class="card__action"
-        >
-          Open
-        </nuxt-link>
-      </div>
-    </template>
+    <nuxt-link
+      v-if="link"
+      slot="actions"
+      :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
+      class="card__action"
+    >
+      Open
+    </nuxt-link>
   </event-card>
 </template>
 

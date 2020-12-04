@@ -1,5 +1,7 @@
 <template>
-  <div class="page container">
+  <page :title="'Brawl Stars ' + metricName + ' Leaderboard'">
+    <p>The best Brawl Stars players world wide, ranked by {{ metricName }}.</p>
+
     <client-only>
       <adsense
         id="ezoic-pub-ad-placeholder-105"
@@ -7,26 +9,19 @@
         data-ad-slot="4579727583"
         data-ad-format="auto"
         data-full-width-responsive="yes"
+        ins-class="mt-3"
       />
     </client-only>
 
-    <div class="section-heading">
-      <h1 class="page-h1">Brawl Stars {{ metricName }} Leaderboard</h1>
-
-      <p>
-        The best players, ranked by {{ metricName }}.
-      </p>
-
-      <div class="overflow-x-auto flex md:justify-center md:flex-wrap">
-        <nuxt-link
-          v-for="metric in metrics"
-          :key="metric"
-          class="button button--secondary button--md mt-2 mr-2 whitespace-nowrap"
-          :to="`/leaderboard/${metric}`"
-        >
-          {{ formatMetric(metric) }} Leaderboard
-        </nuxt-link>
-      </div>
+    <div class="mt-3 overflow-x-auto flex md:justify-center md:flex-wrap">
+      <nuxt-link
+        v-for="metric in metrics"
+        :key="metric"
+        class="button button--secondary button--md mt-2 mr-2 whitespace-nowrap"
+        :to="`/leaderboard/${metric}`"
+      >
+        {{ formatMetric(metric) }} Leaderboard
+      </nuxt-link>
     </div>
 
     <div class="section flex justify-center">
@@ -56,7 +51,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

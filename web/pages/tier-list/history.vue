@@ -1,15 +1,6 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">Brawl Stars Time Capsule</h1>
-      <p>See how the Meta evolved over time.</p>
-    </div>
+  <page title="Brawl Stars Time Capsule">
+    <p>See how the Meta evolved over time.</p>
 
     <div
       class="section-heading"
@@ -54,16 +45,14 @@
         class="mx-auto"
       ></map-detail-card>
     </div>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import modesOverTime from '~/components/modes-over-time.vue'
 
 export default Vue.extend({
-  components: { modesOverTime },
   data() {
     return {
       selectedSeason: undefined as string|undefined,

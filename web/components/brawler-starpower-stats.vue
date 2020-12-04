@@ -1,39 +1,17 @@
 <template>
   <div class="flex flex-wrap justify-around">
-    <card
+    <brawler-starpower-card
       v-for="entry in data"
       :key="entry.id"
-      :title="formatKind + ': ' + formatName(entry)"
-      :icon="`/${kind}/${entry.id}`"
-      :icon-alt="`${brawlerName}'s ${formatKind} ${formatName(entry)}`"
-      full-height
-      md
-    >
-      <dl slot="content">
-        <p
-          v-if="descriptions != null"
-          class="mb-3 h-full"
-        >
-          <q class="italic">{{ gameFileDescription(entry) }}</q>
-          <template v-if="contentDescription(entry) != ''">
-            <br>
-            {{ contentDescription(entry) }}
-          </template>
-          <template v-if="metaDescription(entry) != ''">
-            <br>
-            {{ metaDescription(entry) }}
-          </template>
-        </p>
-        <div class="flex justify-between">
-          <dt class="font-semibold">No {{ formatKind }} Win Rate</dt>
-          <dd>{{ metaStatMaps.formatters.winRate(totals.battle_victory) }}</dd>
-        </div>
-        <div class="flex justify-between">
-          <dt class="font-semibold">{{ formatName(entry) }} Win Rate</dt>
-          <dd>{{ metaStatMaps.formatters.winRate(entry.battle_victory) }}</dd>
-        </div>
-      </dl>
-    </card>
+      :id="entry.id"
+      :kind="kind"
+      :name="getName(entry)"
+      :brawler-name="brawlerName"
+      :content="content"
+      :description="getDescription(entry)"
+      :win-rate="entry.battle_victory"
+      :without-win-rate="totals.battle_victory"
+    ></brawler-starpower-card>
   </div>
 </template>
 
@@ -107,7 +85,7 @@ export default Vue.extend({
 
     this.data = (dataWith.data as unknown as Row[]).map(r => ({
       ...r,
-      id: this.kind == 'starpowers' ? r.brawler_starpower_id : r.brawler_gadget_id,
+      id: this.kind == 'gadgets' ? r.brawler_gadget_id : r.brawler_starpower_id,
     }))
       // in case of duplicate IDs, use the first (most recent)
       .filter((el, index, all) => all.findIndex(e => e.id == el.id) == index)
@@ -124,58 +102,16 @@ export default Vue.extend({
     }
   },
   computed: {
-    capitalize() {
-      return capitalize
-    },
-    metaStatMaps() {
-      return metaStatMaps
-    },
-    formatKind(): string {
-      return this.kind == 'gadgets' ? 'Gadget' : 'Star Power'
-    },
-    // TODO turn concrete gadgets into subcomponent to avoid these loops
     getName() {
       return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_name : entry.brawler_starpower_name
     },
-    formatName() {
-      return (entry: Row) => capitalize(this.getName(entry)?.toLowerCase() || '')
-    },
-    gameFileDescription() {
+    getDescription() {
       return (entry: Row) => {
-        if (this.descriptions == undefined || this.getName(entry) == undefined) {
-          return ''
+        const name = this.getName(entry)
+        if (this.descriptions != null && name != null && name in this.descriptions) {
+          return this.descriptions[name]
         }
-        return this.descriptions[this.getName(entry)!]
-      }
-    },
-    metaDescription() {
-      return (entry: Row) => {
-        if (this.data.length == 0 || this.totals == undefined) {
-          return ''
-        }
-
-        const diff = entry.battle_victory - this.totals.battle_victory
-        const differenceTexts = ['has no noticable impact', 'provides a small advantage', 'provides a noticable advantage', 'improves the chances of winning a lot']
-        const differenceText = differenceTexts[scaleInto(0, 0.05, differenceTexts.length - 1, diff)]
-
-        return `Looking at the Win Rates, ${this.formatName(entry)} ${differenceText}.`
-      }
-    },
-    contentDescription() {
-      return (entry: Row) => {
-        if (this.content == null) {
-          return ''
-        }
-
-        const map = {} as Record<string, string>
-        if (this.content.starpowers != undefined) {
-          this.content.starpowers.forEach(sp => map[sp.name] = sp.description)
-        }
-        if (this.content.gadgets != undefined) {
-          this.content.gadgets.forEach(g => map[g.name] = g.description)
-        }
-
-        return map[this.formatName(entry)] || ''
+        return undefined
       }
     },
   },

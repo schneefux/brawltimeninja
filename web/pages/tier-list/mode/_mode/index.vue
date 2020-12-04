@@ -1,15 +1,6 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">{{ modeName }}</h1>
-      <p>Use the <span class="text-primary-lighter">{{ modeName }}</span> Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
-    </div>
+  <page :title="modeName">
+    <p>Use the <span class="text-primary-lighter">{{ modeName }}</span> Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
     <client-only>
       <adsense
@@ -92,14 +83,12 @@
               ></media-img>
             </template>
             <template v-slot:actions>
-              <div class="flex justify-end">
-                <router-link
-                  :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
-                  class="card__action"
-                >
-                  Open
-                </router-link>
-              </div>
+              <router-link
+                :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
+                class="card__action"
+              >
+                Open
+              </router-link>
             </template>
           </event-card>
         </lazy>
@@ -168,7 +157,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

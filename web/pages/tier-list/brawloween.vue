@@ -1,9 +1,6 @@
 <template>
-  <div class="page container">
-    <div class="section-heading">
-      <h1 class="page-h1">Brawl-o-ween Tier Lists</h1>
-      <p>Open on a map to see the best Brawlers for all Brawl-o-ween Brawl Stars Events.</p>
-    </div>
+  <page title="Brawl-o-ween Tier Lists">
+    <p>Open on a map to see the best Brawlers for all Brawl-o-ween Brawl Stars Events.</p>
 
     <client-only>
       <adsense
@@ -36,7 +33,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

@@ -4,54 +4,38 @@
     :loading="$fetchState.pending"
     size="w-80"
   >
-    <div slot="actions" class="flex justify-end">
-      <nuxt-link
-        :to="`/tier-list/mode/${camelToKebab(mode)}`"
-        class="card__action"
-      >
-        Open
-      </nuxt-link>
-    </div>
-
-    <div slot="content" class="my-2 flex">
-      <div class="flex justify-center bg-gray-800 rounded mx-auto">
-        <div class="flex flex-col justify-end mr-2">
-          <media-img
-            :path="`/brawlers/${brawlerId}/avatar`"
-            size="128"
-            clazz="w-16"
-          ></media-img>
-        </div>
-        <dl
+    <div
+      slot="content"
+      class="flex justify-center"
+    >
+      <div class="flex items-end bg-gray-800 rounded">
+        <media-img
+          :path="`/brawlers/${brawlerId}/avatar`"
+          size="128"
+          clazz="w-16 mr-2"
+        ></media-img>
+        <kv-table
           v-if="modeData.picks > 0"
+          :data="modeTable"
           class="w-48 px-3 py-2"
-        >
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.picks }}</dt>
-            <dd>{{ metaStatMaps.formatters.picks(modeData.picks) }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.useRate }}</dt>
-            <dd>{{ metaStatMaps.formatters.useRate(modeData.picks_weighted / modeTotals.picks_weighted) }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>{{ metaStatMaps.labels.winRate }}</dt>
-            <dd>{{ metaStatMaps.formatters.winRate(modeData.battle_victory) }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt>Viable Maps</dt>
-            <dd>{{ aboveAverageMaps }}/{{ mapData.length }}</dd>
-          </div>
-        </dl>
+        ></kv-table>
         <div
           v-else
           class="w-48 flex"
           style="height: 112px;"
         >
-          <p class="m-auto">Not data available.</p>
+          <p class="m-auto">No data available.</p>
         </div>
       </div>
-    </div>,
+    </div>
+
+    <nuxt-link
+      slot="actions"
+      :to="`/tier-list/mode/${camelToKebab(mode)}`"
+      class="card__action"
+    >
+      Open
+    </nuxt-link>
   </event-card>
 </template>
 
@@ -170,6 +154,14 @@ export default Vue.extend({
     },
     metaStatMaps() {
       return metaStatMaps
+    },
+    modeTable(): string[][] {
+      return [
+        [ metaStatMaps.labels.picks, metaStatMaps.formatters.picks(this.modeData.picks) ],
+        [ metaStatMaps.labels.useRate, metaStatMaps.formatters.useRate(this.modeData.picks_weighted / this.modeTotals.picks_weighted) ],
+        [ metaStatMaps.labels.winRate, metaStatMaps.formatters.winRate(this.modeData.battle_victory) ],
+        [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
+      ]
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,

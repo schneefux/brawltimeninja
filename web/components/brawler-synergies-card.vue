@@ -12,22 +12,23 @@
       <div class="brawler-avatars flex-wrap my-2">
         <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
         <div
-          v-for="brawler in data.slice(0, 5 + page * 20)"
-          :key="brawler.brawler_name"
+          v-for="entry in data.slice(0, 5 + page * 20)"
+          :key="entry.brawler_name"
           class="brawler-avatars__element w-1/5 my-2"
         >
           <router-link
-            :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
+            :to="`/tier-list/brawler/${brawlerId({ name: entry.brawler_name })}`"
             class="brawler-avatar"
           >
             <media-img
-              :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
+              :path="`/brawlers/${brawlerId({ name: entry.brawler_name })}/avatar`"
+              :alt="brawler"
               size="160"
               clazz="brawler-avatar__img"
             ></media-img>
             <p class="brawler-avatar__stats">
-              <template v-if="brawler.picks >= sampleSizeThreshold">
-                {{ brawler.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
+              <template v-if="entry.picks >= sampleSizeThreshold">
+                {{ entry.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(entry.battle_victory) }}
                 {{ metaStatMaps.labelsShort.winRate }}
               </template>
               <template v-else>

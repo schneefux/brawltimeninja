@@ -1,15 +1,5 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">{{ brawlerName }}</h1>
-    </div>
-
+  <page :title="brawlerName">
     <div class="section flex flex-wrap justify-center">
       <brawler-base-stats
         :brawler-id="brawlerId"
@@ -229,7 +219,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

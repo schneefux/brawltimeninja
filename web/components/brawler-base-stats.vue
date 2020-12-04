@@ -13,13 +13,13 @@
               size="500"
             ></media-img>
           </div>
-          <dl
-            v-if="info != null"
-            class="w-full"
-          >
-            <dt class="card__header">{{ brawlerName }}</dt>
-            <dd class="card__text mb-3">
-              <q class="italic">{{ gamefileDescription }}</q>
+          <div class="w-full">
+            <h1 class="text-xl font-semibold mb-3">{{ brawlerName }}</h1>
+            <p>
+              <q
+                v-if="gamefileDescription != ''"
+                class="italic"
+              >{{ gamefileDescription }}</q>
               <template v-if="content != null">
                 <br>
                 {{ content.description || '' }}
@@ -28,92 +28,25 @@
                 <br>
                 {{ generatedDescription }}
               </template>
-            </dd>
-            <div class="flex justify-between">
-              <dt class="font-semibold">Health at Level 1</dt>
-              <dd>{{ info.health }}</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="font-semibold">Health at Level 10</dt>
-              <dd>{{ Math.round(info.health * 1.4) }}</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="font-semibold">Speed</dt>
-              <dd>{{ Math.round(info.speed * 100) / 100 }} Tiles/s</dd>
-            </div>
-          </dl>
-          <div v-else class="w-full"></div>
+            </p>
+            <kv-table
+              class="mt-3"
+              :data="infoTable"
+            ></kv-table>
+          </div>
         </div>
       </card>
     </div>
 
-    <card
-      v-if="info != null"
-      v-for="attack in ['main', 'super']"
-      :key="attack"
-      :title="attack == 'main' ? 'Main Attack' : 'Super'"
-      full-height
-      md
-    >
-      <dl slot="content">
-        <dd class="mb-3">
-          <q class="italic">{{ info[attack].description }}</q>
-          <template v-if="content != null">
-            <br>
-            {{ content[attack] || '' }}
-          </template>
-        </dd>
-        <div
-          v-if="info[attack].rechargeTime != null"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">Reload Speed</dt>
-          <dd>{{ info[attack].rechargeTime }}ms</dd>
-        </div>
-        <div
-          v-if="info[attack].range != null"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">Range</dt>
-          <dd>{{ info[attack].range.toFixed(1) }} Tiles</dd>
-        </div>
-        <div
-          v-if="info[attack].damageCount != null && info[attack].damageCount > 1"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">Projectiles</dt>
-          <dd>{{ info[attack].damageCount }}</dd>
-        </div>
-        <div
-          v-if="info[attack].charges != null"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">Ammo</dt>
-          <dd>{{ info[attack].charges }}</dd>
-        </div>
-        <div
-          v-if="info[attack].spread != null && info[attack].spread != 0"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">Spread</dt>
-          <dd>{{ info[attack].spread }}°</dd>
-        </div>
-        <div
-          v-if="info[attack].damage != null"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">{{ info[attack].damageLabel }} at Level 1</dt>
-          <dd>{{ info[attack].damage }}</dd>
-        </div>
-        <div
-          v-if="info[attack].damage != null"
-          class="flex justify-between"
-        >
-          <dt class="font-semibold">{{ info[attack].damageLabel }} at Level 10</dt>
-          <dd>{{ Math.round(info[attack].damage * 1.4) }}</dd>
-        </div>
-      </dl>
-    </card>
+    <template v-if="info != null">
+      <brawler-attack-stats-card
+        v-for="attack in ['main', 'super']"
+        :key="attack"
+        :attack="attack"
+        :info="info"
+        :content="content"
+      ></brawler-attack-stats-card>
+    </template>
 
     <card
       v-if="data != null"
@@ -121,21 +54,13 @@
       full-height
       md
     >
-      <dl slot="content">
-        <p class="mb-3">{{ statisticsDescription }}</p>
-        <div class="flex justify-between">
-          <dt class="font-semibold">Use Rate</dt>
-          <dd>{{ metaStatMaps.formatters.useRate(data.picks_weighted / totals.picks_weighted) }}</dd>
-        </div>
-        <div class="flex justify-between">
-          <dt class="font-semibold">Star Rate</dt>
-          <dd>{{ metaStatMaps.formatters.starRate(data.battle_starplayer) }}</dd>
-        </div>
-        <div class="flex justify-between">
-          <dt class="font-semibold">Win Rate</dt>
-          <dd>{{ metaStatMaps.formatters.winRate(data.battle_victory) }}</dd>
-        </div>
-      </dl>
+      <template v-slot:content>
+        <p>{{ statisticsDescription }}</p>
+        <kv-table
+          :data="statsTable"
+          class="mt-3"
+        ></kv-table>
+      </template>
     </card>
   </div>
 </template>
@@ -294,6 +219,28 @@ export default Vue.extend({
         ${this.brawlerName} is, judging by ${this.possessivePronoun} Use Rate, a ${popularity} Brawler.\
         Looking at ${this.possessivePronoun} Win Rate, ${this.pronoun} is ${metaness} in the current Meta.
       `
+    },
+    infoTable(): string[][] {
+      if (this.info == null) {
+        return []
+      }
+
+      return [
+        [ 'Health at Level 1', this.info.health.toString() ],
+        [ 'Health at Level 10', Math.round(this.info.health * 1.4).toString() ],
+        [ 'Speed', Math.round(this.info.speed * 100) / 100 + 'Tiles/s' ],
+      ]
+    },
+    statsTable(): string[][] {
+      if (this.data == null || this.totals == null) {
+        return []
+      }
+
+      return [
+        [ metaStatMaps.labels.useRate, metaStatMaps.formatters.useRate(this.data.picks_weighted / this.totals.picks_weighted) ],
+        [ metaStatMaps.labels.starRate, metaStatMaps.formatters.starRate(this.data.battle_starplayer) ],
+        [ metaStatMaps.labels.winRate, metaStatMaps.formatters.winRate(this.data.battle_victory) ],
+      ]
     },
     metaStatMaps() {
       return metaStatMaps

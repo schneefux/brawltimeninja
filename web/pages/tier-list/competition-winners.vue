@@ -1,15 +1,5 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">All Competition Winner Maps</h1>
-    </div>
-
+  <page title="All Competition Winner Maps">
     <div class="section flex flex-wrap justify-center">
       <lazy
         v-for="(map, index) in maps"
@@ -24,7 +14,7 @@
         ></map-detail-card>
       </lazy>
     </div>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">
@@ -68,13 +58,6 @@ export default Vue.extend({
         mode: row.battle_event_mode,
         link: `/tier-list/mode/${camelToKebab(row.battle_event_mode)}/map/${slugify(row.battle_event_map)}`,
       }))
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string) {
-      if (visible) {
-        this.$ga.event('competition_winners', 'scroll', section)
-      }
-    },
   },
 })
 </script>

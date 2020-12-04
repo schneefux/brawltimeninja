@@ -1,18 +1,9 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">Star Power Tier List</h1>
-      <p>
-        Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars. <br />
-        The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
-      </p>
-    </div>
+  <page title="Star Power Tier List">
+    <p>
+      Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars. <br />
+      The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
+    </p>
 
     <meta-slicers
       v-model="slices"
@@ -30,7 +21,7 @@
       ga-category="starpower_meta"
       @measurements="ms => selectedMeasurements = ms"
     ></meta-views>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">
@@ -78,13 +69,6 @@ export default Vue.extend({
       { sort: { picks: 'desc' }, cache: 60*60 })
     this.entries = calculateDiffs(data.data, 'starpowers', 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
     this.totalSampleSize = data.totals.picks
-  },
-  methods: {
-    trackScroll(visible, element, section) {
-      if (visible) {
-        this.$ga.event('starpower_meta', 'scroll', section)
-      }
-    },
   },
 })
 </script>

@@ -1,12 +1,12 @@
 <template>
-  <div class="container page">
+  <page title="Brawl Stars Guides">
     <div
       v-if="faqs.length > 0"
       class="section-heading"
     >
-      <h1 class="page-h1">
+      <h2 class="page-h2">
         Frequently asked Questions
-      </h1>
+      </h2>
     </div>
 
     <div
@@ -40,9 +40,9 @@
     </div>
 
     <div class="section-heading">
-      <h1 class="page-h1">
+      <h2 class="page-h2">
         Brawl Stars Guides
-      </h1>
+      </h2>
     </div>
 
     <div class="section">
@@ -84,7 +84,7 @@
         </article>
       </div>
     </div>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

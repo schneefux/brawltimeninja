@@ -1,5 +1,5 @@
 <template>
-  <div class="page container">
+  <page>
     <card
       :title="club.name"
       class="mx-auto"
@@ -53,7 +53,7 @@
         </table>
       </template>
     </card>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

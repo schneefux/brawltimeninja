@@ -3,14 +3,13 @@
     :title="title"
     size="w-64"
   >
-    <div slot="actions" class="flex justify-end">
-      <nuxt-link
-        :to="`/tier-list/${kind}`"
-        class="card__action"
-      >
-        Open
-      </nuxt-link>
-    </div>
+    <nuxt-link
+      slot="actions"
+      :to="`/tier-list/${kind}`"
+      class="card__action"
+    >
+      Open
+    </nuxt-link>
 
     <div slot="content" class="brawler-avatars">
       <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>

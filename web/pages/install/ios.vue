@@ -1,9 +1,5 @@
 <template>
-  <div class="page container">
-    <div class="section-heading">
-      <h1 class="page-h1">Adding Brawl Time Ninja to your Home Screen</h1>
-    </div>
-
+  <page title="Adding Brawl Time Ninja to your Home Screen">
     <ol class="section flex flex-wrap justify-center">
       <li>
         <card
@@ -39,7 +35,7 @@
         </card>
       </li>
     </ol>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

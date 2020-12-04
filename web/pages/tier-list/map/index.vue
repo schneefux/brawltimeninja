@@ -1,15 +1,6 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">Map Tier Lists</h1>
-      <p>Open on a map to see the best Brawlers for all current and upcoming Brawl Stars Events.</p>
-    </div>
+  <page title="Map Tier Lists">
+    <p>Open on a map to see the best Brawlers for all current and upcoming Brawl Stars Events.</p>
 
     <client-only>
       <adsense
@@ -80,7 +71,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

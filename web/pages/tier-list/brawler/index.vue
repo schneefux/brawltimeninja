@@ -1,15 +1,6 @@
 <template>
-  <div class="page container">
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'title'),
-        once: true,
-      }"
-    >
-      <h1 class="page-h1">Brawl Stars Brawler Tier List</h1>
-      <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
-    </div>
+  <page title="Brawl Stars Brawler Tier List">
+    <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
 
     <div
       class="section-heading"
@@ -156,7 +147,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

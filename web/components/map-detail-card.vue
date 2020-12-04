@@ -71,14 +71,14 @@
       </div>
     </div>
 
-    <div v-if="link" slot="actions" class="flex justify-end">
-      <router-link
-        :to="linkTarget"
-        class="card__action"
-      >
-        Open
-      </router-link>
-    </div>
+    <router-link
+      v-if="link"
+      slot="actions"
+      :to="linkTarget"
+      class="card__action"
+    >
+      Open
+    </router-link>
   </event-card>
 </template>
 
