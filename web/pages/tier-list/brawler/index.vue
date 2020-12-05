@@ -167,6 +167,9 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Brawlers',
+  },
   middleware: ['cached'],
   data() {
     return {

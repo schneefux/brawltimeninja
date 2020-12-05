@@ -50,6 +50,9 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Star Powers',
+  },
   computed: {
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

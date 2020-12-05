@@ -246,6 +246,9 @@ export default Vue.extend({
       script: structuredData,
     }
   },
+  meta: {
+    title: 'Profile',
+  },
   middleware: ['cached'],
   data() {
     return {

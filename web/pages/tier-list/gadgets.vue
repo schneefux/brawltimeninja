@@ -49,6 +49,9 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Gadgets',
+  },
   middleware: ['cached'],
   computed: {
     ...mapState({

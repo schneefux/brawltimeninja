@@ -106,6 +106,9 @@ export default Vue.extend({
       script: structuredData,
     }
   },
+  meta: {
+    title: 'Events',
+  },
   middleware: ['cached'],
   computed: {
     ...mapState({

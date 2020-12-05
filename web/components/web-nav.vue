@@ -1,0 +1,122 @@
+<template>
+  <nav class="bg-primary-dark px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
+    <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
+      <nuxt-link
+        to="/"
+        class="font-semibold text-xl text-white tracking-tighter"
+        prefetch
+      >
+        Brawl Time Ninja
+      </nuxt-link>
+      <div class="lg:hidden float-right">
+        <install-button></install-button>
+        <button
+          v-show="menuButtonVisible"
+          class="ml-4 px-2 py-1 border rounded border-primary-light text-primary-lightest"
+          @click="openMenu"
+        >
+          Menu
+        </button>
+      </div>
+    </div>
+
+    <div
+      ref="menu"
+      class="w-full lg:w-auto relative z-0"
+    >
+      <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap">
+        <div class="pt-3 pb-3 lg:py-0 lg:my-0">
+          <div class="hidden lg:inline-block">
+            <install-button></install-button>
+          </div>
+
+          <nuxt-link
+            v-for="link in links"
+            :key="link.target"
+            :to="link.target"
+            class="inline-block mr-4 text-primary-lighter border-b lg:border-0 border-primary-lighter text-lg capitalize font-medium"
+          >
+            {{ link.name }}
+          </nuxt-link>
+        </div>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  data() {
+    return {
+      links: [ {
+        name: 'Profile Search',
+        target: '/',
+      }, {
+        name: 'Brawler Tier List',
+        target: '/tier-list/brawler',
+      }, {
+        name: 'Map Tier Lists',
+        target: '/tier-list/map',
+      }, {
+        name: 'Leaderboards',
+        target: '/leaderboard/hours',
+      }, {
+        name: 'Guides',
+        target: '/blog/guides',
+      }, {
+        name: 'Status',
+        target: '/status',
+      }, {
+        name: 'Privacy',
+        target: '/about',
+      }],
+      lastScrollY: 0,
+      lastScrollUpY: 0,
+      menuButtonVisible: false,
+      menuLocked: false,
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', () => this.onScroll())
+    this.openMenu()
+  },
+  methods: {
+    onScroll() {
+      if (this.menuLocked) {
+        // ignore
+        this.lastScrollY = window.scrollY
+        this.lastScrollUpY = window.scrollY
+        return
+      }
+
+      if (Math.abs(window.scrollY - this.lastScrollY) < 10) {
+        return
+      }
+
+      const menu = this.$refs.menu as HTMLElement
+      if (window.scrollY < this.lastScrollY) {
+        // scrolled up
+        menu.style['margin-top'] = '0px'
+        this.menuButtonVisible = false
+        this.lastScrollUpY = window.scrollY
+      } else {
+        // scrolled down
+        menu.style['margin-top'] = `-${(window.scrollY - this.lastScrollUpY) / 4}px`
+        this.menuButtonVisible = true
+      }
+
+      this.lastScrollY = window.scrollY
+    },
+    openMenu() {
+      this.menuButtonVisible = false
+      const menu = this.$refs.menu as any
+      menu.style['margin-top'] = '0px'
+      // important: header style changes modify window.scrollY!
+      this.lastScrollY = window.scrollY
+      this.lastScrollUpY = window.scrollY
+    },
+  },
+})
+</script>

@@ -93,6 +93,7 @@ export default {
     '@nuxt/typescript-build',
     '@nuxt/components',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/fontawesome',
   ],
 
   components: [ {
@@ -201,5 +202,12 @@ export default {
     // breaks media-img component registration
     // https://github.com/nuxt/content/issues/261
     liveEdit: false,
+  },
+
+  fontawesome: {
+    // reduce size
+    useLayers: false,
+    useLayersText: false,
+    addCss: false,
   },
 }
