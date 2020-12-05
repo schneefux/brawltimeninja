@@ -162,21 +162,21 @@ export default Vue.extend({
     // called after vuex-persist has loaded
     version() {
       // custom A/B test flag
-      /*
       if ('group' in this.$route.query) {
         console.log('overriding test group from query string')
         this.setTestGroup(this.$route.query['group'])
       } else {
+      /*
         const groups = ['appnav', 'appnav-control', 'appnav-control', 'appnav-control'] as string[]
         if (!groups.includes(this.testGroup)) {
           const group = groups[Math.floor(Math.random() * groups.length)]
           this.setTestGroup(group)
           console.log('user assigned to test group', this.testGroup)
         }
+      */
       }
       this.$ga.set('dimension5', this.testGroup)
       console.log('user is part of test group', this.testGroup)
-      */
     },
   },
 })
