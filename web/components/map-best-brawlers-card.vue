@@ -45,6 +45,7 @@
       slot="actions"
       :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
       class="card__action"
+      prefetch
     >
       Open
     </nuxt-link>

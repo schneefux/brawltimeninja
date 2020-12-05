@@ -14,6 +14,7 @@
       <nuxt-link
         :to="`/player/${player.tag}`"
         class="card__header"
+        prefetch
       >
         <media-img
           :path="`/avatars/${player.icon.id}`"
@@ -29,6 +30,7 @@
         <nuxt-link
           :to="`/player/${player.tag}`"
           class="card__action button--xs"
+          prefetch
         >
           Open Profile
         </nuxt-link>
@@ -36,6 +38,7 @@
       <nuxt-link
         :to="`/player/${player.tag}`"
         class="block mt-1"
+        prefetch
       >
         <player-battles-squares
           :battles="player.battles"

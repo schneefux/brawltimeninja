@@ -140,6 +140,7 @@
           <nuxt-link
             to="/tier-list/brawler"
             class="link"
+            prefetch
           >
             Explore the Brawler Tier List
           </nuxt-link>

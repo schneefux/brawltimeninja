@@ -22,7 +22,10 @@ export default Vue.extend({
         >
           <div class="card bg-white h-full">
             <div class="card__content">
-              <nuxt-link to={`/blog/${props.topic}/${post.slug}`}>
+              <nuxt-link
+                to={`/blog/${props.topic}/${post.slug}`}
+                prefetch
+              >
                 { 'mode' in post ?
                 <media-img
                   clazz="h-6 float-right mx-2"

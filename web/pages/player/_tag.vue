@@ -224,6 +224,7 @@
           <nuxt-link
             class="button md:button--md button--secondary"
             to="/tier-list/map"
+            prefetch
           >
             Open Map Tier List
           </nuxt-link>

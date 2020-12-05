@@ -35,6 +35,7 @@
         <nuxt-link
           class="button md:button--md button--secondary"
           to="/tier-list/starpowers"
+          prefetch
         >
           Open Star Power Tier List
         </nuxt-link>
@@ -42,6 +43,7 @@
         <nuxt-link
           class="button md:button--md ml-3 button--secondary"
           to="/tier-list/gadgets"
+          prefetch
         >
           Open Gadget Tier List
         </nuxt-link>
@@ -107,6 +109,7 @@
         <nuxt-link
           class="button md:button--md button--secondary"
           to="/tier-list/map"
+          prefetch
         >
           Open Map Tier Lists
         </nuxt-link>
@@ -161,6 +164,7 @@
         <nuxt-link
           class="button md:button--md button--secondary"
           to="/tier-list/brawler"
+          prefetch
         >
           Open Brawler Tier List
         </nuxt-link>
@@ -199,12 +203,6 @@
         >
           Show More
         </button>
-        <nuxt-link
-          class="button md:button--md button--secondary"
-          to="/tier-list/mode"
-        >
-          Open Mode Tier Lists
-        </nuxt-link>
       </div>
     </div>
 

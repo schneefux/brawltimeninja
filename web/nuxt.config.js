@@ -102,6 +102,7 @@ export default {
 
   router: {
     middleware: ['unpack-store'],
+    prefetchLinks: false,
   },
 
   redirect: [

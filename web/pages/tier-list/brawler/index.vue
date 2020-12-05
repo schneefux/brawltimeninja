@@ -94,6 +94,7 @@
         <nuxt-link
           to="/tier-list/history"
           class="link"
+          prefetch
         >Explore the Time Capsule.</nuxt-link>
       </p>
     </div>

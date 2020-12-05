@@ -6,6 +6,7 @@
       <nuxt-link
         to="/tier-list/competition-winners"
         class="link"
+        prefetch
       >Compare them here.</nuxt-link>
     </p>
 
@@ -55,12 +56,14 @@
             :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
             class="button mx-2 button--md"
             active-class="button--selected"
+            prefetch
             exact
           >Best Brawlers</nuxt-link>
           <nuxt-link
             :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
             class="button mx-2 button--md"
             active-class="button--selected"
+            prefetch
           >Best Teams</nuxt-link>
         </div>
       </card>

@@ -26,6 +26,7 @@
         <nuxt-link
           :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
           class="card__action button--xs"
+          prefetch
         >
           Open Tier List
         </nuxt-link>

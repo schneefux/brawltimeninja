@@ -27,6 +27,7 @@
             :to="`/faq/${faq.slug}`"
             class="link-light"
             itemprop="url"
+            prefetch
           >
             <h2 class="page-h2">
               <span itemprop="headline">{{ faq.title }}</span>
@@ -66,6 +67,7 @@
             :to="`/blog/guides/${post.slug}`"
             class="link-light"
             itemprop="url"
+            prefetch
           >
             <h2 class="text-2xl font-semibold">
               <span itemprop="headline">{{ post.title }}</span>

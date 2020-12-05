@@ -7,6 +7,7 @@
       slot="actions"
       :to="`/tier-list/${kind}`"
       class="card__action"
+      prefetch
     >
       Open
     </nuxt-link>

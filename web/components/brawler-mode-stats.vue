@@ -33,6 +33,7 @@
       slot="actions"
       :to="`/tier-list/mode/${camelToKebab(mode)}`"
       class="card__action"
+      prefetch
     >
       Open
     </nuxt-link>

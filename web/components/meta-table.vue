@@ -23,7 +23,7 @@
             {{ entry.sampleSize < sampleSizeThreshold ? '?' : index + 1 }}
           </th>
           <td>
-            <nuxt-link
+            <router-link
               :to="entry.link || ''"
               :title="entry.title"
               class="flex items-center"
@@ -44,7 +44,7 @@
                 />
               </div>
               <span class="font-semibold text-lg">{{ entry.title }}</span>
-            </nuxt-link>
+            </router-link>
           </td>
           <td class="text-left font-semibold text-lg">
             {{ entry.sampleSize < sampleSizeThreshold ? '?' : typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
