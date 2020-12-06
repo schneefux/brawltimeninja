@@ -64,24 +64,6 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  created() {
-    // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
-    // based on cookies
-    // 2020-12-06: Disabled because caching the HTML with the `cached`
-    // middleware will serve random settings to users
-    if (process.client) {
-      if (this.cookiesAllowed) {
-        this.setCookieCookie() // refresh
-      }
-      if (this.adsAllowed) {
-        this.enableAds()
-        this.setAdsCookie() // refresh
-      }
-      if (!this.adsAllowed && !this.consentPopupVisible) {
-        this.hideAds()
-      }
-    }
-  },
   methods: {
     disableCookies() {
       this.hideConsentPopup()
@@ -159,6 +141,7 @@ export default Vue.extend({
       allowAds: 'allowAds',
       disallowAds: 'disallowAds',
       hideConsentPopup: 'hideConsentPopup',
+      showConsentPopup: 'showConsentPopup',
       setIsApp: 'setIsApp',
       setTestGroup: 'setTestGroup',
     }),
@@ -166,6 +149,22 @@ export default Vue.extend({
   watch: {
     // called after vuex-persist has loaded
     version() {
+      if (!this.cookiesAllowed) {
+        this.showConsentPopup()
+      } else {
+        // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
+        // based on cookies
+        // 2020-12-06: Disabled because caching the HTML with the `cached`
+        // middleware will serve random settings to users
+        this.setCookieCookie() // refresh
+        if (this.adsAllowed) {
+          this.enableAds()
+          this.setAdsCookie() // refresh
+        } else {
+          this.hideAds()
+        }
+      }
+
       // custom A/B test flag
       if ('group' in this.$route.query) {
         console.log('overriding test group from query string')

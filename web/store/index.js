@@ -44,7 +44,7 @@ export const state = () => ({
   personalityTestResult: undefined,
   cookiesAllowed: false,
   adsAllowed: false,
-  consentPopupVisible: true,
+  consentPopupVisible: false,
   installBannerDismissed: false,
   totalBrawlers: 41,
   isApp: false,
