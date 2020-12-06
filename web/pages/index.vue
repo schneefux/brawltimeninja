@@ -147,10 +147,10 @@
         </div>
       </div>
 
-      <div class="home-section-content">
-        <top-brawlers></top-brawlers>
+      <top-brawlers
+        class="home-section-content"
+      ></top-brawlers>
       </div>
-    </div>
 
     <client-only>
       <adsense
@@ -178,9 +178,9 @@
         </div>
       </div>
 
-      <div class="home-section-content px-2">
-        <active-events></active-events>
-      </div>
+      <active-events
+        class="home-section-content px-2">
+      ></active-events>
 
       <div
         v-show="notificationsAllowed"
@@ -195,6 +195,29 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <div
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'best_players'),
+        once: true,
+      }"
+      class="home-section container"
+    >
+      <lazy>
+        <leaderboard-card
+          class="home-section-content"
+        >
+          <nuxt-link
+            slot="actions"
+            to="/leaderboard/trophies"
+            class="card__action"
+            prefetch
+          >
+            Open
+          </nuxt-link>
+        </leaderboard-card>
+      </lazy>
     </div>
 
     <client-only>
