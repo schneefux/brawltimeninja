@@ -67,6 +67,8 @@ export default Vue.extend({
   created() {
     // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
     // based on cookies
+    // 2020-12-06: Disabled because caching the HTML with the `cached`
+    // middleware will serve random settings to users
     if (process.client) {
       if (this.cookiesAllowed) {
         this.setCookieCookie() // refresh
