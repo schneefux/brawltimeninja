@@ -60,7 +60,7 @@ export default Vue.extend({
       // and not reactive
       // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
 
-      const newTitle = this.$nuxt.$options.context.route.meta[0].title
+      const newTitle = this.$nuxt.$options.context.route.meta[0]?.title
       if (newTitle != undefined) {
         this.title = newTitle
       }
