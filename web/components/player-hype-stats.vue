@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="items-center justify-center flex flex-wrap">
+    <div class="items-center justify-center flex flex-wrap md:mx-16 lg:mx-40">
       <div class="mx-auto md:mx-0 flex">
         <dl>
           <dd ref="counter-hours" class="text-5xl text-secondary font-bold">
@@ -32,15 +32,17 @@
       </div>
 
       <p
-        v-show="showAll"
-        class="md:block w-full md:w-auto text-xl my-4 mx-auto"
+        :class="['w-full md:w-auto text-xl my-4 mx-auto', {
+          'hidden md:block': !showAll,
+        }]"
       >
         which is about
       </p>
 
       <dl
-        v-show="showAll"
-        class="md:flex flex-wrap justify-between z-20"
+        :class="['flex flex-wrap justify-between z-20', {
+          'hidden md:flex': !showAll,
+        }]"
       >
         <div
           v-for="(stat, statName) in funStats"
