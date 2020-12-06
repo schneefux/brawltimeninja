@@ -136,7 +136,10 @@ export default Vue.extend({
   },
   methods: {
     downloadCsv() {
-      this.$ga.event(this.gaCategory, 'click', 'download_csv')
+      this.$gtag.event('click', {
+        'event_category': this.gaCategory,
+        'event_label': 'download_csv',
+      })
 
       const csv = 'title,brawler,sampleSize,' + this.stats.join(',') + '\n'
         + this.sortedEntries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.stats.map(stat => entry.stats[stat]).join(',')).join('\n')
@@ -148,7 +151,10 @@ export default Vue.extend({
     },
     sortBy(stat: string) {
       this.selectedStat = stat
-      this.$ga.event(this.gaCategory, 'sort_by', `${this.selectedStat}`)
+      this.$gtag.event('sort_by', {
+        'event_category': this.gaCategory,
+        'event_label': this.selectedStat,
+      })
     },
   },
 })

@@ -99,7 +99,10 @@ export default Vue.extend({
   methods: {
     trackScroll(visible, entry, section) {
       if (visible) {
-        this.$ga.event('club', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'club',
+          'event_label': section,
+        })
       }
     },
   },

@@ -163,7 +163,10 @@ export default Vue.extend({
   },
   methods: {
     done() {
-      this.$ga.event('profile', 'click', 'share')
+      this.$gtag.event('click', {
+        'event_category': 'profile',
+        'event_label': 'share',
+      })
     },
   },
 })

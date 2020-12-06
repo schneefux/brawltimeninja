@@ -1,26 +1,4 @@
-import { event } from 'vue-analytics'
-
-function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-// immutable
-function mergeDeep(target, source) {
-  let output = Object.assign({}, target);
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
-        if (!(key in target))
-          Object.assign(output, { [key]: source[key] });
-        else
-          output[key] = mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(output, { [key]: source[key] });
-      }
-    });
-  }
-  return output;
-}
+import { event } from 'vue-gtag'
 
 function detectAndroid() {
   return /android/i.test(navigator.userAgent)
@@ -181,20 +159,29 @@ export const actions = {
     if (pwaSupported) {
       state.installPrompt.prompt()
       const choice = await state.installPrompt.userChoice
-      event('app', 'prompt', choice.outcome)
+      event('prompt', {
+        'event_category': 'app',
+        'event_label': choice.outcome,
+      })
       commit('clearInstallPrompt')
       return
     }
 
     if (detectAndroid()) {
       const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      event('app', 'redirect_store', 'fallback')
+      event('redirect_store', {
+        'event_category': 'app',
+        'event_label': 'fallback',
+      })
       window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
       return
     }
 
     if (detectIOS()) {
-      event('app', 'redirect_guide', 'ios')
+      event('redirect_guide', {
+        'event_category': 'app',
+        'event_label': 'ios',
+      })
       this.$router.push('/install/ios')
       return
     }

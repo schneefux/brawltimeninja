@@ -105,7 +105,10 @@ export default Vue.extend({
         return
       }
 
-      this.$ga.event('profile', 'send_notification', 'tips')
+      this.$gtag.event('send_notification', {
+        'event_category': 'profile',
+        'event_label': 'tips',
+      })
       this.notificationsAllowed = true
 
       const sw = await navigator.serviceWorker.ready

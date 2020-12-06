@@ -128,7 +128,10 @@ export default Vue.extend({
   },
   methods: {
     setView(to: string) {
-      this.$ga.event(this.gaCategory, 'click', 'show_' + to)
+      this.$gtag.event('click', {
+        'event_category': this.gaCategory,
+        'event_label': 'show_' + to,
+      })
 
       this.nextView = to
 

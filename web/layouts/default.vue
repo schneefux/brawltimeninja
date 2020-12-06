@@ -43,6 +43,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState, mapMutations } from 'vuex'
+import { bootstrap } from 'vue-gtag'
 
 export default Vue.extend({
   computed: {
@@ -122,7 +123,7 @@ export default Vue.extend({
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
         }
-        this.$ga.enable()
+        this.$gtag.optIn()
 
         // track some meta data
         // play store allows only 1 ad/page - TWA is detected via referrer
@@ -134,9 +135,11 @@ export default Vue.extend({
         }
 
         // set variables for split testing
-        this.$ga.set('dimension1', process.env.branch)
-        this.$ga.set('dimension3', isPwa)
-        this.$ga.set('dimension4', isTwa)
+        this.$gtag.customMap({
+          'dimension1': process.env.branch || '',
+          'dimension3': isPwa.toString(),
+          'dimension4': isTwa.toString(),
+        })
       }
     },
     hideAds() {
@@ -175,7 +178,9 @@ export default Vue.extend({
         }
       */
       }
-      this.$ga.set('dimension5', this.testGroup)
+      this.$gtag.customMap({
+        'dimension5': this.testGroup,
+      })
       console.log('user is part of test group', this.testGroup)
     },
   },

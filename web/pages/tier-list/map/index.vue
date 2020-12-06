@@ -124,7 +124,10 @@ export default Vue.extend({
   methods: {
     trackScroll(visible: boolean, element: any, section: string) {
       if (visible) {
-        this.$ga.event('maps', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'maps',
+          'event_label': section,
+        })
       }
     },
   },

@@ -323,7 +323,10 @@ export default Vue.extend({
       }
 
       if (Notification.permission === 'granted') {
-        this.$ga.event('home', 'send_notification', 'meta')
+        this.$gtag.event('send_notification', {
+          'event_category': 'home',
+          'event_label': 'meta',
+        })
         this.notificationsAllowed = true
 
         const sw = await navigator.serviceWorker.ready
@@ -333,7 +336,9 @@ export default Vue.extend({
 
         await Promise.all(this.currentEvents.map(async (event) => {
           const logAndNull = (e) => {
-            this.$ga.exception('cannot load image: ' + e.message)
+            this.$gtag.exception({
+              description: 'cannot load image: ' + e.message,
+            })
             console.log('cannot load image', e.message)
             return {}
           }
@@ -358,7 +363,10 @@ export default Vue.extend({
       this.error = undefined
 
       if (!this.tagRegex.test(this.cleanedTag)) {
-        this.$ga.event('player', 'search', 'error_invalid')
+        this.$gtag.event('search', {
+          'event_category': 'player',
+          'event_label': 'error_invalid',
+        })
         this.error = 'This is not a tag'
         const dropdown = this.$refs['help-dropdown'] as HTMLElement
         dropdown.setAttribute('open', '')
@@ -373,14 +381,25 @@ export default Vue.extend({
         this.addLastPlayer(this.player)
       } catch (error) {
         if (error.response !== undefined && error.response.status === 404) {
-          this.$ga.event('player', 'search', 'error_notfound')
+          this.$gtag.event('search', {
+            'event_category': 'player',
+            'event_label': 'error_notfound',
+          })
           this.error = 'This tag does not exist'
         } else if (error.response !== undefined && error.response.status === 429) {
-          this.$ga.event('player', 'search', 'error_timeout')
+          this.$gtag.event('search', {
+            'event_category': 'player',
+            'event_label': 'error_timeout',
+          })
           this.error = 'Could not communicate with the Brawl Stars API, try again?'
         } else {
-          this.$ga.exception('cannot get player: ' + error.message)
-          this.$ga.event('player', 'search', 'error_api')
+          this.$gtag.exception({
+            description: 'cannot get player: ' + error.message,
+          })
+          this.$gtag.event('search', {
+            'event_category': 'player',
+            'event_label': 'error_api',
+          })
           this.error = 'Brawl Stars API is not available right now, try again later'
         }
         return
@@ -388,7 +407,10 @@ export default Vue.extend({
         this.loading = false
       }
 
-      this.$ga.event('player', 'search', 'success')
+      this.$gtag.event('search', {
+        'event_category': 'player',
+        'event_label': 'success',
+      })
       if (this.cookiesAllowed) {
         document.cookie = `usertag=${this.cleanedTag}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
@@ -396,7 +418,10 @@ export default Vue.extend({
     },
     trackScroll(visible, element, section) {
       if (visible) {
-        this.$ga.event('home', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'home',
+          'event_label': section,
+        })
       }
     },
     ...mapMutations({

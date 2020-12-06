@@ -82,7 +82,10 @@ export default Vue.extend({
   },
   methods: {
     done() {
-      this.$ga.event('tierlist', 'click', 'share')
+      this.$gtag.event('click', {
+        'event_category': 'tierlist',
+        'event_label': 'share',
+      })
     },
   },
 })

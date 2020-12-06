@@ -20,7 +20,10 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons'
 export default Vue.extend({
   methods: {
     async clickInstall() {
-      this.$ga.event('app', 'click', 'install_header')
+      this.$gtag.event('click', {
+        'event_category': 'app',
+        'event_label': 'install_header',
+      })
       await this.install()
     },
     ...mapActions({

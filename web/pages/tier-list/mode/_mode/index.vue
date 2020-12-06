@@ -91,7 +91,7 @@
         <button
           v-show="!showAllMaps"
           class="button button--md button--secondary"
-          @click="showAllMaps = true; $ga.event('meta_mode', 'load_more')"
+          @click="expandMaps()"
         >
           Show All {{ modeName }} Maps
         </button>
@@ -270,9 +270,18 @@ export default Vue.extend({
     }),
   },
   methods: {
+    expandMaps() {
+      this.showAllMaps = true
+      this.$gtag.event('load_more', {
+        'event_category': 'meta_mode',
+      })
+    },
     trackScroll(visible: boolean, element: any, section: string) {
       if (visible) {
-        this.$ga.event('mode_meta', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'mode_meta',
+          'event_label': section,
+        })
       }
     },
   },

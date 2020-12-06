@@ -40,7 +40,10 @@ export default Vue.extend({
   methods: {
     trackScroll(visible: boolean, element: any): void {
       if (visible && this.trackingPageId != undefined && this.trackingId != undefined) {
-        this.$ga.event(this.trackingPageId, 'scroll', this.trackingId)
+        this.$gtag.event('scroll', {
+          'event_category': this.trackingPageId,
+          'event_label': this.trackingId,
+        })
       }
     },
   },

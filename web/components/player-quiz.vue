@@ -500,7 +500,10 @@ export default Vue.extend({
     restart() {
       this.step = 0
       this.showFullDescription = false
-      this.$ga.event('quiz', 'click', 'restart')
+      this.$gtag.event('click', {
+        'event_category': 'quiz',
+        'event_label': 'restart',
+      })
     },
     async share() {
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
@@ -510,10 +513,16 @@ export default Vue.extend({
           text: `My Brawler personality is ${this.result}! What's yours?`,
           url: 'https://brawltime.ninja',
         })
-        this.$ga.event('quiz', 'click', 'share')
+        this.$gtag.event('click', {
+          'event_category': 'quiz',
+          'event_label': 'share',
+        })
       } catch (err) {
         console.error(err);
-        this.$ga.event('quiz', 'click', 'share_error')
+        this.$gtag.event('click', {
+          'event_category': 'quiz',
+          'event_label': 'share_error',
+        })
       }
     },
     ...mapMutations({
@@ -526,7 +535,11 @@ export default Vue.extend({
       this.step = 5
     },
     step(s: number) {
-      this.$ga.event('quiz', 'step', s.toString())
+      this.$gtag.event('step', {
+        'event_category': 'quiz',
+        'event_label': s.toString(),
+        'value': s,
+      })
     },
   },
 })

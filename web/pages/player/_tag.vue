@@ -398,17 +398,26 @@ export default Vue.extend({
       await this.refreshPlayer()
     },
     dismissInstall() {
-      this.$ga.event('app', 'dismiss', 'install_banner')
+      this.$gtag.event('dismiss', {
+        'event_category': 'app',
+        'event_label': 'install_banner',
+      })
       this.clearInstallPrompt()
       this.dismissInstallBanner()
     },
     async clickInstall() {
-      this.$ga.event('app', 'click', 'install_banner')
+      this.$gtag.event('click', {
+        'event_category': 'app',
+        'event_label': 'install_banner',
+      })
       await this.install()
     },
     trackScroll(visible, entry, section) {
       if (visible) {
-        this.$ga.event('profile', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'profile',
+          'event_label': section,
+        })
       }
     },
     ...mapMutations({

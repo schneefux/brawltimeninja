@@ -61,10 +61,16 @@ export default {
       this.tagValid = this.tagRegex.test(this.cleanedTag)
 
       if (this.tagValid) {
-        this.$ga.event('embed', 'search', 'success')
+        this.$gtag.event('search', {
+          'event_category': 'embed',
+          'event_label': 'success',
+        })
       } else {
         event.preventDefault()
-        this.$ga.event('embed', 'search', 'error_invalid')
+        this.$gtag.event('search', {
+          'event_category': 'embed',
+          'event_label': 'error_invalid',
+        })
       }
 
       return this.tagValid

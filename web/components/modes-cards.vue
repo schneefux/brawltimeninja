@@ -18,7 +18,7 @@
       <button
         v-show="!showAllModes"
         class="button button--md button--secondary"
-        @click="showAllModes = true; $ga.event('brawler_meta', 'load_more')"
+        @click="expandModes()"
       >
         Show All Modes
       </button>
@@ -39,6 +39,14 @@ export default Vue.extend({
   fetchDelay: 0,
   async fetch() {
     this.modes = await this.$clicker.queryAllModes()
+  },
+  methods: {
+    expandModes() {
+      this.showAllModes = true
+      this.$gtag.event('load_more', {
+        'event_category': 'brawler_meta',
+      })
+    },
   },
 })
 </script>

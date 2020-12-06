@@ -11,8 +11,15 @@ import Vue from 'vue'
 export default Vue.extend({
   mounted() {
     const adsBlocked = (<any>this.$refs['adblock-bait']).clientHeight === 0
-    this.$ga.set('dimension2', !adsBlocked)
-    this.$ga.event('ads', 'blocked', adsBlocked.toString(), <any>{ nonInteraction: true })
+    this.$gtag.customMap({
+      'dimension2': (!adsBlocked).toString(),
+    })
+    this.$gtag.event('blocked', {
+      'event_category': 'ads',
+      'event_label': adsBlocked.toString(),
+      'value': adsBlocked ? 1 : 0,
+      'non_interaction': true,
+    })
   },
 })
 </script>

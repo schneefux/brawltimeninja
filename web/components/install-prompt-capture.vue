@@ -17,7 +17,10 @@ export default Vue.extend({
   },
   methods: {
     installed() {
-      this.$ga.event('app', 'install')
+      this.$gtag.event('install', {
+        'event_category': 'app',
+        'event_label': 'install',
+      })
     },
     ...mapMutations({
       setInstallPrompt: 'setInstallPrompt',

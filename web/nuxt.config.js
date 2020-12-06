@@ -69,13 +69,13 @@ export default {
   plugins: [
     { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
-    { src: '~/plugins/analytics', mode: 'client' },
+    { src: '~/plugins/gtag', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/slider', mode: 'client' },
     { src: '~/plugins/plotly', mode: 'client' },
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/scrollto', mode: 'client' },
-    { src: '~/plugins/lazy-hydrate' },
+    // { src: '~/plugins/lazy-hydrate' },
     { src: '~/plugins/clicker' },
     { src: '~/plugins/modern' }
   ],

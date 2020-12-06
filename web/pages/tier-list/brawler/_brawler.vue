@@ -229,7 +229,10 @@ export default Vue.extend({
   methods: {
     trackScroll(visible: boolean, element: any, section: string): void {
       if (visible) {
-        this.$ga.event('brawler', 'scroll', section)
+        this.$gtag.event('scroll', {
+          'event_category': 'brawler',
+          'event_label': section,
+        })
       }
     },
   },
