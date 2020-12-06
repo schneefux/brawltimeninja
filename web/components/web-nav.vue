@@ -3,7 +3,7 @@
     <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
       <nuxt-link
         to="/"
-        class="font-semibold text-xl text-white tracking-tighter"
+        class="font-semibold text-xl text-white tracking-tighter leading-tight"
         prefetch
       >
         Brawl Time Ninja
@@ -12,7 +12,7 @@
         <install-button></install-button>
         <button
           v-show="menuButtonVisible"
-          class="ml-4 px-2 py-1 border rounded border-primary-light text-primary-lightest"
+          class="ml-4 px-2 py-1 border rounded border-primary-light text-primary-lightest leading-none"
           @click="openMenu"
         >
           Menu

@@ -12,7 +12,7 @@
     >
       <font-awesome-icon
         :icon="link.icon"
-        class="w-6 h-6 p-px"
+        class="w-6 h-6"
       ></font-awesome-icon>
       <span class="text-xs leading-none">
         {{ link.name }}

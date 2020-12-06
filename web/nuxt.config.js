@@ -208,6 +208,6 @@ export default {
     // reduce size
     useLayers: false,
     useLayersText: false,
-    addCss: false,
+    addCss: true,
   },
 }
