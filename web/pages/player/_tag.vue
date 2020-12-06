@@ -12,7 +12,7 @@
     </client-only>
 
     <div
-      class="section-heading relative"
+      class="mt-4 relative"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
         once: true,
@@ -32,14 +32,13 @@
       </h1>
     </div>
 
-    <div class="section leading-tight text-center">
-      <player-hype-stats
-        :player="player"
-        :hours-leaderboard="hoursLeaderboard"
-        :enable-clicker-stats="enableClickerStats"
-        :battle-totals="battleTotals"
-      ></player-hype-stats>
-    </div>
+    <player-hype-stats
+      :player="player"
+      :hours-leaderboard="hoursLeaderboard"
+      :enable-clicker-stats="enableClickerStats"
+      :battle-totals="battleTotals"
+      class="leading-tight text-center mt-6"
+    ></player-hype-stats>
 
     <div
       v-observe-visibility="{
@@ -259,28 +258,17 @@
       ></player-brawlers>
     </player-teaser-card>
 
-    <div
+    <page-section
       v-if="relevantGuides.length > 0"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'articles'),
-        once: true,
-      }"
-      class="w-full section-heading"
-    >
-      <h2 class="text-2xl font-semibold">
-        Guides from the Blog
-      </h2>
-    </div>
-
-    <div
-      v-if="relevantGuides.length > 0"
-      class="section"
+      title="Guides from the Blog"
+      tracking-id="articles"
+      tracking-page-id="profile"
     >
       <blogroll
         :posts="relevantGuides"
         topic="guides"
-      />
-    </div>
+      ></blogroll>
+    </page-section>
   </page>
 </template>
 

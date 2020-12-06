@@ -12,7 +12,7 @@
       />
     </client-only>
 
-    <div class="section flex flex-wrap justify-center">
+    <div class="flex flex-wrap justify-center">
       <map-best-brawlers-card
         v-for="event in events"
         :key="event.id"

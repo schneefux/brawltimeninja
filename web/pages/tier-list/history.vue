@@ -2,49 +2,28 @@
   <page title="Brawl Stars Time Capsule">
     <p>See how the Meta evolved over time.</p>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'graph'),
-        once: true,
-      }"
+    <page-section
+      title="Game Mode Popularity"
+      tracking-id="graph"
+      page-tracking-id="meta_history"
     >
-      <h2 class="page-h2">Game Mode Popularity</h2>
-    </div>
+      <modes-over-time></modes-over-time>
+    </page-section>
 
-    <div class="section flex justify-center">
-      <modes-over-time
-        class="w-full"
-      ></modes-over-time>
-    </div>
-
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'graph'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2">State of the Meta</h2>
-    </div>
-
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
-      class="section flex flex-wrap justify-center"
+    <page-section
+      title="State of the Meta"
+      tracking-id="graph"
+      page-tracking-id="meta_history"
     >
       <season-slider
         v-model="selectedSeason"
-        class="w-full"
       ></season-slider>
 
       <map-detail-card
         :season="selectedSeason"
         class="mx-auto"
       ></map-detail-card>
-    </div>
+    </page-section>
   </page>
 </template>
 
@@ -63,19 +42,6 @@ export default Vue.extend({
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  watch: {
-    selectedSeason: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string): void {
-      if (visible) {
-        this.$ga.event('meta_history', 'scroll', section)
-      }
-    },
   },
 })
 </script>

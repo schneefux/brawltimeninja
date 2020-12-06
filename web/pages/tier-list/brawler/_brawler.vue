@@ -1,54 +1,56 @@
 <template>
   <page :title="brawlerName">
-    <div class="section flex flex-wrap justify-center">
-      <brawler-base-stats
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-      ></brawler-base-stats>
+    <page-section>
+      <div class="flex flex-wrap justify-center">
+        <brawler-base-stats
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+        ></brawler-base-stats>
 
-      <brawler-starpower-stats
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'starpowers'),
-          once: true,
-        }"
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-        kind="starpowers"
-      ></brawler-starpower-stats>
+        <brawler-starpower-stats
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'starpowers'),
+            once: true,
+          }"
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+          kind="starpowers"
+        ></brawler-starpower-stats>
 
-      <brawler-starpower-stats
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'gadgets'),
-          once: true,
-        }"
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-        kind="gadgets"
-      ></brawler-starpower-stats>
+        <brawler-starpower-stats
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'gadgets'),
+            once: true,
+          }"
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+          kind="gadgets"
+        ></brawler-starpower-stats>
 
-      <p class="mt-4">
-        Info:
-        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
-      </p>
+        <p class="mt-4">
+          Info:
+          Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
+        </p>
 
-      <div class="mt-2 w-full flex justify-end">
-        <nuxt-link
-          class="button md:button--md button--secondary"
-          to="/tier-list/starpowers"
-          prefetch
-        >
-          Open Star Power Tier List
-        </nuxt-link>
+        <div class="mt-2 w-full flex justify-end">
+          <nuxt-link
+            class="button md:button--md button--secondary"
+            to="/tier-list/starpowers"
+            prefetch
+          >
+            Open Star Power Tier List
+          </nuxt-link>
 
-        <nuxt-link
-          class="button md:button--md ml-3 button--secondary"
-          to="/tier-list/gadgets"
-          prefetch
-        >
-          Open Gadget Tier List
-        </nuxt-link>
+          <nuxt-link
+            class="button md:button--md ml-3 button--secondary"
+            to="/tier-list/gadgets"
+            prefetch
+          >
+            Open Gadget Tier List
+          </nuxt-link>
+        </div>
       </div>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense
@@ -61,38 +63,22 @@
       />
     </client-only>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'synergies'),
-        once: true,
-      }"
+    <page-section
+      :title="'Synergies for ' + brawlerName"
+      tracking-id="synergies"
+      tracking-page-id="brawler"
     >
-      <h2 class="page-h2">
-        Synergies for {{ brawlerName }}
-      </h2>
-    </div>
-
-    <div class="section">
       <brawler-synergies-card
         :brawler="brawlerName"
         class="mx-auto"
       ></brawler-synergies-card>
-    </div>
+    </page-section>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'current-maps'),
-        once: true,
-      }"
+    <page-section
+      :title="'Current Maps for ' + brawlerName"
+      tracking-id="current-maps"
+      tracking-page-id="brawler"
     >
-      <h2 class="page-h2">
-        Current Maps for {{ brawlerName }}
-      </h2>
-    </div>
-
-    <div class="section">
       <brawler-active-events
         :show-all-maps="showAllMaps"
         :brawler-name="brawlerName"
@@ -114,42 +100,27 @@
           Open Map Tier Lists
         </nuxt-link>
       </div>
-    </div>
+    </page-section>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'trends'),
-        once: true,
-      }"
+    <page-section
+      :title="brawlerName + ' Trends'"
+      tracking-id="trends"
+      tracking-page-id="brawler"
     >
-      <h2 class="page-h2">
-        {{ brawlerName }} Trends
-      </h2>
-      <p>
+      <p slot="description">
         See how {{ brawlerName }} has performed this month.
       </p>
-    </div>
 
-    <div class="section">
       <brawler-trends-card
         :brawler="brawlerName"
       ></brawler-trends-card>
-    </div>
+    </page-section>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'trophy-graphs'),
-        once: true,
-      }"
+    <page-section
+      :title="brawlerName + ' Statistics by Trophies'"
+      tracking-id="trophy-graphs"
+      tracking-page-id="brawler"
     >
-      <h2 class="page-h2">
-        {{ brawlerName }} Statistics by Trophies
-      </h2>
-    </div>
-
-    <div class="section">
       <brawler-trophy-graphs
         :brawler-name="brawlerName"
       ></brawler-trophy-graphs>
@@ -169,21 +140,13 @@
           Open Brawler Tier List
         </nuxt-link>
       </div>
-    </div>
+    </page-section>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'modes'),
-        once: true,
-      }"
+    <page-section
+      :title="'Best Modes for ' + brawlerName"
+      tracking-id="modes"
+      tracking-page-id="brawler"
     >
-      <h2 class="page-h2">
-        Best Modes for {{ brawlerName }}
-      </h2>
-    </div>
-
-    <div class="section">
       <brawler-modes-stats
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
@@ -204,7 +167,7 @@
           Show More
         </button>
       </div>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense

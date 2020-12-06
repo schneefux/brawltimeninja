@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="section items-center justify-center flex flex-wrap">
+    <div class="items-center justify-center flex flex-wrap">
       <div class="mx-auto md:mx-0 flex">
         <dl>
           <dd ref="counter-hours" class="text-5xl text-secondary font-bold">
@@ -57,17 +57,16 @@
       </dl>
     </div>
 
-    <div class="absolute w-16 top-0 left-0 z-0 -mt-2 md:-ml-8">
-      <player-sharepic
-        :player="player"
-        :win-rate="winRate"
-        :total-battles="totalBattles"
-        :account-rating="accountRating"
-        :history="history"
-      ></player-sharepic>
-    </div>
+    <player-sharepic
+      :player="player"
+      :win-rate="winRate"
+      :total-battles="totalBattles"
+      :account-rating="accountRating"
+      :history="history"
+      class="absolute w-16 top-0 left-0 z-0 -mt-2"
+    ></player-sharepic>
 
-    <div class="section bigstat-wrapper">
+    <div class="bigstat-wrapper">
       <dl
         v-if="player.club.tag != undefined"
         class="bigstat-container"

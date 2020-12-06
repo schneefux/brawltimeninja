@@ -10,7 +10,7 @@
         data-ad-format="auto"
         data-full-width-responsive="yes"
         ins-class="mt-3"
-      />
+      ></adsense>
     </client-only>
 
     <div class="mt-3 overflow-x-auto flex md:justify-center md:flex-wrap">
@@ -24,7 +24,7 @@
       </nuxt-link>
     </div>
 
-    <div class="section flex justify-center">
+    <div class="flex justify-center">
       <card :title="`Best Players by ${metricName}`">
         <template v-slot:content>
           <p class="mb-1">

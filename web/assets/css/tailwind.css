@@ -114,14 +114,6 @@
     @apply text-left;
   }
 
-  .section-heading {
-    @apply mt-8;
-  }
-
-  .section {
-    @apply mt-4 md:mx-8;
-  }
-
   .link {
     @apply text-secondary underline;
     text-decoration-color: theme('colors.primary');
@@ -262,50 +254,6 @@
 
   .brawler-avatar__stats {
     @apply text-xs whitespace-nowrap tracking-tighter text-center px-px;
-  }
-
-  /** addition to .container */
-  .page-h2 {
-    @apply text-2xl font-semibold;
-  }
-
-  .page-h3 {
-    @apply text-xl font-semibold;
-  }
-
-  .subpage {
-    @apply -mx-2 p-2 bg-gray-800 rounded;
-  }
-
-  .subpage-back {
-    top: calc(54px + 0.5rem - 1px); /* collapsed menu height + space + some pixel fuckup */
-    @apply sticky text-right z-20;
-    @apply button button--md;
-  }
-
-  /* on desktop, turn container into a fullscreen modal */
-  @screen md {
-    .subpage-wrapper {
-      @apply fixed inset-0 z-50 bg-opacity-75 bg-gray-800;
-    }
-
-    .subpage {
-      @apply mx-auto mb-auto my-32 max-w-5xl relative px-6 pb-4;
-    }
-
-    .subpage__title {
-      @apply pb-3;
-    }
-
-    .subpage__content {
-      /* 100% - margin top/bottom - title height */
-      @apply overflow-y-auto;
-      max-height: calc(100vh - 2*8rem - 6.5rem);
-    }
-
-    .subpage-back {
-      @apply absolute top-0 left-0;
-    }
   }
 
   /** ad root-class */

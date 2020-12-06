@@ -21,29 +21,31 @@
       />
     </client-only>
 
-    <div class="section flex flex-wrap justify-center items-center">
-      <map-detail-card
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'widget'),
-          once: true,
-        }"
-        :mode="event.mode"
-        :map="event.map"
-        :id="event.id"
-        :timestamp="event.timestamp"
-      ></map-detail-card>
+    <page-section>
+      <div class="flex flex-wrap justify-center items-center">
+        <map-detail-card
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'widget'),
+            once: true,
+          }"
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+          :timestamp="event.timestamp"
+        ></map-detail-card>
 
-      <map-leaderboard-card
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'leaderboard'),
-          once: true,
-        }"
-        :mode="event.mode"
-        :map="event.map"
-        :id="event.id"
-        :timestamp="event.timestamp"
-      ></map-leaderboard-card>
-    </div>
+        <map-leaderboard-card
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'leaderboard'),
+            once: true,
+          }"
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+          :timestamp="event.timestamp"
+        ></map-leaderboard-card>
+      </div>
+    </page-section>
 
     <div class="flex justify-center">
       <card
@@ -73,23 +75,19 @@
       :event="event"
     ></nuxt-child>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'maps'),
-        once: true,
-      }"
+    <page-section
+      :title="event.modeName + ' Tier List'"
+      tracking-id="maps"
+      tracking-page-id="map_meta"
     >
-      <h2 class="page-h2">{{ event.modeName }} Tier List</h2>
-      <p>Compare the {{ event.map }} Tier List with the overall {{ event.modeName }} Tier List.</p>
-    </div>
+      <p slot="description">Compare the {{ event.map }} Tier List with the overall {{ event.modeName }} Tier List.</p>
 
-    <div class="section flex justify-center">
       <map-best-brawlers-card
         :mode="event.mode"
+        class="mx-auto"
         link
       ></map-best-brawlers-card>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense

@@ -1,91 +1,99 @@
 <template>
   <page title="Brawl Stars Guides">
-    <div
+    <page-section
       v-if="faqs.length > 0"
-      class="section-heading"
+      title="Frequently asked Questions"
+      tracking-id="faq"
+      page-tracking-id="guides"
     >
-      <h2 class="page-h2">
-        Frequently asked Questions
-      </h2>
-    </div>
-
-    <div
-      v-if="faqs.length > 0"
-      class="section flex flex-wrap justify-center"
-    >
-      <div
-        v-for="faq in faqs"
-        :key="faq.id"
-        class="card-wrapper"
-      >
-        <article
-          class="link-card w-full md:w-80 h-full"
+      <div class="flex flex-wrap justify-center">
+        <card
+          v-for="faq in faqs"
+          :key="faq.id"
+          :title="faq.title"
+          :title-link="`/faq/${faq.slug}`"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
+          light
+          sm
         >
+          <p
+            slot="content"
+            itemprop="abstract"
+          >
+            {{ faq.question }}
+          </p>
+
           <nuxt-link
+            slot="actions"
             :to="`/faq/${faq.slug}`"
             class="link-light"
             itemprop="url"
             prefetch
           >
-            <h2 class="page-h2">
-              <span itemprop="headline">{{ faq.title }}</span>
-            </h2>
+            Read
           </nuxt-link>
-          <p class="mt-3" itemprop="abstract">
-            {{ faq.question }}
-          </p>
-        </article>
+        </card>
       </div>
-    </div>
+    </page-section>
 
-    <div class="section-heading">
-      <h2 class="page-h2">
-        Brawl Stars Guides
-      </h2>
-    </div>
-
-    <div class="section">
-      <div
-        v-for="(post, index) in posts"
-        :key="post.title"
-      >
-        <InFeedAdsense
-          v-if="index == 3"
-          data-ad-layout-key="-6f+dk+1s-h+2d"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="6887845661"
-        />
-
-        <article
-          class="link-card my-4 max-w-xl mx-auto"
-          itemscope
-          itemtype="http://schema.org/AnalysisNewsArticle"
+    <page-section
+      title="Brawl Stars Guides"
+      tracking-id="guides"
+      page-tracking-id="guides"
+    >
+      <div class="flex flex-wrap justify-center">
+        <div
+          v-for="(post, index) in posts"
+          :key="post.title"
+          class="contents"
         >
-          <nuxt-link
-            :to="`/blog/guides/${post.slug}`"
-            class="link-light"
-            itemprop="url"
-            prefetch
+          <client-only>
+            <in-feed-adsense
+              v-if="index == 3"
+              data-ad-layout-key="-6f+dk+1s-h+2d"
+              data-ad-client="ca-pub-6856963757796636"
+              data-ad-slot="6887845661"
+              class="w-full"
+            ></in-feed-adsense>
+          </client-only>
+
+          <card
+            :title="post.title"
+            :title-link="`/blog/guides/${post.slug}`"
+            itemscope
+            itemtype="http://schema.org/AnalysisNewsArticle"
+            light
+            sm
           >
-            <h2 class="text-2xl font-semibold">
-              <span itemprop="headline">{{ post.title }}</span>
-              <span class="text-sm block mt-1 md:float-right align-middle text-gray-700" rel="author">{{ post.author }}</span>
-            </h2>
-          </nuxt-link>
-          <p class="mt-3" itemprop="abstract">
-            {{ post.description }}
-          </p>
-          <div
-            v-show="'image' in post"
-            :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
-            class="h-48 bg-cover bg-center mt-6"
-            itemprop="thumbnailUrl"
-          />
-        </article>
+            <div
+              slot="infobar"
+              v-if="'image' in post"
+              :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
+              class="h-48 bg-cover bg-center"
+              itemprop="thumbnailUrl"
+            ></div>
+
+            <p
+              slot="content"
+              itemprop="abstract"
+            >
+              {{ post.description }}
+            </p>
+
+            <nuxt-link
+              slot="actions"
+              :to="`/blog/guides/${post.slug}`"
+              class="link-light"
+              itemprop="url"
+              prefetch
+            >
+              Read
+            </nuxt-link>
+          </card>
+        </div>
       </div>
-    </div>
+    </page-section>
   </page>
 </template>
 

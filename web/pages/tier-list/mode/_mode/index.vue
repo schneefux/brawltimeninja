@@ -12,31 +12,24 @@
       />
     </client-only>
 
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
-      class="section flex justify-center"
+    <page-section
+      tracking-id="widget"
+      tracking-page-id="mode_meta"
     >
       <map-detail-card
         :mode="mode"
         :timestamp="totalTimestamp"
+        class="mx-auto"
       ></map-detail-card>
-    </div>
+    </page-section>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'maps'),
-        once: true,
-      }"
+    <page-section
+      title="Map Tier Lists"
+      tracking-id="maps"
+      tracking-page-id="mode_meta"
     >
-      <h2 class="page-h2">Map Tier Lists</h2>
-      <p>Open on a Map to view the Tier List for it.</p>
-    </div>
+      <p slot="description">Open on a Map to view the Tier List for it.</p>
 
-    <div class="section">
       <div class="overflow-x-auto flex md:justify-center md:flex-wrap">
         <lazy
           v-for="(map, index) in maps"
@@ -103,7 +96,7 @@
           Show All {{ modeName }} Maps
         </button>
       </div>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense
@@ -116,17 +109,11 @@
       />
     </client-only>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'stats'),
-        once: true,
-      }"
+    <page-section
+      :title="'Tier List for all ' + modeName + ' Maps'"
+      tracking-id="stats"
+      tracking-page-id="mode_meta"
     >
-      <h2 class="page-h2">Tier List for all {{ modeName }} Maps</h2>
-    </div>
-
-    <div class="section">
       <meta-slicers
         v-model="slices"
         :sample="totalSampleSize"
@@ -145,7 +132,7 @@
         @measurements="ms => selectedMeasurements = ms"
         ga-category="mode_meta"
       ></meta-views>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense
@@ -164,6 +151,7 @@
 import { differenceInDays, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import pageSection from '~/components/page-section.vue'
 import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal, kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '../../../../lib/util'
 

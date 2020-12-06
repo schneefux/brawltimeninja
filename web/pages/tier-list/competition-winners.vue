@@ -1,6 +1,6 @@
 <template>
   <page title="All Competition Winner Maps">
-    <div class="section flex flex-wrap justify-center">
+    <div class="flex flex-wrap justify-center">
       <lazy
         v-for="(map, index) in maps"
         :key="map.mode + map.map"

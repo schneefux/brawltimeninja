@@ -13,19 +13,22 @@
       />
     </client-only>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'current_events'),
-        once: true,
-      }"
+    <page-section
+      title="Mode Tier Lists"
+      tracking-id="modes"
+      tracking-page-id="maps"
     >
-      <h2 class="page-h2">Live Now</h2>
-    </div>
+      <p slot="description">Open a Mode to view the Tier List for it.</p>
+      <modes-cards></modes-cards>
+    </page-section>
 
-    <div class="section flex flex-wrap justify-center">
+    <page-section
+      title="Live Now"
+      tracking-id="current_events"
+      tracking-page-id="maps"
+    >
       <active-events eager></active-events>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense
@@ -38,27 +41,23 @@
       />
     </client-only>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'upcoming_events'),
-        once: true,
-      }"
+    <page-section
+      title="Upcoming Events"
+      tracking-id="upcoming_events"
+      tracking-page-id="maps"
     >
-      <h2 class="page-h2">Upcoming Events</h2>
-    </div>
-
-    <div class="section flex flex-wrap justify-center">
-      <lazy-map-best-brawlers-card
-        v-for="event in upcomingEvents"
-        :key="event.id"
-        :id="event.id"
-        :mode="unformatMode(event.mode)"
-        :map="event.map"
-        :start-date="event.start"
-        link
-      ></lazy-map-best-brawlers-card>
-    </div>
+      <div class="flex flex-wrap justify-center">
+        <lazy-map-best-brawlers-card
+          v-for="event in upcomingEvents"
+          :key="event.id"
+          :id="event.id"
+          :mode="unformatMode(event.mode)"
+          :map="event.map"
+          :start-date="event.start"
+          link
+        ></lazy-map-best-brawlers-card>
+      </div>
+    </page-section>
 
     <client-only>
       <adsense

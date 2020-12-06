@@ -1,17 +1,12 @@
 <template>
-  <div>
-    <div
-      class="section"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'stats'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2 text-center">Tier List for {{ event.modeName }} - {{ event.map }}</h2>
-      <p class="mt-1 md:text-center">
-        Explore exclusive Brawl Stars Brawler statistics.
-      </p>
-    </div>
+  <page-section
+    :title="'Tier List for ' + event.modeName + ' - ' + event.map"
+    tracking-id="stats"
+    tracking-page-id="map_meta"
+  >
+    <p slot="description">
+      Explore exclusive Brawl Stars Brawler statistics.
+    </p>
 
     <meta-slicers
       v-model="slices"
@@ -31,7 +26,7 @@
       ga-category="map_meta"
       @measurements="ms => selectedMeasurements = ms"
     ></meta-views>
-  </div>
+  </page-section>
 </template>
 
 <script lang="ts">
@@ -148,13 +143,6 @@ export default Vue.extend({
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string) {
-      if (visible) {
-        this.$ga.event('map_meta', 'scroll', section)
-      }
-    },
   },
   scrollToTop: true,
 })

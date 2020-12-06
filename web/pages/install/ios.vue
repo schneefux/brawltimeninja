@@ -1,6 +1,6 @@
 <template>
   <page title="Adding Brawl Time Ninja to your Home Screen">
-    <ol class="section flex flex-wrap justify-center">
+    <ol class="flex flex-wrap justify-center">
       <li>
         <card
           title="1. Tap the &quot;Share&quot; Icon"

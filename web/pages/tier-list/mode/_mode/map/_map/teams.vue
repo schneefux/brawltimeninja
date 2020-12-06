@@ -1,17 +1,12 @@
 <template>
-  <div>
-    <div
-      class="section w-full"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'teams'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2 text-center">Best Teams for {{ event.modeName }} - {{ event.map }}</h2>
-      <p class="mt-1 md:text-center">
-        Discover Brawl Stars Team statistics enhanced with algorithms from Machine Learning.
-      </p>
-    </div>
+  <page-section
+    :title="'Best Teams for ' + event.modeName + ' - ' + event.map"
+    tracking-id="teams"
+    tracking-page-id="map_meta"
+  >
+    <p slot="description">
+      Discover Brawl Stars Team statistics enhanced with algorithms from Machine Learning.
+    </p>
 
     <meta-slicers
       v-model="slices"
@@ -96,7 +91,7 @@
         @click="page++"
       >Load More</button>
     </card>
-  </div>
+  </page-section>
 </template>
 
 <script lang="ts">

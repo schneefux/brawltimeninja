@@ -2,73 +2,21 @@
   <page title="Brawl Stars Brawler Tier List">
     <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'gadgets'),
-        once: true,
-      }"
+    <page-section
+      title="Gadget and Star Power Tier List"
+      tracking-id="gadgets"
+      tracking-page-id="brawler_meta"
     >
-      <h2 class="page-h2">Gadget and Star Power Tier List</h2>
-    </div>
+      <div class="flex flex-wrap justify-center">
+        <best-starpowers-card
+          kind="starpowers"
+        ></best-starpowers-card>
 
-    <div class="section flex flex-wrap justify-center">
-      <best-starpowers-card
-        kind="starpowers"
-      ></best-starpowers-card>
-
-      <best-starpowers-card
-        kind="gadgets"
-      ></best-starpowers-card>
-    </div>
-
-    <client-only>
-      <adsense
-        id="ezoic-pub-ad-placeholder-107"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="9201379700"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
-
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'modes'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2">Mode Tier Lists</h2>
-      <p>Open a Mode to view the Tier List for it.</p>
-    </div>
-
-    <div class="section">
-      <div class="overflow-x-auto flex md:flex-wrap md:justify-center">
-        <div
-          v-for="(mode, index) in modes"
-          :key="mode"
-          :class="{ 'md:hidden': !showAllModes && index >= 3 }"
-          class="mx-2"
-        >
-          <map-best-brawlers-card
-            :mode="mode"
-            link
-          ></map-best-brawlers-card>
-        </div>
+        <best-starpowers-card
+          kind="gadgets"
+        ></best-starpowers-card>
       </div>
-
-      <div class="mt-2 w-full text-right hidden md:block">
-        <button
-          v-show="!showAllModes"
-          class="button button--md button--secondary"
-          @click="showAllModes = true; $ga.event('brawler_meta', 'load_more')"
-        >
-          Show All Modes
-        </button>
-      </div>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense
@@ -81,15 +29,12 @@
       />
     </client-only>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
+    <page-section
+      title="State of the Meta"
+      tracking-id="widget"
+      tracking-page-id="brawler_meta"
     >
-      <h2 class="page-h2">State of the Meta</h2>
-      <p>
+      <p slot="description">
         Curious about the past?
         <nuxt-link
           to="/tier-list/history"
@@ -97,46 +42,36 @@
           prefetch
         >Explore the Time Capsule.</nuxt-link>
       </p>
-    </div>
 
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
-      class="section flex justify-center"
+      <map-detail-card
+        class="mx-auto"
+      ></map-detail-card>
+    </page-section>
+
+    <page-section
+      title="Tier List for all Maps and Modes"
+      tracking-id="widget"
+      tracking-page-id="brawler_meta"
     >
-      <map-detail-card></map-detail-card>
-    </div>
+      <meta-slicers
+        v-model="slices"
+        :sample="totalSampleSize"
+        :sample-min="100000"
+        :timestamp="totalTimestamp"
+        :loading="$fetchState.pending"
+        cube="map"
+        class="mx-auto"
+      ></meta-slicers>
 
-    <div
-      class="section-heading"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'stats'),
-        once: true,
-      }"
-    >
-      <h2 class="page-h2">Tier List for all Maps and Modes</h2>
-    </div>
-
-    <meta-slicers
-      v-model="slices"
-      :sample="totalSampleSize"
-      :sample-min="100000"
-      :timestamp="totalTimestamp"
-      :loading="$fetchState.pending"
-      cube="map"
-      class="mx-auto"
-    ></meta-slicers>
-
-    <meta-views
-      v-if="totalSampleSize > 0"
-      :entries="entries"
-      :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
-      :description="description"
-      ga-category="brawler_meta"
-      @measurements="ms => selectedMeasurements = ms"
-    ></meta-views>
+      <meta-views
+        v-if="totalSampleSize > 0"
+        :entries="entries"
+        :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
+        :description="description"
+        ga-category="brawler_meta"
+        @measurements="ms => selectedMeasurements = ms"
+      ></meta-views>
+    </page-section>
 
     <client-only>
       <adsense
@@ -173,8 +108,6 @@ export default Vue.extend({
   middleware: ['cached'],
   data() {
     return {
-      modes: [] as string[],
-      showAllModes: false,
       slices: this.$clicker.defaultSlices('map'),
       entries: [] as MetaGridEntry[],
       selectedMeasurements: ['winRateAdj'],
@@ -215,13 +148,6 @@ export default Vue.extend({
     }) as MetaGridEntry)
     this.totalSampleSize = data.totals.picks
     this.totalTimestamp = data.totals.timestamp
-  },
-  async asyncData({ $clicker }) {
-    const modes = await $clicker.queryAllModes()
-
-    return {
-      modes,
-    }
   },
   methods: {
     trackScroll(visible: boolean, element: any, section: string): void {

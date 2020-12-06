@@ -80,7 +80,7 @@
 
     <footer
       v-if="'actions' in $scopedSlots"
-      class="px-3 py-2 bg-gray-800 text-primary-lightest w-full font-semibold flex justify-end"
+      class="px-3 py-2 text-primary-lightest w-full font-semibold flex justify-end"
     >
       <slot name="actions"></slot>
     </footer>
