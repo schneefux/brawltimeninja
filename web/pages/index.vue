@@ -125,32 +125,12 @@
       />
     </client-only>
 
-    <div
+    <top-brawlers
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,
       }"
-      class="home-section container"
-    >
-      <div class="home-section-heading-container">
-        <div class="home-section-heading-left">
-          Best Brawlers
-        </div>
-        <div class="home-section-heading-right">
-          <nuxt-link
-            to="/tier-list/brawler"
-            class="link"
-            prefetch
-          >
-            Explore the Brawler Tier List
-          </nuxt-link>
-        </div>
-      </div>
-
-      <top-brawlers
-        class="home-section-content"
-      ></top-brawlers>
-      </div>
+    ></top-brawlers>
 
     <client-only>
       <adsense

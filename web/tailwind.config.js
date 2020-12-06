@@ -103,5 +103,9 @@ module.exports = {
     require('@tailwindcss/forms'),
     // for text shadows etc.
     require('tailwindcss-typography')({ }),
+    // for 'elevation-n'
+    require('tailwindcss-elevation')([], {
+      color: '#1a202c', // gray-900 = surface color
+    }),
   ],
 }

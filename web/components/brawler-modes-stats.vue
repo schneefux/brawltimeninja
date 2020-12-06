@@ -3,7 +3,10 @@
     <p>
       {{ description }}
     </p>
-    <div class="mt-2 overflow-x-auto flex md:justify-center md:flex-wrap">
+    <horizontal-scroller
+      class="mt-2"
+      expand-on-desktop
+    >
       <lazy
         v-for="(mode, index) in data"
         :key="mode.battle_event_mode"
@@ -28,7 +31,7 @@
           }"
         ></brawler-mode-stats>
       </lazy>
-    </div>
+    </horizontal-scroller>
   </div>
 </template>
 

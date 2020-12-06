@@ -1,7 +1,7 @@
 <template>
   <event-card
     :mode="mode"
-    size=""
+    elevation="2"
   >
     <div slot="content">
       <dl class="flex card__props">

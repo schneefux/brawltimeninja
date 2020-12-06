@@ -212,23 +212,24 @@
         :enable-clicker-stats="enableClickerStats"
       ></player-mode-winrates>
 
-      <template v-if="props.open">
-        <div class="mt-1 w-full flex justify-end">
-          <player-tips
-            :player="player"
-            :active-map-meta="activeMapMeta"
-            class="mr-3 button md:button--md"
-          ></player-tips>
+      <div
+        v-if="props.open"
+        class="mt-2 w-full flex justify-end"
+      >
+        <player-tips
+          :player="player"
+          :active-map-meta="activeMapMeta"
+          class="mr-3 button md:button--md"
+        ></player-tips>
 
-          <nuxt-link
-            class="button md:button--md button--secondary"
-            to="/tier-list/map"
-            prefetch
-          >
-            Open Map Tier List
-          </nuxt-link>
-        </div>
-      </template>
+        <nuxt-link
+          class="button md:button--md button--secondary"
+          to="/tier-list/map"
+          prefetch
+        >
+          Open Map Tier List
+        </nuxt-link>
+      </div>
     </player-teaser-card>
 
     <client-only>

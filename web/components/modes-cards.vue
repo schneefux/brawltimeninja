@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="overflow-x-auto flex md:flex-wrap md:justify-center">
+    <horizontal-scroller expand-on-desktop>
       <div
         v-for="(mode, index) in modes"
         :key="mode"
@@ -12,7 +12,7 @@
           link
         ></map-best-brawlers-card>
       </div>
-    </div>
+    </horizontal-scroller>
 
     <div class="mt-2 w-full text-right hidden md:block">
       <button

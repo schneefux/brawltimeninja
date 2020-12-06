@@ -1,41 +1,52 @@
 <template>
-  <div class="flex flex-wrap justify-center">
-    <div
-      v-for="brawler in data"
-      :key="brawler.brawler_name"
-      class="card-wrapper px-2"
-      itemscope
-      itemtype="http://schema.org/Person"
+  <card
+    :loading="$fetchState.pending"
+    title="Best Brawlers"
+    xxl
+  >
+    <horizontal-scroller
+      slot="content"
+      expand-on-desktop
     >
-      <router-link
-        class="block card card--dark prop-card md:prop-card-lg"
-        :to="`/tier-list/brawler/${brawler.id}`"
+      <div
+        v-if="$fetchState.pending"
+        class="w-full"
+        style="height: 68px;"
+      ></div>
+
+      <card
+        v-for="brawler in data"
+        :key="brawler.brawler_name"
+        :title="brawler.brawler_name"
+        :link="`/tier-list/brawler/${brawler.id}`"
+        :icon="'/brawlers/' + brawler.id + '/avatar'"
+        :icon-alt="brawler.brawler_name"
+        size="w-28"
+        elevation="2"
+        class="flex-shrink-0"
+        itemscope
+        itemtype="http://schema.org/Person"
+        dense
       >
-        <span class="prop-card-title md:prop-card-title-lg" itemprop="name">
-          {{ brawler.brawler_name }}
-        </span>
-        <media-img
-          :path="'/brawlers/' + brawler.id + '/avatar'"
-          :alt="brawler.brawler_name"
-          size="160"
-          clazz="prop-card-image md:prop-card-image-lg"
-          itemprop="image"
-        ></media-img>
-        <div
-          class="prop-card__content"
-          itemscope
-          itemtype="http://schema.org/QuantitativeValue"
+        <p
+          slot="content"
+          class="text-xs"
         >
-          <span class="card-prop-value" itemprop="value">
-            {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-          </span>
-          <span class="text-xs md:text-sm" itemprop="unitText">
-            {{ metaStatMaps.labels.winRate }}
-          </span>
-        </div>
-      </router-link>
-    </div>
-  </div>
+          {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
+          {{ metaStatMaps.labels.winRate }}
+        </p>
+      </card>
+    </horizontal-scroller>
+
+    <nuxt-link
+      slot="actions"
+      to="/tier-list/brawlers"
+      class="card__action"
+      prefetch
+    >
+      Open Brawler Tier List
+    </nuxt-link>
+  </card>
 </template>
 
 <script lang="ts">
@@ -50,6 +61,12 @@ interface Row {
 }
 
 export default Vue.extend({
+  props: {
+    limit: {
+      type: Number,
+      default: 5
+    },
+  },
   data() {
     return {
       data: [] as Row[],
@@ -66,7 +83,7 @@ export default Vue.extend({
       },
       {
         sort: { wins_zscore: 'desc' },
-        limit: 4,
+        limit: this.limit,
         cache: 60*60,
       })
     data.data.forEach(r => {
@@ -78,6 +95,9 @@ export default Vue.extend({
   computed: {
     metaStatMaps() {
       return metaStatMaps
+    },
+    mediaUrl() {
+      return process.env.mediaUrl
     },
   },
 })

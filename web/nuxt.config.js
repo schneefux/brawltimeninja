@@ -77,7 +77,7 @@ export default {
     { src: '~/plugins/scrollto', mode: 'client' },
     // { src: '~/plugins/lazy-hydrate' },
     { src: '~/plugins/clicker' },
-    { src: '~/plugins/modern' }
+    { src: '~/plugins/modern' },
   ],
 
   modules: [
@@ -148,6 +148,11 @@ export default {
 
   build: {
     extractCSS: true, // ~1 CSS per component
+    postcss: {
+      plugins: {
+        'postcss-color-function': {},
+      },
+    },
   },
 
   sitemap: {

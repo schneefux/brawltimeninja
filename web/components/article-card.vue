@@ -2,6 +2,7 @@
   <card
     :title="title"
     :subtitle="author != undefined ? 'written by ' + author : ''"
+    tag="article"
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
     light

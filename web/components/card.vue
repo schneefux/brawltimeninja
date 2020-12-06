@@ -1,23 +1,27 @@
 <template functional>
   <div
-    class="card-wrapper"
-    :class="[data.class, data.staticClass, props.size, {
-      'w-full xs:w-xs': props.xs,
-      'w-full sm:w-sm': props.sm,
-      'w-full md:w-md': props.md,
-      'w-full lg:w-lg': props.lg,
-      'w-full xl:w-xl': props.xl,
-      'w-full 2xl:w-2xl': props.xxl,
+    :class="['p-1', data.class, data.staticClass, props.size, {
+      'w-full max-w-xs': props.xs,
+      'w-full max-w-sm': props.sm,
+      'w-full max-w-md': props.md,
+      'w-full max-w-lg': props.lg,
+      'w-full max-w-xl': props.xl,
+      'w-full max-w-2xl': props.xxl,
     }]"
   >
     <accordeon
       v-if="props.pages != undefined"
       :pages="props.pages"
-      :class="['card', {
+      :class="['rounded', {
         'h-full': props.fullHeight,
-        'card--dark': !props.light,
-        'card--light': props.light,
-        'card--loading': props.loading,
+        'bg-dark-0': !props.light && props.elevation == 0,
+        'bg-dark-1': !props.light && props.elevation == 1,
+        'bg-dark-2': !props.light && props.elevation == 2,
+        'bg-gray-200 text-gray-900': props.light,
+        'elevation-0': props.elevation == 0,
+        'elevation-1': props.elevation == 1,
+        'elevation-2': props.elevation == 2,
+        'loading': props.loading,
       }]"
     >
       <template v-slot="accordeonSlotProps">
@@ -39,11 +43,16 @@
     <card-content
       v-else
       v-bind="data.attrs"
-      :class="['card', {
+      :class="['rounded', {
         'h-full': props.fullHeight,
-        'card--dark': !props.light,
-        'card--light': props.light,
-        'card--loading': props.loading,
+        'bg-dark-0': !props.light && props.elevation == 0,
+        'bg-dark-1': !props.light && props.elevation == 1,
+        'bg-dark-2': !props.light && props.elevation == 2,
+        'bg-gray-200 text-gray-900': props.light,
+        'elevation-0': props.elevation == 0,
+        'elevation-1': props.elevation == 1,
+        'elevation-2': props.elevation == 2,
+        'loading': props.loading,
       }]"
     >
       <template
@@ -80,6 +89,10 @@ export default Vue.extend({
       type: String, // class
       default: ''
     },
+    elevation: {
+      type: [Number, String],
+      default: 1,
+    },
     xs: {
       type: Boolean
     },
@@ -105,30 +118,35 @@ export default Vue.extend({
 })
 </script>
 
+<style lang="postcss">
+/* https://material.io/design/color/dark-theme.html#behavior */
+/* scoping this breaks the styles for some reason */
+/*
+  theme('colors.gray.900') does not work,
+  perhaps the colors plugin is executed before tailwind?
+*/
+.bg-dark-0 {
+  background-color: color(#1a202c blend(white 0%));
+}
+
+.bg-dark-1 {
+  background-color: color(#1a202c blend(white 5%));
+}
+
+.bg-dark-2 {
+  background-color: color(#1a202c blend(white 7%));
+}
+</style>
+
 <style lang="postcss" scoped>
-@responsive {
-  .w-xs {
-    width: 20rem;
-  }
+.loading {
+  @apply relative;
+}
 
-  .w-sm {
-    width: 24rem;
-  }
+.loading:before {
+  @apply absolute bottom-0 left-0 bg-primary h-1;
 
-  .w-md {
-    width: 28rem;
-  }
-
-  .w-lg {
-    width: 32rem;
-  }
-
-  .w-xl {
-    width: 36rem;
-  }
-
-  .w-2xl {
-    width: 38rem;
-  }
+  content: '';
+  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 </style>

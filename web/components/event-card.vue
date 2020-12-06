@@ -10,6 +10,7 @@
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
     :md="size == undefined"
     :loading="loading"
+    :elevation="elevation"
   >
     <media-img
       slot="preview"
@@ -64,6 +65,9 @@ export default Vue.extend({
     },
     loading: {
       type: Boolean
+    },
+    elevation: {
+      type: [Number, String],
     },
   },
   data() {

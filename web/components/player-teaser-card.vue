@@ -1,5 +1,5 @@
 <template functional>
-  <card :pages="props.pages" size="">
+  <card :pages="props.pages">
     <template v-slot:content="{open, page}">
       <div class="card__content">
         <h3 class="card__header">

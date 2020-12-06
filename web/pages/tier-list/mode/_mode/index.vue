@@ -30,7 +30,7 @@
     >
       <p slot="description">Open on a Map to view the Tier List for it.</p>
 
-      <div class="overflow-x-auto flex md:justify-center md:flex-wrap">
+      <horizontal-scroller expand-on-desktop>
         <lazy
           v-for="(map, index) in maps"
           :key="map.map"
@@ -85,7 +85,7 @@
             </template>
           </event-card>
         </lazy>
-      </div>
+      </horizontal-scroller>
 
       <div class="mt-2 w-full text-right hidden md:block">
         <button

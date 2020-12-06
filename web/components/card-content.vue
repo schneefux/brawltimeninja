@@ -1,90 +1,115 @@
 <template functional>
-  <section
-    :class="[data.class, data.staticClass]"
-    :style="data.staticStyle"
-  >
-    <div
-      v-if="'infobar' in $scopedSlots"
-      class="text-primary-lightest bg-gray-900 w-full px-2 py-1 text-lg font-semibold"
-    >
-      <slot name="infobar"></slot>
-    </div>
+  <wrapped-component :wrap="props.link != undefined">
+    <router-link
+      slot="wrapper"
+      :to="props.link || ''"
+      class="contents"
+    ></router-link>
 
-    <header
-      v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
-      :class="['w-full px-3 py-2 flex font-semibold items-center', (props.color !== undefined ? `bg-${props.color}` : '')]"
+    <component
+      :is="props.tag"
+      :class="[data.class, data.staticClass]"
+      :style="data.staticStyle"
+      v-bind="data.attrs"
     >
       <div
-        v-if="props.icon != undefined"
-        class="w-10 h-10 my-1 flex justify-center items-center mr-3"
+        v-if="'infobar' in $scopedSlots"
+        class="rounded-t text-primary-lightest bg-gray-900 w-full px-2 py-1 text-lg font-semibold"
       >
-        <media-img
-          :path="props.icon"
-          :alt="props.iconAlt"
-          size="120"
-        ></media-img>
+        <slot name="infobar"></slot>
       </div>
 
-      <div
-        v-if="props.title != undefined"
-        class="mr-auto"
+      <header
+        v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
+        :class="['w-full flex font-semibold items-center', (props.color !== undefined ? `bg-${props.color}` : ''), {
+          'px-3 py-2': !props.dense,
+          'px-2 py-1': props.dense,
+          'rounded-t': !('infobar' in $scopedSlots),
+        }]"
       >
-        <h1
-          v-if="props.title != undefined"
-          class="text-xl"
+        <div
+          v-if="props.icon != undefined"
+          :class="['flex justify-center items-center mr-3', {
+            'w-10 h-10 my-1': !props.dense,
+            'w-6 h-6 my-px': props.dense,
+          }]"
         >
-          <router-link
-            v-if="props.titleLink != undefined"
-            :to="props.titleLink"
-            class="block"
+          <media-img
+            :path="props.icon"
+            :alt="props.iconAlt"
+            size="120"
+          ></media-img>
+        </div>
+
+        <div
+          v-if="props.title != undefined"
+          class="mr-auto"
+        >
+          <h1
+            v-if="props.title != undefined"
+            :class="{
+              'text-xl': !props.dense,
+              'text-lg': props.dense
+            }"
           >
-            {{ props.title }}
-          </router-link>
-          <template v-else>
-            {{ props.title }}
-          </template>
-        </h1>
-        <h2
-          v-if="props.subtitle != undefined"
-          :class="{
-            'text-xl': props.subtitle.length < 20,
-            'text-xs': props.subtitle.length > 40,
-          }">
-          <router-link
-            v-if="props.subtitleLink != undefined"
-            :to="props.subtitleLink"
-            class="block"
+            <wrapped-component :wrap="props.titleLink != undefined">
+              <router-link
+                slot="wrapper"
+                :to="props.titleLink || ''"
+                class="contents"
+              ></router-link>
+
+              {{ props.title }}
+            </wrapped-component>
+          </h1>
+          <h2
+            v-if="props.subtitle != undefined"
+            :class="{
+              'text-xl': props.subtitle.length < 20,
+              'text-xs': props.subtitle.length > 40,
+            }"
           >
-            {{ props.subtitle }}
-          </router-link>
-          <template v-else>
-            {{ props.subtitle }}
-          </template>
-        </h2>
+            <wrapped-component :wrap="props.subtitleLink != undefined">
+              <router-link
+                slot="wrapper"
+                :to="props.subtitleLink || ''"
+                class="contents"
+              ></router-link>
+
+              {{ props.subtitle }}
+            </wrapped-component>
+          </h2>
+        </div>
+
+        <slot name="preview"></slot>
+      </header>
+
+      <div
+        v-if="'content' in $scopedSlots"
+        :class="[{
+          'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
+          'px-3 py-2': !props.dense,
+          'px-2 py-1': props.dense,
+          'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
+        }]"
+        :style="{
+          'background-image': props.background != undefined ? `url('${props.background}')` : undefined,
+        }"
+      >
+        <slot name="content"></slot>
       </div>
 
-      <slot name="preview"></slot>
-    </header>
-
-    <div
-      v-if="'content' in $scopedSlots"
-      :class="['px-3 py-2', {
-        'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
-      }]"
-      :style="{
-        'background-image': props.background != undefined ? `url('${props.background}')` : undefined,
-      }"
-    >
-      <slot name="content"></slot>
-    </div>
-
-    <footer
-      v-if="'actions' in $scopedSlots"
-      class="px-3 py-2 text-primary-lightest w-full font-semibold flex justify-end"
-    >
-      <slot name="actions"></slot>
-    </footer>
-  </section>
+      <footer
+        v-if="'actions' in $scopedSlots"
+        :class="['rounded-b text-primary-lightest w-full font-semibold flex justify-end', {
+          'px-3 py-2': !props.dense,
+          'px-2 py-1': !props.dense,
+        }]"
+      >
+        <slot name="actions"></slot>
+      </footer>
+    </component>
+  </wrapped-component>
 </template>
 
 <script lang="ts">
@@ -93,6 +118,13 @@ import Vue from 'vue'
 export default Vue.extend({
   functional: true,
   props: {
+    tag: {
+      type: String,
+      default: 'section'
+    },
+    link: {
+      type: String,
+    },
     title: {
       type: String,
     },
@@ -117,6 +149,9 @@ export default Vue.extend({
     color: {
       type: String,
     },
+    dense: {
+      type: Boolean,
+    },
   },
 })
 </script>
@@ -127,5 +162,9 @@ export default Vue.extend({
   @apply block absolute top-0 left-0 w-full h-full;
   backdrop-filter: brightness(50%) grayscale(25%);
   z-index: -1;
+}
+
+.bg-filter-rounded-b::after {
+  @apply rounded-b;
 }
 </style>

@@ -13,7 +13,10 @@
       ></adsense>
     </client-only>
 
-    <div class="mt-3 overflow-x-auto flex md:justify-center md:flex-wrap">
+    <horizontal-scroller
+      class="mt-3"
+      expand-on-desktop
+    >
       <nuxt-link
         v-for="metric in metrics"
         :key="metric"
@@ -22,7 +25,7 @@
       >
         {{ formatMetric(metric) }} Leaderboard
       </nuxt-link>
-    </div>
+    </horizontal-scroller>
 
     <div class="flex justify-center">
       <card :title="`Best Players by ${metricName}`">

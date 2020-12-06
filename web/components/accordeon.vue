@@ -3,7 +3,7 @@
     <slot :open="page > 0" :page="page"></slot>
 
     <div
-      class="mb-3 flex justify-center"
+      class="pb-3 flex justify-center"
       ref="top"
       :key="page"
     >

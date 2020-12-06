@@ -1,9 +1,8 @@
 <template>
   <div
-    :class="{
-      '-my-2 flex flex-wrap justify-center': true,
+    :class="['flex flex-wrap justify-center', {
       'h-72 overflow-y-hidden': tease,
-    }"
+    }]"
   >
     <lazy
       v-for="(mode, index) in modes.slice(0, tease ? 3 : undefined)"

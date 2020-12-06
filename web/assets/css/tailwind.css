@@ -43,25 +43,6 @@
     @apply bg-gray-800; /* px-4 py-3; */
   }
 
-  .card--light {
-    @apply bg-gray-200 text-gray-900; /* px-4 py-3; */
-  }
-
-  .card--sm {
-    @apply mt-3 mx-1 w-full max-w-sm;
-  }
-
-  .card--loading {
-    @apply relative;
-  }
-
-  .card--loading:before {
-    @apply absolute bottom-0 left-0 bg-primary h-1;
-
-    content: '';
-    animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-
   @keyframes running-progress {
     0% {
       width: 0%;
