@@ -35,7 +35,7 @@ export default Vue.extend({
       slices: this.$clicker.defaultSlices('gadget'),
       entries: [] as MetaGridEntry[],
       measurements: ['winRate', 'starRate', 'rank1Rate'],
-      selectedMeasurements: ['winsZScore'],
+      selectedMeasurements: ['winRateAdj'],
       totalSampleSize: 0,
     }
   },
@@ -64,7 +64,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const calculateZScore = this.selectedMeasurements[0] == 'winsZScore'
+    const calculateZScore = this.selectedMeasurements[0] == 'winRateAdj'
     const data = await this.$clicker.query('meta.gadget', 'gadget',
       ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
       [...(calculateZScore ? ['battle_victory'] : this.selectedMeasurements.map(m => measurementMap[m])), 'picks', 'timestamp'],
