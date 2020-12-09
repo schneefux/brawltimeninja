@@ -12,27 +12,28 @@
       Open
     </nuxt-link>
 
-    <div slot="content" class="brawler-avatars">
-      <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
+    <shimmer
+      slot="content"
+      :loading="$fetchState.pending"
+      class="flex justify-around h-14"
+    >
       <div
         v-for="entry in topStarpowers"
         :key="entry.id"
         :style="`width: ${100 / Object.keys(topStarpowers).length}%`"
-        class="brawler-avatars__element w-1/5 my-2"
+        class="flex flex-col justify-end items-center"
       >
-        <div class="brawler-avatar">
-          <media-img
-            :path="`/${kind}/${entry.id}`"
-            size="160"
-            clazz="brawler-avatar__img mx-auto"
-          />
-          <p class="brawler-avatar__stats">
-            {{ metaStatMaps.formatters.winRate(entry.battle_victory) }}
-            {{ metaStatMaps.labelsShort.winRate }}
-          </p>
-        </div>
+        <media-img
+          :path="`/${kind}/${entry.id}`"
+          size="160"
+          clazz="h-10"
+        ></media-img>
+        <p class="text-xs">
+          {{ metaStatMaps.formatters.winRate(entry.battle_victory) }}
+          {{ metaStatMaps.labelsShort.winRate }}
+        </p>
       </div>
-    </div>
+    </shimmer>
   </card>
 </template>
 
