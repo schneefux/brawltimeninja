@@ -38,41 +38,27 @@
           distance="600px"
         >
           <div
-            class="w-80"
-            style="height: 420px"
+            class="w-64"
+            style="height: 396px"
             slot="placeholder"
             :class="['mx-2', {
               'md:hidden': !showAllMaps && index > 0,
             }]"
           ></div>
-          <map-detail-card
-            v-if="map.recent"
-            :mode="mode"
-            :map="map.map"
-            :id="map.id"
-            :timestamp="map.timestamp"
-            link
-            horizontal
-            :class="['mx-2', {
-              'md:hidden': !showAllMaps && index > 0,
-            }]"
-          ></map-detail-card>
           <event-card
-            v-else
             :mode="mode"
             :map="map.map"
             nobackground
             :class="['mx-2', {
               'md:hidden': !showAllMaps && index > 0,
             }]"
-            size="w-80"
+            size="w-64"
           >
             <template v-slot:content>
               <media-img
                 :path="`/maps/${map.id}`"
                 size="512"
-                clazz="mx-auto"
-                ztyle="max-height: 20rem"
+                clazz="mx-auto h-64"
               ></media-img>
             </template>
             <template v-slot:actions>
@@ -148,7 +134,6 @@
 </template>
 
 <script lang="ts">
-import { differenceInDays, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import pageSection from '~/components/page-section.vue'
@@ -232,7 +217,6 @@ export default Vue.extend({
           id: e.battle_event_id,
           map: e.battle_event_map,
           timestamp: e.timestamp,
-          recent: differenceInDays(new Date(), parseISO(e.timestamp)) < 7,
         })),
       slices: {
         ...$clicker.defaultSlices('map'),

@@ -2,8 +2,7 @@
   <event-card
     :mode="mode"
     :map="map"
-    :md="!horizontal"
-    :size="horizontal ? 'w-180' : undefined"
+    md
     nobackground
   >
     <div
@@ -105,11 +104,6 @@ export default Vue.extend({
       type: String,
     },
     link: {
-      type: Boolean,
-      default: false
-    },
-    horizontal: {
-      // force horizontal layout on mobile
       type: Boolean,
       default: false
     },
