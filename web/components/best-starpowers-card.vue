@@ -20,8 +20,7 @@
       <div
         v-for="entry in topStarpowers"
         :key="entry.id"
-        :style="`width: ${100 / Object.keys(topStarpowers).length}%`"
-        class="flex flex-col justify-end items-center"
+        class="flex-1 flex flex-col justify-end items-center"
       >
         <media-img
           :path="`/${kind}/${entry.id}`"

@@ -1,34 +1,28 @@
 <template>
-  <div class="brawler-avatars overflow-hidden">
-    <div
-      v-if="$fetchState.pending"
-      class="brawler-avatars__placeholder"
-      style="height: 55px; width: 300px;"
-    ></div>
-    <div
+  <shimmer
+    :loading="$fetchState.pending"
+    class="mx-auto flex justify-around h-14 w-72"
+  >
+    <router-link
       v-for="brawler in data"
+      :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
       :key="brawler.brawler_name"
-      class="brawler-avatars__element w-1/5"
+      class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
     >
-      <router-link
-        :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-        class="brawler-avatar"
-      >
-        <media-img
-          :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
-          size="160"
-          clazz="brawler-avatar__img"
-        ></media-img>
-        <p class="brawler-avatar__stats">
-          {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-          {{ metaStatMaps.labelsShort.winRate }}
-        </p>
-      </router-link>
-    </div>
+      <media-img
+        :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
+        size="160"
+        clazz="h-10"
+      ></media-img>
+      <p class="text-xs tracking-tighter self-center">
+        {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
+        {{ metaStatMaps.labelsShort.winRate }}
+      </p>
+    </router-link>
     <p v-if="!$fetchState.pending && data.length == 0">
       No data.
     </p>
-  </div>
+  </shimmer>
 </template>
 
 <script lang="ts">
