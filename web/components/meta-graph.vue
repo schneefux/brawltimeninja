@@ -32,7 +32,9 @@ export default Vue.extend({
       return {
         traces: [{
           x: entries.map(e => e.title),
-          y: entries.map(e => e.stats[this.stat]),
+          // fix `calculateDiffs` output by unformatting it
+          // TODO: find a better solution
+          y: entries.map(e => Number.parseFloat(e.stats[this.stat].toString()) * (e.stats[this.stat].toString().endsWith('%') ? 0.01 : 1)),
           text: entries.map(e => e.title),
           type: 'bar',
         }],
