@@ -44,52 +44,46 @@
       class="mx-auto"
       md
     >
-      <table slot="content" class="w-full">
-        <thead>
-          <tr class="h-8 border-b border-gray-600">
-            <th scope="col" class="text-left">
-              Brawlers
-            </th>
-            <th scope="col" class="text-left">
-              {{ metaStatMaps.labels[measurement] }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="team in teams.slice(0, (page+1)*pageSize)"
-            :key="team.name"
-          >
-            <td class="pb-1">
-              <div class="flex items-center">
-                <div class="w-24 md:w-32 bg-gray-900 rounded-sm flex mr-2">
-                  <div
-                    class="w-1/3"
-                    v-for="brawler in team.brawlers"
-                    :key="brawler"
-                  >
-                    <media-img
-                      :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
-                      :alt="brawler"
-                      size="160"
-                      clazz="h-6 md:h-8"
-                    ></media-img>
-                  </div>
+      <template v-slot:content>
+        <table class="w-full">
+          <thead>
+            <tr class="h-8 border-b border-gray-600">
+              <th scope="col" class="text-left">
+                Brawlers
+              </th>
+              <th scope="col" class="text-left">
+                {{ metaStatMaps.labels[measurement] }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="team in teams.slice(0, (page+1)*pageSize)"
+              :key="team.name"
+            >
+              <td class="pb-1">
+                <div class="flex items-center">
+                  <brawler-team
+                    :brawlers="team.brawlers"
+                    class="w-32 flex-shrink-0"
+                  ></brawler-team>
+                  <p class="text-sm md:text-lg">
+                    {{ capitalizeWords(team.brawlers.join(', ').toLowerCase()) }}
+                  </p>
                 </div>
-                <span class="text-sm md:text-lg">{{ capitalizeWords(team.brawlers.join(', ').toLowerCase()) }}</span>
-              </div>
-            </td>
-            <td class="text-right font-semibold text-lg">
-              {{ metaStatMaps.formatters[measurement](team[measurement]) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <button
-        v-if="(page+1)*pageSize < teams.length"
-        class="mt-2 button button--secondary"
-        @click="page++"
-      >Load More</button>
+              </td>
+              <td class="text-right font-semibold text-lg">
+                {{ metaStatMaps.formatters[measurement](team[measurement]) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button
+          v-if="(page+1)*pageSize < teams.length"
+          class="mt-2 button button--secondary"
+          @click="page++"
+        >Load More</button>
+      </template>
     </card>
   </page-section>
 </template>

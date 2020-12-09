@@ -8,21 +8,9 @@
       :key="team.id"
       class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
     >
-      <div class="h-8 flex-1 flex justify-between">
-        <router-link
-          v-for="brawler in team.brawlers"
-          :key="brawler"
-          :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
-          class="flex-1"
-        >
-          <media-img
-            :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
-            :alt="brawler"
-            size="160"
-            clazz="h-8"
-          ></media-img>
-        </router-link>
-      </div>
+      <brawler-team
+        :brawlers="team.brawlers"
+      ></brawler-team>
       <p class="self-center text-xs">
         {{ metaStatMaps.formatters.wins(team.wins) }}
         {{ metaStatMaps.labelsShort.wins }}

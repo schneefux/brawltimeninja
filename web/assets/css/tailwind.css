@@ -193,50 +193,6 @@
     }
   }
 
-  .brawler-avatars {
-    @apply flex justify-around mx-1 relative;
-  }
-
-  .brawler-avatars__placeholder {
-    @apply w-full;
-  }
-
-  .brawler-avatars__placeholder::before {
-    content: '';
-    @apply block absolute h-full top-0;
-    left: -200px;
-    width: 200px;
-    background: linear-gradient(to right, transparent 0%, theme('colors.gray.800') 50%, transparent 100%);
-    animation: load 1s ease;
-    animation-iteration-count: infinite;
-  }
-
-  @keyframes load {
-    from {
-      left: -150px;
-    }
-    to {
-      left: 100%;
-    }
-  }
-
-  .brawler-avatars__element {
-    @apply px-px flex flex-wrap justify-center overflow-hidden;
-  }
-
-  /** Brawler avatar with stats below */
-  .brawler-avatar {
-    @apply bg-gray-800 rounded-sm max-w-full;
-  }
-
-  .brawler-avatar__img {
-    @apply h-10;
-  }
-
-  .brawler-avatar__stats {
-    @apply text-xs whitespace-nowrap tracking-tighter text-center px-px;
-  }
-
   /** ad root-class */
   .ad-section {
     @apply mt-4 text-center;
