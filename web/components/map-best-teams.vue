@@ -1,29 +1,29 @@
 <template>
-  <div class="brawler-avatars">
-    <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 55px"></div>
+  <shimmer
+    :loading="$fetchState.pending"
+    class="mx-auto flex justify-between h-12 w-72"
+  >
     <div
       v-for="team in teams.slice(0, limit)"
       :key="team.id"
-      class="brawler-avatars__element w-1/2 mx-1"
+      class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
     >
-      <router-link
-        v-for="brawler in team.brawlers"
-        :key="brawler"
-        :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
-        :class="{
-          'w-1/2': team.brawlers.length == 2,
-          'w-1/3': team.brawlers.length == 3,
-        }"
-        class="brawler-avatar"
-      >
-        <media-img
-          :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
-          :alt="brawler"
-          size="160"
-          clazz="brawler-avatar__img"
-        ></media-img>
-      </router-link>
-      <p class="brawler-avatar__stats">
+      <div class="h-8 flex-1 flex justify-between">
+        <router-link
+          v-for="brawler in team.brawlers"
+          :key="brawler"
+          :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
+          class="flex-1"
+        >
+          <media-img
+            :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
+            :alt="brawler"
+            size="160"
+            clazz="h-8"
+          ></media-img>
+        </router-link>
+      </div>
+      <p class="self-center text-xs">
         {{ metaStatMaps.formatters.wins(team.wins) }}
         {{ metaStatMaps.labelsShort.wins }}
       </p>
@@ -31,7 +31,7 @@
     <p v-if="!$fetchState.pending && teams.length == 0">
       No data.
     </p>
-  </div>
+  </shimmer>
 </template>
 
 <script lang="ts">

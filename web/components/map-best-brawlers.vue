@@ -1,28 +1,14 @@
 <template>
-  <shimmer
+  <brawlers-row
+    :brawlers="data"
     :loading="$fetchState.pending"
-    class="mx-auto flex justify-around h-14 w-72"
+    class="mx-auto h-14 w-72"
   >
-    <router-link
-      v-for="brawler in data"
-      :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
-      :key="brawler.brawler_name"
-      class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
-    >
-      <media-img
-        :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
-        size="160"
-        clazz="h-10"
-      ></media-img>
-      <p class="text-xs tracking-tighter self-center">
-        {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
-        {{ metaStatMaps.labelsShort.winRate }}
-      </p>
-    </router-link>
-    <p v-if="!$fetchState.pending && data.length == 0">
-      No data.
-    </p>
-  </shimmer>
+    <template v-slot="{ brawler }">
+      {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
+      {{ metaStatMaps.labelsShort.winRate }}
+    </template>
+  </brawlers-row>
 </template>
 
 <script lang="ts">

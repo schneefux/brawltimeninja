@@ -2,42 +2,38 @@
   <card
     :title="brawler + ' with another Brawler'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
-    :pages="Math.ceil(data.length / 10)"
+    :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
     sm
   >
     <template v-slot:content="{ page }">
-      <p>
+      <p class="h-18 mb-2">
         {{ description }}
       </p>
-      <div class="brawler-avatars flex-wrap my-2">
-        <div v-if="$fetchState.pending" class="brawler-avatars__placeholder" style="height: 87px"></div>
-        <div
-          v-for="entry in data.slice(0, 5 + page * 20)"
-          :key="entry.brawler_name"
-          class="brawler-avatars__element w-1/5 my-2"
+      <template
+        v-for="p in (page + 1)"
+      >
+        <template
+          v-for="row in rowsPerPage"
         >
-          <router-link
-            :to="`/tier-list/brawler/${brawlerId({ name: entry.brawler_name })}`"
-            class="brawler-avatar"
+          <brawlers-row
+            v-if="$fetchState.pending || data.length >= (p - 1) * (rowSize * rowsPerPage) + (row - 1) * rowSize"
+            :key="row + '-' + p"
+            :loading="$fetchState.pending"
+            :brawlers="data.slice((p - 1) * (rowSize * rowsPerPage) + (row - 1) * rowSize, (p - 1) * (rowSize * rowsPerPage) + row * rowSize)"
+            class="mx-auto h-16 w-72"
           >
-            <media-img
-              :path="`/brawlers/${brawlerId({ name: entry.brawler_name })}/avatar`"
-              :alt="brawler"
-              size="160"
-              clazz="brawler-avatar__img"
-            ></media-img>
-            <p class="brawler-avatar__stats">
-              <template v-if="entry.picks >= sampleSizeThreshold">
-                {{ entry.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(entry.battle_victory) }}
+            <template v-slot="{ brawler }">
+              <template v-if="brawler.picks >= sampleSizeThreshold">
+                {{ brawler.battle_victory > 0 ? '+' : '' }}{{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
                 {{ metaStatMaps.labelsShort.winRate }}
               </template>
               <template v-else>
                 ?
               </template>
-            </p>
-          </router-link>
-        </div>
-      </div>
+            </template>
+          </brawlers-row>
+        </template>
+      </template>
     </template>
   </card>
 </template>
@@ -79,6 +75,8 @@ export default Vue.extend({
   data() {
     return {
       data: [] as Row[],
+      rowSize: 4,
+      rowsPerPage: 2,
     }
   },
   computed: {
