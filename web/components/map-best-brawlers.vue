@@ -1,5 +1,5 @@
 <template>
-  <div class="brawler-avatars">
+  <div class="brawler-avatars overflow-hidden">
     <div
       v-if="$fetchState.pending"
       class="brawler-avatars__placeholder"
