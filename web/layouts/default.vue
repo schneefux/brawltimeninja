@@ -170,14 +170,12 @@ export default Vue.extend({
         console.log('overriding test group from query string')
         this.setTestGroup(this.$route.query['group'])
       } else {
-      /*
         const groups = ['appnav', 'appnav-control', 'appnav-control', 'appnav-control'] as string[]
         if (!groups.includes(this.testGroup)) {
           const group = groups[Math.floor(Math.random() * groups.length)]
           this.setTestGroup(group)
           console.log('user assigned to test group', this.testGroup)
         }
-      */
       }
       this.$gtag.customMap({
         'dimension5': this.testGroup,
