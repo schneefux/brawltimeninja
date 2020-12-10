@@ -42,10 +42,32 @@ collections:
       - name: mode
         required: false
         widget: select
-        options: [gemGrab, brawlBall, heist, bounty, siege, showdown, superCity, roboRumble, bigGame]
+        options: [gemGrab, brawlBall, heist, bounty, siege, hotZone, showdown, superCity, roboRumble, bigGame]
       - name: map
         required: false
         widget: string
+  - name: modes
+    label: "Modes"
+    label_singular: "Mode"
+    folder: web/content/modes
+    create: true
+    identifier_field: mode
+    fields:
+      - name: mode
+        widget: select
+        options: [gemGrab, brawlBall, heist, bounty, siege, hotZone, showdown, superCity, roboRumble, bigGame]
+      - name: author
+        widget: string
+      - name: attribution
+        required: false
+        widget: string
+      - name: attributionLink
+        required: false
+        widget: string
+      - name: description
+        widget: string
+      - name: body
+        widget: markdown
   - name: brawlers
     label: "Brawlers"
     label_singular: "Brawler"
@@ -107,7 +129,7 @@ collections:
       - name: mode
         required: false
         widget: select
-        options: [gemGrab, brawlBall, heist, bounty, siege, soloShowdown, duoShowdown, superCity, roboRumble, bigGame]
+        options: [gemGrab, brawlBall, heist, bounty, siege, hotZone, soloShowdown, duoShowdown, superCity, roboRumble, bigGame]
       - name: map
         widget: string
       - name: author

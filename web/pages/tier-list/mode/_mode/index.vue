@@ -2,6 +2,16 @@
   <page :title="modeName">
     <p>Use the <span class="text-primary-lighter">{{ modeName }}</span> Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
+    <page-section
+      tracking-id="description"
+      tracking-page-id="mode_meta"
+    >
+      <mode-article-card
+        :mode="mode"
+        class="mx-auto"
+      ></mode-article-card>
+    </page-section>
+
     <client-only>
       <adsense
         ins-class="ad-section"

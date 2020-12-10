@@ -6,6 +6,7 @@
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
     light
+    xxl
   >
     <div
       v-if="image"
@@ -19,7 +20,7 @@
         :document="document"
         ref="content"
         itemprop="articleBody"
-        class="prose"
+        class="prose prose-sm sm:prose lg:prose-lg"
       ></nuxt-content>
 
       <div
