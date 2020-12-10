@@ -1,8 +1,10 @@
 <template>
-  <div ref="adblock-bait">
-    <div class="adBanner absolute bottom-0 left-0 w-px h-px bg-transparent">
+  <div
+    ref="adblock-bait"
+    class="absolute bottom-0 left-0"
+  >
+    <div class="adBanner w-px h-px bg-transparent"></div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
