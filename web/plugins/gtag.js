@@ -6,6 +6,15 @@ export default ({ app }) => {
     config: {
       id: 'G-8GGHZC6QR2',
       optimize_id: 'OPT-PWZ78LC',
+      params: {
+        custom_map: {
+          'dimension1': 'branch',
+          'dimension2': 'ads_blocked',
+          'dimension3': 'is_pwa',
+          'dimension4': 'is_twa',
+          'dimension5': 'test_group',
+        },
+      },
     },
     includes: [ {
       // old property

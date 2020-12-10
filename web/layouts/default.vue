@@ -118,11 +118,17 @@ export default Vue.extend({
           this.setIsApp()
         }
 
-        // set variables for split testing
-        this.$gtag.customMap({
-          'dimension1': process.env.branch || '',
-          'dimension3': isPwa.toString(),
-          'dimension4': isTwa.toString(),
+        this.$gtag.event('branch_dimension', {
+          'branch': process.env.branch || '',
+          'non_interaction': true,
+        })
+        this.$gtag.event('is_pwa_dimension', {
+          'is_pwa': isPwa,
+          'non_interaction': true,
+        })
+        this.$gtag.event('is_twa_dimension', {
+          'is_twa': isTwa,
+          'non_interaction': true,
         })
       }
     },
@@ -177,8 +183,9 @@ export default Vue.extend({
           console.log('user assigned to test group', this.testGroup)
         }
       }
-      this.$gtag.customMap({
-        'dimension5': this.testGroup,
+      this.$gtag.event('test_group_dimension', {
+        'test_group': this.testGroup,
+        'non_interaction': true,
       })
       console.log('user is part of test group', this.testGroup)
     },
