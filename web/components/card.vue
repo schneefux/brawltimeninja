@@ -1,6 +1,7 @@
 <template functional>
   <div
     :class="['p-1', data.class, data.staticClass, props.size, {
+      'w-64': props.xxs,
       'w-full max-w-xs': props.xs,
       'w-full max-w-sm': props.sm,
       'w-full max-w-md': props.md,
@@ -92,6 +93,9 @@ export default Vue.extend({
     elevation: {
       type: [Number, String],
       default: 1,
+    },
+    xxs: {
+      type: Boolean
     },
     xs: {
       type: Boolean

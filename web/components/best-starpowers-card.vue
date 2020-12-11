@@ -1,7 +1,7 @@
 <template>
   <card
     :title="title"
-    size="w-64"
+    xxs
   >
     <nuxt-link
       slot="actions"

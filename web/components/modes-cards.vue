@@ -32,7 +32,7 @@ import Vue from 'vue'
 export default Vue.extend({
   data() {
     return {
-      modes: [] as string[],
+      modes: ['brawlBall'] as string[],
       showAllModes: false,
     }
   },
