@@ -3,15 +3,14 @@
     class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
     :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
   >
-    <web-nav
-      :class="{
-        'hidden md:flex': testGroup == 'appnav',
-      }"
-    ></web-nav>
-    <app-head-nav
-      v-show="testGroup == 'appnav'"
-      class="md:hidden"
-    ></app-head-nav>
+    <experiment experiment-id="yCJKhSLRRC2qn6M6S8eo7g">
+      <web-nav></web-nav>
+
+      <template v-slot:1>
+        <web-nav class="hidden md:flex"></web-nav>
+        <app-head-nav class="md:hidden"></app-head-nav>
+      </template>
+    </experiment>
 
     <nuxt />
 
@@ -23,18 +22,20 @@
       @enable-all="enableCookiesAndAds"
     ></cookie-consent-popup>
 
-    <app-bottom-nav
-      v-show="testGroup == 'appnav'"
-      class="md:hidden"
-    ></app-bottom-nav>
+    <experiment experiment-id="yCJKhSLRRC2qn6M6S8eo7g">
+      <template v-slot:1>
+        <app-bottom-nav class="md:hidden"></app-bottom-nav>
+        <footer
+          class="bg-primary-darker py-2 text-sm text-center leading-normal hidden md:block"
+        >
+          <copyright></copyright>
+        </footer>
+      </template>
 
-    <footer
-      :class="['bg-primary-darker py-2 text-sm text-center leading-normal', {
-        'hidden md:block': testGroup == 'appnav',
-      }]"
-    >
-      <copyright></copyright>
-    </footer>
+      <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
+        <copyright></copyright>
+      </footer>
+    </experiment>
 
     <adblock-bait></adblock-bait>
   </div>

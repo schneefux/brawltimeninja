@@ -5,8 +5,8 @@ export default ({ app }) => {
   Vue.use(VueGtag, {
     config: {
       id: 'G-8GGHZC6QR2',
-      optimize_id: 'OPT-PWZ78LC',
       params: {
+        optimize_id: 'OPT-PWZ78LC',
         custom_map: {
           'dimension1': 'branch',
           'dimension2': 'ads_blocked',
