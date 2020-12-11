@@ -38,14 +38,14 @@
       </card>
     </horizontal-scroller>
 
-    <nuxt-link
+    <b-button
       slot="actions"
       to="/tier-list/brawlers"
-      class="card__action"
+      secondary
       prefetch
     >
       Open Brawler Tier List
-    </nuxt-link>
+    </b-button>
   </card>
 </template>
 

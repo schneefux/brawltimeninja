@@ -3,14 +3,14 @@
     :title="title"
     xxs
   >
-    <nuxt-link
+    <b-button
       slot="actions"
       :to="`/tier-list/${kind}`"
-      class="card__action"
+      secondary
       prefetch
     >
       Open
-    </nuxt-link>
+    </b-button>
 
     <shimmer
       slot="content"

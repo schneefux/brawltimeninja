@@ -24,15 +24,15 @@
             {{ faq.question }}
           </p>
 
-          <nuxt-link
+          <b-button
             slot="actions"
             :to="`/faq/${faq.slug}`"
-            class="link-light"
             itemprop="url"
+            light
             prefetch
           >
             Read
-          </nuxt-link>
+          </b-button>
         </card>
       </div>
     </page-section>
@@ -81,15 +81,15 @@
               {{ post.description }}
             </p>
 
-            <nuxt-link
+            <b-button
               slot="actions"
               :to="`/blog/guides/${post.slug}`"
-              class="link-light"
               itemprop="url"
+              light
               prefetch
             >
               Read
-            </nuxt-link>
+            </b-button>
           </card>
         </div>
       </div>

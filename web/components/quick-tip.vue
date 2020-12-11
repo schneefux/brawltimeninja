@@ -27,13 +27,14 @@
         <p class="text-sm">
           Battle Log: <span class="text-green-500 font-semibold">{{ wins }}W</span> / <span class="text-red-500 font-semibold">{{ losses }}L</span>
         </p>
-        <nuxt-link
+        <b-button
           :to="`/player/${player.tag}`"
-          class="card__action button--xs"
+          secondary
+          xs
           prefetch
         >
           Open Profile
-        </nuxt-link>
+        </b-button>
       </div>
       <nuxt-link
         :to="`/player/${player.tag}`"

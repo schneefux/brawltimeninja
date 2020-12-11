@@ -188,14 +188,14 @@
         <leaderboard-card
           class="home-section-content"
         >
-          <nuxt-link
+          <b-button
             slot="actions"
             to="/leaderboard/trophies"
-            class="card__action"
+            secondary
             prefetch
           >
             Open
-          </nuxt-link>
+          </b-button>
         </leaderboard-card>
       </lazy>
     </div>

@@ -36,14 +36,14 @@
       </div>
     </div>
 
-    <nuxt-link
+    <b-button
       slot="actions"
       :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
-      class="card__action"
+      secondary
       prefetch
     >
       Open
-    </nuxt-link>
+    </b-button>
   </event-card>
 </template>
 

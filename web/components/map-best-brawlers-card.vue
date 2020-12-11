@@ -39,15 +39,15 @@
       class="my-4"
     ></map-best-brawlers>
 
-    <nuxt-link
+    <b-button
       v-if="link"
       slot="actions"
       :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
-      class="card__action"
+      secondary
       prefetch
     >
       Open
-    </nuxt-link>
+    </b-button>
   </event-card>
 </template>
 

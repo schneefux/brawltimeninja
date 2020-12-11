@@ -13,12 +13,12 @@
         {{ post.description }}
       </p>
 
-      <nuxt-link
+      <b-button
         slot="actions"
         :to="`/blog/${topic}/${post.slug}`"
-        class="link-light"
+        light
         prefetch
-      >Read</nuxt-link>
+      >Read</b-button>
     </card>
   </div>
 </template>

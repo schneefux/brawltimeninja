@@ -70,14 +70,15 @@
       </div>
     </div>
 
-    <router-link
+    <b-button
       v-if="link"
+      tag="router-link"
       slot="actions"
       :to="linkTarget"
-      class="card__action"
+      secondary
     >
       Open
-    </router-link>
+    </b-button>
   </event-card>
 </template>
 

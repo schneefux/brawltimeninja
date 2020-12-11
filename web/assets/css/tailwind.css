@@ -79,10 +79,6 @@
     @apply mt-2 text-grey-lighter;
   }
 
-  .card__action {
-    @apply button button--md button--secondary;
-  }
-
   .card-prop-icon {
     @apply h-5 align-middle mr-1;
   }
@@ -120,10 +116,6 @@
 
   .button--selected {
     @apply bg-gray-900 hover:bg-gray-700 border-primary-dark;
-  }
-
-  .button--secondary-selected {
-    @apply bg-secondary-light border-primary;
   }
 
   @responsive {

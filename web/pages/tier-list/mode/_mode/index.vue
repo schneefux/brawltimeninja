@@ -71,14 +71,14 @@
                 clazz="mx-auto h-64"
               ></media-img>
             </template>
-            <template v-slot:actions>
-              <router-link
-                :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
-                class="card__action"
-              >
-                Open
-              </router-link>
-            </template>
+            <b-button
+              slot="actions"
+              tag="router-link"
+              :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
+              secondary
+            >
+              Open
+            </b-button>
           </event-card>
         </lazy>
       </horizontal-scroller>

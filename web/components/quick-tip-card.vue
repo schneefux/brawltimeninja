@@ -23,13 +23,14 @@
         </router-link>
       </li>
       <div class="flex items-center">
-        <nuxt-link
+        <b-button
           :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
-          class="card__action button--xs"
+          secondary
           prefetch
+          xs
         >
           Open Tier List
-        </nuxt-link>
+        </b-button>
       </div>
     </ol>
   </event-card>

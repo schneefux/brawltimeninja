@@ -46,11 +46,11 @@
       ></nuxt-content>
     </template>
 
-    <button
+    <b-button
       slot="actions"
-      class="link link-light"
+      light
       @click="expand = !expand"
-    >{{ !expand ? 'Read more' : 'Read less' }}</button>
+    >{{ !expand ? 'Read more' : 'Read less' }}</b-button>
   </card>
 </template>
 
