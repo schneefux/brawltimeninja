@@ -6,7 +6,7 @@
     <b-button
       slot="actions"
       :to="`/tier-list/${kind}`"
-      secondary
+      primary
       prefetch
     >
       Open

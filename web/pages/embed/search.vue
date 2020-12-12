@@ -5,7 +5,7 @@
     target="_blank"
     @submit="search"
   >
-    <div class="py-2 rounded-lg bg-primary-lighter">
+    <div class="py-2 rounded-lg bg-yellow-400">
       <input
         v-model="tag"
         placeholder="Enter your Tag"
@@ -18,7 +18,7 @@
         type="submit"
         class="mr-3"
         value="Search"
-        secondary
+        primary
         lg
       ></b-button>
     </div>

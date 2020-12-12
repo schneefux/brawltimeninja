@@ -22,7 +22,7 @@
         :key="metric"
         :to="`/leaderboard/${metric}`"
         class="mt-2 mr-2 whitespace-nowrap"
-        secondary
+        primary
         md
       >
         {{ formatMetric(metric) }} Leaderboard
@@ -135,6 +135,6 @@ export default Vue.extend({
 }
 
 .table tbody td, tbody th {
-  @apply border-t border-grey-light;
+  @apply border-t border-gray-200;
 }
 </style>

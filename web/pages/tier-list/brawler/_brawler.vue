@@ -35,7 +35,7 @@
         <div class="mt-2 w-full flex justify-end">
           <b-button
             to="/tier-list/starpowers"
-            secondary
+            primary
             md
             prefetch
           >
@@ -45,7 +45,7 @@
           <b-button
             class="ml-3"
             to="/tier-list/gadgets"
-            secondary
+            primary
             md
             prefetch
           >
@@ -93,14 +93,14 @@
           :class="{ 'md:block': !showAllMaps }"
           class="mr-3 hidden"
           md
-          secondary
+          primary
         >
           Show More
         </b-button>
         <b-button
           to="/tier-list/map"
           md
-          secondary
+          primary
           prefetch
         >
           Open Map Tier Lists
@@ -140,7 +140,7 @@
       <div class="mt-1 w-full flex justify-end">
         <b-button
           to="/tier-list/brawler"
-          secondary
+          primary
           md
           prefetch
         >
@@ -171,7 +171,7 @@
           :class="{ 'md:block': !showAllModes }"
           class="mr-3 hidden"
           md
-          secondary
+          primary
         >
           Show More
         </b-button>

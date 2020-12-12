@@ -3,7 +3,7 @@
     class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
     style="background-color: rgba(0, 0, 0, 0.75)"
   >
-    <div class="mx-2 py-2 max-w-xl border-4 rounded border-secondary-dark bg-secondary-darker flex flex-col justify-center items-center">
+    <div class="mx-2 py-2 max-w-xl rounded bg-gray-100 text-gray-800 flex flex-col justify-center items-center">
       <p class="text-center text-xl">
         Cookies? 🍪
       </p>
@@ -38,34 +38,38 @@
       <p class="mt-2 mx-2 text-center">
         Enable Cookies for Settings, Analytics and Ads?
       </p>
-      <div class="mt-3 text-sm flex flex-wrap">
-        <button
-          v-show="showCookieOptions"
-          class="border rounded-sm py-1 w-24 mx-1 bg-red-600 hover:bg-red-500"
+      <div class="mt-3 text-sm flex flex-wrap justify-center">
+        <b-button
+          v-if="showCookieOptions"
+          class="w-32 mx-2 mb-2 bg-red-400 hover:bg-red-300 border-red-400 text-gray-800"
+          lg
           @click="$emit('enable-none')"
         >
           Disable All
-        </button>
-        <button
-          v-show="showCookieOptions"
-          class="border rounded-sm py-1 w-24 mx-1 bg-yellow-600 hover:bg-yellow-500"
+        </b-button>
+        <b-button
+          v-if="showCookieOptions"
+          class="w-32 mx-2 mb-2 bg-yellow-400 hover:bg-yellow-300 border-yellow-400 text-gray-800"
+          lg
           @click="$emit('enable-cookies')"
         >
           Only Settings
-        </button>
-        <button
-          v-show="!showCookieOptions"
-          class="border rounded-sm py-1 w-24 mx-1 bg-secondary-darkest hover:bg-black"
+        </b-button>
+        <b-button
+          v-if="!showCookieOptions"
+          class="w-32 mx-2 mb-2 bg-gray-900 hover:bg-gray-800 border-gray-900 text-gray-200"
+          lg
           @click="showCookieOptions = true"
         >
           More Options
-        </button>
-        <button
-          class="border rounded-sm py-1 w-24 mx-1 bg-green-600 hover:bg-green-500"
+        </b-button>
+        <b-button
+          class="w-32 mx-2 mb-2 bg-green-400 hover:bg-green-300 border-green-400 text-gray-800"
+          lg
           @click="$emit('enable-all')"
         >
           Enable All
-        </button>
+        </b-button>
       </div>
     </div>
   </div>

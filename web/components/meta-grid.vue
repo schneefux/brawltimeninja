@@ -57,7 +57,7 @@
             tag="router-link"
             class="mt-2"
             itemprop="url"
-            secondary
+            primary
             xs
           >
             More Statistics
@@ -69,7 +69,7 @@
     <div class="mt-2 w-full text-right">
       <b-button
         md
-        secondary
+        primary
         @click="downloadCsv()"
       >
         Download Data

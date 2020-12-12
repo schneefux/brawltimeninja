@@ -57,7 +57,7 @@
             <template v-if="mate.brawlerTrophies != undefined">
               <div class="w-full flex">
                 <span
-                  class="w-8 text-xs font-semibold text-shadow text-secondary-lighter"
+                  class="w-8 text-xs font-semibold text-shadow text-white"
                 >
                   {{ mate.brawlerTrophies }}
                 </span>
@@ -72,9 +72,9 @@
             </div>
           </div>
           <span
-            :class="'text-xs whitespace-nowrap m-px '
-              + (mate.tag != playerTag ? 'link ' : 'text-secondary')
-            ">
+            :class="['text-xs whitespace-nowrap m-px', {
+              'text-yellow-400': mate.tag != playerTag,
+            }]">
               {{ mate.name }}
             </span>
           </router-link>

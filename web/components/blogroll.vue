@@ -17,7 +17,7 @@
       <b-button
         slot="actions"
         :to="`/blog/${topic}/${post.slug}`"
-        light
+        primary
         prefetch
       >Read</b-button>
     </card>

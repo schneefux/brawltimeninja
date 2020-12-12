@@ -25,9 +25,9 @@
       <div class="flex items-center">
         <b-button
           :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
-          secondary
-          prefetch
+          primary
           xs
+          prefetch
         >
           Open Tier List
         </b-button>

@@ -82,7 +82,7 @@
         <b-button
           v-if="(page+1)*pageSize < teams.length"
           class="mt-2"
-          secondary
+          primary
           @click="page++"
         >Load More</b-button>
       </template>

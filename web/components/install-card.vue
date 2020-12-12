@@ -24,7 +24,7 @@
       slot="actions"
       class="mx-auto"
       md
-      secondary
+      primary
       @click="clickInstall"
     >
       <font-awesome-icon

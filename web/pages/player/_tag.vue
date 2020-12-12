@@ -24,10 +24,10 @@
       ></media-img>
       <h1 class="text-4xl font-semibold relative z-10">
         Statistics for
-        <span class="text-secondary">{{ player.name }}</span>
+        <span class="text-yellow-400">{{ player.name }}</span>
         <span
           v-if="player.tag == 'V8LLPPC'"
-          class="align-top text-xs text-secondary-dark border-2 border-secondary-dark rounded-lg px-1 font-black"
+          class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
         >DEV</span>
       </h1>
     </div>
@@ -117,7 +117,7 @@
           <b-button
             class="ml-auto md:ml-4"
             sm
-            secondary
+            primary
             @click="refresh"
           >
             Refresh now
@@ -182,7 +182,7 @@
         <b-button
           to="/tier-list/map"
           md
-          secondary
+          primary
           prefetch
         >
           Open Map Tier List

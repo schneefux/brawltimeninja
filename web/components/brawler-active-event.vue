@@ -39,7 +39,7 @@
     <b-button
       slot="actions"
       :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
-      secondary
+      primary
       prefetch
     >
       Open

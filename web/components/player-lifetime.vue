@@ -15,7 +15,7 @@
         slot="content"
         class="text-lg flex"
       >
-        <dd class="text-primary-light font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
+        <dd class="text-yellow-400 font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
         <dt class="ml-2 w-full overflow-hidden">{{ metaStatMaps.labels[name] }}</dt>
       </div>
     </card>

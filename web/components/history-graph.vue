@@ -61,10 +61,10 @@ export default Vue.extend({
         mode: 'lines',
         type: 'scatter',
         line: {
-          color: '#f2d024',
+          color: '#facc15', // yellow-400
         },
         marker: {
-          color: '#f2d024',
+          color: '#facc15',
         },
       }]
 

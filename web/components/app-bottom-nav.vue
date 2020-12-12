@@ -1,12 +1,12 @@
 <template>
-  <nav class="sticky bottom-0 z-40 h-14 bg-primary-dark flex justify-around">
+  <nav class="sticky bottom-0 z-40 h-14 bg-yellow-400 flex justify-around">
     <nuxt-link
       v-for="link in links"
       :key="link.target"
       :to="link.target"
       :class="['flex flex-col items-center justify-between pt-2 pb-3 px-3', {
-        'text-primary-lightest': link.target == activeTarget,
-        'text-primary-light': link.target != activeTarget,
+        'text-gray-900': link.target == activeTarget,
+        'text-yellow-700': link.target != activeTarget,
       }]"
       prefetch
     >

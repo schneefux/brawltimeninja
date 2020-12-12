@@ -1,7 +1,10 @@
 <template>
-  <button
+  <b-button
     v-show="isInstallable"
-    class="px-2 border rounded border-primary-lighter text-primary-lightest lg:p-0 lg:my-0 lg:mr-4 lg:border-0 lg:text-lg lg:font-medium"
+    class="md:mr-2"
+    primary
+    xs
+    outline
     @click="clickInstall"
   >
     <font-awesome-icon
@@ -9,7 +12,7 @@
       :icon="faDownload"
     ></font-awesome-icon>
     Install
-  </button>
+  </b-button>
 </template>
 
 <script lang="ts">

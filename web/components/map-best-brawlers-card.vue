@@ -43,7 +43,7 @@
       v-if="link"
       slot="actions"
       :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
-      secondary
+      primary
       prefetch
     >
       Open

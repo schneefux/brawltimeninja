@@ -81,6 +81,15 @@ const trophyGraphLayout = {
   },
 }
 
+const primaryScatterColors = {
+  line: {
+    color: '#facc15', // yellow-400
+  },
+  marker: {
+    color: '#facc15',
+  },
+}
+
 const trophyranges = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export default Vue.extend({
@@ -161,6 +170,7 @@ export default Vue.extend({
           y: starRates,
           mode: 'lines+markers',
           type: 'scatter',
+          ...primaryScatterColors,
         }, {
           name: 'Average',
           x: trophyranges.map(t => t * 100),
@@ -200,6 +210,7 @@ export default Vue.extend({
           y: this.useRates,
           mode: 'lines+markers',
           type: 'scatter',
+          ...primaryScatterColors,
         }, {
           name: 'Average',
           x: trophyranges.map(t => t * 100),
@@ -244,6 +255,7 @@ export default Vue.extend({
           y: winRates,
           mode: 'lines+markers',
           type: 'scatter',
+          ...primaryScatterColors,
         }, {
           name: 'Average',
           x: trophyranges.map(t => t * 100),

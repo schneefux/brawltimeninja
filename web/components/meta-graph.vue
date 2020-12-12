@@ -36,6 +36,9 @@ export default Vue.extend({
           // TODO: find a better solution
           y: entries.map(e => Number.parseFloat(e.stats[this.stat].toString()) * (e.stats[this.stat].toString().endsWith('%') ? 0.01 : 1)),
           text: entries.map(e => e.title),
+          marker: {
+            color: '#facc15' // yellow-400
+          },
           type: 'bar',
         }],
         layout: {

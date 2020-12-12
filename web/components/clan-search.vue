@@ -15,7 +15,7 @@
           type="submit"
           value="Calculate"
           md
-          secondary
+          primary
         ></b-button>
       </form>
 

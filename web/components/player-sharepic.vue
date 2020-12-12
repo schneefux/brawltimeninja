@@ -1,20 +1,23 @@
 <template>
   <sharepic @done="done">
     <card class="m-0! p-0!">
-      <div slot="content" class="flex flex-wrap">
+      <div
+        slot="content"
+        class="flex flex-wrap"
+      >
         <div class="w-full flex items-center">
           <img
             :src="`${mediaUrl}/avatars/${player.icon.id}.png?size=112`"
             class="w-14 mr-4"
           >
-          <span class="text-4xl font-semibold relative text-secondary">
+          <span class="text-4xl font-semibold relative text-yellow-400">
             {{ player.name }}
           </span>
 
           <div class="ml-auto flex items-center">
             <span class="mb-1 text-xl">Rating</span>
             <div
-              class="ml-3 border-2 border-primary-light text-secondary font-bold text-4xl rounded-full h-12 w-12 text-center flex justify-center items-center"
+              class="ml-3 border-2 border-red-600 text-yellow-400 font-bold text-4xl rounded-full h-12 w-12 text-center flex justify-center items-center"
             >
               <span class="mb-1">
                 {{ accountRating }}
@@ -28,14 +31,14 @@
             v-if="player.club.tag != undefined"
             class="w-full text-center mt-1 text-2xl"
           >
-            <span class="mx-1 text-primary-light font-semibold">
+            <span class="mx-1 text-red-600 font-semibold">
               {{ player.club.name }}
             </span>
             Club
           </p>
 
           <div class="flex text-3xl">
-            <span class="w-24 text-right text-secondary font-bold">
+            <span class="w-24 text-right text-yellow-400 font-bold">
               {{ Math.floor(player.hoursSpent) }}
             </span>
             <span class="ml-2">
@@ -44,7 +47,7 @@
           </div>
 
           <div class="flex text-3xl">
-            <span class="w-24 text-right text-secondary font-bold">
+            <span class="w-24 text-right text-yellow-400 font-bold">
               {{ Math.floor(player.trophies) }}
             </span>
             <span class="ml-2">
@@ -60,7 +63,7 @@
 
         <div class="w-1/2 pl-1">
           <div class="w-full flex justify-center">
-            <span class="text-3xl text-secondary font-bold">
+            <span class="text-3xl text-yellow-400 font-bold">
               {{ Math.floor(winRate * 100) }}%
             </span>
             <div class="ml-2 flex flex-col justify-center items-center">

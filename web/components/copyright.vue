@@ -10,21 +10,21 @@
         tag="a"
         href="https://discord.gg/uYfgznq"
         class="ml-1"
-        primary
+        secondary
         xs
       >Discord</b-button>
       <b-button
         tag="a"
         href="https://twitter.com/brawltimeninja"
         class="ml-1"
-        primary
+        secondary
         xs
       >Twitter</b-button>
       <b-button
         tag="a"
         href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y9TKS7F2E2A2E"
         class="ml-1"
-        primary
+        secondary
         xs
       >PayPal</b-button>
     </div>

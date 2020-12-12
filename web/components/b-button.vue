@@ -11,11 +11,12 @@
         '': props.sm, // default
         'border-4 text-md': props.md,
         'border-8': props.lg,
-        'bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-primary text-white': !props.light && !props.primary && !props.secondary,
-        'border-primary-dark': !props.primary && !props.secondary && props.selected,
+        'bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-yellow-400 text-white': !props.light && !props.primary && !props.secondary,
+        'border-yellow-400': !props.primary && !props.secondary && props.selected,
         'bg-gray-300 hover:bg-gray-400 border-gray-300 hover:border-gray-400 text-primary-dark': props.light,
-        'bg-primary hover:bg-primary-light border-primary hover:border-primary-light text-gray-200': props.primary,
-        'bg-secondary hover:bg-secondary-light border-secondary hover:border-secondary-light text-black': props.secondary,
+        'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 text-gray-900': props.primary,
+        'border-yellow-600': props.primary && props.outline,
+        'bg-red-600 hover:bg-red-500 border-red-600 hover:border-red-500 text-gray-200': props.secondary,
     }]"
     :to="props.to"
   >
@@ -36,6 +37,9 @@ export default Vue.extend({
       type: [String, Object]
     },
     selected: {
+      type: Boolean
+    },
+    outline: {
       type: Boolean
     },
     light: {

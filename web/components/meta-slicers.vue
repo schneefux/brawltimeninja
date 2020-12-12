@@ -36,7 +36,7 @@
             type="checkbox"
             class="hidden"
           >
-          <div class="toggle__line w-10 h-4 bg-primary rounded-full shadow-inner"></div>
+          <div class="toggle__line w-10 h-4 bg-yellow-300 rounded-full shadow-inner"></div>
           <div class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
         </div>
         <span class="ml-3 text-xs">Power Play</span>
@@ -213,6 +213,6 @@ export default Vue.extend({
 
 input:checked ~ .toggle__dot {
   transform: translateX(100%);
-  @apply bg-primary-lighter;
+  @apply bg-yellow-500;
 }
 </style>

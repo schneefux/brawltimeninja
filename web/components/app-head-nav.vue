@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-primary-dark h-14 p-4 z-40 sticky top-0 flex items-center">
+  <div class="bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center">
     <button
       @click="back()"
       class="h-6 w-6 mr-8"
@@ -16,7 +16,7 @@
     </button>
     <nuxt-link
       to="/"
-      class="font-medium text-white mr-auto leading-none text-xl"
+      class="font-medium mr-auto leading-none text-xl"
       prefetch
     >
       {{ title }}

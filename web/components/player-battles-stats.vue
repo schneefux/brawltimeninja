@@ -1,19 +1,19 @@
 <template>
-  <dl class="mt-3 mb-6 bigstat-wrapper">
-    <div class="bigstat-container">
-      <dd class="bigstat-left bigstat-number bigstat-number--light">
+  <dl class="mt-3 mb-6 bigstat-wrapper ">
+    <div class="flex flex-wrap justify-center items-center mt-2 w-full xl:mx-6 xl:w-auto">
+      <dd class="w-1/2 text-right pr-2 font-bold text-3xl text-yellow-500">
         {{ Math.floor(winRate * totalBattles) }}
       </dd>
-      <dt class="bigstat-right bigstat-label text-xl">
+      <dt class="w-1/2 text-left pl-2 text-xl">
         Wins Recorded
       </dt>
     </div>
 
-    <div class="bigstat-container">
-      <dd class="bigstat-left bigstat-number bigstat-number--light">
+    <div class="flex flex-wrap justify-center items-center mt-2 w-full xl:mx-6 xl:w-auto">
+      <dd class="w-1/2 text-right pr-2 font-bold text-3xl text-yellow-500">
         {{ Math.floor((1 - winRate) * totalBattles) }}
       </dd>
-      <dt class="bigstat-right bigstat-label text-xl">
+      <dt class="w-1/2 text-left pl-2 text-xl">
         Losses Recorded
       </dt>
     </div>

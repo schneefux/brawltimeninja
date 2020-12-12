@@ -2,7 +2,7 @@
   <card
     title="Brawler Personality Test"
     md
-    primary
+    secondary
    >
     <div
       slot="content"
@@ -34,7 +34,7 @@
             v-for="rating in [5, 3, 1]"
             :key="rating"
             class="mx-2 w-1/3"
-            secondary
+            primary
             md
             @click="setOpenness(rating)"
           >
@@ -60,7 +60,7 @@
             v-for="rating in [5, 3, 1]"
             :key="rating"
             class="mx-2 w-1/3"
-            secondary
+            primary
             md
             @click="setExtraversion(rating)"
           >
@@ -86,7 +86,7 @@
             v-for="rating in [5, 3, 1]"
             :key="rating"
             class="mx-2 w-1/3"
-            secondary
+            primary
             md
             @click="setNeurotic(rating)"
           >
@@ -127,7 +127,7 @@
             <b-button
               v-if="supportsShareApi"
               class="mr-1 pointer-events-auto"
-              secondary
+              primary
               xs
               @click="share"
             >
@@ -135,7 +135,7 @@
             </b-button>
             <b-button
               class="mr-1 pointer-events-auto"
-              secondary
+              primary
               xs
               @click="restart"
             >
@@ -181,7 +181,7 @@
         <div class="flex mt-3 justify-center">
           <b-button
             class="mx-1"
-            secondary
+            primary
             @click="restart"
           >
             Restart
@@ -189,7 +189,7 @@
           <b-button
             v-if="supportsShareApi"
             class="mx-1"
-            secondary
+            primary
             @click="share"
           >
             Share
@@ -211,9 +211,9 @@
             class="rounded-full"
             :class="{
               'w-2 h-2 mx-1': step != i,
-              'w-4 h-4 bg-primary-lighter': step == i,
+              'w-4 h-4 bg-gray-300': step == i,
               'bg-green-300': step > i,
-              'bg-gray-300': step < i,
+              'bg-gray-100': step < i,
             }"
           ></div>
         </button>
@@ -918,7 +918,7 @@ brawlerTraits.forEach(b => {
 }
 
 .double-bounce1, .double-bounce2 {
-  @apply w-full h-full rounded-full absolute top-0 left-0 bg-secondary-dark opacity-50;
+  @apply w-full h-full rounded-full absolute top-0 left-0 bg-yellow-400 opacity-50;
   animation: bounce 2.0s infinite ease-in-out;
 }
 

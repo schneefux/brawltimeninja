@@ -1,10 +1,9 @@
 <template>
   <div class="flex flex-col items-center">
-    <media-img
-      :path="randomHero"
-      size="500"
-      clazz="mx-auto mt-16 h-32 md:h-48 lg:h-64"
-    ></media-img>
+    <img
+      src="~/assets/images/logo_with_crown_min.svg"
+      class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
+    >
 
     <div class="mt-6 md:mt-10 text-center mx-2">
       <h1 class="text-4xl font-bold">
@@ -30,33 +29,33 @@
         @submit="search"
       >
         <div class="w-full flex justify-center">
-          <div class="py-2 border-2 rounded-lg border-primary-dark">
+          <div class="py-2 border-2 rounded-lg border-yellow-400">
             <input
               v-model="tag"
               placeholder="Enter your Tag"
               type="text"
               autocomplete="off"
-              class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-grey-lighter bg-transparent border-none ml-3 mr-2"
+              class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2"
             >
             <b-button
               tag="input"
               type="submit"
               class="flex-shrink-0 mr-3"
               value="Search"
-              secondary
+              primary
               lg
             ></b-button>
           </div>
         </div>
         <p
           v-show="loading"
-          class="mt-2 text-red-lighter"
+          class="mt-2 text-red-600"
         >
           Searching…
         </p>
         <p
           v-show="error"
-          class="mt-2 text-red-lighter"
+          class="mt-2 font-semibold text-red-600"
         >
           {{ error }}
         </p>
@@ -174,7 +173,7 @@
         <div class="mx-5">
           <b-button
             class="mt-1"
-            secondary
+            primary
             sm
             @click="notifyCurrentEventMeta"
           >
@@ -198,7 +197,7 @@
           <b-button
             slot="actions"
             to="/leaderboard/trophies"
-            secondary
+            primary
             prefetch
           >
             Open

@@ -13,22 +13,23 @@
       :is="props.tag"
       :class="[data.class, data.staticClass, 'flex flex-col rounded', {
         'h-full': props.fullHeight,
-        'bg-dark-0': !props.light && !props.primary && props.elevation == 0,
-        'bg-dark-1': !props.light && !props.primary && props.elevation == 1,
-        'bg-dark-2': !props.light && !props.primary && props.elevation == 2,
-        'bg-gray-200 text-gray-900': props.light,
-        'bg-primary': props.primary,
+        'bg-dark-0': !props.light && !props.primary && !props.secondary && props.elevation == 0,
+        'bg-dark-1': !props.light && !props.primary && !props.secondary && props.elevation == 1,
+        'bg-dark-2': !props.light && !props.primary && !props.secondary && props.elevation == 2,
+        'bg-gray-400 text-gray-900': props.light,
+        'bg-yellow-900': props.primary,
+        'bg-red-900': props.secondary,
         'elevation-0': props.elevation == 0,
         'elevation-1': props.elevation == 1,
         'elevation-2': props.elevation == 2,
-        'loading': props.loading,
+        'relative loading': props.loading,
       }]"
       :style="data.staticStyle"
       v-bind="data.attrs"
     >
       <div
         v-if="'infobar' in $scopedSlots"
-        class="rounded-t text-primary-lightest bg-gray-900 w-full px-2 py-1 text-lg font-semibold"
+        class="rounded-t w-full px-2 py-1 text-lg font-semibold"
       >
         <slot name="infobar"></slot>
       </div>
@@ -115,7 +116,7 @@
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b text-primary-lightest w-full mt-auto font-semibold flex justify-end', {
+        :class="['rounded-b text-gray-800 w-full mt-auto font-semibold flex justify-end', {
           'px-3 py-2': !props.dense,
           'px-2 py-1': !props.dense,
         }]"
@@ -172,11 +173,17 @@ export default Vue.extend({
     primary: {
       type: Boolean
     },
+    secondary: {
+      type: Boolean
+    },
     elevation: {
       type: [Number, String],
       default: 1,
     },
     fullHeight: {
+      type: Boolean
+    },
+    loading: {
       type: Boolean
     },
   },
@@ -195,12 +202,8 @@ export default Vue.extend({
   @apply rounded-b;
 }
 
-.loading {
-  @apply relative;
-}
-
 .loading:before {
-  @apply absolute bottom-0 left-0 bg-primary h-1;
+  @apply absolute bottom-0 left-0 bg-red-600 h-1;
 
   content: '';
   animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;

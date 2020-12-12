@@ -3,30 +3,12 @@
 @tailwind utilities;
 
 @layer utilities {
-  .min-width-min-content {
-    min-width: min-content;
-  }
-
-  .w-fit-content {
-    width: fit-content;
-  }
-
   .m-0\! {
     margin: 0 !important;
   }
 
   .p-0\! {
     padding: 0 !important;
-  }
-
-  .text-5vw {
-    font-size: 5vw;
-  }
-
-  @responsive {
-    .text-4xl\! {
-      @apply text-4xl;
-    }
   }
 }
 
@@ -46,55 +28,6 @@
   /** ad root-class */
   .ad-section {
     @apply mt-4 text-center;
-  }
-  .bigstat-wrapper {
-    @apply flex flex-wrap mx-auto md:justify-center md:mx-0;
-  }
-
-  .bigstat-container {
-    @apply flex flex-wrap justify-center items-center mt-2 w-full;
-  }
-
-  @screen xl {
-    .bigstat-container {
-      @apply mx-6 w-auto;
-    }
-  }
-
-  .bigstat-left {
-    @apply w-1/2 text-right flex justify-end items-center pr-2;
-  }
-
-  .bigstat-right {
-    @apply w-1/2 text-left flex justify-start items-center pl-2;
-  }
-
-  .bigstat-label {
-    @apply leading-none text-white;
-  }
-
-  .bigstat-number {
-    @apply text-5xl font-bold text-secondary;
-  }
-
-  .bigstat-number--light {
-    @apply text-3xl text-primary-light;
-  }
-
-  .bigstat-tooltip-container {
-    @apply relative;
-  }
-
-  .bigstat-tooltip__btn {
-    @apply absolute mt-2 mr-1 text-primary-light font-semibold underline top-0 right-0;
-  }
-
-  .bigstat-tooltip__text {
-    @apply absolute top-0 left-0 text-sm bg-gray-900 text-grey-lighter rounded px-2 py-1 ml-2 text-left z-10;
-  }
-
-  .bigstat-tooltip__close {
-    @apply text-primary-light font-semibold absolute top-0 right-0 mr-1 cursor-pointer;
   }
 }
 

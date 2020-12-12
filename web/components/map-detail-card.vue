@@ -80,7 +80,7 @@
       tag="router-link"
       slot="actions"
       :to="linkTarget"
-      secondary
+      primary
     >
       Open
     </b-button>

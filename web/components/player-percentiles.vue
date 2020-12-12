@@ -11,7 +11,7 @@
         <dt class="block text-xl font-bold">
           {{ achievement.metric }}
         </dt>
-        <dd class="block text-primary-dark font-semibold">
+        <dd class="block text-yellow-700 font-semibold">
           {{ achievement.text }}
         </dd>
       </template>

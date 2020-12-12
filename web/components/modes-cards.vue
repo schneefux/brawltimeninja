@@ -18,7 +18,7 @@
       <b-button
         v-if="!showAllModes"
         md
-        secondary
+        primary
         @click="expandModes()"
       >
         Show All Modes

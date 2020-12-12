@@ -54,8 +54,8 @@
             tag="router-link"
             :to="`/tier-list/mode/${camelToKebab(activeMap.mode)}/map/${slugify(activeMap.map)}`"
             class="mx-auto"
+            primary
             xs
-            secondary
           >
             Open
           </b-button>
@@ -65,8 +65,8 @@
         <b-button
           tag="router-link"
           :to="`/tier-list/mode/${camelToKebab(mode)}`"
+          primary
           xs
-          secondary
         >
           Open Tier List
         </b-button>

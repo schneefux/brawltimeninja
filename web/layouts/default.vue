@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex flex-col justify-between min-h-screen bg-primary text-grey-lighter bg-center bg-top-y"
-    :style="`background-image: radial-gradient(circle closest-side, rgba(0, 0, 32, 0.6), rgba(0, 0, 0, 0.5)), url('${background}')`"
-  >
+  <div class="flex flex-col justify-between min-h-screen bg-gray-900 text-gray-200">
     <experiment experiment-id="yCJKhSLRRC2qn6M6S8eo7g">
       <web-nav></web-nav>
 
@@ -26,13 +23,13 @@
       <template v-slot:1>
         <app-bottom-nav class="md:hidden"></app-bottom-nav>
         <footer
-          class="bg-primary-darker py-2 text-sm text-center leading-normal hidden md:block"
+          class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal hidden md:block"
         >
           <copyright></copyright>
         </footer>
       </template>
 
-      <footer class="bg-primary-darker py-2 text-sm text-center leading-normal">
+      <footer class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal">
         <copyright></copyright>
       </footer>
     </experiment>
@@ -50,11 +47,6 @@ export default Vue.extend({
   computed: {
     isDesktop(): boolean {
       return (<any>global).screen !== undefined && screen.width > 720
-    },
-    background(): string {
-      return this.isDesktop
-        ? require('~/assets/images/background/blue_desktop.jpg')
-        : require('~/assets/images/background/blue_mobile.jpg')
     },
     ...mapState({
       version: (state: any) => state.version as number,
@@ -193,9 +185,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss">
-.bg-top-y {
-  background-position-y: top;
-}
-</style>

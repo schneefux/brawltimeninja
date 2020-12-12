@@ -1,6 +1,6 @@
 <template>
   <page :title="event.modeName + ': ' + event.map">
-    <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
+    <p>Use the {{ event.map }} Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
     <p v-if="event.map.startsWith('Competition Winner')">
       A new Competition Winner Map is voted by the community every day.
       <b-button

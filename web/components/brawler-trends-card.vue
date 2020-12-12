@@ -60,6 +60,24 @@ const trendGraphLayout = {
   },
 }
 
+const primaryScatterColors = {
+  line: {
+    color: '#facc15', // yellow-400
+  },
+  marker: {
+    color: '#facc15',
+  },
+}
+
+const secondaryScatterColors = {
+  line: {
+    color: '#dc2626', // red-600
+  },
+  marker: {
+    color: '#dc2626',
+  },
+}
+
 function exponentialSmoothing(prop: keyof Row, rows: Row[], alpha: number) {
   return rows.slice(1)
     .reduce((v, r: Row, index) => [...v, (1 - alpha) * (index == 0 ? rows[0][prop] as number : v[index - 1]) + alpha * (r[prop] as number)], [] as number[])
@@ -137,12 +155,14 @@ export default Vue.extend({
           y: ys1d,
           mode: 'lines+markers',
           type: 'scatter',
+          ...primaryScatterColors,
         }, {
           name: '7d average',
           x: xs7d,
           y: ys7d,
           mode: 'lines',
           type: 'scatter',
+          ...secondaryScatterColors,
         }],
         layout: {
           ...trendGraphLayout,
@@ -187,12 +207,14 @@ export default Vue.extend({
           y: ys1d,
           mode: 'lines+markers',
           type: 'scatter',
+          ...primaryScatterColors,
         }, {
           name: '7d average',
           x: xs7d,
           y: ys7d,
           mode: 'lines',
           type: 'scatter',
+          ...secondaryScatterColors,
         }],
         layout: {
           ...trendGraphLayout,

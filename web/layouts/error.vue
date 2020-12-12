@@ -16,7 +16,7 @@
     <p class="mt-4">
       <b-button
         to="/"
-        secondary
+        primary
         md
       >
         Return to profile search

@@ -3,7 +3,7 @@
     <div class="items-center justify-center flex flex-wrap md:mx-16 lg:mx-40">
       <div class="mx-auto md:mx-0 flex">
         <dl>
-          <dd ref="counter-hours" class="text-5xl text-secondary font-bold">
+          <dd ref="counter-hours" class="text-5xl text-yellow-400 font-bold">
             ...
           </dd>
           <dt class="text-3xl text-white">
@@ -26,7 +26,7 @@
         <b-button
           class="relative z-10"
           xs
-          secondary
+          primary
           @click="showAll = true"
         >
           &#9660; show fun facts
@@ -51,7 +51,7 @@
           :key="statName"
           class="mx-auto px-2 my-3"
         >
-          <dd ref="counter-funstats" class="text-3xl text-secondary font-semibold">
+          <dd ref="counter-funstats" class="text-3xl text-yellow-400 font-semibold">
             ...
           </dd>
           <dt class="text-2xl text-grey-lighter">
@@ -81,7 +81,7 @@
           <dd class="mx-2">
             <nuxt-link
               :to="`/club/${player.club.tag}`"
-              class="underline text-primary-light font-semibold text-center"
+              class="underline text-red-600 font-semibold text-center"
             >
               {{ player.club.name.replace(/ /g, '&nbsp;') }}
             </nuxt-link>
@@ -136,7 +136,10 @@
         </div>
       </dl>
 
-      <dl class="bigstat-container bigstat-tooltip-container" v-if="winRate !== 0">
+      <dl
+        v-if="winRate !== 0"
+        class="bigstat-container"
+      >
         <div class="bigstat-left relative">
           <dd class="bigstat-number">
             {{ Math.floor(winRate * 100) }}%
@@ -151,18 +154,34 @@
             Recent Win&nbsp;Rate
           </dt>
         </div>
-        <p
+        <card
           v-if="recentHelpOpen"
           @click="recentHelpOpen = false"
-          class="bigstat-tooltip__text"
+          class="absolute z-10"
+          dense
+          xxs
         >
-          Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
-          The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
-          <span class="bigstat-tooltip__close">x</span>
-        </p>
+          <p
+            slot="content"
+            class="text-left"
+          >
+            Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
+            The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
+          </p>
+          <b-button
+            slot="actions"
+            primary
+            xs
+            class="mx-auto"
+            @click="recentHelpOpen = false"
+          >Close</b-button>
+        </card>
       </dl>
 
-      <dl class="bigstat-container" v-if="trophyRate !== 0">
+      <dl
+        v-if="trophyRate !== 0"
+        class="bigstat-container"
+      >
         <dd class="bigstat-left bigstat-number">
           {{ trophyRate.toFixed(2) }}
         </dd>
@@ -173,7 +192,7 @@
         </div>
       </dl>
 
-      <dl class="bigstat-container bigstat-tooltip-container">
+      <dl class="bigstat-container">
         <div class="bigstat-left relative">
           <dd class="bigstat-number">{{ accountRating }}</dd>
           <button
@@ -186,20 +205,33 @@
             Account Rating
           </dt>
         </div>
-        <p
+        <card
           v-if="ratingHelpOpen"
           @click="ratingHelpOpen = false"
-          class="bigstat-tooltip__text"
+          class="absolute z-20"
+          dense
+          xxs
         >
-          The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
-          <ul>
-            <li
-              v-for="(info, rating) in ratingPercentiles"
-              :key="rating"
-            >{{ rating }}: Better than {{ info[0] * 100 }}% (up to {{ info[1] }} Trophies)</li>
-          </ul>
-          <span class="bigstat-tooltip__close">x</span>
-        </p>
+          <p
+            slot="content"
+            class="text-left"
+          >
+            The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
+            <ul>
+              <li
+                v-for="(info, rating) in ratingPercentiles"
+                :key="rating"
+              >{{ rating }}: Better than {{ info[0] * 100 }}% (up to {{ info[1] }} Trophies)</li>
+            </ul>
+          </p>
+          <b-button
+            slot="actions"
+            primary
+            xs
+            class="mx-auto"
+            @click="ratingHelpOpen = false"
+          >Close</b-button>
+        </card>
       </dl>
     </div>
   </div>
@@ -368,3 +400,49 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.bigstat-wrapper {
+  @apply flex flex-wrap mx-auto md:justify-center md:mx-0;
+}
+
+.bigstat-container {
+  @apply flex flex-wrap justify-center items-center mt-2 w-full;
+}
+
+@screen xl {
+  .bigstat-container {
+    @apply mx-6 w-auto;
+  }
+}
+
+.bigstat-left {
+  @apply w-1/2 text-right flex justify-end items-center pr-2;
+}
+
+.bigstat-right {
+  @apply w-1/2 text-left flex justify-start items-center pl-2;
+}
+
+.bigstat-label {
+  @apply leading-none text-white;
+}
+
+.bigstat-number {
+  @apply text-5xl font-bold text-yellow-400;
+}
+
+.bigstat-tooltip__btn {
+  @apply absolute mt-0 mr-1 text-yellow-400 font-semibold underline top-0 right-0;
+}
+
+.text-5vw {
+  font-size: 5vw;
+}
+
+@responsive {
+  .text-4xl\! {
+    @apply text-4xl;
+  }
+}
+</style>

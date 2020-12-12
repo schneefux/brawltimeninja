@@ -27,7 +27,7 @@ export default {
     name: 'Brawl Time Ninja',
     description: 'Track Brawl Stars profile stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.',
     author: 'schneefux',
-    theme_color: '#3490dc', // primary
+    theme_color: '#facc15', // yellow-400
   },
 
   pwa: {
@@ -35,7 +35,7 @@ export default {
       name: 'Brawl Time Ninja',
       short_name: 'Brawl Time',
       description: 'Track Brawl Stars stats, hours played and view Tier Lists.',
-      theme_color: '#3490dc', // primary
+      theme_color: '#facc15', // yellow-400
     },
     workbox: {
       runtimeCaching: [{
@@ -60,7 +60,7 @@ export default {
     },
   },
 
-  loading: { color: '#ffed4a' }, // secondary
+  loading: { color: '#dc2626' }, // red-600
 
   css: [
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),

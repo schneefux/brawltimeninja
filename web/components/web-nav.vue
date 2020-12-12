@@ -1,9 +1,9 @@
 <template>
-  <nav class="bg-primary-dark px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
-    <div class="flex-shrink-0 bg-primary-dark z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
+  <nav class="bg-yellow-400 text-gray-900 px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
+    <div class="bg-yellow-400 flex-shrink-0 z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
       <nuxt-link
         to="/"
-        class="font-semibold text-xl text-white tracking-tighter leading-tight"
+        class="font-semibold text-xl tracking-tighter leading-tight"
         prefetch
       >
         Brawl Time Ninja
@@ -12,7 +12,7 @@
         <install-button></install-button>
         <button
           v-show="menuButtonVisible"
-          class="ml-4 px-2 py-1 border rounded border-primary-light text-primary-lightest leading-none"
+          class="ml-4 px-2 py-1 border-2 -my-2 rounded border-yellow-600 leading-none"
           @click="openMenu"
         >
           Menu
@@ -34,7 +34,7 @@
             v-for="link in links"
             :key="link.target"
             :to="link.target"
-            class="inline-block mr-4 text-primary-lighter border-b lg:border-0 border-primary-lighter text-lg capitalize font-medium"
+            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium"
           >
             {{ link.name }}
           </nuxt-link>

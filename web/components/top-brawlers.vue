@@ -41,7 +41,7 @@
     <b-button
       slot="actions"
       to="/tier-list/brawler"
-      secondary
+      primary
       prefetch
     >
       Open Brawler Tier List

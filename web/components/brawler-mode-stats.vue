@@ -32,7 +32,7 @@
     <b-button
       slot="actions"
       :to="`/tier-list/mode/${camelToKebab(mode)}`"
-      secondary
+      primary
       prefetch
     >
       Open

@@ -26,7 +26,7 @@
       <b-button
         v-if="page > 0"
         class="mx-2"
-        secondary
+        primary
         md
         @click="collapse"
       >
@@ -35,7 +35,7 @@
       <b-button
         v-if="page < pages"
         class="mx-2"
-        secondary
+        primary
         md
         @click="expand"
       >

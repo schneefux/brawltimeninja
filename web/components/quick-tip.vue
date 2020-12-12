@@ -16,7 +16,7 @@
         </p>
         <b-button
           :to="`/player/${player.tag}`"
-          secondary
+          primary
           xs
           prefetch
         >

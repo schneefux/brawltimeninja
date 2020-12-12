@@ -54,7 +54,7 @@
 
     <div
       slot="actions"
-      class="w-full bg-primary-darker"
+      class="w-full"
     >
       <b-button
         @click="open = !open"
@@ -69,16 +69,16 @@
           :player-tag="playerTag"
           class="mt-3 h-32"
         ></history-graph>
-        <div class="my-2">
-          <table class="mt-4 px-4 w-full font-semibold leading-none">
+        <div class="my-2 text-gray-200">
+          <table class="mt-4 w-full font-semibold leading-none">
             <tbody>
               <tr class="flex text-2xl">
-                <td class="w-1/2 pr-1 text-right text-primary-light">Win Rate</td>
-                <td class="w-1/2 pl-1 text-left text-secondary">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
+                <td class="w-1/2 pr-1 text-right">Win Rate</td>
+                <td class="w-1/2 pl-1 text-left text-yellow-400">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
               </tr>
               <tr class="flex">
-                <td class="w-1/2 pr-1 text-right text-primary-light">Highest Trophies</td>
-                <td class="w-1/2 pl-1 text-left text-secondary">{{ brawler.highestTrophies }}</td>
+                <td class="w-1/2 pr-1 text-right">Highest Trophies</td>
+                <td class="w-1/2 pl-1 text-left text-yellow-400">{{ brawler.highestTrophies }}</td>
               </tr>
             </tbody>
           </table>

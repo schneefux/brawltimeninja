@@ -1,6 +1,6 @@
 <template>
   <page :title="modeName">
-    <p>Use the <span class="text-primary-lighter">{{ modeName }}</span> Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
+    <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
     <page-section
       tracking-id="description"
@@ -82,7 +82,7 @@
               slot="actions"
               tag="router-link"
               :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
-              secondary
+              primary
             >
               Open
             </b-button>
@@ -94,7 +94,7 @@
         <b-button
           v-show="!showAllMaps"
           md
-          secondary
+          primary
           @click="expandMaps()"
         >
           Show All {{ modeName }} Maps
