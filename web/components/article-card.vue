@@ -87,38 +87,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.nuxt-content {
-  @apply leading-normal;
-}
-
-.nuxt-content /deep/ h2 {
-  @apply text-3xl mt-3 mb-2;
-}
-
-.nuxt-content /deep/ h3 {
-  @apply text-2xl mt-2 mb-1;
-}
-
-.nuxt-content /deep/ p {
-  @apply mt-3;
-}
-
-.nuxt-content /deep/ ul {
-  @apply list-disc list-inside;
-}
-
-.nuxt-content /deep/ li {
-  @apply mt-2;
-}
-
-.nuxt-content /deep/ a {
-  @apply underline text-primary-dark;
-}
-
-.nuxt-content /deep/ img {
-  @apply mx-auto my-2;
-  max-height: 30rem;
-}
-</style>
