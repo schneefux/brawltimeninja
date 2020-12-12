@@ -7,7 +7,7 @@
       v-for="brawler in brawlers"
       :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
       :key="brawler.brawler_name"
-      class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
+      class="flex-1 flex flex-col justify-end items-center mx-px"
     >
       <media-img
         :path="`/brawlers/${brawlerId({ name: brawler.brawler_name })}/avatar`"
@@ -15,7 +15,7 @@
         size="160"
         clazz="h-10"
       ></media-img>
-      <p class="text-xs tracking-tighter self-center">
+      <p class="text-xs tracking-tighter">
         <slot :brawler="brawler"></slot>
       </p>
     </router-link>

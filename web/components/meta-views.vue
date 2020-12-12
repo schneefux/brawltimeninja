@@ -7,17 +7,15 @@
             <span>Layout</span>
           </div>
           <div class="flex flex-wrap">
-            <button
+            <b-button
               v-for="(name, key) in views"
               :key="key"
-              :class="{
-                'button--selected': view == key,
-              }"
-              class="button mr-1 mb-1"
+              :selected="view == key"
+              class="mr-1 mb-1"
               @click="setView(key)"
             >
               {{ name }}
-            </button>
+            </b-button>
           </div>
         </div>
 
@@ -29,15 +27,16 @@
             <span>Metric</span>
           </div>
           <div class="flex flex-wrap">
-            <button
+            <b-button
               v-for="m in measurements"
               :key="m"
-              class="mr-2 mb-1 button button--sm"
-              :class="{ 'button--selected': measurement == m }"
+              :selected="measurement == m"
+              class="mr-2 mb-1"
+              sm
               @click="setMeasurement(m)"
             >
               {{ metaStatMaps.labels[m] }}
-            </button>
+            </b-button>
           </div>
         </div>
 

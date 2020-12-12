@@ -5,28 +5,29 @@
     target="_blank"
     @submit="search"
   >
-    <div class="link-card p-0!">
-      <div class="py-2 rounded-lg bg-primary-light">
-        <input
-          v-model="tag"
-          placeholder="Enter your Tag"
-          type="text"
-          autocomplete="off"
-          class="w-32 tracking-wider uppercase placeholder:normal-case font-semibold appearance-none bg-transparent focus:outline-none ml-3 mr-2"
-        >
-        <input
-          type="submit"
-          class="button button--lg mr-3"
-          value="Search"
-        >
-      </div>
-      <p
-        v-show="!tagValid"
-        class="mt-2 -mb-4 text-red-500 w-full text-center"
+    <div class="py-2 rounded-lg bg-primary-lighter">
+      <input
+        v-model="tag"
+        placeholder="Enter your Tag"
+        type="text"
+        autocomplete="off"
+        class="w-48 uppercase placeholder:normal-case font-semibold appearance-none focus:outline-none ml-3 mr-2"
       >
-        This is not a tag.
-      </p>
+      <b-button
+        tag="input"
+        type="submit"
+        class="mr-3"
+        value="Search"
+        secondary
+        lg
+      ></b-button>
     </div>
+    <p
+      v-show="!tagValid"
+      class="mt-2 -mb-4 text-red-500 w-full text-center"
+    >
+      This is not a tag.
+    </p>
   </form>
 </template>
 

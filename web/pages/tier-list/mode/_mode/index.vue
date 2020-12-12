@@ -44,7 +44,7 @@
         <lazy
           v-for="(map, index) in maps"
           :key="map.map"
-          :render="showAllMaps || index <= 1"
+          :render="showAllMaps || index <= 3"
           distance="600px"
         >
           <div
@@ -52,7 +52,7 @@
             style="height: 396px"
             slot="placeholder"
             :class="['mx-2', {
-              'md:hidden': !showAllMaps && index > 0,
+              'md:hidden': !showAllMaps && index > 3,
             }]"
           ></div>
           <event-card
@@ -60,16 +60,23 @@
             :map="map.map"
             nobackground
             :class="['mx-2', {
-              'md:hidden': !showAllMaps && index > 0,
+              'md:hidden': !showAllMaps && index > 3,
             }]"
             size="w-64"
           >
             <template v-slot:content>
               <media-img
+                v-if="map.id != 0"
                 :path="`/maps/${map.id}`"
                 size="512"
                 clazz="mx-auto h-64"
               ></media-img>
+              <div
+                v-else
+                class="h-64 flex"
+              >
+                <p class="m-auto">No image available.</p>
+              </div>
             </template>
             <b-button
               slot="actions"
@@ -84,13 +91,14 @@
       </horizontal-scroller>
 
       <div class="mt-2 w-full text-right hidden md:block">
-        <button
+        <b-button
           v-show="!showAllMaps"
-          class="button button--md button--secondary"
+          md
+          secondary
           @click="expandMaps()"
         >
           Show All {{ modeName }} Maps
-        </button>
+        </b-button>
       </div>
     </page-section>
 

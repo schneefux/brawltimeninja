@@ -1,15 +1,15 @@
 <template>
   <card title="Best Players">
-    <div
-      slot="content"
-      class="darkbox"
-    >
+    <template v-slot:content>
+      <p class="w-64">
+        Players ranked by most {{ columnNames[0] }}.
+      </p>
       <player-rank-table
         :columns="columns"
         :column-names="columnNames"
         :rows="rows"
       ></player-rank-table>
-    </div>
+    </template>
 
     <slot name="actions" slot="actions"></slot>
   </card>
@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps } from '~/lib/util'
+import { capitalizeWords, formatMode, metaStatMaps } from '~/lib/util'
 import { Leaderboard, LeaderboardEntry } from '~/model/Api'
 import { PlayerRankTableRow } from './player-rank-table.vue'
 
@@ -33,6 +33,10 @@ interface Row {
 
 export default Vue.extend({
   props: {
+    metric: {
+      type: String,
+      default: 'trophies'
+    },
     limit: {
       type: Number,
       default: 5
@@ -44,8 +48,11 @@ export default Vue.extend({
     }
   },
   fetchDelay: 0,
+  watch: {
+    metric: '$fetch',
+  },
   async fetch() {
-    const leaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/trophies')
+    const leaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/' + this.metric)
     this.data = leaderboard.entries
   },
   computed: {
@@ -57,14 +64,14 @@ export default Vue.extend({
         player_name: r.name,
         player_tag: r.tag,
         player_icon_id: r.icon,
-        trophies: r.metric,
+        [this.metric]: r.metric,
       })).slice(0, this.limit)
     },
     columns(): string[] {
-      return ['trophies']
+      return [this.metric]
     },
     columnNames(): string[] {
-      return ['Trophies']
+      return [capitalizeWords(this.metric)]
     },
   },
 })

@@ -1,9 +1,6 @@
 <template>
   <sharepic @done="done">
-    <card
-      full-height
-      class="m-0! p-0!"
-    >
+    <card class="m-0! p-0!">
       <template v-slot:content>
         <div
           v-for="(entries, tier) in tiers"

@@ -40,7 +40,7 @@
 
     <b-button
       slot="actions"
-      to="/tier-list/brawlers"
+      to="/tier-list/brawler"
       secondary
       prefetch
     >

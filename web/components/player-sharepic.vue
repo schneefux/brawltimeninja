@@ -1,9 +1,6 @@
 <template>
   <sharepic @done="done">
-    <card
-      full-height
-      class="m-0! p-0!"
-    >
+    <card class="m-0! p-0!">
       <div slot="content" class="flex flex-wrap">
         <div class="w-full flex items-center">
           <img
@@ -55,11 +52,10 @@
             </span>
           </div>
 
-          <div v-if="history.length > 1" class="mt-2 -ml-4 h-28 w-80">
-            <history-graph
-              :history="history"
-            ></history-graph>
-          </div>
+          <history-graph
+            :player-tag="player.tag"
+            class="mt-2 -ml-4 w-80 h-28"
+          ></history-graph>
         </div>
 
         <div class="w-1/2 pl-1">
@@ -141,10 +137,6 @@ export default Vue.extend({
     },
     accountRating: {
       type: String,
-      required: true
-    },
-    history: {
-      type: Array as PropType<TrophiesRow[]>,
       required: true
     },
   },

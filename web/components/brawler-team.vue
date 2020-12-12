@@ -1,10 +1,14 @@
 <template functional>
-  <div class="flex justify-between bg-gray-800">
+  <div class="h-full relative">
     <router-link
-      v-for="brawler in props.brawlers"
+      v-for="(brawler, index) in props.brawlers"
       :key="brawler"
       :to="`/tier-list/brawler/${props.brawlerId({ name: brawler })}`"
-      class="flex-1"
+      class="absolute top-0"
+      :style="{
+        // 50% - avg. width - position
+        left: `calc(50% - 20px - (${(index - (props.brawlers.length - 1) / 2)  * 1.5}rem))`,
+      }"
     >
       <media-img
         :path="`/brawlers/${props.brawlerId({ name: brawler})}/avatar`"

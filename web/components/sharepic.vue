@@ -1,10 +1,10 @@
 <template>
   <div class="h-8">
-    <button
+    <b-button
       v-if="!loading"
+      secondary
       @click="trigger"
-      class="button button--secondary"
-    >Share</button>
+    >Share</b-button>
     <div v-if="loading">
       <span class="italic text-sm">Generating your Sharepic...</span>
     </div>

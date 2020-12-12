@@ -14,12 +14,13 @@
       Could not communicate with the Brawl Stars API! Try again later.
     </h3>
     <p class="mt-4">
-      <nuxt-link
+      <b-button
         to="/"
-        class="link"
+        secondary
+        md
       >
         Return to profile search
-      </nuxt-link>
+      </b-button>
     </p>
   </div>
 </template>

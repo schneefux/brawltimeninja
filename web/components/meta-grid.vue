@@ -1,88 +1,86 @@
 <template>
   <div>
     <div class="flex flex-wrap justify-center">
-      <div
+      <brawler-card
         v-for="entry in sortedEntries"
         :key="entry.id"
-        class="card-wrapper w-full md:flex-1"
+        :title="entry.title"
+        :brawler="entry.brawler"
+        :brawler-id="brawlerId({ name: entry.brawler })"
+        :icon="entry.icon"
         itemscope
         itemtype="http://schema.org/Person"
       >
-        <brawler-card
-          :title="entry.title"
-          :brawler="entry.brawler"
-          :icon="entry.icon"
-          class="h-auto"
-        >
-          <template v-slot:stats>
-            <table v-if="entry.sampleSize >= sampleSizeThreshold">
-              <tbody>
-                <tr
-                  v-for="stat in stats"
-                  :key="stat"
-                  class="card__props whitespace-nowrap"
-                  itemscope
-                  itemtype="http://schema.org/QuantitativeValue"
-                >
-                  <td class="text-center">
-                    <img
-                      v-if="metaStatMaps.icons[stat].length > 2"
-                      :src="require(`~/assets/images/icon/${metaStatMaps.icons[stat]}_optimized.png`)"
-                      :alt="stat"
-                      class="card-prop-icon inline"
-                    >
-                    <!-- use emojis (length 2) -->
-                    <span
-                      v-else
-                      class="card-prop-icon"
-                    >
-                      {{ metaStatMaps.icons[stat] }}
-                    </span>
-                  </td>
-                  <td class="card-prop-value text-right pr-1" itemprop="unitText">
-                    {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
-                  </td>
-                  <td class="card-prop-label" itemprop="value">
-                    {{ metaStatMaps.labels[stat] }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div
-              v-else
-              class="h-16 flex"
-            >
-              <span class="m-auto">Not enough data.</span>
-            </div>
-          </template>
-          <template v-slot:link>
-            <router-link
-              v-if="entry.link !== undefined"
-              :to="entry.link"
-              class="mt-2 button button--secondary button--xs"
-              itemprop="url"
-            >
-              More Statistics
-            </router-link>
-          </template>
-        </brawler-card>
-      </div>
+        <template v-slot:stats>
+          <table v-if="entry.sampleSize >= sampleSizeThreshold">
+            <tbody>
+              <tr
+                v-for="stat in stats"
+                :key="stat"
+                class="whitespace-nowrap"
+                itemscope
+                itemtype="http://schema.org/QuantitativeValue"
+              >
+                <td class="text-center">
+                  <img
+                    v-if="metaStatMaps.icons[stat].length > 2"
+                    :src="require(`~/assets/images/icon/${metaStatMaps.icons[stat]}_optimized.png`)"
+                    :alt="stat"
+                    class="card-prop-icon inline"
+                  >
+                  <!-- use emojis (length 2) -->
+                  <span
+                    v-else
+                    class="card-prop-icon"
+                  >
+                    {{ metaStatMaps.icons[stat] }}
+                  </span>
+                </td>
+                <td class="card-prop-value text-right pr-1" itemprop="unitText">
+                  {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
+                </td>
+                <td class="card-prop-label" itemprop="value">
+                  {{ metaStatMaps.labels[stat] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            v-else
+            class="h-16 flex"
+          >
+            <span class="m-auto">Not enough data.</span>
+          </div>
+          <b-button
+            v-if="entry.link !== undefined"
+            :to="entry.link"
+            tag="router-link"
+            class="mt-2"
+            itemprop="url"
+            secondary
+            xs
+          >
+            More Statistics
+          </b-button>
+        </template>
+      </brawler-card>
     </div>
 
     <div class="mt-2 w-full text-right">
-      <button
-        class="button button--md button--secondary"
+      <b-button
+        md
+        secondary
         @click="downloadCsv()"
       >
         Download Data
-      </button>
+      </b-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps, MetaGridEntry, compare1 } from '../lib/util'
+import { metaStatMaps, MetaGridEntry, compare1, brawlerId } from '../lib/util'
 
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
@@ -132,6 +130,9 @@ export default Vue.extend({
           ...entry,
           index: index + 1,
         }))
+    },
+    brawlerId() {
+      return brawlerId
     },
   },
   methods: {

@@ -1,28 +1,15 @@
 <template>
-  <div
-    v-if="!$fetchState.pending"
-    class="w-full"
+  <card
+    :loading="$fetchState.pending"
+    :icon="player == undefined ? undefined : `/avatars/${player.icon.id}`"
+    :title="player == undefined ? undefined : player.name"
+    :title-link="player == undefined ? undefined : `/player/${player.tag}`"
+    xxl
   >
-    <div class="card bg-gray-800 card__content relative">
-      <button
-        class="absolute top-0 right-0 mr-2 text-primary-lighter text-xl"
-        @click="$emit('close')"
-      >
-        &times;
-      </button>
-
-      <nuxt-link
-        :to="`/player/${player.tag}`"
-        class="card__header"
-        prefetch
-      >
-        <media-img
-          :path="`/avatars/${player.icon.id}`"
-          clazz="h-8 inline mr-1"
-        ></media-img>
-        <span class="text-primary-lighter">{{ player.name }}</span>
-      </nuxt-link>
-
+    <template
+      v-if="!$fetchState.pending"
+      v-slot:content
+    >
       <div class="flex justify-between items-center">
         <p class="text-sm">
           Battle Log: <span class="text-green-500 font-semibold">{{ wins }}W</span> / <span class="text-red-500 font-semibold">{{ losses }}L</span>
@@ -50,7 +37,7 @@
       <p class="mt-4 text-sm">
         Recommendations based on Brawler Trophies and current Map Tier Lists:
       </p>
-      <div class="pl-4 -mx-6 flex overflow-x-auto">
+      <div class="pl-4 -mx-3 flex overflow-x-auto">
         <lazy
           v-for="(event, index) in events"
           :key="event.battle_event_mode + event.battle_event_map"
@@ -67,8 +54,8 @@
           ></quick-tip-card>
         </lazy>
       </div>
-    </div>
-  </div>
+    </template>
+  </card>
 </template>
 
 <script lang="ts">
@@ -88,7 +75,7 @@ export default Vue.extend({
     return {
       show: true,
       events: [] as EventMetadata[],
-      player: {} as Player,
+      player: undefined as Player|undefined,
     }
   },
   async fetch() {
@@ -106,13 +93,13 @@ export default Vue.extend({
   },
   computed: {
     wins(): number {
-      if (!('battles' in this.player)) {
+      if (this.player?.battles == undefined) {
         return 0
       }
       return this.player.battles.filter(b => b.victory).length
     },
     losses(): number {
-      if (!('battles' in this.player)) {
+      if (this.player?.battles == undefined) {
         return 0
       }
       return this.player.battles.filter(b => !b.victory).length

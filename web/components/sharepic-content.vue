@@ -22,7 +22,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.render()
+    // wait in case components need to $fetch
+    setTimeout(() => this.render(), 2000)
   },
   methods: {
     async render() {

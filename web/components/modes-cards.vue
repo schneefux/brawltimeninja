@@ -15,13 +15,14 @@
     </horizontal-scroller>
 
     <div class="mt-2 w-full text-right hidden md:block">
-      <button
-        v-show="!showAllModes"
-        class="button button--md button--secondary"
+      <b-button
+        v-if="!showAllModes"
+        md
+        secondary
         @click="expandModes()"
       >
         Show All Modes
-      </button>
+      </b-button>
     </div>
   </div>
 </template>

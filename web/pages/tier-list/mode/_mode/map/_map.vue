@@ -3,11 +3,12 @@
     <p>Use the <span class="text-primary-lighter">{{ event.map }}</span> Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
     <p v-if="event.map.startsWith('Competition Winner')">
       A new Competition Winner Map is voted by the community every day.
-      <nuxt-link
+      <b-button
         to="/tier-list/competition-winners"
-        class="link"
         prefetch
-      >Compare them here.</nuxt-link>
+        primary
+        xs
+      >Compare Competition Winners</b-button>
     </p>
 
     <client-only>
@@ -56,17 +57,29 @@
         <div slot="content" class="flex justify-center">
           <nuxt-link
             :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
-            class="button mx-2 button--md"
-            active-class="button--selected"
-            prefetch
-            exact
-          >Best Brawlers</nuxt-link>
+            v-slot="{ isExactActive }"
+          >
+            <b-button
+              :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
+              :selected="isExactActive"
+              md
+              class="mx-2"
+              prefetch
+            >Best Brawlers</b-button>
+          </nuxt-link>
+
           <nuxt-link
             :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
-            class="button mx-2 button--md"
-            active-class="button--selected"
-            prefetch
-          >Best Teams</nuxt-link>
+            v-slot="{ isExactActive }"
+          >
+            <b-button
+              :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
+              :selected="isExactActive"
+              md
+              class="mx-2"
+              prefetch
+            >Best Teams</b-button>
+          </nuxt-link>
         </div>
       </card>
     </div>

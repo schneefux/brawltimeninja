@@ -16,20 +16,24 @@
         existing slot,
         effectively pushing the scroll position down.
       -->
-      <button
+      <b-button
         v-if="page > 0"
-        class="button button--md button--secondary mx-2"
+        class="mx-2"
+        secondary
+        md
         @click="collapse"
       >
         Show Less
-      </button>
-      <button
+      </b-button>
+      <b-button
         v-if="page < pages"
-        class="button button--md button--secondary mx-2"
+        class="mx-2"
+        secondary
+        md
         @click="expand"
       >
         Show More
-      </button>
+      </b-button>
     </div>
   </div>
 </template>

@@ -8,13 +8,12 @@
         {{ isShowdown ? 'Most successful players' : 'Players with most wins'}}
         recorded by Brawl Time Ninja this season.
       </p>
-      <div class="mt-2 darkbox">
-        <player-rank-table
-          :columns="columns"
-          :column-names="columnNames"
-          :rows="rows"
-        ></player-rank-table>
-      </div>
+      <player-rank-table
+        slot="content"
+        :columns="columns"
+        :column-names="columnNames"
+        :rows="rows"
+      ></player-rank-table>
     </template>
   </card>
 </template>

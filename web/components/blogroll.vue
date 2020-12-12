@@ -6,6 +6,7 @@
       :title="post.title"
       :title-link="`/blog/${topic}/${post.slug}`"
       :icon="'mode' in post ? `/modes/${post.mode}/icon` : undefined"
+      full-height
       light
       sm
     >

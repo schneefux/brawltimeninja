@@ -13,17 +13,6 @@
     <accordeon
       v-if="props.pages != undefined"
       :pages="props.pages"
-      :class="['rounded', {
-        'h-full': props.fullHeight,
-        'bg-dark-0': !props.light && props.elevation == 0,
-        'bg-dark-1': !props.light && props.elevation == 1,
-        'bg-dark-2': !props.light && props.elevation == 2,
-        'bg-gray-200 text-gray-900': props.light,
-        'elevation-0': props.elevation == 0,
-        'elevation-1': props.elevation == 1,
-        'elevation-2': props.elevation == 2,
-        'loading': props.loading,
-      }]"
     >
       <template v-slot="accordeonSlotProps">
         <!-- pass props and slots down -->
@@ -44,17 +33,6 @@
     <card-content
       v-else
       v-bind="data.attrs"
-      :class="['rounded', {
-        'h-full': props.fullHeight,
-        'bg-dark-0': !props.light && props.elevation == 0,
-        'bg-dark-1': !props.light && props.elevation == 1,
-        'bg-dark-2': !props.light && props.elevation == 2,
-        'bg-gray-200 text-gray-900': props.light,
-        'elevation-0': props.elevation == 0,
-        'elevation-1': props.elevation == 1,
-        'elevation-2': props.elevation == 2,
-        'loading': props.loading,
-      }]"
     >
       <template
         v-for="(_, slot) of $scopedSlots"
@@ -80,19 +58,12 @@ export default Vue.extend({
     pages: {
       type: Number
     },
-    light: {
-      type: Boolean
-    },
     loading: {
       type: Boolean
     },
     size: {
       type: String, // class
       default: ''
-    },
-    elevation: {
-      type: [Number, String],
-      default: 1,
     },
     xxs: {
       type: Boolean
@@ -113,9 +84,6 @@ export default Vue.extend({
       type: Boolean
     },
     xxl: {
-      type: Boolean
-    },
-    fullHeight: {
       type: Boolean
     },
   },
@@ -152,5 +120,23 @@ export default Vue.extend({
 
   content: '';
   animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes running-progress {
+  0% {
+    width: 0%;
+    margin-left: 0px;
+    margin-right: 100%;
+  }
+  50% {
+    width: 75%;
+    margin-left: 25%;
+    margin-right: 0%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+    margin-right: 0;
+  }
 }
 </style>

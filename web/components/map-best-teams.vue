@@ -6,7 +6,7 @@
     <div
       v-for="team in teams.slice(0, limit)"
       :key="team.id"
-      class="flex-1 flex flex-col justify-end bg-gray-800 mx-px"
+      class="flex-1 flex flex-col justify-end mx-px"
     >
       <brawler-team
         :brawlers="team.brawlers"
@@ -48,7 +48,7 @@ export default Vue.extend({
     },
     limit: {
       type: Number,
-      default: 2,
+      default: 3,
     },
   },
   data() {

@@ -17,14 +17,16 @@
       class="mt-3"
       expand-on-desktop
     >
-      <nuxt-link
+      <b-button
         v-for="metric in metrics"
         :key="metric"
-        class="button button--secondary button--md mt-2 mr-2 whitespace-nowrap"
         :to="`/leaderboard/${metric}`"
+        class="mt-2 mr-2 whitespace-nowrap"
+        secondary
+        md
       >
         {{ formatMetric(metric) }} Leaderboard
-      </nuxt-link>
+      </b-button>
     </horizontal-scroller>
 
     <div class="flex justify-center">

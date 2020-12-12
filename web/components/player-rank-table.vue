@@ -47,7 +47,7 @@
               clazz="h-8"
               wrapper-class="flex-shrink-0"
             ></media-img>
-            <span class="link ml-2">
+            <span class="ml-2">
               {{ row.player_name }}
             </span>
           </router-link>

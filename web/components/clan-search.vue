@@ -10,11 +10,13 @@
           v-model="pattern"
           class="form-input bg-gray-800 text-gray-400"
         >
-        <input
+        <b-button
+          tag="input"
           type="submit"
           value="Calculate"
-          class="button button--md button--secondary"
-        >
+          md
+          secondary
+        ></b-button>
       </form>
 
       <dl>

@@ -36,11 +36,12 @@
     >
       <p slot="description">
         Curious about the past?
-        <nuxt-link
+        <b-button
           to="/tier-list/history"
-          class="link"
+          primary
+          xs
           prefetch
-        >Explore the Time Capsule.</nuxt-link>
+        >Open the Time Capsule</b-button>
       </p>
 
       <map-detail-card

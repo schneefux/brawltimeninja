@@ -27,15 +27,16 @@
           <span>Metric</span>
         </div>
         <div class="flex flex-wrap">
-          <button
+          <b-button
             v-for="m in ['wins', 'winRate', 'picks']"
             :key="m"
-            class="mr-2 mb-1 button button--sm"
-            :class="{ 'button--selected': measurement == m }"
+            class="mr-2 mb-1"
+            :selected="measurement == m"
+            sm
             @click="measurement = m"
           >
             {{ metaStatMaps.labels[m] }}
-          </button>
+          </b-button>
         </div>
       </div>
     </card>
@@ -78,11 +79,12 @@
             </tr>
           </tbody>
         </table>
-        <button
+        <b-button
           v-if="(page+1)*pageSize < teams.length"
-          class="mt-2 button button--secondary"
+          class="mt-2"
+          secondary
           @click="page++"
-        >Load More</button>
+        >Load More</b-button>
       </template>
     </card>
   </page-section>

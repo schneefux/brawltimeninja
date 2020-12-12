@@ -1,18 +1,15 @@
 <template functional>
-  <card :pages="props.pages">
-    <template v-slot:content="{open, page}">
-      <div class="card__content">
-        <h3 class="card__header">
-          {{ props.title }}
-        </h3>
+  <card
+    :pages="props.pages"
+    :title="props.title"
+  >
+    <template v-slot:content="{ open, page }">
+      <p>
+        {{ props.description }}
+      </p>
 
-        <p class="card__text">
-          {{ props.description }}
-        </p>
-
-        <div class="mt-2">
-          <slot :open="open" :page="page"></slot>
-        </div>
+      <div class="mt-2">
+        <slot :open="open" :page="page"></slot>
       </div>
     </template>
   </card>

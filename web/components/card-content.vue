@@ -1,5 +1,8 @@
 <template functional>
-  <wrapped-component :wrap="props.link != undefined">
+  <wrapped-component
+    :wrap="props.link != undefined"
+    class="contents"
+  >
     <router-link
       slot="wrapper"
       :to="props.link || ''"
@@ -8,7 +11,18 @@
 
     <component
       :is="props.tag"
-      :class="[data.class, data.staticClass]"
+      :class="[data.class, data.staticClass, 'flex flex-col rounded', {
+        'h-full': props.fullHeight,
+        'bg-dark-0': !props.light && !props.primary && props.elevation == 0,
+        'bg-dark-1': !props.light && !props.primary && props.elevation == 1,
+        'bg-dark-2': !props.light && !props.primary && props.elevation == 2,
+        'bg-gray-200 text-gray-900': props.light,
+        'bg-primary': props.primary,
+        'elevation-0': props.elevation == 0,
+        'elevation-1': props.elevation == 1,
+        'elevation-2': props.elevation == 2,
+        'loading': props.loading,
+      }]"
       :style="data.staticStyle"
       v-bind="data.attrs"
     >
@@ -21,7 +35,7 @@
 
       <header
         v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
-        :class="['w-full flex font-semibold items-center', (props.color !== undefined ? `bg-${props.color}` : ''), {
+        :class="['w-full flex font-semibold items-center overflow-hidden', (props.color !== undefined ? `bg-${props.color}` : ''), {
           'px-3 py-2': !props.dense,
           'px-2 py-1': props.dense,
           'rounded-t': !('infobar' in $scopedSlots),
@@ -29,7 +43,7 @@
       >
         <div
           v-if="props.icon != undefined"
-          :class="['flex justify-center items-center mr-3', {
+          :class="['flex-shrink-0 flex justify-center items-center mr-3', {
             'w-10 h-10 my-1': !props.dense,
             'w-6 h-6 my-px': props.dense,
           }]"
@@ -64,10 +78,10 @@
           </h1>
           <h2
             v-if="props.subtitle != undefined"
-            :class="{
+            :class="['whitespace-nowrap', {
               'text-xl': props.subtitle.length < 20,
-              'text-xs': props.subtitle.length > 40,
-            }"
+              'text-xs': props.subtitle.length >= 30,
+            }]"
           >
             <wrapped-component :wrap="props.subtitleLink != undefined">
               <router-link
@@ -101,7 +115,7 @@
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b text-primary-lightest w-full font-semibold flex justify-end', {
+        :class="['rounded-b text-primary-lightest w-full mt-auto font-semibold flex justify-end', {
           'px-3 py-2': !props.dense,
           'px-2 py-1': !props.dense,
         }]"
@@ -151,6 +165,19 @@ export default Vue.extend({
     },
     dense: {
       type: Boolean,
+    },
+    light: {
+      type: Boolean
+    },
+    primary: {
+      type: Boolean
+    },
+    elevation: {
+      type: [Number, String],
+      default: 1,
+    },
+    fullHeight: {
+      type: Boolean
     },
   },
 })

@@ -1,11 +1,11 @@
 <template>
   <client-only v-if="eventRecommendations.length > 0 && notificationsAllowed">
-    <button
-      class="button button--secondary"
+    <b-button
+      secondary
       @click="notifyTips"
     >
       Send Notification
-    </button>
+    </b-button>
   </client-only>
 </template>
 

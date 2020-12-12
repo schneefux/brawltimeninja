@@ -33,21 +33,24 @@
         </p>
 
         <div class="mt-2 w-full flex justify-end">
-          <nuxt-link
-            class="button md:button--md button--secondary"
+          <b-button
             to="/tier-list/starpowers"
+            secondary
+            md
             prefetch
           >
             Open Star Power Tier List
-          </nuxt-link>
+          </b-button>
 
-          <nuxt-link
-            class="button md:button--md ml-3 button--secondary"
+          <b-button
+            class="ml-3"
             to="/tier-list/gadgets"
+            secondary
+            md
             prefetch
           >
             Open Gadget Tier List
-          </nuxt-link>
+          </b-button>
         </div>
       </div>
     </page-section>
@@ -85,20 +88,23 @@
       ></brawler-active-events>
 
       <div class="mt-1 w-full flex justify-end">
-        <button
+        <b-button
           @click="showAllMaps = true"
           :class="{ 'md:block': !showAllMaps }"
-          class="mr-3 button md:button--md button--secondary hidden"
+          class="mr-3 hidden"
+          md
+          secondary
         >
           Show More
-        </button>
-        <nuxt-link
-          class="button md:button--md button--secondary"
+        </b-button>
+        <b-button
           to="/tier-list/map"
+          md
+          secondary
           prefetch
         >
           Open Map Tier Lists
-        </nuxt-link>
+        </b-button>
       </div>
     </page-section>
 
@@ -132,13 +138,14 @@
       </p>
 
       <div class="mt-1 w-full flex justify-end">
-        <nuxt-link
-          class="button md:button--md button--secondary"
+        <b-button
           to="/tier-list/brawler"
+          secondary
+          md
           prefetch
         >
           Open Brawler Tier List
-        </nuxt-link>
+        </b-button>
       </div>
     </page-section>
 
@@ -159,13 +166,15 @@
       </p>
 
       <div class="mt-1 w-full flex justify-end">
-        <button
+        <b-button
           @click="showAllModes = true"
           :class="{ 'md:block': !showAllModes }"
-          class="mr-3 button md:button--md button--secondary hidden"
+          class="mr-3 hidden"
+          md
+          secondary
         >
           Show More
-        </button>
+        </b-button>
       </div>
     </page-section>
 

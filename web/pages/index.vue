@@ -38,11 +38,14 @@
               autocomplete="off"
               class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-grey-lighter bg-transparent border-none ml-3 mr-2"
             >
-            <input
+            <b-button
+              tag="input"
               type="submit"
-              class="button button--lg button--secondary flex-shrink-0 mr-3"
+              class="flex-shrink-0 mr-3"
               value="Search"
-            >
+              secondary
+              lg
+            ></b-button>
           </div>
         </div>
         <p
@@ -100,17 +103,19 @@
           Recently searched:
         </span>
       </p>
-      <p class="mx-auto">
-        <nuxt-link
+      <div class="mx-auto">
+        <b-button
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
           :to="playerToRoute(player)"
           @click.native.passive="addLastPlayer(player)"
-          class="ml-2 link"
+          xs
+          primary
+          class="ml-2"
         >
           {{ player.name }}
-        </nuxt-link>
-      </p>
+        </b-button>
+      </div>
     </div>
 
     <client-only>
@@ -167,12 +172,14 @@
         class="mt-4 w-full mx-auto max-w-xl"
       >
         <div class="mx-5">
-          <button
-            class="mt-1 button button--sm button--secondary"
+          <b-button
+            class="mt-1"
+            secondary
+            sm
             @click="notifyCurrentEventMeta"
           >
             Send a Notification with Map Tier List
-          </button>
+          </b-button>
         </div>
       </div>
     </div>

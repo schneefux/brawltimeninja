@@ -22,51 +22,56 @@
       >
 
       <div>
-        <dl
+        <card
           v-if="timestamp != undefined"
-          class="darkbox stat flex justify-between"
+          elevation="2"
         >
-          <dt class="text-left font-semibold mr-1">
-            Last Online:
-          </dt>
-          <dd class="text-right ml-1">
-            {{ lastOnlineString }}
-          </dd>
-        </dl>
+          <dl
+            slot="content"
+            class="flex justify-between"
+          >
+            <dt class="text-left font-semibold mr-1">
+              Last Online:
+            </dt>
+            <dd class="text-right ml-1">
+              {{ lastOnlineString }}
+            </dd>
+          </dl>
+        </card>
 
-        <map-balance-score
-          :mode="mode"
-          :map="map"
-          :season="season"
-          class="darkbox stat"
-        ></map-balance-score>
+        <card elevation="2">
+          <map-balance-score
+            slot="content"
+            :mode="mode"
+            :map="map"
+            :season="season"
+          ></map-balance-score>
+        </card>
 
-        <div class="darkbox stat">
-          <div class="text-lg font-semibold text-center">
-            Best Brawlers
-          </div>
+        <card
+          title="Best Brawlers"
+          elevation="2"
+        >
           <map-best-brawlers
+            slot="content"
             :mode="mode"
             :map="map"
             :season="season"
-            class="mt-2 mb-1"
           ></map-best-brawlers>
-        </div>
+        </card>
 
-        <div
+        <card
           v-if="mode != 'soloShowdown'"
-          class="darkbox stat"
+          title="Teams with most wins"
+          elevation="2"
         >
-          <div class="text-lg font-semibold text-center">
-            Teams with most Wins
-          </div>
           <map-best-teams
+            slot="content"
             :mode="mode"
             :map="map"
             :season="season"
-            class="mt-2 mb-1"
           ></map-best-teams>
-        </div>
+        </card>
       </div>
     </div>
 

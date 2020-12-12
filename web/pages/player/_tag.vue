@@ -40,17 +40,14 @@
       class="leading-tight text-center mt-6"
     ></player-hype-stats>
 
-    <div
+    <player-quiz
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'quiz'),
         once: true,
       }"
-      class="card-wrapper"
-    >
-      <player-quiz
-        :player="player"
-      ></player-quiz>
-    </div>
+      :player="player"
+      class="mt-2 mx-auto"
+    ></player-quiz>
 
     <client-only>
       <adsense
@@ -67,7 +64,6 @@
       v-slot="props"
       title="Personal Records"
       description="Compare your profile statistics against pro players."
-      class="card-wrapper"
     >
       <player-lifetime
         v-observe-visibility="{
@@ -78,37 +74,23 @@
         :tease="!props.open"
       ></player-lifetime>
 
-      <template v-if="props.open">
-        <h3
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'pro'),
-            once: true,
-          }"
-          class="card__header mt-3"
-        >
-          Are you a Pro?
-        </h3>
-
-        <player-percentiles
-          :player="player"
-          class="card__text"
-        ></player-percentiles>
-      </template>
+      <player-percentiles
+        v-if="props.open"
+        :player="player"
+      ></player-percentiles>
     </player-teaser-card>
 
-    <div class="card-wrapper">
-      <div class="mx-1 md:m-6 flex items-center">
-        <h2 class="text-2xl font-semibold">
-          Info!
-        </h2>
-        <p class="text-xs ml-3">
-          Play times are estimated and statistics are compared against other visitors.
-          They are not official numbers.
-          Win Rates are based on your last {{ totalBattles }} battles.
-          <br />
-          Check your profile daily to get the most accurate statistics.
-        </p>
-      </div>
+    <div class="my-1 md:my-4 mx-1 md:ml-4 flex items-center">
+      <h2 class="text-2xl font-semibold">
+        Info!
+      </h2>
+      <p class="text-xs ml-3">
+        Play times are estimated and statistics are compared against other visitors.
+        They are not official numbers.
+        Win Rates are based on your last {{ totalBattles }} battles.
+        <br />
+        Check your profile daily to get the most accurate statistics.
+      </p>
     </div>
 
     <player-teaser-card
@@ -117,7 +99,6 @@
       :pages="Math.ceil(player.battles.length / 6)"
       title="Battle Log"
       description="See your latest battles and calculate your Win Rate."
-      class="card-wrapper"
     >
       <player-battles-squares
         v-observe-visibility="{
@@ -133,12 +114,14 @@
           <span class="text-sm text-grey-lighter">
             Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
           </span>
-          <button
-            class="ml-auto md:ml-4 button button--sm button--secondary"
+          <b-button
+            class="ml-auto md:ml-4"
+            sm
+            secondary
             @click="refresh"
           >
             Refresh now
-          </button>
+          </b-button>
         </div>
 
         <player-battles-stats
@@ -153,34 +136,9 @@
       </template>
     </player-teaser-card>
 
-    <div
-      v-show="isInstallable && !installBannerDismissed"
-      class="card-wrapper md:w-1/2 mx-auto text-center leading-tight"
-    >
-      <div class="relative py-3 px-6 bg-primary-darker rounded border-2 border-secondary-lighter">
-        <button
-          class="absolute top-0 right-0 mr-1 mt-1"
-          @click="dismissInstall"
-        >
-          <svg class="h-6 w-6 fill-current" viewBox="0 0 20 20">
-            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-          </svg>
-        </button>
-        <p>
-          Add the web app to your home screen.
-          Track your trophies easily. Light, fast and free.
-        </p>
-        <div class="mt-3">
-          <button
-            class="button button--md button--secondary"
-            @click="clickInstall"
-          >
-            <span class="mr-1">📥</span>
-            Install
-          </button>
-        </div>
-      </div>
-    </div>
+    <install-card
+      class="mx-auto"
+    ></install-card>
 
     <client-only>
       <adsense
@@ -198,7 +156,6 @@
       v-slot="props"
       title="Game Modes"
       description="View your win rate in different modes and get personalized recommendations."
-      class="card-wrapper"
     >
       <player-mode-winrates
         v-observe-visibility="{
@@ -219,16 +176,17 @@
         <player-tips
           :player="player"
           :active-map-meta="activeMapMeta"
-          class="mr-3 button md:button--md"
+          class="mr-3"
         ></player-tips>
 
-        <nuxt-link
-          class="button md:button--md button--secondary"
+        <b-button
           to="/tier-list/map"
+          md
+          secondary
           prefetch
         >
           Open Map Tier List
-        </nuxt-link>
+        </b-button>
       </div>
     </player-teaser-card>
 
@@ -249,7 +207,6 @@
       :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
       title="Brawlers"
       description="View Trophy Graphs and Win Rates for all of your Brawlers."
-      class="card-wrapper"
     >
       <player-brawlers
         :player="player"
@@ -275,7 +232,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { MetaInfo } from 'vue-meta'
+import { mapState, mapActions } from 'vuex'
 import { MapMetaMap } from '../../model/MetaEntry'
 import { Post } from '../../model/Web'
 import { ActiveEvent, CurrentAndUpcomingEvents, Leaderboard, LeaderboardEntry } from '../../model/Api'
@@ -283,10 +241,10 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios'
 import { BattleTotalRow } from '../../components/player-battles-stats.vue'
 
 export default Vue.extend({
-  head() {
-    const description = `Brawl Time for ${(<any>this).player.name}: ${Math.floor((<any>this).player.hoursSpent)} hours spent, ${(<any>this).player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
+  head(): MetaInfo {
+    const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
     return {
-      title: (<any>this).player.name,
+      title: this.player.name,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -320,11 +278,7 @@ export default Vue.extend({
     },
     ...mapState({
       player: (state: any) => state.player,
-      installBannerDismissed: (state: any) => state.installBannerDismissed as boolean,
       isApp: (state: any) => state.isApp as boolean,
-    }),
-    ...mapGetters({
-      isInstallable: 'isInstallable',
     }),
   },
   async validate({ store, params }) {
@@ -398,21 +352,6 @@ export default Vue.extend({
       this.refreshSecondsLeft = 180
       await this.refreshPlayer()
     },
-    dismissInstall() {
-      this.$gtag.event('dismiss', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      this.clearInstallPrompt()
-      this.dismissInstallBanner()
-    },
-    async clickInstall() {
-      this.$gtag.event('click', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      await this.install()
-    },
     trackScroll(visible, entry, section) {
       if (visible) {
         this.$gtag.event('scroll', {
@@ -421,13 +360,8 @@ export default Vue.extend({
         })
       }
     },
-    ...mapMutations({
-      dismissInstallBanner: 'dismissInstallBanner',
-      clearInstallPrompt: 'clearInstallPrompt',
-    }),
     ...mapActions({
       refreshPlayer: 'refreshPlayer',
-      install: 'install',
     }),
   },
 })

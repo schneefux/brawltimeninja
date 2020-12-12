@@ -1,5 +1,4 @@
 <template>
-  <!-- a bit less px than card__content on sm so that the time buttons fit -->
   <card
     :loading="loading"
     md
@@ -10,15 +9,16 @@
           <span>Timespan</span>
         </div>
         <div class="flex flex-wrap">
-          <button
+          <b-button
             v-for="(label, t) in timeRangeLabel"
             :key="t"
-            class="mr-2 my-1 button button--sm"
-            :class="{ 'button--selected': timeRange == t }"
+            :selected="timeRange == t"
+            class="mr-1 my-1"
+            sm
             @click="timeRange = t"
           >
             {{ label }}
-          </button>
+          </b-button>
         </div>
       </div>
 

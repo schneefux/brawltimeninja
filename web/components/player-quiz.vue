@@ -1,14 +1,14 @@
 <template>
-  <div class="card card__content bg-primary-dark relative max-w-md mx-auto">
-    <h3 class="card__header">
-      Brawler Personality Test
-    </h3>
-
+  <card
+    title="Brawler Personality Test"
+    md
+    primary
+   >
     <div
-      class="card__text"
-      :class="{
-        'h-20': !showFullDescription,
-      }"
+      slot="content"
+      :class="['relative', {
+        'h-24': !showFullDescription,
+      }]"
     >
       <template v-if="step == 0">
         <p class="question">
@@ -30,10 +30,12 @@
           Do you always play the new Brawler?
         </p>
         <div class="answers">
-          <button
+          <b-button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2 w-1/3"
+            class="mx-2 w-1/3"
+            secondary
+            md
             @click="setOpenness(rating)"
           >
             <template v-if="rating == 5">
@@ -45,7 +47,7 @@
             <template v-if="rating == 1">
               No.
             </template>
-          </button>
+          </b-button>
         </div>
       </template>
 
@@ -54,10 +56,12 @@
           Are you an Attacker or a Defender?
         </p>
         <div class="answers">
-          <button
+          <b-button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2 w-1/3"
+            class="mx-2 w-1/3"
+            secondary
+            md
             @click="setExtraversion(rating)"
           >
             <template v-if="rating == 5">
@@ -69,7 +73,7 @@
             <template v-if="rating == 1">
               Defender!
             </template>
-          </button>
+          </b-button>
         </div>
       </template>
 
@@ -78,10 +82,12 @@
           Are you very upset when you lose?
         </p>
         <div class="answers">
-          <button
+          <b-button
             v-for="rating in [5, 3, 1]"
             :key="rating"
-            class="button button--secondary button--md mx-2 w-1/3"
+            class="mx-2 w-1/3"
+            secondary
+            md
             @click="setNeurotic(rating)"
           >
             <template v-if="rating == 5">
@@ -93,7 +99,7 @@
             <template v-if="rating == 1">
               No.
             </template>
-          </button>
+          </b-button>
         </div>
       </template>
 
@@ -111,26 +117,30 @@
         v-if="step == 5 && !showFullDescription"
         class="flex flex-wrap h-full items-center"
       >
-        <div class="absolute top-0 right-0 w-1/3 h-full flex flex-wrap justify-end pointer-events-none">
+        <div class="absolute top-0 right-0 -mt-10 w-1/3 h-full flex flex-wrap justify-end pointer-events-none">
           <media-img
             :path="'/brawlers/' + brawlerId({ name: result }) + '/model'"
             size="256"
             clazz="h-24 mt-3 mr-2"
           ></media-img>
           <div class="w-full flex h-6 justify-end">
-            <button
+            <b-button
               v-if="supportsShareApi"
-              class="button button--secondary button--xs mr-1 pointer-events-auto"
+              class="mr-1 pointer-events-auto"
+              secondary
+              xs
               @click="share"
             >
               Share
-            </button>
-            <button
-              class="button button--secondary button--xs mr-1 pointer-events-auto"
+            </b-button>
+            <b-button
+              class="mr-1 pointer-events-auto"
+              secondary
+              xs
               @click="restart"
             >
               Restart
-            </button>
+            </b-button>
           </div>
         </div>
         <p
@@ -169,19 +179,21 @@
           </div>
         </div>
         <div class="flex mt-3 justify-center">
-          <button
-            class="button button--secondary mx-1"
+          <b-button
+            class="mx-1"
+            secondary
             @click="restart"
           >
             Restart
-          </button>
-          <button
+          </b-button>
+          <b-button
             v-if="supportsShareApi"
-            class="button button--secondary mx-1"
+            class="mx-1"
+            secondary
             @click="share"
           >
             Share
-          </button>
+          </b-button>
         </div>
       </div>
 
@@ -207,7 +219,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </card>
 </template>
 
 <script lang="ts">

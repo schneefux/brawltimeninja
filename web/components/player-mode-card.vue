@@ -4,11 +4,11 @@
     elevation="2"
   >
     <div slot="content">
-      <dl class="flex card__props">
-        <dd class="card-prop-value">
+      <dl class="flex">
+        <dd class="font-semibold">
           {{ stats.picks > 5 ? metaStatMaps.formatters.winRate(stats.winRate) : '?' }}
         </dd>
-        <dt class="ml-1 card-prop-label">
+        <dt class="ml-1">
           {{ metaStatMaps.labels.winRate }}
         </dt>
       </dl>
@@ -50,21 +50,26 @@
             clazz="px-1"
             ztyle="max-height: 100%;"
           ></media-img>
-          <router-link
+          <b-button
+            tag="router-link"
             :to="`/tier-list/mode/${camelToKebab(activeMap.mode)}/map/${slugify(activeMap.map)}`"
-            class="mx-auto button button--xs button--secondary"
+            class="mx-auto"
+            xs
+            secondary
           >
             Open
-          </router-link>
+          </b-button>
         </div>
       </div>
       <div v-else class="mt-2">
-        <router-link
+        <b-button
+          tag="router-link"
           :to="`/tier-list/mode/${camelToKebab(mode)}`"
-          class="button button--xs button--secondary"
+          xs
+          secondary
         >
           Open Tier List
-        </router-link>
+        </b-button>
       </div>
     </div>
     <div class="absolute top-0 right-0 mr-6 my-4">

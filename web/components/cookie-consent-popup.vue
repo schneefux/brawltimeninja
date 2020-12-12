@@ -32,7 +32,7 @@
         To collect this information, some data will be shared with Cloudflare, Google Analytics, Google AdSense and Sentry.
         Your information will never be sold.
         <br>
-        Read the privacy policy or update your preferences later <nuxt-link class="link" to="/about">here</nuxt-link>.
+        Read the privacy policy or update your preferences later <nuxt-link class="underline" to="/about">here</nuxt-link>.
         <summary>More information</summary>
       </details>
       <p class="mt-2 mx-2 text-center">

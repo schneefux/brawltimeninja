@@ -23,12 +23,14 @@
         v-show="!showAll"
         class="w-full md:hidden mt-1"
       >
-        <button
-          class="relative z-10 button button--secondary button--xs text-sm"
+        <b-button
+          class="relative z-10"
+          xs
+          secondary
           @click="showAll = true"
         >
           &#9660; show fun facts
-        </button>
+        </b-button>
       </div>
 
       <p
@@ -64,7 +66,6 @@
       :win-rate="winRate"
       :total-battles="totalBattles"
       :account-rating="accountRating"
-      :history="history"
       class="absolute w-16 top-0 left-0 z-0 -mt-2"
     ></player-sharepic>
 
@@ -105,15 +106,14 @@
         </dl>
 
         <div class="w-full max-w-xs my-3 md:my-0 md:w-80 relative">
-          <div class="h-24 md:h-20 flex flex-col justify-center">
-            <history-graph
-              v-if="history.length > 1"
-              :history="history"
-            ></history-graph>
-            <span v-else class="italic">
-              Come back later to see progress charts
-            </span>
-          </div>
+          <history-graph
+            v-if="enableClickerStats"
+            :player-tag="player.tag"
+            class="h-24 md:h-20"
+          ></history-graph>
+          <span v-else class="italic">
+            Come back later to see progress charts
+          </span>
         </div>
       </div>
 
@@ -236,7 +236,6 @@ export default Vue.extend({
       showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
-      history: [] as TrophiesRow[],
       ratingPercentiles: {
         // key: percentile, trophy boundary
         '?': [0, 480],
@@ -248,29 +247,6 @@ export default Vue.extend({
         'S+': [0.99, Infinity],
       },
     }
-  },
-  watch: {
-    enableClickerStats: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    if (!this.enableClickerStats) {
-      return
-    }
-
-    const data = await this.$clicker.query('player.history',
-      'brawler',
-      ['timestamp'],
-      ['timestamp', 'player_trophies'],
-      {
-        ...this.$clicker.defaultSlices('brawler'),
-        player_tag: [this.player.tag],
-      },
-      { cache: 60 })
-    this.history = data.data.map(b => ({
-      timestamp: b.timestamp,
-      trophies: b.player_trophies,
-    } as TrophiesRow))
   },
   mounted() {
     if ((<any>process).client) {
