@@ -507,7 +507,7 @@ export default Vue.extend({
         this.setPersonalityTestResult(result)
         this.result = result
         this.step++
-      }, 1.3000)
+      }, 3000)
     },
     restart() {
       this.step = 0
