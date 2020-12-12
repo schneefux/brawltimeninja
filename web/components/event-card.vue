@@ -6,11 +6,8 @@
     :subtitle-link="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
-    :size="size"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
-    :md="size == undefined"
-    :loading="loading"
-    :elevation="elevation"
+    v-bind="$attrs"
   >
     <media-img
       slot="preview"
@@ -44,6 +41,7 @@ import Vue from 'vue'
 import { camelToKebab, formatMode, slugify } from '../lib/util'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     mode: {
       // camel case
@@ -56,18 +54,8 @@ export default Vue.extend({
       // enables map icon top right
       type: [String, Number],
     },
-    size: {
-      // class
-      type: String,
-    },
     nobackground: {
       type: Boolean
-    },
-    loading: {
-      type: Boolean
-    },
-    elevation: {
-      type: [Number, String],
     },
   },
   data() {

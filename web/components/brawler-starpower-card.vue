@@ -7,7 +7,7 @@
     md
   >
     <template v-slot:content>
-      <p class="h-full">
+      <p>
         <q
           v-if="gameFileDescription != ''"
           class="italic"

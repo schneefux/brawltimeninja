@@ -1,7 +1,7 @@
 <template>
   <event-card
     :mode="mode"
-    elevation="2"
+    v-bind="$attrs"
   >
     <div slot="content">
       <dl class="flex">
@@ -107,6 +107,7 @@ interface MapWithId extends MapMeta {
 }
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     playerTag: {
       type: String,

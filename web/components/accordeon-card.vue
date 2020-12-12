@@ -1,9 +1,16 @@
 <template>
-  <div>
-    <slot :open="page > 0" :page="page"></slot>
+  <card v-bind="$attrs">
+    <template v-slot:content>
+      <slot
+        name="content"
+        :open="page > 0"
+        :page="page"
+      ></slot>
+    </template>
 
     <div
-      class="pb-3 flex justify-center"
+      slot="actions"
+      class="w-full flex justify-center"
       ref="top"
       :key="page"
     >
@@ -35,7 +42,7 @@
         Show More
       </b-button>
     </div>
-  </div>
+  </card>
 </template>
 
 <script lang="ts">

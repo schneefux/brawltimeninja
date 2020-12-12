@@ -1,5 +1,5 @@
 <template functional>
-  <card
+  <accordeon-card
     :pages="props.pages"
     :title="props.title"
   >
@@ -12,7 +12,7 @@
         <slot :open="open" :page="page"></slot>
       </div>
     </template>
-  </card>
+  </accordeon-card>
 </template>
 
 <script lang="ts">

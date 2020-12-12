@@ -194,4 +194,33 @@ export default Vue.extend({
 .bg-filter-rounded-b::after {
   @apply rounded-b;
 }
+
+.loading {
+  @apply relative;
+}
+
+.loading:before {
+  @apply absolute bottom-0 left-0 bg-primary h-1;
+
+  content: '';
+  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes running-progress {
+  0% {
+    width: 0%;
+    margin-left: 0px;
+    margin-right: 100%;
+  }
+  50% {
+    width: 75%;
+    margin-left: 25%;
+    margin-right: 0%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+    margin-right: 0;
+  }
+}
 </style>

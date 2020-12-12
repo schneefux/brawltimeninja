@@ -2,9 +2,8 @@ import Vue from 'vue'
 import MediaImg from '~/components/media-img'
 import Lazy from '~/components/lazy'
 import WrappedComponent from '~/components/wrapped-component'
-import FastLink from '~/components/fast-link'
-import Accordeon from '~/components/accordeon'
 import Card from '~/components/card.vue'
+import AccordeonCard from '~/components/accordeon-card.vue'
 import CardContent from '~/components/card-content.vue'
 
 // globally enable base components
@@ -13,7 +12,6 @@ import CardContent from '~/components/card-content.vue'
 Vue.component('media-img', MediaImg)
 Vue.component('lazy', Lazy)
 Vue.component('wrapped-component', WrappedComponent)
-Vue.component('fast-link', FastLink)
-Vue.component('accordeon', Accordeon)
 Vue.component('card', Card)
+Vue.component('accordeon-card', AccordeonCard)
 Vue.component('card-content', CardContent)

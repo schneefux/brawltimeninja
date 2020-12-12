@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['flex flex-wrap justify-center', {
+    :class="['flex flex-wrap justify-center pt-2', {
       'h-72 overflow-y-hidden': tease,
     }]"
   >
@@ -8,8 +8,8 @@
       v-for="(mode, index) in modes.slice(0, tease ? 3 : undefined)"
       :key="mode"
       :render="index <= 3"
-      class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
       distance="600px"
+      translucent
     >
       <player-mode-card
         :mode="mode"
@@ -18,6 +18,8 @@
         :player-brawlers="Object.values(player.brawlers)"
         :player-tag="player.tag"
         :enable-clicker-stats="enableClickerStats"
+        elevation="2"
+        sm
       ></player-mode-card>
     </lazy>
   </div>

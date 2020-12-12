@@ -10,30 +10,7 @@
       'w-full max-w-2xl': props.xxl,
     }]"
   >
-    <accordeon
-      v-if="props.pages != undefined"
-      :pages="props.pages"
-    >
-      <template v-slot="accordeonSlotProps">
-        <!-- pass props and slots down -->
-        <card-content v-bind="data.attrs">
-          <template
-            v-for="(_, slot) of $scopedSlots"
-            v-slot:[slot]="slotProps"
-          >
-            <slot
-              v-bind="{ ...slotProps, ...accordeonSlotProps }"
-              :name="slot"
-            ></slot>
-          </template>
-        </card-content>
-      </template>
-    </accordeon>
-
-    <card-content
-      v-else
-      v-bind="data.attrs"
-    >
+    <card-content v-bind="data.attrs">
       <template
         v-for="(_, slot) of $scopedSlots"
         v-slot:[slot]="slotProps"
@@ -55,12 +32,6 @@ import Vue from 'vue'
 export default Vue.extend({
   functional: true,
   props: {
-    pages: {
-      type: Number
-    },
-    loading: {
-      type: Boolean
-    },
     size: {
       type: String, // class
       default: ''
@@ -107,36 +78,5 @@ export default Vue.extend({
 
 .bg-dark-2 {
   background-color: color(#1a202c blend(white 7%));
-}
-</style>
-
-<style lang="postcss" scoped>
-.loading {
-  @apply relative;
-}
-
-.loading:before {
-  @apply absolute bottom-0 left-0 bg-primary h-1;
-
-  content: '';
-  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes running-progress {
-  0% {
-    width: 0%;
-    margin-left: 0px;
-    margin-right: 100%;
-  }
-  50% {
-    width: 75%;
-    margin-left: 25%;
-    margin-right: 0%;
-  }
-  100% {
-    width: 0%;
-    margin-left: 100%;
-    margin-right: 0;
-  }
 }
 </style>

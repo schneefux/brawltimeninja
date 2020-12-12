@@ -1,5 +1,5 @@
 <template>
-  <card
+  <accordeon-card
     :title="brawler + ' with another Brawler'"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
@@ -35,7 +35,7 @@
         </template>
       </template>
     </template>
-  </card>
+  </accordeon-card>
 </template>
 
 <script lang="ts">
