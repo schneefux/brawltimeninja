@@ -4,6 +4,16 @@ Fun game statistics site for Brawlstars.
 
 https://brawltime.ninja
 
+## Style Guide
+```
+gray-900: background
+gray-200: light text
+gray-800: dark text
+
+yellow-400: primary
+red-600: secondary
+```
+
 ## Build Setup
 
 For development, copy `example.env` to `.env`, fill credentials and run `docker-compose up` or follow the steps below. Note: For deployment, buildpacks (using dokku) are used and not the Dockerfiles.
@@ -43,15 +53,6 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 ## Deployment
 
 * Dokku Docker options to connect services: `docker-options:add brawltime.ninja build,deploy,run "--add-host api.brawltime.ninja:host-gateway`
-
-## Processing images
-
-* `for f in web/assets/images/hero/icon/*.png; do magick.exe "$f" -strip -resize x192 "${f%.png}_optimized.png"; done`
-* `for f in web/assets/images/icon/*.png; do magick.exe "$f" -strip -resize x40 "${f%.png}_optimized.png"; done`
-* `for f in web/assets/images/mode/background/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -resize x256 "${f%.png}.jpg"; done`
-* `for f in web/assets/images/mode/icon/*.png; do magick.exe "$f" -sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -resize x96 "${f%.png}_optimized.png"; done`
-* `for f in web/assets/images/blog/guides/*.jpg; do magick.exe "$f" -strip -resize 800x "${f%.jpg}_small.jpg"; done`
-* `for f in web/assets/images/bs-assets/map_images/*.png; do magick.exe "$f" -strip -resize x384 -background white "${f%.png}_small.jpg"; done; mv web/assets/images/bs-assets/map_images/*_small.jpg web/assets/images/map/`
 
 ## Assets
 
