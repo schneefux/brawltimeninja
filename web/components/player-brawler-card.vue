@@ -161,10 +161,10 @@ export default Vue.extend({
     this.picks = battleData.data[0].picks
   },
   computed: {
-    brawlerId() {
+    brawlerId(): string {
       return brawlerId({ name: this.brawler.name })
     },
-    title() {
+    title(): string {
       return capitalizeWords(this.brawler.name.toLowerCase())
     },
   },
