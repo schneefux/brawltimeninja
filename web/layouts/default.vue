@@ -1,13 +1,7 @@
 <template>
   <div class="flex flex-col justify-between min-h-screen bg-gray-900 text-gray-200">
-    <experiment experiment-id="yCJKhSLRRC2qn6M6S8eo7g">
-      <web-nav></web-nav>
-
-      <template v-slot:1>
-        <web-nav class="hidden md:flex"></web-nav>
-        <app-head-nav class="md:hidden"></app-head-nav>
-      </template>
-    </experiment>
+    <web-nav class="hidden md:flex"></web-nav>
+    <app-head-nav class="md:hidden"></app-head-nav>
 
     <nuxt />
 
@@ -19,20 +13,12 @@
       @enable-all="enableCookiesAndAds"
     ></cookie-consent-popup>
 
-    <experiment experiment-id="yCJKhSLRRC2qn6M6S8eo7g">
-      <template v-slot:1>
-        <app-bottom-nav class="md:hidden"></app-bottom-nav>
-        <footer
-          class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal hidden md:block"
-        >
-          <copyright></copyright>
-        </footer>
-      </template>
-
-      <footer class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal">
-        <copyright></copyright>
-      </footer>
-    </experiment>
+    <app-bottom-nav class="md:hidden"></app-bottom-nav>
+    <footer
+      class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal hidden md:block"
+    >
+      <copyright></copyright>
+    </footer>
 
     <adblock-bait></adblock-bait>
   </div>

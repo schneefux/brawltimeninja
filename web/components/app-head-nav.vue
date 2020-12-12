@@ -6,7 +6,7 @@
     >
       <img
         v-if="isTopLevel"
-        src="/icon.png"
+        src="~/assets/images/logo_with_crown_min.svg"
       >
       <font-awesome-icon
         v-else
