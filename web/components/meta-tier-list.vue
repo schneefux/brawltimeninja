@@ -1,11 +1,7 @@
 <template>
   <card v-bind="$attrs">
     <template v-slot:content>
-      <p>
-        Tiers are calculated from {{ metaStatMaps.labels[stat] }}. <br>
-        Click on a Brawler to learn more about them.
-      </p>
-      <ul class="mt-2">
+      <ul>
         <li
           v-for="(entries, tier) in tiers"
           :key="tier"
