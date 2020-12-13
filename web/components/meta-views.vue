@@ -29,7 +29,7 @@
         slot="content"
         :entries="entries"
         :stat="measurement"
-        class="flex-1 h-full"
+        class="flex-1 h-64 md:h-full"
         full-height
       ></meta-graph>
     </div>
