@@ -67,7 +67,7 @@
                 <div class="flex items-center">
                   <brawler-team
                     :brawlers="team.brawlers"
-                    class="w-32 flex-shrink-0"
+                    class="h-8 w-24 flex-shrink-0"
                   ></brawler-team>
                   <p class="text-sm md:text-lg">
                     {{ capitalizeWords(team.brawlers.join(', ').toLowerCase()) }}

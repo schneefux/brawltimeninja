@@ -10,6 +10,7 @@
     >
       <brawler-team
         :brawlers="team.brawlers"
+        class="h-full"
       ></brawler-team>
       <p class="self-center text-xs">
         {{ metaStatMaps.formatters.wins(team.wins) }}

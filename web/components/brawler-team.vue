@@ -1,5 +1,8 @@
 <template functional>
-  <div class="h-full relative">
+  <div
+    :style="data.staticStyle"
+    :class="['relative', data.class, data.staticClass]"
+  >
     <router-link
       v-for="(brawler, index) in props.brawlers"
       :key="brawler"
