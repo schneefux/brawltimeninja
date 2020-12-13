@@ -13,7 +13,10 @@
     </p>
     <p class="mt-2">
       With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking
-      <b-button light @click="withdrawCookieConsent">this button</b-button>.
+      <b-button
+        light
+        @click="withdrawCookieConsent"
+      >this button</b-button>.
     </p>
 
     <h1>Privacy Policy</h1>

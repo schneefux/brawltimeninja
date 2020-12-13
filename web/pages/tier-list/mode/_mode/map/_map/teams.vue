@@ -33,6 +33,7 @@
             class="mr-2 mb-1"
             :selected="measurement == m"
             sm
+            dark
             @click="measurement = m"
           >
             {{ metaStatMaps.labels[m] }}

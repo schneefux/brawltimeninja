@@ -63,6 +63,7 @@
               :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
               :selected="isExactActive"
               md
+              dark
               class="mx-2"
               prefetch
             >Best Brawlers</b-button>
@@ -76,6 +77,7 @@
               :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
               :selected="isExactActive"
               md
+              dark
               class="mx-2"
               prefetch
             >Best Teams</b-button>

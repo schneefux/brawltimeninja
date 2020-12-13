@@ -11,8 +11,8 @@
         '': props.sm, // default
         'border-4 text-md': props.md,
         'border-8': props.lg,
-        'bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-yellow-400 text-white': !props.light && !props.primary && !props.secondary,
-        'border-yellow-400': !props.primary && !props.secondary && props.selected,
+        'bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-yellow-400 text-white': props.dark,
+        'border-yellow-400': props.dark && props.selected,
         'bg-gray-300 hover:bg-gray-400 border-gray-300 hover:border-gray-400 text-primary-dark': props.light,
         'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 text-gray-800': props.primary,
         'border-yellow-600': props.primary && props.outline,
@@ -40,6 +40,9 @@ export default Vue.extend({
       type: Boolean
     },
     outline: {
+      type: Boolean
+    },
+    dark: {
       type: Boolean
     },
     light: {

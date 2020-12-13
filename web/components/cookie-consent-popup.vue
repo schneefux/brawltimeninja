@@ -41,7 +41,7 @@
       <div class="mt-3 text-sm flex flex-wrap justify-center">
         <b-button
           v-if="showCookieOptions"
-          class="w-32 mx-2 mb-2 bg-red-400 hover:bg-red-300 border-red-400 text-gray-800"
+          class="w-32 mx-2 mb-2 bg-red-400 border-red-400 hover:border-red-300 text-gray-800"
           lg
           @click="$emit('enable-none')"
         >
@@ -49,7 +49,7 @@
         </b-button>
         <b-button
           v-if="showCookieOptions"
-          class="w-32 mx-2 mb-2 bg-yellow-400 hover:bg-yellow-300 border-yellow-400 text-gray-800"
+          class="w-32 mx-2 mb-2 bg-yellow-400 border-yellow-400 hover:border-yellow-300 text-gray-800"
           lg
           @click="$emit('enable-cookies')"
         >
@@ -57,14 +57,14 @@
         </b-button>
         <b-button
           v-if="!showCookieOptions"
-          class="w-32 mx-2 mb-2 bg-gray-900 hover:bg-gray-800 border-gray-900 text-gray-200"
+          class="w-32 mx-2 mb-2 bg-gray-800 border-gray-800 hover:border-gray-700 text-gray-200"
           lg
           @click="showCookieOptions = true"
         >
           More Options
         </b-button>
         <b-button
-          class="w-32 mx-2 mb-2 bg-green-400 hover:bg-green-300 border-green-400 text-gray-800"
+          class="w-32 mx-2 mb-2 bg-green-400 border-green-400 hover:border-green-300 text-gray-800"
           lg
           @click="$emit('enable-all')"
         >

@@ -12,6 +12,7 @@
               :key="key"
               :selected="view == key"
               class="mr-1 mb-1"
+              dark
               @click="setView(key)"
             >
               {{ name }}
@@ -32,6 +33,7 @@
               :key="m"
               :selected="measurement == m"
               class="mr-2 mb-1"
+              dark
               sm
               @click="setMeasurement(m)"
             >

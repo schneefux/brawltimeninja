@@ -15,6 +15,7 @@
             :selected="timeRange == t"
             class="mr-1 my-1"
             sm
+            dark
             @click="timeRange = t"
           >
             {{ label }}
