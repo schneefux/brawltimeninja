@@ -3,6 +3,7 @@
     :mode="mode"
     :map="map"
     :id="!large && id != undefined && id != 0 ? id : undefined"
+    v-bind="$attrs"
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
@@ -57,6 +58,7 @@ import { camelToKebab, slugify } from '../lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     large: {
       type: Boolean,

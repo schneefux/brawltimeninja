@@ -98,6 +98,7 @@
       <map-best-brawlers-card
         :mode="event.mode"
         class="mx-auto"
+        md
         link
       ></map-best-brawlers-card>
     </page-section>
