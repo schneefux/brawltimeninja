@@ -16,41 +16,62 @@
 
       <div
         v-show="expand"
-        class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
+        class="fixed inset-0 z-50 bg-gray-900 bg-opacity-75 h-screen w-screen overflow-y-scroll"
+        @click.self="expand = false"
       >
-        <h1>
-          {{ modeName }} Guide
-        </h1>
-        <p v-if="article.author != undefined">
-          This guide was written by {{ article.author }}
-          <template v-if="article.attribution != undefined">
-            <wrapped-component
-              :wrap="article.attributionLink != undefined"
-            >
-              <a
-                slot="wrapper"
-                rel="nofollow"
-                :href="article.attributionLink"
-              ></a>
-              <span>({{ article.attribution }})</span>
-            </wrapped-component>
-          </template>.
-        </p>
-      </div>
+        <button
+          class="fixed top-0 right-0 mr-10 mt-4 text-white rounded-full h-12 w-12 bg-gray-800 text-4xl pb-2"
+          @click="expand = false"
+        >
+          &times;
+        </button>
+        <card
+          tag="article"
+          class="mt-8 mb-24 mx-auto"
+          itemscope
+          itemtype="http://schema.org/AnalysisNewsArticle"
+          xxl
+          light
+       >
+        <template v-slot:content>
+          <div
+            class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
+          >
+            <h1>
+              {{ modeName }} Guide
+            </h1>
+            <p v-if="article.author != undefined">
+              This guide was written by {{ article.author }}
+              <template v-if="article.attribution != undefined">
+                <wrapped-component
+                  :wrap="article.attributionLink != undefined"
+                >
+                  <a
+                    slot="wrapper"
+                    rel="nofollow"
+                    :href="article.attributionLink"
+                  ></a>
+                  <span>({{ article.attribution }})</span>
+                </wrapped-component>
+              </template>.
+            </p>
+          </div>
 
-      <nuxt-content
-        v-show="expand"
-        :document="article"
-        itemprop="articleBody"
-        class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
-      ></nuxt-content>
+          <nuxt-content
+            :document="article"
+            itemprop="articleBody"
+            class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
+          ></nuxt-content>
+        </template>
+        </card>
+      </div>
     </template>
 
     <b-button
       slot="actions"
       light
       @click="expand = !expand"
-    >{{ !expand ? 'Read more' : 'Read less' }}</b-button>
+    >{{ !expand ? 'Open Guide' : 'Close Guide' }}</b-button>
   </card>
 </template>
 
