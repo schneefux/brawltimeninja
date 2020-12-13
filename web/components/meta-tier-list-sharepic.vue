@@ -1,6 +1,9 @@
 <template>
   <sharepic @done="done">
-    <card class="m-0! p-0!">
+    <card
+      class="m-0! p-0! h-full"
+      full-height
+    >
       <template v-slot:content>
         <div
           v-for="(entries, tier) in tiers"
@@ -33,7 +36,7 @@
             </div>
           </div>
         </div>
-        <div class="w-full py-1 absolute bottom-0 left-0 z-10 bg-gray-800 px-3 flex justify-between text-xs tracking-tight text-gray-600">
+        <div class="w-full py-1 absolute bottom-0 left-0 z-10 px-3 flex justify-between text-xs tracking-tight text-gray-600">
           <span>
             <template v-if="description != undefined">
               {{ description }}
