@@ -1,5 +1,5 @@
 <template>
-  <page title="Star Power Tier List">
+  <page-dashboard title="Star Power Tier List">
     <p>
       Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars. <br />
       The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
@@ -13,20 +13,23 @@
       :measurements="measurements"
       :slices="slices"
       :loading="$fetchState.pending"
+      class="mt-4"
       default-measurement="winsZScore"
       cube="starpower"
       @measurements="ms => selectedMeasurements = ms"
       @slices="s => slices = s"
     ></meta-views>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import pageDashboard from '~/components/page-dashboard.vue'
 import { MetaGridEntry, brawlerId, measurementMap, capitalizeWords, calculateDiffs } from '../../lib/util'
 
 export default Vue.extend({
+  components: { pageDashboard },
   data() {
     return {
       slices: this.$clicker.defaultSlices('starpower'),

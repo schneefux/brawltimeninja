@@ -1,5 +1,5 @@
 <template>
-  <page title="Brawl Stars Brawler Tier List">
+  <page-dashboard title="Brawl Stars Brawler Tier List">
     <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
 
     <div class="flex flex-wrap justify-center">
@@ -75,7 +75,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">

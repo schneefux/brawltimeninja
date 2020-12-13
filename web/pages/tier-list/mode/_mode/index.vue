@@ -1,5 +1,5 @@
 <template>
-  <page :title="modeName">
+  <page-dashboard :title="modeName">
     <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
     <div class="flex flex-wrap justify-center">
@@ -141,7 +141,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">

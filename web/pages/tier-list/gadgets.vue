@@ -1,5 +1,5 @@
 <template>
-  <page title="Gadget Tier List">
+  <page-dashboard title="Gadget Tier List">
     <p>
       Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars. <br />
       The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
@@ -13,12 +13,13 @@
       :measurements="measurements"
       :slices="slices"
       :loading="$fetchState.pending"
+      class="mt-4"
       default-measurement="winsZScore"
       cube="gadget"
       @measurements="ms => selectedMeasurements = ms"
       @slices="s => slices = s"
     ></meta-views>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">
