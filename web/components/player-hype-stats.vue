@@ -81,7 +81,7 @@
           <dd class="mx-2">
             <nuxt-link
               :to="`/club/${player.club.tag}`"
-              class="underline text-red-600 font-semibold text-center"
+              class="underline text-red-500 font-semibold text-center"
             >
               {{ player.club.name.replace(/ /g, '&nbsp;') }}
             </nuxt-link>
@@ -433,7 +433,7 @@ export default Vue.extend({
 }
 
 .bigstat-tooltip__btn {
-  @apply absolute mt-0 mr-1 text-yellow-400 font-semibold underline top-0 right-0;
+  @apply absolute mt-0 mr-1 text-red-500 font-semibold underline top-0 right-0;
 }
 
 .text-5vw {

@@ -28,7 +28,7 @@
             slot="actions"
             :to="`/faq/${faq.slug}`"
             itemprop="url"
-            light
+            primary
             prefetch
           >
             Read
@@ -85,7 +85,7 @@
               slot="actions"
               :to="`/blog/guides/${post.slug}`"
               itemprop="url"
-              light
+              primary
               prefetch
             >
               Read

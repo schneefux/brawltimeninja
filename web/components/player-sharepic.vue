@@ -31,7 +31,7 @@
             v-if="player.club.tag != undefined"
             class="w-full text-center mt-1 text-2xl"
           >
-            <span class="mx-1 text-red-600 font-semibold">
+            <span class="mx-1 text-red-500 font-semibold">
               {{ player.club.name }}
             </span>
             Club

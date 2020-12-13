@@ -1,8 +1,7 @@
 <template>
   <b-button
     v-show="isInstallable"
-    class="md:mr-2"
-    primary
+    secondary
     xs
     outline
     @click="clickInstall"

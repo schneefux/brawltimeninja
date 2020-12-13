@@ -5,7 +5,7 @@
       :key="link.target"
       :to="link.target"
       :class="['flex flex-col items-center justify-between pt-2 pb-3 px-3', {
-        'text-gray-900': link.target == activeTarget,
+        'text-gray-800': link.target == activeTarget,
         'text-yellow-700': link.target != activeTarget,
       }]"
       prefetch

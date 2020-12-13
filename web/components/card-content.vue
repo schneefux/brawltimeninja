@@ -16,7 +16,7 @@
         'bg-dark-0': !props.light && !props.primary && !props.secondary && props.elevation == 0,
         'bg-dark-1': !props.light && !props.primary && !props.secondary && props.elevation == 1,
         'bg-dark-2': !props.light && !props.primary && !props.secondary && props.elevation == 2,
-        'bg-gray-400 text-gray-900': props.light,
+        'bg-gray-100 text-gray-800': props.light,
         'bg-yellow-900': props.primary,
         'bg-red-900': props.secondary,
         'elevation-0': props.elevation == 0,

@@ -15,52 +15,49 @@
       See how much you play, statistics for your Brawlers and more.
     </p>
 
-    <div class="mt-4 mx-4"
+    <form
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'search'),
         once: true,
       }"
+      class="mt-4 mx-4 flex flex-wrap justify-center"
+      :action="`/player/${cleanedTag}`"
+      :target="isInIframe ? '_parent' : ''"
+      :onSubmit="isInIframe ? '' : 'return false;'"
+      @submit="search"
     >
-      <form
-        class="flex flex-wrap justify-center"
-        :action="`/player/${cleanedTag}`"
-        :target="isInIframe ? '_parent' : ''"
-        :onSubmit="isInIframe ? '' : 'return false;'"
-        @submit="search"
-      >
-        <div class="w-full flex justify-center">
-          <div class="py-2 border-2 rounded-lg border-yellow-400">
-            <input
-              v-model="tag"
-              placeholder="Enter your Tag"
-              type="text"
-              autocomplete="off"
-              class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2"
-            >
-            <b-button
-              tag="input"
-              type="submit"
-              class="flex-shrink-0 mr-3"
-              value="Search"
-              primary
-              lg
-            ></b-button>
-          </div>
+      <div class="w-full flex justify-center">
+        <div class="py-2 border-2 rounded-lg border-yellow-400 bg-gray-800">
+          <input
+            v-model="tag"
+            placeholder="Enter your Tag"
+            type="text"
+            autocomplete="off"
+            class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2"
+          >
+          <b-button
+            tag="input"
+            type="submit"
+            class="flex-shrink-0 mr-3"
+            value="Search"
+            secondary
+            lg
+          ></b-button>
         </div>
-        <p
-          v-show="loading"
-          class="mt-2 text-red-600"
-        >
-          Searching…
-        </p>
-        <p
-          v-show="error"
-          class="mt-2 font-semibold text-red-600"
-        >
-          {{ error }}
-        </p>
-      </form>
-    </div>
+      </div>
+      <p
+        v-show="loading"
+        class="mt-2 text-red-500"
+      >
+        Searching…
+      </p>
+      <p
+        v-show="error"
+        class="mt-2 font-semibold text-red-500"
+      >
+        {{ error }}
+      </p>
+    </form>
 
     <div class="mt-2 text-center">
       <details
@@ -93,16 +90,16 @@
       </details>
     </div>
 
-    <div class="my-2 text-center max-w-sm">
-      <p class="text-grey">
-        <span v-show="lastPlayers.length === 0">
-          Or check one of these profiles:
-        </span>
-        <span v-show="lastPlayers.length > 0">
+    <div class="my-2 mx-6 max-w-lg flex flex-wrap justify-center">
+      <div class="mt-1">
+        <template v-if="lastPlayers.length === 0">
+          Or check one of these:
+        </template>
+        <template v-if="lastPlayers.length > 0">
           Recently searched:
-        </span>
-      </p>
-      <div class="mx-auto">
+        </template>
+      </div>
+      <div>
         <b-button
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
@@ -110,7 +107,7 @@
           @click.native.passive="addLastPlayer(player)"
           xs
           primary
-          class="ml-2"
+          class="ml-2 mt-1"
         >
           {{ player.name }}
         </b-button>

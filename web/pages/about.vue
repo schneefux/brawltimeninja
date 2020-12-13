@@ -1,7 +1,7 @@
 <template>
   <page
     title="About"
-    class="bg-grey-lighter py-8 px-6 my-8 prose prose-sm sm:prose lg:prose-lg"
+    class="bg-gray-100 prose prose-sm sm:prose lg:prose-lg"
   >
     <copyright></copyright>
     <p>

@@ -15,7 +15,7 @@
 
     <app-bottom-nav class="md:hidden"></app-bottom-nav>
     <footer
-      class="bg-yellow-600 text-gray-900 py-2 text-sm text-center leading-normal hidden md:block"
+      class="bg-yellow-400 text-gray-800 py-2 text-sm text-center leading-normal hidden md:block"
     >
       <copyright></copyright>
     </footer>

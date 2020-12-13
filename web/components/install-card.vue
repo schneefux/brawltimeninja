@@ -1,8 +1,8 @@
 <template>
   <card
-    v-if="isInstallable && !installBannerDismissed"
+    v-show="isInstallable && !installBannerDismissed"
     title="Install the web app"
-    primary
+    secondary
     md
     class="relative"
   >

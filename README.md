@@ -6,12 +6,17 @@ https://brawltime.ninja
 
 ## Style Guide
 ```
-gray-900: background
+gray-900: dark background
 gray-200: light text
+gray-100: light background
 gray-800: dark text
 
 yellow-400: primary
+yellow-600: primary darker
+yellow-200: primary light background
+yellow-900: primary background
 red-600: secondary
+red-500: secondary text
 ```
 
 ## Build Setup

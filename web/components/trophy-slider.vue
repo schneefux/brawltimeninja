@@ -12,11 +12,17 @@
             :step="1"
             :min-range="1"
             :value="value"
-            @input="e => $emit('input', e)"
+            :bg-style="bgStyle"
+            :process-style="processStyle"
             tooltip-dir="top"
             lazy
+            @input="e => $emit('input', e)"
           >
-            <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
+            <span
+              slot="tooltip"
+              slot-scope="{ value }"
+              class="slider-tooltip bg-gray-700! border-gray-700!"
+            >
               {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
             </span>
           </vue-range-slider>
@@ -47,5 +53,27 @@ export default Vue.extend({
       },
     }
   },
+  computed: {
+    bgStyle() {
+      return {
+        backgroundColor: 'rgb(253, 230, 138)', // yellow-200
+      }
+    },
+    processStyle() {
+      return {
+        backgroundColor: 'rgb(251, 191, 36)', // yellow-400
+      }
+    },
+  },
 })
 </script>
+
+<style lang="postcss" scoped>
+.bg-gray-700\! {
+  @apply bg-gray-700 !important;
+}
+
+.border-gray-700\! {
+  @apply border-gray-700 !important;
+}
+</style>
