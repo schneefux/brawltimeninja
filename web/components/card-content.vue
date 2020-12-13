@@ -106,6 +106,7 @@
           'px-3 py-2': !props.dense,
           'px-2 py-1': props.dense,
           'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
+          'h-full': props.fullHeight,
         }]"
         :style="{
           'background-image': props.background != undefined ? `url('${props.background}')` : undefined,

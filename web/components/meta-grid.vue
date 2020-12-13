@@ -1,21 +1,29 @@
 <template>
-  <div>
-    <div class="flex flex-wrap justify-center">
+  <card v-bind="$attrs">
+    <div
+      slot="content"
+      class="flex flex-wrap justify-center"
+    >
       <brawler-card
-        v-for="entry in sortedEntries"
+        v-for="entry in sortedEntries.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
         :title="entry.title"
         :brawler="entry.brawler"
         :brawler-id="brawlerId({ name: entry.brawler })"
         :icon="entry.icon"
+        elevation="2"
         itemscope
         itemtype="http://schema.org/Person"
       >
+        <span
+          slot="preview"
+          class="text-right font-semibold text-xl"
+        >#{{ entry.index }}</span>
         <template v-slot:stats>
           <table v-if="entry.sampleSize >= sampleSizeThreshold">
             <tbody>
               <tr
-                v-for="stat in stats"
+                v-for="stat in measurements"
                 :key="stat"
                 class="whitespace-nowrap"
                 itemscope
@@ -65,17 +73,24 @@
         </template>
       </brawler-card>
     </div>
-
-    <div class="mt-2 w-full text-right">
+    <div
+      slot="actions"
+      class="w-full flex justify-center"
+    >
       <b-button
-        md
+        v-if="page > 0"
+        class="mr-1 w-32"
         primary
-        @click="downloadCsv()"
-      >
-        Download Data
-      </b-button>
+        @click="page--"
+      >Previous Page</b-button>
+      <b-button
+        v-if="(page+1)*pageSize < sortedEntries.length"
+        class="ml-1 w-32"
+        primary
+        @click="page++"
+      >Next Page</b-button>
     </div>
-  </div>
+  </card>
 </template>
 
 <script lang="ts">
@@ -87,75 +102,48 @@ interface IndexedMetaGridEntry extends MetaGridEntry {
 }
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
+    measurements: {
+      type: Array as PropType<string[]>,
+      required: true
+    },
     entries: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true,
     },
-    defaultStat: {
+    stat: {
       type: String,
-      required: false
-    },
-    gaCategory: {
-      type: String,
-      required: true,
+      required: true
     },
     sampleSizeThreshold: {
       type: Number,
       default: 200
     },
+    pageSize: {
+      type: Number,
+      default: 4
+    }
   },
   data() {
-    const defaultStat = this.defaultStat || (this.entries.length === 0 ? ''
-      : metaStatMaps.propPriority.find(prop => prop in this.entries[0].stats)) as string
-
     return {
-      selectedStat: defaultStat,
-      metaStatMaps,
+      page: 0,
     }
   },
   computed: {
-    stats(): string[] {
-      if (this.entries.length == 0) {
-        return []
-      }
-      return Object.keys(this.entries[0].stats)
-        .filter((key) => this.entries[0].stats[key] != undefined
-          && !isNaN(parseFloat(this.entries[0].stats[key].toString())))
-    },
     sortedEntries(): IndexedMetaGridEntry[] {
-      return this.entries.slice()
-        .sort(compare1(this.selectedStat as any))
+      return this.entries
         .map((entry, index) => ({
           ...entry,
           index: index + 1,
         }))
+        .sort(compare1(this.stat as any))
     },
     brawlerId() {
       return brawlerId
     },
-  },
-  methods: {
-    downloadCsv() {
-      this.$gtag.event('click', {
-        'event_category': this.gaCategory,
-        'event_label': 'download_csv',
-      })
-
-      const csv = 'title,brawler,sampleSize,' + this.stats.join(',') + '\n'
-        + this.sortedEntries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.stats.map(stat => entry.stats[stat]).join(',')).join('\n')
-      const downloader = document.createElement('a')
-      downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
-      downloader.target = '_blank'
-      downloader.download = 'export.csv'
-      downloader.click()
-    },
-    sortBy(stat: string) {
-      this.selectedStat = stat
-      this.$gtag.event('sort_by', {
-        'event_category': this.gaCategory,
-        'event_label': this.selectedStat,
-      })
+    metaStatMaps() {
+      return metaStatMaps
     },
   },
 })

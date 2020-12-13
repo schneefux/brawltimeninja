@@ -1,11 +1,12 @@
 <template>
-  <card>
+  <card v-bind="$attrs">
     <plotly
       slot="content"
+      v-if="chart != undefined"
       :traces="chart.traces"
       :layout="chart.layout"
       :options="chart.options"
-      class="h-80"
+      class="h-full"
     ></plotly>
   </card>
 </template>
@@ -15,6 +16,7 @@ import Vue, { PropType } from 'vue'
 import { metaStatMaps, MetaGridEntry, compare1 } from '../lib/util'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     stat: {
       type: String,
@@ -27,6 +29,10 @@ export default Vue.extend({
   },
   computed: {
     chart(): any {
+      if (this.entries.length == 0 || !(this.stat in this.entries[0].stats)) {
+        return undefined
+      }
+
       const entries = this.entries.sort(compare1(this.stat as any))
 
       return {

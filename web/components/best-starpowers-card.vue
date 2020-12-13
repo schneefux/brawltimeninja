@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="title"
+    :title="`Best ${kindName}`"
     xxs
   >
     <b-button
@@ -9,7 +9,7 @@
       primary
       prefetch
     >
-      Open
+      Open {{ kindName.replace(/s$/, '') }} Tier List
     </b-button>
 
     <shimmer
@@ -81,8 +81,8 @@ export default Vue.extend({
     }))
   },
   computed: {
-    title(): string {
-      return `Best ${capitalize(this.kind)}`
+    kindName(): string {
+      return capitalize(this.kind)
     },
     metaStatMaps() {
       return metaStatMaps

@@ -8,23 +8,18 @@
       Explore exclusive Brawl Stars Brawler statistics.
     </p>
 
-    <meta-slicers
-      v-model="slices"
+    <meta-views
       :sample="totalSampleSize"
       :sample-min="100000"
       :timestamp="totalTimestamp"
+      :entries="entries"
+      :measurements="measurements"
+      :slices="slices"
+      :description="description"
       :loading="$fetchState.pending"
       cube="map"
-      class="mx-auto"
-    ></meta-slicers>
-
-    <meta-views
-      v-if="totalSampleSize > 0"
-      :entries="entries"
-      :description="description"
-      :measurements="measurements"
-      ga-category="map_meta"
       @measurements="ms => selectedMeasurements = ms"
+      @slices="s => slices = s"
     ></meta-views>
   </page-section>
 </template>
@@ -118,7 +113,7 @@ export default Vue.extend({
       }
     },
     measurements(): string[] {
-      let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
+      let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
       // all 3v3: star player
       if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.event.mode)) {
         measurements = [...measurements, 'starRate']

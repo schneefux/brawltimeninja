@@ -2,15 +2,24 @@
   <page :title="modeName">
     <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
-    <page-section
-      tracking-id="description"
-      tracking-page-id="mode_meta"
-    >
-      <mode-article-card
+    <div class="flex flex-wrap justify-center">
+      <map-detail-card
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'widget'),
+          once: true,
+        }"
         :mode="mode"
-        class="mx-auto"
+        :timestamp="totalTimestamp"
+      ></map-detail-card>
+
+      <mode-article-card
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'description'),
+          once: true,
+        }"
+        :mode="mode"
       ></mode-article-card>
-    </page-section>
+    </div>
 
     <client-only>
       <adsense
@@ -21,17 +30,6 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-
-    <page-section
-      tracking-id="widget"
-      tracking-page-id="mode_meta"
-    >
-      <map-detail-card
-        :mode="mode"
-        :timestamp="totalTimestamp"
-        class="mx-auto"
-      ></map-detail-card>
-    </page-section>
 
     <page-section
       title="Map Tier Lists"
@@ -118,23 +116,18 @@
       tracking-id="stats"
       tracking-page-id="mode_meta"
     >
-      <meta-slicers
-        v-model="slices"
+      <meta-views
         :sample="totalSampleSize"
         :sample-min="300000"
         :timestamp="totalTimestamp"
-        :loading="$fetchState.pending"
-        cube="map"
-        class="mx-auto"
-      ></meta-slicers>
-
-      <meta-views
-        v-if="totalSampleSize > 0"
         :entries="entries"
         :measurements="measurements"
+        :slices="slices"
         :description="description"
+        :loading="$fetchState.pending"
+        cube="map"
         @measurements="ms => selectedMeasurements = ms"
-        ga-category="mode_meta"
+        @slices="s => slices = s"
       ></meta-views>
     </page-section>
 
@@ -244,7 +237,7 @@ export default Vue.extend({
   },
   computed: {
     measurements(): string[] {
-      let measurements = ['wins', 'winRate', 'useRate', 'pickRate']
+      let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
       // all 3v3: star player
       if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.mode)) {
         measurements = [...measurements, 'starRate']

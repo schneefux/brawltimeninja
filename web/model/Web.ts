@@ -30,7 +30,7 @@ export interface TierListEntry extends MetaGridEntry {
 }
 
 export interface TierList {
-  [tier: string]: TierListEntry[]
+  [tier: string]: MetaGridEntry[]
 }
 
 export interface BrawlerContent {

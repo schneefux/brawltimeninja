@@ -1,88 +1,110 @@
 <template>
-  <div>
-    <card>
-      <template v-slot:content>
-        <div class="w-full flex">
-          <div class="w-14 flex-shrink-0 mt-1">
-            <span>Layout</span>
-          </div>
-          <div class="flex flex-wrap">
+  <div class="flex flex-wrap justify-center">
+    <meta-metric-select
+      :value="measurement"
+      :measurements="measurements"
+      :loading="loading"
+      class="w-full"
+      @input="m => setMeasurement(m)"
+    ></meta-metric-select>
+
+    <div class="w-full flex flex-wrap">
+      <div>
+        <meta-slicers
+          :value="slices"
+          :cube="cube"
+          class="w-full"
+          full-height
+          md
+          @input="s => $emit('slices', s)"
+        ></meta-slicers>
+
+        <meta-sample-info
+          :sample="sample"
+          :timestamp="timestamp"
+        ></meta-sample-info>
+      </div>
+
+      <meta-graph
+        slot="content"
+        :entries="entries"
+        :stat="measurement"
+        class="flex-1 h-full"
+        full-height
+      ></meta-graph>
+    </div>
+
+    <div class="w-full flex flex-wrap justify-center">
+      <meta-table
+        :entries="entries"
+        :stat="measurement"
+        sm
+        full-height
+      ></meta-table>
+
+      <div class="flex-1 flex flex-col">
+        <card class="-mb-3">
+          <div
+            slot="content"
+            class="w-full flex justify-start"
+          >
+            <span class="text-gray-200 mr-3 font-normal self-center">Layout</span>
             <b-button
               v-for="(name, key) in views"
               :key="key"
               :selected="view == key"
-              class="mr-1 mb-1"
+              class="mr-2 mb-1"
+              sm
               dark
               @click="setView(key)"
             >
               {{ name }}
             </b-button>
-          </div>
-        </div>
-
-        <div
-          v-if="showMetricSelector"
-          class="w-full mt-3 flex"
-        >
-          <div class="w-14 flex-shrink-0 mt-1">
-            <span>Metric</span>
-          </div>
-          <div class="flex flex-wrap">
             <b-button
-              v-for="m in measurements"
-              :key="m"
-              :selected="measurement == m"
               class="mr-2 mb-1"
-              dark
               sm
-              @click="setMeasurement(m)"
+              dark
+              @click="downloadCsv()"
             >
-              {{ metaStatMaps.labels[m] }}
+              Download
             </b-button>
           </div>
-        </div>
+        </card>
 
-        <p
-          v-if="showMetricSelector"
-          class="w-full mt-2"
-        >
-          {{ metaStatMaps.descriptions[measurement] }}
-        </p>
-      </template>
-    </card>
+        <meta-tier-list
+          v-if="view == 'tierlist'"
+          :entries="entries"
+          :stat="measurement"
+          :description="description"
+          full-height
+          class="h-full"
+        ></meta-tier-list>
 
-    <meta-tier-list
-      v-if="view == 'tierlist'"
-      :entries="entries"
-      :description="description"
-    ></meta-tier-list>
-    <meta-table
-      v-if="view == 'table'"
-      :entries="entries"
-      :stat="measurement"
-      class="mx-auto"
-    ></meta-table>
-    <meta-grid
-      v-if="view == 'legacy'"
-      :entries="entries"
-      :key="measurement"
-      :default-stat="measurement"
-      :ga-category="gaCategory"
-    ></meta-grid>
-    <meta-graph
-      v-if="view == 'graph'"
-      :entries="entries"
-      :stat="measurement"
-    ></meta-graph>
+        <meta-grid
+          v-if="view == 'legacy'"
+          :measurements="measurements"
+          :entries="entries"
+          :stat="measurement"
+          full-height
+          class="h-full"
+        ></meta-grid>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
-import { measurementMap, MetaGridEntry, metaStatMaps } from '../lib/util'
+import { mapState } from 'vuex'
+import { formatSI, MetaGridEntry } from '~/lib/util'
 
 export default Vue.extend({
   props: {
+    slices: {
+      type: Object as PropType<Record<string, string[]>>,
+      required: true
+    },
     entries: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true
@@ -91,79 +113,87 @@ export default Vue.extend({
       type: Array as PropType<string[]>,
       required: false
     },
-    gaCategory: {
+    defaultMeasurement: {
       type: String,
-      required: true
+      default: 'winRateAdj'
     },
     description: {
       type: String,
       required: false
+    },
+    loading: {
+      type: Boolean
+    },
+    sample: {
+      type: Number
+    },
+    sampleMin: {
+      type: Number
+    },
+    timestamp: {
+      type: String
+    },
+    cube: {
+      type: String
     },
   },
   data() {
     return {
       views: {
         tierlist: 'Tier List',
-        table: 'Table',
         legacy: 'Details',
-        graph: 'Graph',
       },
       view: 'tierlist',
-      nextView: undefined as string|undefined,
-      measurement: 'winRate',
-      nextMeasurement: undefined as string|undefined,
+      measurement: this.defaultMeasurement,
+      updateCallback: undefined as (()=>void)|undefined,
     }
   },
   watch: {
     entries() {
       // delay component rerendering until data has been refreshed
-      if (this.nextView != undefined) {
-        this.view = this.nextView
-        this.nextView = undefined
-      }
-      if (this.nextMeasurement != undefined) {
-        this.measurement = this.nextMeasurement
-        this.nextMeasurement = undefined
+      if (this.updateCallback != undefined) {
+        this.updateCallback()
+        this.updateCallback = undefined
       }
     },
   },
   methods: {
-    setView(to: string) {
-      this.$gtag.event('click', {
-        'event_category': this.gaCategory,
-        'event_label': 'show_' + to,
-      })
-
-      this.nextView = to
-
-      if (to == 'legacy') {
+    setView(v: string) {
+      if (v == 'legacy') {
+        this.updateCallback = () => this.view = v
         this.$emit('measurements', this.measurements)
-      }
-
-      if (to == 'tierlist') {
-        this.$emit('measurements', ['winRateAdj'])
-      }
-
-      if (['table', 'graph'].includes(to)) {
+      } else {
+        // refresh in background
+        this.view = v
         this.$emit('measurements', [this.measurement])
       }
     },
     setMeasurement(m: string) {
       if (this.view == 'legacy') {
-        // all data is already present, just update the sort
+        // refresh in background
         this.measurement = m
+        this.$emit('measurements', this.measurements)
       } else {
-        this.nextMeasurement = m
+        this.updateCallback = () => this.measurement = m
         this.$emit('measurements', [m])
       }
-    }
-  },
-  computed: {
-    metaStatMaps() {
-      return metaStatMaps
     },
-    showMetricSelector(): boolean {
-      return ['table', 'graph', 'legacy'].includes(this.view) && this.measurements != undefined
+    downloadCsv() {
+      this.$gtag.event('click', {
+        'event_category': this.cube + '_meta',
+        'event_label': 'download_csv',
+      })
+
+      this.updateCallback = () => {
+        const csv = 'title,brawler,sampleSize,' + this.measurements.join(',') + '\n'
+          + this.entries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.measurements.map(stat => entry.stats[stat]).join(',')).join('\n')
+        const downloader = document.createElement('a')
+        downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
+        downloader.target = '_blank'
+        downloader.download = 'export.csv'
+        downloader.click()
+      }
+      this.$emit('measurements', this.measurements)
     },
   },
 })

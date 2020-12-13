@@ -7,6 +7,9 @@
     :style="data.staticStyle"
     :class="[data.class, data.staticClass]"
   >
+    <template v-slot:preview>
+      <slot name="preview"></slot>
+    </template>
     <template v-slot:content>
       <div class="relative">
         <media-img

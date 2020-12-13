@@ -2,12 +2,13 @@
   <page title="Brawl Stars Brawler Tier List">
     <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
 
-    <page-section
-      title="Gadget and Star Power Tier List"
-      tracking-id="gadgets"
-      tracking-page-id="brawler_meta"
-    >
-      <div class="flex flex-wrap justify-center">
+    <div class="flex flex-wrap justify-center">
+      <div
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gadgets'),
+          once: true,
+        }"
+      >
         <best-starpowers-card
           kind="starpowers"
         ></best-starpowers-card>
@@ -16,7 +17,22 @@
           kind="gadgets"
         ></best-starpowers-card>
       </div>
-    </page-section>
+
+      <map-detail-card
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'widget'),
+          once: true,
+        }"
+        title="State of the Brawl Stars Meta"
+      >
+        <b-button
+          slot="actions"
+          to="/tier-list/history"
+          primary
+          prefetch
+        >Open Time Capsule</b-button>
+      </map-detail-card>
+    </div>
 
     <client-only>
       <adsense
@@ -30,47 +46,22 @@
     </client-only>
 
     <page-section
-      title="State of the Meta"
-      tracking-id="widget"
-      tracking-page-id="brawler_meta"
-    >
-      <p slot="description">
-        Curious about the past?
-        <b-button
-          to="/tier-list/history"
-          primary
-          xs
-          prefetch
-        >Open the Time Capsule</b-button>
-      </p>
-
-      <map-detail-card
-        class="mx-auto"
-      ></map-detail-card>
-    </page-section>
-
-    <page-section
       title="Tier List for all Maps and Modes"
       tracking-id="widget"
       tracking-page-id="brawler_meta"
     >
-      <meta-slicers
-        v-model="slices"
+      <meta-views
         :sample="totalSampleSize"
         :sample-min="100000"
         :timestamp="totalTimestamp"
+        :entries="entries"
+        :measurements="['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
+        :slices="slices"
+        :description="description"
         :loading="$fetchState.pending"
         cube="map"
-        class="mx-auto"
-      ></meta-slicers>
-
-      <meta-views
-        v-if="totalSampleSize > 0"
-        :entries="entries"
-        :measurements="['winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
-        :description="description"
-        ga-category="brawler_meta"
         @measurements="ms => selectedMeasurements = ms"
+        @slices="s => slices = s"
       ></meta-views>
     </page-section>
 

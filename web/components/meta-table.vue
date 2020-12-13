@@ -1,5 +1,5 @@
 <template>
-  <card md>
+  <card v-bind="$attrs">
     <table slot="content" class="w-full">
       <thead>
         <tr class="h-8 border-b border-gray-600">
@@ -16,13 +16,13 @@
       </thead>
       <tbody>
         <tr
-          v-for="(entry, index) in sortedEntries"
+          v-for="(entry, index) in sortedEntries.slice(page*pageSize, (page+1)*pageSize)"
           :key="entry.id"
         >
           <th scope="row" class="text-right pr-2 pt-1">
             {{ entry.sampleSize < sampleSizeThreshold ? '?' : index + 1 }}
           </th>
-          <td>
+          <td class="pr-2">
             <router-link
               :to="entry.link || ''"
               :title="entry.title"
@@ -47,11 +47,28 @@
             </router-link>
           </td>
           <td class="text-left font-semibold text-lg">
-            {{ entry.sampleSize < sampleSizeThreshold ? '?' : typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
+            {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
           </td>
         </tr>
       </tbody>
     </table>
+    <div
+      slot="actions"
+      class="w-full flex justify-center"
+    >
+      <b-button
+        v-if="page > 0"
+        class="mr-1 w-32"
+        primary
+        @click="page--"
+      >Previous Page</b-button>
+      <b-button
+        v-if="(page+1)*pageSize < sortedEntries.length"
+        class="ml-1 w-32"
+        primary
+        @click="page++"
+      >Next Page</b-button>
+    </div>
   </card>
 </template>
 
@@ -60,6 +77,7 @@ import Vue, { PropType } from 'vue'
 import { metaStatMaps, MetaGridEntry, brawlerId, compare1 } from '../lib/util'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     stat: {
       type: String,
@@ -73,22 +91,28 @@ export default Vue.extend({
       type: Number,
       default: 200
     },
+    pageSize: {
+      type: Number,
+      default: 15
+    },
+  },
+  data() {
+    return {
+      page: 0,
+    }
   },
   computed: {
-    metaStatMaps() {
-      return metaStatMaps
-    },
-    brawlerId() {
-      return brawlerId
-    },
-    today(): string {
-      return new Date().toLocaleDateString()
-    },
     sortedEntries(): MetaGridEntry[] {
       const aboveThreshold = this.entries.filter(e => e.sampleSize >= this.sampleSizeThreshold)
       const belowThreshold = this.entries.filter(e => e.sampleSize < this.sampleSizeThreshold)
       return aboveThreshold.sort(compare1(this.stat as any))
         .concat(belowThreshold)
+    },
+    metaStatMaps() {
+      return metaStatMaps
+    },
+    brawlerId() {
+      return brawlerId
     },
   },
 })

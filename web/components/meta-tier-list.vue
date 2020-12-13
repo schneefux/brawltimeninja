@@ -1,8 +1,8 @@
 <template>
-  <card>
+  <card v-bind="$attrs">
     <template v-slot:content>
       <p>
-        Tiers are calculated from win rates using Bayesian inference. <br>
+        Tiers are calculated from {{ metaStatMaps.labels[stat] }}. <br>
         Click on a Brawler to learn more about them.
       </p>
       <ul class="mt-2">
@@ -15,6 +15,10 @@
             <span class="text-3xl font-bold">{{ tier }}</span>
           </div>
           <ul class="w-full flex flex-wrap justify-start">
+            <div
+              v-if="entries.length == 0"
+              class="h-12 md:h-16"
+            ></div>
             <router-link
               v-for="entry in entries"
               :key="entry.id"
@@ -54,28 +58,31 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TierList, TierListEntry } from '~/model/Web'
-import { brawlerId } from '../lib/util'
+import { brawlerId, compare1, MetaGridEntry, metaStatMaps } from '../lib/util'
 
-function groupTiers(entries: TierListEntry[]): TierList {
+function groupTiers(entries: MetaGridEntry[], stat: string): TierList {
   if (entries.length <= 2) {
     return {}
   }
 
-  const getStat = (e: TierListEntry) => (e.stats.winRateAdj || e.stats.winsZScore)
+  const getStat = (e: MetaGridEntry) => typeof e.stats[stat] != 'string' ? e.stats[stat] as number|undefined :  Number.parseFloat(e.stats[stat] as string)
   // min-max scale stat into the 5 tiers and put nulls into '?' tier
-  const stats = entries.map(getStat).filter(e => e != undefined).sort()
-  const min = stats[1] // skip highest (outlier)
-  const max = stats[stats.length - 2] // skip lowest
+  const stats = entries.slice()
+    .sort(compare1(stat as any)).map(getStat)
+    .reverse()
+  const sign = metaStatMaps.signs[stat]
+  const min = stats[sign == -1 ? 1 : stats.length - 2]! // skip highest (outlier)
+  const max = stats[sign == -1 ? stats.length - 2 : 1]! // skip lowest
   const clamp = (v: number) => Math.max(min, Math.min(max, v))
   const minMax = (v: number) => (clamp(v) - min) / (max - min)
-  const tierMap = { S: [], A: [], B: [], C: [], D: [] } as Record<string, TierListEntry[]>
+  const tierMap = { S: [], A: [], B: [], C: [], D: [] } as Record<string, MetaGridEntry[]>
   const tiers = ['S', 'A', 'B', 'C', 'D']
 
   for (const entry of entries) {
     let key = '?'
     if (getStat(entry) != undefined) {
-      const index = (tiers.length - 1) - Math.floor(minMax(getStat(entry)) * (tiers.length - 1))
-      key = tiers[index]
+      const index = (tiers.length - 1) - Math.floor(minMax(getStat(entry)!) * (tiers.length - 1))
+      key = tiers[sign == -1 ? index : tiers.length - index - 1]
     }
 
     if (!(key in tierMap)) {
@@ -86,16 +93,21 @@ function groupTiers(entries: TierListEntry[]): TierList {
   }
 
   for (const key in tierMap) {
-    tierMap[key].sort((e1, e2) => getStat(e2) - getStat(e1))
+    tierMap[key].sort(compare1(stat as any))
   }
 
   return tierMap
 }
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     entries: {
-      type: Array as PropType<TierListEntry[]>,
+      type: Array as PropType<MetaGridEntry[]>,
+      required: true
+    },
+    stat: {
+      type: String,
       required: true
     },
     description: {
@@ -104,11 +116,14 @@ export default Vue.extend({
     },
   },
   computed: {
+    tiers(): TierList {
+      return groupTiers(this.entries, this.stat)
+    },
     brawlerId() {
       return brawlerId
     },
-    tiers(): TierList {
-      return groupTiers(this.entries)
+    metaStatMaps() {
+      return metaStatMaps
     },
   },
 })

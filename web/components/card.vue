@@ -8,6 +8,8 @@
       'w-full max-w-lg': props.lg,
       'w-full max-w-xl': props.xl,
       'w-full max-w-2xl': props.xxl,
+      'w-full max-w-3xl': props.xxxl,
+      'w-full max-w-4xl': props.xxxxl,
     }]"
   >
     <card-content v-bind="data.attrs">
@@ -55,6 +57,12 @@ export default Vue.extend({
       type: Boolean
     },
     xxl: {
+      type: Boolean
+    },
+    xxxl: {
+      type: Boolean
+    },
+    xxxxl: {
       type: Boolean
     },
   },

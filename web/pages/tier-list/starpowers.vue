@@ -5,21 +5,18 @@
       The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.
     </p>
 
-    <meta-slicers
-      v-model="slices"
+    <meta-views
       :sample="totalSampleSize"
       :sample-min="300000"
-      :loading="$fetchState.pending"
-      cube="starpower"
-      class="mx-auto"
-    ></meta-slicers>
-
-    <meta-views
-      v-if="totalSampleSize > 0"
+      :timestamp="totalTimestamp"
       :entries="entries"
       :measurements="measurements"
-      ga-category="starpower_meta"
+      :slices="slices"
+      :loading="$fetchState.pending"
+      default-measurement="winsZScore"
+      cube="starpower"
       @measurements="ms => selectedMeasurements = ms"
+      @slices="s => slices = s"
     ></meta-views>
   </page>
 </template>
@@ -34,9 +31,10 @@ export default Vue.extend({
     return {
       slices: this.$clicker.defaultSlices('starpower'),
       entries: [] as MetaGridEntry[],
-      measurements: ['winRate', 'starRate', 'rank1Rate'],
-      selectedMeasurements: ['winRateAdj'],
-      totalSampleSize: 0,
+      measurements: ['winsZScore', 'winRate', 'starRate', 'rank1Rate'],
+      selectedMeasurements: ['winsZScore'],
+      totalSampleSize: undefined as undefined|number,
+      totalTimestamp: undefined as undefined|string,
     }
   },
   middleware: ['cached'],
@@ -64,14 +62,19 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const calculateZScore = this.selectedMeasurements[0] == 'winRateAdj'
+    const calculateZScore = this.selectedMeasurements.includes('winsZScore')
+    const fetchingMeasurements = this.selectedMeasurements
+      .map(m => m == 'winsZScore' ? 'winRate' : m)
+      .map(m => measurementMap[m])
+
     const data = await this.$clicker.query('meta.starpower', 'starpower',
       ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
-      [...(calculateZScore ? ['battle_victory'] : this.selectedMeasurements.map(m => measurementMap[m])), 'picks', 'timestamp'],
+      [...fetchingMeasurements, 'picks', 'timestamp'],
       this.slices,
       { sort: { picks: 'desc' }, cache: 60*60 })
     this.entries = calculateDiffs(data.data, 'starpowers', 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
     this.totalSampleSize = data.totals.picks
+    this.totalTimestamp = data.totals.timestamp
   },
 })
 </script>

@@ -2,7 +2,8 @@
   <event-card
     :mode="mode"
     :map="map"
-    md
+    v-bind="$attrs"
+    sm
     nobackground
   >
     <div
@@ -75,15 +76,17 @@
       </div>
     </div>
 
-    <b-button
-      v-if="link"
-      tag="router-link"
-      slot="actions"
-      :to="linkTarget"
-      primary
-    >
-      Open
-    </b-button>
+    <template v-slot:actions>
+      <slot name="actions"></slot>
+      <b-button
+        v-if="link"
+        tag="router-link"
+        :to="linkTarget"
+        primary
+      >
+        Open
+      </b-button>
+    </template>
   </event-card>
 </template>
 
@@ -93,6 +96,7 @@ import Vue, { PropType } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     mode: {
       type: String,
