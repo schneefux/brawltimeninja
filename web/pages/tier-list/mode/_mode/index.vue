@@ -18,6 +18,8 @@
           once: true,
         }"
         :mode="mode"
+        full-height
+        xxl
       ></mode-article-card>
     </div>
 

@@ -122,7 +122,7 @@ export default Vue.extend({
     },
     pageSize: {
       type: Number,
-      default: 4
+      default: 6
     }
   },
   data() {

@@ -1,13 +1,13 @@
 <template>
   <card
     v-if="article != undefined"
+    v-bind="$attrs"
     :title="modeName + ' Description'"
     :loading="$fetchState.pending"
     tag="article"
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
     light
-    xxl
   >
     <template v-slot:content>
       <p
@@ -20,7 +20,7 @@
         @click.self="expand = false"
       >
         <button
-          class="fixed top-0 right-0 mr-10 mt-4 text-white rounded-full h-12 w-12 bg-gray-800 text-4xl pb-2"
+          class="fixed top-0 right-0 mr-10 mt-4 text-white rounded-full h-12 w-12 bg-gray-800 text-4xl pb-2 leading-none"
           @click="expand = false"
         >
           &times;

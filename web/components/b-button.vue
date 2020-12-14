@@ -5,13 +5,15 @@
     v-on="listeners"
     :style="data.staticStyle"
     :class="[data.class, data.staticClass,
-      'rounded font-semibold text-sm py-1 px-2 border-2', {
+      'font-semibold text-sm py-1 px-2 border-2', {
+        'rounded': !props.round,
+        'rounded-full': props.round,
         'inline-block': props.to != undefined,
         'text-xs py-px px-1 border-1': props.xs,
         '': props.sm, // default
         'border-4 text-md': props.md,
         'border-8': props.lg,
-        'bg-gray-900 hover:bg-gray-700 border-gray-700 hover:border-yellow-400 text-white': props.dark,
+        'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-white': props.dark,
         'border-yellow-400': props.dark && props.selected,
         'bg-gray-300 hover:bg-gray-400 border-gray-300 hover:border-gray-400 text-primary-dark': props.light,
         'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 text-gray-800': props.primary,
@@ -40,6 +42,9 @@ export default Vue.extend({
       type: Boolean
     },
     outline: {
+      type: Boolean
+    },
+    round: {
       type: Boolean
     },
     dark: {

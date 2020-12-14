@@ -40,15 +40,6 @@
           </dl>
         </card>
 
-        <card elevation="2">
-          <map-balance-score
-            slot="content"
-            :mode="mode"
-            :map="map"
-            :season="season"
-          ></map-balance-score>
-        </card>
-
         <card
           title="Best Brawlers"
           elevation="2"

@@ -1,32 +1,26 @@
 <template>
   <div class="flex flex-wrap justify-center">
-    <meta-metric-select
-      :value="measurement"
+    <meta-slicers
+      :value="slices"
+      :measurement="measurement"
       :measurements="measurements"
-      :loading="loading"
-      class="w-full"
-      @input="m => setMeasurement(m)"
-    ></meta-metric-select>
+      :cube="cube"
+      class="w-full sticky z-10 top-12 lg:top-0!"
+      @input="s => $emit('slices', s)"
+      @measurement="m => measurement = m"
+    ></meta-slicers>
 
     <div class="w-full flex flex-wrap">
-      <div>
-        <meta-slicers
-          :value="slices"
-          :cube="cube"
-          class="w-full"
-          full-height
-          md
-          @input="s => $emit('slices', s)"
-        ></meta-slicers>
-
-        <meta-sample-info
-          :sample="sample"
-          :timestamp="timestamp"
-        ></meta-sample-info>
-      </div>
+      <meta-sample-info
+        :data="entries"
+        :sample="sample"
+        :timestamp="timestamp"
+        :measurement="measurement"
+        class="w-full max-w-lg"
+      ></meta-sample-info>
 
       <meta-graph
-        slot="content"
+        title="Graph View"
         :entries="entries"
         :stat="measurement"
         class="flex-1 h-64 md:h-full"
@@ -36,6 +30,7 @@
 
     <div class="w-full flex flex-wrap justify-center">
       <meta-table
+        title="Table View"
         :entries="entries"
         :stat="measurement"
         sm
@@ -46,9 +41,9 @@
         <card class="-mb-3">
           <div
             slot="content"
-            class="w-full flex justify-start"
+            class="w-full flex flex-wrap"
           >
-            <span class="text-gray-200 mr-3 font-normal self-center">Layout</span>
+            <span class="text-gray-200 mr-3 font-normal self-center">View</span>
             <b-button
               v-for="(name, key) in views"
               :key="key"
@@ -59,14 +54,6 @@
               @click="setView(key)"
             >
               {{ name }}
-            </b-button>
-            <b-button
-              class="mr-2 mb-1"
-              sm
-              dark
-              @click="downloadCsv()"
-            >
-              Download
             </b-button>
           </div>
         </card>
@@ -88,6 +75,17 @@
           full-height
           class="h-full"
         ></meta-grid>
+      </div>
+
+      <div class="w-full flex">
+        <b-button
+          class="ml-auto"
+          sm
+          secondary
+          @click="downloadCsv()"
+        >
+          Download Data
+        </b-button>
       </div>
     </div>
   </div>
@@ -198,3 +196,15 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.top-12 {
+  top: 3rem;
+}
+
+@responsive {
+  .top-0\! {
+    @apply top-0 !important;
+  }
+}
+</style>

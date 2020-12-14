@@ -1,7 +1,21 @@
 <template>
   <div class="flex flex-wrap justify-center">
     <card
-      v-if="sample != undefined && sample == 0"
+      :title="`About &quot;${metaStatMaps.labels[measurement]}&quot;`"
+      full-height
+      dense
+      class="w-full"
+    >
+      <p
+        slot="content"
+        class="md:h-16"
+      >
+        {{ metaStatMaps.descriptions[measurement] }}
+      </p>
+    </card>
+
+    <card
+      v-if="sample == 0"
       full-height
       dense
     >
@@ -17,7 +31,7 @@
     <card
       v-if="sample != undefined"
       title="Sample Size"
-      class="w-1/2 md:w-auto"
+      class="w-1/2"
       full-height
       dense
     >
@@ -32,7 +46,7 @@
     <card
       v-if="timestamp != undefined"
       title="Last Update"
-      class="w-1/2 md:w-auto"
+      class="w-1/2"
       full-height
       dense
     >
@@ -45,15 +59,18 @@
     </card>
 
     <card
-      v-if="timestamp != undefined"
+      v-if="sample != undefined"
       title="Margin of error"
-      class="w-full md:w-auto text-center"
+      class="w-1/2"
       full-height
       dense
     >
-      <p slot="content">
+      <p
+        slot="content"
+        class="text-center leading-none"
+      >
         <span
-          :class="['font-semibold text-xl', {
+          :class="['font-bold text-xl', {
             'text-green-400': moe <= 0.01,
             'text-orange-400': moe > 0.01 && moe <= 0.025,
             'text-red-400': moe > 0.25,
@@ -76,22 +93,63 @@
         </span>
       </p>
     </card>
+
+    <card
+      v-if="sample != undefined"
+      title="Balance Rating"
+      class="w-1/2"
+      full-height
+      dense
+    >
+      <b-button
+        slot="preview"
+        to="/faq/measuring-map-quality"
+        class="my-px"
+        dark
+        xs
+      >?</b-button>
+      <p
+        slot="content"
+        class="text-center leading-none"
+      >
+        <span
+          class="text-lg font-bold"
+          :class="{
+            'text-red-500': giniScore > 0.4,
+            'text-orange-400': giniScore > 0.3 && giniScore <= 0.4,
+            'text-green-400': giniScore <= 0.3,
+          }"
+        >{{ giniScore == undefined ? '?' : giniScoreWords[Math.floor(giniScore * 10)] }}</span>
+        <br>
+        <span class="text-xs">Gini Coefficient: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}</span>
+      </p>
+    </card>
   </div>
 </template>
 
 <script lang="ts">
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { formatSI } from '~/lib/util'
+import { formatSI, MetaGridEntry, metaStatMaps } from '~/lib/util'
 
 export default Vue.extend({
   props: {
+    data: {
+      type: Array as PropType<MetaGridEntry[]>,
+      required: true
+    },
     sample: {
-      type: Number
+      type: Number,
+      required: true
     },
     timestamp: {
-      type: String
+      type: String,
+      required: true
+    },
+    measurement: {
+      type: String,
+      required: true
     },
   },
   computed: {
@@ -121,8 +179,47 @@ export default Vue.extend({
       }
       return (this.moe * 100).toFixed(2) + '%'
     },
+    giniScore(): number|undefined {
+      if (this.data.length == 0) {
+        return undefined
+      }
+      const getStat = (r: MetaGridEntry) => r.sampleSize
+
+      // calculate Gini coefficient
+      let absoluteDifference = 0
+      let arithmeticMean = 0
+      for (const e1 of this.data) {
+        arithmeticMean += getStat(e1) / this.data.length
+        for (const e2 of this.data) {
+          absoluteDifference += Math.abs(getStat(e1) - getStat(e2))
+        }
+      }
+      return absoluteDifference / (2 * Math.pow(this.data.length, 2) * arithmeticMean)
+    },
+    giniScoreWords(): string[] {
+      // results from a hand-drawn sample of different maps and modes:
+      // 25%ile 0.225
+      // 50%ile 0.32
+      // 75%ile 0.425
+      // words chosen from http://www.mcdonald.me.uk/storytelling/lichert_article.htm
+      return [
+        'Amazing',
+        'Excellent',
+        'Good',
+        'Fair',
+        'Mediocre',
+        'Poor',
+        'Bad',
+        'Awful',
+        'Awful',
+        'Awful',
+      ]
+    },
     formatSI() {
       return formatSI
+    },
+    metaStatMaps() {
+      return metaStatMaps
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
