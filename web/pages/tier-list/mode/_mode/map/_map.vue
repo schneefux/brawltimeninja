@@ -42,8 +42,6 @@
           }"
           :mode="event.mode"
           :map="event.map"
-          :id="event.id"
-          :timestamp="event.timestamp"
         ></map-leaderboard-card>
       </div>
     </page-section>

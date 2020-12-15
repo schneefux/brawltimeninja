@@ -41,12 +41,6 @@ export default Vue.extend({
     map: {
       type: String,
     },
-    id: {
-      type: [String, Number],
-    },
-    timestamp: {
-      type: String,
-    },
   },
   data() {
     return {

@@ -116,23 +116,25 @@ export default Vue.extend({
       default: 'winRateAdj'
     },
     description: {
-      type: String,
-      required: false
+      type: String
     },
     loading: {
       type: Boolean
     },
     sample: {
-      type: Number
+      type: Number,
+      required: true
     },
     sampleMin: {
       type: Number
     },
     timestamp: {
-      type: String
+      type: String,
+      required: true
     },
     cube: {
-      type: String
+      type: String,
+      required: true
     },
   },
   data() {
