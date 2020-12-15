@@ -18,6 +18,7 @@
       v-if="sample == 0"
       full-height
       dense
+      class="w-full"
     >
       <p
         slot="content"
@@ -29,7 +30,7 @@
     </card>
 
     <card
-      v-if="sample != undefined"
+      v-if="sample > 0"
       title="Sample Size"
       class="w-1/2"
       full-height
@@ -44,7 +45,7 @@
     </card>
 
     <card
-      v-if="timestamp != undefined"
+      v-if="sample > 0"
       title="Last Update"
       class="w-1/2"
       full-height
@@ -59,7 +60,7 @@
     </card>
 
     <card
-      v-if="sample != undefined"
+      v-if="sample > 0"
       title="Margin of error"
       class="w-1/2"
       full-height
@@ -95,7 +96,7 @@
     </card>
 
     <card
-      v-if="sample != undefined"
+      v-if="sample > 0"
       title="Balance Rating"
       class="w-1/2"
       full-height
@@ -115,7 +116,7 @@
         <span
           class="text-lg font-bold"
           :class="{
-            'text-red-500': giniScore > 0.4,
+            'text-red-400': giniScore > 0.4,
             'text-orange-400': giniScore > 0.3 && giniScore <= 0.4,
             'text-green-400': giniScore <= 0.3,
           }"
@@ -160,10 +161,7 @@ export default Vue.extend({
       }
       return formatDistanceToNow(timestamp, { addSuffix: true })
     },
-    moe(): number|undefined {
-      if (this.sample == undefined) {
-        return undefined
-      }
+    moe(): number {
       // margin of error
       // moe = z * standard error
       // for binomial (normal approximation):
@@ -173,16 +171,10 @@ export default Vue.extend({
       // (TODO: Assumes we are slicing Brawlers!)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (this.sample / this.totalBrawlers))
     },
-    moePercent(): string|undefined {
-      if (this.moe == undefined) {
-        return undefined
-      }
+    moePercent(): string {
       return (this.moe * 100).toFixed(2) + '%'
     },
-    giniScore(): number|undefined {
-      if (this.data.length == 0) {
-        return undefined
-      }
+    giniScore(): number {
       const getStat = (r: MetaGridEntry) => r.sampleSize
 
       // calculate Gini coefficient
