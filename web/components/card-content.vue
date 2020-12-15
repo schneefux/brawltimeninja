@@ -36,7 +36,7 @@
 
       <header
         v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
-        :class="['w-full flex font-semibold items-center overflow-hidden', (props.color !== undefined ? `bg-${props.color}` : ''), {
+        :class="['flex-shrink-0 w-full flex font-semibold items-center overflow-hidden', (props.color !== undefined ? `bg-${props.color}` : ''), {
           'px-3 py-2': !props.dense,
           'px-2 py-1': props.dense,
           'rounded-t': !('infobar' in $scopedSlots),

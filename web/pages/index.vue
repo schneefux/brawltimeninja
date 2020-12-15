@@ -129,12 +129,19 @@
       />
     </client-only>
 
-    <top-brawlers
+    <top-brawlers-card
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,
       }"
-    ></top-brawlers>
+    ></top-brawlers-card>
+
+    <top-players-card
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'best_players'),
+        once: true,
+      }"
+    ></top-players-card>
 
     <client-only>
       <adsense
@@ -181,29 +188,6 @@
           </b-button>
         </div>
       </div>
-    </div>
-
-    <div
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'best_players'),
-        once: true,
-      }"
-      class="home-section container"
-    >
-      <lazy>
-        <leaderboard-card
-          class="home-section-content"
-        >
-          <b-button
-            slot="actions"
-            to="/leaderboard/trophies"
-            primary
-            prefetch
-          >
-            Open
-          </b-button>
-        </leaderboard-card>
-      </lazy>
     </div>
 
     <client-only>

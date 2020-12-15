@@ -30,7 +30,7 @@
       >
         <p
           slot="content"
-          class="text-xs"
+          class="text-xs text-center"
         >
           {{ metaStatMaps.formatters.winRate(brawler.battle_victory) }}
           {{ metaStatMaps.labels.winRate }}

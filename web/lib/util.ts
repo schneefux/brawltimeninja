@@ -194,7 +194,7 @@ export const metaStatMaps = {
     wins: '🏅',
   },
   formatters: {
-    trophies: (n: number) => Math.round(n),
+    trophies: (n: number) => formatSI(n, 1),
     spTrophies: (n: number) => Math.round(n),
     trophyChange: (n: number) => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
     winRate: (n: number) => `${(100 * n).toFixed(1)}%`,
