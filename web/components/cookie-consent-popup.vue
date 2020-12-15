@@ -3,10 +3,10 @@
     class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
     style="background-color: rgba(0, 0, 0, 0.75)"
   >
-    <div class="mx-2 py-2 max-w-xl rounded bg-gray-100 text-gray-800 flex flex-col justify-center items-center">
-      <p class="text-center text-xl">
+    <section class="mx-2 py-2 max-w-xl rounded bg-gray-100 text-gray-800 flex flex-col justify-center items-center">
+      <h1 class="text-center text-xl">
         Cookies? 🍪
-      </p>
+      </h1>
       <p class="mt-2 mx-2 text-center text-sm">
         Brawl Time stores your settings in a Cookie.
         Analytics and Advertisements may set Cookies as well.
@@ -71,7 +71,7 @@
           Enable All
         </b-button>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 

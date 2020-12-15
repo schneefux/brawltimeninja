@@ -1,9 +1,12 @@
 <template>
   <div class="flex flex-col items-center">
-    <img
-      src="~/assets/images/logo_with_crown_min.svg"
-      class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
-    >
+    <div class="relative">
+      <img
+        src="~/assets/images/logo_with_crown_min.svg"
+        class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
+      >
+      <span class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl">New Design!</span>
+    </div>
 
     <div class="mt-6 md:mt-10 text-center mx-2">
       <h1 class="text-4xl font-bold">
