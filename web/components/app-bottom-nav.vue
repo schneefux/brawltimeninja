@@ -4,7 +4,7 @@
       v-for="link in links"
       :key="link.target"
       :to="link.target"
-      :class="['flex flex-col items-center justify-between pt-2 pb-3 px-3', {
+      :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
         'text-gray-800': link.target == activeTarget,
         'text-yellow-700': link.target != activeTarget,
       }]"
