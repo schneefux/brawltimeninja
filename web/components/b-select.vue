@@ -9,7 +9,7 @@
         'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-white': props.dark,
     }]"
     :value="props.value"
-    @input="listeners.input && listeners.input($event.target.selectedOptions[0].value)"
+    @input="listeners.input && listeners.input($event.target.value)"
   >
     <slot></slot>
   </select>

@@ -65,8 +65,8 @@
             dark
             sm
           >
-            <option :value="false">Regular Battles</option>
-            <option :value="true">Power Play</option>
+            <option value="false">Regular Battles</option>
+            <option value="true">Power Play</option>
           </b-select>
         </div>
 
@@ -146,13 +146,13 @@ export default Vue.extend({
       }
     },
     powerPlayActive: {
-      get(): boolean {
-        return (this.value.battle_event_powerplay || [])[0] == 'true'
+      get(): string {
+        return (this.value.battle_event_powerplay || [])[0]
       },
-      set(v: boolean) {
+      set(v: string) {
         this.$emit('input', {
           ...this.value,
-          battle_event_powerplay: [v ? 'true' : 'false'],
+          battle_event_powerplay: [v],
         })
       }
     },

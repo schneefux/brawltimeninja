@@ -7,11 +7,10 @@
           <client-only>
             <vue-range-slider
               v-if="season != undefined && seasons.length > 0"
+              v-model="season"
               :min="0"
               :max="seasons.length - 2"
               :step="1"
-              :value="season"
-              @input="e => season = e"
               tooltip-dir="top"
               piecewise
               lazy
