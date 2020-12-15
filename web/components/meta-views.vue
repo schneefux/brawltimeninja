@@ -8,7 +8,7 @@
       :loading="loading"
       class="w-full sticky z-10 top-12 lg:top-0!"
       @input="s => $emit('slices', s)"
-      @measurement="m => measurement = m"
+      @measurement="m => setMeasurement(m)"
     ></meta-slicers>
 
     <div class="w-full flex flex-wrap">
