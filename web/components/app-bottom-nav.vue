@@ -51,7 +51,7 @@ export const screens: Screen[] = [ {
     icon: faNewspaper,
     name: 'Guides',
     target: '/blog/guides',
-    matches: ['/blog'],
+    matches: ['/blog', '/faq'],
   },
 ]
 
