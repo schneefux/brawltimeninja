@@ -1,5 +1,8 @@
 <template>
-  <div class="relative">
+  <div
+    class="relative"
+    v-click-outside="() => dropdownOpen = false"
+  >
     <b-button
       class="flex justify-center"
       dark
@@ -39,7 +42,7 @@
           :process-style="processStyle"
           tooltip-dir="top"
           lazy
-          @input="e => $emit('input', e)"
+          @input="e => JSON.stringify(e) != JSON.stringify(value) ? $emit('input', e) : undefined"
         >
           <span
             slot="tooltip"
@@ -56,8 +59,12 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import vClickOutside from 'v-click-outside'
 
 export default Vue.extend({
+  directives: {
+    clickOutside: vClickOutside.directive,
+  },
   props: {
     value: {
       type: Array as PropType<number[]>,

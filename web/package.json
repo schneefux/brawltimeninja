@@ -31,6 +31,7 @@
     "nuxt": "^2.14.9",
     "plotly.js": "^1.58.1",
     "tailwindcss-elevation": "^1.0.1",
+    "v-click-outside": "^3.1.2",
     "vue-google-adsense": "^1.9.1",
     "vue-gtag": "^1.10.0",
     "vue-lazy-hydration": "^2.0.0-beta.4",
