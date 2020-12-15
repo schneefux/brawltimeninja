@@ -5,6 +5,7 @@
       :measurement="measurement"
       :measurements="measurements"
       :cube="cube"
+      :loading="loading"
       class="w-full sticky z-10 top-12 lg:top-0!"
       @input="s => $emit('slices', s)"
       @measurement="m => measurement = m"
