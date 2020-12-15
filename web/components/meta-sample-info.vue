@@ -74,7 +74,7 @@
           :class="['font-bold text-xl', {
             'text-green-400': moe <= 0.01,
             'text-orange-400': moe > 0.01 && moe <= 0.025,
-            'text-red-400': moe > 0.25,
+            'text-red-400': moe > 0.025,
           }]"
         >{{ moePercent }}</span>
         <br>
