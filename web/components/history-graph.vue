@@ -1,8 +1,10 @@
 <template>
   <plotly
+    v-if="history.length > 0"
     :traces="graph.traces"
     :layout="graph.layout"
   ></plotly>
+  <div v-else></div>
 </template>
 
 <script lang="ts">
