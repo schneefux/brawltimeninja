@@ -3,6 +3,10 @@ id: solo-showdown
 title: Solo Showdown Guide
 author: zeibb
 description: The following guide is a break down of competitive Solo Showdown.
+modeDescription: >
+  Go alone or with a partner to fight in the Showdown Arena! Whoever's still standing at the end wins.
+
+  Collect Power Cubes to increase your Health and Attack damage. There are poison clouds closing in, so keep moving!
 mode: soloShowdown
 createdAt: 2020-08-20
 ---

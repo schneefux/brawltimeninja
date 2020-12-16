@@ -12,7 +12,7 @@
     <template v-slot:content>
       <p
         class="prose prose-sm sm:prose lg:prose-lg"
-      >{{ article.description }}</p>
+      >{{ article.modeDescription }}</p>
 
       <div
         v-show="expand"
@@ -34,27 +34,10 @@
           light
        >
         <template v-slot:content>
-          <div
-            class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
-          >
+          <div class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
             <h1>
               {{ modeName }} Guide
             </h1>
-            <p v-if="article.author != undefined">
-              This guide was written by {{ article.author }}
-              <template v-if="article.attribution != undefined">
-                <wrapped-component
-                  :wrap="article.attributionLink != undefined"
-                >
-                  <a
-                    slot="wrapper"
-                    rel="nofollow"
-                    :href="article.attributionLink"
-                  ></a>
-                  <span>({{ article.attribution }})</span>
-                </wrapped-component>
-              </template>.
-            </p>
           </div>
 
           <nuxt-content
@@ -63,6 +46,24 @@
             class="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl"
           ></nuxt-content>
         </template>
+        <p
+          slot="actions"
+          v-if="article.author != undefined"
+        >
+          This guide was written by {{ article.author }}<template v-if="article.attribution != undefined">
+            <wrapped-component
+              :wrap="article.attributionLink != undefined"
+            >
+              <a
+                slot="wrapper"
+                :href="article.attributionLink"
+                rel="nofollow"
+                class="underline"
+              ></a>
+              <span>({{ article.attribution }})</span>
+            </wrapped-component>
+          </template>.
+        </p>
         </card>
       </div>
     </template>
@@ -78,7 +79,7 @@
 <script lang="ts">
 import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
-import { formatMode } from '~/lib/util'
+import { camelToKebab, formatMode, slugify } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -97,7 +98,8 @@ export default Vue.extend({
   async fetch() {
     // TODO fetch description from API / game files
     // TODO add a TOC
-    this.article = await this.$content(`modes/${this.mode}`).fetch().catch(() => undefined) as IContentDocument|undefined
+    this.article = await this.$content(`modes/${camelToKebab(this.mode).replace(/_/g, '-')}`)
+      .fetch().catch(() => undefined) as IContentDocument|undefined
   },
   computed: {
     modeName(): string {
