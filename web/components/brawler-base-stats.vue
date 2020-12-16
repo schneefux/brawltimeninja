@@ -97,7 +97,7 @@ function expandContentWithInfo(content: BrawlerContent, info: BrawlerData) {
     return text
       .replace('$damage', info[skill]?.damage != undefined ? (info[skill].damage! * 1.4).toString() : '')
       .replace('$rechargetime', formatSeconds(info[skill].rechargeTime))
-      .replace('$range', info[skill].range?.toString() || '')
+      .replace('$range', info[skill].range?.toFixed(1) || '')
   }
 
   if (content.gender == undefined) {

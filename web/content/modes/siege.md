@@ -1,6 +1,8 @@
 ---
 mode: siege
+title: Siege Guide
 author: EA-22
+description: Learn about the different stages of Siege.
 attribution: ProvidencE Coaching
 attributionLink: https://discord.gg/qjTyDvuzUb
 description: >
@@ -8,6 +10,8 @@ description: >
 
   There are up to three Sieges during each match. The team that has more bolts at the start of each Siege builds a Siege Robot. The more bolts, the stronger the robot.
   Watch out, IKEs have powerful ballistic defenses - don't get too close to the enemy base without a Siege Robot to help you!
+mode: siege
+createdAt: 2020-12-16
 ---
 
 ## Overview

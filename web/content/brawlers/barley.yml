@@ -1,0 +1,15 @@
+name: Barley
+gender: m
+description: Barley is a rare brawler who lobs a bottle, breaking the ground and dealing splash damage. Enemy targets will take more damage the longer they stay inside the area of the puddle. He has a health of $health. He is considered one of the best of many throwers inside the game, viable in many gamemodes due to his unique abilities and mechanics!
+main: Barley has a range consisting of $range tiles. His rather underwhelming damage output is made up for the fact that he can deal damage to several enemy targets, making him a great brawler for area denial and control.
+super: During his super, Barley chucks a flurry of bottles onto the ground covering a large area of the map. With his super, Barley has 5 maximum projectiles, compared to his 1 during his main attack. His base damage still consists of the same damage per second as his main, however he now has a range of $range tiles.
+starpowers:
+  - name: Medical Use
+    description: With medical use, it enable barley to instantly regain health from each of his main attacks. This is the more widely used starpower compared to extra noxious as it ensures a higher chance of Barley surviving in tough situations. Medical use is recommended on maps where Barley will most of the time be vunerable and prone to enemy attacks. Coupled with his second gadget, Barley becomes one of the best area control brawlers in the game, allowing him to sustain damage for a prolonged period of time.
+  - name: Extra Noxious
+    description: With the use of this starpower, Barley gains additional damage during his attacks. For gamemodes where there is an IKE and Heist safe, this Starpower is definitly recommended for the extra damage, although the first Starpower may be more suitable depending on the map.
+gadgets:
+  - name: Sticky Syrup Mixer
+    description: Barley drops a sticky concoction, slowing down enemies within the area of effect. This gadget again can be used for when Barley may become exposed, activating your gadget against tanks enables you to completely melt them as well as charge your super. It is highly recommended for Siege, where using this gadget can slowdown the Siege robot, thus dealing less damage to your IKE.
+  - name: Herbal Tonic
+    description: Barley throws a healing potion, creating an area that heals every second! This is his prefered gadget between the two for most people, and rightly so. It enables him to become almost untouchable in gamemodes such as Hot Zone where maintaning area control is absolutely vital.

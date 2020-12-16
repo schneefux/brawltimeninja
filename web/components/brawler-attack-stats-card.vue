@@ -61,7 +61,7 @@ export default Vue.extend({
         data.push([ 'Damage at Level 1', this.info[this.attack].damage.toString() ])
       }
       if (this.info[this.attack].damage != null) {
-        data.push([ 'Damage at Level 10', (this.info[this.attack].damage * 1.4).toString() ])
+        data.push([ 'Damage at Level 10', Math.round(this.info[this.attack].damage * 1.4).toString() ])
       }
 
       return data
