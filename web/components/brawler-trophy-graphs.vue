@@ -130,7 +130,7 @@ export default Vue.extend({
   },
   computed: {
     useRates(): number[] {
-      if (this.data.length == 0 || this.totals.length == 0) {
+      if (this.data.length < trophyranges.length) {
         return []
       }
       return trophyranges.map(t =>
@@ -154,7 +154,7 @@ export default Vue.extend({
       `
     },
     trophiesStarRateChart(): any {
-      if (this.data.length == 0 || this.totals.length == 0) {
+      if (this.data.length < trophyranges.length) {
         return undefined
       }
 
@@ -199,7 +199,7 @@ export default Vue.extend({
       }
     },
     trophiesUseRateChart(): any {
-      if (this.data.length == 0 || this.totals.length == 0) {
+      if (this.data.length < trophyranges.length) {
         return undefined
       }
 
@@ -239,7 +239,7 @@ export default Vue.extend({
       }
     },
     trophiesWinRateChart(): any {
-      if (this.data.length == 0 || this.totals.length == 0) {
+      if (this.data.length < trophyranges.length) {
         return undefined
       }
 
