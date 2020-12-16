@@ -34,8 +34,8 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       measurements: ['winsZScore', 'winRate', 'starRate', 'rank1Rate'],
       selectedMeasurements: ['winsZScore'],
-      totalSampleSize: undefined as undefined|number,
-      totalTimestamp: undefined as undefined|string,
+      totalSampleSize: 0,
+      totalTimestamp: '1970-01-01',
     }
   },
   head() {

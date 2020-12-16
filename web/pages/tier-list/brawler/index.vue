@@ -104,7 +104,7 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       selectedMeasurements: ['winRateAdj'],
       totalSampleSize: 0,
-      totalTimestamp: undefined as undefined|string,
+      totalTimestamp: '1970-01-01',
     }
   },
   computed: {

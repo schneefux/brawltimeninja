@@ -134,7 +134,7 @@ export default Vue.extend({
       teams: [] as Team[],
       slices: this.$clicker.defaultSlices('synergy'),
       totalSampleSize: 0,
-      totalTimestamp: undefined as string|undefined,
+      totalTimestamp: '1970-01-01',
       measurement: 'wins',
       page: 0,
       pageSize: 20,
