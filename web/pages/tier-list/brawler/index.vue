@@ -51,17 +51,8 @@
       tracking-page-id="brawler_meta"
     >
       <meta-views
-        :sample="totalSampleSize"
         :sample-min="100000"
-        :timestamp="totalTimestamp"
-        :entries="entries"
-        :measurements="['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']"
-        :slices="slices"
-        :description="description"
-        :loading="$fetchState.pending"
-        cube="map"
-        @measurements="ms => selectedMeasurements = ms"
-        @slices="s => slices = s"
+        default-cube="map"
       ></meta-views>
     </page-section>
 
@@ -98,48 +89,10 @@ export default Vue.extend({
     title: 'Brawlers',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      slices: this.$clicker.defaultSlices('map'),
-      entries: [] as MetaGridEntry[],
-      selectedMeasurements: ['winRateAdj'],
-      totalSampleSize: 0,
-      totalTimestamp: '1970-01-01',
-    }
-  },
   computed: {
-    description(): string {
-      return this.$clicker.describeSlices(this.slices, this.totalTimestamp)
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  watch: {
-    slices: '$fetch',
-    selectedMeasurements: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    const data = await this.$clicker.query('meta.brawler', 'map',
-      ['brawler_name'],
-      [...this.selectedMeasurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
-      this.slices,
-      { sort: { picks: 'desc' }, cache: 60*60 })
-
-    this.entries = data.data.map(row => ({
-      id: row.brawler_name,
-      brawler: row.brawler_name,
-      title: capitalizeWords(row.brawler_name.toLowerCase()),
-      stats: this.selectedMeasurements.reduce((stats, m) => ({
-        ...stats,
-        [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
-      }), {} as Record<string, number>),
-      sampleSize: row.picks,
-      link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-    }) as MetaGridEntry)
-    this.totalSampleSize = data.totals.picks
-    this.totalTimestamp = data.totals.timestamp
   },
   methods: {
     trackScroll(visible: boolean, element: any, section: string): void {

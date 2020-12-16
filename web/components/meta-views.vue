@@ -5,10 +5,12 @@
       :measurement="measurement"
       :measurements="measurements"
       :cube="cube"
+      :cubes="['map', 'starpower', 'gadget', 'synergy']"
       :loading="loading"
       class="w-full sticky z-10 top-12 lg:top-0!"
-      @input="s => $emit('slices', s)"
+      @input="s => setSlices(s)"
       @measurement="m => setMeasurement(m)"
+      @cube="c => setCube(c)"
     ></meta-slicers>
 
     <div class="w-full flex flex-wrap">
@@ -96,88 +98,72 @@
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { formatSI, MetaGridEntry } from '~/lib/util'
+import { brawlerId, calculateDiffs, capitalizeWords, formatSI, measurementMap, measurementOfTotal, MetaGridEntry } from '~/lib/util'
+
+function defaultMeasurement(cube: string) {
+  if (['map', 'synergy'].includes(cube)) {
+    return 'winRateAdj'
+  }
+  if (['starpower', 'gadget'].includes(cube)) {
+    return 'winsZScore'
+  }
+  return 'winRate'
+}
 
 export default Vue.extend({
   props: {
-    slices: {
+    defaultCube: {
+      type: String,
+      required: true
+    },
+    defaultSlices: {
       type: Object as PropType<Record<string, string[]>>,
-      required: true
-    },
-    entries: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<string[]>,
-      required: false
+      default: () => ({})
     },
     defaultMeasurement: {
-      type: String,
-      default: 'winRateAdj'
-    },
-    description: {
       type: String
-    },
-    loading: {
-      type: Boolean
-    },
-    sample: {
-      type: Number,
-      required: true
-    },
-    sampleMin: {
-      type: Number
-    },
-    timestamp: {
-      type: String,
-      required: true
-    },
-    cube: {
-      type: String,
-      required: true
     },
   },
   data() {
     return {
+      cube: this.defaultCube,
+      slices: {
+        ...this.$clicker.defaultSlices(this.defaultCube),
+        ...this.defaultSlices,
+      },
+      measurement: this.defaultMeasurement || defaultMeasurement(this.defaultCube),
+      entries: [] as MetaGridEntry[],
       views: {
         tierlist: 'Tier List',
         legacy: 'Details',
       },
       view: 'tierlist',
-      measurement: this.defaultMeasurement,
-      updateCallback: undefined as (()=>void)|undefined,
+      sample: 0,
+      timestamp: '1970-01-01',
+      loading: false,
     }
   },
-  watch: {
-    entries() {
-      // delay component rerendering until data has been refreshed
-      if (this.updateCallback != undefined) {
-        this.updateCallback()
-        this.updateCallback = undefined
-      }
-    },
+  fetchDelay: 0,
+  async fetch() {
+    await this.update({})
   },
   methods: {
-    setView(v: string) {
-      if (v == 'legacy') {
-        this.updateCallback = () => this.view = v
-        this.$emit('measurements', this.measurements)
-      } else {
-        // refresh in background
-        this.view = v
-        this.$emit('measurements', [this.measurement])
-      }
+    async setSlices(s: Record<string, string[]>) {
+      await this.update({ slices: s })
     },
-    setMeasurement(m: string) {
-      if (this.view == 'legacy') {
-        // refresh in background
-        this.measurement = m
-        this.$emit('measurements', this.measurements)
-      } else {
-        this.updateCallback = () => this.measurement = m
-        this.$emit('measurements', [m])
-      }
+    async setMeasurement(m: string) {
+      await this.update({ measurement: m })
+    },
+    async setCube(c: string) {
+      // reset all selectors
+      await this.update({
+        cube: c,
+        slices: this.$clicker.defaultSlices(c),
+        measurement: defaultMeasurement(c),
+      })
+    },
+    async setView(v: string) {
+      await this.update({ view: v })
     },
     downloadCsv() {
       this.$gtag.event('click', {
@@ -185,16 +171,143 @@ export default Vue.extend({
         'event_label': 'download_csv',
       })
 
-      this.updateCallback = () => {
-        const csv = 'title,brawler,sampleSize,' + this.measurements.join(',') + '\n'
-          + this.entries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.measurements.map(stat => entry.stats[stat]).join(',')).join('\n')
-        const downloader = document.createElement('a')
-        downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
-        downloader.target = '_blank'
-        downloader.download = 'export.csv'
-        downloader.click()
+      // TODO fetch first!
+      const csv = 'title,brawler,sampleSize,' + this.measurements.join(',') + '\n'
+        + this.entries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.measurements.map(stat => entry.stats[stat]).join(',')).join('\n')
+      const downloader = document.createElement('a')
+      downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
+      downloader.target = '_blank'
+      downloader.download = 'export.csv'
+      downloader.click()
+    },
+    async update(args: { measurement?: string, view?: string, slices?: Record<string, string[]>, cube?: string }) {
+      this.loading = true
+
+      const measurement = args.measurement || this.measurement
+      const view = args.view || this.view
+      const slices = args.slices || this.slices
+      const cube = args.cube || this.cube
+
+      const measurements = (view == 'legacy' ? this.measurements : [measurement])
+
+      if (cube == 'map') {
+        const data = await this.$clicker.query('meta.mode', 'map',
+          ['brawler_name'],
+          [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
+          slices,
+          { sort: { picks: 'desc' }, cache: 60*30 })
+
+        this.entries = data.data.map(row => ({
+          id: row.brawler_name,
+          brawler: row.brawler_name,
+          title: capitalizeWords(row.brawler_name.toLowerCase()),
+          stats: measurements.reduce((stats, m) => ({
+            ...stats,
+            [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
+          }), {} as Record<string, number>),
+          sampleSize: row.picks,
+          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+        }) as MetaGridEntry)
+
+        this.sample = data.totals.picks
+        this.timestamp = data.totals.timestamp
       }
-      this.$emit('measurements', this.measurements)
+
+      if (cube == 'starpower') {
+        const calculateZScore = measurements.includes('winsZScore')
+        const fetchingMeasurements = measurements
+          .map(m => m == 'winsZScore' ? 'winRate' : m)
+          .map(m => measurementMap[m])
+
+        const data = await this.$clicker.query('meta.starpower', 'starpower',
+          ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
+          [...fetchingMeasurements, 'picks', 'timestamp'],
+          slices,
+          { sort: { picks: 'desc' }, cache: 60*60 })
+        this.entries = calculateDiffs(data.data, 'starpowers', 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
+
+        this.sample = data.totals.picks
+        this.timestamp = data.totals.timestamp
+      }
+
+      if (cube == 'gadget') {
+        const calculateZScore = measurements.includes('winsZScore')
+        const fetchingMeasurements = measurements
+          .map(m => m == 'winsZScore' ? 'winRate' : m)
+          .map(m => measurementMap[m])
+
+        const data = await this.$clicker.query('meta.gadget', 'gadget',
+          ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
+          [...fetchingMeasurements, 'picks', 'timestamp'],
+          slices,
+          { sort: { picks: 'desc' }, cache: 60*60 })
+        this.entries = calculateDiffs(data.data, 'gadgets', 'brawler_gadget_name', 'brawler_gadget_id', calculateZScore)
+
+        this.sample = data.totals.picks
+        this.timestamp = data.totals.timestamp
+      }
+
+      if (cube == 'synergy') {
+        const data = await this.$clicker.query('meta.mode', 'synergy',
+          ['brawler_name'],
+          [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
+          slices,
+          { sort: { picks: 'desc' }, cache: 60*30 })
+
+        this.entries = data.data.map(row => ({
+          id: row.brawler_name,
+          brawler: row.brawler_name,
+          title: capitalizeWords(row.brawler_name.toLowerCase()),
+          stats: measurements.reduce((stats, m) => ({
+            ...stats,
+            [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
+          }), {} as Record<string, number>),
+          sampleSize: row.picks,
+          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
+        }) as MetaGridEntry)
+
+        this.sample = data.totals.picks
+        this.timestamp = data.totals.timestamp
+      }
+
+
+      this.measurement = measurement
+      this.view = view
+      this.slices = slices
+      this.cube = cube
+
+      this.loading = false
+    }
+  },
+  computed: {
+    description(): string {
+      return this.$clicker.describeSlices(this.slices, this.timestamp)
+    },
+    measurements(): string[] {
+      if (['map', 'synergy'].includes(this.cube)) {
+        const mode = (this.slices.battle_event_mode || [])[0]
+        if (mode == undefined) {
+          return ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']
+        }
+
+        let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
+        // all 3v3: star player
+        if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
+          measurements = [...measurements, 'starRate']
+        }
+        // all 3v3 except bounty: duration
+        if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
+          measurements = [...measurements, 'duration']
+        }
+        if (mode.endsWith('howdown')) {
+          measurements = [...measurements, 'rank1Rate']
+        }
+        return measurements
+      }
+      if (['starpower', 'gadget'].includes(this.cube)) {
+        return ['winsZScore', 'winRate', 'starRate', 'rank1Rate']
+      }
+      return []
     },
   },
 })

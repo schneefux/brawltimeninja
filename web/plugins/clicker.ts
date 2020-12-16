@@ -25,21 +25,9 @@ export interface EventMetadata {
   end?: string
 }
 
-function keyToTeam(id: string) {
-  return id.split('+')
-}
-
-function teamToKey(...names: string[]) {
-  return names.sort().join('+')
-}
-
-function addToMap(map: Map<string, PicksWins>, row: PicksWins, teamToKey: string) {
-  if (!map.has(teamToKey)) {
-    map.set(teamToKey, { picks: 0, wins: 0 })
-  }
-  map.get(teamToKey)!.picks += row.picks
-  map.get(teamToKey)!.wins += row.wins
-  return map
+export interface MapMetadata {
+  battle_event_id: number
+  battle_event_map: string
 }
 
 export interface Slices extends Record<string, string[]|undefined> {}
@@ -62,6 +50,8 @@ interface Clicker {
   queryActiveEvents(): Promise<EventMetadata[]>,
   queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>
+  queryAllMaps(mode?: string): Promise<MapMetadata[]>
+  queryAllBrawlers(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
   calculateBayesSynergies(slices: Slices, tag: string, brawler?: string, limit?: number): Promise<{
     sampleSize: number,
@@ -188,6 +178,27 @@ export default (context, inject) => {
         { trophy_season_end: ['balance'] },
         { sort: { picks: 'desc' }, cache: 60*60 })
       return modes.data.map(row => row.battle_event_mode)
+    },
+    async queryAllMaps(mode?: string) {
+      const maps = await this.query<MapMetadata>('all.maps', 'map',
+        ['battle_event_map', 'battle_event_id'],
+        ['battle_event_map', 'battle_event_id'],
+        {
+          trophy_season_end: ['balance'],
+          ...(mode != undefined ? {
+            battle_event_mode: [mode],
+          } : {})
+        },
+        { sort: { picks: 'desc' }, cache: 60*60 })
+      return maps.data
+    },
+    async queryAllBrawlers() {
+      const brawlers = await this.query<{ brawler_name: string }>('all.brawlers', 'map',
+        ['brawler_name'],
+        ['brawler_name'],
+        { trophy_season_end: ['balance'] },
+        { sort: { picks: 'desc' }, cache: 60*60 })
+      return brawlers.data.map(b => b.brawler_name)
     },
     describeSlices(slices: Record<string, string[]>, timestamp?: string) {
       let description: string[] = []

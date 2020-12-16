@@ -119,17 +119,8 @@
       tracking-page-id="mode_meta"
     >
       <meta-views
-        :sample="totalSampleSize"
-        :sample-min="300000"
-        :timestamp="totalTimestamp"
-        :entries="entries"
-        :measurements="measurements"
-        :slices="slices"
-        :description="description"
-        :loading="$fetchState.pending"
-        cube="map"
-        @measurements="ms => selectedMeasurements = ms"
-        @slices="s => slices = s"
+        :default-slices="{ battle_event_mode: [ mode ] }"
+        default-cube="map"
       ></meta-views>
     </page-section>
 
@@ -172,42 +163,11 @@ export default Vue.extend({
   middleware: ['cached'],
   data() {
     return {
-      slices: this.$clicker.defaultSlices('map'),
       showAllMaps: false,
       mode: '',
       modeName: '',
       maps: [] as EventIdAndMap[],
-      entries: [] as MetaGridEntry[],
-      selectedMeasurements: ['winRateAdj'],
-      totalSampleSize: 0,
-      totalTimestamp: '1970-01-01',
     }
-  },
-  watch: {
-    slices: '$fetch',
-    selectedMeasurements: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    const data = await this.$clicker.query('meta.mode', 'map',
-      ['brawler_name'],
-      [...this.selectedMeasurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
-      this.slices,
-      { sort: { picks: 'desc' }, cache: 60*30 })
-
-    this.entries = data.data.map(row => ({
-      id: row.brawler_name,
-      brawler: row.brawler_name,
-      title: capitalizeWords(row.brawler_name.toLowerCase()),
-      stats: this.selectedMeasurements.reduce((stats, m) => ({
-        ...stats,
-        [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
-      }), {} as Record<string, number>),
-      sampleSize: row.picks,
-      link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-    }) as MetaGridEntry)
-    this.totalSampleSize = data.totals.picks
-    this.totalTimestamp = data.totals.timestamp
   },
   async asyncData({ params, $clicker }) {
     const mode = kebabToCamel(params.mode as string)
@@ -231,31 +191,9 @@ export default Vue.extend({
           map: e.battle_event_map,
           timestamp: e.timestamp,
         })),
-      slices: {
-        ...$clicker.defaultSlices('map'),
-        battle_event_mode: [mode],
-      } as any,
     }
   },
   computed: {
-    measurements(): string[] {
-      let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
-      // all 3v3: star player
-      if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(this.mode)) {
-        measurements = [...measurements, 'starRate']
-      }
-      // all 3v3 except bounty: duration
-      if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(this.mode)) {
-        measurements = [...measurements, 'duration']
-      }
-      if (this.mode.endsWith('howdown')) {
-        measurements = [...measurements, 'rank1Rate']
-      }
-      return measurements
-    },
-    description(): string {
-      return this.$clicker.describeSlices(this.slices, this.totalTimestamp)
-    },
     camelToKebab() {
       return camelToKebab
     },

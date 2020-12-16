@@ -25,6 +25,48 @@
           'mt-3': showFilters,
         }]"
       >
+        <div
+          v-if="cubes != undefined"
+          class="mr-2 my-1"
+        >
+          <b-select
+            v-model="selectedCube"
+            dark
+            sm
+          >
+            <option
+              v-for="c in cubes"
+              :key="c"
+              :value="c"
+            >
+              {{ cubeLabel[c] }}
+            </option>
+          </b-select>
+        </div>
+
+        <div
+          v-if="cube == 'synergy'"
+          class="mr-2 my-1"
+        >
+          <b-select
+            v-model="ally"
+            dark
+            sm
+          >
+            <option value="">with any</option>
+            <option
+              v-if="!['', undefined].includes(ally) && !brawlers.includes(ally)"
+              :key="ally"
+              :value="ally"
+            >with {{ capitalize(ally.toLowerCase()) }}</option>
+            <option
+              v-for="b in brawlers"
+              :key="b"
+              :value="b"
+            >with {{ capitalize(b.toLowerCase()) }}</option>
+          </b-select>
+        </div>
+
         <div class="mr-2 my-1">
           <b-select
             :value="measurement"
@@ -42,6 +84,7 @@
           </b-select>
         </div>
 
+        <!-- TODO develop full season slider -->
         <div class="mr-2 my-1">
           <b-select
             v-model="timeRange"
@@ -58,13 +101,16 @@
           </b-select>
         </div>
 
-        <div class="mr-2 my-1">
+        <div
+          class="mr-2 my-1"
+          v-if="['map'].includes(cube)"
+        >
           <b-select
-            v-if="cube == 'map'"
             v-model="powerPlayActive"
             dark
             sm
           >
+            <option value="">All Battles</option>
             <option value="false">Regular Battles</option>
             <option value="true">Power Play</option>
           </b-select>
@@ -74,8 +120,55 @@
           v-if="cube != 'synergy'"
           v-model="trophyRange"
           :name="powerPlayActive ? 'Points' : undefined"
-          class="my-1"
+          class="mr-2 my-1"
         ></trophy-slider>
+
+        <!-- TODO add icons and previews to selects -->
+        <div
+          v-if="['map', 'synergy'].includes(cube)"
+          class="mr-2 my-1"
+        >
+          <b-select
+            v-model="mode"
+            dark
+            sm
+          >
+            <option value="">All Modes</option>
+            <option
+              v-if="!['', undefined].includes(mode) && !modes.includes(mode)"
+              :key="mode"
+              :value="mode"
+            >{{ formatMode(mode) }}</option>
+            <option
+              v-for="mode in modes"
+              :key="mode"
+              :value="mode"
+            >{{ formatMode(mode) }}</option>
+          </b-select>
+        </div>
+
+        <div
+          v-if="['map', 'synergy'].includes(cube)"
+          class="mr-2 my-1"
+        >
+          <b-select
+            v-model="map"
+            dark
+            sm
+          >
+            <option value="">All Maps</option>
+            <option
+              v-if="!['', undefined].includes(map) && !maps.some(m => m.battle_event_map == map)"
+              :key="map"
+              :value="map"
+            >{{ map }}</option>
+            <option
+              v-for="map in maps"
+              :key="map.battle_event_map"
+              :value="map.battle_event_map"
+            >{{ map.battle_event_map }}</option>
+          </b-select>
+        </div>
       </div>
     </template>
   </card>
@@ -83,20 +176,36 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { metaStatMaps } from '~/lib/util'
+import { capitalize, formatMode, metaStatMaps } from '~/lib/util'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { MapMetadata } from '~/plugins/clicker'
 
 // TODO add big brawler
+
+interface Slices {
+  trophy_season_end: string[]
+  brawler_trophyrange: string[]
+  battle_event_powerplay?: string[]
+  battle_event_mode?: string[]
+  battle_event_map?: string[]
+  ally_brawler_name?: string[]
+}
+
+function withN1Slice(slices: Slices, name: keyof Slices, value: string) {
+  const newSlices = { ...slices }
+  if (value == '') {
+    delete newSlices[name]
+  } else {
+    newSlices[name] = [value]
+  }
+  return newSlices
+}
 
 export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<{
-        trophy_season_end: string[],
-        brawler_trophyrange: string[],
-        battle_event_powerplay?: string[],
-      }>,
+      type: Object as PropType<Slices>,
       required: true
     },
     measurement: {
@@ -109,20 +218,56 @@ export default Vue.extend({
     },
     cube: {
       type: String,
-      required: false
+      required: true
+    },
+    cubes: {
+      type: Array as PropType<string[]>,
     },
   },
   data() {
     return {
+      modes: [] as string[],
+      maps: [] as MapMetadata[],
+      brawlers: [] as string[],
       timeRangeLabel: {
         'current': 'Season',
         'balance': 'Update',
         'month': 'Month',
       },
+      cubeLabel: {
+        'map': 'Brawlers',
+        'gadget': 'Gadgets',
+        'starpower': 'Star Powers',
+        'synergy': 'Synergies',
+      },
       showFilters: false,
     }
   },
+  watch: {
+    cube: '$fetch',
+    mode: '$fetch',
+  },
+  fetchDelay: 0,
+  async fetch() {
+    if (this.cube == 'map') {
+      this.modes = await this.$clicker.queryAllModes()
+      const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
+      this.maps = maps.sort((m1, m2) => m1.battle_event_map.localeCompare(m2.battle_event_map))
+    }
+    if (this.cube == 'synergy') {
+      const brawlers = await this.$clicker.queryAllBrawlers()
+      this.brawlers = brawlers.sort((b1, b2) => b1.localeCompare(b2))
+    }
+  },
   computed: {
+    selectedCube: {
+      get(): string {
+        return this.cube
+      },
+      set(c: string) {
+        this.$emit('cube', c)
+      }
+    },
     trophyRange: {
       get(): number[] {
         return this.value.brawler_trophyrange.map(n => parseInt(n))
@@ -136,35 +281,72 @@ export default Vue.extend({
     },
     timeRange: {
       get(): string {
-        return this.value.trophy_season_end[0]
+        return this.value.trophy_season_end[0] || ''
       },
       set(v: string) {
-        this.$emit('input', {
-          ...this.value,
-          trophy_season_end: [v],
-        })
+        this.$emit('input', withN1Slice(this.value, 'trophy_season_end', v))
       }
     },
     powerPlayActive: {
       get(): string {
-        return (this.value.battle_event_powerplay || [])[0]
+        return (this.value.battle_event_powerplay || [])[0] || ''
       },
       set(v: string) {
-        this.$emit('input', {
-          ...this.value,
-          battle_event_powerplay: [v],
-        })
+        this.$emit('input', withN1Slice(this.value, 'battle_event_powerplay', v))
+      }
+    },
+    mode: {
+      get(): string {
+        return (this.value.battle_event_mode || [])[0] || ''
+      },
+      set(v: string) {
+        // reset map
+        this.$emit('input', withN1Slice(
+          withN1Slice(this.value, 'battle_event_mode', v),
+          'battle_event_map', ''
+        ))
+      }
+    },
+    map: {
+      get(): string {
+        return (this.value.battle_event_map || [])[0] || ''
+      },
+      set(v: string) {
+        this.$emit('input', withN1Slice(this.value, 'battle_event_map', v))
+      }
+    },
+    ally: {
+      get(): string {
+        return (this.value.ally_brawler_name || [])[0] || ''
+      },
+      set(v: string) {
+        this.$emit('input', withN1Slice(this.value, 'ally_brawler_name', v))
       }
     },
     filtersDescription(): string {
       const formatTrophies = (n: number) => n == 10 ? '1000+' : n * 100
-      return `${metaStatMaps.labels[this.measurement]}, Current ${this.timeRangeLabel[this.timeRange]}, ${!this.powerPlayActive ? 'Regular Battles' : 'Power Play'}, ${formatTrophies(this.trophyRange[0])}-${formatTrophies(this.trophyRange[1])} ${!this.powerPlayActive ? 'Trophies' : 'Points'}`
+      const pieces = [
+        ...(this.ally != '' ? ['with ' + capitalize(this.ally.toLowerCase())] : []),
+        metaStatMaps.labels[this.measurement],
+        'Current ' + this.timeRangeLabel[this.timeRange],
+        this.powerPlayActive ? 'Regular Battles' : 'Power Play',
+        formatTrophies(this.trophyRange[0]) + '-' + formatTrophies(this.trophyRange[1]) + (!this.powerPlayActive ? 'Trophies' : 'Points'),
+        this.mode == '' ? 'All Modes' : formatMode(this.mode),
+        this.map == '' ? 'All Maps' : this.map,
+      ]
+      return pieces.join(', ')
     },
     faFilter() {
       return faFilter
     },
     metaStatMaps() {
       return metaStatMaps
+    },
+    formatMode() {
+      return formatMode
+    },
+    capitalize() {
+      return capitalize
     },
   },
 })
