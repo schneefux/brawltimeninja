@@ -1,7 +1,6 @@
 <template>
   <card
-    :title="title"
-    :subtitle="author != undefined ? 'written by ' + author : ''"
+    :title="document.title"
     tag="article"
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
@@ -9,12 +8,18 @@
     xxl
   >
     <div
-      v-if="image"
+      v-if="document.image"
       slot="infobar"
       :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${image}')`"
       class="h-48 bg-cover bg-center"
       itemprop="thumbnailUrl"
     ></div>
+    <span
+      slot="preview"
+      class="text-gray-400 text-sm"
+    >
+      {{ date }}
+    </span>
     <div slot="content">
       <nuxt-content
         :document="document"
@@ -44,11 +49,31 @@
         </div>
       </div>
     </div>
+    <p
+      slot="actions"
+      v-if="document.author != undefined"
+    >
+      This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
+        <wrapped-component
+          :wrap="document.attributionLink != undefined"
+        >
+          <a
+            slot="wrapper"
+            :href="document.attributionLink"
+            rel="nofollow"
+            class="underline"
+          ></a>
+          <span>({{ document.attribution }})</span>
+        </wrapped-component>
+      </template>.
+    </p>
   </card>
 </template>
 
 <script lang="ts">
 import { IContentDocument } from '@nuxt/content/types/content'
+import { format } from 'date-fns'
+import { parseISO } from 'date-fns/fp'
 import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
@@ -60,12 +85,6 @@ export default Vue.extend({
     document: {
       type: Object as PropType<IContentDocument>,
       required: true
-    },
-    image: {
-      type: String
-    },
-    author: {
-      type: String
     },
   },
   data() {
@@ -84,6 +103,11 @@ export default Vue.extend({
         })
       })
     }
+  },
+  computed: {
+    date(): string {
+      return format(parseISO(this.document.createdAt as unknown as string), 'PP')
+    },
   },
 })
 </script>
