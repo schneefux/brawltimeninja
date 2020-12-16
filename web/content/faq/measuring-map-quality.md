@@ -2,6 +2,7 @@
 id: measuring-map-quality
 title: Measuring Map Quality - The Gini Coefficient
 question: What is the Balance Rating, or what is the Gini coefficient?
+createdAt: 2020-11-26
 ---
 Brawl Stars has almost 200 distinct maps. With the daily Map Maker Competition Winner, there is a new map available to play every day. Unarguably, some maps must be better than others. How can we measure that?
 

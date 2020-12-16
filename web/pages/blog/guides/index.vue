@@ -17,6 +17,11 @@
           light
           sm
         >
+          <span
+            slot="preview"
+            class="text-gray-400 text-sm"
+          >{{ faq.createdAt }}</span>
+
           <p
             slot="content"
             itemprop="abstract"
@@ -66,6 +71,10 @@
             light
             sm
           >
+            <span
+              slot="preview"
+              class="text-gray-400 text-sm"
+            >{{ post.createdAt }}</span>
             <div
               slot="infobar"
               v-if="'image' in post"
@@ -99,6 +108,7 @@
 
 <script lang="ts">
 import { IContentDocument } from '@nuxt/content/types/content'
+import { format, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { Post } from '../../../model/Web'
 
@@ -116,11 +126,21 @@ export default Vue.extend({
     }
   },
   async asyncData({ $content }: any) {
-    const posts = await $content('guides').sortBy('createdAt', 'desc').fetch() as Post[]
-    const faqs = await $content('faq').sortBy('createdAt', 'desc').fetch()
+    const posts = await $content('guides')
+      .sortBy('createdAt', 'desc')
+      .fetch() as Post[]
+    const faqs = await $content('faq')
+      .sortBy('createdAt', 'desc')
+      .fetch()
     return {
-      posts,
-      faqs,
+      posts: posts.map(p => ({
+        ...p,
+        createdAt: format(parseISO(p.createdAt), 'PP'),
+      })),
+      faqs: faqs.map(f => ({
+        ...f,
+        createdAt: format(parseISO(f.createdAt), 'PP'),
+      })),
     }
   },
 })

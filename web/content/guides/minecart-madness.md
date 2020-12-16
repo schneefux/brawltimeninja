@@ -6,6 +6,7 @@ image: /images/guides/minecart-madness_small.jpg
 description: Wait for the right moment and trap the enemy in Minecart Madness with Piper, Carl and Barley.
 mode: gemGrab
 map: Minecart Madness
+createdAt: 2019-04-24
 ---
 
 Recommended Comp

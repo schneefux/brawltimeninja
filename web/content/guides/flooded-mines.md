@@ -6,6 +6,7 @@ image: /images/guides/flooded-mines_small.jpg
 description: Keep pressure on the enemy and fight for the Flooded Mines from a safe distance with Piper, Nita and Rico.
 mode: gemGrab
 map: Flooded Mines
+createdAt: 2019-04-26
 ---
 
 Recommended Comp

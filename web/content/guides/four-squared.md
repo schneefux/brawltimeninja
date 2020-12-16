@@ -6,6 +6,7 @@ image: /images/guides/four-squared_small.jpg
 description: Split push the Four Squared lanes and take control of the mine with Spike, Mortis and Dynamike.
 mode: gemGrab
 map: Four Squared
+createdAt: 2019-04-20
 ---
 
 Recommended Comp

@@ -6,6 +6,7 @@ image: /images/guides/undermine_small.jpg
 description: Hide in the bushes and protect the Undermine with Pam, Nita and Leon.
 mode: gemGrab
 map: Undermine
+createdAt: 2019-04-24
 ---
 
 Recommended Comp

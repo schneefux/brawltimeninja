@@ -6,6 +6,7 @@ image: /images/guides/deep-siege_small.jpg
 description: Use walls to your advantage in Deep Siege with Jessie, Mortis and Dynamike.
 mode: gemGrab
 map: Stone Fort
+createdAt: 2019-04-22
 ---
 
 Recommended Comp

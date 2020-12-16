@@ -6,6 +6,7 @@ image: /images/guides/stone-fort_small.jpg
 description: Hold the Stone Fort with long range attacks and Frank, Carl and Rico.
 mode: gemGrab
 map: Stone Fort
+createdAt: 2019-04-22
 ---
 
 Recommended Comp

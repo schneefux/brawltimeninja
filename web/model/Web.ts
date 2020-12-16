@@ -16,6 +16,7 @@ export interface Post {
   order: number
   slug: string
   image?: string
+  createdAt: string
 }
 
 export interface TierListEntry extends MetaGridEntry {

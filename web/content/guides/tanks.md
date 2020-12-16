@@ -3,6 +3,7 @@ id: tanks
 title: "Brawl Stars Classes: Tanks"
 author: XaviorKeyz
 description: Learn more about Tanks, the heaviest Brawlers in Brawl Stars.
+createdAt: 2020-01-05
 ---
 
 Today's article is about the Tank class of Brawl Stars, the heaviest Brawlers. It was written by XaviorKeyz with the help of Cali Life.

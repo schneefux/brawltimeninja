@@ -3,6 +3,7 @@ id: adcs
 title: "Brawl Stars Character Classes: ADC"
 author: XaviorKeyz
 description: Tips on playing long-ranged Brawlers.
+createdAt: 2020-01-05
 ---
 
 This article is about the long-ranged class of Brawl Stars - ADCs. You will learn their roles and impact in the game. It was written by XaviorKeyz and proofread by Cali Life, Gooose, and LukieBear. Thanks for their help!

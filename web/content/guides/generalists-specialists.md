@@ -3,6 +3,7 @@ id: generalists-specialists
 title: "Generalists vs. Specialists"
 author: Obsidian297
 description: An explanation on Brawler design and viability.
+createdAt: 2020-07-13
 ---
 This post will explain the differences in Brawler design and their impact in the viability in the meta.
 

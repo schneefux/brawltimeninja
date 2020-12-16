@@ -2,6 +2,7 @@
 id: how-to-contribute
 title: Contributing to Brawl Time Ninja
 question: How do I write an article or Brawler tip?
+createdAt: 2020-11-25
 ---
 
 I am super happy that you want to contribute to Brawl Time Ninja!

@@ -6,6 +6,7 @@ image: /images/guides/safe-zone_small.jpg
 description: Siege or play aggressively with one of three compositions on Safe Zone.
 mode: heist
 map: Safe Zone
+createdAt: 2019-04-24
 ---
 
 Control Comp

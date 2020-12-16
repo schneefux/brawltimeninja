@@ -6,6 +6,7 @@ image: /images/guides/deathcap-cave_small.jpg
 description: Keep control of Deathcap Cave with Pam, Nita and Barley.
 mode: gemGrab
 map: Deathcap Cave
+createdAt: 2019-04-20
 ---
 
 Recommended Comp
