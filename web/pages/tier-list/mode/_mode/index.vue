@@ -1,5 +1,5 @@
 <template>
-  <page-dashboard :title="modeName">
+  <page :title="modeName">
     <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
     <div class="flex flex-wrap justify-center">
@@ -118,10 +118,9 @@
       tracking-id="stats"
       tracking-page-id="mode_meta"
     >
-      <meta-views
-        :default-slices="{ battle_event_mode: [ mode ] }"
-        default-cube="map"
-      ></meta-views>
+      <map-meta-table
+        :mode="mode"
+      ></map-meta-table>
     </page-section>
 
     <client-only>
@@ -134,14 +133,14 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import pageSection from '~/components/page-section.vue'
-import { formatMode, MetaGridEntry, brawlerId, measurementMap, capitalizeWords, measurementOfTotal, kebabToCamel } from '~/lib/util'
+import { formatMode, kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '../../../../lib/util'
 
 interface EventIdAndMap {

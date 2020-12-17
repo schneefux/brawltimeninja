@@ -11,7 +11,6 @@
     <meta-slicers
       v-model="slices"
       :sample="totalSampleSize"
-      :sample-min="100000"
       :timestamp="totalTimestamp"
       :loading="$fetchState.pending"
       cube="synergy"

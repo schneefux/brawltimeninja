@@ -1,5 +1,5 @@
 <template>
-  <page-dashboard title="Brawl Stars Brawler Tier List">
+  <page title="Brawl Stars Brawler Tier List">
     <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
 
     <div class="flex flex-wrap justify-center">
@@ -50,10 +50,7 @@
       tracking-id="widget"
       tracking-page-id="brawler_meta"
     >
-      <meta-views
-        :sample-min="100000"
-        default-cube="map"
-      ></meta-views>
+      <map-meta-table></map-meta-table>
     </page-section>
 
     <client-only>
@@ -66,13 +63,12 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry, brawlerId, capitalize, capitalizeWords, measurementMap, measurementOfTotal } from '../../../lib/util'
 
 export default Vue.extend({
   head() {

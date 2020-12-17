@@ -1,5 +1,5 @@
 <template>
-  <page-dashboard :title="event.modeName + ': ' + event.map">
+  <page :title="event.modeName + ': ' + event.map">
     <p>Use the {{ event.map }} Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
     <p v-if="event.map.startsWith('Competition Winner')">
       A new Competition Winner Map is voted by the community every day.
@@ -113,7 +113,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">

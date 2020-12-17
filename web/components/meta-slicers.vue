@@ -55,11 +55,6 @@
           >
             <option value="">with any</option>
             <option
-              v-if="!['', undefined].includes(ally) && !brawlers.includes(ally)"
-              :key="ally"
-              :value="ally"
-            >with {{ capitalize(ally.toLowerCase()) }}</option>
-            <option
               v-for="b in brawlers"
               :key="b"
               :value="b"
@@ -110,7 +105,6 @@
             dark
             sm
           >
-            <option value="">All Battles</option>
             <option value="false">Regular Battles</option>
             <option value="true">Power Play</option>
           </b-select>
@@ -135,11 +129,6 @@
           >
             <option value="">All Modes</option>
             <option
-              v-if="!['', undefined].includes(mode) && !modes.includes(mode)"
-              :key="mode"
-              :value="mode"
-            >{{ formatMode(mode) }}</option>
-            <option
               v-for="mode in modes"
               :key="mode"
               :value="mode"
@@ -157,11 +146,6 @@
             sm
           >
             <option value="">All Maps</option>
-            <option
-              v-if="!['', undefined].includes(map) && !maps.some(m => m.battle_event_map == map)"
-              :key="map"
-              :value="map"
-            >{{ map }}</option>
             <option
               v-for="map in maps"
               :key="map.battle_event_map"
@@ -226,9 +210,9 @@ export default Vue.extend({
   },
   data() {
     return {
-      modes: [] as string[],
-      maps: [] as MapMetadata[],
-      brawlers: [] as string[],
+      allModes: [] as string[],
+      allMaps: [] as MapMetadata[],
+      allBrawlers: [] as string[],
       timeRangeLabel: {
         'current': 'Season',
         'balance': 'Update',
@@ -250,16 +234,37 @@ export default Vue.extend({
   fetchDelay: 0,
   async fetch() {
     if (this.cube == 'map') {
-      this.modes = await this.$clicker.queryAllModes()
+      this.allModes = await this.$clicker.queryAllModes()
       const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
-      this.maps = maps.sort((m1, m2) => m1.battle_event_map.localeCompare(m2.battle_event_map))
+      this.allMaps = maps.sort((m1, m2) => m1.battle_event_map.localeCompare(m2.battle_event_map))
     }
     if (this.cube == 'synergy') {
       const brawlers = await this.$clicker.queryAllBrawlers()
-      this.brawlers = brawlers.sort((b1, b2) => b1.localeCompare(b2))
+      this.allBrawlers = brawlers.sort((b1, b2) => b1.localeCompare(b2))
     }
   },
   computed: {
+    modes(): string[] {
+      if (this.allModes.length == 0 && !['', undefined].includes(this.mode)) {
+        return [this.mode]
+      }
+      return this.allModes
+    },
+    maps(): MapMetadata[] {
+      if (this.allMaps.length == 0 && !['', undefined].includes(this.map)) {
+        return [{
+          battle_event_id: 0,
+          battle_event_map: this.map,
+        }]
+      }
+      return this.allMaps
+    },
+    brawlers(): string[] {
+      if (this.allBrawlers.length == 0 && !['', undefined].includes(this.ally)) {
+        return [this.ally]
+      }
+      return this.allBrawlers
+    },
     selectedCube: {
       get(): string {
         return this.cube
@@ -289,7 +294,7 @@ export default Vue.extend({
     },
     powerPlayActive: {
       get(): string {
-        return (this.value.battle_event_powerplay || [])[0] || ''
+        return (this.value.battle_event_powerplay || [])[0] || 'false'
       },
       set(v: string) {
         this.$emit('input', withN1Slice(this.value, 'battle_event_powerplay', v))
@@ -329,8 +334,8 @@ export default Vue.extend({
         ...(this.ally != '' ? ['with ' + capitalize(this.ally.toLowerCase())] : []),
         metaStatMaps.labels[this.measurement],
         'Current ' + this.timeRangeLabel[this.timeRange],
-        this.powerPlayActive ? 'Regular Battles' : 'Power Play',
-        formatTrophies(this.trophyRange[0]) + '-' + formatTrophies(this.trophyRange[1]) + (!this.powerPlayActive ? 'Trophies' : 'Points'),
+        this.powerPlayActive == 'false' ? 'Regular Battles' : 'Power Play',
+        formatTrophies(this.trophyRange[0]) + '-' + formatTrophies(this.trophyRange[1]) + (this.powerPlayActive == 'false' ? ' Trophies' : ' Points'),
         this.mode == '' ? 'All Modes' : formatMode(this.mode),
         this.map == '' ? 'All Maps' : this.map,
       ]

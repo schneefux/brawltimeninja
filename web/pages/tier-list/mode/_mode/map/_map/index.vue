@@ -8,10 +8,10 @@
       Explore exclusive Brawl Stars Brawler statistics.
     </p>
 
-    <meta-views
-      :default-slices="defaultSlices"
-      default-cube="map"
-    ></meta-views>
+    <map-meta-table
+      :mode="event.mode"
+      :map="event.map"
+    ></map-meta-table>
   </page-section>
 </template>
 
@@ -19,7 +19,6 @@
 import Vue, { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { brawlerId, capitalizeWords, deslugify, kebabToCamel, measurementMap, measurementOfTotal, MetaGridEntry } from '~/lib/util'
 import { Slices } from '~/plugins/clicker'
 
 interface Map {
@@ -53,13 +52,6 @@ export default Vue.extend({
     },
   },
   computed: {
-    defaultSlices() {
-      return {
-        ...this.$clicker.routeToSlices(this.$route, this.$clicker.defaultSlices('map')),
-        battle_event_mode: [ this.event.mode ],
-        battle_event_map: [ this.event.map ],
-      }
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),

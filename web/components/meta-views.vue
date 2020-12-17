@@ -98,7 +98,7 @@
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { brawlerId, calculateDiffs, capitalizeWords, formatSI, measurementMap, measurementOfTotal, MetaGridEntry } from '~/lib/util'
+import { calculateDiffs, measurementMap, MetaGridEntry } from '~/lib/util'
 
 function defaultMeasurement(cube: string) {
   if (['map', 'synergy'].includes(cube)) {
@@ -191,23 +191,13 @@ export default Vue.extend({
       const measurements = (view == 'legacy' ? this.measurements : [measurement])
 
       if (cube == 'map') {
-        const data = await this.$clicker.query('meta.mode', 'map',
+        const data = await this.$clicker.query('meta.map', 'map',
           ['brawler_name'],
           [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
           slices,
           { sort: { picks: 'desc' }, cache: 60*30 })
 
-        this.entries = data.data.map(row => ({
-          id: row.brawler_name,
-          brawler: row.brawler_name,
-          title: capitalizeWords(row.brawler_name.toLowerCase()),
-          stats: measurements.reduce((stats, m) => ({
-            ...stats,
-            [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
-          }), {} as Record<string, number>),
-          sampleSize: row.picks,
-          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-        }) as MetaGridEntry)
+        this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
 
         this.sample = data.totals.picks
         this.timestamp = data.totals.timestamp
@@ -248,28 +238,17 @@ export default Vue.extend({
       }
 
       if (cube == 'synergy') {
-        const data = await this.$clicker.query('meta.mode', 'synergy',
+        const data = await this.$clicker.query('meta.synergy', 'synergy',
           ['brawler_name'],
           [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
           slices,
           { sort: { picks: 'desc' }, cache: 60*30 })
 
-        this.entries = data.data.map(row => ({
-          id: row.brawler_name,
-          brawler: row.brawler_name,
-          title: capitalizeWords(row.brawler_name.toLowerCase()),
-          stats: measurements.reduce((stats, m) => ({
-            ...stats,
-            [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? data.totals[measurementMap[m]] : 1),
-          }), {} as Record<string, number>),
-          sampleSize: row.picks,
-          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
-        }) as MetaGridEntry)
+        this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
 
         this.sample = data.totals.picks
         this.timestamp = data.totals.timestamp
       }
-
 
       this.measurement = measurement
       this.view = view

@@ -343,6 +343,10 @@ export interface MetaGridEntrySorted extends MetaGridEntry {
   sortProp: string
 }
 
+export interface MetaGridEntryTiered extends MetaGridEntry {
+  tier: string
+}
+
 export function formatAsJsonLd(event: ActiveEvent) {
   const url = `/tier-list/mode/${slugify(event.mode)})}/${slugify(event.map)}`
   return {
@@ -586,4 +590,37 @@ export function encodeQuery(data: { [key: string]: number|string }) {
  */
 export function isSpecialEvent(mode: string) {
   return ['roboRumble', 'bigGame', 'superCity'].includes(mode)
+}
+
+/*
+ * min-max scale stat into the 5 tiers and put nulls into '?' tier
+ */
+export function scaleEntriesIntoTiers(entries: MetaGridEntry[], stat: keyof typeof entries[0]['stats']): MetaGridEntryTiered[] {
+  const getStat = (e: MetaGridEntry) => typeof e.stats[stat] != 'string' ? e.stats[stat] as number|undefined :  Number.parseFloat(e.stats[stat] as string)
+  const sortedEntries = entries
+    .slice()
+    .sort(compare1(stat as any))
+
+  const stats = sortedEntries
+    .map(getStat)
+    .reverse()
+  const sign = metaStatMaps.signs[stat]
+  const min = stats[sign == -1 ? 1 : stats.length - 2]! // skip highest (outlier)
+  const max = stats[sign == -1 ? stats.length - 2 : 1]! // skip lowest
+  const clamp = (v: number) => Math.max(min, Math.min(max, v))
+  const minMax = (v: number) => (clamp(v) - min) / (max - min)
+  const tiers = ['S', 'A', 'B', 'C', 'D']
+
+  return sortedEntries.map(entry => {
+    let tier = '?'
+    if (getStat(entry) != undefined) {
+      const index = (tiers.length - 1) - Math.floor(minMax(getStat(entry)!) * (tiers.length - 1))
+      tier = tiers[sign == -1 ? index : tiers.length - index - 1]
+    }
+
+    return {
+      ...entry,
+      tier,
+    }
+  })
 }

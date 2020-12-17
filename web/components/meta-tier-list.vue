@@ -54,43 +54,17 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TierList, TierListEntry } from '~/model/Web'
-import { brawlerId, compare1, MetaGridEntry, metaStatMaps } from '../lib/util'
+import { brawlerId, compare1, MetaGridEntry, metaStatMaps, scaleEntriesIntoTiers } from '../lib/util'
 
 function groupTiers(entries: MetaGridEntry[], stat: string): TierList {
   if (entries.length <= 2) {
     return {}
   }
 
-  const getStat = (e: MetaGridEntry) => typeof e.stats[stat] != 'string' ? e.stats[stat] as number|undefined :  Number.parseFloat(e.stats[stat] as string)
-  // min-max scale stat into the 5 tiers and put nulls into '?' tier
-  const stats = entries.slice()
-    .sort(compare1(stat as any)).map(getStat)
-    .reverse()
-  const sign = metaStatMaps.signs[stat]
-  const min = stats[sign == -1 ? 1 : stats.length - 2]! // skip highest (outlier)
-  const max = stats[sign == -1 ? stats.length - 2 : 1]! // skip lowest
-  const clamp = (v: number) => Math.max(min, Math.min(max, v))
-  const minMax = (v: number) => (clamp(v) - min) / (max - min)
+  const scaledEntries = scaleEntriesIntoTiers(entries, stat)
+
   const tierMap = { S: [], A: [], B: [], C: [], D: [] } as Record<string, MetaGridEntry[]>
-  const tiers = ['S', 'A', 'B', 'C', 'D']
-
-  for (const entry of entries) {
-    let key = '?'
-    if (getStat(entry) != undefined) {
-      const index = (tiers.length - 1) - Math.floor(minMax(getStat(entry)!) * (tiers.length - 1))
-      key = tiers[sign == -1 ? index : tiers.length - index - 1]
-    }
-
-    if (!(key in tierMap)) {
-      tierMap[key] = [entry]
-    } else {
-      tierMap[key].push(entry)
-    }
-  }
-
-  for (const key in tierMap) {
-    tierMap[key].sort(compare1(stat as any))
-  }
+  scaledEntries.forEach(e => e.tier in tierMap ? tierMap[e.tier].push(e) : tierMap[e.tier] = [e])
 
   return tierMap
 }

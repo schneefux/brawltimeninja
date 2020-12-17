@@ -13,7 +13,7 @@
         '': props.sm, // default
         'border-4 text-md': props.md,
         'border-8': props.lg,
-        'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-white': props.dark,
+        'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-gray-200': props.dark,
         'border-yellow-400': props.dark && props.selected,
         'bg-gray-300 hover:bg-gray-400 border-gray-300 hover:border-gray-400 text-primary-dark': props.light,
         'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 text-gray-800': props.primary,

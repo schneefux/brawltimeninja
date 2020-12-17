@@ -1,6 +1,6 @@
 <template>
   <card v-bind="$attrs">
-    <table slot="content" class="w-full">
+    <table slot="content" class="w-full text-lg">
       <thead>
         <tr class="h-8 border-b border-gray-600">
           <th scope="col" class="text-right pr-2">
@@ -16,11 +16,14 @@
       </thead>
       <tbody>
         <tr
-          v-for="(entry, index) in sortedEntries.slice(page*pageSize, (page+1)*pageSize)"
+          v-for="entry in sortedEntries.slice(page*pageSize, (page+1)*pageSize)"
           :key="entry.id"
         >
-          <th scope="row" class="text-right pr-2 pt-1">
-            {{ entry.sampleSize < sampleSizeThreshold ? '?' : index + 1 }}
+          <th
+            scope="row"
+            class="text-right pr-2 pt-1"
+          >
+            {{ entry.sampleSize < sampleSizeThreshold ? '?' : entry.index }}
           </th>
           <td class="pr-2">
             <router-link
@@ -28,7 +31,7 @@
               :title="entry.title"
               class="flex items-center"
             >
-              <div class="mr-2 w-12 md:w-12 bg-gray-900 rounded-sm relative">
+              <div class="mr-2 w-10 sm:w-12 md:w-14 bg-gray-900 rounded-sm relative">
                 <media-img
                   :path="`/brawlers/${brawlerId({ name: entry.brawler })}/avatar`"
                   :alt="entry.brawler"
@@ -43,36 +46,26 @@
                   clazz="h-5 md:h-6 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-px"
                 />
               </div>
-              <span class="font-semibold text-lg">{{ entry.title }}</span>
+              <span class="font-semibold">{{ entry.title }}</span>
             </router-link>
           </td>
-          <td class="text-left font-semibold text-lg">
+          <td class="text-center font-semibold">
             {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}
           </td>
         </tr>
       </tbody>
     </table>
-    <div
+    <paginator
       slot="actions"
-      class="w-full flex justify-center"
-    >
-      <b-button
-        v-if="page > 0"
-        class="mr-1 w-32"
-        primary
-        @click="page--"
-      >Previous Page</b-button>
-      <b-button
-        v-if="(page+1)*pageSize < sortedEntries.length"
-        class="ml-1 w-32"
-        primary
-        @click="page++"
-      >Next Page</b-button>
-    </div>
+      v-model="page"
+      :pages="Math.floor(sortedEntries.length / pageSize)"
+      class="w-full"
+    ></paginator>
   </card>
 </template>
 
 <script lang="ts">
+import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import Vue, { PropType } from 'vue'
 import { metaStatMaps, MetaGridEntry, brawlerId, compare1 } from '../lib/util'
 
@@ -105,8 +98,10 @@ export default Vue.extend({
     sortedEntries(): MetaGridEntry[] {
       const aboveThreshold = this.entries.filter(e => e.sampleSize >= this.sampleSizeThreshold)
       const belowThreshold = this.entries.filter(e => e.sampleSize < this.sampleSizeThreshold)
-      return aboveThreshold.sort(compare1(this.stat as any))
+      return aboveThreshold
+        .sort(compare1(this.stat as any))
         .concat(belowThreshold)
+        .map((e, index) => ({ ...e, index: index + 1 }))
     },
     metaStatMaps() {
       return metaStatMaps
