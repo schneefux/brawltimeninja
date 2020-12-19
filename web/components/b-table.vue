@@ -24,6 +24,17 @@
       </thead>
       <tbody>
         <tr
+          v-if="rows.length == 0"
+          class="w-full"
+        >
+          <td
+            :colspan="(ranked ? 1 : 0) + columns.length"
+            class="text-center"
+          >
+            No data
+          </td>
+        </tr>
+        <tr
           v-for="(r, index) in pageSize == undefined ? rows : rows.slice(page*pageSize, (page+1)*pageSize)"
           :key="index"
         >

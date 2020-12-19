@@ -1,37 +1,28 @@
 <template>
   <page title="Brawl Stars Brawler Tier List">
-    <p>Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.</p>
+    <p>
+      Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.
+
+      <b-button
+        to="/tier-list/history"
+        xs
+        primary
+        prefetch
+      >Open historical data</b-button>
+    </p>
 
     <div class="flex flex-wrap justify-center">
-      <div
+      <best-starpowers-card
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'gadgets'),
           once: true,
         }"
-      >
-        <best-starpowers-card
-          kind="starpowers"
-        ></best-starpowers-card>
+        kind="starpowers"
+      ></best-starpowers-card>
 
-        <best-starpowers-card
-          kind="gadgets"
-        ></best-starpowers-card>
-      </div>
-
-      <map-detail-card
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'widget'),
-          once: true,
-        }"
-        title="State of the Brawl Stars Meta"
-      >
-        <b-button
-          slot="actions"
-          to="/tier-list/history"
-          primary
-          prefetch
-        >Open Time Capsule</b-button>
-      </map-detail-card>
+      <best-starpowers-card
+        kind="gadgets"
+      ></best-starpowers-card>
     </div>
 
     <client-only>

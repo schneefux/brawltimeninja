@@ -8,25 +8,41 @@
         {{ isShowdown ? 'Most successful players' : 'Players with most wins'}}
         in Brawl Stars this season.
       </p>
-      <player-rank-table
+      <b-table
         slot="content"
         :columns="columns"
-        :column-names="columnNames"
         :rows="rows"
-      ></player-rank-table>
+        ranked
+      >
+        <template v-slot:player="{ row }">
+          <router-link :to="`/player/${row.player_tag}`">
+            {{ row.player }}
+          </router-link>
+        </template>
+        <template v-slot:brawler="{ row }">
+          <router-link :to="`/tier-list/brawler/${row.brawlerId}`">
+            <media-img
+              :path="`/brawlers/${row.brawlerId}/avatar`"
+              :alt="row.brawlerName"
+              clazz="h-6 mx-auto"
+            ></media-img>
+          </router-link>
+        </template>
+      </b-table>
     </template>
   </card>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, metaStatMaps } from '~/lib/util'
+import { brawlerId, capitalizeWords, formatMode, metaStatMaps } from '~/lib/util'
+import { Column } from './b-table.vue'
 import { PlayerRankTableRow } from './player-rank-table.vue'
 
 interface Row {
   player_name: string
   player_tag: string
-  player_icon_id: number
+  brawler_name: string
   picks: number
   wins: number
   battle_victory: number
@@ -49,14 +65,15 @@ export default Vue.extend({
     }
   },
   watch: {
-    isShowdown: '$fetch',
+    mode: '$fetch',
+    map: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
     const data = await this.$clicker.query('mode.leaderboard',
       'battle',
       ['player_id'],
-      ['player_name', 'player_icon_id' , ...(this.isShowdown? ['picks', 'battle_rank'] : ['wins', 'battle_victory'])], {
+      ['player_name', 'brawler_name' , ...(this.isShowdown? ['picks', 'battle_rank'] : ['wins', 'battle_victory'])], {
         ...this.$clicker.defaultSlices('battle'),
         trophy_season_end: ['current'],
         ...(this.map != undefined ? {
@@ -67,23 +84,19 @@ export default Vue.extend({
         } : {}),
       }, {
         cache: 60*60,
-        sort: {
-          wins: 'desc',
-        },
+        sort: { wins: 'desc' },
         limit: 5,
       })
 
     this.data = data.data
   },
   computed: {
-    metaStatMaps() {
-      return metaStatMaps
-    },
-    rows(): PlayerRankTableRow[] {
+    rows(): unknown[] {
       return this.data.map(r => ({
-        player_name: r.player_name,
-        player_tag: r.player_tag,
-        player_icon_id: r.player_icon_id,
+        player: r.player_name,
+        player_tag: r.player_tag.slice(1),
+        brawler: capitalizeWords(r.brawler_name.toLowerCase()),
+        brawlerId: brawlerId({ name: r.brawler_name }),
         ...(this.isShowdown ? {
           picks: metaStatMaps.formatters.picks(r.picks),
           rank: metaStatMaps.formatters.rank(r.battle_rank),
@@ -93,13 +106,32 @@ export default Vue.extend({
         }),
       }))
     },
-    columns(): string[] {
-      return this.isShowdown ? ['picks', 'rank'] : ['wins', 'winRate']
-    },
-    columnNames(): string[] {
-      return this.isShowdown ?
-        [metaStatMaps.labelsShort.picks, metaStatMaps.labelsShort.rank]
-        : [metaStatMaps.labelsShort.wins, metaStatMaps.labelsShort.winRate]
+    columns(): Column[] {
+      return this.isShowdown ? [{
+        title: 'Player',
+        key: 'player',
+      }, {
+        title: 'Brawler',
+        key: 'brawler',
+      }, {
+        title: metaStatMaps.labels.picks,
+        key: 'picks',
+      }, {
+        title: metaStatMaps.labels.rank,
+        key: 'rank',
+      }] : [{
+        title: 'Player',
+        key: 'player',
+      }, {
+        title: 'Brawler',
+        key: 'brawler',
+      }, {
+        title: metaStatMaps.labels.wins,
+        key: 'wins',
+      }, {
+        title: metaStatMaps.labels.winRate,
+        key: 'winRate',
+      }]
     },
     title(): string {
       if (this.mode == undefined) {

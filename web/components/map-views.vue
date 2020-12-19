@@ -35,7 +35,7 @@
       </client-only>
     </div>
 
-    <div class="flex flex-wrap">
+    <div class="flex flex-wrap justify-center">
       <map-brawlers-table
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'brawlers'),
