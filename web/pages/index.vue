@@ -123,7 +123,7 @@
         data-ad-format="auto"
         data-full-width-responsive="no"
         class="container flex justify-center"
-        ins-class="w-screen md:w-full -mx-4"
+        ins-class="w-screen md:w-full -mx-4 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6067985913"
       />
@@ -149,7 +149,7 @@
         data-ad-format="auto"
         data-full-width-responsive="no"
         class="container flex justify-center"
-        ins-class="w-screen md:w-full -mx-4"
+        ins-class="w-screen md:w-full -mx-4 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6709232983"
       />
