@@ -113,15 +113,13 @@
       />
     </client-only>
 
-    <page-section
-      :title="'Tier List for all ' + modeName + ' Maps'"
-      tracking-id="stats"
-      tracking-page-id="mode_meta"
-    >
-      <map-meta-table
+    <page-section>
+      <map-views
         :mode="mode"
-      ></map-meta-table>
+        ga-category="mode"
+      ></map-views>
     </page-section>
+
 
     <client-only>
       <adsense

@@ -1,9 +1,8 @@
 <template>
   <event-card
+    v-bind="$attrs"
     :mode="mode"
     :map="map"
-    v-bind="$attrs"
-    sm
     nobackground
   >
     <div

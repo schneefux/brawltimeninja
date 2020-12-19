@@ -50,7 +50,9 @@
       tracking-id="widget"
       tracking-page-id="brawler_meta"
     >
-      <map-meta-table></map-meta-table>
+      <map-views
+        ga-category="brawler"
+      ></map-views>
     </page-section>
 
     <client-only>

@@ -1,7 +1,7 @@
 <template functional>
   <div
     :style="data.staticStyle"
-    :class="['relative', data.class, data.staticClass]"
+    :class="['relative', props.height, data.class, data.staticClass]"
   >
     <router-link
       v-for="(brawler, index) in props.brawlers"
@@ -10,14 +10,14 @@
       class="absolute top-0"
       :style="{
         // 50% - avg. width - position
-        left: `calc(50% - 20px - (${(index - (props.brawlers.length - 1) / 2)  * 1.5}rem))`,
+        left: `calc(50% - 20px - (${(index - (props.brawlers.length - 1) / 2) * 100 / (props.brawlers.length + 1)}%))`,
       }"
     >
       <media-img
         :path="`/brawlers/${props.brawlerId({ name: brawler})}/avatar`"
         :alt="props.capitalizeWords(brawler.toLowerCase())"
         size="160"
-        clazz="h-8"
+        :clazz="props.height"
       ></media-img>
     </router-link>
   </div>
@@ -41,6 +41,10 @@ export default Vue.extend({
     capitalizeWords: {
       type: Function,
       default: capitalizeWords
+    },
+    height: {
+      type: String,
+      default: 'h-8'
     },
   },
 })

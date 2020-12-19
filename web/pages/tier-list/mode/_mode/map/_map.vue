@@ -1,5 +1,7 @@
 <template>
-  <page :title="event.modeName + ': ' + event.map">
+  <page-dashboard
+    :title="title"
+  >
     <p>Use the {{ event.map }} Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
     <p v-if="event.map.startsWith('Competition Winner')">
       A new Competition Winner Map is voted by the community every day.
@@ -23,78 +25,16 @@
     </client-only>
 
     <page-section>
-      <div class="flex flex-wrap justify-center items-center">
-        <map-detail-card
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'widget'),
-            once: true,
-          }"
-          :mode="event.mode"
-          :map="event.map"
-          :id="event.id"
-          :timestamp="event.timestamp"
-        ></map-detail-card>
-
-        <map-leaderboard-card
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'leaderboard'),
-            once: true,
-          }"
-          :mode="event.mode"
-          :map="event.map"
-        ></map-leaderboard-card>
-      </div>
+      <map-views
+        :mode="event.mode"
+        :map="event.map"
+        :id="event.id"
+        :timestamp="event.timestamp"
+        ga-category="map"
+      ></map-views>
     </page-section>
 
-    <div class="flex justify-center">
-      <card
-        v-if="event.mode != 'soloShowdown'"
-        class="mx-auto"
-        md
-      >
-        <div slot="content" class="flex justify-center">
-          <nuxt-link
-            :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
-            v-slot="{ isExactActive }"
-          >
-            <b-button
-              :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`"
-              :selected="isExactActive"
-              md
-              dark
-              class="mx-2"
-              prefetch
-            >Best Brawlers</b-button>
-          </nuxt-link>
-
-          <nuxt-link
-            :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
-            v-slot="{ isExactActive }"
-          >
-            <b-button
-              :to="`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}/teams`"
-              :selected="isExactActive"
-              md
-              dark
-              class="mx-2"
-              prefetch
-            >Best Teams</b-button>
-          </nuxt-link>
-        </div>
-      </card>
-    </div>
-
-    <nuxt-child
-      :event="event"
-    ></nuxt-child>
-
-    <page-section
-      :title="event.modeName + ' Tier List'"
-      tracking-id="maps"
-      tracking-page-id="map_meta"
-    >
-      <p slot="description">Compare the {{ event.map }} Tier List with the overall {{ event.modeName }} Tier List.</p>
-
+    <page-section>
       <map-best-brawlers-card
         :mode="event.mode"
         class="mx-auto"
@@ -113,7 +53,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">
@@ -152,6 +92,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    title(): string {
+      return `${this.event.modeName}: ${this.event.map} Brawl Stars Tier List`
+    },
     camelToKebab() {
       return camelToKebab
     },

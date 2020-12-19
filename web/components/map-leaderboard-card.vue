@@ -1,12 +1,12 @@
 <template>
   <card
-    title="Best Players"
-    :subtitle="subtitle"
+    v-bind="$attrs"
+    :title="title"
   >
     <template v-slot:content>
       <p class="w-64">
         {{ isShowdown ? 'Most successful players' : 'Players with most wins'}}
-        recorded by Brawl Time Ninja this season.
+        in Brawl Stars this season.
       </p>
       <player-rank-table
         slot="content"
@@ -34,6 +34,7 @@ interface Row {
 }
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     mode: {
       type: String,
@@ -100,14 +101,14 @@ export default Vue.extend({
         [metaStatMaps.labelsShort.picks, metaStatMaps.labelsShort.rank]
         : [metaStatMaps.labelsShort.wins, metaStatMaps.labelsShort.winRate]
     },
-    subtitle(): string {
+    title(): string {
       if (this.mode == undefined) {
-        return ''
+        return 'Best Players in Brawl Stars'
       }
       if (this.map == undefined) {
-        return `in ${formatMode(this.mode)}`
+        return `Best Players in ${formatMode(this.mode)}`
       }
-      return `in ${formatMode(this.mode)} - ${this.map}`
+      return `Best Players in ${formatMode(this.mode)} - ${this.map}`
     },
     isShowdown(): boolean {
       return this.mode != undefined && this.mode.toLowerCase().includes('showdown')
