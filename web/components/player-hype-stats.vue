@@ -155,11 +155,12 @@
           </dt>
         </div>
         <card
-          v-if="recentHelpOpen"
-          @click="recentHelpOpen = false"
-          class="absolute z-10"
+          :class="['absolute z-10', {
+            'hidden': !recentHelpOpen,
+          }]"
           dense
           xxs
+          @click="recentHelpOpen = false"
         >
           <p
             slot="content"
@@ -206,11 +207,12 @@
           </dt>
         </div>
         <card
-          v-if="ratingHelpOpen"
-          @click="ratingHelpOpen = false"
-          class="absolute z-20"
+          :class="['absolute z-20', {
+            'hidden': !ratingHelpOpen,
+          }]"
           dense
           xxs
+          @click="ratingHelpOpen = false"
         >
           <p
             slot="content"

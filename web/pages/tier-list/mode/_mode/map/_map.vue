@@ -3,7 +3,7 @@
     :title="title"
   >
     <p>Use the {{ event.map }} Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
-    <p v-if="event.map.startsWith('Competition Winner')">
+    <p v-if="event.map.startsWith('Competition ')">
       A new Competition Winner Map is voted by the community every day.
       <b-button
         to="/tier-list/competition-winners"

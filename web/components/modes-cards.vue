@@ -16,7 +16,7 @@
 
     <div class="mt-2 w-full text-right hidden md:block">
       <b-button
-        v-if="!showAllModes"
+        v-show="!showAllModes"
         md
         primary
         @click="expandModes()"

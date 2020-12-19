@@ -75,7 +75,7 @@
       ></player-lifetime>
 
       <player-percentiles
-        v-if="props.open"
+        v-show="props.open"
         :player="player"
       ></player-percentiles>
     </player-teaser-card>
@@ -109,31 +109,34 @@
         :tease="!props.open"
       ></player-battles-squares>
 
-      <template v-if="props.open">
-        <div class="w-full md:w-auto md:ml-auto mt-2 flex items-center">
-          <span class="text-sm text-grey-lighter">
-            Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
-          </span>
-          <b-button
-            class="ml-auto md:ml-4"
-            sm
-            primary
-            @click="refresh"
-          >
-            Refresh now
-          </b-button>
-        </div>
+      <div
+        v-show="props.open"
+        class="w-full md:w-auto md:ml-auto mt-2 flex items-center"
+      >
+        <span class="text-sm text-grey-lighter">
+          Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
+        </span>
+        <b-button
+          class="ml-auto md:ml-4"
+          sm
+          primary
+          @click="refresh"
+        >
+          Refresh now
+        </b-button>
+      </div>
 
-        <player-battles-stats
-          :battle-totals="battleTotals"
-          :battles="player.battles"
-        ></player-battles-stats>
+      <player-battles-stats
+        v-show="props.open"
+        :battle-totals="battleTotals"
+        :battles="player.battles"
+      ></player-battles-stats>
 
-        <player-battles
-          :player="player"
-          :limit="props.page * 6"
-        ></player-battles>
-      </template>
+      <player-battles
+        v-show="props.open"
+        :player="player"
+        :limit="props.page * 6"
+      ></player-battles>
     </player-teaser-card>
 
     <install-card
@@ -170,7 +173,7 @@
       ></player-mode-winrates>
 
       <div
-        v-if="props.open"
+        v-show="props.open"
         class="mt-2 w-full flex justify-end"
       >
         <player-tips
