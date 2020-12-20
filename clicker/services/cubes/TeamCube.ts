@@ -52,7 +52,7 @@ export class TeamCube extends SynergyMetaCube {
       order: Partial<Record<string, Order>> = {},
       limit?: number): Promise<{ data: any[], totals: any, statistics: Record<string, number> }> {
     // TODO add more features (measures and dimensions)
-    const allowedMeasures = ['picks', 'wins', 'battle_victory']
+    const allowedMeasures = ['picks', 'wins', 'battle_victory', 'timestamp']
     if (dimensions.length != 1 || dimensions[0] != 'brawler_names') {
       throw new Error('Cube must be sliced by brawler_names')
     }
@@ -155,6 +155,7 @@ export class TeamCube extends SynergyMetaCube {
       ...s,
       brawler_names: keyToTeam(id),
       battle_victory: s.wins / s.picks,
+      timestamp: totalTimestamp,
     }))
 
     for (const key in order) {
