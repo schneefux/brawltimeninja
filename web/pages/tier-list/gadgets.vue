@@ -1,5 +1,6 @@
 <template>
   <page-dashboard title="Gadget Tier List">
+    <map-breadcrumbs gadgets></map-breadcrumbs>
     <p>
       Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars. <br />
       The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.

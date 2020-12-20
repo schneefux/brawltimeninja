@@ -46,6 +46,7 @@
       :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
       primary
       prefetch
+      sm
     >
       Open
     </b-button>

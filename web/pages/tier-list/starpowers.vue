@@ -1,5 +1,6 @@
 <template>
   <page-dashboard title="Star Power Tier List">
+    <map-breadcrumbs starpowers></map-breadcrumbs>
     <p>
       Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars. <br />
       The statistics are calculated as the difference between a Brawler with one Star Power and a Brawler with zero Star Powers.

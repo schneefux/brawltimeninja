@@ -31,6 +31,7 @@
       slot="actions"
       :to="dashboardLink"
       secondary
+      sm
     >
       Explore in Dashboard
     </b-button>

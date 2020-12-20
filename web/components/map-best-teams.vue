@@ -65,7 +65,7 @@ export default Vue.extend({
   fetchDelay: 0,
   async fetch() {
     const slices = {
-      ...this.$clicker.defaultSlices('synergy'),
+      ...this.$clicker.defaultSlices('team'),
       ...(this.map != undefined ? {
         battle_event_map: [this.map],
       } : {}),

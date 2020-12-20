@@ -2,6 +2,10 @@
   <page :title="modeName">
     <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
 
+    <map-breadcrumbs
+      :mode="mode"
+    ></map-breadcrumbs>
+
     <div class="flex flex-wrap justify-center">
       <map-detail-card
         v-observe-visibility="{
@@ -83,6 +87,7 @@
               tag="router-link"
               :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
               primary
+              sm
             >
               Open
             </b-button>
@@ -93,7 +98,7 @@
       <div class="mt-2 w-full text-right hidden md:block">
         <b-button
           v-show="!showAllMaps"
-          md
+          sm
           primary
           @click="expandMaps()"
         >

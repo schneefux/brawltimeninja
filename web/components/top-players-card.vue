@@ -42,6 +42,7 @@
       :to="`/leaderboard/${metric}`"
       primary
       prefetch
+      sm
     >
       Open {{ capitalize(metric) }} Leaderboard
     </b-button>

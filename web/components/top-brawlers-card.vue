@@ -43,6 +43,7 @@
       to="/tier-list/brawler"
       primary
       prefetch
+      sm
     >
       Open Brawler Tier List
     </b-button>

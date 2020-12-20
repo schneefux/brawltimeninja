@@ -8,8 +8,9 @@
       :to="`/tier-list/${kind}`"
       primary
       prefetch
+      sm
     >
-      Open {{ kindName.replace(/s$/, '') }} Tier List
+      Open {{ kindNameSingular }} Tier List
     </b-button>
 
     <shimmer
@@ -81,8 +82,14 @@ export default Vue.extend({
     }))
   },
   computed: {
+    kindLong(): string {
+      return this.kind == 'starpowers' ? 'Star Powers' : this.kind
+    },
     kindName(): string {
-      return capitalize(this.kind)
+      return capitalize(this.kindLong)
+    },
+    kindNameSingular(): string {
+      return capitalize(this.kindLong).replace(/s$/, '')
     },
     metaStatMaps() {
       return metaStatMaps

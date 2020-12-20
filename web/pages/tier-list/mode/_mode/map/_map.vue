@@ -13,6 +13,11 @@
       >Compare Competition Winners</b-button>
     </p>
 
+    <map-breadcrumbs
+      :mode="event.mode"
+      :map="event.map"
+    ></map-breadcrumbs>
+
     <client-only>
       <adsense
         ins-class="ad-section"

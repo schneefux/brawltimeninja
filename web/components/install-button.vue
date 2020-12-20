@@ -1,8 +1,8 @@
 <template>
   <b-button
     v-show="isInstallable"
+    class="text-sm px-2 md:py-1"
     secondary
-    xs
     outline
     @click="clickInstall"
   >
