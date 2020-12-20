@@ -2,7 +2,7 @@
   <div class="flex flex-wrap justify-center items-end">
     <lazy-map-best-brawlers-card
       v-for="event in events"
-      :key="event.battle_event_id"
+      :key="event.battle_event_map + '-' + event.battle_event_id"
       :mode="event.battle_event_mode"
       :map="event.battle_event_map"
       :id="event.battle_event_id"
