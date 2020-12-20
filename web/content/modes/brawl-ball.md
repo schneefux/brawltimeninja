@@ -6,7 +6,7 @@ description: Brawl Ball is not just about killing Brawlers.
 mode: brawlBall
 modeDescription: >
   Take the ball to the opposing team's goal to score! The Match ends when one team scores two goals, or at full time.
-  createdAt: 2020-01-06
+createdAt: 2020-01-06
 ---
 
 If you learn a few simple tips and tricks, getting goals and defending them will be much easier.

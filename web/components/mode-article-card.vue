@@ -70,6 +70,7 @@
 
     <b-button
       slot="actions"
+      md
       light
       @click="expand = !expand"
     >{{ !expand ? 'Open Guide' : 'Close Guide' }}</b-button>
