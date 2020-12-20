@@ -53,7 +53,6 @@
             dark
             sm
           >
-            <option value="">with any</option>
             <option
               v-for="b in brawlers"
               :key="b"
@@ -323,7 +322,7 @@ export default Vue.extend({
     },
     ally: {
       get(): string {
-        return (this.value.ally_brawler_name || [])[0] || ''
+        return (this.value.ally_brawler_name || [])[0] || 'SHELLY'
       },
       set(v: string) {
         this.$emit('input', withN1Slice(this.value, 'ally_brawler_name', v))

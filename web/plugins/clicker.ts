@@ -108,6 +108,12 @@ export default (context, inject) => {
         case 'brawler':
           return {
           }
+        case 'synergy':
+          return {
+            trophy_season_end: ['balance'],
+            brawler_trophyrange: ['0', '10'],
+            ally_brawler_name: ['SHELLY'],
+          }
         default:
           return {
             trophy_season_end: ['balance'],
