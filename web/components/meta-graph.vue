@@ -33,15 +33,22 @@ export default Vue.extend({
         return undefined
       }
 
-      const entries = this.entries.sort(compare1(this.stat as any))
-
       return {
         traces: [{
-          x: entries.map(e => e.title),
-          // fix `calculateDiffs` output by unformatting it
-          // TODO: find a better solution
-          y: entries.map(e => Number.parseFloat(e.stats[this.stat].toString()) * (e.stats[this.stat].toString().endsWith('%') ? 0.01 : 1)),
-          text: entries.map(e => e.title),
+          x: this.entries.map(e => e.title),
+          y: this.entries.map(e => {
+            // fix `calculateDiffs` output by unformatting it
+            // TODO: find a better solution
+            const s = e.stats[this.stat]
+            if (typeof s == 'number') {
+              return s
+            }
+            if (s.endsWith('%')) {
+              return Number.parseFloat(s.slice(0, -1)) / 100
+            }
+            return 0
+          }),
+          text: this.entries.map(e => e.title),
           marker: {
             color: '#facc15' // yellow-400
           },

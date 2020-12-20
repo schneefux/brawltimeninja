@@ -113,7 +113,7 @@
         <trophy-slider
           v-if="cube != 'synergy'"
           v-model="trophyRange"
-          :name="powerPlayActive ? 'Points' : undefined"
+          :name="powerPlayActive == 'true' ? 'Points' : undefined"
           class="mr-2 my-1"
         ></trophy-slider>
 

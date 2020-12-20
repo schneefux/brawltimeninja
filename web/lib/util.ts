@@ -120,11 +120,14 @@ export const metaStatMaps = {
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
     winRate: 'Win Rate',
+    winRateDiff: 'Win Rate Diff.',
     winRateAdj: 'Adjusted Win Rate',
     winsZScore: 'Wins z-Score',
     rank1Rate: '#1 Rate',
+    rank1RateDiff: '#1 Rate Diff.',
     level: 'Avg. Level',
     starRate: 'Star Player',
+    starRateDiff: 'Star Player Diff.',
     picks: 'Picks recorded',
     pickRate: 'Pick Rate',
     pickRate_boss: 'Boss Pick Rate',
@@ -147,11 +150,14 @@ export const metaStatMaps = {
     spTrophies: 'with Star Power',
     trophyChange: 'this season',
     winRate: 'Win',
+    winRateDiff: 'WinD',
     winRateAdj: 'Win',
     winsZScore: 'Win-z',
     rank1Rate: 'SD Win',
+    rank1RateDiff: 'SD WinD',
     level: 'Level',
     starRate: 'Star',
+    starRateDiff: 'StarD',
     picks: 'Picks',
     pickRate: 'Picked',
     useRate: 'Used',
@@ -165,24 +171,30 @@ export const metaStatMaps = {
     useRate: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     rank: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     rank1Rate: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+    rank1RateDiff: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
     wins: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
     winRate: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+    winRateDiff: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
     winRateAdj: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    winsZScore: 'The Wins z-score is higher the bigger the impact the Star Power / Gadget has.',
+    winsZScore: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
     starRate: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+    starRateDiff: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
     trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    duration: 'The Duration tells you how long battles with this Brawler last on average.',
+    duration: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
   },
   icons: {
     trophies: 'trophy',
     spTrophies: 'starpower',
     trophyChange: 'trophy',
     winRate: '📈',
+    winRateDiff: '📈',
     winRateAdj: '📈',
     winsZScore: '📈',
     rank1Rate: '📈',
+    rank1RateDiff: '📈',
     level: '🏅',
     starRate: '⭐',
+    starRateDiff: '⭐',
     picks: '👇',
     useRate: '🎯',
     pickRate: '👇',
@@ -198,10 +210,13 @@ export const metaStatMaps = {
     spTrophies: (n: number) => Math.round(n),
     trophyChange: (n: number) => n <= 0 ? Math.round(n) : `+${Math.round(n)}`,
     winRate: (n: number) => `${(100 * n).toFixed(1)}%`,
+    winRateDiff: (n: number) => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
     winRateAdj: (n: number) => `${(100 * n).toFixed(1)}%`,
     winsZScore: (n: number) => n.toFixed(2),
     rank1Rate: (n: number) => `${(100 * n).toFixed(2)}%`,
+    rank1RateDiff: (n: number) => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
     starRate: (n: number) => `${(100 * n).toFixed(1)}%`,
+    starRateDiff: (n: number) => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
     useRate: (n: number) => `${(100 * n).toFixed(2)}%`,
     pickRate: (n: number) => `${(100 * n).toFixed(2)}%`,
     pickRate_boss: (n: number) => `${Math.round(100 * n)}%`,
@@ -219,10 +234,13 @@ export const metaStatMaps = {
     spTrophies: '',
     trophyChange: '+',
     winRate: '.1%',
+    winRateDiff: '+.2%',
     winRateAdj: '.1%',
     winsZScore: '2f',
     rank1Rate: '.2%',
+    rank1RateDiff: '+.2%',
     starRate: '.1%',
+    starRateDiff: '+.2%',
     useRate: '.2%',
     pickRate: '.2%',
     pickRate_boss: '.2%',
@@ -239,10 +257,13 @@ export const metaStatMaps = {
     spTrophies: -1,
     trophyChange: -1,
     winRate: -1,
+    winRateDiff: -1,
     winRateAdj: -1,
     winsZScore: -1,
     rank1Rate: -1,
+    rank1RateDiff: -1,
     starRate: -1,
+    starRateDiff: -1,
     useRate: -1,
     pickRate: -1,
     pickRate_boss: -1,
@@ -475,25 +496,30 @@ export const parseApiTime = (time: string) => {
 
 export const measurementMap = {
   winRate: 'battle_victory',
+  winRateDiff: 'battle_victory',
   winRateAdj: 'battle_victory_adj',
   wins: 'wins',
-  winsZScore: 'wins_zscore',
   useRate: 'picks_weighted',
   pickRate: 'picks',
   starRate: 'battle_starplayer',
+  starRateDiff: 'battle_starplayer',
   rank1Rate: 'battle_rank1',
+  rank1RateDiff: 'battle_rank1',
   duration: 'battle_duration',
 }
 
 export const measurementOfTotal = {
   winRate: false,
+  winRateDiff: false,
   winRateAdj: false,
   wins: false,
   winsZScore: false,
   useRate: true,
   pickRate: true,
   starRate: false,
+  starRateDiff: false,
   rank1Rate: false,
+  rank1RateDiff: false,
   duration: false,
 }
 
@@ -523,58 +549,54 @@ interface DiffRow {
 
 // calculate diff stats between brawlers with & without starpower/gadget
 export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessoryNameKey: 'brawler_starpower_name'|'brawler_gadget_name', accessoryIdKey: 'brawler_starpower_id'|'brawler_gadget_id', includeZScore: boolean) {
-  const statsToDiffs = (accessory: DiffRow) => {
-    const brawlerWithout = rows
-      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
-    const perc = (v: number) => Math.round(v * 100 * 100) / 100
-    const signed = (v: number) => v > 0 ? `+${v}%` : `${v}%`
-    const format = (v: number) => signed(perc(v))
-
-    if (brawlerWithout == undefined) {
-      return {
-        ...(includeZScore ? { winsZScore: undefined } : {}),
-        winRate: accessory.battle_victory,
-        starRate: accessory.battle_starplayer,
-        rank1Rate: accessory.battle_rank1,
-      }
-    }
-
-    // calculate z-score, testing with star power wins against without star power wins
-    const zX = accessory.battle_victory * accessory.picks
-    const zN = accessory.picks
-    const zP = brawlerWithout.battle_victory
-    const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
-    const z = zCondition ? (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP)) : undefined
-
-    return {
-      ...(includeZScore ? { winsZScore: z } : {}),
-      winRate: format(accessory.battle_victory - brawlerWithout.battle_victory),
-      starRate: format(accessory.battle_starplayer - brawlerWithout.battle_starplayer),
-      rank1Rate: format(accessory.battle_rank1 - brawlerWithout.battle_rank1),
-    }
-  }
-  const sampleSize = (accessory: DiffRow) => {
-    const brawlerWithout = rows
-      .find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
-    if (brawlerWithout == undefined) {
-      return 0
-    }
-    return Math.min(accessory.picks, brawlerWithout.picks)
-  }
-
   return rows
+    // map over gadgets/star powers
     .filter(s => s[accessoryNameKey] !== '')
     // in case of duplicate IDs, use the first (most picks)
     .filter((e1, index, all) => all.findIndex(e2 => e1[accessoryIdKey] == e2[accessoryIdKey]) == index)
-    .map((accessory) => (<MetaGridEntry>{
-      id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
-      title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
-      brawler: accessory.brawler_name,
-      sampleSize: sampleSize(accessory),
-      stats: statsToDiffs(accessory),
-      icon: `/${accessoryType}/${accessory[accessoryIdKey]}`,
-      link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
-    }))
+    .map((accessory) => {
+      const brawlerWithout = rows.find(b => b[accessoryNameKey] == '' && b.brawler_id == accessory.brawler_id)
+
+      if (brawlerWithout == undefined) {
+        return undefined
+      }
+
+      // calculate z-score, testing with star power wins against without star power wins
+      const zX = accessory.battle_victory * accessory.picks
+      const zN = accessory.picks
+      const zP = brawlerWithout.battle_victory
+      const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
+      if (includeZScore && !zCondition) {
+        return undefined
+      }
+
+      const z = (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP))
+
+      const sampleSize = Math.min(accessory.picks, brawlerWithout.picks)
+      const stats = {
+        ...(includeZScore ? { winsZScore: z } : {}),
+        ...(accessory.battle_victory != undefined ? {
+          winRateDiff: accessory.battle_victory - brawlerWithout.battle_victory,
+        } : {}),
+        ...(accessory.battle_starplayer != undefined ? {
+          starRateDiff: accessory.battle_starplayer - brawlerWithout.battle_starplayer,
+        } : {}),
+        ...(accessory.battle_rank1 != undefined ? {
+          rank1RateDiff: accessory.battle_rank1 - brawlerWithout.battle_rank1,
+        } : {}),
+      }
+
+      return <MetaGridEntry>{
+        id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
+        title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
+        brawler: accessory.brawler_name,
+        sampleSize,
+        stats,
+        icon: `/${accessoryType}/${accessory[accessoryIdKey]}`,
+        link: `/tier-list/brawler/${brawlerId({ name: accessory.brawler_name })}`,
+      }
+    })
+    .filter(e => e != undefined) as MetaGridEntry[]
 }
 
 export function encodeQuery(data: { [key: string]: number|string }) {

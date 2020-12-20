@@ -7,7 +7,7 @@
       slot="content"
       class="overflow-x-auto flex flex-col h-full"
     >
-      <p class="text-base md:text-lg">Brawl Stars Tier List for {{ description }}. Open the dashboard for details and options.</p>
+      <p class="text-base md:text-lg">Brawl Stars Tier List for {{ description }}.</p>
       <b-table
         :columns="columns"
         :rows="rows"
@@ -47,7 +47,7 @@
       :to="dashboardLink"
       secondary
     >
-      Open in Dashboard
+      Explore in Dashboard
     </b-button>
   </card>
 </template>

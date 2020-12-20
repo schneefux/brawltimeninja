@@ -5,7 +5,7 @@
       class="flex flex-wrap justify-center"
     >
       <brawler-card
-        v-for="entry in sortedEntries.slice(page*pageSize, (page+1)*pageSize)"
+        v-for="(entry, index) in entries.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
         :title="entry.title"
         :brawler="entry.brawler"
@@ -18,7 +18,7 @@
         <span
           slot="preview"
           class="text-right font-semibold text-xl"
-        >#{{ entry.index }}</span>
+        >#{{ index + page*pageSize + 1 }}</span>
         <template v-slot:stats>
           <table v-if="entry.sampleSize >= sampleSizeThreshold">
             <tbody>
@@ -84,7 +84,7 @@
         @click="page--"
       >Previous Page</b-button>
       <b-button
-        v-if="(page+1)*pageSize < sortedEntries.length"
+        v-if="(page+1)*pageSize < entries.length"
         class="ml-1 w-32"
         primary
         @click="page++"
@@ -131,14 +131,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    sortedEntries(): IndexedMetaGridEntry[] {
-      return this.entries
-        .map((entry, index) => ({
-          ...entry,
-          index: index + 1,
-        }))
-        .sort(compare1(this.stat as any))
-    },
     brawlerId() {
       return brawlerId
     },

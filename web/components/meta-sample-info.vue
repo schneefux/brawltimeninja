@@ -96,7 +96,7 @@
     </card>
 
     <card
-      v-if="sample > 0"
+      v-if="['map'].includes(cube) && sample > 0"
       title="Balance Rating"
       class="w-1/2"
       full-height
@@ -136,6 +136,10 @@ import { formatSI, MetaGridEntry, metaStatMaps } from '~/lib/util'
 
 export default Vue.extend({
   props: {
+    cube: {
+      type: String,
+      required: true
+    },
     data: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true

@@ -15,7 +15,8 @@
 
     <div class="w-full flex flex-wrap">
       <meta-sample-info
-        :data="entries"
+        :cube="cube"
+        :data="sortedEntries"
         :sample="sample"
         :timestamp="timestamp"
         :measurement="measurement"
@@ -24,7 +25,7 @@
 
       <meta-graph
         title="Graph View"
-        :entries="entries"
+        :entries="sortedEntries"
         :stat="measurement"
         class="flex-1 h-64 md:h-full"
         full-height
@@ -34,7 +35,7 @@
     <div class="w-full flex flex-wrap justify-center">
       <meta-table
         title="Table View"
-        :entries="entries"
+        :entries="sortedEntries"
         :stat="measurement"
         sm
         full-height
@@ -63,7 +64,7 @@
 
         <meta-tier-list
           v-if="view == 'tierlist'"
-          :entries="entries"
+          :entries="sortedEntries"
           :stat="measurement"
           :description="description"
           full-height
@@ -73,7 +74,7 @@
         <meta-grid
           v-if="view == 'legacy'"
           :measurements="measurements"
-          :entries="entries"
+          :entries="sortedEntries"
           :stat="measurement"
           full-height
           class="h-full"
@@ -98,7 +99,7 @@
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { calculateDiffs, measurementMap, MetaGridEntry } from '~/lib/util'
+import { calculateDiffs, compare1, measurementMap, MetaGridEntry } from '~/lib/util'
 
 function defaultMeasurement(cube: string) {
   if (['map', 'synergy'].includes(cube)) {
@@ -203,12 +204,12 @@ export default Vue.extend({
         this.timestamp = data.totals.timestamp
       }
 
-      if (cube == 'starpower') {
-        const calculateZScore = measurements.includes('winsZScore')
-        const fetchingMeasurements = measurements
-          .map(m => m == 'winsZScore' ? 'winRate' : m)
-          .map(m => measurementMap[m])
+      const calculateZScore = measurements.includes('winsZScore')
+      const fetchingMeasurements = measurements
+        .map(m => m == 'winsZScore' ? 'winRate' : m)
+        .map(m => measurementMap[m])
 
+      if (cube == 'starpower') {
         const data = await this.$clicker.query('meta.starpower', 'starpower',
           ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
           [...fetchingMeasurements, 'picks', 'timestamp'],
@@ -221,11 +222,6 @@ export default Vue.extend({
       }
 
       if (cube == 'gadget') {
-        const calculateZScore = measurements.includes('winsZScore')
-        const fetchingMeasurements = measurements
-          .map(m => m == 'winsZScore' ? 'winRate' : m)
-          .map(m => measurementMap[m])
-
         const data = await this.$clicker.query('meta.gadget', 'gadget',
           ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
           [...fetchingMeasurements, 'picks', 'timestamp'],
@@ -259,6 +255,12 @@ export default Vue.extend({
     }
   },
   computed: {
+    sortedEntries(): MetaGridEntry[] {
+      return this.entries
+        .slice()
+        .filter(e => e.stats[this.measurement] != undefined)
+        .sort(compare1(this.measurement as any))
+    },
     description(): string {
       return this.$clicker.describeSlices(this.slices, this.timestamp)
     },
@@ -284,7 +286,7 @@ export default Vue.extend({
         return measurements
       }
       if (['starpower', 'gadget'].includes(this.cube)) {
-        return ['winsZScore', 'winRate', 'starRate', 'rank1Rate']
+        return ['winsZScore', 'winRateDiff', 'starRateDiff', 'rank1RateDiff']
       }
       return []
     },
