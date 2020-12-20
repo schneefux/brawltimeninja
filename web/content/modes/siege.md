@@ -5,13 +5,12 @@ author: EA-22
 description: Learn about the different stages of Siege.
 attribution: ProvidencE Coaching
 attributionLink: https://discord.gg/qjTyDvuzUb
+createdAt: 2020-12-16
 modeDescription: >
   Siege and destroy the enemy's IKE assembly turret! Your team also has an IKE: feed it bolts, and it will assemble a powerful Siege Robot to fight for you. Bolts appear randomly around the middle of the map. Grab a bolt and hold it for a few seconds to feed it to your IKE.
 
   There are up to three Sieges during each match. The team that has more bolts at the start of each Siege builds a Siege Robot. The more bolts, the stronger the robot.
   Watch out, IKEs have powerful ballistic defenses - don't get too close to the enemy base without a Siege Robot to help you!
-mode: siege
-createdAt: 2020-12-16
 ---
 
 ## Overview
