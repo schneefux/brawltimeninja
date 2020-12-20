@@ -18,6 +18,10 @@ import { metaStatMaps, MetaGridEntry, compare1 } from '../lib/util'
 export default Vue.extend({
   inheritAttrs: false,
   props: {
+    cube: {
+      type: String,
+      required: true
+    },
     stat: {
       type: String,
       required: true
@@ -32,6 +36,11 @@ export default Vue.extend({
       if (this.entries.length == 0 || !(this.stat in this.entries[0].stats)) {
         return undefined
       }
+
+      const title = ['map', 'synergy'].includes(this.cube) ? 'Brawler' :
+        this.cube == 'starpower' ? 'Star Power' :
+        this.cube == 'gadget' ? 'Gadget' :
+        this.cube == 'team' ? 'Team' : ''
 
       return {
         traces: [{
@@ -59,7 +68,7 @@ export default Vue.extend({
           showlegend: false,
           xaxis: {
             title: {
-              text: 'Brawler',
+              text: title,
               standoff: 10,
             },
             fixedrange: true,

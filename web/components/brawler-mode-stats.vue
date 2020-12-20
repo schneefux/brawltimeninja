@@ -94,7 +94,6 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    console.log('fetching')
     // TODO use brawler ID
 
     const modeData = await this.$clicker.query<ModeRow>('meta.mode.brawler-mode-stats-widget', 'map',

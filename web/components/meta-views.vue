@@ -24,9 +24,10 @@
       ></meta-sample-info>
 
       <meta-graph
-        title="Graph View"
+        :cube="cube"
         :entries="sortedEntries"
         :stat="measurement"
+        title="Graph View"
         class="flex-1 h-64 md:h-full"
         full-height
       ></meta-graph>
@@ -231,30 +232,25 @@ export default Vue.extend({
 
       const measurements = (view == 'legacy' ? measurementsForCube(cube) : [measurement])
 
-      if (['map', 'synergy'].includes(cube)) {
+      const dimensions = cube == 'map' ? ['brawler_name'] :
+        cube == 'synergy' ? ['brawler_name', 'ally_brawler_name'] : []
+        cube == 'team' ? ['brawler_names'] : []
+
+      if (dimensions.length > 0) {
         const data = await this.$clicker.query('meta.' + cube, cube,
-          ['brawler_name'],
+          dimensions,
           [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
           slices,
-          { sort: { picks: 'desc' }, cache: 60*30 })
+          {
+            sort: { picks: 'desc' },
+            cache: 60*30,
+            limit: 500,
+          })
 
         this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
 
         this.sample = data.totals.picks
         this.timestamp = data.totals.timestamp
-      }
-
-      if (['team'].includes(cube)) {
-        const data = await this.$clicker.query('meta.' + cube, cube,
-          ['brawler_names'],
-          [...measurements.map(m => measurementMap[m]), 'picks'],
-          slices,
-          { sort: { picks: 'desc' }, cache: 60*30 })
-
-        this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
-
-        this.sample = data.totals.picks
-        this.timestamp = undefined
       }
 
       if (['starpower', 'gadget'].includes(cube)) {

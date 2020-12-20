@@ -66,7 +66,8 @@ interface Clicker {
   routeToSlices(route: Route, defaults?: Slices): Slices
   slicesToLocation(slices: Slices, defaults?: Slices): Location
   // backwards compat
-  mapToMetaGridEntry<R extends { brawler_name?: string, brawler_names?: string[], picks: number }>(measurements: (keyof typeof measurementMap)[], rows: R[], totals: R): MetaGridEntry[]
+  mapToMetaGridEntry<R extends { brawler_name?: string, brawler_names?: string[], ally_brawler_name?: string, picks: number }>(
+    measurements: (keyof typeof measurementMap)[], rows: R[], totals: R): MetaGridEntry[]
 }
 
 declare module 'vue/types/vue' {
@@ -343,7 +344,7 @@ export default (context, inject) => {
     },
     mapToMetaGridEntry(measurements, rows, totals) {
       return rows.map(row => ({
-        id: row.brawler_names?.join('+') || row.brawler_name!,
+        id: (row.brawler_names?.join('+') || row.brawler_name!) + (row.ally_brawler_name != undefined ? '+' + row.ally_brawler_name : '' ),
         brawlers: row.brawler_names || [row.brawler_name!],
         title: capitalizeWords((row.brawler_names?.join(', ') || row.brawler_name!).toLowerCase()),
         stats: measurements.reduce((stats, m) => ({
@@ -353,6 +354,9 @@ export default (context, inject) => {
         sampleSize: row.picks,
         ...(row.brawler_names == undefined ? {
           link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name! })}`,
+        } : {}),
+        ...(row.ally_brawler_name != undefined ? {
+          icon: `/brawlers/${brawlerId({ name: row.ally_brawler_name })}/avatar`
         } : {}),
       }))
     },
