@@ -26,15 +26,25 @@
             {{ entry.sampleSize < sampleSizeThreshold ? '?' : entry.index }}
           </th>
           <td class="pr-2">
-            <router-link
+            <component
+              :is="entry.link == undefined ? 'div' : 'router-link'"
               :to="entry.link || ''"
               :title="entry.title"
               class="flex items-center"
             >
-              <div class="mr-2 w-10 sm:w-12 md:w-14 bg-gray-900 rounded-sm relative">
+              <brawler-team
+                v-if="entry.brawlers.length > 1"
+                :brawlers="entry.brawlers"
+                class="flex-shrink-0 md:mr-2 w-16 sm:w-20 md:w-24"
+                height="h-6 sm:h-8 md:h-10"
+              ></brawler-team>
+              <div
+                v-else
+                class="mr-2 w-10 sm:w-12 md:w-14 bg-gray-900 rounded-sm relative"
+              >
                 <media-img
-                  :path="`/brawlers/${brawlerId({ name: entry.brawler })}/avatar`"
-                  :alt="entry.brawler"
+                  :path="`/brawlers/${brawlerId({ name: entry.brawlers[0] })}/avatar`"
+                  :alt="entry.brawlers[0]"
                   size="160"
                   clazz="h-8 md:h-10"
                 />
@@ -47,7 +57,7 @@
                 />
               </div>
               <span class="font-semibold">{{ entry.title }}</span>
-            </router-link>
+            </component>
           </td>
           <td class="text-center font-semibold">
             {{ typeof entry.stats[stat] == 'string' ? entry.stats[stat] : metaStatMaps.formatters[stat](entry.stats[stat]) }}

@@ -27,7 +27,6 @@
       </b-table>
     </div>
 
-<!--
     <b-button
       slot="actions"
       :to="dashboardLink"
@@ -35,7 +34,6 @@
     >
       Explore in Dashboard
     </b-button>
--->
   </card>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <brawler-card
     :title="title"
-    :brawler="brawler.name"
+    :brawlers="[brawler.name]"
     :brawler-id="brawlerId"
     elevation="2"
   >

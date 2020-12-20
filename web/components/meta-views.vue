@@ -5,7 +5,7 @@
       :measurement="measurement"
       :measurements="measurements"
       :cube="cube"
-      :cubes="['map', 'starpower', 'gadget', 'synergy']"
+      :cubes="['map', 'starpower', 'gadget', 'synergy', 'team']"
       :loading="loading"
       class="w-full sticky z-10 top-12 lg:top-0!"
       @input="s => setSlices(s)"
@@ -42,22 +42,25 @@
       ></meta-table>
 
       <div class="flex-1 flex flex-col">
-        <card class="-mb-3">
+        <card
+          v-if="views.length > 1"
+          class="-mb-3"
+        >
           <div
             slot="content"
             class="w-full flex flex-wrap"
           >
             <span class="text-gray-200 mr-3 font-normal self-center">View</span>
             <b-button
-              v-for="(name, key) in views"
-              :key="key"
-              :selected="view == key"
+              v-for="v in views"
+              :key="v.key"
+              :selected="view == v.key"
               class="mr-2 mb-1"
               sm
               dark
-              @click="setView(key)"
+              @click="setView(v.key)"
             >
-              {{ name }}
+              {{ v.title }}
             </b-button>
           </div>
         </card>
@@ -99,7 +102,7 @@
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { calculateDiffs, compare1, measurementMap, MetaGridEntry } from '~/lib/util'
+import { calculateDiffs, capitalizeWords, compare1, measurementMap, measurementOfTotal, MetaGridEntry } from '~/lib/util'
 
 function defaultMeasurement(cube: string) {
   if (['map', 'synergy'].includes(cube)) {
@@ -108,7 +111,17 @@ function defaultMeasurement(cube: string) {
   if (['starpower', 'gadget'].includes(cube)) {
     return 'winsZScore'
   }
+  if (['team'].includes(cube)) {
+    return 'wins'
+  }
   return 'winRate'
+}
+
+function defaultView(cube: string) {
+  if (['team'].includes(cube)) {
+    return 'legacy'
+  }
+  return 'tierlist'
 }
 
 export default Vue.extend({
@@ -134,13 +147,9 @@ export default Vue.extend({
       },
       measurement: this.defaultMeasurement || defaultMeasurement(this.defaultCube),
       entries: [] as MetaGridEntry[],
-      views: {
-        tierlist: 'Tier List',
-        legacy: 'Details',
-      },
-      view: 'tierlist',
+      view: defaultView(this.defaultCube),
       sample: 0,
-      timestamp: '1970-01-01',
+      timestamp: '1970-01-01' as string|undefined,
       loading: false,
     }
   },
@@ -156,6 +165,7 @@ export default Vue.extend({
       await this.update({ measurement: m })
     },
     async setCube(c: string) {
+      this.view = defaultView(c)
       // reset all selectors
       await this.update({
         cube: c,
@@ -174,7 +184,7 @@ export default Vue.extend({
 
       // TODO fetch first!
       const csv = 'title,brawler,sampleSize,' + this.measurements.join(',') + '\n'
-        + this.entries.map(entry => entry.title + ',' + entry.brawler + ',' + entry.sampleSize + ',' + this.measurements.map(stat => entry.stats[stat]).join(',')).join('\n')
+        + this.entries.map(entry => entry.title + ',' + entry.brawlers.join('+') + ',' + entry.sampleSize + ',' + this.measurements.map(stat => entry.stats[stat]).join(',')).join('\n')
       const downloader = document.createElement('a')
       downloader.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
       downloader.target = '_blank'
@@ -191,8 +201,8 @@ export default Vue.extend({
 
       const measurements = (view == 'legacy' ? this.measurements : [measurement])
 
-      if (cube == 'map') {
-        const data = await this.$clicker.query('meta.map', 'map',
+      if (['map', 'synergy'].includes(cube)) {
+        const data = await this.$clicker.query('meta.' + cube, cube,
           ['brawler_name'],
           [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
           slices,
@@ -204,43 +214,32 @@ export default Vue.extend({
         this.timestamp = data.totals.timestamp
       }
 
-      const calculateZScore = measurements.includes('winsZScore')
-      const fetchingMeasurements = measurements
-        .map(m => m == 'winsZScore' ? 'winRate' : m)
-        .map(m => measurementMap[m])
-
-      if (cube == 'starpower') {
-        const data = await this.$clicker.query('meta.starpower', 'starpower',
-          ['brawler_id', 'brawler_name', 'brawler_starpower_id', 'brawler_starpower_name'],
-          [...fetchingMeasurements, 'picks', 'timestamp'],
-          slices,
-          { sort: { picks: 'desc' }, cache: 60*60 })
-        this.entries = calculateDiffs(data.data, 'starpowers', 'brawler_starpower_name', 'brawler_starpower_id', calculateZScore)
-
-        this.sample = data.totals.picks
-        this.timestamp = data.totals.timestamp
-      }
-
-      if (cube == 'gadget') {
-        const data = await this.$clicker.query('meta.gadget', 'gadget',
-          ['brawler_id', 'brawler_name', 'brawler_gadget_id', 'brawler_gadget_name'],
-          [...fetchingMeasurements, 'picks', 'timestamp'],
-          slices,
-          { sort: { picks: 'desc' }, cache: 60*60 })
-        this.entries = calculateDiffs(data.data, 'gadgets', 'brawler_gadget_name', 'brawler_gadget_id', calculateZScore)
-
-        this.sample = data.totals.picks
-        this.timestamp = data.totals.timestamp
-      }
-
-      if (cube == 'synergy') {
-        const data = await this.$clicker.query('meta.synergy', 'synergy',
-          ['brawler_name'],
-          [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
+      if (['team'].includes(cube)) {
+        const data = await this.$clicker.query('meta.' + cube, cube,
+          ['brawler_names'],
+          [...measurements.map(m => measurementMap[m]), 'picks'],
           slices,
           { sort: { picks: 'desc' }, cache: 60*30 })
 
         this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
+
+        this.sample = data.totals.picks
+        this.timestamp = undefined
+      }
+
+      if (['starpower', 'gadget'].includes(cube)) {
+        const calculateZScore = measurements.includes('winsZScore')
+        const fetchingMeasurements = measurements
+          .map(m => m == 'winsZScore' ? 'winRate' : m)
+          .map(m => measurementMap[m])
+        const accessoryRows = cube == 'starpower' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
+
+        const data = await this.$clicker.query('meta.' + cube, cube,
+          ['brawler_id', 'brawler_name', ...accessoryRows],
+          [...fetchingMeasurements, 'picks', 'timestamp'],
+          slices,
+          { sort: { picks: 'desc' }, cache: 60*60 })
+        this.entries = calculateDiffs(data.data, cube + 's', accessoryRows[1] as any, accessoryRows[0] as any, calculateZScore)
 
         this.sample = data.totals.picks
         this.timestamp = data.totals.timestamp
@@ -255,6 +254,21 @@ export default Vue.extend({
     }
   },
   computed: {
+    views() {
+      if (this.cube == 'team') {
+        return [{
+          key: 'legacy',
+          title: 'Details',
+        }]
+      }
+      return [{
+        key: 'tierlist',
+        title: 'Tier List',
+      }, {
+        key: 'legacy',
+        title: 'Details',
+      }]
+    },
     sortedEntries(): MetaGridEntry[] {
       return this.entries
         .slice()
@@ -287,6 +301,9 @@ export default Vue.extend({
       }
       if (['starpower', 'gadget'].includes(this.cube)) {
         return ['winsZScore', 'winRateDiff', 'starRateDiff', 'rank1RateDiff']
+      }
+      if (['team'].includes(this.cube)) {
+        return ['wins', 'winRate']
       }
       return []
     },

@@ -23,8 +23,8 @@
             >
               <li class="mt-1 mr-2 w-16 md:w-20 bg-gray-900 rounded-sm relative">
                 <media-img
-                  :path="`/brawlers/${brawlerId({ name: entry.brawler })}/avatar`"
-                  :alt="entry.brawler"
+                  :path="`/brawlers/${brawlerId({ name: entry.brawlers[0] })}/avatar`"
+                  :alt="entry.brawlers[0]"
                   size="160"
                   clazz="h-12 md:h-16"
                 />

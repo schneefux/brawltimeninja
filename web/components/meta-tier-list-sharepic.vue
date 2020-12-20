@@ -20,8 +20,8 @@
             >
               <div class="my-px w-12 relative">
                 <media-img
-                  :path="`/brawlers/${brawlerId({ name: entry.brawler })}/avatar`"
-                  :alt="entry.brawler"
+                  :path="`/brawlers/${brawlerId({ name: entry.brawlers[0] })}/avatar`"
+                  :alt="entry.brawlers[0]"
                   size="160"
                   clazz="h-8"
                 />

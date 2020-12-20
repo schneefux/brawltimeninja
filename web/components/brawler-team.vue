@@ -5,7 +5,7 @@
   >
     <router-link
       v-for="(brawler, index) in props.brawlers"
-      :key="brawler"
+      :key="brawler + '-' + index"
       :to="`/tier-list/brawler/${props.brawlerId({ name: brawler })}`"
       class="absolute top-0"
       :style="{

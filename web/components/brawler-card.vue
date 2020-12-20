@@ -1,7 +1,7 @@
 <template functional>
   <card
     :title="props.title"
-    :title-link="`/tier-list/brawler/${props.brawlerId}`"
+    :title-link="props.brawlerId != undefined ? `/tier-list/brawler/${props.brawlerId}` : undefined"
     sm
     v-bind="data.attrs"
     :style="data.staticStyle"
@@ -12,9 +12,18 @@
     </template>
     <template v-slot:content>
       <div class="relative">
+        <div
+          v-if="props.brawlers.length > 1"
+          class="z-0 absolute bottom-0 w-24"
+        >
+          <brawler-team
+            :brawlers="props.brawlers"
+          ></brawler-team>
+        </div>
         <media-img
+          v-if="props.brawlerId != undefined"
           :path="'/brawlers/' + props.brawlerId + '/avatar'"
-          :alt="props.brawler"
+          :alt="props.brawlers[0]"
           size="160"
           clazz="z-0 absolute bottom-0 h-20"
         ></media-img>
@@ -37,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   functional: true,
@@ -46,13 +55,12 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    brawler: {
-      type: String,
+    brawlers: {
+      type: Array as PropType<string[]>,
       required: true,
     },
     brawlerId: {
       type: String,
-      required: true,
     },
     icon: {
       type: String,

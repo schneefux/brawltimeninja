@@ -45,7 +45,7 @@
         </div>
 
         <div
-          v-if="cube == 'synergy'"
+          v-if="['synergy'].includes(cube)"
           class="mr-2 my-1"
         >
           <b-select
@@ -111,7 +111,7 @@
         </div>
 
         <trophy-slider
-          v-if="cube != 'synergy'"
+          v-if="['map', 'starpower', 'gadget'].includes(cube)"
           v-model="trophyRange"
           :name="powerPlayActive == 'true' ? 'Points' : undefined"
           class="mr-2 my-1"
@@ -119,7 +119,7 @@
 
         <!-- TODO add icons and previews to selects -->
         <div
-          v-if="['map', 'synergy'].includes(cube)"
+          v-if="['map', 'synergy', 'team'].includes(cube)"
           class="mr-2 my-1"
         >
           <b-select
@@ -137,7 +137,7 @@
         </div>
 
         <div
-          v-if="['map', 'synergy'].includes(cube)"
+          v-if="['map', 'synergy', 'team'].includes(cube)"
           class="mr-2 my-1"
         >
           <b-select
@@ -148,7 +148,7 @@
             <option value="">All Maps</option>
             <option
               v-for="map in maps"
-              :key="map.battle_event_map"
+              :key="map.battle_event_map + '-' + map.battle_event_id"
               :value="map.battle_event_map"
             >{{ map.battle_event_map }}</option>
           </b-select>
@@ -223,6 +223,7 @@ export default Vue.extend({
         'gadget': 'Gadgets',
         'starpower': 'Star Powers',
         'synergy': 'Synergies',
+        'team': 'Teams',
       },
       showFilters: false,
     }
@@ -233,7 +234,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    if (this.cube == 'map') {
+    if (['map', 'synergy', 'team'].includes(this.cube)) {
       this.allModes = await this.$clicker.queryAllModes()
       const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
       this.allMaps = maps.sort((m1, m2) => m1.battle_event_map.localeCompare(m2.battle_event_map))

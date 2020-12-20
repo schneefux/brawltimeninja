@@ -142,8 +142,8 @@ export default Vue.extend({
           winRateAdj: metaStatMaps.formatters.winRateAdj(e.stats.winRateAdj as number),
           useRate: metaStatMaps.formatters.useRate(e.stats.useRate as number),
           link: e.link || '',
-          brawlerId: brawlerId({ name: e.brawler }),
-          brawler: e.brawler,
+          brawlerId: brawlerId({ name: e.brawlers[0] }),
+          brawler: e.brawlers[0],
           title: e.title,
           icon: e.icon,
         }))

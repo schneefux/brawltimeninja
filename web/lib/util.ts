@@ -351,7 +351,7 @@ export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: M
 export interface MetaGridEntry {
   id: string
   title: string
-  brawler: string // ID
+  brawlers: string[] // ID
   link?: string
   icon?: string
   sampleSize: number
@@ -589,7 +589,7 @@ export function calculateDiffs(rows: DiffRow[], accessoryType: string, accessory
       return <MetaGridEntry>{
         id: `${accessory.brawler_id}-${accessory[accessoryNameKey]}`,
         title: capitalizeWords((accessory[accessoryNameKey] || '').toLowerCase()),
-        brawler: accessory.brawler_name,
+        brawlers: [accessory.brawler_name],
         sampleSize,
         stats,
         icon: `/${accessoryType}/${accessory[accessoryIdKey]}`,

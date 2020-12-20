@@ -8,8 +8,8 @@
         v-for="(entry, index) in entries.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
         :title="entry.title"
-        :brawler="entry.brawler"
-        :brawler-id="brawlerId({ name: entry.brawler })"
+        :brawlers="entry.brawlers"
+        :brawler-id="entry.brawlers.length == 1 ? brawlerId({ name: entry.brawlers[0] }) : undefined"
         :icon="entry.icon"
         elevation="2"
         itemscope
@@ -96,6 +96,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { metaStatMaps, MetaGridEntry, compare1, brawlerId } from '../lib/util'
+import BrawlerTeam from '~/components/brawler-team.vue'
 
 interface IndexedMetaGridEntry extends MetaGridEntry {
   index: number
@@ -103,6 +104,9 @@ interface IndexedMetaGridEntry extends MetaGridEntry {
 
 export default Vue.extend({
   inheritAttrs: false,
+  components: {
+    BrawlerTeam,
+  },
   props: {
     measurements: {
       type: Array as PropType<string[]>,

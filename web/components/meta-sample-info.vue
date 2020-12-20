@@ -45,7 +45,7 @@
     </card>
 
     <card
-      v-if="sample > 0"
+      v-if="sample > 0 && timestamp != undefined"
       title="Last Update"
       class="w-1/2"
       full-height
@@ -150,7 +150,6 @@ export default Vue.extend({
     },
     timestamp: {
       type: String,
-      required: true
     },
     measurement: {
       type: String,
