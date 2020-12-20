@@ -35,6 +35,7 @@
             itemprop="url"
             primary
             prefetch
+            md
           >
             Read
           </b-button>
@@ -96,6 +97,7 @@
               itemprop="url"
               primary
               prefetch
+              md
             >
               Read
             </b-button>
