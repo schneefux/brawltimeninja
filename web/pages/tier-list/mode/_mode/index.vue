@@ -13,7 +13,6 @@
           once: true,
         }"
         :mode="mode"
-        :timestamp="totalTimestamp"
       ></map-detail-card>
 
       <mode-article-card
