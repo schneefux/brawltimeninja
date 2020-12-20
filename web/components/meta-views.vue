@@ -233,7 +233,7 @@ export default Vue.extend({
       const measurements = (view == 'legacy' ? measurementsForCube(cube) : [measurement])
 
       const dimensions = cube == 'map' ? ['brawler_name'] :
-        cube == 'synergy' ? ['brawler_name', 'ally_brawler_name'] : []
+        cube == 'synergy' ? ['brawler_name', 'ally_brawler_name'] :
         cube == 'team' ? ['brawler_names'] : []
 
       if (dimensions.length > 0) {
