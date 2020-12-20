@@ -124,6 +124,36 @@ function defaultView(cube: string) {
   return 'tierlist'
 }
 
+function measurementsForCube(cube: string, slices: Record<string, string[]> = {}) {
+  if (['map', 'synergy'].includes(cube)) {
+    const mode = (slices.battle_event_mode || [])[0]
+    if (mode == undefined) {
+      return ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']
+    }
+
+    let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
+    // all 3v3: star player
+    if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
+      measurements = [...measurements, 'starRate']
+    }
+    // all 3v3 except bounty: duration
+    if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
+      measurements = [...measurements, 'duration']
+    }
+    if (mode.endsWith('howdown')) {
+      measurements = [...measurements, 'rank1Rate']
+    }
+    return measurements
+  }
+  if (['starpower', 'gadget'].includes(cube)) {
+    return ['winsZScore', 'winRateDiff', 'starRateDiff', 'rank1RateDiff']
+  }
+  if (['team'].includes(cube)) {
+    return ['wins', 'winRate']
+  }
+  return []
+}
+
 export default Vue.extend({
   props: {
     defaultCube: {
@@ -165,12 +195,12 @@ export default Vue.extend({
       await this.update({ measurement: m })
     },
     async setCube(c: string) {
-      this.view = defaultView(c)
       // reset all selectors
       await this.update({
         cube: c,
         slices: this.$clicker.defaultSlices(c),
         measurement: defaultMeasurement(c),
+        view: defaultView(c),
       })
     },
     async setView(v: string) {
@@ -199,7 +229,7 @@ export default Vue.extend({
       const slices = args.slices || this.slices
       const cube = args.cube || this.cube
 
-      const measurements = (view == 'legacy' ? this.measurements : [measurement])
+      const measurements = (view == 'legacy' ? measurementsForCube(cube) : [measurement])
 
       if (['map', 'synergy'].includes(cube)) {
         const data = await this.$clicker.query('meta.' + cube, cube,
@@ -279,33 +309,7 @@ export default Vue.extend({
       return this.$clicker.describeSlices(this.slices, this.timestamp)
     },
     measurements(): string[] {
-      if (['map', 'synergy'].includes(this.cube)) {
-        const mode = (this.slices.battle_event_mode || [])[0]
-        if (mode == undefined) {
-          return ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate', 'starRate', 'rank1Rate', 'duration']
-        }
-
-        let measurements = ['winRateAdj', 'winRate', 'wins', 'useRate', 'pickRate']
-        // all 3v3: star player
-        if (['gemGrab', 'heist', 'bounty', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
-          measurements = [...measurements, 'starRate']
-        }
-        // all 3v3 except bounty: duration
-        if (['gemGrab', 'heist', 'hotZone', 'brawlBall', 'siege'].includes(mode)) {
-          measurements = [...measurements, 'duration']
-        }
-        if (mode.endsWith('howdown')) {
-          measurements = [...measurements, 'rank1Rate']
-        }
-        return measurements
-      }
-      if (['starpower', 'gadget'].includes(this.cube)) {
-        return ['winsZScore', 'winRateDiff', 'starRateDiff', 'rank1RateDiff']
-      }
-      if (['team'].includes(this.cube)) {
-        return ['wins', 'winRate']
-      }
-      return []
+      return measurementsForCube(this.cube, this.slices)
     },
   },
 })
