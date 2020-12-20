@@ -248,9 +248,9 @@ export const metaStatMaps = {
     duration_boss: '',
     rank: '2f',
     level: '2f',
-    rank1: '1s',
-    wins: '1s',
-    picks: '1s',
+    rank1: '.2s',
+    wins: '.2s',
+    picks: '.2s',
   },
   signs: {
     trophies: -1, // more is better -> sort rank desc
