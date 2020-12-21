@@ -43,7 +43,13 @@
             scope="row"
             class="text-right pr-2 pt-1"
           >
-            {{ index + 1 + (pageSize == undefined ? 0 : page * pageSize) }}
+            <slot
+              name="index"
+              :index="index + 1 + (pageSize == undefined ? 0 : page * pageSize)"
+              :row="r"
+            >
+              {{ index + 1 + (pageSize == undefined ? 0 : page * pageSize) }}
+            </slot>
           </th>
           <td
             v-for="(c, index) in columns"

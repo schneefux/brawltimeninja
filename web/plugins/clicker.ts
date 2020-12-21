@@ -61,7 +61,7 @@ interface Clicker {
   routeToSlices(route: Route, defaults?: Slices): Slices
   slicesToLocation(slices: Slices, defaults?: Slices): Location
   // backwards compat
-  mapToMetaGridEntry<R extends { brawler_name?: string, brawler_names?: string[], ally_brawler_name?: string, picks: number }>(
+  mapToMetaGridEntry<R extends { player_name?: string, brawler_name?: string, brawler_names?: string[], ally_brawler_name?: string, picks: number }>(
     measurements: (keyof typeof measurementMap)[], rows: R[], totals: R): MetaGridEntry[]
 }
 
@@ -93,7 +93,6 @@ export default (context, inject) => {
         case 'map':
           return {
             trophy_season_end: ['balance'],
-            brawler_trophyrange: ['0', '10'],
             battle_event_powerplay: ['false'],
           }
         case 'battle':
@@ -343,15 +342,15 @@ export default (context, inject) => {
     },
     mapToMetaGridEntry(measurements, rows, totals) {
       return rows.map(row => ({
-        id: (row.brawler_names?.join('+') || row.brawler_name!) + (row.ally_brawler_name != undefined ? '+' + row.ally_brawler_name : '' ),
-        brawlers: row.brawler_names || [row.brawler_name!],
-        title: capitalizeWords((row.brawler_names?.join(', ') || row.brawler_name!).toLowerCase()),
+        id: (row.brawler_names?.join('+') || row.brawler_name || '') + (row.ally_brawler_name != undefined ? '+' + row.ally_brawler_name : '' ),
+        brawlers: row.brawler_names || row.brawler_name != undefined ? [row.brawler_name] : [],
+        title: row.player_name || capitalizeWords((row.brawler_names?.join(', ') || row.brawler_name || '').toLowerCase()),
         stats: measurements.reduce((stats, m) => ({
           ...stats,
           [m]: row[measurementMap[m]] / (measurementOfTotal[m] ? totals[measurementMap[m]] : 1),
         }), {} as Record<string, number>),
         sampleSize: row.picks,
-        ...(row.brawler_names == undefined ? {
+        ...(row.brawler_name != undefined ? {
           link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name! })}`,
         } : {}),
         ...(row.ally_brawler_name != undefined ? {

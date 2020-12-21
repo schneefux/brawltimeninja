@@ -45,6 +45,21 @@
     </card>
 
     <card
+      v-if="users != undefined"
+      title="Sample Size"
+      class="w-1/2"
+      full-height
+      dense
+    >
+      <p
+        slot="content"
+        class="text-lg"
+      >
+        {{ formatSI(users) }} Users
+      </p>
+    </card>
+
+    <card
       v-if="sample > 0 && timestamp != undefined"
       title="Last Update"
       class="w-1/2"
@@ -147,6 +162,9 @@ export default Vue.extend({
     sample: {
       type: Number,
       required: true
+    },
+    users: {
+      type: Number,
     },
     timestamp: {
       type: String,

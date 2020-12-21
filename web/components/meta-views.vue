@@ -18,12 +18,14 @@
         :cube="cube"
         :data="sortedEntries"
         :sample="sample"
+        :users="users"
         :timestamp="timestamp"
         :measurement="measurement"
         class="w-full max-w-lg"
       ></meta-sample-info>
 
       <meta-graph
+        v-if="['map', 'starpower', 'gadget', 'synergy', 'team'].includes(cube)"
         :cube="cube"
         :entries="sortedEntries"
         :stat="measurement"
@@ -35,6 +37,7 @@
 
     <div class="w-full flex flex-wrap justify-center">
       <meta-table
+        v-if="['map', 'starpower', 'gadget', 'synergy', 'team', 'battle'].includes(cube)"
         title="Table View"
         :entries="sortedEntries"
         :stat="measurement"
@@ -115,14 +118,20 @@ function defaultMeasurement(cube: string) {
   if (['team'].includes(cube)) {
     return 'wins'
   }
+  if (['battle'].includes(cube)) {
+    return 'users'
+  }
   return 'winRate'
 }
 
 function defaultView(cube: string) {
+  if (['map', 'starpower', 'gadget', 'synergy', 'team'].includes(cube)) {
+    return 'tierlist'
+  }
   if (['team'].includes(cube)) {
     return 'legacy'
   }
-  return 'tierlist'
+  return undefined
 }
 
 function measurementsForCube(cube: string, slices: Record<string, string[]> = {}) {
@@ -152,6 +161,9 @@ function measurementsForCube(cube: string, slices: Record<string, string[]> = {}
   if (['team'].includes(cube)) {
     return ['wins', 'winRate']
   }
+  if (['battle'].includes(cube)) {
+    return ['users', 'winRate', 'wins', 'picks', 'starRate', 'rank1Rate', 'duration']
+  }
   return []
 }
 
@@ -180,6 +192,7 @@ export default Vue.extend({
       entries: [] as MetaGridEntry[],
       view: defaultView(this.defaultCube),
       sample: 0,
+      users: undefined,
       timestamp: '1970-01-01' as string|undefined,
       loading: false,
     }
@@ -232,14 +245,21 @@ export default Vue.extend({
 
       const measurements = (view == 'legacy' ? measurementsForCube(cube) : [measurement])
 
+      // TODO put dimensions into the URL, allowing to group by maps instead of brawlers etc.
       const dimensions = cube == 'map' ? ['brawler_name'] :
         cube == 'synergy' ? ['brawler_name', 'ally_brawler_name'] :
-        cube == 'team' ? ['brawler_names'] : []
+        cube == 'team' ? ['brawler_names'] :
+        cube == 'battle' ? ['player_id'] : []
 
       if (dimensions.length > 0) {
         const data = await this.$clicker.query('meta.' + cube, cube,
           dimensions,
-          [...measurements.map(m => measurementMap[m]), 'picks', 'timestamp'],
+          [
+            ...measurements.map(m => measurementMap[m]),
+            'picks',
+            'timestamp',
+            ...(cube == 'battle' ? ['player_name', 'users'] : [])
+          ],
           slices,
           {
             sort: { picks: 'desc' },
@@ -250,6 +270,7 @@ export default Vue.extend({
         this.entries = this.$clicker.mapToMetaGridEntry(measurements as any, data.data, data.totals)
 
         this.sample = data.totals.picks
+        this.users = data.totals.users
         this.timestamp = data.totals.timestamp
       }
 
@@ -281,19 +302,22 @@ export default Vue.extend({
   },
   computed: {
     views() {
-      if (this.cube == 'team') {
+      if (['map', 'starpower', 'gadget', 'synergy'].includes(this.cube)) {
+        return [{
+          key: 'tierlist',
+          title: 'Tier List',
+        }, {
+          key: 'legacy',
+          title: 'Details',
+        }]
+      }
+      if (['team'].includes(this.cube)) {
         return [{
           key: 'legacy',
           title: 'Details',
         }]
       }
-      return [{
-        key: 'tierlist',
-        title: 'Tier List',
-      }, {
-        key: 'legacy',
-        title: 'Details',
-      }]
+      return []
     },
     sortedEntries(): MetaGridEntry[] {
       return this.entries

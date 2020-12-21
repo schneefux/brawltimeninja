@@ -3,6 +3,7 @@
     <b-button
       v-if="!loading"
       secondary
+      sm
       @click="trigger"
     >Share</b-button>
     <div v-if="loading">

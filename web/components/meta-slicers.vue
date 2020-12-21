@@ -102,7 +102,18 @@
 
         <div
           class="mr-2 my-1"
-          v-if="['map'].includes(cube)"
+          v-if="['battle'].includes(cube)"
+        >
+          <input
+            type="text"
+            v-model.lazy="nameFilter"
+            class="rounded font-semibold text-sm py-1 pl-2 border-2 form-input bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-gray-200"
+          >
+        </div>
+
+        <div
+          class="mr-2 my-1"
+          v-if="['map', 'battle'].includes(cube)"
         >
           <b-select
             v-model="powerPlayActive"
@@ -115,7 +126,7 @@
         </div>
 
         <trophy-slider
-          v-if="['map', 'starpower', 'gadget'].includes(cube)"
+          v-if="['map', 'starpower', 'gadget', 'battle'].includes(cube)"
           v-model="trophyRange"
           :name="powerPlayActive == 'true' ? 'Points' : undefined"
           class="mr-2 my-1"
@@ -123,7 +134,7 @@
 
         <!-- TODO add icons and previews to selects -->
         <div
-          v-if="['map', 'synergy', 'team'].includes(cube)"
+          v-if="['map', 'synergy', 'team', 'battle'].includes(cube)"
           class="mr-2 my-1"
         >
           <b-select
@@ -141,7 +152,7 @@
         </div>
 
         <div
-          v-if="['map', 'synergy', 'team'].includes(cube)"
+          v-if="['map', 'synergy', 'team', 'battle'].includes(cube)"
           class="mr-2 my-1"
         >
           <b-select
@@ -176,6 +187,7 @@ interface Slices {
   battle_event_mode?: string[]
   battle_event_map?: string[]
   ally_brawler_name?: string[]
+  player_name_ilike?: string[]
 }
 
 function withN1Slice(slices: Slices, name: keyof Slices, value: string) {
@@ -222,11 +234,12 @@ export default Vue.extend({
         'month': 'Month',
       },
       cubeLabel: {
-        'map': 'Brawlers',
-        'gadget': 'Gadgets',
-        'starpower': 'Star Powers',
-        'synergy': 'Synergies',
-        'team': 'Teams',
+        map: 'Brawlers',
+        gadget: 'Gadgets',
+        starpower: 'Star Powers',
+        synergy: 'Synergies',
+        team: 'Teams',
+        battle: 'Players',
       },
       showFilters: false,
     }
@@ -238,7 +251,7 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false, // FIXME: causes render error
   async fetch() {
-    if (['map', 'synergy', 'team'].includes(this.cube)) {
+    if (['map', 'synergy', 'team', 'battle'].includes(this.cube)) {
       this.allModes = await this.$clicker.queryAllModes()
       const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
       this.allMaps = maps.sort((m1, m2) => m1.localeCompare(m2))
@@ -328,6 +341,14 @@ export default Vue.extend({
       },
       set(v: string) {
         this.$emit('input', withN1Slice(this.value, 'ally_brawler_name', v))
+      }
+    },
+    nameFilter: {
+      get(): string {
+        return (this.value.player_name_ilike || [])[0] || '%'
+      },
+      set(v: string) {
+        this.$emit('input', withN1Slice(this.value, 'player_name_ilike', v))
       }
     },
     filtersDescription(): string {

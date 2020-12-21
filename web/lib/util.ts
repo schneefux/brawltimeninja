@@ -146,6 +146,7 @@ export const metaStatMaps = {
     victories: '3v3 Wins',
     soloVictories: 'Solo Showdown Wins',
     duoVictories: 'Duo Showdown Wins',
+    users: 'Players',
   },
   labelsShort: {
     trophies: 'Trophies',
@@ -183,6 +184,7 @@ export const metaStatMaps = {
     starRateDiff: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
     trophies: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
     duration: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+    users: 'The total number of players.',
   },
   icons: {
     trophies: 'trophy',
@@ -206,6 +208,7 @@ export const metaStatMaps = {
     rank: 'leaderboards',
     rank1: '🏅',
     wins: '🏅',
+    players: '🧑',
   },
   formatters: {
     trophies: (n: number) => formatSI(n, 1),
@@ -229,6 +232,7 @@ export const metaStatMaps = {
     rank1: (n: number) => formatSI(n, 1),
     wins: (n: number) => formatSI(n, 1),
     picks: (n: number) => formatSI(n, 1),
+    users: (n: number) => formatSI(n, 1),
   },
   // TODO replace formatting functions above by d3-format
   d3formatters: {
@@ -289,7 +293,7 @@ export const metaStatMaps = {
  *  ] }
  * sorted by the preferred prop according to propPriority
  */
-export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {
+export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: unknown[] } {
   return [...Object.entries(meta)]
     .reduce((top, [key, entry]) => ({
       ...top,
@@ -315,39 +319,6 @@ export function getBestBrawlers(brawlers: BrawlerMetaStatistics[]): BrawlerMetaS
   const sortProp = <string>metaStatMaps.propPriority.find(prop => prop in brawlers[0].stats)
   brawlers.sort((brawler1, brawler2) => brawler2.stats[sortProp] - brawler1.stats[sortProp])
   return brawlers
-}
-
-export function getBestBrawlersByEachMetric(brawlers: BrawlerMetaStatistics[]): { [stat: string]: BrawlerMetaStatistics } {
-  const props = Object.keys(metaStatMaps.labels)
-  const max = {} as { [key: string]: BrawlerMetaStatistics }
-
-  brawlers.forEach((entry) => {
-    props.forEach((prop) => {
-      if ((!(prop in max) || max[prop].stats[prop] < entry.stats[prop]) &&
-        entry.stats[prop] !== undefined && entry.stats[prop] !== 0) {
-        max[prop] = entry
-      }
-    })
-  })
-
-  return max
-}
-
-export function getMostPopular(meta: MapMetaMap|ModeMetaMap): { [key: string]: MetaGridEntrySorted[] } {
-  return [...Object.entries(meta)]
-    .reduce((top, [key, entry]) => ({
-      ...top,
-      [key]: [...Object.entries(entry.brawlers)]
-        .map(([brawlerId, brawler]) => ({
-          id: brawlerId,
-          title: brawler.name,
-          brawler: brawlerId,
-          sampleSize: brawler.sampleSize,
-          stats: brawler.stats,
-          sortProp: 'useRate',
-        }))
-        .sort((brawler1, brawler2) => brawler2.stats[brawler2.sortProp] - brawler1.stats[brawler1.sortProp])
-    }), {})
 }
 
 export interface MetaGridEntry {
@@ -508,6 +479,8 @@ export const measurementMap = {
   rank1Rate: 'battle_rank1',
   rank1RateDiff: 'battle_rank1',
   duration: 'battle_duration',
+  picks: 'picks',
+  users: 'users',
 }
 
 export const measurementOfTotal = {
@@ -523,6 +496,8 @@ export const measurementOfTotal = {
   rank1Rate: false,
   rank1RateDiff: false,
   duration: false,
+  picks: false,
+  users: false,
 }
 
 export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, stat: keyof typeof metaStatMaps.signs): number {
