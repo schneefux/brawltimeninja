@@ -4,9 +4,9 @@
       <div class="flex md:hidden">
         <b-button
           :selected="showFilters"
-          dark
+          primary
           sm
-          class="mr-2 w-10"
+          class="mr-3 h-8"
           @click="showFilters = !showFilters"
         >
           <font-awesome-icon
@@ -14,7 +14,12 @@
           ></font-awesome-icon>
         </b-button>
 
-        <span class="text-sm leading-tight">
+        <span
+          :class="['my-auto leading-tight ', {
+            'whitespace-nowrap overflow-hidden overflow-ellipsis': !showFilters,
+          }]"
+          @click="showFilters = true"
+        >
           {{ filtersDescription }}
         </span>
       </div>
@@ -328,7 +333,8 @@ export default Vue.extend({
     filtersDescription(): string {
       const formatTrophies = (n: number) => n == 10 ? '1000+' : n * 100
       const pieces = [
-        ...(this.ally != '' ? ['with ' + capitalize(this.ally.toLowerCase())] : []),
+        this.cubeLabel[this.cube],
+        ...(['synergy'].includes(this.cube) && this.ally != '' ? ['with ' + capitalize(this.ally.toLowerCase())] : []),
         metaStatMaps.labels[this.measurement],
         'Current ' + this.timeRangeLabel[this.timeRange],
         this.powerPlayActive == 'false' ? 'Regular Battles' : 'Power Play',
