@@ -277,7 +277,7 @@ export default Vue.extend({
     },
     trophyRange: {
       get(): number[] {
-        return this.value.brawler_trophyrange.map(n => parseInt(n))
+        return (this.value.brawler_trophyrange || ['0', '10']).map(n => parseInt(n))
       },
       set(v: number[]) {
         this.$emit('input', {
