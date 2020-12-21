@@ -63,7 +63,7 @@ export default Vue.extend({
     },
     limit: {
       type: Number,
-      default: 5
+      default: 4
     },
   },
   data() {
