@@ -190,6 +190,7 @@ export default Vue.extend({
   },
   methods: {
     async setSlices(s: Record<string, string[]>) {
+      console.log('update slices', s)
       await this.update({ slices: s })
     },
     async setMeasurement(m: string) {

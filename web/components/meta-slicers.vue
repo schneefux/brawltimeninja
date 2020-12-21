@@ -147,9 +147,9 @@
             <option value="">All Maps</option>
             <option
               v-for="map in maps"
-              :key="map.battle_event_map + '-' + map.battle_event_id"
-              :value="map.battle_event_map"
-            >{{ map.battle_event_map }}</option>
+              :key="map"
+              :value="map"
+            >{{ map }}</option>
           </b-select>
         </div>
       </div>
@@ -161,7 +161,6 @@
 import Vue, { PropType } from 'vue'
 import { capitalize, formatMode, metaStatMaps } from '~/lib/util'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { MapMetadata } from '~/plugins/clicker'
 
 // TODO add big brawler
 
@@ -210,7 +209,7 @@ export default Vue.extend({
   data() {
     return {
       allModes: [] as string[],
-      allMaps: [] as MapMetadata[],
+      allMaps: [] as string[],
       allBrawlers: [] as string[],
       timeRangeLabel: {
         'current': 'Season',
@@ -232,11 +231,12 @@ export default Vue.extend({
     mode: '$fetch',
   },
   fetchDelay: 0,
+  fetchOnServer: false, // FIXME: causes render error
   async fetch() {
     if (['map', 'synergy', 'team'].includes(this.cube)) {
       this.allModes = await this.$clicker.queryAllModes()
       const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
-      this.allMaps = maps.sort((m1, m2) => m1.battle_event_map.localeCompare(m2.battle_event_map))
+      this.allMaps = maps.sort((m1, m2) => m1.localeCompare(m2))
     }
     if (this.cube == 'synergy') {
       const brawlers = await this.$clicker.queryAllBrawlers()
@@ -250,12 +250,9 @@ export default Vue.extend({
       }
       return this.allModes
     },
-    maps(): MapMetadata[] {
+    maps(): string[] {
       if (this.allMaps.length == 0 && !['', undefined].includes(this.map)) {
-        return [{
-          battle_event_id: 0,
-          battle_event_map: this.map,
-        }]
+        return [this.map]
       }
       return this.allMaps
     },
