@@ -27,7 +27,7 @@
       <b-button
         xs
         dark
-      >{{ modeName }} - {{ map }}</b-button>
+      >{{ map }}</b-button>
     </li>
     <li v-if="starpowers">
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
