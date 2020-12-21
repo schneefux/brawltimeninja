@@ -111,7 +111,9 @@ export function formatSI(num: number, digits: number) {
       break
     }
   }
-  return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol
+  return Math.round(num / si[i].value)
+    .toFixed(digits)
+    .replace(rx, '$1') + si[i].symbol
 }
 
 export const metaStatMaps = {
