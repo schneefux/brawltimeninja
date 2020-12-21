@@ -125,7 +125,7 @@ function defaultMeasurement(cube: string) {
 }
 
 function defaultView(cube: string) {
-  if (['map', 'starpower', 'gadget', 'synergy', 'team'].includes(cube)) {
+  if (['map', 'starpower', 'gadget', 'synergy'].includes(cube)) {
     return 'tierlist'
   }
   if (['team'].includes(cube)) {

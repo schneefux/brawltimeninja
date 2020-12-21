@@ -319,6 +319,12 @@ export default (context, inject) => {
         ...('range' in route.query ? {
           brawler_trophyrange: route.query['range'] as string[],
         } : {}),
+        ...('ally' in route.query ? {
+          ally_brawler_name: [route.query['ally'] as string],
+        } : {}),
+        ...('name_like' in route.query ? {
+          player_name_ilike: [route.query['name_like'] as string],
+        } : {}),
       }
     },
     slicesToLocation(slices, defaults={}) {
@@ -328,6 +334,12 @@ export default (context, inject) => {
       ))
 
       const query = {} as Record<string, string[]>
+      if ('battle_event_mode' in diff) {
+        query['mode'] = diff.battle_event_mode!
+      }
+      if ('battle_event_map' in diff) {
+        query['map'] = diff.battle_event_map!
+      }
       if ('battle_event_powerplay' in diff) {
         query['powerplay'] = diff.battle_event_powerplay!
       }
@@ -337,13 +349,19 @@ export default (context, inject) => {
       if ('brawler_trophyrange' in diff) {
         query['range'] = diff.brawler_trophyrange!
       }
+      if ('ally_brawler_name' in diff) {
+        query['ally'] = diff.ally_brawler_name!
+      }
+      if ('player_name_ilike' in diff) {
+        query['name_like'] = diff.player_name_ilike!
+      }
 
       return { query }
     },
     mapToMetaGridEntry(measurements, rows, totals) {
       return rows.map(row => ({
         id: (row.brawler_names?.join('+') || row.brawler_name || '') + (row.ally_brawler_name != undefined ? '+' + row.ally_brawler_name : '' ),
-        brawlers: row.brawler_names || row.brawler_name != undefined ? [row.brawler_name] : [],
+        brawlers: row.brawler_names || (row.brawler_name != undefined ? [row.brawler_name] : []),
         title: row.player_name || capitalizeWords((row.brawler_names?.join(', ') || row.brawler_name || '').toLowerCase()),
         stats: measurements.reduce((stats, m) => ({
           ...stats,
@@ -351,7 +369,7 @@ export default (context, inject) => {
         }), {} as Record<string, number>),
         sampleSize: row.picks,
         ...(row.brawler_name != undefined ? {
-          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name! })}`,
+          link: `/tier-list/brawler/${brawlerId({ name: row.brawler_name })}`,
         } : {}),
         ...(row.ally_brawler_name != undefined ? {
           icon: `/brawlers/${brawlerId({ name: row.ally_brawler_name })}/avatar`

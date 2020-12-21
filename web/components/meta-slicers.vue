@@ -168,6 +168,20 @@
             >{{ map }}</option>
           </b-select>
         </div>
+
+        <client-only>
+          <b-button
+            v-if="supportsShareApi"
+            secondary
+            sm
+            class="ml-auto my-auto h-8"
+            @click="share()"
+          >
+            <font-awesome-icon
+              :icon="faShare"
+            ></font-awesome-icon>
+          </b-button>
+        </client-only>
       </div>
     </template>
   </card>
@@ -176,7 +190,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { capitalize, formatMode, metaStatMaps } from '~/lib/util'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faFilter, faShare } from '@fortawesome/free-solid-svg-icons'
 
 // TODO add big brawler
 
@@ -365,8 +379,14 @@ export default Vue.extend({
       ]
       return pieces.join(', ')
     },
+    supportsShareApi() {
+      return global.window && 'share' in window.navigator
+    },
     faFilter() {
       return faFilter
+    },
+    faShare() {
+      return faShare
     },
     metaStatMaps() {
       return metaStatMaps
@@ -378,18 +398,31 @@ export default Vue.extend({
       return capitalize
     },
   },
+  methods: {
+    async share() {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
+      try {
+        const { query } = this.$clicker.slicesToLocation(this.value as any, this.$clicker.defaultSlices(this.cube))
+        const params = new URLSearchParams()
+        params.append('cube', this.cube)
+        Object.entries(query as Record<string, string[]>)
+          .forEach(([name, values]) => values.forEach(value => params.append(name, value)))
+
+        await navigator.share({
+          url: 'https://brawltime.ninja/dashboard?' + params.toString(),
+        })
+        this.$gtag.event('click', {
+          'event_category': 'dashboard',
+          'event_label': 'share_filters',
+        })
+      } catch (err) {
+        console.error(err);
+        this.$gtag.event('click', {
+          'event_category': 'dashboard',
+          'event_label': 'share_filters_error',
+        })
+      }
+    },
+  },
 })
 </script>
-
-<style scoped lang="postcss">
-.toggle__dot {
-  top: -.25rem;
-  left: -.25rem;
-  transition: all 0.3s ease-in-out;
-}
-
-input:checked ~ .toggle__dot {
-  transform: translateX(100%);
-  @apply bg-yellow-600;
-}
-</style>
