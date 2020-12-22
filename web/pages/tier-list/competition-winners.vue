@@ -43,6 +43,7 @@ export default Vue.extend({
       ['battle_event_map', 'battle_event_mode'],
       ['battle_event_map', 'battle_event_mode', 'timestamp', 'picks'], {
         ...this.$clicker.defaultSlices('map'),
+        trophy_season_end: ['month'],
         battle_event_map_like: ['Competition Winner %'],
       }, {
         cache: 60*30,
