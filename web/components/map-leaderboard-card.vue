@@ -15,7 +15,10 @@
         ranked
       >
         <template v-slot:player="{ row }">
-          <router-link :to="`/player/${row.player_tag}`">
+          <router-link
+            :to="`/player/${row.player_tag}`"
+            class="whitespace-nowrap ellipsis"
+          >
             {{ row.player }}
           </router-link>
         </template>
@@ -24,7 +27,7 @@
             <media-img
               :path="`/brawlers/${row.brawlerId}/avatar`"
               :alt="row.brawlerName"
-              clazz="h-6 mx-auto"
+              clazz="h-6"
             ></media-img>
           </router-link>
         </template>
