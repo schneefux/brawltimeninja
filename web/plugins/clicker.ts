@@ -330,7 +330,7 @@ export default (context, inject) => {
     slicesToLocation(slices, defaults={}) {
       const diff = Object.fromEntries(
         Object.entries(slices)
-          .filter(([name, params]) => !(name in defaults && JSON.stringify(defaults[name]) == JSON.stringify(params))
+          .filter(([name, params]) => !(name in defaults) || JSON.stringify(defaults[name]) != JSON.stringify(params)
       ))
 
       const query = {} as Record<string, string[]>

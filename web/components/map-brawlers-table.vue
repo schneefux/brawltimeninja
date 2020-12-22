@@ -154,8 +154,12 @@ export default Vue.extend({
         path: '/dashboard',
         query: {
           cube: 'map',
-          mode: this.mode,
-          map: this.map,
+          ...(this.mode != undefined ? {
+            mode: this.mode,
+          } : {}),
+          ...(this.map != undefined ? {
+            map: this.map,
+          } : {}),
         },
       }
     },
