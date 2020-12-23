@@ -86,9 +86,11 @@
         </lazy>
       </horizontal-scroller>
 
-      <div class="mt-2 w-full text-right hidden md:block">
+      <div
+        v-show="!showAllMaps"
+        class="mt-2 w-full text-right hidden md:block"
+      >
         <b-button
-          v-show="!showAllMaps"
           sm
           primary
           @click="expandMaps()"

@@ -1,7 +1,8 @@
 <template>
   <b-button
-    v-show="isInstallable"
-    class="text-sm px-2 md:py-1"
+    :class="['text-sm px-2 md:py-1', {
+      'hidden': !isInstallable,
+    }]"
     secondary
     outline
     @click="clickInstall"

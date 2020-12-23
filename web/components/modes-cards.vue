@@ -14,9 +14,11 @@
       </div>
     </horizontal-scroller>
 
-    <div class="mt-2 w-full text-right hidden md:block">
+    <div
+      v-show="!showAllModes"
+      class="mt-2 w-full text-right hidden md:block"
+    >
       <b-button
-        v-show="!showAllModes"
         sm
         primary
         @click="expandModes()"
