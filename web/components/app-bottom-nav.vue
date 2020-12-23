@@ -46,7 +46,7 @@ export const screens: Screen[] = [ {
     icon: faMask,
     name: 'Brawlers',
     target: '/tier-list/brawler',
-    matches: ['/tier-list/brawler', '/tier-list/starpowers', '/tier-list/gadgets'],
+    matches: ['/tier-list/brawler', '/tier-list/starpowers', '/tier-list/gadgets', '/dashboard'],
   }, {
     icon: faNewspaper,
     name: 'Guides',
