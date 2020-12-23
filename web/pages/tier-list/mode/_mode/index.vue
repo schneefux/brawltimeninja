@@ -7,14 +7,6 @@
     ></map-breadcrumbs>
 
     <div class="flex flex-wrap justify-center">
-      <map-detail-card
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'widget'),
-          once: true,
-        }"
-        :mode="mode"
-      ></map-detail-card>
-
       <mode-article-card
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'description'),

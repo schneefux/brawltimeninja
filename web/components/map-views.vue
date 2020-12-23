@@ -1,16 +1,24 @@
 <template>
   <div class="flex flex-wrap justify-center">
-    <map-detail-card
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'widget'),
-        once: true,
-      }"
-      :mode="mode"
-      :map="map"
-      :id="id"
-      :timestamp="timestamp"
+    <card
+      v-if="id != undefined && id != 0"
       sm
-    ></map-detail-card>
+    >
+      <div
+        slot="content"
+        class="flex justify-center"
+      >
+        <media-img
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'image'),
+            once: true,
+          }"
+          :path="`/maps/${id}`"
+          size="512"
+          clazz="h-80"
+        ></media-img>
+      </div>
+    </card>
 
     <div>
       <map-leaderboard-table
@@ -20,7 +28,8 @@
         }"
         :mode="mode"
         :map="map"
-        sm
+        :sm="mode != undefined"
+        :md="mode == undefined"
       ></map-leaderboard-table>
 
       <client-only>
