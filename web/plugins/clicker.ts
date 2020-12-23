@@ -48,7 +48,7 @@ interface Clicker {
   queryAllMaps(mode?: string): Promise<string[]>
   queryAllBrawlers(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
-  calculateBayesSynergies(slices: Slices, tag: string, brawler?: string, limit?: number): Promise<{
+  calculateBayesSynergies(tag: string, brawler?: string, limit?: number): Promise<{
     sampleSize: number,
     timestamp: string,
     // H
@@ -249,7 +249,11 @@ export default (context, inject) => {
 
       return description.join(', ')
     },
-    async calculateBayesSynergies(slices: Record<string, string[]>, tag: string, brawler?: string, limit?: number) {
+    async calculateBayesSynergies(tag: string, brawler?: string, limit?: number) {
+      const slices = {
+        trophy_season_end: ['balance'],
+      }
+
       // H(ally_brawler,brawler)
       const pairData = await this.query(tag, 'synergy',
         ['brawler_name', 'ally_brawler_name'],

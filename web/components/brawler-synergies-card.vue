@@ -105,9 +105,7 @@ export default Vue.extend({
       and observation:      P(brawler,ally) = H(brawler,ally) / H
     */
 
-    const slices = this.$clicker.defaultSlices('synergy')
-
-    const bayesStats = await this.$clicker.calculateBayesSynergies(slices, 'meta.synergy.widget', this.brawler)
+    const bayesStats = await this.$clicker.calculateBayesSynergies('meta.synergy.widget', this.brawler)
 
     const data: Row[] = []
     const brawler = this.brawler.toUpperCase()
