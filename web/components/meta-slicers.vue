@@ -153,6 +153,7 @@
 
         <div
           v-if="['map', 'synergy', 'team', 'battle'].includes(cube)"
+          v-show="mode != ''"
           class="mr-2 my-1"
         >
           <b-select
