@@ -69,6 +69,7 @@ export default Vue.extend({
     map: '$fetch',
   },
   fetchDelay: 0,
+  fetchOnServer: false, // FIXME: causes render error
   async fetch() {
     const data = await this.$clicker.query('mode.leaderboard',
       'battle',

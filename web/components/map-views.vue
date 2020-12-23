@@ -13,7 +13,7 @@
     ></map-detail-card>
 
     <div>
-      <map-leaderboard-card
+      <map-leaderboard-table
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'leaderboard'),
           once: true,
@@ -21,7 +21,7 @@
         :mode="mode"
         :map="map"
         sm
-      ></map-leaderboard-card>
+      ></map-leaderboard-table>
 
       <client-only>
         <adsense

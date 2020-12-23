@@ -24,7 +24,7 @@
       </thead>
       <tbody>
         <tr
-          v-if="rows.length == 0"
+          v-if="pageRows.length == 0"
           class="w-full"
         >
           <td
@@ -35,8 +35,8 @@
           </td>
         </tr>
         <tr
-          v-for="(r, index) in pageSize == undefined ? rows : rows.slice(page*pageSize, (page+1)*pageSize)"
-          :key="index"
+          v-for="r in pageRows"
+          :key="r.index"
         >
           <th
             v-if="ranked"
@@ -45,10 +45,10 @@
           >
             <slot
               name="index"
-              :index="index + 1 + (pageSize == undefined ? 0 : page * pageSize)"
+              :index="r.index"
               :row="r"
             >
-              {{ index + 1 + (pageSize == undefined ? 0 : page * pageSize) }}
+              {{ r.index + 1 }}
             </slot>
           </th>
           <td
@@ -93,7 +93,7 @@ export default Vue.extend({
       required: true
     },
     rows: {
-      type: Array as PropType<unknown[]>,
+      type: Array as PropType<object[]>,
       required: true
     },
     pageSize: {
@@ -107,6 +107,16 @@ export default Vue.extend({
     return {
       page: 0,
     }
+  },
+  computed: {
+    pageRows(): object[] {
+      const offset = this.page * (this.pageSize || 0)
+      const pageRows = this.pageSize == undefined ? this.rows : this.rows.slice(offset, (this.page+1)*this.pageSize)
+      return pageRows.map((r, index) => ({
+        ...r,
+        index: offset + index,
+      }))
+    },
   },
 })
 </script>

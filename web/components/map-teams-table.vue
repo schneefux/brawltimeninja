@@ -77,6 +77,7 @@ export default Vue.extend({
     pageSize: '$fetch',
   },
   fetchDelay: 0,
+  fetchOnServer: false, // FIXME: causes render error
   async fetch() {
     const data = await this.$clicker.query('meta.map.teams', 'team',
       ['brawler_names'],

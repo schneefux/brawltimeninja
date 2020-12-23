@@ -1,8 +1,11 @@
 <template>
-  <div class="flex justify-center space-x-2">
+  <div class="flex justify-center">
     <b-button
-      v-if="page > 0"
-      class="w-8 text-center"
+      :class="['w-8 text-center', {
+        'hidden': page == 0,
+        'mr-10': page == pages,
+        'mr-1': page < pages,
+      }]"
       primary
       @click="page--"
     >
@@ -10,14 +13,14 @@
         :icon="faCaretLeft"
       ></font-awesome-icon>
     </b-button>
-    <div
-      v-else
-      class="w-8"
-    ></div>
 
     <b-button
-      v-if="page < pages"
       class="w-8 text-center"
+      :class="['w-8 text-center', {
+        'hidden': page == pages,
+        'ml-10': page == 0,
+        'ml-1': page > 0,
+      }]"
       primary
       @click="page++"
     >
@@ -25,10 +28,6 @@
         :icon="faCaretRight"
       ></font-awesome-icon>
     </b-button>
-    <div
-      v-else
-      class="w-8"
-    ></div>
   </div>
 </template>
 
