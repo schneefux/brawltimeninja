@@ -23,7 +23,7 @@
         :to="`/leaderboard/${metric}`"
         class="mt-2 mr-2 whitespace-nowrap"
         primary
-        md
+        sm
       >
         {{ formatMetric(metric) }} Leaderboard
       </b-button>
