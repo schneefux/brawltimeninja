@@ -270,11 +270,6 @@ export default Vue.extend({
         .toUpperCase()
         .replace(/O/g, '0')
     },
-    randomHero(): string {
-      const heroes = ['crow1', 'crow2', 'crow3']
-      const hero = heroes[Math.floor(Math.random() * heroes.length)]
-      return '/brawlers/' + hero + '/model';
-    },
     randomPlayers(): string[] {
       const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
       return players.slice(0, 3)
