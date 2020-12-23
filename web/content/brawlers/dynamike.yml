@@ -1,4 +1,5 @@
 gender: null
+starpowers: []
 gadget1_description: Dynamike spins around and throws sticks of dynamite around
   himself while also gaining a speed boost. Each stick of dynamite deals
   $damage, and because of its inconsistencies, best used to finish a brawler
@@ -16,8 +17,21 @@ gadget2_description: The next regular attack will stun enemies in place for 1.5
   so much more!
 gadget2_name: Satchel Charge
 gadget1_name: Fidget Spinner
-starpower2_name: Demolition
 name: Dynamike
+gadgets:
+  - name: Fidget Spinner
+    description: "Dynamike gains a temporary speed boost and throws sticks of
+      dynamite around himself, each dealing 1200 damage. While using Fidget
+      Spinner, Dynamike is not able to use his main attack or super. His gadget
+      can be used to check bushes, head back into battle/to an objective faster,
+      area denial, finishing off enemies, and getting away from enemies. "
+  - name: Satchel Charge
+    description: "Dynamike's next attack will stun enemies for 1.5 seconds. Enemy
+      brawlers can tell that you have a stun ready as there will be a halo in
+      your head after activating the gadget. Satchel Charge can be used to
+      guarantee a kill/super, interrupting a brawler's super, temporarily
+      halting the siege bot, forcing opponents back and making them on guard, "
+starpower2_name: Demolition
 starpower1_name: Dyna-jump
 description: "Dynamike is a thrower with $health HP. He throws two sticks of
   dynamite for his main attack and a whole barrel of dynamite that can destroy
@@ -42,7 +56,7 @@ super: "KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
   within 1-2 successful attacks. Because of how frequently Mike gets his super,
   it is recommended to use it as soon as possible and not save it. The super
   doesn't have to be used on a brawler either, as breaking walls can also be
-  beneficial.  Benefits of destroying covers includes: more control for long
+  beneficial. Some benefits of destroying covers includes: more control for long
   ranged brawlers, decreasing the amount of walls that enemy throwers can hide
-  behind, opening up spaces for an easier goal in Brawl Ball, opening up a
-  shortcut for the IKE bot, and more."
+  behind, opening up spaces for an easier goal in Brawl Ball, and opening up a
+  shortcut for the siege bot. Just make sure to not destroy your own walls."
