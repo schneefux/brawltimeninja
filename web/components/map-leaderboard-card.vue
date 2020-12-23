@@ -15,10 +15,7 @@
         ranked
       >
         <template v-slot:player="{ row }">
-          <router-link
-            :to="`/player/${row.player_tag}`"
-            class="whitespace-nowrap ellipsis"
-          >
+          <router-link :to="`/player/${row.player_tag}`">
             {{ row.player }}
           </router-link>
         </template>
