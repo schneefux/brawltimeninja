@@ -28,6 +28,7 @@ export interface EventMetadata {
 export interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
+  timePresets: Record<string, string>
   defaultSlices(cube: string): Record<string, string[]>
   cubes: typeof cubes[number][]
   queryMetadata(cube: typeof cubes[number]): Promise<{ dimensions: string[], measures: string[], slices: Record<string, number> }>
@@ -88,6 +89,11 @@ declare module 'vuex/types/index' {
 
 export default (context, inject) => {
   inject('clicker', <Clicker>{
+    timePresets: {
+      'current': 'Season',
+      'balance': 'Update',
+      'month': 'Month',
+    } as Record<string, string>,
     defaultSlices(cube) {
       switch (cube) {
         case 'map':

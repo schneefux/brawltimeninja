@@ -1,29 +1,24 @@
 <template>
-  <card>
-    <template v-slot:content>
-      <p class="text-center">Trophy Season</p>
-      <div class="flex w-full">
-        <div class="w-full mx-12 mt-10">
-          <client-only>
-            <vue-range-slider
-              v-if="season != undefined && seasons.length > 0"
-              v-model="season"
-              :min="0"
-              :max="seasons.length - 2"
-              :step="1"
-              tooltip-dir="top"
-              piecewise
-              lazy
-            >
-              <span slot="tooltip" slot-scope="{ value }" class="slider-tooltip">
-                starting {{ formatDate(value) }}
-              </span>
-            </vue-range-slider>
-          </client-only>
-        </div>
-      </div>
-    </template>
-  </card>
+  <vue-range-slider
+    v-if="seasons.length > 0"
+    v-model="season"
+    :min="0"
+    :max="seasons.length - 2"
+    :step="1"
+    :bg-style="bgStyle"
+    :process-style="processStyle"
+    tooltip-dir="top"
+    piecewise
+    lazy
+  >
+    <span
+      slot="tooltip"
+      slot-scope="{ value }"
+      class="slider-tooltip bg-gray-600! border-gray-600!"
+    >
+      {{ formatDate(value) }}
+    </span>
+  </vue-range-slider>
 </template>
 
 <script lang="ts">
@@ -77,6 +72,26 @@ export default Vue.extend({
     formatDate() {
       return (value: number) => format(parseISO(this.seasons[value]), 'PP')
     },
+    bgStyle() {
+      return {
+        backgroundColor: 'rgb(253, 230, 138)', // yellow-200
+      }
+    },
+    processStyle() {
+      return {
+        backgroundColor: 'rgb(251, 191, 36)', // yellow-400
+      }
+    },
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.bg-gray-600\! {
+  @apply bg-gray-600 !important;
+}
+
+.border-gray-600\! {
+  @apply border-gray-600 !important;
+}
+</style>

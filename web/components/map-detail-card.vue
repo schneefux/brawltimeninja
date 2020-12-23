@@ -82,6 +82,7 @@
         tag="router-link"
         :to="linkTarget"
         primary
+        sm
       >
         Open
       </b-button>

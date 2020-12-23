@@ -15,9 +15,20 @@
       tracking-id="graph"
       page-tracking-id="meta_history"
     >
-      <season-slider
-        v-model="selectedSeason"
-      ></season-slider>
+      <card>
+        <template v-slot:content>
+          <p class="text-center">Trophy Season</p>
+          <div class="flex w-full">
+            <div class="w-full mx-12 mt-10">
+              <client-only>
+                <season-slider
+                  v-model="selectedSeason"
+                ></season-slider>
+              </client-only>
+            </div>
+          </div>
+        </template>
+      </card>
 
       <map-detail-card
         :season="selectedSeason"

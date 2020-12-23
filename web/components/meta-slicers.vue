@@ -85,19 +85,9 @@
 
         <!-- TODO develop full season slider -->
         <div class="mr-2 my-1">
-          <b-select
+          <season-slider-select
             v-model="timeRange"
-            dark
-            sm
-          >
-            <option
-              v-for="(label, t) in timeRangeLabel"
-              :key="t"
-              :value="t"
-            >
-              Current {{ label }}
-            </option>
-          </b-select>
+          ></season-slider-select>
         </div>
 
         <div
@@ -125,12 +115,12 @@
           </b-select>
         </div>
 
-        <trophy-slider
+        <trophy-slider-select
           v-if="['map', 'starpower', 'gadget', 'battle'].includes(cube)"
           v-model="trophyRange"
           :name="powerPlayActive == 'true' ? 'Points' : undefined"
           class="mr-2 my-1"
-        ></trophy-slider>
+        ></trophy-slider-select>
 
         <!-- TODO add icons and previews to selects -->
         <div
@@ -372,7 +362,7 @@ export default Vue.extend({
         this.cubeLabel[this.cube],
         ...(['synergy'].includes(this.cube) && this.ally != '' ? ['with ' + capitalize(this.ally.toLowerCase())] : []),
         metaStatMaps.labels[this.measurement],
-        'Current ' + this.timeRangeLabel[this.timeRange],
+        this.timeRange in this.$clicker.timePresets ? 'Current ' + this.$clicker.timePresets[this.timeRange] : 'Since ' + this.timeRange,
         this.powerPlayActive == 'false' ? 'Regular Battles' : 'Power Play',
         formatTrophies(this.trophyRange[0]) + '-' + formatTrophies(this.trophyRange[1]) + (this.powerPlayActive == 'false' ? ' Trophies' : ' Points'),
         this.mode == '' ? 'All Modes' : formatMode(this.mode),
