@@ -46,19 +46,21 @@ gadget1_name: Fidget Spinner
 name: Dynamike
 gadgets:
   - name: Fidget Spinner
-    description: "Dynamike gains a temporary speed boost and throws sticks of
+    description: Dynamike gains a temporary speed boost and throws sticks of
       dynamite around himself, each dealing 1200 damage. While using Fidget
       Spinner, Dynamike is not able to use his main attack or super. His gadget
       can be used to check bushes, head back into battle/to an objective faster,
-      area denial, finishing off enemies, and getting away from enemies. "
+      serve area denial, finish off low-health enemies, and retreating from
+      danger.
   - name: Satchel Charge
-    description: "Dynamike's next attack will stun enemies for 1.5 seconds. Enemy
+    description: Dynamike's next attack will stun enemies for 1.5 seconds. Enemy
       brawlers can tell that you have a stun prepared from the halo on your head
       after activating the gadget. Satchel Charge can be used to gain his super,
-      interrupt a brawler's super, temporarily halting the siege bot, forcing
+      interrupt a brawler's super, temporarily halt the siege bot, forcing
       opponents back and making them be on guard, making brawlers take
-      guaranteed damage from minecarts, meteors, etc., and gaining the lane
-      advantage early on as stunned brawlers are likely to die. "
+      guaranteed damage from minecarts, meteors, etc., gaining the lane
+      advantage early on as stunned brawlers are likely to die/fall back, and
+      more.
 starpower2_name: Demolition
 starpower1_name: Dyna-jump
 description: "\"Who wants some TNT?\" Dynamike is a thrower with $health HP. He
@@ -87,4 +89,5 @@ super: "KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
   beneficial. Some benefits of destroying covers includes: more control for long
   ranged brawlers, decreasing the amount of walls that enemy throwers can hide
   behind, opening up spaces for an easier goal in Brawl Ball, and opening up a
-  shortcut for the siege bot. Just make sure to not destroy your own walls."
+  shortcut for the siege bot. Just make sure to try and not destroy your own
+  walls unless necessary."
