@@ -83,11 +83,20 @@
           </b-select>
         </div>
 
-        <!-- TODO develop full season slider -->
         <div class="mr-2 my-1">
-          <season-slider-select
+          <b-select
             v-model="timeRange"
-          ></season-slider-select>
+            dark
+            sm
+          >
+            <option
+              v-for="(label, t) in timeRangeLabel"
+              :key="t"
+              :value="t"
+            >
+              Current {{ label }}
+            </option>
+          </b-select>
         </div>
 
         <div
