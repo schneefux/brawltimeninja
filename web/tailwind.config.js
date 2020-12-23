@@ -36,5 +36,7 @@ module.exports = {
     require('tailwindcss-elevation')([], {
       color: '#1a202c', // gray-900 = surface color
     }),
+    // for aspect-w-...
+    require('@tailwindcss/aspect-ratio'),
   ],
 }

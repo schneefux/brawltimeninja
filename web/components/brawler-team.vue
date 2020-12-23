@@ -1,23 +1,21 @@
 <template functional>
   <div
     :style="data.staticStyle"
-    :class="['relative', props.height, data.class, data.staticClass]"
+    :class="['flex flex-row-reverse justify-center', data.class, data.staticClass]"
   >
     <router-link
       v-for="(brawler, index) in props.brawlers"
       :key="brawler + '-' + index"
       :to="`/tier-list/brawler/${props.brawlerId({ name: brawler })}`"
-      class="absolute top-0"
-      :style="{
-        // 50% - avg. width - position
-        left: `calc(50% - 20px - (${(index - (props.brawlers.length - 1) / 2) * 100 / (props.brawlers.length + 1)}%))`,
-      }"
+      :class="[props.height, props.width, {
+        [props.snug]: index < props.brawlers.length - 1,
+      }]"
     >
       <media-img
         :path="`/brawlers/${props.brawlerId({ name: brawler})}/avatar`"
         :alt="props.capitalizeWords(brawler.toLowerCase())"
         size="160"
-        :clazz="props.height"
+        :clazz="'bg-gray-800 border-transparent border-2 rounded-full object-cover ' + props.height + ' ' + props.width"
       ></media-img>
     </router-link>
   </div>
@@ -42,9 +40,20 @@ export default Vue.extend({
       type: Function,
       default: capitalizeWords
     },
+    xs: {
+      type: Boolean
+    },
     height: {
       type: String,
       default: 'h-8'
+    },
+    width: {
+      type: String,
+      default: 'w-8'
+    },
+    snug: {
+      type: String,
+      default: '-ml-4'
     },
   },
 })
