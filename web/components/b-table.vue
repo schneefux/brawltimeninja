@@ -36,7 +36,7 @@
         </tr>
         <tr
           v-for="r in pageRows"
-          :key="r.index"
+          :key="r[idKey]"
         >
           <th
             v-if="ranked"
@@ -45,7 +45,7 @@
           >
             <slot
               name="index"
-              :index="r.index"
+              :index="r.index + 1"
               :row="r"
             >
               {{ r.index + 1 }}
@@ -92,6 +92,10 @@ export default Vue.extend({
       type: Array as PropType<Column[]>,
       required: true
     },
+    idKey: {
+      type: String,
+      required: true
+    },
     rows: {
       type: Array as PropType<object[]>,
       required: true
@@ -101,6 +105,14 @@ export default Vue.extend({
     },
     ranked: {
       type: Boolean
+    },
+  },
+  watch: {
+    columns() {
+      this.page = 0
+    },
+    rows() {
+      this.page = 0
     },
   },
   data() {

@@ -98,10 +98,6 @@ import Vue, { PropType } from 'vue'
 import { metaStatMaps, MetaGridEntry, compare1, brawlerId } from '../lib/util'
 import BrawlerTeam from '~/components/brawler-team.vue'
 
-interface IndexedMetaGridEntry extends MetaGridEntry {
-  index: number
-}
-
 export default Vue.extend({
   inheritAttrs: false,
   components: {
@@ -133,6 +129,11 @@ export default Vue.extend({
     return {
       page: 0,
     }
+  },
+  watch: {
+    entries() {
+      this.page = 0
+    },
   },
   computed: {
     brawlerId() {

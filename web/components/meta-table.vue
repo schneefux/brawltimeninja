@@ -5,6 +5,7 @@
       :columns="columns"
       :rows="rows"
       :page-size="pageSize"
+      id-key="id"
       class="font-semibold"
       ranked
     >
@@ -77,11 +78,6 @@ export default Vue.extend({
       default: 15
     },
   },
-  data() {
-    return {
-      page: 0,
-    }
-  },
   computed: {
     columns(): Column[] {
       return [{
@@ -98,6 +94,7 @@ export default Vue.extend({
       return aboveThreshold
         .concat(belowThreshold)
         .map(e => ({
+          id: e.id,
           brawlers: e.brawlers,
           icon: e.icon,
           link: e.link,

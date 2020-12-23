@@ -12,6 +12,7 @@
         slot="content"
         :columns="columns"
         :rows="rows"
+        id-key="player"
         ranked
       >
         <template v-slot:player="{ row }">

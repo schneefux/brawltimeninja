@@ -12,6 +12,7 @@
         :columns="columns"
         :rows="rows"
         :page-size="pageSize"
+        id-key="name"
         class="font-semibold text-sm md:text-lg h-full"
         ranked
       >

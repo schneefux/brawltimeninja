@@ -12,6 +12,7 @@
         :columns="columns"
         :rows="rows"
         :page-size="pageSize"
+        id-key="brawlerNames"
         class="font-semibold text-sm md:text-lg"
       >
         <template v-slot:brawlers="{ row }">
