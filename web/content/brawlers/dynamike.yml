@@ -27,10 +27,12 @@ gadgets:
       area denial, finishing off enemies, and getting away from enemies. "
   - name: Satchel Charge
     description: "Dynamike's next attack will stun enemies for 1.5 seconds. Enemy
-      brawlers can tell that you have a stun ready as there will be a halo in
-      your head after activating the gadget. Satchel Charge can be used to
-      guarantee a kill/super, interrupting a brawler's super, temporarily
-      halting the siege bot, forcing opponents back and making them on guard, "
+      brawlers can tell that you have a stun prepared from the halo on your head
+      after activating the gadget. Satchel Charge can be used to gain his super,
+      interrupt a brawler's super, temporarily halting the siege bot, forcing
+      opponents back and making them be on guard, making brawlers take
+      guaranteed damage from minecarts, meteors, etc., and gaining the lane
+      advantage early on as stunned brawlers are likely to die. "
 starpower2_name: Demolition
 starpower1_name: Dyna-jump
 description: "Dynamike is a thrower with $health HP. He throws two sticks of
