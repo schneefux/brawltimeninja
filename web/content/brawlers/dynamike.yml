@@ -1,9 +1,29 @@
-name: Dynamike
 gender: null
+gadget1_description: Dynamike spins around and throws sticks of dynamite around
+  himself while also gaining a speed boost. Each stick of dynamite deals
+  $damage, and because of its inconsistencies, best used to finish a brawler
+  off. The increased movement speed allows Mike to get away from enemies and
+  inversely, get back in action or another destination such as the goal faster.
+  Aside from being used as a finisher and a speed boost, Fidget Spinner can also
+  be used for area denial.
+gadget2_description: The next regular attack will stun enemies in place for 1.5
+  seconds if landed successfully. Satchel Charge allows for Dynamike and his
+  team to take down most enemies and win the lane advantage, turning the fight
+  to a 3v2, 3v1, or even a 3v0. Mike's 2nd gadget also works on the IKE turret
+  and siege bot, making him and his team able to deal more damage to the IKE or
+  the siege bot respectively. In addition, the stun from Satchel Charge can
+  knock the ball out of enemy brawlers' hand, interrupt an enemies' super, and
+  so much more!
+gadget2_name: Satchel Charge
+gadget1_name: Fidget Spinner
+starpower2_name: Demolition
+name: Dynamike
+starpower1_name: Dyna-jump
 description: "Dynamike is a thrower with $health HP. He throws two sticks of
-  dynamite for his main attack and a whole barrel of dynamite for his super.
-  Brawler fact: Dynamike dislikes the auto-aim feature, so don't use it unless
-  you want to make Mike VERY UPSET ‘(T∩T)’."
+  dynamite for his main attack and a whole barrel of dynamite that can destroy
+  cover and knock back brawlers for his super. Brawler fact: Dynamike dislikes
+  the auto-aim feature, so don't use it unless you want to make Mike VERY UPSET
+  ‘(T∩T)’."
 main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
   damage. His attack can go over walls and has a range of $range tiles. The
   farther away Mike throws his sticks, the faster they explode. The sticks'
@@ -24,22 +44,3 @@ super: KABOOM! Dynamike lobs a whole barrel of dynamite at his enemies, dealing
   Because Mike's super can break cover, it can be used to open up space for
   long-ranged brawlers to attack along with reducing the effectiveness of enemy
   throwers. Just make sure you don't blow up your own walls.
-starpower1_name: Dyna-jump
-starpower2_name: Demolition
-gadget1_name: Fidget Spinner
-gadget1_description: Dynamike spins around and throws sticks of dynamite around
-  himself while also gaining a speed boost. Each stick of dynamite deals
-  $damage, and because of its inconsistencies, best used to finish a brawler
-  off. The increased movement speed allows Mike to get away from enemies and
-  inversely, get back in action or another destination such as the goal faster.
-  Aside from being used as a finisher and a speed boost, Fidget Spinner can also
-  be used for area denial.
-gadget2_name: Satchel Charge
-gadget2_description: The next regular attack will stun enemies in place for 1.5
-  seconds if landed successfully. Satchel Charge allows for Dynamike and his
-  team to take down most enemies and win the lane advantage, turning the fight
-  to a 3v2, 3v1, or even a 3v0. Mike's 2nd gadget also works on the IKE turret
-  and siege bot, making him and his team able to deal more damage to the IKE or
-  the siege bot respectively. In addition, the stun from Satchel Charge can
-  knock the ball out of enemy brawlers' hand, interrupt an enemies' super, and
-  so much more!
