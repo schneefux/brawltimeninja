@@ -117,8 +117,12 @@ export default Vue.extend({
         path: '/dashboard',
         query: {
           cube: 'team',
-          mode: this.mode,
-          map: this.map,
+          ...(this.mode != undefined ? {
+            mode: this.mode,
+          } : {}),
+          ...(this.map != undefined ? {
+            map: this.map,
+          } : {}),
         },
       }
     },
