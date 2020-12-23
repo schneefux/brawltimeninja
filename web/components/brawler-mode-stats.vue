@@ -34,6 +34,7 @@
       :to="`/tier-list/mode/${camelToKebab(mode)}`"
       primary
       prefetch
+      sm
     >
       Open
     </b-button>

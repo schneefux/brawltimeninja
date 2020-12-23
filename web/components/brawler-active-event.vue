@@ -41,6 +41,7 @@
       :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
       primary
       prefetch
+      sm
     >
       Open
     </b-button>

@@ -19,6 +19,7 @@
         :to="`/blog/${topic}/${post.slug}`"
         primary
         prefetch
+        sm
       >Read</b-button>
     </card>
   </div>

@@ -36,7 +36,7 @@
         v-if="page < pages"
         class="mx-2"
         primary
-        md
+        sm
         @click="expand"
       >
         Show More

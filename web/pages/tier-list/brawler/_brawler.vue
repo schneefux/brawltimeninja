@@ -36,7 +36,7 @@
           <b-button
             to="/tier-list/starpowers"
             primary
-            md
+            sm
             prefetch
           >
             Open Star Power Tier List
@@ -46,7 +46,7 @@
             class="ml-3"
             to="/tier-list/gadgets"
             primary
-            md
+            sm
             prefetch
           >
             Open Gadget Tier List
@@ -92,14 +92,14 @@
           @click="showAllMaps = true"
           :class="{ 'md:block': !showAllMaps }"
           class="mr-3 hidden"
-          md
+          sm
           primary
         >
           Show More
         </b-button>
         <b-button
           to="/tier-list/map"
-          md
+          sm
           primary
           prefetch
         >
@@ -141,7 +141,7 @@
         <b-button
           to="/tier-list/brawler"
           primary
-          md
+          sm
           prefetch
         >
           Open Brawler Tier List
@@ -170,7 +170,7 @@
           @click="showAllModes = true"
           :class="{ 'md:block': !showAllModes }"
           class="mr-3 hidden"
-          md
+          sm
           primary
         >
           Show More
