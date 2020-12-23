@@ -4,6 +4,7 @@
       <nuxt-link
         to="/"
         class="font-semibold text-xl tracking-tighter leading-tight"
+        exact-active-class="text-red-800"
         prefetch
       >
         Brawl Time Ninja
@@ -34,7 +35,8 @@
             v-for="link in links"
             :key="link.target"
             :to="link.target"
-            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium"
+            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium hover:text-red-800"
+            exact-active-class="text-red-800"
           >
             {{ link.name }}
           </nuxt-link>
