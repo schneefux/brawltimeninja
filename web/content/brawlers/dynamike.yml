@@ -6,8 +6,11 @@ starpowers:
       dynamites. This allows Mike to be able to avoid attacks/supers, retreat
       behind a wall, and take shortcuts over walls to reach an objective faster.
       The distance that Mike is propelled is different between his main attack
-      and super, with the super propelling Mike forward more. Dyna-jump can also
-      be used to waste ammos and bait out supers. "
+      and super, with the super propelling Mike forward more. Aside from
+      positioning and temporary immunity, Dyna-jump can also be used to waste
+      enemies' ammo and bait out supers. There are different jumps possible with
+      dyna-jump: single jump, double jump, and triple jumps, which are done with
+      combinations of Mike's main attack or super. "
 gadget1_description: Dynamike spins around and throws sticks of dynamite around
   himself while also gaining a speed boost. Each stick of dynamite deals
   $damage, and because of its inconsistencies, best used to finish a brawler
