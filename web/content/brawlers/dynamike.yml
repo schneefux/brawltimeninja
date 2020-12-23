@@ -12,10 +12,14 @@ starpowers:
       dyna-jump: single jump, double jumps, and triple jumps, which are done
       with combinations of Mike's main attack and/or super. Quadruple or higher
       jumps are also possible, but walls will have to be utilized to do so.
-      Conserving ammo and not doing unnecessary jumps are essential towards
-      playing with Dyna-jump, as not being able to escape a bad situation and
-      putting yourself in a bad situation are the outcomes of what happen if you
-      do the opposite."
+      Conserving ammo and not doing unnecessary jumps are essential with
+      Dyna-jump, as not being able to escape a bad situation and putting
+      yourself in a bad situation are the outcomes of what happen if you do not
+      do so."
+  - name: Demolition
+    description: "Kapowee.. Dynamike's super gains an additional 1000 damage,
+      allowing him to kill off more brawlers with one super and not just Tick.
+      Dynamike's 2nd star power is the more consistent of the two, and "
 gadget1_description: Dynamike spins around and throws sticks of dynamite around
   himself while also gaining a speed boost. Each stick of dynamite deals
   $damage, and because of its inconsistencies, best used to finish a brawler
@@ -51,11 +55,11 @@ gadgets:
       advantage early on as stunned brawlers are likely to die. "
 starpower2_name: Demolition
 starpower1_name: Dyna-jump
-description: "Dynamike is a thrower with $health HP. He throws two sticks of
-  dynamite for his main attack and a whole barrel of dynamite that can destroy
-  cover and knock back brawlers for his super. Brawler Fact: Dynamike dislikes
-  the auto-aim button, so don't use it unless you want to make him very upset
-  (T∩T)."
+description: "\"Who wants some TNT?\" Dynamike is a thrower with $health HP. He
+  throws two sticks of dynamite for his main attack and a whole barrel of
+  dynamite that can destroy cover and knock back brawlers for his super. Brawler
+  Fact: Dynamike dislikes the auto-aim button, so don't use it unless you want
+  to make him very upset (T∩T)."
 main: "Boom! Dynamike throws out two sticks of dynamite, each dealing $damage
   damage. His attack can go over walls and has a range of $range tiles. The
   farther away Mike throws his sticks, the faster they explode and the wider
