@@ -3,7 +3,10 @@ starpowers:
   - name: Dyna-jump
     description: "Arguably the hardest mechanic to master in the game, Dyna-jump
       allows for Dynamike to jump over obstacles and into the air from his
-      dynamites. This allows Mike to be able to gain immunity from "
+      dynamites. This allows Mike to be able to avoid attacks/supers, retreat
+      behind a wall, and taking shortcuts over walls to reach an objective
+      faster. The distance that Mike is propelled is different between his main
+      attack and super, with the super propelling Mike forwards more. "
 gadget1_description: Dynamike spins around and throws sticks of dynamite around
   himself while also gaining a speed boost. Each stick of dynamite deals
   $damage, and because of its inconsistencies, best used to finish a brawler
