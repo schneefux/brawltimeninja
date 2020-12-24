@@ -15,6 +15,7 @@
       With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking
       <b-button
         light
+        xs
         @click="withdrawCookieConsent"
       >this button</b-button>.
     </p>

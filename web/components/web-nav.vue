@@ -4,7 +4,6 @@
       <nuxt-link
         to="/"
         class="font-semibold text-xl tracking-tighter leading-tight"
-        exact-active-class="text-red-800"
         prefetch
       >
         Brawl Time Ninja
