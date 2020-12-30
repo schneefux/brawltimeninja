@@ -35,7 +35,7 @@ export default Vue.extend({
         ['timestamp'],
         ['timestamp', 'brawler_trophies'],
         {
-          ...this.$clicker.defaultSlices('brawler'),
+          ...this.$clicker.defaultSlicesRaw('brawler'),
           // TODO use ID
           brawler_name: [this.brawler.toUpperCase()],
           player_tag: [this.playerTag],
@@ -52,7 +52,7 @@ export default Vue.extend({
         ['timestamp'],
         ['timestamp', 'player_trophies'],
         {
-          ...this.$clicker.defaultSlices('brawler'),
+          ...this.$clicker.defaultSlicesRaw('brawler'),
           brawler_name: undefined,
           player_tag: [this.playerTag],
         },
