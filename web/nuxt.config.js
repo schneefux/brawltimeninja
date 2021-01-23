@@ -110,6 +110,7 @@ export default {
     { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
     { from: '^/leaderboard$', to: '/leaderboard/hours', statusCode: 301 },
     { from: '^/leaderboard/$', to: '/leaderboard/hours', statusCode: 301 },
+    { from: '^/tier-list/mode/(.*)/map/(.*)/teams$', to: '/tier-list/mode/$1/map/$2', statusCode: 301 },
   ],
 
   sentry: {
