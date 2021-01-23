@@ -1,5 +1,10 @@
 <template>
   <page :title="brawlerName">
+    <map-breadcrumbs
+      :brawler-id="brawlerId"
+      :brawler-name="brawlerName"
+    ></map-breadcrumbs>
+
     <page-section>
       <div class="flex flex-wrap justify-center">
         <brawler-base-stats

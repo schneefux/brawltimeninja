@@ -1,47 +1,128 @@
 <template>
-  <ol class="flex flex-wrap space-x-2 my-1">
-    <li>
+  <ol
+    class="flex flex-wrap space-x-2 my-1"
+    itemtype="https://schema.org/BreadcrumbList"
+    itemscope
+  >
+    <!-- TODO: refactor -->
+    <li
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
       <b-button
         to="/tier-list/brawler"
+        itemid="/tier-list/brawler"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
         xs
         primary
-      >Brawlers</b-button>
+      >
+        <span itemprop="name">Brawlers</span>
+      </b-button>
+      <meta itemprop="position" content="1" />
     </li>
-    <li v-if="brawler != undefined">
+    <li
+      v-if="brawlerId != undefined"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
+      <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
+        :to="`/tier-list/brawler/${brawlerId}`"
+        :itemid="`/tier-list/brawler/${brawlerId}`"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
         xs
         dark
-      >{{ brawlerName }}</b-button>
+      >
+        <span itemprop="name">{{ brawlerName }}</span>
+      </b-button>
+      <meta itemprop="position" content="2" />
     </li>
-    <li v-if="mode != undefined">
+    <li
+      v-if="mode != undefined"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
         :to="`/tier-list/mode/${modePath}`"
-        xs
+        :itemid="`/tier-list/mode/${modePath}`"
         :primary="map != undefined"
         :dark="map == undefined"
-      >{{ modeName }}</b-button>
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
+        xs
+      >
+        <span itemprop="name">{{ modeName }}</span>
+      </b-button>
+      <meta itemprop="position" content="2" />
     </li>
-    <li v-if="map != undefined">
+    <li
+      v-if="map != undefined"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
+        :to="`/tier-list/mode/${modePath}/map/${mapPath}`"
+        :itemid="`/tier-list/mode/${modePath}/map/${mapPath}`"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
         xs
         dark
-      >{{ map }}</b-button>
+      >
+        <span itemprop="name">{{ map }}</span>
+      </b-button>
+      <meta itemprop="position" content="3" />
     </li>
-    <li v-if="starpowers">
+    <li
+      v-if="starpowers"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
+        to="/tier-list/starpowers"
+        itemid="/tier-list/starpowers"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
         xs
         dark
-      >Star Powers</b-button>
+      >
+        <span itemprop="name">Star Powers</span>
+      </b-button>
+      <meta itemprop="position" content="2" />
     </li>
-    <li v-if="gadgets">
+    <li
+      v-if="gadgets"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
+        to="/tier-list/gadgets"
+        itemid="/tier-list/gadgets"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
         xs
         dark
-      >Gadgets</b-button>
+      >
+        <span itemprop="name">Gadgets</span>
+      </b-button>
+      <meta itemprop="position" content="2" />
     </li>
   </ol>
 </template>
@@ -49,7 +130,7 @@
 <script lang="ts">
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import Vue from 'vue'
-import { camelToKebab, formatMode } from '~/lib/util'
+import { camelToKebab, formatMode, slugify } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -65,7 +146,10 @@ export default Vue.extend({
     gadgets: {
       type: Boolean
     },
-    brawler: {
+    brawlerId: {
+      type: String
+    },
+    brawlerName: {
       type: String
     },
   },
@@ -75,6 +159,9 @@ export default Vue.extend({
     },
     modePath() {
       return camelToKebab(this.mode)
+    },
+    mapPath() {
+      return slugify(this.map)
     },
     faCaretRight() {
       return faCaretRight
