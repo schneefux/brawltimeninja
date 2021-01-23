@@ -98,7 +98,7 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return `${this.event.modeName}: ${this.event.map} Brawl Stars Tier List`
+      return `${this.event.map} Tier List for Brawl Stars`
     },
     camelToKebab() {
       return camelToKebab
