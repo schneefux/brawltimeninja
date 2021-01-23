@@ -342,7 +342,7 @@ export interface MetaGridEntryTiered extends MetaGridEntry {
 }
 
 export function formatAsJsonLd(event: ActiveEvent) {
-  const url = `/tier-list/mode/${slugify(event.mode)})}/${slugify(event.map)}`
+  const url = `/tier-list/mode/${slugify(event.mode)}/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
