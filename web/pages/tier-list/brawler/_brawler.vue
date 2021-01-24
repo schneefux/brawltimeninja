@@ -202,15 +202,16 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { capitalize, capitalizeWords, metaStatMaps } from '../../../lib/util'
-import { ModeMetaMap, MapMetaMap } from '../../../model/MetaEntry'
-import { BrawlerStatisticsRows } from '../../../model/Clicker'
-import { ActiveEvent, CurrentAndUpcomingEvents } from '../../../model/Api'
 
 export default Vue.extend({
   head(): MetaInfo {
     const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
     return {
       title: `${this.brawlerName} in Brawl Stars`,
+      link: [ {
+        rel: 'canonical',
+        href: `/tier-list/brawler/${this.brawlerId}`,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

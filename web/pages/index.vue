@@ -232,6 +232,10 @@ export default Vue.extend({
 
     return {
       title: 'Brawl Stars Stats',
+      link: [ {
+        rel: 'canonical',
+        href: '/',
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

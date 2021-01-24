@@ -239,8 +239,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
 import { MapMetaMap } from '../../model/MetaEntry'
 import { Post } from '../../model/Web'
-import { ActiveEvent, CurrentAndUpcomingEvents, Leaderboard, LeaderboardEntry } from '../../model/Api'
-import { NuxtAxiosInstance } from '@nuxtjs/axios'
+import { Leaderboard, LeaderboardEntry } from '../../model/Api'
 import { BattleTotalRow } from '../../components/player-battles-stats.vue'
 
 export default Vue.extend({

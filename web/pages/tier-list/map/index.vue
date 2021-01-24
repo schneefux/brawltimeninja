@@ -98,6 +98,10 @@ export default Vue.extend({
 
     return {
       title: 'Map Tier List',
+      link: [ {
+        rel: 'canonical',
+        href: '/tier-list/map',
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
