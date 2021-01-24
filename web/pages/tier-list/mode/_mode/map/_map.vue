@@ -78,10 +78,15 @@ export default Vue.extend({
   head(): MetaInfo {
     const description = `Brawl Stars Tier List for ${this.event.modeName}: ${this.event.map}. View the best Brawlers with Win Rates and Rankings.`
     return {
-      title: `Tier List for ${this.event.modeName}: ${this.event.map}`,
+      title: `${this.event.map} Tier List for Brawl Stars`,
+      link: [ {
+        rel: 'canonical',
+        href: `/tier-list/mode/${camelToKebab(this.event.mode)}/map/${slugify(this.event.map)}`,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
+        ...(this.event.id != undefined && this.event.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: process.env.mediaUrl! + '/maps/' + this.event.id + '.png' }] : []),
       ]
     }
   },
@@ -100,17 +105,11 @@ export default Vue.extend({
     title(): string {
       return `${this.event.map} Tier List for Brawl Stars`
     },
-    camelToKebab() {
-      return camelToKebab
-    },
-    slugify() {
-      return slugify
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ store, params, error, $clicker }) {
+  async asyncData({ params, error, $clicker }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
     const events = await $clicker.query('all.events', 'map',

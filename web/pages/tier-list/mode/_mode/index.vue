@@ -135,7 +135,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import pageSection from '~/components/page-section.vue'
+import { MetaInfo } from 'vue-meta'
 import { formatMode, kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '../../../../lib/util'
 
@@ -145,10 +145,14 @@ interface EventIdAndMap {
 }
 
 export default Vue.extend({
-  head() {
-    const description = `Brawl Stars ${(<any>this).modeName} Tier List. Find the best Brawlers for ${(<any>this).modeName} with Win Rates and Rankings.`
+  head(): MetaInfo {
+    const description = `Brawl Stars ${this.modeName} Tier List. Find the best Brawlers for ${this.modeName} with Win Rates and Rankings.`
     return {
-      title: `${(<any>this).modeName} Tier List`,
+      title: `${this.modeName} Tier List`,
+      link: [ {
+        rel: 'canonical',
+        href: `/tier-list/mode/${this.mode}`,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
