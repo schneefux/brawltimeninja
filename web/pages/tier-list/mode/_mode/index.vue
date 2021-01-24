@@ -151,7 +151,7 @@ export default Vue.extend({
       title: `${this.modeName} Tier List`,
       link: [ {
         rel: 'canonical',
-        href: `/tier-list/mode/${this.mode}`,
+        href: `/tier-list/mode/${camelToKebab(this.mode)}`,
       } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
