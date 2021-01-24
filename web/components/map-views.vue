@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap justify-center">
     <card
-      v-if="id != undefined && id != 0"
+      v-if="(id != undefined && id != 0) || (staticImageUrl != undefined)"
       sm
     >
       <div
@@ -9,6 +9,7 @@
         class="flex justify-center"
       >
         <media-img
+          v-if="id != undefined && id != 0"
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'image'),
             once: true,
@@ -17,6 +18,11 @@
           size="512"
           clazz="h-80"
         ></media-img>
+        <img
+          v-if="staticImageUrl != undefined"
+          :src="staticImageUrl"
+          style="max-height: 16rem"
+        >
       </div>
     </card>
 
@@ -94,6 +100,14 @@ export default Vue.extend({
     },
   },
   computed: {
+    staticImageUrl(): string|undefined {
+      if (this.map?.startsWith('Competition Winner ')) {
+        const id = this.map!.replace('Competition Winner ', '')
+        return process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
+      } else {
+        return undefined
+      }
+    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     })

@@ -122,7 +122,7 @@ export default Vue.extend({
     staticImageUrl(): string|undefined {
       if (this.map?.startsWith('Competition Winner ')) {
         const id = this.map!.replace('Competition Winner ', '')
-        return `/images/maps/${id}.jpg`
+        return process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
       } else {
         return undefined
       }
