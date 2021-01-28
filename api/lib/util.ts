@@ -611,7 +611,7 @@ export function scaleEntriesIntoTiers(entries: MetaGridEntry[], stat: keyof type
   const stats = sortedEntries
     .map(getStat)
     .reverse()
-  const sign = metaStatMaps.signs[stat]
+  const sign = metaStatMaps.signs[stat as keyof typeof metaStatMaps.signs]
   const min = stats[sign == -1 ? 1 : stats.length - 2]! // skip highest (outlier)
   const max = stats[sign == -1 ? stats.length - 2 : 1]! // skip lowest
   const clamp = (v: number) => Math.max(min, Math.min(max, v))
