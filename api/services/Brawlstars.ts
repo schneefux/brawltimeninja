@@ -1,6 +1,6 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
-import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getCompetitionMapDayStart } from '../lib/util';
+import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util';
 import { MapMap, MapMetaMap } from '~/model/MetaEntry';
 import { BrawlerMetaRow, MapMetaRow, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
 import { Battle, Brawler, Player, BrawlerMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
@@ -354,13 +354,15 @@ export default class BrawlstarsService {
       // TODO battle log database was cleared 2020-10-22,
       // all workarounds from before that date can be removed
 
-      // 2020-10-22, competition maps: event={id: 0, map: null}, trophychange=N/A
-      if (battle.event.id == 0 && battle.event.map == null && !('trophyChange' in battle.battle)) {
-        battle.event.map = 'Competition Entry'
-      }
-      // competition winners: event={id: 0, map: null}, trophychange=number
-      if (battle.event.id == 0 && battle.event.map == null && 'trophyChange' in battle.battle) {
-        battle.event.map = `Competition Winner ${getCompetitionMapDayStart(parseApiTime(battle.battleTime)).toISOString().slice(0, 10)}`
+      // 2020-10-22, competition maps: event={id: 0, map: null}
+      if (battle.event.id == 0 && battle.event.map == null) {
+        const battleTime = parseApiTime(battle.battleTime)
+        const competitionWinnerMode = getCompetitionWinnerMode(battleTime)
+        if (battle.event.mode == competitionWinnerMode) {
+          battle.event.map = `Competition Winner ${getCompetitionMapDayStart(parseApiTime(battle.battleTime)).toISOString().slice(0, 10)}`
+        } else {
+          battle.event.map = 'Competition Entry'
+        }
       }
       battle.event.id = battle.event.id || 0
       battle.event.map = battle.event.map || ''
