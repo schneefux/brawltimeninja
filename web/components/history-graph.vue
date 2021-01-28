@@ -38,7 +38,9 @@ export default Vue.extend({
         // TODO use ID
         ...(this.brawler != undefined ? {
           brawler_name: [this.brawler.toUpperCase()],
-        } : {}),
+        } : {
+          brawler_name: undefined,
+        }),
         player_tag: [this.playerTag],
       },
       { cache: 60 })
