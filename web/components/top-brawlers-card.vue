@@ -53,7 +53,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { brawlerId, capitalizeWords, metaStatMaps } from '~/lib/util'
-import { BrawlerMetaStatistics } from '~/model/Api'
 
 interface Row {
   id: string
