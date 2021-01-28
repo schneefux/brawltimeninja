@@ -358,7 +358,7 @@ export default class BrawlstarsService {
       if (battle.event.id == 0 && battle.event.map == null) {
         const battleTime = parseApiTime(battle.battleTime)
         const competitionWinnerMode = getCompetitionWinnerMode(battleTime)
-        if (battle.event.mode == competitionWinnerMode) {
+        if (battle.battle.mode == competitionWinnerMode) {
           battle.event.map = `Competition Winner ${getCompetitionMapDayStart(parseApiTime(battle.battleTime)).toISOString().slice(0, 10)}`
         } else {
           battle.event.map = 'Competition Entry'
