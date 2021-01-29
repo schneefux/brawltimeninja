@@ -1,8 +1,9 @@
 <template>
   <div class="mt-2 flex flex-wrap justify-center">
     <lazy
-      v-for="battle in player.battles.slice(0, limit)"
+      v-for="(battle, index) in player.battles.slice(0, limit)"
       :key="battle.timestamp"
+      :render="index <= 5"
       distance="640px"
       translucent
     >
