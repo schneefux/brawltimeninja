@@ -117,6 +117,8 @@
       </div>
     </div>
 
+    <ad-card></ad-card>
+
     <client-only>
       <adsense
         v-if="!isApp"
