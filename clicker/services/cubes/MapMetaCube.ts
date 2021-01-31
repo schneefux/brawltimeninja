@@ -41,6 +41,12 @@ export default class MapMetaCube extends BrawlerBattleCube {
     battle_is_bigbrawler UInt8
   `
 
+  measures = {
+     ...BrawlerBattleCube.defaultMeasures,
+    'battle_event_mode': 'any(battle_event_mode)',
+    'battle_event_id': 'any(battle_event_id)',
+  }
+
   // FIXME this gives every ally the same trophyrange, trophychange and pick weight which might not be true
   // ally bigbrawler being the same is ok because the bigbrawler is in the opposing team or has no allies
   // TODO add brawler_id to dimensions
