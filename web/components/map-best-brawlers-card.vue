@@ -43,7 +43,7 @@
     <b-button
       v-if="link"
       slot="actions"
-      :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}${powerplay ? '?powerplay=true' : ''}` : `/tier-list/mode/${camelToKebab(mode)}`"
+      :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
       primary
       prefetch
       sm
