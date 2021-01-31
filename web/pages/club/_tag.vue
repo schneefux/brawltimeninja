@@ -69,6 +69,10 @@ export default Vue.extend({
     const description = `${this.club.name} Brawl Stars Club. ${this.club.description}`
     return {
       title: this.club.name,
+      link: [ {
+        rel: 'canonical',
+        href: `/club/${this.club.tag}`,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -90,7 +94,8 @@ export default Vue.extend({
     })
   },
   async asyncData({ $axios, params }) {
-    const club = await $axios.$get<Club>(`/api/club/${params.tag}`)
+    const tag = params.tag.toUpperCase()
+    const club = await $axios.$get<Club>(`/api/club/${tag}`)
 
     return {
       club,

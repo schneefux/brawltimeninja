@@ -247,6 +247,10 @@ export default Vue.extend({
     const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
     return {
       title: this.player.name,
+      link: [ {
+        rel: 'canonical',
+        href: `/player/${this.player.tag}`,
+      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -284,7 +288,7 @@ export default Vue.extend({
     }),
   },
   async validate({ store, params }) {
-    const { tag } = params
+    const tag = params.tag.toUpperCase() // fuck Bing for lowercasing all URLs
     const tagRegex = RegExp(store.state.tagPattern)
 
     if (!tagRegex.test(tag)) {
