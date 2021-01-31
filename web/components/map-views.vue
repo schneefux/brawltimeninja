@@ -1,8 +1,15 @@
 <template>
-  <div class="flex flex-wrap justify-center">
+  <div
+    class="grid grid-cols-1 lg:grid-cols-2 grid-rows-2 justify-items-center"
+    :class="{
+      'xl:grid-cols-4': showMapImageCard,
+      'xl:grid-cols-3': !showMapImageCard,
+    }"
+  >
     <card
-      v-if="(id != undefined && id != 0) || (staticImageUrl != undefined)"
-      sm
+      v-if="showMapImageCard"
+      md
+      class="row-span-2"
     >
       <div
         slot="content"
@@ -16,7 +23,7 @@
           }"
           :path="`/maps/${id}`"
           size="512"
-          clazz="h-80"
+          clazz="h-80 md:h-120"
         ></media-img>
         <img
           v-if="staticImageUrl != undefined"
@@ -26,54 +33,53 @@
       </div>
     </card>
 
-    <div>
-      <map-leaderboard-table
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'leaderboard'),
-          once: true,
-        }"
-        :mode="mode"
-        :map="map"
-        :sm="mode != undefined"
-        :md="mode == undefined"
-      ></map-leaderboard-table>
+    <map-brawlers-table
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'brawlers'),
+        once: true,
+      }"
+      :mode="mode"
+      :map="map"
+      class="row-span-2"
+      full-height
+      md
+    ></map-brawlers-table>
 
-      <client-only>
-        <adsense
-          v-if="!isApp && map != undefined"
-          data-ad-format="auto"
-          data-full-width-responsive="no"
-          class="md:w-full max-w-sm"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="4623162753"
-        ></adsense>
-      </client-only>
-    </div>
+    <map-teams-table
+      v-if="mode != 'soloShowdown'"
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'teams'),
+        once: true,
+      }"
+      :mode="mode"
+      :map="map"
+      class="row-span-2"
+      full-height
+      md
+    ></map-teams-table>
 
-    <div class="flex flex-wrap justify-center">
-      <map-brawlers-table
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'brawlers'),
-          once: true,
-        }"
-        :mode="mode"
-        :map="map"
-        full-height
-        md
-      ></map-brawlers-table>
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        data-ad-format="auto"
+        data-full-width-responsive="no"
+        class="container flex justify-center"
+        ins-class="w-screen md:w-full -mx-4 text-center"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="4623162753"
+      ></adsense>
+    </client-only>
 
-      <map-teams-table
-        v-if="mode != 'soloShowdown'"
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'teams'),
-          once: true,
-        }"
-        :mode="mode"
-        :map="map"
-        full-height
-        md
-      ></map-teams-table>
-    </div>
+    <map-leaderboard-table
+      v-observe-visibility="{
+        callback: (v, e) => trackScroll(v, e, 'leaderboard'),
+        once: true,
+      }"
+      :mode="mode"
+      :map="map"
+      full-height
+      md
+    ></map-leaderboard-table>
   </div>
 </template>
 
@@ -107,6 +113,9 @@ export default Vue.extend({
       } else {
         return undefined
       }
+    },
+    showMapImageCard(): boolean {
+      return (this.id != undefined && this.id != 0) || (this.staticImageUrl != undefined)
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
