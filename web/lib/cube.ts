@@ -33,6 +33,7 @@ export interface Dimension {
   formatter: (o: object) => string
   column: string
   anyColumns: string[]
+  hidden: boolean
 }
 
 export interface Slice {
@@ -52,6 +53,7 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (p: any) => p.player_name,
     column: 'player_id',
     anyColumns: ['player_name', 'player_icon_id'],
+    hidden: false,
   },
   brawler: {
     id: 'brawler',
@@ -59,13 +61,23 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (b: any) => capitalizeWords(b.brawler_name.toLowerCase()),
     column: 'brawler_name',
     anyColumns: [],
+    hidden: false,
   },
-  ally: {
+  brawlerHidden: {
+    id: 'brawler',
+    name: 'Brawler',
+    formatter: (b: any) => capitalizeWords(b.brawler_name.toLowerCase()),
+    column: 'brawler_name',
+    anyColumns: [],
+    hidden: true,
+  },
+  allyHidden: {
     id: 'ally',
     name: 'Ally',
     formatter: (a: any) => capitalizeWords(a.ally_brawler_name.toLowerCase()),
     column: 'ally_brawler_name',
     anyColumns: [],
+    hidden: true,
   },
   gadget: {
     id: 'gadget',
@@ -73,6 +85,7 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (g: any) => capitalizeWords(g.brawler_gadget_name.toLowerCase()),
     column: 'brawler_gadget_id',
     anyColumns: ['brawler_gadget_name', 'brawler_name'],
+    hidden: false,
   },
   starpower: {
     id: 'starpower',
@@ -80,6 +93,7 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (s: any) => capitalizeWords(s.brawler_starpower_name.toLowerCase()),
     column: 'brawler_starpower_id',
     anyColumns: ['brawler_starpower_name', 'brawler_name'],
+    hidden: false,
   },
   team: {
     id: 'team',
@@ -87,6 +101,7 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (t: any) => capitalizeWords(t.brawler_names.join(', ').toLowerCase()),
     column: 'brawler_names',
     anyColumns: [],
+    hidden: false,
   },
   mode: {
     id: 'mode',
@@ -94,14 +109,15 @@ const commonDimensions: Record<string, Dimension> = {
     formatter: (m: any) => formatMode(m.battle_event_mode),
     column: 'battle_event_mode',
     anyColumns: [],
+    hidden: false,
   },
   map: {
     id: 'map',
     name: 'Map',
     formatter: (m: any) => m.battle_event_map,
     column: 'battle_event_map',
-    // TODO add to clicker
-    anyColumns: [], // ['battle_event_mode', 'battle_event_id'],
+    anyColumns: ['battle_event_mode', 'battle_event_id'],
+    hidden: false,
   },
 }
 
@@ -500,7 +516,7 @@ const cubes: Record<string, Cube> = {
   map: {
     id: 'map',
     table: 'meta_map',
-    name: 'Map Cube',
+    name: 'Map',
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.mode,
@@ -523,9 +539,9 @@ const cubes: Record<string, Cube> = {
   starpower: {
     id: 'starpower',
     table: 'meta_starpower',
-    name: 'Star Power Cube',
+    name: 'Star Power',
     dimensions: [
-      commonDimensions.brawler,
+      commonDimensions.brawlerHidden,
       commonDimensions.starpower,
     ],
     defaultDimensionId: 'starpower',
@@ -543,9 +559,9 @@ const cubes: Record<string, Cube> = {
   gadget: {
     id: 'gadget',
     table: 'meta_gadget',
-    name: 'Gadget Cube',
+    name: 'Gadget',
     dimensions: [
-      commonDimensions.brawler,
+      commonDimensions.brawlerHidden,
       commonDimensions.gadget,
     ],
     defaultDimensionId: 'gadget',
@@ -563,10 +579,10 @@ const cubes: Record<string, Cube> = {
   synergy: {
     id: 'synergy',
     table: 'meta_synergy',
-    name: 'Synergies Cube',
+    name: 'Synergies',
     dimensions: [
       commonDimensions.brawler,
-      commonDimensions.ally,
+      commonDimensions.allyHidden,
     ],
     defaultDimensionId: 'ally',
     measurements: [
@@ -585,7 +601,7 @@ const cubes: Record<string, Cube> = {
   team: {
     id: 'team',
     table: 'team',
-    name: 'Teams Cube',
+    name: 'Teams',
     dimensions: [
       commonDimensions.team,
     ],

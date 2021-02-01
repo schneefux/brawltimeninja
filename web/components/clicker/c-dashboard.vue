@@ -24,11 +24,32 @@
       </template>
     </c-slicer>
 
+    <c-slicer
+      v-if="false"
+      :config="config"
+      :cube-id="configuration.cubeId"
+      v-model="configuration.comparingSlices"
+      class="w-full"
+      title="Compare to"
+    >
+      <template
+        v-for="(_, name) in $scopedSlots"
+        v-slot:[name]="data"
+      >
+        <slot
+          v-if="name.startsWith('slices.')"
+          :name="name"
+          v-bind="data"
+        ></slot>
+      </template>
+    </c-slicer>
+
     <c-query
       :config="config"
       :dimensions-ids="configuration.dimensionsIds"
       :measurements-ids="configuration.measurementsIds"
       :slices-values="configuration.slices"
+      :comparing-slices-values="configuration.comparingSlices"
       :cube-id="configuration.cubeId"
       :sort-id="configuration.measurementsIds[0]"
     >
@@ -99,6 +120,7 @@ export default Vue.extend({
       configuration: {
         cubeId,
         slices: this.defaultSlices || this.$clicker.defaultSlices(cubeId),
+        comparingSlices: this.$clicker.defaultSlices(cubeId),
         dimensionsIds: this.defaultDimensions || [this.config[cubeId].defaultDimensionId],
         measurementsIds: this.defaultMeasurements || [this.config[cubeId].defaultMeasurementId],
       } as Configuration,

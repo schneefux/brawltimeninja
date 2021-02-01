@@ -13,8 +13,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MetaGridEntry } from '@/lib/util'
-import { Config, Dimension, Measurement, Slice, SliceValue } from '~/lib/cube'
+import { Config, SliceValue } from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -39,6 +38,14 @@ export default Vue.extend({
       type: Object as PropType<SliceValue>,
       default: () => ({})
     },
+    comparingSlicesValues: {
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
+    },
+    comparing: {
+      type: Boolean,
+      default: false
+    },
     sortId: {
       type: String,
       required: true
@@ -59,6 +66,7 @@ export default Vue.extend({
     dimensionsIds: '$fetch',
     measurementsIds: '$fetch',
     slicesValues: '$fetch',
+    comparingSlicesValues: '$fetch',
     sortId: '$fetch',
   },
   fetchOnServer: false, // FIXME causes v-table render error :(
@@ -94,7 +102,28 @@ export default Vue.extend({
         limit: this.limit,
       })
 
-    const data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals, cube.metaColumns)
+    let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals, cube.metaColumns)
+
+    if (this.comparing) {
+      const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
+        ...this.$clicker.defaultSlices(this.cubeId),
+        ...this.comparingSlicesValues,
+      }, cube.metaColumns)
+      const comparingRawData = await this.$clicker.query('meta.' + this.cubeId, this.cubeId,
+        query.dimensions,
+        query.measurements,
+        query.slices, {
+          ...(sort != undefined ? {
+            sort: { [sort.column]: 'desc' },
+          } : {}),
+          cache: 60*30,
+          limit: this.limit,
+        })
+
+      const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals, cube.metaColumns)
+
+      data = this.$clicker.compareEntries(data, comparingData, 'diff')
+    }
 
     this.state = {
       data,

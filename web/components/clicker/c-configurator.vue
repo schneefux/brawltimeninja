@@ -43,7 +43,10 @@
         </b-select>
       </div>
 
-      <div class="mr-2 my-1">
+      <div
+        v-if="dimensions.length > 1"
+        class="mr-2 my-1"
+      >
         <b-select
           :value="value.dimensionsIds[0]"
           dark
@@ -51,7 +54,7 @@
           @input="v => onInputDimensionsIds([v])"
         >
           <option
-            v-for="d in config[value.cubeId].dimensions"
+            v-for="d in dimensions"
             :key="d.id"
             :value="d.id"
           >
@@ -111,5 +114,10 @@ export default Vue.extend({
       })
     },
   },
+  computed: {
+    dimensions() {
+      return this.config[this.value.cubeId].dimensions.filter(d => !d.hidden)
+    },
+  }
 })
 </script>

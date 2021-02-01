@@ -57,7 +57,7 @@ interface Clicker {
   slicesToLocation(slices: SliceValue, defaults?: SliceValue): Location
   constructQuery(dimensions: Dimension[], measurements: Measurement[], slices: Slice[], slicesValues: SliceValue, metaColumns: string[]): { dimensions: string[], measurements: string[], slices: Record<string, string[]> }
   mapToMetaGridEntry(dimensions: Dimension[], measurements: Measurement[], rows: any[], totals: any, metaColumns: string[]): MetaGridEntry[]
-  compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], joiner: (b: MetaGridEntry, c: MetaGridEntry) => boolean): MetaGridEntry[]
+  compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
 }
 
 declare module 'vue/types/vue' {
@@ -466,34 +466,42 @@ export default (context, inject) => {
         return entry
       })
     },
-    compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], joiner) {
+    compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode) {
       return comparingEntries
         .map(comparingEntry => {
-          const baseEntry = baseEntries.find(b => joiner(comparingEntry, b))
+          const baseEntry = baseEntries.find(b => b.id == comparingEntry.id)
           if (baseEntry == undefined) {
             return undefined
           }
-          // replace '...Diff' by actual diffs
           const measurementsRaw: Record<string, number> = {}
           const measurements: Record<string, string> = {}
 
           for (const m in baseEntry.measurements) {
-            measurementsRaw[m] = baseEntry.measurementsRaw[m] - comparingEntry.measurementsRaw[m]
-            measurements[m] = commonMeasurements[m].formatter(measurementsRaw[m])
-          }
-
-          if (comparingEntry.measurements.winsZScore != undefined) {
-            // replace '...ZScore' by actual z-score (based on wins)
-            const zN = comparingEntry.measurementsRaw.picks
-            const zX = comparingEntry.measurementsRaw.winsZScore
-            const zP = baseEntry.measurementsRaw.winsZScore / baseEntry.measurementsRaw.picks
-            const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
-            if (zCondition) {
-              measurementsRaw.winsZScore = (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP))
-            } else {
-              measurementsRaw.winsZScore = 0
+            if(mode == 'diff') {
+              measurementsRaw[m] = baseEntry.measurementsRaw[m] - comparingEntry.measurementsRaw[m]
+              measurements[m] = commonMeasurements[m].formatter(measurementsRaw[m])
             }
-            measurements.winsZScore = commonMeasurements.winsZScore.formatter(measurementsRaw.winsZScore)
+
+            // TODO implement z-test again
+            /*
+            if (mode == 'test') {
+              // perform a Gauss test using normal approximation
+              // TODO quite a hack because most attributes aren't even binomial...
+              // TODO get the variances directly, then evaluate t-test or welch-test
+              // TODO requires picks... logic should be moved elsewhere
+
+              const zN = comparingEntry.meta.picks as number
+              const zX = comparingEntry.measurementsRaw[m]
+              const zP = baseEntry.measurementsRaw[m] / (baseEntry.meta.picks as number)
+              const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
+              if (zCondition) {
+                measurementsRaw[m] = (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP))
+              } else {
+                measurementsRaw[m] = 0
+              }
+              measurements[m] = measurementsRaw[m].toFixed(2)
+            }
+            */
           }
 
           return {

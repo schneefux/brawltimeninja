@@ -4,7 +4,7 @@
       :value="value.ally"
       dark
       sm
-      @input="v => $emit('input', { ally: v })"
+      @input="v => $parent.$emit('input', { ...value, ally: [v] })"
     >
       <option
         v-for="b in brawlers"

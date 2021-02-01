@@ -63,7 +63,7 @@ export default Vue.extend({
       set(v: string) {
         this.$parent.$emit('input', {
           ...this.value,
-          mode: [v],
+          mode: v != '' ? [v] : [],
           map: [],
         })
       },
@@ -75,7 +75,7 @@ export default Vue.extend({
       set(v: string) {
         this.$parent.$emit('input', {
           ...this.value,
-          map: [v],
+          map: v != '' ? [v] : [],
         })
       },
     },

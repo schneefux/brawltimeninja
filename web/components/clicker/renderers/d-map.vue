@@ -1,6 +1,6 @@
 <template functional>
   <router-link
-    :to="`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.map.battle_event_mode)}/map/${props.row.dimensionRaw.map.battle_event_map}`"
+    :to="`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.map.battle_event_mode || '')}/map/${props.row.dimensionsRaw.map.battle_event_map}`"
     class="flex items-center"
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">

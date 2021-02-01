@@ -1,5 +1,5 @@
 <template>
-  <page title="Brawl Stars Meta Dashboard">
+  <page-dashboard title="Brawl Stars Meta Dashboard">
     <c-dashboard
       :config="config"
       :default-cube="cube"
@@ -37,14 +37,18 @@
       <template v-slot:[`dimensions.mode`]="data">
         <d-mode v-bind="data"></d-mode>
       </template>
+      <template v-slot:[`dimensions.map`]="data">
+        <d-map v-bind="data"></d-map>
+      </template>
       <template v-slot:visualisations="data">
         <v-sample-size v-bind="data"></v-sample-size>
         <v-last-update v-bind="data"></v-last-update>
         <v-moe v-bind="data"></v-moe>
         <v-gini v-bind="data"></v-gini>
+        <v-measure-description v-bind="data"></v-measure-description>
       </template>
     </c-dashboard>
-  </page>
+  </page-dashboard>
 </template>
 
 <script lang="ts">
@@ -68,6 +72,7 @@ import VGini from '@/components/clicker/renderers/v-gini.vue'
 import VLastUpdate from '@/components/clicker/renderers/v-last-update.vue'
 import VMoe from '@/components/clicker/renderers/v-moe.vue'
 import VSampleSize from '@/components/clicker/renderers/v-sample-size.vue'
+import VMeasureDescription from '@/components/clicker/renderers/v-measure-description.vue'
 
 export default Vue.extend({
   components: {
@@ -88,6 +93,7 @@ export default Vue.extend({
     VLastUpdate,
     VMoe,
     VSampleSize,
+    VMeasureDescription,
   },
   head(): MetaInfo {
     return {
