@@ -78,10 +78,6 @@ import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
-    title: {
-      type: String,
-      required: true
-    },
     document: {
       type: Object as PropType<IContentDocument>,
       required: true
