@@ -9,7 +9,7 @@
       :rows="data"
       :page-size="pageSize"
       id-key="id"
-      class="font-semibold text-sm md:text-lg h-full"
+      class="font-semibold text-sm md:text-lg h-full overflow-auto"
       ranked
     >
       <template

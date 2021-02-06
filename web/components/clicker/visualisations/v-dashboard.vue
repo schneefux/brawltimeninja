@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <div class="w-full flex flex-wrap">
       <slot
         name="visualisations"
@@ -7,6 +7,7 @@
         :data="data"
         :dimensions="dimensions"
         :measurements="measurements"
+        :comparing="comparing"
         full-height
       ></slot>
     </div>
@@ -17,6 +18,7 @@
         :data="data"
         :dimensions="dimensions"
         :measurements="measurements"
+        :comparing="comparing"
         title="Graph View"
         class="flex-1 h-80"
         full-height
@@ -29,8 +31,8 @@
         :data="data"
         :dimensions="dimensions"
         :measurements="measurements"
+        :comparing="comparing"
         title="Table View"
-        sm
         full-height
       >
         <template
@@ -44,45 +46,45 @@
         </template>
       </v-table>
 
-      <div class="flex-1 flex flex-col">
-        <v-tier-list
-          :loading="loading"
-          :data="data"
-          :dimensions="dimensions"
-          :measurements="measurements"
-          full-height
-          class="h-full"
+      <v-tier-list
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        full-height
+        class="h-full"
+      >
+        <template
+          v-for="(_, name) in $scopedSlots"
+          v-slot:[name]="data"
         >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-tier-list>
+          <slot
+            :name="name"
+            v-bind="data"
+          ></slot>
+        </template>
+      </v-tier-list>
 
-        <v-grid
-          :loading="loading"
-          :data="data"
-          :dimensions="dimensions"
-          :measurements="measurements"
-          full-height
-          class="h-full"
+      <v-grid
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        full-height
+        class="h-full"
+      >
+        <template
+          v-for="(_, name) in $scopedSlots"
+          v-slot:[name]="data"
         >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-grid>
-      </div>
+          <slot
+            :name="name"
+            v-bind="data"
+          ></slot>
+        </template>
+      </v-grid>
     </div>
   </div>
 </template>
@@ -108,6 +110,10 @@ export default Vue.extend({
     },
     measurements: {
       type: Array as PropType<Measurement[]>,
+      required: true
+    },
+    comparing: {
+      type: Boolean,
       required: true
     },
   },

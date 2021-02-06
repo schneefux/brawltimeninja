@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && 'picks' in data[0].meta"
+    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && 'picks' in data[0].meta && !comparing"
     v-bind="$attrs"
     title="Balance Rating"
     size="w-48"
@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { mapState } from 'vuex'
 import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '~/lib/util'
 
@@ -49,6 +48,10 @@ export default Vue.extend({
     },
     measurements: {
       type: Array as PropType<Measurement[]>,
+      required: true
+    },
+    comparing: {
+      type: Boolean,
       required: true
     },
   },

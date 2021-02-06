@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="dimensions.length == 1 && measurements.length == 1"
+    v-if="dimensions.length == 1 && measurements.length == 1 && data.length > 5 && data.length < 100"
     v-bind="$attrs"
   >
     <template v-slot:content>

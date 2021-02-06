@@ -6,31 +6,45 @@
       class="w-full"
     ></c-configurator>
 
-    <c-slicer
-      :config="config"
-      :cube-id="configuration.cubeId"
-      v-model="configuration.slices"
-      class="w-full sticky z-10 top-12 lg:top-0!"
+    <div
+      v-if="config[configuration.cubeId].slices.length > 0"
+      class="w-full flex sticky z-10 top-12 lg:top-0!"
     >
-      <template
-        v-for="(_, name) in $scopedSlots"
-        v-slot:[name]="data"
+      <c-slicer
+        v-model="configuration.slices"
+        :config="config"
+        :cube-id="configuration.cubeId"
+        :comparing="false"
+        class="w-full"
       >
-        <slot
-          v-if="name.startsWith('slices.')"
-          :name="name"
-          v-bind="data"
-        ></slot>
-      </template>
-    </c-slicer>
+        <template
+          v-for="(_, name) in $scopedSlots"
+          v-slot:[name]="data"
+        >
+          <slot
+            v-if="name.startsWith('slices.')"
+            :name="name"
+            v-bind="data"
+          ></slot>
+        </template>
+      </c-slicer>
+
+      <div class="self-center mx-2">
+        <b-button
+          @click="comparing = !comparing"
+          primary
+          md
+        >Compare</b-button>
+      </div>
+    </div>
 
     <c-slicer
-      v-if="false"
+      v-if="comparing"
+      v-model="configuration.comparingSlices"
       :config="config"
       :cube-id="configuration.cubeId"
-      v-model="configuration.comparingSlices"
+      :comparing="true"
       class="w-full"
-      title="Compare to"
     >
       <template
         v-for="(_, name) in $scopedSlots"
@@ -52,6 +66,7 @@
       :comparing-slices-values="configuration.comparingSlices"
       :cube-id="configuration.cubeId"
       :sort-id="configuration.measurementsIds[0]"
+      :comparing="comparing"
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
@@ -73,7 +88,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import config, { Cube, SliceValue } from '~/lib/cube'
+import { Cube, SliceValue } from '~/lib/cube'
 import VTable from './visualisations/v-table.vue'
 import VGraph from './visualisations/v-graph.vue'
 import VGrid from './visualisations/v-grid.vue'
@@ -119,11 +134,12 @@ export default Vue.extend({
     return {
       configuration: {
         cubeId,
-        slices: this.defaultSlices || this.$clicker.defaultSlices(cubeId),
-        comparingSlices: this.$clicker.defaultSlices(cubeId),
-        dimensionsIds: this.defaultDimensions || [this.config[cubeId].defaultDimensionId],
+        slices: this.defaultSlices || this.config[cubeId].defaultSliceValues,
+        comparingSlices: this.config[cubeId].defaultSliceValues,
+        dimensionsIds: this.defaultDimensions || this.config[cubeId].defaultDimensionsIds,
         measurementsIds: this.defaultMeasurements || [this.config[cubeId].defaultMeasurementId],
       } as Configuration,
+      comparing: false,
     }
   },
 })

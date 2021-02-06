@@ -1,5 +1,8 @@
 <template>
-  <card v-bind="$attrs">
+  <card
+    v-if="measurements.length > 1"
+    v-bind="$attrs"
+  >
     <div
       slot="content"
       class="flex flex-wrap justify-center"
@@ -24,6 +27,7 @@
             <div
               v-for="d in dimensions"
               :key="d.id"
+              class="my-1"
             >
               <slot
                 :name="`dimensions.${d.id}`"

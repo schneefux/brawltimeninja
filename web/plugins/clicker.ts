@@ -24,7 +24,6 @@ export interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
   timePresets: Record<string, string>
-  defaultSlices(cubeId: string): SliceValue
   defaultSlicesRaw(cubeId: string): Record<string, string[]>
   query<T=any>(
     name: string,
@@ -88,31 +87,6 @@ export default (context, inject) => {
       'balance': 'Update',
       'month': 'Month',
     } as Record<string, string>,
-    defaultSlices(cube) {
-      switch (cube) {
-        case 'map':
-          return {
-            season: ['balance'],
-            powerplay: ['false'],
-          }
-        case 'battle':
-          return {
-            season: ['month'],
-          }
-        case 'brawler':
-          return {
-          }
-        case 'synergy':
-          return {
-            season: ['balance'],
-            ally: ['SHELLY'],
-          }
-        default:
-          return {
-            season: ['balance'],
-          }
-      }
-    },
     defaultSlicesRaw(cube) {
       switch (cube) {
         case 'map':
@@ -469,7 +443,8 @@ export default (context, inject) => {
     compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode) {
       return comparingEntries
         .map(comparingEntry => {
-          const baseEntry = baseEntries.find(b => b.id == comparingEntry.id)
+          // use startsWith instead of eq to allow comparisons across hierarchy levels
+          const baseEntry = baseEntries.find(b => comparingEntry.id.startsWith(b.id))
           if (baseEntry == undefined) {
             return undefined
           }
@@ -477,9 +452,9 @@ export default (context, inject) => {
           const measurements: Record<string, string> = {}
 
           for (const m in baseEntry.measurements) {
-            if(mode == 'diff') {
-              measurementsRaw[m] = baseEntry.measurementsRaw[m] - comparingEntry.measurementsRaw[m]
-              measurements[m] = commonMeasurements[m].formatter(measurementsRaw[m])
+            if (mode == 'diff') {
+              measurementsRaw[m] = comparingEntry.measurementsRaw[m] - baseEntry.measurementsRaw[m]
+              measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + commonMeasurements[m].formatter(measurementsRaw[m])
             }
 
             // TODO implement z-test again

@@ -30,7 +30,7 @@
           'mt-3': showFilters,
         }]"
       >
-        <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">{{ title }}</h1>
+        <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
         <slot
           v-for="s in sliceIds"
           :name="`slices.${s}`"
@@ -60,9 +60,9 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    title: {
-      type: String,
-      default: 'Filters'
+    comparing: {
+      type: Boolean,
+      required: true
     },
   },
   data() {

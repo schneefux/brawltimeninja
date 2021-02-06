@@ -1,19 +1,19 @@
 <template>
   <div class="mr-2 my-1">
     <b-select
-      :value="value.ally"
+      :value="value.brawler"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, ally: v == '' ? [] : [v] })"
+      @input="v => $parent.$emit('input', { ...value, brawler: v == '' ? [] : [v] })"
     >
       <option
         value=""
-      >with any</option>
+      >Any Brawler</option>
       <option
         v-for="b in brawlers"
         :key="b"
         :value="b"
-      >with {{ capitalize(b.toLowerCase()) }}</option>
+      >{{ capitalize(b.toLowerCase()) }}</option>
     </b-select>
   </div>
 </template>

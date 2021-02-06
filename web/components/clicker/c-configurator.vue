@@ -2,66 +2,97 @@
   <card v-bind="$attrs">
     <div
       slot="content"
-      class="flex flex-wrap"
+      class="flex flex-wrap items-center py-1"
     >
-      <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">
+      <h1 class="text-xl font-semibold hidden md:inline mr-4">
         Data Source
       </h1>
 
-      <div class="mr-2 my-1">
-        <b-select
-          :value="value.cubeId"
-          dark
-          sm
-          @input="v => onInputCubeId(v)"
-        >
-          <option
-            v-for="c in config"
-            :key="c.id"
-            :value="c.id"
-          >
-            {{ c.name }}
-          </option>
-        </b-select>
-      </div>
-
-      <div class="mr-2 my-1">
-        <b-select
-          :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
-          dark
-          sm
-          @input="v => onInputMeasurementsIds([v])"
-        >
-          <option value="">All</option>
-          <option
-            v-for="m in config[value.cubeId].measurements"
-            :key="m.id"
-            :value="m.id"
-          >
-            {{ m.name }}
-          </option>
-        </b-select>
-      </div>
-
-      <div
-        v-if="dimensions.length > 1"
-        class="mr-2 my-1"
+      <b-select
+        :value="value.cubeId"
+        class="mr-6"
+        dark
+        sm
+        @input="v => onInputCubeId(v)"
       >
-        <b-select
-          :value="value.dimensionsIds[0]"
-          dark
-          sm
-          @input="v => onInputDimensionsIds([v])"
+        <option
+          v-for="c in config"
+          :key="c.id"
+          :value="c.id"
         >
-          <option
-            v-for="d in dimensions"
-            :key="d.id"
-            :value="d.id"
-          >
-            {{ d.name }}
-          </option>
-        </b-select>
-      </div>
+          {{ c.name }}
+        </option>
+      </b-select>
+
+      <span class="font-semibold hidden md:inline mr-4">
+        Metric
+      </span>
+
+      <b-select
+        :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
+        class="mr-6"
+        dark
+        sm
+        @input="v => onInputMeasurementsIds([v])"
+      >
+        <option
+          v-if="config[value.cubeId].measurements.length > 1"
+          value=""
+        >All</option>
+        <option
+          v-for="m in config[value.cubeId].measurements"
+          :key="m.id"
+          :value="m.id"
+        >
+          {{ m.name }}
+        </option>
+      </b-select>
+
+      <span class="font-semibold hidden md:inline mr-4">
+        Group By
+      </span>
+
+      <b-select
+        v-for="group in groups"
+        :key="group"
+        :value="value.dimensionsIds[group - 1]"
+        class="mr-2"
+        dark
+        sm
+        @input="v => onInputDimensionsIds(group - 1, v)"
+      >
+        <option
+          v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
+          :key="d.id"
+          :value="d.id"
+        >
+          {{ d.name }}
+        </option>
+      </b-select>
+
+      <b-button
+        v-if="groups < dimensions.length"
+        class="font-semibold mx-1"
+        primary
+        sm
+        @click="groups++"
+      >
+        <font-awesome-icon
+          :icon="faPlus"
+        ></font-awesome-icon>
+      </b-button>
+
+      <b-button
+        v-if="groups > 0"
+        class="font-semibold mx-1"
+        primary
+        sm
+        @click="onGroupRemove()"
+      >
+        <font-awesome-icon
+          :icon="faMinus"
+        ></font-awesome-icon>
+      </b-button>
     </div>
   </card>
 </template>
@@ -69,10 +100,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Config, SliceValue } from '~/lib/cube'
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export interface Configuration {
   cubeId: string
   slices: SliceValue
+  comparingSlices: SliceValue
   dimensionsIds: string[]
   measurementsIds: string[]
 }
@@ -89,19 +122,37 @@ export default Vue.extend({
       required: true
     },
   },
+  data() {
+    return {
+      groups: this.config[this.value.cubeId].defaultDimensionsIds.length,
+    }
+  },
   methods: {
     onInputCubeId(c: string) {
       this.$emit('input', <Configuration>{
         cubeId: c,
-        slices: this.$clicker.defaultSlices(c),
-        dimensionsIds: [this.config[c].defaultDimensionId],
+        slices: this.config[c].defaultSliceValues,
+        comparingSlices: this.config[c].defaultSliceValues,
+        dimensionsIds: this.config[c].defaultDimensionsIds,
         measurementsIds: [this.config[c].defaultMeasurementId],
       })
+      this.groups = this.config[c].defaultDimensionsIds.length
     },
-    onInputDimensionsIds(d: string[]) {
+    onInputDimensionsIds(group: number, d: string) {
+      const dimensionsIds = this.value.dimensionsIds.slice()
+      dimensionsIds[group] = d
       this.$emit('input', <Configuration>{
         ...this.value,
-        dimensionsIds: d,
+        dimensionsIds,
+      })
+    },
+    onGroupRemove() {
+      this.groups--
+      const dimensionsIds = this.value.dimensionsIds.slice()
+      dimensionsIds.pop()
+      this.$emit('input', <Configuration>{
+        ...this.value,
+        dimensionsIds,
       })
     },
     onInputMeasurementsIds(m: string[]) {
@@ -117,6 +168,12 @@ export default Vue.extend({
   computed: {
     dimensions() {
       return this.config[this.value.cubeId].dimensions.filter(d => !d.hidden)
+    },
+    faPlus() {
+      return faPlus
+    },
+    faMinus() {
+      return faMinus
     },
   }
 })

@@ -6,12 +6,16 @@
       :default-slices="slices"
       :default-dimensions="['brawler']"
       :default-measurements="['winRateAdj']"
+      class="mt-2"
     >
       <template v-slot:[`slices.season`]="data">
         <s-season v-bind="data"></s-season>
       </template>
       <template v-slot:[`slices.map`]="data">
         <s-mode-map v-bind="data"></s-mode-map>
+      </template>
+      <template v-slot:[`slices.brawler`]="data">
+        <s-brawler v-bind="data"></s-brawler>
       </template>
       <template v-slot:[`slices.ally`]="data">
         <s-ally v-bind="data"></s-ally>
@@ -21,6 +25,12 @@
       </template>
       <template v-slot:[`slices.trophies`]="data">
         <s-trophies v-bind="data"></s-trophies>
+      </template>
+      <template v-slot:[`slices.withStarpower`]="data">
+        <s-with-starpower v-bind="data"></s-with-starpower>
+      </template>
+      <template v-slot:[`slices.withGadget`]="data">
+        <s-with-gadget v-bind="data"></s-with-gadget>
       </template>
       <template v-slot:[`dimensions.brawler`]="data">
         <d-brawler v-bind="data"></d-brawler>
@@ -68,6 +78,9 @@ import SAlly from '@/components/clicker/renderers/s-ally.vue'
 import SSeason from '@/components/clicker/renderers/s-season.vue'
 import SPowerplay from '@/components/clicker/renderers/s-powerplay.vue'
 import STrophies from '@/components/clicker/renderers/s-trophies.vue'
+import SWithStarpower from '@/components/clicker/renderers/s-with-starpower.vue'
+import SWithGadget from '@/components/clicker/renderers/s-with-gadget.vue'
+import SBrawler from '@/components/clicker/renderers/s-brawler.vue'
 import VGini from '@/components/clicker/renderers/v-gini.vue'
 import VLastUpdate from '@/components/clicker/renderers/v-last-update.vue'
 import VMoe from '@/components/clicker/renderers/v-moe.vue'
@@ -89,6 +102,9 @@ export default Vue.extend({
     SSeason,
     SPowerplay,
     STrophies,
+    SWithStarpower,
+    SWithGadget,
+    SBrawler,
     VGini,
     VLastUpdate,
     VMoe,
@@ -108,14 +124,14 @@ export default Vue.extend({
     return {
       cube: 'map',
       config,
-      slices: this.$clicker.defaultSlices('map') as SliceValue,
+      slices: config['map'].defaultSliceValues,
     }
   },
   asyncData({ query, $clicker, route }) {
     const cube = query['cube'] as string || 'map'
     return {
       cube,
-      slices: $clicker.routeToSlices(route, $clicker.defaultSlices(cube)),
+      slices: $clicker.routeToSlices(route, config[cube].defaultSliceValues),
     }
   },
 })

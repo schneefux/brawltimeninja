@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div class="contents">
     <slot
       v-if="state != undefined"
       :loading="loading"
+      :comparing="comparing"
       :data="state.data"
       :dimensions="state.dimensions"
       :measurements="state.measurements"
@@ -68,6 +69,7 @@ export default Vue.extend({
     slicesValues: '$fetch',
     comparingSlicesValues: '$fetch',
     sortId: '$fetch',
+    comparing: '$fetch',
   },
   fetchOnServer: false, // FIXME causes v-table render error :(
   fetchDelay: 0,
@@ -82,13 +84,16 @@ export default Vue.extend({
     const cube = this.config[this.cubeId]
     const sort = cube.measurements
       .find(m => this.sortId == m.id)
+    if (sort == undefined) {
+      throw new Error('Invalid sort id ' + this.sortId)
+    }
     const dimensions = cube.dimensions
       .filter(d => this.dimensionsIds.includes(d.id))
     const measurements = cube.measurements
       .filter(m => this.measurementsIds.includes(m.id))
 
     const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
-      ...this.$clicker.defaultSlices(this.cubeId),
+      ...cube.defaultSliceValues,
       ...this.slicesValues,
     }, cube.metaColumns)
     const rawData = await this.$clicker.query('meta.' + this.cubeId, this.cubeId,
@@ -106,7 +111,7 @@ export default Vue.extend({
 
     if (this.comparing) {
       const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
-        ...this.$clicker.defaultSlices(this.cubeId),
+        ...cube.defaultSliceValues,
         ...this.comparingSlicesValues,
       }, cube.metaColumns)
       const comparingRawData = await this.$clicker.query('meta.' + this.cubeId, this.cubeId,
@@ -122,7 +127,11 @@ export default Vue.extend({
 
       const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals, cube.metaColumns)
 
-      data = this.$clicker.compareEntries(data, comparingData, 'diff')
+      // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
+      let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]
+
+      data = this.$clicker.compareEntries(left, right, 'diff')
+        .sort((e1, e2) => sort.sign * (e1.measurementsRaw[sort.id] - e2.measurementsRaw[sort.id]))
     }
 
     this.state = {
