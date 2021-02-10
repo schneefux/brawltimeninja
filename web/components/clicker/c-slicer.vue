@@ -12,16 +12,9 @@
           <font-awesome-icon
             :icon="faFilter"
           ></font-awesome-icon>
-        </b-button>
 
-        <span
-          :class="['my-auto leading-tight ', {
-            'whitespace-nowrap overflow-hidden overflow-ellipsis': !showFilters,
-          }]"
-          @click="showFilters = true"
-        >
-          description
-        </span>
+          Filters
+        </b-button>
       </div>
 
       <div

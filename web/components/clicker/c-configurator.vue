@@ -2,97 +2,101 @@
   <card v-bind="$attrs">
     <div
       slot="content"
-      class="flex flex-wrap items-center py-1"
+      class="flex flex-wrap items-center py-1 gap-y-3"
     >
-      <h1 class="text-xl font-semibold hidden md:inline mr-4">
-        Data Source
-      </h1>
+      <div class="mr-6">
+        <h1 class="inline md:text-xl font-semibold mr-4">
+          Data Source
+        </h1>
 
-      <b-select
-        :value="value.cubeId"
-        class="mr-6"
-        dark
-        sm
-        @input="v => onInputCubeId(v)"
-      >
-        <option
-          v-for="c in config"
-          :key="c.id"
-          :value="c.id"
+        <b-select
+          :value="value.cubeId"
+          dark
+          sm
+          @input="v => onInputCubeId(v)"
         >
-          {{ c.name }}
-        </option>
-      </b-select>
+          <option
+            v-for="c in config"
+            :key="c.id"
+            :value="c.id"
+          >
+            {{ c.name }}
+          </option>
+        </b-select>
+      </div>
 
-      <span class="font-semibold hidden md:inline mr-4">
-        Metric
-      </span>
+      <div class="mr-6">
+        <span class="font-semibold mr-4">
+          Metric
+        </span>
 
-      <b-select
-        :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
-        class="mr-6"
-        dark
-        sm
-        @input="v => onInputMeasurementsIds([v])"
-      >
-        <option
-          v-if="config[value.cubeId].measurements.length > 1"
-          value=""
-        >All</option>
-        <option
-          v-for="m in config[value.cubeId].measurements"
-          :key="m.id"
-          :value="m.id"
+        <b-select
+          :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
+          dark
+          sm
+          @input="v => onInputMeasurementsIds([v])"
         >
-          {{ m.name }}
-        </option>
-      </b-select>
+          <option
+            v-if="config[value.cubeId].measurements.length > 1"
+            value=""
+          >All</option>
+          <option
+            v-for="m in config[value.cubeId].measurements"
+            :key="m.id"
+            :value="m.id"
+          >
+            {{ m.name }}
+          </option>
+        </b-select>
+      </div>
 
-      <span class="font-semibold hidden md:inline mr-4">
-        Group By
-      </span>
+      <div class="mr-2">
+        <span class="font-semibold mr-4">
+          Group By
+        </span>
 
-      <b-select
-        v-for="group in groups"
-        :key="group"
-        :value="value.dimensionsIds[group - 1]"
-        class="mr-2"
-        dark
-        sm
-        @input="v => onInputDimensionsIds(group - 1, v)"
-      >
-        <option
-          v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
-          :key="d.id"
-          :value="d.id"
+        <b-select
+          v-for="group in groups"
+          :key="group"
+          :value="value.dimensionsIds[group - 1]"
+          class="mr-2"
+          dark
+          sm
+          @input="v => onInputDimensionsIds(group - 1, v)"
         >
-          {{ d.name }}
-        </option>
-      </b-select>
+          <option
+            v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
+            :key="d.id"
+            :value="d.id"
+          >
+            {{ d.name }}
+          </option>
+        </b-select>
 
-      <b-button
-        v-if="groups < dimensions.length"
-        class="font-semibold mx-1"
-        primary
-        sm
-        @click="groups++"
-      >
-        <font-awesome-icon
-          :icon="faPlus"
-        ></font-awesome-icon>
-      </b-button>
+        <b-button
+          v-if="groups < dimensions.length"
+          class="font-semibold mx-1"
+          primary
+          sm
+          @click="groups++"
+        >
+          <font-awesome-icon
+            :icon="faPlus"
+          ></font-awesome-icon>
+        </b-button>
 
-      <b-button
-        v-if="groups > 0"
-        class="font-semibold mx-1"
-        primary
-        sm
-        @click="onGroupRemove()"
-      >
-        <font-awesome-icon
-          :icon="faMinus"
-        ></font-awesome-icon>
-      </b-button>
+        <b-button
+          v-if="groups > 0"
+          class="font-semibold mx-1"
+          primary
+          sm
+          @click="onGroupRemove()"
+        >
+          <font-awesome-icon
+            :icon="faMinus"
+          ></font-awesome-icon>
+        </b-button>
+      </div>
     </div>
   </card>
 </template>

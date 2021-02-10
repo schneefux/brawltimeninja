@@ -8,7 +8,7 @@
 
     <div
       v-if="config[configuration.cubeId].slices.length > 0"
-      class="w-full flex sticky z-10 top-12 lg:top-0!"
+      class="w-full flex"
     >
       <c-slicer
         v-model="configuration.slices"
