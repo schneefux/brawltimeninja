@@ -32,7 +32,6 @@
         :dimensions="dimensions"
         :measurements="measurements"
         :comparing="comparing"
-        title="Table View"
         full-height
       >
         <template

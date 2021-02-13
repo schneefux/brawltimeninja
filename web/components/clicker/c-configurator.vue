@@ -2,100 +2,114 @@
   <card v-bind="$attrs">
     <div
       slot="content"
-      class="flex flex-wrap items-center py-1 gap-y-3"
+      class="flex flex-wrap items-center py-1"
     >
-      <div class="mr-6">
+      <div class="grid grid-cols-12-1fr gap-y-3 items-center">
         <h1 class="inline md:text-xl font-semibold mr-4">
-          Data Source
+          Source
         </h1>
 
-        <b-select
-          :value="value.cubeId"
-          dark
-          sm
-          @input="v => onInputCubeId(v)"
-        >
-          <option
-            v-for="c in config"
-            :key="c.id"
-            :value="c.id"
+        <div>
+          <b-select
+            :value="value.cubeId"
+            dark
+            sm
+            @input="v => onInputCubeId(v)"
           >
-            {{ c.name }}
-          </option>
-        </b-select>
-      </div>
+            <option
+              v-for="c in config"
+              :key="c.id"
+              :value="c.id"
+            >
+              {{ c.name }}
+            </option>
+          </b-select>
+        </div>
 
-      <div class="mr-6">
         <span class="font-semibold mr-4">
           Metric
         </span>
 
-        <b-select
-          :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
-          dark
-          sm
-          @input="v => onInputMeasurementsIds([v])"
-        >
-          <option
-            v-if="config[value.cubeId].measurements.length > 1"
-            value=""
-          >All</option>
-          <option
-            v-for="m in config[value.cubeId].measurements"
-            :key="m.id"
-            :value="m.id"
+        <div>
+          <b-select
+            :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
+            dark
+            sm
+            @input="v => onInputMeasurementsIds([v])"
           >
-            {{ m.name }}
-          </option>
-        </b-select>
-      </div>
+            <option
+              v-if="config[value.cubeId].measurements.length > 1"
+              value=""
+            >All</option>
+            <option
+              v-for="m in config[value.cubeId].measurements"
+              :key="m.id"
+              :value="m.id"
+            >
+              {{ m.name }}
+            </option>
+          </b-select>
+        </div>
 
-      <div class="mr-2">
-        <span class="font-semibold mr-4">
-          Group By
-        </span>
-
-        <b-select
-          v-for="group in groups"
-          :key="group"
-          :value="value.dimensionsIds[group - 1]"
-          class="mr-2"
-          dark
-          sm
-          @input="v => onInputDimensionsIds(group - 1, v)"
-        >
-          <option
-            v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
-            :key="d.id"
-            :value="d.id"
+        <label class="col-span-2 flex items-center">
+          <input
+            v-model="showGrouper"
+            type="checkbox"
+            class="form-input bg-gray-700 text-gray-400 text-sm"
           >
-            {{ d.name }}
-          </option>
-        </b-select>
+          <span class="ml-2">Advanced</span>
+        </label>
 
-        <b-button
-          v-if="groups < dimensions.length"
-          class="font-semibold mx-1"
-          primary
-          sm
-          @click="groups++"
+        <template
+          v-if="showGrouper"
         >
-          <font-awesome-icon
-            :icon="faPlus"
-          ></font-awesome-icon>
-        </b-button>
+          <span class="font-semibold mr-2">
+            Group By
+          </span>
 
-        <b-button
-          v-if="groups > 0"
-          class="font-semibold mx-1"
-          primary
-          sm
-          @click="onGroupRemove()"
-        >
-          <font-awesome-icon
-            :icon="faMinus"
-          ></font-awesome-icon>
-        </b-button>
+          <div class="flex flex-wrap gap-y-1 gap-x-1">
+            <b-select
+              v-for="group in groups"
+              :key="group"
+              :value="value.dimensionsIds[group - 1]"
+              dark
+              sm
+              @input="v => onInputDimensionsIds(group - 1, v)"
+            >
+              <option
+                v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
+                :key="d.id"
+                :value="d.id"
+              >
+                {{ d.name }}
+              </option>
+            </b-select>
+
+            <b-button
+              v-if="groups < dimensions.length"
+              class="font-semibold"
+              primary
+              sm
+              @click="groups++"
+            >
+              <font-awesome-icon
+                :icon="faPlus"
+              ></font-awesome-icon>
+            </b-button>
+
+            <b-button
+              v-if="groups > 0"
+              class="font-semibold"
+              primary
+              sm
+              @click="onGroupRemove()"
+            >
+              <font-awesome-icon
+                :icon="faMinus"
+              ></font-awesome-icon>
+            </b-button>
+          </div>
+        </template>
       </div>
     </div>
   </card>
@@ -128,6 +142,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      showGrouper: false,
       groups: this.config[this.value.cubeId].defaultDimensionsIds.length,
     }
   },
@@ -182,3 +197,9 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="postcss" scoped>
+.grid-cols-12-1fr {
+  grid-template-columns: 6rem 1fr;
+}
+</style>

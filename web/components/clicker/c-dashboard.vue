@@ -89,20 +89,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Cube, SliceValue } from '~/lib/cube'
-import VTable from './visualisations/v-table.vue'
-import VGraph from './visualisations/v-graph.vue'
-import VGrid from './visualisations/v-grid.vue'
-import VTierList from './visualisations/v-tier-list.vue'
 import CDashboard from './c-dashboard.vue'
 import CSlicer from './c-slicer.vue'
 import CConfigurator, { Configuration } from './c-configurator.vue'
 
 export default Vue.extend({
   components: {
-    VTable,
-    VGrid,
-    VGraph,
-    VTierList,
     CDashboard,
     CSlicer,
     CConfigurator,
