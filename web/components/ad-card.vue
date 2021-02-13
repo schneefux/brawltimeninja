@@ -1,7 +1,6 @@
 <template>
   <card
-    title="Check out this video!"
-    subtitle="Brawl Stars on the piano"
+    title="BrawlClopedia scrim"
     class="relative"
     secondary
     sm
@@ -11,17 +10,13 @@
         advertisement
       </span>
       <a
-        href="https://www.youtube.com/watch?v=_eN7Mhgya9k"
+        href="https://www.reddit.com/r/BrawlClopedia/comments/lgsmnt/brawlclopedia_is_hosting_scrims/"
         rel="sponsored"
         target="_blank"
         class="flex items-center"
       >
-        <img
-          src="~/assets/piano-promo.jpg"
-          class="absolute top-0 right-0 mr-10 mt-8 w-14"
-        >
         <p class="leading-tight">
-          Subscribe to my brother's YouTube channel for more 🎶
+          The BrawlClopedia community is hosting a small tournament
         </p>
 
         <b-button
@@ -31,10 +26,10 @@
           primary
         >
           <font-awesome-icon
-            :icon="faYoutube"
+            :icon="faDoorOpen"
             class="mr-1"
           ></font-awesome-icon>
-          Watch
+          Join
         </b-button>
       </a>
     </div>
@@ -42,13 +37,13 @@
 </template>
 
 <script lang="ts">
-import { faYoutube } from '@fortawesome/free-brands-svg-icons'
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons'
 import Vue from 'vue'
 
 export default Vue.extend({
   computed: {
-    faYoutube() {
-      return faYoutube
+    faDoorOpen() {
+      return faDoorOpen
     },
   },
 })
