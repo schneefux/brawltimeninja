@@ -122,14 +122,14 @@ export default class MediaService {
     const gadgetCards = cards.filter(c => c.name.startsWith(character.name) && c.iconExportName?.startsWith('icon_item_'))
     const gadgetAccessories = gadgetCards.map(g => accessories.find(a => a.name == g.name)!)
     const getStarpowerDescription = (c: DataCard) =>
-      tids['TID_' + c.rawTID + '_DESC']
+      (tids['TID_' + c.rawTID + '_DESC'] || '')
         .replace(/<VALUE1>/g, c.value?.toString() || '')
         .replace(/<VALUE2>/g, c.value2?.toString() || '')
         .replace(/<VALUE3>/g, c.value3?.toString() || '')
         .replace(/<\/?c\w{0,6}>/g, '') // color codes
         .replace(/\\n/g, '\n')
     const getGadgetDescription = (c: DataCard, a: DataAccessory) =>
-      tids['TID_' + c.rawTID + '_DESC']
+      (tids['TID_' + c.rawTID + '_DESC'] || '')
         .replace(/<VALUE1>/g, a.customValue1?.toString() || '')
         .replace(/<VALUE2>/g, a.customValue2?.toString() || '')
         .replace(/<VALUE3>/g, a.customValue3?.toString() || '')
@@ -139,7 +139,7 @@ export default class MediaService {
         .replace(/<\/?c\w{0,6}>/g, '') // color codes
         .replace(/\\n/g, '\n')
     const getSkillDescription = (c: DataCard, s: DataSkill) =>
-      tids['TID_' + c.rawTID + '_DESC']
+      (tids['TID_' + c.rawTID + '_DESC'] || '')
         .replace(/<time>/g, s.activeTime != null ? (s.activeTime / 1000).toString() : '')
         .replace(/<num>/g, s.msBetweenAttacks?.toString() || '')
         .replace(/\\n/g, '\n')
