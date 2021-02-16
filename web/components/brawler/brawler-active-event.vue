@@ -7,7 +7,7 @@
     size="w-80"
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
-      ends in {{ timeTillEnd }}
+      {{ $t('time.ends-in', { time: timeTillEnd }) }}
     </p>
 
     <div
@@ -31,19 +31,19 @@
           class="w-48 flex"
           style="height: 112px;"
         >
-          <p class="m-auto">No data available.</p>
+          <p class="m-auto">{{ $t('state.no-data') }}</p>
         </div>
       </div>
     </div>
 
     <b-button
       slot="actions"
-      :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
+      :to="localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`)"
       primary
       prefetch
       sm
     >
-      Open
+      {{ $t('action.open') }}
     </b-button>
   </event-card>
 </template>
@@ -139,9 +139,9 @@ export default Vue.extend({
     },
     table(): string[][] {
       return [
-        [ commonMeasurements.picks.name, commonMeasurements.picks.formatter(this.data.picks) ],
-        [ commonMeasurements.useRate.name, commonMeasurements.useRate.formatter(this.useRate) ],
-        [ commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.data.battle_victory) ],
+        [ this.$tc('metric.picks'), commonMeasurements.picks.formatter(this.data.picks) ],
+        [ this.$tc('metric.useRate'), commonMeasurements.useRate.formatter(this.useRate) ],
+        [ this.$tc('metric.winRate'), commonMeasurements.winRate.formatter(this.data.battle_victory) ],
       ]
     },
     brawlerId(): string {

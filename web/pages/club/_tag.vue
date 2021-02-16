@@ -14,13 +14,13 @@
           <thead>
             <tr class="h-8 border-b border-gray-600 text-left">
               <th scope="col">
-                Name
+                {{ $t('metric.name') }}
               </th>
               <th scope="col">
-                Role
+                {{ $t('metric.club-role') }}
               </th>
               <th scope="col">
-                Trophies
+                {{ $t('metric.trophies') }}
               </th>
             </tr>
           </thead>
@@ -32,7 +32,7 @@
             >
               <th scope="row" class="pr-2 text-left">
                 <router-link
-                  :to="`/player/${member.tag}`"
+                  :to="localePath(`/player/${member.tag}`)"
                   :title="member.name"
                 >
                   <media-img
@@ -66,13 +66,9 @@ import { Club } from '@/model/Brawlstars'
 export default Vue.extend({
   head(): MetaInfo {
     // TODO
-    const description = `${this.club.name} Brawl Stars Club. ${this.club.description}`
+    const description = this.$tc('club.meta.description', 1, { club: this.club.name }) + ' ' + this.club.description
     return {
       title: this.club.name,
-      link: [ {
-        rel: 'canonical',
-        href: `/club/${this.club.tag}`,
-      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -93,8 +89,13 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     })
   },
-  async asyncData({ $axios, params }) {
+  async asyncData({ $axios, params, redirect }) {
     const tag = params.tag.toUpperCase()
+    if (tag != params.tag) {
+      redirect(`/club/${tag}`)
+      return false
+    }
+
     const club = await $axios.$get<Club>(`/api/club/${tag}`)
 
     return {

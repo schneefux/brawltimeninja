@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CurrentAndUpcomingEvents } from '~/model/Api'
 import { EventMetadata } from '~/plugins/clicker'
 
 export default Vue.extend({

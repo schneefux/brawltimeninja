@@ -220,7 +220,7 @@ export default Vue.extend({
           ...trendGraphLayout,
           yaxis: {
             title: {
-              text: 'Win Rate',
+              text: this.$tc('metric.winRate'),
               standoff: 10,
             },
             fixedrange: true,

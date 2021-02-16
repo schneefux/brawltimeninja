@@ -9,7 +9,7 @@
   >
     <template v-slot="data">
       <v-table
-        title="Best Gadgets in Brawl Stars"
+        :title="$t('leaderboard.thing.long', { thing: $tc('thing.gadget', 2) })"
         :link="dashboardLink"
         v-bind="data"
         class="mt-4"

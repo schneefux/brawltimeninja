@@ -7,12 +7,12 @@
             ...
           </dd>
           <dt class="text-3xl text-white">
-            hours spent
+            {{ $t('metric.hours-spent') }}
           </dt>
         </dl>
         <nuxt-link
           v-if="rank !== 0"
-          to="/leaderboard/hours"
+          :to="localePath('/leaderboard/hours')"
           class="text-4xl -ml-4 text-primary-light font-bold"
         >
           #{{ rank }}
@@ -29,7 +29,7 @@
           primary
           @click="showAll = true"
         >
-          &#9660; show fun facts
+          &#9660; {{ $t('action.show-all.thing', $tc('thing.fun-facts', 2)) }}
         </b-button>
       </div>
 
@@ -38,7 +38,7 @@
           'hidden md:block': !showAll,
         }]"
       >
-        which is about
+        {{ $t('player.equals')}}
       </p>
 
       <dl
@@ -63,7 +63,7 @@
 
     <player-sharepic
       :player="player"
-      :win-rate="winRate"
+      :winRate="winRate"
       :total-battles="totalBattles"
       :account-rating="accountRating"
       class="absolute w-16 top-0 left-0 z-0 -mt-2"
@@ -80,7 +80,7 @@
           </div>
           <dd class="mx-2">
             <nuxt-link
-              :to="`/club/${player.club.tag}`"
+              :to="localePath(`/club/${player.club.tag}`)"
               class="underline text-red-500 font-semibold text-center"
             >
               {{ player.club.name.replace(/ /g, '&nbsp;') }}
@@ -101,7 +101,7 @@
             {{ player.trophies.toLocaleString() }}
           </dd>
           <dt class="bigstat-right bigstat-label text-4xl">
-            Trophies
+            {{ $t('metric.trophies') }}
           </dt>
         </dl>
 
@@ -112,7 +112,7 @@
             class="h-24 md:h-20"
           ></history-graph>
           <span v-else class="italic">
-            Come back later to see progress charts
+            {{ $t('player.no-history') }}
           </span>
         </div>
       </div>
@@ -127,10 +127,10 @@
         <div class="bigstat-right">
           <dt class="bigstat-label w-48 pt-1">
             <span class="text-xl">
-              Potential&nbsp;Trophies
+              {{ $t('metric.potential-trophies') }}
             </span>
             <span class="text-sm">
-              (with&nbsp;all&nbsp;Brawlers&nbsp;unlocked)
+              {{ $t('metric.potential-trophies.subtext') }}
             </span>
           </dt>
         </div>
@@ -151,7 +151,7 @@
         </div>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
-            Recent Win&nbsp;Rate
+            {{ $t('metric.recentWinrate') }}
           </dt>
         </div>
         <card
@@ -166,8 +166,7 @@
             slot="content"
             class="text-left"
           >
-            Your last {{ totalBattles }} battles are used for "Recent" statistics. <br>
-            The Recent Win Rate takes 3v3 wins and Showdown rankings into account.
+            {{ $t('metric.recentWinRate.description', { battles: totalBattles }) }}
           </p>
           <b-button
             slot="actions"
@@ -175,7 +174,7 @@
             xs
             class="mx-auto"
             @click="recentHelpOpen = false"
-          >Close</b-button>
+          >{{ $t('action.close') }}</b-button>
         </card>
       </dl>
 
@@ -188,7 +187,7 @@
         </dd>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
-            Recent&nbsp;Trophies per&nbsp;battle
+            {{ $t('metric.average-trophies') }}
           </dt>
         </div>
       </dl>
@@ -203,7 +202,7 @@
         </div>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
-            Account Rating
+            {{ $t('metric.account-rating') }}
           </dt>
         </div>
         <card
@@ -218,12 +217,12 @@
             slot="content"
             class="text-left"
           >
-            The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.
+            {{ $t('metric.account-rating.description') }}
             <ul>
               <li
                 v-for="(info, rating) in ratingPercentiles"
                 :key="rating"
-              >{{ rating }}: Better than {{ info[0] * 100 }}% (up to {{ info[1] }} Trophies)</li>
+              >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
             </ul>
           </p>
           <b-button
@@ -232,7 +231,7 @@
             xs
             class="mx-auto"
             @click="ratingHelpOpen = false"
-          >Close</b-button>
+          >{{ $t('action.close') }}</b-button>
         </card>
       </dl>
     </div>
@@ -243,7 +242,6 @@
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { Player, LeaderboardEntry } from '@/model/Api'
-import { TrophiesRow } from '../model/Clicker'
 import { BattleTotalRow } from './player-battles-stats.vue'
 
 export default Vue.extend({
@@ -375,23 +373,23 @@ export default Vue.extend({
       return {
         recharges: {
           // measured with AccuBattery on my phone
-          label: 'empty batteries',
+          label: this.$tc('metric.battery'),
           value: (h) => h / 4.27
         },
         toiletBreaks: {
           // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
           // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
-          label: 'toilet breaks',
+          label: this.$tc('metric.toilet'),
           value: (h) => h / (102 / 7 / 60)
         },
         books: {
           // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
-          label: 'books unread',
+          label: this.$tc('metric.book'),
           value: (h) => h / 7.72
         },
         songs: {
           // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
-          label: 'songs unheard',
+          label: this.$tc('metric.song'),
           value: (h) => h / (3.7 / 60)
         },
       }

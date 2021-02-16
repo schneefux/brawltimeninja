@@ -1,5 +1,5 @@
 <template functional>
-  <router-link :to="`/player/${props.row.dimensionsRaw.player.player_tag}`">
+  <router-link :to="parent.localePath(`/player/${props.row.dimensionsRaw.player.player_tag}`)">
     {{ props.row.dimensions.player }}
   </router-link>
 </template>

@@ -1,7 +1,7 @@
 <template functional>
   <card
     :title="props.title"
-    :title-link="props.brawlerId != undefined ? `/tier-list/brawler/${props.brawlerId}` : undefined"
+    :title-link="props.brawlerId != undefined ? parent.localePath(`/tier-list/brawler/${props.brawlerId}`) : undefined"
     sm
     v-bind="data.attrs"
     :style="data.staticStyle"

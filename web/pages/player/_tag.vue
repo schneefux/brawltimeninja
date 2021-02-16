@@ -23,7 +23,7 @@
         clazz="absolute w-16 md:w-24 lg:w-32 xl:w-40 right-0 z-0"
       ></media-img>
       <h1 class="text-4xl font-semibold relative z-10">
-        Statistics for
+        {{ $t('player.statistics-for') }}
         <span class="text-yellow-400">{{ player.name }}</span>
         <span
           v-if="player.tag == 'V8LLPPC'"
@@ -62,8 +62,8 @@
 
     <player-teaser-card
       v-slot="props"
-      title="Personal Records"
-      description="Compare your profile statistics against pro players."
+      :title="$t('player.records.title')"
+      :description="$t('player.records.description')"
     >
       <player-lifetime
         v-observe-visibility="{
@@ -85,11 +85,7 @@
         Info!
       </h2>
       <p class="text-xs ml-3">
-        Play times are estimated and statistics are compared against other visitors.
-        They are not official numbers.
-        Win Rates are based on your last {{ totalBattles }} battles.
-        <br />
-        Check your profile daily to get the most accurate statistics.
+        {{ $t('player.disclaimer', { battles: totalBattles }) }}
       </p>
     </div>
 
@@ -97,8 +93,8 @@
       v-if="player.battles.length > 0"
       v-slot="props"
       :pages="Math.ceil(player.battles.length / 6)"
-      title="Battle Log"
-      description="See your latest battles and calculate your Win Rate."
+      :title="$tc('thing.battle-log', 1)"
+      :description="$t('player.battle-log.description')"
     >
       <player-battles-squares
         v-observe-visibility="{
@@ -114,7 +110,7 @@
         class="w-full md:w-auto md:ml-auto mt-2 flex items-center"
       >
         <span class="text-sm text-grey-lighter">
-          Updating again in {{ Math.floor(refreshSecondsLeft / 60) }}m {{ refreshSecondsLeft % 60 }}s
+          {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
         </span>
         <b-button
           class="ml-auto md:ml-4"
@@ -122,7 +118,7 @@
           primary
           @click="refresh"
         >
-          Refresh now
+          {{ $t('action.refresh') }}
         </b-button>
       </div>
 
@@ -157,8 +153,8 @@
 
     <player-teaser-card
       v-slot="props"
-      title="Game Modes"
-      description="View your win rate in different modes and get personalized recommendations."
+      :title="$tc('thing.mode', 2)"
+      :description="$t('player.modes.description')"
     >
       <player-mode-winrates
         v-observe-visibility="{
@@ -183,12 +179,12 @@
         ></player-tips>
 
         <b-button
-          to="/tier-list/map"
+          :to="localePath('/tier-list/map')"
           md
           primary
           prefetch
         >
-          Open Map Tier List
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.map', 1) }) }) }}
         </b-button>
       </div>
     </player-teaser-card>
@@ -208,8 +204,8 @@
     <player-teaser-card
       v-slot="props"
       :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
-      title="Brawlers"
-      description="View Trophy Graphs and Win Rates for all of your Brawlers."
+      :title="$tc('thing.brawler', 2)"
+      :description="$t('player.brawlers.description')"
     >
       <player-brawlers
         :player="player"
@@ -244,13 +240,9 @@ import { BattleTotalRow } from '@/components/player-battles-stats.vue'
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = `Brawl Time for ${this.player.name}: ${Math.floor(this.player.hoursSpent)} hours spent, ${this.player.trophies} Trophies. Track Brawl Stars stats, calculate your Win Rate and get Tips.`
+    const description = this.$tc('player.meta.description', 1, { name: this.player.name, hours: Math.floor(this.player.hoursSpent), trophies: this.player.trophies })
     return {
       title: this.player.name,
-      link: [ {
-        rel: 'canonical',
-        href: `/player/${this.player.tag}`,
-      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -287,8 +279,14 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async validate({ store, params }) {
-    const tag = params.tag.toUpperCase() // fuck Bing for lowercasing all URLs
+  async validate({ store, params, redirect }) {
+    const tag = params.tag.toUpperCase()
+    if (tag != params.tag) {
+      // fuck Bing for lowercasing all URLs
+      redirect(`/player/${tag}`)
+      return false
+    }
+
     const tagRegex = RegExp(store.state.tagPattern)
 
     if (!tagRegex.test(tag)) {

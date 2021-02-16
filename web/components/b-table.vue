@@ -28,7 +28,7 @@
             :colspan="(ranked ? 1 : 0) + columns.length"
             class="text-center"
           >
-            No data
+            {{ $t('state.no-data') }}
           </td>
         </tr>
         <tr

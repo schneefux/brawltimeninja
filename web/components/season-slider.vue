@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { format, parseISO } from 'date-fns'
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { formatClickhouse } from '~/lib/util'
 
 interface Row {

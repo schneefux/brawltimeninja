@@ -1,0 +1,13 @@
+{
+  "tier-list.maps.title": "Map-Ranglisten",
+  "tier-list.maps.description": "Öffne eine Map, um die besten Brawler für die aktuellen und kommenden Brawl Stars-Ereignisse zu sehen.",
+  "tier-list.mode.title": "Modus-Ranglisten",
+  "tier-list.mode.description": "Öffne einen Modus, um seine Rangliste zu sehen.",
+  "events.active.title": "Gerade aktiv",
+  "events.upcoming.title": "Zukünftige Ereignisse",
+  "action.open": "Öffnen",
+  "map.Competition Entry": "Wettbewerbseintrag",
+  "thing.mode": "Modus | Modi",
+  "thing.map": "Map | Maps",
+  "thing.event": "Ereignis | Ereignisse"
+}

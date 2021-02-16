@@ -29,25 +29,6 @@ interface Achievement {
   text: string
 }
 
-function formatPercentile(p: number): string {
-  let base = 10
-  if (p >= 0.95) {
-    base = 100
-  }
-  if (p >= 0.99) {
-    base = 1000
-  }
-  if (p >= 0.999) {
-    base = 10000
-  }
-
-  p = Math.floor(p * base) / base
-  if (p == 0.5) {
-    return 'Better than Average'
-  }
-  return `Better than ${p * base} out of ${base}`
-}
-
 export default Vue.extend({
   props: {
     player: {
@@ -92,31 +73,51 @@ export default Vue.extend({
 
       // TODO create an endpoint?
       const allAchievements = [{
-        metric: 'Highest Trophies',
+        metric: this.$tc('metric.highestTrophies'),
         percentile: ztable(trophiesZ),
       }, {
-        metric: 'Highest Power Play Points',
+        metric: this.$tc('metric.highestPowerPlayPoints'),
         percentile: ztable(ppZ),
       }, {
-        metric: 'Highest Brawler Trophies',
+        metric: this.$tc('metric.highestBrawlerTrophies'),
         percentile: ztable(brawlerZ),
       }, {
-        metric: 'Qualified for Championships',
+        metric: this.$tc('metric.isQualifiedFromChampionshipChallenge'),
         percentile: ccPercentile,
       }, {
-        metric: '3vs3 Wins',
+        metric: this.$tc('metric.victories'),
         percentile: ztable(victoryZ),
       }, {
-        metric: 'Solo Showdown Wins',
+        metric: this.$tc('metric.soloVictories'),
         percentile: ztable(soloZ),
       }, {
-        metric: 'Duo Showdown Wins',
+        metric: this.$tc('metric.duoVictories'),
         percentile: ztable(duoZ),
       }].sort((a1, a2) => a2.percentile - a1.percentile)
 
       const goodAchievements = allAchievements
         .filter(a => a.percentile >= 0.5)
       const achievements = goodAchievements.length == 0 ? allAchievements.slice(0, 1) : goodAchievements
+
+      const thiz = this
+      function formatPercentile(p: number): string {
+        let base = 10
+        if (p >= 0.95) {
+          base = 100
+        }
+        if (p >= 0.99) {
+          base = 1000
+        }
+        if (p >= 0.999) {
+          base = 10000
+        }
+
+        p = Math.floor(p * base) / base
+        if (p == 0.5) {
+          return thiz.$t('rating.above-average') as string
+        }
+        return thiz.$t('rating.percentile-of', { part: p * base, total: base }) as string
+      }
 
       return achievements.map(a => ({
         metric: a.metric,

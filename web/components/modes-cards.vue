@@ -23,7 +23,7 @@
         primary
         @click="expandModes()"
       >
-        Show All Modes
+        {{ $t('action.show-all.thing', { thing: $tc('thing.mode', 2) })}}
       </b-button>
     </div>
   </div>

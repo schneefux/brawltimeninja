@@ -18,7 +18,7 @@
             {{ brawler.rank }}
           </td>
           <td class="card-prop-label">
-            Rank
+            {{ $t('metric.rank') }}
           </td>
         </tr>
         <tr>
@@ -32,7 +32,7 @@
             {{ brawler.trophies }}
           </td>
           <td class="card-prop-label">
-            Trophies
+            {{ $t('metric.trophies') }}
           </td>
         </tr>
         <tr>
@@ -46,7 +46,7 @@
             {{ brawler.power }}
           </td>
           <td class="card-prop-label">
-            Power Level
+            {{ $t('metric.power-level') }}
           </td>
         </tr>
       </tbody>
@@ -61,7 +61,7 @@
         primary
         class="w-full"
       >
-        {{ open ? 'Hide' : 'Show' }} Details
+        {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}
       </b-button>
       <div v-if="open">
         <history-graph
@@ -73,11 +73,11 @@
           <table class="mt-4 w-full font-semibold leading-none">
             <tbody>
               <tr class="flex text-2xl">
-                <td class="w-1/2 pr-1 text-right">Win Rate</td>
+                <td class="w-1/2 pr-1 text-right">{{ $t('metric.winRate') }}</td>
                 <td class="w-1/2 pl-1 text-left text-yellow-400">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
               </tr>
               <tr class="flex">
-                <td class="w-1/2 pr-1 text-right">Highest Trophies</td>
+                <td class="w-1/2 pr-1 text-right">{{ $t('metric.highest-trophies') }}</td>
                 <td class="w-1/2 pl-1 text-left text-yellow-400">{{ brawler.highestTrophies }}</td>
               </tr>
             </tbody>
@@ -87,11 +87,11 @@
             class="flex justify-center"
           >
             <span class="w-16 text-green-500 text-right">
-              {{ Math.floor(this.winrate * this.picks) }}W
+              {{ Math.floor(this.winrate * this.picks) }}{{ $t('metric.wins.letter') }}
             </span>
             <span class="px-1">-</span>
             <span class="w-16 text-red-500 text-left">
-              {{ Math.floor((1-this.winrate) * this.picks) }}L
+              {{ Math.floor((1-this.winrate) * this.picks) }}{{ $t('metric.losses.letter') }}
             </span>
           </div>
         </div>
@@ -103,7 +103,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Brawler } from '~/model/Api'
-import { TrophiesRow } from '~/model/Clicker'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
 interface BrawlerWithId extends Brawler {

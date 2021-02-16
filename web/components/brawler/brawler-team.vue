@@ -6,7 +6,7 @@
     <router-link
       v-for="(brawler, index) in props.brawlers"
       :key="brawler + '-' + index"
-      :to="`/tier-list/brawler/${props.brawlerId({ name: brawler })}`"
+      :to="localePath(`/tier-list/brawler/${props.brawlerId({ name: brawler })}`)"
       :class="[props.height, props.width, {
         [props.snug]: index < props.brawlers.length - 1,
       }]"

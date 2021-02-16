@@ -80,7 +80,7 @@
       <b-button
         v-if="link"
         tag="router-link"
-        :to="linkTarget"
+        :to="localePath(linkTarget)"
         primary
         sm
       >
@@ -92,8 +92,11 @@
 
 <script lang="ts">
 import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
-import Vue, { PropType } from 'vue'
+import { enUS, de } from 'date-fns/locale'
+import Vue from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
+
+const locales = { en: enUS, de: de }
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -133,9 +136,12 @@ export default Vue.extend({
       }
       const date = parseISO(this.timestamp)
       if (differenceInMinutes(new Date(), date) < 60) {
-        return 'Active'
+        return this.$tc('state.event-active')
       }
-      return formatDistanceToNow(date, { addSuffix: true })
+      return formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: locales[this.$i18n.locale],
+      })
     },
     linkTarget(): string {
       if (this.mode == undefined) {

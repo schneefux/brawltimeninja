@@ -111,15 +111,6 @@ export default Vue.extend({
     VSampleSize,
     VMeasureDescription,
   },
-  head(): MetaInfo {
-    return {
-      link: [ {
-        // do not differentiate by query strings (slices)
-        rel: 'canonical',
-        href: this.$route.path,
-      } ],
-    }
-  },
   data() {
     return {
       cube: 'map',

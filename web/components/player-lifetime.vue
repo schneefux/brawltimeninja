@@ -16,7 +16,7 @@
         class="text-lg flex"
       >
         <dd class="text-yellow-400 font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
-        <dt class="ml-2 w-full overflow-hidden">{{ commonMeasurements[name].name }}</dt>
+        <dt class="ml-2 w-full overflow-hidden">{{ $t('metric.' + name) }}</dt>
       </div>
     </card>
   </dl>

@@ -1,6 +1,6 @@
 <template>
-  <page :title="'Brawl Stars ' + metricName + ' Leaderboard'">
-    <p>The best Brawl Stars players world wide, ranked by {{ metricName }}.</p>
+  <page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
+    <p>{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
 
     <client-only>
       <adsense
@@ -20,12 +20,12 @@
       <b-button
         v-for="metric in metrics"
         :key="metric"
-        :to="`/leaderboard/${metric}`"
+        :to="localePath(`/leaderboard/${metric}`)"
         class="mt-2 mr-2 whitespace-nowrap"
         primary
         sm
       >
-        {{ formatMetric(metric) }} Leaderboard
+        {{ $t('metric.' + metric) }}
       </b-button>
     </horizontal-scroller>
 
@@ -33,7 +33,7 @@
       <card :title="`Best Players by ${metricName}`">
         <template v-slot:content>
           <p class="mb-1">
-            Top {{ leaderboard.length }} players on Brawl Time Ninja, updated hourly
+            {{ $t('leaderboard.player.description', { length: leaderboard.length }) }}
           </p>
           <div class="mt-2">
             <player-rank-table
@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { camelToSnakeCase, capitalizeWords } from '@/lib/util'
 import { PlayerRankTableRow } from '~/components/player-rank-table.vue'
@@ -73,9 +73,9 @@ function formatMetric(m: string) {
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = `Brawl Stars ${this.metricName} Leaderboard. Players ranked by most ${this.metricName}.`
+    const description = this.$tc('leaderboard.meta.description', 1, { metric: this.metricName })
     return {
-      title: `Brawl Stars ${this.metricName} Leaderboard`,
+      title: this.$tc('leaderboard.meta.title', 1, { metric: this.metricName }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

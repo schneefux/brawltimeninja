@@ -1,6 +1,6 @@
 <template>
   <card
-    title="Brawler Personality Test"
+    :title="$t('player.quiz.title')"
     md
     secondary
    >
@@ -12,7 +12,7 @@
     >
       <template v-if="step == 0">
         <p class="question">
-          What is your favorite color?
+          {{ $t('player.quiz.favorite-color') }}
         </p>
         <div class="answers">
           <button
@@ -27,7 +27,7 @@
 
       <template v-if="step == 1">
         <p class="question">
-          Do you always play the new Brawler?
+          {{ $t('player.quiz.new-brawler') }}
         </p>
         <div class="answers">
           <b-button
@@ -39,13 +39,13 @@
             @click="setOpenness(rating)"
           >
             <template v-if="rating == 5">
-              Yes!
+              {{ $t('player.quiz.yes') }}
             </template>
             <template v-if="rating == 3">
-              Sometimes.
+              {{ $t('player.quiz.sometimes') }}
             </template>
             <template v-if="rating == 1">
-              No.
+              {{ $t('player.quiz.no') }}
             </template>
           </b-button>
         </div>
@@ -53,7 +53,7 @@
 
       <template v-if="step == 2">
         <p class="question">
-          Are you an Attacker or a Defender?
+          {{ $t('player.quiz.attacker-or-defender') }}
         </p>
         <div class="answers">
           <b-button
@@ -65,13 +65,13 @@
             @click="setExtraversion(rating)"
           >
             <template v-if="rating == 5">
-              Attacker!
+              {{ $t('player.quiz.attacker') }}
             </template>
             <template v-if="rating == 3">
-              Both!
+              {{ $t('player.quiz.both') }}
             </template>
             <template v-if="rating == 1">
-              Defender!
+              {{ $t('player.quiz.defender') }}
             </template>
           </b-button>
         </div>
@@ -79,7 +79,7 @@
 
       <template v-if="step == 3">
         <p class="question">
-          Are you very upset when you lose?
+          {{ $t('player.quiz.upset') }}
         </p>
         <div class="answers">
           <b-button
@@ -91,13 +91,13 @@
             @click="setNeurotic(rating)"
           >
             <template v-if="rating == 5">
-              Yes!
+              {{ $t('player.quiz.yes') }}
             </template>
             <template v-if="rating == 3">
-              Sometimes.
+              {{ $t('player.quiz.sometimes') }}
             </template>
             <template v-if="rating == 1">
-              No.
+              {{ $t('player.quiz.no') }}
             </template>
           </b-button>
         </div>
@@ -105,7 +105,7 @@
 
       <template v-if="step == 4">
         <p>
-          Processing profile statistics and answers...
+          {{ $t('player.quiz.loading') }}
         </p>
         <div class="spinner mt-1 mx-auto">
           <div class="double-bounce1"></div>
@@ -131,7 +131,7 @@
               xs
               @click="share"
             >
-              Share
+              {{ $t('action.share') }}
             </b-button>
             <b-button
               class="mr-1 pointer-events-auto"
@@ -139,7 +139,7 @@
               xs
               @click="restart"
             >
-              Restart
+              {{ $t('action.restart') }}
             </b-button>
           </div>
         </div>
@@ -160,7 +160,7 @@
           <button
             class="underline"
             @click="showFullDescription = true"
-          >More...</button>
+          >{{ $t('action.more') }}...</button>
         </p>
       </div>
       <div v-if="step == 5 && showFullDescription">
@@ -184,7 +184,7 @@
             primary
             @click="restart"
           >
-            Restart
+            {{ $t('action.restart') }}
           </b-button>
           <b-button
             v-if="supportsShareApi"
@@ -192,7 +192,7 @@
             primary
             @click="share"
           >
-            Share
+            {{ $t('action.share') }}
           </b-button>
         </div>
       </div>

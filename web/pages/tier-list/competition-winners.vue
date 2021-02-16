@@ -1,5 +1,5 @@
 <template>
-  <page title="All Competition Winner Maps">
+  <page :title="$t('tier-list.competition-winners.title')">
     <div class="flex flex-wrap justify-center">
       <lazy
         v-for="(map, index) in maps"
@@ -19,8 +19,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import { mapState } from 'vuex'
 import { camelToKebab, slugify } from '~/lib/util'
 
 interface Event {

@@ -1,6 +1,6 @@
 <template>
-  <page :title="modeName">
-    <p>Use the {{ modeName }} Tier List to find the best Brawler for all {{ modeName }} maps in Brawl Stars.</p>
+  <page :title="$t('tier-list.mode.title', { mode: modeName })">
+    <p>{{ $t('tier-list.mode.description', { mode: modeName }) }}</p>
 
     <map-breadcrumbs
       :mode="mode"
@@ -33,7 +33,7 @@
       tracking-id="maps"
       tracking-page-id="mode_meta"
     >
-      <p slot="description">Open on a Map to view the Tier List for it.</p>
+      <p slot="description">{{ $t('tier-list.open-map') }}</p>
 
       <horizontal-scroller expand-on-desktop>
         <lazy
@@ -70,7 +70,7 @@
                 v-else
                 class="h-64 flex"
               >
-                <p class="m-auto">No image available.</p>
+                <p class="m-auto">{{ $t('state.no-image') }}.</p>
               </div>
             </template>
             <b-button
@@ -80,7 +80,7 @@
               primary
               sm
             >
-              Open
+              {{ $t('action.open') }}
             </b-button>
           </event-card>
         </lazy>
@@ -95,7 +95,7 @@
           primary
           @click="expandMaps()"
         >
-          Show All {{ modeName }} Maps
+          {{ $t('action.show-all.thing', { thing: modeName + ' ' + $tc('thing.map', 2) }) }}
         </b-button>
       </div>
     </page-section>
@@ -146,13 +146,9 @@ interface EventIdAndMap {
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = `Brawl Stars ${this.modeName} Tier List. Find the best Brawlers for ${this.modeName} with Win Rates and Rankings.`
+    const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.modeName })
     return {
-      title: `${this.modeName} Tier List`,
-      link: [ {
-        rel: 'canonical',
-        href: `/tier-list/mode/${camelToKebab(this.mode)}`,
-      } ],
+      title: this.$tc('tier-list.mode.meta.title', 1, { mode: this.modeName }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

@@ -30,6 +30,7 @@
     "glob-all": "^3.2.1",
     "html2canvas": "^1.0.0-rc.7",
     "nuxt": "^2.14.9",
+    "nuxt-i18n": "^6.20.1",
     "plotly.js": "^1.58.1",
     "tailwindcss-elevation": "^1.0.1",
     "v-click-outside": "^3.1.2",

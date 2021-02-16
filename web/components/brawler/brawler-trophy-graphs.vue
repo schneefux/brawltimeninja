@@ -272,7 +272,7 @@ export default Vue.extend({
           ...trophyGraphLayout,
           yaxis: {
             title: {
-              text: 'Win Rate',
+              text: this.$tc('metric.winRate'),
               standoff: 10,
             },
             fixedrange: true,

@@ -5,7 +5,7 @@
         {{ Math.floor(winRate * totalBattles) }}
       </dd>
       <dt class="w-1/2 text-left pl-2 text-xl">
-        Wins Recorded
+        {{ $t('metric.wins' )}}
       </dt>
     </div>
 
@@ -14,7 +14,7 @@
         {{ Math.floor((1 - winRate) * totalBattles) }}
       </dd>
       <dt class="w-1/2 text-left pl-2 text-xl">
-        Losses Recorded
+        {{ $t('metric.losses' )}}
       </dt>
     </div>
   </dl>

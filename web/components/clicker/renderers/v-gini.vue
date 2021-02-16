@@ -2,7 +2,7 @@
   <card
     v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && 'picks' in data[0].meta && !comparing"
     v-bind="$attrs"
-    title="Balance Rating"
+    :title="$t('metric.balance-rating')"
     size="w-48"
     dense
   >
@@ -26,7 +26,7 @@
         }"
       >{{ giniScore == undefined ? '?' : giniScoreWords[Math.floor(giniScore * 10)] }}</span>
       <br>
-      <span class="text-xs">Gini Coefficient: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}</span>
+      <span class="text-xs">{{ $t('metric.gini-coefficient') }}: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}</span>
     </p>
   </card>
 </template>
@@ -77,16 +77,16 @@ export default Vue.extend({
       // 75%ile 0.425
       // words chosen from http://www.mcdonald.me.uk/storytelling/lichert_article.htm
       return [
-        'Amazing',
-        'Excellent',
-        'Good',
-        'Fair',
-        'Mediocre',
-        'Poor',
-        'Bad',
-        'Awful',
-        'Awful',
-        'Awful',
+        this.$tc('rating.excellence.9'),
+        this.$tc('rating.excellence.8'),
+        this.$tc('rating.excellence.7'),
+        this.$tc('rating.excellence.6'),
+        this.$tc('rating.excellence.5'),
+        this.$tc('rating.excellence.4'),
+        this.$tc('rating.excellence.3'),
+        this.$tc('rating.excellence.2'),
+        this.$tc('rating.excellence.1'),
+        this.$tc('rating.excellence.0'),
       ]
     },
   },

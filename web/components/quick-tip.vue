@@ -15,7 +15,7 @@
           Battle Log: <span class="text-green-500 font-semibold">{{ wins }}W</span> / <span class="text-red-500 font-semibold">{{ losses }}L</span>
         </p>
         <b-button
-          :to="`/player/${player.tag}`"
+          :to="localePath(`/player/${player.tag}`)"
           primary
           xs
           prefetch
@@ -24,7 +24,7 @@
         </b-button>
       </div>
       <nuxt-link
-        :to="`/player/${player.tag}`"
+        :to="localePath(`/player/${player.tag}`)"
         class="block mt-1"
         prefetch
       >

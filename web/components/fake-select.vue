@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import vClickOutside from 'v-click-outside'
 
 export default Vue.extend({

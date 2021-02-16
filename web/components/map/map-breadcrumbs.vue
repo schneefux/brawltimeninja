@@ -11,7 +11,7 @@
       itemscope
     >
       <b-button
-        to="/tier-list/brawler"
+        :to="localePath('/tier-list/brawler')"
         itemid="/tier-list/brawler"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
@@ -19,7 +19,7 @@
         xs
         primary
       >
-        <span itemprop="name">Brawlers</span>
+        <span itemprop="name">{{ $tc('thing.brawler', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="1" />
     </li>
@@ -31,7 +31,7 @@
     >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
-        :to="`/tier-list/brawler/${brawlerId}`"
+        :to="localePath(`/tier-list/brawler/${brawlerId}`)"
         :itemid="`/tier-list/brawler/${brawlerId}`"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
@@ -51,7 +51,7 @@
     >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
-        :to="`/tier-list/mode/${modePath}`"
+        :to="localePath(`/tier-list/mode/${modePath}`)"
         :itemid="`/tier-list/mode/${modePath}`"
         :primary="map != undefined"
         :dark="map == undefined"
@@ -72,7 +72,7 @@
     >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
-        :to="`/tier-list/mode/${modePath}/map/${mapPath}`"
+        :to="localePath(`/tier-list/mode/${modePath}/map/${mapPath}`)"
         :itemid="`/tier-list/mode/${modePath}/map/${mapPath}`"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
@@ -92,7 +92,7 @@
     >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
-        to="/tier-list/starpowers"
+        :to="localePath('/tier-list/starpowers')"
         itemid="/tier-list/starpowers"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
@@ -100,7 +100,7 @@
         xs
         dark
       >
-        <span itemprop="name">Star Powers</span>
+        <span itemprop="name">{{ $tc('thing.starpower', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
     </li>
@@ -112,7 +112,7 @@
     >
       <font-awesome-icon :icon="faCaretRight"></font-awesome-icon>
       <b-button
-        to="/tier-list/gadgets"
+        :to="localePath('/tier-list/gadgets')"
         itemid="/tier-list/gadgets"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
@@ -120,7 +120,7 @@
         xs
         dark
       >
-        <span itemprop="name">Gadgets</span>
+        <span itemprop="name">{{ $tc('thing.gadget', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
     </li>

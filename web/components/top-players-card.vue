@@ -1,7 +1,7 @@
 <template>
   <card
     :loading="$fetchState.pending"
-    title="Best Players"
+    :title="$t('leaderboard.thing.long', { thing: $tc('thing.player', 2) })"
     xxl
   >
     <horizontal-scroller
@@ -18,7 +18,7 @@
         v-for="player in data.slice(0, limit)"
         :key="player.player_tag"
         :title="player.name"
-        :link="`/player/${player.tag}`"
+        :link="localePath(`/player/${player.tag}`)"
         :icon="`/avatars/${player.icon}`"
         size="w-40"
         elevation="2"
@@ -39,7 +39,7 @@
 
     <b-button
       slot="actions"
-      :to="`/leaderboard/${metric}`"
+      :to="localePath(`/leaderboard/${metric}`)"
       primary
       prefetch
       sm

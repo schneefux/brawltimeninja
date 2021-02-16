@@ -26,10 +26,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { mapState, mapMutations } from 'vuex'
-import { bootstrap } from 'vue-gtag'
 
 export default Vue.extend({
+  head(): MetaInfo {
+    // https://i18n.nuxtjs.org/seo/#improving-performance
+    // will also add rel=canonical without query params
+    return this.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
+  },
   computed: {
     isDesktop(): boolean {
       return (<any>global).screen !== undefined && screen.width > 720

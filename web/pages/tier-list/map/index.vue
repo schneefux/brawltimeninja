@@ -1,6 +1,6 @@
 <template>
-  <page title="Map Tier Lists">
-    <p>Open on a map to see the best Brawlers for all current and upcoming Brawl Stars Events.</p>
+  <page :title="$t('tier-list.maps.title')">
+    <p>{{ $t('tier-list.maps.description') }}</p>
 
     <client-only>
       <adsense
@@ -14,16 +14,16 @@
     </client-only>
 
     <page-section
-      title="Mode Tier Lists"
+      :title="$t('tier-list.modes.title')"
       tracking-id="modes"
       tracking-page-id="maps"
     >
-      <p slot="description">Open a Mode to view the Tier List for it.</p>
+      <p slot="description">{{ $t('tier-list.modes.description') }}</p>
       <modes-cards></modes-cards>
     </page-section>
 
     <page-section
-      title="Live Now"
+      :title="$t('events.active.title')"
       tracking-id="current_events"
       tracking-page-id="maps"
     >
@@ -42,7 +42,7 @@
     </client-only>
 
     <page-section
-      title="Upcoming Events"
+      :title="$t('events.upcoming.title')"
       tracking-id="upcoming_events"
       tracking-page-id="maps"
     >
@@ -89,7 +89,7 @@ export default Vue.extend({
     }
   },
   head(): MetaInfo {
-    const description = 'Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.'
+    const description = this.$tc('tier-list.maps.meta.description', 1)
     const structuredData = this.currentEvents.concat(this.upcomingEvents)
       .map((event) => ({
         type: 'application/ld+json',
@@ -97,11 +97,7 @@ export default Vue.extend({
       }))
 
     return {
-      title: 'Map Tier List',
-      link: [ {
-        rel: 'canonical',
-        href: '/tier-list/map',
-      } ],
+      title: this.$tc('tier-list.maps.meta.title', 1),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

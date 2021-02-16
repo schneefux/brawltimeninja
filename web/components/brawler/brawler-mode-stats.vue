@@ -24,29 +24,28 @@
           class="w-48 flex"
           style="height: 112px;"
         >
-          <p class="m-auto">No data available.</p>
+          <p class="m-auto">{{ $t('state.no-data') }}</p>
         </div>
       </div>
     </div>
 
     <b-button
       slot="actions"
-      :to="`/tier-list/mode/${camelToKebab(mode)}`"
+      :to="localePath(`/tier-list/mode/${camelToKebab(mode)}`)"
       primary
       prefetch
       sm
     >
-      Open
+      {{ $t('action.open') }}
     </b-button>
   </event-card>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import { commonMeasurements } from '~/lib/cube';
 import { camelToKebab } from '@/lib/util';
-import { ModeMetaMap, MapMetaMap, MapMeta, ModeMeta } from '@/model/MetaEntry';
 
 interface ModeRow {
   battle_victory: number

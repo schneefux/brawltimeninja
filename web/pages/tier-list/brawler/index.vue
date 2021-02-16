@@ -1,14 +1,16 @@
 <template>
-  <page title="Brawl Stars Brawler Tier List">
+  <page
+    :title="$t('tier-list.brawler.title')"
+  >
     <p>
-      Brawler Tier Lists are generated automatically for all Brawlers in Brawl Stars.
+      {{ $t('tier-list.brawler.description') }}
 
       <b-button
         to="/tier-list/history"
         xs
         primary
         prefetch
-      >Open historical data</b-button>
+      >{{ $t('tier-list.open-historical') }}</b-button>
     </p>
 
     <div class="flex flex-wrap justify-center">
@@ -37,7 +39,7 @@
     </client-only>
 
     <page-section
-      title="Tier List for all Maps and Modes"
+      :title="$t('tier-list.all.title')"
       tracking-id="widget"
       tracking-page-id="brawler_meta"
     >
@@ -65,13 +67,9 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
   head() {
-    const description = 'Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.'
+    const description = this.$tc('tier-list.brawlers.meta.description', 1)
     return {
-      title: 'Brawler Tier List',
-      link: [ {
-        rel: 'canonical',
-        href: '/tier-list/brawler',
-      } ],
+      title: this.$tc('tier-list.brawlers.meta.title', 1),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

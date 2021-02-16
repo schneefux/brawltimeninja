@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { formatMode, formatSI } from '~/lib/util'
+import { formatSI } from '~/lib/util'
 
 export default Vue.extend({
   data() {

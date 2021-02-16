@@ -15,7 +15,7 @@
           </span>
 
           <div class="ml-auto flex items-center">
-            <span class="mb-1 text-xl">Rating</span>
+            <span class="mb-1 text-xl">{{ $t('metric.account-rating.short') }}</span>
             <div
               class="ml-3 border-2 border-red-600 text-yellow-400 font-bold text-4xl rounded-full h-12 w-12 text-center flex justify-center items-center"
             >
@@ -42,7 +42,7 @@
               {{ Math.floor(player.hoursSpent) }}
             </span>
             <span class="ml-2">
-              hours spent
+              {{ $t('metric.hours-spent') }}
             </span>
           </div>
 
@@ -51,7 +51,7 @@
               {{ Math.floor(player.trophies) }}
             </span>
             <span class="ml-2">
-              Trophies
+              {{ $t('metric.trophies') }}
             </span>
           </div>
 
@@ -68,16 +68,16 @@
             </span>
             <div class="ml-2 flex flex-col justify-center items-center">
               <span class="text-xl">
-                Win Rate
+                {{ $t('metric.winRate') }}
               </span>
               <span class="text-xs -mt-1">
-                ({{ totalBattles }} Battles)
+                ({{ totalBattles }} {{ $t('metric.battles-total') }})
               </span>
             </div>
           </div>
 
           <div>
-            <span class="text-lg">Best Brawlers:</span>
+            <span class="text-lg">{{ $t('player.best-brawlers') }}:</span>
 
             <div class="w-full flex flex-wrap">
               <div
@@ -121,7 +121,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Player } from '../model/Brawlstars'
-import { TrophiesRow } from '../model/Clicker'
 import { Brawler } from '@/model/Api'
 
 export default Vue.extend({

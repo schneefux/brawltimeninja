@@ -8,7 +8,7 @@
     <div class="py-2 rounded-lg bg-yellow-400">
       <input
         v-model="tag"
-        placeholder="Enter your Tag"
+        :placeholder="$t('action.enter-tag')"
         type="text"
         autocomplete="off"
         class="w-48 uppercase placeholder:normal-case font-semibold appearance-none focus:outline-none ml-3 mr-2"
@@ -26,7 +26,7 @@
       v-show="!tagValid"
       class="mt-2 -mb-4 text-red-500 w-full text-center"
     >
-      This is not a tag.
+      {{ $t('error.tag.invalid') }}
     </p>
   </form>
 </template>

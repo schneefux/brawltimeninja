@@ -1,10 +1,7 @@
 <template>
-  <page title="Gadget Tier List">
+  <page :title="$t('tier-list.gadget.title')">
     <map-breadcrumbs gadgets></map-breadcrumbs>
-    <p>
-      Use the Gadget Tier List to find the best Gadget for all Brawlers in Brawl Stars. <br />
-      The statistics are calculated as the difference between a Brawler with one Gadget and a Brawler with zero Gadgets.
-    </p>
+    <p>{{ $t('tier-list.gadget.description') }}</p>
 
     <div class="flex flex-wrap justify-center">
       <best-gadgets-table
@@ -17,14 +14,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
 
 export default Vue.extend({
   middleware: ['cached'],
   head() {
-    const description = `Brawl Stars Gadget Tier List. Find the best Gagdets for all Brawlers with Win Rates and Rankings.`
+    const description = this.$tc('tier-list.gadget.description', 1)
     return {
-      title: `Gadget Tier List`,
+      title: this.$tc('tier-list.gadget.title', 1),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -33,11 +29,6 @@ export default Vue.extend({
   },
   meta: {
     title: 'Gadgets',
-  },
-  computed: {
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
   },
 })
 </script>

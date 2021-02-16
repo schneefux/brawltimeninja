@@ -20,7 +20,7 @@
         primary
         prefetch
         sm
-      >Read</b-button>
+      >{{ $t('action.read') }}</b-button>
     </card>
   </div>
 </template>

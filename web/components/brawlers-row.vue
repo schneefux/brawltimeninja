@@ -5,7 +5,7 @@
   >
     <router-link
       v-for="brawler in brawlers"
-      :to="`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`"
+      :to="localePath(`/tier-list/brawler/${brawlerId({ name: brawler.brawler_name })}`)"
       :key="brawler.brawler_name"
       class="flex-1 flex flex-col justify-end items-center mx-px"
     >
@@ -20,7 +20,7 @@
       </p>
     </router-link>
     <p v-if="!loading && brawlers.length == 0">
-      No data.
+      {{ $t('state.no-data') }}
     </p>
   </shimmer>
 </template>

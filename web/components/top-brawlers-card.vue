@@ -1,7 +1,7 @@
 <template>
   <card
     :loading="$fetchState.pending"
-    title="Best Brawlers"
+    :title="$t('leaderboard.thing.long', { thing: $tc('thing.brawler', 2) })"
     xxl
   >
     <horizontal-scroller
@@ -18,7 +18,7 @@
         v-for="brawler in data"
         :key="brawler.brawler_name"
         :title="brawler.brawler_name"
-        :link="`/tier-list/brawler/${brawler.id}`"
+        :link="localePath(`/tier-list/brawler/${brawler.id}`)"
         :icon="'/brawlers/' + brawler.id + '/avatar'"
         :icon-alt="brawler.brawler_name"
         size="w-28"
@@ -33,19 +33,19 @@
           class="text-xs text-center"
         >
           {{ commonMeasurements.winRate.formatter(brawler.battle_victory) }}
-          {{ commonMeasurements.winRate.name }}
+          {{ $t('metric.winRate') }}
         </p>
       </card>
     </horizontal-scroller>
 
     <b-button
       slot="actions"
-      to="/tier-list/brawler"
+      :to="localePath('/tier-list/brawler')"
       primary
       prefetch
       sm
     >
-      Open Brawler Tier List
+      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.brawler', 1) }) }) }}
     </b-button>
   </card>
 </template>

@@ -20,10 +20,10 @@
       class="flex justify-end"
     >
       <span v-if="id == 0" class="mr-auto">
-        Competition Map
+        {{ $tc('thing.competition-map', 1) }}
       </span>
       <span v-if="powerplay" class="mr-auto">
-        Power Play
+        {{ $tc('thing.power-play', 1) }}
       </span>
       <span v-if="endDate != undefined">
         {{ endDateString }}
@@ -43,12 +43,12 @@
     <b-button
       v-if="link"
       slot="actions"
-      :to="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : `/tier-list/mode/${camelToKebab(mode)}`"
+      :to="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : localePath(`/tier-list/mode/${camelToKebab(mode)}`)"
       primary
       prefetch
       sm
     >
-      Open
+      {{ $t('action.open') }}
     </b-button>
   </event-card>
 </template>

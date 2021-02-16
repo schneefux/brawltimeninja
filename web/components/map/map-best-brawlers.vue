@@ -6,13 +6,13 @@
   >
     <template v-slot="{ brawler }">
       {{ commonMeasurements.winRate.formatter(brawler.battle_victory) }}
-      {{ commonMeasurements.winRate.nameShort }}
+      {{ $t('metric.winRate.short') }}
     </template>
   </brawlers-row>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { commonMeasurements } from '~/lib/cube'
 import { brawlerId } from '~/lib/util'
 

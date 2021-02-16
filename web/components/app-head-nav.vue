@@ -15,11 +15,11 @@
       ></font-awesome-icon>
     </button>
     <nuxt-link
-      to="/"
+      :to="localePath('/')"
       class="font-medium mr-auto leading-none text-xl"
       prefetch
     >
-      {{ title }}
+      {{ $t('nav.' + title) }}
     </nuxt-link>
 
     <install-button
@@ -27,7 +27,7 @@
     ></install-button>
 
     <nuxt-link
-      to="/about"
+      :to="localePath('/about')"
       class="h-6"
     >
       <font-awesome-icon
@@ -39,7 +39,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
 import { faInfo, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { screens } from './app-bottom-nav.vue'
 

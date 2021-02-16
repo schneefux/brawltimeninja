@@ -1,9 +1,9 @@
 <template>
   <card
     :title="$attrs.title || (mode != undefined ? formatMode(mode) : undefined)"
-    :title-link="mode != undefined ? `/tier-list/mode/${camelToKebab(mode)}` : undefined"
+    :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
     :subtitle="mapName"
-    :subtitle-link="map != undefined ? `/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}` : undefined"
+    :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"

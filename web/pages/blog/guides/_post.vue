@@ -19,10 +19,6 @@ export default Vue.extend({
     const description = `Brawl Stars Guides written by ${this.post.author}. ${this.post.description}`
     return {
       title: this.post.title,
-      link: [ {
-        rel: 'canonical',
-        href: `/blog/guides/${this.post.slug}`,
-      } ],
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

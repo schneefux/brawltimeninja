@@ -1,6 +1,6 @@
 <template functional>
   <router-link
-    :to="`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.battle_event_mode)}`"
+    :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.battle_event_mode)}`)"
     class="flex items-center"
   >
     <div class="mr-2 w-24 sm:w-23 md:w-40">

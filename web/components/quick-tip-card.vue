@@ -11,7 +11,7 @@
         class="flex-shrink-0 w-10 h-12 leading-none mr-2 bg-gray-800 text-center"
       >
         <router-link
-          :to="'/tier-list/brawler/' + brawlerId({ name: brawler })"
+          :to="localePath('/tier-list/brawler/' + brawlerId({ name: brawler }))"
         >
           <media-img
             :path="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
@@ -24,12 +24,12 @@
       </li>
       <div class="flex items-center">
         <b-button
-          :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`"
+          :to="localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`)"
           primary
           xs
           prefetch
         >
-          Open Tier List
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list', 1) }) }}
         </b-button>
       </div>
     </ol>

@@ -44,7 +44,7 @@
             sm
             prefetch
           >
-            Open Star Power Tier List
+            {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.starpower', 2) }) }) }}
           </b-button>
 
           <b-button
@@ -54,7 +54,7 @@
             sm
             prefetch
           >
-            Open Gadget Tier List
+            {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', { thing: $tc('thing.gadget', 2) }) }) }}
           </b-button>
         </div>
       </div>
@@ -72,7 +72,7 @@
     </client-only>
 
     <page-section
-      :title="'Synergies for ' + brawlerName"
+      :title="$t('brawler.synergies-for', { brawler: brawlerName })"
       tracking-id="synergies"
       tracking-page-id="brawler"
     >
@@ -83,7 +83,7 @@
     </page-section>
 
     <page-section
-      :title="'Current Maps for ' + brawlerName"
+      :title="$t('brawler.current-maps-for', { brawler: brawlerName })"
       tracking-id="current-maps"
       tracking-page-id="brawler"
     >
@@ -100,7 +100,7 @@
           sm
           primary
         >
-          Show More
+          {{ $t('action.expand') }}
         </b-button>
         <b-button
           to="/tier-list/map"
@@ -108,7 +108,7 @@
           primary
           prefetch
         >
-          Open Map Tier Lists
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.map', 1) }) }) }}
         </b-button>
       </div>
     </page-section>
@@ -119,7 +119,7 @@
       tracking-page-id="brawler"
     >
       <p slot="description">
-        See how {{ brawlerName }} has performed this month.
+        {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
       </p>
 
       <brawler-trends-card
@@ -128,7 +128,7 @@
     </page-section>
 
     <page-section
-      :title="brawlerName + ' Statistics by Trophies'"
+      :title="$t('brawler.by-trophies', { brawler: brawlerName })"
       tracking-id="trophy-graphs"
       tracking-page-id="brawler"
     >
@@ -137,9 +137,7 @@
       ></brawler-trophy-graphs>
 
       <p class="mt-4">
-        Info:
-        Statistics are generated with data from Brawl Time Ninja's visitors.
-        These players are usually better than the average.
+        {{ $t('brawler.disclaimer') }}
       </p>
 
       <div class="mt-1 w-full flex justify-end">
@@ -149,7 +147,7 @@
           sm
           prefetch
         >
-          Open Brawler Tier List
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.brawler', 1) }) }) }}
         </b-button>
       </div>
     </page-section>
@@ -166,8 +164,7 @@
       ></brawler-modes-stats>
 
       <p class="mt-2">
-        Info:
-        A Brawler is considered viable on a map if the Brawler has an above average number of wins on that map.
+        {{ $t('brawler.viable-info') }}
       </p>
 
       <div class="mt-1 w-full flex justify-end">
@@ -178,7 +175,7 @@
           sm
           primary
         >
-          Show More
+          {{ $t('action.expand') }}
         </b-button>
       </div>
     </page-section>
@@ -205,13 +202,9 @@ import { capitalizeWords } from '@/lib/util'
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = `${this.brawlerName} Brawl Stars stats. Best Star Power and best Gadget for ${this.brawlerName} with win rate and pick rates for all modes.`
+    const description = this.$tc('tier-list.brawler.description', 1, { brawler: this.brawlerName })
     return {
-      title: `${this.brawlerName} in Brawl Stars`,
-      link: [ {
-        rel: 'canonical',
-        href: `/tier-list/brawler/${this.brawlerId}`,
-      } ],
+      title: this.$tc('tier-list.brawler.title', 1, { brawler: this.brawlerName }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

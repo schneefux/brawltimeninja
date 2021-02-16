@@ -30,7 +30,7 @@
         md
         @click="collapse"
       >
-        Show Less
+        {{ $t('action.collapse') }}
       </b-button>
       <b-button
         v-if="page < pages"
@@ -39,7 +39,7 @@
         sm
         @click="expand"
       >
-        Show More
+        {{ $t('action.expand') }}
       </b-button>
     </div>
   </card>

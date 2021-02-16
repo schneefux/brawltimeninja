@@ -6,7 +6,7 @@
           #
         </th>
         <th scope="col" class="text-left font-semibold">
-          Player
+          {{ $t('metric.player') }}
         </th>
         <th
           v-for="(column, index) in columns"
@@ -27,7 +27,7 @@
           :colspan="2 + columns.length"
           class="text-center"
         >
-          No data
+          {{ $t('state.no-data') }}
         </td>
       </tr>
       <tr
@@ -39,7 +39,7 @@
         </th>
         <td class="font-semibold">
           <router-link
-            :to="`/player/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`"
+            :to="localePath(`/player/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`)"
             class="flex items-center"
           >
             <media-img

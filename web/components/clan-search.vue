@@ -21,15 +21,15 @@
 
       <dl>
         <div>
-          <dt class="inline">Users</dt>
+          <dt class="inline">{{ $tc('thing.user', 2) }}</dt>
           <dd class="inline">{{ formatSI(data.users) }}</dd>
         </div>
         <div>
-          <dt class="inline">Battles</dt>
+          <dt class="inline">{{ $tc('thing.battle', 2) }}</dt>
           <dd class="inline">{{ commonMeasurements.picks.formatter(data.picks) }}</dd>
         </div>
         <div>
-          <dt class="inline">{{ commonMeasurements.winRate.name }}</dt>
+          <dt class="inline">{{ $t('metric.winRate') }}</dt>
           <dd class="inline">{{ commonMeasurements.winRate.formatter(data.battle_victory) }}</dd>
         </div>
       </dl>

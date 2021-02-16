@@ -1,5 +1,6 @@
 import path from 'path'
 import axios from 'axios'
+import messages from './lang'
 
 // TODO migrate this file to ts and import from util
 const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
@@ -81,6 +82,7 @@ export default {
   ],
 
   modules: [
+    'nuxt-i18n',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
@@ -215,4 +217,23 @@ export default {
     useLayersText: false,
     addCss: true,
   },
+
+  i18n: {
+    seo: false,
+    locales: [{
+      code: 'en',
+      iso: 'en-US',
+    }, {
+      code: 'de',
+      iso: 'de-DE',
+    }, {
+       code: 'es',
+       iso: 'es-ES',
+    }],
+    defaultLocale: 'en',
+    vueI18n: {
+      fallbackLocale: 'en',
+      messages,
+    }
+  }
 }

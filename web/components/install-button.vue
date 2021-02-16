@@ -11,7 +11,7 @@
       class="mr-1"
       :icon="faDownload"
     ></font-awesome-icon>
-    Install
+    {{ $t('action.install') }}
   </b-button>
 </template>
 

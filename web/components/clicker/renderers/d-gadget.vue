@@ -1,6 +1,6 @@
 <template functional>
   <router-link
-    :to="`/tier-list/brawler/${props.brawlerId({ name: props.row.dimensionsRaw.gadget.brawler_name })}`"
+    :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.row.dimensionsRaw.gadget.brawler_name })}`)"
     :title="props.row.dimensions.gadget"
     class="flex items-center"
   >

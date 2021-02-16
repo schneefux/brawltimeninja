@@ -4,7 +4,7 @@
       primary
       @click="notifyTips"
     >
-      Send Notification
+      {{ $t('action.send-notification') }}
     </b-button>
   </client-only>
 </template>

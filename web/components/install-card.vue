@@ -16,7 +16,7 @@
         <font-awesome-icon :icon="faTimes"></font-awesome-icon>
       </button>
       <p>
-        Track your trophies easily. Light, fast and free.
+        {{ $t('banner.install.catchphrase') }}
       </p>
     </div>
 
@@ -31,7 +31,7 @@
         :icon="faDownload"
         class="mr-1"
       ></font-awesome-icon>
-      Install
+      {{ $t('action.install') }}
     </b-button>
   </card>
 </template>

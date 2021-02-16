@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { differenceInWeeks, parseISO } from 'date-fns'
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { TrophiesRow } from '~/model/Clicker'
 
 export default Vue.extend({

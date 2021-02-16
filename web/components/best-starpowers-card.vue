@@ -5,12 +5,12 @@
   >
     <b-button
       slot="actions"
-      :to="`/tier-list/${kind}`"
+      :to="localePath(`/tier-list/${kind}`)"
       primary
       prefetch
       sm
     >
-      Open {{ kindNameSingular }} Tier List
+      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: kind }) }) }}
     </b-button>
 
     <shimmer
@@ -30,7 +30,7 @@
         ></media-img>
         <p class="text-xs">
           {{ commonMeasurements.winRate.formatter(entry.battle_victory) }}
-          {{ commonMeasurements.winRate.nameShort }}
+          {{ $t('metric.winRate.short') }}
         </p>
       </div>
     </shimmer>

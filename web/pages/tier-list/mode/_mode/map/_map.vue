@@ -1,16 +1,16 @@
 <template>
   <page-dashboard
-    :title="title"
+    :title="$tc('thing.tier-list.thing.long', 1, { thing: event.map })"
   >
-    <p>Use the {{ event.map }} Tier List to find the best Brawler for this {{ event.modeName }} map in Brawl Stars.</p>
+    <p>{{ $t('tier-list.map.description', { map: event.map, mode: event.modeName }) }}</p>
     <p v-if="event.map.startsWith('Competition ')">
-      A new Competition Winner Map is voted by the community every day.
+      {{ $t('tier-list.competition-info') }}
       <b-button
         to="/tier-list/competition-winners"
         prefetch
         primary
         xs
-      >Compare Competition Winners</b-button>
+      >{{ $t('tier-list.compare-competition-winners') }}</b-button>
     </p>
 
     <map-breadcrumbs
@@ -65,7 +65,7 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { deslugify, kebabToCamel, formatMode, camelToKebab, slugify } from '~/lib/util'
+import { deslugify, kebabToCamel, formatMode } from '~/lib/util'
 
 interface Map {
   id: string
@@ -76,13 +76,9 @@ interface Map {
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = `Brawl Stars Tier List for ${this.event.modeName}: ${this.event.map}. View the best Brawlers with Win Rates and Rankings.`
+    const description = this.$tc('tier-list.map.meta.description', 1, { map: this.event.map, mode: this.event.modeName })
     return {
-      title: `${this.event.map} Tier List for Brawl Stars`,
-      link: [ {
-        rel: 'canonical',
-        href: `/tier-list/mode/${camelToKebab(this.event.mode)}/map/${slugify(this.event.map)}`,
-      } ],
+      title: this.$tc('tier-list.map.meta.title', 1, { mode: this.event.mode, map: this.event.map }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -102,9 +98,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    title(): string {
-      return `${this.event.map} Tier List for Brawl Stars`
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),

@@ -9,8 +9,8 @@
       :brawler-name="brawlerName"
       :content="content"
       :description="getDescription(entry)"
-      :win-rate="entry.battle_victory"
-      :without-win-rate="totals.battle_victory"
+      :winRate="entry.battle_victory"
+      :without-winRate="totals.battle_victory"
     ></brawler-starpower-card>
   </div>
 </template>

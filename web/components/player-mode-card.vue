@@ -9,11 +9,11 @@
           {{ stats.picks > 5 ? commonMeasurements.winRate.formatter(stats.winRate) : '?' }}
         </dd>
         <dt class="ml-1">
-          {{ commonMeasurements.winRate.name }}
+          {{ $t('metric.winRate') }}
         </dt>
       </dl>
       <p class="text-xs">
-        {{ stats.wins }} Wins / {{ stats.losses }} Losses</p>
+        {{ stats.wins }} {{ $t('metric.wins' )}} / {{ stats.losses }} {{ $t('metric.losses') }}</p>
       <div
         v-if="recommendedBrawlers.length > 0"
         class="flex justify-between md:flex-row-reverse md:justify-end my-3 h-32"
@@ -21,7 +21,7 @@
         <div class="md:ml-2 w-full">
           <div>
             <h6 class="font-semibold">{{ activeMap.map }}</h6>
-            <p class="text-xs">Recommended for you:</p>
+            <p class="text-xs">{{ $t('player.recommendation') }}</p>
           </div>
           <ol class="flex mt-2 w-32">
             <li
@@ -30,7 +30,7 @@
               class="flex-shrink-0 w-10 h-12 leading-none mr-1 bg-gray-800 text-center"
             >
               <router-link
-                :to="'/tier-list/brawler/' + brawlerId({ name:  brawler })"
+                :to="localePath('/tier-list/brawler/' + brawlerId({ name:  brawler }))"
               >
                 <media-img
                   :path="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
@@ -52,23 +52,23 @@
           ></media-img>
           <b-button
             tag="router-link"
-            :to="`/tier-list/mode/${camelToKebab(activeMap.mode)}/map/${slugify(activeMap.map)}`"
+            :to="localePath(`/tier-list/mode/${camelToKebab(activeMap.mode)}/map/${slugify(activeMap.map)}`)"
             class="mx-auto"
             primary
             xs
           >
-            Open
+            {{ $t('action.open') }}
           </b-button>
         </div>
       </div>
       <div v-else class="mt-2">
         <b-button
           tag="router-link"
-          :to="`/tier-list/mode/${camelToKebab(mode)}`"
+          :to="localePath(`/tier-list/mode/${camelToKebab(mode)}`)"
           primary
           xs
         >
-          Open Tier List
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list', 1) })}}
         </b-button>
       </div>
     </div>

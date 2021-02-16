@@ -3,7 +3,7 @@
     <nuxt-link
       v-for="link in links"
       :key="link.target"
-      :to="link.target"
+      :to="localePath(link.target)"
       :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
         'text-gray-800': link.target == activeTarget,
         'text-yellow-700': link.target != activeTarget,
@@ -15,7 +15,7 @@
         class="w-6 h-6"
       ></font-awesome-icon>
       <span class="text-xs leading-none">
-        {{ link.name }}
+        {{ $t('nav.' + link.name) }}
       </span>
     </nuxt-link>
   </nav>

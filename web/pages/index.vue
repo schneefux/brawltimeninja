@@ -5,17 +5,16 @@
         src="~/assets/images/logo_with_crown_min.svg"
         class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
       >
-      <span class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl">New Design!</span>
     </div>
 
     <div class="mt-6 md:mt-10 text-center mx-2">
       <h1 class="text-4xl font-bold">
-        How much time on Brawl Stars?
+        {{ $t('index.title') }}
       </h1>
     </div>
 
     <p class="mt-3 text-center text-lg mx-2">
-      See how much you play, statistics for your Brawlers and more.
+      {{ $t('index.subtitle') }}
     </p>
 
     <form
@@ -33,16 +32,16 @@
         <div class="py-2 border-2 rounded-lg border-yellow-400 bg-gray-800">
           <input
             v-model="tag"
-            placeholder="Enter your Tag"
+            :placeholder="$t('action.enter-tag')"
             type="text"
             autocomplete="off"
             class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2"
           >
           <b-button
             tag="input"
+            :value="$t('action.search')"
             type="submit"
             class="flex-shrink-0 mr-3"
-            value="Search"
             secondary
             lg
           ></b-button>
@@ -52,7 +51,7 @@
         v-show="loading"
         class="mt-2 text-red-500"
       >
-        Searching…
+        {{ $t('state.searching') }}…
       </p>
       <p
         v-show="error"
@@ -68,21 +67,21 @@
         class="mx-6"
       >
         <summary>
-          What is my tag?
+          {{ $t('tag-help.title') }}
         </summary>
         <card
           title="How to find your tag"
           class="mt-2"
         >
           <template v-slot:content>
-            <p>Open the game.</p>
-            <p>Tap on your profile icon.</p>
+            <p>{{ $t('tag-help.step.1') }}</p>
+            <p>{{ $t('tag-help.step.2') }}</p>
             <img
               loading="lazy"
               src="~/assets/images/tag/tag-1.jpg"
               class="px-8 mt-1 w-80 max-w-full"
             >
-            <p class="mt-3">The string starting with "#" is your tag.</p>
+            <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
             <img
               loading="lazy"
               src="~/assets/images/tag/tag-2.jpg"
@@ -96,17 +95,17 @@
     <div class="my-2 mx-6 max-w-lg flex flex-wrap justify-center">
       <div class="mt-1">
         <template v-if="lastPlayers.length === 0">
-          Or check one of these:
+          {{ $t('index.recommended') }}:
         </template>
         <template v-if="lastPlayers.length > 0">
-          Recently searched:
+          {{ $t('index.recents') }}:
         </template>
       </div>
       <div>
         <b-button
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
-          :to="playerToRoute(player)"
+          :to="localePath(playerToRoute(player))"
           @click.native.passive="addLastPlayer(player)"
           xs
           primary
@@ -165,7 +164,7 @@
     >
       <div class="home-section-heading-container">
         <div class="home-section-heading-left">
-          Brawl Stars Events
+          {{ $t('index.events.title')}}
         </div>
       </div>
 
@@ -184,7 +183,7 @@
             sm
             @click="notifyCurrentEventMeta"
           >
-            Send a Notification with Map Tier List
+            {{ $t('index.send-map-tier-list') }}
           </b-button>
         </div>
       </div>
@@ -210,7 +209,7 @@ import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd, getBest, unformatMode } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
-import { BrawlerMetaStatistics, ActiveEvent, CurrentAndUpcomingEvents } from '@/model/Api'
+import { ActiveEvent, CurrentAndUpcomingEvents } from '@/model/Api'
 
 function playerToRoute(player) {
   return {
@@ -223,7 +222,7 @@ function playerToRoute(player) {
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = 'Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.'
+    const description = this.$tc('index.meta.description')
     const structuredData = this.currentEvents
       .map((event) => ({
         type: 'application/ld+json',
@@ -231,11 +230,7 @@ export default Vue.extend({
       }))
 
     return {
-      title: 'Brawl Stars Stats',
-      link: [ {
-        rel: 'canonical',
-        href: '/',
-      } ],
+      title: this.$tc('index.meta.title'),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -359,7 +354,7 @@ export default Vue.extend({
           'event_category': 'player',
           'event_label': 'error_invalid',
         })
-        this.error = 'This is not a tag'
+        this.error = this.$tc('error.tag.invalid')
         const dropdown = this.$refs['help-dropdown'] as HTMLElement
         dropdown.setAttribute('open', '')
         // key events would cancel scroll
@@ -377,13 +372,13 @@ export default Vue.extend({
             'event_category': 'player',
             'event_label': 'error_notfound',
           })
-          this.error = 'This tag does not exist'
+          this.error = this.$tc('error.tag.not-found')
         } else if (error.response !== undefined && error.response.status === 429) {
           this.$gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_timeout',
           })
-          this.error = 'Could not communicate with the Brawl Stars API, try again?'
+          this.error = this.$tc('error.api-unavailable')
         } else {
           this.$gtag.exception({
             description: 'cannot get player: ' + error.message,
@@ -392,7 +387,7 @@ export default Vue.extend({
             'event_category': 'player',
             'event_label': 'error_api',
           })
-          this.error = 'Brawl Stars API is not available right now, try again later'
+          this.error = this.$tc('error.api-unavailable')
         }
         return
       } finally {
