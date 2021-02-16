@@ -104,7 +104,10 @@ export default class MediaService {
     }
 
     const id = brawlerId({ name: name })
-    const character = characters.find(c => (c.itemName || '').replace(/[.-]/g, '').replace('ricochet', 'rico') == id.replace(/[_-]/g, ''))
+    const character = characters.find(c => (c.itemName || '')
+      .replace(/[.-]/g, '')
+      .replace('ricochet', 'rico')
+      .replace('ruffs', 'colonelruffs') == id.replace(/[_-]/g, ''))
     if (character == undefined) {
       console.log('brawler not found: ' + name)
       return null
