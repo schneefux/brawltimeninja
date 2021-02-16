@@ -21,7 +21,6 @@
         :link="localePath(`/tier-list/brawler/${brawler.id}`)"
         :icon="'/brawlers/' + brawler.id + '/avatar'"
         :icon-alt="brawler.brawler_name"
-        size="w-28"
         elevation="2"
         class="flex-shrink-0"
         itemscope

@@ -127,10 +127,10 @@
         <div class="bigstat-right">
           <dt class="bigstat-label w-48 pt-1">
             <span class="text-xl">
-              {{ $t('metric.potential-trophies') }}
+              {{ $t('metric.potentialTrophies') }}
             </span>
             <span class="text-sm">
-              {{ $t('metric.potential-trophies.subtext') }}
+              {{ $t('metric.potentialTrophies.subtext') }}
             </span>
           </dt>
         </div>
@@ -187,7 +187,7 @@
         </dd>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
-            {{ $t('metric.average-trophies') }}
+            {{ $t('metric.averageTrophies') }}
           </dt>
         </div>
       </dl>
@@ -202,7 +202,7 @@
         </div>
         <div class="bigstat-right bigstat-label text-xl">
           <dt class="w-24">
-            {{ $t('metric.account-rating') }}
+            {{ $t('metric.accountRating') }}
           </dt>
         </div>
         <card
@@ -217,7 +217,7 @@
             slot="content"
             class="text-left"
           >
-            {{ $t('metric.account-rating.description') }}
+            {{ $t('metric.accountRating.description') }}
             <ul>
               <li
                 v-for="(info, rating) in ratingPercentiles"
