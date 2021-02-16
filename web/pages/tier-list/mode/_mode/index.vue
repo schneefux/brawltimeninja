@@ -6,18 +6,6 @@
       :mode="mode"
     ></map-breadcrumbs>
 
-    <div class="flex flex-wrap justify-center">
-      <mode-article-card
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'description'),
-          once: true,
-        }"
-        :mode="mode"
-        full-height
-        xxl
-      ></mode-article-card>
-    </div>
-
     <client-only>
       <adsense
         ins-class="ad-section"
