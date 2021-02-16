@@ -6,6 +6,7 @@ export interface Cube {
   id: string
   table: string
   name: string
+  hidden: boolean
   dimensions: Dimension[]
   defaultDimensionsIds: string[]
   measurements: Measurement[]
@@ -589,6 +590,7 @@ const cubes: Record<string, Cube> = {
     id: 'map',
     table: 'meta_map',
     name: 'Map',
+    hidden: false,
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.mode,
@@ -616,6 +618,7 @@ const cubes: Record<string, Cube> = {
     id: 'starpower',
     table: 'meta_starpower',
     name: 'Star Power',
+    hidden: false,
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.starpower,
@@ -640,6 +643,7 @@ const cubes: Record<string, Cube> = {
     id: 'gadget',
     table: 'meta_gadget',
     name: 'Gadget',
+    hidden: false,
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.gadget,
@@ -664,6 +668,7 @@ const cubes: Record<string, Cube> = {
     id: 'synergy',
     table: 'meta_synergy',
     name: 'Synergies',
+    hidden: false,
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.ally,
@@ -690,6 +695,7 @@ const cubes: Record<string, Cube> = {
     id: 'team',
     table: 'team',
     name: 'Teams',
+    hidden: false,
     dimensions: [
       commonDimensions.team,
     ],
@@ -715,6 +721,7 @@ const cubes: Record<string, Cube> = {
     id: 'player',
     table: 'player',
     name: 'Leaderboard',
+    hidden: false,
     dimensions: [
       commonDimensions.player,
     ],
@@ -736,6 +743,7 @@ const cubes: Record<string, Cube> = {
     id: 'brawler',
     table: 'brawler',
     name: 'Brawler Leaderboard',
+    hidden: true,
     dimensions: [
       commonDimensions.player,
       commonDimensions.brawler,
@@ -757,6 +765,7 @@ const cubes: Record<string, Cube> = {
     id: 'battle',
     table: 'battle',
     name: 'Raw Battles',
+    hidden: true,
     dimensions: [
       commonDimensions.player,
       commonDimensions.brawler,

@@ -17,7 +17,7 @@
             @input="v => onInputCubeId(v)"
           >
             <option
-              v-for="c in config"
+              v-for="c in cubes"
               :key="c.id"
               :value="c.id"
             >
@@ -185,6 +185,10 @@ export default Vue.extend({
     },
   },
   computed: {
+    cubes() {
+      return Object.values(this.config)
+        .filter((cube) => !cube.hidden)
+    },
     dimensions() {
       return this.config[this.value.cubeId].dimensions.filter(d => !d.hidden)
     },
