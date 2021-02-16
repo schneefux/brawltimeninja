@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts --legacy-watch",
     "dev:migrate": "ts-node migrate.ts",
-    "build": "webpack --mode production",
+    "build": "webpack --mode=production",
     "start": "node dist/migrate.js && node dist/clicker.js"
   },
   "author": "schneefux",

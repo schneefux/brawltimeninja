@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts",
-    "build": "webpack --mode production",
+    "build": "webpack --mode=production",
     "start": "node dist/api.js"
   },
   "dependencies": {
