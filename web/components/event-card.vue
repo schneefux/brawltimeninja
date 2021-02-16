@@ -2,7 +2,7 @@
   <card
     :title="$attrs.title || (mode != undefined ? formatMode(mode) : undefined)"
     :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
-    :subtitle="mapName"
+    :subtitle="map"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
@@ -61,7 +61,6 @@ export default Vue.extend({
   data() {
     return {
       staticImageUrl: undefined as undefined|string,
-      mapOverride: undefined as undefined|string,
     }
   },
   // TODO find a better solution to this hack
@@ -70,15 +69,10 @@ export default Vue.extend({
   async fetch() {
     if (this.map?.startsWith('Competition Winner ')) {
       const id = this.map.replace('Competition Winner ', '')
-      const content = await this.$content(`/maps/${id}`).fetch().catch(err => ({})) as IContentDocument
-      this.mapOverride = content.map || 'Competition Winner'
       this.staticImageUrl = process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
     }
   },
   computed: {
-    mapName(): string|undefined {
-      return this.mapOverride || this.map
-    },
     formatMode() {
       return formatMode
     },

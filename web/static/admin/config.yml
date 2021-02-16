@@ -113,33 +113,6 @@ collections:
             widget: string
           - name: description
             widget: string
-  - name: maps
-    label: "Competition Winner Maps"
-    label_singular: "Competition Winner Map"
-    folder: web/content/maps
-    format: yml
-    create: true
-    identifier_field: date
-    preview_path: "tier-list/{{mode}}/{{date}}"
-    sortable_fields: [date]
-    fields:
-      - name: date
-        pattern: ["\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])", "Must be a YYYY-MM-DD date string"]
-        widget: string
-      - name: mode
-        required: false
-        widget: select
-        options: [gemGrab, brawlBall, heist, bounty, siege, hotZone, soloShowdown, duoShowdown, superCity, roboRumble, bigGame]
-      - name: map
-        widget: string
-      - name: author
-        required: false
-        widget: string
-      - name: image
-        required: false
-        widget: image
-        media_folder: "{{media_folder}}/maps"
-        public_folder: "{{public_folder}}/maps"
   - name: faq
     label: "Questions & Answers"
     label_singular: "Question"
