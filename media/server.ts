@@ -1,17 +1,103 @@
-import Koa from 'koa';
-import cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
+import Koa from 'koa'
+import cors from '@koa/cors'
+import path from 'path'
+import fs from 'fs'
+import { promisify } from 'util'
+import sharp from 'sharp'
+import resolvePath from 'resolve-path'
 
-import mediaRoutes from './routes';
+const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets')
+const maxage = parseInt(process.env.CACHE_SECONDS || '86400')
 
-const app = new Koa();
+const app = new Koa()
+
+const fsStat = promisify(fs.stat)
+let placeholder: Buffer
 
 app.use(cors({ origin: '*' })); // TODO for development only
-app.use(bodyParser());
-app.use(mediaRoutes);
+app.use(async (ctx, next) => {
+  if (!(ctx.req.method == 'GET' && ctx.path == '/status')) {
+    await next()
+    return
+  }
 
-const port = parseInt(process.env.PORT || '') || 3003;
+  ctx.body = ({ 'status': 'ok' })
+})
+app.use(async (ctx, next) => {
+  if (ctx.method != 'GET') {
+    await next()
+    return
+  }
 
-app.listen(port, () => {
-  console.log(`listening on port ${port}`)
-});
+  // adapted from koa-send and koa-static
+  const requestPath = ctx.path
+
+  // backwards compat
+  const camelToKebab = (s: string) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+  // images: always use png
+  const fullFilePath = camelToKebab(ctx.path.replace(/\.(webp|jpg)/g, '.png'))
+  const filePath = resolvePath(assetDir, fullFilePath.substr(path.parse(fullFilePath).root.length))
+
+  let stats
+  try {
+    stats = await fsStat(filePath)
+  } catch (err) {
+    const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
+    if (notfound.includes(err.code)) {
+      if (filePath.endsWith('.png')) {
+        ctx.type = 'image/png'
+        ctx.body = placeholder
+      } else {
+        ctx.throw(404, 'no such file or directory')
+      }
+      return
+    }
+    err.status = 500
+    throw err
+  }
+  if (stats.isDirectory()) {
+    ctx.throw(404, 'is a directory')
+    return
+  }
+
+  ctx.set('Content-Length', stats.size.toString())
+  if (!ctx.response.get('Last-Modified')) {
+    ctx.set('Last-Modified', stats.mtime.toUTCString())
+  }
+  if (!ctx.response.get('Cache-Control')) {
+    ctx.set('Cache-Control', `public, max-age=${maxage}`)
+  }
+
+  const ext = path.extname(path.basename(requestPath))
+  ctx.type = ext
+
+  if (['.webp', '.jpg', '.png'].includes(ext)) {
+    let transformer = sharp(filePath)
+    if ('size' in ctx.query) {
+      const size = Math.max(1, Math.min(1000, parseInt(ctx.query.size)))
+      transformer = transformer.resize(size)
+    }
+    if (ext != '.png') {
+      transformer = transformer.toFormat(ext.substring(1))
+    }
+    ctx.body = await transformer.toBuffer()
+  } else {
+    ctx.body = fs.createReadStream(filePath)
+  }
+})
+
+const port = parseInt(process.env.PORT || '') || 3003
+
+sharp({
+  create: {
+    width: 1,
+    height: 1,
+    channels: 4,
+    background: { r: 0, b: 0, g: 0, alpha: 0.0 },
+  }
+}).png().toBuffer().then(b => {
+  placeholder = b
+  app.listen(port, () => {
+    console.log(`listening on port ${port}`)
+  })
+})
