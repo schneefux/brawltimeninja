@@ -32,7 +32,7 @@ app.use(async (ctx, next) => {
   // adapted from koa-send and koa-static
   const requestPath = ctx.path
 
-  // backwards compat
+  // backwards compat, can be removed
   const camelToKebab = (s: string) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
   // images: always use png
   const fullFilePath = camelToKebab(ctx.path.replace(/\.(webp|jpg)/g, '.png'))

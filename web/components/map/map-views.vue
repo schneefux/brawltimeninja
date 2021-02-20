@@ -7,7 +7,7 @@
     }"
   >
     <card
-      v-if="showMapImageCard"
+      v-if="id != undefined"
       md
       class="row-span-2"
     >
@@ -16,20 +16,14 @@
         class="flex justify-center"
       >
         <media-img
-          v-if="id != undefined && id != 0"
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'image'),
             once: true,
           }"
-          :path="`/maps/${id}`"
+          :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
           size="512"
           clazz="h-80 md:h-120"
         ></media-img>
-        <img
-          v-if="staticImageUrl != undefined"
-          :src="staticImageUrl"
-          style="max-height: 16rem"
-        >
       </div>
     </card>
 
@@ -92,17 +86,6 @@ export default Vue.extend({
     },
   },
   computed: {
-    staticImageUrl(): string|undefined {
-      if (this.map?.startsWith('Competition Winner ')) {
-        const id = this.map!.replace('Competition Winner ', '')
-        return process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
-      } else {
-        return undefined
-      }
-    },
-    showMapImageCard(): boolean {
-      return (this.id != undefined && this.id != 0) || (this.staticImageUrl != undefined)
-    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     })

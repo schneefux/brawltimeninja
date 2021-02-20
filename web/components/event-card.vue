@@ -5,23 +5,17 @@
     :subtitle="map"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
-    :icon="mode != undefined ? '/modes/' + mode + '/icon' : undefined"
+    :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
     v-bind="$attrs"
   >
     <media-img
       slot="preview"
-      v-if="id != undefined && id != 0"
-      :path="`/maps/${id}`"
+      v-if="id != undefined"
+      :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
       size="80"
       clazz="h-12"
     ></media-img>
-    <img
-      slot="preview"
-      v-if="staticImageUrl != undefined"
-      :src="staticImageUrl"
-      style="max-height: 3rem"
-    >
 
     <template
       v-for="(_, slot) of $scopedSlots"
@@ -36,7 +30,6 @@
 </template>
 
 <script lang="ts">
-import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
 import { camelToKebab, formatMode, slugify } from '@/lib/util'
 
@@ -57,20 +50,6 @@ export default Vue.extend({
     nobackground: {
       type: Boolean
     },
-  },
-  data() {
-    return {
-      staticImageUrl: undefined as undefined|string,
-    }
-  },
-  // TODO find a better solution to this hack
-  // move it into media or at least move it to the parent
-  fetchDelay: 0,
-  async fetch() {
-    if (this.map?.startsWith('Competition Winner ')) {
-      const id = this.map.replace('Competition Winner ', '')
-      this.staticImageUrl = process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
-    }
   },
   computed: {
     formatMode() {

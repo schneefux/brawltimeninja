@@ -1,5 +1,6 @@
 import Vue, { PropType } from 'vue'
 import { Battle } from '~/model/Api'
+import { camelToKebab } from '~/lib/util'
 
 export default Vue.extend({
   functional: true,
@@ -35,7 +36,7 @@ export default Vue.extend({
         }}
       >
         <media-img
-          path={'/modes/' + battle.event.mode + '/icon'}
+          path={'/modes/' + camelToKebab(battle.event.mode) + '/icon'}
           size="120"
           clazz="w-8 mx-auto my-auto"
         ></media-img>

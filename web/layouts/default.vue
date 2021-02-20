@@ -17,6 +17,7 @@
     <footer
       class="bg-yellow-400 text-gray-800 py-2 text-sm text-center leading-normal hidden md:block"
     >
+      <locale-switcher></locale-switcher>
       <copyright></copyright>
     </footer>
 
@@ -36,9 +37,6 @@ export default Vue.extend({
     return this.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
   },
   computed: {
-    isDesktop(): boolean {
-      return (<any>global).screen !== undefined && screen.width > 720
-    },
     ...mapState({
       version: (state: any) => state.version as number,
       adsAllowed: (state: any) => state.adsAllowed as boolean,

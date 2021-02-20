@@ -10,16 +10,11 @@
       class="flex flex-wrap justify-evenly items-center"
     >
       <media-img
-        v-if="id != undefined && id != 0"
-        :path="`/maps/${id}`"
+        v-if="id != undefined"
+        :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
         size="512"
         clazz="h-64"
       ></media-img>
-      <img
-        v-if="staticImageUrl != undefined"
-        :src="staticImageUrl"
-        style="max-height: 16rem"
-      >
 
       <div>
         <card
@@ -122,14 +117,6 @@ export default Vue.extend({
     },
   },
   computed: {
-    staticImageUrl(): string|undefined {
-      if (this.map?.startsWith('Competition Winner ')) {
-        const id = this.map!.replace('Competition Winner ', '')
-        return process.env.mediaUrl + '/maps/competition-winners/' + id + '.png'
-      } else {
-        return undefined
-      }
-    },
     lastOnlineString(): string {
       if (this.timestamp == undefined) {
         return ''
