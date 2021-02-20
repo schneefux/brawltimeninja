@@ -392,11 +392,11 @@ export default class BrawlstarsService {
         result = `Rank ${battle.battle.rank}`;
         // solo
         if (battle.battle.players) {
-          victory = battle.battle.rank >= battle.battle.players.length / 2;
+          victory = battle.battle.rank <= battle.battle.players.length / 2;
         }
         // duo
         if (battle.battle.teams) {
-          victory = battle.battle.rank >= battle.battle.teams.length / 2;
+          victory = battle.battle.rank <= battle.battle.teams.length / 2;
         }
       }
 
