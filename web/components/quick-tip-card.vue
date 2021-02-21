@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { brawlerId, camelToKebab, capitalize, formatMode, slugify } from '@/lib/util'
+import { brawlerId, camelToKebab, capitalize, slugify } from '@/lib/util'
 import { Player } from '@/model/Api'
 
 interface Row {
@@ -112,9 +112,6 @@ export default Vue.extend({
     },
     mediaUrl(): string {
       return process.env.mediaUrl!
-    },
-    formatMode() {
-      return formatMode
     },
     brawlerId() {
       return brawlerId

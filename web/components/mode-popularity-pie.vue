@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { formatMode } from '~/lib/util'
 
 interface Row {
   battle_event_mode: string
@@ -40,7 +39,7 @@ export default Vue.extend({
 
       return {
         traces: [{
-          labels: entries.map(e => formatMode(e.battle_event_mode)),
+          labels: entries.map(e => this.$i18n.t('mode.' + e.battle_event_mode) as string),
           values: entries.map(e => {
             // with every battle, allies are added to map meta as well,
             // so manually correct the totals

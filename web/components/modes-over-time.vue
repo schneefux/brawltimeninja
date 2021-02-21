@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { formatMode } from '~/lib/util'
 
 interface Row {
   battle_event_mode: string
@@ -75,7 +74,7 @@ export default Vue.extend({
         traces: modes.map(mode => {
           const seasons = [...modeSeasonMap.get(mode)!.keys()]
           return {
-            name: formatMode(mode),
+            name: this.$i18n.t('mode.' + mode) as string,
             x: seasons,
             y: seasons.map(s => modeSeasonMap.get(mode)!.get(s)! / seasonTotalMap.get(s)!) ,
             mode: 'lines+markers',

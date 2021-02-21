@@ -60,7 +60,7 @@
         itemscope
         xs
       >
-        <span itemprop="name">{{ modeName }}</span>
+        <span itemprop="name">{{ $t('mode.' + mode) }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
     </li>
@@ -80,7 +80,7 @@
         xs
         dark
       >
-        <span itemprop="name">{{ map }}</span>
+        <span itemprop="name">{{ $t('map.' + id) }}</span>
       </b-button>
       <meta itemprop="position" content="3" />
     </li>
@@ -130,7 +130,7 @@
 <script lang="ts">
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import Vue from 'vue'
-import { camelToKebab, formatMode, slugify } from '~/lib/util'
+import { camelToKebab, slugify } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -139,6 +139,9 @@ export default Vue.extend({
     },
     map: {
       type: String
+    },
+    id: {
+      type: Number
     },
     starpowers: {
       type: Boolean
@@ -154,9 +157,6 @@ export default Vue.extend({
     },
   },
   computed: {
-    modeName() {
-      return formatMode(this.mode)
-    },
     modePath() {
       return camelToKebab(this.mode)
     },

@@ -39,7 +39,7 @@ interface Clicker {
   queryActiveEvents(): Promise<EventMetadata[]>,
   queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>
-  queryAllMaps(mode?: string): Promise<string[]>
+  queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]>
   queryAllBrawlers(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
   calculateBayesSynergies(tag: string, brawler?: string, limit?: number): Promise<{
@@ -176,9 +176,9 @@ export default (context, inject) => {
       return modes.data.map(row => row.battle_event_mode)
     },
     async queryAllMaps(mode?: string) {
-      const maps = await this.query<{ battle_event_map: string }>('all.maps', 'map',
+      const maps = await this.query<{ battle_event_map: string, battle_event_id: number }>('all.maps', 'map',
         ['battle_event_map'],
-        ['battle_event_map'],
+        ['battle_event_map', 'battle_event_id'],
         {
           trophy_season_end: ['balance'],
           ...(mode != undefined ? {
@@ -186,7 +186,7 @@ export default (context, inject) => {
           } : {})
         },
         { sort: { picks: 'desc' }, cache: 60*60 })
-      return maps.data.map(m => m.battle_event_map)
+      return maps.data
     },
     async queryAllBrawlers() {
       const brawlers = await this.query<{ brawler_name: string }>('all.brawlers', 'map',

@@ -34,6 +34,7 @@
       }"
       :mode="mode"
       :map="map"
+      :id="id"
       class="row-span-2"
       full-height
       md
@@ -47,6 +48,7 @@
       }"
       :mode="mode"
       :map="map"
+      :id="id"
       class="row-span-2"
       full-height
       md
@@ -59,6 +61,7 @@
       }"
       :mode="mode"
       :map="map"
+      :id="id"
     ></map-best-players-table>
   </div>
 </template>

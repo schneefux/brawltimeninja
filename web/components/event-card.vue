@@ -1,8 +1,8 @@
 <template>
   <card
-    :title="$attrs.title || (mode != undefined ? formatMode(mode) : undefined)"
+    :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
     :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
-    :subtitle="map"
+    :subtitle="id != undefined ? $t('map.' + id) : undefined"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { camelToKebab, formatMode, slugify } from '@/lib/util'
+import { camelToKebab, slugify } from '@/lib/util'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -52,9 +52,6 @@ export default Vue.extend({
     },
   },
   computed: {
-    formatMode() {
-      return formatMode
-    },
     camelToKebab() {
       return camelToKebab
     },

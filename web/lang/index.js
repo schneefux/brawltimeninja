@@ -6,7 +6,6 @@ import es from './es.json'
 const strings = { en, de, es }
 
 export default async ({ $axios, env }, locale) => {
-  const mapStrings = await $axios.$get(env.mediaUrl + '/maps/' + locale + '.json').catch(e => ({}))
-  strings[locale].maps = mapStrings
-  return strings[locale]
+  const lazyStrings = await $axios.$get(env.mediaUrl + '/translations/' + locale + '.json').catch(e => ({}))
+  return Object.assign({}, strings[locale], lazyStrings)
 }

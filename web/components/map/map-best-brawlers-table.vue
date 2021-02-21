@@ -25,7 +25,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { RawLocation } from 'vue-router'
-import { formatMode } from '@/lib/util'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import CQuery from '@/components/clicker/c-query.vue'
@@ -45,16 +44,25 @@ export default Vue.extend({
     map: {
       type: String
     },
+    id: {
+      type: Number
+    },
   },
   computed: {
     title(): string {
       if (this.mode == undefined) {
-        return 'Best Brawlers in Brawl Stars'
+        return this.$i18n.t('leaderboard.thing.long', { thing: this.$i18n.tc('thing.brawler', 2) }) as string
       }
       if (this.map == undefined) {
-        return `Best Brawlers for ${formatMode(this.mode)}`
+        return this.$i18n.t('leaderboard.thing.for.thing2', {
+          thing: this.$i18n.tc('thing.brawler', 2),
+          thing2: this.$i18n.t('mode.' + this.mode) as string,
+        }) as string
       }
-      return `Best Brawlers for ${formatMode(this.mode)} - ${this.map}`
+      return this.$i18n.t('leaderboard.thing.for.thing2', {
+        thing: this.$i18n.tc('thing.brawler', 2),
+        thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
+      }) as string
     },
     dashboardLink(): RawLocation {
       return {

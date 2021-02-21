@@ -39,10 +39,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { EventMetadata } from '~/plugins/clicker'
-import { decapitalizeFirstLetter, formatList, formatMode, isSpecialEvent, scaleInto } from '@/lib/util'
-import { CurrentAndUpcomingEvents } from '@/model/Api'
+import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 
 interface Row extends EventMetadata {
   battle_victory: number
@@ -81,17 +80,17 @@ export default Vue.extend({
       }
       const bestEvents = this.events.slice().sort((e1, e2) => e2.battle_victory_adj - e1.battle_victory_adj)
 
-      const formatEvent = (r: Row) => `${formatMode(r.battle_event_mode)} - ${r.battle_event_map}`
+      const formatEvent = (r: Row) => `${this.$i18n.t('mode.' + r.battle_event_mode) as string} - ${this.$i18n.t('map.' + r.battle_event_id) as string}`
 
       const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => e.battle_victory_adj > 0.55).length
-      const viableWords = ['no', 'some', 'a few', 'all']
-      const viableWord = viableWords[scaleInto(0, 1, viableWords.length - 1, viableMaps / bestEvents.length)]
+      const viableAmount = scaleInto(0, 1, 4, viableMaps / bestEvents.length)
 
-      return `
-        ${this.brawlerName} has a good win rate on ${viableWord} maps today.
-        If you want to play ${this.brawlerName}, the best maps are ${bestMaps}.
-      `
+      return this.$i18n.t('brawler.current-maps.description', {
+        brawler: this.brawlerName,
+        amount: this.$i18n.t('rating.amount.' + viableAmount) as string,
+        maps: bestMaps,
+      }) as string
     },
   },
 })

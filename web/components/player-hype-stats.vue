@@ -166,7 +166,7 @@
             slot="content"
             class="text-left"
           >
-            {{ $t('metric.recentWinRate.description', { battles: totalBattles }) }}
+            {{ $t('metric.recentWinrate.description', { battles: totalBattles }) }}
           </p>
           <b-button
             slot="actions"

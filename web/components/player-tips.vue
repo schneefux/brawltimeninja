@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { capitalizeWords, getBestBrawlers, formatMode } from '@/lib/util'
+import { capitalizeWords, getBestBrawlers } from '@/lib/util'
 import { MapMeta, MapMetaMap } from '../model/MetaEntry'
 import { Player, BrawlerMetaStatistics } from '@/model/Api'
 
@@ -41,7 +41,6 @@ export default Vue.extend({
       notificationsAllowed: false,
       tipsPage: 1,
       tipsPageSize: 3,
-      formatMode,
     }
   },
   created() {
@@ -113,7 +112,7 @@ export default Vue.extend({
 
       const sw = await navigator.serviceWorker.ready
 
-      const eventDescription = (r: Recommendation) => formatMode(r.mode) + ' - ' + r.map
+      const eventDescription = (r: Recommendation) => this.$i18n.t('mode.' + r.mode) + ' - ' + this.$i18n.t('map.' + r.map)
       const N = 5
       const topNByEvent = (this.eventRecommendations as Recommendation[])
         .reduce((topNByEvent, recommendation) => ({

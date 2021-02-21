@@ -1,6 +1,6 @@
 <template>
-  <page :title="$t('tier-list.mode.title', { mode: modeName })">
-    <p>{{ $t('tier-list.mode.description', { mode: modeName }) }}</p>
+  <page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
+    <p>{{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}</p>
 
     <map-breadcrumbs
       :mode="mode"
@@ -83,7 +83,7 @@
           primary
           @click="expandMaps()"
         >
-          {{ $t('action.show-all.thing', { thing: modeName + ' ' + $tc('thing.map', 2) }) }}
+          {{ $t('action.show-all.thing', { thing: $t('mode.' + mode) + ' ' + $tc('thing.map', 2) }) }}
         </b-button>
       </div>
     </page-section>
@@ -124,7 +124,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaInfo } from 'vue-meta'
-import { formatMode, kebabToCamel } from '~/lib/util'
+import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
 
 interface EventIdAndMap {
@@ -134,9 +134,9 @@ interface EventIdAndMap {
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.modeName })
+    const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })
     return {
-      title: this.$tc('tier-list.mode.meta.title', 1, { mode: this.modeName }),
+      title: this.$tc('tier-list.mode.meta.title', 1, { mode: this.$i18n.t('mode.' + this.mode) as string }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -148,13 +148,11 @@ export default Vue.extend({
     return {
       showAllMaps: false,
       mode: '',
-      modeName: '',
       maps: [] as EventIdAndMap[],
     }
   },
   async asyncData({ params, $clicker }) {
     const mode = kebabToCamel(params.mode as string)
-    const modeName = formatMode(mode)
     const events = await $clicker.query('all.events', 'map',
       ['battle_event_id', 'battle_event_map'],
       ['battle_event_id', 'battle_event_map', 'picks', 'timestamp'],
@@ -166,7 +164,6 @@ export default Vue.extend({
 
     return {
       mode,
-      modeName,
       maps: events.data
         .filter(e => e.picks > 1000)
         .map(e => ({

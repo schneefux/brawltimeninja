@@ -1,8 +1,8 @@
 <template>
   <page-dashboard
-    :title="$tc('thing.tier-list.thing.long', 1, { thing: event.map })"
+    :title="$tc('thing.tier-list.thing.long', 1, { thing: $t('map.' + event.id) })"
   >
-    <p>{{ $t('tier-list.map.description', { map: event.map, mode: event.modeName }) }}</p>
+    <p>{{ $t('tier-list.map.description', { map: $t('map.' + event.id), mode: $t('mode.' + mode) }) }}</p>
     <p v-if="event.map.startsWith('Competition ')">
       {{ $t('tier-list.competition-info') }}
       <b-button
@@ -16,6 +16,7 @@
     <map-breadcrumbs
       :mode="event.mode"
       :map="event.map"
+      :id="event.id"
     ></map-breadcrumbs>
 
     <client-only>
@@ -65,20 +66,24 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { deslugify, kebabToCamel, formatMode } from '~/lib/util'
+import { deslugify, kebabToCamel } from '~/lib/util'
 
 interface Map {
   id: string
   mode: string
-  modeName: string
   map: string
 }
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = this.$tc('tier-list.map.meta.description', 1, { map: this.event.map, mode: this.event.modeName })
+    const description = this.$tc('tier-list.map.meta.description', 1, {
+      map: this.$i18n.t('map.' + this.event.id),
+      mode: this.$i18n.t('mode.' + this.event.mode),
+    })
     return {
-      title: this.$tc('tier-list.map.meta.title', 1, { mode: this.event.mode, map: this.event.map }),
+      title: this.$tc('tier-list.map.meta.title', 1, {
+        map: this.$i18n.t('map.' + this.event.id),
+      }),
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -92,7 +97,6 @@ export default Vue.extend({
       event: {
         id: '',
         mode: '',
-        modeName: '',
         map: '',
       } as Map,
     }
@@ -123,7 +127,6 @@ export default Vue.extend({
         id: event.battle_event_id,
         map,
         mode,
-        modeName: formatMode(mode),
         timestamp: event.timestamp,
       } as Map,
     }

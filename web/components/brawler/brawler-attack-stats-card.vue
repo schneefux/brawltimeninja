@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="attack == 'main' ? 'Main Attack' : 'Super'"
+    :title="attack == 'main' ? $t('thing.main-attack') : $t('thing.super-attack')"
     full-height
     md
   >
@@ -43,25 +43,25 @@ export default Vue.extend({
     table(): string[][] {
       const data: string[][] = []
       if (this.info[this.attack].rechargeTime != null) {
-        data.push([ 'Reload Speed', this.info[this.attack].rechargeTime.toString() + 'ms' ])
+        data.push([ this.$i18n.t('metric.reloadSpeed') as string, this.info[this.attack].rechargeTime.toString() + 'ms' ])
       }
       if (this.info[this.attack].range != null) {
-        data.push([ 'Range', this.info[this.attack].range.toFixed(1) ])
+        data.push([ this.$i18n.t('metric.range') as string, this.info[this.attack].range.toFixed(1) ])
       }
       if (this.info[this.attack].damageCount != null && this.info[this.attack].damageCount > 1) {
-        data.push([ 'Projectiles', this.info[this.attack].damageCount.toString() ])
+        data.push([ this.$i18n.t('metric.projectiles') as string, this.info[this.attack].damageCount.toString() ])
       }
       if (this.info[this.attack].charges != null) {
-        data.push([ 'Ammo', this.info[this.attack].charges.toString() ])
+        data.push([ this.$i18n.t('metric.ammo') as string, this.info[this.attack].charges.toString() ])
       }
       if (this.info[this.attack].spread != null && this.info[this.attack].spread != 0) {
-        data.push([ 'Spread', this.info[this.attack].spread + '°' ])
+        data.push([ this.$i18n.t('metric.spread') as string, this.info[this.attack].spread + '°' ])
       }
       if (this.info[this.attack].damage != null) {
-        data.push([ 'Damage at Level 1', this.info[this.attack].damage.toString() ])
+        data.push([ this.$i18n.t('metric.level1Damage') as string, this.info[this.attack].damage.toString() ])
       }
       if (this.info[this.attack].damage != null) {
-        data.push([ 'Damage at Level 10', Math.round(this.info[this.attack].damage * 1.4).toString() ])
+        data.push([ this.$i18n.t('metric.level10Damage') as string, Math.round(this.info[this.attack].damage * 1.4).toString() ])
       }
 
       return data

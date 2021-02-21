@@ -50,7 +50,7 @@
 
     <card
       v-if="data != null"
-      :title="brawlerName + ' Statistics'"
+      :title="$t('thing.statistics.thing', { thing: brawlerName })"
       full-height
       md
     >
@@ -214,17 +214,15 @@ export default Vue.extend({
         return ''
       }
 
-      const popularityWords = ['niche', 'not so popular', 'moderately popular', 'very popular']
       const useRate = this.data.picks_weighted / this.totals.picks_weighted
-      const popularity = popularityWords[scaleInto(0.02, 0.03, popularityWords.length - 1, useRate)]
+      const popularity = scaleInto(0.02, 0.03, 4, useRate)
+      const metaness = scaleInto(0.55, 0.60, 5, this.data.battle_victory)
 
-      const metanessWords = ['not that good', 'below average', 'average', 'above average', 'excellent']
-      const metaness = metanessWords[scaleInto(0.55, 0.60, metanessWords.length - 1, this.data.battle_victory)]
-
-      return `
-        ${this.brawlerName} is, judging by ${this.possessivePronoun} Use Rate, a ${popularity} Brawler.\
-        Looking at ${this.possessivePronoun} Win Rate, ${this.pronoun} is ${metaness} in the current Meta.
-      `
+      return this.$i18n.t('brawler.rating', {
+        brawler: this.brawlerName,
+        popularity: this.$i18n.t('rating.popularity.' + popularity),
+        relative: this.$i18n.t('rating.relative.' + metaness),
+      }) as string
     },
     infoTable(): string[][] {
       if (this.info == null) {

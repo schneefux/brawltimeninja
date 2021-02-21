@@ -83,7 +83,7 @@
     </page-section>
 
     <page-section
-      :title="$t('brawler.current-maps-for', { brawler: brawlerName })"
+      :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
       tracking-id="current-maps"
       tracking-page-id="brawler"
     >

@@ -15,7 +15,7 @@
           </span>
 
           <div class="ml-auto flex items-center">
-            <span class="mb-1 text-xl">{{ $t('metric.account-rating.short') }}</span>
+            <span class="mb-1 text-xl">{{ $t('metric.accountRating.short') }}</span>
             <div
               class="ml-3 border-2 border-red-600 text-yellow-400 font-bold text-4xl rounded-full h-12 w-12 text-center flex justify-center items-center"
             >

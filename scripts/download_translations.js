@@ -20,8 +20,8 @@ async function main() {
   for (const [lang, strings] of Object.entries(translations)) {
     const relevant = Object.fromEntries(Object.entries(strings)
       .filter(([key, value]) => key.startsWith('map_name_'))
-      .map(([key, value]) => [key.replace('map_name_', ''), value]))
-    await streamPipeline(JSON.stringify(relevant), createWriteStream('./out/maps/' + lang + '.json'))
+      .map(([key, value]) => [key.replace('map_name_', 'map.'), value]))
+    await streamPipeline(JSON.stringify(relevant), createWriteStream('./out/translations/' + lang + '.json'))
   }
 }
 

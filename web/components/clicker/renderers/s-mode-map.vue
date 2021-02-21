@@ -5,12 +5,12 @@
       dark
       sm
     >
-      <option value="">All Modes</option>
+      <option value="">{{ $t('option.all-modes') }}</option>
       <option
         v-for="mode in modes"
         :key="mode"
         :value="mode"
-      >{{ formatMode(mode) }}</option>
+      >{{ $t('mode.' + mode) }}</option>
     </b-select>
 
     <b-select
@@ -19,12 +19,12 @@
       dark
       sm
     >
-      <option value="">All Maps</option>
+      <option value="">{{ $t('option.all-maps') }}</option>
       <option
         v-for="map in maps"
-        :key="map"
-        :value="map"
-      >{{ map }}</option>
+        :key="map.battle_event_map"
+        :value="map.battle_event_map"
+      >{{ $t('map.' + map.battle_event_id) }}</option>
     </b-select>
   </div>
 </template>
@@ -32,7 +32,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { SliceValue } from '~/lib/cube'
-import { formatMode } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -43,17 +42,18 @@ export default Vue.extend({
   },
   data() {
     return {
-      maps: [] as string[],
+      maps: [] as { battle_event_map: string, battle_event_id: number }[],
       modes: [] as string[],
     }
   },
   watch: {
     mode: '$fetch',
+    '$i18n.loale': '$fetch',
   },
   async fetch() {
     this.modes = await this.$clicker.queryAllModes()
     const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
-    this.maps = maps.sort((m1, m2) => m1.localeCompare(m2))
+    this.maps = maps.sort((m1, m2) => (this.$i18n.t('map.' + m1.battle_event_id) as string).localeCompare(this.$i18n.t('map.' + m2.battle_event_id) as string))
   },
   computed: {
     mode: {
@@ -78,9 +78,6 @@ export default Vue.extend({
           map: v != '' ? [v] : [],
         })
       },
-    },
-    formatMode() {
-      return formatMode
     },
   },
 })

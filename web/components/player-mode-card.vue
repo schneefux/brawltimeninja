@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { formatMode, getBestBrawlers, capitalize, brawlerId } from '~/lib/util'
+import { getBestBrawlers, capitalize, brawlerId } from '~/lib/util'
 import { MapMetaMap, MapMeta } from '~/model/MetaEntry'
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify } from '@/lib/util'
@@ -225,9 +225,6 @@ export default Vue.extend({
     },
     mediaUrl(): string {
       return process.env.mediaUrl!
-    },
-    formatMode() {
-      return formatMode
     },
     commonMeasurements() {
       return commonMeasurements

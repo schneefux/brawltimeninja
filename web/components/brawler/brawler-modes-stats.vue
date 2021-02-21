@@ -36,8 +36,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { formatMode, scaleInto } from '~/lib/util';
+import Vue from 'vue'
+import { scaleInto } from '~/lib/util';
 
 interface Row {
   battle_event_mode: string
@@ -84,15 +84,15 @@ export default Vue.extend({
       }
       const bestModes = this.data.slice().sort((e1, e2) => e2.battle_victory_adj - e1.battle_victory_adj)
 
-      const bestMode = formatMode(bestModes[0].battle_event_mode)
+      const bestMode = this.$i18n.t('mode.' + bestModes[0].battle_event_mode)
       const viableModes = bestModes.filter(e => e.battle_victory_adj > 0.55).length
-      const viableWords = ['no', 'some', 'a few', 'all']
-      const viableWord = viableWords[scaleInto(0, 1, viableWords.length - 1, viableModes / bestModes.length)]
+      const viability = scaleInto(0, 1, 4, viableModes / bestModes.length)
 
-      return `
-        There are ${viableModes || 'no'} modes where ${this.brawlerName} has a good win rate.
-        ${this.brawlerName} shines in ${bestMode}, which is the mode with the highest win rate.
-      `
+      return this.$i18n.t('brawler.modes.description', {
+        brawler: this.brawlerName,
+        amount: this.$i18n.t('rating.amount.' + viability),
+        bestMode,
+      }) as string
     },
   },
 });

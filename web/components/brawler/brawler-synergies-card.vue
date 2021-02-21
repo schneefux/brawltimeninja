@@ -1,6 +1,6 @@
 <template>
   <accordeon-card
-    :title="brawler + ' with another Brawler'"
+    :title="$t('brawler.synergy.title', { brawler })"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
     sm
@@ -94,7 +94,7 @@ export default Vue.extend({
       const formatName = (r: Row) => capitalizeWords(r.brawler_name.toLowerCase())
       const topText = formatList(this.data.slice(0, 4).map(formatName))
       const bottomText = formatList(this.data.slice(-3).map(formatName))
-      return `${this.brawler} performs best together with ${topText}. Playing with ${bottomText} puts ${this.brawler} at disadvantage.`
+      return this.$i18n.t('brawler.synergy.description', { brawler: this.brawler, goodBrawlers: topText, badBrawlers: bottomText }) as string
     },
   },
   fetchDelay: 0,
