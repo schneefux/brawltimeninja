@@ -20,11 +20,7 @@
                 v-if="gamefileDescription != ''"
                 class="italic"
               >{{ gamefileDescription }}</q>
-              <template v-if="content != null">
-                <br>
-                {{ content.description || '' }}
-              </template>
-              <template v-if="content == null && generatedDescription != ''">
+              <template v-if="generatedDescription != ''">
                 <br>
                 {{ generatedDescription }}
               </template>
@@ -44,7 +40,6 @@
         :key="attack"
         :attack="attack"
         :info="info"
-        :content="content"
       ></brawler-attack-stats-card>
     </template>
 
@@ -66,53 +61,17 @@
 </template>
 
 <script lang="ts">
-import { IContentDocument } from '@nuxt/content/types/content'
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import { commonMeasurements } from '~/lib/cube'
-import { capitalize, scaleInto } from '~/lib/util'
+import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
-import { BrawlerContent } from '~/model/Web'
 
 interface Row {
   brawler_name: string
   picks_weighted: number
   battle_victory: number
   battle_starplayer: number
-}
-
-function expandContentWithInfo(content: BrawlerContent, info: BrawlerData) {
-  function detectGender() {
-    const text = info.description.toLowerCase()
-    if (text.includes(' she ') || text.includes(' her ')) {
-      return 'f'
-    }
-    if (text.includes(' he ') || text.includes(' his ') || text.includes(' him ')) {
-      return 'm'
-    }
-    return 't'
-  }
-
-  function replaceSkillKeys(text: string, skill: 'main'|'super') {
-    const formatSeconds = (n: number) => n / 1000 + 's'
-    return text
-      .replace('$damage', info[skill]?.damage != undefined ? (info[skill].damage! * 1.4).toString() : '')
-      .replace('$rechargetime', formatSeconds(info[skill].rechargeTime))
-      .replace('$range', info[skill].range?.toFixed(1) || '')
-  }
-
-  if (content.gender == undefined) {
-    content.gender = detectGender()
-  }
-
-  if (content.main != undefined) {
-    content.main = replaceSkillKeys(content.main, 'main')
-  }
-  if (content.super != undefined) {
-    content.super = replaceSkillKeys(content.super, 'super')
-  }
-
-  return content
 }
 
 export default Vue.extend({
@@ -130,8 +89,6 @@ export default Vue.extend({
     return {
       // game files
       info: null as BrawlerData|null,
-      // cms
-      content: null as BrawlerContent|null,
       // clicker data
       data: null as Row|null,
       totals: null as Row|null,
@@ -146,14 +103,6 @@ export default Vue.extend({
   async fetch() {
     const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null)
     this.info = info
-
-    let content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => null) as BrawlerContent|null
-
-    if (content != null && info != null) {
-      content = expandContentWithInfo(content, info)
-    }
-
-    this.content = content
 
     const data = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
       ['brawler_name'],
@@ -175,28 +124,6 @@ export default Vue.extend({
     this.totals = totalData.data[0]
   },
   computed: {
-    pronoun(): string {
-      if (this.content == undefined) {
-        return this.brawlerName
-      }
-
-      return {
-        'm': 'he',
-        'f': 'she',
-        't': 'they',
-      }[this.content.gender]
-    },
-    possessivePronoun(): string {
-      if (this.content == undefined) {
-        return this.brawlerName + '\'s'
-      }
-
-      return {
-        'm': 'his',
-        'f': 'her',
-        't': 'their',
-      }[this.content.gender]
-    },
     gamefileDescription(): string {
       return this.info?.description || ''
     },
@@ -204,10 +131,14 @@ export default Vue.extend({
       if (this.info == null) {
         return ''
       }
-      return `
-        ${this.info.class ? `${this.brawlerName} is a ${this.info.class}${this.info.rarity && ` with ${this.info.rarity} Rarity.`}` : (this.info.rarity && `${this.brawlerName}'s Rarity is ${this.info.rarity}.`)}\
-        ${capitalize(this.pronoun)} is unlocked ${this.info.unlock ? this.info.unlock == 0 ? `when starting the game` : `upon reaching ${this.info.unlock} Trophies` : `by opening Brawl Boxes`}.
-      `.trim()
+      return this.$i18n.t('brawler.description', {
+        brawler: this.brawlerName,
+        rarity: this.$i18n.t('rarity.' + this.info.rarity) as string,
+        class: this.$i18n.t('brawler.class.' + this.info.class) as string,
+        unlockCondition: this.info.unlock == undefined ? this.$i18n.t('brawler.unlock.boxes') as string :
+          this.info.unlock == 0 ? this.$i18n.t('brawler.unlock.start') as string :
+          this.$i18n.t('brawler.unlock.trophies', { trophies : this.info.unlock }) as string,
+      }) as string
     },
     statisticsDescription(): string {
       if (this.data == undefined || this.totals == undefined) {

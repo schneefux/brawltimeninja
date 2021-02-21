@@ -7,10 +7,6 @@
     <template v-slot:content>
       <p>
         <q class="italic">{{ info[attack].description }}</q>
-        <template v-if="content != null">
-          <br>
-          {{ content[attack] || '' }}
-        </template>
       </p>
       <kv-table
         :data="table"
@@ -23,7 +19,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BrawlerData } from '~/model/Media'
-import { BrawlerContent } from '~/model/Web'
 
 export default Vue.extend({
   props: {
@@ -34,9 +29,6 @@ export default Vue.extend({
     info: {
       type: Object as PropType<BrawlerData>,
       required: true
-    },
-    content: {
-      type: Object as PropType<BrawlerContent>,
     },
   },
   computed: {

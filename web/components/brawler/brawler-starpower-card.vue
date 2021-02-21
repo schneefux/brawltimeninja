@@ -12,10 +12,6 @@
           v-if="gameFileDescription != ''"
           class="italic"
         >{{ gameFileDescription }}</q>
-        <template v-if="contentDescription != ''">
-          <br>
-          {{ contentDescription }}
-        </template>
         <template v-if="metaDescription != ''">
           <br>
           {{ metaDescription }}
@@ -33,7 +29,6 @@
 import Vue, { PropType } from 'vue'
 import { commonMeasurements } from '~/lib/cube'
 import { capitalize, scaleInto } from '~/lib/util'
-import { BrawlerContent } from '~/model/Web'
 
 export default Vue.extend({
   props: {
@@ -52,9 +47,6 @@ export default Vue.extend({
     id: {
       type: Number,
       required: true
-    },
-    content: {
-      type: Object as PropType<BrawlerContent>,
     },
     winRate: {
       type: Number
@@ -82,21 +74,6 @@ export default Vue.extend({
         [ 'No ' + this.formatKind + ' ' + commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.withoutWinRate) ],
         [ this.formatName + ' ' + commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.winRate) ],
       ]
-    },
-    contentDescription(): string {
-      if (this.content == null) {
-        return ''
-      }
-
-      const map = {} as Record<string, string>
-      if (this.content.starpowers != undefined) {
-        this.content.starpowers.forEach(sp => map[sp.name] = sp.description)
-      }
-      if (this.content.gadgets != undefined) {
-        this.content.gadgets.forEach(g => map[g.name] = g.description)
-      }
-
-      return map[this.formatName] || ''
     },
     gameFileDescription(): string {
       return this.description || ''

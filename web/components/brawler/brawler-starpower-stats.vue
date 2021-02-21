@@ -7,7 +7,6 @@
       :kind="kind"
       :name="getStrings(entry).name"
       :brawler-name="brawlerName"
-      :content="content"
       :description="getStrings(entry).description"
       :winRate="entry.battle_victory"
       :without-winRate="totals.battle_victory"
@@ -17,7 +16,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BrawlerContent } from '~/model/Web'
 import { BrawlerData } from '@/model/Media'
 
 interface Row {
@@ -47,7 +45,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      content: null as BrawlerContent|null,
       data: [] as Row[],
       totals: null as Row|null,
       descriptions: null as Record<string, { name: string, description: string}>|null,
@@ -55,8 +52,6 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => null) as BrawlerContent|null
-
     const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
     const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
 
