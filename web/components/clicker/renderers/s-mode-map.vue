@@ -24,7 +24,7 @@
         v-for="map in maps"
         :key="map.battle_event_map"
         :value="map.battle_event_map"
-      >{{ $t('map.' + map.battle_event_id) }}</option>
+      >{{ map.battle_event_id != 0 ? $t('map.' + map.battle_event_id) : map.battle_event_map }}</option>
     </b-select>
   </div>
 </template>

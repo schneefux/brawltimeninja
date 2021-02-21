@@ -80,7 +80,7 @@
         xs
         dark
       >
-        <span itemprop="name">{{ $t('map.' + id) }}</span>
+        <span itemprop="name">{{ id != 0 ? $t('map.' + id) : map }}</span>
       </b-button>
       <meta itemprop="position" content="3" />
     </li>

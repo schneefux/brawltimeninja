@@ -2,7 +2,7 @@
   <card
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
     :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
-    :subtitle="id != undefined ? $t('map.' + id) : undefined"
+    :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
