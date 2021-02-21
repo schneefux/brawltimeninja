@@ -548,6 +548,16 @@ const commonSlices: Record<string, Slice> = {
     name: 'Map',
     column: 'battle_event_map',
   },
+  mapLike: {
+    id: 'mapLike',
+    name: 'Map Name',
+    column: 'battle_event_map_like',
+  },
+  mapNotLike: {
+    id: 'mapNotLike',
+    name: 'not Map Name',
+    column: 'battle_event_map_notlike',
+  },
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
@@ -606,6 +616,8 @@ const cubes: Record<string, Cube> = {
       commonSlices.season,
       commonSlices.mode,
       commonSlices.map,
+      commonSlices.mapLike,
+      commonSlices.mapNotLike,
       commonSlices.powerplay,
       commonSlices.trophies,
     ],

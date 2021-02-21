@@ -14,6 +14,9 @@
       <template v-slot:[`slices.map`]="data">
         <s-mode-map v-bind="data"></s-mode-map>
       </template>
+      <template v-slot:[`slices.mapNotLike`]="data">
+        <s-competition-maps v-bind="data"></s-competition-maps>
+      </template>
       <template v-slot:[`slices.brawler`]="data">
         <s-brawler v-bind="data"></s-brawler>
       </template>
@@ -63,8 +66,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import config, { SliceValue } from '~/lib/cube'
+import config from '~/lib/cube'
 import CDashboard from '@/components/clicker/c-dashboard.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
@@ -74,6 +76,7 @@ import DGadget from '@/components/clicker/renderers/d-gadget.vue'
 import DMode from '@/components/clicker/renderers/d-mode.vue'
 import DMap from '@/components/clicker/renderers/d-map.vue'
 import SModeMap from '@/components/clicker/renderers/s-mode-map.vue'
+import SCompetitionMaps from '@/components/clicker/renderers/s-competition-maps.vue'
 import SAlly from '@/components/clicker/renderers/s-ally.vue'
 import SSeason from '@/components/clicker/renderers/s-season.vue'
 import SPowerplay from '@/components/clicker/renderers/s-powerplay.vue'
@@ -98,6 +101,7 @@ export default Vue.extend({
     DMode,
     DMap,
     SModeMap,
+    SCompetitionMaps,
     SAlly,
     SSeason,
     SPowerplay,
