@@ -137,9 +137,14 @@ export default Vue.extend({
       totals: null as Row|null,
     }
   },
+  watch: {
+    brawlerId: '$fetch',
+    brawlerName: '$fetch',
+    '$i18n.locale': '$fetch',
+  },
   fetchDelay: 0,
   async fetch() {
-    const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null)
+    const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null)
     this.info = info
 
     let content = await this.$content(`/brawlers/${this.brawlerId}`).fetch().catch(err => null) as BrawlerContent|null

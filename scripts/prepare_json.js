@@ -7,6 +7,8 @@ const fetch = require('node-fetch')
 const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const token = process.env.BRAWLAPI_TOKEN || '';
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
 function getStarlistBrawlers() {
   return fetch(starlistUrl + '/brawlers', {
     headers: { 'Authorization': 'Bearer ' + token },
@@ -72,13 +74,22 @@ async function main() {
           .replace(/<VALUE6>/g, a.customValue6?.toString() || '')
           .replace(/<\/?c\w{0,6}>/g, '') // color codes
           .replace(/\\n/g, '\n')
-      const starpowerDescriptions = starCards.reduce((d, c) => ({
+      // FIXME assumes star list and in game order of star powers is the same!!!
+      const starpowerIds = brawler.starPowers.map(s => s.id)
+      const gadgetIds = brawler.gadgets.map(s => s.id)
+      const starpowerDescriptions = starCards.reduce((d, c, index) => ({
         ...d,
-        [c.tID]: getStarpowerDescription(c),
+        [starpowerIds[index]]: {
+          name: c.tID,
+          description: getStarpowerDescription(c),
+        },
       }), {})
       const gadgetDescriptions = gadgetCards.reduce((d, c, index) => ({
         ...d,
-        [c.tID]: getGadgetDescription(c, gadgetAccessories[index]),
+        [gadgetIds[index]]: {
+          name: c.tID,
+          description: getGadgetDescription(c, gadgetAccessories[index]),
+        },
       }), {})
       const getSkillDescription = (c, s) =>
         (tids['TID_' + c.rawTID + '_DESC'] || '')
@@ -92,15 +103,30 @@ async function main() {
       // (implemented client-side)
       const starlistStarpowerDescriptions = brawler.starPowers.reduce((d, s) => ({
         ...d,
-        [s.name.toUpperCase()]: s.description,
+        [s.id]: {
+          name: s.name.toUpperCase(),
+          description: s.description,
+        },
+        [s.name.toUpperCase()]: s.description, // backwards compat, can be removed
       }), {})
-      Object.assign(starpowerDescriptions, starlistStarpowerDescriptions)
 
       const starlistGadgetDescriptions = brawler.gadgets.reduce((d, g) => ({
         ...d,
-        [g.name.toUpperCase()]: g.description,
+        [g.id]: {
+          name: g.name.toUpperCase(),
+          description: g.description,
+        },
+        [g.name.toUpperCase()]: g.description, // backwards compat, can be removed
       }), {})
-      Object.assign(gadgetDescriptions, starlistGadgetDescriptions)
+
+      if (lang == 'en') {
+        // starlist has the better translation
+        Object.assign(gadgetDescriptions, starlistGadgetDescriptions)
+        Object.assign(starpowerDescriptions, starlistStarpowerDescriptions)
+      } else {
+        Object.assign(starlistGadgetDescriptions, gadgetDescriptions)
+        Object.assign(starlistStarpowerDescriptions, starpowerDescriptions)
+      }
 
       const rarityMap = {
         common: 'Common',

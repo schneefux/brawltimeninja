@@ -71,7 +71,7 @@ export default Vue.extend({
       return this.kind == 'gadgets' ? 'Gadget' : 'Star Power'
     },
     formatName(): string {
-      return capitalize(this.name.toLowerCase() || '')
+      return capitalize(this.name?.toLowerCase() || '')
     },
     statsTable(): string[][] {
       if (this.winRate == undefined || this.withoutWinRate == undefined) {

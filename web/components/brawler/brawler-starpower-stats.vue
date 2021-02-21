@@ -5,10 +5,10 @@
       :key="entry.id"
       :id="entry.id"
       :kind="kind"
-      :name="getName(entry)"
+      :name="getStrings(entry).name"
       :brawler-name="brawlerName"
       :content="content"
-      :description="getDescription(entry)"
+      :description="getStrings(entry).description"
       :winRate="entry.battle_victory"
       :without-winRate="totals.battle_victory"
     ></brawler-starpower-card>
@@ -16,9 +16,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { BrawlerContent } from '~/model/Web'
-import { BrawlerStatisticsRows } from '@/model/Clicker'
 import { BrawlerData } from '@/model/Media'
 
 interface Row {
@@ -51,7 +50,7 @@ export default Vue.extend({
       content: null as BrawlerContent|null,
       data: [] as Row[],
       totals: null as Row|null,
-      descriptions: null as Record<string, string>|null,
+      descriptions: null as Record<string, { name: string, description: string}>|null,
     }
   },
   fetchDelay: 0,
@@ -91,7 +90,7 @@ export default Vue.extend({
 
     this.totals = dataWithout.data[0]
 
-    const info = await this.$axios.$get(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/info`).catch(() => null) as BrawlerData|null
+    const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null) as BrawlerData|null
     if (info != null) {
       if (this.kind == 'starpowers') {
         this.descriptions = info.starpowerDescriptions
@@ -101,16 +100,13 @@ export default Vue.extend({
     }
   },
   computed: {
-    getName() {
-      return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_name : entry.brawler_starpower_name
+    getId(): (entry: Row) => number|undefined {
+      return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_id : entry.brawler_starpower_id
     },
-    getDescription() {
+    getStrings(): (entry: Row) => { name?: string, description?: string } {
       return (entry: Row) => {
-        const name = this.getName(entry)
-        if (this.descriptions != null && name != null && name in this.descriptions) {
-          return this.descriptions[name]
-        }
-        return undefined
+        const id = this.getId(entry)
+        return this.descriptions == null || id == undefined ? {} : this.descriptions[id]
       }
     },
   },
