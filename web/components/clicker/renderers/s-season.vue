@@ -11,7 +11,7 @@
         :key="t"
         :value="t"
       >
-        Current {{ label }}
+        {{ label }}
       </option>
     </b-select>
   </div>
@@ -31,9 +31,8 @@ export default Vue.extend({
   computed: {
     timeRangeLabel() {
       return {
-        'current': 'Season',
-        'balance': 'Update',
-        'month': 'Month',
+        'current': 'Last 2 weeks',
+        'month': 'Last 4 weeks',
       }
     },
   }

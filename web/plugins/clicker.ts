@@ -23,7 +23,6 @@ export interface EventMetadata {
 export interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
-  timePresets: Record<string, string>
   defaultSlicesRaw(cubeId: string): Record<string, string[]>
   query<T=any>(
     name: string,
@@ -82,16 +81,11 @@ declare module 'vuex/types/index' {
 
 export default (context, inject) => {
   inject('clicker', <Clicker>{
-    timePresets: {
-      'current': 'Season',
-      'balance': 'Update',
-      'month': 'Month',
-    } as Record<string, string>,
     defaultSlicesRaw(cube) {
       switch (cube) {
         case 'map':
           return {
-            trophy_season_end: ['balance'],
+            trophy_season_end: ['month'],
             battle_event_powerplay: ['false'],
           }
         case 'battle':
@@ -103,12 +97,12 @@ export default (context, inject) => {
           }
         case 'synergy':
           return {
-            trophy_season_end: ['balance'],
+            trophy_season_end: ['month'],
             ally_brawler_name: ['SHELLY'],
           }
         default:
           return {
-            trophy_season_end: ['balance'],
+            trophy_season_end: ['month'],
           }
       }
     },
@@ -171,7 +165,7 @@ export default (context, inject) => {
       const modes = await this.query<{ battle_event_mode: string }>('all.modes', 'map',
         ['battle_event_mode'],
         ['battle_event_mode'],
-        { trophy_season_end: ['balance'] },
+        { trophy_season_end: ['month'] },
         { sort: { picks: 'desc' }, cache: 60*60 })
       return modes.data.map(row => row.battle_event_mode)
     },
@@ -180,7 +174,7 @@ export default (context, inject) => {
         ['battle_event_map'],
         ['battle_event_map', 'battle_event_id'],
         {
-          trophy_season_end: ['balance'],
+          trophy_season_end: ['month'],
           ...(mode != undefined ? {
             battle_event_mode: [mode],
           } : {})
@@ -192,7 +186,7 @@ export default (context, inject) => {
       const brawlers = await this.query<{ brawler_name: string }>('all.brawlers', 'map',
         ['brawler_name'],
         ['brawler_name'],
-        { trophy_season_end: ['balance'] },
+        { trophy_season_end: ['month'] },
         { sort: { picks: 'desc' }, cache: 60*60 })
       return brawlers.data.map(b => b.brawler_name)
     },
@@ -246,7 +240,7 @@ export default (context, inject) => {
     },
     async calculateBayesSynergies(tag: string, brawler?: string, limit?: number) {
       const slices = {
-        trophy_season_end: ['balance'],
+        trophy_season_end: ['month'],
       }
 
       // H(ally_brawler,brawler)

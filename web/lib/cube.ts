@@ -622,7 +622,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.trophies,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
       powerplay: ['false'],
     },
   },
@@ -647,7 +647,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.withStarpower,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
       withStarpower: ['true'],
     },
   },
@@ -672,7 +672,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.withGadget,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
       withGadget: ['true'],
     },
   },
@@ -700,7 +700,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.trophies,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
     },
   },
   team: {
@@ -726,7 +726,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.trophies,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
     },
   },
   player: {
@@ -802,7 +802,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.playerName,
     ],
     defaultSliceValues: {
-      season: ['balance'],
+      season: ['month'],
     },
   },
 }
