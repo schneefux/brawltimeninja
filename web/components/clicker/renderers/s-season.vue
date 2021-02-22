@@ -1,7 +1,10 @@
 <template>
-  <div class="mr-2 my-1">
+  <div
+    v-if="'season' in value"
+    class="mr-2 my-1"
+  >
     <b-select
-      :value="(value.season || [])[0]"
+      :value="value.season[0]"
       dark
       sm
       @input="v => $parent.$emit('input', { ...value, season: [v] })"

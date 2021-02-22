@@ -14,7 +14,7 @@
         :link="dashboardLink"
         v-bind="data"
       >
-        <template v-slot:[`dimensions.team`]="data">
+        <template v-slot:dimensions="data">
           <d-team v-bind="data"></d-team>
         </template>
       </v-table>

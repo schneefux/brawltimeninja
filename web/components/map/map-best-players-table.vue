@@ -14,10 +14,8 @@
         :title="title"
         v-bind="data"
       >
-        <template v-slot:[`dimensions.player`]="data">
+        <template v-slot:dimensions="data">
           <d-player v-bind="data"></d-player>
-        </template>
-        <template v-slot:[`measurements.brawler`]="data">
           <d-brawler v-bind="data"></d-brawler>
         </template>
       </v-table>

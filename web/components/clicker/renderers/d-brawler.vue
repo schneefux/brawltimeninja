@@ -1,5 +1,6 @@
 <template functional>
   <router-link
+    v-if="'brawler' in props.row.dimensions"
     :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.row.dimensionsRaw.brawler.brawler_name })}`)"
     class="flex items-center"
   >

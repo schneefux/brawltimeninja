@@ -1,6 +1,7 @@
 <template>
   <trophy-slider-select
-    :value="value.trophies || [0, 10]"
+    v-if="'trophies' in value"
+    :value="value.trophies.length > 0 ? value.trophies : [0, 10]"
     class="mr-2 my-1"
     @input="v => $parent.$emit('input', { ...value, trophies: v })"
   ></trophy-slider-select>

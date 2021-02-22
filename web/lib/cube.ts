@@ -623,7 +623,12 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      mode: [],
+      map: [],
+      mapLike: [],
+      mapNotLike: [],
       powerplay: ['false'],
+      trophies: [],
     },
   },
   starpower: {
@@ -648,6 +653,7 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      trophies: [],
       withStarpower: ['true'],
     },
   },
@@ -673,6 +679,7 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      trophies: [],
       withGadget: ['true'],
     },
   },
@@ -701,6 +708,11 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      mode: [],
+      map: [],
+      brawler: [],
+      ally: [],
+      trophies: [],
     },
   },
   team: {
@@ -727,6 +739,9 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      mode: [],
+      map: [],
+      trophies: [],
     },
   },
   player: {
@@ -803,6 +818,9 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      powerplay: [],
+      trophies: [],
+      playerName: [],
     },
   },
 }

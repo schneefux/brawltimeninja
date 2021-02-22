@@ -1,6 +1,10 @@
 <template>
-  <div class="mr-2 my-1">
+  <div
+    v-if="'mode' in value || 'map' in value"
+    class="mr-2 my-1"
+  >
     <b-select
+      v-if="'mode' in value"
       v-model="mode"
       dark
       sm
@@ -14,6 +18,7 @@
     </b-select>
 
     <b-select
+      v-if="'map' in value"
       v-show="mode != ''"
       v-model="map"
       dark

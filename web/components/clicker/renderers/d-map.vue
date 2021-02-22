@@ -1,5 +1,6 @@
 <template functional>
   <router-link
+    v-if="'map' in props.row.dimensions"
     :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.map.battle_event_mode || '')}/map/${props.row.dimensionsRaw.map.battle_event_map}`)"
     class="flex items-center"
   >

@@ -25,8 +25,7 @@
       >
         <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
         <slot
-          v-for="s in sliceIds"
-          :name="`slices.${s}`"
+          name="slices"
           :value="value"
         ></slot>
       </div>
@@ -37,20 +36,12 @@
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Vue, { PropType } from 'vue'
-import { Config, SliceValue } from '~/lib/cube'
+import { SliceValue } from '~/lib/cube'
 
 export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
-      required: true
-    },
-    config: {
-      type: Object as PropType<Config>,
-      required: true
-    },
-    cubeId: {
-      type: String,
       required: true
     },
     comparing: {
@@ -64,9 +55,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    sliceIds(): string[] {
-      return this.config[this.cubeId].slices.map(s => s.id)
-    },
     faFilter() {
       return faFilter
     },

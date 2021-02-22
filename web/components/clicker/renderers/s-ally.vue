@@ -1,5 +1,8 @@
 <template>
-  <div class="mr-2 my-1">
+  <div
+    v-if="'ally' in value"
+    class="mr-2 my-1"
+  >
     <b-select
       :value="value.ally"
       dark

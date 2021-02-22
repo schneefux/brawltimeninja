@@ -1,5 +1,8 @@
 <template functional>
-  <div class="flex items-center">
+  <div
+    v-if="'team' in props.row.dimensions"
+    class="flex items-center"
+  >
     <brawler-team
       :brawlers="props.row.dimensionsRaw.team.brawler_names"
       class="flex-shrink-0 md:mr-2 w-16 sm:w-20 md:w-24"

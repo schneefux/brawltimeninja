@@ -8,50 +8,24 @@
       :default-measurements="['winRateAdj']"
       class="mt-2"
     >
-      <template v-slot:[`slices.season`]="data">
-        <s-season v-bind="data"></s-season>
-      </template>
-      <template v-slot:[`slices.map`]="data">
-        <s-mode-map v-bind="data"></s-mode-map>
-      </template>
-      <template v-slot:[`slices.mapNotLike`]="data">
-        <s-competition-maps v-bind="data"></s-competition-maps>
-      </template>
-      <template v-slot:[`slices.brawler`]="data">
-        <s-brawler v-bind="data"></s-brawler>
-      </template>
-      <template v-slot:[`slices.ally`]="data">
-        <s-ally v-bind="data"></s-ally>
-      </template>
-      <template v-slot:[`slices.powerplay`]="data">
-        <s-powerplay v-bind="data"></s-powerplay>
-      </template>
-      <template v-slot:[`slices.trophies`]="data">
-        <s-trophies v-bind="data"></s-trophies>
-      </template>
-      <template v-slot:[`slices.withStarpower`]="data">
-        <s-with-starpower v-bind="data"></s-with-starpower>
-      </template>
-      <template v-slot:[`slices.withGadget`]="data">
-        <s-with-gadget v-bind="data"></s-with-gadget>
-      </template>
-      <template v-slot:[`dimensions.brawler`]="data">
+      <template v-slot:dimensions="data">
         <d-brawler v-bind="data"></d-brawler>
-      </template>
-      <template v-slot:[`dimensions.team`]="data">
         <d-team v-bind="data"></d-team>
-      </template>
-      <template v-slot:[`dimensions.starpower`]="data">
         <d-starpower v-bind="data"></d-starpower>
-      </template>
-      <template v-slot:[`dimensions.gadget`]="data">
         <d-gadget v-bind="data"></d-gadget>
-      </template>
-      <template v-slot:[`dimensions.mode`]="data">
         <d-mode v-bind="data"></d-mode>
-      </template>
-      <template v-slot:[`dimensions.map`]="data">
         <d-map v-bind="data"></d-map>
+      </template>
+      <template v-slot:slices="data">
+        <s-season v-bind="data"></s-season>
+        <s-mode-map v-bind="data"></s-mode-map>
+        <s-competition-maps v-bind="data"></s-competition-maps>
+        <s-brawler v-bind="data"></s-brawler>
+        <s-ally v-bind="data"></s-ally>
+        <s-powerplay v-bind="data"></s-powerplay>
+        <s-trophies v-bind="data"></s-trophies>
+        <s-with-starpower v-bind="data"></s-with-starpower>
+        <s-with-gadget v-bind="data"></s-with-gadget>
       </template>
       <template v-slot:visualisations="data">
         <v-sample-size v-bind="data"></v-sample-size>

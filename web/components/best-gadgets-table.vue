@@ -14,7 +14,7 @@
         v-bind="data"
         class="mt-4"
       >
-        <template v-slot:[`dimensions.gadget`]="data">
+        <template v-slot:dimensions="data">
           <d-gadget v-bind="data"></d-gadget>
         </template>
       </v-table>

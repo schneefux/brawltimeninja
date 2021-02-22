@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="'withStarpower' in value"
     class="mr-2 my-1"
   >
     <b-select

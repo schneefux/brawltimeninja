@@ -14,7 +14,7 @@
         :link="dashboardLink"
         v-bind="data"
       >
-        <template v-slot:[`dimensions.brawler`]="data">
+        <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
         </template>
       </v-table>

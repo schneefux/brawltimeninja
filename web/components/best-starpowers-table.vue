@@ -14,7 +14,7 @@
         v-bind="data"
         class="mt-4"
       >
-        <template v-slot:[`dimensions.starpower`]="data">
+        <template v-slot:dimensions="data">
           <d-starpower v-bind="data"></d-starpower>
         </template>
       </v-table>

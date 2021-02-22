@@ -65,11 +65,11 @@ export default Vue.extend({
   },
   computed: {
     columns(): Column[] {
-      return (<Column[]>[]).concat(
-        this.dimensions.map(d => ({
-          title: d.name,
-          key: `dimensions.${d.id}`,
-        })),
+      // TODO put each dimension into its own column
+      return (<Column[]>[{
+        title: this.dimensions.map(d => d.name).join(', '),
+        key: 'dimensions',
+      }]).concat(
         this.measurements.map(m => ({
           title: m.name,
           key: `measurements.${m.id}`,

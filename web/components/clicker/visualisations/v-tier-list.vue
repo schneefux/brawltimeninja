@@ -20,7 +20,7 @@
               class="my-px"
             >
               <slot
-                :name="`dimensions.${dimensions[0].id}`"
+                name="dimensions"
                 :row="entry"
               ></slot>
             </li>

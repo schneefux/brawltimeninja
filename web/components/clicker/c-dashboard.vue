@@ -17,13 +17,9 @@
         :comparing="false"
         class="w-full"
       >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
-        >
+        <template v-slot:slices="data">
           <slot
-            v-if="name.startsWith('slices.')"
-            :name="name"
+            name="slices"
             v-bind="data"
           ></slot>
         </template>
@@ -46,13 +42,9 @@
       :comparing="true"
       class="w-full"
     >
-      <template
-        v-for="(_, name) in $scopedSlots"
-        v-slot:[name]="data"
-      >
+      <template v-slot:slices="data">
         <slot
-          v-if="name.startsWith('slices.')"
-          :name="name"
+          name="slices"
           v-bind="data"
         ></slot>
       </template>
@@ -70,13 +62,21 @@
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
+          <template v-slot:dimensions="data">
             <slot
-              v-if="name.startsWith('dimensions.') || name.startsWith('measurements.') || name == 'visualisations'"
-              :name="name"
+              name="dimensions"
+              v-bind="data"
+            ></slot>
+          </template>
+          <template v-slot:measurements="data">
+            <slot
+              name="measurements"
+              v-bind="data"
+            ></slot>
+          </template>
+          <template v-slot:visualisations="data">
+            <slot
+              name="visualisations"
               v-bind="data"
             ></slot>
           </template>
