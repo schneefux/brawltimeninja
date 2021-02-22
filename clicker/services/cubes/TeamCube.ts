@@ -154,7 +154,7 @@ export class TeamCube extends SynergyMetaCube {
     let rows = teams.map(([id, s]) => ({
       ...s,
       brawler_names: keyToTeam(id),
-      battle_victory: s.wins / s.picks,
+      battle_victory: Math.max(0.0, Math.min(1.0, s.wins / s.picks)),
       timestamp: totalTimestamp,
     }))
 
