@@ -13,12 +13,12 @@
             :icon="faFilter"
           ></font-awesome-icon>
 
-          Filters
+          {{ comparing ? 'Comparing ' : '' }} Filters
         </b-button>
       </div>
 
       <div
-        :class="['md:flex flex-wrap', {
+        :class="['md:flex flex-col', {
           'hidden': !showFilters,
           'mt-3': showFilters,
         }]"
@@ -46,7 +46,7 @@ export default Vue.extend({
     },
     comparing: {
       type: Boolean,
-      required: true
+      default: false
     },
   },
   data() {

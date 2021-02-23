@@ -8,7 +8,7 @@
       dark
       sm
     >
-      <option value="all">All Maps</option>
+      <option value="all">Include Competition Maps</option>
       <option value="include">Only Competition Maps</option>
       <option value="exclude">Exclude Competition Maps</option>
     </b-select>

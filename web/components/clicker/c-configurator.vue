@@ -52,17 +52,11 @@
         </div>
 
         <label class="col-span-2 flex items-center">
-          <input
-            v-model="showGrouper"
-            type="checkbox"
-            class="form-input bg-gray-700 text-gray-400 text-sm"
-          >
+          <b-checkbox v-model="showGrouper"></b-checkbox>
           <span class="ml-2">Advanced</span>
         </label>
 
-        <template
-          v-if="showGrouper"
-        >
+        <template v-if="showGrouper">
           <span class="font-semibold mr-2">
             Group By
           </span>

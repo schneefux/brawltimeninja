@@ -1,46 +1,17 @@
 <template>
-  <div class="flex flex-wrap justify-center">
+  <div class="flex flex-wrap">
     <c-configurator
       v-model="configuration"
       :config="config"
-      class="w-full"
+      class="flex-auto md:flex-none"
+      full-height
     ></c-configurator>
 
-    <div
-      v-if="config[configuration.cubeId].slices.length > 0"
-      class="w-full flex"
-    >
-      <c-slicer
-        v-model="configuration.slices"
-        :config="config"
-        :cube-id="configuration.cubeId"
-        :comparing="false"
-        class="w-full"
-      >
-        <template v-slot:slices="data">
-          <slot
-            name="slices"
-            v-bind="data"
-          ></slot>
-        </template>
-      </c-slicer>
-
-      <div class="self-center mx-2">
-        <b-button
-          @click="comparing = !comparing"
-          primary
-          md
-        >Compare</b-button>
-      </div>
-    </div>
-
     <c-slicer
-      v-if="comparing"
-      v-model="configuration.comparingSlices"
+      v-model="configuration.slices"
       :config="config"
       :cube-id="configuration.cubeId"
-      :comparing="true"
-      class="w-full"
+      full-height
     >
       <template v-slot:slices="data">
         <slot
@@ -49,6 +20,31 @@
         ></slot>
       </template>
     </c-slicer>
+
+    <div class="self-center md:self-auto mr-auto">
+      <div class="mx-2 my-2">
+        <label class="flex items-center">
+          <b-checkbox v-model="comparing"></b-checkbox>
+          <span class="ml-2">Compare Mode</span>
+        </label>
+      </div>
+
+      <c-slicer
+        v-if="comparing"
+        v-model="configuration.comparingSlices"
+        :config="config"
+        :cube-id="configuration.cubeId"
+        comparing
+        full-height
+      >
+        <template v-slot:slices="data">
+          <slot
+            name="slices"
+            v-bind="data"
+          ></slot>
+        </template>
+      </c-slicer>
+    </div>
 
     <c-query
       :config="config"

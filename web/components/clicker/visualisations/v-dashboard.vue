@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full">
-    <div class="w-full flex flex-wrap">
+  <div class="w-full flex flex-wrap">
+    <div class="w-full flex flex-wrap children-flex-auto">
       <slot
         name="visualisations"
         :loading="loading"
@@ -12,20 +12,18 @@
       ></slot>
     </div>
 
-    <div class="w-full flex flex-wrap">
-      <v-graph
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
-        title="Graph View"
-        class="flex-1 h-80"
-        full-height
-      ></v-graph>
-    </div>
+    <v-graph
+      :loading="loading"
+      :data="data"
+      :dimensions="dimensions"
+      :measurements="measurements"
+      :comparing="comparing"
+      title="Graph View"
+      class="h-80 flex-auto"
+      full-height
+    ></v-graph>
 
-    <div class="w-full flex flex-wrap justify-center">
+    <div class="w-full flex flex-wrap children-flex-auto">
       <v-table
         :loading="loading"
         :data="data"
@@ -52,7 +50,6 @@
         :measurements="measurements"
         :comparing="comparing"
         full-height
-        class="h-full"
       >
         <template
           v-for="(_, name) in $scopedSlots"
@@ -72,7 +69,6 @@
         :measurements="measurements"
         :comparing="comparing"
         full-height
-        class="h-full"
       >
         <template
           v-for="(_, name) in $scopedSlots"
@@ -118,3 +114,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.children-flex-auto > * {
+  @apply flex-auto;
+}
+</style>

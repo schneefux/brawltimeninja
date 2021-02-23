@@ -207,6 +207,7 @@
   "nav.Leaderboards": "Leaderboards",
   "nav.Privacy": "Privacy",
   "nav.Status": "Status",
+  "nav.Brawl Time Ninja": "Brawl Time Ninja",
   "brawler.synergies-for": "Synergies for {brawler}",
   "brawler.current-maps.title": "Current Maps for {brawler}",
   "brawler.current-maps.description": "{brawler} has a good win rate on {amount} maps today. If you want to play {brawler}, the best maps are {maps}.",

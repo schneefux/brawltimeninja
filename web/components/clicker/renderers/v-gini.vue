@@ -3,7 +3,7 @@
     v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && 'picks' in data[0].meta && !comparing"
     v-bind="$attrs"
     :title="$t('metric.balance-rating')"
-    size="w-48"
+    size="w-44"
     dense
   >
     <b-button

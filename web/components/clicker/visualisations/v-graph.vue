@@ -2,6 +2,7 @@
   <card
     v-if="dimensions.length == 1 && measurements.length == 1 && data.length > 1 && data.length < 100"
     v-bind="$attrs"
+    size="w-80"
   >
     <plotly
       slot="content"

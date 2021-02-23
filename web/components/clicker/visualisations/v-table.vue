@@ -39,7 +39,7 @@
 import Vue, { PropType } from 'vue'
 import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
-import { Column } from '@/components/b-table.vue'
+import { Column } from '@/components/ui/b-table.vue'
 
 export default Vue.extend({
   inheritAttrs: false,
