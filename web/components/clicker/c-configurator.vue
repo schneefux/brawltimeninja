@@ -30,61 +30,35 @@
           Metric
         </span>
 
-        <div>
+        <div class="flex flex-wrap gap-y-1 gap-x-1">
           <b-select
-            :value="value.measurementsIds.length == 1 ? value.measurementsIds[0] : ''"
+            v-for="index in (showAllMeasurements ? 1 : numMeasurements)"
+            :key="index"
+            :value="showAllMeasurements ? '' : value.measurementsIds[index - 1]"
             dark
             sm
-            @input="v => onInputMeasurementsIds([v])"
+            @input="v => onInputMeasurementsIds(index - 1, v)"
           >
             <option
-              v-if="config[value.cubeId].measurements.length > 1"
+              v-if="index == 1 && measurements.length > 1"
               value=""
             >All</option>
             <option
-              v-for="m in config[value.cubeId].measurements"
+              v-for="m in (showAllMeasurements ? measurements : measurements.filter(m => m.id == value.measurementsIds[index - 1] || !value.measurementsIds.includes(m.id)))"
               :key="m.id"
               :value="m.id"
             >
               {{ m.name }}
             </option>
           </b-select>
-        </div>
 
-        <label class="col-span-2 flex items-center">
-          <b-checkbox v-model="showGrouper"></b-checkbox>
-          <span class="ml-2">Advanced</span>
-        </label>
-
-        <template v-if="showGrouper">
-          <span class="font-semibold mr-2">
-            Group By
-          </span>
-
-          <div class="flex flex-wrap gap-y-1 gap-x-1">
-            <b-select
-              v-for="group in groups"
-              :key="group"
-              :value="value.dimensionsIds[group - 1]"
-              dark
-              sm
-              @input="v => onInputDimensionsIds(group - 1, v)"
-            >
-              <option
-                v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[group - 1] || !value.dimensionsIds.includes(d.id))"
-                :key="d.id"
-                :value="d.id"
-              >
-                {{ d.name }}
-              </option>
-            </b-select>
-
+          <div class="flex gap-x-1">
             <b-button
-              v-if="groups < dimensions.length"
+              v-if="!showAllMeasurements && advancedMode"
               class="font-semibold"
               primary
               sm
-              @click="groups++"
+              @click="numMeasurements++"
             >
               <font-awesome-icon
                 :icon="faPlus"
@@ -92,18 +66,78 @@
             </b-button>
 
             <b-button
-              v-if="groups > 0"
+              v-if="numMeasurements > 1 && !showAllMeasurements && advancedMode"
               class="font-semibold"
               primary
               sm
-              @click="onGroupRemove()"
+              @click="onMeasurementRemove()"
             >
               <font-awesome-icon
                 :icon="faMinus"
               ></font-awesome-icon>
             </b-button>
           </div>
-        </template>
+        </div>
+
+        <span
+          v-if="advancedMode"
+          class="font-semibold mr-2"
+        >
+          Group By
+        </span>
+
+        <div
+          v-if="advancedMode"
+          class="flex flex-wrap gap-y-1 gap-x-1"
+        >
+          <b-select
+            v-for="index in numDimensions"
+            :key="index"
+            :value="value.dimensionsIds[index - 1]"
+            dark
+            sm
+            @input="v => onInputDimensionsIds(index - 1, v)"
+          >
+            <option
+              v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[index - 1] || !value.dimensionsIds.includes(d.id))"
+              :key="d.id"
+              :value="d.id"
+            >
+              {{ d.name }}
+            </option>
+          </b-select>
+
+          <div class="flex gap-x-1">
+            <b-button
+              v-if="numDimensions < dimensions.length"
+              class="font-semibold"
+              primary
+              sm
+              @click="numDimensions++"
+            >
+              <font-awesome-icon
+                :icon="faPlus"
+              ></font-awesome-icon>
+            </b-button>
+
+            <b-button
+              v-if="numDimensions > 0"
+              class="font-semibold"
+              primary
+              sm
+              @click="onDimensionRemove()"
+            >
+              <font-awesome-icon
+                :icon="faMinus"
+              ></font-awesome-icon>
+            </b-button>
+          </div>
+        </div>
+
+        <label class="col-span-2 flex items-center">
+          <b-checkbox v-model="advancedMode"></b-checkbox>
+          <span class="ml-2">Advanced</span>
+        </label>
       </div>
     </div>
   </card>
@@ -111,7 +145,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Config, SliceValue } from '~/lib/cube'
+import { Config, Cube, Dimension, Measurement, SliceValue } from '~/lib/cube'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export interface Configuration {
@@ -136,8 +170,9 @@ export default Vue.extend({
   },
   data() {
     return {
-      showGrouper: false,
-      groups: this.config[this.value.cubeId].defaultDimensionsIds.length,
+      advancedMode: false,
+      numDimensions: this.config[this.value.cubeId].defaultDimensionsIds.length,
+      numMeasurements: 1,
     }
   },
   methods: {
@@ -169,42 +204,68 @@ export default Vue.extend({
         dimensionsIds: this.config[c].defaultDimensionsIds,
         measurementsIds: measurementsIdsDefaults,
       })
-      this.groups = this.config[c].defaultDimensionsIds.length
+      this.numDimensions = this.config[c].defaultDimensionsIds.length
+      this.numMeasurements = measurementsIdsDefaults.length
     },
-    onInputDimensionsIds(group: number, d: string) {
+    onInputDimensionsIds(index: number, d: string) {
       const dimensionsIds = this.value.dimensionsIds.slice()
-      dimensionsIds[group] = d
+      dimensionsIds[index] = d
       this.$emit('input', <Configuration>{
         ...this.value,
         dimensionsIds,
       })
+      this.numDimensions = dimensionsIds.length
     },
-    onGroupRemove() {
-      this.groups--
+    onDimensionRemove() {
       const dimensionsIds = this.value.dimensionsIds.slice()
       dimensionsIds.pop()
       this.$emit('input', <Configuration>{
         ...this.value,
         dimensionsIds,
       })
+      this.numDimensions--
     },
-    onInputMeasurementsIds(m: string[]) {
-      if (m[0] == '') {
-        m = this.config[this.value.cubeId].measurements.map(m => m.id)
+    onInputMeasurementsIds(index: number, m: string) {
+      let measurementsIds: string[] = []
+      if (m != '') {
+        if (!this.showAllMeasurements) {
+          measurementsIds = this.value.measurementsIds.slice()
+        }
+        // else: drop every measurement and keep only the new input
+        measurementsIds[index] = m
+      } else {
+        measurementsIds = this.config[this.value.cubeId].measurements.map(m => m.id)
       }
+
       this.$emit('input', <Configuration>{
         ...this.value,
-        measurementsIds: m,
+        measurementsIds,
       })
+      this.numMeasurements = measurementsIds.length
+    },
+    onMeasurementRemove() {
+      const measurementsIds = this.value.measurementsIds.slice()
+      measurementsIds.pop()
+      this.$emit('input', <Configuration>{
+        ...this.value,
+        measurementsIds,
+      })
+      this.numMeasurements--
     },
   },
   computed: {
-    cubes() {
+    cubes(): Cube[] {
       return Object.values(this.config)
         .filter((cube) => !cube.hidden)
     },
-    dimensions() {
+    dimensions(): Dimension[] {
       return this.config[this.value.cubeId].dimensions.filter(d => !d.hidden)
+    },
+    measurements(): Measurement[] {
+      return this.config[this.value.cubeId].measurements
+    },
+    showAllMeasurements(): boolean {
+      return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
     },
     faPlus() {
       return faPlus
