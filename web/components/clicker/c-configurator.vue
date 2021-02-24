@@ -142,12 +142,32 @@ export default Vue.extend({
   },
   methods: {
     onInputCubeId(c: string) {
+      // filter & keep old slice values that exist in the new cube too
+      const slicesDefaults = Object.assign({},
+        this.config[c].defaultSliceValues,
+        Object.fromEntries(
+          Object.entries(this.value.slices)
+            .filter(([key, value]) => this.config[c].slices.some(s => s.id == key))
+        ))
+      const comparingSliceDefaults = Object.assign({},
+        this.config[c].defaultSliceValues,
+        Object.fromEntries(
+          Object.entries(this.value.comparingSlices)
+            .filter(([key, value]) => this.config[c].slices.some(s => s.id == key))
+        ))
+
+      // keep old measurements if they all exist in the new cube
+      const measurementsIdsDefaults = this.value.measurementsIds
+        .every(m => this.config[c].measurements.some(mm => mm.id == m))
+        ? this.value.measurementsIds
+        : [this.config[c].defaultMeasurementId]
+
       this.$emit('input', <Configuration>{
         cubeId: c,
-        slices: this.config[c].defaultSliceValues,
-        comparingSlices: this.config[c].defaultSliceValues,
+        slices: slicesDefaults,
+        comparingSlices: comparingSliceDefaults,
         dimensionsIds: this.config[c].defaultDimensionsIds,
-        measurementsIds: [this.config[c].defaultMeasurementId],
+        measurementsIds: measurementsIdsDefaults,
       })
       this.groups = this.config[c].defaultDimensionsIds.length
     },
