@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="data.length > 0 && 'picks' in data[0].meta"
+    v-if="data.length > 0 && data[0].meta.picks != undefined"
     v-bind="$attrs"
     title="Sample Size"
     size="w-32"

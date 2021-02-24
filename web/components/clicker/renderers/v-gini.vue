@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && 'picks' in data[0].meta && !comparing"
+    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && data[0].meta.picks != undefined && !comparing"
     v-bind="$attrs"
     :title="$t('metric.balance-rating')"
     size="w-44"

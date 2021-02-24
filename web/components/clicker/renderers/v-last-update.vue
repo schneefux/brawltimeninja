@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="data.length > 0 && 'timestamp' in data[0].meta"
+    v-if="data.length > 0 && data[0].meta.timestamp != undefined"
     v-bind="$attrs"
     title="Last Update"
     dense
