@@ -87,10 +87,12 @@ export default Vue.extend({
     if (sort == undefined) {
       throw new Error('Invalid sort id ' + this.sortId)
     }
-    const dimensions = cube.dimensions
-      .filter(d => this.dimensionsIds.includes(d.id))
-    const measurements = cube.measurements
-      .filter(m => this.measurementsIds.includes(m.id))
+    const dimensions = this.dimensionsIds
+      .map(id => cube.dimensions.find(d => id == d.id)!)
+      .filter(d => d != undefined)
+    const measurements = this.measurementsIds
+      .map(id => cube.measurements.find(m => id == m.id)!)
+      .filter(m => m != undefined)
 
     const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
       ...cube.defaultSliceValues,

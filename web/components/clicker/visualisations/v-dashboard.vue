@@ -12,16 +12,37 @@
       ></slot>
     </div>
 
-    <v-graph
-      :loading="loading"
-      :data="data"
-      :dimensions="dimensions"
-      :measurements="measurements"
-      :comparing="comparing"
-      title="Graph View"
-      class="h-80 flex-auto"
-      full-height
-    ></v-graph>
+    <div class="w-full flex flex-wrap children-flex-auto">
+      <v-barplot
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        class="h-80"
+        full-height
+      ></v-barplot>
+
+      <v-scatterplot
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        class="h-80"
+        full-height
+      ></v-scatterplot>
+
+      <v-heatmap
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        class="h-80"
+        full-height
+      ></v-heatmap>
+    </div>
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-table

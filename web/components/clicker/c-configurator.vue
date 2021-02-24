@@ -237,6 +237,7 @@ export default Vue.extend({
         measurementsIds = this.config[this.value.cubeId].measurements.map(m => m.id)
       }
 
+  console.log(measurementsIds)
       this.$emit('input', <Configuration>{
         ...this.value,
         measurementsIds,

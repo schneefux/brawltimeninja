@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="dimensions.length == 1 && measurements.length == 1 && data.length > 1 && data.length < 100"
+    v-if="show"
     v-bind="$attrs"
     size="w-80"
   >
@@ -37,11 +37,15 @@ export default Vue.extend({
     },
   },
   computed: {
+    show(): boolean {
+      return this.dimensions.length == 1 && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 100
+    },
     chart(): any {
-      if (this.data.length == 0) {
-        return undefined
+      if (!this.show) {
+        return
       }
 
+      // bar plot with dimension on x and label and measurement on y
       return {
         traces: [{
           x: this.data.map(e => e.dimensions[this.dimensions[0].id]),
