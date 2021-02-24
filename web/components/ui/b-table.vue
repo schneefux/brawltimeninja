@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col">
-    <table class="w-full">
+  <div>
+    <table class="mx-auto">
       <thead>
         <tr class="h-8 border-b border-gray-600">
           <th
