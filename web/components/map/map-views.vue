@@ -2,8 +2,8 @@
   <div
     class="grid grid-cols-1 lg:grid-cols-2 grid-rows-1 justify-items-center"
     :class="{
-      'xl:grid-cols-4': showMapImageCard,
-      'xl:grid-cols-3': !showMapImageCard,
+      'xl:grid-cols-4': id != undefined,
+      'xl:grid-cols-3': id == undefined,
     }"
   >
     <card
