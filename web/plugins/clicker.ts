@@ -2,7 +2,32 @@ import { differenceInMinutes, parseISO } from "date-fns"
 import { formatMode, MetaGridEntry } from "~/lib/util"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { Route, Location } from "vue-router"
-import { commonMeasurements, Dimension, Measurement, Slice, SliceValue } from "~/lib/cube"
+import { State, Config, commonMeasurements, Dimension, Measurement, Slice, SliceValue } from "~/lib/cube"
+
+// workaround for https://github.com/vuejs/vue-router/issues/2725
+// FIXME remove when upgrading to vue-router 3
+function safeEncode(arr: (string|number)[]) {
+  return arr.map(s => typeof s == 'number' ? s.toString() : s.replace(/%/g, '%23'))
+}
+function safeDecode(arr: (string|null|undefined)[]) {
+  return arr?.map(s => s?.replace(/%23/g, '%'))
+}
+
+function parseQueryParams(query: Record<string, string | (string | null)[]>, prefix: string): object {
+  return Object.fromEntries(
+    Object.entries(query)
+      .filter(([key, value]) => key.startsWith(prefix + '[') && key.endsWith(']'))
+      .map(([key, value]) => [key.substring((prefix + '[').length, key.length - ']'.length), safeDecode(typeof value == 'string' ? [value] : value)])
+  )
+}
+
+function generateQueryParams(o: Record<string, (string|number)[]>, prefix: string): Record<string, string[]> {
+  return Object.fromEntries(
+    Object.entries(o)
+      .filter(([key, value]) => value != undefined && value.length > 0)
+      .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
+  )
+}
 
 export interface PicksWins {
   picks: number
@@ -51,11 +76,11 @@ interface Clicker {
     // H(ally_brawler,brawler)
     pairData: Map<string, Map<string, PicksWins>>,
   }>
-  routeToSlices(route: Route, defaults?: SliceValue): SliceValue
-  slicesToLocation(slices: SliceValue, defaults?: SliceValue): Location
   constructQuery(dimensions: Dimension[], measurements: Measurement[], slices: Slice[], slicesValues: SliceValue, metaColumns: string[]): { dimensions: string[], measurements: string[], slices: Record<string, string[]> }
   mapToMetaGridEntry(dimensions: Dimension[], measurements: Measurement[], rows: any[], totals: any, metaColumns: string[]): MetaGridEntry[]
   compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
+  stateToLocation(state: Partial<State>): Location
+  locationToState(location: Route, config: Config): State
 }
 
 declare module 'vue/types/vue' {
@@ -294,63 +319,6 @@ export default (context, inject) => {
         timestamp: totalTimestamp,
       }
     },
-    routeToSlices(route, defaults={}) {
-      return {
-        ...defaults,
-        ...('mode' in route.query ? {
-          mode: [route.query['mode'] as string],
-        }: {}),
-        ...('map' in route.query ? {
-          map: [route.query['map'] as string],
-        }: {}),
-        ...('powerplay' in route.query ? {
-          powerplay: [route.query['powerplay'] as string],
-        } : {}),
-        ...('season' in route.query ? {
-          season: [route.query['season'] as string],
-        } : {}),
-        ...('range' in route.query ? {
-          trophies: route.query['range'] as string[],
-        } : {}),
-        ...('ally' in route.query ? {
-          ally: [route.query['ally'] as string],
-        } : {}),
-        ...('name_like' in route.query ? {
-          playerName: [route.query['name_like'] as string],
-        } : {}),
-      }
-    },
-    slicesToLocation(slices, defaults={}) {
-      const diff = Object.fromEntries(
-        Object.entries(slices)
-          .filter(([name, params]) => !(name in defaults) || JSON.stringify(defaults[name]) != JSON.stringify(params)
-      ))
-
-      const query = {} as Record<string, string[]>
-      if ('mode' in diff) {
-        query['mode'] = diff.battle_event_mode!
-      }
-      if ('map' in diff) {
-        query['map'] = diff.battle_event_map!
-      }
-      if ('powerplay' in diff) {
-        query['powerplay'] = diff.battle_event_powerplay!
-      }
-      if ('season' in diff) {
-        query['season'] = diff.trophy_season_end!
-      }
-      if ('trophies' in diff) {
-        query['range'] = diff.brawler_trophyrange!
-      }
-      if ('ally' in diff) {
-        query['ally'] = diff.ally_brawler_name!
-      }
-      if ('playerName' in diff) {
-        query['name_like'] = diff.player_name_ilike!
-      }
-
-      return { query }
-    },
     constructQuery(dimensions, measurements, slices, slicesValues, metaColumns) {
       // TODO filter duplicates
       const queryDimensions = dimensions.map(d => d.column)
@@ -480,6 +448,53 @@ export default (context, inject) => {
           }
         })
       .filter(e => e != undefined) as MetaGridEntry[]
+    },
+    stateToLocation(state: Partial<State>): Location {
+      const slices = state.slices ? generateQueryParams(state.slices, 'filter') : {}
+      const comparingSlices = state.comparing && state.comparingSlices ? generateQueryParams(state.comparingSlices, 'comparingFilter') : {}
+
+      const query = Object.assign({}, {
+          cube: state.cubeId,
+          dimension: state.dimensionsIds,
+          metric: state.measurementsIds,
+          comparing: state.comparing ? '' : undefined,
+        }, slices, comparingSlices
+      )
+
+      return { path: '/dashboard', query }
+    },
+    locationToState(location: Route, config: Config): State|undefined {
+      if (location.query == undefined) {
+        return undefined
+      }
+
+      const cubeId = location.query.cube as string || 'map'
+      let slices = parseQueryParams(location.query, 'filter')
+      slices = Object.assign({}, config[cubeId].defaultSliceValues, slices)
+
+      let comparingSlices = parseQueryParams(location.query, 'compareFilter')
+      comparingSlices = Object.assign({}, config[cubeId].defaultSliceValues, comparingSlices)
+
+      let dimensionsIds = location.query.dimension || config[cubeId].defaultDimensionsIds
+      if (typeof dimensionsIds == 'string') {
+        dimensionsIds = [dimensionsIds]
+      }
+
+      let measurementsIds = location.query.metric || config[cubeId].defaultMeasurementIds
+      if (typeof measurementsIds == 'string') {
+        measurementsIds = [measurementsIds]
+      }
+
+      const comparing = location.query.comparing != undefined
+
+      return {
+        cubeId,
+        slices,
+        comparingSlices,
+        dimensionsIds,
+        measurementsIds,
+        comparing,
+      } as State
     }
   })
 }

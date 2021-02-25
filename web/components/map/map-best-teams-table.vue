@@ -11,8 +11,8 @@
     <template v-slot="data">
       <v-table
         :title="title"
-        :link="dashboardLink"
         v-bind="data"
+        show-link
       >
         <template v-slot:dimensions="data">
           <d-team v-bind="data"></d-team>
@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { RawLocation } from 'vue-router'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
@@ -65,20 +64,6 @@ export default Vue.extend({
         thing: this.$i18n.tc('thing.team', 2),
         thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
       }) as string
-    },
-    dashboardLink(): RawLocation {
-      return {
-        path: '/dashboard',
-        query: {
-          cube: 'team',
-          ...(this.mode != undefined ? {
-            mode: this.mode,
-          } : {}),
-          ...(this.map != undefined ? {
-            map: this.map,
-          } : {}),
-        },
-      }
     },
     config() {
       return config

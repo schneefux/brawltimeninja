@@ -28,6 +28,7 @@ import Vue from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DPlayer from '@/components/clicker/renderers/d-player.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '@/components/clicker/c-query.vue'
 import config from '@/lib/cube'
 
@@ -37,6 +38,7 @@ export default Vue.extend({
     DPlayer,
     DBrawler,
     CQuery,
+    BrawlerLink,
   },
   inheritAttrs: false,
   props: {

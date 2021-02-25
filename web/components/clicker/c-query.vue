@@ -1,12 +1,13 @@
 <template>
   <div class="contents">
     <slot
-      v-if="state != undefined"
+      v-if="result != undefined"
+      :state="state"
+      :comparing="state.comparing"
       :loading="loading"
-      :comparing="comparing"
-      :data="state.data"
-      :dimensions="state.dimensions"
-      :measurements="state.measurements"
+      :data="result.data"
+      :dimensions="result.dimensions"
+      :measurements="result.measurements"
       v-bind="$attrs"
     ></slot>
   </div>
@@ -14,7 +15,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Config, SliceValue } from '~/lib/cube'
+import { Config, SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -58,8 +59,20 @@ export default Vue.extend({
   data() {
     return {
       loading: false,
-      state: undefined as any,
+      result: undefined as any,
     }
+  },
+  computed: {
+    state(): State {
+      return {
+        cubeId: this.cubeId,
+        slices: this.slicesValues,
+        comparingSlices: this.comparingSlicesValues,
+        dimensionsIds: this.dimensionsIds,
+        measurementsIds: this.measurementsIds,
+        comparing: this.comparing,
+      }
+    },
   },
   watch: {
     config: '$fetch',
@@ -135,7 +148,7 @@ export default Vue.extend({
         .sort((e1, e2) => sort.sign * (e1.measurementsRaw[sort.id] - e2.measurementsRaw[sort.id]))
     }
 
-    this.state = {
+    this.result = {
       data,
       dimensions,
       measurements,

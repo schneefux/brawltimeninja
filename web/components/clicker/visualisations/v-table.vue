@@ -26,7 +26,7 @@
 
     <b-button
       slot="actions"
-      v-if="link"
+      v-if="showLink"
       :to="link"
       secondary
       sm
@@ -38,9 +38,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Dimension, Measurement } from '~/lib/cube'
+import { Dimension, Measurement, State } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
 import { Column } from '@/components/ui/b-table.vue'
+import { Location } from 'vue-router'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -56,12 +57,16 @@ export default Vue.extend({
       type: Array as PropType<Measurement[]>,
       required: true
     },
+    state: {
+      type: Object as PropType<State>,
+      required: true
+    },
     pageSize: {
       type: Number,
       default: 10
     },
-    link: {
-      type: [String, Object]
+    showLink: {
+      type: Boolean
     },
   },
   computed: {
@@ -76,6 +81,9 @@ export default Vue.extend({
           key: `measurements.${m.id}`,
         })),
       )
+    },
+    link(): Location {
+      return this.$clicker.stateToLocation(this.state)
     },
   },
 })

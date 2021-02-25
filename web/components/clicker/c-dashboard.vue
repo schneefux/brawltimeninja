@@ -85,10 +85,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Cube, SliceValue } from '~/lib/cube'
+import { Cube, SliceValue, State } from '~/lib/cube'
 import CDashboard from './c-dashboard.vue'
 import CSlicer from './c-slicer.vue'
-import CConfigurator, { Configuration } from './c-configurator.vue'
+import CConfigurator from './c-configurator.vue'
 
 export default Vue.extend({
   components: {
@@ -98,7 +98,7 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Object as PropType<Configuration>,
+      type: Object as PropType<State>,
       required: true
     },
     config: {

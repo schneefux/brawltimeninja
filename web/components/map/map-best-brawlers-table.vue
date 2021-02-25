@@ -11,8 +11,8 @@
     <template v-slot="data">
       <v-table
         :title="title"
-        :link="dashboardLink"
         v-bind="data"
+        show-link
       >
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
@@ -24,9 +24,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { RawLocation } from 'vue-router'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '@/components/clicker/c-query.vue'
 import config from '@/lib/cube'
 
@@ -35,6 +35,7 @@ export default Vue.extend({
     VTable,
     DBrawler,
     CQuery,
+    BrawlerLink,
   },
   inheritAttrs: false,
   props: {
@@ -63,20 +64,6 @@ export default Vue.extend({
         thing: this.$i18n.tc('thing.brawler', 2),
         thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
       }) as string
-    },
-    dashboardLink(): RawLocation {
-      return {
-        path: '/dashboard',
-        query: {
-          cube: 'map',
-          ...(this.mode != undefined ? {
-            mode: this.mode,
-          } : {}),
-          ...(this.map != undefined ? {
-            map: this.map,
-          } : {}),
-        },
-      }
     },
     config() {
       return config

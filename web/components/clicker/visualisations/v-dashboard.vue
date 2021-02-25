@@ -3,26 +3,26 @@
     <div class="w-full flex flex-wrap children-flex-auto">
       <slot
         name="visualisations"
-        v-bind="context"
+        v-bind="$props"
         full-height
       ></slot>
     </div>
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-barplot
-        v-bind="context"
+        v-bind="$props"
         class="h-80"
         full-height
       ></v-barplot>
 
       <v-scatterplot
-        v-bind="context"
+        v-bind="$props"
         class="h-80"
         full-height
       ></v-scatterplot>
 
       <v-heatmap
-        v-bind="context"
+        v-bind="$props"
         class="h-80"
         full-height
       ></v-heatmap>
@@ -30,7 +30,7 @@
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-table
-        v-bind="context"
+        v-bind="$props"
         full-height
       >
         <template
@@ -45,7 +45,7 @@
       </v-table>
 
       <v-tier-list
-        v-bind="context"
+        v-bind="$props"
         full-height
       >
         <template
@@ -60,7 +60,7 @@
       </v-tier-list>
 
       <v-grid
-        v-bind="context"
+        v-bind="$props"
         full-height
       >
         <template
@@ -75,26 +75,24 @@
       </v-grid>
     </div>
 
-    <div class="w-full flex flex-wrap children-flex-auto">
-      <v-csv
-        v-bind="context"
-        full-height
-      ></v-csv>
-      <v-share
-        v-bind="context"
-        full-height
-      ></v-share>
+    <div class="w-full flex flex-wrap">
+      <v-csv v-bind="$props"></v-csv>
+      <v-share v-bind="$props"></v-share>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Dimension, Measurement } from '~/lib/cube'
+import { Dimension, Measurement, State } from '~/lib/cube'
 import { MetaGridEntry } from '~/lib/util'
 
 export default Vue.extend({
   props: {
+    state: {
+      type: Object as PropType<State>,
+      required: true
+    },
     loading: {
       type: Boolean,
       required: true
@@ -114,17 +112,6 @@ export default Vue.extend({
     comparing: {
       type: Boolean,
       required: true
-    },
-  },
-  computed: {
-    context() {
-      return {
-        loading: this.loading,
-        data: this.data,
-        dimensions: this.dimensions,
-        measurements: this.measurements,
-        comparing: this.comparing,
-      }
     },
   },
 })

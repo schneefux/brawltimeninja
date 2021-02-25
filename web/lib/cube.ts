@@ -2,6 +2,15 @@ import { capitalizeWords, formatMode, formatSI } from './util'
 
 export interface Config extends Record<string, Cube> {}
 
+export interface State {
+  cubeId: string
+  slices: SliceValue
+  comparingSlices: SliceValue
+  dimensionsIds: string[]
+  measurementsIds: string[]
+  comparing: boolean
+}
+
 export interface Cube {
   id: string
   table: string

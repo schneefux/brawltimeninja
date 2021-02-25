@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import config from '~/lib/cube'
+import config, { State } from '~/lib/cube'
 import CDashboard from '@/components/clicker/c-dashboard.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -57,32 +57,6 @@ import VLastUpdate from '@/components/clicker/renderers/v-last-update.vue'
 import VMoe from '@/components/clicker/renderers/v-moe.vue'
 import VSampleSize from '@/components/clicker/renderers/v-sample-size.vue'
 import VMeasureDescription from '@/components/clicker/renderers/v-measure-description.vue'
-import { Configuration } from '~/components/clicker/c-configurator.vue'
-
-// workaround for https://github.com/vuejs/vue-router/issues/2725
-// FIXME remove when upgrading to vue-router 3
-function safeEncode(arr: (string|number)[]) {
-  return arr.map(s => typeof s == 'number' ? s.toString() : s.replace(/%/g, '%23'))
-}
-function safeDecode(arr: (string|null)[]) {
-  return arr?.map(s => s?.replace(/%23/g, '%'))
-}
-
-function parseQueryParams(query: Record<string, string | (string | null)[]>, prefix: string): object {
-  return Object.fromEntries(
-    Object.entries(query)
-      .filter(([key, value]) => key.startsWith(prefix + '[') && key.endsWith(']'))
-      .map(([key, value]) => [key.substring((prefix + '[').length, key.length - ']'.length), safeDecode(typeof value == 'string' ? [value] : value)])
-  )
-}
-
-function generateQueryParams(o: Record<string, (string|number)[]>, prefix: string): Record<string, string[]> {
-  return Object.fromEntries(
-    Object.entries(o)
-      .filter(([key, value]) => value != undefined && value.length > 0)
-      .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
-  )
-}
 
 export default Vue.extend({
   components: {
@@ -115,48 +89,11 @@ export default Vue.extend({
   },
   computed: {
     state: {
-      get(): Configuration {
-        const cubeId = this.$route.query.cube as string || 'map'
-        let slices = parseQueryParams(this.$route.query, 'filter')
-        slices = Object.assign({}, this.config[cubeId].defaultSliceValues, slices)
-
-        let comparingSlices = parseQueryParams(this.$route.query, 'compareFilter')
-        comparingSlices = Object.assign({}, this.config[cubeId].defaultSliceValues, comparingSlices)
-
-        let dimensionsIds = this.$route.query.dimension || this.config[cubeId].defaultDimensionsIds
-        if (typeof dimensionsIds == 'string') {
-          dimensionsIds = [dimensionsIds]
-        }
-
-        let measurementsIds = this.$route.query.metric || this.config[cubeId].defaultMeasurementIds
-        if (typeof measurementsIds == 'string') {
-          measurementsIds = [measurementsIds]
-        }
-
-        const comparing = this.$route.query.comparing != undefined
-
-        return {
-          cubeId,
-          slices,
-          comparingSlices,
-          dimensionsIds,
-          measurementsIds,
-          comparing,
-        } as Configuration
+      get(): State {
+        return this.$clicker.locationToState(this.$route, this.config)
       },
-      set(c: Configuration) {
-        const slices = generateQueryParams(c.slices, 'filter')
-        const comparingSlices = c.comparing ? generateQueryParams(c.comparingSlices, 'comparingFilter') : {}
-
-        const query = Object.assign({}, {
-            cube: c.cubeId,
-            dimension: c.dimensionsIds,
-            metric: c.measurementsIds,
-            comparing: c.comparing ? '' : undefined,
-          }, slices, comparingSlices
-        )
-
-        this.$router.push({ query })
+      set(s: State) {
+        this.$router.push(this.$clicker.stateToLocation(s))
       }
     },
   },

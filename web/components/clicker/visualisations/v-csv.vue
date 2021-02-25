@@ -1,5 +1,8 @@
 <template>
-  <card v-bind="$attrs">
+  <card
+    v-bind="$attrs"
+    v-if="data.length > 0"
+  >
     <b-button
       slot="content"
       secondary
@@ -29,13 +32,6 @@ export default Vue.extend({
     measurements: {
       type: Array as PropType<Measurement[]>,
       required: true
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    },
-    link: {
-      type: [String, Object]
     },
   },
   methods: {

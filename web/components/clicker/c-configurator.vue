@@ -145,23 +145,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Config, Cube, Dimension, Measurement, SliceValue } from '~/lib/cube'
+import { State, Config, Cube, Dimension, Measurement } from '~/lib/cube'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-
-export interface Configuration {
-  cubeId: string
-  slices: SliceValue
-  comparingSlices: SliceValue
-  dimensionsIds: string[]
-  measurementsIds: string[]
-  comparing: boolean
-}
 
 export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<Configuration>,
+      type: Object as PropType<State>,
       required: true
     },
     config: {
@@ -198,7 +189,7 @@ export default Vue.extend({
         ? this.value.measurementsIds
         : this.config[c].defaultMeasurementIds
 
-      this.$emit('input', <Configuration>{
+      this.$emit('input', <State>{
         cubeId: c,
         slices: slicesDefaults,
         comparingSlices: comparingSliceDefaults,
@@ -211,7 +202,7 @@ export default Vue.extend({
     onInputDimensionsIds(index: number, d: string) {
       const dimensionsIds = this.value.dimensionsIds.slice()
       dimensionsIds[index] = d
-      this.$emit('input', <Configuration>{
+      this.$emit('input', <State>{
         ...this.value,
         dimensionsIds,
       })
@@ -220,7 +211,7 @@ export default Vue.extend({
     onDimensionRemove() {
       const dimensionsIds = this.value.dimensionsIds.slice()
       dimensionsIds.pop()
-      this.$emit('input', <Configuration>{
+      this.$emit('input', <State>{
         ...this.value,
         dimensionsIds,
       })
@@ -238,7 +229,7 @@ export default Vue.extend({
         measurementsIds = this.config[this.value.cubeId].measurements.map(m => m.id)
       }
 
-      this.$emit('input', <Configuration>{
+      this.$emit('input', <State>{
         ...this.value,
         measurementsIds,
       })
@@ -247,7 +238,7 @@ export default Vue.extend({
     onMeasurementRemove() {
       const measurementsIds = this.value.measurementsIds.slice()
       measurementsIds.pop()
-      this.$emit('input', <Configuration>{
+      this.$emit('input', <State>{
         ...this.value,
         measurementsIds,
       })
