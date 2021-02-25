@@ -2,16 +2,14 @@
   <card
     v-if="show"
     v-bind="$attrs"
-    size="w-80"
   >
-    <plotly
+    <vega
       slot="content"
-      v-if="chart != undefined"
-      :traces="chart.traces"
-      :layout="chart.layout"
-      :options="chart.options"
-      class="h-full"
-    ></plotly>
+      :spec="spec"
+      full-width
+      full-height
+      show-download
+    ></vega>
   </card>
 </template>
 
@@ -19,6 +17,7 @@
 import Vue, { PropType } from 'vue'
 import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
+import { VisualizationSpec } from 'vega-embed'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -40,47 +39,39 @@ export default Vue.extend({
     show(): boolean {
       return this.dimensions.length == 2 && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 1000
     },
-    chart(): any {
-      if (!this.show) {
-        return
-      }
-
-      const x = [...new Set(this.data.map(e => e.dimensions[this.dimensions[0].id]))]
-      const y = [...new Set(this.data.map(e => e.dimensions[this.dimensions[1].id]))]
-      console.log(this.data[0].dimensions)
-      const z = y.map(yValue => x.map(xValue =>
-        this.data.find(d => d.dimensions[this.dimensions[0].id] == xValue && d.dimensions[this.dimensions[1].id] == yValue)
-        ?.measurementsRaw[this.measurements[0].id]
-      ))
-
-      // heatmap with dimensions on x and y and measurement on color
+    spec(): VisualizationSpec {
       return {
-        traces: [{
-          x,
-          y,
-          z,
-          type: 'heatmap',
-        }],
-        layout: {
-          margin: { t: 0, l: 0, b: 0, r: 0 },
-          showlegend: false,
-          xaxis: {
-            title: {
-              text: this.dimensions[0].name,
-              standoff: 10,
+        data: {
+          values: this.data,
+        },
+        mark: 'rect',
+        encoding: {
+          x: {
+            field: 'dimensions.' + this.dimensions[0].id,
+            type: this.dimensions[0].type,
+            title: this.dimensions[0].name,
+            scale: {
+              type: this.dimensions[0].scale?.type,
+              zero: this.dimensions[0].scale?.zero,
             },
-            fixedrange: true,
-            tickcolor: '#ffffff',
-            automargin: true,
           },
-          yaxis: {
-            title: {
-              text: this.dimensions[1].name,
-              standoff: 10,
+          y: {
+            field: 'dimensions.' + this.dimensions[1].id,
+            type: this.dimensions[1].type,
+            title: this.dimensions[1].name,
+            scale: {
+              type: this.dimensions[1].scale?.type,
+              zero: this.dimensions[1].scale?.zero,
             },
-            fixedrange: true,
-            tickcolor: '#ffffff',
-            automargin: true,
+          },
+          color: {
+            field: 'measurementsRaw.' + this.measurements[0].id,
+            type: this.measurements[0].type,
+            title: this.measurements[0].name,
+            scale: {
+              type: this.measurements[0].scale?.type,
+              zero: this.measurements[0].scale?.zero,
+            },
           },
         },
       }

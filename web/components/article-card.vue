@@ -28,26 +28,12 @@
         class="prose prose-sm sm:prose lg:prose-lg"
       ></nuxt-content>
 
-      <div
-        v-show="lightboxOpen"
-        class="fixed inset-0 z-50 bg-gray-900 bg-opacity-75"
-      >
-        <button
-          class="absolute top-0 right-0 mr-10 mt-4 text-white text-5xl"
-          @click="lightboxOpen = false"
+      <lightbox v-model="lightboxOpen">
+        <img
+          class="max-h-full max-w-full"
+          :src="lightboxImage"
         >
-          &times;
-        </button>
-        <div
-          class="h-full flex justify-center items-center"
-          @click.self="lightboxOpen = false"
-        >
-          <img
-            class="max-h-full max-w-full"
-            :src="lightboxImage"
-          >
-        </div>
-      </div>
+      </lightbox>
     </div>
     <p
       slot="actions"

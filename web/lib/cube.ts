@@ -27,6 +27,11 @@ export interface Measurement {
   sign: number
   percentage: boolean
   column: string
+  type: 'quantitative'|'temporal'|'ordinal'|'nominal'
+  scale?: {
+    type?: 'linear'|'log'|'pow'|'sqrt'|'symlog' | 'time'|'utc' | 'ordinal'
+    zero?: boolean
+  }
 }
 
 export interface Dimension {
@@ -36,6 +41,11 @@ export interface Dimension {
   column: string
   anyColumns: string[]
   hidden: boolean
+  type: 'quantitative'|'temporal'|'ordinal'|'nominal'
+  scale?: {
+    type?: 'linear'|'log'|'pow'|'sqrt'|'symlog' | 'time'|'utc' | 'ordinal'
+    zero?: boolean
+  }
 }
 
 export interface Slice {
@@ -56,6 +66,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'player_id',
     anyColumns: ['player_name', 'player_icon_id'],
     hidden: false,
+    type: 'nominal',
   },
   brawler: {
     id: 'brawler',
@@ -64,14 +75,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'brawler_name',
     anyColumns: [],
     hidden: false,
-  },
-  brawlerHidden: {
-    id: 'brawler',
-    name: 'Brawler',
-    formatter: (b: any) => capitalizeWords(b.brawler_name.toLowerCase()),
-    column: 'brawler_name',
-    anyColumns: [],
-    hidden: true,
+    type: 'nominal',
   },
   ally: {
     id: 'ally',
@@ -80,6 +84,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'ally_brawler_name',
     anyColumns: [],
     hidden: false,
+    type: 'nominal',
   },
   gadget: {
     id: 'gadget',
@@ -88,6 +93,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'brawler_gadget_id',
     anyColumns: ['brawler_gadget_name', 'brawler_name'],
     hidden: false,
+    type: 'nominal',
   },
   starpower: {
     id: 'starpower',
@@ -96,6 +102,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'brawler_starpower_id',
     anyColumns: ['brawler_starpower_name', 'brawler_name'],
     hidden: false,
+    type: 'nominal',
   },
   team: {
     id: 'team',
@@ -104,6 +111,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'brawler_names',
     anyColumns: [],
     hidden: false,
+    type: 'nominal',
   },
   mode: {
     id: 'mode',
@@ -112,6 +120,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'battle_event_mode',
     anyColumns: [],
     hidden: false,
+    type: 'nominal',
   },
   map: {
     id: 'map',
@@ -120,6 +129,7 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'battle_event_map',
     anyColumns: ['battle_event_mode', 'battle_event_id'],
     hidden: false,
+    type: 'nominal',
   },
 }
 
@@ -136,6 +146,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'timestamp',
+    type: 'temporal',
   },
   trophies: {
     id: 'trophies',
@@ -148,6 +159,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'brawler_trophies',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   trophyChange: {
     id: 'trophyChange',
@@ -160,6 +175,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_trophy_change',
+    type: 'quantitative',
   },
   winRate: {
     id: 'winRate',
@@ -172,6 +188,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_victory',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   winRateAdj: {
     id: 'winRateAdj',
@@ -184,6 +204,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_victory_adj',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   winRateDiff: {
     id: 'winRateDiff',
@@ -196,6 +220,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_victory',
+    type: 'quantitative',
   },
   wins: {
     id: 'wins',
@@ -208,6 +233,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'wins',
+    type: 'quantitative',
   },
   winsZScore: {
     id: 'winsZScore',
@@ -220,6 +246,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'wins',
+    type: 'quantitative',
   },
   picks: {
     id: 'picks',
@@ -232,6 +259,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'picks',
+    type: 'quantitative',
   },
   pickRate: {
     id: 'pickRate',
@@ -244,6 +272,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: true,
     column: 'picks',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   useRate: {
     id: 'useRate',
@@ -256,6 +288,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: true,
     column: 'picks_weighted',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   starRate: {
     id: 'starRate',
@@ -268,6 +304,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_starplayer',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   starRateDiff: {
     id: 'starRateDiff',
@@ -280,6 +320,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_starplayer',
+    type: 'quantitative',
   },
   rank: {
     id: 'rank',
@@ -292,6 +333,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: +1,
     percentage: false,
     column: 'battle_rank',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   rank1: {
     id: 'rank1',
@@ -304,6 +349,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_rank1',
+    type: 'quantitative',
   },
   rank1Rate: {
     id: 'rank1Rate',
@@ -316,6 +362,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_rank1',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   rank1RateDiff: {
     id: 'rank1RateDiff',
@@ -328,6 +378,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_rank1',
+    type: 'quantitative',
   },
   duration: {
     id: 'duration',
@@ -340,6 +391,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: +1,
     percentage: false,
     column: 'battle_duration',
+    type: 'quantitative',
   },
   level: {
     id: 'level',
@@ -352,6 +404,10 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'battle_level',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   users: {
     id: 'users',
@@ -364,6 +420,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'users',
+    type: 'quantitative',
   },
   highestTrophies: {
     id: 'highestTrophies',
@@ -376,6 +433,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_highest_trophies',
+    type: 'quantitative',
   },
   powerPlayPoints: {
     id: 'powerPlayPoints',
@@ -388,6 +446,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_power_play_points',
+    type: 'quantitative',
   },
   highestPowerPlayPoints: {
     id: 'highestPowerPlayPoints',
@@ -400,6 +459,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_highest_power_play_points',
+    type: 'quantitative',
   },
   expLevel: {
     id: 'expLevel',
@@ -412,6 +472,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_exp_level',
+    type: 'quantitative',
   },
   victories: {
     id: 'victories',
@@ -424,6 +485,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_3vs3_victories',
+    type: 'quantitative',
   },
   soloVictories: {
     id: 'soloVictories',
@@ -436,6 +498,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_solo_victories',
+    type: 'quantitative',
   },
   duoVictories: {
     id: 'duoVictories',
@@ -448,6 +511,7 @@ export const commonMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_duo_victories',
+    type: 'quantitative',
   },
 }
 
@@ -463,6 +527,7 @@ export const playerMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_3vs3_victories',
+    type: 'quantitative',
   },
   exp: {
     id: 'exp',
@@ -475,6 +540,7 @@ export const playerMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_exp_points',
+    type: 'quantitative',
   },
   soloVictories: {
     id: 'soloVictories',
@@ -487,6 +553,7 @@ export const playerMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_solo_victories',
+    type: 'quantitative',
   },
   duoVictories: {
     id: 'duoVictories',
@@ -499,6 +566,7 @@ export const playerMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'player_duo_victories',
+    type: 'quantitative',
   },
 }
 
@@ -514,6 +582,7 @@ export const brawlerMeasurements: Record<string, Measurement> = {
     sign: -1,
     percentage: false,
     column: 'brawler_highest_trophies',
+    type: 'quantitative',
   },
 }
 

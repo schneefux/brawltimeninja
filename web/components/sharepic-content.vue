@@ -4,8 +4,6 @@
     :class="{ 'sharepic--invisible': !debug }"
     ref="sharepic"
   >
-    <!-- aspect ratio 1.91 : 1 -->
-    <!-- https://www.business2community.com/brandviews/presto-media/best-social-media-image-sizes-photo-sharing-every-major-social-network-01911894 -->
     <slot></slot>
   </div>
 </template>
@@ -85,6 +83,10 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="postcss">
+/*
+  aspect ratio 1.91 : 1
+  https://www.business2community.com/brandviews/presto-media/best-social-media-image-sizes-photo-sharing-every-major-social-network-01911894
+*/
 .sharepic {
   @apply fixed top-0 left-0;
   width: 600px;

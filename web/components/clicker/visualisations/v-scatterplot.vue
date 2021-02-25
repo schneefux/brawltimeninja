@@ -2,16 +2,14 @@
   <card
     v-if="show"
     v-bind="$attrs"
-    size="w-80"
   >
-    <plotly
+    <vega
       slot="content"
-      v-if="chart != undefined"
-      :traces="chart.traces"
-      :layout="chart.layout"
-      :options="chart.options"
-      class="h-full"
-    ></plotly>
+      :spec="spec"
+      full-width
+      full-height
+      show-download
+    ></vega>
   </card>
 </template>
 
@@ -19,6 +17,7 @@
 import Vue, { PropType } from 'vue'
 import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
+import { VisualizationSpec } from 'vega-embed'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -40,48 +39,54 @@ export default Vue.extend({
     show(): boolean {
       return this.dimensions.length == 1 && this.measurements.length == 2 && this.data.length > 1 && this.data.length < 1000
     },
-    chart(): any {
-      if (!this.show) {
-        return
-      }
-
-      // scatter plot with measurements on x and y and dimension on label
+    spec(): VisualizationSpec {
       return {
-        traces: [{
-          x: this.data.map(e => e.measurementsRaw[this.measurements[0].id]),
-          y: this.data.map(e => e.measurementsRaw[this.measurements[1].id]),
-          text: this.data.map(e => e.dimensions[this.dimensions[0].id]),
-          textposition: 'bottom center',
-          marker: {
-            color: '#facc15' // yellow-400
-          },
-          type: 'scatter',
-          mode: 'markers+text',
-        }],
-        layout: {
-          margin: { t: 0, l: 0, b: 0, r: 0 },
-          showlegend: false,
-          xaxis: {
-            title: {
-              text: this.measurements[0].name,
-              standoff: 10,
+        data: {
+          values: this.data,
+        },
+        encoding: {
+          x: {
+            field: 'measurementsRaw.' + this.measurements[0].id,
+            type: this.measurements[0].type,
+            title: this.measurements[0].name,
+            axis: {
+              format: this.measurements[0].d3formatter,
             },
-            fixedrange: true,
-            tickformat: this.measurements[0].d3formatter,
-            tickcolor: '#ffffff',
-            automargin: true,
-          },
-          yaxis: {
-            title: {
-              text: this.measurements[1].name,
-              standoff: 10,
+            scale: {
+              type: this.measurements[0].scale?.type,
+              zero: this.measurements[0].scale?.zero,
             },
-            fixedrange: true,
-            tickformat: this.measurements[0].d3formatter,
-            tickcolor: '#ffffff',
-            automargin: true,
+          },
+          y: {
+            field: 'measurementsRaw.' + this.measurements[1].id,
+            type: this.measurements[1].type,
+            title: this.measurements[1].name,
+            axis: {
+              format: this.measurements[1].d3formatter,
+            },
+            scale: {
+              type: this.measurements[1].scale?.type,
+              zero: this.measurements[1].scale?.zero,
+            },
           },
         },
+        layer: [{
+          mark: 'point',
+        }, {
+          mark: {
+            type: 'text',
+            align: 'center',
+            baseline: 'top',
+            dy: 3,
+          },
+          encoding: {
+            text: {
+              field: 'dimensions.' + this.dimensions[0].id,
+              type: this.dimensions[0].type,
+              title: this.dimensions[0].name,
+            },
+          },
+        }],
       }
     },
   },
