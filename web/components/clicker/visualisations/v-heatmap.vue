@@ -37,7 +37,14 @@ export default Vue.extend({
   },
   computed: {
     show(): boolean {
-      return this.dimensions.length == 2 && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 1000
+      if (this.dimensions.length == 2 && this.measurements.length == 1 && this.data.length > 1) {
+        const uniqueX = new Set(this.data.map(d => d.dimensions[this.dimensions[0].id])).size
+        const uniqueY = new Set(this.data.map(d => d.dimensions[this.dimensions[1].id])).size
+
+        // less than 50% gaps
+        return this.data.length > 0.5 * uniqueX * uniqueY
+      }
+      return false
     },
     spec(): VisualizationSpec {
       return {
