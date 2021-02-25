@@ -24,13 +24,8 @@
           class="flex flex-wrap"
         >
           <div class="mb-4 mr-2">
-            <div
-              v-for="d in dimensions"
-              :key="d.id"
-              class="my-1"
-            >
-              <slot
-                :name="`dimensions.${d.id}`"
+            <div class="my-1">
+              <slot name="dimensions"
                 :row="entry"
               ></slot>
             </div>
