@@ -102,6 +102,17 @@
         </template>
       </v-grid>
     </div>
+
+    <div class="w-full flex flex-wrap children-flex-auto">
+      <v-csv
+        :loading="loading"
+        :data="data"
+        :dimensions="dimensions"
+        :measurements="measurements"
+        :comparing="comparing"
+        full-height
+      ></v-csv>
+    </div>
   </div>
 </template>
 
