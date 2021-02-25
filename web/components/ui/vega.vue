@@ -21,7 +21,7 @@
       @click="download()"
     >
       <font-awesome-icon
-        :icon="faExpandAlt"
+        :icon="faDownload"
       ></font-awesome-icon>
     </b-button>
   </div>
@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import embed, { Result, VisualizationSpec } from 'vega-embed'
-import { faExpandAlt } from '@fortawesome/free-solid-svg-icons'
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
 
 const gray200 = '#e4e4e7'
 const gray400 = '#a1a1aa'
@@ -65,8 +65,8 @@ export default Vue.extend({
     this.cleanup()
   },
   computed: {
-    faExpandAlt() {
-      return faExpandAlt
+    faDownload() {
+      return faDownload
     },
   },
   methods: {
@@ -85,11 +85,6 @@ export default Vue.extend({
         return
       }
 
-      // opening a window from async is blocked in Safari
-      let w = window.open('', '_blank') || window
-
-      const img = new Image()
-
       const oldBackground = this.result.view.background()
       const oldWidth = this.result.view.width()
       const oldHeight = this.result.view.height()
@@ -99,30 +94,18 @@ export default Vue.extend({
       this.result.view.width(opts.width)
       this.result.view.height(opts.height)
 
-      img.src = await this.result.view.toImageURL(ext, scaleFactor)
+      const imageUrl = await this.result.view.toImageURL(ext, scaleFactor)
+      const downloader = document.createElement('a')
+      downloader.href = imageUrl
+      downloader.target = '_blank'
+      downloader.download = 'export.' + ext
+      downloader.click()
 
       // reset background and sizes
       this.result.view.background(oldBackground)
       this.result.view.width(oldWidth)
       this.result.view.height(oldHeight)
       this.result.view.runAsync() // image render has replaced the image
-
-      const button = w.document.createElement('button')
-      button.style.marginBottom = '10px'
-      button.textContent = 'Go Back'
-
-      const a = w.document.createElement('a')
-      a.setAttribute('href', window.location.href)
-      a.appendChild(button)
-
-      const div = w.document.createElement('div')
-      div.appendChild(a)
-
-      const container = w.document.createElement('div')
-      container.appendChild(div)
-      container.appendChild(img)
-
-      w.document.write(container.outerHTML)
     },
     async refresh() {
       if (!process.client) {
