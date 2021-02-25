@@ -1,16 +1,17 @@
 <template>
   <div class="flex flex-wrap">
     <c-configurator
-      v-model="configuration"
+      :value="value"
       :config="config"
       class="flex-auto md:flex-none"
       full-height
+      @input="v => $emit('input', v)"
     ></c-configurator>
 
     <c-slicer
-      v-model="configuration.slices"
+      v-model="slices"
       :config="config"
-      :cube-id="configuration.cubeId"
+      :cube-id="value.cubeId"
       full-height
     >
       <template v-slot:slices="data">
@@ -30,10 +31,10 @@
       </div>
 
       <c-slicer
-        v-if="comparing"
-        v-model="configuration.comparingSlices"
+        v-if="value.comparing"
+        v-model="comparingSlices"
         :config="config"
-        :cube-id="configuration.cubeId"
+        :cube-id="value.cubeId"
         comparing
         full-height
       >
@@ -48,13 +49,13 @@
 
     <c-query
       :config="config"
-      :dimensions-ids="configuration.dimensionsIds"
-      :measurements-ids="configuration.measurementsIds"
-      :slices-values="configuration.slices"
-      :comparing-slices-values="configuration.comparingSlices"
-      :cube-id="configuration.cubeId"
-      :sort-id="configuration.measurementsIds[0]"
-      :comparing="comparing"
+      :dimensions-ids="value.dimensionsIds"
+      :measurements-ids="value.measurementsIds"
+      :slices-values="value.slices"
+      :comparing-slices-values="value.comparingSlices"
+      :cube-id="value.cubeId"
+      :sort-id="value.measurementsIds[0]"
+      :comparing="value.comparing"
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
@@ -96,51 +97,49 @@ export default Vue.extend({
     CConfigurator,
   },
   props: {
+    value: {
+      type: Object as PropType<Configuration>,
+      required: true
+    },
     config: {
       type: Object as PropType<Record<string, Cube>>,
       required: true
     },
-    defaultCube: {
-      type: String,
-      required: true
-    },
-    defaultSlices: {
-      type: Object as PropType<SliceValue>,
-      default: () => ({})
-    },
-    defaultMeasurements: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
-    defaultDimensions: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
   },
-  data() {
-    const cubeId = this.defaultCube || 'map'
-    return {
-      configuration: {
-        cubeId,
-        slices: this.defaultSlices || this.config[cubeId].defaultSliceValues,
-        comparingSlices: this.config[cubeId].defaultSliceValues,
-        dimensionsIds: this.defaultDimensions || this.config[cubeId].defaultDimensionsIds,
-        measurementsIds: this.defaultMeasurements || [this.config[cubeId].defaultMeasurementId],
-      } as Configuration,
-      comparing: false,
-    }
+  computed: {
+    comparing: {
+      get() {
+        return this.value.comparing
+      },
+      set(c: boolean) {
+        this.$emit('input', {
+          ...this.value,
+          comparing: c,
+        })
+      }
+    },
+    slices: {
+      get() {
+        return this.value.slices
+      },
+      set(v: SliceValue) {
+        this.$emit('input', {
+          ...this.value,
+          slices: v,
+        })
+      }
+    },
+    comparingSlices: {
+      get() {
+        return this.value.comparingSlices
+      },
+      set(v: SliceValue) {
+        this.$emit('input', {
+          ...this.value,
+          comparingSlices: v,
+        })
+      }
+    },
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.top-12 {
-  top: 3rem;
-}
-
-@responsive {
-  .top-0\! {
-    @apply top-0 !important;
-  }
-}
-</style>

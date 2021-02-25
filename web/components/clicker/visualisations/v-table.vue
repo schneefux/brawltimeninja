@@ -26,6 +26,7 @@
 
     <b-button
       slot="actions"
+      v-if="link"
       :to="link"
       secondary
       sm

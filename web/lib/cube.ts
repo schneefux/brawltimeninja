@@ -10,7 +10,7 @@ export interface Cube {
   dimensions: Dimension[]
   defaultDimensionsIds: string[]
   measurements: Measurement[]
-  defaultMeasurementId: string
+  defaultMeasurementIds: string[]
   metaColumns: string[]
   slices: Slice[]
   defaultSliceValues: SliceValue
@@ -176,6 +176,9 @@ export const commonMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'battle_trophy_change',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   winRate: {
     id: 'winRate',
@@ -679,7 +682,7 @@ const cubes: Record<string, Cube> = {
     measurements: [
       ...Object.values(brawlerBattleMeasurements),
     ],
-    defaultMeasurementId: 'winRateAdj',
+    defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
@@ -713,7 +716,7 @@ const cubes: Record<string, Cube> = {
     measurements: [
       ...Object.values(brawlerBattleMeasurements),
     ],
-    defaultMeasurementId: 'winRateAdj',
+    defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
@@ -739,7 +742,7 @@ const cubes: Record<string, Cube> = {
     measurements: [
       ...Object.values(brawlerBattleMeasurements),
     ],
-    defaultMeasurementId: 'winRateAdj',
+    defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
@@ -765,7 +768,7 @@ const cubes: Record<string, Cube> = {
     measurements: [
       ...Object.values(brawlerBattleMeasurements),
     ],
-    defaultMeasurementId: 'winRateAdj',
+    defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
@@ -798,7 +801,7 @@ const cubes: Record<string, Cube> = {
       commonMeasurements.picks,
       commonMeasurements.winRate,
     ],
-    defaultMeasurementId: 'wins',
+    defaultMeasurementIds: ['wins'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
@@ -828,7 +831,7 @@ const cubes: Record<string, Cube> = {
       playerMeasurements.duoVictories,
       playerMeasurements.exp,
     ],
-    defaultMeasurementId: 'victories',
+    defaultMeasurementIds: ['victories'],
     metaColumns: ['timestamp'],
     slices: [
     ],
@@ -848,7 +851,7 @@ const cubes: Record<string, Cube> = {
     measurements: [
       brawlerMeasurements.highestTrophies,
     ],
-    defaultMeasurementId: 'highestTrophies',
+    defaultMeasurementIds: ['highestTrophies'],
     metaColumns: ['timestamp'],
     slices: [
       commonSlices.brawler,
@@ -877,7 +880,7 @@ const cubes: Record<string, Cube> = {
       commonMeasurements.rank,
       commonMeasurements.duration,
     ],
-    defaultMeasurementId: 'winRateAdj',
+    defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,

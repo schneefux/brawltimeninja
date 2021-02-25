@@ -154,6 +154,7 @@ export interface Configuration {
   comparingSlices: SliceValue
   dimensionsIds: string[]
   measurementsIds: string[]
+  comparing: boolean
 }
 
 export default Vue.extend({
@@ -195,7 +196,7 @@ export default Vue.extend({
       const measurementsIdsDefaults = this.value.measurementsIds
         .every(m => this.config[c].measurements.some(mm => mm.id == m))
         ? this.value.measurementsIds
-        : [this.config[c].defaultMeasurementId]
+        : this.config[c].defaultMeasurementIds
 
       this.$emit('input', <Configuration>{
         cubeId: c,

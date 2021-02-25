@@ -69,7 +69,6 @@ export default Vue.extend({
     slicesValues: '$fetch',
     comparingSlicesValues: '$fetch',
     sortId: '$fetch',
-    comparing: '$fetch',
   },
   fetchOnServer: false, // FIXME causes v-table render error :(
   fetchDelay: 0,

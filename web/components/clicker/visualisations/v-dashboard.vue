@@ -3,42 +3,26 @@
     <div class="w-full flex flex-wrap children-flex-auto">
       <slot
         name="visualisations"
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         full-height
       ></slot>
     </div>
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-barplot
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         class="h-80"
         full-height
       ></v-barplot>
 
       <v-scatterplot
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         class="h-80"
         full-height
       ></v-scatterplot>
 
       <v-heatmap
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         class="h-80"
         full-height
       ></v-heatmap>
@@ -46,11 +30,7 @@
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-table
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         full-height
       >
         <template
@@ -65,11 +45,7 @@
       </v-table>
 
       <v-tier-list
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         full-height
       >
         <template
@@ -84,11 +60,7 @@
       </v-tier-list>
 
       <v-grid
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         full-height
       >
         <template
@@ -105,13 +77,13 @@
 
     <div class="w-full flex flex-wrap children-flex-auto">
       <v-csv
-        :loading="loading"
-        :data="data"
-        :dimensions="dimensions"
-        :measurements="measurements"
-        :comparing="comparing"
+        v-bind="context"
         full-height
       ></v-csv>
+      <v-share
+        v-bind="context"
+        full-height
+      ></v-share>
     </div>
   </div>
 </template>
@@ -142,6 +114,17 @@ export default Vue.extend({
     comparing: {
       type: Boolean,
       required: true
+    },
+  },
+  computed: {
+    context() {
+      return {
+        loading: this.loading,
+        data: this.data,
+        dimensions: this.dimensions,
+        measurements: this.measurements,
+        comparing: this.comparing,
+      }
     },
   },
 })
