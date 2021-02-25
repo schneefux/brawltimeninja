@@ -17,7 +17,6 @@
     <footer
       class="bg-yellow-400 text-gray-800 py-2 text-sm text-center leading-normal hidden md:block"
     >
-      <locale-switcher></locale-switcher>
       <copyright></copyright>
     </footer>
 
