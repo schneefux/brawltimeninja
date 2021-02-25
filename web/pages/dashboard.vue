@@ -11,8 +11,6 @@
       <template v-slot:dimensions="data">
         <d-brawler v-bind="data"></d-brawler>
         <d-team v-bind="data"></d-team>
-        <d-starpower v-bind="data"></d-starpower>
-        <d-gadget v-bind="data"></d-gadget>
         <d-mode v-bind="data"></d-mode>
         <d-map v-bind="data"></d-map>
       </template>
@@ -43,10 +41,9 @@ import Vue from 'vue'
 import config from '~/lib/cube'
 import CDashboard from '@/components/clicker/c-dashboard.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import DStarpower from '@/components/clicker/renderers/d-starpower.vue'
-import DGadget from '@/components/clicker/renderers/d-gadget.vue'
 import DMode from '@/components/clicker/renderers/d-mode.vue'
 import DMap from '@/components/clicker/renderers/d-map.vue'
 import SModeMap from '@/components/clicker/renderers/s-mode-map.vue'
@@ -68,10 +65,9 @@ export default Vue.extend({
   components: {
     CDashboard,
     DBrawler,
+    BrawlerLink, // dependency of DBrawler
     DTeam,
     BrawlerTeam, // dependency of DTeam
-    DStarpower,
-    DGadget,
     DMode,
     DMap,
     SModeMap,

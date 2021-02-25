@@ -1,27 +1,17 @@
 <template functional>
-  <router-link
-    v-if="'brawler' in props.row.dimensions"
-    :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.row.dimensionsRaw.brawler.brawler_name })}`)"
-    class="flex items-center"
-  >
-    <div class="mr-2 w-10 sm:w-12 md:w-14">
-      <media-img
-        :path="`/brawlers/${props.brawlerId({ name: props.row.dimensionsRaw.brawler.brawler_name })}/avatar`"
-        :alt="props.row.dimensions.brawler"
-        size="160"
-        clazz="h-6 sm:h-8 md:h-10"
-      ></media-img>
-    </div>
-    <span
-      v-if="props.captioned"
-      class="w-16 md:w-24"
-    >{{ props.row.dimensions.brawler }}</span>
-  </router-link>
+  <brawler-link
+    v-if="'brawler' in props.row.dimensions || 'starpower' in props.row.dimensions || 'gadget' in props.row.dimensions"
+    :brawler="props.row.dimensionsRaw.brawler.brawler_name || props.row.dimensionsRaw.starpower.brawler_name || props.row.dimensionsRaw.gadget.brawler_name"
+    :starpower-name="props.row.dimensions.starpower"
+    :starpower-id="(props.row.dimensionsRaw.starpower || {}).brawler_starpower_id"
+    :gadget-name="props.row.dimensions.gadget"
+    :gadget-id="(props.row.dimensionsRaw.gadget || {}).brawler_gadget_id"
+    :caption="props.captioned"
+  ></brawler-link>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { brawlerId } from '~/lib/util'
 
 export default Vue.extend({
   functional: true,
@@ -32,10 +22,6 @@ export default Vue.extend({
     },
     captioned: {
       type: Boolean
-    },
-    brawlerId: {
-      type: Function,
-      default: brawlerId
     },
   },
 })

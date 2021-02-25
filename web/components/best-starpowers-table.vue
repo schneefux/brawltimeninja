@@ -15,7 +15,7 @@
         class="mt-4"
       >
         <template v-slot:dimensions="data">
-          <d-starpower v-bind="data"></d-starpower>
+          <d-brawler v-bind="data"></d-brawler>
         </template>
       </v-table>
     </template>
@@ -26,14 +26,14 @@
 import Vue from 'vue'
 import { RawLocation } from 'vue-router'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
-import DStarpower from '@/components/clicker/renderers/d-starpower.vue'
+import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import CQuery from '@/components/clicker/c-query.vue'
 import config from '@/lib/cube'
 
 export default Vue.extend({
   components: {
     VTable,
-    DStarpower,
+    DBrawler,
     CQuery,
   },
   inheritAttrs: false,
