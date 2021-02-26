@@ -6,14 +6,14 @@
           :selected="showFilters"
           primary
           sm
-          class="mr-3 h-8"
+          class="mr-3"
           @click="showFilters = !showFilters"
         >
           <font-awesome-icon
             :icon="faFilter"
           ></font-awesome-icon>
 
-          {{ comparing ? 'Comparing ' : '' }} Filters
+          Configure {{ comparing ? 'Comparing ' : '' }} Filters
         </b-button>
       </div>
 
@@ -36,12 +36,16 @@
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Vue, { PropType } from 'vue'
-import { SliceValue, State } from '~/lib/cube'
+import { Config, SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<State>,
+      required: true
+    },
+    config: {
+      type: Object as PropType<Config>,
       required: true
     },
     comparing: {

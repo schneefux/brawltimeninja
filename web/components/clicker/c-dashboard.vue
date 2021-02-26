@@ -9,6 +9,8 @@
 
     <c-slicer
       v-model="state"
+      :config="config"
+      class="w-full md:w-auto"
       full-height
     >
       <template v-slot:slices="data">
@@ -19,28 +21,21 @@
       </template>
     </c-slicer>
 
-    <div class="self-center md:self-auto mr-auto">
-      <div class="mx-2 my-2">
-        <label class="flex items-center">
-          <b-checkbox v-model="comparing"></b-checkbox>
-          <span class="ml-2">Compare Mode</span>
-        </label>
-      </div>
-
-      <c-slicer
-        v-if="value.comparing"
-        v-model="state"
-        comparing
-        full-height
-      >
-        <template v-slot:slices="data">
-          <slot
-            name="slices"
-            v-bind="data"
-          ></slot>
-        </template>
-      </c-slicer>
-    </div>
+    <c-slicer
+      v-if="value.comparing"
+      v-model="state"
+      :config="config"
+      class="w-full md:w-auto"
+      comparing
+      full-height
+    >
+      <template v-slot:slices="data">
+        <slot
+          name="slices"
+          v-bind="data"
+        ></slot>
+      </template>
+    </c-slicer>
 
     <c-query
       :state="value"

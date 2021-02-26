@@ -134,9 +134,17 @@
           </div>
         </div>
 
+        <label
+          v-if="advancedMode"
+          class="col-span-2 flex items-center"
+        >
+          <b-checkbox v-model="compareMode"></b-checkbox>
+          <span class="ml-2">Comparison Mode</span>
+        </label>
+
         <label class="col-span-2 flex items-center">
           <b-checkbox v-model="advancedMode"></b-checkbox>
-          <span class="ml-2">Advanced</span>
+          <span class="ml-2">Expert Options</span>
         </label>
       </div>
     </div>
@@ -163,6 +171,7 @@ export default Vue.extend({
   data() {
     const stateIsDefault = this.value.measurementsIds.length != this.config[this.value.cubeId].defaultMeasurementIds.length
       || JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.config[this.value.cubeId].defaultDimensionsIds)
+      || this.value.comparing != true
 
     return {
       advancedMode: !stateIsDefault,
@@ -249,6 +258,17 @@ export default Vue.extend({
     },
   },
   computed: {
+    compareMode: {
+      get(): boolean {
+        return this.value.comparing
+      },
+      set(comparing: boolean) {
+        this.$emit('input', <State>{
+          ...this.value,
+          comparing,
+        })
+      }
+    },
     cubes(): Cube[] {
       return Object.values(this.config)
         .filter((cube) => !cube.hidden)
