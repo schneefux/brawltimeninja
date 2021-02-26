@@ -76,10 +76,10 @@ export default Vue.extend({
         this.result = undefined
       }
     },
-    async download(ext: 'svg'|'png' = 'png', scaleFactor: number = 2, opts = {
+    async download(ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
       background: gray900,
-      width: 600*1.5,
-      height: 314*1.5,
+      width: 600*1.25,
+      height: 314*1.25,
     }) {
       if (this.result == undefined) {
         return
