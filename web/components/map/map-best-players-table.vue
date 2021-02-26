@@ -2,12 +2,14 @@
   <c-query
     v-bind="$attrs"
     :config="config"
-    :dimensions-ids="['player']"
-    :measurements-ids="isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler']"
-    :slices="{ mode: [mode], map: [map] }"
-    :sort-id="isShowdown ? 'picks' : 'wins'"
+    :state="{
+      cubeId: 'battle',
+      dimensionsIds: ['player'],
+      measurementsIds: isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
+      slices: { mode: [mode], map: [map] },
+      sortId: isShowdown ? 'picks' : 'wins',
+    }"
     :limit="50"
-    cube-id="battle"
   >
     <template v-slot="data">
       <v-table

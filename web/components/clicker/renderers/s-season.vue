@@ -7,7 +7,7 @@
       :value="value.season[0]"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, season: [v] })"
+      @input="v => $parent.$emit('slice', { season: [v] })"
     >
       <option
         v-for="(label, t) in timeRangeLabel"

@@ -8,6 +8,7 @@ export interface State {
   comparingSlices: SliceValue
   dimensionsIds: string[]
   measurementsIds: string[]
+  sortId: string
   comparing: boolean
 }
 

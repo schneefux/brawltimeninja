@@ -7,7 +7,7 @@
       :value="(value.withGadget || [])[0]"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, withGadget: [v] })"
+      @input="v => $parent.$emit('slice', { withGadget: [v] })"
     >
       <option value="false">0 Gadgets owned</option>
       <option value="true">1 Gadget owned</option>

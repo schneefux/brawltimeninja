@@ -7,7 +7,7 @@
       :value="(value.withStarpower || [])[0]"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, withStarpower: [v] })"
+      @input="v => $parent.$emit('slice', { withStarpower: [v] })"
     >
       <option value="false">0 Star Powers owned</option>
       <option value="true">1 Star Power owned</option>

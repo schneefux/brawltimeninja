@@ -28,7 +28,7 @@ export default Vue.extend({
         return (this.value.playerName || [])[0]
       },
       set(v: string) {
-        this.$parent.$emit('input', { ...this.value, playerName: [v] })
+        this.$parent.$emit('slice', { playerName: [v] })
       }
     },
   }

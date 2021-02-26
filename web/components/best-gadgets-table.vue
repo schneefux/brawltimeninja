@@ -1,11 +1,13 @@
 <template>
   <c-query
     :config="config"
-    :dimensions-ids="['gadget']"
-    :measurements-ids="['winRateAdj', 'picks']"
-    :slices-values="{ withGadget: [true] }"
-    sort-id="winRateAdj"
-    cube-id="gadget"
+    :state="{
+      cubeId: 'gadget',
+      dimensionsIds: ['gadget'],
+      measurementsIds: ['winRateAdj', 'picks'],
+      slices: { withGadget: [true] },
+      sortId: 'winRateAdj',
+    }"
   >
     <template v-slot="data">
       <v-table

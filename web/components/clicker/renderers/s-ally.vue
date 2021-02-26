@@ -7,7 +7,7 @@
       :value="value.ally"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, ally: v == '' ? [] : [v] })"
+      @input="v => $parent.$emit('slice', { ally: v == '' ? [] : [v] })"
     >
       <option
         value=""

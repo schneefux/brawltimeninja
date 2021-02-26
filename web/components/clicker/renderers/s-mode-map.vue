@@ -66,8 +66,7 @@ export default Vue.extend({
         return (this.value.mode || {})[0]
       },
       set(v: string) {
-        this.$parent.$emit('input', {
-          ...this.value,
+        this.$parent.$emit('slice', {
           mode: v != '' ? [v] : [],
           map: [],
         })
@@ -78,8 +77,7 @@ export default Vue.extend({
         return (this.value.map || {})[0]
       },
       set(v: string) {
-        this.$parent.$emit('input', {
-          ...this.value,
+        this.$parent.$emit('slice', {
           map: v != '' ? [v] : [],
         })
       },

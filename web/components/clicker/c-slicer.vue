@@ -26,7 +26,7 @@
         <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
         <slot
           name="slices"
-          :value="value"
+          :value="slices"
         ></slot>
       </div>
     </template>
@@ -36,17 +36,17 @@
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/lib/cube'
+import { SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   props: {
     value: {
-      type: Object as PropType<SliceValue>,
+      type: Object as PropType<State>,
       required: true
     },
     comparing: {
-      type: Boolean,
-      default: false
+      // true if the slicer controls comparingSlices
+      type: Boolean
     },
   },
   data() {
@@ -54,7 +54,24 @@ export default Vue.extend({
       showFilters: false,
     }
   },
+  mounted() {
+    // slots cannot have event handlers, so they $parent.$emit
+    // the diff object instead
+    // capture, process and forwrad it
+    this.$on('slice', (s: Partial<SliceValue>) => {
+      this.$emit('input', {
+        ...this.value,
+        [this.comparing ? 'comparingSlices' : 'slices']: {
+          ...this.slices,
+          ...s,
+        },
+      })
+    })
+  },
   computed: {
+    slices(): SliceValue {
+      return this.comparing ? this.value.comparingSlices : this.value.slices
+    },
     faFilter() {
       return faFilter
     },

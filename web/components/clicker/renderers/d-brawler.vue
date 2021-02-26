@@ -1,7 +1,7 @@
 <template functional>
   <brawler-link
     v-if="'brawler' in props.row.dimensions || 'starpower' in props.row.dimensions || 'gadget' in props.row.dimensions"
-    :brawler="props.row.dimensionsRaw.brawler.brawler_name || props.row.dimensionsRaw.starpower.brawler_name || props.row.dimensionsRaw.gadget.brawler_name"
+    :brawler="(props.row.dimensionsRaw.brawler || {}).brawler_name || (props.row.dimensionsRaw.starpower || {}).brawler_name || (props.row.dimensionsRaw.gadget || {}).brawler_name"
     :starpower-name="props.row.dimensions.starpower"
     :starpower-id="(props.row.dimensionsRaw.starpower || {}).brawler_starpower_id"
     :gadget-name="props.row.dimensions.gadget"

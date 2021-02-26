@@ -1,16 +1,18 @@
 <template>
   <c-query
     :config="config"
-    :dimensions-ids="['starpower']"
-    :measurements-ids="['winRateAdj', 'picks']"
-    :slices-values="{ withStarpower: [true] }"
-    sort-id="winRateAdj"
-    cube-id="starpower"
+    :state="{
+      cubeId: 'starpower',
+      dimensionsIds: ['starpower'],
+      measurementsIds: ['winRateAdj', 'picks'],
+      slices: { withStarpower: [true] },
+      sortId: 'winRateAdj',
+    }"
   >
     <template v-slot="data">
       <v-table
         :title="$t('leaderboard.thing.long', { thing: $tc('thing.starpower', 2) })"
-        v-bind="data"
+        v-bind="{ ...$attrs, ...data }"
         class="mt-4"
         show-link
       >

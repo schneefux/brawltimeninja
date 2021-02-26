@@ -1,17 +1,14 @@
 <template>
   <div class="flex flex-wrap">
     <c-configurator
-      :value="value"
+      v-model="state"
       :config="config"
       class="flex-auto md:flex-none"
       full-height
-      @input="v => $emit('input', v)"
     ></c-configurator>
 
     <c-slicer
-      v-model="slices"
-      :config="config"
-      :cube-id="value.cubeId"
+      v-model="state"
       full-height
     >
       <template v-slot:slices="data">
@@ -32,9 +29,7 @@
 
       <c-slicer
         v-if="value.comparing"
-        v-model="comparingSlices"
-        :config="config"
-        :cube-id="value.cubeId"
+        v-model="state"
         comparing
         full-height
       >
@@ -48,14 +43,8 @@
     </div>
 
     <c-query
+      :state="value"
       :config="config"
-      :dimensions-ids="value.dimensionsIds"
-      :measurements-ids="value.measurementsIds"
-      :slices-values="value.slices"
-      :comparing-slices-values="value.comparingSlices"
-      :cube-id="value.cubeId"
-      :sort-id="value.measurementsIds[0]"
-      :comparing="value.comparing"
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
@@ -107,6 +96,14 @@ export default Vue.extend({
     },
   },
   computed: {
+    state: {
+      get(): State {
+        return this.value
+      },
+      set(s: State) {
+        this.$emit('input', s)
+      }
+    },
     comparing: {
       get(): boolean {
         return this.value.comparing

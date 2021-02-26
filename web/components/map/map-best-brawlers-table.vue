@@ -2,11 +2,13 @@
   <c-query
     v-bind="$attrs"
     :config="config"
-    :dimensions-ids="['brawler']"
-    :measurements-ids="['winRateAdj', 'useRate']"
-    :slices="{ mode: [mode], map: [map] }"
-    sort-id="winRateAdj"
-    cube-id="map"
+    :state="{
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      measurementsIds: ['winRateAdj', 'useRate'],
+      slices: { mode: [mode], map: [map] },
+      sortId: 'winRateAdj',
+    }"
   >
     <template v-slot="data">
       <v-table

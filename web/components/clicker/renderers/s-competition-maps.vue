@@ -39,22 +39,19 @@ export default Vue.extend({
       },
       set(v: string) {
         if (v == 'include') {
-          this.$parent.$emit('input', {
-            ...this.value,
+          this.$parent.$emit('slice', {
             mapLike: ['Competition %'],
             mapNotLike: [],
           })
         }
         if (v == 'exclude') {
-          this.$parent.$emit('input', {
-            ...this.value,
+          this.$parent.$emit('slice', {
             mapLike: [],
             mapNotLike: ['Competition %'],
           })
         }
         if (v == 'all') {
-          this.$parent.$emit('input', {
-            ...this.value,
+          this.$parent.$emit('slice', {
             mapLike: [],
             mapNotLike: [],
           })

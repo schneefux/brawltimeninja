@@ -7,7 +7,7 @@
       :value="value.brawler"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, brawler: v == '' ? [] : [v] })"
+      @input="v => $parent.$emit('slice', { brawler: v == '' ? [] : [v] })"
     >
       <option
         value=""

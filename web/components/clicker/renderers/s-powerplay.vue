@@ -7,7 +7,7 @@
       :value="(value.powerplay || [])[0]"
       dark
       sm
-      @input="v => $parent.$emit('input', { ...value, powerplay: [v] })"
+      @input="v => $parent.$emit('slice', { powerplay: [v] })"
     >
       <option value="false">Regular Battles</option>
       <option value="true">Power Play</option>

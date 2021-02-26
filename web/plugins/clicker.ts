@@ -6,8 +6,10 @@ import { State, Config, commonMeasurements, Dimension, Measurement, Slice, Slice
 
 // workaround for https://github.com/vuejs/vue-router/issues/2725
 // FIXME remove when upgrading to vue-router 3
-function safeEncode(arr: (string|number)[]) {
-  return arr.map(s => typeof s == 'number' ? s.toString() : s.replace(/%/g, '%23'))
+function safeEncode(arr: (string|number|boolean|undefined)[]) {
+  return arr
+    .filter(s => s != undefined)
+    .map(s => typeof s == 'string' ? s.replace(/%/g, '%23') : s!.toString())
 }
 function safeDecode(arr: (string|null|undefined)[]) {
   return arr?.map(s => s?.replace(/%23/g, '%'))
@@ -458,6 +460,7 @@ export default (context, inject) => {
           dimension: state.dimensionsIds,
           metric: state.measurementsIds,
           comparing: state.comparing ? '' : undefined,
+          sort: state.sortId,
         }, slices, comparingSlices
       )
 
@@ -487,6 +490,8 @@ export default (context, inject) => {
 
       const comparing = location.query.comparing != undefined
 
+      const sortId = location.query.sort || measurementsIds[0]
+
       return {
         cubeId,
         slices,
@@ -494,6 +499,7 @@ export default (context, inject) => {
         dimensionsIds,
         measurementsIds,
         comparing,
+        sortId,
       } as State
     }
   })

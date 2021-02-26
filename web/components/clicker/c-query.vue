@@ -15,41 +15,17 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Config, SliceValue, State } from '~/lib/cube'
+import { Config, State } from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
   props: {
+    state: {
+      type: Object as PropType<State>,
+      required: true
+    },
     config: {
       type: Object as PropType<Config>,
-      required: true
-    },
-    cubeId: {
-      type: String,
-      required: true
-    },
-    dimensionsIds: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
-    measurementsIds: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
-    slicesValues: {
-      type: Object as PropType<SliceValue>,
-      default: () => ({})
-    },
-    comparingSlicesValues: {
-      type: Object as PropType<SliceValue>,
-      default: () => ({})
-    },
-    comparing: {
-      type: Boolean,
-      default: false
-    },
-    sortId: {
-      type: String,
       required: true
     },
     limit: {
@@ -62,55 +38,38 @@ export default Vue.extend({
       result: undefined as any,
     }
   },
-  computed: {
-    state(): State {
-      return {
-        cubeId: this.cubeId,
-        slices: this.slicesValues,
-        comparingSlices: this.comparingSlicesValues,
-        dimensionsIds: this.dimensionsIds,
-        measurementsIds: this.measurementsIds,
-        comparing: this.comparing,
-      }
-    },
-  },
   watch: {
     config: '$fetch',
-    cubeId: '$fetch',
-    dimensionsIds: '$fetch',
-    measurementsIds: '$fetch',
-    slicesValues: '$fetch',
-    comparingSlicesValues: '$fetch',
-    sortId: '$fetch',
+    state: '$fetch',
   },
   fetchOnServer: false, // FIXME causes v-table render error :(
   fetchDelay: 0,
   async fetch() {
     this.loading = true
 
-    if (!(this.cubeId in this.config)) {
-      console.error('Invalid cubeId ' + this.cubeId)
+    if (!(this.state.cubeId in this.config)) {
+      console.error('Invalid cubeId ' + this.state.cubeId)
       return
     }
 
-    const cube = this.config[this.cubeId]
+    const cube = this.config[this.state.cubeId]
     const sort = cube.measurements
-      .find(m => this.sortId == m.id)
+      .find(m => this.state.sortId == m.id)
     if (sort == undefined) {
-      throw new Error('Invalid sort id ' + this.sortId)
+      throw new Error('Invalid sort id ' + this.state.sortId)
     }
-    const dimensions = this.dimensionsIds
+    const dimensions = this.state.dimensionsIds
       .map(id => cube.dimensions.find(d => id == d.id)!)
       .filter(d => d != undefined)
-    const measurements = this.measurementsIds
+    const measurements = this.state.measurementsIds
       .map(id => cube.measurements.find(m => id == m.id)!)
       .filter(m => m != undefined)
 
-    const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
+    const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
       ...cube.defaultSliceValues,
-      ...this.slicesValues,
+      ...this.state.slices,
     }, cube.metaColumns)
-    const rawData = await this.$clicker.query('meta.' + this.cubeId, this.cubeId,
+    const rawData = await this.$clicker.query('meta.' + this.state.cubeId, this.state.cubeId,
       query.dimensions,
       query.measurements,
       query.slices, {
@@ -123,12 +82,12 @@ export default Vue.extend({
 
     let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals, cube.metaColumns)
 
-    if (this.comparing) {
-      const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.cubeId].slices, {
+    if (this.state.comparing) {
+      const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
         ...cube.defaultSliceValues,
-        ...this.comparingSlicesValues,
+        ...this.state.comparingSlices,
       }, cube.metaColumns)
-      const comparingRawData = await this.$clicker.query('meta.' + this.cubeId, this.cubeId,
+      const comparingRawData = await this.$clicker.query('meta.' + this.state.cubeId, this.state.cubeId,
         query.dimensions,
         query.measurements,
         query.slices, {
