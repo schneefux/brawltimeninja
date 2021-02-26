@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="`Best ${kindName}`"
+    :title="$t('leaderboard.thing', { thing: $tc('thing.' + kindKey) })"
     xxs
   >
     <b-button
@@ -10,7 +10,7 @@
       prefetch
       sm
     >
-      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: kind }) }) }}
+      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.' + kindKey, 1) }) }) }}
     </b-button>
 
     <shimmer
@@ -83,14 +83,8 @@ export default Vue.extend({
     }))
   },
   computed: {
-    kindLong(): string {
-      return this.kind == 'starpowers' ? 'Star Powers' : this.kind
-    },
-    kindName(): string {
-      return capitalize(this.kindLong)
-    },
-    kindNameSingular(): string {
-      return capitalize(this.kindLong).replace(/s$/, '')
+    kindKey(): string {
+      return this.kind == 'starpowers' ? 'starpower' : 'gadget'
     },
     commonMeasurements() {
       return commonMeasurements

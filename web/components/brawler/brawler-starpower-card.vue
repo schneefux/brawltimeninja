@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { commonMeasurements } from '~/lib/cube'
 import { capitalize, scaleInto } from '~/lib/util'
 
