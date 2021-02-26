@@ -339,7 +339,7 @@ export default class ClickerService {
 
       const record = {
         timestamp: formatClickhouseDate(new Date()),
-        trophy_season_end: getCurrentSeasonEnd(), // will be formatted by node-clickhouse
+        trophy_season_end: formatClickhouseDate(getCurrentSeasonEnd()),
         ...playerFacts,
         brawler_id: brawler.id,
         brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06

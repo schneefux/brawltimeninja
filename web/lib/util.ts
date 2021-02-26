@@ -264,7 +264,6 @@ export function formatClickhouse(timestamp: Date) {
 export function formatClickhouseDate(timestamp: Date) {
   return timestamp.toISOString()
     .slice(0, 10) // remove fractions, day and time zone
-    .replace('T', ' ')
 }
 
 /** Parse API time format */
