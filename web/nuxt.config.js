@@ -91,11 +91,19 @@ export default {
   ],
 
   buildModules: [
+    'nuxt-build-optimisations', // TODO remove in Nuxt 3
     '@nuxt/typescript-build',
     '@nuxt/components',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/fontawesome',
   ],
+
+  buildOptimisations: {
+    profile: 'experimental',
+    features: {
+      esbuildLoader: false, // no JSX support
+    },
+  },
 
   components: [ {
     path: '~/components',
