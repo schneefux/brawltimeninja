@@ -1,10 +1,11 @@
 <template>
   <card
-    v-show="isInstallable && !installBannerDismissed"
+    :class="['relative', {
+      'hidden': !isInstallable || installBannerDismissed,
+    }]"
     title="Install the web app"
     secondary
     md
-    class="relative"
   >
     <div
       slot="content"
