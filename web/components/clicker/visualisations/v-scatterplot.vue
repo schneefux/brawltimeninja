@@ -52,10 +52,7 @@ export default Vue.extend({
             axis: {
               format: this.measurements[0].d3formatter,
             },
-            scale: {
-              type: this.measurements[0].scale?.type,
-              zero: this.measurements[0].scale?.zero,
-            },
+            scale: this.measurements[0].scale,
           },
           y: {
             field: 'measurementsRaw.' + this.measurements[1].id,
@@ -64,10 +61,7 @@ export default Vue.extend({
             axis: {
               format: this.measurements[1].d3formatter,
             },
-            scale: {
-              type: this.measurements[1].scale?.type,
-              zero: this.measurements[1].scale?.zero,
-            },
+            scale: this.measurements[1].scale,
           },
         },
         layer: [{

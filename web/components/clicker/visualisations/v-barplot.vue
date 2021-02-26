@@ -50,10 +50,7 @@ export default Vue.extend({
             field: 'dimensions.' + this.dimensions[0].id,
             type: this.dimensions[0].type,
             title: this.dimensions[0].name,
-            scale: {
-              type: this.dimensions[0].scale?.type,
-              zero: this.dimensions[0].scale?.zero,
-            },
+            scale: this.dimensions[0].scale,
             sort: {
               field: this.measurements[0].id,
               order: this.measurements[0].sign == -1 ? 'descending' : 'ascending',
@@ -66,10 +63,7 @@ export default Vue.extend({
             axis: {
               format: this.measurements[0].d3formatter,
             },
-            scale: {
-              type: this.measurements[0].scale?.type,
-              zero: this.measurements[0].scale?.zero,
-            },
+            scale: this.measurements[0].scale,
           },
         },
       }

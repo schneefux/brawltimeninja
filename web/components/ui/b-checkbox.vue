@@ -21,7 +21,7 @@ export default Vue.extend({
   functional: true,
   props: {
     value: {
-      type: undefined
+      type: Boolean
     },
     dark: {
       type: Boolean

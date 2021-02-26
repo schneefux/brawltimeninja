@@ -57,28 +57,19 @@ export default Vue.extend({
             field: 'dimensions.' + this.dimensions[0].id,
             type: this.dimensions[0].type,
             title: this.dimensions[0].name,
-            scale: {
-              type: this.dimensions[0].scale?.type,
-              zero: this.dimensions[0].scale?.zero,
-            },
+            scale: this.dimensions[0].scale,
           },
           y: {
             field: 'dimensions.' + this.dimensions[1].id,
             type: this.dimensions[1].type,
             title: this.dimensions[1].name,
-            scale: {
-              type: this.dimensions[1].scale?.type,
-              zero: this.dimensions[1].scale?.zero,
-            },
+            scale: this.dimensions[1].scale,
           },
           color: {
             field: 'measurementsRaw.' + this.measurements[0].id,
             type: this.measurements[0].type,
             title: this.measurements[0].name,
-            scale: {
-              type: this.measurements[0].scale?.type,
-              zero: this.measurements[0].scale?.zero,
-            },
+            scale: this.measurements[0].scale,
           },
         },
       }

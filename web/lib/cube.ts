@@ -37,10 +37,7 @@ export interface Measurement {
   percentage: boolean
   column: string
   type: 'quantitative'|'temporal'|'ordinal'|'nominal'
-  scale?: {
-    type?: 'linear'|'log'|'pow'|'sqrt'|'symlog' | 'time'|'utc' | 'ordinal'
-    zero?: boolean
-  }
+  scale?: any // https://vega.github.io/vega-lite/docs/scale.html
 }
 
 export interface Dimension {
@@ -51,10 +48,7 @@ export interface Dimension {
   anyColumns: string[]
   hidden: boolean
   type: 'quantitative'|'temporal'|'ordinal'|'nominal'
-  scale?: {
-    type?: 'linear'|'log'|'pow'|'sqrt'|'symlog' | 'time'|'utc' | 'ordinal'
-    zero?: boolean
-  }
+  scale?: any // https://vega.github.io/vega-lite/docs/scale.html
 }
 
 export interface Slice {
@@ -68,6 +62,18 @@ export interface Slice {
 export interface SliceValue extends Record<string, string[]> { }
 
 const commonDimensions: Record<string, Dimension> = {
+  season: {
+    id: 'season',
+    name: 'Bi-Week',
+    formatter: (s: any) => s.trophy_season_end,
+    column: 'trophy_season_end',
+    anyColumns: [],
+    hidden: false,
+    type: 'temporal',
+    scale: {
+      nice: 'week',
+    },
+  },
   player: {
     id: 'player',
     name: 'Player',
@@ -686,6 +692,7 @@ const cubes: Record<string, Cube> = {
       commonDimensions.brawler,
       commonDimensions.mode,
       commonDimensions.map,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
@@ -720,6 +727,7 @@ const cubes: Record<string, Cube> = {
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.starpower,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
     measurements: [
@@ -746,6 +754,7 @@ const cubes: Record<string, Cube> = {
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.gadget,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler', 'gadget'],
     measurements: [
@@ -772,6 +781,7 @@ const cubes: Record<string, Cube> = {
     dimensions: [
       commonDimensions.brawler,
       commonDimensions.ally,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
@@ -803,6 +813,7 @@ const cubes: Record<string, Cube> = {
     hidden: false,
     dimensions: [
       commonDimensions.team,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['team'],
     measurements: [
@@ -832,6 +843,7 @@ const cubes: Record<string, Cube> = {
     hidden: false,
     dimensions: [
       commonDimensions.player,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -855,6 +867,7 @@ const cubes: Record<string, Cube> = {
     dimensions: [
       commonDimensions.player,
       commonDimensions.brawler,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -877,6 +890,7 @@ const cubes: Record<string, Cube> = {
     dimensions: [
       commonDimensions.player,
       commonDimensions.brawler,
+      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
