@@ -459,7 +459,7 @@ export default (context, inject) => {
           cube: state.cubeId,
           dimension: state.dimensionsIds,
           metric: state.measurementsIds,
-          comparing: state.comparing ? '' : undefined,
+          compare: state.comparing ? true : undefined,
           sort: state.sortId,
         }, slices, comparingSlices
       )
@@ -488,7 +488,7 @@ export default (context, inject) => {
         measurementsIds = [measurementsIds]
       }
 
-      const comparing = location.query.comparing != undefined
+      const comparing = location.query.compare != undefined
 
       const sortId = location.query.sort || measurementsIds[0]
 

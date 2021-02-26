@@ -171,7 +171,7 @@ export default Vue.extend({
   data() {
     const stateIsDefault = this.value.measurementsIds.length != this.config[this.value.cubeId].defaultMeasurementIds.length
       || JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.config[this.value.cubeId].defaultDimensionsIds)
-      || this.value.comparing == false
+      || this.value.comparing != true
 
     return {
       advancedMode: !stateIsDefault,
