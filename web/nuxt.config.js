@@ -242,5 +242,9 @@ export default {
     vueI18n: {
       fallbackLocale: 'en',
     },
-  }
+  },
+
+  tailwindcss: {
+    viewer: false,
+  },
 }

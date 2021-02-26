@@ -19,9 +19,9 @@
         'bg-gray-100 text-gray-800': props.light,
         'bg-yellow-900': props.primary,
         'bg-red-900': props.secondary,
-        'elevation-0': props.elevation == 0,
-        'elevation-1': props.elevation == 1,
-        'elevation-2': props.elevation == 2,
+        'shadow': props.elevation == 0,
+        'shadow-md': props.elevation == 1,
+        'shadow-lg': props.elevation == 2,
         'relative loading': props.loading,
       }]"
       :style="data.staticStyle"
