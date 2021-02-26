@@ -108,7 +108,7 @@ export default Vue.extend({
   },
   computed: {
     comparing: {
-      get() {
+      get(): boolean {
         return this.value.comparing
       },
       set(c: boolean) {
@@ -119,7 +119,7 @@ export default Vue.extend({
       }
     },
     slices: {
-      get() {
+      get(): SliceValue {
         return this.value.slices
       },
       set(v: SliceValue) {
@@ -130,7 +130,7 @@ export default Vue.extend({
       }
     },
     comparingSlices: {
-      get() {
+      get(): SliceValue {
         return this.value.comparingSlices
       },
       set(v: SliceValue) {
