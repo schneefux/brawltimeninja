@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TierList } from '@/model/Web'
-import { MetaGridEntry, brawlerId } from '@/lib/util'
+import { brawlerId } from '@/lib/util'
 
 // note: Using <media-img> is ok for this component
 // because all images are already loaded by the parent tier list component.

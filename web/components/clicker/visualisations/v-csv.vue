@@ -23,7 +23,8 @@ export default Vue.extend({
   inheritAttrs: false,
   props: {
     data: {
-      type: Array as PropType<MetaGridEntry[]>
+      type: Array as PropType<MetaGridEntry[]>,
+      required: true
     },
     dimensions: {
       type: Array as PropType<Dimension[]>,
