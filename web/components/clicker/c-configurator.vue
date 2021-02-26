@@ -161,10 +161,13 @@ export default Vue.extend({
     },
   },
   data() {
+    const stateIsDefault = this.value.measurementsIds.length != this.config[this.value.cubeId].defaultMeasurementIds.length
+      || JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.config[this.value.cubeId].defaultDimensionsIds)
+
     return {
-      advancedMode: false,
-      numDimensions: this.config[this.value.cubeId].defaultDimensionsIds.length,
-      numMeasurements: 1,
+      advancedMode: !stateIsDefault,
+      numDimensions: this.value.dimensionsIds.length,
+      numMeasurements: this.value.measurementsIds.length,
     }
   },
   methods: {
