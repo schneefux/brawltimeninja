@@ -271,10 +271,11 @@ export default Vue.extend({
     },
     cubes(): Cube[] {
       return Object.values(this.config)
-        .filter((cube) => !cube.hidden)
+        .filter((cube) => this.advancedMode || !cube.hidden)
     },
     dimensions(): Dimension[] {
-      return this.config[this.value.cubeId].dimensions.filter(d => !d.hidden)
+      return this.config[this.value.cubeId].dimensions
+        .filter(d => this.advancedMode || !d.hidden)
     },
     measurements(): Measurement[] {
       return this.config[this.value.cubeId].measurements
