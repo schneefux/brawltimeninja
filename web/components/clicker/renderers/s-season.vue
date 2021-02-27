@@ -68,7 +68,7 @@ export default Vue.extend({
         const d = parseISO(e.trophy_season_end)
         return {
           id: formatClickhouse(d),
-          name: format(d, 'PP')
+          name: format(subWeeks(d, 2), 'PP') // seasons last 2 weeks
         }
       })
       .sort((e1, e2) => e1.id.localeCompare(e2.id))
