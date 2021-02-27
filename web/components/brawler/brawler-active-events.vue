@@ -84,7 +84,7 @@ export default Vue.extend({
 
       const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => e.battle_victory_adj > 0.55).length
-      const viableAmount = scaleInto(0, 1, 4, viableMaps / bestEvents.length)
+      const viableAmount = scaleInto(0, 1, 3, viableMaps / bestEvents.length)
 
       return this.$i18n.t('brawler.current-maps.description', {
         brawler: this.brawlerName,

@@ -146,8 +146,8 @@ export default Vue.extend({
       }
 
       const useRate = this.data.picks_weighted / this.totals.picks_weighted
-      const popularity = scaleInto(0.02, 0.03, 4, useRate)
-      const metaness = scaleInto(0.55, 0.60, 5, this.data.battle_victory)
+      const popularity = scaleInto(0.02, 0.03, 3, useRate)
+      const metaness = scaleInto(0.55, 0.60, 4, this.data.battle_victory)
 
       return this.$i18n.t('brawler.rating', {
         brawler: this.brawlerName,

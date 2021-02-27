@@ -86,7 +86,7 @@ export default Vue.extend({
 
       const bestMode = this.$i18n.t('mode.' + bestModes[0].battle_event_mode)
       const viableModes = bestModes.filter(e => e.battle_victory_adj > 0.55).length
-      const viability = scaleInto(0, 1, 4, viableModes / bestModes.length)
+      const viability = scaleInto(0, 1, 3, viableModes / bestModes.length)
 
       return this.$i18n.t('brawler.modes.description', {
         brawler: this.brawlerName,
