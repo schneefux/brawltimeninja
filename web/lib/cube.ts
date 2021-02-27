@@ -1199,8 +1199,8 @@ const cubes: Record<string, Cube> = {
       ally: [],
     },
   },
-  playerLeaderboard: {
-    id: 'playerLeaderboard',
+  player: {
+    id: 'player',
     table: 'player',
     name: 'Leaderboard',
     hidden: true,
@@ -1225,8 +1225,8 @@ const cubes: Record<string, Cube> = {
       timestamp: [],
     },
   },
-  brawlerLeaderboard: {
-    id: 'brawlerLeaderboard',
+  player_brawler: {
+    id: 'player_brawler',
     table: 'player_brawler',
     name: 'Brawler Leaderboard',
     hidden: false,
