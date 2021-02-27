@@ -68,23 +68,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss">
-/* https://material.io/design/color/dark-theme.html#behavior */
-/* scoping this breaks the styles for some reason */
-/*
-  theme('colors.gray.900') does not work,
-  perhaps the colors plugin is executed before tailwind?
-*/
-.bg-dark-0 {
-  background-color: color(#1a202c blend(white 0%));
-}
-
-.bg-dark-1 {
-  background-color: color(#1a202c blend(white 5%));
-}
-
-.bg-dark-2 {
-  background-color: color(#1a202c blend(white 7%));
-}
-</style>

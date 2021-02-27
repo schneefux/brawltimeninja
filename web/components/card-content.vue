@@ -16,12 +16,14 @@
         'bg-dark-0': !props.light && !props.primary && !props.secondary && props.elevation == 0,
         'bg-dark-1': !props.light && !props.primary && !props.secondary && props.elevation == 1,
         'bg-dark-2': !props.light && !props.primary && !props.secondary && props.elevation == 2,
+        'bg-dark-3': !props.light && !props.primary && !props.secondary && props.elevation == 3,
         'bg-gray-100 text-gray-800': props.light,
         'bg-yellow-900': props.primary,
         'bg-red-900': props.secondary,
-        'shadow': props.elevation == 0,
-        'shadow-md': props.elevation == 1,
-        'shadow-lg': props.elevation == 2,
+        'shadow-sm': props.elevation == 0,
+        'shadow': props.elevation == 1,
+        'shadow-md': props.elevation == 2,
+        'shadow-lg': props.elevation == 3,
         'relative loading': props.loading,
       }]"
       :style="data.staticStyle"
@@ -226,5 +228,29 @@ export default Vue.extend({
     margin-left: 100%;
     margin-right: 0;
   }
+}
+</style>
+
+<style lang="postcss" scoped>
+/* https://material.io/design/color/dark-theme.html#behavior */
+/* scoping this breaks the styles for some reason */
+/*
+  theme('colors.gray.900') does not work,
+  perhaps the colors plugin is executed before tailwind?
+*/
+.bg-dark-0 {
+  background-color: color(#1a202c blend(white 0%));
+}
+
+.bg-dark-1 {
+  background-color: color(#1a202c blend(white 5%));
+}
+
+.bg-dark-2 {
+  background-color: color(#1a202c blend(white 7%));
+}
+
+.bg-dark-3 {
+  background-color: color(#1a202c blend(white 8%));
 }
 </style>
