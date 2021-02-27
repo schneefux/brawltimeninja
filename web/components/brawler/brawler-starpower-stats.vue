@@ -101,7 +101,7 @@ export default Vue.extend({
     getStrings(): (entry: Row) => { name?: string, description?: string } {
       return (entry: Row) => {
         const id = this.getId(entry)
-        return this.descriptions == null || id == undefined ? {} : this.descriptions[id]
+        return this.descriptions == null || id == undefined || !(id in this.descriptions) ? {} : this.descriptions[id]
       }
     },
   },
