@@ -788,7 +788,7 @@ const battleMeasurements = asMeasurements({
     icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
     formatter: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
-    d3formatter: '',
+    d3formatter: '.2s',
     sign: +1,
     percentage: false,
     column: 'battle_duration',
