@@ -63,7 +63,7 @@ export default Vue.extend({
     // the diff object instead
     // capture, process and forwrad it
     this.$on('slice', (s: Partial<SliceValue>) => {
-      this.$emit('input', {
+      this.$emit('input', <State>{
         ...this.value,
         [this.comparing ? 'comparingSlices' : 'slices']: {
           ...this.slices,

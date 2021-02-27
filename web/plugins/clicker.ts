@@ -453,7 +453,7 @@ export default (context, inject) => {
     },
     stateToLocation(state: Partial<State>): Location {
       const slices = state.slices ? generateQueryParams(state.slices, 'filter') : {}
-      const comparingSlices = state.comparing && state.comparingSlices ? generateQueryParams(state.comparingSlices, 'comparingFilter') : {}
+      const comparingSlices = state.comparing && state.comparingSlices ? generateQueryParams(state.comparingSlices, 'compareFilter') : {}
 
       const query = Object.assign({}, {
           cube: state.cubeId,
