@@ -16,12 +16,13 @@
     <b-button
       v-if="showDownload"
       class="absolute bottom-0 left-0"
-      primary
-      sm
+      dark
+      xs
       @click="download()"
     >
       <font-awesome-icon
         :icon="faDownload"
+        class="pb-px"
       ></font-awesome-icon>
     </b-button>
   </div>

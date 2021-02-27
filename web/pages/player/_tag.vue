@@ -40,14 +40,32 @@
       class="leading-tight text-center mt-6"
     ></player-hype-stats>
 
-    <player-quiz
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'quiz'),
-        once: true,
-      }"
-      :player="player"
-      class="mt-2 mx-auto"
-    ></player-quiz>
+    <div class="mt-2 flex flex-wrap justify-center items-center">
+      <history-graph
+        v-if="enableClickerStats"
+        :player-tag="player.tag"
+        size="h-40"
+        md
+      ></history-graph>
+      <card
+        v-else
+      >
+        <span
+          slot="content"
+          class="italic"
+        >
+          {{ $t('player.no-history') }}
+        </span>
+      </card>
+
+      <player-quiz
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'quiz'),
+          once: true,
+        }"
+        :player="player"
+      ></player-quiz>
+    </div>
 
     <client-only>
       <adsense

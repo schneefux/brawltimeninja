@@ -75,6 +75,18 @@ const commonDimensions: Record<string, Dimension> = {
       nice: 'week',
     },
   },
+  day: {
+    id: 'day',
+    name: 'Day',
+    formatter: (s: any) => s.timestamp_day,
+    column: 'timestamp_day',
+    anyColumns: [],
+    hidden: false,
+    type: 'temporal',
+    scale: {
+      nice: 'day',
+    },
+  },
   player: {
     id: 'player',
     name: 'Player',
@@ -163,22 +175,6 @@ export const commonMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'timestamp',
     type: 'temporal',
-  },
-  trophies: {
-    id: 'trophies',
-    name: 'Trophies',
-    nameShort: 'Trophies',
-    icon: 'trophy',
-    description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    formatter: n => formatSI(n, 1),
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'brawler_trophies',
-    type: 'quantitative',
-    scale: {
-      zero: false,
-    },
   },
   trophyChange: {
     id: 'trophyChange',
@@ -441,19 +437,6 @@ export const commonMeasurements: Record<string, Measurement> = {
     column: 'users',
     type: 'quantitative',
   },
-  highestTrophies: {
-    id: 'highestTrophies',
-    name: 'Highest Trophies',
-    nameShort: 'Trophy Max',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_highest_trophies',
-    type: 'quantitative',
-  },
   powerPlayPoints: {
     id: 'powerPlayPoints',
     name: 'Power Play Points',
@@ -535,6 +518,38 @@ export const commonMeasurements: Record<string, Measurement> = {
 }
 
 export const playerMeasurements: Record<string, Measurement> = {
+  playerTrophies: {
+    id: 'playerTrophies',
+    name: 'Player Trophies',
+    nameShort: 'Trophies',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '.2s',
+    sign: -1,
+    percentage: false,
+    column: 'player_trophies',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
+  },
+  playerHighestTrophies: {
+    id: 'playerHighestTrophies',
+    name: 'Player Highest Trophies',
+    nameShort: 'Trophy Max',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '.2s',
+    sign: -1,
+    percentage: false,
+    column: 'player_highest_trophies',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
+  },
   victories: {
     id: 'victories',
     name: '3v3 Victories',
@@ -547,6 +562,9 @@ export const playerMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'player_3vs3_victories',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   exp: {
     id: 'exp',
@@ -560,6 +578,9 @@ export const playerMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'player_exp_points',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   soloVictories: {
     id: 'soloVictories',
@@ -573,6 +594,9 @@ export const playerMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'player_solo_victories',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
   duoVictories: {
     id: 'duoVictories',
@@ -586,6 +610,9 @@ export const playerMeasurements: Record<string, Measurement> = {
     percentage: false,
     column: 'player_duo_victories',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
 }
 
@@ -597,11 +624,27 @@ export const brawlerMeasurements: Record<string, Measurement> = {
     icon: '',
     description: '',
     formatter: n => n.toString(),
-    d3formatter: '',
+    d3formatter: '.2s',
     sign: -1,
     percentage: false,
     column: 'brawler_highest_trophies',
     type: 'quantitative',
+  },
+  trophies: {
+    id: 'trophies',
+    name: 'Trophies',
+    nameShort: 'Trophies',
+    icon: 'trophy',
+    description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+    formatter: n => n.toString(),
+    d3formatter: '.2s',
+    sign: -1,
+    percentage: false,
+    column: 'brawler_trophies',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
 }
 
@@ -670,6 +713,11 @@ const commonSlices: Record<string, Slice> = {
     id: 'playerName',
     name: 'Player Name',
     column: 'player_name_ilike',
+  },
+  playerTag: {
+    id: 'playerTag',
+    name: 'Player Tag',
+    column: 'player_tag',
   },
   withStarpower: {
     id: 'withStarpower',
@@ -848,6 +896,8 @@ const cubes: Record<string, Cube> = {
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
+      playerMeasurements.playerTrophies,
+      playerMeasurements.playerHighestTrophies,
       playerMeasurements.victories,
       playerMeasurements.soloVictories,
       playerMeasurements.duoVictories,
@@ -869,9 +919,13 @@ const cubes: Record<string, Cube> = {
       commonDimensions.player,
       commonDimensions.brawler,
       commonDimensions.season,
+      commonDimensions.day,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
+      playerMeasurements.playerTrophies,
+      playerMeasurements.playerHighestTrophies,
+      brawlerMeasurements.trophies,
       brawlerMeasurements.highestTrophies,
     ],
     defaultMeasurementIds: ['highestTrophies'],
@@ -879,12 +933,15 @@ const cubes: Record<string, Cube> = {
     slices: [
       commonSlices.brawler,
       commonSlices.playerName,
+      commonSlices.playerTag,
       commonSlices.season,
     ],
     defaultSliceValues: {
       brawler: ['SHELLY'],
       playerName: [],
+      playerTag: [],
       season: ['month'],
+      day: [],
     },
   },
   battle: {
@@ -896,6 +953,7 @@ const cubes: Record<string, Cube> = {
       commonDimensions.player,
       commonDimensions.brawler,
       commonDimensions.season,
+      commonDimensions.day,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
@@ -907,6 +965,9 @@ const cubes: Record<string, Cube> = {
       commonMeasurements.useRate,
       commonMeasurements.rank,
       commonMeasurements.duration,
+      brawlerMeasurements.trophies,
+      playerMeasurements.playerTrophies,
+      playerMeasurements.playerHighestTrophies,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
@@ -915,12 +976,15 @@ const cubes: Record<string, Cube> = {
       commonSlices.powerplay,
       commonSlices.trophies,
       commonSlices.playerName,
+      commonSlices.playerTag,
     ],
     defaultSliceValues: {
       season: ['month'],
       powerplay: [],
       trophies: [],
       playerName: [],
+      playerTag: [],
+      day: [],
     },
   },
 }

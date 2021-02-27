@@ -21,6 +21,12 @@
         full-height
       ></v-scatterplot>
 
+      <v-lineplot
+        v-bind="$props"
+        class="h-80"
+        full-height
+      ></v-lineplot>
+
       <v-heatmap
         v-bind="$props"
         class="h-80"

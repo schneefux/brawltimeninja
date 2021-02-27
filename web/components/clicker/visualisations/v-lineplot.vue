@@ -37,24 +37,20 @@ export default Vue.extend({
   },
   computed: {
     show(): boolean {
-      return this.dimensions.length == 1 && this.dimensions[0].type == 'nominal' && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 100
+      return this.dimensions.length == 1 && this.dimensions[0].type == 'temporal' && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 1000
     },
     spec(): VisualizationSpec {
       return {
         data: {
           values: this.data,
         },
-        mark: 'bar',
+        mark: 'line',
         encoding: {
           x: {
             field: 'dimensions.' + this.dimensions[0].id,
             type: this.dimensions[0].type,
             title: this.dimensions[0].name,
             scale: this.dimensions[0].scale,
-            sort: {
-              field: this.measurements[0].id,
-              order: this.measurements[0].sign == -1 ? 'descending' : 'ascending',
-            },
           },
           y: {
             field: 'measurementsRaw.' + this.measurements[0].id,

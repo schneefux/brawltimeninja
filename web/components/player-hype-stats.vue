@@ -104,17 +104,6 @@
             {{ $t('metric.trophies') }}
           </dt>
         </dl>
-
-        <div class="w-full max-w-xs my-3 md:my-0 md:w-80 relative">
-          <history-graph
-            v-if="enableClickerStats"
-            :player-tag="player.tag"
-            class="h-24 md:h-20"
-          ></history-graph>
-          <span v-else class="italic">
-            {{ $t('player.no-history') }}
-          </span>
-        </div>
       </div>
 
       <dl

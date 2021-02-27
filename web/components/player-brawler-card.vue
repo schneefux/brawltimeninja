@@ -67,7 +67,8 @@
         <history-graph
           :brawler="brawler.name"
           :player-tag="playerTag"
-          class="mt-3 h-32"
+          size="h-32"
+          class="mt-3"
         ></history-graph>
         <div class="my-2 text-gray-200">
           <table class="mt-4 w-full font-semibold leading-none">
