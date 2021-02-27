@@ -649,7 +649,7 @@ export const commonMeasurements: Record<string, Measurement> = {
   trophies: playerMeasurements.playerTrophies,
   brawler: {
     id: 'brawler',
-    name: 'Brawler',
+    name: 'Most played Brawler',
     nameShort: 'Brawler',
     icon: '',
     description: '',
@@ -984,7 +984,7 @@ const cubes: Record<string, Cube> = {
       playerMeasurements.playerHighestTrophies,
       commonMeasurements.brawler,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
+    defaultMeasurementIds: ['winRate'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,

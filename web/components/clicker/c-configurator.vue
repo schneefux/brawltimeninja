@@ -135,7 +135,7 @@
         </div>
 
         <label
-          v-if="advancedMode"
+          v-if="advancedMode && canCompare"
           class="col-span-2 flex items-center"
         >
           <b-checkbox v-model="compareMode"></b-checkbox>
@@ -282,6 +282,9 @@ export default Vue.extend({
     },
     showAllMeasurements(): boolean {
       return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
+    },
+    canCompare(): boolean {
+      return this.measurements.every(m => m.type == 'quantitative')
     },
     faPlus() {
       return faPlus
