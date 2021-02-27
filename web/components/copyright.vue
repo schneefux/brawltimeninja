@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      &#169; 2018 - 2020 Brawl Time Ninja
+      &#169; 2018 - 2021 Brawl Time Ninja
       ({{ releaseVersion }})
     </p>
     <div class="text-center my-1">
