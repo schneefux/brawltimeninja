@@ -13,7 +13,7 @@
     <template v-slot="data">
       <v-table
         :title="title"
-        v-bind="data"
+        v-bind="{ ...data, ...$attrs }"
         show-link
       >
         <template v-slot:dimensions="data">

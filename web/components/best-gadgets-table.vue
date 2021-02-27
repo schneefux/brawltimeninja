@@ -12,7 +12,7 @@
     <template v-slot="data">
       <v-table
         :title="$t('leaderboard.thing.long', { thing: $tc('thing.gadget', 2) })"
-        v-bind="data"
+        v-bind="{ ...data, ...$attrs }"
         class="mt-4"
         show-link
       >

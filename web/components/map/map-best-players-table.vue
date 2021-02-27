@@ -14,7 +14,7 @@
     <template v-slot="data">
       <v-table
         :title="title"
-        v-bind="data"
+        v-bind="{ ...data, ...$attrs }"
       >
         <template v-slot:dimensions="data">
           <d-player v-bind="data"></d-player>
