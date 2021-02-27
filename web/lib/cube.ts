@@ -78,7 +78,7 @@ const commonDimensions: Record<string, Dimension> = {
   day: {
     id: 'day',
     name: 'Day',
-    formatter: (s: any) => s.timestamp_day,
+    formatter: (s: any) => s.timestamp_day.slice(0, 11),
     column: 'timestamp_day',
     anyColumns: [],
     hidden: false,
@@ -660,6 +660,19 @@ export const commonMeasurements: Record<string, Measurement> = {
     column: 'brawler_name',
     type: 'nominal',
   },
+  playerName: {
+    id: 'playerName',
+    name: 'Most common name',
+    nameShort: 'Name',
+    icon: '',
+    description: '',
+    formatter: n => n as unknown as string,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_name',
+    type: 'nominal',
+  },
 }
 
 const brawlerBattleMeasurements = {
@@ -927,7 +940,7 @@ const cubes: Record<string, Cube> = {
   brawler: {
     id: 'brawler',
     table: 'brawler',
-    name: 'Brawler Leaderboard',
+    name: 'Brawlers',
     hidden: true,
     dimensions: [
       commonDimensions.player,
@@ -943,7 +956,7 @@ const cubes: Record<string, Cube> = {
       brawlerMeasurements.highestTrophies,
     ],
     defaultMeasurementIds: ['highestTrophies'],
-    metaColumns: ['timestamp'],
+    metaColumns: [],
     slices: [
       commonSlices.brawler,
       commonSlices.playerName,
@@ -968,6 +981,8 @@ const cubes: Record<string, Cube> = {
       commonDimensions.brawler,
       commonDimensions.season,
       commonDimensions.day,
+      commonDimensions.mode,
+      commonDimensions.map,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
@@ -982,10 +997,12 @@ const cubes: Record<string, Cube> = {
       brawlerMeasurements.trophies,
       playerMeasurements.playerTrophies,
       playerMeasurements.playerHighestTrophies,
+      commonMeasurements.users,
       commonMeasurements.brawler,
+      commonMeasurements.playerName,
     ],
     defaultMeasurementIds: ['winRate'],
-    metaColumns: ['picks', 'timestamp'],
+    metaColumns: [],
     slices: [
       commonSlices.season,
       commonSlices.mode,
@@ -994,6 +1011,7 @@ const cubes: Record<string, Cube> = {
       commonSlices.trophies,
       commonSlices.playerName,
       commonSlices.playerTag,
+      commonSlices.brawler,
     ],
     defaultSliceValues: {
       season: ['month'],

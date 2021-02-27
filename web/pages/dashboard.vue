@@ -26,6 +26,8 @@
         <s-trophies v-bind="data"></s-trophies>
         <s-with-starpower v-bind="data"></s-with-starpower>
         <s-with-gadget v-bind="data"></s-with-gadget>
+        <s-player-name v-bind="data"></s-player-name>
+        <s-player-tag v-bind="data"></s-player-tag>
       </template>
       <template v-slot:visualisations="data">
         <v-sample-size v-bind="data"></v-sample-size>
@@ -65,6 +67,8 @@ import VMoe from '@/components/clicker/renderers/v-moe.vue'
 import VSampleSize from '@/components/clicker/renderers/v-sample-size.vue'
 import VMeasureDescription from '@/components/clicker/renderers/v-measure-description.vue'
 import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
+import SPlayerName from '@/components/clicker/renderers/s-player-name.vue'
+import SPlayerTag from '@/components/clicker/renderers/s-player-tag.vue'
 
 export default Vue.extend({
   components: {
@@ -92,6 +96,8 @@ export default Vue.extend({
     VSampleSize,
     VMeasureDescription,
     MBrawler,
+    SPlayerName,
+    SPlayerTag,
   },
   data() {
     return {
