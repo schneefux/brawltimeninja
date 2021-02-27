@@ -2,6 +2,11 @@ import { capitalizeWords, formatMode, formatSI } from './util'
 
 export interface Config extends Record<string, Cube> {}
 
+// helper function which infers keys and restricts values to ElementType
+const asDimensions = <T>(et: { [K in keyof T]: Dimension }) => et
+const asMeasurements = <T>(et: { [K in keyof T]: Measurement }) => et
+const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
+
 export interface State {
   cubeId: string
   slices: SliceValue
@@ -62,7 +67,7 @@ export interface Slice {
 
 export interface SliceValue extends Record<string, string[]> { }
 
-const commonDimensions: Record<string, Dimension> = {
+const metaDimensions = asDimensions({
   season: {
     id: 'season',
     name: 'Bi-Week',
@@ -87,6 +92,21 @@ const commonDimensions: Record<string, Dimension> = {
       nice: 'day',
     },
   },
+  timestamp: {
+    id: 'timestamp',
+    name: 'Timestamp',
+    formatter: (s: any) => s.timestamp,
+    column: 'timestamp',
+    anyColumns: [],
+    hidden: false,
+    type: 'temporal',
+    scale: {
+      nice: 'hour',
+    },
+  },
+})
+
+const playerDimensions = asDimensions({
   player: {
     id: 'player',
     name: 'Player',
@@ -96,6 +116,9 @@ const commonDimensions: Record<string, Dimension> = {
     hidden: false,
     type: 'nominal',
   },
+})
+
+const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
@@ -105,6 +128,15 @@ const commonDimensions: Record<string, Dimension> = {
     hidden: false,
     type: 'nominal',
   },
+  brawlerId: {
+    id: 'brawlerId',
+    name: 'Brawler ID',
+    formatter: (b: any) => b.brawler_id,
+    column: 'brawler_id',
+    anyColumns: [],
+    hidden: true,
+    type: 'nominal',
+  },
   ally: {
     id: 'ally',
     name: 'Ally',
@@ -112,6 +144,15 @@ const commonDimensions: Record<string, Dimension> = {
     column: 'ally_brawler_name',
     anyColumns: [],
     hidden: false,
+    type: 'nominal',
+  },
+  allyId: {
+    id: 'allyId',
+    name: 'Ally ID',
+    formatter: (a: any) => a.ally_brawler_id,
+    column: 'ally_brawler_id',
+    anyColumns: [],
+    hidden: true,
     type: 'nominal',
   },
   gadget: {
@@ -132,15 +173,18 @@ const commonDimensions: Record<string, Dimension> = {
     hidden: false,
     type: 'nominal',
   },
-  team: {
-    id: 'team',
-    name: 'Team',
-    formatter: (t: any) => capitalizeWords(t.brawler_names.join(', ').toLowerCase()),
-    column: 'brawler_names',
+  bigbrawler: {
+    id: 'bigbrawler',
+    name: 'Big Brawler',
+    formatter: (s: any) => s.battle_is_bigbrawler == '1' ? 'Yes' : 'No',
+    column: 'brawler_is_bigbrawler',
     anyColumns: [],
-    hidden: false,
+    hidden: true,
     type: 'nominal',
   },
+})
+
+const battleDimensions = asDimensions({
   mode: {
     id: 'mode',
     name: 'Mode',
@@ -159,9 +203,86 @@ const commonDimensions: Record<string, Dimension> = {
     hidden: false,
     type: 'nominal',
   },
-}
+  team: {
+    id: 'team',
+    name: 'Team',
+    formatter: (t: any) => capitalizeWords(t.brawler_names.join(', ').toLowerCase()),
+    column: 'brawler_names',
+    anyColumns: [],
+    hidden: false,
+    type: 'nominal',
+  },
+  powerplay: {
+    id: 'powerplay',
+    name: 'Power Play',
+    formatter: (t: any) => t.battle_power_play == '1' ? 'Yes' : 'No',
+    column: 'battle_power_play',
+    anyColumns: [],
+    hidden: false,
+    type: 'nominal',
+  },
+})
 
-export const playerMeasurements: Record<string, Measurement> = {
+const commonDimensions = asDimensions({
+  ...playerDimensions,
+  ...brawlerDimensions,
+  ...metaDimensions,
+  ...battleDimensions,
+})
+
+export const playerMeasurements = asMeasurements({
+  playerName: {
+    id: 'playerName',
+    name: 'Most common name',
+    nameShort: 'Name',
+    icon: '',
+    description: '',
+    formatter: n => n as unknown as string,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_name',
+    type: 'nominal',
+  },
+  clubName: {
+    id: 'clubName',
+    name: 'Most common Club name',
+    nameShort: 'Club Name',
+    icon: '',
+    description: '',
+    formatter: n => n as unknown as string,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_club_name',
+    type: 'nominal',
+  },
+  playerIcon: {
+    id: 'playerIcon',
+    name: 'Most common icon',
+    nameShort: 'Icon',
+    icon: '',
+    description: '',
+    formatter: n => n as unknown as string,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_icon_id',
+    type: 'nominal',
+  },
+  playerNameColor: {
+    id: 'playerNameColor',
+    name: 'Most common color',
+    nameShort: 'Name Color',
+    icon: '',
+    description: '',
+    formatter: n => n as unknown as string,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_name_color',
+    type: 'nominal',
+  },
   playerTrophies: {
     id: 'playerTrophies',
     name: 'Player Trophies',
@@ -258,9 +379,87 @@ export const playerMeasurements: Record<string, Measurement> = {
       zero: false,
     },
   },
-}
+  users: {
+    id: 'users',
+    name: 'Players',
+    nameShort: 'Players',
+    icon: '🧑',
+    description: 'The total number of players.',
+    formatter: n => formatSI(n, 1),
+    d3formatter: '.1s',
+    sign: -1,
+    percentage: false,
+    column: 'users',
+    type: 'quantitative',
+  },
+  powerPlayPoints: {
+    id: 'powerPlayPoints',
+    name: 'Power Play Points',
+    nameShort: 'Points',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_power_play_points',
+    type: 'quantitative',
+  },
+  highestPowerPlayPoints: {
+    id: 'highestPowerPlayPoints',
+    name: 'Highest Power Play Points',
+    nameShort: 'Points Max',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_highest_power_play_points',
+    type: 'quantitative',
+  },
+  expLevel: {
+    id: 'expLevel',
+    name: 'EXP Level',
+    nameShort: 'EXP',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_exp_level',
+    type: 'quantitative',
+  },
+  expPoints: {
+    id: 'expPoints',
+    name: 'EXP',
+    nameShort: 'EXP',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_exp_points',
+    type: 'quantitative',
+  },
+  brawlers: {
+    id: 'brawlers',
+    name: 'Brawlers',
+    nameShort: 'Brawlers',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'player_brawlers_length',
+    type: 'quantitative',
+  },
+})
 
-export const brawlerMeasurements: Record<string, Measurement> = {
+export const brawlerMeasurements = asMeasurements({
   highestTrophies: {
     id: 'highestTrophies',
     name: 'Highest Trophies',
@@ -290,9 +489,48 @@ export const brawlerMeasurements: Record<string, Measurement> = {
       zero: false,
     },
   },
-}
+  brawler: {
+    id: 'brawler',
+    name: 'Most played Brawler',
+    nameShort: 'Brawler',
+    icon: '',
+    description: '',
+    formatter: n => capitalizeWords((n as unknown as string).toLowerCase()),
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'brawler_name',
+    type: 'nominal',
+  },
+  starpowers: {
+    id: 'starpowers',
+    name: 'Star Powers',
+    nameShort: 'Star Powers',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'brawler_starpowers_length',
+    type: 'quantitative',
+  },
+  gadgets: {
+    id: 'gadgets',
+    name: 'Gadgets',
+    nameShort: 'Gadgets',
+    icon: '',
+    description: '',
+    formatter: n => `${n}`,
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'brawler_gadgets_length',
+    type: 'quantitative',
+  },
+})
 
-export const commonMeasurements: Record<string, Measurement> = {
+const metaMeasurements = asMeasurements({
   timestamp: {
     // TODO
     id: 'timestamp',
@@ -307,6 +545,23 @@ export const commonMeasurements: Record<string, Measurement> = {
     column: 'timestamp',
     type: 'temporal',
   },
+  day: {
+    // TODO
+    id: 'day',
+    name: 'Day',
+    nameShort: 'Day',
+    icon: '⌚',
+    description: '',
+    formatter: n => n.toString(),
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'timestamp_day',
+    type: 'temporal',
+  },
+})
+
+const battleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
@@ -555,147 +810,106 @@ export const commonMeasurements: Record<string, Measurement> = {
       zero: false,
     },
   },
-  users: {
-    id: 'users',
-    name: 'Players',
-    nameShort: 'Players',
-    icon: '🧑',
-    description: 'The total number of players.',
-    formatter: n => formatSI(n, 1),
-    d3formatter: '.1s',
+  power: {
+    id: 'power',
+    name: 'Power',
+    nameShort: 'Power',
+    icon: '🏅',
+    description: '',
+    formatter: n => n.toFixed(2),
+    d3formatter: '.2f',
     sign: -1,
     percentage: false,
-    column: 'users',
+    column: 'brawler_power',
     type: 'quantitative',
+    scale: {
+      zero: false,
+    },
   },
-  powerPlayPoints: {
-    id: 'powerPlayPoints',
-    name: 'Power Play Points',
-    nameShort: 'Points',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_power_play_points',
-    type: 'quantitative',
-  },
-  highestPowerPlayPoints: {
-    id: 'highestPowerPlayPoints',
-    name: 'Highest Power Play Points',
-    nameShort: 'Points Max',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_highest_power_play_points',
-    type: 'quantitative',
-  },
-  expLevel: {
-    id: 'expLevel',
-    name: 'EXP Level',
-    nameShort: 'EXP',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_exp_level',
-    type: 'quantitative',
-  },
-  victories: {
-    id: 'victories',
-    name: '3v3 Wins',
-    nameShort: '3v3 Win',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_3vs3_victories',
-    type: 'quantitative',
-  },
-  soloVictories: {
-    id: 'soloVictories',
-    name: 'Solo Wins',
-    nameShort: 'Solo Win',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_solo_victories',
-    type: 'quantitative',
-  },
-  duoVictories: {
-    id: 'duoVictories',
-    name: 'Duo Wins',
-    nameShort: 'Duo Win',
-    icon: '',
-    description: '',
-    formatter: n => `${n}`,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_duo_victories',
-    type: 'quantitative',
-  },
-  trophies: playerMeasurements.playerTrophies,
-  brawler: {
-    id: 'brawler',
-    name: 'Most played Brawler',
-    nameShort: 'Brawler',
-    icon: '',
-    description: '',
-    formatter: n => capitalizeWords((n as unknown as string).toLowerCase()),
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'brawler_name',
-    type: 'nominal',
-  },
-  playerName: {
-    id: 'playerName',
-    name: 'Most common name',
-    nameShort: 'Name',
-    icon: '',
-    description: '',
-    formatter: n => n as unknown as string,
-    d3formatter: '',
-    sign: -1,
-    percentage: false,
-    column: 'player_name',
-    type: 'nominal',
-  },
-}
+})
 
-const brawlerBattleMeasurements = {
-  trophyChange: commonMeasurements.trophyChange,
-  winRate: commonMeasurements.winRate,
-  winRateAdj: commonMeasurements.winRateAdj,
-  wins: commonMeasurements.wins,
-  picks: commonMeasurements.picks,
-  pickRate: commonMeasurements.pickRate,
-  useRate: commonMeasurements.useRate,
-  starRate: commonMeasurements.starRate,
-  rank: commonMeasurements.rank,
-  rank1Rate: commonMeasurements.rank1Rate,
-  duration: commonMeasurements.duration,
-  level: commonMeasurements.level,
-}
+export const commonMeasurements = asMeasurements({
+  ...metaMeasurements,
+  ...playerMeasurements,
+  ...brawlerMeasurements,
+  ...battleMeasurements,
+})
 
-const commonSlices: Record<string, Slice> = {
+const metaSlices = asSlice({
   season: {
     id: 'season',
-    name: 'Time',
+    name: 'Since Time',
     column: 'trophy_season_end',
   },
+  seasonExact: {
+    id: 'seasonExact',
+    name: 'Time',
+    column: 'trophy_season_end_exact',
+  },
+  timestamp: {
+    id: 'timestamp',
+    name: 'Since Time',
+    column: 'timestamp',
+  },
+})
+
+const playerSlices = asSlice({
+  playerName: {
+    id: 'playerName',
+    name: 'Player Name',
+    column: 'player_name_ilike',
+  },
+  playerId: {
+    id: 'playerId',
+    name: 'Player ID',
+    column: 'player_id',
+  },
+  playerTag: {
+    id: 'playerTag',
+    name: 'Player Tag',
+    column: 'player_tag',
+  },
+})
+
+const brawlerSlices = asSlice({
+  brawler: {
+    id: 'brawler',
+    name: 'Brawler',
+    column: 'brawler_name',
+  },
+  brawlerId: {
+    id: 'brawlerId',
+    name: 'Brawler ID',
+    column: 'brawler_id',
+  },
+  ally: {
+    id: 'ally',
+    name: 'Ally',
+    column: 'ally_brawler_name',
+  },
+  allyId: {
+    id: 'allyId',
+    name: 'Ally ID',
+    column: 'ally_brawler_id',
+  },
+  trophies: {
+    id: 'trophies',
+    name: 'Trophies',
+    column: 'brawler_trophyrange',
+  },
+  withStarpower: {
+    id: 'withStarpower',
+    name: 'Star Power detected',
+    column: 'with_starpower',
+  },
+  withGadget: {
+    id: 'withGadget',
+    name: 'Gadget detected',
+    column: 'with_gadget',
+  },
+})
+
+const battleSlices = asSlice({
   mode: {
     id: 'mode',
     name: 'Mode',
@@ -721,41 +935,119 @@ const commonSlices: Record<string, Slice> = {
     name: 'Power Play',
     column: 'battle_event_powerplay',
   },
-  brawler: {
-    id: 'brawler',
-    name: 'Brawler',
-    column: 'brawler_name',
+  bigbrawler: {
+    id: 'bigbrawler',
+    name: 'Big Brawler',
+    column: 'battle_is_bigbrawler',
   },
-  ally: {
-    id: 'ally',
-    name: 'Ally',
-    column: 'ally_brawler_name',
-  },
-  trophies: {
-    id: 'trophies',
-    name: 'Trophies',
-    column: 'brawler_trophyrange',
-  },
-  playerName: {
-    id: 'playerName',
-    name: 'Player Name',
-    column: 'player_name_ilike',
-  },
-  playerTag: {
-    id: 'playerTag',
-    name: 'Player Tag',
-    column: 'player_tag',
-  },
-  withStarpower: {
-    id: 'withStarpower',
-    name: 'Star Power detected',
-    column: 'with_starpower',
-  },
-  withGadget: {
-    id: 'withGadget',
-    name: 'Gadget detected',
-    column: 'with_gadget',
-  },
+})
+
+const commonSlices = asSlice({
+  ...metaSlices,
+  ...playerSlices,
+  ...battleSlices,
+  ...brawlerSlices,
+})
+
+const brawlerBattleMeasurements = [
+  /*
+  commonMeasurements.trophySeasonEnd,
+  commonMeasurements.timestamp,
+  */
+  commonMeasurements.trophyChange,
+  commonMeasurements.winRate,
+  commonMeasurements.winRateAdj,
+  commonMeasurements.wins,
+  commonMeasurements.picks,
+  commonMeasurements.pickRate,
+  commonMeasurements.useRate,
+  commonMeasurements.starRate,
+  commonMeasurements.rank,
+  commonMeasurements.rank1Rate,
+  commonMeasurements.duration,
+  commonMeasurements.level,
+  commonMeasurements.brawler,
+]
+
+const brawlerBattleDimensions = [
+  commonDimensions.brawler,
+  commonDimensions.season,
+]
+
+const brawlerBattleSlices = [
+  commonSlices.season,
+  commonSlices.seasonExact,
+  commonSlices.trophies,
+  commonSlices.brawler,
+]
+
+const brawlerBattleDefaultSliceValues: SliceValue = {
+  season: ['month'],
+  trophies: [],
+  brawler: [],
+}
+
+const playerBrawlerDimensions = [
+  commonDimensions.season,
+  commonDimensions.timestamp,
+  commonDimensions.day,
+  commonDimensions.player,
+  commonDimensions.brawler,
+  commonDimensions.brawlerId,
+]
+
+const playerBrawlerMeasurements = [
+  commonMeasurements.picks,
+  commonMeasurements.pickRate,
+  commonMeasurements.useRate,
+  commonMeasurements.users,
+  // commonMeasurements.season,
+  commonMeasurements.timestamp,
+  commonMeasurements.day,
+  commonMeasurements.playerName,
+  commonMeasurements.playerNameColor,
+  commonMeasurements.playerIcon,
+  commonMeasurements.playerTrophies,
+  commonMeasurements.playerHighestTrophies,
+  commonMeasurements.powerPlayPoints,
+  commonMeasurements.highestPowerPlayPoints,
+  commonMeasurements.expPoints,
+  // commonMeasurements.championshipQualified,
+  commonMeasurements.victories,
+  commonMeasurements.soloVictories,
+  commonMeasurements.duoVictories,
+  // commonMeasurements.roboRumble,
+  // commonMeasurements.bigBrawler,
+  commonMeasurements.brawlers,
+  // commonMeasurements.clubId,
+  // commonMeasurements.clubTag,
+  commonMeasurements.clubName,
+
+  // commonMeasurements.brawlerId,
+  commonMeasurements.brawler,
+  commonMeasurements.power,
+  commonMeasurements.trophies,
+  commonMeasurements.highestTrophies,
+  commonMeasurements.starpowers,
+  commonMeasurements.gadgets,
+]
+
+const playerBrawlerSlices = [
+  commonSlices.playerTag,
+  commonSlices.playerName,
+  commonSlices.season,
+  commonSlices.trophies,
+  commonSlices.brawlerId,
+  commonSlices.brawler,
+]
+
+const playerBrawlerDefaultSliceValues = {
+  playerTag: [],
+  playerName: [],
+  season: ['current'],
+  trophies: [],
+  brawlerId: [],
+  brawlerName: [],
 }
 
 const cubes: Record<string, Cube> = {
@@ -765,34 +1057,31 @@ const cubes: Record<string, Cube> = {
     name: 'Map',
     hidden: false,
     dimensions: [
-      commonDimensions.brawler,
+      ...brawlerBattleDimensions,
       commonDimensions.mode,
       commonDimensions.map,
-      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
-      ...Object.values(brawlerBattleMeasurements),
+      ...brawlerBattleMeasurements,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
-      commonSlices.season,
+      ...brawlerBattleSlices,
       commonSlices.mode,
       commonSlices.map,
       commonSlices.mapLike,
       commonSlices.mapNotLike,
       commonSlices.powerplay,
-      commonSlices.trophies,
     ],
     defaultSliceValues: {
-      season: ['month'],
+      ...brawlerBattleDefaultSliceValues,
       mode: [],
       map: [],
       mapLike: [],
       mapNotLike: [],
       powerplay: ['false'],
-      trophies: [],
     },
   },
   starpower: {
@@ -801,9 +1090,9 @@ const cubes: Record<string, Cube> = {
     name: 'Star Power',
     hidden: false,
     dimensions: [
-      commonDimensions.brawler,
+      ...brawlerBattleDimensions,
+      commonDimensions.brawlerId,
       commonDimensions.starpower,
-      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
     measurements: [
@@ -812,13 +1101,11 @@ const cubes: Record<string, Cube> = {
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
-      commonSlices.season,
-      commonSlices.trophies,
+      ...brawlerBattleSlices,
       commonSlices.withStarpower,
     ],
     defaultSliceValues: {
-      season: ['month'],
-      trophies: [],
+      ...brawlerBattleDefaultSliceValues,
       withStarpower: ['true'],
     },
   },
@@ -828,24 +1115,22 @@ const cubes: Record<string, Cube> = {
     name: 'Gadget',
     hidden: false,
     dimensions: [
-      commonDimensions.brawler,
+      ...brawlerBattleDimensions,
+      commonDimensions.brawlerId,
       commonDimensions.gadget,
-      commonDimensions.season,
     ],
     defaultDimensionsIds: ['brawler', 'gadget'],
     measurements: [
-      ...Object.values(brawlerBattleMeasurements),
+      ...brawlerBattleMeasurements,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
-      commonSlices.season,
-      commonSlices.trophies,
+      ...brawlerBattleSlices,
       commonSlices.withGadget,
     ],
     defaultSliceValues: {
-      season: ['month'],
-      trophies: [],
+      ...brawlerBattleDefaultSliceValues,
       withGadget: ['true'],
     },
   },
@@ -855,31 +1140,32 @@ const cubes: Record<string, Cube> = {
     name: 'Synergies',
     hidden: false,
     dimensions: [
-      commonDimensions.brawler,
+      ...brawlerBattleDimensions,
+      commonDimensions.brawlerId,
       commonDimensions.ally,
-      commonDimensions.season,
+      commonDimensions.allyId,
+      commonDimensions.mode,
+      commonDimensions.map,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
-      ...Object.values(brawlerBattleMeasurements),
+      ...brawlerBattleMeasurements,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
-      commonSlices.season,
+      ...brawlerBattleSlices,
       commonSlices.mode,
       commonSlices.map,
-      commonSlices.brawler,
+      commonSlices.brawlerId,
       commonSlices.ally,
-      commonSlices.trophies,
+      commonSlices.allyId,
     ],
     defaultSliceValues: {
-      season: ['month'],
+      ...brawlerBattleDefaultSliceValues,
       mode: [],
       map: [],
-      brawler: [],
       ally: [],
-      trophies: [],
     },
   },
   team: {
@@ -889,7 +1175,6 @@ const cubes: Record<string, Cube> = {
     hidden: false,
     dimensions: [
       commonDimensions.team,
-      commonDimensions.season,
     ],
     defaultDimensionsIds: ['team'],
     measurements: [
@@ -900,75 +1185,90 @@ const cubes: Record<string, Cube> = {
     defaultMeasurementIds: ['wins'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
-      commonSlices.season,
+      ...brawlerBattleSlices,
       commonSlices.mode,
       commonSlices.map,
-      commonSlices.trophies,
+      commonSlices.brawlerId,
+      commonSlices.ally,
+      commonSlices.allyId,
     ],
     defaultSliceValues: {
-      season: ['month'],
+      ...brawlerBattleDefaultSliceValues,
       mode: [],
       map: [],
-      trophies: [],
+      ally: [],
     },
   },
-  player: {
-    id: 'player',
+  playerLeaderboard: {
+    id: 'playerLeaderboard',
     table: 'player',
     name: 'Leaderboard',
-    hidden: false,
+    hidden: true,
     dimensions: [
       commonDimensions.player,
-      commonDimensions.season,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
-      playerMeasurements.playerTrophies,
-      playerMeasurements.playerHighestTrophies,
-      playerMeasurements.victories,
-      playerMeasurements.soloVictories,
-      playerMeasurements.duoVictories,
-      playerMeasurements.exp,
+      commonMeasurements.playerName,
+      commonMeasurements.playerIcon,
+      commonMeasurements.expPoints,
+      commonMeasurements.victories,
+      commonMeasurements.soloVictories,
+      commonMeasurements.duoVictories,
     ],
     defaultMeasurementIds: ['victories'],
     metaColumns: ['timestamp'],
     slices: [
+      commonSlices.timestamp,
     ],
     defaultSliceValues: {
+      timestamp: [],
+    },
+  },
+  brawlerLeaderboard: {
+    id: 'brawlerLeaderboard',
+    table: 'player_brawler',
+    name: 'Brawler Leaderboard',
+    hidden: false,
+    dimensions: [
+      commonDimensions.player,
+      commonDimensions.brawlerId,
+    ],
+    defaultDimensionsIds: ['player'],
+    measurements: [
+      commonMeasurements.playerName,
+      commonMeasurements.playerIcon,
+      commonMeasurements.brawler,
+      commonMeasurements.highestTrophies,
+    ],
+    defaultMeasurementIds: ['highestTrophies'],
+    metaColumns: ['timestamp'],
+    slices: [
+      commonSlices.timestamp,
+    ],
+    defaultSliceValues: {
+      timestamp: [],
     },
   },
   brawler: {
     id: 'brawler',
     table: 'brawler',
-    name: 'Brawlers',
+    name: 'Raw Brawlers',
     hidden: true,
     dimensions: [
-      commonDimensions.player,
-      commonDimensions.brawler,
-      commonDimensions.season,
-      commonDimensions.day,
+      ...playerBrawlerDimensions,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
-      playerMeasurements.playerTrophies,
-      playerMeasurements.playerHighestTrophies,
-      brawlerMeasurements.trophies,
-      brawlerMeasurements.highestTrophies,
+      ...playerBrawlerMeasurements,
     ],
-    defaultMeasurementIds: ['highestTrophies'],
-    metaColumns: [],
+    defaultMeasurementIds: ['picks'],
+    metaColumns: ['timestamp'],
     slices: [
-      commonSlices.brawler,
-      commonSlices.playerName,
-      commonSlices.playerTag,
-      commonSlices.season,
+      ...playerBrawlerSlices,
     ],
     defaultSliceValues: {
-      brawler: ['SHELLY'],
-      playerName: [],
-      playerTag: [],
-      season: ['month'],
-      day: [],
+      ...playerBrawlerDefaultSliceValues,
     },
   },
   battle: {
@@ -977,51 +1277,35 @@ const cubes: Record<string, Cube> = {
     name: 'Raw Battles',
     hidden: true,
     dimensions: [
-      commonDimensions.player,
-      commonDimensions.brawler,
-      commonDimensions.season,
-      commonDimensions.day,
+      ...playerBrawlerDimensions,
       commonDimensions.mode,
       commonDimensions.map,
+      commonDimensions.powerplay,
     ],
-    defaultDimensionsIds: ['brawler'],
+    defaultDimensionsIds: ['player'],
     measurements: [
+      ...playerBrawlerMeasurements,
+      commonMeasurements.wins,
+      commonMeasurements.duration,
+      commonMeasurements.rank,
+      commonMeasurements.rank1,
       commonMeasurements.trophyChange,
       commonMeasurements.winRate,
-      commonMeasurements.wins,
-      commonMeasurements.picks,
-      commonMeasurements.pickRate,
-      commonMeasurements.useRate,
-      commonMeasurements.rank,
-      commonMeasurements.duration,
-      brawlerMeasurements.trophies,
-      playerMeasurements.playerTrophies,
-      playerMeasurements.playerHighestTrophies,
-      commonMeasurements.users,
-      commonMeasurements.brawler,
-      commonMeasurements.playerName,
+      // TODO
     ],
-    defaultMeasurementIds: ['winRate'],
-    metaColumns: [],
+    defaultMeasurementIds: ['picks'],
+    metaColumns: ['timestamp'],
     slices: [
-      commonSlices.season,
+      ...playerBrawlerSlices,
       commonSlices.mode,
       commonSlices.map,
       commonSlices.powerplay,
-      commonSlices.trophies,
-      commonSlices.playerName,
-      commonSlices.playerTag,
-      commonSlices.brawler,
     ],
     defaultSliceValues: {
-      season: ['month'],
+      ...playerBrawlerDefaultSliceValues,
       mode: [],
       map: [],
       powerplay: [],
-      trophies: [],
-      playerName: [],
-      playerTag: [],
-      day: [],
     },
   },
 }

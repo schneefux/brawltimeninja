@@ -40,7 +40,7 @@
             @input="v => onInputMeasurementsIds(index - 1, v)"
           >
             <option
-              v-if="index == 1 && measurements.length > 1"
+              v-if="index == 1 && measurements.length > 1 && measurements.length < 10"
               value=""
             >All</option>
             <option
