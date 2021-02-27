@@ -58,6 +58,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 ## Deployment
 
 * Dokku Docker options to connect services: `docker-options:add brawltime.ninja build,deploy,run "--add-host api.brawltime.ninja:host-gateway`
+* Mount asset directory: `storage:mount media.brawltime.ninja /mnt/brawltime/assets:/assets`
 
 ## Assets
 
