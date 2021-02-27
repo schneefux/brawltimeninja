@@ -15,7 +15,13 @@
     ignore-meta
   >
     <template v-slot="data">
+      <v-lineplot-raw
+        v-if="raw"
+        v-bind="{ ...data, ...$attrs }"
+        full-height
+      ></v-lineplot-raw>
       <v-lineplot
+        v-else
         v-bind="{ ...data, ...$attrs }"
         full-height
       ></v-lineplot>
@@ -36,6 +42,9 @@ export default Vue.extend({
     playerTag: {
       type: String,
       required: true
+    },
+    raw: {
+      type: Boolean
     },
   },
   data() {

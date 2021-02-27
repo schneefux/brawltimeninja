@@ -1,17 +1,10 @@
 <template>
-  <card
+  <vega
     v-if="show"
-    v-bind="$attrs"
-    slot="wrapper"
-  >
-    <vega
-      slot="content"
-      :spec="spec"
-      show-download
-      full-width
-      full-height
-    ></vega>
-  </card>
+    :spec="spec"
+    full-width
+    full-height
+  ></vega>
 </template>
 
 <script lang="ts">
