@@ -23,7 +23,7 @@ export default (context, inject) => {
   let supportsWebp = false
 
   if (process.server) {
-    supportsWebp = (context.req.headers['accept'] && context.req.headers['accept'].toLowerCase().includes('image/webp'))
+    supportsWebp = (context.req.headers['accept'] != undefined && context.req.headers['accept'].toLowerCase().includes('image/webp'))
   }
 
   if (process.client) {
