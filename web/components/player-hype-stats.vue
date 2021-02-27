@@ -202,18 +202,18 @@
           xxs
           @click="ratingHelpOpen = false"
         >
-          <p
+          <div
             slot="content"
             class="text-left"
           >
-            {{ $t('metric.accountRating.description') }}
+            <p>{{ $t('metric.accountRating.description') }}</p>
             <ul>
               <li
                 v-for="(info, rating) in ratingPercentiles"
                 :key="rating"
               >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
             </ul>
-          </p>
+          </div>
           <b-button
             slot="actions"
             primary
