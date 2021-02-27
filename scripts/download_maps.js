@@ -42,7 +42,7 @@ async function main() {
   await fs.mkdir('./out/maps', { recursive: true })
   for (const map of maps) {
     await streamPipeline((await fetch(map.imageUrl)).body, createWriteStream('./out/maps/' + map.id + '.png'))
-    await sleep(50)
+    await sleep(100)
   }
 
   const modes = (await getStarlistModes()).list
@@ -50,9 +50,9 @@ async function main() {
     const modeId = mode.name.toLowerCase().replace(/-| /g, '-')
     await fs.mkdir('./out/modes/' + modeId, { recursive: true })
     await streamPipeline((await fetch(mode.imageUrl)).body, createWriteStream('./out/modes/' + modeId + '/icon.png'))
-    await sleep(50)
+    await sleep(100)
     await streamPipeline((await fetch(mode.imageUrl2)).body, createWriteStream('./out/modes/' + modeId + '/background.png'))
-    await sleep(50)
+    await sleep(100)
   }
 }
 

@@ -187,17 +187,17 @@ async function main() {
 
     await streamPipeline((await fetch(brawler.imageUrl2)).body, createWriteStream(outDir + '/avatar.png'))
     await streamPipeline((await fetch('https://pixelcrux.com/Brawl_Stars/Images/Brawlers/Med/' + name.replace('8-Bit', '8-BIT') + '.png')).body, createWriteStream(outDir + '/model.png'))
-    await sleep(50)
+    await sleep(100)
 
     await fs.mkdir(outBase + '/starpowers', { recursive: true })
     await fs.mkdir(outBase + '/gadgets', { recursive: true })
     for (const sp of brawler.starPowers) {
       await streamPipeline((await fetch(sp.imageUrl)).body, createWriteStream(outBase + '/starpowers/' + sp.id + '.png'))
-      await sleep(50)
+      await sleep(100)
     }
     for (const sp of brawler.gadgets) {
       await streamPipeline((await fetch(sp.imageUrl)).body, createWriteStream(outBase + '/gadgets/' + sp.id + '.png'))
-      await sleep(50)
+      await sleep(100)
     }
   }
 }
