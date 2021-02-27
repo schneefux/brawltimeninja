@@ -245,6 +245,7 @@ export default Vue.extend({
       this.$emit('input', <State>{
         ...this.value,
         measurementsIds,
+        sortId: measurementsIds[0],
       })
       this.numMeasurements = measurementsIds.length
     },
