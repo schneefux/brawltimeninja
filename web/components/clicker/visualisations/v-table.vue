@@ -71,14 +71,22 @@ export default Vue.extend({
   },
   computed: {
     columns(): Column[] {
-      // TODO put each dimension into its own column
-      return (<Column[]>[{
-        title: this.dimensions.map(d => d.name).join(', '),
-        key: 'dimensions',
-      }]).concat(
-        this.measurements.map(m => ({
+      return this.dimensions.map((d, index) => (<Column>{
+        title: d.name,
+        key: `dimensions.${d.id}`,
+        ...(index == 0 ? {
+          // dimensions are rendered n:m
+          slot: 'dimensions',
+          colspan: this.dimensions.length,
+        } : {
+          skip: true,
+        }),
+      })).concat(
+        this.measurements.map(m => (<Column>{
+          // measurements are rendered 1:1
           title: m.name,
           key: `measurements.${m.id}`,
+          slot: `measurements.${m.id}`,
         })),
       )
     },

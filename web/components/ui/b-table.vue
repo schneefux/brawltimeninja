@@ -40,26 +40,21 @@
             scope="row"
             class="text-right pr-2 pt-1"
           >
-            <slot
-              name="index"
-              :index="r.index + 1"
-              :row="r"
-            >
-              {{ r.index + 1 }}
-            </slot>
+            {{ r.index + 1 }}
           </td>
           <td
-            v-for="(c, index) in columns"
+            v-for="(c, index) in columns.filter(c => c.skip != true)"
             :key="c.key"
             :class="['text-left pt-1', {
               'pr-1': index != columns.length - 1,
             }]"
+            :colspan="c.colspan || 1"
           >
             <slot
-              :name="c.key"
-              :row="r"
+              :name="c.slot"
+              :row="r.row"
             >
-              {{ c.key.split('.').reduce((a, b) => a[b], r) }}
+              {{ r.fields[index] }}
             </slot>
           </td>
         </tr>
@@ -79,8 +74,16 @@
 import Vue, { PropType } from 'vue'
 
 export interface Column {
+  /** column title */
   title: string
+  /** dot-path to property rendered in cell per default */
   key: string
+  /** cell slot to use instead. the slot receives a "row" prop. */
+  slot?: string
+  /** colspan of the cell */
+  colspan?: number
+  /** true: do not render cell */
+  skip?: boolean
 }
 
 export default Vue.extend({
@@ -122,8 +125,9 @@ export default Vue.extend({
       const offset = this.page * (this.pageSize || 0)
       const pageRows = this.pageSize == undefined ? this.rows : this.rows.slice(offset, (this.page+1)*this.pageSize)
       return pageRows.map((r, index) => ({
-        ...r,
         index: offset + index,
+        row: r,
+        fields: this.columns.map(c => c.key!.split('.').reduce((a, b) => a[b], r)),
       }))
     },
   },

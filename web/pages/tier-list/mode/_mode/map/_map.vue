@@ -2,7 +2,7 @@
   <page-dashboard
     :title="$tc('thing.tier-list.thing.long', 1, { thing: event.id != 0 ? $t('map.' + event.id) : event.map })"
   >
-    <p>{{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + mode) }) }}</p>
+    <p>{{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}</p>
     <p v-if="event.map.startsWith('Competition ')">
       {{ $t('tier-list.competition-info') }}
       <b-button

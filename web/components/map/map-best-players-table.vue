@@ -15,10 +15,14 @@
       <v-table
         :title="title"
         v-bind="{ ...data, ...$attrs }"
+        show-link
       >
         <template v-slot:dimensions="data">
           <d-player v-bind="data"></d-player>
           <d-brawler v-bind="data"></d-brawler>
+        </template>
+        <template v-slot:[`measurements.brawler`]="data">
+          <m-brawler v-bind="data"></m-brawler>
         </template>
       </v-table>
     </template>
@@ -30,6 +34,7 @@ import Vue from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DPlayer from '@/components/clicker/renderers/d-player.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '@/components/clicker/c-query.vue'
 import config from '@/lib/cube'
@@ -39,6 +44,7 @@ export default Vue.extend({
     VTable,
     DPlayer,
     DBrawler,
+    MBrawler,
     CQuery,
     BrawlerLink,
   },

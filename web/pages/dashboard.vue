@@ -13,6 +13,9 @@
         <d-season v-bind="data"></d-season>
         <d-player v-bind="data"></d-player>
       </template>
+      <template v-slot:[`measurements.brawler`]="data">
+        <m-brawler v-bind="data"></m-brawler>
+      </template>
       <template v-slot:slices="data">
         <s-season v-bind="data"></s-season>
         <s-mode-map v-bind="data"></s-mode-map>
@@ -61,6 +64,7 @@ import VLastUpdate from '@/components/clicker/renderers/v-last-update.vue'
 import VMoe from '@/components/clicker/renderers/v-moe.vue'
 import VSampleSize from '@/components/clicker/renderers/v-sample-size.vue'
 import VMeasureDescription from '@/components/clicker/renderers/v-measure-description.vue'
+import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
 
 export default Vue.extend({
   components: {
@@ -87,6 +91,7 @@ export default Vue.extend({
     VMoe,
     VSampleSize,
     VMeasureDescription,
+    MBrawler,
   },
   data() {
     return {

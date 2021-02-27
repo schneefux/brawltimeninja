@@ -647,6 +647,19 @@ export const commonMeasurements: Record<string, Measurement> = {
     type: 'quantitative',
   },
   trophies: playerMeasurements.playerTrophies,
+  brawler: {
+    id: 'brawler',
+    name: 'Brawler',
+    nameShort: 'Brawler',
+    icon: '',
+    description: '',
+    formatter: n => capitalizeWords((n as unknown as string).toLowerCase()),
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'brawler_name',
+    type: 'nominal',
+  },
 }
 
 const brawlerBattleMeasurements = {
@@ -969,11 +982,14 @@ const cubes: Record<string, Cube> = {
       brawlerMeasurements.trophies,
       playerMeasurements.playerTrophies,
       playerMeasurements.playerHighestTrophies,
+      commonMeasurements.brawler,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       commonSlices.season,
+      commonSlices.mode,
+      commonSlices.map,
       commonSlices.powerplay,
       commonSlices.trophies,
       commonSlices.playerName,
@@ -981,6 +997,8 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       season: ['month'],
+      mode: [],
+      map: [],
       powerplay: [],
       trophies: [],
       playerName: [],

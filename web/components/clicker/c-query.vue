@@ -118,7 +118,7 @@ export default Vue.extend({
 
       if (sortMeasurement != undefined) {
         data = this.$clicker.compareEntries(left, right, 'diff')
-          .sort((e1, e2) => sortMeasurement.sign * (e1.measurementsRaw[sortMeasurement.id] - e2.measurementsRaw[sortMeasurement.id]))
+          .sort((e1, e2) => sortMeasurement.sign * ((e1.measurementsRaw[sortMeasurement.id] as number) - (e2.measurementsRaw[sortMeasurement.id] as number)))
       }
       if (sortDimension != undefined) {
         data = this.$clicker.compareEntries(left, right, 'diff')

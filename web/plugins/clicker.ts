@@ -380,7 +380,7 @@ export default (context, inject) => {
         for (const m of measurements) {
           if ('percentage' in m) {
             // m is a measurement
-            const measurement =  row[m.column] / (m.percentage ? totals[m.column] : 1)
+            const measurement = m.percentage ? row[m.column] / totals[m.column] : row[m.column]
             entry.measurementsRaw[m.id] = measurement
             entry.measurements[m.id] = m.formatter(measurement)
           } else {
@@ -412,13 +412,13 @@ export default (context, inject) => {
           if (baseEntry == undefined) {
             return undefined
           }
-          const measurementsRaw: Record<string, number> = {}
+          const measurementsRaw: Record<string, number|string> = {}
           const measurements: Record<string, string> = {}
 
           for (const m in baseEntry.measurements) {
             if (mode == 'diff') {
-              measurementsRaw[m] = comparingEntry.measurementsRaw[m] - baseEntry.measurementsRaw[m]
-              measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + commonMeasurements[m].formatter(measurementsRaw[m])
+              measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
+              measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + commonMeasurements[m].formatter(measurementsRaw[m] as number)
             }
 
             // TODO implement z-test again

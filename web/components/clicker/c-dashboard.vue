@@ -49,9 +49,13 @@
               v-bind="data"
             ></slot>
           </template>
-          <template v-slot:measurements="data">
+          <template
+            v-for="(_, name) in $scopedSlots"
+            v-slot:[name]="data"
+          >
             <slot
-              name="measurements"
+              v-if="name.startsWith('measurements.')"
+              :name="name"
               v-bind="data"
             ></slot>
           </template>
