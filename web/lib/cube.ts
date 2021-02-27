@@ -92,7 +92,7 @@ const commonDimensions: Record<string, Dimension> = {
     name: 'Player',
     formatter: (p: any) => p.player_name,
     column: 'player_id',
-    anyColumns: ['player_name', 'player_tag', 'player_icon_id'],
+    anyColumns: ['player_name', /* 'player_tag', FIXME */ 'player_icon_id'],
     hidden: false,
     type: 'nominal',
   },

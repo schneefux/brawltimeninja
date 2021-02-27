@@ -11,6 +11,7 @@
         <d-mode v-bind="data"></d-mode>
         <d-map v-bind="data"></d-map>
         <d-season v-bind="data"></d-season>
+        <d-player v-bind="data"></d-player>
       </template>
       <template v-slot:slices="data">
         <s-season v-bind="data"></s-season>
@@ -45,6 +46,7 @@ import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import DMode from '@/components/clicker/renderers/d-mode.vue'
 import DMap from '@/components/clicker/renderers/d-map.vue'
 import DSeason from '@/components/clicker/renderers/d-season.vue'
+import DPlayer from '@/components/clicker/renderers/d-player.vue'
 import SModeMap from '@/components/clicker/renderers/s-mode-map.vue'
 import SCompetitionMaps from '@/components/clicker/renderers/s-competition-maps.vue'
 import SAlly from '@/components/clicker/renderers/s-ally.vue'
@@ -70,6 +72,7 @@ export default Vue.extend({
     DMode,
     DMap,
     DSeason,
+    DPlayer,
     SModeMap,
     SCompetitionMaps,
     SAlly,
