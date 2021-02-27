@@ -165,7 +165,7 @@ export default Vue.extend({
       this.result = await embed(this.$refs.graph as HTMLElement, spec, {
         actions: false,
         // canvas: better performance, svg: easily zoomable
-        renderer: 'canvas',
+        renderer: 'svg',
       })
     },
   },

@@ -1,16 +1,24 @@
 <template>
   <card
-    v-if="show"
+    v-if="show && raw != true"
     v-bind="$attrs"
+    slot="wrapper"
   >
     <vega
       slot="content"
       :spec="spec"
+      show-download
       full-width
       full-height
-      show-download
     ></vega>
   </card>
+
+  <vega
+    v-else
+    :spec="spec"
+    full-width
+    full-height
+  ></vega>
 </template>
 
 <script lang="ts">
@@ -33,6 +41,9 @@ export default Vue.extend({
     data: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true,
+    },
+    raw: {
+      type: Boolean
     },
   },
   computed: {

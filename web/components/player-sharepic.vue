@@ -55,10 +55,12 @@
             </span>
           </div>
 
-          <history-graph
-            :player-tag="player.tag"
-            class="mt-2 -ml-4 w-80 h-28"
-          ></history-graph>
+          <div class="mt-2 -ml-4 w-80 h-28">
+            <history-graph
+              :player-tag="player.tag"
+              raw
+            ></history-graph>
+          </div>
         </div>
 
         <div class="w-1/2 pl-1">
