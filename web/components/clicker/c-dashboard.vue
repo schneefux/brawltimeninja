@@ -43,25 +43,13 @@
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
-          <template v-slot:dimensions="data">
-            <slot
-              name="dimensions"
-              v-bind="data"
-            ></slot>
-          </template>
           <template
             v-for="(_, name) in $scopedSlots"
             v-slot:[name]="data"
           >
             <slot
-              v-if="name.startsWith('measurements.')"
+              v-if="name == 'dimensions' || name == 'visualisations' || name.startsWith('measurements.')"
               :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-          <template v-slot:visualisations="data">
-            <slot
-              name="visualisations"
               v-bind="data"
             ></slot>
           </template>
