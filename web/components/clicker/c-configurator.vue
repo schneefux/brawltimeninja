@@ -286,7 +286,9 @@ export default Vue.extend({
       return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
     },
     canCompare(): boolean {
-      return this.measurements.every(m => m.type == 'quantitative')
+      return this.measurements
+        .filter(m => this.value.measurementsIds.includes(m.id))
+        .every(m => m.type == 'quantitative')
     },
     faPlus() {
       return faPlus
