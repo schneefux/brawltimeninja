@@ -5,7 +5,7 @@ import { MapMetaMap } from '~/model/MetaEntry';
 import { MapMetaRow, LeaderboardRow } from '~/model/Clicker';
 import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
-const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
+const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const clickerUrl = process.env.CLICKER_URL || '';
