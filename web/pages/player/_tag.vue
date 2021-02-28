@@ -149,7 +149,7 @@
       <player-battles
         v-show="props.open"
         :player="player"
-        :limit="props.page * 6"
+        :limit="(props.page || 1) * 6"
       ></player-battles>
     </player-teaser-card>
 
