@@ -27,12 +27,14 @@ export interface BrawlerData {
   main: Skill
   super: Skill
 
-  starpowerDescriptions: {
-    [key: string]: string
-  }
-  gadgetDescriptions: {
-    [key: string]: string
-  }
+  starpowerDescriptions: Record<string, {
+    name: string
+    description: string
+  }>
+  gadgetDescriptions: Record<string, {
+    name: string
+    description: string
+  }>
 }
 
 // from the game files

@@ -1,19 +1,4 @@
-import { BattleMeasures } from "./Clicker"
 import { Player as BrawlstarsPlayer } from "./Brawlstars"
-
-export interface PlayerModeWinrates {
-  [id: string]: {
-    name: string
-    stats: BattleMeasures
-  }
-}
-
-export interface PlayerBrawlerWinrates {
-  [id: string]: {
-    name: string
-    stats: BattleMeasures
-  }
-}
 
 export interface StarPower {
   id: number
@@ -56,18 +41,6 @@ export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
   hoursSpent: number;
   brawlers: Record<string, Brawler>
   battles: Battle[];
-}
-
-interface Sample {
-  sampleSize: number;
-  stats: {
-    [stat: string]: number;
-  }
-}
-
-export interface BrawlerMetaStatistics extends Sample {
-  id: string;
-  name: string;
 }
 
 export interface ActiveEvent {
