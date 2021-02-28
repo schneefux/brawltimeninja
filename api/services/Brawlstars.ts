@@ -1,9 +1,9 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
 import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util';
-import { MapMap, MapMetaMap } from '~/model/MetaEntry';
-import { BrawlerMetaRow, MapMetaRow, LeaderboardRow, BrawlerStatisticsRows } from '~/model/Clicker';
-import { Battle, Brawler, Player, BrawlerMetaStatistics, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
+import { MapMetaMap } from '~/model/MetaEntry';
+import { MapMetaRow, LeaderboardRow } from '~/model/Clicker';
+import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.starlist.pro/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -51,22 +51,6 @@ export default class BrawlstarsService {
       current: mapper(response.active),
       upcoming: mapper(response.upcoming),
     }
-  }
-
-  /**
-   * Return event meta information without actual Brawlers and win rates.
-   */
-  public async getAllEvents() {
-    const meta = await this.getMapMeta({}, '0', '99')
-    const metaData = {} as MapMap
-    Object.entries(meta).forEach(([eventId, event]) => {
-      metaData[eventId] = {
-        mode: event.mode,
-        map: event.map,
-        sampleSize: event.sampleSize,
-      };
-    })
-    return metaData
   }
 
   public async getLeaderboard(metric: string): Promise<Leaderboard> {
@@ -148,52 +132,7 @@ export default class BrawlstarsService {
     };
   }
 
-  public async getBrawlerMeta(trophyrangeLower: string, trophyrangeHigher: string) {
-    if (clickerUrl == '') {
-      return [];
-    }
-
-    const meta = await request<BrawlerMetaRow[]>(
-      '/meta/brawler',
-      clickerUrl,
-      'fetch_brawler_meta',
-      { trophyrangeLower, trophyrangeHigher },
-      {},
-      60000,
-    );
-
-    const sumPicks = meta.reduce((sum, entry) => sum + entry.picks, 0);
-    const sumPicksWeighted = meta.reduce((sum, entry) => sum + entry.picksWeighted, 0);
-    return meta.map((entry) => ({
-      id: brawlerId({ name: entry.brawlerName }),
-      name: entry.brawlerName,
-      sampleSize: entry.picks,
-      stats: {
-        winRate: entry.winRate,
-        starRate: entry.starRate,
-        pickRate: entry.picks / sumPicks,
-        useRate: entry.picksWeighted / sumPicksWeighted,
-      },
-    }) as BrawlerMetaStatistics)
-  }
-
-  public async getBrawlerStatistics(id: string) {
-    // name is validated by clicker
-    if (clickerUrl == '') {
-      return [];
-    }
-
-    return await request<BrawlerStatisticsRows>(
-      '/brawler/' + id,
-      clickerUrl,
-      'fetch_brawler_statistics',
-      {},
-      {},
-      60000,
-    );
-  }
-
-  public async getMapMeta(filters: { [name: string]: string }, trophyrangeLower: string, trophyrangeHigher: string) {
+  public async getActiveMapMeta() {
     if (clickerUrl == '') {
       return {};
     }
@@ -202,7 +141,7 @@ export default class BrawlstarsService {
       '/meta/map',
       clickerUrl,
       'fetch_map_meta',
-      { trophyrangeLower, trophyrangeHigher },
+      {},
       {},
       60000,
     );
@@ -270,43 +209,16 @@ export default class BrawlstarsService {
     }), <MapMetaMap>{});
 
     let filterIds = [] as string[];
-    if (filters.current !== undefined || filters.upcoming !== undefined) {
-      const events = await this.getActiveEvents();
+    const events = await this.getActiveEvents();
 
-      if (filters.current !== undefined) {
-        const eventIds = events.current.map(({ id }) => id);
-        filterIds = filterIds.concat(eventIds)
+    filterIds = filterIds.concat(events.current.map(({ id }) => id))
+    filterIds = filterIds.concat(events.upcoming.map(({ id }) => id))
+
+    Object.keys(mapMeta).forEach((eventId) => {
+      if (!filterIds.includes(eventId)) {
+        delete mapMeta[eventId];
       }
-
-      if (filters.upcoming !== undefined) {
-        const eventIds = events.upcoming.map(({ id }) => id);
-        filterIds = filterIds.concat(eventIds)
-      }
-    }
-
-    if (filters.include !== undefined) {
-      const eventIds = filters.include.split(',');
-      filterIds = filterIds.concat(eventIds)
-    }
-
-    if (filterIds.length > 0) {
-      Object.keys(mapMeta).forEach((eventId) => {
-        if (!filterIds.includes(eventId)) {
-          delete mapMeta[eventId];
-        }
-      });
-    }
-
-    if (filters.mode !== undefined) {
-      const mode = filters.mode.toLowerCase()
-        .replace(/ /g, '')
-        .replace(/^showdown$/, 'soloshowdown');
-      Object.entries(mapMeta).forEach(([eventId, event]) => {
-        if (event.mode.toLowerCase().replace(/ /g, '') != mode) {
-          delete mapMeta[eventId];
-        }
-      });
-    }
+    });
 
     return mapMeta;
   }

@@ -51,7 +51,7 @@ export default {
   },
   async created() {
     try {
-      await this.$axios.$get('/api/events')
+      await this.$axios.$get('/api/player/V8LLPPC')
       this.status = 'up'
     } catch {
       this.status = 'down'
