@@ -50,7 +50,8 @@ export class TeamCube extends SynergyMetaCube {
       dimensions: string[],
       slices: Partial<Record<string, string[]>> = {} as any,
       order: Partial<Record<string, Order>> = {},
-      limit?: number): Promise<{ data: any[], totals: any, statistics: Record<string, number> }> {
+      totals: boolean,
+      limit?: number): Promise<{ data: any[], totals?: any, statistics: Record<string, number> }> {
     // TODO add more features (measures and dimensions)
     const allowedMeasures = ['picks', 'wins', 'battle_victory', 'timestamp']
     if (dimensions.length != 1 || dimensions[0] != 'brawler_names') {
@@ -74,10 +75,10 @@ export class TeamCube extends SynergyMetaCube {
     const pairData = await this.synergyCube.query(name, ['picks', 'wins'], ['brawler_name', 'ally_brawler_name'], slices)
 
     // H(brawler) and H
-    const data = await this.mapMetaCube.query(name, ['picks', 'wins'], ['brawler_name'], slices)
+    const data = await this.mapMetaCube.query(name, ['picks', 'wins'], ['brawler_name'], slices, undefined, true)
 
-    const totalSampleSize = data.totals.picks
-    const totalTimestamp = data.totals.timestamp
+    const totalSampleSize = data.totals!.picks
+    const totalTimestamp = data.totals!.timestamp
 
     // H(ally_brawler,brawler)
     const pairMap = new Map<string, Map<string, PicksWins>>()
@@ -169,10 +170,12 @@ export class TeamCube extends SynergyMetaCube {
 
     return {
       data: rows,
-      totals: {
-        timestamp: totalTimestamp,
-        picks: totalSampleSize,
-      },
+      ...(totals ? {
+        totals: {
+          timestamp: totalTimestamp,
+          picks: totalSampleSize,
+        },
+      } : {}),
       statistics: {},
     }
   }

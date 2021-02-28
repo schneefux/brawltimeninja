@@ -75,12 +75,13 @@ app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, re
   const cache = parseInt(query['cache'] || req.header('x-brawltime-cache') || '60')
   const name = query['name'] || req.header('x-brawltime-tag')
   const format = query['format']
+  const totals = query['totals'] == 'true'
 
   res.header('Cache-Control', `public, stale-while-revalidate=${cache/10}, stale-if-error=${cache}`)
   res.header('Last-Modified', new Date().toUTCString())
   res.header('Expires', new Date(Date.now() + cache * 1000).toUTCString())
   try {
-    const data = await service.queryCube(cubeName, measures, dimensions, slices, order, limit, name, format)
+    const data = await service.queryCube(cubeName, measures, dimensions, slices, order, limit, totals, name, format)
     if (typeof data == 'string') {
       res.header('Content-Type', 'text/csv')
       res.header('Content-Disposition', `attachment; filename=${name}.csv`)

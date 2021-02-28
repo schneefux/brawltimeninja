@@ -304,7 +304,7 @@ export default class ClickerService {
 
       // to debug encoding errors:
       // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         stats.increment('player.insert.run')
         if (battleStream.write(record)) {
           return resolve()
@@ -356,7 +356,7 @@ export default class ClickerService {
         brawler_gadgets_length: brawler.gadgets.length,
       }
 
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         stats.increment('brawler.insert.run')
         if (brawlerStream.write(record)) {
           return resolve()
@@ -400,6 +400,7 @@ export default class ClickerService {
         'timestamp': [formatClickhouse(oneWeekAgo)],
       },
       { [metricMeasure]: 'desc' },
+      false,
       limit,
     )
 
@@ -435,6 +436,7 @@ export default class ClickerService {
         'timestamp': [formatClickhouse(oneWeekAgo)],
       },
       { [metricMeasure]: 'desc' },
+      false,
       limit,
     )
 
@@ -523,18 +525,24 @@ export default class ClickerService {
       slices: { [name: string]: string[] },
       order: { [column: string]: Order },
       limit: number,
+      totals: boolean|undefined,
       name: string|undefined,
       format: string|undefined) {
     const cube = this.getCubeByName(cubeName)
     limit = Math.min(1000, limit)
 
-    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, format)
+    if (format == 'totals') {
+      totals = true
+    }
+
+    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, totals, format)
     const data = await cube.query(
       name || 'cube.' + cubeName + '.' + dimensions.join(','),
       measures,
       dimensions,
       slices,
       order,
+      totals,
       limit,
     )
 

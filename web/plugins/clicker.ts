@@ -61,7 +61,8 @@ interface Clicker {
       sort?: Record<string, string>,
       limit?: number,
       cache?: number,
-    }): Promise<{ data: T[], totals: T, statistics: Record<string, number> }>
+      totals?: boolean,
+    }): Promise<{ data: T[], totals?: T, statistics: Record<string, number> }>
   queryActiveEvents(): Promise<EventMetadata[]>,
   queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>
@@ -79,7 +80,7 @@ interface Clicker {
     pairData: Map<string, Map<string, PicksWins>>,
   }>
   constructQuery(dimensions: Dimension[], measurements: Measurement[], slices: Slice[], slicesValues: SliceValue, metaColumns: string[]): { dimensions: string[], measurements: string[], slices: Record<string, string[]> }
-  mapToMetaGridEntry(dimensions: Dimension[], measurements: Measurement[], rows: any[], totals: any, metaColumns: string[]): MetaGridEntry[]
+  mapToMetaGridEntry(dimensions: Dimension[], measurements: Measurement[], rows: any[], totals: any|undefined, metaColumns: string[]): MetaGridEntry[]
   compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
   stateToLocation(state: Partial<State>): Location
   locationToState(location: Route, config: Config): State
@@ -143,6 +144,9 @@ export default (context, inject) => {
       }
       if (options.limit != undefined) {
         query.append('limit', options.limit.toString())
+      }
+      if (options.totals == true) {
+        query.append('totals', options.totals.toString())
       }
       if (name != undefined) {
         headers['x-brawltime-tag'] = name
@@ -288,10 +292,13 @@ export default (context, inject) => {
         ['brawler_name'],
         ['wins', 'picks', 'timestamp'],
         slices,
-        { cache: 60*60 })
+        {
+          cache: 60*60,
+          totals: true,
+        })
 
-      const totalSampleSize = data.totals.picks
-      const totalTimestamp = data.totals.timestamp
+      const totalSampleSize = data.totals!.picks
+      const totalTimestamp = data.totals!.timestamp
 
       // H(ally_brawler,brawler)
       const pairMap = new Map<string, Map<string, PicksWins>>()
@@ -309,8 +316,8 @@ export default (context, inject) => {
       data.data.forEach((row) => dataMap.set(row.brawler_name, row))
       // H
       const totals: PicksWins = {
-        picks: data.totals.picks,
-        wins: data.totals.wins,
+        picks: data.totals!.picks,
+        wins: data.totals!.wins,
       }
 
       return {
@@ -380,7 +387,7 @@ export default (context, inject) => {
         for (const m of measurements) {
           if ('percentage' in m) {
             // m is a measurement
-            const measurement = m.percentage ? row[m.column] / totals[m.column] : row[m.column]
+            const measurement = m.percentage ? row[m.column] / totals![m.column] : row[m.column]
             entry.measurementsRaw[m.id] = measurement
             entry.measurements[m.id] = m.formatter(measurement)
           } else {

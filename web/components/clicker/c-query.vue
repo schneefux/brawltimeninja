@@ -78,6 +78,8 @@ export default Vue.extend({
         return measurement
       })
 
+    const needTotals = measurements.some(m => m.percentage)
+
     const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
       ...cube.defaultSliceValues,
       ...this.state.slices,
@@ -91,9 +93,10 @@ export default Vue.extend({
         } : {}),
         cache: 60*30,
         limit: this.limit,
+        totals: needTotals,
       })
 
-    let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals, this.ignoreMeta ? [] : cube.metaColumns)
+    let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals || {}, this.ignoreMeta ? [] : cube.metaColumns)
 
     if (this.state.comparing) {
       const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
@@ -109,9 +112,10 @@ export default Vue.extend({
           } : {}),
           cache: 60*30,
           limit: this.limit,
+          totals: needTotals,
         })
 
-      const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals, this.ignoreMeta ? [] : cube.metaColumns)
+      const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals || {}, this.ignoreMeta ? [] : cube.metaColumns)
 
       // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
       let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]

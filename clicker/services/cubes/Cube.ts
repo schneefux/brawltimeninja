@@ -29,7 +29,7 @@ export default abstract class Cube {
     return await ch2.query(sql).toPromise() as T[]
   }
 
-  public abstract async up(ch2: ClickHouse2): Promise<void>
+  public abstract up(ch2: ClickHouse2): Promise<void>
 
   private measureQuery(key: string) {
     return this.knex.raw(this.measures[key].replace(/\$TABLE/g, this.table))
@@ -41,7 +41,8 @@ export default abstract class Cube {
       dimensions: string[],
       slices: Partial<Record<string, string[]>> = {} as any,
       order: Partial<Record<string, Order>> = {},
-      limit?: number): Promise<{ data: R[], totals: R, statistics: Record<string, number> }> {
+      totals: boolean = false,
+      limit?: number): Promise<{ data: R[], totals?: R, statistics: Record<string, number> }> {
     if (measures.length == 1 && measures[0] == '*') {
       measures = Object.keys(this.measures)
     }
@@ -108,7 +109,7 @@ export default abstract class Cube {
       query = query.limit(limit)
     }
 
-    if (dimensions.length > 0) {
+    if (dimensions.length > 0 && totals) {
       query = query.groupByRaw('PLACEHOLDER')
     }
 
