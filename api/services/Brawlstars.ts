@@ -223,7 +223,7 @@ export default class BrawlstarsService {
     return mapMeta;
   }
 
-  public async getPlayerStatistics(tag: string) {
+  public async getPlayerStatistics(tag: string, store: boolean) {
     const player = await request<BrawlstarsPlayer>(
       'players/%23' + tag,
       getApiUrl(tag),
@@ -328,7 +328,7 @@ export default class BrawlstarsService {
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
-    if (clickerUrl != '') {
+    if (clickerUrl != '' && store) {
       console.time('post battles to clicker ' + tag)
       // do not await - process in background and resolve early
       post<null>(

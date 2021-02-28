@@ -1,4 +1,6 @@
 import Router from 'koa-router';
+import isbot from 'isbot';
+import StatsD from 'hot-shots';
 
 import BrawlstarsService from '../services/Brawlstars';
 
@@ -6,9 +8,18 @@ const service = new BrawlstarsService();
 
 const router = new Router();
 
+const stats = new StatsD({ prefix: 'brawltime.api.' });
+
 router.get('/player/:tag', async (ctx, next) => {
+  const bot = isbot(ctx.req.headers['user-agent'] || '')
+  if (bot) {
+    stats.increment('player.bot')
+  } else {
+    stats.increment('player.human')
+  }
+
   try {
-    ctx.body = await service.getPlayerStatistics(ctx.params.tag);
+    ctx.body = await service.getPlayerStatistics(ctx.params.tag, !bot);
     ctx.set('Cache-Control', 'public, max-age=180');
   } catch (error) {
     console.log(error);
