@@ -5,13 +5,13 @@
     class="flex items-center"
   >
     <div
-      :class="['w-6 sm:w-8 md:w-10 relative', {
-        'mr-2': props.captioned,
+      :class="['relative', {
+        'pr-3 md:pr-4': props.starpowerId != undefined || props.gadgetId != undefined,
       }]"
     >
       <media-img
         :path="`/brawlers/${props.brawlerId({ name: props.brawler })}/avatar`"
-        :alt="props.capitalizeWords(props.brawler)"
+        :alt="props.capitalizeWords(props.brawler.toLowerCase())"
         size="160"
         clazz="h-6 sm:h-8 md:h-10"
       ></media-img>
@@ -32,7 +32,7 @@
     </div>
     <span
       v-if="props.captioned"
-      class="w-16 md:w-24"
+      class="ml-2 w-16 md:w-24"
     >{{ props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler) }}</span>
   </router-link>
 </template>

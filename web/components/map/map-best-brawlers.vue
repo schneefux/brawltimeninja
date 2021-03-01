@@ -1,27 +1,46 @@
 <template>
-  <brawlers-row
-    :brawlers="data"
-    :loading="$fetchState.pending"
-    class="mx-auto h-14 w-72"
+  <c-query
+    :config="config"
+    :state="{
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      measurementsIds: ['winRateAdj'],
+      slices: {
+        map: map != undefined ? [map] : [],
+        mode: mode != undefined ? [mode] : [],
+        powerplay: powerplay != undefined ? [powerplay] : [],
+        season: season != undefined ? [season] : [],
+      },
+      sortId: 'winRateAdj',
+    }"
+    :limit="limit"
   >
-    <template v-slot="{ brawler }">
-      {{ commonMeasurements.winRate.formatter(brawler.battle_victory) }}
-      {{ $t('metric.winRate.short') }}
+    <shimmer
+      slot="placeholder"
+      width-px="265"
+      height-px="72"
+      loading
+    ></shimmer>
+    <template v-slot="data">
+      <v-roll
+        v-bind="{ ...data, ...$attrs }"
+      >
+        <template v-slot:dimensions="data">
+          <d-brawler v-bind="data"></d-brawler>
+        </template>
+      </v-roll>
     </template>
-  </brawlers-row>
+  </c-query>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMeasurements } from '~/lib/cube'
-import { brawlerId } from '~/lib/util'
-
-interface Row {
-  brawler_name: string
-  battle_victory: number
-}
+import config from '~/lib/cube'
+import BrawlerLink from '~/components/brawler/brawler-link.vue'
+import DBrawler from '~/components/clicker/renderers/d-brawler.vue'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     map: {
       type: String,
@@ -40,53 +59,14 @@ export default Vue.extend({
       default: 5
     },
   },
+  components: {
+    DBrawler,
+    BrawlerLink,
+  },
   data() {
     return {
-      data: [] as Row[],
+      config,
     }
-  },
-  watch: {
-    map: '$fetch',
-    mode: '$fetch',
-    season: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    this.data = []
-
-    const data = await this.$clicker.query('meta.map.best', 'map',
-      ['brawler_name'],
-      ['battle_victory'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        ...(this.map != undefined ? {
-          battle_event_map: [this.map],
-        } : {}),
-        ...(this.mode != undefined ? {
-          battle_event_mode: [this.mode],
-        } : {}),
-        ...(this.powerplay == true ? {
-          battle_event_powerplay: ['true'],
-        } : {}),
-        ...(this.season != undefined ? {
-          trophy_season_end: undefined,
-          trophy_season_end_exact: [this.season],
-        } : {}),
-      },
-      {
-        sort: { battle_victory_adj: 'desc' },
-        limit: this.limit,
-        cache: 60*10,
-      })
-    this.data = data.data as any
-  },
-  computed: {
-    brawlerId() {
-      return brawlerId
-    },
-    commonMeasurements() {
-      return commonMeasurements
-    },
   },
 })
 </script>

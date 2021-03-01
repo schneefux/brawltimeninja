@@ -1,6 +1,10 @@
 <template>
   <div class="contents">
     <slot
+      v-if="result == undefined"
+      name="placeholder"
+    ></slot>
+    <slot
       v-if="result != undefined"
       :state="state"
       :comparing="state.comparing"

@@ -25,7 +25,8 @@
         >
           <div class="mb-4 mr-2">
             <div class="my-1">
-              <slot name="dimensions"
+              <slot
+                name="dimensions"
                 :row="entry"
               ></slot>
             </div>

@@ -35,6 +35,9 @@ module.exports = {
         160: '40rem',
         180: '50rem',
       },
+      fontSize: {
+        '2xs': ['0.625rem', { lineHeight: '0.75rem' }],
+      },
     },
   },
   variants: {},

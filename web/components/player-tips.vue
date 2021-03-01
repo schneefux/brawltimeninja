@@ -13,7 +13,7 @@
 import Vue, { PropType } from 'vue'
 import { capitalizeWords, getBestBrawlers } from '@/lib/util'
 import { MapMeta, MapMetaMap } from '../model/MetaEntry'
-import { Player, BrawlerMetaStatistics } from '@/model/Api'
+import { Player } from '@/model/Api'
 
 interface Recommendation {
   id: string
@@ -70,7 +70,7 @@ export default Vue.extend({
       Object.entries(this.activeMapMeta).forEach(([id, mapMeta]) => {
         const meta = mapMeta as MapMeta
 
-        const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers).map(v => ({ ...v, id: v.name }))) as BrawlerMetaStatistics[]
+        const bestBrawlers = getBestBrawlers(Object.values(meta.brawlers).map(v => ({ ...v, id: v.name }))) as any[]
         worstBrawlers.forEach((worstBrawler, worstBrawlerIndex) => {
           const bestBrawlerIndex = bestBrawlers.findIndex(b => b.name.toLowerCase() == worstBrawler.name.toLowerCase())
           if (bestBrawlerIndex == -1) {
