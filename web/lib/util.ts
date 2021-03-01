@@ -1,7 +1,7 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
-import { BrawlerMetaStatistics, ActiveEvent } from "~/model/Api";
+import { ActiveEvent } from "~/model/Api";
 import { Measurement } from "./cube";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -115,7 +115,7 @@ export function getBest(meta: MapMetaMap|ModeMetaMap): { [key: string]: unknown[
     }), {})
 }
 
-export function getBestBrawlers(brawlers: BrawlerMetaStatistics[]): BrawlerMetaStatistics[] {
+export function getBestBrawlers(brawlers: any[]): any[] {
   const sampleSizeThreshold = 300
   brawlers = brawlers.filter(brawler => brawler.sampleSize >= sampleSizeThreshold)
   if (brawlers.length == 0) {
