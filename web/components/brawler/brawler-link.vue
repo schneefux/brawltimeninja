@@ -1,10 +1,14 @@
 <template functional>
   <router-link
     :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.brawler })}`)"
-    :title="props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler)"
+    :title="props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase())"
     class="flex items-center"
   >
-    <div class="mr-2 w-10 sm:w-12 md:w-14 relative">
+    <div
+      :class="['w-6 sm:w-8 md:w-10 relative', {
+        'mr-2': props.captioned,
+      }]"
+    >
       <media-img
         :path="`/brawlers/${props.brawlerId({ name: props.brawler })}/avatar`"
         :alt="props.capitalizeWords(props.brawler)"
