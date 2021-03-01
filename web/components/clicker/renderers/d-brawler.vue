@@ -6,7 +6,7 @@
     :starpower-id="(props.row.dimensionsRaw.starpower || {}).brawler_starpower_id"
     :gadget-name="props.row.dimensions.gadget"
     :gadget-id="(props.row.dimensionsRaw.gadget || {}).brawler_gadget_id"
-    :caption="props.captioned"
+    :captioned="props.captioned"
   ></brawler-link>
 </template>
 
