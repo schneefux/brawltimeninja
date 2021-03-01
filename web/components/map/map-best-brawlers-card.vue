@@ -37,6 +37,7 @@
       slot="content"
       :mode="mode"
       :map="map"
+      :powerplay="powerplay"
       class="my-4"
     ></map-best-brawlers>
 

@@ -32,6 +32,9 @@ export default Vue.extend({
     season: {
       type: String,
     },
+    powerplay: {
+      type: Boolean,
+    },
     limit: {
       type: Number,
       default: 5
@@ -61,6 +64,9 @@ export default Vue.extend({
         } : {}),
         ...(this.mode != undefined ? {
           battle_event_mode: [this.mode],
+        } : {}),
+        ...(this.powerplay == true ? {
+          battle_event_powerplay: ['true'],
         } : {}),
         ...(this.season != undefined ? {
           trophy_season_end: undefined,
