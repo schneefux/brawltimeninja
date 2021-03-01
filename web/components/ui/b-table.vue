@@ -43,10 +43,10 @@
             {{ r.index + 1 }}
           </td>
           <td
-            v-for="(c, index) in columns.filter(c => c.skip != true)"
+            v-for="c in renderedColumns"
             :key="c.key"
             :class="['text-left pt-1', {
-              'pr-1': index != columns.length - 1,
+              'pr-1': c.index != columns.length - 1,
             }]"
             :colspan="c.colspan || 1"
           >
@@ -54,7 +54,7 @@
               :name="c.slot"
               :row="r.row"
             >
-              {{ r.fields[index] }}
+              {{ r.fields[c.index] }}
             </slot>
           </td>
         </tr>
@@ -84,6 +84,10 @@ export interface Column {
   colspan?: number
   /** true: do not render cell */
   skip?: boolean
+}
+
+interface IndexedColumn extends Column {
+  index: number
 }
 
 export default Vue.extend({
@@ -129,6 +133,14 @@ export default Vue.extend({
         row: r,
         fields: this.columns.map(c => c.key!.split('.').reduce((a, b) => a[b], r)),
       }))
+    },
+    renderedColumns(): IndexedColumn[] {
+      return this.columns
+        .map((c, index) => ({
+          ...c,
+          index,
+        }))
+        .filter(c => c.skip != true)
     },
   },
 })
