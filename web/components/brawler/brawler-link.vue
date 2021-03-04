@@ -33,7 +33,7 @@
     <span
       v-if="props.captioned"
       class="ml-2 w-16 md:w-24"
-    >{{ props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler) }}</span>
+    >{{ props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase()) }}</span>
   </router-link>
 </template>
 
