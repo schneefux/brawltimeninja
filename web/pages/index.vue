@@ -213,7 +213,7 @@ import { ActiveEvent, CurrentAndUpcomingEvents } from '@/model/Api'
 
 function playerToRoute(player) {
   return {
-    name: 'player-tag',
+    name: 'profile-tag',
     params: {
       tag: player.tag,
     },
