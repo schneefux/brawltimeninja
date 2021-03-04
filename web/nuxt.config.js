@@ -120,6 +120,7 @@ export default {
     { from: '^/leaderboard$', to: '/leaderboard/hours', statusCode: 301 },
     { from: '^/leaderboard/$', to: '/leaderboard/hours', statusCode: 301 },
     { from: '^/tier-list/mode/(.*)/map/(.*)/teams$', to: '/tier-list/mode/$1/map/$2', statusCode: 301 },
+    { from: '^/player/(.*)$', to: '/profile/$1', statusCode: 301 },
   ],
 
   sentry: {
@@ -202,7 +203,7 @@ export default {
       for (const metric of metrics) {
         try {
           const top = await axios.get(`${process.env.API_URL}/api/leaderboard/${metric}`)
-          top.data.entries.forEach(({ tag }) => routes.push(`/player/${tag}`))
+          top.data.entries.forEach(({ tag }) => routes.push(`/profile/${tag}`))
         } catch (err) {
           console.error(`error adding ${metric} leaderboard players to sitemap`, err)
         }

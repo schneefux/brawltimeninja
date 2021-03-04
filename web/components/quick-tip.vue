@@ -3,7 +3,7 @@
     :loading="$fetchState.pending"
     :icon="player == undefined ? undefined : `/avatars/${player.icon.id}`"
     :title="player == undefined ? undefined : player.name"
-    :title-link="player == undefined ? undefined : `/player/${player.tag}`"
+    :title-link="player == undefined ? undefined : `/profile/${player.tag}`"
     xxl
   >
     <template
@@ -15,7 +15,7 @@
           Battle Log: <span class="text-green-500 font-semibold">{{ wins }}W</span> / <span class="text-red-500 font-semibold">{{ losses }}L</span>
         </p>
         <b-button
-          :to="localePath(`/player/${player.tag}`)"
+          :to="localePath(`/profile/${player.tag}`)"
           primary
           xs
           prefetch
@@ -24,7 +24,7 @@
         </b-button>
       </div>
       <nuxt-link
-        :to="localePath(`/player/${player.tag}`)"
+        :to="localePath(`/profile/${player.tag}`)"
         class="block mt-1"
         prefetch
       >

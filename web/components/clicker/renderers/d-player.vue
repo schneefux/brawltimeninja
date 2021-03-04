@@ -6,7 +6,7 @@
   >
     <template v-slot:wrapper>
       <router-link
-        :to="parent.localePath(`/player/${props.row.dimensionsRaw.player.player_tag}`)"
+        :to="parent.localePath(`/profile/${props.row.dimensionsRaw.player.player_tag}`)"
         class="flex items-center"
       ></router-link>
     </template>

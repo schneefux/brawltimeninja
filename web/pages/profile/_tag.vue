@@ -301,7 +301,7 @@ export default Vue.extend({
     const tag = params.tag.toUpperCase()
     if (tag != params.tag) {
       // fuck Bing for lowercasing all URLs
-      redirect(`/player/${tag}`)
+      redirect(`/profile/${tag}`)
       return false
     }
 

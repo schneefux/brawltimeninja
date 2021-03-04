@@ -1,6 +1,6 @@
 <template>
   <form
-    :action="`/player/${cleanedTag}`"
+    :action="`/profile/${cleanedTag}`"
     class="w-full flex flex-wrap justify-center"
     target="_blank"
     @submit="search"

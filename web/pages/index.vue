@@ -23,7 +23,7 @@
         once: true,
       }"
       class="mt-4 mx-4 flex flex-wrap justify-center"
-      :action="`/player/${cleanedTag}`"
+      :action="`/profile/${cleanedTag}`"
       :target="isInIframe ? '_parent' : ''"
       :onSubmit="isInIframe ? '' : 'return false;'"
       @submit="search"

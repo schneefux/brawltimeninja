@@ -32,7 +32,7 @@
             >
               <th scope="row" class="pr-2 text-left">
                 <router-link
-                  :to="localePath(`/player/${member.tag}`)"
+                  :to="localePath(`/profile/${member.tag}`)"
                   :title="member.name"
                 >
                   <media-img

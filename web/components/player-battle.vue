@@ -43,7 +43,7 @@
           v-for="mate in team"
           :key="mate.tag"
           :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 400 ? 'nofollow' : ''"
-          :to="localePath(`/player/${mate.tag}`)"
+          :to="localePath(`/profile/${mate.tag}`)"
           :class="'w-14 h-14 bg-gray-800 py-px relative overflow-hidden '
             + (mate.tag == playerTag ? 'border-2 border-gray-300 ' : '')
             + (team.length != 2 ? 'mx-1 rounded-sm ' : '')

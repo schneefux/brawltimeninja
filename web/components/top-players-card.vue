@@ -18,7 +18,7 @@
         v-for="player in data.slice(0, limit)"
         :key="player.player_tag"
         :title="player.name"
-        :link="localePath(`/player/${player.tag}`)"
+        :link="localePath(`/profile/${player.tag}`)"
         :icon="`/avatars/${player.icon}`"
         size="w-40"
         elevation="2"
