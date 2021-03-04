@@ -1,15 +1,14 @@
 <template>
   <div
-    class="grid grid-cols-1 lg:grid-cols-2 grid-rows-1 justify-items-center"
+    class="grid grid-cols-1 lg:grid-cols-2 justify-items-center"
     :class="{
-      'xl:grid-cols-4': id != undefined,
-      'xl:grid-cols-3': id == undefined,
+      '2xl:grid-cols-4': id != undefined,
+      '2xl:grid-cols-3': id == undefined,
     }"
   >
     <card
       v-if="id != undefined"
       md
-      class="row-span-2"
     >
       <div
         slot="content"
@@ -22,7 +21,7 @@
           }"
           :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
           size="512"
-          clazz="h-80 md:h-120"
+          clazz="h-auto"
         ></media-img>
       </div>
     </card>
@@ -35,7 +34,6 @@
       :mode="mode"
       :map="map"
       :id="id"
-      class="row-span-2"
       full-height
       md
     ></map-best-brawlers-table>
@@ -49,7 +47,6 @@
       :mode="mode"
       :map="map"
       :id="id"
-      class="row-span-2"
       full-height
       md
     ></map-best-teams-table>
