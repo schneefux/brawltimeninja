@@ -3,10 +3,10 @@
     :title="$t('brawler.synergy.title', { brawler })"
     :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
     :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
-    sm
+    md
   >
     <template v-slot:content="{ page }">
-      <p class="h-18 mb-2">
+      <p class="mb-2">
         {{ description }}
       </p>
       <template
@@ -20,7 +20,7 @@
             :key="row + '-' + p"
             :loading="$fetchState.pending"
             :brawlers="data.slice((p - 1) * (rowSize * rowsPerPage) + (row - 1) * rowSize, (p - 1) * (rowSize * rowsPerPage) + row * rowSize)"
-            class="mx-auto h-16 w-72"
+            class="mx-auto mt-2"
           >
             <template v-slot="{ brawler }">
               <template v-if="brawler.picks >= sampleSizeThreshold">

@@ -1,7 +1,7 @@
 <template>
   <shimmer
     :loading="loading"
-    class="flex justify-between w-72"
+    class="flex justify-between"
   >
     <router-link
       v-for="brawler in brawlers"
@@ -15,7 +15,7 @@
         size="160"
         clazz="h-10"
       ></media-img>
-      <p class="text-xs tracking-tighter">
+      <p class="mt-1 text-2xs md:text-xs tracking-tighter">
         <slot :brawler="brawler"></slot>
       </p>
     </router-link>
