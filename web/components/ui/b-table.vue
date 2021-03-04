@@ -26,7 +26,7 @@
         <tr v-if="pageRows.length == 0">
           <td
             :colspan="(ranked ? 1 : 0) + columns.length"
-            class="text-center"
+            class="text-center overflow-auto"
           >
             {{ $t('state.no-data') }}
           </td>
