@@ -258,9 +258,9 @@ import { BattleTotalRow } from '@/components/player-battles-stats.vue'
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = this.$tc('player.meta.description', 1, { name: this.player.name, hours: Math.floor(this.player.hoursSpent), trophies: this.player.trophies })
+    const description = this.$t('player.meta.description', { name: this.player.name }) as string
     return {
-      title: this.player.name,
+      title: this.$t('player.meta.title', { name: this.player.name }) as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
