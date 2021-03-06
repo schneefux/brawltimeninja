@@ -105,7 +105,7 @@
         <b-button
           v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
           :key="player.tag"
-          :to="localePath(playerToRoute(player))"
+          :to="localePath(`/profile/${player.tag}`)"
           @click.native.passive="addLastPlayer(player)"
           xs
           primary
@@ -211,15 +211,6 @@ import { Player } from '../model/Brawlstars'
 import { MapMetaMap } from '../model/MetaEntry'
 import { ActiveEvent, CurrentAndUpcomingEvents } from '@/model/Api'
 
-function playerToRoute(player) {
-  return {
-    name: 'profile-tag',
-    params: {
-      tag: player.tag,
-    },
-  }
-}
-
 export default Vue.extend({
   head(): MetaInfo {
     const description = this.$tc('index.meta.description')
@@ -249,15 +240,9 @@ export default Vue.extend({
       loading: false,
       error: undefined as string|undefined,
       currentEvents: [] as ActiveEvent[],
-      playerToRoute,
     }
   },
   computed: {
-    playerRoute(): any {
-      return playerToRoute({
-        tag: this.cleanedTag,
-      })
-    },
     tagRegex(): RegExp {
       return new RegExp(this.tagPattern)
     },
@@ -400,7 +385,7 @@ export default Vue.extend({
       if (this.cookiesAllowed) {
         document.cookie = `usertag=${this.cleanedTag}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
-      this.$router.push(this.playerRoute)
+      this.$router.push(this.localePath(`/profile/${this.cleanedTag}`))
     },
     trackScroll(visible, element, section) {
       if (visible) {
