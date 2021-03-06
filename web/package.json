@@ -27,7 +27,7 @@
     "d3-format": "^2.0.0",
     "date-fns": "^2.19.0",
     "html2canvas": "^1.0.0-rc.7",
-    "nuxt": "^2.15.2",
+    "nuxt": "2.14.12",
     "nuxt-i18n": "^6.20.4",
     "plotly.js": "^1.58.4",
     "v-click-outside": "^3.1.2",
@@ -47,18 +47,17 @@
     "ztable": "^1.0.7"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.15.2",
+    "@nuxt/types": "^2.14.12",
     "@nuxt/typescript-build": "^2.0.6",
     "@nuxtjs/fontawesome": "^1.1.2",
-    "@nuxtjs/tailwindcss": "^4.0.0-0",
+    "@nuxtjs/tailwindcss": "^3.4.2",
     "@types/d3-format": "^2.0.0",
-    "autoprefixer": "^10.2.5",
-    "css-loader": "^5.1.1",
-    "postcss": "^8.2.7",
+    "autoprefixer": "^9.8.6",
+    "postcss": "^7.0.35",
     "postcss-color-function": "^4.1.0",
-    "postcss-import": "^13.0.0",
-    "postcss-loader": "^4.2.0",
-    "postcss-url": "^10.1.1",
-    "tailwindcss": "^2.0.3"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
+  },
+  "resolutions": {
+    "@babel/preset-env": "7.12.17"
   }
 }
