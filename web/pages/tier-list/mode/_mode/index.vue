@@ -106,7 +106,6 @@
       ></map-views>
     </page-section>
 
-
     <client-only>
       <adsense
         v-if="!isApp"
@@ -126,6 +125,7 @@ import { mapState } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
+import Page from '~/components/page.vue'
 
 interface EventIdAndMap {
   id: number
@@ -133,6 +133,9 @@ interface EventIdAndMap {
 }
 
 export default Vue.extend({
+  components: {
+    Page,
+  },
   head(): MetaInfo {
     const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })
     return {

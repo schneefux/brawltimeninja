@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Config, State } from '~/lib/cube'
+import { State } from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -28,14 +28,10 @@ export default Vue.extend({
       type: Object as PropType<State>,
       required: true
     },
-    config: {
-      type: Object as PropType<Config>,
-      required: true
-    },
     limit: {
       type: Number
     },
-    ignoreMeta: {
+    includeMeta: {
       type: Boolean
     },
   },
@@ -46,20 +42,18 @@ export default Vue.extend({
     }
   },
   watch: {
-    config: '$fetch',
     state: '$fetch',
   },
-  fetchOnServer: false, // FIXME causes v-table render error :(
   fetchDelay: 0,
   async fetch() {
     this.loading = true
 
-    if (!(this.state.cubeId in this.config)) {
+    if (!(this.state.cubeId in this.$cube.config)) {
       console.error('Invalid cubeId ' + this.state.cubeId)
       return
     }
 
-    const cube = this.config[this.state.cubeId]
+    const cube = this.$cube.config[this.state.cubeId]
     // sort-id may either refer to a measurement or a dimension
     const sortMeasurement = cube.measurements
       .find(m => this.state.sortId == m.id)
@@ -84,10 +78,10 @@ export default Vue.extend({
 
     const needTotals = measurements.some(m => m.percentage)
 
-    const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
+    const query = this.$clicker.constructQuery(dimensions, measurements, this.$cube.config[this.state.cubeId].slices, {
       ...cube.defaultSliceValues,
       ...this.state.slices,
-    }, this.ignoreMeta ? [] : cube.metaColumns)
+    }, this.includeMeta ? cube.metaColumns : [])
     const rawData = await this.$clicker.query('meta.' + this.state.cubeId, this.state.cubeId,
       query.dimensions,
       query.measurements,
@@ -100,13 +94,13 @@ export default Vue.extend({
         totals: needTotals,
       })
 
-    let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals || {}, this.ignoreMeta ? [] : cube.metaColumns)
+    let data = this.$clicker.mapToMetaGridEntry(dimensions, measurements, rawData.data, rawData.totals || {}, this.includeMeta ? cube.metaColumns : [])
 
     if (this.state.comparing) {
-      const query = this.$clicker.constructQuery(dimensions, measurements, this.config[this.state.cubeId].slices, {
+      const query = this.$clicker.constructQuery(dimensions, measurements, this.$cube.config[this.state.cubeId].slices, {
         ...cube.defaultSliceValues,
         ...this.state.comparingSlices,
-      }, this.ignoreMeta ? [] : cube.metaColumns)
+      }, this.includeMeta ? cube.metaColumns : [])
       const comparingRawData = await this.$clicker.query('meta.' + this.state.cubeId, this.state.cubeId,
         query.dimensions,
         query.measurements,
@@ -119,7 +113,7 @@ export default Vue.extend({
           totals: needTotals,
         })
 
-      const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals || {}, this.ignoreMeta ? [] : cube.metaColumns)
+      const comparingData = this.$clicker.mapToMetaGridEntry(dimensions, measurements, comparingRawData.data, comparingRawData.totals || {}, this.includeMeta ? cube.metaColumns : [])
 
       // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
       let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]

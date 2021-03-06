@@ -71,8 +71,8 @@ export default Vue.extend({
       }
 
       return [
-        [ 'No ' + this.formatKind + ' ' + commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.withoutWinRate) ],
-        [ this.formatName + ' ' + commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.winRate) ],
+        [ 'No ' + this.formatKind + ' ' + commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.withoutWinRate) ],
+        [ this.formatName + ' ' + commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.winRate) ],
       ]
     },
     gameFileDescription(): string {

@@ -1,7 +1,6 @@
 <template>
   <c-query
     v-bind="$attrs"
-    :config="config"
     :state="{
       cubeId: 'map',
       dimensionsIds: ['brawler'],
@@ -30,7 +29,6 @@ import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '@/components/clicker/c-query.vue'
-import config from '@/lib/cube'
 
 export default Vue.extend({
   components: {
@@ -66,9 +64,6 @@ export default Vue.extend({
         thing: this.$i18n.tc('thing.brawler', 2),
         thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
       }) as string
-    },
-    config() {
-      return config
     },
   },
 })

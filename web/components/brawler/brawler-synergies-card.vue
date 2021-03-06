@@ -1,7 +1,7 @@
 <template>
   <accordeon-card
     :title="$t('brawler.synergy.title', { brawler })"
-    :icon="'/brawlers/' + brawlerId({ name: brawler }) + '/avatar'"
+    :icon="'/brawlers/' + brawlerId + '/avatar'"
     :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
     md
   >
@@ -24,8 +24,8 @@
           >
             <template v-slot="{ brawler }">
               <template v-if="brawler.picks >= sampleSizeThreshold">
-                {{ commonMeasurements.winRateDiff.formatter(brawler.battle_victory) }}
-                {{ commonMeasurements.winRateDiff.nameShort }}
+                {{ formatWinRateDiff(brawler) }}
+                {{ winRateDiffName }}
               </template>
               <template v-else>
                 ?
@@ -81,11 +81,14 @@ export default Vue.extend({
     }
   },
   computed: {
-    brawlerId() {
-      return brawlerId
+    brawlerId(): string {
+      return brawlerId({ name: this.brawler })
     },
-    commonMeasurements() {
-      return commonMeasurements
+    formatWinRateDiff() {
+      return (b: any) => this.$clicker.format(commonMeasurements.winRateDiff, b.battle_victory)
+    },
+    winRateDiffName(): string {
+      return commonMeasurements.winRateDiff.nameShort
     },
     description(): string {
       if (this.data.length < 5) {

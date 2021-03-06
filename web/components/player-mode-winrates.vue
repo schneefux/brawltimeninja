@@ -14,7 +14,7 @@
       <player-mode-card
         :mode="mode"
         :battles="battles"
-        :active-map-meta="activeMapMeta"
+        :active-events="events"
         :player-brawlers="Object.values(player.brawlers)"
         :player-tag="player.tag"
         :enable-clicker-stats="enableClickerStats"
@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
-import { MapMetaMap } from '~/model/MetaEntry'
+import { EventMetadata } from '~/plugins/clicker'
 
 export default Vue.extend({
   props: {
@@ -39,10 +39,6 @@ export default Vue.extend({
     battles: {
       type: Array as PropType<Battle[]>,
       default: []
-    },
-    activeMapMeta: {
-      type: Object as PropType<MapMetaMap>,
-      default: {}
     },
     tease: {
       type: Boolean,
@@ -56,10 +52,13 @@ export default Vue.extend({
   data() {
     return {
       modes: [] as string[],
+      events: [] as EventMetadata[],
     }
   },
+  fetchDelay: 0,
   async fetch() {
     this.modes = await this.$clicker.queryAllModes()
+    this.events = await this.$clicker.queryActiveEvents()
   },
 })
 </script>

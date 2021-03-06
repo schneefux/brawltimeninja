@@ -1,7 +1,6 @@
 <template>
   <c-query
     v-bind="$attrs"
-    :config="config"
     :state="{
       cubeId: 'team',
       dimensionsIds: ['team'],
@@ -9,6 +8,7 @@
       slices: { mode: [mode], map: [map] },
       sortId: 'wins',
     }"
+    :limit="limit"
   >
     <template v-slot="data">
       <v-table
@@ -30,7 +30,6 @@ import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import CQuery from '@/components/clicker/c-query.vue'
-import config from '@/lib/cube'
 
 export default Vue.extend({
   components: {
@@ -50,6 +49,10 @@ export default Vue.extend({
     id: {
       type: Number
     },
+    limit: {
+      type: Number,
+      default: 50
+    }
   },
   computed: {
     title(): string {
@@ -66,9 +69,6 @@ export default Vue.extend({
         thing: this.$i18n.tc('thing.team', 2),
         thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
       }) as string
-    },
-    config() {
-      return config
     },
   },
 })

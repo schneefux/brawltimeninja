@@ -1,6 +1,5 @@
 <template>
   <c-query
-    :config="config"
     :state="{
       cubeId: 'map',
       dimensionsIds: ['brawler'],
@@ -35,7 +34,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import config from '~/lib/cube'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import DBrawler from '~/components/clicker/renderers/d-brawler.vue'
 
@@ -62,11 +60,6 @@ export default Vue.extend({
   components: {
     DBrawler,
     BrawlerLink,
-  },
-  data() {
-    return {
-      config,
-    }
   },
 })
 </script>

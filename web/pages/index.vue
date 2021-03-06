@@ -103,9 +103,9 @@
       </div>
       <div>
         <b-button
-          v-for="player in (lastPlayers.length === 0 ? randomPlayers : lastPlayers)"
+          v-for="player in playerLinks"
           :key="player.tag"
-          :to="localePath(`/profile/${player.tag}`)"
+          :to="localePath(player.link)"
           @click.native.passive="addLastPlayer(player)"
           xs
           primary
@@ -155,7 +155,7 @@
     </client-only>
 
     <div
-      v-if="currentEvents.length > 0"
+      v-if="events.length > 0"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'live_events'),
         once: true,
@@ -171,22 +171,6 @@
       <active-events
         class="home-section-content px-2">
       ></active-events>
-
-      <div
-        v-show="notificationsAllowed"
-        class="mt-4 w-full mx-auto max-w-xl"
-      >
-        <div class="mx-5">
-          <b-button
-            class="mt-1"
-            primary
-            sm
-            @click="notifyCurrentEventMeta"
-          >
-            {{ $t('index.send-map-tier-list') }}
-          </b-button>
-        </div>
-      </div>
     </div>
 
     <client-only>
@@ -206,18 +190,29 @@
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
 import { MetaInfo } from 'vue-meta'
-import { formatAsJsonLd, getBest } from '@/lib/util'
+import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
-import { MapMetaMap } from '../model/MetaEntry'
-import { ActiveEvent, CurrentAndUpcomingEvents } from '@/model/Api'
+import { EventMetadata } from '~/plugins/clicker'
+
+interface PlayerLink {
+  name: string
+  tag: string
+  link: any
+}
 
 export default Vue.extend({
   head(): MetaInfo {
     const description = this.$tc('index.meta.description')
-    const structuredData = this.currentEvents
+    const structuredData = this.events
       .map((event) => ({
         type: 'application/ld+json',
-        json: formatAsJsonLd(event),
+        json: formatAsJsonLd({
+          id: event.battle_event_id.toString(),
+          map: event.battle_event_map,
+          mode: event.battle_event_mode,
+          start: event.start,
+          end: event.end,
+        }),
       }))
 
     return {
@@ -235,17 +230,13 @@ export default Vue.extend({
   middleware: ['cached'],
   data() {
     return {
-      notificationsAllowed: false,
       tag: undefined as string|undefined,
       loading: false,
       error: undefined as string|undefined,
-      currentEvents: [] as ActiveEvent[],
+      events: [] as EventMetadata[],
     }
   },
   computed: {
-    tagRegex(): RegExp {
-      return new RegExp(this.tagPattern)
-    },
     cleanedTag(): string {
       return (this.tag || '')
         .trim()
@@ -253,9 +244,16 @@ export default Vue.extend({
         .toUpperCase()
         .replace(/O/g, '0')
     },
-    randomPlayers(): string[] {
-      const players = this.featuredPlayers.concat().sort(() => 0.5 - Math.random())
-      return players.slice(0, 3)
+    playerLinks(): PlayerLink[] {
+      const players = this.lastPlayers.length == 0 ? this.featuredPlayers : this.lastPlayers
+      return players
+        .slice().sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(p => (<PlayerLink>{
+          tag: p.tag,
+          name: p.name,
+          link: `/profile/${p.tag}`,
+        }))
     },
     isInIframe(): boolean {
       try {
@@ -275,65 +273,17 @@ export default Vue.extend({
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
     }),
   },
-  async asyncData({ $axios }) {
-    const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
-      .catch(() => ({ current: [], upcoming: [] }))
-    return {
-      currentEvents: events.current,
-    }
-  },
-  created() {
-    if ((<any>process).client && 'Notification' in window) {
-      this.notificationsAllowed = Notification.permission !== 'denied'
-    }
+  fetchDelay: 0,
+  async fetch() {
+    this.events = await this.$clicker.queryActiveEvents()
   },
   methods: {
-    async notifyCurrentEventMeta() {
-      if (!(Notification.permission in ['denied', 'granted'])) {
-        await Notification.requestPermission()
-      }
-
-      if (Notification.permission === 'granted') {
-        this.$gtag.event('send_notification', {
-          'event_category': 'home',
-          'event_label': 'meta',
-        })
-        this.notificationsAllowed = true
-
-        const sw = await navigator.serviceWorker.ready
-
-        const mapMeta = await this.$axios.$get('/api/meta/map/events').catch(() => ({})) as MapMetaMap
-        const bestByEvent = getBest(mapMeta)
-
-        await Promise.all(this.currentEvents.map(async (event) => {
-          const logAndNull = (e) => {
-            this.$gtag.exception({
-              description: 'cannot load image: ' + e.message,
-            })
-            console.log('cannot load image', e.message)
-            return {}
-          }
-          const modeId = event.mode.replace(' ', '').toLowerCase().replace('soloshowdown', 'showdown')
-          const badge = await import(`~/assets/images/mode/icon/${modeId}_optimized.png`).catch(logAndNull)
-          const icon = await import(`~/assets/images/map/${event.id.replace(/^1500/, '150')}_small.jpg`).catch(logAndNull)
-
-          const top5 = (bestByEvent[event.id] || []).slice(0, 5).map(entry => (<any>entry).title)
-
-          sw.showNotification(`${event.mode}: ${top5.join(', ')}`, {
-            tag: event.id,
-            body: `Best Brawlers for ${event.mode}: ${event.map} as recommended by Brawl Time Ninja`,
-            badge: badge.default,
-            icon: icon.default,
-          })
-        }))
-      } else {
-        this.notificationsAllowed = false
-      }
-    },
     async search() {
       this.error = undefined
 
-      if (!this.tagRegex.test(this.cleanedTag)) {
+      const tagRegex = new RegExp(this.tagPattern)
+
+      if (!tagRegex.test(this.cleanedTag)) {
         this.$gtag.event('search', {
           'event_category': 'player',
           'event_label': 'error_invalid',

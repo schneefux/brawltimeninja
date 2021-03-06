@@ -16,11 +16,11 @@
 
       <card
         v-for="brawler in data"
-        :key="brawler.brawler_name"
-        :title="brawler.brawler_name"
+        :key="brawler.name"
+        :title="brawler.name"
         :link="localePath(`/tier-list/brawler/${brawler.id}`)"
         :icon="'/brawlers/' + brawler.id + '/avatar'"
-        :icon-alt="brawler.brawler_name"
+        :icon-alt="brawler.name"
         elevation="2"
         class="flex-shrink-0"
         itemscope
@@ -31,7 +31,7 @@
           slot="content"
           class="text-xs text-center"
         >
-          {{ commonMeasurements.winRate.formatter(brawler.battle_victory) }}
+          {{ brawler.winRate }}
           {{ $t('metric.winRate') }}
         </p>
       </card>
@@ -56,8 +56,8 @@ import { brawlerId, capitalizeWords } from '~/lib/util'
 
 interface Row {
   id: string
-  brawler_name: string
-  battle_victory: number
+  name: string
+  winRate: string
 }
 
 export default Vue.extend({
@@ -72,33 +72,26 @@ export default Vue.extend({
       data: [] as Row[],
     }
   },
+  watch: {
+    limit: '$fetch',
+  },
   fetchDelay: 0,
   async fetch() {
     const data = await this.$clicker.query('meta.brawler.widget', 'map',
       ['brawler_name'],
-      ['battle_victory'],
-      {
+      ['battle_victory'], {
         ...this.$clicker.defaultSlicesRaw('map'),
         trophy_season_end: ['current'],
-      },
-      {
+      }, {
         sort: { wins_zscore: 'desc' },
         limit: this.limit,
         cache: 60*60,
       })
-    data.data.forEach(r => {
-      r.brawler_name = capitalizeWords(r.brawler_name.toLowerCase())
-      r.id = brawlerId({ name: r.brawler_name })
-    })
-    this.data = data.data as any
-  },
-  computed: {
-    commonMeasurements() {
-      return commonMeasurements
-    },
-    mediaUrl() {
-      return process.env.mediaUrl
-    },
+    this.data = data.data.map((b: any) => ({
+      id: brawlerId({ name: b.brawler_name }),
+      name: capitalizeWords(b.brawler_name.toLowerCase()),
+      winRate: this.$clicker.format(commonMeasurements.winRate, b.battle_victory),
+    }))
   },
 })
 </script>

@@ -67,16 +67,6 @@ router.get('/leaderboard/:metric', async (ctx) => {
   }
 });
 
-router.get('/meta/map/events', async (ctx) => {
-  try {
-    ctx.body = await service.getActiveMapMeta()
-    ctx.set('Cache-Control', 'public, max-age=600')
-  } catch (error) {
-    console.log(error);
-    ctx.throw(error.status, error.reason)
-  }
-})
-
 const port = parseInt(process.env.PORT || '') || 3001
 
 app

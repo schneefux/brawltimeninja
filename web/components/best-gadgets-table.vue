@@ -1,6 +1,5 @@
 <template>
   <c-query
-    :config="config"
     :state="{
       cubeId: 'gadget',
       dimensionsIds: ['gadget'],
@@ -30,20 +29,14 @@ import VTable from '@/components/clicker/visualisations/v-table.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import CQuery from '@/components/clicker/c-query.vue'
-import config from '@/lib/cube'
 
 export default Vue.extend({
+  inheritAttrs: false,
   components: {
     VTable,
     DBrawler,
     CQuery,
     BrawlerLink,
-  },
-  inheritAttrs: false,
-  computed: {
-    config() {
-      return config
-    },
   },
 })
 </script>

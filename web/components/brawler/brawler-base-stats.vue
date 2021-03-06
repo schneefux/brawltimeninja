@@ -172,9 +172,9 @@ export default Vue.extend({
       }
 
       return [
-        [ commonMeasurements.useRate.name, commonMeasurements.useRate.formatter(this.data.picks_weighted / this.totals.picks_weighted) ],
-        [ commonMeasurements.starRate.name, commonMeasurements.starRate.formatter(this.data.battle_starplayer) ],
-        [ commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.data.battle_victory) ],
+        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, this.data.picks_weighted / this.totals.picks_weighted) ],
+        [ commonMeasurements.starRate.name, this.$clicker.format(commonMeasurements.starRate, this.data.battle_starplayer) ],
+        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.data.battle_victory) ],
       ]
     },
     ...mapState({

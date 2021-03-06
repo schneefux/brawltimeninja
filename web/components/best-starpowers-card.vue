@@ -29,7 +29,7 @@
           clazz="h-10"
         ></media-img>
         <p class="text-xs">
-          {{ commonMeasurements.winRate.formatter(entry.battle_victory) }}
+          {{ entry.winRate }}
           {{ $t('metric.winRate.short') }}
         </p>
       </div>
@@ -39,19 +39,11 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { capitalize } from '@/lib/util'
 import { commonMeasurements } from '../lib/cube'
 
 interface Row {
-  brawler_id: number
-  brawler_name: string
-  brawler_starpower_id?: number
-  brawler_starpower_name?: string
-  brawler_gadget_id?: number
-  brawler_gadget_name?: string
-  battle_victory: number
-
-  id?: number
+  id: number
+  winRate: string
 }
 
 export default Vue.extend({
@@ -66,6 +58,7 @@ export default Vue.extend({
       topStarpowers: [] as Row[],
     }
   },
+  fetchDelay: 0,
   async fetch() {
     const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
     const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
@@ -73,21 +66,18 @@ export default Vue.extend({
       ['brawler_id', 'brawler_name', ...dimensions],
       ['battle_victory'],
       {
-        ...this.$clicker.defaultSlicesRaw('starpower'),
+        ...this.$clicker.defaultSlicesRaw(this.kindKey),
         [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['true'],
       },
       { sort: { picks: 'desc' }, limit: 3, cache: 60*60 })
     this.topStarpowers = data.data.map(e => (<Row>{
-      ...e,
       id: this.kind == 'starpowers' ? e.brawler_starpower_id : e.brawler_gadget_id,
+      winRate: this.$clicker.format(commonMeasurements.winRate, e.battle_victory),
     }))
   },
   computed: {
     kindKey(): string {
       return this.kind == 'starpowers' ? 'starpower' : 'gadget'
-    },
-    commonMeasurements() {
-      return commonMeasurements
     },
   },
 })

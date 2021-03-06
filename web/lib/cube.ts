@@ -1,11 +1,11 @@
-import { capitalizeWords, formatMode, formatSI } from './util'
-
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
 const asDimensions = <T>(et: { [K in keyof T]: Dimension }) => et
 const asMeasurements = <T>(et: { [K in keyof T]: Measurement }) => et
 const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
+
+export type ValueType = 'quantitative'|'temporal'|'ordinal'|'nominal'
 
 export interface State {
   cubeId: string
@@ -37,23 +37,24 @@ export interface Measurement {
   nameShort: string
   icon: string
   description: string
-  formatter: (n: number) => string
+  formatter: string
   d3formatter: string
   sign: number
   percentage: boolean
   column: string
-  type: 'quantitative'|'temporal'|'ordinal'|'nominal'
+  type: ValueType
   scale?: any // https://vega.github.io/vega-lite/docs/scale.html
 }
 
 export interface Dimension {
   id: string
   name: string
-  formatter: (o: object) => string
+  formatColumn: string
+  formatter: string
   column: string
   anyColumns: string[]
   hidden: boolean
-  type: 'quantitative'|'temporal'|'ordinal'|'nominal'
+  type: ValueType
   scale?: any // https://vega.github.io/vega-lite/docs/scale.html
 }
 
@@ -62,7 +63,7 @@ export interface Slice {
   name: string
   column: string
   // TODO: for description
-  // formatter: (s: SliceValue) => string
+  // formatter: string
 }
 
 export interface SliceValue extends Record<string, string[]> { }
@@ -71,7 +72,8 @@ const metaDimensions = asDimensions({
   season: {
     id: 'season',
     name: 'Bi-Week',
-    formatter: (s: any) => s.trophy_season_end,
+    formatColumn: 'trophy_season_end',
+    formatter: '',
     column: 'trophy_season_end',
     anyColumns: [],
     hidden: false,
@@ -83,7 +85,8 @@ const metaDimensions = asDimensions({
   day: {
     id: 'day',
     name: 'Day',
-    formatter: (s: any) => s.timestamp_day.slice(0, 11),
+    formatColumn: 'timestamp_day',
+    formatter: 'yyyy-MM-dd',
     column: 'timestamp_day',
     anyColumns: [],
     hidden: false,
@@ -95,7 +98,8 @@ const metaDimensions = asDimensions({
   timestamp: {
     id: 'timestamp',
     name: 'Timestamp',
-    formatter: (s: any) => s.timestamp,
+    formatColumn: 'timestamp',
+    formatter: 'yyyy-MM-ddTHH:mm',
     column: 'timestamp',
     anyColumns: [],
     hidden: false,
@@ -110,7 +114,8 @@ const playerDimensions = asDimensions({
   player: {
     id: 'player',
     name: 'Player',
-    formatter: (p: any) => p.player_name,
+    formatColumn: 'player_name',
+    formatter: '',
     column: 'player_id',
     anyColumns: ['player_name', /* 'player_tag', FIXME */ 'player_icon_id'],
     hidden: false,
@@ -122,7 +127,8 @@ const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
-    formatter: (b: any) => capitalizeWords(b.brawler_name.toLowerCase()),
+    formatColumn: 'brawler_name',
+    formatter: 'capitalizeWords',
     column: 'brawler_name',
     anyColumns: [],
     hidden: false,
@@ -131,7 +137,8 @@ const brawlerDimensions = asDimensions({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
-    formatter: (b: any) => b.brawler_id,
+    formatColumn: 'brawler_id',
+    formatter: '',
     column: 'brawler_id',
     anyColumns: [],
     hidden: true,
@@ -140,7 +147,8 @@ const brawlerDimensions = asDimensions({
   ally: {
     id: 'ally',
     name: 'Ally',
-    formatter: (a: any) => capitalizeWords(a.ally_brawler_name.toLowerCase()),
+    formatColumn: 'ally_brawler_name',
+    formatter: 'capitalizeWords',
     column: 'ally_brawler_name',
     anyColumns: [],
     hidden: false,
@@ -149,7 +157,8 @@ const brawlerDimensions = asDimensions({
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
-    formatter: (a: any) => a.ally_brawler_id,
+    formatColumn: 'ally_brawler_id',
+    formatter: '',
     column: 'ally_brawler_id',
     anyColumns: [],
     hidden: true,
@@ -158,7 +167,8 @@ const brawlerDimensions = asDimensions({
   gadget: {
     id: 'gadget',
     name: 'Gadget',
-    formatter: (g: any) => capitalizeWords(g.brawler_gadget_name.toLowerCase()),
+    formatColumn: 'brawler_gadget_name',
+    formatter: 'capitalizeWords',
     column: 'brawler_gadget_id',
     anyColumns: ['brawler_gadget_name', 'brawler_name'],
     hidden: false,
@@ -167,7 +177,8 @@ const brawlerDimensions = asDimensions({
   starpower: {
     id: 'starpower',
     name: 'Star Power',
-    formatter: (s: any) => capitalizeWords(s.brawler_starpower_name.toLowerCase()),
+    formatColumn: 'brawler_starpower_name',
+    formatter: 'capitalizeWords',
     column: 'brawler_starpower_id',
     anyColumns: ['brawler_starpower_name', 'brawler_name'],
     hidden: false,
@@ -176,7 +187,8 @@ const brawlerDimensions = asDimensions({
   bigbrawler: {
     id: 'bigbrawler',
     name: 'Big Brawler',
-    formatter: (s: any) => s.battle_is_bigbrawler == '1' ? 'Yes' : 'No',
+    formatColumn: 'battle_is_bigbrawler',
+    formatter: 'y/n',
     column: 'brawler_is_bigbrawler',
     anyColumns: [],
     hidden: true,
@@ -188,7 +200,8 @@ const battleDimensions = asDimensions({
   mode: {
     id: 'mode',
     name: 'Mode',
-    formatter: (m: any) => formatMode(m.battle_event_mode),
+    formatColumn: 'battle_event_mode',
+    formatter: 'formatMode',
     column: 'battle_event_mode',
     anyColumns: [],
     hidden: false,
@@ -197,7 +210,8 @@ const battleDimensions = asDimensions({
   map: {
     id: 'map',
     name: 'Map',
-    formatter: (m: any) => m.battle_event_map,
+    formatColumn: 'battle_event_map',
+    formatter: '',
     column: 'battle_event_map',
     anyColumns: ['battle_event_mode', 'battle_event_id'],
     hidden: false,
@@ -206,7 +220,8 @@ const battleDimensions = asDimensions({
   team: {
     id: 'team',
     name: 'Team',
-    formatter: (t: any) => capitalizeWords(t.brawler_names.join(', ').toLowerCase()),
+    formatColumn: 'brawler_names',
+    formatter: 'capitalizeWords',
     column: 'brawler_names',
     anyColumns: [],
     hidden: false,
@@ -215,7 +230,8 @@ const battleDimensions = asDimensions({
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
-    formatter: (t: any) => t.battle_power_play == '1' ? 'Yes' : 'No',
+    formatColumn: 'battle_power_play',
+    formatter: 'y/n',
     column: 'battle_power_play',
     anyColumns: [],
     hidden: false,
@@ -237,7 +253,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Name',
     icon: '',
     description: '',
-    formatter: n => n as unknown as string,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -250,7 +266,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Club Name',
     icon: '',
     description: '',
-    formatter: n => n as unknown as string,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -263,7 +279,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Icon',
     icon: '',
     description: '',
-    formatter: n => n as unknown as string,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -276,7 +292,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Name Color',
     icon: '',
     description: '',
-    formatter: n => n as unknown as string,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -289,7 +305,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Trophies',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -305,7 +321,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Trophy Max',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -321,7 +337,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Victories',
     icon: '',
     description: '',
-    formatter: n => formatSI(n, 2),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -337,7 +353,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'EXP',
     icon: '',
     description: '',
-    formatter: n => formatSI(n, 2),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -353,7 +369,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'SD Victories',
     icon: '',
     description: '',
-    formatter: n => formatSI(n, 2),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -369,7 +385,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'SD Victories',
     icon: '',
     description: '',
-    formatter: n => formatSI(n, 2),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -385,7 +401,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Players',
     icon: '🧑',
     description: 'The total number of players.',
-    formatter: n => formatSI(n, 1),
+    formatter: '.1s',
     d3formatter: '.1s',
     sign: -1,
     percentage: false,
@@ -398,7 +414,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Points',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -411,7 +427,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Points Max',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -424,7 +440,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'EXP',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -437,7 +453,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'EXP',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -450,7 +466,7 @@ export const playerMeasurements = asMeasurements({
     nameShort: 'Brawlers',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -466,7 +482,7 @@ export const brawlerMeasurements = asMeasurements({
     nameShort: 'Highest Trophies',
     icon: '',
     description: '',
-    formatter: n => n.toString(),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -479,7 +495,7 @@ export const brawlerMeasurements = asMeasurements({
     nameShort: 'Trophies',
     icon: 'trophy',
     description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    formatter: n => n.toString(),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -495,7 +511,7 @@ export const brawlerMeasurements = asMeasurements({
     nameShort: 'Brawler',
     icon: '',
     description: '',
-    formatter: n => capitalizeWords((n as unknown as string).toLowerCase()),
+    formatter: 'capitalizeWords',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -508,7 +524,7 @@ export const brawlerMeasurements = asMeasurements({
     nameShort: 'Star Powers',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -521,7 +537,7 @@ export const brawlerMeasurements = asMeasurements({
     nameShort: 'Gadgets',
     icon: '',
     description: '',
-    formatter: n => `${n}`,
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -538,7 +554,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Updated',
     icon: '⌚',
     description: '',
-    formatter: n => n.toString(),
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -552,7 +568,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Day',
     icon: '⌚',
     description: '',
-    formatter: n => n.toString(),
+    formatter: '',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -568,7 +584,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'TrophyD',
     icon: 'trophy',
     description: '',
-    formatter: n => n <= 0 ? `${n.toFixed(2)}` : `+${n.toFixed(2)}`,
+    formatter: '+.2f',
     d3formatter: '+.2f',
     sign: -1,
     percentage: false,
@@ -584,7 +600,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Win',
     icon: '📈',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    formatter: n => `${(100 * n).toFixed(1)}%`,
+    formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
     percentage: false,
@@ -600,7 +616,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Win',
     icon: '📈',
     description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    formatter: n => `${(100 * n).toFixed(1)}%`,
+    formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
     percentage: false,
@@ -616,7 +632,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'WinD',
     icon: '📈',
     description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: n => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
+    formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
     percentage: false,
@@ -629,7 +645,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Wins',
     icon: '📈',
     description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    formatter: n => formatSI(n, 1),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -642,7 +658,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Win-z',
     icon: '📈',
     description: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
-    formatter: n => n.toFixed(2),
+    formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
     percentage: false,
@@ -655,7 +671,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Picks',
     icon: '👇',
     description: '',
-    formatter: n => formatSI(n, 1),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -668,7 +684,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Picked',
     icon: '👇',
     description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    formatter: n => `${(100 * n).toFixed(2)}%`,
+    formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
     percentage: true,
@@ -684,7 +700,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Used',
     icon: '🎯',
     description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    formatter: n => `${(100 * n).toFixed(2)}%`,
+    formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
     percentage: true,
@@ -700,7 +716,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Star',
     icon: '⭐',
     description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    formatter: n => `${(100 * n).toFixed(1)}%`,
+    formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
     percentage: false,
@@ -716,7 +732,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'StarD',
     icon: '⭐',
     description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: n => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
+    formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
     percentage: false,
@@ -729,7 +745,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Rank',
     icon: 'leaderboards',
     description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    formatter: n => n === null ? 'N/A' : n.toFixed(2),
+    formatter: '.2f',
     d3formatter: '.2f',
     sign: +1,
     percentage: false,
@@ -745,7 +761,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Rank 1',
     icon: '🏅',
     description: '',
-    formatter: n => formatSI(n, 1),
+    formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
     percentage: false,
@@ -758,7 +774,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'SD Win',
     icon: '📈',
     description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    formatter: n => `${(100 * n).toFixed(2)}%`,
+    formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
     percentage: false,
@@ -774,7 +790,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'SD WinD',
     icon: '📈',
     description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: n => `${n > 0 ? '+' : ''}${(100 * n).toFixed(2)}%`,
+    formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
     percentage: false,
@@ -787,8 +803,8 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Duration',
     icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    formatter: n => `${Math.floor(n / 60)}:${Math.floor(n % 60).toString().padStart(2, '0')}`,
-    d3formatter: '.2s',
+    formatter: 'duration',
+    d3formatter: 'duration',
     sign: +1,
     percentage: false,
     column: 'battle_duration',
@@ -800,7 +816,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Level',
     icon: '🏅',
     description: '',
-    formatter: n => n.toFixed(2),
+    formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
     percentage: false,
@@ -816,7 +832,7 @@ const battleMeasurements = asMeasurements({
     nameShort: 'Power',
     icon: '🏅',
     description: '',
-    formatter: n => n.toFixed(2),
+    formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
     percentage: false,

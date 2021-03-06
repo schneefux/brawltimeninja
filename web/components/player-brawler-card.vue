@@ -106,12 +106,16 @@
 import Vue, { PropType } from 'vue'
 import { Brawler } from '~/model/Api'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import BrawlerCard from '~/components/brawler/brawler-card.vue'
 
 interface BrawlerWithId extends Brawler {
   id: string
 }
 
 export default Vue.extend({
+  components: {
+    BrawlerCard,
+  },
   props: {
     playerTag: {
       type: String,

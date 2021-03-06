@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-wrap justify-center">
     <card
-      v-for="post in posts"
+      v-for="post in articles"
       :key="post.id"
       :title="post.title"
       :title-link="`/blog/${topic}/${post.slug}`"
-      :icon="'mode' in post ? `/modes/${post.mode}/icon` : undefined"
+      :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
       full-height
       light
       sm
@@ -26,7 +26,15 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
+
+interface Article {
+  id: string
+  title: string
+  slug: string
+  mode: string
+  description: string
+}
 
 export default Vue.extend({
   props: {
@@ -34,10 +42,34 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    posts: {
-      type: Array as PropType<any>,
-      required: true
+    limit: {
+      type: Number,
+      default: 3
     },
+  },
+  data() {
+    return {
+      articles: [] as Article[],
+    }
+  },
+  watch: {
+    topic: '$fetch',
+    limit: '$fetch',
+  },
+  fetchDelay: 0,
+  async fetch() {
+    const articles = await this.$content(this.topic)
+      .sortBy('createdAt', 'desc')
+      .limit(this.limit)
+      .fetch()
+    this.articles = articles
+      .map((a) => ({
+        id: a.id,
+        title: a.title,
+        slug: a.slug,
+        mode: a.mode,
+        description: a.description,
+      }))
   },
 })
 </script>

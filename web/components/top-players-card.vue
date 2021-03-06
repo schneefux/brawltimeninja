@@ -15,11 +15,12 @@
       ></div>
 
       <card
-        v-for="player in data.slice(0, limit)"
-        :key="player.player_tag"
+        v-for="player in data"
+        :key="player.tag"
         :title="player.name"
         :link="localePath(`/profile/${player.tag}`)"
         :icon="`/avatars/${player.icon}`"
+        :icon-alt="player.name"
         size="w-40"
         elevation="2"
         class="flex-shrink-0 whitespace-nowrap"
@@ -31,8 +32,8 @@
           slot="content"
           class="text-sm text-center"
         >
-          {{ commonMeasurements[metric].formatter(player.metric) }}
-          {{ commonMeasurements[metric].name }}
+          {{ player.metric }}
+          {{ metricName }}
         </p>
       </card>
     </horizontal-scroller>
@@ -44,7 +45,7 @@
       prefetch
       sm
     >
-      Open {{ capitalize(metric) }} Leaderboard
+      Open {{ metricName }} Leaderboard
     </b-button>
   </card>
 </template>
@@ -53,7 +54,14 @@
 import Vue from 'vue'
 import { commonMeasurements } from '~/lib/cube'
 import { capitalize } from '~/lib/util'
-import { Leaderboard, LeaderboardEntry } from '~/model/Api'
+import { Leaderboard } from '~/model/Api'
+
+interface Row {
+  tag: string
+  name: string
+  icon: number
+  metric: string
+}
 
 export default Vue.extend({
   props: {
@@ -68,23 +76,28 @@ export default Vue.extend({
   },
   data() {
     return {
-      data: [] as LeaderboardEntry[],
+      data: [] as Row[],
     }
   },
   fetchDelay: 0,
   watch: {
     metric: '$fetch',
+    limit: '$fetch',
   },
   async fetch() {
     const leaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/' + this.metric)
     this.data = leaderboard.entries
+      .slice(0, this.limit)
+      .map(e => (<Row>{
+        tag: e.tag,
+        name: e.name,
+        icon: e.icon,
+        metric: this.$clicker.format(commonMeasurements[this.metric], e.metric),
+      }))
   },
   computed: {
-    commonMeasurements() {
-      return commonMeasurements
-    },
-    capitalize() {
-      return capitalize
+    metricName(): string {
+      return capitalize(commonMeasurements[this.metric].name)
     },
   },
 })

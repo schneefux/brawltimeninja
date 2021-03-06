@@ -32,13 +32,15 @@
       </h1>
     </div>
 
-    <player-hype-stats
-      :player="player"
-      :hours-leaderboard="hoursLeaderboard"
-      :enable-clicker-stats="enableClickerStats"
-      :battle-totals="battleTotals"
-      class="leading-tight text-center mt-6"
-    ></player-hype-stats>
+    <!-- FIXME remove, SSR error -->
+    <client-only>
+      <player-hype-stats
+        :player="player"
+        :enable-clicker-stats="enableClickerStats"
+        :battle-totals="battleTotals"
+        class="leading-tight text-center mt-6"
+      ></player-hype-stats>
+    </client-only>
 
     <div class="mt-2 flex flex-wrap justify-center items-center">
       <history-graph
@@ -181,7 +183,6 @@
         }"
         :player="player"
         :battles="player.battles"
-        :active-map-meta="activeMapMeta"
         :tease="!props.open"
         :enable-clicker-stats="enableClickerStats"
       ></player-mode-winrates>
@@ -190,12 +191,6 @@
         v-show="props.open"
         class="mt-2 w-full flex justify-end"
       >
-        <player-tips
-          :player="player"
-          :active-map-meta="activeMapMeta"
-          class="mr-3"
-        ></player-tips>
-
         <b-button
           :to="localePath('/tier-list/map')"
           md
@@ -234,15 +229,11 @@
     </player-teaser-card>
 
     <page-section
-      v-if="relevantGuides.length > 0"
       title="Guides from the Blog"
       tracking-id="articles"
       tracking-page-id="profile"
     >
-      <blogroll
-        :posts="relevantGuides"
-        topic="guides"
-      ></blogroll>
+      <blogroll topic="guides"></blogroll>
     </page-section>
   </page>
 </template>
@@ -252,7 +243,6 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
 import { MapMetaMap } from '../../model/MetaEntry'
-import { Post } from '../../model/Web'
 import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { BattleTotalRow } from '@/components/player-battles-stats.vue'
 
@@ -271,16 +261,10 @@ export default Vue.extend({
   data() {
     return {
       refreshSecondsLeft: 180,
-      activeMapMeta: {} as MapMetaMap,
-      guides: [] as Post[],
-      hoursLeaderboard: [] as LeaderboardEntry[],
       battleTotals: {} as BattleTotalRow,
     }
   },
   computed: {
-    relevantGuides(): Post[] {
-      return this.guides.slice(0, 3)
-    },
     totalBattles(): number {
       return this.battleTotals.picks || this.player.battles.length
     },
@@ -328,22 +312,6 @@ export default Vue.extend({
   },
   mounted() {
     setTimeout(() => this.refreshTimer(), 15 * 1000)
-  },
-  async asyncData(context) {
-    const $axios = context.$axios
-    const $content = (<any>context).$content
-
-    const [guides, activeMapMeta, hoursLeaderboard] = await Promise.all([
-      $content('guides').sortBy('createdAt', 'desc').fetch(),
-      $axios.$get<MapMetaMap>('/api/meta/map/events').catch(() => ({})),
-      $axios.$get<Leaderboard>('/api/leaderboard/hours').catch(() => ({ metric: 'hours', entries: [] })),
-    ])
-
-    return {
-      guides: guides as Post[],
-      hoursLeaderboard: (<Leaderboard>hoursLeaderboard).entries as LeaderboardEntry[],
-      activeMapMeta,
-    }
   },
   fetchDelay: 0,
   async fetch() {

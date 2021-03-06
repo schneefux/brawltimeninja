@@ -2,14 +2,12 @@
   <div class="flex flex-wrap">
     <c-configurator
       v-model="state"
-      :config="config"
       class="flex-auto md:flex-none"
       full-height
     ></c-configurator>
 
     <c-slicer
       v-model="state"
-      :config="config"
       class="w-full md:w-auto"
       full-height
     >
@@ -24,7 +22,6 @@
     <c-slicer
       v-if="value.comparing"
       v-model="state"
-      :config="config"
       class="w-full md:w-auto"
       comparing
       full-height
@@ -39,7 +36,7 @@
 
     <c-query
       :state="value"
-      :config="config"
+      include-meta
     >
       <template v-slot="data">
         <v-dashboard v-bind="data">
@@ -61,7 +58,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Cube, SliceValue, State } from '~/lib/cube'
+import { SliceValue, State } from '~/lib/cube'
 import CDashboard from './c-dashboard.vue'
 import CSlicer from './c-slicer.vue'
 import CConfigurator from './c-configurator.vue'
@@ -75,10 +72,6 @@ export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<State>,
-      required: true
-    },
-    config: {
-      type: Object as PropType<Record<string, Cube>>,
       required: true
     },
   },

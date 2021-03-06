@@ -155,9 +155,9 @@ export default Vue.extend({
     },
     modeTable(): string[][] {
       return [
-        [ commonMeasurements.picks.name, commonMeasurements.picks.formatter(this.modeData.picks) ],
-        [ commonMeasurements.useRate.name, commonMeasurements.useRate.formatter(this.modeData.picks_weighted / this.modeTotals.picks_weighted) ],
-        [ commonMeasurements.winRate.name, commonMeasurements.winRate.formatter(this.modeData.battle_victory) ],
+        [ commonMeasurements.picks.name, this.$clicker.format(commonMeasurements.picks, this.modeData.picks) ],
+        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, this.modeData.picks_weighted / this.modeTotals.picks_weighted) ],
+        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.modeData.battle_victory) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },

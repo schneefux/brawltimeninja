@@ -11,7 +11,7 @@
           </dt>
         </dl>
         <nuxt-link
-          v-if="rank !== 0"
+          v-if="rank != undefined"
           :to="localePath('/leaderboard/hours')"
           class="text-4xl -ml-4 text-primary-light font-bold"
         >
@@ -230,7 +230,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { Player, LeaderboardEntry } from '@/model/Api'
+import { Player, Leaderboard } from '@/model/Api'
 import { BattleTotalRow } from './player-battles-stats.vue'
 
 export default Vue.extend({
@@ -238,10 +238,6 @@ export default Vue.extend({
     player: {
       type: Object as PropType<Player>,
       required: true
-    },
-    hoursLeaderboard: {
-      type: Array as PropType<LeaderboardEntry[]>,
-      default: () => []
     },
     battleTotals: {
       type: Object as PropType<BattleTotalRow>,
@@ -254,6 +250,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      rank: undefined as undefined|number,
       showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
@@ -269,49 +266,53 @@ export default Vue.extend({
       },
     }
   },
-  mounted() {
-    if ((<any>process).client) {
-      this.$nextTick(() => {
-        const playerHours = Math.max(this.player.hoursSpent, 1)
-        const animationDuration = 3000
-        const frameDuration = 50
-        const k = Math.log(playerHours) / (animationDuration / frameDuration)
+  fetchDelay: 0,
+  async fetch() {
+    if (!this.enableClickerStats) {
+      return
+    }
 
-        let hoursSpent = 0
-        const hoursTimer = () => setTimeout(() => {
-          hoursSpent += k * (playerHours - hoursSpent)
-          if (Math.floor(hoursSpent) >= playerHours - 1) {
-            hoursSpent = playerHours
-          }
-
-          const counter = this.$refs['counter-hours'] as HTMLElement
-          if (counter == undefined) {
-            // user navigated to a different page
-            return
-          }
-
-          counter.textContent = Math.floor(hoursSpent).toString()
-          Object.values(this.funStats).forEach((stat, index) => {
-            const funCounter = this.$refs['counter-funstats'][index] as HTMLElement
-            funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
-          })
-
-          if (Math.floor(hoursSpent) < playerHours) {
-            hoursTimer()
-          }
-        }, frameDuration)
-        hoursTimer()
-      })
+    const hoursLeaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/hours')
+      .catch(() => ({ metric: 'hours', entries: [] }))
+    const rank = hoursLeaderboard.entries.findIndex(e => e.tag == this.player.tag)
+    if (rank != -1) {
+      this.rank = rank + 1
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      const playerHours = Math.max(this.player.hoursSpent, 1)
+      const animationDuration = 3000
+      const frameDuration = 50
+      const k = Math.log(playerHours) / (animationDuration / frameDuration)
+
+      let hoursSpent = 0
+      const hoursTimer = () => setTimeout(() => {
+        hoursSpent += k * (playerHours - hoursSpent)
+        if (Math.floor(hoursSpent) >= playerHours - 1) {
+          hoursSpent = playerHours
+        }
+
+        const counter = this.$refs['counter-hours'] as HTMLElement
+        if (counter == undefined) {
+          // user navigated to a different page
+          return
+        }
+
+        counter.textContent = Math.floor(hoursSpent).toString()
+        Object.values(this.funStats).forEach((stat, index) => {
+          const funCounter = this.$refs['counter-funstats'][index] as HTMLElement
+          funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
+        })
+
+        if (Math.floor(hoursSpent) < playerHours) {
+          hoursTimer()
+        }
+      }, frameDuration)
+      hoursTimer()
+    })
+  },
   computed: {
-    rank(): number|undefined {
-      const rank = this.hoursLeaderboard.findIndex(e => e.tag == this.player.tag)
-      if (rank == undefined) {
-        return undefined
-      }
-      return rank + 1
-    },
     brawlersUnlocked(): number {
       return Object.keys(this.player.brawlers).length
     },

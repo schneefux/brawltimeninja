@@ -1,6 +1,5 @@
 <template>
   <c-query
-    :config="config"
     :state="{
       cubeId: 'brawler',
       dimensionsIds: ['day'],
@@ -12,7 +11,6 @@
       },
       sortId: 'day',
     }"
-    ignore-meta
   >
     <template v-slot="data">
       <v-lineplot-raw
@@ -31,7 +29,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import config from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -46,11 +43,6 @@ export default Vue.extend({
     raw: {
       type: Boolean
     },
-  },
-  data() {
-    return {
-      config,
-    }
   },
 })
 </script>

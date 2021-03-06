@@ -1,7 +1,6 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
-import { ActiveEvent } from "~/model/Api";
 import { Measurement } from "./cube";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -139,14 +138,25 @@ export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
 
-export function formatAsJsonLd(event: ActiveEvent) {
+interface EventMetadata {
+  id: string
+  map: string
+  mode: string
+  start?: string
+  end?: string
+}
+export function formatAsJsonLd(event: EventMetadata) {
   const url = `/tier-list/mode/${slugify(event.mode.toLowerCase())}/map/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
     'name': `${event.mode} - ${event.map}`,
-    'startDate': event.start,
-    'endDate': event.end,
+    ...(event.start != undefined ? {
+      'startDate': event.start,
+    } : {}),
+    ...(event.end != undefined ? {
+      'endDate': event.end!,
+    } : {}),
     'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'eventStatus': 'https://schema.org/EventScheduled',
     'url': url,

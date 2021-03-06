@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { commonMeasurements } from '~/lib/cube'
 import { Player } from '~/model/Brawlstars'
 
 export default Vue.extend({
@@ -43,16 +42,15 @@ export default Vue.extend({
       return {
         trophies: this.player.trophies,
         highestTrophies: this.player.highestTrophies,
-        powerPlayPoints: this.player.powerPlayPoints,
+        ...(this.player.powerPlayPoints != undefined ? {
+          powerPlayPoints: this.player.powerPlayPoints,
+        } : {}),
         highestPowerPlayPoints: this.player.highestPowerPlayPoints,
         expLevel: this.player.expLevel,
         victories: this.player['3vs3Victories'],
         soloVictories: this.player.soloVictories,
         duoVictories: this.player.duoVictories,
       }
-    },
-    commonMeasurements() {
-      return commonMeasurements
     },
   },
 })

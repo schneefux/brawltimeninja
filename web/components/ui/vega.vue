@@ -32,6 +32,7 @@
 import Vue, { PropType } from 'vue'
 import embed, { Result, VisualizationSpec } from 'vega-embed'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { expressionFunction } from 'vega'
 
 const gray200 = '#e4e4e7'
 const gray400 = '#a1a1aa'

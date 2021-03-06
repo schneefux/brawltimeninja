@@ -139,9 +139,9 @@ export default Vue.extend({
     },
     table(): string[][] {
       return [
-        [ this.$tc('metric.picks'), commonMeasurements.picks.formatter(this.data.picks) ],
-        [ this.$tc('metric.useRate'), commonMeasurements.useRate.formatter(this.useRate) ],
-        [ this.$tc('metric.winRate'), commonMeasurements.winRate.formatter(this.data.battle_victory) ],
+        [ this.$tc('metric.picks'), this.$clicker.format(commonMeasurements.picks, this.data.picks) ],
+        [ this.$tc('metric.useRate'), this.$clicker.format(commonMeasurements.useRate, this.useRate) ],
+        [ this.$tc('metric.winRate'), this.$clicker.format(commonMeasurements.winRate, this.data.battle_victory) ],
       ]
     },
     brawlerId(): string {

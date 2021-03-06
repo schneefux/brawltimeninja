@@ -61,7 +61,7 @@ export default Vue.extend({
             type: this.measurements[0].type,
             title: this.measurements[0].name,
             axis: {
-              format: this.measurements[0].d3formatter,
+              format: this.measurements[0].formatter,
             },
             scale: this.measurements[0].scale,
           },

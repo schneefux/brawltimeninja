@@ -93,7 +93,13 @@ export default Vue.extend({
     const structuredData = this.currentEvents.concat(this.upcomingEvents)
       .map((event) => ({
         type: 'application/ld+json',
-        json: formatAsJsonLd(event),
+        json: formatAsJsonLd({
+          id: event.id,
+          map: event.map,
+          mode: event.mode,
+          start: event.start,
+          end: event.end,
+        }),
       }))
 
     return {

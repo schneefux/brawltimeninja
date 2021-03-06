@@ -1,13 +1,9 @@
-<template functional>
-  <main
-    v-bind="data.attrs"
-    :class="['container mx-auto p-4', data.class, data.staticClass]"
-    :style="data.staticStyle"
-  >
+<template>
+  <main class="container mx-auto p-4">
     <h1
-      v-if="props.title != ''"
+      v-if="title != ''"
       class="text-3xl font-semibold"
-    >{{ props.title }}</h1>
+    >{{ title }}</h1>
 
     <slot></slot>
   </main>
@@ -17,7 +13,6 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  functional: true,
   props: {
     title: {
       type: String,

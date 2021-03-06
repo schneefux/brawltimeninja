@@ -2,7 +2,6 @@
   <page-dashboard title="Brawl Stars Meta Dashboard">
     <c-dashboard
       v-model="state"
-      :config="config"
       class="mt-2"
     >
       <template v-slot:dimensions="data">
@@ -42,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import config, { State } from '~/lib/cube'
+import { State } from '~/lib/cube'
 import CDashboard from '@/components/clicker/c-dashboard.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -99,15 +98,10 @@ export default Vue.extend({
     SPlayerName,
     SPlayerTag,
   },
-  data() {
-    return {
-      config,
-    }
-  },
   computed: {
     state: {
       get(): State {
-        return this.$clicker.locationToState(this.$route, this.config)
+        return this.$clicker.locationToState(this.$route, this.$cube.config)
       },
       set(s: State) {
         this.$router.push(this.$clicker.stateToLocation(s))

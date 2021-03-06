@@ -163,15 +163,11 @@ export default Vue.extend({
       type: Object as PropType<State>,
       required: true
     },
-    config: {
-      type: Object as PropType<Config>,
-      required: true
-    },
   },
   data() {
-    const stateIsDefault = !this.config[this.value.cubeId].hidden
-      && this.value.measurementsIds.length == this.config[this.value.cubeId].defaultMeasurementIds.length
-      && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.config[this.value.cubeId].defaultDimensionsIds)
+    const stateIsDefault = !this.$cube.config[this.value.cubeId].hidden
+      && this.value.measurementsIds.length == this.$cube.config[this.value.cubeId].defaultMeasurementIds.length
+      && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.$cube.config[this.value.cubeId].defaultDimensionsIds)
       && this.value.comparing == false
 
     return {
@@ -184,32 +180,32 @@ export default Vue.extend({
     onInputCubeId(c: string) {
       // filter & keep old slice values that exist in the new cube too
       const slicesDefaults = Object.assign({},
-        this.config[c].defaultSliceValues,
+        this.$cube.config[c].defaultSliceValues,
         Object.fromEntries(
           Object.entries(this.value.slices)
-            .filter(([key, value]) => this.config[c].slices.some(s => s.id == key))
+            .filter(([key, value]) => this.$cube.config[c].slices.some(s => s.id == key))
         ))
       const comparingSliceDefaults = Object.assign({},
-        this.config[c].defaultSliceValues,
+        this.$cube.config[c].defaultSliceValues,
         Object.fromEntries(
           Object.entries(this.value.comparingSlices)
-            .filter(([key, value]) => this.config[c].slices.some(s => s.id == key))
+            .filter(([key, value]) => this.$cube.config[c].slices.some(s => s.id == key))
         ))
 
       // keep old measurements if they all exist in the new cube
       const measurementsIdsDefaults = this.value.measurementsIds
-        .every(m => this.config[c].measurements.some(mm => mm.id == m))
+        .every(m => this.$cube.config[c].measurements.some(mm => mm.id == m))
         ? this.value.measurementsIds
-        : this.config[c].defaultMeasurementIds
+        : this.$cube.config[c].defaultMeasurementIds
 
       this.$emit('input', <State>{
         cubeId: c,
         slices: slicesDefaults,
         comparingSlices: comparingSliceDefaults,
-        dimensionsIds: this.config[c].defaultDimensionsIds,
+        dimensionsIds: this.$cube.config[c].defaultDimensionsIds,
         measurementsIds: measurementsIdsDefaults,
       })
-      this.numDimensions = this.config[c].defaultDimensionsIds.length
+      this.numDimensions = this.$cube.config[c].defaultDimensionsIds.length
       this.numMeasurements = measurementsIdsDefaults.length
     },
     onInputDimensionsIds(index: number, d: string) {
@@ -239,7 +235,7 @@ export default Vue.extend({
         // else: drop every measurement and keep only the new input
         measurementsIds[index] = m
       } else {
-        measurementsIds = this.config[this.value.cubeId].measurements.map(m => m.id)
+        measurementsIds = this.$cube.config[this.value.cubeId].measurements.map(m => m.id)
       }
 
       this.$emit('input', <State>{
@@ -272,15 +268,15 @@ export default Vue.extend({
       }
     },
     cubes(): Cube[] {
-      return Object.values(this.config)
+      return Object.values(this.$cube.config)
         .filter((cube) => this.advancedMode || !cube.hidden)
     },
     dimensions(): Dimension[] {
-      return this.config[this.value.cubeId].dimensions
+      return this.$cube.config[this.value.cubeId].dimensions
         .filter(d => this.advancedMode || !d.hidden)
     },
     measurements(): Measurement[] {
-      return this.config[this.value.cubeId].measurements
+      return this.$cube.config[this.value.cubeId].measurements
     },
     showAllMeasurements(): boolean {
       return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1

@@ -13,8 +13,8 @@
         class="h-full"
       ></brawler-team>
       <p class="mt-1 self-center text-xs">
-        {{ commonMeasurements.wins.formatter(team.wins) }}
-        {{ commonMeasurements.wins.nameShort }}
+        {{ team.wins }}
+        {{ winsName }}
       </p>
     </div>
     <p v-if="!$fetchState.pending && teams.length == 0">
@@ -24,15 +24,13 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'vuex'
-import Vue, { PropType } from 'vue'
-import { MetaInfo } from 'vue-meta'
+import Vue from 'vue'
 import { commonMeasurements } from '~/lib/cube'
 
 interface Team {
   id: string
   brawlers: string[]
-  wins: number
+  wins: string
   winRate: number
 }
 
@@ -87,17 +85,14 @@ export default Vue.extend({
     this.teams = data.data.map((t) => (<Team>{
       id: t.brawler_names.join('+'),
       brawlers: t.brawler_names,
-      wins: Math.floor(t.wins),
+      wins: this.$clicker.format(commonMeasurements.wins, Math.floor(t.wins)),
       winRate: t.wins / t.picks,
     }))
   },
   computed: {
-    commonMeasurements() {
-      return commonMeasurements
+    winsName() {
+      return commonMeasurements.wins.nameShort
     },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers,
-    })
   },
 })
 </script>

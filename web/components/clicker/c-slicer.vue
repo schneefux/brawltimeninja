@@ -36,16 +36,12 @@
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Vue, { PropType } from 'vue'
-import { Config, SliceValue, State } from '~/lib/cube'
+import { SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   props: {
     value: {
       type: Object as PropType<State>,
-      required: true
-    },
-    config: {
-      type: Object as PropType<Config>,
       required: true
     },
     comparing: {

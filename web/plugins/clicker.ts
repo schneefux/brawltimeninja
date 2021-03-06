@@ -1,8 +1,9 @@
-import { differenceInMinutes, parseISO } from "date-fns"
-import { formatMode, MetaGridEntry } from "~/lib/util"
+import { differenceInMinutes, parseISO, format as formatDate } from "date-fns"
+import { capitalizeWords, formatMode, MetaGridEntry } from "~/lib/util"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { Route, Location } from "vue-router"
-import { State, Config, commonMeasurements, Dimension, Measurement, Slice, SliceValue } from "~/lib/cube"
+import { State, Config, commonMeasurements, Dimension, Measurement, Slice, SliceValue, ValueType } from "~/lib/cube"
+import * as d3format from "d3-format"
 
 // workaround for https://github.com/vuejs/vue-router/issues/2725
 // FIXME remove when upgrading to vue-router 3
@@ -84,6 +85,7 @@ interface Clicker {
   compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
   stateToLocation(state: Partial<State>): Location
   locationToState(location: Route, config: Config): State
+  format(spec: { type: ValueType, formatter: string }, value: number|string|string[]): string
 }
 
 declare module 'vue/types/vue' {
@@ -135,18 +137,19 @@ export default (context, inject) => {
       }
     },
     query(name, cube, dimensions, measures, slices, options = {}) {
-      const query = new URLSearchParams({
+      // SSR does not support UrlSearchParams
+      const query = {
         include: measures.join(','),
-      })
+      }
       const headers = {} as Record<string, string>
       if (options.sort != undefined) {
-        query.append('sort', Object.entries(options.sort || {}).map(([name, order]) => (order == 'desc' ? '-' : '') + name).join(','))
+        query['sort'] = Object.entries(options.sort || {}).map(([name, order]) => (order == 'desc' ? '-' : '') + name).join(',')
       }
       if (options.limit != undefined) {
-        query.append('limit', options.limit.toString())
+        query['limit'] = options.limit.toString()
       }
       if (options.totals == true) {
-        query.append('totals', options.totals.toString())
+        query['totals'] = options.totals.toString()
       }
       if (name != undefined) {
         headers['x-brawltime-tag'] = name
@@ -156,9 +159,12 @@ export default (context, inject) => {
       }
       Object.entries(slices)
         .filter(([name, args]) => args != undefined)
-        .forEach(([name, args]) => query.append('slice[' + name + ']', args!.join(',')))
-      query.sort()
-      const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + query.toString()
+        .forEach(([name, args]) => query['slice[' + name + ']'] = args!.join(','))
+      const queryString = Object.entries(query)
+        .sort(([k1, v1], [k2, v2]) => k1 < k2 ? -1 : k1 > k2 ? 1 : 0)
+        .map(([k, v]) => k + '=' + encodeURIComponent(v))
+        .join('&')
+      const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + queryString
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url, { headers })
     },
@@ -389,7 +395,7 @@ export default (context, inject) => {
             // m is a measurement
             const measurement = m.percentage ? row[m.column] / totals![m.column] : row[m.column]
             entry.measurementsRaw[m.id] = measurement
-            entry.measurements[m.id] = m.formatter(measurement)
+            entry.measurements[m.id] = this.format(m, measurement)
           } else {
             // m is a dimension
             anyDimensions.push(m)
@@ -402,7 +408,7 @@ export default (context, inject) => {
             .concat(d.column)
             .reduce((o, c) => ({ ...o, [c]: row[c] }), {}) // pick keys from row
           entry.dimensionsRaw[d.id] = dimension
-          const formatted = d.formatter(dimension)
+          const formatted = this.format(d, dimension[d.formatColumn])
           entry.dimensions[d.id] = formatted
           id += formatted
         }
@@ -425,7 +431,7 @@ export default (context, inject) => {
           for (const m in baseEntry.measurements) {
             if (mode == 'diff') {
               measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
-              measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + commonMeasurements[m].formatter(measurementsRaw[m] as number)
+              measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(commonMeasurements[m], measurementsRaw[m])
             }
 
             // TODO implement z-test again
@@ -508,6 +514,34 @@ export default (context, inject) => {
         comparing,
         sortId,
       } as State
+    },
+    format(spec, value) {
+      if (Array.isArray(value)) {
+        return value.map(v => this.format(spec, v)).join(', ')
+      }
+      if (spec.type == 'quantitative' && typeof value == 'number') {
+        if (spec.formatter == 'duration') {
+          return `${Math.floor(value / 60)}:${Math.floor(value % 60).toString().padStart(2, '0')}`
+        }
+        return d3format.format(spec.formatter)(value)
+      }
+      if (spec.type == 'temporal' && typeof value == 'string') {
+        return formatDate(parseISO(value), spec.formatter)
+      }
+      if (spec.type == 'nominal' && typeof value == 'string') {
+        if (spec.formatter == 'capitalizeWords') {
+          return capitalizeWords(value.toLowerCase())
+        }
+        if (spec.formatter == 'y/n') {
+          return value == '1' ? 'Yes' : 'No'
+        }
+        if (spec.formatter == 'formatMode') {
+          // TODO remove for i18n
+          return formatMode(value)
+        }
+        return value
+      }
+      return value.toString()
     }
   })
 }
