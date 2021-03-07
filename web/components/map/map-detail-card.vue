@@ -88,10 +88,10 @@
 
 <script lang="ts">
 import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
-import { enUS, de } from 'date-fns/locale'
 import Vue from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
+import { enUS, de } from 'date-fns/locale'
 const locales = { en: enUS, de: de }
 
 export default Vue.extend({

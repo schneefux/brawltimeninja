@@ -65,7 +65,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { camelToSnakeCase, capitalizeWords } from '@/lib/util'
-import { PlayerRankTableRow } from '~/components/player-rank-table.vue'
+import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
 
 function formatMetric(m: string) {
   return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))

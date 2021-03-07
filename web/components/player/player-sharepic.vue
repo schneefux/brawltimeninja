@@ -122,7 +122,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Player } from '../model/Brawlstars'
+import { Player } from '@/model/Brawlstars'
 import { Brawler } from '@/model/Api'
 
 export default Vue.extend({

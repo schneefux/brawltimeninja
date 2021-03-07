@@ -20,10 +20,10 @@
   "tier-list.competition-info": "A new Competition Winner Map is voted by the community every day.",
   "tier-list.compare-competition-winners": "Compare Competition Winners",
   "tier-list.gadget.title": "Gadget Tier List for Brawl Stars",
-  "tier-list.gadget.description": "Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars.",
+  "tier-list.gadget.description": "Use the Gadget Tier List to find the best Gadgets for all Brawlers in Brawl Stars.",
   "tier-list.gadget.meta.description": "Brawl Stars Gadget Tier List. Find the best Gadgets for all Brawlers in Brawl Stars with Win Rates and Rankings.",
   "tier-list.starpower.title": "Star Power Tier List for Brawl Stars",
-  "tier-list.starpower.description": "Use the Star Power Tier List to find the best Star Power for all Brawlers in Brawl Stars.",
+  "tier-list.starpower.description": "Use the Star Power Tier List to find the best Star Powers for all Brawlers in Brawl Stars.",
   "tier-list.starpower.meta.description": "Brawl Stars Star Power Tier List. Find the best Star Power for all Brawlers with Win Rates and Rankings.",
   "tier-list.brawlers.meta.title": "Brawl Stars Brawler Tier List",
   "tier-list.brawlers.meta.description": "Brawl Stars Brawler Tier List. Find the best Brawlers. View Win Rates and Rankings.",
@@ -256,7 +256,7 @@
   "status.down.title": "Oh no!",
   "status.down.description": "No connection to Brawl Stars servers possible. It's not just you!",
   "status.check-twitter": "Check the official Brawl Stars Twitter feed to find out whether there is a maintenance ongoing:",
-  "club.meta.description": "${club} Brawl Stars Club.",
+  "club.meta.description": "{club} Brawl Stars Club.",
   "leaderboard.meta.title": "Brawl Stars {metric} Leaderboard",
   "leaderboard.meta.description": "Brawl Stars {metric} Leaderboard. Players ranked by most {metric}.",
   "player.meta.title": "{name} Brawl Stars Profile",
@@ -275,5 +275,6 @@
   "mode.superCityRampage": "Super City Rampage",
   "mode.gemGrab": "Gem Grab",
   "option.all-modes": "All Modes",
-  "option.all-maps": "All Maps"
+  "option.all-maps": "All Maps",
+  "index.now-in-language": "Now in English!"
 }

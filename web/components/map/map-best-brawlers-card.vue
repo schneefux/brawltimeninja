@@ -38,8 +38,8 @@
       :mode="mode"
       :map="map"
       :powerplay="powerplay"
+      :elevation="2"
       class="my-4"
-      elevation="2"
     ></map-best-brawlers>
 
     <b-button
@@ -59,6 +59,9 @@
 import Vue from 'vue'
 import { camelToKebab, slugify } from '@/lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
+
+import { enUS, de } from 'date-fns/locale'
+const locales = { en: enUS, de: de }
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -105,7 +108,11 @@ export default Vue.extend({
       }
 
       const date = parseISO(this.endDate)
-      return 'ends in ' + formatDistanceToNow(date)
+      const dist = formatDistanceToNow(date, {
+        locale: locales[this.$i18n.locale],
+      })
+
+      return this.$t('time.ends-in', { time: dist }) as string
     },
     startDateString(): string {
       if (this.startDate == undefined) {

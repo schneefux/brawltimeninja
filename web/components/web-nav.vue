@@ -39,6 +39,10 @@
           >
             {{ $t('nav.' + link.name) }}
           </nuxt-link>
+
+          <locale-switcher
+            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium hover:text-red-800"
+          ></locale-switcher>
         </div>
       </div>
     </div>

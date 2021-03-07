@@ -225,11 +225,11 @@ export default {
       code: 'en',
       iso: 'en-US',
       file: 'index.js',
-    }, /* {
+    }, {
       code: 'de',
       iso: 'de-DE',
       file: 'index.js',
-    } */],
+    }],
     lazy: true,
     langDir: 'lang/',
     defaultLocale: 'en',

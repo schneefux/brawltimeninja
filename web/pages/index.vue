@@ -5,6 +5,12 @@
         src="~/assets/images/logo_with_crown_min.svg"
         class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
       >
+      <span
+        v-if="$i18n.locale != 'en'"
+        class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl"
+      >
+        {{ $t('index.now-in-language') }}
+      </span>
     </div>
 
     <div class="mt-6 md:mt-10 text-center mx-2">

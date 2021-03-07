@@ -240,7 +240,7 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
-import { BattleTotalRow } from '@/components/player-battles-stats.vue'
+import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
 
 export default Vue.extend({
   head(): MetaInfo {
