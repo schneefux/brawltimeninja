@@ -25,23 +25,23 @@
       class="w-full lg:w-auto relative z-0"
     >
       <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap">
-        <div class="pt-3 pb-3 lg:py-0 lg:my-0">
+        <div class="pt-3 pb-3 lg:py-0 lg:my-0 space-x-3">
           <div class="hidden lg:inline-block">
-            <install-button class="md:mr-2"></install-button>
+            <install-button></install-button>
           </div>
 
           <nuxt-link
             v-for="link in links"
             :key="link.target"
             :to="localePath(link.target)"
-            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium hover:text-red-800"
+            class="inline-block underline lg:border-0 text-lg font-medium hover:text-red-800"
             exact-active-class="text-red-800"
           >
             {{ $t('nav.' + link.name) }}
           </nuxt-link>
 
           <locale-switcher
-            class="inline-block underline mr-4 lg:border-0 text-lg capitalize font-medium hover:text-red-800"
+            class="lg:border-0 align-text-top text-2xs pr-7 bg-gray-200"
           ></locale-switcher>
         </div>
       </div>

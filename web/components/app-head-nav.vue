@@ -28,12 +28,16 @@
 
     <nuxt-link
       :to="localePath('/about')"
-      class="h-6"
+      class="h-6 mr-4"
     >
       <font-awesome-icon
         :icon="faInfo"
       ></font-awesome-icon>
     </nuxt-link>
+
+    <locale-switcher
+      class="h-6 text-2xs pr-7 bg-gray-200"
+    ></locale-switcher>
   </div>
 </template>
 

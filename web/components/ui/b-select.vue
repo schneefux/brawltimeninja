@@ -7,6 +7,7 @@
       'rounded font-semibold text-sm py-1 pl-2 border-2', {
         '': props.sm, // default
         'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-gray-200': props.dark,
+        'bg-gray-300 hover:bg-gray-400 border-gray-300 hover:border-gray-400 text-primary-dark': props.light,
     }]"
     :value="props.value"
     @input="listeners.input && listeners.input($event.target.value)"
@@ -25,6 +26,9 @@ export default Vue.extend({
       type: undefined
     },
     dark: {
+      type: Boolean
+    },
+    light: {
       type: Boolean
     },
     sm: {
