@@ -29,7 +29,7 @@
           primary
           @click="showAll = true"
         >
-          &#9660; {{ $t('action.show-all.thing', { thing: $tc('thing.fun-facts', 2) }) }}
+          &#9660; {{ $t('action.show-all.fun-facts') }}
         </b-button>
       </div>
 

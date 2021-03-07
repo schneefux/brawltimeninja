@@ -61,17 +61,16 @@ export default Vue.extend({
   computed: {
     title(): string {
       if (this.mode == undefined) {
-        return this.$i18n.t('leaderboard.thing.long', { thing: this.$i18n.tc('thing.player', 2) }) as string
+        return this.$i18n.t('best.players.long') as string
       }
       if (this.map == undefined) {
-        return this.$i18n.t('leaderboard.thing.in.thing2', {
-          thing: this.$i18n.tc('thing.player', 2),
-          thing2: this.$i18n.t('mode.' + this.mode) as string,
+        return this.$i18n.t('best.players.for.mode', {
+          mode: this.$i18n.t('mode.' + this.mode) as string,
         }) as string
       }
-      return this.$i18n.t('leaderboard.thing.in.thing2', {
-        thing: this.$i18n.tc('thing.player', 2),
-        thing2: `${this.$i18n.t('mode.' + this.mode) as string} - ${this.$i18n.t('map.' + this.id) as string}`,
+      return this.$i18n.t('best.players.for.map', {
+        mode: this.$i18n.t('mode.' + this.mode) as string,
+        map: this.$i18n.t('map.' + this.id) as string,
       }) as string
     },
     isShowdown(): boolean {

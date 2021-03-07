@@ -10,7 +10,7 @@
   >
     <template v-slot="data">
       <v-table
-        :title="$t('leaderboard.thing.long', { thing: $tc('thing.starpower', 2) })"
+        :title="$t('best.starpowers.long')"
         v-bind="{ ...$attrs, ...data }"
         class="mt-4"
         show-link

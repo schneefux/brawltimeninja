@@ -44,7 +44,7 @@
             sm
             prefetch
           >
-            {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.starpower', 2) }) }) }}
+            {{ $t('action.open.tier-list.starpower') }}
           </b-button>
 
           <b-button
@@ -54,7 +54,7 @@
             sm
             prefetch
           >
-            {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', { thing: $tc('thing.gadget', 2) }) }) }}
+            {{ $t('action.open.tier-list.gadget') }}
           </b-button>
         </div>
       </div>
@@ -108,7 +108,7 @@
           primary
           prefetch
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.map', 1) }) }) }}
+          {{ $t('action.open.tier-list.maps') }}
         </b-button>
       </div>
     </page-section>
@@ -147,13 +147,13 @@
           sm
           prefetch
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.brawler', 1) }) }) }}
+          {{ $t('action.open.tier-list.brawler') }}
         </b-button>
       </div>
     </page-section>
 
     <page-section
-      :title="'Best Modes for ' + brawlerName"
+      :title="$t('brawler.modes.title', { brawler: brawlerName })"
       tracking-id="modes"
       tracking-page-id="brawler"
     >
@@ -202,9 +202,9 @@ import { capitalizeWords } from '@/lib/util'
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = this.$tc('tier-list.brawler.description', 1, { brawler: this.brawlerName })
+    const description = this.$t('tier-list.brawler.meta.description', { brawler: this.brawlerName }) as string
     return {
-      title: this.$tc('tier-list.brawler.title', 1, { brawler: this.brawlerName }),
+      title: this.$t('tier-list.brawler.meta.title', { brawler: this.brawlerName }) as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="attack == 'main' ? $t('thing.main-attack') : $t('thing.super-attack')"
+    :title="attack == 'main' ? $t('brawler.main-attack') : $t('brawler.super-attack')"
     full-height
     md
   >

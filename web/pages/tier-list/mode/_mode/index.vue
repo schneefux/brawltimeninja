@@ -83,7 +83,7 @@
           primary
           @click="expandMaps()"
         >
-          {{ $t('action.show-all.thing', { thing: $t('mode.' + mode) + ' ' + $tc('thing.map', 2) }) }}
+          {{ $t('action.show-all.mode-maps', { mode: $t('mode.' + mode) }) }}
         </b-button>
       </div>
     </page-section>

@@ -19,7 +19,7 @@
         xs
         primary
       >
-        <span itemprop="name">{{ $tc('thing.brawler', 2) }}</span>
+        <span itemprop="name">{{ $tc('brawler', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="1" />
     </li>
@@ -100,7 +100,7 @@
         xs
         dark
       >
-        <span itemprop="name">{{ $tc('thing.starpower', 2) }}</span>
+        <span itemprop="name">{{ $tc('starpower', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
     </li>
@@ -120,7 +120,7 @@
         xs
         dark
       >
-        <span itemprop="name">{{ $tc('thing.gadget', 2) }}</span>
+        <span itemprop="name">{{ $tc('gadget', 2) }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
     </li>

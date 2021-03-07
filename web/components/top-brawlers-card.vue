@@ -1,7 +1,7 @@
 <template>
   <card
     :loading="$fetchState.pending"
-    :title="$t('leaderboard.thing.long', { thing: $tc('thing.brawler', 2) })"
+    :title="$t('best.brawlers.long')"
     xxl
   >
     <horizontal-scroller
@@ -44,7 +44,7 @@
       prefetch
       sm
     >
-      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.brawler', 1) }) }) }}
+      {{ $t('action.open.tier-list.brawler') }}
     </b-button>
   </card>
 </template>

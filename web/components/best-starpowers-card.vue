@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="$t('leaderboard.thing', { thing: $tc('thing.' + kindKey) })"
+    :title="$tc('best.' + kindKey, 1)"
     xxs
   >
     <b-button
@@ -10,7 +10,7 @@
       prefetch
       sm
     >
-      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.' + kindKey, 1) }) }) }}
+      {{ $t('action.open.tier-list.' + kindKey) }}
     </b-button>
 
     <shimmer

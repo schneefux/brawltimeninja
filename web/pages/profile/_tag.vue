@@ -110,7 +110,7 @@
       v-if="player.battles.length > 0"
       v-slot="props"
       :pages="Math.ceil(player.battles.length / 6)"
-      :title="$tc('thing.battle-log', 1)"
+      :title="$tc('battle-log', 1)"
       :description="$t('player.battle-log.description')"
     >
       <player-battles-squares
@@ -170,7 +170,7 @@
 
     <player-teaser-card
       v-slot="props"
-      :title="$tc('thing.mode', 2)"
+      :title="$tc('mode', 2)"
       :description="$t('player.modes.description')"
     >
       <player-mode-winrates
@@ -195,7 +195,7 @@
           primary
           prefetch
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('thing.map', 1) }) }) }}
+          {{ $t('action.open.tier-list.maps') }}
         </b-button>
       </div>
     </player-teaser-card>
@@ -215,7 +215,7 @@
     <player-teaser-card
       v-slot="props"
       :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
-      :title="$tc('thing.brawler', 2)"
+      :title="$tc('brawler', 2)"
       :description="$t('player.brawlers.description')"
     >
       <player-brawlers

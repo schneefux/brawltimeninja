@@ -16,7 +16,7 @@
               {{ winRate }}
             </dd>
             <dt class="ml-1">
-              {{ $t('metric.winRate.thing', { thing: $t('mode.' + mode) }) }}
+              {{ $t('metric.winRate.mode', { mode: $t('mode.' + mode) }) }}
             </dt>
           </dl>
           <p class="text-xs">
@@ -27,7 +27,7 @@
 
       <card
         v-if="activeMap != undefined"
-        :title="$t('player.tips-for.thing', { thing: $t('map.' + activeMap.id) })"
+        :title="$t('player.tips-for.map', { map: $t('map.' + activeMap.id) })"
         :elevation="elevation + 1"
         dense
       >
@@ -53,7 +53,7 @@
           primary
           xs
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('map.' + activeMap.id) }) })}}
+          {{ $t('action.open.tier-list.map', { map: $tc('map.' + activeMap.id) }) }}
         </b-button>
       </card>
     </div>
@@ -73,7 +73,7 @@
       primary
       xs
     >
-      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $t('mode.' + mode) }) })}}
+      {{ $t('action.open.tier-list.mode', { mode: $tc('mode.' + mode) }) }}
     </b-button>
   </event-card>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <card
     :loading="$fetchState.pending"
-    :title="$t('leaderboard.thing.long', { thing: $tc('thing.player', 2) })"
+    :title="$t('best.players.long')"
     xxl
   >
     <horizontal-scroller
@@ -45,7 +45,7 @@
       prefetch
       sm
     >
-      Open {{ metricName }} Leaderboard
+      {{ $t('action.open.leaderboard.metric', { metric: $t('metric.' + metric) }) }}
     </b-button>
   </card>
 </template>

@@ -24,7 +24,7 @@
                 {{ entry.measurements[m.id] }}
               </td>
               <td>
-                {{ m.nameShort }}
+                {{ $t('metric.' + m.id + '.short') }}
               </td>
             </tr>
           </tbody>

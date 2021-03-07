@@ -29,7 +29,7 @@
           xs
           prefetch
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list', 1) }) }}
+          {{ $t('action.open.tier-list.mode', { mode }) }}
         </b-button>
       </div>
     </ol>

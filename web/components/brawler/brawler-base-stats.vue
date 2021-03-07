@@ -45,7 +45,7 @@
 
     <card
       v-if="data != null"
-      :title="$t('thing.statistics.thing', { thing: brawlerName })"
+      :title="$t('brawler.statistics', { brawler: brawlerName })"
       full-height
       md
     >

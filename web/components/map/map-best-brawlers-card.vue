@@ -20,10 +20,10 @@
       class="flex justify-end"
     >
       <span v-if="id == 0" class="mr-auto">
-        {{ $tc('thing.competition-map', 1) }}
+        {{ $tc('competition-map', 1) }}
       </span>
       <span v-if="powerplay" class="mr-auto">
-        {{ $tc('thing.power-play', 1) }}
+        {{ $tc('power-play', 1) }}
       </span>
       <span v-if="endDate != undefined">
         {{ endDateString }}

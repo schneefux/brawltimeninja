@@ -67,9 +67,9 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
   head() {
-    const description = this.$tc('tier-list.brawlers.meta.description', 1)
+    const description = this.$t('tier-list.brawlers.meta.description') as string
     return {
-      title: this.$tc('tier-list.brawlers.meta.title', 1),
+      title: this.$t('tier-list.brawlers.meta.title') as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },

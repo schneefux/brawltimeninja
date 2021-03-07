@@ -18,9 +18,9 @@ import Vue from 'vue'
 export default Vue.extend({
   middleware: ['cached'],
   head() {
-    const description = this.$tc('tier-list.gadget.meta.description', 1)
+    const description = this.$t('tier-list.gadget.meta.description') as string
     return {
-      title: this.$tc('tier-list.gadget.title', 1),
+      title: this.$t('tier-list.gadget.meta.title') as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
