@@ -151,19 +151,23 @@ export default Vue.extend({
       return
     }
 
-    const battleData = await this.$clicker.query('player.winrates.brawler',
-      'battle',
-      [],
-      ['picks', 'battle_victory'],
-      {
-        ...this.$clicker.defaultSlicesRaw('battle'),
-        // TODO use ID
-        brawler_name: [this.brawler.name.toUpperCase()],
-        player_tag: [this.playerTag],
+    const response = await this.$cube.query({
+      cubeId: 'battle',
+      slices: {
+        brawler: [this.brawler.name.toUpperCase()],
+        playerTag: [this.playerTag],
+        season: [],
       },
-      { cache: 60 })
-    this.winrate = battleData.data[0].battle_victory
-    this.picks = battleData.data[0].picks
+      dimensionsIds: [],
+      measurementsIds: ['winRate', 'picks'],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
+    if (response.data[0].measurementsRaw.picks > 0) {
+      this.winrate = response.data[0].measurementsRaw.winRate as number
+      this.picks = response.data[0].measurementsRaw.picks as number
+    }
   },
   computed: {
     brawlerId(): string {

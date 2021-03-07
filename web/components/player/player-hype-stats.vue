@@ -268,7 +268,6 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    console.log({ enable: this.enableClickerStats })
     if (!this.enableClickerStats) {
       return
     }
