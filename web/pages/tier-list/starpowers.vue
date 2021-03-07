@@ -29,6 +29,7 @@ export default Vue.extend({
   },
   meta: {
     title: 'Star Powers',
+    screen: 'brawlers',
   },
 })
 </script>

@@ -120,6 +120,10 @@ export default Vue.extend({
       title: 'Guides',
     }
   },
+  meta: {
+    title: 'Guides',
+    screen: 'guides',
+  },
   middleware: ['cached'],
   data() {
     return {
@@ -148,7 +152,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .markdown {
   @apply leading-normal;
 }

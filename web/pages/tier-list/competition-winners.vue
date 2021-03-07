@@ -58,5 +58,9 @@ export default Vue.extend({
         link: `/tier-list/mode/${camelToKebab(row.battle_event_mode)}/map/${slugify(row.battle_event_map)}`,
       }))
   },
+  meta: {
+    title: 'Competition Winners',
+    screen: 'events',
+  },
 })
 </script>

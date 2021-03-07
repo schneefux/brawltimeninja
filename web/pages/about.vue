@@ -57,10 +57,10 @@
 import { mapMutations } from 'vuex'
 
 export default {
-  name: 'AboutPage',
   middleware: ['cached'],
   meta: {
     title: 'About',
+    screen: 'guides',
   },
   computed: {
     domain() {

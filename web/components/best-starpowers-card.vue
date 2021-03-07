@@ -1,6 +1,6 @@
 <template>
   <card
-    :title="$tc('best.' + kindKey, 1)"
+    :title="$tc('best.' + kind, 1)"
     xxs
   >
     <b-button

@@ -78,6 +78,7 @@ export default Vue.extend({
   },
   meta: {
     title: 'Brawlers',
+    screen: 'brawlers',
   },
   middleware: ['cached'],
   computed: {

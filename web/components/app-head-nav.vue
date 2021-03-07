@@ -1,11 +1,11 @@
 <template>
   <div class="bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center">
     <button
-      @click="back()"
-      class="h-6 w-6 mr-8"
+      @click="() => depth == 0 ? undefined : back()"
+      class="h-6 w-6 mr-6"
     >
       <img
-        v-if="isTopLevel"
+        v-if="depth == 0"
         src="~/assets/images/logo_with_crown_min.svg"
       >
       <font-awesome-icon
@@ -23,7 +23,7 @@
     </nuxt-link>
 
     <install-button
-      class="h-6 mr-6"
+      class="h-6 mr-4"
     ></install-button>
 
     <nuxt-link
@@ -44,17 +44,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import { faInfo, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { screens } from './app-bottom-nav.vue'
 
 export default Vue.extend({
   data() {
     return {
-      isTopLevel: true,
+      depth: 0,
       title: 'Brawl Time Ninja',
     }
   },
   methods: {
     back() {
+      this.depth -= 2
       this.$router.go(-1)
     },
     update() {
@@ -67,14 +67,16 @@ export default Vue.extend({
       if (newTitle != undefined) {
         this.title = newTitle
       }
-      this.isTopLevel = screens.some(s => s.matches.some(m => m == this.$route.path))
     },
   },
   created() {
     this.update()
   },
   watch: {
-    '$route': 'update',
+    '$route'() {
+      this.depth++
+      this.update()
+    },
   },
   computed: {
     faArrowLeft() {

@@ -43,5 +43,9 @@ import Vue from 'vue'
 
 export default Vue.extend({
   middleware: ['cached'],
+  meta: {
+    title: 'Install',
+    screen: 'guides',
+  },
 })
 </script>

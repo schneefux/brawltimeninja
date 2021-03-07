@@ -82,6 +82,10 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Leaderboard',
+    screen: 'profile',
+  },
   middleware: ['cached'],
   data() {
     return {

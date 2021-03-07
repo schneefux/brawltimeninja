@@ -27,6 +27,10 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Install',
+    screen: 'guides',
+  },
   middleware: ['cached'],
   data() {
     return {

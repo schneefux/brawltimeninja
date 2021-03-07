@@ -54,5 +54,9 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
+  meta: {
+    title: 'History',
+    screen: 'brawlers',
+  },
 })
 </script>

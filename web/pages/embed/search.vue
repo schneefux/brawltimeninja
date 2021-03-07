@@ -36,6 +36,7 @@ import { mapState } from 'vuex'
 
 export default {
   layout: 'empty',
+  middleware: ['cached'],
   data() {
     return {
       tag: undefined,

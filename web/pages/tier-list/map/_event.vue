@@ -19,5 +19,6 @@ export default Vue.extend({
     redirect(301, `/tier-list/mode/${camelToKebab(event.battle_event_mode)}/map/${slugify(event.battle_event_map)}`)
     return true
   },
+  middleware: ['cached'],
 })
 </script>

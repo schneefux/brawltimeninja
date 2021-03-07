@@ -113,6 +113,7 @@ export default Vue.extend({
   },
   meta: {
     title: 'Events',
+    screen: 'events',
   },
   middleware: ['cached'],
   computed: {

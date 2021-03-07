@@ -29,6 +29,7 @@ export default Vue.extend({
   },
   meta: {
     title: 'Gadgets',
+    screen: 'brawlers',
   },
 })
 </script>

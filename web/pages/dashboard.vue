@@ -108,5 +108,10 @@ export default Vue.extend({
       }
     },
   },
+  meta: {
+    title: 'Dashboard',
+    screen: 'brawlers',
+  },
+  middleware: ['cached'],
 })
 </script>

@@ -44,6 +44,9 @@ export default {
   components: {
     Timeline,
   },
+  meta: {
+    screen: 'guides',
+  },
   data() {
     return {
       status: undefined,

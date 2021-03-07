@@ -75,6 +75,10 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Club',
+    screen: 'profile',
+  },
   middleware: ['cached'],
   data() {
     return {

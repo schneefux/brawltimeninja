@@ -1,21 +1,21 @@
 <template>
   <nav class="sticky bottom-0 z-40 h-14 bg-yellow-400 flex justify-around">
     <nuxt-link
-      v-for="link in links"
-      :key="link.target"
-      :to="localePath(link.target)"
+      v-for="screen in screens"
+      :key="screen.target"
+      :to="localePath(screen.target)"
       :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
-        'text-gray-800': link.target == activeTarget,
-        'text-yellow-700': link.target != activeTarget,
+        'text-gray-800': screen.id == active,
+        'text-yellow-700': screen.id != active,
       }]"
       prefetch
     >
       <font-awesome-icon
-        :icon="link.icon"
+        :icon="screen.icon"
         class="w-6 h-6"
       ></font-awesome-icon>
       <span class="text-xs leading-none">
-        {{ $t('nav.' + link.name) }}
+        {{ $t('nav.' + screen.name) }}
       </span>
     </nuxt-link>
   </nav>
@@ -26,55 +26,63 @@ import Vue from 'vue'
 import { faCalendarDay, faSearch, faMask, faNewspaper, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 interface Screen {
+  id: string
   icon: IconDefinition
   name: string
   target: string
-  matches: string[]
 }
 
 export const screens: Screen[] = [ {
-    icon: faSearch,
-    name: 'Profile',
-    target: '/',
-    matches: ['', '/', '/player'],
-  }, {
-    icon: faCalendarDay,
-    name: 'Events',
-    target: '/tier-list/map',
-    matches: ['/tier-list/map', '/tier-list/mode'],
-  }, {
-    icon: faMask,
-    name: 'Brawlers',
-    target: '/tier-list/brawler',
-    matches: ['/tier-list/brawler', '/tier-list/starpowers', '/tier-list/gadgets', '/dashboard'],
-  }, {
-    icon: faNewspaper,
-    name: 'Guides',
-    target: '/blog/guides',
-    matches: ['/blog', '/faq'],
-  },
-]
+  id: 'profile',
+  icon: faSearch,
+  name: 'Profile',
+  target: '/',
+}, {
+  id: 'events',
+  icon: faCalendarDay,
+  name: 'Events',
+  target: '/tier-list/map',
+}, {
+  id: 'brawlers',
+  icon: faMask,
+  name: 'Brawlers',
+  target: '/tier-list/brawler',
+}, {
+  id: 'guides',
+  icon: faNewspaper,
+  name: 'Guides',
+  target: '/blog/guides',
+} ]
 
 export default Vue.extend({
   data() {
     return {
-      links: screens,
+      screens,
+      active: 'profile',
     }
   },
-  computed: {
-    activeTarget(): string {
-      let longestPrefix = 0
-      let bestMatch: Screen = screens[0]
-      for (const s of screens) {
-        for (const m of s.matches) {
-          const prefixLength = m.split('/').length
-          if (this.$route.path.startsWith(m) && prefixLength > longestPrefix) {
-            bestMatch = s
-          }
+  methods: {
+    update() {
+      // TODO: update with Nuxt 3
+      // $route.meta is merged into $nuxt.$options.context.route.meta
+      // and not reactive
+      // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
+
+      const newScreen = this.$nuxt.$options.context.route.meta[0]?.screen
+      if (newScreen != undefined) {
+        if (screens.some(s => s.id == newScreen)) {
+          this.active = newScreen
+        } else {
+          console.error('Screen does not exist: ' + newScreen)
         }
       }
-      return bestMatch.target
     },
+  },
+  created() {
+    this.update()
+  },
+  watch: {
+    '$route': 'update',
   },
 })
 </script>

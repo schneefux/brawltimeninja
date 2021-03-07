@@ -25,6 +25,10 @@ export default Vue.extend({
       ]
     }
   },
+  meta: {
+    title: 'Guides',
+    screen: 'guides',
+  },
   middleware: ['cached'],
   data() {
     return {

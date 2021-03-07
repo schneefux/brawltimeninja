@@ -232,6 +232,7 @@ export default Vue.extend({
   },
   meta: {
     title: 'Profile',
+    screen: 'profile',
   },
   middleware: ['cached'],
   data() {
