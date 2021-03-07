@@ -175,7 +175,9 @@ export default Vue.extend({
     this.data = data.data[0]
 
     // TODO there might be a second one when Power Play or competition entry is online
-    const map = this.activeEvents.find(e => e.battle_event_mode == this.mode)
+    const map = this.activeEvents
+      .filter(e => !e.battle_event_map.startsWith('Competition '))
+      .find(e => e.battle_event_mode == this.mode)
     if (map != undefined) {
       const totals = await this.$clicker.query('player.winrates.mode-totals', 'map',
         ['brawler_name'],

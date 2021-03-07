@@ -6,9 +6,7 @@
       elevation="2"
       dense
     >
-      <div
-        slot="content"
-      >
+      <div slot="content">
         <div class="mx-auto">
           <slot
             name="dimensions"
