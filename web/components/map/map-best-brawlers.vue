@@ -21,9 +21,7 @@
       loading
     ></shimmer>
     <template v-slot="data">
-      <v-roll
-        v-bind="{ ...data, ...$attrs }"
-      >
+      <v-roll v-bind="{ ...data, ...$attrs }">
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
         </template>

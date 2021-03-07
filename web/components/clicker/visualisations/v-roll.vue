@@ -3,7 +3,7 @@
     <card
       v-for="entry in data"
       :key="entry.id"
-      elevation="2"
+      :elevation="elevation"
       dense
     >
       <div slot="content">
@@ -40,7 +40,6 @@ import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
 
 export default Vue.extend({
-  inheritAttrs: false,
   props: {
     dimensions: {
       type: Array as PropType<Dimension[]>,
@@ -53,6 +52,9 @@ export default Vue.extend({
     data: {
       type: Array as PropType<MetaGridEntry[]>,
       required: true,
+    },
+    elevation: {
+      type: Number
     },
   },
   computed: {

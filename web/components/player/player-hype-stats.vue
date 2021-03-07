@@ -268,6 +268,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
+    console.log({ enable: this.enableClickerStats })
     if (!this.enableClickerStats) {
       return
     }
@@ -324,7 +325,7 @@ export default Vue.extend({
       return medBrawlerTrophies * this.totalBrawlers
     },
     trophyRate(): number {
-      if (this.battleTotals != undefined && this.battleTotals != undefined) {
+      if (this.battleTotals.battle_trophy_change != undefined) {
         return this.battleTotals.battle_trophy_change || 0
       }
 
@@ -337,7 +338,7 @@ export default Vue.extend({
       return trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
     },
     winRate(): number {
-      if (this.battleTotals != undefined && this.battleTotals.battle_victory != undefined) {
+      if (this.battleTotals.battle_victory != undefined) {
         return this.battleTotals.battle_victory
       }
       if (this.player.battles.length == 0) {

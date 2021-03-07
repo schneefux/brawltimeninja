@@ -52,6 +52,7 @@
             :mode="mode"
             :map="map"
             :season="season"
+            elevation="3"
           ></map-best-brawlers>
         </card>
 

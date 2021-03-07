@@ -17,6 +17,7 @@
         'bg-dark-1': !props.light && !props.primary && !props.secondary && props.elevation == 1,
         'bg-dark-2': !props.light && !props.primary && !props.secondary && props.elevation == 2,
         'bg-dark-3': !props.light && !props.primary && !props.secondary && props.elevation == 3,
+        'bg-dark-4': !props.light && !props.primary && !props.secondary && props.elevation == 4,
         'bg-gray-100 text-gray-800': props.light,
         'bg-yellow-900': props.primary,
         'bg-red-900': props.secondary,
@@ -24,6 +25,7 @@
         'shadow': props.elevation == 1,
         'shadow-md': props.elevation == 2,
         'shadow-lg': props.elevation == 3,
+        'shadow-xl': props.elevation == 4,
         'relative loading': props.loading,
       }]"
       :style="data.staticStyle"
@@ -121,7 +123,7 @@
         v-if="'actions' in $scopedSlots"
         :class="['rounded-b text-gray-800 w-full mt-auto font-semibold flex justify-end', {
           'px-3 py-2': !props.dense,
-          'px-2 py-1': !props.dense,
+          'px-2 py-1': props.dense,
         }]"
       >
         <slot name="actions"></slot>
@@ -233,7 +235,6 @@ export default Vue.extend({
 
 <style lang="postcss" scoped>
 /* https://material.io/design/color/dark-theme.html#behavior */
-/* scoping this breaks the styles for some reason */
 /*
   theme('colors.gray.900') does not work,
   perhaps the colors plugin is executed before tailwind?
@@ -252,5 +253,9 @@ export default Vue.extend({
 
 .bg-dark-3 {
   background-color: color(#1a202c blend(white 8%));
+}
+
+.bg-dark-4 {
+  background-color: color(#1a202c blend(white 9%));
 }
 </style>

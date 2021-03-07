@@ -1,9 +1,5 @@
 <template>
-  <div
-    :class="['flex flex-wrap justify-center pt-2', {
-      'h-72 overflow-y-hidden': tease,
-    }]"
-  >
+  <div class="flex flex-wrap justify-center pt-2">
     <lazy
       v-for="(mode, index) in modes.slice(0, tease ? 3 : undefined)"
       :key="mode"
@@ -18,7 +14,10 @@
         :player-brawlers="Object.values(player.brawlers)"
         :player-tag="player.tag"
         :enable-clicker-stats="enableClickerStats"
-        elevation="2"
+        :elevation="elevation"
+        :class="{
+          'hidden md:block': tease && index > 0,
+        }"
         sm
       ></player-mode-card>
     </lazy>
@@ -47,6 +46,9 @@ export default Vue.extend({
     enableClickerStats: {
       type: Boolean,
       required: true
+    },
+    elevation: {
+      type: Number
     },
   },
   data() {

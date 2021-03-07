@@ -1,76 +1,61 @@
 <template>
   <event-card
     :mode="mode"
+    :elevation="elevation"
     v-bind="$attrs"
+    full-height
   >
     <div slot="content">
-      <dl class="flex">
-        <dd class="font-semibold">
-          {{ winRate }}
-        </dd>
-        <dt class="ml-1">
-          {{ $t('metric.winRate') }}
-        </dt>
-      </dl>
-      <p class="text-xs">
-        {{ stats.wins }} {{ $t('metric.wins' )}} / {{ stats.losses }} {{ $t('metric.losses') }}</p>
-      <div
-        v-if="recommendedBrawlers.length > 0"
-        class="flex justify-between md:flex-row-reverse md:justify-end my-3 h-32"
+      <card
+        :elevation="elevation + 1"
+        dense
       >
-        <div class="md:ml-2 w-full">
-          <div>
-            <h6 class="font-semibold">{{ activeMap.map }}</h6>
-            <p class="text-xs">{{ $t('player.recommendation') }}</p>
-          </div>
-          <ol class="flex mt-2 w-32">
-            <li
-              v-for="brawler in recommendedBrawlers"
-              :key="brawler.id"
-              class="flex-shrink-0 w-10 h-12 leading-none mr-1 bg-gray-800 text-center"
-            >
-              <router-link
-                :to="localePath('/tier-list/brawler/' + brawler.id)"
-              >
-                <media-img
-                  :path="'/brawlers/' + brawler.id + '/avatar'"
-                  :alt="brawler"
-                  size="160"
-                  clazz="h-8"
-                ></media-img>
-                <span class="text-xs">{{ brawler.name }}</span>
-              </router-link>
-            </li>
-          </ol>
+        <div slot="content">
+          <dl slot="content" class="flex">
+            <dd class="font-semibold">
+              {{ winRate }}
+            </dd>
+            <dt class="ml-1">
+              {{ $t('metric.winRate.thing', { thing: $t('mode.' + mode) }) }}
+            </dt>
+          </dl>
+          <p class="text-xs">
+            {{ stats.wins }} {{ $t('metric.wins' )}} / {{ stats.losses }} {{ $t('metric.losses') }}
+          </p>
         </div>
-        <div class="w-24 flex flex-col justify-center">
-          <media-img
-            :path="'/maps/' + activeMap.id"
-            size="384"
-            clazz="px-1"
-            ztyle="max-height: 100%;"
-          ></media-img>
-          <b-button
-            tag="router-link"
-            :to="localePath(activeMap.url)"
-            class="mx-auto"
-            primary
-            xs
-          >
-            {{ $t('action.open') }}
-          </b-button>
-        </div>
-      </div>
-      <div v-else class="mt-2">
+      </card>
+
+      <card
+        v-if="activeMap != undefined"
+        :title="$t('player.tips-for.thing', { thing: $t('map.' + activeMap.id) })"
+        :elevation="elevation + 1"
+        dense
+      >
+        <media-img
+          slot="preview"
+          :path="`/maps/${activeMap.id}`"
+          size="80"
+          clazz="h-12"
+        ></media-img>
+        <player-map-tip-roll
+          slot="content"
+          :map="activeMap.map"
+          :mode="mode"
+          :player-brawlers="playerBrawlers"
+          :limit="4"
+          :elevation="elevation + 2"
+          class="mx-auto"
+        ></player-map-tip-roll>
         <b-button
+          slot="actions"
           tag="router-link"
-          :to="localePath(`/tier-list/mode/${modeKebab}`)"
+          :to="localePath(activeMap.url)"
           primary
           xs
         >
-          {{ $t('action.open.thing', { thing: $tc('thing.tier-list', 1) })}}
+          {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $tc('map.' + activeMap.id) }) })}}
         </b-button>
-      </div>
+      </card>
     </div>
     <div class="absolute top-0 right-0 mr-6 my-4">
       <media-img
@@ -80,12 +65,21 @@
         clazz="w-12 mr-1"
       ></media-img>
     </div>
+    <b-button
+      v-if="activeMap == undefined"
+      slot="actions"
+      tag="router-link"
+      :to="localePath(`/tier-list/mode/${modeKebab}`)"
+      primary
+      xs
+    >
+      {{ $t('action.open.thing', { thing: $tc('thing.tier-list.thing', 1, { thing: $t('mode.' + mode) }) })}}
+    </b-button>
   </event-card>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { brawlerId, capitalizeWords } from '~/lib/util'
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify } from '@/lib/util'
 import { commonMeasurements } from '~/lib/cube'
@@ -106,13 +100,7 @@ interface Stats {
 interface ActiveMap {
   id: number
   map: string
-  brawlers: string[]
   url: string
-}
-
-interface BrawlerId {
-  id: string
-  name: string
 }
 
 export default Vue.extend({
@@ -141,6 +129,9 @@ export default Vue.extend({
     enableClickerStats: {
       type: Boolean,
       required: true
+    },
+    elevation: {
+      type: Number
     },
   },
   data() {
@@ -178,21 +169,11 @@ export default Vue.extend({
     const map = this.activeEvents
       .filter(e => !e.battle_event_map.startsWith('Competition '))
       .find(e => e.battle_event_mode == this.mode)
-    if (map != undefined) {
-      const totals = await this.$clicker.query('player.winrates.mode-totals', 'map',
-        ['brawler_name'],
-        ['battle_victory'],
-        {
-          ...this.$clicker.defaultSlicesRaw('map'),
-          battle_event_mode: [this.mode],
-          battle_event_id: [map.battle_event_id.toString()],
-        },
-        { sort: { battle_victory: 'desc' }, cache: 60*60 })
 
+    if (map != undefined) {
       this.activeMap = {
         id: map.battle_event_id,
         map: map.battle_event_map,
-        brawlers: totals.data.map(b => b.brawler_name),
         url: `/tier-list/mode/${camelToKebab(map.battle_event_mode)}/map/${slugify(map.battle_event_map)}`,
       }
     }
@@ -221,34 +202,6 @@ export default Vue.extend({
         wins,
         losses,
       }
-    },
-    recommendedBrawlers(): BrawlerId[] {
-      if (this.activeMap == undefined) {
-        return []
-      }
-
-      // score =
-      //   index [ brawlers owned by player, worst first ]
-      //     *
-      //   index [ brawler in map meta, best first ]
-      const worstBrawlers = this.playerBrawlers.slice()
-        .sort((b1, b2) => b1.trophies - b2.trophies)
-      const bestBrawlers = this.activeMap!.brawlers
-
-      return worstBrawlers
-        .map((worstBrawler) => {
-          const bestBrawlerIndex = bestBrawlers.indexOf(worstBrawler.name)
-          return {
-            brawler: worstBrawler,
-            score: (worstBrawler.trophies + 1) * (bestBrawlerIndex / bestBrawlers.length + 1),
-          }
-        })
-        .sort((r1, r2) => r1.score - r2.score)
-        .slice(0, 3)
-        .map((r) => ({
-          name: capitalizeWords(r.brawler.name.toLowerCase()),
-          id: brawlerId({ name: r.brawler.name }),
-        }))
     },
     winRate(): string {
       return this.stats.picks > 5 ? this.$clicker.format(commonMeasurements.winRate, this.stats.winRate) : '?'

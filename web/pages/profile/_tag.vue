@@ -32,15 +32,12 @@
       </h1>
     </div>
 
-    <!-- FIXME remove, SSR error -->
-    <client-only>
-      <player-hype-stats
-        :player="player"
-        :enable-clicker-stats="enableClickerStats"
-        :battle-totals="battleTotals"
-        class="leading-tight text-center mt-6"
-      ></player-hype-stats>
-    </client-only>
+    <player-hype-stats
+      :player="player"
+      :enable-clicker-stats="enableClickerStats"
+      :battle-totals="battleTotals"
+      class="leading-tight text-center mt-6"
+    ></player-hype-stats>
 
     <div class="mt-2 flex flex-wrap justify-center items-center">
       <history-graph
@@ -185,6 +182,7 @@
         :battles="player.battles"
         :tease="!props.open"
         :enable-clicker-stats="enableClickerStats"
+        :elevation="2"
       ></player-mode-winrates>
 
       <div
@@ -242,8 +240,6 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
-import { MapMetaMap } from '../../model/MetaEntry'
-import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { BattleTotalRow } from '@/components/player-battles-stats.vue'
 
 export default Vue.extend({
@@ -314,6 +310,7 @@ export default Vue.extend({
     setTimeout(() => this.refreshTimer(), 15 * 1000)
   },
   fetchDelay: 0,
+  fetchOnServer: false, // FIXME enableClickerStats causes SSR bugs (due to race conditions?)
   async fetch() {
     const battleData = await this.$clicker.query('player.winrates.total',
       'battle',

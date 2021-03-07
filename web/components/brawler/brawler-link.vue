@@ -13,7 +13,7 @@
         :path="`/brawlers/${props.brawlerId({ name: props.brawler })}/avatar`"
         :alt="props.capitalizeWords(props.brawler.toLowerCase())"
         size="160"
-        clazz="h-6 w-6 sm:h-8 sm:w-6 md:h-10 md:w-10"
+        clazz="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
       ></media-img>
       <media-img
         v-if="props.starpowerId != undefined"

@@ -39,6 +39,7 @@
       :map="map"
       :powerplay="powerplay"
       class="my-4"
+      elevation="2"
     ></map-best-brawlers>
 
     <b-button
