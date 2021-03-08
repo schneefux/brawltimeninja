@@ -5,9 +5,9 @@
       secondary
       sm
       @click="trigger"
-    >Share</b-button>
+    >{{ $t('action.share') }}</b-button>
     <div v-if="loading">
-      <span class="italic text-sm">Generating your Sharepic...</span>
+      <span class="italic text-sm">{{ $t('state.generating-sharepic') }}...</span>
     </div>
     <lazy-sharepic-content
       v-if="loading"

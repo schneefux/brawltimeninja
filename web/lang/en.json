@@ -67,6 +67,7 @@
   "state.no-image": "No image available",
   "state.searching": "Searching",
   "state.checking": "Checking",
+  "state.generating-sharepic": "Generating your Sharepic",
   "tier-list.competition-winners.title": "All Competition Winner Maps",
   "metric.balance-rating": "Balance Rating",
   "metric.gini-coefficient": "Gini Coefficient",
@@ -98,6 +99,8 @@
   "metric.accountRating.description": "The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.",
   "metric.player": "Player",
   "metric.brawler": "Brawler",
+  "metric.starpower": "Star Power",
+  "metric.gadget": "Gadget",
   "metric.name": "Name",
   "metric.highestTrophies": "Highest Trophies",
   "metric.powerPlayPoints": "Power Play Points",
@@ -200,6 +203,7 @@
   "nav.Status": "Status",
   "nav.Brawl Time Ninja": "Brawl Time Ninja",
   "nav.About": "About",
+  "nav.Dashboard": "Dashboard",
   "brawler.statistics": "{brawler} Statistics",
   "brawler.synergies-for": "Synergies for {brawler}",
   "brawler.current-maps.title": "Current Maps for {brawler}",
@@ -288,5 +292,8 @@
   "action.show-all.modes": "Show all Modes",
   "action.show-all.mode-maps": "Show all {mode} Maps",
   "action.show-all.fun-facts": "Show all fun facts",
-  "action.open.leaderboard.metric": "Open {metric} Leaderboard"
+  "action.open.leaderboard.metric": "Open {metric} Leaderboard",
+  "club": "Club",
+  "player.quiz.result.title": "I am a {brawler} person!",
+  "player.quiz.result.description": "My Brawler personality is {brawler}! What's yours?"
 }

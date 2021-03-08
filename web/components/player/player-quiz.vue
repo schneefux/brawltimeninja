@@ -521,8 +521,8 @@ export default Vue.extend({
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
       try {
         await navigator.share({
-          title: `I am a ${this.result} person!`,
-          text: `My Brawler personality is ${this.result}! What's yours?`,
+          title: this.$t('player.quiz.result.title', { brawler: this.result }) as string,
+          text: this.$t('player.quiz.result.description', { brawler: this.result }) as string,
           url: 'https://brawltime.ninja',
         })
         this.$gtag.event('click', {

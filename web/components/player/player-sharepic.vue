@@ -34,23 +34,23 @@
             <span class="mx-1 text-red-500 font-semibold">
               {{ player.club.name }}
             </span>
-            Club
+            {{ $t('club') }}
           </p>
 
           <div class="flex text-3xl">
-            <span class="w-24 text-right text-yellow-400 font-bold">
+            <span class="w-24 text-right text-yellow-400 font-bold flex-shrink-0">
               {{ Math.floor(player.hoursSpent) }}
             </span>
-            <span class="ml-2">
+            <span class="ml-2 whitespace-nowrap">
               {{ $t('metric.hours-spent') }}
             </span>
           </div>
 
           <div class="flex text-3xl">
-            <span class="w-24 text-right text-yellow-400 font-bold">
+            <span class="w-24 text-right text-yellow-400 font-bold flex-shrink-0">
               {{ Math.floor(player.trophies) }}
             </span>
-            <span class="ml-2">
+            <span class="ml-2 whitespace-nowrap">
               {{ $t('metric.trophies') }}
             </span>
           </div>
