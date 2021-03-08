@@ -101,10 +101,10 @@
     <div class="my-2 mx-6 max-w-lg flex flex-wrap justify-center">
       <div class="mt-1">
         <template v-if="lastPlayers.length === 0">
-          {{ $t('index.recommended') }}:
+          {{ $t('index.recommended') }}
         </template>
         <template v-if="lastPlayers.length > 0">
-          {{ $t('index.recents') }}:
+          {{ $t('index.recents') }}
         </template>
       </div>
       <div>

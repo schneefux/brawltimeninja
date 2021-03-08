@@ -3,7 +3,7 @@
     <nuxt-link
       v-for="screen in screens"
       :key="screen.target"
-      :to="localePath(screen.target)"
+      :to="screen.target"
       :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
         'text-gray-800': screen.id == active,
         'text-yellow-700': screen.id != active,
@@ -32,32 +32,9 @@ interface Screen {
   target: string
 }
 
-export const screens: Screen[] = [ {
-  id: 'profile',
-  icon: faSearch,
-  name: 'Profile',
-  target: '/',
-}, {
-  id: 'events',
-  icon: faCalendarDay,
-  name: 'Events',
-  target: '/tier-list/map',
-}, {
-  id: 'brawlers',
-  icon: faMask,
-  name: 'Brawlers',
-  target: '/tier-list/brawler',
-}, {
-  id: 'guides',
-  icon: faNewspaper,
-  name: 'Guides',
-  target: '/blog/guides',
-} ]
-
 export default Vue.extend({
   data() {
     return {
-      screens,
       active: 'profile',
     }
   },
@@ -70,12 +47,37 @@ export default Vue.extend({
 
       const newScreen = this.$nuxt.$options.context.route.meta[0]?.screen
       if (newScreen != undefined) {
-        if (screens.some(s => s.id == newScreen)) {
+        if (this.screens.some(s => s.id == newScreen)) {
           this.active = newScreen
         } else {
           console.error('Screen does not exist: ' + newScreen)
         }
       }
+    },
+  },
+  computed: {
+    screens(): Screen[] {
+      return [ {
+        id: 'profile',
+        icon: faSearch,
+        name: 'Profile',
+        target: this.localePath('/'),
+      }, {
+        id: 'events',
+        icon: faCalendarDay,
+        name: 'Events',
+        target: this.localePath('/tier-list/map'),
+      }, {
+        id: 'brawlers',
+        icon: faMask,
+        name: 'Brawlers',
+        target: this.localePath('/tier-list/brawler'),
+      }, {
+        id: 'guides',
+        icon: faNewspaper,
+        name: 'Guides',
+        target: '/blog/guides',
+      } ]
     },
   },
   created() {

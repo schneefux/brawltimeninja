@@ -55,28 +55,6 @@ import Vue from 'vue'
 export default Vue.extend({
   data() {
     return {
-      links: [ {
-        name: 'Profile Search',
-        target: '/',
-      }, {
-        name: 'Brawler Tier List',
-        target: '/tier-list/brawler',
-      }, {
-        name: 'Map Tier Lists',
-        target: '/tier-list/map',
-      }, {
-        name: 'Leaderboards',
-        target: '/leaderboard/hours',
-      }, {
-        name: 'Guides',
-        target: '/blog/guides',
-      }, {
-        name: 'Status',
-        target: '/status',
-      }, {
-        name: 'Privacy',
-        target: '/about',
-      }],
       lastScrollY: 0,
       lastScrollUpY: 0,
       menuButtonVisible: false,
@@ -86,6 +64,32 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('scroll', () => this.onScroll())
     this.openMenu()
+  },
+  computed: {
+    links() {
+      return [ {
+        name: 'Profile Search',
+        target: this.localePath('/'),
+      }, {
+        name: 'Brawler Tier List',
+        target: this.localePath('/tier-list/brawler'),
+      }, {
+        name: 'Map Tier Lists',
+        target: this.localePath('/tier-list/map'),
+      }, {
+        name: 'Leaderboards',
+        target: this.localePath('/leaderboard/hours'),
+      }, {
+        name: 'Guides',
+        target: '/blog/guides',
+      }, {
+        name: 'Status',
+        target: this.localePath('/status'),
+      }, {
+        name: 'Privacy',
+        target: '/about',
+      }]
+    },
   },
   methods: {
     onScroll() {

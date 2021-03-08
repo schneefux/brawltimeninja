@@ -124,6 +124,9 @@ export default Vue.extend({
     title: 'Guides',
     screen: 'guides',
   },
+  nuxtI18n: {
+    locales: ['en'],
+  },
   middleware: ['cached'],
   data() {
     return {

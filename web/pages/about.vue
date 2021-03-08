@@ -62,6 +62,9 @@ export default {
     title: 'About',
     screen: 'guides',
   },
+  nuxtI18n: {
+    locales: ['en'],
+  },
   computed: {
     domain() {
       if (global.window !== undefined) {

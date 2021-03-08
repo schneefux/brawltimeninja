@@ -28,10 +28,13 @@ export default Vue.extend({
     }
   },
   meta: {
-    title: 'Install',
+    title: 'FAQ',
     screen: 'guides',
   },
   middleware: ['cached'],
+  nuxtI18n: {
+    locales: ['en'],
+  },
   data() {
     return {
       faq: undefined as undefined|IContentDocument,

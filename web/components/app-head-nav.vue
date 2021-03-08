@@ -27,7 +27,7 @@
     ></install-button>
 
     <nuxt-link
-      :to="localePath('/about')"
+      :to="'/about'"
       class="h-6 mr-4"
     >
       <font-awesome-icon
