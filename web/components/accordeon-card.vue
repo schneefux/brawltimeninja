@@ -27,7 +27,7 @@
         v-if="page > 0"
         class="mx-2"
         primary
-        md
+        sm
         @click="collapse"
       >
         {{ $t('action.collapse') }}
