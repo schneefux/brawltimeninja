@@ -233,6 +233,11 @@ export default {
     lazy: true,
     langDir: 'lang/',
     defaultLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      onlyOnRoot: true,
+    },
     vueI18n: {
       fallbackLocale: 'en',
     },
