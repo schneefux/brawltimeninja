@@ -35,7 +35,7 @@ import DPlayer from '@/components/clicker/renderers/d-player.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
-import CQuery from '@/components/clicker/c-query.vue'
+import CQuery from '~/components/clicker/c-query'
 
 export default Vue.extend({
   components: {

@@ -26,6 +26,8 @@
       </div>
     </card>
 
+    <!-- FiXME find cause for SSR error -->
+    <client-only>
     <map-best-brawlers-table
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'brawlers'),
@@ -60,12 +62,12 @@
       :map="map"
       :id="id"
     ></map-best-players-table>
+    </client-only>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
 
 export default Vue.extend({
   props: {
@@ -84,11 +86,6 @@ export default Vue.extend({
     gaCategory: {
       type: String
     },
-  },
-  computed: {
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    })
   },
   methods: {
     trackScroll(visible, element, section) {
