@@ -39,14 +39,14 @@ export default Vue.extend({
     }
   },
   async asyncData({ params, $content, error }: any) {
-    const post = await $content(`guides/${params.post}`).fetch() as Post
-
-    if (post == undefined) {
-      return error({ statusCode: 404, message: 'Post not found' })
-    }
-
-    return {
-      post,
+    try {
+      const post = await $content(`guides/${params.post}`).fetch() as Post
+      return {
+        post,
+      }
+    } catch {
+      error({ statusCode: 404, message: 'Post not found' })
+      return {}
     }
   },
 })
