@@ -5,7 +5,7 @@
       dimensionsIds: ['day'],
       measurementsIds: brawler != undefined ? ['trophies'] : ['playerTrophies'],
       slices: {
-        season: ['month'],
+        season: [season],
         playerTag: [playerTag],
         brawler: brawler != undefined ? [brawler.toUpperCase()] : [],
       },
@@ -29,6 +29,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { formatClickhouse, getSeasonEnd } from '~/lib/util'
+import { subMonths } from 'date-fns'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -42,6 +44,12 @@ export default Vue.extend({
     },
     raw: {
       type: Boolean
+    },
+  },
+  computed: {
+    season() {
+      const d = new Date()
+      return formatClickhouse(getSeasonEnd(subMonths(d, 3)))
     },
   },
 })
