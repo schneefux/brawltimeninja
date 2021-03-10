@@ -40,7 +40,7 @@ export default Vue.extend({
   },
   computed: {
     supportsShareApi() {
-      return 'share' in navigator
+      return global.navigator != undefined && 'share' in navigator
     },
   },
 })
