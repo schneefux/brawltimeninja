@@ -1,7 +1,7 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
 import { stripIndent } from "common-tags"
-import { QueryBuilder } from "knex"
 import { DataType } from "./Cube"
+import { Knex } from "knex"
 
 export interface MapMetaCubeRow extends BrawlerBattleCubeRow {
   battle_event_mode: string
@@ -77,7 +77,7 @@ export default class MapMetaCube extends BrawlerBattleCube {
     ...BrawlerBattleCube.defaultSlices,
   }
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'battle_event_mode':
         return query.where(`${this.table}.battle_event_mode`, '=', args[0])

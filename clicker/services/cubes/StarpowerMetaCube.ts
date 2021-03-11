@@ -1,6 +1,6 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube";
 import { stripIndent } from "common-tags";
-import { QueryBuilder } from "knex";
+import { Knex } from "knex";
 import { DataType } from "./Cube";
 
 export interface StarpowerMetaCubeRow extends BrawlerBattleCubeRow {
@@ -55,7 +55,7 @@ export default class StarpowerMetaCube extends BrawlerBattleCube {
     ...BrawlerBattleCube.defaultSlices,
   }
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'with_starpower':
         return query.where(`${this.table}.brawler_starpower_id`, args[0] == 'true' ? '<>' : '=', '0')

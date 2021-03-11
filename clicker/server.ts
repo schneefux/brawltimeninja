@@ -43,7 +43,7 @@ app.get('/clicker/cube/:cube/metadata', asyncMiddleware(async (req, res) => {
   res.json(service.getCubeMetadata(req.params.cube))
 }))
 
-app.options('/clicker/cube/:cube/query/:dimensions?', cors({
+app.options('/clicker/cube/:cube/query/:dimensions?', (cors as any)({
   origin: '*', // TODO for development only
   allowedHeaders: ['x-brawltime-cache', 'x-brawltime-tag'],
   maxAge: 86400, // 24h max, capped by Firefox
@@ -100,6 +100,8 @@ const core = CubejsServerCore.create({
   // TODO: careful - driver uses shared session
   driverFactory: () => new ClickhouseDriver({
     host: process.env.CLICKHOUSE_HOST,
+    port: parseInt(process.env.CLICKHOUSE_PORT || '8123'),
+    readOnly: true,
     database: 'brawltime',
     cacheAndQueueDriver: 'memory',
   }),

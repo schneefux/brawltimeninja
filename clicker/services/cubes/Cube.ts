@@ -1,5 +1,5 @@
 import { ClickHouse as ClickHouse2 } from 'clickhouse';
-import Knex, { QueryBuilder } from "knex"
+import Knex, { Knex as KnexT } from "knex"
 import { StatsD } from "hot-shots"
 
 export type Order = 'asc'|'desc'
@@ -14,7 +14,7 @@ export default abstract class Cube {
   abstract virtuals: Record<string, string[]>
   abstract mapVirtual(row: Record<string, string>): Record<string, string|number|boolean>
 
-  abstract slice(query: QueryBuilder, name: string, args: string[]): QueryBuilder
+  abstract slice(query: KnexT.QueryBuilder, name: string, args: string[]): KnexT.QueryBuilder
 
   private knex = Knex({ client: 'mysql' })
   private stats = new StatsD({ prefix: 'brawltime.clicker.' })

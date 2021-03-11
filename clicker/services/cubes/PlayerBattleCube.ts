@@ -1,6 +1,6 @@
 import { ClickHouse } from "clickhouse";
 import { stripIndent } from "common-tags";
-import { QueryBuilder } from "knex";
+import { Knex } from "knex";
 import { DataType } from "./Cube";
 import PlayerBrawlerCube from "./PlayerBrawlerCube";
 
@@ -146,7 +146,7 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
     'battle_event_powerplay': 1,
   }
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'battle_event_mode':
         return query.where(`${this.table}.battle_event_mode`, '=', args[0])

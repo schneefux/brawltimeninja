@@ -1,6 +1,6 @@
 import { ClickHouse } from "clickhouse";
 import { stripIndent } from "common-tags";
-import { QueryBuilder } from "knex";
+import { Knex } from "knex";
 import { formatClickhouse, getCurrentSeasonEnd, idToTag, tagToId } from "../../lib/util";
 import Cube, { DataType } from "./Cube";
 
@@ -181,7 +181,7 @@ export default class PlayerBrawlerCube extends Cube {
 
   mappers = PlayerBrawlerCube.defaultMappers
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'trophy_season_end':
         if (args[0] == 'current') {

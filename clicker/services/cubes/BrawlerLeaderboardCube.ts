@@ -1,5 +1,5 @@
 import MaterializedCube from "./MaterializedCube";
-import { QueryBuilder } from "knex";
+import { Knex } from "knex";
 import { idToTag } from "../../lib/util";
 import { stripIndent } from "common-tags";
 import { DataType } from "./Cube";
@@ -72,7 +72,7 @@ export default class BrawlerLeaderboardCube extends MaterializedCube {
     GROUP BY player_id, brawler_id
   `
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'timestamp':
         return query.where(`${this.table}.timestamp`, '>=', query.client.raw(`toDateTime(?, 'UTC')`, args[0]))

@@ -1,6 +1,6 @@
 import BrawlerBattleCube, { BrawlerBattleCubeRow } from "./BrawlerBattleCube"
 import { stripIndent } from "common-tags"
-import { QueryBuilder } from "knex"
+import { Knex } from "knex"
 import { DataType } from "./Cube"
 
 export interface SynergyMetaCubeRow extends BrawlerBattleCubeRow {
@@ -68,7 +68,7 @@ export default class SynergyMetaCube extends BrawlerBattleCube {
   }
 
   // TODO deduplicate MapMetaCube code (create a parent class)
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'battle_event_mode':
         return query.where(`${this.table}.battle_event_mode`, '=', args[0])

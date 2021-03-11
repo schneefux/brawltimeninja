@@ -1,5 +1,5 @@
 import MaterializedCube from "./MaterializedCube";
-import { QueryBuilder } from "knex";
+import { Knex } from "knex";
 import { stripIndent } from "common-tags";
 import { formatClickhouse, getCurrentSeasonEnd } from "../../lib/util";
 import { DataType } from "./Cube";
@@ -125,7 +125,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
 
   slices = BrawlerBattleCube.defaultSlices
 
-  slice(query: QueryBuilder, name: string, args: string[]) {
+  slice(query: Knex.QueryBuilder, name: string, args: string[]) {
     switch (name) {
       case 'trophy_season_end':
         if (args[0] == 'current') {
