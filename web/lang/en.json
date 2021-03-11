@@ -99,6 +99,7 @@
   "metric.accountRating.description": "The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.",
   "metric.player": "Player",
   "metric.brawler": "Brawler",
+  "metric.team": "Team",
   "metric.starpower": "Star Power",
   "metric.gadget": "Gadget",
   "metric.name": "Name",
