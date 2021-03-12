@@ -26,11 +26,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { Timeline } from 'vue-tweet-embed'
 
-export default {
-  head() {
+export default Vue.extend({
+  head(): MetaInfo {
     const description = this.$tc('status.meta.description')
     return {
       title: this.$tc('status.meta.title'),
@@ -49,7 +51,7 @@ export default {
   },
   data() {
     return {
-      status: undefined,
+      status: undefined as undefined|string,
     }
   },
   async created() {
@@ -59,6 +61,6 @@ export default {
     } catch {
       this.status = 'down'
     }
-  }
-}
+  },
+})
 </script>
