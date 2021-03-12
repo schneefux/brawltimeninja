@@ -105,7 +105,7 @@ const core = CubejsServerCore.create({
     database: 'brawltime',
     cacheAndQueueDriver: 'memory',
   }),
-  apiSecret: 'secret', // TODO
+  apiSecret: process.env.API_SECRET || 'secret', // TODO
   telemetry: false,
 })
 core.initApp(app)
