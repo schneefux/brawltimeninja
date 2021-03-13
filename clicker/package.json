@@ -6,7 +6,7 @@
     "node": ">=14.x"
   },
   "scripts": {
-    "dev": "nodemon -e ts -x ts-node server.ts --legacy-watch",
+    "dev": "tsc ./lib/cube.ts && nodemon -e ts -x ts-node server.ts --legacy-watch",
     "dev:migrate": "ts-node migrate.ts",
     "build": "tsc",
     "start": "node dist/migrate.js && node dist/server.js"

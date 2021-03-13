@@ -1,4 +1,4 @@
-import config from '../dist/lib/cube.js'
+import config from '../lib/cube.js'
 
 // cube.js imports are not 'real' imports
 // -> access `.default`

@@ -33,6 +33,10 @@ var metaDimensions = asDimensions({
         type: 'temporal',
         scale: {
             nice: 'week'
+        },
+        config: {
+            sql: 'trophy_season_end',
+            type: 'time'
         }
     },
     day: {
@@ -46,6 +50,10 @@ var metaDimensions = asDimensions({
         type: 'temporal',
         scale: {
             nice: 'day'
+        },
+        config: {
+            sql: 'timestamp_day',
+            type: 'time'
         }
     },
     timestamp: {
@@ -59,6 +67,10 @@ var metaDimensions = asDimensions({
         type: 'temporal',
         scale: {
             nice: 'hour'
+        },
+        config: {
+            sql: 'timestamp',
+            type: 'time'
         }
     }
 });
@@ -71,7 +83,11 @@ var playerDimensions = asDimensions({
         column: 'player_id',
         anyColumns: ['player_name', /* 'player_tag', FIXME */ 'player_icon_id'],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'player_id',
+            type: 'string'
+        }
     }
 });
 var brawlerDimensions = asDimensions({
@@ -83,7 +99,11 @@ var brawlerDimensions = asDimensions({
         column: 'brawler_name',
         anyColumns: [],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'brawler_name',
+            type: 'string'
+        }
     },
     brawlerId: {
         id: 'brawlerId',
@@ -93,7 +113,11 @@ var brawlerDimensions = asDimensions({
         column: 'brawler_id',
         anyColumns: [],
         hidden: true,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'brawler_id',
+            type: 'string'
+        }
     },
     ally: {
         id: 'ally',
@@ -103,7 +127,11 @@ var brawlerDimensions = asDimensions({
         column: 'ally_brawler_name',
         anyColumns: [],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'ally_brawler_name',
+            type: 'string'
+        }
     },
     allyId: {
         id: 'allyId',
@@ -113,7 +141,11 @@ var brawlerDimensions = asDimensions({
         column: 'ally_brawler_id',
         anyColumns: [],
         hidden: true,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'ally_brawler_id',
+            type: 'string'
+        }
     },
     gadget: {
         id: 'gadget',
@@ -123,7 +155,11 @@ var brawlerDimensions = asDimensions({
         column: 'brawler_gadget_id',
         anyColumns: ['brawler_gadget_name', 'brawler_name'],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'brawler_gadget_id',
+            type: 'string'
+        }
     },
     starpower: {
         id: 'starpower',
@@ -133,7 +169,11 @@ var brawlerDimensions = asDimensions({
         column: 'brawler_starpower_id',
         anyColumns: ['brawler_starpower_name', 'brawler_name'],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'brawler_starpower_id',
+            type: 'string'
+        }
     },
     bigbrawler: {
         id: 'bigbrawler',
@@ -143,7 +183,11 @@ var brawlerDimensions = asDimensions({
         column: 'brawler_is_bigbrawler',
         anyColumns: [],
         hidden: true,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'battle_is_bigbrawler',
+            type: 'boolean'
+        }
     }
 });
 var battleDimensions = asDimensions({
@@ -155,7 +199,11 @@ var battleDimensions = asDimensions({
         column: 'battle_event_mode',
         anyColumns: [],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'battle_event_mode',
+            type: 'string'
+        }
     },
     map: {
         id: 'map',
@@ -165,7 +213,11 @@ var battleDimensions = asDimensions({
         column: 'battle_event_map',
         anyColumns: ['battle_event_mode', 'battle_event_id'],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'battle_event_map',
+            type: 'string'
+        }
     },
     team: {
         id: 'team',
@@ -175,7 +227,11 @@ var battleDimensions = asDimensions({
         column: 'brawler_names',
         anyColumns: [],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'brawler_names',
+            type: 'string'
+        }
     },
     powerplay: {
         id: 'powerplay',
@@ -185,10 +241,20 @@ var battleDimensions = asDimensions({
         column: 'battle_power_play',
         anyColumns: [],
         hidden: false,
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'battle_power_play',
+            type: 'boolean'
+        }
     }
 });
 var commonDimensions = asDimensions(__assign(__assign(__assign(__assign({}, playerDimensions), brawlerDimensions), metaDimensions), battleDimensions));
+var picks = 'SUM(picks)';
+var winRate = "toFloat64(AVG(battle_victory))";
+var winRateMerged = "toFloat64(avgMerge(battle_victory_state))";
+var zP = '((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55)';
+var winratePosterior = "(1583+" + winRate + "*" + picks + ")/(1583/" + zP + "+" + picks + ")";
+var winratePosteriorMerged = "(1583+" + winRateMerged + "*" + picks + ")/(1583/" + zP + "+" + picks + ")";
 exports.playerMeasurements = asMeasurements({
     playerName: {
         id: 'playerName',
@@ -201,7 +267,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_name',
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'any(player_name)',
+            type: 'number'
+        }
     },
     clubName: {
         id: 'clubName',
@@ -214,7 +284,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_club_name',
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'any(player_club_name)',
+            type: 'number'
+        }
     },
     playerIcon: {
         id: 'playerIcon',
@@ -227,7 +301,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_icon_id',
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'any(player_icon_id)',
+            type: 'number'
+        }
     },
     playerNameColor: {
         id: 'playerNameColor',
@@ -240,7 +318,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_name_color',
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'any(player_name_color)',
+            type: 'number'
+        }
     },
     playerTrophies: {
         id: 'playerTrophies',
@@ -256,6 +338,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_trophies',
+            type: 'max'
         }
     },
     playerHighestTrophies: {
@@ -272,6 +358,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_highest_trophies',
+            type: 'max'
         }
     },
     victories: {
@@ -288,6 +378,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_3vs3_victories',
+            type: 'max'
         }
     },
     exp: {
@@ -304,6 +398,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_exp',
+            type: 'max'
         }
     },
     soloVictories: {
@@ -320,6 +418,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_solo_victories',
+            type: 'max'
         }
     },
     duoVictories: {
@@ -336,6 +438,10 @@ exports.playerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_duo_victories',
+            type: 'max'
         }
     },
     users: {
@@ -349,7 +455,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'users',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'uniqCombined(player_id)',
+            type: 'number'
+        }
     },
     powerPlayPoints: {
         id: 'powerPlayPoints',
@@ -362,7 +472,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_power_play_points',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'player_power_play_points',
+            type: 'max'
+        }
     },
     highestPowerPlayPoints: {
         id: 'highestPowerPlayPoints',
@@ -375,7 +489,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_highest_power_play_points',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'player_highest_power_play_points',
+            type: 'max'
+        }
     },
     expLevel: {
         id: 'expLevel',
@@ -388,7 +506,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_exp_level',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'player_exp_level',
+            type: 'max'
+        }
     },
     expPoints: {
         id: 'expPoints',
@@ -401,7 +523,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_exp_points',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'player_exp_points',
+            type: 'max'
+        }
     },
     brawlers: {
         id: 'brawlers',
@@ -414,7 +540,11 @@ exports.playerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'player_brawlers_length',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'player_brawlers_length',
+            type: 'max'
+        }
     }
 });
 exports.brawlerMeasurements = asMeasurements({
@@ -429,7 +559,11 @@ exports.brawlerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'brawler_highest_trophies',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'brawler_highest_trophies',
+            type: 'max'
+        }
     },
     trophies: {
         id: 'trophies',
@@ -445,6 +579,10 @@ exports.brawlerMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'brawler_trophies',
+            type: 'avg'
         }
     },
     brawler: {
@@ -458,7 +596,11 @@ exports.brawlerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'brawler_name',
-        type: 'nominal'
+        type: 'nominal',
+        config: {
+            sql: 'anyHeavy(brawler_name)',
+            type: 'number'
+        }
     },
     starpowers: {
         id: 'starpowers',
@@ -471,7 +613,11 @@ exports.brawlerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'brawler_starpowers_length',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'brawler_starpowers_length',
+            type: 'max'
+        }
     },
     gadgets: {
         id: 'gadgets',
@@ -484,7 +630,11 @@ exports.brawlerMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'brawler_gadgets_length',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'brawler_gadgets_length',
+            type: 'max'
+        }
     }
 });
 var metaMeasurements = asMeasurements({
@@ -500,7 +650,11 @@ var metaMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'timestamp',
-        type: 'temporal'
+        type: 'temporal',
+        config: {
+            sql: 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
+            type: 'number'
+        }
     },
     day: {
         // TODO
@@ -514,7 +668,11 @@ var metaMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'timestamp_day',
-        type: 'temporal'
+        type: 'temporal',
+        config: {
+            sql: 'formatDateTime(MAX(toStartOfDay(timestamp)), \'%FT%TZ\', \'UTC\')',
+            type: 'number'
+        }
     }
 });
 var battleMeasurements = asMeasurements({
@@ -532,6 +690,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'battle_trophy_change',
+            type: 'avg'
         }
     },
     winRate: {
@@ -548,6 +710,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'battle_victory',
+            type: 'avg'
         }
     },
     winRateAdj: {
@@ -564,6 +730,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: winratePosterior,
+            type: 'number'
         }
     },
     winRateDiff: {
@@ -577,7 +747,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'battle_victory',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: '',
+            type: 'number'
+        }
     },
     wins: {
         id: 'wins',
@@ -590,7 +764,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'wins',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'battle_victory',
+            type: 'sum'
+        }
     },
     winsZScore: {
         id: 'winsZScore',
@@ -603,7 +781,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'wins',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: '',
+            type: 'number'
+        }
     },
     picks: {
         id: 'picks',
@@ -616,7 +798,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'picks',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: '',
+            type: 'count'
+        }
     },
     pickRate: {
         id: 'pickRate',
@@ -632,6 +818,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: '',
+            type: 'count'
         }
     },
     useRate: {
@@ -648,6 +838,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_brawlers_length',
+            type: 'sum'
         }
     },
     starRate: {
@@ -664,6 +858,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'player_brawlers_length',
+            type: 'sum'
         }
     },
     starRateDiff: {
@@ -677,7 +875,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'battle_starplayer',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: '',
+            type: 'number'
+        }
     },
     rank: {
         id: 'rank',
@@ -693,6 +895,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'battle_rank',
+            type: 'avg'
         }
     },
     rank1: {
@@ -706,7 +912,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'battle_rank1',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'battle_rank1',
+            type: 'sum'
+        }
     },
     rank1Rate: {
         id: 'rank1Rate',
@@ -722,6 +932,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'battle_rank1',
+            type: 'avg'
         }
     },
     rank1RateDiff: {
@@ -735,7 +949,11 @@ var battleMeasurements = asMeasurements({
         sign: -1,
         percentage: false,
         column: 'battle_rank1',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: '',
+            type: 'number'
+        }
     },
     duration: {
         id: 'duration',
@@ -748,7 +966,11 @@ var battleMeasurements = asMeasurements({
         sign: +1,
         percentage: false,
         column: 'battle_duration',
-        type: 'quantitative'
+        type: 'quantitative',
+        config: {
+            sql: 'battle_duration',
+            type: 'avg'
+        }
     },
     level: {
         id: 'level',
@@ -764,6 +986,10 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'battle_level',
+            type: 'avg'
         }
     },
     power: {
@@ -780,6 +1006,187 @@ var battleMeasurements = asMeasurements({
         type: 'quantitative',
         scale: {
             zero: false
+        },
+        config: {
+            sql: 'brawler_power',
+            type: 'avg'
+        }
+    }
+});
+// same as battleMeasurements, but using clickhouse merge for mv
+var mergedbattleMeasurements = asMeasurements({
+    trophyChange: {
+        id: 'trophyChange',
+        name: 'Trophy Change',
+        nameShort: 'TrophyD',
+        icon: 'trophy',
+        description: '',
+        formatter: '+.2f',
+        d3formatter: '+.2f',
+        sign: -1,
+        percentage: false,
+        column: 'battle_trophy_change',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'avgMerge(battle_trophy_change_state)',
+            type: 'number'
+        }
+    },
+    winRate: {
+        id: 'winRate',
+        name: 'Win Rate',
+        nameShort: 'Win',
+        icon: '📈',
+        description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+        formatter: '.1%',
+        d3formatter: '.1%',
+        sign: -1,
+        percentage: false,
+        column: 'battle_victory',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'avgMerge(battle_victory_state)',
+            type: 'number'
+        }
+    },
+    winRateAdj: {
+        id: 'winRateAdj',
+        name: 'Adjusted Win Rate',
+        nameShort: 'Win',
+        icon: '📈',
+        description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+        formatter: '.1%',
+        d3formatter: '.1%',
+        sign: -1,
+        percentage: false,
+        column: 'battle_victory_adj',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: winratePosteriorMerged,
+            type: 'number'
+        }
+    },
+    wins: {
+        id: 'wins',
+        name: 'Wins',
+        nameShort: 'Wins',
+        icon: '📈',
+        description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+        formatter: '.2s',
+        d3formatter: '.2s',
+        sign: -1,
+        percentage: false,
+        column: 'wins',
+        type: 'quantitative',
+        config: {
+            sql: winRateMerged + "*" + picks,
+            type: 'number'
+        }
+    },
+    pickRate: {
+        id: 'pickRate',
+        name: 'Pick Rate',
+        nameShort: 'Picked',
+        icon: '👇',
+        description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+        formatter: '.2%',
+        d3formatter: '.2%',
+        sign: -1,
+        percentage: true,
+        column: 'picks',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'SUM(picks)',
+            type: 'number'
+        }
+    },
+    starRate: {
+        id: 'starRate',
+        name: 'Star Player',
+        nameShort: 'Star',
+        icon: '⭐',
+        description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+        formatter: '.1%',
+        d3formatter: '.1%',
+        sign: -1,
+        percentage: false,
+        column: 'battle_starplayer',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'avgMerge(battle_starplayer_state_state)',
+            type: 'sum'
+        }
+    },
+    rank: {
+        id: 'rank',
+        name: 'Average Rank',
+        nameShort: 'Rank',
+        icon: 'leaderboards',
+        description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+        formatter: '.2f',
+        d3formatter: '.2f',
+        sign: +1,
+        percentage: false,
+        column: 'battle_rank',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'avgMerge(battle_rank_state)',
+            type: 'number'
+        }
+    },
+    rank1Rate: {
+        id: 'rank1Rate',
+        name: '#1 Rate',
+        nameShort: 'SD Win',
+        icon: '📈',
+        description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+        formatter: '.2%',
+        d3formatter: '.2%',
+        sign: -1,
+        percentage: false,
+        column: 'battle_rank1',
+        type: 'quantitative',
+        scale: {
+            zero: false
+        },
+        config: {
+            sql: 'avgMerge(battle_rank1_state)',
+            type: 'number'
+        }
+    },
+    duration: {
+        id: 'duration',
+        name: 'Duration',
+        nameShort: 'Duration',
+        icon: '⏰',
+        description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+        formatter: 'duration',
+        d3formatter: 'duration',
+        sign: +1,
+        percentage: false,
+        column: 'battle_duration',
+        type: 'quantitative',
+        config: {
+            sql: 'avgMerge(battle_duration)',
+            type: 'number'
         }
     }
 });
@@ -890,20 +1297,20 @@ var battleSlices = asSlice({
 var commonSlices = asSlice(__assign(__assign(__assign(__assign({}, metaSlices), playerSlices), battleSlices), brawlerSlices));
 var brawlerBattleMeasurements = [
     /*
-    commonMeasurements.trophySeasonEnd,
-    commonMeasurements.timestamp,
+    mergedbattleMeasurements.trophySeasonEnd,
+    mergedbattleMeasurements.timestamp,
     */
-    exports.commonMeasurements.trophyChange,
-    exports.commonMeasurements.winRate,
-    exports.commonMeasurements.winRateAdj,
-    exports.commonMeasurements.wins,
+    mergedbattleMeasurements.trophyChange,
+    mergedbattleMeasurements.winRate,
+    mergedbattleMeasurements.winRateAdj,
+    mergedbattleMeasurements.wins,
     exports.commonMeasurements.picks,
-    exports.commonMeasurements.pickRate,
+    mergedbattleMeasurements.pickRate,
     exports.commonMeasurements.useRate,
-    exports.commonMeasurements.starRate,
-    exports.commonMeasurements.rank,
-    exports.commonMeasurements.rank1Rate,
-    exports.commonMeasurements.duration,
+    mergedbattleMeasurements.starRate,
+    mergedbattleMeasurements.rank,
+    mergedbattleMeasurements.rank1Rate,
+    mergedbattleMeasurements.duration,
     exports.commonMeasurements.level,
     exports.commonMeasurements.brawler,
 ];
@@ -983,7 +1390,7 @@ var playerBrawlerDefaultSliceValues = {
 var cubes = {
     map: {
         id: 'map',
-        table: 'meta_map',
+        table: 'map_meta',
         name: 'Map',
         hidden: false,
         dimensions: __spreadArray(__spreadArray([], brawlerBattleDimensions), [
@@ -1005,7 +1412,7 @@ var cubes = {
     },
     starpower: {
         id: 'starpower',
-        table: 'meta_starpower',
+        table: 'starpower_meta',
         name: 'Star Power',
         hidden: false,
         dimensions: __spreadArray(__spreadArray([], brawlerBattleDimensions), [
@@ -1023,7 +1430,7 @@ var cubes = {
     },
     gadget: {
         id: 'gadget',
-        table: 'meta_gadget',
+        table: 'gadget_meta',
         name: 'Gadget',
         hidden: false,
         dimensions: __spreadArray(__spreadArray([], brawlerBattleDimensions), [
@@ -1041,7 +1448,7 @@ var cubes = {
     },
     synergy: {
         id: 'synergy',
-        table: 'meta_synergy',
+        table: 'synergy_meta',
         name: 'Synergies',
         hidden: false,
         dimensions: __spreadArray(__spreadArray([], brawlerBattleDimensions), [
