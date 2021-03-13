@@ -6,7 +6,7 @@
     "node": ">=14.x"
   },
   "scripts": {
-    "dev": "tsc ./lib/cube.ts && nodemon -e ts -x ts-node server.ts --legacy-watch",
+    "dev": "nodemon -e ts -x ts-node server.ts --legacy-watch",
     "dev:migrate": "ts-node migrate.ts",
     "build": "tsc",
     "start": "node dist/migrate.js && node dist/server.js"
@@ -15,8 +15,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@apla/clickhouse": "^1.6.3",
-    "@cubejs-backend/clickhouse-driver": "^0.26.45",
-    "@cubejs-backend/server-core": "^0.26.52",
     "body-parser": "^1.19.0",
     "clickhouse": "^2.1.5",
     "common-tags": "^1.8.0",

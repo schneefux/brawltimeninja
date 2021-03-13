@@ -1,11 +1,6 @@
 import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-
-import CubejsServerCore from '@cubejs-backend/server-core'
-// untyped
-const ClickhouseDriver: any = require('@cubejs-backend/clickhouse-driver')
-
 import ClickerService from './services/Clicker';
 import { Player, BattleLog } from '~/model/Brawlstars';
 import { Order } from './services/cubes/Cube';
@@ -94,21 +89,6 @@ app.get('/clicker/cube/:cube/query/:dimensions?', asyncMiddleware(async (req, re
     }
   }
 }))
-
-const core = CubejsServerCore.create({
-  dbType: 'clickhouse',
-  // TODO: careful - driver uses shared session
-  driverFactory: () => new ClickhouseDriver({
-    host: process.env.CLICKHOUSE_HOST,
-    port: parseInt(process.env.CLICKHOUSE_PORT || '8123'),
-    readOnly: true,
-    database: 'brawltime',
-    cacheAndQueueDriver: 'memory',
-  }),
-  apiSecret: process.env.API_SECRET || 'secret', // TODO
-  telemetry: false,
-})
-core.initApp(app)
 
 const port = parseInt(process.env.PORT || '') || 3004
 app.listen(port, () => {
