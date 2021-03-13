@@ -181,13 +181,13 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
     timestamp_state AggregateFunction(argMax, DateTime, DateTime),
     picks UInt64,
     picks_weighted UInt64,
-    battle_duration_state AggregateFunction(avg, UInt16),
-    battle_rank_state AggregateFunction(avg, UInt8),
-    battle_rank1_state AggregateFunction(avg, UInt8),
-    battle_victory_state AggregateFunction(avg, Decimal32(8)),
-    battle_starplayer_state AggregateFunction(avg, UInt8),
-    battle_level_state AggregateFunction(avg, UInt16),
-    battle_trophy_change_state AggregateFunction(avg, Int8)
+    battle_duration_state AggregateFunction(avg, Nullable(UInt16)),
+    battle_rank_state AggregateFunction(avg, Nullable(UInt8)),
+    battle_rank1_state AggregateFunction(avg, Nullable(UInt8)),
+    battle_victory_state AggregateFunction(avg, Nullable(Decimal32(8))),
+    battle_starplayer_state AggregateFunction(avg, Nullable(UInt8)),
+    battle_level_state AggregateFunction(avg, Nullable(UInt16)),
+    battle_trophy_change_state AggregateFunction(avg, Nullable(Int8))
   `
 
   // *state must have same data type as source column
