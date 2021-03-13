@@ -5,7 +5,7 @@ ENV PORT=80
 EXPOSE 80
 
 COPY package*.json ./
-RUN yarn ci
+RUN npm ci
 
 COPY . .
 
