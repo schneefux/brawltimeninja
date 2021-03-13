@@ -2,14 +2,14 @@
   <event-card
     :mode="mode"
     :map="map"
-    :id="!large && id != undefined && id != 0 ? id : undefined"
+    :id="!large ? id : undefined"
     v-bind="$attrs"
   >
     <!-- large, endDate, startDate are mutually exclusive -->
     <media-img
-      v-if="large && id != undefined && id != 0"
+      v-if="large && id != undefined"
       slot="infobar"
-      :path="'/maps/' + id"
+      :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
       size="384"
       clazz="h-48 mx-auto"
       itemprop="image"
@@ -19,8 +19,11 @@
       slot="infobar"
       class="flex justify-end"
     >
-      <span v-if="id == 0" class="mr-auto">
+      <span v-if="id == 0 && map.startsWith('Competition Entry')" class="mr-auto">
         {{ $tc('competition-map', 1) }}
+      </span>
+      <span v-if="id == 0 && map.startsWith('Competition Winner')" class="mr-auto">
+        {{ $tc('competition-winner', 1) }}
       </span>
       <span v-if="powerplay" class="mr-auto">
         {{ $tc('power-play', 1) }}
