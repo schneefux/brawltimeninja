@@ -8,7 +8,7 @@ on:
       - "clicker/**"
 
 jobs:
-  deploy-media:
+  deploy-clicker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

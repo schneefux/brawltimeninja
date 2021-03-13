@@ -8,7 +8,7 @@ on:
       - "api/**"
 
 jobs:
-  deploy-media:
+  deploy-api:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
