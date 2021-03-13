@@ -185,7 +185,7 @@ export default abstract class BrawlerBattleCube extends MaterializedCube {
     battle_rank_state AggregateFunction(avg, Nullable(UInt8)),
     battle_rank1_state AggregateFunction(avg, Nullable(UInt8)),
     battle_victory_state AggregateFunction(avg, Nullable(Decimal32(8))),
-    battle_starplayer_state AggregateFunction(avg, Nullable(UInt8)),
+    battle_starplayer_state AggregateFunction(avg, UInt8),
     battle_level_state AggregateFunction(avg, Nullable(UInt16)),
     battle_trophy_change_state AggregateFunction(avg, Nullable(Int8))
   `

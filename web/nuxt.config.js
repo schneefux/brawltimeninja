@@ -47,6 +47,9 @@ export default {
       }, {
         urlPattern: process.env.CLICKER_URL + '/.*',
         handler: 'networkFirst',
+      }, {
+        urlPattern: process.env.CUBE_URL + '/.*',
+        handler: 'networkFirst',
       }],
       // prefix all cache keys with release id
       // write release id to a custom option
@@ -145,8 +148,9 @@ export default {
   env: {
     branch: process.env.BRANCH || '',
     mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''), // replace trailing slash
-    clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''), // replace trailing slash
-    clickerSecret: (process.env.CLICKER_SECRET || ''),
+    clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''),
+    cubeUrl: (process.env.CUBE_URL || '').replace(/\/$/, ''),
+    cubeSecret: (process.env.CLICKER_SECRET || ''),
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
 
