@@ -25,5 +25,5 @@ jobs:
         with:
           context: ./api/
           push: true
-          tags: schneefux/brawltime:latest
+          tags: ghcr.io/schneefux/brawltime:latest
       - run: echo ${{ steps.docker_build.outputs.digest }}
