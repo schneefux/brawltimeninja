@@ -3,7 +3,7 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { MapMetaRow, LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
+import { LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
 import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './cubes/MapMetaCube';
 import GadgetMetaCube from './cubes/GadgetMetaCube';

@@ -1,7 +1,7 @@
-import config from '../lib/cube.ts'
-// cube.js does something weird with the imports
-// const config = require('../lib/cube.ts')
+import config from '../dist/lib/cube.js'
 
+// cube.js imports are not 'real' imports
+// -> access `.default`
 Object.values(config.default).forEach((c) => {
   cube(c.id, {
     refreshKey: {

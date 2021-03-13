@@ -12,6 +12,10 @@
     },
     "outDir": "./dist",
     "strict": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
