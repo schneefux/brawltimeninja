@@ -204,7 +204,9 @@ export default class ClickerService {
         : 'rank' in battle.battle ? 1 - (battle.battle.rank! - 1) / (teams.length - 1)
         : null
 
-      const trophyRange = Math.floor(me.brawler.trophies / 100)
+      // type=tournament battles have no trophies, fall back to current brawler trophies
+      const myBrawlerTrophies = me.brawler.trophies || myBrawler.trophies
+      const trophyRange = Math.floor(myBrawlerTrophies / 100) || 0
 
       const allies = myTeam.filter(p => p.tag !== player.tag)
       const enemies = (<BattlePlayer[]>[]).concat(...teams.filter(t => t !== myTeam))
@@ -240,7 +242,7 @@ export default class ClickerService {
         brawler_id: myBrawler.id,
         brawler_name: myBrawler.name || 'NANI', // FIXME API bug 2020-06-06
         brawler_power: me.brawler.power,
-        brawler_trophies: me.brawler.trophies,
+        brawler_trophies: myBrawlerTrophies,
         brawler_highest_trophies: myBrawler.highestTrophies,
         // calculated
         brawler_trophyrange: trophyRange,

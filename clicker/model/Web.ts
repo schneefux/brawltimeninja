@@ -15,6 +15,7 @@ export interface Post {
   order: number
   slug: string
   image?: string
+  createdAt: string
 }
 
 export interface TierListEntry extends MetaGridEntry {
@@ -29,5 +30,21 @@ export interface TierListEntry extends MetaGridEntry {
 }
 
 export interface TierList {
-  [tier: string]: TierListEntry[]
+  [tier: string]: MetaGridEntry[]
+}
+
+export interface BrawlerContent {
+  name?: string
+  gender: string
+  description?: string
+  main?: string
+  super?: string
+  starpowers?: {
+    name: string
+    description: string
+  }[]
+  gadgets?: {
+    name: string
+    description: string
+  }[]
 }

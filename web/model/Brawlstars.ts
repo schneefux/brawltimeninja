@@ -65,7 +65,7 @@ export interface BattlePlayer {
     id: number;
     name: string;
     power: number;
-    trophies: number;
+    trophies?: number; // type=tournament has no trophies
   }
 }
 
