@@ -4,9 +4,7 @@ WORKDIR /app
 ENV PORT=80
 EXPOSE 80
 
-COPY package*.json ./
-RUN npm ci && npm build
-
 COPY . .
+RUN npm ci && npm run build
 
 CMD [ "npm", "start" ]
