@@ -1,4 +1,5 @@
 import { event } from 'vue-gtag'
+import { GetterTree, ActionTree, MutationTree } from 'vuex'
 
 function detectAndroid() {
   return /android/i.test(navigator.userAgent)
@@ -36,11 +37,11 @@ export const state = () => ({
       name: 'Keith ツ',
     } ],
   tagPattern: '^[0289PYLQGRJCUV]{3,}$',
-  lastPlayers: [],
+  lastPlayers: [] as string[],
   player: {
     tag: '',
   }, // cached API response
-  userTag: undefined, // personal tag (last searched)
+  userTag: undefined as undefined|string, // personal tag (last searched)
   personalityTestResult: undefined,
   cookiesAllowed: false,
   adsAllowed: false,
@@ -48,20 +49,13 @@ export const state = () => ({
   installBannerDismissed: false,
   totalBrawlers: 44,
   isApp: false,
-  installPrompt: undefined,
-  testGroup: undefined,
+  installPrompt: undefined as any,
+  testGroup: undefined as undefined|string,
 })
 
-export const getters = {
-  playerRank(state) {
-    if (state.player.tag === '' || !state.leaderboardLoaded) {
-      return 0
-    }
+export type RootState = ReturnType<typeof state>
 
-    return state.leaderboard
-      .map(({ tag }) => tag)
-      .indexOf(state.player.tag) + 1
-  },
+export const getters: GetterTree<RootState, RootState> = {
   isInstallable(state) {
     if (state.isApp) {
       return false
@@ -76,7 +70,7 @@ export const getters = {
   },
 }
 
-export const mutations = {
+export const mutations: MutationTree<RootState> = {
   setPlayer(state, player) {
     state.player = player
   },
@@ -86,22 +80,6 @@ export const mutations = {
     const lastPlayers = [clone(player), ...state.lastPlayers]
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
     state.lastPlayers = lastPlayers.slice(0, 4)
-  },
-  setCurrentEvents(state, currentEvents) {
-    state.currentEvents = currentEvents
-    state.currentEventsLoaded = true
-  },
-  setUpcomingEvents(state, upcomingEvents) {
-    state.upcomingEvents = upcomingEvents
-    state.upcomingEventsLoaded = true
-  },
-  setLeaderboard(state, leaderboard) {
-    state.leaderboard = leaderboard
-    state.leaderboardLoaded = true
-  },
-  setModeMeta(state, meta) {
-    state.modeMeta = meta
-    state.modeMetaLoaded = true
   },
   allowAds(state) {
     state.adsAllowed = true
@@ -141,17 +119,17 @@ export const mutations = {
   },
 }
 
-export const actions = {
+export const actions: ActionTree<RootState, RootState> = {
   async loadPlayer({ state, commit }, playerTag) {
     if (playerTag === state.player.tag) {
       return
     }
 
-    const player = await this.$http.$get(this.$config.apiUrl + `/api/player/${playerTag}`)
+    const player = await this.$http.$get((<any>this).$config.apiUrl + `/api/player/${playerTag}`)
     commit('setPlayer', player)
   },
   async refreshPlayer({ state, commit }) {
-    const player = await this.$http.$get(this.$config.apiUrl + `/api/player/${state.player.tag}`)
+    const player = await this.$http.$get((<any>this).$config.apiUrl + `/api/player/${state.player.tag}`)
     commit('setPlayer', player)
   },
   async install({ state, commit }) {
