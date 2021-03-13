@@ -1,21 +1,18 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
-    "sourceMap": true,
-    "lib": ["es2018", "es2019"],
-    "resolveJsonModule": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
+    "target": "es2020",
+    "lib": ["es2020"],
     "baseUrl": ".",
     "paths": {
       "~/*": [
         "./*"
       ]
     },
+    "outDir": "./dist",
     "strict": true,
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }

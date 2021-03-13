@@ -1,14 +1,14 @@
-name: Build api Docker image
+name: Build clicker Docker image
 
 on:
   push:
     branches:
       - master
     paths:
-      - "api/**"
+      - "clicker/**"
 
 jobs:
-  build-api:
+  build-clicker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - uses: docker/build-push-action@v2
         with:
-          context: ./api/
+          context: ./clicker/
           push: true
-          tags: ghcr.io/schneefux/brawltime-api:latest
+          tags: ghcr.io/schneefux/brawltime-clicker:latest
       - run: echo ${{ steps.docker_build.outputs.digest }}

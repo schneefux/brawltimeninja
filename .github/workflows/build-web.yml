@@ -1,14 +1,14 @@
-name: Build api Docker image
+name: Build web Docker image
 
 on:
   push:
     branches:
       - master
     paths:
-      - "api/**"
+      - "web/**"
 
 jobs:
-  build-api:
+  build-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - uses: docker/build-push-action@v2
         with:
-          context: ./api/
+          context: ./web/
           push: true
-          tags: ghcr.io/schneefux/brawltime-api:latest
+          tags: ghcr.io/schneefux/brawltime-web:latest
       - run: echo ${{ steps.docker_build.outputs.digest }}

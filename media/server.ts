@@ -73,12 +73,15 @@ app.use(async (ctx, next) => {
 
   if (['.webp', '.jpg', '.png'].includes(ext)) {
     let transformer = sharp(filePath)
-    if ('size' in ctx.query) {
+    if (typeof ctx.query.size == 'string') {
       const size = Math.max(1, Math.min(1000, parseInt(ctx.query.size)))
       transformer = transformer.resize(size)
     }
-    if (ext != '.png') {
-      transformer = transformer.toFormat(ext.substring(1))
+    if (ext == '.webp') {
+      transformer = transformer.toFormat('webp')
+    }
+    if (ext == '.jpg') {
+      transformer = transformer.toFormat('jpeg')
     }
     ctx.body = await transformer.toBuffer()
   } else {

@@ -2,9 +2,6 @@
   "name": "clicker",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": ">=14.x"
-  },
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts --legacy-watch",
     "dev:migrate": "ts-node migrate.ts",

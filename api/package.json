@@ -4,9 +4,6 @@
   "description": "Brawlstars player statistics website",
   "author": "schneefux",
   "private": true,
-  "engines": {
-    "node": "14.x"
-  },
   "scripts": {
     "dev": "nodemon -e ts -x ts-node server.ts",
     "build": "tsc",
