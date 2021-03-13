@@ -5,6 +5,7 @@ import PlotlyComponent from '~/components/ui/plotly.vue'
 import PlotlyPie from 'plotly.js/lib/pie'
 import PlotlyBar from 'plotly.js/lib/bar'
 import PlotlyHeatmap from 'plotly.js/lib/heatmap'
+import { Plugin } from '@nuxt/types'
 
 Plotly.register([
   PlotlyPie,
@@ -13,6 +14,8 @@ Plotly.register([
 ])
 Vue.component('plotly', PlotlyComponent)
 
-export default (context, inject) => {
+const plugin: Plugin = (context, inject) => {
   inject('plotly', Plotly)
 }
+
+export default plugin

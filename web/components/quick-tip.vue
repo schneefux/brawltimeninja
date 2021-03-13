@@ -79,7 +79,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    this.player = await this.$axios.$get('/api/player/' + this.playerTag) as Player
+    this.player = await this.$http.$get(this.$config.apiUrl + '/api/player/' + this.playerTag) as Player
 
     const modePopularity = this.player.battles.reduce((map, b) => ({
       ...map,

@@ -85,7 +85,7 @@ export default Vue.extend({
 
     this.totals = dataWithout.data[0]
 
-    const info = await this.$axios.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null) as BrawlerData|null
+    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null) as BrawlerData|null
     if (info != null) {
       if (this.kind == 'starpowers') {
         this.descriptions = info.starpowerDescriptions

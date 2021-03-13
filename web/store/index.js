@@ -147,11 +147,11 @@ export const actions = {
       return
     }
 
-    const player = await this.$axios.$get(`/api/player/${playerTag}`)
+    const player = await this.$http.$get(this.$config.apiUrl + `/api/player/${playerTag}`)
     commit('setPlayer', player)
   },
   async refreshPlayer({ state, commit }) {
-    const player = await this.$axios.$get(`/api/player/${state.player.tag}`)
+    const player = await this.$http.$get(this.$config.apiUrl + `/api/player/${state.player.tag}`)
     commit('setPlayer', player)
   },
   async install({ state, commit }) {

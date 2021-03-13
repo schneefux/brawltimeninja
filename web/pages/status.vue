@@ -56,7 +56,7 @@ export default Vue.extend({
   },
   async created() {
     try {
-      await this.$axios.$get('/api/player/V8LLPPC')
+      await this.$http.$get(this.$config.apiUrl + '/api/player/V8LLPPC')
       this.status = 'up'
     } catch {
       this.status = 'down'

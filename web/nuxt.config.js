@@ -1,5 +1,5 @@
 import path from 'path'
-import axios from 'axios'
+import fetch from 'node-fetch'
 
 // TODO migrate this file to ts and import from util
 const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
@@ -38,6 +38,8 @@ export default {
       theme_color: '#facc15', // yellow-400
     },
     workbox: {
+      // FIXME depends on env variables being available at build time
+      // - use *.brawltime.ninja as urlPattern instead
       runtimeCaching: [{
         urlPattern: process.env.MEDIA_URL + '/.*',
         handler: 'staleWhileRevalidate',
@@ -82,15 +84,16 @@ export default {
     { src: '~/plugins/clicker' },
     { src: '~/plugins/cube' },
     { src: '~/plugins/modern' },
+    { src: '~/plugins/http', mode: 'client' },
   ],
 
   modules: [
     'nuxt-i18n',
-    '@nuxtjs/axios',
+    '@nuxt/http',
+    '@nuxt/content',
     '@nuxtjs/pwa',
     '@nuxtjs/redirect-module',
     '@nuxtjs/sentry',
-    '@nuxt/content',
     '@nuxtjs/sitemap',
   ],
 
@@ -150,7 +153,8 @@ export default {
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
   publicRuntimeConfig: {
-    mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''), // replace trailing slash
+    apiUrl: (process.env.API_URL || '').replace(/\/$/, ''), // replace trailing slash
+    mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''),
     clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''),
     cubeUrl: (process.env.CUBE_URL || '').replace(/\/$/, ''),
     cubeSecret: (process.env.CLICKER_SECRET || ''),
@@ -173,40 +177,33 @@ export default {
       const routes = []
 
       try {
-        const events = await axios.get(`${process.env.API_URL}/api/events`)
-        Object.values(events.data).forEach(event => {
-          const modeRoute = `/tier-list/mode/${camelToKebab(event.mode)}`
+        const events = await fetch(`${process.env.CLICKER_URL}/clicker/cube/map/query/battle_event_mode,battle_event_map?slice[trophy_season_end]=month`)
+          .then(r => r.json())
+        events.data.forEach((event) => {
+          const modeRoute = `/tier-list/mode/${camelToKebab(event.battle_event_mode)}`
           if (!routes.includes(modeRoute)) {
             routes.push(modeRoute)
           }
-          routes.push(`/tier-list/mode/${camelToKebab(event.mode)}/map/${slugify(event.map)}`)
+          routes.push(`/tier-list/mode/${camelToKebab(event.battle_event_mode)}/map/${slugify(event.battle_event_map)}`)
         })
       } catch (err) {
         console.error('error adding events to sitemap', err)
       }
 
       try {
-        const brawlers = await axios.get(`${process.env.CLICKER_URL}/clicker/cube/map/query/brawler_name?include=brawler_name`)
-        brawlers.data.data.forEach((b) => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
+        const brawlers = await fetch(`${process.env.CLICKER_URL}/clicker/cube/map/query/brawler_name?include=brawler_name`)
+          .then(r => r.json())
+        brawlers.data.forEach(b => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
       } catch (err) {
         console.error('error adding brawlers to sitemap', err)
       }
 
-      const metrics = [
-        'hours',
-        'trophies',
-        'powerPlayPoints',
-        'victories',
-        'soloVictories',
-        'duoVictories',
-      ]
-      for (const metric of metrics) {
-        try {
-          const top = await axios.get(`${process.env.API_URL}/api/leaderboard/${metric}`)
-          top.data.entries.forEach(({ tag }) => routes.push(`/profile/${tag}`))
-        } catch (err) {
-          console.error(`error adding ${metric} leaderboard players to sitemap`, err)
-        }
+      try {
+        const players = await fetch(`${process.env.CLICKER_URL}/clicker/cube/battle/query/player_id?limit=1000&slice[trophy_season_end]=current&sort=-player_trophies`)
+          .then(r => r.json())
+        players.data.forEach(p => routes.push(`/profile/${p.player_tag}`))
+      } catch (err) {
+        console.error(`error adding top players to sitemap`, err)
       }
 
       return routes

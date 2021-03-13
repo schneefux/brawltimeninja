@@ -1,7 +1,8 @@
+import { Plugin } from '@nuxt/types'
 import Vue from 'vue'
 import VueGtag from 'vue-gtag'
 
-export default ({ app }) => {
+const plugin: Plugin = ({ app }) => {
   Vue.use(VueGtag, {
     config: {
       id: 'G-8GGHZC6QR2',
@@ -21,6 +22,8 @@ export default ({ app }) => {
       id: 'UA-137233906-1',
     } ],
     // toggled in layout.vue
-    enabled: app.store.state.adsAllowed == true,
+    enabled: app.store!.state.adsAllowed == true,
   }, app.router)
 }
+
+export default plugin

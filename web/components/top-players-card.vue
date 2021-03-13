@@ -85,7 +85,7 @@ export default Vue.extend({
     limit: '$fetch',
   },
   async fetch() {
-    const leaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/' + this.metric)
+    const leaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/' + this.metric)
     this.data = leaderboard.entries
       .slice(0, this.limit)
       .map(e => (<Row>{

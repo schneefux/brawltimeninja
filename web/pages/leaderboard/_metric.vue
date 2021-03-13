@@ -103,9 +103,9 @@ export default Vue.extend({
       leaderboard: [] as LeaderboardEntry[],
     }
   },
-  async asyncData({ $axios, params }) {
+  async asyncData({ $http, $config, params }) {
     const metric = params.metric as string
-    const leaderboard = await $axios.$get<Leaderboard>(`/api/leaderboard/${metric}`)
+    const leaderboard = await $http.$get<Leaderboard>($config.apiUrl + `/api/leaderboard/${metric}`)
 
     return {
       metric,

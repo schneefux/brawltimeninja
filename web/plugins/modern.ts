@@ -1,3 +1,5 @@
+import { Plugin } from "@nuxt/types"
+
 declare module 'vue/types/vue' {
   interface Vue {
     $supportsWebp: boolean
@@ -19,7 +21,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-export default (context, inject) => {
+const plugin: Plugin = (context, inject) => {
   let supportsWebp = false
 
   if (process.server) {
@@ -38,3 +40,5 @@ export default (context, inject) => {
 
   inject('supportsWebp', supportsWebp)
 }
+
+export default plugin

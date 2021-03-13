@@ -93,14 +93,14 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     })
   },
-  async asyncData({ $axios, params, redirect }) {
+  async asyncData({ $http, $config, params, redirect }) {
     const tag = params.tag.toUpperCase()
     if (tag != params.tag) {
       redirect(`/club/${tag}`)
       return false
     }
 
-    const club = await $axios.$get<Club>(`/api/club/${tag}`)
+    const club = await $http.$get<Club>($config.apiUrl + `/api/club/${tag}`)
 
     return {
       club,

@@ -121,8 +121,8 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ $axios }) {
-    const events = await $axios.$get<CurrentAndUpcomingEvents>('/api/events/active')
+  async asyncData({ $http, $config }) {
+    const events = await $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active')
     return {
       currentEvents: events.current,
       upcomingEvents: events.upcoming,

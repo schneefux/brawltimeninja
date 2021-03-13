@@ -1,9 +1,10 @@
+import { Plugin } from '@nuxt/types'
 import VuexPersistence from 'vuex-persist'
 
-export default ({ store }) => {
-  window.onNuxtReady(() => new VuexPersistence({
+const plugin: Plugin = ({ store }) => {
+  (<any>window).onNuxtReady(() => new VuexPersistence({
     key: 'brawlstars-ninja',
-    reducer: state => ({
+    reducer: (state: any) => ({
       version: state.version,
       lastPlayers: state.lastPlayers,
       cookiesAllowed: state.cookiesAllowed,
@@ -12,7 +13,7 @@ export default ({ store }) => {
       testGroup: state.testGroup,
       personalityTestResult: state.personalityTestResult,
     }),
-    restoreState: (key, storage) => {
+    restoreState: (key: string, storage: any) => {
       // pass through (https://github.com/championswimmer/vuex-persist/blob/master/src/index.ts#L189)
       let value = (storage).getItem(key)
       value = typeof value === 'string' ? JSON.parse(value || '{}') : (value || {})
@@ -47,3 +48,5 @@ export default ({ store }) => {
     }
   }).plugin(store))
 }
+
+export default plugin

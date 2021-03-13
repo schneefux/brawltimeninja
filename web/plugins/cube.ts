@@ -1,3 +1,4 @@
+import { Plugin } from "@nuxt/types"
 import config, { Config, Dimension, Measurement, State } from "~/lib/cube"
 import { MetaGridEntry } from "~/lib/util"
 
@@ -35,7 +36,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-export default (context, inject) => {
+const plugin: Plugin = (context, inject) => {
   inject('cube', <Cube>{
     config,
     async query(state, limit = undefined, includeMeta = false) {
@@ -128,3 +129,5 @@ export default (context, inject) => {
     },
   })
 }
+
+export default plugin

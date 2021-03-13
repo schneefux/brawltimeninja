@@ -272,7 +272,7 @@ export default Vue.extend({
       return
     }
 
-    const hoursLeaderboard = await this.$axios.$get<Leaderboard>('/api/leaderboard/hours')
+    const hoursLeaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/hours')
       .catch(() => ({ metric: 'hours', entries: [] }))
     const rank = hoursLeaderboard.entries.findIndex(e => e.tag == this.player.tag)
     if (rank != -1) {

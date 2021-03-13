@@ -4,6 +4,7 @@ import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { Route, Location } from "vue-router"
 import { State, Config, commonMeasurements, Dimension, Measurement, Slice, SliceValue, ValueType } from "~/lib/cube"
 import * as d3format from "d3-format"
+import { Plugin } from "@nuxt/types"
 
 // workaround for https://github.com/vuejs/vue-router/issues/2725
 // FIXME remove when upgrading to vue-router 3
@@ -109,7 +110,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-export default (context, inject) => {
+const plugin: Plugin = (context, inject) => {
   inject('clicker', <Clicker>{
     defaultSlicesRaw(cube) {
       switch (cube) {
@@ -166,7 +167,7 @@ export default (context, inject) => {
         .join('&')
       const url = context.$config.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + queryString
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
-      return context.$axios.$get(url, { headers })
+      return context.$http.$get(url, { headers })
     },
     async queryActiveEvents(measures = [], slices = {}, maxage = 60) {
       const events = await this.query<EventMetadata>('active.events', 'map',
@@ -186,7 +187,7 @@ export default (context, inject) => {
         .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
         .sort((e1, e2) => e2.picks - e1.picks)
 
-      const starlistData = await context.$axios.$get('/api/events/active')
+      const starlistData = await context.$http.$get(context.$config.apiUrl + '/api/events/active')
         .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents
       starlistData.current.forEach(s => {
         const match = lastEvents.find(e => e.battle_event_id.toString() == s.id)
@@ -545,3 +546,5 @@ export default (context, inject) => {
     }
   })
 }
+
+export default plugin
