@@ -5,7 +5,6 @@ module.exports = {
   driverFactory: () => new ClickhouseDriver({
     readOnly: true,
     database: 'brawltime',
-    cacheAndQueueDriver: 'memory', // TODO set up redis in production
   }),
   apiSecret: process.env.CUBEJS_API_SECRET || 'secret',
   telemetry: false,
