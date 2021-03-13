@@ -29,14 +29,8 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-    mediaUrl: {
-      type: String,
-      default() {
-        return process.env.mediaUrl
-      }
-    },
   },
-  render(h, { props, data }) {
+  render(h, { props, data, parent }) {
     function query({ size }: { size: string|number|undefined }): string {
       const opts = {}
       if (size) {
@@ -45,9 +39,9 @@ export default Vue.extend({
       return '?' + encodeQuery(opts)
     }
     return <picture class={props.wrapperClass}>
-      <source srcset={props.mediaUrl + props.path + '.webp' + query(props)} type="image/webp" />
+      <source srcset={parent.$config.mediaUrl + props.path + '.webp' + query(props)} type="image/webp" />
       <img
-        src={props.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)}
+        src={parent.$config.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + query(props)}
         class={props.clazz}
         style={props.ztyle}
         {... { attrs: data.attrs } } />

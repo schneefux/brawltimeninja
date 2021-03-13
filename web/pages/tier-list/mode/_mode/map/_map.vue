@@ -87,7 +87,7 @@ export default Vue.extend({
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
-        ...(this.event.id != undefined && this.event.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: process.env.mediaUrl! + '/maps/' + this.event.id + '.png' }] : []),
+        ...(this.event.id != undefined && this.event.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: this.$config.mediaUrl + '/maps/' + this.event.id + '.png' }] : []),
       ]
     }
   },

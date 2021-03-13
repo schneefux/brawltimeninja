@@ -99,7 +99,7 @@ export default Vue.extend({
           mode: event.mode,
           start: event.start,
           end: event.end,
-        }),
+        }, this.$config.mediaUrl),
       }))
 
     return {

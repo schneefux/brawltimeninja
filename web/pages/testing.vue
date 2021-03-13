@@ -18,8 +18,8 @@ export default Vue.extend({
   fetchOnServer: false,
   async fetch() {
     const cubejsApi = cubejs(
-      process.env.cubeSecret!,
-      { apiUrl: process.env.cubeUrl! }
+      this.$config.cubeSecret,
+      { apiUrl: this.$config.cubeUrl }
     )
 
     this.data = await cubejsApi.load({

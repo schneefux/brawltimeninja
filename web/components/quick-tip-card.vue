@@ -110,9 +110,6 @@ export default Vue.extend({
         .map((r) => r.brawler.name.toLowerCase())
         .slice(0, 4)
     },
-    mediaUrl(): string {
-      return process.env.mediaUrl!
-    },
     brawlerId() {
       return brawlerId
     },

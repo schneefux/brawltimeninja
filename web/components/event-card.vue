@@ -64,7 +64,7 @@ export default Vue.extend({
       }
       const path = '/modes/' + this.mode + '/background'
       const query = '?size=800'
-      const url = process.env.mediaUrl + path + (this.$supportsWebp ? '.webp' : '.jpg') + query
+      const url = this.$config.mediaUrl + path + (this.$supportsWebp ? '.webp' : '.jpg') + query
       return url
     },
   },

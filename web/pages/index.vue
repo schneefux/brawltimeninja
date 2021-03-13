@@ -218,7 +218,7 @@ export default Vue.extend({
           mode: event.battle_event_mode,
           start: event.start,
           end: event.end,
-        }),
+        }, this.$config.mediaUrl),
       }))
 
     return {

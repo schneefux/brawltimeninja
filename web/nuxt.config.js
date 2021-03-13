@@ -147,11 +147,13 @@ export default {
 
   env: {
     branch: process.env.BRANCH || '',
+    release: (process.env.GIT_REV || 'dev').slice(0, 6),
+  },
+  publicRuntimeConfig: {
     mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''), // replace trailing slash
     clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''),
     cubeUrl: (process.env.CUBE_URL || '').replace(/\/$/, ''),
     cubeSecret: (process.env.CLICKER_SECRET || ''),
-    release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
 
   build: {

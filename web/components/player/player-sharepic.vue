@@ -7,7 +7,7 @@
       >
         <div class="w-full flex items-center">
           <img
-            :src="`${mediaUrl}/avatars/${player.icon.id}.png?size=112`"
+            :src="`${$config.mediaUrl}/avatars/${player.icon.id}.png?size=112`"
             class="w-14 mr-4"
           >
           <span class="text-4xl font-semibold relative text-yellow-400">
@@ -89,7 +89,7 @@
               >
                 <div class="w-full h-full text-center">
                   <img
-                    :src="`${mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
+                    :src="`${$config.mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
                     class="w-auto h-full mx-auto"
                   >
                 </div>
@@ -152,9 +152,6 @@ export default Vue.extend({
           id,
         }))
         .sort((b1, b2) => b2.trophies - b1.trophies)
-    },
-    mediaUrl(): string {
-      return process.env.mediaUrl!
     },
   },
   methods: {

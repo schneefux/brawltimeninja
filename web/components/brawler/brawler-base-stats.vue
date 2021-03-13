@@ -101,7 +101,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const info = await this.$axios.$get<BrawlerData>(`${process.env.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null)
+    const info = await this.$axios.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null)
     this.info = info
 
     const data = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',

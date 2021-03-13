@@ -145,7 +145,7 @@ interface EventMetadata {
   start?: string
   end?: string
 }
-export function formatAsJsonLd(event: EventMetadata) {
+export function formatAsJsonLd(event: EventMetadata, mediaUrl: string) {
   const url = `/tier-list/mode/${slugify(event.mode.toLowerCase())}/map/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
@@ -160,7 +160,7 @@ export function formatAsJsonLd(event: EventMetadata) {
     'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'eventStatus': 'https://schema.org/EventScheduled',
     'url': url,
-    'image': [`${process.env.mediaUrl}/map/${event.id}.png`],
+    'image': [`${mediaUrl}/map/${event.id}.png`],
     'location': {
       '@type': 'VirtualLocation',
       'url': url,

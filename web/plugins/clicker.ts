@@ -164,7 +164,7 @@ export default (context, inject) => {
         .sort(([k1, v1], [k2, v2]) => k1 < k2 ? -1 : k1 > k2 ? 1 : 0)
         .map(([k, v]) => k + '=' + encodeURIComponent(v))
         .join('&')
-      const url = context.env.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + queryString
+      const url = context.$config.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + queryString
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$axios.$get(url, { headers })
     },

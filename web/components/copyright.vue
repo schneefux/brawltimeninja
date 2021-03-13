@@ -40,7 +40,7 @@ import Vue from 'vue'
 export default Vue.extend({
   computed: {
     releaseVersion(): string {
-      return (<any>process.env).release
+      return process.env.release!
     },
   },
 })
