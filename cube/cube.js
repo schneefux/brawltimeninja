@@ -13,6 +13,8 @@ module.exports = {
   http: {
     cors: {
       origin: '*',
+      allowedHeaders: 'authorization,content-type,x-request-id,cache-control',
+      maxAge: 86400, // 24h max, capped by Firefox
     },
   },
 };
