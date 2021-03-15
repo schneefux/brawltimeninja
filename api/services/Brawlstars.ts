@@ -133,21 +133,6 @@ export default class BrawlstarsService {
   }
 
   public async getPlayerStatistics(tag: string, store: boolean) {
-    const player = await request<BrawlstarsPlayer>(
-      'players/%23' + tag,
-      getApiUrl(tag),
-      'fetch_player',
-      { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
-      1000,
-    );
-    // official API: with hash, unofficial API: no hash
-    // brawltime assumes no hash
-    player.tag = player.tag.replace(/^#/, '');
-    if (player.club?.tag != undefined) {
-      player.club.tag = player.club.tag.replace(/^#/, '');
-    }
-
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       getApiUrl(tag),
@@ -159,6 +144,25 @@ export default class BrawlstarsService {
       items: [],
       paging: [],
     }));
+
+    // fetch player after battle log to prevent race condition
+    // where a brawler is used in battle log,
+    // but not available in player.brawlers yet
+    const player = await request<BrawlstarsPlayer>(
+      'players/%23' + tag,
+      getApiUrl(tag),
+      'fetch_player',
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial },
+      1000,
+    );
+
+    // official API: with hash, unofficial API: no hash
+    // brawltime assumes no hash
+    player.tag = player.tag.replace(/^#/, '');
+    if (player.club?.tag != undefined) {
+      player.club.tag = player.club.tag.replace(/^#/, '');
+    }
 
     const battles = battleLog.items.map((battle) => {
       const transformPlayer = (player: BattlePlayer) => ({
