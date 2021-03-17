@@ -85,8 +85,4 @@ export default {
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
 }
-
-.p-0\! {
-  padding: 0;
-}
 </style>

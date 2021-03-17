@@ -145,9 +145,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.stat {
-  @apply mx-2 mt-2;
-}
-</style>

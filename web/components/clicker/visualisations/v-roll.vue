@@ -1,5 +1,8 @@
 <template>
-  <div class="flex justify-center">
+  <div
+    v-if="show"
+    class="flex justify-center"
+  >
     <card
       v-for="entry in data"
       :key="entry.id"

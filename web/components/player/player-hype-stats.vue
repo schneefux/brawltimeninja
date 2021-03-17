@@ -1,240 +1,129 @@
 <template>
-  <div class="relative">
-    <div class="items-center justify-center flex flex-wrap md:mx-16 lg:mx-40">
-      <div class="mx-auto md:mx-0 flex">
-        <dl>
-          <dd ref="counter-hours" class="text-5xl text-yellow-400 font-bold">
-            ...
-          </dd>
-          <dt class="text-3xl text-white">
-            {{ $t('metric.hours-spent') }}
-          </dt>
-        </dl>
-        <nuxt-link
-          v-if="rank != undefined"
-          :to="localePath('/leaderboard/hours')"
-          class="text-4xl -ml-4 text-primary-light font-bold"
-        >
-          #{{ rank }}
-        </nuxt-link>
-      </div>
-
-      <div
-        v-show="!showAll"
-        class="w-full md:hidden mt-1"
-      >
-        <b-button
-          class="relative z-10"
-          xs
-          primary
-          @click="showAll = true"
-        >
-          &#9660; {{ $t('action.show-all.fun-facts') }}
-        </b-button>
-      </div>
-
-      <p
-        :class="['w-full md:w-auto text-xl my-4 mx-auto', {
-          'hidden md:block': !showAll,
-        }]"
-      >
-        {{ $t('player.equals')}}
-      </p>
-
-      <dl
-        :class="['flex flex-wrap justify-between z-20', {
-          'hidden md:flex': !showAll,
-        }]"
+  <div class="mx-auto max-w-6xl">
+    <horizontal-scroller
+      class="children-flex-auto children-flex-shrink-0"
+      expand-on-desktop
+    >
+      <bigstat
+        :title="$t('metric.hours-spent')"
+        class="relative"
+        md
       >
         <div
-          v-for="(stat, statName) in funStats"
-          :key="statName"
-          class="mx-auto px-2 my-3"
-        >
-          <dd ref="counter-funstats" class="text-3xl text-yellow-400 font-semibold">
-            ...
-          </dd>
-          <dt class="text-2xl text-grey-lighter">
-            {{ stat.label }}
-          </dt>
-        </div>
-      </dl>
-    </div>
-
-    <sharepic
-      @done="sharepicDone"
-      class="absolute w-16 top-0 left-0 z-0 -mt-2"
-    >
-      <player-sharepic
-        :player="player"
-        :winRate="winRate"
-        :total-battles="totalBattles"
-        :account-rating="accountRating"
-      ></player-sharepic>
-    </sharepic>
-
-    <div class="bigstat-wrapper">
-      <dl
-        v-if="player.club.tag != undefined"
-        class="bigstat-container"
-      >
-        <div class="bigstat-left text-5vw md:text-4xl!">
-          <div style="margin-top: -0.125em">
-            [
-          </div>
-          <dd class="mx-2">
-            <nuxt-link
-              :to="localePath(`/club/${player.club.tag}`)"
-              class="underline text-red-500 font-semibold text-center"
-            >
-              {{ player.club.name.replace(/ /g, '&nbsp;') }}
-            </nuxt-link>
-          </dd>
-          <div style="margin-top: -0.125em">
-            ]
-          </div>
-        </div>
-        <dt class="bigstat-right bigstat-label text-4xl">
-          Club
-        </dt>
-      </dl>
-
-      <div class="bigstat-container">
-        <dl class="flex flex-wrap">
-          <dd class="bigstat-left bigstat-number">
-            {{ player.trophies.toLocaleString() }}
-          </dd>
-          <dt class="bigstat-right bigstat-label text-4xl">
-            {{ $t('metric.trophies') }}
-          </dt>
-        </dl>
-      </div>
-
-      <dl
-        v-if="brawlersUnlocked < totalBrawlers"
-        class="bigstat-container"
-      >
-        <dd class="bigstat-left bigstat-number">
-          {{ Math.floor(trophiesGoal).toLocaleString() }}
-        </dd>
-        <div class="bigstat-right">
-          <dt class="bigstat-label w-48 pt-1">
-            <span class="text-xl">
-              {{ $t('metric.potentialTrophies') }}
-            </span>
-            <span class="text-sm">
-              {{ $t('metric.potentialTrophies.subtext') }}
-            </span>
-          </dt>
-        </div>
-      </dl>
-
-      <dl
-        v-if="winRate !== 0"
-        class="bigstat-container"
-      >
-        <div class="bigstat-left relative">
-          <dd class="bigstat-number">
-            {{ Math.floor(winRate * 100) }}%
-          </dd>
-          <button
-            @click="recentHelpOpen = true"
-            class="bigstat-tooltip__btn"
-          >?</button>
-        </div>
-        <div class="bigstat-right bigstat-label text-xl">
-          <dt class="w-24">
-            {{ $t('metric.recentWinrate') }}
-          </dt>
-        </div>
-        <card
-          :class="['absolute z-10', {
-            'hidden': !recentHelpOpen,
-          }]"
-          dense
-          xxs
-          @click="recentHelpOpen = false"
+          slot="value"
+          class="w-full text-center"
         >
           <p
-            slot="content"
-            class="text-left"
+            ref="counter-hours"
+            class="text-6xl font-bold text-yellow-400 mb-4"
           >
-            {{ $t('metric.recentWinrate.description', { battles: totalBattles }) }}
+            ...
           </p>
-          <b-button
-            slot="actions"
-            primary
-            xs
-            class="mx-auto"
-            @click="recentHelpOpen = false"
-          >{{ $t('action.close') }}</b-button>
-        </card>
-      </dl>
 
-      <dl
-        v-if="trophyRate !== 0"
-        class="bigstat-container"
-      >
-        <dd class="bigstat-left bigstat-number">
-          {{ trophyRate.toFixed(2) }}
-        </dd>
-        <div class="bigstat-right bigstat-label text-xl">
-          <dt class="w-24">
-            {{ $t('metric.averageTrophies') }}
-          </dt>
-        </div>
-      </dl>
-
-      <dl class="bigstat-container">
-        <div class="bigstat-left relative">
-          <dd class="bigstat-number">{{ accountRating }}</dd>
-          <button
-            @click="ratingHelpOpen = true"
-            class="bigstat-tooltip__btn"
-          >?</button>
-        </div>
-        <div class="bigstat-right bigstat-label text-xl">
-          <dt class="w-24">
-            {{ $t('metric.accountRating') }}
-          </dt>
-        </div>
-        <card
-          :class="['absolute z-20', {
-            'hidden': !ratingHelpOpen,
-          }]"
-          dense
-          xxs
-          @click="ratingHelpOpen = false"
-        >
-          <div
-            slot="content"
-            class="text-left"
+          <sharepic
+            @done="sharepicDone"
+            class="mb-2"
+            debug
           >
-            <p>{{ $t('metric.accountRating.description') }}</p>
-            <ul>
-              <li
-                v-for="(info, rating) in ratingPercentiles"
-                :key="rating"
-              >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
-            </ul>
-          </div>
-          <b-button
-            slot="actions"
-            primary
-            xs
-            class="mx-auto"
-            @click="ratingHelpOpen = false"
-          >{{ $t('action.close') }}</b-button>
-        </card>
-      </dl>
-    </div>
+            <player-sharepic
+              :player="player"
+              :winRate="winRate"
+              :total-battles="totalBattles"
+              :account-rating="accountRating"
+            ></player-sharepic>
+          </sharepic>
+        </div>
+      </bigstat>
+
+      <div class="flex flex-col">
+        <p class="mx-2">{{ $t('player.equals') }}</p>
+        <div class="flex children-flex-auto children-flex-shrink-0">
+          <bigstat
+            v-for="(stat, statName) in funStats"
+            :key="statName"
+            :title="stat.label"
+          >
+            <p
+              slot="value"
+              ref="counter-funstats"
+              class="text-center text-3xl font-bold text-yellow-400 mb-2"
+            >
+              ...
+            </p>
+          </bigstat>
+        </div>
+      </div>
+    </horizontal-scroller>
+
+    <horizontal-scroller
+      class="mt-2 lg:justify-start children-flex-shrink-0 children-flex-auto"
+      expand-on-desktop
+    >
+      <bigstat
+        v-if="player.club.tag != undefined"
+        :title="$t('club')"
+      >
+        <div
+          slot="value"
+          class="flex justify-center"
+        >
+          <nuxt-link
+            :to="localePath(`/club/${player.club.tag}`)"
+            class="text-center text-3xl font-semibold underline text-red-500 mb-2"
+          >
+            [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
+          </nuxt-link>
+        </div>
+      </bigstat>
+
+      <bigstat
+        :title="$t('metric.trophies')"
+        :value="player.trophies.toLocaleString()"
+      ></bigstat>
+
+      <bigstat
+        v-if="brawlersUnlocked < totalBrawlers"
+        :title="$t('metric.potentialTrophies')"
+        :value="Math.floor(trophiesGoal).toLocaleString()"
+        :tooltip="$t('metric.potentialTrophies.subtext')"
+      ></bigstat>
+
+      <bigstat
+        v-if="winRate != 0"
+        :title="$t('metric.recentWinrate')"
+        :value="Math.floor(winRate * 100) + '%'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: totalBattles })"
+      ></bigstat>
+
+      <bigstat
+        v-if="trophyRate != 0"
+        :title="$t('metric.averageTrophies')"
+        :value="trophyRate.toFixed(2)"
+      ></bigstat>
+
+      <bigstat
+        :title="$t('metric.accountRating')"
+        :value="accountRating"
+        tooltip
+      >
+        <template v-slot:tooltip>
+          <p>{{ $t('metric.accountRating.description') }}</p>
+          <ul>
+            <li
+              v-for="(info, rating) in ratingPercentiles"
+              :key="rating"
+            >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
+          </ul>
+        </template>
+      </bigstat>
+    </horizontal-scroller>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
-import { Player, Leaderboard } from '@/model/Api'
+import { Player } from '@/model/Api'
 import { BattleTotalRow } from './player-battles-stats.vue'
 import { ratingPercentiles } from '~/lib/util'
 
@@ -248,30 +137,12 @@ export default Vue.extend({
       type: Object as PropType<BattleTotalRow>,
       required: false
     },
-    enableClickerStats: {
-      type: Boolean,
-      required: true
-    },
   },
   data() {
     return {
-      rank: undefined as undefined|number,
       showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
-    }
-  },
-  fetchDelay: 0,
-  async fetch() {
-    if (!this.enableClickerStats) {
-      return
-    }
-
-    const hoursLeaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/hours')
-      .catch(() => ({ metric: 'hours', entries: [] }))
-    const rank = hoursLeaderboard.entries.findIndex(e => e.tag == this.player.tag)
-    if (rank != -1) {
-      this.rank = rank + 1
     }
   },
   mounted() {
@@ -361,23 +232,23 @@ export default Vue.extend({
       return {
         recharges: {
           // measured with AccuBattery on my phone
-          label: this.$tc('metric.battery'),
+          label: this.$t('metric.battery') as string,
           value: (h) => h / 4.27
         },
         toiletBreaks: {
           // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
           // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
-          label: this.$tc('metric.toilet'),
+          label: this.$t('metric.toilet') as string,
           value: (h) => h / (102 / 7 / 60)
         },
         books: {
           // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
-          label: this.$tc('metric.book'),
+          label: this.$t('metric.book') as string,
           value: (h) => h / 7.72
         },
         songs: {
           // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
-          label: this.$tc('metric.song'),
+          label: this.$t('metric.song') as string,
           value: (h) => h / (3.7 / 60)
         },
       }
@@ -398,47 +269,13 @@ export default Vue.extend({
 </script>
 
 <style lang="postcss" scoped>
-.bigstat-wrapper {
-  @apply flex flex-wrap mx-auto md:justify-center md:mx-0;
-}
-
-.bigstat-container {
-  @apply flex flex-wrap justify-center items-center mt-2 w-full;
-}
-
-@screen xl {
-  .bigstat-container {
-    @apply mx-6 w-auto;
-  }
-}
-
-.bigstat-left {
-  @apply w-1/2 text-right flex justify-end items-center pr-2;
-}
-
-.bigstat-right {
-  @apply w-1/2 text-left flex justify-start items-center pl-2;
-}
-
-.bigstat-label {
-  @apply leading-none text-white;
-}
-
-.bigstat-number {
-  @apply text-5xl font-bold text-yellow-400;
-}
-
-.bigstat-tooltip__btn {
-  @apply absolute mt-0 mr-1 text-red-500 font-semibold underline top-0 right-0;
-}
-
-.text-5vw {
-  font-size: 5vw;
-}
-
 @responsive {
-  .text-4xl\! {
-    @apply text-4xl;
+  .children-flex-auto > * {
+    @apply flex-auto;
   }
+}
+
+.children-flex-shrink-0 > * {
+  @apply flex-shrink-0;
 }
 </style>

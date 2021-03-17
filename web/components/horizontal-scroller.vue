@@ -2,7 +2,9 @@
   <div
     :class="['overflow-x-auto flex items-center', {
       'md:items-end md:justify-center md:flex-wrap': props.expandOnDesktop,
-    }]">
+    }, data.class, data.staticClass]"
+    :style="data.staticStyle"
+  >
     <slot></slot>
   </div>
 </template>

@@ -108,6 +108,7 @@ export default {
     path: '~/components',
     pathPrefix: false,
     ignore: ['**/media-img.*', '**/lazy.*'], // loaded by plugin instead
+    loader: true, // https://github.com/nuxt/components/issues/164
   } ],
 
   router: {
@@ -252,6 +253,7 @@ export default {
 
   tailwindcss: {
     viewer: false,
+    jit: false,
   },
 
   googleFonts: {

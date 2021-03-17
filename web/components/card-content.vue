@@ -41,16 +41,16 @@
       <header
         v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
         :class="['flex-shrink-0 w-full flex font-semibold items-center overflow-hidden', (props.color !== undefined ? `bg-${props.color}` : ''), {
-          'px-3 py-2': !props.dense,
-          'px-2 py-1': props.dense,
+          'px-3': !props.dense,
+          'px-2': props.dense,
           'rounded-t': !('infobar' in $scopedSlots),
         }]"
       >
         <div
           v-if="props.icon != undefined"
           :class="['flex-shrink-0 flex justify-center items-center mr-3', {
-            'w-10 h-10 my-1': !props.dense,
-            'w-6 h-6 my-px': props.dense,
+            'w-10 h-10 my-2': !props.dense,
+            'w-6 h-6 my-1': props.dense,
           }]"
         >
           <media-img
@@ -62,7 +62,10 @@
 
         <div
           v-if="props.title != undefined"
-          class="mr-auto"
+          :class="['mr-auto', {
+            'my-2': !props.dense,
+            'my-px': props.dense,
+          }]"
         >
           <h1
             v-if="props.title != undefined"
@@ -107,8 +110,10 @@
         v-if="'content' in $scopedSlots"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
-          'px-3 py-2': !props.dense,
-          'px-2 py-1': props.dense,
+          'px-3': !props.dense,
+          'py-2': props.background != undefined && !props.dense,
+          'px-2': props.dense,
+          'py-px': props.background != undefined && props.dense,
           'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
           'h-full': props.fullHeight,
         }]"

@@ -76,6 +76,7 @@ export default Vue.extend({
     limit: '$fetch',
   },
   fetchDelay: 0,
+  fetchOnServer: false, // FIXME weird hydration bug - https://github.com/nuxt/nuxt.js/issues/8830
   async fetch() {
     const data = await this.$clicker.query('meta.brawler.widget', 'map',
       ['brawler_name'],

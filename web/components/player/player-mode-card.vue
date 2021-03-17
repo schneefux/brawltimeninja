@@ -35,7 +35,7 @@
           slot="preview"
           :path="`/maps/${activeMap.id}`"
           size="80"
-          clazz="h-12"
+          clazz="h-10"
         ></media-img>
         <player-map-tip-roll
           slot="content"

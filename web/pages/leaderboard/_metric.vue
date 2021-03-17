@@ -128,17 +128,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.table th {
-  @apply py-2 px-2;
-}
-
-.table td {
-  @apply py-4 px-2;
-}
-
-.table tbody td, tbody th {
-  @apply border-t border-gray-200;
-}
-</style>

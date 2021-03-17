@@ -154,17 +154,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.markdown {
-  @apply leading-normal;
-}
-
-.markdown h2 {
-  @apply mt-3 mb-2;
-}
-
-.markdown h3 {
-  @apply mt-2 mb-1;
-}
-</style>

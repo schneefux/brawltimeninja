@@ -34,9 +34,8 @@
 
     <player-hype-stats
       :player="player"
-      :enable-clicker-stats="enableClickerStats"
       :battle-totals="battleTotals"
-      class="leading-tight text-center mt-6"
+      class="mt-6"
     ></player-hype-stats>
 
     <div class="mt-2 flex flex-wrap justify-center items-center">
@@ -158,11 +157,10 @@
 
     <client-only>
       <adsense
-        v-if="!isApp && player.battles.length > 0"
+        v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
-        id="ezoic-pub-ad-placeholder-102"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
       />
@@ -206,7 +204,6 @@
         data-ad-format="auto"
         data-full-width-responsive="no"
         ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
-        id="ezoic-pub-ad-placeholder-101"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
       />
@@ -317,7 +314,6 @@ export default Vue.extend({
     setTimeout(() => this.refreshTimer(), 15 * 1000)
   },
   fetchDelay: 0,
-  fetchOnServer: false, // FIXME enableClickerStats causes SSR bugs (due to race conditions?)
   async fetch() {
     const battleData = await this.$clicker.query('player.winrates.total',
       'battle',

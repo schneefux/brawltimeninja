@@ -18,18 +18,22 @@ export default Vue.extend({
   fetchOnServer: false,
   async fetch() {
     const cubejsApi = cubejs(
-      this.$config.cubeSecret,
-      { apiUrl: this.$config.cubeUrl }
-    )
+      '',
+      {
+        apiUrl: this.$config.cubeUrl + '/cubejs-api/v1',
+        headers: {
+          'Cache-Control': 'public, max-age=60',
+        }
+      })
 
     this.data = await cubejsApi.load({
       measures: ['map.wins_measure'],
-      dimensions: ['map.brawler_dimension'],
+      dimensions: [],
       filters: [],
       timeDimensions: [ {
         dimension: 'map.season_dimension',
         granularity: 'month',
-        dateRange: 'last 6 month',
+        dateRange: 'last 3 month',
       } ],
     })
   },

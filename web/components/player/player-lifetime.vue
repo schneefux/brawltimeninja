@@ -2,7 +2,7 @@
   <dl
     :class="['flex flex-col md:flex-row md:flex-wrap md:justify-center', {
       'flex-wrap justify-center': !tease,
-      'h-32 md:h-12 overflow-hidden': tease,
+      'h-28 md:h-10 overflow-hidden': tease,
     }]"
   >
     <card
