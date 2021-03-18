@@ -19,16 +19,6 @@ Object.values(config.default).forEach((c) => {
         } : {}),
         sql: m.config.sql,
         type: m.config.type,
-        meta: {
-          formatter: m.formatter,
-          d3formatter: m.d3formatter,
-          sign: m.sign,
-          percentage: m.percentage,
-          vega: {
-            type: m.type,
-            scale: m.scale,
-          },
-        },
       },
     }), {}),
 
@@ -39,13 +29,6 @@ Object.values(config.default).forEach((c) => {
         sql: d.config.sql,
         type: d.config.type,
         shown: !d.hidden,
-        meta: {
-          formatter: d.formatter,
-          vega: {
-            type: d.type,
-            scale: d.scale,
-          },
-        },
       },
     }), {}),
   })

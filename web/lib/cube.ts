@@ -8,6 +8,7 @@ const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
 export type ValueType = 'quantitative'|'temporal'|'ordinal'|'nominal'
 export type MeasureType = 'number'|'count'|'countDistinct'|'countDistinctApprox'|'sum'|'avg'|'min'|'max'|'runningTotal'
 export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
+export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 
 export interface State {
   cubeId: string
@@ -72,6 +73,10 @@ export interface Slice {
   id: string
   name: string
   column: string
+  config: { // cube.js config
+    member: string // dimension/measure id
+    operator: OperatorType
+  }
   // TODO: for description
   // formatter: string
 }
@@ -1184,6 +1189,26 @@ const mergedbattleMeasurements = asMeasurements({
       type: 'number',
     },
   },
+  useRate: {
+    id: 'useRate',
+    name: 'Use Rate',
+    nameShort: 'Used',
+    icon: '🎯',
+    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+    formatter: '.2%',
+    d3formatter: '.2%',
+    sign: -1,
+    percentage: true,
+    column: 'picks_weighted',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
+    config: {
+      sql: 'picks_weighted',
+      type: 'sum',
+    },
+  },
   starRate: {
     id: 'starRate',
     name: 'Star Player',
@@ -1275,16 +1300,28 @@ const metaSlices = asSlice({
     id: 'season',
     name: 'Since Time',
     column: 'trophy_season_end',
+    config: {
+      member: 'season_dimension',
+      operator: 'afterDate',
+    },
   },
   seasonExact: {
     id: 'seasonExact',
     name: 'Time',
     column: 'trophy_season_end_exact',
+    config: {
+      member: 'season_dimension',
+      operator: 'equals',
+    }
   },
   timestamp: {
     id: 'timestamp',
     name: 'Since Time',
     column: 'timestamp',
+    config: {
+      member: 'timestamp_dimension',
+      operator: 'afterDate',
+    }
   },
 })
 
@@ -1293,16 +1330,28 @@ const playerSlices = asSlice({
     id: 'playerName',
     name: 'Player Name',
     column: 'player_name_ilike',
+    config: {
+      member: 'player_name_dimension',
+      operator: 'contains',
+    },
   },
   playerId: {
     id: 'playerId',
     name: 'Player ID',
     column: 'player_id',
+    config: {
+      member: 'player_dimension',
+      operator: 'equals',
+    },
   },
   playerTag: {
     id: 'playerTag',
     name: 'Player Tag',
     column: 'player_tag',
+    config: {
+      member: 'player_dimension', // TODO
+      operator: 'equals',
+    },
   },
 })
 
@@ -1311,36 +1360,64 @@ const brawlerSlices = asSlice({
     id: 'brawler',
     name: 'Brawler',
     column: 'brawler_name',
+    config: {
+      member: 'brawler_dimension',
+      operator: 'equals',
+    },
   },
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
     column: 'brawler_id',
+    config: {
+      member: 'brawler_id_dimension',
+      operator: 'equals',
+    },
   },
   ally: {
     id: 'ally',
     name: 'Ally',
     column: 'ally_brawler_name',
+    config: {
+      member: 'ally_brawler_dimension',
+      operator: 'equals',
+    },
   },
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
     column: 'ally_brawler_id',
+    config: {
+      member: 'ally_brawler_id_dimension',
+      operator: 'equals',
+    },
   },
   trophies: {
     id: 'trophies',
     name: 'Trophies',
     column: 'brawler_trophyrange',
+    config: {
+      member: 'trophyrange_dimension',
+      operator: 'equals', // TODO use $and for range
+    },
   },
   withStarpower: {
     id: 'withStarpower',
     name: 'Star Power detected',
     column: 'with_starpower',
+    config: {
+      member: 'trophyrange_dimension', // TODO
+      operator: 'equals',
+    },
   },
   withGadget: {
     id: 'withGadget',
     name: 'Gadget detected',
     column: 'with_gadget',
+    config: {
+      member: 'trophyrange_dimension', // TODO
+      operator: 'equals',
+    },
   },
 })
 
@@ -1349,31 +1426,55 @@ const battleSlices = asSlice({
     id: 'mode',
     name: 'Mode',
     column: 'battle_event_mode',
+    config: {
+      member: 'mode_dimension',
+      operator: 'equals',
+    },
   },
   map: {
     id: 'map',
     name: 'Map',
     column: 'battle_event_map',
+    config: {
+      member: 'map_dimension',
+      operator: 'equals',
+    },
   },
   mapLike: {
     id: 'mapLike',
     name: 'Map Name',
     column: 'battle_event_map_like',
+    config: {
+      member: 'map_dimension',
+      operator: 'contains',
+    },
   },
   mapNotLike: {
     id: 'mapNotLike',
     name: 'not Map Name',
     column: 'battle_event_map_notlike',
+    config: {
+      member: 'map_dimension',
+      operator: 'notContains',
+    },
   },
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
     column: 'battle_event_powerplay',
+    config: {
+      member: 'powerplay_dimension',
+      operator: 'equals',
+    },
   },
   bigbrawler: {
     id: 'bigbrawler',
     name: 'Big Brawler',
     column: 'battle_is_bigbrawler',
+    config: {
+      member: 'bigbrawler_dimension',
+      operator: 'equals',
+    },
   },
 })
 
@@ -1395,7 +1496,7 @@ const brawlerBattleMeasurements = [
   mergedbattleMeasurements.wins,
   commonMeasurements.picks,
   mergedbattleMeasurements.pickRate,
-  commonMeasurements.useRate,
+  mergedbattleMeasurements.useRate,
   mergedbattleMeasurements.starRate,
   mergedbattleMeasurements.rank,
   mergedbattleMeasurements.rank1Rate,
@@ -1495,6 +1596,7 @@ const cubes: Record<string, Cube> = {
       ...brawlerBattleDimensions,
       commonDimensions.mode,
       commonDimensions.map,
+      commonDimensions.powerplay,
     ],
     defaultDimensionsIds: ['brawler'],
     measurements: [
@@ -1531,7 +1633,7 @@ const cubes: Record<string, Cube> = {
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
     measurements: [
-      ...Object.values(brawlerBattleMeasurements),
+      ...brawlerBattleMeasurements,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
