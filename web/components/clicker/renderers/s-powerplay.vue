@@ -10,7 +10,7 @@
       @input="v => $parent.$emit('slice', { powerplay: [v] })"
     >
       <option value="false">Regular Battles</option>
-      <option value="true">Power Play</option>
+      <option value="true">Power League</option>
     </b-select>
   </div>
 </template>

@@ -239,12 +239,12 @@ const plugin: Plugin = (context, inject) => {
           mapName += ' - ' + slices.battle_event_map[0]
         }
         if (powerplay) {
-          mapName += ' (Power Play)'
+          mapName += ' (Power League)'
         }
         description.push(mapName)
       } else {
         if (powerplay) {
-          description.push('Power Play')
+          description.push('Power League')
         }
       }
 

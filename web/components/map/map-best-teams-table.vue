@@ -29,7 +29,7 @@ import Vue from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import CQuery from '~/components/clicker/c-query.ts'
+import CQuery from '~/components/clicker/c-query'
 
 export default Vue.extend({
   components: {
