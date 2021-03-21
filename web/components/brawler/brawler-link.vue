@@ -52,13 +52,13 @@ export default Vue.extend({
       type: String,
     },
     starpowerId: {
-      type: Number,
+      type: String,
     },
     gadgetName: {
       type: String,
     },
     gadgetId: {
-      type: Number,
+      type: String,
     },
     captioned: {
       type: Boolean

@@ -57,7 +57,7 @@ export default Vue.extend({
   },
   computed: {
     giniScore(): number {
-      const getStat = (r: MetaGridEntry) => r.meta.picks as number
+      const getStat = (r: MetaGridEntry) => parseInt(r.meta.picks as string) as number
 
       // calculate Gini coefficient
       let absoluteDifference = 0

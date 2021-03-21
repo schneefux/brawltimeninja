@@ -134,12 +134,15 @@
       />
     </client-only>
 
-    <top-brawlers-card
+    <map-best-brawlers-roll
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,
       }"
-    ></top-brawlers-card>
+      :limit="4"
+      :elevation="1"
+      long
+    ></map-best-brawlers-roll>
 
     <top-players-card
       v-observe-visibility="{
@@ -198,7 +201,7 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
-import { EventMetadata } from '~/plugins/clicker'
+import { EventMetadata } from '~/plugins/cube'
 
 interface PlayerLink {
   name: string
@@ -282,7 +285,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.events = await this.$clicker.queryActiveEvents()
+    this.events = await this.$cube.queryActiveEvents()
   },
   methods: {
     async search() {

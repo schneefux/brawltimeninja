@@ -14,17 +14,17 @@
     </p>
 
     <div class="flex flex-wrap justify-center">
-      <best-starpowers-card
+      <map-best-starpowers-roll
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'gadgets'),
           once: true,
         }"
         kind="starpowers"
-      ></best-starpowers-card>
+      ></map-best-starpowers-roll>
 
-      <best-starpowers-card
+      <map-best-starpowers-roll
         kind="gadgets"
-      ></best-starpowers-card>
+      ></map-best-starpowers-roll>
     </div>
 
     <client-only>

@@ -44,19 +44,23 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const data = await this.$clicker.query('seasons.all', 'map',
-      ['trophy_season_end'],
-      ['trophy_season_end', 'picks'], {
-        trophy_season_end: ['2020-06-15 08:00:00'],
-      }, {
-        cache: 60*60*24,
-      })
+    const data = await this.$cube.query({
+      cubeId: 'map',
+      dimensionsIds: ['season'],
+      measurementsIds: ['picks'],
+      sortId: 'picks',
+      slices: {
+        season: ['2020-06-15 08:00:00'],
+      },
+      comparingSlices: {},
+      comparing: false,
+    })
 
-    data.data.sort((e1: Row, e2: Row) => e1.trophy_season_end.localeCompare(e2.trophy_season_end))
+    data.data.sort((e1, e2) => e1.dimensionsRaw.season.season.localeCompare(e2.dimensionsRaw.season.season))
     // slice season with low sample size
-    const firstIndex = data.data.findIndex(e => e.picks > 1000000)
+    const firstIndex = data.data.findIndex(e => e.measurementsRaw.picks > 1000000)
     this.seasons = data.data.slice(firstIndex)
-      .map(e => formatClickhouse(parseISO(e.trophy_season_end)))
+      .map(e => formatClickhouse(parseISO(e.dimensionsRaw.season.season)))
       .sort()
     this.$emit('input', this.seasons[this.seasons.length - 2])
   },

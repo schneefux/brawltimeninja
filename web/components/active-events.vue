@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-wrap justify-center items-end">
-    <lazy-map-best-brawlers-card
+    <lzy-map-best-brawlers-card
       v-for="event in events"
       :key="event.battle_event_map + '-' + event.battle_event_id"
       :mode="event.battle_event_mode"
@@ -10,13 +10,13 @@
       :end-date="event.end"
       :eager="eager"
       link
-    ></lazy-map-best-brawlers-card>
+    ></lzy-map-best-brawlers-card>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { EventMetadata } from '~/plugins/clicker'
+import { EventMetadata } from '~/plugins/cube'
 
 export default Vue.extend({
   props: {
@@ -31,7 +31,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.events = await this.$clicker.queryActiveEvents()
+    this.events = await this.$cube.queryActiveEvents()
   },
 })
 </script>

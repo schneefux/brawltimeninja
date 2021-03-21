@@ -56,8 +56,8 @@ export default Vue.extend({
     '$i18n.loale': '$fetch',
   },
   async fetch() {
-    this.modes = await this.$clicker.queryAllModes()
-    const maps = await this.$clicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
+    this.modes = await this.$cube.queryAllModes()
+    const maps = await this.$cube.queryAllMaps(this.mode == '' ? undefined : this.mode)
     this.maps = maps.sort((m1, m2) => (this.$i18n.t('map.' + m1.battle_event_id) as string).localeCompare(this.$i18n.t('map.' + m2.battle_event_id) as string))
   },
   computed: {

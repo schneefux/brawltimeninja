@@ -81,14 +81,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Brawler, Battle } from '~/model/Api'
-import { camelToKebab, slugify } from '@/lib/util'
+import { camelToKebab, MetaGridEntry, slugify, tagToId } from '@/lib/util'
 import { commonMeasurements } from '~/lib/cube'
 import { EventMetadata } from '~/plugins/clicker'
-
-interface Row {
-  picks: number
-  battle_victory: number
-}
 
 interface Stats {
   winRate: number
@@ -136,7 +131,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      data: {} as Row,
+      data: undefined as undefined|MetaGridEntry,
       activeMap: undefined as undefined|ActiveMap,
     }
   },
@@ -152,16 +147,18 @@ export default Vue.extend({
       return
     }
 
-    const data = await this.$clicker.query('player.winrates.mode',
-      'battle',
-      [],
-      ['picks', 'battle_victory'],
-      {
-        ...this.$clicker.defaultSlicesRaw('battle'),
-        battle_event_mode: [this.mode],
-        player_tag: [this.playerTag],
+    const data = await this.$cube.query({
+      cubeId: 'battle',
+      dimensionsIds: [],
+      measurementsIds: ['picks', 'winRate'],
+      sortId: 'picks',
+      slices: {
+        playerId: [tagToId(this.playerTag)],
+        mode: [this.mode],
       },
-      { sort: { picks: 'desc' }, cache: 60 })
+      comparing: false,
+      comparingSlices: {},
+    })
 
     this.data = data.data[0]
 
@@ -180,12 +177,12 @@ export default Vue.extend({
   },
   computed: {
     stats(): Stats {
-      if (this.data.picks != undefined) {
-        const wins = Math.floor(this.data.battle_victory * this.data.picks)
-        const losses = Math.floor((1 - this.data.battle_victory) * this.data.picks)
+      if (this.data?.measurementsRaw?.picks != undefined) {
+        const wins = Math.floor((this.data.measurementsRaw.winRate as number) * (this.data.measurementsRaw.picks as number))
+        const losses = (this.data.measurementsRaw.picks as number) - wins
         return {
-          winRate: this.data.battle_victory,
-          picks: this.data.picks,
+          winRate: this.data.measurementsRaw.winRate as number,
+          picks: this.data.measurementsRaw.picks as number,
           wins,
           losses,
         }

@@ -2,7 +2,7 @@
   <c-query
     v-bind="$attrs"
     :state="{
-      cubeId: 'team',
+      cubeId: 'battle',
       dimensionsIds: ['team'],
       measurementsIds: ['wins'],
       slices: { mode: [mode], map: [map] },

@@ -1,10 +1,10 @@
-import { differenceInMinutes, parseISO, format as formatDate } from "date-fns"
-import { capitalizeWords, formatMode, MetaGridEntry } from "~/lib/util"
-import { CurrentAndUpcomingEvents } from "~/model/Api"
+import { parseISO, format as formatDate } from "date-fns"
+import { capitalizeWords, formatMode, idToTag, MetaGridEntry } from "~/lib/util"
 import { Route, Location } from "vue-router"
-import { State, Config, commonMeasurements, Dimension, Measurement, Slice, SliceValue, ValueType } from "~/lib/cube"
+import { State, Config, commonMeasurements, Dimension, Measurement, ValueType, Cube } from "~/lib/cube"
 import * as d3format from "d3-format"
 import { Plugin } from "@nuxt/types"
+import { ResultSet } from "@cubejs-client/core"
 
 // workaround for https://github.com/vuejs/vue-router/issues/2725
 // FIXME remove when upgrading to vue-router 3
@@ -38,17 +38,6 @@ export interface PicksWins {
   wins: number
 }
 
-export interface EventMetadata {
-  battle_event_id: number
-  battle_event_map: string
-  battle_event_mode: string
-  battle_event_powerplay: boolean
-  timestamp: string
-  picks: number
-  start?: string
-  end?: string
-}
-
 export interface Slices extends Record<string, string[]|undefined> {}
 
 interface Clicker {
@@ -65,11 +54,6 @@ interface Clicker {
       cache?: number,
       totals?: boolean,
     }): Promise<{ data: T[], totals?: T, statistics: Record<string, number> }>
-  queryActiveEvents(): Promise<EventMetadata[]>,
-  queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
-  queryAllModes(): Promise<string[]>
-  queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]>
-  queryAllBrawlers(): Promise<string[]>
   describeSlices(slices: Slices, timestamp?: string): string
   calculateBayesSynergies(tag: string, brawler?: string, limit?: number): Promise<{
     sampleSize: number,
@@ -81,8 +65,7 @@ interface Clicker {
     // H(ally_brawler,brawler)
     pairData: Map<string, Map<string, PicksWins>>,
   }>
-  constructQuery(dimensions: Dimension[], measurements: Measurement[], slices: Slice[], slicesValues: SliceValue, metaColumns: string[]): { dimensions: string[], measurements: string[], slices: Record<string, string[]> }
-  mapToMetaGridEntry(dimensions: Dimension[], measurements: Measurement[], rows: any[], totals: any|undefined, metaColumns: string[]): MetaGridEntry[]
+  mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet, totalsSet?: ResultSet, metaColumns?: string[]): MetaGridEntry[]
   compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
   stateToLocation(state: Partial<State>): Location
   locationToState(location: Route, config: Config): State
@@ -137,7 +120,7 @@ const plugin: Plugin = (context, inject) => {
           }
       }
     },
-    query(name, cube, dimensions, measures, slices, options = {}) {
+    async query(name, cube, dimensions, measures, slices, options = {}) {
       // SSR does not support UrlSearchParams
       const query = {
         include: measures.join(','),
@@ -168,65 +151,6 @@ const plugin: Plugin = (context, inject) => {
       const url = context.$config.clickerUrl + '/clicker/cube/' + cube + '/query/' + dimensions.join(',') + '?' + queryString
       console.log(`querying clicker: cube=${cube}, dimensions=${JSON.stringify(dimensions)}, measures=${JSON.stringify(measures)}, slices=${JSON.stringify(slices)} name=${name} (${url})`)
       return context.$http.$get(url, { headers })
-    },
-    async queryActiveEvents(measures = [], slices = {}, maxage = 60) {
-      const events = await this.query<EventMetadata>('active.events', 'map',
-        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay'],
-        ['battle_event_mode', 'battle_event_map', 'battle_event_id', 'battle_event_powerplay', 'timestamp', 'picks', ...measures],
-        {
-          trophy_season_end: ['current'],
-          ...slices,
-        },
-        {
-          sort: { timestamp: 'desc' },
-          cache: 60*10,
-          limit: 10,
-        })
-
-      const lastEvents = events.data
-        .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
-        .sort((e1, e2) => e2.picks - e1.picks)
-
-      const starlistData = await context.$http.$get(context.$config.apiUrl + '/api/events/active')
-        .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents
-      starlistData.current.forEach(s => {
-        const match = lastEvents.find(e => e.battle_event_id.toString() == s.id)
-        if (match) {
-          match.start = s.start
-          match.end = s.end
-        }
-      })
-
-      return lastEvents
-    },
-    async queryAllModes() {
-      const modes = await this.query<{ battle_event_mode: string }>('all.modes', 'map',
-        ['battle_event_mode'],
-        ['battle_event_mode'],
-        { trophy_season_end: ['month'] },
-        { sort: { picks: 'desc' }, cache: 60*60 })
-      return modes.data.map(row => row.battle_event_mode)
-    },
-    async queryAllMaps(mode?: string) {
-      const maps = await this.query<{ battle_event_map: string, battle_event_id: number }>('all.maps', 'map',
-        ['battle_event_map'],
-        ['battle_event_map', 'battle_event_id'],
-        {
-          trophy_season_end: ['month'],
-          ...(mode != undefined ? {
-            battle_event_mode: [mode],
-          } : {})
-        },
-        { sort: { picks: 'desc' }, cache: 60*60 })
-      return maps.data
-    },
-    async queryAllBrawlers() {
-      const brawlers = await this.query<{ brawler_name: string }>('all.brawlers', 'map',
-        ['brawler_name'],
-        ['brawler_name'],
-        { trophy_season_end: ['month'] },
-        { sort: { picks: 'desc' }, cache: 60*60 })
-      return brawlers.data.map(b => b.brawler_name)
     },
     describeSlices(slices: Record<string, string[]>, timestamp?: string) {
       let description: string[] = []
@@ -335,48 +259,8 @@ const plugin: Plugin = (context, inject) => {
         timestamp: totalTimestamp,
       }
     },
-    constructQuery(dimensions, measurements, slices, slicesValues, metaColumns) {
-      // TODO filter duplicates
-      const queryDimensions = dimensions.map(d => d.column)
-      const queryMeasurements = <string[]>[]
-
-      metaColumns.forEach(c => queryMeasurements.push(c))
-      measurements.forEach(m => {
-        queryMeasurements.push(m.column)
-        if ('anyColumns' in m) {
-          // m is actually a dimension
-          (<Dimension>m).anyColumns
-            .forEach(c => queryMeasurements.push(c))
-        }
-      })
-
-      dimensions.forEach(d => d.anyColumns
-        .forEach(c => queryMeasurements.push(c)))
-
-      const querySlices = Object.fromEntries(Object.entries(slicesValues)
-        .filter(([key, value]) => {
-          if (!Array.isArray(value)) {
-            throw new Error('Illegal slice specification! ' + key + ': ' + value)
-          }
-          return value.length > 0 && value[0] != undefined
-        })
-        .map(([key, value]) => {
-          const slice = slices.find(s => s.id == key)
-          if (slice == undefined) {
-            throw new Error('Undefined slice ' + key)
-          }
-          return [slice.column, value]
-        })
-      )
-
-      return {
-        dimensions: queryDimensions,
-        measurements: queryMeasurements,
-        slices: querySlices,
-      }
-    },
-    mapToMetaGridEntry(dimensions, measurements, rows, totals, metaColumns) {
-      return rows.map(row => {
+    mapToMetaGridEntry(cube, dimensions, measurements, resultSet, totalSet, metaColumns = []) {
+      return resultSet.tablePivot().map(row => {
         const entry: MetaGridEntry = {
           id: '',
           dimensionsRaw: {},
@@ -387,29 +271,35 @@ const plugin: Plugin = (context, inject) => {
         }
 
         for (const m of metaColumns) {
-          entry.meta[m] = row[m]
+          entry.meta[m] = row[cube.id + '.' + m + '_measure'] as string
         }
 
-        const anyDimensions: Dimension[] = []
         for (const m of measurements) {
-          if ('percentage' in m) {
-            // m is a measurement
-            const measurement = m.percentage ? row[m.column] / totals![m.column] : row[m.column]
-            entry.measurementsRaw[m.id] = measurement
-            entry.measurements[m.id] = this.format(m, measurement)
-          } else {
-            // m is a dimension
-            anyDimensions.push(m)
-          }
+          const id = cube.id + '.' + m.id + '_measure'
+          // cube.js clickhouse driver formats everything as strings
+          const value = m.type == 'quantitative' ? parseFloat(row[id] as string) : row[id] as string
+          const total = totalSet != undefined ? totalSet.tablePivot()[0] : {}
+          const measurement = m.type == 'quantitative' && m.percentage ? (value as number) / parseFloat(total[id] as string) : value
+          entry.measurements[m.id] = this.format(m, measurement)
+          entry.measurementsRaw[m.id] = value
         }
 
         let id = ''
-        for (const d of dimensions.concat(anyDimensions)) {
-          const dimension = d.anyColumns
-            .concat(d.column)
-            .reduce((o, c) => ({ ...o, [c]: row[c] }), {}) // pick keys from row
+        for (const d of dimensions) {
+          const dimension = d.additionalMeasures
+            .map(m => m + '_measure')
+            .concat(d.id + '_dimension')
+            // pick keys from row
+            .reduce((o, c) => ({
+              ...o,
+              [c.replace(/_measure|_dimension/g, '')]: row[cube.id + '.' + c],
+            }), {})
           entry.dimensionsRaw[d.id] = dimension
-          const formatted = this.format(d, dimension[d.formatColumn])
+          const naturalId = dimension[d.naturalIdAttribute]
+          if (naturalId == undefined) {
+            throw new Error('Invalid natural id ' + d.naturalIdAttribute + ' for dimension ' + d.id)
+          }
+          const formatted = this.format(d, naturalId)
           entry.dimensions[d.id] = formatted
           id += formatted
         }
@@ -539,6 +429,9 @@ const plugin: Plugin = (context, inject) => {
         if (spec.formatter == 'formatMode') {
           // TODO remove for i18n
           return formatMode(value)
+        }
+        if (spec.formatter == 'idToTag') {
+          return idToTag(value)
         }
         return value
       }

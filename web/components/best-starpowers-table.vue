@@ -4,7 +4,7 @@
       cubeId: 'starpower',
       dimensionsIds: ['starpower'],
       measurementsIds: ['winRateAdj', 'picks'],
-      slices: { withStarpower: [true] },
+      slices: { starpowerIdNeq: ['0'] },
       sortId: 'winRateAdj',
     }"
   >

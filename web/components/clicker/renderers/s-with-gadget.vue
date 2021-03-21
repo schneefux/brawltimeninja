@@ -1,16 +1,16 @@
 <template>
   <div
-    v-if="'withGadget' in value"
+    v-if="'gadgetIdNeq' in value"
     class="mr-2 my-1"
   >
     <b-select
-      :value="(value.withGadget || [])[0]"
+      :value="(value.gadgetIdNeq || [])[0] == '0' ? '1' : '0'"
       dark
       sm
-      @input="v => $parent.$emit('slice', { withGadget: [v] })"
+      @input="v => $parent.$emit('slice', { gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })"
     >
-      <option value="false">0 Gadgets owned</option>
-      <option value="true">1 Gadget owned</option>
+      <option value="0">0 Gadgets owned</option>
+      <option value="1">1 Gadget owned</option>
     </b-select>
   </div>
 </template>

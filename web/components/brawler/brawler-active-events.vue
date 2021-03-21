@@ -40,8 +40,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { EventMetadata } from '~/plugins/clicker'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
+import { EventMetadata } from '~/plugins/cube'
 
 interface Row extends EventMetadata {
   battle_victory: number
@@ -68,8 +68,8 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    this.events = await this.$clicker.queryActiveEvents<Row>(
-      ['battle_victory_adj', 'battle_victory', 'picks_weighted', 'wins'], {
+    this.events = await this.$cube.queryActiveEvents(
+      ['winRateAdj', 'winRate', 'picks', 'wins'], {
       brawler_name: [this.brawlerName.toUpperCase()],
     }, 120)
   },

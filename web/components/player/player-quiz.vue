@@ -903,7 +903,7 @@ brawlerTraits.forEach(b => {
 })
 </script>
 
-<style scoped lang="postcss">
+<style lang="postcss" scoped>
 .question {
   @apply font-semibold text-center;
 }
@@ -917,7 +917,12 @@ brawlerTraits.forEach(b => {
   @apply w-12 h-12 relative;
 }
 
-.double-bounce1, .double-bounce2 {
+.double-bounce1 {
+  @apply w-full h-full rounded-full absolute top-0 left-0 bg-yellow-400 opacity-50;
+  animation: bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
   @apply w-full h-full rounded-full absolute top-0 left-0 bg-yellow-400 opacity-50;
   animation: bounce 2.0s infinite ease-in-out;
 }

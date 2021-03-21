@@ -4,7 +4,7 @@
       cubeId: 'gadget',
       dimensionsIds: ['gadget'],
       measurementsIds: ['winRateAdj', 'picks'],
-      slices: { withGadget: [true] },
+      slices: { gadgetIdNeq: ['0'] },
       sortId: 'winRateAdj',
     }"
   >

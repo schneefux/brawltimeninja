@@ -139,7 +139,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Brawler } from '~/model/Api'
-import { brawlerId, capitalizeWords } from '~/lib/util'
+import { brawlerId, capitalizeWords, formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
+import { subWeeks } from 'date-fns'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -181,12 +182,13 @@ export default Vue.extend({
       return
     }
 
+    const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
     const response = await this.$cube.query({
       cubeId: 'battle',
       slices: {
         brawler: [this.brawler.name.toUpperCase()],
-        playerTag: [this.playerTag],
-        season: [],
+        playerId: [tagToId(this.playerTag)],
+        season: [season],
       },
       dimensionsIds: [],
       measurementsIds: ['winRate', 'picks'],

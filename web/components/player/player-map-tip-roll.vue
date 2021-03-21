@@ -73,7 +73,7 @@ export default Vue.extend({
 
     function score(b: MetaGridEntry) {
       const bestBrawlerIndex = bestBrawlers.indexOf(b)
-      const worstBrawler = worstBrawlers.find(bb => bb.name == b.dimensionsRaw.brawler.brawler_name)
+      const worstBrawler = worstBrawlers.find(bb => bb.name == b.dimensionsRaw.brawler.brawler)
       if (worstBrawler == undefined) {
         return 0
       }

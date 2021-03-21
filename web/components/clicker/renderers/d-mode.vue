@@ -1,12 +1,12 @@
 <template functional>
   <router-link
     v-if="'mode' in props.row.dimensions"
-    :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.battle_event_mode)}`)"
+    :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.mode)}`)"
     class="flex items-center"
   >
     <div class="mr-2 w-24 sm:w-23 md:w-40">
       <media-img
-        :path="`/modes/${props.row.dimensionsRaw.mode.battle_event_mode}/background`"
+        :path="`/modes/${props.row.dimensionsRaw.mode.mode}/background`"
         :alt="props.row.dimensions.mode"
         size="160"
         clazz="h-6 sm:h-8 md:h-10"

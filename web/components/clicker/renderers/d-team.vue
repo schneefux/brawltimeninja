@@ -4,7 +4,7 @@
     class="flex items-center"
   >
     <brawler-team
-      :brawlers="props.row.dimensionsRaw.team.brawler_names"
+      :brawlers="props.row.dimensionsRaw.team.team"
       class="flex-shrink-0 md:mr-2 w-16 sm:w-20 md:w-24"
       height="h-6 sm:h-8 md:h-10"
       width="w-6 sm:w-8 md:w-10"

@@ -70,7 +70,7 @@ export default Vue.extend({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = this.data.reduce((agg, c) => agg + (c.meta.picks as number), 0)
+      const sample = this.data.reduce((agg, c) => agg + parseInt(c.meta.picks as string), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / this.totalBrawlers))
     },
     moePercent(): string {

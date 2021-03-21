@@ -47,7 +47,7 @@
       tracking-page-id="maps"
     >
       <div class="flex flex-wrap justify-center">
-        <lazy-map-best-brawlers-card
+        <lzy-map-best-brawlers-card
           v-for="event in upcomingEvents"
           :key="event.id"
           :id="event.id"
@@ -55,7 +55,7 @@
           :map="event.map"
           :start-date="event.start"
           link
-        ></lazy-map-best-brawlers-card>
+        ></lzy-map-best-brawlers-card>
       </div>
     </page-section>
 

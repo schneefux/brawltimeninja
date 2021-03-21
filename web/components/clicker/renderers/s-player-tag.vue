@@ -15,6 +15,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { SliceValue } from '~/lib/cube'
+import { tagToId } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -30,10 +31,10 @@ export default Vue.extend({
       },
       set(v: string) {
         if (v == '') {
-          this.$parent.$emit('slice', { playerTag: [] })
+          this.$parent.$emit('slice', { playerId: [] })
         }
         if (new RegExp('^[0289PYLQGRJCUV]{3,}$').test(v)) {
-          this.$parent.$emit('slice', { playerTag: [v] })
+          this.$parent.$emit('slice', { playerId: [tagToId(v)] })
         }
       }
     },

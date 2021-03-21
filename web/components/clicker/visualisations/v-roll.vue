@@ -1,22 +1,29 @@
 <template>
-  <div
+  <horizontal-scroller
     v-if="show"
-    class="flex justify-center"
+    expand-on-desktop
   >
     <card
       v-for="entry in data"
       :key="entry.id"
       :elevation="elevation"
+      :title="long ? entry.dimensions[dimensions[0].id] : undefined"
+      class="flex-shrink-0"
       dense
     >
-      <div slot="content">
-        <div class="mx-auto">
+      <div
+        slot="content"
+        :class="{
+          'flex items-center gap-2 my-1 mx-2': long,
+        }"
+      >
+        <div class="mx-auto flex-shrink-0">
           <slot
             name="dimensions"
             :row="entry"
           ></slot>
         </div>
-        <table class="mx-auto mt-1 text-2xs md:text-xs lg:text-base text-center">
+        <table class="mx-auto my-1 text-2xs md:text-xs lg:text-base text-center">
           <tbody>
             <tr
               v-for="m in measurements"
@@ -34,7 +41,7 @@
         </table>
       </div>
     </card>
-  </div>
+  </horizontal-scroller>
 </template>
 
 <script lang="ts">
@@ -43,6 +50,7 @@ import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
 
 export default Vue.extend({
+  name: 'VRoll',
   props: {
     dimensions: {
       type: Array as PropType<Dimension[]>,
@@ -58,6 +66,9 @@ export default Vue.extend({
     },
     elevation: {
       type: Number
+    },
+    long: {
+      type: Boolean
     },
   },
   computed: {

@@ -39,7 +39,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const brawlers = await this.$clicker.queryAllBrawlers()
+    const brawlers = await this.$cube.queryAllBrawlers()
     this.brawlers = brawlers
       .sort((b1, b2) => b1.localeCompare(b2))
   },

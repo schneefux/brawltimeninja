@@ -1,19 +1,19 @@
 <template functional>
   <wrapped-component
     v-if="'player' in props.row.dimensions"
-    :wrap="'player_tag' in props.row.dimensionsRaw.player"
+    :wrap="'player' in props.row.dimensionsRaw.player"
     class="flex items-center"
   >
     <template v-slot:wrapper>
       <router-link
-        :to="parent.localePath(`/profile/${props.row.dimensionsRaw.player.player_tag}`)"
+        :to="parent.localePath(`/profile/${props.idToTag(props.row.dimensionsRaw.player.player).substring(1)}`)"
         class="flex items-center"
       ></router-link>
     </template>
 
     <media-img
-      v-if="'player_icon_id' in props.row.dimensionsRaw.player"
-      :path="`/avatars/${props.row.dimensionsRaw.player.player_icon_id}`"
+      v-if="'playerIcon' in props.row.dimensionsRaw.player"
+      :path="`/avatars/${props.row.dimensionsRaw.player.playerIcon}`"
       clazz="h-8"
       wrapper-class="flex-shrink-0"
     ></media-img>
@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { idToTag } from '~/lib/util'
 
 export default Vue.extend({
   functional: true,
@@ -35,6 +36,9 @@ export default Vue.extend({
     },
     captioned: {
       type: Boolean
+    },
+    idToTag: {
+      default: () => idToTag,
     },
   },
 })

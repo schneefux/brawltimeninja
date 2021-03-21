@@ -41,7 +41,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.modes = await this.$clicker.queryAllModes()
+    this.modes = await this.$cube.queryAllModes()
   },
   methods: {
     expandModes() {

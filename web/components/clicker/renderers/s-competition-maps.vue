@@ -29,10 +29,10 @@ export default Vue.extend({
   computed: {
     choice: {
       get(): string {
-        if (this.value.mapLike?.length == 1 && this.value.mapLike[0] == 'Competition %') {
+        if (this.value.mapLike?.length == 1 && this.value.mapLike[0] == 'Competition') {
           return 'include'
         }
-        if (this.value.mapNotLike?.length == 1 && this.value.mapNotLike[0] == 'Competition %') {
+        if (this.value.mapNotLike?.length == 1 && this.value.mapNotLike[0] == 'Competition') {
           return 'exclude'
         }
         return 'all'
@@ -40,14 +40,14 @@ export default Vue.extend({
       set(v: string) {
         if (v == 'include') {
           this.$parent.$emit('slice', {
-            mapLike: ['Competition %'],
+            mapLike: ['Competition'],
             mapNotLike: [],
           })
         }
         if (v == 'exclude') {
           this.$parent.$emit('slice', {
             mapLike: [],
-            mapNotLike: ['Competition %'],
+            mapNotLike: ['Competition'],
           })
         }
         if (v == 'all') {

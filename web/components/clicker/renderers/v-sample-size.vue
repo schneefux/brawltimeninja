@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   computed: {
     sample(): number {
-      return this.data.reduce((agg, e) => agg + (e.meta.picks as number), 0)
+      return this.data.reduce((agg, e) => agg + parseInt(e.meta.picks as string), 0)
     },
     sampleFormatted(): string {
       return formatSI(this.sample, 2)

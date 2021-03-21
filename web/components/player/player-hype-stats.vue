@@ -193,8 +193,8 @@ export default Vue.extend({
       return medBrawlerTrophies * this.totalBrawlers
     },
     trophyRate(): number {
-      if (this.battleTotals.battle_trophy_change != undefined) {
-        return this.battleTotals.battle_trophy_change || 0
+      if (this.battleTotals.trophyChange != undefined) {
+        return this.battleTotals.trophyChange || 0
       }
 
       const trophyChanges = this.player.battles
@@ -206,8 +206,8 @@ export default Vue.extend({
       return trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
     },
     winRate(): number {
-      if (this.battleTotals.battle_victory != undefined) {
-        return this.battleTotals.battle_victory
+      if (this.battleTotals.winRate != undefined) {
+        return this.battleTotals.winRate
       }
       if (this.player.battles.length == 0) {
         return 0

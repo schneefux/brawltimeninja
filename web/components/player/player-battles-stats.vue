@@ -26,8 +26,8 @@ import { Battle } from '~/model/Api'
 
 export interface BattleTotalRow {
   picks: number
-  battle_victory: number
-  battle_trophy_change: number
+  winRate: number
+  trophyChange: number
 }
 
 export default Vue.extend({
@@ -46,7 +46,7 @@ export default Vue.extend({
       return this.battleTotals.picks || this.battles.length
     },
     winRate(): number {
-      return this.battleTotals.battle_victory ||
+      return this.battleTotals.winRate ||
         (this.battles.length == 0 ? 0 : this.battles.filter((battle) => battle.victory).length / this.battles.length)
     },
   },

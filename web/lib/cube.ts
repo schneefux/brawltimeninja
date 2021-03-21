@@ -9,6 +9,19 @@ export type ValueType = 'quantitative'|'temporal'|'ordinal'|'nominal'
 export type MeasureType = 'number'|'count'|'countDistinct'|'countDistinctApprox'|'sum'|'avg'|'min'|'max'|'runningTotal'
 export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
+export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
+
+/* c&p from util */
+export function getSeasonEnd(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
+  return trophySeasonEnd
+}
+
+const monthAgo = new Date()
+monthAgo.setMonth(monthAgo.getMonth() - 1)
 
 export interface State {
   cubeId: string
@@ -29,44 +42,88 @@ export interface Cube {
   defaultDimensionsIds: string[]
   measurements: Measurement[]
   defaultMeasurementIds: string[]
-  metaColumns: string[]
   slices: Slice[]
   defaultSliceValues: SliceValue
+  /**
+   * deprecate
+   */
+  metaColumns: string[]
 }
 
+/**
+ * Measure which will be transformed into a cube.js measure
+ * with id `${id}_measure`.
+ */
 export interface Measurement {
   id: string
   name: string
-  nameShort: string
-  icon: string
   description: string
   formatter: string
   d3formatter: string
   sign: number
   percentage: boolean
-  column: string // deprecate
   type: ValueType
-  scale?: any // https://vega.github.io/vega-lite/docs/scale.html
-  config: { // cube.js config
+  /**
+   * Vega.js scale configuration
+   * @see https://vega.github.io/vega-lite/docs/scale.html
+   */
+  scale?: any
+  /**
+   * cube.js configuration.
+   */
+  config: {
     sql: string
     type: MeasureType
   }
+  /**
+   * old attributes, deprecate
+   */
+  nameShort: string
+  icon: string
+  column: string
 }
 
+/**
+ * Dimension which will be transformed into a cube.js dimension
+ * with id `${id}_dimension`.
+ */
 export interface Dimension {
   id: string
   name: string
-  formatColumn: string
-  formatter: string
-  column: string
-  anyColumns: string[]
+  /**
+   * Column which contains a human-readable identifier.
+   * May be the dimension or one of additionalMeasures.
+   */
+  naturalIdAttribute: string
+  /**
+   * Specification to use for formatting the natural ID.
+   */
+  formatter: FormatType
+  /**
+   * Measures to always request when requesting dimension.
+   * Used for attributes of SCDs.
+   */
+  additionalMeasures: string[]
   hidden: boolean
   type: ValueType
-  scale?: any // https://vega.github.io/vega-lite/docs/scale.html
-  config: { // cube.js config
+  /**
+   * Vega.js scale configuration
+   * @see https://vega.github.io/vega-lite/docs/scale.html
+   */
+  scale?: any
+  /**
+   * cube.js configuration.
+   */
+  config: {
     sql: string
     type: DimensionType
   }
+  /**
+   * Deprecated clicker configuration
+   */
+  formatColumn: string
+  column: string
+  anyColumns: string[]
 }
 
 export interface Slice {
@@ -88,9 +145,11 @@ const metaDimensions = asDimensions({
     id: 'season',
     name: 'Bi-Week',
     formatColumn: 'trophy_season_end',
-    formatter: '',
+    naturalIdAttribute: 'season',
+    formatter: 'yyyy-MM-dd',
     column: 'trophy_season_end',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'temporal',
     scale: {
@@ -104,17 +163,19 @@ const metaDimensions = asDimensions({
   day: {
     id: 'day',
     name: 'Day',
-    formatColumn: 'timestamp_day',
+    formatColumn: '',
+    naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
-    column: 'timestamp_day',
+    column: '',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'temporal',
     scale: {
       nice: 'day',
     },
     config: {
-      sql: 'timestamp_day',
+      sql: 'toStartOfDay(timestamp)',
       type: 'time',
     },
   },
@@ -122,9 +183,11 @@ const metaDimensions = asDimensions({
     id: 'timestamp',
     name: 'Timestamp',
     formatColumn: 'timestamp',
+    naturalIdAttribute: 'timestamp',
     formatter: 'yyyy-MM-ddTHH:mm',
     column: 'timestamp',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'temporal',
     scale: {
@@ -142,9 +205,11 @@ const playerDimensions = asDimensions({
     id: 'player',
     name: 'Player',
     formatColumn: 'player_name',
+    naturalIdAttribute: 'playerName',
     formatter: '',
     column: 'player_id',
-    anyColumns: ['player_name', /* 'player_tag', FIXME */ 'player_icon_id'],
+    anyColumns: ['player_name', 'player_icon_id'],
+    additionalMeasures: ['playerName', 'playerIcon'],
     hidden: false,
     type: 'nominal',
     config: {
@@ -159,9 +224,11 @@ const brawlerDimensions = asDimensions({
     id: 'brawler',
     name: 'Brawler',
     formatColumn: 'brawler_name',
+    naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     column: 'brawler_name',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'nominal',
     config: {
@@ -173,9 +240,11 @@ const brawlerDimensions = asDimensions({
     id: 'brawlerId',
     name: 'Brawler ID',
     formatColumn: 'brawler_id',
+    naturalIdAttribute: 'brawlerId',
     formatter: '',
     column: 'brawler_id',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -187,9 +256,11 @@ const brawlerDimensions = asDimensions({
     id: 'ally',
     name: 'Ally',
     formatColumn: 'ally_brawler_name',
+    naturalIdAttribute: 'ally',
     formatter: 'capitalizeWords',
     column: 'ally_brawler_name',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'nominal',
     config: {
@@ -201,9 +272,11 @@ const brawlerDimensions = asDimensions({
     id: 'allyId',
     name: 'Ally ID',
     formatColumn: 'ally_brawler_id',
+    naturalIdAttribute: 'allyId',
     formatter: '',
     column: 'ally_brawler_id',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -215,9 +288,11 @@ const brawlerDimensions = asDimensions({
     id: 'gadget',
     name: 'Gadget',
     formatColumn: 'brawler_gadget_name',
+    naturalIdAttribute: 'gadgetName',
     formatter: 'capitalizeWords',
     column: 'brawler_gadget_id',
     anyColumns: ['brawler_gadget_name', 'brawler_name'],
+    additionalMeasures: ['gadgetName', 'brawler'],
     hidden: false,
     type: 'nominal',
     config: {
@@ -228,10 +303,12 @@ const brawlerDimensions = asDimensions({
   starpower: {
     id: 'starpower',
     name: 'Star Power',
-    formatColumn: 'brawler_starpower_name',
+    formatColumn: '',
+    naturalIdAttribute: 'starpowerName',
     formatter: 'capitalizeWords',
     column: 'brawler_starpower_id',
-    anyColumns: ['brawler_starpower_name', 'brawler_name'],
+    anyColumns: ['', ''],
+    additionalMeasures: ['starpowerName', 'brawler'],
     hidden: false,
     type: 'nominal',
     config: {
@@ -243,9 +320,11 @@ const brawlerDimensions = asDimensions({
     id: 'bigbrawler',
     name: 'Big Brawler',
     formatColumn: 'battle_is_bigbrawler',
+    naturalIdAttribute: 'bigbrawler',
     formatter: 'y/n',
     column: 'brawler_is_bigbrawler',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -260,9 +339,11 @@ const battleDimensions = asDimensions({
     id: 'mode',
     name: 'Mode',
     formatColumn: 'battle_event_mode',
+    naturalIdAttribute: 'mode',
     formatter: 'formatMode',
     column: 'battle_event_mode',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'nominal',
     config: {
@@ -274,9 +355,11 @@ const battleDimensions = asDimensions({
     id: 'map',
     name: 'Map',
     formatColumn: 'battle_event_map',
+    naturalIdAttribute: 'map',
     formatter: '',
     column: 'battle_event_map',
     anyColumns: ['battle_event_mode', 'battle_event_id'],
+    additionalMeasures: ['mode', 'eventId'],
     hidden: false,
     type: 'nominal',
     config: {
@@ -287,28 +370,32 @@ const battleDimensions = asDimensions({
   team: {
     id: 'team',
     name: 'Team',
-    formatColumn: 'brawler_names',
+    formatColumn: '',
+    naturalIdAttribute: 'team',
     formatter: 'capitalizeWords',
-    column: 'brawler_names',
+    column: '',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'nominal',
     config: {
-      sql: 'brawler_names',
+      sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
       type: 'string',
     },
   },
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
-    formatColumn: 'battle_power_play',
+    formatColumn: 'battle_event_powerplay',
+    naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
-    column: 'battle_power_play',
+    column: 'battle_event_powerplay',
     anyColumns: [],
+    additionalMeasures: [],
     hidden: false,
     type: 'nominal',
     config: {
-      sql: 'battle_power_play',
+      sql: 'battle_event_powerplay',
       type: 'boolean',
     },
   },
@@ -720,7 +807,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Updated',
     icon: '⌚',
     description: '',
-    formatter: '',
+    formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -738,7 +825,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Day',
     icon: '⌚',
     description: '',
-    formatter: '',
+    formatter: 'yyyy-MM-dd',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -1088,10 +1175,112 @@ const battleMeasurements = asMeasurements({
       type: 'avg',
     },
   },
+  starpowerName: {
+    id: 'starpowerName',
+    name: 'Star Power',
+    nameShort: 'Star Power',
+    icon: '',
+    description: '',
+    formatter: '',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: '',
+    type: 'nominal',
+    config: {
+      sql: 'any(brawler_starpower_name)',
+      type: 'number',
+    },
+  },
+  gadgetName: {
+    id: 'gadgetName',
+    name: 'Gadget',
+    nameShort: 'Gadget',
+    icon: '',
+    description: '',
+    formatter: '',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: '',
+    type: 'nominal',
+    config: {
+      sql: 'any(brawler_gadget_name)',
+      type: 'number',
+    },
+  },
+  eventId: {
+    id: 'eventId',
+    name: 'Event ID',
+    nameShort: 'Event ID',
+    icon: '',
+    description: '',
+    formatter: '',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: '',
+    type: 'nominal',
+    config: {
+      sql: 'any(battle_event_id)',
+      type: 'number',
+    },
+  },
+  map: {
+    id: 'map',
+    name: 'Map',
+    nameShort: 'Map',
+    icon: '',
+    description: '',
+    formatter: '',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: '',
+    type: 'nominal',
+    config: {
+      sql: 'any(battle_event_map)',
+      type: 'number',
+    },
+  },
+  mode: {
+    id: 'mode',
+    name: 'Mode',
+    nameShort: 'Mode',
+    icon: '',
+    description: '',
+    formatter: '',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: '',
+    type: 'nominal',
+    config: {
+      sql: 'any(battle_event_mode)',
+      type: 'number',
+    },
+  },
 })
 
 // same as battleMeasurements, but using clickhouse merge for mv
 const mergedbattleMeasurements = asMeasurements({
+  timestamp: {
+    id: 'timestamp',
+    name: 'Last Update',
+    nameShort: 'Updated',
+    icon: '⌚',
+    description: '',
+    formatter: 'yyyy-MM-ddTHH:mm',
+    d3formatter: '',
+    sign: -1,
+    percentage: false,
+    column: 'timestamp',
+    type: 'temporal',
+    config: {
+      sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
+      type: 'number',
+    },
+  },
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
@@ -1344,15 +1533,6 @@ const playerSlices = asSlice({
       operator: 'equals',
     },
   },
-  playerTag: {
-    id: 'playerTag',
-    name: 'Player Tag',
-    column: 'player_tag',
-    config: {
-      member: 'player_dimension', // TODO
-      operator: 'equals',
-    },
-  },
 })
 
 const brawlerSlices = asSlice({
@@ -1401,22 +1581,40 @@ const brawlerSlices = asSlice({
       operator: 'equals', // TODO use $and for range
     },
   },
-  withStarpower: {
-    id: 'withStarpower',
-    name: 'Star Power detected',
-    column: 'with_starpower',
+  starpowerIdEq: {
+    id: 'starpowerIdEq',
+    name: 'Star Power ID equals',
+    column: '',
     config: {
-      member: 'trophyrange_dimension', // TODO
+      member: 'starpower_dimension',
       operator: 'equals',
     },
   },
-  withGadget: {
-    id: 'withGadget',
-    name: 'Gadget detected',
-    column: 'with_gadget',
+  starpowerIdNeq: {
+    id: 'starpowerIdNeq',
+    name: 'Star Power ID not equals',
+    column: '',
     config: {
-      member: 'trophyrange_dimension', // TODO
+      member: 'starpower_dimension',
+      operator: 'notEquals',
+    },
+  },
+  gadgetIdEq: {
+    id: 'gadgetIdEq',
+    name: 'Gadget ID equals',
+    column: '',
+    config: {
+      member: 'gadget_dimension',
       operator: 'equals',
+    },
+  },
+  gadgetIdNeq: {
+    id: 'gadgetIdNeq',
+    name: 'Gadget ID not equals',
+    column: '',
+    config: {
+      member: 'gadget_dimension',
+      operator: 'notEquals',
     },
   },
 })
@@ -1488,8 +1686,11 @@ const commonSlices = asSlice({
 const brawlerBattleMeasurements = [
   /*
   mergedbattleMeasurements.trophySeasonEnd,
-  mergedbattleMeasurements.timestamp,
   */
+  commonMeasurements.mode,
+  commonMeasurements.map,
+  commonMeasurements.eventId,
+  mergedbattleMeasurements.timestamp,
   mergedbattleMeasurements.trophyChange,
   mergedbattleMeasurements.winRate,
   mergedbattleMeasurements.winRateAdj,
@@ -1518,7 +1719,7 @@ const brawlerBattleSlices = [
 ]
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
-  season: ['month'],
+  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophies: [],
   brawler: [],
 }
@@ -1569,7 +1770,7 @@ const playerBrawlerMeasurements = [
 ]
 
 const playerBrawlerSlices = [
-  commonSlices.playerTag,
+  commonSlices.playerId,
   commonSlices.playerName,
   commonSlices.season,
   commonSlices.trophies,
@@ -1578,9 +1779,9 @@ const playerBrawlerSlices = [
 ]
 
 const playerBrawlerDefaultSliceValues = {
-  playerTag: [],
+  playerId: [],
   playerName: [],
-  season: ['current'],
+  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophies: [],
   brawlerId: [],
   brawlerName: [],
@@ -1634,16 +1835,18 @@ const cubes: Record<string, Cube> = {
     defaultDimensionsIds: ['brawler', 'starpower'],
     measurements: [
       ...brawlerBattleMeasurements,
+      commonMeasurements.starpowerName,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
-      commonSlices.withStarpower,
+      commonSlices.starpowerIdEq,
+      commonSlices.starpowerIdNeq,
     ],
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
-      withStarpower: ['true'],
+      starpowerIdNeq: ['0'],
     },
   },
   gadget: {
@@ -1659,16 +1862,18 @@ const cubes: Record<string, Cube> = {
     defaultDimensionsIds: ['brawler', 'gadget'],
     measurements: [
       ...brawlerBattleMeasurements,
+      commonMeasurements.gadgetName,
     ],
     defaultMeasurementIds: ['winRateAdj'],
     metaColumns: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
-      commonSlices.withGadget,
+      commonSlices.gadgetIdEq,
+      commonSlices.gadgetIdNeq,
     ],
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
-      withGadget: ['true'],
+      gadgetIdNeq: ['0'],
     },
   },
   synergy: {
@@ -1711,6 +1916,8 @@ const cubes: Record<string, Cube> = {
     name: 'Teams',
     hidden: false,
     dimensions: [
+      commonDimensions.mode,
+      commonDimensions.map,
       commonDimensions.team,
     ],
     defaultDimensionsIds: ['team'],
@@ -1818,6 +2025,7 @@ const cubes: Record<string, Cube> = {
       commonDimensions.mode,
       commonDimensions.map,
       commonDimensions.powerplay,
+      commonDimensions.team,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [

@@ -1,16 +1,16 @@
 <template>
   <div
-    v-if="'withStarpower' in value"
+    v-if="'starpowerIdNeq' in value"
     class="mr-2 my-1"
   >
     <b-select
-      :value="(value.withStarpower || [])[0]"
+      :value="(value.starpowerIdNeq || [])[0] == '0' ? '1' : '0'"
       dark
       sm
-      @input="v => $parent.$emit('slice', { withStarpower: [v] })"
+      @input="v => $parent.$emit('slice', { starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"
     >
-      <option value="false">0 Star Powers owned</option>
-      <option value="true">1 Star Power owned</option>
+      <option value="0">0 Star Powers owned</option>
+      <option value="1">1 Star Power owned</option>
     </b-select>
   </div>
 </template>

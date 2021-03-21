@@ -165,7 +165,6 @@ export default {
   },
 
   build: {
-    extractCSS: true, // ~1 CSS per component
     postcss: {
       plugins: {
         'postcss-color-function': {},
@@ -253,7 +252,7 @@ export default {
 
   tailwindcss: {
     viewer: false,
-    jit: false,
+    jit: true,
   },
 
   googleFonts: {

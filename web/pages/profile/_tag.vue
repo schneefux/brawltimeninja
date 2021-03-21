@@ -238,6 +238,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState, mapActions } from 'vuex'
 import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
+import { tagToId } from '~/lib/util'
 
 export default Vue.extend({
   head(): MetaInfo {
@@ -315,18 +316,20 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const battleData = await this.$clicker.query('player.winrates.total',
-      'battle',
-      [],
-      ['picks', 'battle_victory', 'battle_trophy_change'],
-      {
-        ...this.$clicker.defaultSlicesRaw('battle'),
-        player_tag: [this.player.tag],
+    const battleData = await this.$cube.query({
+      cubeId: 'battle',
+      dimensionsIds: [],
+      measurementsIds: ['picks', 'winRate', 'trophyChange'],
+      slices: {
+        playerId: [tagToId(this.player.tag)],
       },
-      { sort: { picks: 'desc' }, cache: 60 })
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    if (battleData.data[0].picks != undefined) {
-      this.battleTotals = battleData.data[0]
+    if (battleData.data[0]?.measurementsRaw.picks != undefined) {
+      this.battleTotals = battleData.data[0].measurementsRaw as any as BattleTotalRow
     }
   },
   methods: {
