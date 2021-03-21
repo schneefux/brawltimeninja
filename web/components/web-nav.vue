@@ -33,7 +33,7 @@
           <nuxt-link
             v-for="link in links"
             :key="link.target"
-            :to="localePath(link.target)"
+            :to="link.target"
             class="inline-block underline lg:border-0 text-lg font-medium hover:text-red-800"
             exact-active-class="text-red-800"
           >
