@@ -204,33 +204,16 @@ export default class ClickerService {
         : 'rank' in battle.battle ? 1 - (battle.battle.rank! - 1) / (teams.length - 1)
         : null
 
+      // 2020-03-18 power play is now power league
+      const isPowerplay = battle.battle.type == 'soloRanked' || battle.battle.type == 'teamRanked'
+
       // type=tournament battles have no trophies, fall back to current brawler trophies
       const myBrawlerTrophies = me.brawler.trophies || myBrawler.trophies
-      const trophyRange = Math.floor(myBrawlerTrophies / 100) || 0
+      // power league has trophies = league level (0-19)
+      const trophyRange = isPowerplay ? myBrawlerTrophies : Math.floor(myBrawlerTrophies / 100) || 0
 
       const allies = myTeam.filter(p => p.tag !== player.tag)
       const enemies = (<BattlePlayer[]>[]).concat(...teams.filter(t => t !== myTeam))
-
-      const isPowerplay = floatingVictory != null && battle.battle.trophyChange != null
-        // all brawlers use a star power
-        && allies.every(a => a.brawler.power == 10) && enemies.every(a => a.brawler.power == 10)
-        // victory
-        //   - regular battles give +11 max (+10 +3 underdog) on victory
-        //   - power play at least 18
-        // draw
-        //   - regular battles +3 max (0 +3 underdog)
-        //   - power play 18 or 15
-        // defeat
-        //   - regular battles max +3 (0 +3 underdog) in Showdown <50 trophies
-        //   - power play at least 2
-        //   - this is not 100% accurate but a collision is unlikely
-        // https://brawlstars.fandom.com/wiki/Power_Play
-        // https://brawlstars.fandom.com/wiki/Trophies
-        && (floatingVictory > 0.5 && battle.battle.trophyChange >= 15
-          || floatingVictory == 0.5 && battle.battle.trophyChange >= 5
-          || floatingVictory < 0.5 && battle.battle.trophyChange >= 2)
-      // retroactively applied on 2020-09-20T11:45 with
-      // alter table battle update battle_event_powerplay=1 where player_highest_power_play_points>0 and brawler_power=10 and (battle_victory>toDecimal32(0.5, 8) and battle_trophy_change>=15 or battle_victory=toDecimal32(0.5, 8) and battle_trophy_change>=5 or battle_victory<toDecimal32(0.5, 8) and battle_trophy_change>=2)
 
       const record = {
         timestamp: battle.battleTime,
