@@ -6,7 +6,7 @@
     <div class="flex flex-wrap justify-center">
       <best-starpowers-table
         full-height
-        md
+        lg
       ></best-starpowers-table>
     </div>
   </page>

@@ -20,10 +20,12 @@
           once: true,
         }"
         kind="starpowers"
+        xs
       ></map-best-starpowers-roll>
 
       <map-best-starpowers-roll
         kind="gadgets"
+        xs
       ></map-best-starpowers-roll>
     </div>
 

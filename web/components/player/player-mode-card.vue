@@ -83,7 +83,7 @@ import Vue, { PropType } from 'vue'
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, MetaGridEntry, slugify, tagToId } from '@/lib/util'
 import { commonMeasurements } from '~/lib/cube'
-import { EventMetadata } from '~/plugins/clicker'
+import { EventMetadata } from '~/plugins/cube'
 
 interface Stats {
   winRate: number

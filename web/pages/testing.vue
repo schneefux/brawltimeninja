@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <s-mode-map :value="{ mode: [], map: [] }"></s-mode-map>
+    <active-events></active-events>
   </client-only>
 </template>
 
@@ -17,15 +17,14 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    return
 
     const cubejsApi = cubejs('', {
       apiUrl: this.$config.cubeUrl + '/cubejs-api/v1',
-      headers: {
-        'Cache-Control': 'public, max-age=60',
-      },
+      headers: { },
     })
 
+    console.log(await cubejsApi.meta())
+    return
     console.log(await cubejsApi.sql({
       measures: ['map.winRateAdj_measure', 'map.useRate_measure'],
       dimensions: ['map.brawler_dimension'],

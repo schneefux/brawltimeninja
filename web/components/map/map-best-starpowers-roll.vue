@@ -1,7 +1,7 @@
 <template>
   <card
     :title="$tc('best.' + kind, 1)"
-    xxs
+    :elevation="elevation"
   >
     <b-button
       slot="actions"
@@ -38,7 +38,12 @@
         loading
       ></shimmer>
       <template v-slot="data">
-        <v-roll v-bind="{ ...data, ...$attrs }">
+        <v-roll
+          v-bind="{
+            ...data,
+            ...$attrs,
+            elevation: elevation + 1,
+          }">
           <template v-slot:dimensions="data">
             <d-brawler v-bind="data"></d-brawler>
           </template>
@@ -74,6 +79,10 @@ export default Vue.extend({
     limit: {
       type: Number,
       default: 3
+    },
+    elevation: {
+      type: Number,
+      default: 1
     },
   },
   computed: {

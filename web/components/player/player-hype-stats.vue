@@ -269,10 +269,8 @@ export default Vue.extend({
 </script>
 
 <style lang="postcss" scoped>
-@responsive {
-  .children-flex-auto > * {
-    @apply flex-auto;
-  }
+.children-flex-auto > * {
+  @apply flex-auto;
 }
 
 .children-flex-shrink-0 > * {

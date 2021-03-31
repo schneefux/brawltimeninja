@@ -6,7 +6,7 @@
     <div class="flex flex-wrap justify-center">
       <best-gadgets-table
         full-height
-        md
+        lg
       ></best-gadgets-table>
     </div>
   </page>

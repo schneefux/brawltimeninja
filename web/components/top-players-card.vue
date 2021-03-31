@@ -84,7 +84,6 @@ export default Vue.extend({
     metric: '$fetch',
     limit: '$fetch',
   },
-  fetchOnServer: false, // FIXME weird hydration bug - https://github.com/nuxt/nuxt.js/issues/8830
   async fetch() {
     const leaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/' + this.metric)
     this.data = leaderboard.entries
