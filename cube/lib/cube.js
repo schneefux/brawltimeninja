@@ -16,18 +16,29 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     return to;
 };
 exports.__esModule = true;
-exports.commonMeasurements = exports.brawlerMeasurements = exports.playerMeasurements = void 0;
+exports.commonMeasurements = exports.brawlerMeasurements = exports.playerMeasurements = exports.getSeasonEnd = void 0;
 // helper function which infers keys and restricts values to ElementType
 var asDimensions = function (et) { return et; };
 var asMeasurements = function (et) { return et; };
 var asSlice = function (et) { return et; };
+/* c&p from util */
+function getSeasonEnd(timestamp) {
+    var trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'));
+    var diff = timestamp.getTime() - trophySeasonEnd.getTime();
+    var seasonsSince = Math.ceil(diff / 1000 / 60 / 60 / 24 / 7 / 2);
+    trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince * 7 * 2);
+    return trophySeasonEnd;
+}
+exports.getSeasonEnd = getSeasonEnd;
+var monthAgo = new Date();
+monthAgo.setMonth(monthAgo.getMonth() - 1);
 var metaDimensions = asDimensions({
     season: {
         id: 'season',
         name: 'Bi-Week',
         formatColumn: 'trophy_season_end',
         naturalIdAttribute: 'season',
-        formatter: '',
+        formatter: 'yyyy-MM-dd',
         column: 'trophy_season_end',
         anyColumns: [],
         additionalMeasures: [],
@@ -675,7 +686,7 @@ var metaMeasurements = asMeasurements({
         nameShort: 'Updated',
         icon: '⌚',
         description: '',
-        formatter: '',
+        formatter: 'yyyy-MM-ddTHH:mm',
         d3formatter: '',
         sign: -1,
         percentage: false,
@@ -693,7 +704,7 @@ var metaMeasurements = asMeasurements({
         nameShort: 'Day',
         icon: '⌚',
         description: '',
-        formatter: '',
+        formatter: 'yyyy-MM-dd',
         d3formatter: '',
         sign: -1,
         percentage: false,
@@ -1136,7 +1147,7 @@ var mergedbattleMeasurements = asMeasurements({
         nameShort: 'Updated',
         icon: '⌚',
         description: '',
-        formatter: '',
+        formatter: 'yyyy-MM-ddTHH:mm',
         d3formatter: '',
         sign: -1,
         percentage: false,
@@ -1565,7 +1576,7 @@ var brawlerBattleSlices = [
     commonSlices.brawler,
 ];
 var brawlerBattleDefaultSliceValues = {
-    season: ['month'],
+    season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
     trophies: [],
     brawler: []
 };
@@ -1622,7 +1633,7 @@ var playerBrawlerSlices = [
 var playerBrawlerDefaultSliceValues = {
     playerId: [],
     playerName: [],
-    season: ['current'],
+    season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
     trophies: [],
     brawlerId: [],
     brawlerName: []

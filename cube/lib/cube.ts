@@ -11,6 +11,18 @@ export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
 
+/* c&p from util */
+export function getSeasonEnd(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
+  return trophySeasonEnd
+}
+
+const monthAgo = new Date()
+monthAgo.setMonth(monthAgo.getMonth() - 1)
+
 export interface State {
   cubeId: string
   slices: SliceValue
@@ -134,7 +146,7 @@ const metaDimensions = asDimensions({
     name: 'Bi-Week',
     formatColumn: 'trophy_season_end',
     naturalIdAttribute: 'season',
-    formatter: '',
+    formatter: 'yyyy-MM-dd',
     column: 'trophy_season_end',
     anyColumns: [],
     additionalMeasures: [],
@@ -795,7 +807,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Updated',
     icon: '⌚',
     description: '',
-    formatter: '',
+    formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -813,7 +825,7 @@ const metaMeasurements = asMeasurements({
     nameShort: 'Day',
     icon: '⌚',
     description: '',
-    formatter: '',
+    formatter: 'yyyy-MM-dd',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -1258,7 +1270,7 @@ const mergedbattleMeasurements = asMeasurements({
     nameShort: 'Updated',
     icon: '⌚',
     description: '',
-    formatter: '',
+    formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
     sign: -1,
     percentage: false,
@@ -1707,7 +1719,7 @@ const brawlerBattleSlices = [
 ]
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
-  season: ['month'],
+  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophies: [],
   brawler: [],
 }
@@ -1769,7 +1781,7 @@ const playerBrawlerSlices = [
 const playerBrawlerDefaultSliceValues = {
   playerId: [],
   playerName: [],
-  season: ['current'],
+  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophies: [],
   brawlerId: [],
   brawlerName: [],
