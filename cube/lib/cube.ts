@@ -1414,8 +1414,8 @@ const mergedbattleMeasurements = asMeasurements({
       zero: false,
     },
     config: {
-      sql: 'avgMerge(battle_starplayer_state_state)',
-      type: 'sum',
+      sql: 'avgMerge(battle_starplayer_state)',
+      type: 'number',
     },
   },
   rank: {
