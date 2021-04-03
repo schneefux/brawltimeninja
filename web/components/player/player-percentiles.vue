@@ -22,7 +22,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Player } from '~/model/Api'
-import * as ztable from 'ztable'
+import ztable from 'ztable'
 
 interface Achievement {
   metric: string

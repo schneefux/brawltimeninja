@@ -216,6 +216,10 @@ const plugin: Plugin = (context, inject) => {
           battle_event_powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
           picks: e.measurementsRaw.picks as number,
           timestamp: e.measurementsRaw.timestamp as string,
+          ...(measures.reduce((agg, m) => ({
+            ...agg,
+            [m]: e.measurementsRaw[m],
+          }), {})),
         }))
         .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
         .sort((e1, e2) => e2.picks - e1.picks)

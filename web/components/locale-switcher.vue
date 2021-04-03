@@ -24,10 +24,10 @@ export default Vue.extend({
         'en': '🇬🇧',
         'de': '🇩🇪',
       }
-      return this.$i18n.locales!.map((l: any) => ({
+      return this.$i18n.locales?.map((l: any) => ({
         code: l.code,
         emoji: emoji[l.code],
-      }))
+      })) || []
     },
   },
   methods: {

@@ -22,7 +22,7 @@
           clazz="w-16 mr-2"
         ></media-img>
         <kv-table
-          v-if="data.picks > 0"
+          v-if="table.length > 0"
           class="w-48 px-3 py-2"
           :data="table"
         ></kv-table>
@@ -53,18 +53,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { commonMeasurements } from '~/lib/cube'
-import { brawlerId, camelToKebab, slugify } from '@/lib/util'
-
-interface Row {
-  wins: number
-  picks: number
-  picks_weighted: number
-  battle_victory: number
-}
-
-interface TotalsRow {
-  picks_weighted: number
-}
+import { brawlerId, camelToKebab, MetaGridEntry, slugify } from '@/lib/util'
 
 export default Vue.extend({
   props: {
@@ -91,8 +80,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      data: {} as Row,
-      totals: {} as TotalsRow,
+      data: undefined as undefined|MetaGridEntry,
+      totals: undefined as undefined|MetaGridEntry,
     }
   },
   watch: {
@@ -103,33 +92,42 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    const data = await this.$clicker.query('meta.map.brawler-event', 'map',
-      [],
-      ['battle_victory', 'picks', 'picks_weighted', 'wins'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        battle_event_map: [this.map],
-        battle_event_mode: [this.mode],
-        brawler_name: [this.brawlerName.toUpperCase()],
+    const data = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        map: [this.map],
+        mode: [this.mode],
+        brawler: [this.brawlerName.toUpperCase()],
       },
-      { cache: 60*10 })
+      dimensionsIds: [],
+      measurementsIds: ['winRate', 'picks', 'useRate', 'wins'],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const totals = await this.$clicker.query('meta.map.brawler-event', 'map',
-      [],
-      ['picks_weighted'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        battle_event_map: [this.map],
-        battle_event_mode: [this.mode],
+    const totals = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        map: [this.map],
+        mode: [this.mode],
       },
-      { cache: 60*10 })
+      dimensionsIds: [],
+      measurementsIds: ['useRate'],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
     this.data = data.data[0]
     this.totals = totals.data[0]
   },
   computed: {
     useRate(): number {
-      return this.data.picks_weighted / this.totals.picks_weighted
+      if (this.data == undefined || this.totals == undefined) {
+        return 0
+      }
+      return (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)
     },
     timeTillEnd(): string {
       if (this.end == undefined) {
@@ -138,10 +136,13 @@ export default Vue.extend({
       return formatDistanceToNow(parseISO(this.end))
     },
     table(): string[][] {
+      if (this.data == undefined) {
+        return []
+      }
       return [
-        [ this.$tc('metric.picks'), this.$clicker.format(commonMeasurements.picks, this.data.picks) ],
+        [ this.$tc('metric.picks'), this.data.measurements.picks ],
         [ this.$tc('metric.useRate'), this.$clicker.format(commonMeasurements.useRate, this.useRate) ],
-        [ this.$tc('metric.winRate'), this.$clicker.format(commonMeasurements.winRate, this.data.battle_victory) ],
+        [ this.$tc('metric.winRate'), this.data.measurements.winRate ],
       ]
     },
     brawlerId(): string {

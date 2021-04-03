@@ -45,7 +45,7 @@ export default Vue.extend({
       required: true
     },
     id: {
-      type: Number,
+      type: String,
       required: true
     },
     winRate: {

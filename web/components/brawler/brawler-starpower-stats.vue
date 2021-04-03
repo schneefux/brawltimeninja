@@ -5,11 +5,11 @@
       :key="entry.id"
       :id="entry.id"
       :kind="kind"
-      :name="getStrings(entry).name"
+      :name="getStrings(entry).name || entry.dimensions.gadget || entry.dimensions.starpower"
       :brawler-name="brawlerName"
       :description="getStrings(entry).description"
-      :winRate="entry.battle_victory"
-      :without-winRate="totals.battle_victory"
+      :winRate="entry.measurementsRaw.winRate"
+      :without-winRate="totals == undefined ? 0 : totals.measurementsRaw.winRate"
     ></brawler-starpower-card>
   </div>
 </template>
@@ -17,16 +17,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BrawlerData } from '@/model/Media'
-
-interface Row {
-  brawler_starpower_id?: number
-  brawler_starpower_name?: string
-  brawler_gadget_id?: number
-  brawler_gadget_name?: string
-  battle_victory: number
-
-  id?: number
-}
+import { MetaGridEntry } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -45,48 +36,53 @@ export default Vue.extend({
   },
   data() {
     return {
-      data: [] as Row[],
-      totals: null as Row|null,
-      descriptions: null as Record<string, { name: string, description: string}>|null,
+      data: [] as MetaGridEntry[],
+      totals: undefined as undefined|MetaGridEntry,
+      descriptions: undefined as Record<string, { name: string, description: string}>|undefined,
     }
   },
   fetchDelay: 0,
   async fetch() {
-    const dimensions = this.kind == 'starpowers' ? ['brawler_starpower_id', 'brawler_starpower_name'] : ['brawler_gadget_id', 'brawler_gadget_name']
-    const cube = this.kind == 'starpowers' ? 'starpower' : 'gadget'
+    const singular = this.kind == 'starpowers' ? 'starpower' : 'gadget'
 
     // TODO queries could be combined
-    const dataWith = await this.$clicker.query('meta.starpower.brawler-widget', cube,
-      dimensions,
-      ['battle_victory'],
-      {
-        ...this.$clicker.defaultSlicesRaw('starpower'),
-        brawler_name: [this.brawlerName.toUpperCase()], // TODO use the ID
-        [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['true'],
+    const dataWith = await this.$cube.query({
+      cubeId: singular,
+      slices: {
+        brawler: [this.brawlerName.toUpperCase()],
+        [this.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
       },
-      { sort: { timestamp: 'desc' }, cache: 60*60 })
+      dimensionsIds: [singular],
+      measurementsIds: ['winRate'],
+      sortId: 'timestamp',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const dataWithout = await this.$clicker.query('meta.starpower.brawler-widget', cube,
-      dimensions,
-      ['battle_victory'],
-      {
-        ...this.$clicker.defaultSlicesRaw('starpower'),
-        brawler_name: [this.brawlerName.toUpperCase()], // TODO use the ID
-        [this.kind == 'starpowers' ? 'with_starpower' : 'with_gadget']: ['false'],
+    const dataWithout = await this.$cube.query({
+      cubeId: singular,
+      slices: {
+        brawler: [this.brawlerName.toUpperCase()],
+        [this.kind == 'starpowers' ? 'starpowerIdEq' : 'gadgetIdEq']: ['0'],
       },
-      { sort: { timestamp: 'desc' }, cache: 60*60 })
+      dimensionsIds: [singular],
+      measurementsIds: ['winRate'],
+      sortId: 'timestamp',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    this.data = (dataWith.data as unknown as Row[]).map(r => ({
+    this.data = dataWith.data.map(r => ({
       ...r,
-      id: this.kind == 'gadgets' ? r.brawler_gadget_id : r.brawler_starpower_id,
+      id: this.kind == 'gadgets' ? r.dimensionsRaw.gadget.gadget : r.dimensionsRaw.starpower.starpower,
     }))
       // in case of duplicate IDs, use the first (most recent)
       .filter((el, index, all) => all.findIndex(e => e.id == el.id) == index)
 
     this.totals = dataWithout.data[0]
 
-    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null) as BrawlerData|null
-    if (info != null) {
+    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => undefined) as BrawlerData|undefined
+    if (info != undefined) {
       if (this.kind == 'starpowers') {
         this.descriptions = info.starpowerDescriptions
       } else {
@@ -95,13 +91,13 @@ export default Vue.extend({
     }
   },
   computed: {
-    getId(): (entry: Row) => number|undefined {
-      return (entry: Row) => this.kind == 'gadgets' ? entry.brawler_gadget_id : entry.brawler_starpower_id
+    getId(): (entry: MetaGridEntry) => string|undefined {
+      return (entry: MetaGridEntry) => this.kind == 'gadgets' ? entry.dimensionsRaw.gadget.gadget : entry.dimensionsRaw.starpower.starpower
     },
-    getStrings(): (entry: Row) => { name?: string, description?: string } {
-      return (entry: Row) => {
+    getStrings(): (entry: MetaGridEntry) => { name?: string, description?: string } {
+      return (entry: MetaGridEntry) => {
         const id = this.getId(entry)
-        return this.descriptions == null || id == undefined || !(id in this.descriptions) ? {} : this.descriptions[id]
+        return this.descriptions == undefined || id == undefined || !(id in this.descriptions) ? {} : this.descriptions[id]
       }
     },
   },

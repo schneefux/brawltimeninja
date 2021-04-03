@@ -15,7 +15,7 @@
           clazz="w-16 mr-2"
         ></media-img>
         <kv-table
-          v-if="modeData.picks > 0"
+          v-if="modeTable.length > 0"
           :data="modeTable"
           class="w-48 px-3 py-2"
         ></kv-table>
@@ -45,23 +45,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { commonMeasurements } from '~/lib/cube';
-import { camelToKebab } from '@/lib/util';
-
-interface ModeRow {
-  battle_victory: number
-  picks: number
-  picks_weighted: number
-}
-
-interface ModeTotal {
-  picks_weighted: number
-}
-
-interface MapRow {
-  battle_event_map: string
-  battle_victory: number
-  picks_weighted: number
-}
+import { camelToKebab, MetaGridEntry } from '@/lib/util';
 
 export default Vue.extend({
   props: {
@@ -81,10 +65,10 @@ export default Vue.extend({
   },
   data() {
     return {
-      modeData: {} as ModeRow,
-      modeTotals: {} as ModeTotal,
-      mapData: [] as MapRow[],
-      mapTotals: [] as MapRow[],
+      modeData: undefined as undefined|MetaGridEntry,
+      modeTotals: undefined as undefined|MetaGridEntry,
+      mapData: [] as MetaGridEntry[],
+      mapTotals: [] as MetaGridEntry[],
     }
   },
   watch: {
@@ -97,43 +81,55 @@ export default Vue.extend({
   async fetch() {
     // TODO use brawler ID
 
-    const modeData = await this.$clicker.query<ModeRow>('meta.mode.brawler-mode-stats-widget', 'map',
-      [],
-      ['battle_victory', 'picks_weighted', 'picks'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        brawler_name: [this.brawlerName.toUpperCase()],
-        battle_event_mode: [this.mode],
+    const modeData = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        brawler: [this.brawlerName.toUpperCase()],
+        mode: [this.mode],
       },
-      { cache: 60*60 })
+      measurementsIds: ['winRate', 'useRate', 'picks'],
+      dimensionsIds: [],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const modeTotals = await this.$clicker.query<ModeRow>('meta.mode.brawler-mode-stats-widget', 'map',
-      ['battle_event_mode'],
-      ['picks_weighted'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        battle_event_mode: [this.mode],
+    const modeTotals = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        mode: [this.mode],
       },
-      { cache: 60*60 })
+      measurementsIds: ['useRate'],
+      dimensionsIds: [],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const mapData = await this.$clicker.query<MapRow>('meta.map.brawler-mode-stats-widget', 'map',
-      ['battle_event_map'],
-      ['battle_victory', 'picks_weighted'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        brawler_name: [this.brawlerName.toUpperCase()],
-        battle_event_mode: [this.mode],
+    const mapData = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        brawler: [this.brawlerName.toUpperCase()],
+        mode: [this.mode],
       },
-      { cache: 60*60 })
+      measurementsIds: ['winRate', 'useRate'],
+      dimensionsIds: ['map'],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const mapTotals = await this.$clicker.query<MapRow>('meta.map.brawler-mode-stats-widget', 'map',
-      ['battle_event_map'],
-      ['battle_victory', 'picks_weighted'],
-      {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        battle_event_mode: [this.mode],
+    const mapTotals = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        mode: [this.mode],
       },
-      { cache: 60*60 })
+      measurementsIds: ['winRate', 'useRate'],
+      dimensionsIds: ['map'],
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
 
     if (modeData.data.length > 0) {
       this.modeData = modeData.data[0]
@@ -146,18 +142,21 @@ export default Vue.extend({
   },
   computed: {
     aboveAverageMaps(): number {
-      const compareMaps = (m: MapRow, t: MapRow|undefined) => t == undefined ? false : m.battle_victory * m.picks_weighted > t.battle_victory * t.picks_weighted / this.totalBrawlers
-      const findTotal = (m: MapRow) => this.mapTotals.find(m2 => m2.battle_event_map == m.battle_event_map)
+      const compareMaps = (m: MetaGridEntry, t: MetaGridEntry|undefined) => t == undefined ? false : (m.measurementsRaw.winRate as number) * (m.measurementsRaw.useRate as number) > (t.measurementsRaw.winRate as number) * (t.measurementsRaw.useRate as number) / this.totalBrawlers
+      const findTotal = (m: MetaGridEntry) => this.mapTotals.find(m2 => m2.dimensionsRaw.map.map == m.dimensionsRaw.map.map)
       return this.mapData.filter(m => compareMaps(m, findTotal(m))).length
     },
     camelToKebab() {
       return camelToKebab
     },
     modeTable(): string[][] {
+      if (this.modeData == undefined || this.modeTotals == undefined) {
+        return []
+      }
       return [
-        [ commonMeasurements.picks.name, this.$clicker.format(commonMeasurements.picks, this.modeData.picks) ],
-        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, this.modeData.picks_weighted / this.modeTotals.picks_weighted) ],
-        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.modeData.battle_victory) ],
+        [ commonMeasurements.picks.name, this.$clicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
+        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, (this.modeData.measurementsRaw.useRate as number) / (this.modeTotals.measurementsRaw.useRate as number)) ],
+        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },
@@ -165,5 +164,5 @@ export default Vue.extend({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     })
   },
-});
+})
 </script>

@@ -5,11 +5,11 @@ module.exports = {
   purge: {
     enabled: process.env.NODE_ENV == 'production',
     content: [
-      './pages/**/*.vue',
-      './layouts/**/*.vue',
-      './components/**/*.vue',
-      './components/**/*.tsx',
-      './content/**/*.md',
+      '~/pages/**/*.vue',
+      '~/layouts/**/*.vue',
+      '~/components/**/*.vue',
+      '~/components/**/*.tsx',
+      '~/content/**/*.md',
       'node_modules/vue-range-component/dist/vue-range-slider.css', // whitelist all
     ],
   },

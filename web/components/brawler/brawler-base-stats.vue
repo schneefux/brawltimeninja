@@ -34,7 +34,7 @@
       </card>
     </div>
 
-    <template v-if="info != null">
+    <template v-if="info != undefined">
       <brawler-attack-stats-card
         v-for="attack in ['main', 'super']"
         :key="attack"
@@ -44,7 +44,7 @@
     </template>
 
     <card
-      v-if="data != null"
+      v-if="data != undefined"
       :title="$t('brawler.statistics', { brawler: brawlerName })"
       full-height
       md
@@ -64,15 +64,8 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { commonMeasurements } from '~/lib/cube'
-import { scaleInto } from '~/lib/util'
+import { MetaGridEntry, scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
-
-interface Row {
-  brawler_name: string
-  picks_weighted: number
-  battle_victory: number
-  battle_starplayer: number
-}
 
 export default Vue.extend({
   props: {
@@ -88,10 +81,10 @@ export default Vue.extend({
   data() {
     return {
       // game files
-      info: null as BrawlerData|null,
+      info: undefined as BrawlerData|undefined,
       // clicker data
-      data: null as Row|null,
-      totals: null as Row|null,
+      data: undefined as MetaGridEntry|undefined,
+      totals: undefined as MetaGridEntry|undefined,
     }
   },
   watch: {
@@ -101,23 +94,30 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => null)
+    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => undefined)
     this.info = info
 
-    const data = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
-      ['brawler_name'],
-      ['battle_victory', 'battle_starplayer', 'picks_weighted'], {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        brawler_name: [this.brawlerName.toUpperCase()],
+    const data = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        brawler: [this.brawlerName.toUpperCase()],
       },
-      { sort: { picks: 'desc' }, cache: 60*60 })
+      dimensionsIds: [],
+      measurementsIds: ['winRate', 'starRate', 'useRate'],
+      sortId: 'winRate',
+      comparing: false,
+      comparingSlices: {},
+    })
 
-    const totalData = await this.$clicker.query<Row>('meta.brawler.base-stats-widget', 'map',
-      [],
-      ['battle_victory', 'battle_starplayer', 'picks_weighted'], {
-        ...this.$clicker.defaultSlicesRaw('map'),
-      },
-      { sort: { picks: 'desc' }, cache: 60*60 })
+    const totalData = await this.$cube.query({
+      cubeId: 'map',
+      slices: {},
+      dimensionsIds: [],
+      measurementsIds: ['useRate'],
+      sortId: 'winRate',
+      comparing: false,
+      comparingSlices: {},
+    })
 
     // TODO use ID
     this.data = data.data[0]
@@ -128,7 +128,7 @@ export default Vue.extend({
       return this.info?.description || ''
     },
     generatedDescription(): string {
-      if (this.info == null) {
+      if (this.info == undefined) {
         return ''
       }
       return this.$i18n.t('brawler.description', {
@@ -145,9 +145,9 @@ export default Vue.extend({
         return ''
       }
 
-      const useRate = this.data.picks_weighted / this.totals.picks_weighted
+      const useRate = (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)
       const popularity = scaleInto(0.02, 0.03, 3, useRate)
-      const metaness = scaleInto(0.55, 0.60, 4, this.data.battle_victory)
+      const metaness = scaleInto(0.55, 0.60, 4, this.data.measurementsRaw.winRate as number)
 
       return this.$i18n.t('brawler.rating', {
         brawler: this.brawlerName,
@@ -156,7 +156,7 @@ export default Vue.extend({
       }) as string
     },
     infoTable(): string[][] {
-      if (this.info == null) {
+      if (this.info == undefined) {
         return []
       }
 
@@ -167,14 +167,14 @@ export default Vue.extend({
       ]
     },
     statsTable(): string[][] {
-      if (this.data == null || this.totals == null) {
+      if (this.data == undefined || this.totals == undefined) {
         return []
       }
 
       return [
-        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, this.data.picks_weighted / this.totals.picks_weighted) ],
-        [ commonMeasurements.starRate.name, this.$clicker.format(commonMeasurements.starRate, this.data.battle_starplayer) ],
-        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.data.battle_victory) ],
+        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
+        [ commonMeasurements.starRate.name, this.data.measurements.starRate ],
+        [ commonMeasurements.winRate.name, this.data.measurements.winRate ],
       ]
     },
     ...mapState({

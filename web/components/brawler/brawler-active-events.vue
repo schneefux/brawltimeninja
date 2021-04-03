@@ -43,11 +43,6 @@ import Vue from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/cube'
 
-interface Row extends EventMetadata {
-  battle_victory: number
-  battle_victory_adj: number
-}
-
 export default Vue.extend({
   props: {
     brawlerName: {
@@ -62,15 +57,15 @@ export default Vue.extend({
   },
   data() {
     return {
-      events: [] as Row[],
+      events: [] as EventMetadata[],
     }
   },
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
     this.events = await this.$cube.queryActiveEvents(
-      ['winRateAdj', 'winRate', 'picks', 'wins'], {
-      brawler_name: [this.brawlerName.toUpperCase()],
+      ['winRateAdj'], {
+      brawler: [this.brawlerName.toUpperCase()],
     }, 120)
   },
   computed: {
@@ -78,12 +73,12 @@ export default Vue.extend({
       if (this.events.length == 0) {
         return ''
       }
-      const bestEvents = this.events.slice().sort((e1, e2) => e2.battle_victory_adj - e1.battle_victory_adj)
+      const bestEvents = this.events.slice().sort((e1, e2) => (<any>e2).winRateAdj - (<any>e1).winRateAdj)
 
-      const formatEvent = (r: Row) => `${this.$i18n.t('mode.' + r.battle_event_mode) as string} - ${this.$i18n.t('map.' + r.battle_event_id) as string}`
+      const formatEvent = (r: EventMetadata) => `${this.$i18n.t('mode.' + r.battle_event_mode) as string} - ${this.$i18n.t('map.' + r.battle_event_id) as string}`
 
       const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode)).slice(0, 2).map(formatEvent))
-      const viableMaps = bestEvents.filter(e => e.battle_victory_adj > 0.55).length
+      const viableMaps = bestEvents.filter(e => (<any>e).winRateAdj > 0.55).length
       const viableAmount = scaleInto(0, 1, 3, viableMaps / bestEvents.length)
 
       return this.$i18n.t('brawler.current-maps.description', {

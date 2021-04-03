@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <active-events></active-events>
+    <brawler-starpower-stats brawler-name="Stu" brawler-id="stu" kind="starpowers"></brawler-starpower-stats>
   </client-only>
 </template>
 
@@ -23,8 +23,7 @@ export default Vue.extend({
       headers: { },
     })
 
-    console.log(await cubejsApi.meta())
-    return
+    return;
     console.log(await cubejsApi.sql({
       measures: ['map.winRateAdj_measure', 'map.useRate_measure'],
       dimensions: ['map.brawler_dimension'],
