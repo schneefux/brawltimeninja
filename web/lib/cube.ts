@@ -1471,7 +1471,27 @@ const mergedbattleMeasurements = asMeasurements({
     column: 'battle_duration',
     type: 'quantitative',
     config: {
-      sql: 'avgMerge(battle_duration)',
+      sql: 'avgMerge(battle_duration_state)',
+      type: 'number',
+    },
+  },
+  level: {
+    id: 'level',
+    name: 'Average Level',
+    nameShort: 'Level',
+    icon: '🏅',
+    description: '',
+    formatter: '.2f',
+    d3formatter: '.2f',
+    sign: -1,
+    percentage: false,
+    column: 'battle_level',
+    type: 'quantitative',
+    scale: {
+      zero: false,
+    },
+    config: {
+      sql: 'avgMerge(battle_level_state)',
       type: 'number',
     },
   },
@@ -1638,6 +1658,15 @@ const battleSlices = asSlice({
       operator: 'equals',
     },
   },
+  id: {
+    id: 'id',
+    name: 'Event ID',
+    column: '',
+    config: {
+      member: 'eventId_measure',
+      operator: 'equals',
+    },
+  },
   mapLike: {
     id: 'mapLike',
     name: 'Map Name',
@@ -1702,7 +1731,7 @@ const brawlerBattleMeasurements = [
   mergedbattleMeasurements.rank,
   mergedbattleMeasurements.rank1Rate,
   mergedbattleMeasurements.duration,
-  commonMeasurements.level,
+  mergedbattleMeasurements.level,
   commonMeasurements.brawler,
 ]
 
@@ -1809,6 +1838,7 @@ const cubes: Record<string, Cube> = {
       ...brawlerBattleSlices,
       commonSlices.mode,
       commonSlices.map,
+      commonSlices.id,
       commonSlices.mapLike,
       commonSlices.mapNotLike,
       commonSlices.powerplay,

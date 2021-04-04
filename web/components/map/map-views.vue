@@ -8,12 +8,14 @@
   >
     <card
       v-if="id != undefined"
+      :title="$t('map.' + id)"
       md
     >
       <div
         slot="content"
-        class="flex justify-center"
+        class="flex flex-wrap justify-center"
       >
+        <p class="w-full">{{ $t('tier-list.map.last-online', { time: lastOnlineString }) }}</p>
         <media-img
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'image'),
@@ -66,6 +68,10 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import { enUS, de } from 'date-fns/locale'
+import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
+const locales = { en: enUS, de: de }
+
 export default Vue.extend({
   props: {
     mode: {
@@ -75,13 +81,28 @@ export default Vue.extend({
       type: String
     },
     id: {
-      type: Number
+      type: String
     },
     timestamp: {
       type: String
     },
     gaCategory: {
       type: String
+    },
+  },
+  computed: {
+    lastOnlineString(): string {
+      if (this.timestamp == undefined) {
+        return ''
+      }
+      const date = parseISO(this.timestamp)
+      if (differenceInMinutes(new Date(), date) < 60) {
+        return this.$tc('state.event-active')
+      }
+      return formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: locales[this.$i18n.locale],
+      })
     },
   },
   methods: {

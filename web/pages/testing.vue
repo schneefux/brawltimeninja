@@ -23,6 +23,20 @@ export default Vue.extend({
       headers: { },
     })
 
+    const events = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        id: ["15000239"],
+        season: [],
+      },
+      dimensionsIds: ['mode', 'map'],
+      measurementsIds: ['eventId'],
+      sortId: 'timestamp',
+      comparingSlices: {},
+      comparing: false,
+    })
+    console.log(events)
+
     return;
     console.log(await cubejsApi.sql({
       measures: ['map.winRateAdj_measure', 'map.useRate_measure'],

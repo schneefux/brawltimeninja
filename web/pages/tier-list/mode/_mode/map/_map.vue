@@ -109,17 +109,21 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ params, error, $clicker }) {
+  async asyncData({ params, error, $cube }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
-    const events = await $clicker.query('all.events', 'map',
-      ['battle_event_id', 'battle_event_mode', 'battle_event_map'],
-      ['battle_event_id', 'battle_event_mode', 'battle_event_map', 'timestamp'],
-      {
-        battle_event_mode: [mode],
-        battle_event_map: [map],
+    const events = await $cube.query({
+      cubeId: 'map',
+      slices: {
+        mode: [mode],
+        map: [map],
       },
-      { cache: 60*10 })
+      dimensionsIds: [],
+      measurementsIds: ['eventId', 'timestamp'],
+      sortId: 'timestamp',
+      comparing: false,
+      comparingSlices: {},
+    }, 1)
     if (events.data.length == 0) {
       return error({ statusCode: 404, message: 'Map not found' })
     }
@@ -127,10 +131,10 @@ export default Vue.extend({
 
     return {
       event: {
-        id: event.battle_event_id,
+        id: event.measurementsRaw.eventId,
         map,
         mode,
-        timestamp: event.timestamp,
+        timestamp: event.measurementsRaw.timestamp,
       } as Map,
     }
   },

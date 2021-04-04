@@ -17,13 +17,29 @@
     </client-only>
 
     <page-section
-      title="Map Tier Lists"
+      :title="$t('tier-list.maps.title')"
       tracking-id="maps"
       tracking-page-id="mode_meta"
     >
       <p slot="description">{{ $t('tier-list.open-map') }}</p>
 
-      <horizontal-scroller expand-on-desktop>
+      <form @submit.prevent="$fetch()">
+        <b-textbox
+          v-model="nameFilter"
+          :placeholder="$tc('map', 1)"
+          dark
+        ></b-textbox>
+        <b-button
+          type="submit"
+          primary
+          sm
+        >{{ $t('action.search') }}</b-button>
+      </form>
+
+      <horizontal-scroller
+        class="mt-3"
+        expand-on-desktop
+      >
         <lazy
           v-for="(map, index) in maps"
           :key="map.map"
@@ -41,12 +57,14 @@
           <event-card
             :mode="mode"
             :map="map.map"
-            nobackground
+            :id="map.id"
             :class="['mx-2', {
               'md:hidden': !showAllMaps && index > 3,
             }]"
+            nobackground
             size="w-64"
           >
+            <template v-slot:preview></template>
             <template v-slot:content>
               <media-img
                 v-if="map.id != 0"
@@ -75,7 +93,7 @@
       </horizontal-scroller>
 
       <div
-        v-show="!showAllMaps"
+        v-show="!showAllMaps && maps.length > 3"
         class="mt-2 w-full text-right hidden md:block"
       >
         <b-button
@@ -128,8 +146,9 @@ import { camelToKebab, slugify } from '@/lib/util'
 import Page from '~/components/page.vue'
 
 interface EventIdAndMap {
-  id: number
+  id: string
   map: string
+  timestamp: string
 }
 
 export default Vue.extend({
@@ -155,28 +174,44 @@ export default Vue.extend({
       showAllMaps: false,
       mode: '',
       maps: [] as EventIdAndMap[],
+      nameFilter: '',
     }
   },
-  async asyncData({ params, $clicker }) {
+  watch: {
+    mode: '$fetch',
+  },
+  fetchDelay: 0,
+  async fetch() {
+    if (this.mode == '') {
+      return
+    }
+
+    const events = await this.$cube.query({
+      cubeId: 'map',
+      slices: {
+        mode: [this.mode],
+        mapLike: [this.nameFilter],
+      },
+      dimensionsIds: ['map'],
+      measurementsIds: ['eventId', 'picks', 'timestamp'],
+      sortId: 'timestamp',
+      comparing: false,
+      comparingSlices: {},
+    })
+
+    this.maps = events.data
+      .filter(e => e.measurementsRaw.picks > 1000)
+      .map(e => ({
+        map: e.dimensionsRaw.map.map,
+        id: e.measurementsRaw.eventId as string,
+        timestamp: e.measurementsRaw.timestamp as string,
+      }))
+  },
+  async asyncData({ params }) {
     const mode = kebabToCamel(params.mode as string)
-    const events = await $clicker.query('all.events', 'map',
-      ['battle_event_id', 'battle_event_map'],
-      ['battle_event_id', 'battle_event_map', 'picks', 'timestamp'],
-      { battle_event_mode: [mode] },
-      {
-        sort: { timestamp: 'desc' },
-        cache: 60*60,
-      })
 
     return {
       mode,
-      maps: events.data
-        .filter(e => e.picks > 1000)
-        .map(e => ({
-          id: e.battle_event_id,
-          map: e.battle_event_map,
-          timestamp: e.timestamp,
-        })),
     }
   },
   computed: {
