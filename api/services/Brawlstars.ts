@@ -4,6 +4,7 @@ import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getCom
 import { MapMetaMap } from '~/model/MetaEntry';
 import { MapMetaRow, LeaderboardRow } from '~/model/Clicker';
 import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
+import * as MAPS from '../maps.json';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -189,6 +190,12 @@ export default class BrawlstarsService {
           battle.event.map = 'Competition Entry'
         }
       }
+
+      // 2021-04-09, map is null for all maps but event id isn't
+      if (battle.event.id > 0 && battle.event.map == null && `map.${battle.event.id}` in MAPS) {
+        battle.event.map = (<any>MAPS)[`map.${battle.event.id}`] as string
+      }
+
       battle.event.id = battle.event.id || 0
       battle.event.map = battle.event.map || ''
       // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
