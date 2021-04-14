@@ -119,6 +119,7 @@ export default {
     { from: '^/leaderboard$', to: '/leaderboard/hours', statusCode: 301 },
     { from: '^/leaderboard/$', to: '/leaderboard/hours', statusCode: 301 },
     { from: '^/tier-list/mode/(.*)/map/(.*)/teams$', to: '/tier-list/mode/$1/map/$2', statusCode: 301 },
+    { from: '^(.*)/profile/8QQ8YYRYP$', statusCode: 404 }, // threatened to sue me by mail
     { from: '^/player/(.*)$', to: '/profile/$1', statusCode: 301 },
   ],
 
