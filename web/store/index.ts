@@ -47,7 +47,7 @@ export const state = () => ({
   adsAllowed: false,
   consentPopupVisible: false,
   installBannerDismissed: false,
-  totalBrawlers: 44,
+  totalBrawlers: 45,
   isApp: false,
   installPrompt: undefined as any,
   testGroup: undefined as undefined|string,
