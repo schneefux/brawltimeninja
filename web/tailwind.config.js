@@ -7,8 +7,7 @@ module.exports = {
     content: [
       '~/pages/**/*.vue',
       '~/layouts/**/*.vue',
-      '~/components/**/*.vue',
-      '~/components/**/*.tsx',
+      '~/components/**/*.{js,jsx,ts,tsx,vue}',
       '~/content/**/*.md',
       'node_modules/vue-range-component/dist/vue-range-slider.css', // whitelist all
     ],

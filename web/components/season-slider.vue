@@ -14,7 +14,7 @@
     <span
       slot="tooltip"
       slot-scope="{ value }"
-      class="slider-tooltip bg-gray-600! border-gray-600!"
+      class="slider-tooltip !bg-gray-600 !border-gray-600"
     >
       {{ formatDate(value) }}
     </span>
@@ -89,13 +89,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.bg-gray-600\! {
-  @apply bg-gray-600 !important;
-}
-
-.border-gray-600\! {
-  @apply border-gray-600 !important;
-}
-</style>

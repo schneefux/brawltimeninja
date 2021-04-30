@@ -79,6 +79,7 @@ export default Vue.extend({
       data: [] as Row[],
     }
   },
+  fetchOnServer: false, // FIXME SSR bug
   fetchDelay: 0,
   watch: {
     metric: '$fetch',

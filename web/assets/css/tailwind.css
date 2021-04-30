@@ -3,14 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  .m-0\! {
-    margin: 0 !important;
-  }
-
-  .p-0\! {
-    padding: 0 !important;
-  }
-
   .text-shadow {
     text-shadow: -1px 0 #22292f, 0 1px #22292f, 1px 0 #22292f, 0 -1px #22292f;
   }

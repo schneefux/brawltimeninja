@@ -170,6 +170,8 @@ export default {
         'postcss-color-function': {},
       },
     },
+    // https://github.com/nuxt/nuxt.js/issues/9221
+    transpile: ['vega-lite'],
   },
 
   sitemap: {

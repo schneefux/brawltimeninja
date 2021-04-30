@@ -1,7 +1,7 @@
 <template>
   <sharepic @done="done">
     <card
-      class="m-0! p-0! h-full"
+      class="!m-0 !p-0 h-full"
       full-height
     >
       <template v-slot:content>
