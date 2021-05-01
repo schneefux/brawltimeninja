@@ -56,7 +56,14 @@
         <history-graph
           :player-tag="player.tag"
           raw
-        ></history-graph>
+        >
+          <p
+            slot="placeholder"
+            class="px-20 pt-12 text-center"
+          >
+            {{ $t('player.no-history') }}
+          </p>
+        </history-graph>
       </div>
     </div>
 
