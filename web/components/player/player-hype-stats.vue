@@ -61,7 +61,6 @@
           <sharepic
             @done="sharepicDone"
             class="mb-2"
-            debug
           >
             <player-sharepic
               :player="player"
