@@ -3,10 +3,10 @@ import cors from '@koa/cors'
 import { Browser, chromium } from 'playwright'
 import StatsD from 'hot-shots'
 
-const maxage = parseInt(process.env.CACHE_SECONDS || '86400')
+const maxage = parseInt(process.env.CACHE_SECONDS || '86400') // 24h
 const WEB_URL = (process.env.WEB_URL || 'https://brawltime.ninja/').replace(/\/$/, '') // remove trailing slash
 
-const stats = new StatsD({ prefix: 'brawltime.shotter.' })
+const stats = new StatsD({ prefix: 'brawltime.render.' })
 const app = new Koa()
 
 let browser: Browser
@@ -58,7 +58,9 @@ app.use(async (ctx, next) => {
 
 const port = parseInt(process.env.PORT || '') || 3005
 
-chromium.launch().then(b => {
+chromium.launch({
+  args: ['--disable-dev-shm-usage'],
+}).then(b => {
   browser = b
   app.listen(port, () => {
     console.log(`listening on port ${port}`)

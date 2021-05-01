@@ -1,4 +1,4 @@
-FROM node:16
+FROM mcr.microsoft.com/playwright:focal
 
 WORKDIR /app
 ENV PORT=80
