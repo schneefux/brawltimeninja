@@ -60,16 +60,11 @@ app.use(async (ctx, next) => {
     return
   }
 
-  ctx.set('Content-Length', stats.size.toString())
-  if (!ctx.response.get('Last-Modified')) {
-    ctx.set('Last-Modified', stats.mtime.toUTCString())
-  }
-  if (!ctx.response.get('Cache-Control')) {
-    ctx.set('Cache-Control', `public, max-age=${maxage}`)
-  }
-
   const ext = path.extname(path.basename(requestPath))
   ctx.type = ext
+  ctx.length = stats.size
+  ctx.lastModified = stats.mtime
+  ctx.set('Cache-Control', `public, max-age=${maxage}`)
 
   if (['.webp', '.jpg', '.png'].includes(ext)) {
     let transformer = sharp(filePath)
