@@ -35,7 +35,9 @@ app.use(async (ctx, next) => {
   }
 
   const start = process.hrtime()
-  const page = await browser.newPage()
+  const page = await browser.newPage({
+    deviceScaleFactor: 2,
+  })
   await page.goto(WEB_URL + path)
   await page.waitForTimeout(300) // wait for history graph
   const element = await page.$('.sharepic')
