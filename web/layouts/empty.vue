@@ -1,8 +1,3 @@
 <template>
-    <nuxt />
+  <nuxt class="text-gray-200" />
 </template>
-
-<script>
-export default {
-}
-</script>

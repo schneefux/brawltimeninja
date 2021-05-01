@@ -57,6 +57,16 @@
           <dt class="text-2xl text-grey-lighter">
             {{ stat.label }}
           </dt>
+
+          <sharepic @done="sharepicDone">
+            <player-sharepic
+              :player="player"
+              :winRate="winRate"
+              :total-battles="totalBattles"
+              :account-rating="accountRating"
+              class="absolute bottom-0 right-0 z-0 mr-3 mb-2"
+            ></player-sharepic>
+          </sharepic>
         </div>
       </dl>
     </div>
@@ -232,6 +242,7 @@ import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { Player, Leaderboard } from '@/model/Api'
 import { BattleTotalRow } from './player-battles-stats.vue'
+import { ratingPercentiles } from '~/lib/util'
 
 export default Vue.extend({
   props: {
@@ -254,16 +265,6 @@ export default Vue.extend({
       showAll: false,
       ratingHelpOpen: false,
       recentHelpOpen: false,
-      ratingPercentiles: {
-        // key: percentile, trophy boundary
-        '?': [0, 480],
-        'D': [0.25, 500],
-        'C': [0.375, 520],
-        'B': [0.5, 590],
-        'A': [0.9, 630],
-        'S': [0.95, 730],
-        'S+': [0.99, Infinity],
-      },
     }
   },
   fetchDelay: 0,
@@ -313,6 +314,9 @@ export default Vue.extend({
     })
   },
   computed: {
+    ratingPercentiles() {
+      return ratingPercentiles
+    },
     brawlersUnlocked(): number {
       return Object.keys(this.player.brawlers).length
     },
@@ -352,8 +356,8 @@ export default Vue.extend({
       const medTrophies = this.trophiesGoal / this.totalBrawlers
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
-      for (const key in this.ratingPercentiles) {
-        if (medTrophies <= this.ratingPercentiles[key][1]) {
+      for (const key in ratingPercentiles) {
+        if (medTrophies <= ratingPercentiles[key][1]) {
           return key
         }
       }
@@ -387,6 +391,14 @@ export default Vue.extend({
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     })
+  },
+  methods: {
+    sharepicDone() {
+      this.$gtag.event('click', {
+        'event_category': 'profile',
+        'event_label': 'share',
+      })
+    },
   },
 })
 </script>

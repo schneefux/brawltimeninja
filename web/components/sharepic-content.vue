@@ -40,18 +40,22 @@ export default Vue.extend({
         scrollY: 0,
       })
 
-      const blob = await new Promise<Blob>((res, rej) => canvas.toBlob((blob) => res(blob!)))
+      const blob = await new Promise<Blob>((res) => canvas.toBlob((blob) => res(blob!)))
       const files = [new File([blob], 'brawltime-ninja.png', { type: blob.type })]
+      let shared = false
       if ((<any>navigator).canShare != undefined && (<any>navigator).canShare({ files })) {
         try {
           await navigator.share({
             files,
             url: window.location,
           } as any)
+          shared = true
         } catch (err) {
           console.error(err);
         }
-      } else {
+      }
+
+      if (!shared) {
         // opening a window from async is blocked in Safari
         let w = window.open('', '_blank') || window
 
