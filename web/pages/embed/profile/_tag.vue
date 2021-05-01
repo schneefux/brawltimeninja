@@ -13,7 +13,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
 import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
-import { tagToId, ratingPercentiles } from '~/lib/util'
+import { ratingPercentiles } from '~/lib/util'
 import { Player } from '~/model/Api'
 
 export default Vue.extend({
@@ -81,25 +81,22 @@ export default Vue.extend({
 
     return RegExp(store.state.tagPattern).test(tag)
   },
-  async asyncData({ params, $http, $config, $cube }) {
+  async asyncData({ params, $http, $config, $clicker }): Promise<{ player: Player, battleTotals: BattleTotalRow }> {
     const player = await $http.$get($config.apiUrl + `/api/player/${params.tag}`)
-    const battleData = await $cube.query({
-      cubeId: 'battle',
-      dimensionsIds: [],
-      measurementsIds: ['picks', 'winRate'],
-      slices: {
-        playerId: [tagToId(params.tag)],
+
+    const battleData = await $clicker.query('player.winrates.total',
+      'battle',
+      [],
+      ['picks', 'battle_victory', 'battle_trophy_change'],
+      {
+        ...$clicker.defaultSlicesRaw('battle'),
+        player_tag: [params.tag],
       },
-      sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
-    })
+      { sort: { picks: 'desc' }, cache: 60 })
 
     return {
-      player,
-      ...(battleData.data[0]?.measurementsRaw.picks != undefined ? {
-        battleTotals: battleData.data[0].measurementsRaw as any as BattleTotalRow,
-      } : {}),
+      player: player as Player,
+      battleTotals: (battleData.data[0]?.picks != undefined ? battleData.data[0] : {}) as BattleTotalRow,
     }
   },
 })
