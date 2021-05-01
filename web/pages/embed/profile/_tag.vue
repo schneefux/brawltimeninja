@@ -10,12 +10,24 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
 import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
 import { tagToId, ratingPercentiles } from '~/lib/util'
 import { Player } from '~/model/Api'
 
 export default Vue.extend({
+  head(): MetaInfo {
+    // block all requests except to subdomains (including ads/analytics)
+    const allowedOrigins = [this.$config.clickerUrl, this.$config.mediaUrl, this.$config.cubeUrl]
+    return {
+      meta: [ <any>{
+        // FIXME remove any after https://github.com/nuxt/vue-meta/issues/575
+        'http-equiv': 'Content-Security-Policy',
+        content: `default-src 'self' 'unsafe-inline' 'unsafe-eval' ${allowedOrigins.join(' ')}`,
+      } ]
+    }
+  },
   layout: 'empty',
   middleware: ['cached'],
   data() {
