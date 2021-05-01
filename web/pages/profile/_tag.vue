@@ -250,6 +250,9 @@ export default Vue.extend({
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
+        { hid: 'og:image', property: 'og:image', content: this.$config.renderUrl + `/embed/profile/${this.player.tag}` },
+        { hid: 'og:image:alt', property: 'og:image:alt', content: `${this.player.name} Brawl Stars Profile share image` },
+        { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
       ]
     }
   },

@@ -157,6 +157,7 @@ export default {
     apiUrl: (process.env.API_URL || '').replace(/\/$/, ''), // replace trailing slash
     mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''),
     clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''),
+    renderUrl: (process.env.RENDER_URL || '').replace(/\/$/, ''),
     cubeUrl: (process.env.CUBE_URL || '').replace(/\/$/, ''),
     cubeSecret: (process.env.CLICKER_SECRET || ''),
   },
