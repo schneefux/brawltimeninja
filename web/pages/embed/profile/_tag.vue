@@ -38,8 +38,8 @@ export default Vue.extend({
   },
   computed: {
     winRate(): number {
-      if (this.battleTotals.winRate != undefined) {
-        return this.battleTotals.winRate
+      if (this.battleTotals.battle_victory != undefined) {
+        return this.battleTotals.battle_victory
       }
       if (this.player.battles.length == 0) {
         return 0
