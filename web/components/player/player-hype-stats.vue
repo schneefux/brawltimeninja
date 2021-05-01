@@ -57,29 +57,21 @@
           <dt class="text-2xl text-grey-lighter">
             {{ stat.label }}
           </dt>
-
-          <sharepic
-            @done="sharepicDone"
-            class="mb-2"
-          >
-            <player-sharepic
-              :player="player"
-              :winRate="winRate"
-              :total-battles="totalBattles"
-              :account-rating="accountRating"
-            ></player-sharepic>
-          </sharepic>
         </div>
       </dl>
     </div>
 
-    <player-sharepic
-      :player="player"
-      :winRate="winRate"
-      :total-battles="totalBattles"
-      :account-rating="accountRating"
+    <sharepic
+      @done="sharepicDone"
       class="absolute w-16 top-0 left-0 z-0 -mt-2"
-    ></player-sharepic>
+    >
+      <player-sharepic
+        :player="player"
+        :winRate="winRate"
+        :total-battles="totalBattles"
+        :account-rating="accountRating"
+      ></player-sharepic>
+    </sharepic>
 
     <div class="bigstat-wrapper">
       <dl
