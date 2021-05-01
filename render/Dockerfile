@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/playwright:focal
+RUN apt-get install -y fonts-freefont-ttf
 
 WORKDIR /app
 ENV PORT=80
