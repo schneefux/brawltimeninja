@@ -58,13 +58,16 @@
             {{ stat.label }}
           </dt>
 
-          <sharepic @done="sharepicDone">
+          <sharepic
+            @done="sharepicDone"
+            class="mb-2"
+            debug
+          >
             <player-sharepic
               :player="player"
               :winRate="winRate"
               :total-battles="totalBattles"
               :account-rating="accountRating"
-              class="absolute bottom-0 right-0 z-0 mr-3 mb-2"
             ></player-sharepic>
           </sharepic>
         </div>
