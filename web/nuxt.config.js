@@ -101,6 +101,7 @@ export default {
     '@nuxt/typescript-build',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/fontawesome',
+    '@nuxtjs/google-fonts',
   ],
 
   components: [ {
@@ -251,5 +252,14 @@ export default {
 
   tailwindcss: {
     viewer: false,
+  },
+
+  googleFonts: {
+    families: {
+      Roboto: true,
+    },
+    display: 'swap',
+    download: true,
+    subsets: 'latin',
   },
 }
