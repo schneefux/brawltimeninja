@@ -209,6 +209,7 @@
   "nav.About": "About",
   "nav.Dashboard": "Dashboard",
   "nav.FAQ": "FAQ",
+  "nav.Quiz": "Quiz",
   "nav.Club": "Club",
   "brawler.statistics": "{brawler} Statistics",
   "brawler.synergies-for": "Synergies for {brawler}",
@@ -325,5 +326,68 @@
   "cookie-consent.ads": "Customization of advertisements",
   "cookie-consent.reliability": "To improve the reliability of this service",
   "cookie-consent.transfer": "To collect this information, some data will be shared with Cloudflare, Google Analytics, Google AdSense and Sentry. Your information will never be sold.",
-  "cookie-consent.link": "Read the privacy policy or update your preferences:"
+  "cookie-consent.link": "Read the privacy policy or update your preferences:",
+  "oejts": {
+    "intro": "Where are you on this scale?",
+    "artisticScientific": {
+      "low": "artistic",
+      "high": "scientific"
+    },
+    "bounceCalm": {
+      "low": "bounces around the room",
+      "high": "remains calm"
+    },
+    "heartHead": {
+      "low": "follows the heart",
+      "high": "follows the head"
+    },
+    "friendlyDistant": {
+      "low": "friendly",
+      "high": "distant"
+    },
+    "partyWornOut": {
+      "low": "gets worn out by parties",
+      "high": "gets fired up by parties"
+    },
+    "photographHateLove": {
+      "low": "hate being photographed",
+      "high": "love it"
+    },
+    "leadFrontBehindScenes": {
+      "low": "leads from the front",
+      "high": "manipulates things behind the scenes"
+    },
+    "listenTalk": {
+      "low": "listens more",
+      "high": "talks more"
+    },
+    "organizedChaotic": {
+      "low": "organized",
+      "high": "chaotic"
+    },
+    "preparesImprovises": {
+      "low": "prepares",
+      "high": "improvises"
+    },
+    "stickPlanAdapt": {
+      "low": "sticks to the plan",
+      "high": "adapts the plan on the fly"
+    },
+    "reasonInstinct": {
+      "low": "uses reason",
+      "high": "uses instinct"
+    },
+    "emotions": {
+      "low": "values emotions",
+      "high": "uncomfortable with emotions"
+    },
+    "respectLove": {
+      "low": "wants people's respect",
+      "high": "wants their love"
+    },
+    "aloneGroup": {
+      "low": "works best alone",
+      "high": "works best in groups"
+    }
+  }
 }
