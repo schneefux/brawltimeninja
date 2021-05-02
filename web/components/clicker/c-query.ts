@@ -46,6 +46,12 @@ export default Vue.extend({
       })
     }
 
+    if ('empty' in this.$scopedSlots && this.result != undefined && this.result.data.length == 0) {
+      nodes = this.$scopedSlots.empty!({
+        ...this.$attrs,
+      })
+    }
+
     if ('placeholder' in this.$scopedSlots && this.result == undefined) {
       nodes = this.$scopedSlots.placeholder!({
         ...this.$attrs,

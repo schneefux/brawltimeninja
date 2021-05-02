@@ -65,7 +65,7 @@
           raw
         >
           <p
-            slot="placeholder"
+            slot="empty"
             class="px-20 pt-12 text-center"
           >
             {{ $t('player.no-history') }}

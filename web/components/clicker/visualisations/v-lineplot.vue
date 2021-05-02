@@ -2,7 +2,6 @@
   <card
     v-if="show"
     v-bind="$attrs"
-    slot="wrapper"
   >
     <vega
       slot="content"

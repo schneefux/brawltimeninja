@@ -23,16 +23,12 @@
         v-bind="{ ...data, ...$attrs }"
         full-height
       ></v-lineplot>
-      <slot
-        v-if="data.data.length <= 1"
-        name="placeholder"
-      ></slot>
     </template>
 
-    <template v-slot:placeholder>
-      <slot name="placeholder"></slot>
+    <template v-slot:empty>
+      <slot name="empty"></slot>
     </template>
-  ></c-query>
+  </c-query>
 </template>
 
 <script lang="ts">
