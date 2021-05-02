@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap bg-gray-800 px-3"
+    class="flex flex-wrap bg-gray-800 px-3 relative"
   >
     <div class="w-full flex items-center">
       <img
@@ -24,35 +24,42 @@
     </div>
 
     <div class="w-1/2 pr-1">
-      <p
-        v-if="player.club.tag != undefined"
-        class="w-full text-center mt-1 text-2xl"
-      >
-        <span class="mx-1 text-red-500 font-semibold">
+      <div class="grid grid-cols-2 gap-x-2 items-center">
+        <span
+          v-if="player.club.tag != undefined"
+          class="text-right text-2xl"
+        >
+          {{ $t('club') }}
+        </span>
+        <span
+          v-if="player.club.tag != undefined"
+          class="text-red-500 text-2xl font-semibold"
+        >
           {{ player.club.name }}
         </span>
-        {{ $t('club') }}
-      </p>
 
-      <div class="flex text-3xl">
-        <span class="w-24 text-right text-yellow-400 font-bold flex-shrink-0">
+        <span class="text-right text-yellow-400 text-3xl font-bold">
           {{ Math.floor(player.hoursSpent) }}
         </span>
-        <span class="ml-2 whitespace-nowrap">
+        <span class="whitespace-nowrap text-2xl">
           {{ $t('metric.hours-spent') }}
         </span>
-      </div>
 
-      <div class="flex text-3xl">
-        <span class="w-24 text-right text-yellow-400 font-bold flex-shrink-0">
+        <span class="text-right text-yellow-400 text-3xl font-bold">
           {{ Math.floor(player.trophies) }}
         </span>
-        <span class="ml-2 whitespace-nowrap">
+        <span class="whitespace-nowrap text-2xl">
           {{ $t('metric.trophies') }}
         </span>
       </div>
 
-      <div class="mt-2 -ml-4 w-80 h-28">
+      <div
+        class="mt-2 -ml-3 pr-3 w-80"
+        :class="{
+          'h-28': player.club.tag != undefined,
+          'h-36': player.club.tag == undefined,
+        }"
+      >
         <history-graph
           :player-tag="player.tag"
           raw
@@ -68,54 +75,52 @@
     </div>
 
     <div class="w-1/2 pl-1">
-      <div class="w-full flex justify-center">
-        <span class="text-3xl text-yellow-400 font-bold">
+      <div class="grid grid-cols-2 gap-x-2 items-center">
+        <span class="text-3xl text-yellow-400 font-bold text-right">
           {{ Math.floor(winRate * 100) }}%
         </span>
-        <div class="ml-2 flex flex-col justify-center items-center">
-          <span class="text-xl">
+        <div>
+          <span class="text-xl block">
             {{ $t('metric.winRate') }}
           </span>
-          <span class="text-xs -mt-1">
+          <span class="text-xs -mt-1 block">
             ({{ totalBattles }} {{ $t('metric.battles-total') }})
           </span>
         </div>
+
+        <span class="text-3xl text-yellow-400 font-bold text-right">
+          {{ player['3vs3Victories'] }}
+        </span>
+        <span class="text-2xl">
+          {{ $t('metric.victories') }}
+        </span>
       </div>
 
-      <div>
-        <span class="text-lg">{{ $t('player.best-brawlers') }}:</span>
-
-        <div class="w-full flex flex-wrap">
-          <div
-            v-for="brawler in bestBrawlers.slice(0, 6)"
-            :key="brawler.id"
-            class="flex items-center w-32 h-12 mt-1 mx-1"
-          >
-            <div class="w-full h-full text-center">
-              <img
-                :src="`${$config.mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
-                class="w-auto h-full mx-auto"
-              >
-            </div>
-            <div class="w-full flex flex-wrap justify-center">
-              <div class="w-full flex items-center">
-                <img
-                  src="~/assets/images/icon/trophy_optimized.png"
-                  class="h-4 inline"
-                >
-                <span class="ml-1 text-lg font-bold">
-                  {{ brawler.trophies }}
-                </span>
-              </div>
-              <span class="w-full -mt-2 capitalize text-center text-xs">
-                {{ brawler.name.toLowerCase() }}
-              </span>
-            </div>
+      <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+        <div
+          v-for="brawler in bestBrawlers.slice(0, 6)"
+          :key="brawler.id"
+          class="flex items-center h-12"
+        >
+          <div class="w-full h-full">
+            <img
+              :src="`${$config.mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
+              class="w-auto h-full mx-auto"
+            >
+          </div>
+          <div class="w-full flex items-center">
+            <img
+              src="~/assets/images/icon/trophy_optimized.png"
+              class="h-5 inline"
+            >
+            <span class="ml-1 text-xl font-bold">
+              {{ brawler.trophies }}
+            </span>
           </div>
         </div>
       </div>
 
-      <p class="-mr-2 -mt-1 text-xs text-right text-gray-400">
+      <p class="absolute bottom-0 right-0 mr-2 mb-1 text-xs text-right text-gray-400">
         brawltime.ninja
       </p>
     </div>
