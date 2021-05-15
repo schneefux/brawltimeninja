@@ -145,7 +145,7 @@ interface EventMetadata {
   start?: string
   end?: string
 }
-export function formatAsJsonLd(event: EventMetadata, mediaUrl: string) {
+export function formatAsJsonLd(event: EventMetadata) {
   const url = `/tier-list/mode/${slugify(event.mode.toLowerCase())}/map/${slugify(event.map)}`
   return {
     '@context': 'https://schema.org',
@@ -160,7 +160,7 @@ export function formatAsJsonLd(event: EventMetadata, mediaUrl: string) {
     'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'eventStatus': 'https://schema.org/EventScheduled',
     'url': url,
-    'image': [`${mediaUrl}/map/${event.id}.png`],
+    'image': [`${process.env.mediaUrl}/map/${event.id}.png`],
     'location': {
       '@type': 'VirtualLocation',
       'url': url,
@@ -254,8 +254,8 @@ export function getCompetitionMapDayStart(timestamp: Date) {
 }
 
 export function getCompetitionWinnerMode(timestamp: Date) {
-  const order = ['heist', 'gemGrab', 'soloShowdown', 'brawlBall', 'bounty']
-  const dayStart = new Date(Date.parse('2021-01-27T09:30:00Z'))
+  const order = ['duoShowdown', 'siege', 'hotZone', 'soloShowdown', 'brawlBall', 'bounty', 'heist', 'gemGrab']
+  const dayStart = new Date(Date.parse('2021-04-25T09:30:00Z'))
   const diff = timestamp.getTime() - dayStart.getTime()
   const daysSince = Math.floor(diff/1000/60/60/24)
   return order[daysSince % order.length]
@@ -352,16 +352,3 @@ export function scaleEntriesIntoTiers(entries: MetaGridEntry[], measurement: Mea
 }
 
 export const getDotProp = (o: any, k: string) => k.split('.').reduce((a, b) => a[b], o)
-
-// measured on 2020-11-01 with data from 2020-10-01
-// select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
-export const ratingPercentiles = {
-  // key: percentile, trophy boundary
-  '?': [0, 480],
-  'D': [0.25, 500],
-  'C': [0.375, 520],
-  'B': [0.5, 590],
-  'A': [0.9, 630],
-  'S': [0.95, 730],
-  'S+': [0.99, Infinity],
-}
