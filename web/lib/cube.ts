@@ -332,6 +332,22 @@ const brawlerDimensions = asDimensions({
       type: 'boolean',
     },
   },
+  trophyRange: {
+    id: 'trophyRange',
+    name: 'Trophy Range',
+    formatColumn: 'brawler_trophyrange',
+    naturalIdAttribute: 'trophyRange',
+    formatter: '',
+    column: 'brawler_trophyrange',
+    anyColumns: [],
+    additionalMeasures: [],
+    hidden: true,
+    type: 'ordinal',
+    config: {
+      sql: 'brawler_trophyrange',
+      type: 'string',
+    },
+  },
 })
 
 const battleDimensions = asDimensions({
@@ -1592,13 +1608,22 @@ const brawlerSlices = asSlice({
       operator: 'equals',
     },
   },
-  trophies: {
-    id: 'trophies',
-    name: 'Trophies',
+  trophyRangeGte: {
+    id: 'trophyRangeGte',
+    name: 'Trophy Range greater than equals',
     column: 'brawler_trophyrange',
     config: {
-      member: 'trophyrange_dimension',
-      operator: 'equals', // TODO use $and for range
+      member: 'trophyRange_dimension',
+      operator: 'gte',
+    },
+  },
+  trophyRangeLt: {
+    id: 'trophyRangeLt',
+    name: 'Trophy Range lower than',
+    column: 'brawler_trophyrange',
+    config: {
+      member: 'trophyRange_dimension',
+      operator: 'lt',
     },
   },
   starpowerIdEq: {
@@ -1738,18 +1763,21 @@ const brawlerBattleMeasurements = [
 const brawlerBattleDimensions = [
   commonDimensions.brawler,
   commonDimensions.season,
+  commonDimensions.trophyRange,
 ]
 
 const brawlerBattleSlices = [
   commonSlices.season,
   commonSlices.seasonExact,
-  commonSlices.trophies,
+  commonSlices.trophyRangeGte,
+  commonSlices.trophyRangeLt,
   commonSlices.brawler,
 ]
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
   season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
-  trophies: [],
+  trophyRangeGte: ['0'],
+  trophyRangeLt: ['10'],
   brawler: [],
 }
 
@@ -1760,6 +1788,7 @@ const playerBrawlerDimensions = [
   commonDimensions.player,
   commonDimensions.brawler,
   commonDimensions.brawlerId,
+  commonDimensions.trophyRange,
 ]
 
 const playerBrawlerMeasurements = [
@@ -1802,7 +1831,8 @@ const playerBrawlerSlices = [
   commonSlices.playerId,
   commonSlices.playerName,
   commonSlices.season,
-  commonSlices.trophies,
+  commonSlices.trophyRangeGte,
+  commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
 ]

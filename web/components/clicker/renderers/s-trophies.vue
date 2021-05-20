@@ -1,9 +1,9 @@
 <template>
   <trophy-slider-select
-    v-if="'trophies' in value"
-    :value="value.trophies.length > 0 ? value.trophies : [0, 10]"
+    v-if="'trophyRangeGte' in value"
+    :value="[(value.trophyRangeGte || [0])[0], (value.trophyRangeLt || [0])[0]]"
     class="mr-2 my-1"
-    @input="v => $parent.$emit('slice', { trophies: v })"
+    @input="v => $parent.$emit('slice', { trophyRangeGte: [v[0]], trophyRangeLt: [v[1]] })"
   ></trophy-slider-select>
 </template>
 

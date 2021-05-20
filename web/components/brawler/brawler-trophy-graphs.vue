@@ -46,10 +46,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import { scaleInto } from '~/lib/util'
-import { BrawlerStatisticsRows } from '~/model/Clicker'
 
 interface Row {
   brawler_trophyrange: number
