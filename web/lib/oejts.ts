@@ -1,5 +1,5 @@
 // data based on the Open Extended Jungian Type Scale https://openpsychometrics.org/tests/OJTS/development/
-interface OEJTSEntry {
+export interface OEJTSEntry {
   // negative/positive: how confident to the left/right dichitomy
   ie: number
   sn: number
@@ -265,286 +265,286 @@ const oejtsScores = <Record<string, OEJTSEntry>>{
 // based on community votes
 
 const brawlerScores = <Record<string, OEJTSEntry>>{
-  colt: {
+  COLT: {
     ie: +1.00,
     sn: -1.00,
     ft: +0.92,
     jp: +0.95,
   },
-  shelly: {
+  SHELLY: {
     ie: +1.00,
     sn: -1.00,
     ft: +1.00,
     jp: -0.92,
   },
-  '8-bit': {
+  '8-BIT': {
     ie: -0.64,
     sn: +1.00,
     ft: +1.00,
     jp: +0.55,
   },
-  amber: {
+  AMBER: {
     ie: +0.94,
     sn: -0.78,
     ft: -1.00,
     jp: +0.78,
   },
-  barley: {
+  BARLEY: {
     ie: -0.93,
     sn: -0.97,
     ft: -0.97,
     jp: -0.97,
   },
-  bea: {
+  BEA: {
     ie: +1.00,
     sn: +1.00,
     ft: -0.93,
     jp: -0.79,
   },
-  belle: {
+  BELLE: {
     ie: +0.70,
     sn: +0.70,
     ft: +0.90,
     jp: -0.80,
   },
-  bibi: {
+  BIBI: {
     ie: +0.76,
     sn: -1.00,
     ft: +0.59,
     jp: +0.94,
   },
-  bo: {
+  BO: {
     ie: -0.96,
     sn: +0.83,
     ft: -0.83,
     jp: -0.78,
   },
-  brock: {
+  BROCK: {
     ie: +0.93,
     sn: -1.00,
     ft: +0.87,
     jp: +1.00,
   },
-  bull: {
+  BULL: {
     ie: +0.61,
     sn: -1.00,
     ft: +1.00,
     jp: +0.83,
   },
-  byron: {
+  BYRON: {
     ie: 0.00,
     sn: +0.96,
     ft: +0.96,
     jp: -1.00,
   },
-  carl: {
+  CARL: {
     ie: +0.73,
     sn: +1.00,
     ft: +0.95,
     jp: +1.00,
   },
-  colette: {
+  COLETTE: {
     ie: +0.95,
     sn: +0.91,
     ft: -0.91,
     jp: +0.95,
   },
-  'colonel ruffs': {
+  'COLONEL RUFFS': {
     ie: +0.88,
     sn: +0.75,
     ft: +0.88,
     jp: -0.88,
   },
-  crow: {
+  CROW: {
     ie: -0.94,
     sn: -0.59,
     ft: +1.00,
     jp: +0.62,
   },
-  darryl: {
+  DARRYL: {
     ie: +0.65,
     sn: +0.80,
     ft: -0.75,
     jp: +1.00,
   },
-  dynamike: {
+  DYNAMIKE: {
     ie: +1.00,
     sn: -1.00,
     ft: +0.73,
     jp: +0.91,
   },
-  edgar: {
+  EDGAR: {
     ie: -0.88,
     sn: -1.00,
     ft: -1.00,
     jp: +0.88,
   },
-  'el primo': {
+  'EL PRIMO': {
     ie: +1.00,
     sn: -1.00,
     ft: -1.00,
     jp: +0.90,
   },
-  emz: {
+  EMZ: {
     ie: +1.00,
     sn: -1.00,
     ft: -0.93,
     jp: +1.00,
   },
-  frank: {
+  FRANK: {
     ie: -1.00,
     sn: -1.00,
     ft: +0.79,
     jp: -0.64,
   },
-  gale: {
+  GALE: {
     ie: -1.00,
     sn: -1.00,
     ft: -0.92,
     jp: -1.00,
   },
-  gene: {
+  GENE: {
     ie: +0.82,
     sn: +0.94,
     ft: -1.00,
     jp: +1.00,
   },
-  jacky: {
+  JACKY: {
     ie: +0.92,
     sn: -1.00,
     ft: +1.00,
     jp: -0.75,
   },
-  jessie: {
+  JESSIE: {
     ie: +0.91,
     sn: +0.95,
     ft: +0.68,
     jp: +1.00,
   },
-  tick: {
+  TICK: {
     ie: +0.86,
     sn: +0.93,
     ft: +0.79,
     jp: +1.00,
   },
-  leon: {
+  LEON: {
     ie: -0.68,
     sn: -0.71,
     ft: +0.68,
     jp: +0.97,
   },
-  lou: {
+  LOU: {
     ie: +0.71,
     sn: -0.79,
     ft: -1.00,
     jp: -0.79,
   },
-  max: {
+  MAX: {
     ie: +1.00,
     sn: -0.94,
     ft: +0.56,
     jp: +1.00,
   },
-  mortis: {
+  MORTIS: {
     ie: +0.67,
     sn: +1.00,
     ft: +0.96,
     jp: +0.67,
   },
-  'mr. p': {
+  'MR. P': {
     ie: +0.92,
     sn: -0.77,
     ft: +1.00,
     jp: -1.00,
   },
-  nani: {
+  NANI: {
     ie: -0.91,
     sn: -0.91,
     ft: -0.91,
     jp: -0.91,
   },
-  nita: {
+  NITA: {
     ie: -0.89,
     sn: -0.74,
     ft: -1.00,
     jp: +1.00,
   },
-  pam: {
+  PAM: {
     ie: +0.92,
     sn: -1.00,
     ft: -0.85,
     jp: -0.92,
   },
-  penny: {
+  PENNY: {
     ie: +0.88,
     sn: -0.94,
     ft: +0.94,
     jp: +0.75,
   },
-  piper: {
+  PIPER: {
     ie: +0.95,
     sn: -0.70,
     ft: -1.00,
     jp: -1.00,
   },
-  poco: {
+  POCO: {
     ie: +0.92,
     sn: +0.60,
     ft: -0.92,
     jp: -0.60,
   },
-  rico: {
+  RICO: {
     ie: +0.70,
     sn: +0.65,
     ft: +0.95,
     jp: -0.90,
   },
-  rosa: {
+  ROSA: {
     ie: -0.85,
     sn: +0.73,
     ft: +0.77,
     jp: +0.88,
   },
-  sandy: {
+  SANDY: {
     ie: -0.97,
     sn: +0.97,
     ft: +0.70,
     jp: +1.00,
   },
-  spike: {
+  SPIKE: {
     ie: +0.70,
     sn: +0.95,
     ft: -1.00,
     jp: +0.95,
   },
-  sprout: {
+  SPROUT: {
     ie: -1.00,
     sn: -0.62,
     ft: +0.67,
     jp: -0.62,
   },
-  squeak: {
+  SQUEAK: {
     // TODO
     ie: -0.75,
     sn: +0.75,
     ft: -1.00,
     jp: +1.00,
   },
-  stu: {
+  STU: {
     // TODO
     ie: +0.80,
     sn: +0.80,
     ft: -0.80,
     jp: +1.00,
   },
-  surge: {
+  SURGE: {
     // TODO
     ie: +1.00,
     sn: -1.00,
     ft: +1.00,
     jp: +1.00,
   },
-  tara: {
+  TARA: {
     ie: -1.00,
     sn: +0.94,
     ft: +0.94,

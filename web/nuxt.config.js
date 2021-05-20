@@ -102,6 +102,7 @@ export default {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/fontawesome',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/composition-api/module',
   ],
 
   components: [ {
@@ -156,12 +157,12 @@ export default {
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
   publicRuntimeConfig: {
-    apiUrl: (process.env.API_URL || '').replace(/\/$/, ''), // replace trailing slash
-    mediaUrl: (process.env.MEDIA_URL || '').replace(/\/$/, ''),
-    clickerUrl: (process.env.CLICKER_URL || '').replace(/\/$/, ''),
-    renderUrl: (process.env.RENDER_URL || '').replace(/\/$/, ''),
-    cubeUrl: (process.env.CUBE_URL || '').replace(/\/$/, ''),
-    cubeSecret: (process.env.CLICKER_SECRET || ''),
+    apiUrl: (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''), // replace trailing slash
+    mediaUrl: (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, ''),
+    clickerUrl: (process.env.CLICKER_URL || 'https://clicker.brawltime.ninja').replace(/\/$/, ''),
+    renderUrl: (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, ''),
+    cubeUrl: (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, ''),
+    cubeSecret: (process.env.CUBE_SECRET || ''),
   },
 
   build: {
@@ -171,7 +172,7 @@ export default {
       },
     },
     // https://github.com/nuxt/nuxt.js/issues/9221
-    transpile: ['vega-lite'],
+    transpile: ['vega-lite', 'd3-format'],
   },
 
   sitemap: {
@@ -254,7 +255,6 @@ export default {
 
   tailwindcss: {
     viewer: false,
-    jit: true,
   },
 
   googleFonts: {

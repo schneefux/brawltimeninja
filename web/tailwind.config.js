@@ -2,14 +2,13 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
+  mode: 'jit',
   purge: {
-    enabled: process.env.NODE_ENV == 'production',
     content: [
       '~/pages/**/*.vue',
       '~/layouts/**/*.vue',
       '~/components/**/*.{js,jsx,ts,tsx,vue}',
       '~/content/**/*.md',
-      'node_modules/vue-range-component/dist/vue-range-slider.css', // whitelist all
     ],
   },
   darkMode: false,
