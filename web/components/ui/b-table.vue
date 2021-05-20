@@ -65,7 +65,7 @@
       v-if="pageSize != undefined"
       v-model="page"
       :pages="Math.floor(rows.length / pageSize)"
-      class="pt-2 mt-auto"
+      class="pt-2 pb-1 mt-auto"
     ></paginator>
   </div>
 </template>

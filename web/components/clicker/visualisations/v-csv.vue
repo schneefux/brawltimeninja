@@ -5,6 +5,7 @@
   >
     <b-button
       slot="content"
+      class="my-1"
       secondary
       sm
       @click="download()"
