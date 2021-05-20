@@ -2,13 +2,13 @@
   <fake-select>
     <template v-slot:preview>
       {{ format(value[0]) }}-{{ format(value[1]) }}
-      {{ name }}
+      {{ name == 'Trophies' ? name : '' }}
     </template>
 
     <client-only>
       <vue-range-slider
         :min="0"
-        :max="10"
+        :max="name == 'Trophies' ? 10 : 18"
         :step="1"
         :min-range="1"
         :value="value"
@@ -64,6 +64,10 @@ export default Vue.extend({
       }
     },
     format() {
+      if (this.name == 'League') {
+        const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
+        return (n: number) => `${leagues[Math.floor(n/3)]} ${n < 18 ? ['I', 'II', 'III'][n%3] : ''}`
+      }
       return (n: number) => n == 10 ? '1000+' : n * 100
     },
   },
