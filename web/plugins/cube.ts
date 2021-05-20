@@ -1,6 +1,6 @@
 import { Plugin } from "@nuxt/types"
 import config, { Config, Dimension, Measurement, SliceValue, State } from "~/lib/cube"
-import { formatClickhouse, getCurrentSeasonEnd, getSeasonEnd, MetaGridEntry } from "~/lib/util"
+import { getCurrentSeasonEnd, MetaGridEntry } from "~/lib/util"
 import cubejs, { CubejsApi, Filter, TQueryOrderObject } from "@cubejs-client/core"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { Slices } from "./clicker"

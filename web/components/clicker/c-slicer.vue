@@ -57,7 +57,7 @@ export default Vue.extend({
   mounted() {
     // slots cannot have event handlers, so they $parent.$emit
     // the diff object instead
-    // capture, process and forwrad it
+    // capture, process and forward it
     this.$on('slice', (s: Partial<SliceValue>) => {
       this.$emit('input', <State>{
         ...this.value,

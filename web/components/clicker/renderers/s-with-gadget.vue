@@ -4,7 +4,7 @@
     class="mr-2 my-1"
   >
     <b-select
-      :value="(value.gadgetIdNeq || [])[0] == '0' ? '1' : '0'"
+      :value="(value.gadgetIdNeq || ['0'])[0] == '0' ? '1' : '0'"
       dark
       sm
       @input="v => $parent.$emit('slice', { gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })"

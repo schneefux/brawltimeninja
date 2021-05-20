@@ -28,7 +28,7 @@ function parseQueryParams(query: Record<string, string | (string | null)[]>, pre
 function generateQueryParams(o: Record<string, (string|number)[]>, prefix: string): Record<string, string[]> {
   return Object.fromEntries(
     Object.entries(o)
-      .filter(([key, value]) => value != undefined && value.length > 0)
+      .filter(([key, value]) => value != undefined)
       .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
   )
 }
@@ -360,13 +360,12 @@ const plugin: Plugin = (context, inject) => {
       const comparingSlices = state.comparing && state.comparingSlices ? generateQueryParams(state.comparingSlices, 'compareFilter') : {}
 
       const query = Object.assign({}, {
-          cube: state.cubeId,
-          dimension: state.dimensionsIds,
-          metric: state.measurementsIds,
-          compare: state.comparing ? true : undefined,
-          sort: state.sortId,
-        }, slices, comparingSlices
-      )
+        cube: state.cubeId,
+        dimension: state.dimensionsIds,
+        metric: state.measurementsIds,
+        compare: state.comparing ? true : undefined,
+        sort: state.sortId,
+      }, slices, comparingSlices)
 
       return { path: '/dashboard', query }
     },

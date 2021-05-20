@@ -4,7 +4,7 @@
     class="mr-2 my-1"
   >
     <b-select
-      :value="(value.starpowerIdNeq || [])[0] == '0' ? '1' : '0'"
+      :value="(value.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'"
       dark
       sm
       @input="v => $parent.$emit('slice', { starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"

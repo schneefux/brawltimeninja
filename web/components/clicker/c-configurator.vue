@@ -153,7 +153,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { State, Config, Cube, Dimension, Measurement } from '~/lib/cube'
+import { State, Cube, Dimension, Measurement } from '~/lib/cube'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default Vue.extend({

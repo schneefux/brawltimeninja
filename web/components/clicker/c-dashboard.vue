@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { SliceValue, State } from '~/lib/cube'
+import { State } from '~/lib/cube'
 import CDashboard from './c-dashboard.vue'
 import CSlicer from './c-slicer.vue'
 import CConfigurator from './c-configurator.vue'
@@ -85,39 +85,6 @@ export default Vue.extend({
       },
       set(s: State) {
         this.$emit('input', s)
-      }
-    },
-    comparing: {
-      get(): boolean {
-        return this.value.comparing
-      },
-      set(c: boolean) {
-        this.$emit('input', {
-          ...this.value,
-          comparing: c,
-        })
-      }
-    },
-    slices: {
-      get(): SliceValue {
-        return this.value.slices
-      },
-      set(v: SliceValue) {
-        this.$emit('input', {
-          ...this.value,
-          slices: v,
-        })
-      }
-    },
-    comparingSlices: {
-      get(): SliceValue {
-        return this.value.comparingSlices
-      },
-      set(v: SliceValue) {
-        this.$emit('input', {
-          ...this.value,
-          comparingSlices: v,
-        })
       }
     },
   },
