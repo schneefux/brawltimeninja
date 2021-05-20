@@ -21,7 +21,7 @@
         </p>
       </slot>
       <slot name="value">
-        <p class="text-center text-3xl font-bold text-yellow-400 mb-2">
+        <p class="text-center text-3xl font-bold text-yellow-400 mb-1">
           {{ value }}
         </p>
       </slot>

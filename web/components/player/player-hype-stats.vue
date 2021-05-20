@@ -46,7 +46,7 @@
             <p
               slot="value"
               ref="counter-funstats"
-              class="text-center text-3xl font-bold text-yellow-400 mb-2"
+              class="text-center text-3xl font-bold text-yellow-400 mb-1"
             >
               ...
             </p>
@@ -69,7 +69,7 @@
         >
           <nuxt-link
             :to="localePath(`/club/${player.club.tag}`)"
-            class="text-center text-3xl font-semibold underline text-red-500 mb-2"
+            class="text-center text-3xl font-semibold underline text-red-500 mb-1"
           >
             [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
           </nuxt-link>
