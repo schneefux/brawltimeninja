@@ -17,7 +17,7 @@
           'flex items-center gap-2 my-1 mx-2': long,
         }"
       >
-        <div class="mx-auto flex-shrink-0">
+        <div class="mt-2 mx-auto flex-shrink-0">
           <slot
             name="dimensions"
             :row="entry"
