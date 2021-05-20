@@ -1174,6 +1174,23 @@ var mergedbattleMeasurements = asMeasurements({
             type: 'number'
         }
     },
+    picks: {
+        id: 'picks',
+        name: 'Picks recorded',
+        nameShort: 'Picks',
+        icon: '👇',
+        description: '',
+        formatter: '.2s',
+        d3formatter: '.2s',
+        sign: -1,
+        percentage: false,
+        column: 'picks',
+        type: 'quantitative',
+        config: {
+            sql: 'sum(picks)',
+            type: 'number'
+        }
+    },
     trophyChange: {
         id: 'trophyChange',
         name: 'Trophy Change',
@@ -1609,7 +1626,7 @@ var brawlerBattleMeasurements = [
     mergedbattleMeasurements.winRate,
     mergedbattleMeasurements.winRateAdj,
     mergedbattleMeasurements.wins,
-    exports.commonMeasurements.picks,
+    mergedbattleMeasurements.picks,
     mergedbattleMeasurements.pickRate,
     mergedbattleMeasurements.useRate,
     mergedbattleMeasurements.starRate,
