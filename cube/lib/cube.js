@@ -221,6 +221,22 @@ var brawlerDimensions = asDimensions({
             sql: 'battle_is_bigbrawler',
             type: 'boolean'
         }
+    },
+    trophyRange: {
+        id: 'trophyRange',
+        name: 'Trophy Range',
+        formatColumn: 'brawler_trophyrange',
+        naturalIdAttribute: 'trophyRange',
+        formatter: '',
+        column: 'brawler_trophyrange',
+        anyColumns: [],
+        additionalMeasures: [],
+        hidden: true,
+        type: 'ordinal',
+        config: {
+            sql: 'brawler_trophyrange',
+            type: 'string'
+        }
     }
 });
 var battleDimensions = asDimensions({
@@ -1460,13 +1476,22 @@ var brawlerSlices = asSlice({
             operator: 'equals'
         }
     },
-    trophies: {
-        id: 'trophies',
-        name: 'Trophies',
+    trophyRangeGte: {
+        id: 'trophyRangeGte',
+        name: 'Trophy Range greater than equals',
         column: 'brawler_trophyrange',
         config: {
-            member: 'trophyrange_dimension',
-            operator: 'equals'
+            member: 'trophyRange_dimension',
+            operator: 'gte'
+        }
+    },
+    trophyRangeLt: {
+        id: 'trophyRangeLt',
+        name: 'Trophy Range lower than',
+        column: 'brawler_trophyrange',
+        config: {
+            member: 'trophyRange_dimension',
+            operator: 'lt'
         }
     },
     starpowerIdEq: {
@@ -1522,6 +1547,15 @@ var battleSlices = asSlice({
         column: 'battle_event_map',
         config: {
             member: 'map_dimension',
+            operator: 'equals'
+        }
+    },
+    id: {
+        id: 'id',
+        name: 'Event ID',
+        column: '',
+        config: {
+            member: 'eventId_measure',
             operator: 'equals'
         }
     },
@@ -1588,16 +1622,19 @@ var brawlerBattleMeasurements = [
 var brawlerBattleDimensions = [
     commonDimensions.brawler,
     commonDimensions.season,
+    commonDimensions.trophyRange,
 ];
 var brawlerBattleSlices = [
     commonSlices.season,
     commonSlices.seasonExact,
-    commonSlices.trophies,
+    commonSlices.trophyRangeGte,
+    commonSlices.trophyRangeLt,
     commonSlices.brawler,
 ];
 var brawlerBattleDefaultSliceValues = {
     season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
-    trophies: [],
+    trophyRangeGte: ['0'],
+    trophyRangeLt: ['10'],
     brawler: []
 };
 var playerBrawlerDimensions = [
@@ -1607,6 +1644,7 @@ var playerBrawlerDimensions = [
     commonDimensions.player,
     commonDimensions.brawler,
     commonDimensions.brawlerId,
+    commonDimensions.trophyRange,
 ];
 var playerBrawlerMeasurements = [
     exports.commonMeasurements.picks,
@@ -1646,7 +1684,8 @@ var playerBrawlerSlices = [
     commonSlices.playerId,
     commonSlices.playerName,
     commonSlices.season,
-    commonSlices.trophies,
+    commonSlices.trophyRangeGte,
+    commonSlices.trophyRangeLt,
     commonSlices.brawlerId,
     commonSlices.brawler,
 ];
@@ -1676,6 +1715,7 @@ var cubes = {
         slices: __spreadArray(__spreadArray([], brawlerBattleSlices), [
             commonSlices.mode,
             commonSlices.map,
+            commonSlices.id,
             commonSlices.mapLike,
             commonSlices.mapNotLike,
             commonSlices.powerplay,
