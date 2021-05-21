@@ -2,6 +2,7 @@
   <card
     title="What is your Brawler Personality?"
     :subtitle="`Answer ${Object.keys(oejtsScores).length} questions to find out!`"
+    md
   >
     <img slot="preview" class="h-24 my-3" src="~/assets/images/Ranged_Bot.png">
     <b-button

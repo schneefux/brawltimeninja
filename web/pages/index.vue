@@ -35,13 +35,13 @@
       @submit="search"
     >
       <div class="w-full flex justify-center">
-        <div class="py-2 border-2 rounded-lg border-yellow-400 bg-gray-800">
+        <div class="py-2 border-4 rounded-lg border-yellow-400 bg-gray-800">
           <input
             v-model="tag"
             :placeholder="$t('action.enter-tag')"
             type="text"
             autocomplete="off"
-            class="form-input w-40 md:w-48 tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2"
+            class="transition duration-100 ease-in-out form-input w-40 md:w-48 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2 focus:ring focus:ring-gray-400 rounded py-2"
           >
           <b-button
             tag="input"
