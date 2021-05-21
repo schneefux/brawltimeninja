@@ -12,7 +12,6 @@ import Shimmer from '~/components/shimmer.vue'
 import HorizontalScroller from '~/components/horizontal-scroller.vue'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import BrawlerTeam from '~/components/brawler/brawler-team.vue'
-import BrawlerCard from '~/components/brawler/brawler-card.vue'
 import BButton from '~/components/ui/b-button.vue'
 
 // add functional components globally so that they are available
@@ -32,6 +31,5 @@ Vue.component('page-dashboard', PageDashboard)
 Vue.component('shimmer', Shimmer)
 Vue.component('brawler-link', BrawlerLink)
 Vue.component('brawler-team', BrawlerTeam)
-Vue.component('brawler-card', BrawlerCard)
 Vue.component('horizontal-scroller', HorizontalScroller)
 Vue.component('b-button', BButton)

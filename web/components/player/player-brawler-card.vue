@@ -1,56 +1,90 @@
 <template>
-  <brawler-card
+  <card
     :title="title"
-    :brawlers="[brawler.name]"
-    :brawler-id="brawlerId"
+    :title-link="localePath(`/tier-list/brawler/${brawlerId}`)"
     elevation="2"
+    sm
   >
-    <table slot="stats">
-      <tbody>
-        <tr>
-          <td class="text-center">
-            <img
-              src="~/assets/images/icon/leaderboards_optimized.png"
-              class="card-prop-icon"
-            >
-          </td>
-          <td class="card-prop-value text-right pr-1">
-            {{ brawler.rank }}
-          </td>
-          <td class="card-prop-label">
-            {{ $t('metric.rank') }}
-          </td>
-        </tr>
-        <tr>
-          <td class="text-center">
-            <img
-              src="~/assets/images/icon/trophy_optimized.png"
-              class="card-prop-icon"
-            >
-          </td>
-          <td class="card-prop-value text-right pr-1">
-            {{ brawler.trophies }}
-          </td>
-          <td class="card-prop-label">
-            {{ $t('metric.trophies') }}
-          </td>
-        </tr>
-        <tr>
-          <td class="text-center">
-            <img
-              :src="brawler.power < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
-              class="card-prop-icon"
-            >
-          </td>
-          <td class="card-prop-value text-right pr-1">
-            {{ brawler.power }}
-          </td>
-          <td class="card-prop-label">
-            {{ $t('metric.power-level') }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div
+      slot="content"
+      class="flex items-center"
+    >
+      <div class="flex rounded overflow-hidden">
+        <media-img
+          v-if="brawlerId != undefined"
+          :path="'/brawlers/' + brawlerId + '/avatar'"
+          :alt="brawler.name"
+          size="160"
+          clazz="z-0 h-16 sm:h-20"
+          class="flex-1"
+        ></media-img>
+        <div
+          v-if="brawler.starPowers.length + brawler.gadgets.length > 0"
+          class="bg-gray-900 bg-opacity-75 flex flex-col items-center h-16 sm:h-20 w-5 sm:w-6 p-1 justify-center space-y-1"
+        >
+          <media-img
+            v-for="starpower in brawler.starPowers"
+            :key="starpower.id"
+            :path="`/starpowers/${starpower.id}`"
+            :alt="capitalizeWords(starpower.name.toLowerCase())"
+            size="80"
+          ></media-img>
+          <media-img
+            v-for="gadget in brawler.gadgets"
+            :key="gadget.id"
+            :path="`/gadgets/${gadget.id}`"
+            :alt="capitalizeWords(gadget.name.toLowerCase())"
+            size="80"
+          ></media-img>
+        </div>
+      </div>
+      <table class="ml-auto text-sm sm:text-base">
+        <tbody>
+          <tr>
+            <td class="text-center">
+              <img
+                src="~/assets/images/icon/leaderboards_optimized.png"
+                class="card-prop-icon"
+              >
+            </td>
+            <td class="card-prop-value text-right pr-1">
+              {{ brawler.rank }}
+            </td>
+            <td class="card-prop-label">
+              {{ $t('metric.rank') }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-center">
+              <img
+                src="~/assets/images/icon/trophy_optimized.png"
+                class="card-prop-icon"
+              >
+            </td>
+            <td class="card-prop-value text-right pr-1">
+              {{ brawler.trophies }}
+            </td>
+            <td class="card-prop-label">
+              {{ $t('metric.trophies') }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-center">
+              <img
+                :src="brawler.power < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
+                class="card-prop-icon"
+              >
+            </td>
+            <td class="card-prop-value text-right pr-1">
+              {{ brawler.power }}
+            </td>
+            <td class="card-prop-label">
+              {{ $t('metric.power-level') }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div
       slot="actions"
@@ -99,23 +133,19 @@
         </div>
       </div>
     </div>
-  </brawler-card>
+  </card>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Brawler } from '~/model/Api'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import BrawlerCard from '~/components/brawler/brawler-card.vue'
 
 interface BrawlerWithId extends Brawler {
   id: string
 }
 
 export default Vue.extend({
-  components: {
-    BrawlerCard,
-  },
   props: {
     playerTag: {
       type: String,
@@ -175,6 +205,9 @@ export default Vue.extend({
     },
     title(): string {
       return capitalizeWords(this.brawler.name.toLowerCase())
+    },
+    capitalizeWords()  {
+      return capitalizeWords
     },
   },
 })
