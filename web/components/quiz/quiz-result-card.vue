@@ -14,7 +14,7 @@
       >
         <div slot="content" class="grid grid-cols-[1rem,1fr,1rem] items-center text-center gap-x-1">
           <span class="mt-1 font-semibold col-span-3">{{ oejtsAbbreviation }}</span>
-          <template v-for="(value, attr) in oejtsResult">
+          <template v-for="(value, attr) in result">
             <span :key="'l-' + attr">{{ attr[0].toUpperCase() }}</span>
             <div
               :key="'c-' + attr"

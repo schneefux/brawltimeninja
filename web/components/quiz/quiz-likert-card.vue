@@ -1,6 +1,6 @@
 <template>
   <form
-    v-if="started && page < pages"
+    v-if="page < pages"
     @submit.prevent="next"
   >
     <card
@@ -9,30 +9,34 @@
       class="mt-2"
       lg
     >
-      <ol
-        slot="content"
-        :start="page * pageSize + 1"
-      >
-        <li
-          v-for="question in oejtsScores.slice(pageSize * page, pageSize * (page+1))"
-          :key="question.id"
-          class="my-3 "
-        >
-          <div class="flex justify-center items-center space-x-1 text-sm">
-            <span class="!mr-2 flex-1 text-right">{{ $t('oejts.' + question.id + '.low') }}</span>
-            <b-radio
-              v-for="i in 5"
-              v-model="oejtsAnswers[question.id]"
-              :key="i"
-              :value="i"
-              :name="question.id"
-              required
-              primary
-            ></b-radio>
-            <span class="!ml-2 flex-1 text-left">{{ $t('oejts.' + question.id + '.high') }}</span>
-          </div>
-        </li>
-      </ol>
+      <div slot="content">
+        <transition name="slide-fade" mode="out-in">
+          <ol
+            :key="page"
+            :start="page * pageSize + 1"
+          >
+            <li
+              v-for="question in oejtsScores.slice(pageSize * page, pageSize * (page + 1))"
+              :key="question.id"
+              class="my-3"
+            >
+              <div class="flex justify-center items-center space-x-1 text-sm">
+                <span class="!mr-2 flex-1 text-right">{{ $t('oejts.' + question.id + '.low') }}</span>
+                <b-radio
+                  v-for="i in 5"
+                  v-model="oejtsAnswers[question.id]"
+                  :key="i"
+                  :value="i"
+                  :name="question.id"
+                  required
+                  primary
+                ></b-radio>
+                <span class="!ml-2 flex-1 text-left">{{ $t('oejts.' + question.id + '.high') }}</span>
+              </div>
+            </li>
+          </ol>
+        </transition>
+      </div>
 
       <b-button
         slot="actions"
@@ -41,7 +45,7 @@
         md
       >Next</b-button>
     </card>
-  </form>
+</form>
 </template>
 
 <script lang="ts">
@@ -100,3 +104,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-enter {
+  transform: translateX(2rem);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(-2rem);
+  opacity: 0;
+}
+</style>
