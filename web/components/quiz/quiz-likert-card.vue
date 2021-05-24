@@ -6,7 +6,7 @@
     <card
       :title="`Questions ${page+1}/${pages}`"
       subtitle="Where are you on this scale?"
-      class="mt-2"
+      class="mt-2 mx-auto"
       lg
     >
       <div slot="content">
@@ -104,19 +104,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.slide-fade-enter-active, .slide-fade-leave-active {
-  transition: all .3s ease;
-}
-
-.slide-fade-enter {
-  transform: translateX(2rem);
-  opacity: 0;
-}
-
-.slide-fade-leave-to {
-  transform: translateX(-2rem);
-  opacity: 0;
-}
-</style>

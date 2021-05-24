@@ -1,21 +1,23 @@
 <template>
   <page title="Brawl Stars Quiz">
-    <quiz-cta-card
-      v-if="!started"
-      class="mx-auto"
-    ></quiz-cta-card>
+    <transition name="slide-fade" mode="out-in">
+      <quiz-cta-card
+        v-if="step == 0"
+        class="mx-auto"
+      ></quiz-cta-card>
 
-    <quiz-likert-card
-      v-if="started && oejtsResult == undefined"
-      class="mx-auto"
-      @input="r => oejtsResult = r"
-    ></quiz-likert-card>
+      <quiz-likert-card
+        v-if="step == 1"
+        class="mx-auto"
+        @input="r => oejtsResult = r"
+      ></quiz-likert-card>
 
-    <quiz-result-card
-      v-if="oejtsResult != undefined"
-      :result="oejtsResult"
-      class="mx-auto"
-    ></quiz-result-card>
+      <quiz-result-card
+        v-if="step == 2"
+        :result="oejtsResult"
+        class="mx-auto"
+      ></quiz-result-card>
+    </transition>
   </page>
 </template>
 
@@ -50,13 +52,14 @@ export default Vue.extend({
     }
   },
   computed: {
-    started: {
-      get(): boolean {
-        return 'start' in this.$route.query
-      },
-      set(s: boolean) {
-        this.$router.push({ query: { start: s ? '' : undefined } })
+    step() {
+      if (!('start' in this.$route.query)) {
+        return 0
       }
+      if (this.oejtsResult == undefined) {
+        return 1
+      }
+      return 2
     },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,

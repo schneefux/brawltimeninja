@@ -68,6 +68,7 @@ export default {
   loading: { color: '#dc2626' }, // red-600
 
   css: [
+    '~/assets/css/transitions.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
 
