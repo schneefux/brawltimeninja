@@ -39,18 +39,21 @@
       include-meta
     >
       <template v-slot="data">
-        <v-dashboard v-bind="data">
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
-            <slot
-              v-if="name == 'dimensions' || name == 'visualisations' || name.startsWith('measurements.')"
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-dashboard>
+        <client-only>
+          <!-- FIXME SSR error -->
+          <v-dashboard v-bind="data">
+            <template
+              v-for="(_, name) in $scopedSlots"
+              v-slot:[name]="data"
+            >
+              <slot
+                v-if="name == 'dimensions' || name == 'visualisations' || name.startsWith('measurements.')"
+                :name="name"
+                v-bind="data"
+              ></slot>
+            </template>
+          </v-dashboard>
+        </client-only>
       </template>
     </c-query>
   </div>
