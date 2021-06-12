@@ -107,8 +107,8 @@
         tooltip
       >
         <template v-slot:tooltip>
-          <p>{{ $t('metric.accountRating.description') }}</p>
-          <ul>
+          <p class="mt-2">{{ $t('metric.accountRating.description') }}</p>
+          <ul class="mt-1 mb-2">
             <li
               v-for="(info, rating) in ratingPercentiles"
               :key="rating"

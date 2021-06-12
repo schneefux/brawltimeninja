@@ -12,14 +12,19 @@
       @click="tooltipOpen = !tooltipOpen"
     >?</b-button>
     <template v-slot:content>
-      <slot
-        v-if="tooltipOpen"
-        name="tooltip"
+      <lightbox
+        v-model="tooltipOpen"
       >
-        <p class="text-sm mb-1">
-          {{ tooltip }}
-        </p>
-      </slot>
+        <card sm>
+          <template v-slot:content>
+            <slot name="tooltip">
+              <p class="my-2">
+                {{ tooltip }}
+              </p>
+            </slot>
+          </template>
+        </card>
+      </lightbox>
       <slot name="value">
         <p class="text-center text-3xl font-bold text-yellow-400 mb-1">
           {{ value }}
