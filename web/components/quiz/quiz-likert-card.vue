@@ -5,7 +5,7 @@
   >
     <card
       :title="`Questions ${page+1}/${pages}`"
-      subtitle="Where are you on this scale?"
+      :subtitle="$t('oejts.intro')"
       class="mt-2 mx-auto"
       lg
     >
@@ -28,7 +28,6 @@
                   :key="i"
                   :value="i"
                   :name="question.id"
-                  required
                   primary
                 ></b-radio>
                 <span class="!ml-2 flex-1 text-left">{{ $t('oejts.' + question.id + '.high') }}</span>

@@ -5,17 +5,33 @@
   >
     <div
       slot="content"
-      class="flex flex-wrap"
+      class=""
     >
       <card
         elevation="2"
-        class="w-1/2"
         dense
       >
-        <div slot="content" class="grid grid-cols-[1rem,1fr,1rem] items-center text-center gap-x-1">
-          <span class="mt-1 font-semibold col-span-3">{{ oejtsAbbreviation }}</span>
+        <div
+          slot="content"
+          class="flex flex-col items-center"
+        >
+          <span class="mt-1 font-semibold">{{ mostSimilarBrawler.name }}</span>
+          <span class="whitespace-nowrap">{{ Math.round(mostSimilarBrawler.similarity * 100) }}% match</span>
+          <media-img
+            clazz="h-48 m-2"
+            :path="`/brawlers/${mostSimilarBrawler.id}/model`"
+          ></media-img>
+        </div>
+      </card>
+
+      <card
+        elevation="2"
+        dense
+      >
+        <div slot="content" class="grid grid-cols-[6rem,1fr,6rem] items-center text-center gap-x-1">
+          <span class="mt-1 col-span-3 font-semibold">{{ oejtsAbbreviation }}</span>
           <template v-for="(value, attr) in result">
-            <span :key="'l-' + attr">{{ attr[0].toUpperCase() }}</span>
+            <span :key="'l-' + attr" class="text-left">{{ oejtsMap[attr[0]] }}</span>
             <div
               :key="'c-' + attr"
               class="h-2 bg-gray-100 rounded relative"
@@ -28,32 +44,16 @@
                 }]"
               ></div>
             </div>
-            <span :key="'r-' + attr">{{ attr[1].toUpperCase() }}</span>
+            <span :key="'r-' + attr" class="text-right">{{ oejtsMap[attr[1]] }}</span>
           </template>
-          <span class="mt-1 col-span-3 text-sm">{{ oejtsNames }}</span>
         </div>
       </card>
 
-      <card
-        elevation="2"
-        class="w-1/2"
-        dense
-      >
-        <div
-          slot="content"
-          class="flex flex-col items-center"
-        >
-          <span class="mt-1 font-semibold">{{ mostSimilarBrawler.name }}</span>
-          <span class="whitespace-nowrap text-sm">({{ Math.round(mostSimilarBrawler.similarity * 100) }}% match)</span>
-          <media-img
-            clazz="h-24 m-2"
-            :path="`/brawlers/${mostSimilarBrawler.id}/model`"
-          ></media-img>
-        </div>
-      </card>
-
-      <p class="text-sm mt-2 mb-1">
-        This quiz tests the <a href="https://openpsychometrics.org/tests/OJTS/development/" rel="nofollow">Open Extended Jungian Type Scales</a> which is based on Jung's theory of psychological type.
+      <p class="mt-2 text-left text-sm mb-1">
+        The Open Extended Jungian Type Scales is a psychological test based on theories by Carl Jung.
+        The OEJTS measures four scales to calculate an overall type.
+        There is no best type, all types are considered equal.
+        Read more about the theory <b-button tag="a" xs dark href="https://simple.wikipedia.org/wiki/Myers-Briggs_Type_Indicator" target="_blank">on Wikipedia</b-button> and more about the OEJTS <b-button tag="a" xs dark href="https://openpsychometrics.org/tests/OJTS/development/" target="_blank">here</b-button>.
         Brawler personalities have been voted by the community.
       </p>
     </div>
@@ -87,19 +87,17 @@ export default Vue.extend({
         .join('')
         .toUpperCase()
     },
-    oejtsNames(): string {
-      return this.oejtsAbbreviation.toLowerCase().split('')
-        .filter(l => l != 'X')
-        .map(l => ({
-          i: 'Introversion',
-          e: 'Extraversion',
-          s: 'Sensing',
-          n: 'Intuition',
-          f: 'Feeling',
-          t: 'Thinking',
-          j: 'Judging',
-          p: 'Perceiving',
-        }[l])).join(', ')
+    oejtsMap(): Record<string, string> {
+      return {
+        i: 'Introversion',
+        e: 'Extraversion',
+        s: 'Sensing',
+        n: 'Intuition',
+        f: 'Feeling',
+        t: 'Thinking',
+        j: 'Judging',
+        p: 'Perceiving',
+      }
     },
     mostSimilarBrawler(): { name: string, id: string, similarity: number, scores: OEJTSEntry }|undefined {
       const scores = Object.entries(brawlerScores)

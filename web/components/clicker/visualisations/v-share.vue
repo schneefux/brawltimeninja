@@ -10,7 +10,7 @@
       sm
       @click="share()"
     >
-      Share Link
+      Share
     </b-button>
   </card>
 </template>
