@@ -1,6 +1,7 @@
 <template>
   <page>
     <card
+      v-if="club != undefined"
       :title="club.name"
       class="mx-auto"
       lg
@@ -57,64 +58,56 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaInfo } from 'vue-meta'
 import { capitalize } from '@/lib/util'
 import { Club } from '@/model/Brawlstars'
+import { defineComponent, ref, useContext, useFetch, useMeta, useRoute, wrapProperty } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    // TODO
-    const description = this.$tc('club.meta.description', 1, { club: this.club.name }) + ' ' + this.club.description
-    return {
-      title: this.club.name,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
+export default defineComponent({
+  head: {},
   meta: {
     title: 'Club',
     screen: 'profile',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      club: {} as Club,
-    }
-  },
-  computed: {
-    capitalize() {
-      return capitalize
-    },
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
+  setup() {
+    const { app: { i18n }, $http, $config, redirect } = useContext()
+    const route = useRoute()
+
+    const club = ref<Club>()
+    useFetch(async () => {
+      const tag = route.value.params.tag.toUpperCase()
+      if (tag != route.value.params.tag) {
+        redirect(`/club/${tag}`)
+      } else {
+        club.value = await $http.$get<Club>($config.apiUrl + `/api/club/${tag}`)
+      }
     })
-  },
-  async asyncData({ $http, $config, params, redirect }) {
-    const tag = params.tag.toUpperCase()
-    if (tag != params.tag) {
-      redirect(`/club/${tag}`)
-      return false
-    }
 
-    const club = await $http.$get<Club>($config.apiUrl + `/api/club/${tag}`)
+    useMeta(() => {
+      const description = club.value != undefined ? i18n.tc('club.meta.description', 1, { club: club.value.name }) + ' ' + club.value.description : ''
+      return {
+        title: club.value != undefined ? i18n.tc('club.meta.title', 1, { club: club.value.name }) : '',
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', name: 'og:description', content: description },
+        ],
+      }
+    })
 
-    return {
-      club,
-    }
-  },
-  methods: {
-    trackScroll(visible, entry, section) {
+    const trackScroll = (visible, entry, section) => {
       if (visible) {
-        this.$gtag.event('scroll', {
+        wrapProperty('$gtag', false)().event('scroll', {
           'event_category': 'club',
           'event_label': section,
         })
       }
-    },
+    }
+
+    return {
+      club,
+      trackScroll,
+      capitalize,
+    }
   },
 })
 </script>

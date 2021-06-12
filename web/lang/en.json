@@ -256,6 +256,7 @@
   "status.down.title": "Oh no!",
   "status.down.description": "No connection to Brawl Stars servers possible. It's not just you!",
   "status.check-twitter": "Check the official Brawl Stars Twitter feed to find out whether there is a maintenance ongoing:",
+  "club.meta.title": "{club} Brawl Stars Club",
   "club.meta.description": "{club} Brawl Stars Club.",
   "leaderboard.meta.title": "Brawl Stars {metric} Leaderboard",
   "leaderboard.meta.description": "Brawl Stars {metric} Leaderboard. Players ranked by most {metric}.",

@@ -167,7 +167,7 @@ export default Vue.extend({
 
         counter.textContent = Math.floor(hoursSpent).toString()
         Object.values(this.funStats).forEach((stat, index) => {
-          const funCounter = this.$refs['counter-funstats'][index] as HTMLElement
+          const funCounter = this.$refs['counter-funstats']![index] as HTMLElement
           funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
         })
 
