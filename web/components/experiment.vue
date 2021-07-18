@@ -17,10 +17,13 @@ export default Vue.extend({
       type: String,
       required: true
     },
+    debug: {
+      type: String
+    },
   },
   data() {
     return {
-      activeVariant: '0' as string,
+      activeVariant: this.debug || '0',
       callback: undefined as ((v: string) => void)|undefined,
     }
   },

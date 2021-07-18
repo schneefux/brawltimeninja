@@ -3,10 +3,7 @@
     title="Your Brawler Personality"
     lg
   >
-    <div
-      slot="content"
-      class=""
-    >
+    <div slot="content">
       <card
         elevation="2"
         dense
@@ -57,6 +54,13 @@
         Brawler personalities have been voted by the community.
       </p>
     </div>
+    <b-button
+      slot="actions"
+      class="mx-auto"
+      primary
+      md
+      @click="$emit('restart')"
+    >{{ $t('action.restart') }}</b-button>
   </card>
 </template>
 
@@ -64,6 +68,7 @@
 import Vue, { PropType } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import { mapMutations } from 'vuex'
 
 function similarity(o1: OEJTSEntry, o2: OEJTSEntry) {
   // use scalar product because o1 and o2 are already -1 +1 normalized
@@ -76,6 +81,9 @@ export default Vue.extend({
       type: Object as PropType<OEJTSEntry>,
       required: true
     },
+  },
+  mounted() {
+    this.setPersonalityTestResult(this.mostSimilarBrawler?.name)
   },
   computed: {
     oejtsAbbreviation(): string {
@@ -114,6 +122,11 @@ export default Vue.extend({
         scores: scores[0].score,
       }
     },
+  },
+  methods: {
+    ...mapMutations({
+      setPersonalityTestResult: 'setPersonalityTestResult',
+    })
   },
 })
 </script>

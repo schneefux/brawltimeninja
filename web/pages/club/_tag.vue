@@ -62,6 +62,7 @@ import { capitalize } from '@/lib/util'
 import { Club } from '@/model/Brawlstars'
 import { defineComponent, ref, useContext, useFetch, useMeta, useRoute, wrapProperty } from '@nuxtjs/composition-api'
 
+const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   head: {},
   meta: {
@@ -94,9 +95,10 @@ export default defineComponent({
       }
     })
 
+    const gtag = useGtag()
     const trackScroll = (visible, entry, section) => {
       if (visible) {
-        wrapProperty('$gtag', false)().event('scroll', {
+        gtag.event('scroll', {
           'event_category': 'club',
           'event_label': section,
         })

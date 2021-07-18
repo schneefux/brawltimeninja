@@ -329,6 +329,12 @@
   "cookie-consent.transfer": "To collect this information, some data will be shared with Cloudflare, Google Analytics, Google AdSense and Sentry. Your information will never be sold.",
   "cookie-consent.link": "Read the privacy policy or update your preferences:",
   "oejts": {
+    "title": "Brawl Stars Quiz",
+    "description": "Do the Open Extended Jungian Type Scale personality test to calculate your personality type. Find out which Brawler has the same personality as you do.",
+    "meta": {
+      "title": "Brawl Stars Quiz",
+      "description": "Do the Brawl Stars personality quiz to find out which Brawler you are. Finish this test and calculate your spirit Brawler."
+    },
     "intro": "Where are you on this scale?",
     "artisticScientific": {
       "low": "artistic",

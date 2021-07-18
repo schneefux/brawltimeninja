@@ -1,5 +1,6 @@
 <template>
-  <page title="Brawl Stars Quiz">
+  <page :title="$t('oejts.title')">
+    <p class="mb-4">{{ $t('oejts.description') }}</p>
     <transition name="slide-fade" mode="out-in">
       <quiz-cta-card
         v-if="step == 0"
@@ -9,73 +10,81 @@
       <quiz-likert-card
         v-if="step == 1"
         class="mx-auto"
-        @input="r => oejtsResult = r"
+        @input="r => setResult(r)"
       ></quiz-likert-card>
 
       <quiz-result-card
         v-if="step == 2"
         :result="oejtsResult"
         class="mx-auto"
+        @restart="restart()"
       ></quiz-result-card>
     </transition>
   </page>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaInfo } from 'vue-meta'
 import { OEJTSEntry } from '~/lib/oejts'
+import { computed, defineComponent, ref, useContext, useMeta, useRoute, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    // TODO
-    // keyword: "brawl stars quiz", "brawl stars test", "brawler personality", "spirit brawler"
-    const description = this.$tc('index.meta.description')
-
-    return {
-      title: this.$tc('index.meta.title'),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ],
-    }
-  },
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
+  head: {},
   meta: {
     title: 'Quiz',
     screen: 'profile',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      oejtsResult: undefined as OEJTSEntry|undefined,
-    }
-  },
-  computed: {
-    step() {
-      if (!('start' in this.$route.query)) {
+  setup() {
+    const { app: { i18n } } = useContext()
+
+    const route = useRoute()
+    const oejtsResult = ref<OEJTSEntry>()
+    const step = computed(() => {
+      if (!('start' in route.value.query)) {
         return 0
       }
-      if (this.oejtsResult == undefined) {
+      if (oejtsResult.value == undefined) {
         return 1
       }
       return 2
-    },
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-      cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
-    }),
-  },
-  fetchDelay: 0,
-  methods: {
-    trackScroll(visible, element, section) {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'home',
-          'event_label': section,
-        })
+    })
+
+    const gtag = useGtag()
+    const restart = () => {
+      oejtsResult.value = undefined
+      gtag.event('click', {
+        'event_category': 'oejts',
+        'event_label': 'restart',
+      })
+    }
+
+    const setResult = (r: OEJTSEntry) => {
+      oejtsResult.value = r
+      gtag.event('step', {
+        'event_category': 'oejts',
+        'event_label': 'result',
+      })
+    }
+
+    useMeta(() => {
+      const description = i18n.tc('oejts.meta.description')
+
+      return {
+        title: i18n.tc('oejts.meta.title'),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ],
       }
-    },
+    })
+
+    return {
+      oejtsResult,
+      setResult,
+      restart,
+      step,
+    }
   },
 })
 </script>

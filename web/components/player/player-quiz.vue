@@ -2,7 +2,7 @@
   <card
     :title="$t('player.quiz.title')"
     md
-    secondary
+    :secondary="highlighted"
    >
     <div
       slot="content"
@@ -289,6 +289,9 @@ export default Vue.extend({
     player: {
       type: Object as PropType<Player>,
       required: true
+    },
+    highlighted: {
+      type: Boolean
     },
   },
   data() {

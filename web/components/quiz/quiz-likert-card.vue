@@ -28,6 +28,12 @@
                   :key="i"
                   :value="i"
                   :name="question.id"
+                  :class="{
+                    'w-6 h-6': (i == 1 || i == 5),
+                    'w-5 h-5': (i == 2 || i == 4),
+                    'w-4 h-4': (i == 3),
+                  }"
+                  required
                   primary
                 ></b-radio>
                 <span class="!ml-2 flex-1 text-left">{{ $t('oejts.' + question.id + '.high') }}</span>
@@ -85,7 +91,7 @@ export default Vue.extend({
     next() {
       this.page++
       this.$gtag.event('step', {
-        'event_category': 'quiz2',
+        'event_category': 'oejts',
         'event_label': this.page.toString(),
         'value': this.page,
       })
