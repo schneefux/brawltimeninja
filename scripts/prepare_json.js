@@ -28,6 +28,7 @@ async function main() {
     const name = brawler.name
     const id = name.replace(/\.| /g, '_').toLowerCase()
     const outDir = outBase + '/brawlers/' + id + '/'
+    await fs.mkdir(outDir, { recursive: true })
 
     for (const lang of langs) {
       const dir = './json/' + lang
@@ -48,6 +49,7 @@ async function main() {
         console.log(characters.map(c => c.itemName))
         return null
       }
+
       const characterDescription = tids['TID_' + character.rawTID + '_DESC']
       const mainSkill = skills.find(s => s.name == character.weaponSkill)
       const superSkill = skills.find(s => s.name == character.ultimateSkill)
@@ -93,9 +95,13 @@ async function main() {
       }), {})
       const getSkillDescription = (c, s) =>
         (tids['TID_' + c.rawTID + '_DESC'] || '')
-          .replace(/<time>/g, s.activeTime != null ? (s.activeTime / 1000).toString() : '')
-          .replace(/<num>/g, s.msBetweenAttacks?.toString() || '')
+          .replace(/<time>/g, s?.activeTime != null ? (s?.activeTime / 1000).toString() : '')
+          .replace(/<num>/g, s?.msBetweenAttacks?.toString() || '')
           .replace(/\\n/g, '\n')
+      if (mainSkill == undefined) {
+        console.log('Could not find skill for ' + character.rawTID)
+        continue
+      }
       const mainDescription = getSkillDescription(mainCard, mainSkill)
       const superDescription = getSkillDescription(superCard, superSkill)
 
@@ -177,7 +183,6 @@ async function main() {
         gadgetDescriptions,
       }
 
-      await fs.mkdir(outDir, { recursive: true })
       if (lang == 'en') {
         // backward compat
         await fs.writeFile(outDir + '/info', JSON.stringify(brawlerInfo))
