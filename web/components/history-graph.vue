@@ -28,6 +28,17 @@
     <template v-slot:empty>
       <slot name="empty"></slot>
     </template>
+    <template v-slot:placeholder>
+      <card
+        v-bind="$attrs"
+        full-height
+        loading
+      >
+        <template v-slot:content>
+          <slot name="placeholder"></slot>
+        </template>
+      </card>
+    </template>
   </c-query>
 </template>
 

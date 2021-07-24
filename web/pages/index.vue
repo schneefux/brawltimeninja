@@ -273,7 +273,6 @@ export default Vue.extend({
       }
     },
     ...mapState({
-      player: (state: any) => state.player as Player,
       userTag: (state: any) => state.userTag as undefined|string,
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
@@ -308,8 +307,8 @@ export default Vue.extend({
 
       try {
         this.loading = true
-        await this.loadPlayer(this.cleanedTag)
-        this.addLastPlayer(this.player)
+        const player = await this.$http.$get<Player>(this.$config.apiUrl + `/api/player/${this.cleanedTag}`)
+        this.addLastPlayer(player)
       } catch (error) {
         if (error.response !== undefined && error.response.status === 404) {
           this.$gtag.event('search', {
@@ -357,9 +356,6 @@ export default Vue.extend({
     },
     ...mapMutations({
       addLastPlayer: 'addLastPlayer',
-    }),
-    ...mapActions({
-      loadPlayer: 'loadPlayer',
     }),
   },
 })

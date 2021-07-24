@@ -5,13 +5,14 @@
       'h-full': fullHeight,
     }]"
   >
-    <div
+    <shimmer
       ref="graph"
+      :loading="loading"
       :class="{
         'w-full': fullWidth,
         'h-full': fullHeight,
       }"
-    ></div>
+    ></shimmer>
 
     <b-button
       v-if="showDownload"
@@ -56,11 +57,12 @@ export default Vue.extend({
   },
   data() {
     return {
+      loading: false,
       result: undefined as Result|undefined,
     }
   },
-  async mounted() {
-    await this.refresh()
+  mounted() {
+    this.refresh()
   },
   destroyed() {
     this.cleanup()
@@ -80,7 +82,7 @@ export default Vue.extend({
     async download(ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
       background: gray900,
       width: 600*1.25,
-      height: 314*1.25,
+      height: 315*1.25,
     }) {
       if (this.result == undefined) {
         return
@@ -113,6 +115,7 @@ export default Vue.extend({
         return
       }
 
+      this.loading = true
       this.cleanup()
 
       const defaults: VisualizationSpec = {
@@ -162,11 +165,13 @@ export default Vue.extend({
 
       const spec = Object.assign(<VisualizationSpec>{}, this.spec, defaults)
 
-      this.result = await embed(this.$refs.graph as HTMLElement, spec, {
+      this.result = await embed((this.$refs.graph as Vue).$el as HTMLElement, spec, {
         actions: false,
         // canvas: better performance, svg: easily zoomable
         renderer: 'svg',
       })
+
+      this.loading = false
     },
   },
   watch: {

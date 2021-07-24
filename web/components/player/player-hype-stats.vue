@@ -6,6 +6,7 @@
     >
       <bigstat
         :title="$t('metric.hours-spent')"
+        :loading="player == undefined"
         class="relative"
         md
       >
@@ -27,8 +28,8 @@
           >
             <player-sharepic
               :player="player"
-              :winRate="winRate"
-              :total-battles="totalBattles"
+              :winRate="battleTotals.winRate"
+              :total-battles="battleTotals.picks"
               :account-rating="accountRating"
             ></player-sharepic>
           </sharepic>
@@ -60,7 +61,7 @@
       expand-on-desktop
     >
       <bigstat
-        v-if="player.club.tag != undefined"
+        v-if="player != undefined && player.club.tag != undefined"
         :title="$t('club')"
       >
         <div
@@ -78,7 +79,8 @@
 
       <bigstat
         :title="$t('metric.trophies')"
-        :value="player.trophies.toLocaleString()"
+        :value="player != undefined ? player.trophies.toLocaleString() : '?'"
+        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
@@ -86,24 +88,28 @@
         :title="$t('metric.potentialTrophies')"
         :value="Math.floor(trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
+        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
-        v-if="winRate != 0"
+        v-if="battleTotals.picks > 0"
         :title="$t('metric.recentWinrate')"
-        :value="Math.floor(winRate * 100) + '%'"
-        :tooltip="$t('metric.recentWinrate.description', { battles: totalBattles })"
+        :value="Math.floor(battleTotals.winRate * 100) + '%'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: battleTotals.picks })"
+        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
-        v-if="trophyRate != 0"
+        v-if="battleTotals.picks > 0"
         :title="$t('metric.averageTrophies')"
-        :value="trophyRate.toFixed(2)"
+        :value="battleTotals.trophyChange.toFixed(2)"
+        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
         :title="$t('metric.accountRating')"
         :value="accountRating"
+        :loading="player == undefined"
         tooltip
       >
         <template v-slot:tooltip>
@@ -130,8 +136,7 @@ import { ratingPercentiles } from '~/lib/util'
 export default Vue.extend({
   props: {
     player: {
-      type: Object as PropType<Player>,
-      required: true
+      type: Object as PropType<Player|undefined>,
     },
     battleTotals: {
       type: Object as PropType<BattleTotalRow>,
@@ -146,79 +151,33 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      const playerHours = Math.max(this.player.hoursSpent, 1)
-      const animationDuration = 3000
-      const frameDuration = 50
-      const k = Math.log(playerHours) / (animationDuration / frameDuration)
-
-      let hoursSpent = 0
-      const hoursTimer = () => setTimeout(() => {
-        hoursSpent += k * (playerHours - hoursSpent)
-        if (Math.floor(hoursSpent) >= playerHours - 1) {
-          hoursSpent = playerHours
-        }
-
-        const counter = this.$refs['counter-hours'] as HTMLElement
-        if (counter == undefined) {
-          // user navigated to a different page
-          return
-        }
-
-        counter.textContent = Math.floor(hoursSpent).toString()
-        Object.values(this.funStats).forEach((stat, index) => {
-          const funCounter = this.$refs['counter-funstats']![index] as HTMLElement
-          funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
-        })
-
-        if (Math.floor(hoursSpent) < playerHours) {
-          hoursTimer()
-        }
-      }, frameDuration)
-      hoursTimer()
-    })
+    this.$nextTick(() => this.startCounter())
   },
   computed: {
     ratingPercentiles() {
       return ratingPercentiles
     },
-    brawlersUnlocked(): number {
+    brawlersUnlocked(): number|string {
+      if (this.player == undefined) {
+        return '?'
+      }
       return Object.keys(this.player.brawlers).length
     },
-    trophiesGoal(): number {
+    trophiesGoal(): number|string {
+      if (this.player == undefined) {
+        return '?'
+      }
       const brawlerTrophies = [...Object.values(this.player.brawlers)]
         .map(({ trophies }) => trophies)
       brawlerTrophies.sort()
       const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
       return medBrawlerTrophies * this.totalBrawlers
     },
-    trophyRate(): number {
-      if (this.battleTotals.trophyChange != undefined) {
-        return this.battleTotals.trophyChange || 0
-      }
-
-      const trophyChanges = this.player.battles
-        .map((battle) => battle.trophyChange!)
-        .filter((trophyChange) => trophyChange != undefined)
-      if (trophyChanges.length == 0) {
-        return 0
-      }
-      return trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
-    },
-    winRate(): number {
-      if (this.battleTotals.winRate != undefined) {
-        return this.battleTotals.winRate
-      }
-      if (this.player.battles.length == 0) {
-        return 0
-      }
-      return this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
-    },
-    totalBattles(): number {
-      return this.battleTotals.picks || this.player.battles.length
-    },
     accountRating(): string {
-      const medTrophies = this.trophiesGoal / this.totalBrawlers
+      if (this.player == undefined) {
+        return '?'
+      }
+      const medTrophies = this.trophiesGoal as number / this.totalBrawlers
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
       for (const key in ratingPercentiles) {
@@ -257,7 +216,45 @@ export default Vue.extend({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     })
   },
+  watch: {
+    player: 'startCounter',
+  },
   methods: {
+    startCounter() {
+      if (this.player == undefined) {
+        return
+      }
+
+      const playerHours = Math.max(this.player!.hoursSpent, 1)
+      const animationDuration = 3000
+      const frameDuration = 50
+      const k = Math.log(playerHours) / (animationDuration / frameDuration)
+
+      let hoursSpent = 0
+      const hoursTimer = () => setTimeout(() => {
+        hoursSpent += k * (playerHours - hoursSpent)
+        if (Math.floor(hoursSpent) >= playerHours - 1) {
+          hoursSpent = playerHours
+        }
+
+        const counter = this.$refs['counter-hours'] as HTMLElement
+        if (counter == undefined) {
+          // user navigated to a different page
+          return
+        }
+
+        counter.textContent = Math.floor(hoursSpent).toString()
+        Object.values(this.funStats).forEach((stat, index) => {
+          const funCounter = this.$refs['counter-funstats']![index] as HTMLElement
+          funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
+        })
+
+        if (Math.floor(hoursSpent) < playerHours) {
+          hoursTimer()
+        }
+      }, frameDuration)
+      hoursTimer()
+    },
     sharepicDone() {
       this.$gtag.event('click', {
         'event_category': 'profile',

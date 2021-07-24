@@ -1,33 +1,18 @@
 <template>
-  <dl class="mt-3 mb-6 bigstat-wrapper ">
-    <div class="flex flex-wrap justify-center items-center mt-2 w-full xl:mx-6 xl:w-auto">
-      <dd class="w-1/2 text-right pr-2 font-bold text-3xl text-yellow-500">
-        {{ Math.floor(winRate * totalBattles) }}
-      </dd>
-      <dt class="w-1/2 text-left pl-2 text-xl">
-        {{ $t('metric.wins' )}}
-      </dt>
-    </div>
-
-    <div class="flex flex-wrap justify-center items-center mt-2 w-full xl:mx-6 xl:w-auto">
-      <dd class="w-1/2 text-right pr-2 font-bold text-3xl text-yellow-500">
-        {{ Math.floor((1 - winRate) * totalBattles) }}
-      </dd>
-      <dt class="w-1/2 text-left pl-2 text-xl">
-        {{ $t('metric.losses' )}}
-      </dt>
-    </div>
-  </dl>
+  <list-of-stats
+    class="mt-3 mb-6"
+    :stats="stats"
+  ></list-of-stats>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Battle } from '~/model/Api'
 
 export interface BattleTotalRow {
   picks: number
   winRate: number
   trophyChange: number
+  brawler: string
 }
 
 export default Vue.extend({
@@ -36,19 +21,14 @@ export default Vue.extend({
       type: Object as PropType<BattleTotalRow>,
       required: true
     },
-    battles: {
-      type: Array as PropType<Battle[]>,
-      default: []
-    },
   },
   computed: {
-    totalBattles(): number {
-      return this.battleTotals.picks || this.battles.length
-    },
-    winRate(): number {
-      return this.battleTotals.winRate ||
-        (this.battles.length == 0 ? 0 : this.battles.filter((battle) => battle.victory).length / this.battles.length)
-    },
+    stats(): Record<string, number> {
+      return {
+        wins: Math.floor(this.battleTotals.winRate * this.battleTotals.picks),
+        losses: Math.floor((1 - this.battleTotals.winRate) * this.battleTotals.picks),
+      }
+    }
   },
 })
 </script>

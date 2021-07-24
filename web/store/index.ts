@@ -38,9 +38,6 @@ export const state = () => ({
     } ],
   tagPattern: '^[0289PYLQGRJCUV]{3,}$',
   lastPlayers: [] as string[],
-  player: {
-    tag: '',
-  }, // cached API response
   userTag: undefined as undefined|string, // personal tag (last searched)
   personalityTestResult: undefined,
   cookiesAllowed: false,
@@ -71,9 +68,6 @@ export const getters: GetterTree<RootState, RootState> = {
 }
 
 export const mutations: MutationTree<RootState> = {
-  setPlayer(state, player) {
-    state.player = player
-  },
   addLastPlayer(state, player) {
     const clone = obj => JSON.parse(JSON.stringify(obj))
 
@@ -120,18 +114,6 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  async loadPlayer({ state, commit }, playerTag) {
-    if (playerTag === state.player.tag) {
-      return
-    }
-
-    const player = await this.$http.$get((<any>this).$config.apiUrl + `/api/player/${playerTag}`)
-    commit('setPlayer', player)
-  },
-  async refreshPlayer({ state, commit }) {
-    const player = await this.$http.$get((<any>this).$config.apiUrl + `/api/player/${state.player.tag}`)
-    commit('setPlayer', player)
-  },
   async install({ state, commit }) {
     const pwaSupported = state.installPrompt !== undefined
     if (pwaSupported) {

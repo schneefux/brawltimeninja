@@ -1,25 +1,8 @@
 <template>
-  <dl
-    :class="['flex flex-col md:flex-row md:flex-wrap md:justify-center', {
-      'flex-wrap justify-center': !tease,
-      'h-28 md:h-10 overflow-hidden': tease,
-    }]"
-  >
-    <card
-      v-for="(value, name) in stats"
-      :key="name"
-      elevation="2"
-      dense
-    >
-      <div
-        slot="content"
-        class="text-lg flex"
-      >
-        <dd class="text-yellow-400 font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
-        <dt class="ml-2 w-full overflow-hidden">{{ $t('metric.' + name) }}</dt>
-      </div>
-    </card>
-  </dl>
+  <list-of-stats
+    :class="{ 'h-28 md:h-10 overflow-hidden': tease }"
+    :stats="stats"
+  ></list-of-stats>
 </template>
 
 <script lang="ts">

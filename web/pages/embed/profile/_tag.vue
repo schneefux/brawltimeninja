@@ -12,7 +12,6 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
 import { ratingPercentiles, tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
 
@@ -33,34 +32,18 @@ export default Vue.extend({
   data() {
     return {
       player: {} as Player,
-      battleTotals: {} as BattleTotalRow,
+      winRate: 0,
+      totalBattles: 0,
     }
   },
   computed: {
-    winRate(): number {
-      if (this.battleTotals.picks > 0) {
-        return this.battleTotals.winRate
-      }
-      if (this.player.battles.length == 0) {
-        return 0
-      }
-      return this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
-    },
-    totalBattles(): number {
-      return this.battleTotals.picks || this.player.battles.length
-    },
-    brawlersUnlocked(): number {
-      return Object.keys(this.player.brawlers).length
-    },
-    trophiesGoal(): number {
+    accountRating(): string {
       const brawlerTrophies = [...Object.values(this.player.brawlers)]
         .map(({ trophies }) => trophies)
       brawlerTrophies.sort()
       const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-      return medBrawlerTrophies * this.totalBrawlers
-    },
-    accountRating(): string {
-      const medTrophies = this.trophiesGoal / this.totalBrawlers
+      const trophiesGoal = medBrawlerTrophies * this.totalBrawlers
+      const medTrophies = trophiesGoal / this.totalBrawlers
       for (const key in ratingPercentiles) {
         if (medTrophies <= ratingPercentiles[key][1]) {
           return key
@@ -81,8 +64,8 @@ export default Vue.extend({
 
     return RegExp(store.state.tagPattern).test(tag)
   },
-  async asyncData({ params, $http, $config, $cube }): Promise<{ player: Player, battleTotals: BattleTotalRow }> {
-    const player = await $http.$get($config.apiUrl + `/api/player/${params.tag}`)
+  async asyncData({ params, $http, $config, $cube }) {
+    const player = await $http.$get<Player>($config.apiUrl + `/api/player/${params.tag}`)
 
     const battleData = await $cube.query({
       cubeId: 'battle',
@@ -96,9 +79,15 @@ export default Vue.extend({
       comparingSlices: {},
     })
 
+    const winRate = battleData.data[0].measurementsRaw.winRate as number
+      || (player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length)
+    const totalBattles = battleData.data[0].measurementsRaw.picks as number
+      || player.battles.length
+
     return {
-      player: player as Player,
-      battleTotals: battleData.data[0].measurementsRaw as any as BattleTotalRow,
+      player,
+      winRate,
+      totalBattles,
     }
   },
 })

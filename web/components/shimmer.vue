@@ -1,15 +1,15 @@
-<template functional>
+<template>
   <component
-    :is="props.tag"
-    :class="[data.class, data.staticClass, {
-      'relative overflow-hidden shimmer': props.loading,
-    }]"
-    :style="[{
-      width: props.widthPx != undefined ? props.widthPx + 'px' : undefined,
-      height: props.heightPx != undefined ? props.heightPx + 'px' : undefined,
-    }, data.staticStyle]"
+    :is="tag"
+    :class="{
+      'relative overflow-hidden shimmer': loading,
+    }"
+    :style="{
+      width: widthPx != undefined ? widthPx + 'px' : undefined,
+      height: heightPx != undefined ? heightPx + 'px' : undefined,
+    }"
   >
-    <slot v-if="!props.loading"></slot>
+    <slot v-if="!loading"></slot>
   </component>
 </template>
 
@@ -18,7 +18,6 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'Shimmer',
-  functional: true,
   props: {
     tag: {
       type: String,
@@ -37,7 +36,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
 .shimmer::before {
   content: '';
   @apply block absolute h-full top-0;
