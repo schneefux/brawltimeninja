@@ -177,7 +177,7 @@ export default Vue.extend({
   },
   computed: {
     stats(): Stats {
-      if (this.data?.measurementsRaw?.picks != undefined) {
+      if (this.data?.measurementsRaw?.picks != undefined && this.data.measurementsRaw.picks > 0) {
         const wins = Math.floor((this.data.measurementsRaw.winRate as number) * (this.data.measurementsRaw.picks as number))
         const losses = (this.data.measurementsRaw.picks as number) - wins
         return {
