@@ -38,7 +38,7 @@ export default Vue.extend({
   },
   computed: {
     winRate(): number {
-      if (this.battleTotals.winRate != undefined) {
+      if (this.battleTotals.picks > 0) {
         return this.battleTotals.winRate
       }
       if (this.player.battles.length == 0) {
@@ -98,7 +98,7 @@ export default Vue.extend({
 
     return {
       player: player as Player,
-      battleTotals: (battleData.data[0]?.measurementsRaw.picks != undefined ? battleData.data[0].measurementsRaw : {}) as any as BattleTotalRow,
+      battleTotals: battleData.data[0].measurementsRaw as any as BattleTotalRow,
     }
   },
 })
