@@ -108,16 +108,16 @@ if __name__ == '__main__':
                 for j in i_keys:
                     i[j] = cleanup(i[j])
 
-            if fn == 'maps.csv':
-                # make maps look cool
-                rp_data = {}
-                for i in data:
-                    if i['group']:
-                        latest_grp = i['group']
-                        rp_data[i['group']] = [i['data']]
-                    else:
-                        rp_data[latest_grp].append(i['data'])
-                data = {i: rp_data[i] for i in sorted(rp_data.keys())}
+#            if fn == 'maps.csv':
+#                # make maps look cool
+#                rp_data = {}
+#                for i in data:
+#                    if i['group']:
+#                        latest_grp = i['group']
+#                        rp_data[i['group']] = [i['data']]
+#                    else:
+#                        rp_data[latest_grp].append(i['data'])
+#                data = {i: rp_data[i] for i in sorted(rp_data.keys())}
 
             # languages
             if fn != 'maps.csv':
