@@ -281,6 +281,9 @@ export default Vue.extend({
         { hid: 'og:image', property: 'og:image', content: this.$config.renderUrl + `/embed/profile/${this.player.tag}` },
         { hid: 'og:image:alt', property: 'og:image:alt', content: `${this.player.name} Brawl Stars Profile share image` },
         { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+        // 2x the .sharepic size
+        { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
+        { hid: 'og:image:height', property: 'og:image:height', content: '630' },
       ]
     }
   },

@@ -107,6 +107,6 @@ export default Vue.extend({
 <style lang="postcss" scoped>
 .sharepic {
   width: 600px;
-  height: 314px;
+  height: 315px;
 }
 </style>
