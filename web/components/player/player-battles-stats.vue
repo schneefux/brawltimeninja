@@ -12,7 +12,6 @@ export interface BattleTotalRow {
   picks: number
   winRate: number
   trophyChange: number
-  brawler: string
 }
 
 export default Vue.extend({

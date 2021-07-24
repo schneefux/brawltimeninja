@@ -362,39 +362,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const tag = this.$route.params.tag
-    this.player = await this.$http.$get<Player>(this.$config.apiUrl + `/api/player/${tag}`)
-
-    // calculate battleTotals from battle log in case cube has no data
-    const picks = this.player.battles.length
-    const trophyChanges = this.player.battles
-      .map((battle) => battle.trophyChange!)
-      .filter((trophyChange) => trophyChange != undefined)
-    const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
-    const winRate = this.player.battles.length == 0 ? 0 : this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
-
-    this.battleTotals = {
-      picks,
-      trophyChange,
-      winRate,
-      brawler: '?', // TODO
-    } as BattleTotalRow
-
-    const battleData = await this.$cube.query({
-      cubeId: 'battle',
-      dimensionsIds: [],
-      measurementsIds: ['picks', 'winRate', 'trophyChange', 'brawler'],
-      slices: {
-        playerId: [tagToId(tag)],
-      },
-      sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
-    })
-
-    if (battleData.data[0].measurementsRaw.picks > 0) {
-      this.battleTotals = battleData.data[0].measurementsRaw as any as BattleTotalRow
-    }
+    await Promise.all([this.refreshPlayer(), this.refreshBattleTotals()])
   },
   methods: {
     async refreshTimer() {
@@ -407,6 +375,43 @@ export default Vue.extend({
     async refresh() {
       await this.$fetch()
       this.refreshSecondsLeft = 180
+    },
+    async refreshPlayer() {
+      this.player = await this.$http.$get<Player>(this.$config.apiUrl + `/api/player/${this.tag}`)
+
+      if (this.battleTotals.picks <= 25) {
+        // calculate battleTotals from battle log in case cube has no data
+        const picks = this.player.battles.length
+        const trophyChanges = this.player.battles
+          .map((battle) => battle.trophyChange!)
+          .filter((trophyChange) => trophyChange != undefined)
+        const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+        const winRate = this.player.battles.length == 0 ? 0 : this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
+
+        this.battleTotals = {
+          picks,
+          trophyChange,
+          winRate,
+          brawler: '?', // TODO
+        } as BattleTotalRow
+      }
+    },
+    async refreshBattleTotals() {
+      const battleData = await this.$cube.query({
+        cubeId: 'battle',
+        dimensionsIds: [],
+        measurementsIds: ['picks', 'winRate', 'trophyChange'],
+        slices: {
+          playerId: [tagToId(this.tag)],
+        },
+        sortId: 'picks',
+        comparing: false,
+        comparingSlices: {},
+      })
+
+      if (battleData.data[0].measurementsRaw.picks > 0) {
+        this.battleTotals = battleData.data[0].measurementsRaw as any as BattleTotalRow
+      }
     },
     trackScroll(visible, entry, section) {
       if (visible) {
