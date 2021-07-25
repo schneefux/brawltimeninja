@@ -1,6 +1,6 @@
 <template>
   <list-of-stats
-    :class="{ 'h-28 md:h-10 overflow-hidden': tease }"
+    :class="{ '!block h-28 md:h-10 overflow-hidden': tease }"
     :stats="stats"
   ></list-of-stats>
 </template>
