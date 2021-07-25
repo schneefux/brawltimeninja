@@ -197,7 +197,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
@@ -273,6 +273,7 @@ export default Vue.extend({
       }
     },
     ...mapState({
+      player: (state: any) => state.player as Player,
       userTag: (state: any) => state.userTag as undefined|string,
       tagPattern: (state: any) => state.tagPattern as string,
       lastPlayers: (state: any) => state.lastPlayers,
@@ -307,8 +308,8 @@ export default Vue.extend({
 
       try {
         this.loading = true
-        const player = await this.$http.$get<Player>(this.$config.apiUrl + `/api/player/${this.cleanedTag}`)
-        this.addLastPlayer(player)
+        await this.$store.dispatch('loadPlayer', this.cleanedTag)
+        this.addLastPlayer(this.player)
       } catch (error) {
         if (error.response !== undefined && error.response.status === 404) {
           this.$gtag.event('search', {

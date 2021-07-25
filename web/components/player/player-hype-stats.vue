@@ -6,7 +6,6 @@
     >
       <bigstat
         :title="$t('metric.hours-spent')"
-        :loading="player == undefined"
         class="relative"
         md
       >
@@ -28,8 +27,8 @@
           >
             <player-sharepic
               :player="player"
-              :winRate="battleTotals.winRate"
-              :total-battles="battleTotals.picks"
+              :winRate="playerTotals.winRate"
+              :total-battles="playerTotals.picks"
               :account-rating="accountRating"
             ></player-sharepic>
           </sharepic>
@@ -80,7 +79,6 @@
       <bigstat
         :title="$t('metric.trophies')"
         :value="player != undefined ? player.trophies.toLocaleString() : '?'"
-        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
@@ -88,28 +86,24 @@
         :title="$t('metric.potentialTrophies')"
         :value="Math.floor(trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
-        :loading="player == undefined"
       ></bigstat>
 
       <bigstat
-        v-if="battleTotals.picks > 0"
+        v-if="playerTotals.picks > 0"
         :title="$t('metric.recentWinrate')"
-        :value="Math.floor(battleTotals.winRate * 100) + '%'"
-        :tooltip="$t('metric.recentWinrate.description', { battles: battleTotals.picks })"
-        :loading="player == undefined"
+        :value="Math.floor(playerTotals.winRate * 100) + '%'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
       ></bigstat>
 
       <bigstat
-        v-if="battleTotals.picks > 0"
+        v-if="playerTotals.picks > 0"
         :title="$t('metric.averageTrophies')"
-        :value="battleTotals.trophyChange.toFixed(2)"
-        :loading="player == undefined"
+        :value="playerTotals.trophyChange.toFixed(2)"
       ></bigstat>
 
       <bigstat
         :title="$t('metric.accountRating')"
         :value="accountRating"
-        :loading="player == undefined"
         tooltip
       >
         <template v-slot:tooltip>
@@ -130,16 +124,17 @@
 import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
 import { Player } from '@/model/Api'
-import { BattleTotalRow } from './player-battles-stats.vue'
 import { ratingPercentiles } from '~/lib/util'
+import { PlayerTotals } from '~/store'
 
 export default Vue.extend({
   props: {
     player: {
-      type: Object as PropType<Player|undefined>,
+      type: Object as PropType<Player>,
+      required: true
     },
-    battleTotals: {
-      type: Object as PropType<BattleTotalRow>,
+    playerTotals: {
+      type: Object as PropType<PlayerTotals>,
       required: false
     },
   },
@@ -158,15 +153,9 @@ export default Vue.extend({
       return ratingPercentiles
     },
     brawlersUnlocked(): number|string {
-      if (this.player == undefined) {
-        return '?'
-      }
       return Object.keys(this.player.brawlers).length
     },
     trophiesGoal(): number|string {
-      if (this.player == undefined) {
-        return '?'
-      }
       const brawlerTrophies = [...Object.values(this.player.brawlers)]
         .map(({ trophies }) => trophies)
       brawlerTrophies.sort()
@@ -174,9 +163,6 @@ export default Vue.extend({
       return medBrawlerTrophies * this.totalBrawlers
     },
     accountRating(): string {
-      if (this.player == undefined) {
-        return '?'
-      }
       const medTrophies = this.trophiesGoal as number / this.totalBrawlers
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
@@ -221,10 +207,6 @@ export default Vue.extend({
   },
   methods: {
     startCounter() {
-      if (this.player == undefined) {
-        return
-      }
-
       const playerHours = Math.max(this.player!.hoursSpent, 1)
       const animationDuration = 3000
       const frameDuration = 50

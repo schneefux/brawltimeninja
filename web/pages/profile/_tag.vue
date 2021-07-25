@@ -18,20 +18,13 @@
         once: true,
       }"
     >
-      <div class="absolute w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 right-0 z-0">
-        <shimmer
-          v-if="player == undefined"
-          class="w-full h-full"
-          loading
-      ></shimmer>
-        <media-img
-          v-if="player != undefined"
-          :path="`/avatars/${player.icon.id}`"
-        ></media-img>
-      </div>
+      <media-img
+        :path="`/avatars/${player.icon.id}`"
+        clazz="absolute w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 right-0 z-0"
+      ></media-img>
       <h1 class="text-4xl font-semibold relative z-10">
         {{ $t('player.statistics-for') }}
-        <span class="text-yellow-400">{{ player == undefined ? '...' : player.name }}</span>
+        <span class="text-yellow-400">{{ player.name }}</span>
         <span
           v-if="tag == 'V8LLPPC'"
           class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
@@ -41,7 +34,7 @@
 
     <player-hype-stats
       :player="player"
-      :battle-totals="battleTotals"
+      :player-totals="playerTotals"
       class="mt-6"
     ></player-hype-stats>
 
@@ -54,7 +47,6 @@
       ></history-graph>
       <card
         v-else
-        :loading="player == undefined"
         class="h-16 md:h-32"
         full-height
         md
@@ -69,10 +61,7 @@
         </div>
       </card>
 
-      <experiment
-        v-if="player != undefined"
-        experiment-id="6tVxIoWeQAqhjqUk4ow8Sw"
-      >
+      <experiment experiment-id="6tVxIoWeQAqhjqUk4ow8Sw">
         <player-quiz
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'quiz'),
@@ -122,85 +111,83 @@
       />
     </client-only>
 
-    <template v-if="player != undefined">
-      <player-teaser-card
-        v-slot="props"
-        :title="$t('player.records.title')"
-        :description="$t('player.records.description')"
+    <player-teaser-card
+      v-slot="props"
+      :title="$t('player.records.title')"
+      :description="$t('player.records.description')"
+    >
+      <player-lifetime
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'lifetime'),
+          once: true,
+        }"
+        :player="player"
+        :tease="!props.open"
+      ></player-lifetime>
+
+      <player-percentiles
+        v-show="props.open"
+        :player="player"
+      ></player-percentiles>
+    </player-teaser-card>
+
+    <div class="my-1 md:my-4 mx-1 md:ml-4 flex items-center">
+      <h2 class="text-2xl font-semibold">
+        Info!
+      </h2>
+      <p class="text-xs ml-3">
+        {{ $t('player.disclaimer', { battles: playerTotals.picks }) }}
+      </p>
+    </div>
+
+    <player-teaser-card
+      v-if="playerTotals.picks > 0"
+      v-slot="props"
+      :pages="Math.ceil(playerTotals.picks / 6)"
+      :title="$tc('battle-log', 1)"
+      :description="$t('player.battle-log.description')"
+    >
+      <player-battles-squares
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'battles'),
+          once: true,
+        }"
+        :battles="player.battles"
+        :tease="!props.open"
+      ></player-battles-squares>
+
+      <div
+        v-show="props.open"
+        class="w-full md:w-auto md:ml-auto mt-2 flex items-center"
       >
-        <player-lifetime
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'lifetime'),
-            once: true,
-          }"
-          :player="player"
-          :tease="!props.open"
-        ></player-lifetime>
-
-        <player-percentiles
-          v-show="props.open"
-          :player="player"
-        ></player-percentiles>
-      </player-teaser-card>
-
-      <div class="my-1 md:my-4 mx-1 md:ml-4 flex items-center">
-        <h2 class="text-2xl font-semibold">
-          Info!
-        </h2>
-        <p class="text-xs ml-3">
-          {{ $t('player.disclaimer', { battles: battleTotals.picks }) }}
-        </p>
+        <span class="text-sm text-grey-lighter">
+          {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
+        </span>
+        <b-button
+          class="ml-auto md:ml-4"
+          sm
+          primary
+          @click="refresh"
+        >
+          {{ $t('action.refresh') }}
+        </b-button>
       </div>
 
-      <player-teaser-card
-        v-if="battleTotals.picks > 0"
-        v-slot="props"
-        :pages="Math.ceil(battleTotals.picks / 6)"
-        :title="$tc('battle-log', 1)"
-        :description="$t('player.battle-log.description')"
-      >
-        <player-battles-squares
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'battles'),
-            once: true,
-          }"
-          :battles="player.battles"
-          :tease="!props.open"
-        ></player-battles-squares>
+      <player-battles-stats
+        v-show="props.open"
+        :player-totals="playerTotals"
+      ></player-battles-stats>
 
-        <div
-          v-show="props.open"
-          class="w-full md:w-auto md:ml-auto mt-2 flex items-center"
-        >
-          <span class="text-sm text-grey-lighter">
-            {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
-          </span>
-          <b-button
-            class="ml-auto md:ml-4"
-            sm
-            primary
-            @click="refresh"
-          >
-            {{ $t('action.refresh') }}
-          </b-button>
-        </div>
+      <player-battles
+        v-show="props.open"
+        :player="player"
+        :limit="(props.page || 1) * 6"
+      ></player-battles>
+    </player-teaser-card>
 
-        <player-battles-stats
-          v-show="props.open"
-          :battle-totals="battleTotals"
-        ></player-battles-stats>
-
-        <player-battles
-          v-show="props.open"
-          :player="player"
-          :limit="(props.page || 1) * 6"
-        ></player-battles>
-      </player-teaser-card>
-
-      <install-card
-        class="mx-auto"
-      ></install-card>
-    </template>
+    <install-card
+      class="mx-auto"
+    ></install-card>
 
     <client-only>
       <adsense
@@ -213,39 +200,37 @@
       />
     </client-only>
 
-    <template v-if="player != undefined">
-      <player-teaser-card
-        v-slot="props"
-        :title="$tc('mode', 2)"
-        :description="$t('player.modes.description')"
-      >
-        <player-mode-winrates
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'gamemodes'),
-            once: true,
-          }"
-          :player="player"
-          :battles="player.battles"
-          :tease="!props.open"
-          :enable-clicker-stats="enableClickerStats"
-          :elevation="2"
-        ></player-mode-winrates>
+    <player-teaser-card
+      v-slot="props"
+      :title="$tc('mode', 2)"
+      :description="$t('player.modes.description')"
+    >
+      <player-mode-winrates
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gamemodes'),
+          once: true,
+        }"
+        :player="player"
+        :battles="player.battles"
+        :tease="!props.open"
+        :enable-clicker-stats="enableClickerStats"
+        :elevation="2"
+      ></player-mode-winrates>
 
-        <div
-          v-show="props.open"
-          class="mt-2 w-full flex justify-end"
+      <div
+        v-show="props.open"
+        class="mt-2 w-full flex justify-end"
+      >
+        <b-button
+          :to="localePath('/tier-list/map')"
+          md
+          primary
+          prefetch
         >
-          <b-button
-            :to="localePath('/tier-list/map')"
-            md
-            primary
-            prefetch
-          >
-            {{ $t('action.open.tier-list.maps') }}
-          </b-button>
-        </div>
-      </player-teaser-card>
-    </template>
+          {{ $t('action.open.tier-list.maps') }}
+        </b-button>
+      </div>
+    </player-teaser-card>
 
     <client-only>
       <adsense
@@ -258,21 +243,19 @@
       />
     </client-only>
 
-    <template v-if="player != undefined">
-      <player-teaser-card
-        v-slot="props"
-        :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
-        :title="$tc('brawler', 2)"
-        :description="$t('player.brawlers.description')"
-      >
-        <player-brawlers
-          :player="player"
-          :tease="!props.open"
-          :limit="props.page * 15"
-          :enable-clicker-stats="enableClickerStats"
-        ></player-brawlers>
-      </player-teaser-card>
-    </template>
+    <player-teaser-card
+      v-slot="props"
+      :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
+      :title="$tc('brawler', 2)"
+      :description="$t('player.brawlers.description')"
+    >
+      <player-brawlers
+        :player="player"
+        :tease="!props.open"
+        :limit="props.page * 15"
+        :enable-clicker-stats="enableClickerStats"
+      ></player-brawlers>
+    </player-teaser-card>
 
     <page-section
       title="Guides from the Blog"
@@ -288,15 +271,14 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { BattleTotalRow } from '@/components/player/player-battles-stats.vue'
-import { tagToId } from '~/lib/util'
-import { Player } from '~/model/Api'
+import { Player } from '~/model/Brawlstars'
+import { PlayerTotals } from '~/store'
 
 export default Vue.extend({
   head(): MetaInfo {
-    const description = this.player == undefined ? '' : this.$t('player.meta.description', { name: this.player.name }) as string
+    const description = this.$t('player.meta.description', { name: this.player.name }) as string
+    const name = this.player.name
     const tag = this.$route.params.tag
-    const name = this.player?.name || tag
     return {
       title: this.$t('player.meta.title', { name }) as string,
       meta: [
@@ -319,13 +301,6 @@ export default Vue.extend({
   data() {
     return {
       refreshSecondsLeft: 180,
-      player: undefined as undefined|Player,
-      battleTotals: {
-        picks: 0,
-        winRate: 0,
-        trophyChange: 0,
-        brawler: '?',
-      } as BattleTotalRow,
     }
   },
   computed: {
@@ -334,16 +309,15 @@ export default Vue.extend({
     },
     enableClickerStats(): boolean {
       // do not send queries to backend if user has no battle history in database
-      return this.battleTotals.picks > 25
+      return this.playerTotals.picks > 25
     },
     topBrawlerId(): string {
-      if (this.player == undefined) {
-        return ''
-      }
       const brawlerIds = [...Object.keys(this.player.brawlers)]
       return brawlerIds[0]
     },
     ...mapState({
+      player: (state: any) => state.player as Player,
+      playerTotals: (state: any) => state.playerTotals as PlayerTotals,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
@@ -360,9 +334,12 @@ export default Vue.extend({
   mounted() {
     setTimeout(() => this.refreshTimer(), 15 * 1000)
   },
-  fetchDelay: 0,
-  async fetch() {
-    await Promise.all([this.refreshPlayer(), this.refreshBattleTotals()])
+  async asyncData({ store, params }) {
+    if (store.state.player == undefined || store.state.player.tag != params.tag) {
+      await store.dispatch('loadPlayer', params.tag)
+    }
+
+    return {}
   },
   methods: {
     async refreshTimer() {
@@ -373,45 +350,8 @@ export default Vue.extend({
       setTimeout(() => this.refreshTimer(), 15 * 1000)
     },
     async refresh() {
-      await this.$fetch()
+      await this.$store.dispatch('loadPlayer', this.$route.params.tag)
       this.refreshSecondsLeft = 180
-    },
-    async refreshPlayer() {
-      this.player = await this.$http.$get<Player>(this.$config.apiUrl + `/api/player/${this.tag}`)
-
-      if (this.battleTotals.picks <= 25) {
-        // calculate battleTotals from battle log in case cube has no data
-        const picks = this.player.battles.length
-        const trophyChanges = this.player.battles
-          .map((battle) => battle.trophyChange!)
-          .filter((trophyChange) => trophyChange != undefined)
-        const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
-        const winRate = this.player.battles.length == 0 ? 0 : this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
-
-        this.battleTotals = {
-          picks,
-          trophyChange,
-          winRate,
-          brawler: '?', // TODO
-        } as BattleTotalRow
-      }
-    },
-    async refreshBattleTotals() {
-      const battleData = await this.$cube.query({
-        cubeId: 'battle',
-        dimensionsIds: [],
-        measurementsIds: ['picks', 'winRate', 'trophyChange'],
-        slices: {
-          playerId: [tagToId(this.tag)],
-        },
-        sortId: 'picks',
-        comparing: false,
-        comparingSlices: {},
-      })
-
-      if (battleData.data[0].measurementsRaw.picks > 0) {
-        this.battleTotals = battleData.data[0].measurementsRaw as any as BattleTotalRow
-      }
     },
     trackScroll(visible, entry, section) {
       if (visible) {

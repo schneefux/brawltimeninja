@@ -1,5 +1,7 @@
 import { event } from 'vue-gtag'
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
+import { tagToId } from '~/lib/util'
+import { Player } from '~/model/Api'
 
 function detectAndroid() {
   return /android/i.test(navigator.userAgent)
@@ -16,6 +18,12 @@ function detectIOS() {
   ].includes(navigator.platform)
   // iPad on iOS 13 detection
   || (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+}
+
+export interface PlayerTotals {
+  picks: number
+  winRate: number
+  trophyChange: number
 }
 
 export const state = () => ({
@@ -48,6 +56,8 @@ export const state = () => ({
   isApp: false,
   installPrompt: undefined as any,
   testGroup: undefined as undefined|string,
+  player: undefined as undefined|Player,
+  playerTotals: undefined as undefined|PlayerTotals,
 })
 
 export type RootState = ReturnType<typeof state>
@@ -111,6 +121,12 @@ export const mutations: MutationTree<RootState> = {
   setPersonalityTestResult(state, result) {
     state.personalityTestResult = result
   },
+  setPlayer(state, player) {
+    state.player = player
+  },
+  setPlayerTotals(state, totals) {
+    state.playerTotals = totals
+  },
 }
 
 export const actions: ActionTree<RootState, RootState> = {
@@ -144,6 +160,42 @@ export const actions: ActionTree<RootState, RootState> = {
       })
       this.$router.push('/install/ios')
       return
+    }
+  },
+  async loadPlayer({ state, commit }, tag) {
+    const player = await this.$http.$get<Player>((<any>this).$config.apiUrl + `/api/player/${tag}`)
+    commit('setPlayer', player)
+
+    const battleData = await this.$cube.query({
+      cubeId: 'battle',
+      dimensionsIds: [],
+      measurementsIds: ['picks', 'winRate', 'trophyChange'],
+      slices: {
+        playerId: [tagToId(tag)],
+      },
+      sortId: 'picks',
+      comparing: false,
+      comparingSlices: {},
+    })
+
+    if (battleData.data[0].measurementsRaw.picks > 0) {
+      const totals = battleData.data[0].measurementsRaw as any as PlayerTotals
+      commit('setPlayerTotals', totals)
+    } else {
+      // calculate player totals from battle log
+      const picks = player.battles.length
+      const trophyChanges = player.battles
+        .map((battle) => battle.trophyChange!)
+        .filter((trophyChange) => trophyChange != undefined)
+      const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+      const winRate = player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length
+
+      const totals = {
+        picks,
+        trophyChange,
+        winRate,
+      } as PlayerTotals
+      commit('setPlayerTotals', totals)
     }
   },
 }

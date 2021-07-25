@@ -7,25 +7,20 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-
-export interface BattleTotalRow {
-  picks: number
-  winRate: number
-  trophyChange: number
-}
+import { PlayerTotals } from '~/store'
 
 export default Vue.extend({
   props: {
-    battleTotals: {
-      type: Object as PropType<BattleTotalRow>,
+    playerTotals: {
+      type: Object as PropType<PlayerTotals>,
       required: true
     },
   },
   computed: {
     stats(): Record<string, number> {
       return {
-        wins: Math.floor(this.battleTotals.winRate * this.battleTotals.picks),
-        losses: Math.floor((1 - this.battleTotals.winRate) * this.battleTotals.picks),
+        wins: Math.floor(this.playerTotals.winRate * this.playerTotals.picks),
+        losses: Math.floor((1 - this.playerTotals.winRate) * this.playerTotals.picks),
       }
     }
   },
