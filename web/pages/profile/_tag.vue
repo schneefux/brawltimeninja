@@ -301,6 +301,7 @@ export default Vue.extend({
   data() {
     return {
       refreshSecondsLeft: 180,
+      timer: undefined as undefined|number,
     }
   },
   computed: {
@@ -332,7 +333,10 @@ export default Vue.extend({
     return RegExp(store.state.tagPattern).test(tag)
   },
   mounted() {
-    setTimeout(() => this.refreshTimer(), 15 * 1000)
+    this.timer = window.setTimeout(() => this.refreshTimer(), 15 * 1000)
+  },
+  destroyed() {
+    window.clearTimeout(this.timer)
   },
   async asyncData({ store, params }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {
@@ -347,7 +351,7 @@ export default Vue.extend({
       if (this.refreshSecondsLeft <= 0) {
         await this.refresh()
       }
-      setTimeout(() => this.refreshTimer(), 15 * 1000)
+      this.timer = window.setTimeout(() => this.refreshTimer(), 15 * 1000)
     },
     async refresh() {
       await this.$store.dispatch('loadPlayer', this.$route.params.tag)
