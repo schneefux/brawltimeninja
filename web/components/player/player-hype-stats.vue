@@ -138,13 +138,6 @@ export default Vue.extend({
       required: false
     },
   },
-  data() {
-    return {
-      showAll: false,
-      ratingHelpOpen: false,
-      recentHelpOpen: false,
-    }
-  },
   mounted() {
     this.$nextTick(() => this.startCounter())
   },
@@ -202,40 +195,41 @@ export default Vue.extend({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     })
   },
-  watch: {
-    player: 'startCounter',
-  },
   methods: {
     startCounter() {
-      const playerHours = Math.max(this.player!.hoursSpent, 1)
+      const playerHours = Math.max(this.player.hoursSpent, 1)
       const animationDuration = 3000
-      const frameDuration = 50
-      const k = Math.log(playerHours) / (animationDuration / frameDuration)
 
-      let hoursSpent = 0
-      const hoursTimer = () => setTimeout(() => {
-        hoursSpent += k * (playerHours - hoursSpent)
-        if (Math.floor(hoursSpent) >= playerHours - 1) {
-          hoursSpent = playerHours
-        }
-
+      const setCounters = (hoursSpent: number) => {
         const counter = this.$refs['counter-hours'] as HTMLElement
         if (counter == undefined) {
-          // user navigated to a different page
+          // not rendered yet
           return
         }
-
         counter.textContent = Math.floor(hoursSpent).toString()
         Object.values(this.funStats).forEach((stat, index) => {
           const funCounter = this.$refs['counter-funstats']![index] as HTMLElement
           funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
         })
+      }
 
-        if (Math.floor(hoursSpent) < playerHours) {
-          hoursTimer()
+      let animationStart = undefined as number|undefined
+      const animateHours = () => window.requestAnimationFrame((timestamp) => {
+        if (animationStart == undefined) {
+          animationStart = timestamp
         }
-      }, frameDuration)
-      hoursTimer()
+        if (timestamp - animationStart >= animationDuration) {
+          return
+        }
+
+        const easeOutCubic = 1 - Math.pow(1 - (timestamp - animationStart) / animationDuration, 3)
+        const hoursSpent = playerHours * easeOutCubic
+        setCounters(hoursSpent)
+
+        animateHours()
+      })
+
+      animateHours()
     },
     sharepicDone() {
       this.$gtag.event('click', {
