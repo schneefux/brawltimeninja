@@ -55,7 +55,7 @@ export default Vue.extend({
       type: String,
     },
     id: {
-      type: Number
+      type: [Number, String]
     },
   },
   computed: {

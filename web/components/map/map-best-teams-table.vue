@@ -47,7 +47,7 @@ export default Vue.extend({
       type: String
     },
     id: {
-      type: Number
+      type: [Number, String]
     },
     limit: {
       type: Number,
