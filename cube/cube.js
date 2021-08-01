@@ -5,6 +5,13 @@ module.exports = {
   driverFactory: () => new ClickhouseDriver({
     readOnly: true,
     database: 'brawltime',
+    queryOptions: {
+      readonly: 1,
+      join_use_nulls: 1,
+      max_threads: 1,
+      output_format_json_quote_64bit_integers: 1,
+      allow_experimental_window_functions: 1,
+    },
   }),
   apiSecret: process.env.CUBEJS_API_SECRET || 'secret',
   telemetry: false,
