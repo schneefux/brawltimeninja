@@ -281,7 +281,7 @@ const plugin: Plugin = (context, inject) => {
           const total = totalSet != undefined ? totalSet.tablePivot()[0] : {}
           const measurement = m.type == 'quantitative' && m.percentage ? (value as number) / parseFloat(total[id] as string) : value
           entry.measurements[m.id] = this.format(m, measurement)
-          entry.measurementsRaw[m.id] = value
+          entry.measurementsRaw[m.id] = measurement
         }
 
         let id = ''
