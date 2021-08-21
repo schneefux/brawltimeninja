@@ -13,7 +13,7 @@ export default {
   head: {
     titleTemplate: '%s - Brawl Time Ninja',
     script: [
-      { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', async: true },
+      { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6856963757796636', async: true, crossorigin: 'anonymous' },
       {
         innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
         async: false,
