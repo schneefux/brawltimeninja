@@ -7,8 +7,9 @@
       :value="(value.powerplay || [])[0]"
       dark
       sm
-      @input="v => $parent.$emit('slice', { powerplay: [v] })"
+      @input="v => $parent.$emit('slice', { powerplay: v != '' ? [v] : [] })"
     >
+      <option value="">All Battles</option>
       <option value="false">Regular Battles</option>
       <option value="true">Power League</option>
     </b-select>
