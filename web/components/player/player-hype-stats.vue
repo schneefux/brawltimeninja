@@ -15,23 +15,20 @@
         >
           <p
             ref="counter-hours"
-            class="text-6xl font-bold text-yellow-400 mb-4"
+            class="text-6xl font-bold text-yellow-400 mb-2"
           >
             ...
           </p>
 
-          <sharepic
-            @done="sharepicDone"
-            class="mb-2"
-            debug
-          >
-            <player-sharepic
-              :player="player"
-              :winRate="playerTotals.winRate"
-              :total-battles="playerTotals.picks"
-              :account-rating="accountRating"
-            ></player-sharepic>
-          </sharepic>
+          <b-button
+            :href="sharepicUrl"
+            target="_blank"
+            tag="a"
+            class="inline-block mb-1"
+            secondary
+            sm
+            @click="sharepicTriggered"
+          >{{ $t('action.share') }}</b-button>
         </div>
       </bigstat>
 
@@ -191,6 +188,9 @@ export default Vue.extend({
         },
       }
     },
+    sharepicUrl(): string {
+      return this.$config.renderUrl + `/embed/profile/${this.player.tag}`
+    },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     })
@@ -231,7 +231,7 @@ export default Vue.extend({
 
       animateHours()
     },
-    sharepicDone() {
+    sharepicTriggered() {
       this.$gtag.event('click', {
         'event_category': 'profile',
         'event_label': 'share',
