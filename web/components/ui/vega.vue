@@ -81,6 +81,7 @@ export default Vue.extend({
     },
     async download(ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
       background: gray900,
+      // 1.91:1
       width: 600*1.25,
       height: 315*1.25,
     }) {
@@ -88,27 +89,19 @@ export default Vue.extend({
         return
       }
 
-      const oldBackground = this.result.view.background()
-      const oldWidth = this.result.view.width()
-      const oldHeight = this.result.view.height()
-
       this.result.view.background(opts.background)
-      // 1.91:1
       this.result.view.width(opts.width)
       this.result.view.height(opts.height)
 
       const imageUrl = await this.result.view.toImageURL(ext, scaleFactor)
+      // restore old background and sizes
+      this.refresh()
+
       const downloader = document.createElement('a')
       downloader.href = imageUrl
       downloader.target = '_blank'
       downloader.download = 'export.' + ext
       downloader.click()
-
-      // reset background and sizes
-      this.result.view.background(oldBackground)
-      this.result.view.width(oldWidth)
-      this.result.view.height(oldHeight)
-      this.result.view.runAsync() // image render has replaced the image
     },
     async refresh() {
       if (!process.client) {
