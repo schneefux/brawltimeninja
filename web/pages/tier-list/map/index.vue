@@ -96,7 +96,7 @@ export default Vue.extend({
         json: formatAsJsonLd({
           id: event.id,
           map: event.map,
-          mode: event.mode,
+          mode: this.$t('mode.' + event.mode, 'en') as string,
           start: event.start,
           end: event.end,
         }, this.$config.mediaUrl),
