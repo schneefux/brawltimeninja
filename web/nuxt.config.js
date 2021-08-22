@@ -131,19 +131,20 @@ export default {
     // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
     // auth token is an organization integration auth token (developer settings)
     // with project write, release admin and org read access
-    config: {
-      ignoreErrors: [/frameElement/],
-      release: 'brawltimeninja@' + process.env.GIT_REV,
-    },
-    disabled: process.env.SENTRY_DISABLED || process.env.NODE_ENV == 'development' || process.env.SENTRY_DSN == undefined,
-    publishRelease: true,
-    sourceMapStyle: 'hidden-source-map',
+    publishRelease: process.env.NODE_ENV == 'production',
+    sourceMapStyle: 'source-map',
+    /*
+    // manually configure release for herokuish build
     webpackConfig: {
       setCommits: {
         repo: 'schneefux/brawltimeninja',
         commit: process.env.GIT_REV,
       },
     },
+    config: {
+      release: 'brawltimeninja@' + process.env.GIT_REV,
+    },
+    */
     // requires @sentry/tracing
     // enable for performance metrics
     /*
