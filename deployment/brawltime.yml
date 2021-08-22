@@ -1,0 +1,85 @@
+version: '3.7'
+
+services:
+  web:
+    image: ghcr.io/schneefux/brawltime-web:latest
+    build:
+      context: ./web
+      args:
+        - API_URL=http://api/
+        - CLICKER_URL=http://clicker/
+        - CUBE_URL=http://cube/
+        - MEDIA_URL=http://media/
+        - RENDER_URL=http://render/
+    ports:
+      - 3000:80
+    environment:
+      API_URL: http://api/
+      CLICKER_URL: http://clicker/
+      CUBE_URL: http://cube/
+      MEDIA_URL: http://media/
+      RENDER_URL: http://render/
+    env_file: ./.env
+  api:
+    image: ghcr.io/schneefux/brawltime-api:latest
+    build: ./api
+    ports:
+      - 3001:80
+    environment:
+      PORT: 80
+      BRAWLSTARS_TOKEN: "${BRAWLSTARS_TOKEN}"
+      BRAWLAPI_TOKEN: "${BRAWLAPI_TOKEN}"
+      BRAWLSTARS_URL: "${BRAWLSTARS_URL}"
+      CACHE_PATH: /tmp/brawltime-api
+      CLICKER_URL: http://clicker/clicker
+      # DD_AGENT_HOST:
+    env_file: ./.env
+  media:
+    image: ghcr.io/schneefux/brawltime-media:latest
+    build: ./media
+    ports:
+      - 3003:80
+    environment:
+      # TODO
+      ASSET_DIR: /assets
+      PORT: 80
+    env_file: ./.env
+  clicker:
+    image: ghcr.io/schneefux/brawltime-clicker:latest
+    build: ./clicker
+    ports:
+      - 3004:80
+    environment:
+      PORT: 80
+      CLICKHOUSE_HOST: clickhouse
+      # DD_AGENT_HOST:
+    env_file: ./.env
+  clickhouse:
+    image: yandex/clickhouse-server:21.7-alpine
+    ports:
+      - 8123:8123
+      - 9000:9000
+    # volumes
+    ulimits:
+      nofile: 262144:262144
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+  datadog:
+    image: datadog/agent
+#    labels:
+#      com.datadoghq.ad.check_names: '["docker", "nginx", "redisdb", "clickhouse"]'
+#      com.datadoghq.ad.init_configs: '[{}, {}, {}, {}, {}]'
+#      com.datadoghq.ad.instances: '[{}, { "nginx_status_url": "http://${config.networking.domain}:81/nginx_status/" }, { "host": "${config.networking.domain}", "port": 6379 }, { "server": "${config.networking.domain}", "db": "brawltime" }]'
+    environment:
+      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: 1
+      #DD_API_KEY:
+    ports:
+      - 8125:8125/udp
+      - 5555:5555
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+

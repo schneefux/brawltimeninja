@@ -1,0 +1,7 @@
+#cloud-config
+runcmd:
+  - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
+  - ufw allow OpenSSH
+  - ufw allow "Nginx Full"
+  - ufw enable
+  - docker swarm init --advertise-addr ens10
