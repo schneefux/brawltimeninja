@@ -33,7 +33,7 @@
         </tr>
         <tr
           v-for="r in pageRows"
-          :key="r[idKey]"
+          :key="r.key"
         >
           <td
             v-if="ranked"
@@ -124,6 +124,7 @@ export default Vue.extend({
       const offset = this.page * (this.pageSize || 0)
       const pageRows = this.pageSize == undefined ? this.rows : this.rows.slice(offset, (this.page+1)*this.pageSize)
       return pageRows.map((r, index) => ({
+        key: r[this.idKey],
         index: offset + index,
         row: r,
         fields: this.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
