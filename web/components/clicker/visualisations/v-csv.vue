@@ -44,7 +44,7 @@ export default Vue.extend({
       ).join(',')
       const body = this.data.map(e =>
         (<(string|number)[]>[]).concat(
-          this.dimensions.map(d => e.dimensionsRaw[d.id][d.column]),
+          this.dimensions.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
           this.measurements.map(m => e.measurementsRaw[m.id]),
         ).join(',')
       ).join('\n')
