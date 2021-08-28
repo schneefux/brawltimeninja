@@ -1,6 +1,6 @@
 <template>
   <dl
-    class="flex flex-col md:flex-row md:flex-wrap md:justify-center flex-wrap justify-center"
+    class="flex flex-col md:flex-row md:flex-wrap md:justify-center"
   >
     <card
       v-for="(value, name) in stats"
