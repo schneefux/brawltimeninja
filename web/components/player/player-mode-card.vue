@@ -156,8 +156,6 @@ export default Vue.extend({
         playerId: [tagToId(this.playerTag)],
         mode: [this.mode],
       },
-      comparing: false,
-      comparingSlices: {},
     })
 
     this.data = data.data[0]

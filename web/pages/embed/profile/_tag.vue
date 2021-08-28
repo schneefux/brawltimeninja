@@ -75,8 +75,6 @@ export default Vue.extend({
         playerId: [tagToId(params.tag)],
       },
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const winRate = battleData.data[0].measurementsRaw.winRate as number

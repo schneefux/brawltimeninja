@@ -121,8 +121,6 @@ export default Vue.extend({
       dimensionsIds: [],
       measurementsIds: ['eventId', 'timestamp'],
       sortId: 'timestamp',
-      comparing: false,
-      comparingSlices: {},
     }, 1)
     if (events.data.length == 0) {
       return error({ statusCode: 404, message: 'Map not found' })

@@ -28,7 +28,7 @@ export interface EventMetadata {
 interface Cube {
   cubejsApi: CubejsApi
   config: Config // TODO move plugin to module, make this configurable
-  query(state: State, limit?: number, includeMeta?: boolean): Promise<CubeResponse>
+  query(state: State, limit?: number): Promise<CubeResponse>
   queryActiveEvents(): Promise<EventMetadata[]>,
   queryActiveEvents<T extends EventMetadata>(measures: string[], slices: Slices, maxage: number): Promise<T[]>,
   queryAllModes(): Promise<string[]>
@@ -64,7 +64,7 @@ const plugin: Plugin = (context, inject) => {
   inject('cube', <Cube>{
     cubejsApi,
     config,
-    async query(state, limit = undefined, includeMeta = false) {
+    async query(state, limit = undefined) {
       if (!(state.cubeId in this.config)) {
         console.error('Invalid cubeId ' + state.cubeId)
         return
@@ -124,7 +124,6 @@ const plugin: Plugin = (context, inject) => {
       const queryMeasures = (<string[]>[]).concat(
         measurements.map(m => cube.id + '.' + m.id + '_measure'),
         ...dimensions.map(d => d.additionalMeasures.map(m => cube.id + '.' + m + '_measure')),
-        ...(includeMeta ? cube.metaColumns.map(m => cube.id + '.' + m + '_measure') : []),
       )
       const queryDimensions = dimensions.map(d => cube.id + '.' + d.id + '_dimension')
 
@@ -144,17 +143,10 @@ const plugin: Plugin = (context, inject) => {
         limit,
       })
 
-      const needTotals = measurements.some(m => m.percentage)
-      const totalData = needTotals ? await cubejsApi.load({
-        measures: queryMeasures,
-        dimensions: [],
-        filters: querySlices,
-      }) : undefined
-
-      let data = context.$clicker.mapToMetaGridEntry(cube, dimensions, measurements, rawData, totalData, includeMeta ? cube.metaColumns : [])
+      let data = context.$clicker.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
 
       // TODO refactor this - remove comparison mode from query level and move it to visualisation level
-      if (state.comparing) {
+      if (state.comparingSlices != undefined) {
         const queryComparingSlices = mapSlices(state.comparingSlices)
 
         const comparingRawData = await cubejsApi.load({
@@ -165,15 +157,7 @@ const plugin: Plugin = (context, inject) => {
           limit,
         })
 
-        const comparingTotalData = needTotals ? await cubejsApi.load({
-          measures: queryMeasures,
-          dimensions: [],
-          filters: queryComparingSlices,
-          order: queryOrder,
-          limit,
-        }) : undefined
-
-        const comparingData = context.$clicker.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData, comparingTotalData, [])
+        const comparingData = context.$clicker.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData, [])
 
         // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
         let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]
@@ -204,8 +188,6 @@ const plugin: Plugin = (context, inject) => {
           ...slices,
         },
         sortId: 'timestamp',
-        comparing: false,
-        comparingSlices: {},
       }, 10)
 
       const lastEvents = events.data
@@ -247,8 +229,6 @@ const plugin: Plugin = (context, inject) => {
           season: [limit.toISOString().slice(0, 10)],
         },
         sortId: 'season',
-        comparing: false,
-        comparingSlices: {},
       })
 
       return data.data
@@ -271,8 +251,6 @@ const plugin: Plugin = (context, inject) => {
           season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
         },
         sortId: 'picks',
-        comparing: false,
-        comparingSlices: {},
       })
       return modes.data.map(row => row.dimensionsRaw.mode.mode)
     },
@@ -288,8 +266,6 @@ const plugin: Plugin = (context, inject) => {
           } : {}),
         },
         sortId: 'picks',
-        comparing: false,
-        comparingSlices: {},
       })
       return maps.data.map(e => ({
         battle_event_id: e.measurementsRaw.eventId,
@@ -305,8 +281,6 @@ const plugin: Plugin = (context, inject) => {
           season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
         },
         sortId: 'picks',
-        comparing: false,
-        comparingSlices: {},
       })
       return brawlers.data.map(b => b.dimensionsRaw.brawler.brawler)
     },

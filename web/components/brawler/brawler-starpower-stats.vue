@@ -55,8 +55,6 @@ export default Vue.extend({
       dimensionsIds: [singular],
       measurementsIds: ['winRate'],
       sortId: 'timestamp',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const dataWithout = await this.$cube.query({
@@ -68,8 +66,6 @@ export default Vue.extend({
       dimensionsIds: [singular],
       measurementsIds: ['winRate'],
       sortId: 'timestamp',
-      comparing: false,
-      comparingSlices: {},
     })
 
     this.data = dataWith.data.map(r => ({

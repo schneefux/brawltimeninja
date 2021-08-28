@@ -3,18 +3,9 @@
     <c-dashboard
       v-model="state"
       class="mt-2"
+      configurator
+      slicer
     >
-      <template v-slot:dimensions="data">
-        <d-brawler v-bind="data"></d-brawler>
-        <d-team v-bind="data"></d-team>
-        <d-mode v-bind="data"></d-mode>
-        <d-map v-bind="data"></d-map>
-        <d-season v-bind="data"></d-season>
-        <d-player v-bind="data"></d-player>
-      </template>
-      <template v-slot:[`measurements.brawler`]="data">
-        <m-brawler v-bind="data"></m-brawler>
-      </template>
       <template v-slot:slices="data">
         <s-season v-bind="data"></s-season>
         <s-mode-map v-bind="data"></s-mode-map>
@@ -28,12 +19,35 @@
         <s-player-name v-bind="data"></s-player-name>
         <s-player-tag v-bind="data"></s-player-tag>
       </template>
-      <template v-slot:visualisations="data">
-        <v-sample-size v-bind="data"></v-sample-size>
-        <v-last-update v-bind="data"></v-last-update>
-        <v-moe v-bind="data"></v-moe>
-        <v-gini v-bind="data"></v-gini>
-        <v-measure-description v-bind="data"></v-measure-description>
+
+      <template v-slot:totals="data">
+        <div class="flex">
+          <v-sample-size v-bind="data"></v-sample-size>
+          <v-last-update v-bind="data"></v-last-update>
+          <v-measure-description v-bind="data"></v-measure-description>
+        </div>
+      </template>
+
+      <template v-slot="data">
+        <v-dashboard v-bind="data">
+          <template v-slot:visualisations="data">
+            <v-moe v-bind="data"></v-moe>
+            <v-gini v-bind="data"></v-gini>
+          </template>
+
+          <template v-slot:dimensions="data">
+            <d-brawler v-bind="data"></d-brawler>
+            <d-team v-bind="data"></d-team>
+            <d-mode v-bind="data"></d-mode>
+            <d-map v-bind="data"></d-map>
+            <d-season v-bind="data"></d-season>
+            <d-player v-bind="data"></d-player>
+          </template>
+
+          <template v-slot:[`measurements.brawler`]="data">
+            <m-brawler v-bind="data"></m-brawler>
+          </template>
+        </v-dashboard>
       </template>
     </c-dashboard>
   </page-dashboard>

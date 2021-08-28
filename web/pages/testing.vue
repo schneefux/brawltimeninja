@@ -32,8 +32,6 @@ export default Vue.extend({
       dimensionsIds: ['mode', 'map'],
       measurementsIds: ['eventId'],
       sortId: 'timestamp',
-      comparingSlices: {},
-      comparing: false,
     })
     console.log(events)
 

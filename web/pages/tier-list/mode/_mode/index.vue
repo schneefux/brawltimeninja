@@ -195,8 +195,6 @@ export default Vue.extend({
       dimensionsIds: ['map'],
       measurementsIds: ['eventId', 'picks', 'timestamp'],
       sortId: 'timestamp',
-      comparing: false,
-      comparingSlices: {},
     })
 
     this.maps = events.data

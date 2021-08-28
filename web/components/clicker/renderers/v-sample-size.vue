@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="data.length > 0 && data[0].meta.picks != undefined"
+    v-if="show"
     v-bind="$attrs"
     title="Sample Size"
     size="w-32"
@@ -45,8 +45,11 @@ export default Vue.extend({
     },
   },
   computed: {
+    show(): boolean {
+      return this.data.length > 0 && (this.data[0].meta.picks != undefined || this.data[0].measurementsRaw.picks != undefined)
+    },
     sample(): number {
-      return this.data.reduce((agg, e) => agg + parseInt(e.meta.picks as string), 0)
+      return this.data.reduce((agg, e) => agg + parseInt((e.measurementsRaw.picks ?? e.meta.picks) as string), 0)
     },
     sampleFormatted(): string {
       return formatSI(this.sample, 2)

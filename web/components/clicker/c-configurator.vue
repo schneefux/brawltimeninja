@@ -5,7 +5,7 @@
       class="flex flex-wrap items-center py-1"
     >
       <div class="grid grid-cols-12-1fr gap-y-3 items-center">
-        <h1 class="inline md:text-xl font-semibold mr-4">
+        <h1 class="inline font-semibold mr-4">
           Source
         </h1>
 
@@ -26,58 +26,12 @@
           </b-select>
         </div>
 
-        <span class="font-semibold mr-4">
-          Metric
-        </span>
-
-        <div class="flex flex-wrap gap-y-1 gap-x-1">
-          <b-select
-            v-for="index in (showAllMeasurements ? 1 : numMeasurements)"
-            :key="index"
-            :value="showAllMeasurements ? '' : value.measurementsIds[index - 1]"
-            dark
-            sm
-            @input="v => onInputMeasurementsIds(index - 1, v)"
-          >
-            <option
-              v-if="index == 1 && measurements.length > 1 && measurements.length < 10"
-              value=""
-            >All</option>
-            <option
-              v-for="m in (showAllMeasurements ? measurements : measurements.filter(m => m.id == value.measurementsIds[index - 1] || !value.measurementsIds.includes(m.id)))"
-              :key="m.id"
-              :value="m.id"
-            >
-              {{ m.name }}
-            </option>
-          </b-select>
-
-          <div class="flex gap-x-1">
-            <b-button
-              v-if="!showAllMeasurements && advancedMode"
-              class="font-semibold"
-              primary
-              sm
-              @click="numMeasurements++"
-            >
-              <font-awesome-icon
-                :icon="faPlus"
-              ></font-awesome-icon>
-            </b-button>
-
-            <b-button
-              v-if="numMeasurements > 1 && !showAllMeasurements && advancedMode"
-              class="font-semibold"
-              primary
-              sm
-              @click="onMeasurementRemove()"
-            >
-              <font-awesome-icon
-                :icon="faMinus"
-              ></font-awesome-icon>
-            </b-button>
-          </div>
-        </div>
+        <c-metric
+          :value="value"
+          :multiple="advancedMode"
+          class="col-span-2"
+          @input="s => $emit('input', s)"
+        ></c-metric>
 
         <span
           v-if="advancedMode"
@@ -168,12 +122,11 @@ export default Vue.extend({
     const stateIsDefault = !this.$cube.config[this.value.cubeId].hidden
       && this.value.measurementsIds.length == this.$cube.config[this.value.cubeId].defaultMeasurementIds.length
       && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.$cube.config[this.value.cubeId].defaultDimensionsIds)
-      && this.value.comparing == false
+      && this.value.comparingSlices == undefined
 
     return {
       advancedMode: !stateIsDefault,
       numDimensions: this.value.dimensionsIds.length,
-      numMeasurements: this.value.measurementsIds.length,
     }
   },
   methods: {
@@ -188,7 +141,7 @@ export default Vue.extend({
       const comparingSliceDefaults = Object.assign({},
         this.$cube.config[c].defaultSliceValues,
         Object.fromEntries(
-          Object.entries(this.value.comparingSlices)
+          Object.entries(this.value.comparingSlices ?? {})
             .filter(([key, value]) => this.$cube.config[c].slices.some(s => s.id == key))
         ))
 
@@ -206,7 +159,6 @@ export default Vue.extend({
         measurementsIds: measurementsIdsDefaults,
       })
       this.numDimensions = this.$cube.config[c].defaultDimensionsIds.length
-      this.numMeasurements = measurementsIdsDefaults.length
     },
     onInputDimensionsIds(index: number, d: string) {
       const dimensionsIds = this.value.dimensionsIds.slice()
@@ -226,44 +178,16 @@ export default Vue.extend({
       })
       this.numDimensions--
     },
-    onInputMeasurementsIds(index: number, m: string) {
-      let measurementsIds: string[] = []
-      if (m != '') {
-        if (!this.showAllMeasurements) {
-          measurementsIds = this.value.measurementsIds.slice()
-        }
-        // else: drop every measurement and keep only the new input
-        measurementsIds[index] = m
-      } else {
-        measurementsIds = this.$cube.config[this.value.cubeId].measurements.map(m => m.id)
-      }
-
-      this.$emit('input', <State>{
-        ...this.value,
-        measurementsIds,
-        sortId: measurementsIds[0],
-      })
-      this.numMeasurements = measurementsIds.length
-    },
-    onMeasurementRemove() {
-      const measurementsIds = this.value.measurementsIds.slice()
-      measurementsIds.pop()
-      this.$emit('input', <State>{
-        ...this.value,
-        measurementsIds,
-      })
-      this.numMeasurements--
-    },
   },
   computed: {
     compareMode: {
       get(): boolean {
-        return this.value.comparing
+        return this.value.comparingSlices != undefined
       },
       set(comparing: boolean) {
         this.$emit('input', <State>{
           ...this.value,
-          comparing,
+          comparingSlices: comparing ? this.$cube.config[this.value.cubeId].defaultSliceValues : undefined,
         })
       }
     },
@@ -275,14 +199,9 @@ export default Vue.extend({
       return this.$cube.config[this.value.cubeId].dimensions
         .filter(d => this.advancedMode || !d.hidden)
     },
-    measurements(): Measurement[] {
-      return this.$cube.config[this.value.cubeId].measurements
-    },
-    showAllMeasurements(): boolean {
-      return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
-    },
     canCompare(): boolean {
-      return this.measurements
+      const measurements = this.$cube.config[this.value.cubeId].measurements
+      return measurements
         .filter(m => this.value.measurementsIds.includes(m.id))
         .every(m => m.type == 'quantitative')
     },

@@ -81,7 +81,7 @@
       </v-grid>
     </div>
 
-    <div class="w-full flex flex-wrap">
+    <div class="w-full flex flex-wrap gap-x-2">
       <v-csv v-bind="$props"></v-csv>
       <v-share v-bind="$props"></v-share>
     </div>

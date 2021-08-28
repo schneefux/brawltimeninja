@@ -12,7 +12,7 @@
           </th>
           <th
             v-for="(c, index) in columns"
-            :key="c.key"
+            :key="c.keys.join('-')"
             :class="['text-left', {
               'pr-1': index != columns.length - 1,
             }]"
@@ -44,11 +44,10 @@
           </td>
           <td
             v-for="c in renderedColumns"
-            :key="c.key"
+            :key="c.keys.join('-')"
             :class="['text-left pt-1', {
               'pr-1': c.index != columns.length - 1,
             }]"
-            :colspan="c.colspan || 1"
           >
             <slot
               :name="c.slot"
@@ -77,13 +76,9 @@ export interface Column {
   /** column title */
   title: string
   /** dot-path to property rendered in cell per default */
-  key: string
+  keys: string[]
   /** cell slot to use instead. the slot receives a "row" prop. */
   slot?: string
-  /** colspan of the cell */
-  colspan?: number
-  /** true: do not render cell */
-  skip?: boolean
 }
 
 interface IndexedColumn extends Column {
@@ -131,7 +126,7 @@ export default Vue.extend({
       return pageRows.map((r, index) => ({
         index: offset + index,
         row: r,
-        fields: this.columns.map(c => c.key!.split('.').reduce((a, b) => a[b], r)),
+        fields: this.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
       }))
     },
     renderedColumns(): IndexedColumn[] {
@@ -140,7 +135,6 @@ export default Vue.extend({
           ...c,
           index,
         }))
-        .filter(c => c.skip != true)
     },
   },
 })

@@ -1,13 +1,17 @@
 <template>
   <div class="flex flex-wrap">
     <c-configurator
+      v-if="configurator"
       v-model="state"
+      v-bind="$attrs"
       class="flex-auto md:flex-none"
       full-height
     ></c-configurator>
 
     <c-slicer
+      v-if="slicer"
       v-model="state"
+      v-bind="$attrs"
       class="w-full md:w-auto"
       full-height
     >
@@ -20,8 +24,9 @@
     </c-slicer>
 
     <c-slicer
-      v-if="value.comparing"
+      v-if="slicer && value.comparingSlices"
       v-model="state"
+      v-bind="$attrs"
       class="w-full md:w-auto"
       comparing
       full-height
@@ -29,31 +34,27 @@
       <template v-slot:slices="data">
         <slot
           name="slices"
-          v-bind="data"
+          v-bind="{ ...data, ...$attrs }"
         ></slot>
       </template>
     </c-slicer>
 
     <c-query
-      :state="value"
-      include-meta
+      v-if="metaMetrics.length > 0"
+      :state="{
+        ...value,
+        dimensionsIds: [],
+        measurementsIds: metaMetrics,
+      }"
     >
       <template v-slot="data">
-        <client-only>
-          <!-- FIXME SSR error -->
-          <v-dashboard v-bind="data">
-            <template
-              v-for="(_, name) in $scopedSlots"
-              v-slot:[name]="data"
-            >
-              <slot
-                v-if="name == 'dimensions' || name == 'visualisations' || name.startsWith('measurements.')"
-                :name="name"
-                v-bind="data"
-              ></slot>
-            </template>
-          </v-dashboard>
-        </client-only>
+        <slot name="totals" v-bind="{ ...data, ...$attrs }"></slot>
+      </template>
+    </c-query>
+
+    <c-query :state="value">
+      <template v-slot="data">
+        <slot v-bind="{ ...data, ...$attrs }"></slot>
       </template>
     </c-query>
   </div>
@@ -66,6 +67,7 @@ import CSlicer from './c-slicer.vue'
 import CConfigurator from './c-configurator.vue'
 
 export default Vue.extend({
+  inheritAttrs: false,
   components: {
     CSlicer,
     CConfigurator,
@@ -75,8 +77,19 @@ export default Vue.extend({
       type: Object as PropType<State>,
       required: true
     },
+    configurator: {
+      type: Boolean,
+      default: false
+    },
+    slicer: {
+      type: Boolean,
+      default: false
+    },
   },
   computed: {
+    metaMetrics(): string[] {
+      return this.$cube.config[this.value.cubeId].metaMeasurements
+    },
     state: {
       get(): State {
         return this.value

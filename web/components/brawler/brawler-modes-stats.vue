@@ -70,8 +70,6 @@ export default Vue.extend({
       dimensionsIds: ['mode'],
       measurementsIds: ['winRateAdj'],
       sortId: 'winRateAdj',
-      comparing: false,
-      comparingSlices: {},
     })
 
     this.data = data.data

@@ -12,9 +12,6 @@ export default Vue.extend({
     limit: {
       type: Number
     },
-    includeMeta: {
-      type: Boolean
-    },
   },
   data() {
     return {
@@ -28,7 +25,7 @@ export default Vue.extend({
   fetchDelay: 0,
   async fetch() {
     this.loading = true
-    this.result = await this.$cube.query(this.state, this.limit, this.includeMeta)
+    this.result = await this.$cube.query(this.state, this.limit)
     this.loading = false
   },
   render(h): VNode {
@@ -36,13 +33,13 @@ export default Vue.extend({
 
     if ('default' in this.$scopedSlots && this.result != undefined) {
       nodes = this.$scopedSlots.default!({
+        ...this.$attrs,
         state: this.state,
-        comparing: this.state.comparing,
+        comparing: this.state.comparingSlices != undefined,
         loading: this.loading,
         data: this.result.data,
         dimensions: this.result.dimensions,
         measurements: this.result.measurements,
-        ...this.$attrs,
       })
     }
 

@@ -105,8 +105,6 @@ export default Vue.extend({
       dimensionsIds: [],
       measurementsIds: ['winRate', 'starRate', 'useRate'],
       sortId: 'winRate',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const totalData = await this.$cube.query({
@@ -115,8 +113,6 @@ export default Vue.extend({
       dimensionsIds: [],
       measurementsIds: ['useRate'],
       sortId: 'winRate',
-      comparing: false,
-      comparingSlices: {},
     })
 
     // TODO use ID

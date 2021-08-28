@@ -1,18 +1,14 @@
 <template>
-  <card
-    v-bind="$attrs"
+  <b-button
     v-if="data.length > 0"
+    slot="content"
+    class="my-1"
+    secondary
+    sm
+    @click="download()"
   >
-    <b-button
-      slot="content"
-      class="my-1"
-      secondary
-      sm
-      @click="download()"
-    >
-      Export CSV
-    </b-button>
-  </card>
+    {{ $t('action.export-csv') }}
+  </b-button>
 </template>
 
 <script lang="ts">
@@ -21,7 +17,6 @@ import { Dimension, Measurement } from '~/lib/cube'
 import { MetaGridEntry } from '@/lib/util'
 
 export default Vue.extend({
-  inheritAttrs: false,
   props: {
     data: {
       type: Array as PropType<MetaGridEntry[]>,

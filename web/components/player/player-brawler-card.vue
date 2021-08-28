@@ -193,8 +193,6 @@ export default Vue.extend({
       dimensionsIds: [],
       measurementsIds: ['winRate', 'picks'],
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
     if (response.data[0].measurementsRaw.picks > 0) {
       this.winrate = response.data[0].measurementsRaw.winRate as number

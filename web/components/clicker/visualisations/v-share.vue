@@ -1,25 +1,20 @@
 <template>
-  <card
+  <b-button
     v-if="supportsShareApi"
-    v-bind="$attrs"
+    slot="content"
+    class="my-1"
+    secondary
+    sm
+    @click="share()"
   >
-    <b-button
-      slot="content"
-      class="my-1"
-      secondary
-      sm
-      @click="share()"
-    >
-      Share
-    </b-button>
-  </card>
+    Share
+  </b-button>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
 export default Vue.extend({
-  inheritAttrs: false,
   methods: {
     async share() {
       try {

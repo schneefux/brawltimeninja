@@ -1,6 +1,6 @@
 <template>
   <card
-    v-if="data.length > 0 && data[0].meta.timestamp != undefined"
+    v-if="show"
     v-bind="$attrs"
     title="Last Update"
     dense
@@ -36,9 +36,12 @@ export default Vue.extend({
     },
   },
   computed: {
+    show(): boolean {
+      return this.data.length > 0 && (this.data[0].meta.timestamp != undefined || this.data[0].measurementsRaw.timestamp != undefined)
+    },
     lastUpdate(): string {
       const timestamps = this.data
-        .map(d => d.meta.timestamp)
+        .map(d => d.measurementsRaw.timestamp ?? d.meta.timestamp)
         .sort() as unknown as string[] // TODO
       const timestamp = parseISO(timestamps[timestamps.length - 1])
       if (timestamp.valueOf() == 0) {

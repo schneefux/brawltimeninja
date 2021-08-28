@@ -57,8 +57,6 @@ export default Vue.extend({
       dimensionsIds: ['brawler'],
       measurementsIds: ['winRate'],
       sortId: 'winRate',
-      comparing: false,
-      comparingSlices: {},
     })
 
     // custom sort function

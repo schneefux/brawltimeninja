@@ -90,8 +90,6 @@ export default Vue.extend({
       measurementsIds: ['winRate', 'useRate', 'picks'],
       dimensionsIds: [],
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const modeTotals = await this.$cube.query({
@@ -102,8 +100,6 @@ export default Vue.extend({
       measurementsIds: ['useRate'],
       dimensionsIds: [],
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const mapData = await this.$cube.query({
@@ -115,8 +111,6 @@ export default Vue.extend({
       measurementsIds: ['winRate', 'useRate'],
       dimensionsIds: ['map'],
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     const mapTotals = await this.$cube.query({
@@ -127,8 +121,6 @@ export default Vue.extend({
       measurementsIds: ['winRate', 'useRate'],
       dimensionsIds: ['map'],
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     if (modeData.data.length > 0) {

@@ -174,8 +174,6 @@ export const actions: ActionTree<RootState, RootState> = {
         playerId: [tagToId(tag)],
       },
       sortId: 'picks',
-      comparing: false,
-      comparingSlices: {},
     })
 
     if (battleData.data[0].measurementsRaw.picks > 0) {

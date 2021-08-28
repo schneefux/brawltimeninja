@@ -65,7 +65,7 @@ interface Clicker {
     // H(ally_brawler,brawler)
     pairData: Map<string, Map<string, PicksWins>>,
   }>
-  mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet, totalsSet?: ResultSet, metaColumns?: string[]): MetaGridEntry[]
+  mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet, metaColumns?: string[]): MetaGridEntry[]
   compareEntries(baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[]
   stateToLocation(state: Partial<State>): Location
   locationToState(location: Route, config: Config): State
@@ -259,8 +259,40 @@ const plugin: Plugin = (context, inject) => {
         timestamp: totalTimestamp,
       }
     },
-    mapToMetaGridEntry(cube, dimensions, measurements, resultSet, totalSet, metaColumns = []) {
-      return resultSet.tablePivot().map(row => {
+    mapToMetaGridEntry(cube, dimensions, measurements, resultSet, metaColumns = []) {
+      const totals: Record<string, Record<string, number>> = {}
+      const table = resultSet.tablePivot()
+
+      const rowIdWithout = (percentageOver: string, row: Record<string, string | number | boolean>) => dimensions
+        .filter(d => d.id != percentageOver)
+        .map(d => {
+          const keyId = cube.id + '.' + d.naturalIdAttribute + '_dimension'
+          if (!(keyId in row)) {
+            throw new Error('Invalid percentageOver specification, cannot find ' + keyId)
+          }
+          return row[keyId]
+        }).join('-')
+
+      for (const m of measurements) {
+        if (m.percentageOver) {
+          // totals = sum($m.id) group by every dimenison except $m.percentageOver
+          const total: Record<string, number> = {}
+
+          for (const row of table) {
+            const key = rowIdWithout(m.percentageOver, row)
+            const valueId = cube.id + '.' + m.id + '_measure'
+
+            if (!(key in total)) {
+              total[key] = 0
+            }
+            total[key] += parseFloat(row[valueId] as string)
+          }
+
+          totals[m.percentageOver] = total
+        }
+      }
+
+      return table.map(row => {
         const entry: MetaGridEntry = {
           id: '',
           dimensionsRaw: {},
@@ -274,14 +306,28 @@ const plugin: Plugin = (context, inject) => {
           entry.meta[m] = row[cube.id + '.' + m + '_measure'] as string
         }
 
-        for (const m of measurements) {
+        const getValue = (m: Measurement) => {
           const id = cube.id + '.' + m.id + '_measure'
-          // cube.js clickhouse driver formats everything as strings
-          const value = m.type == 'quantitative' ? parseFloat(row[id] as string) : row[id] as string
-          const total = totalSet != undefined ? totalSet.tablePivot()[0] : {}
-          const measurement = m.type == 'quantitative' && m.percentage ? (value as number) / parseFloat(total[id] as string) : value
-          entry.measurements[m.id] = this.format(m, measurement)
-          entry.measurementsRaw[m.id] = measurement
+
+          if (m.type != 'quantitative') {
+            return row[id] as string
+          }
+
+          // ! cube.js clickhouse driver formats everything as strings
+          const value = parseFloat(row[id] as string)
+          if (m.percentageOver) {
+            const key = rowIdWithout(m.percentageOver, row)
+            const total = totals[m.percentageOver][key]
+            return value / total
+          } else {
+            return value
+          }
+        }
+
+        for (const m of measurements) {
+          const value = getValue(m)
+          entry.measurements[m.id] = this.format(m, value)
+          entry.measurementsRaw[m.id] = value
         }
 
         let id = ''
@@ -357,13 +403,13 @@ const plugin: Plugin = (context, inject) => {
     },
     stateToLocation(state: Partial<State>): Location {
       const slices = state.slices ? generateQueryParams(state.slices, 'filter') : {}
-      const comparingSlices = state.comparing && state.comparingSlices ? generateQueryParams(state.comparingSlices, 'compareFilter') : {}
+      const comparingSlices = state.comparingSlices ? generateQueryParams(state.comparingSlices, 'compareFilter') : {}
 
       const query = Object.assign({}, {
         cube: state.cubeId,
         dimension: state.dimensionsIds,
         metric: state.measurementsIds,
-        compare: state.comparing ? true : undefined,
+        compare: state.comparingSlices ? true : undefined,
         sort: state.sortId,
       }, slices, comparingSlices)
 
@@ -378,8 +424,9 @@ const plugin: Plugin = (context, inject) => {
       let slices = parseQueryParams(location.query, 'filter')
       slices = Object.assign({}, config[cubeId].defaultSliceValues, slices)
 
-      let comparingSlices = parseQueryParams(location.query, 'compareFilter')
-      comparingSlices = Object.assign({}, config[cubeId].defaultSliceValues, comparingSlices)
+      const comparing = location.query.compare != undefined
+      let comparingSlices: object|undefined = parseQueryParams(location.query, 'compareFilter')
+      comparingSlices = comparing ? Object.assign({}, config[cubeId].defaultSliceValues, comparingSlices) : undefined
 
       let dimensionsIds = location.query.dimension || config[cubeId].defaultDimensionsIds
       if (typeof dimensionsIds == 'string') {
@@ -391,19 +438,16 @@ const plugin: Plugin = (context, inject) => {
         measurementsIds = [measurementsIds]
       }
 
-      const comparing = location.query.compare != undefined
-
       const sortId = location.query.sort || measurementsIds[0]
 
-      return {
+      return <State>{
         cubeId,
         slices,
         comparingSlices,
         dimensionsIds,
         measurementsIds,
-        comparing,
         sortId,
-      } as State
+      }
     },
     format(spec, value) {
       if (Array.isArray(value)) {

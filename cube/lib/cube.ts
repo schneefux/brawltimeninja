@@ -2035,7 +2035,7 @@ const cubes: Record<string, Cube> = {
       // TODO
     ],
     defaultMeasurementIds: ['picks'],
-    metaMeasurements: ['timestamp'],
+    metaMeasurements: ['timestamp', 'picks'],
     slices: [
       ...playerBrawlerSlices,
       commonSlices.mode,

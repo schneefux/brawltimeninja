@@ -1,21 +1,19 @@
 <template>
   <card v-bind="$attrs">
     <template v-slot:content>
-      <div class="flex md:hidden">
-        <b-button
-          :selected="showFilters"
-          primary
-          sm
-          class="mr-3"
-          @click="showFilters = !showFilters"
-        >
-          <font-awesome-icon
-            :icon="faFilter"
-          ></font-awesome-icon>
+      <b-button
+        :selected="showFilters"
+        class="mr-3 my-2 flex md:hidden"
+        primary
+        sm
+        @click="showFilters = !showFilters"
+      >
+        <font-awesome-icon
+          :icon="faFilter"
+        ></font-awesome-icon>
 
-          Configure {{ comparing ? 'Comparing ' : '' }} Filters
-        </b-button>
-      </div>
+        Configure {{ comparing ? 'Comparing ' : '' }} Filters
+      </b-button>
 
       <div
         :class="['md:flex flex-col', {
@@ -70,7 +68,7 @@ export default Vue.extend({
   },
   computed: {
     slices(): SliceValue {
-      return this.comparing ? this.value.comparingSlices : this.value.slices
+      return this.value.comparingSlices ?? this.value.slices
     },
     faFilter() {
       return faFilter

@@ -1841,7 +1841,7 @@ var cubes = {
             battleMeasurements.rank,
         ]),
         defaultMeasurementIds: ['picks'],
-        metaMeasurements: ['timestamp'],
+        metaMeasurements: ['timestamp', 'picks'],
         slices: __spreadArray(__spreadArray([], playerBrawlerSlices), [
             commonSlices.mode,
             commonSlices.map,

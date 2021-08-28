@@ -52,8 +52,6 @@ export default Vue.extend({
       slices: {
         season: ['2020-06-15 08:00:00'],
       },
-      comparingSlices: {},
-      comparing: false,
     })
 
     data.data.sort((e1, e2) => e1.dimensionsRaw.season.season.localeCompare(e2.dimensionsRaw.season.season))
