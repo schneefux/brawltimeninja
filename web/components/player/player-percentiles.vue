@@ -7,14 +7,14 @@
       elevation="2"
       light
     >
-      <template v-slot:content>
+      <div slot="content" class="py-2">
         <dt class="block text-xl font-bold">
           {{ achievement.metric }}
         </dt>
         <dd class="block text-yellow-700 font-semibold">
           {{ achievement.text }}
         </dd>
-      </template>
+      </div>
     </card>
   </dl>
 </template>
