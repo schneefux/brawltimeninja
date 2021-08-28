@@ -16,16 +16,18 @@
       </b-button>
 
       <div
-        :class="['md:flex flex-col', {
+        :class="['md:block', {
           'hidden': !showFilters,
           'mt-3': showFilters,
         }]"
       >
-        <h1 class="text-xl font-semibold hidden md:inline my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
-        <slot
-          name="slices"
-          :value="slices"
-        ></slot>
+        <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
+        <div class="mb-3 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2">
+          <slot
+            name="slices"
+            :value="slices"
+          ></slot>
+        </div>
       </div>
     </div>
   </card>

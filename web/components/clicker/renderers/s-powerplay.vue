@@ -1,19 +1,15 @@
 <template>
-  <div
+  <b-select
     v-if="'powerplay' in value"
-    class="mr-2 my-1"
+    :value="(value.powerplay || [])[0]"
+    dark
+    sm
+    @input="v => $parent.$emit('slice', { powerplay: v != '' ? [v] : [] })"
   >
-    <b-select
-      :value="(value.powerplay || [])[0]"
-      dark
-      sm
-      @input="v => $parent.$emit('slice', { powerplay: v != '' ? [v] : [] })"
-    >
-      <option value="">All Battles</option>
-      <option value="false">Regular Battles</option>
-      <option value="true">Power League</option>
-    </b-select>
-  </div>
+    <option value="">All Battles</option>
+    <option value="false">Regular Battles</option>
+    <option value="true">Power League</option>
+  </b-select>
 </template>
 
 <script lang="ts">

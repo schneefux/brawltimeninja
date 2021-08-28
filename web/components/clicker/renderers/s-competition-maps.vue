@@ -1,18 +1,14 @@
 <template>
-  <div
+  <b-select
     v-if="'mapLike' in value && 'mapNotLike' in value"
-    class="mr-2 my-1"
+    v-model="choice"
+    dark
+    sm
   >
-    <b-select
-      v-model="choice"
-      dark
-      sm
-    >
-      <option value="all">Include Competition Maps</option>
-      <option value="include">Only Competition Maps</option>
-      <option value="exclude">Exclude Competition Maps</option>
-    </b-select>
-  </div>
+    <option value="all">Include Competition Maps</option>
+    <option value="include">Only Competition Maps</option>
+    <option value="exclude">Exclude Competition Maps</option>
+  </b-select>
 </template>
 
 <script lang="ts">

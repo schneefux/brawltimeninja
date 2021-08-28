@@ -1,9 +1,9 @@
 <template>
   <fake-select>
-    <template v-slot:preview>
+    <span slot="preview" class="w-full text-left">
       {{ format(value[0]) }}-{{ format(value[1]) }}
       {{ name == 'Trophies' ? name : '' }}
-    </template>
+    </span>
 
     <client-only>
       <vue-range-slider

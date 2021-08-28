@@ -1,10 +1,10 @@
 <template>
   <div
-    class="relative"
+    class="inline-block relative"
     v-click-outside="() => dropdownOpen = false"
   >
     <b-button
-      class="flex justify-center"
+      class="w-full flex justify-center"
       dark
       sm
       @click="dropdownOpen = !dropdownOpen"
@@ -12,7 +12,7 @@
       <slot name="preview"></slot>
       <!-- Tailwind Heroicon name: chevron-down -->
       <svg
-        class="-mr-1 ml-2 h-5 w-5 text-gray-500"
+        class="ml-2 h-5 w-6 text-gray-500"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"

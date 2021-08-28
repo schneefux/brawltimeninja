@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="'mode' in value || 'map' in value"
-    class="mr-2 my-1"
+    class="contents"
   >
     <b-select
       v-if="'mode' in value"
@@ -20,7 +20,7 @@
     <b-select
       v-if="'map' in value"
       v-model="map"
-      :class="['ml-1', { 'hidden': mode == undefined }]"
+      :class="{ 'hidden': mode == undefined }"
       dark
       sm
     >

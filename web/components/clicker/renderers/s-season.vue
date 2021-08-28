@@ -1,23 +1,19 @@
 <template>
-  <div
+  <b-select
     v-if="'season' in value"
-    class="mr-2 my-1"
+    :value="value.season[0]"
+    dark
+    sm
+    @input="v => $parent.$emit('slice', { season: [v] })"
   >
-    <b-select
-      :value="value.season[0]"
-      dark
-      sm
-      @input="v => $parent.$emit('slice', { season: [v] })"
+    <option
+      v-for="s in seasons"
+      :key="s.id"
+      :value="s.id"
     >
-      <option
-        v-for="s in seasons"
-        :key="s.id"
-        :value="s.id"
-      >
-        Since {{ s.name }}
-      </option>
-    </b-select>
-  </div>
+      Since {{ s.name }}
+    </option>
+  </b-select>
 </template>
 
 <script lang="ts">

@@ -1,24 +1,20 @@
 <template>
-  <div
+  <b-select
     v-if="'ally' in value"
-    class="mr-2 my-1"
+    :value="value.ally"
+    dark
+    sm
+    @input="v => $parent.$emit('slice', { ally: v == '' ? [] : [v] })"
   >
-    <b-select
-      :value="value.ally"
-      dark
-      sm
-      @input="v => $parent.$emit('slice', { ally: v == '' ? [] : [v] })"
-    >
-      <option
-        value=""
-      >with any</option>
-      <option
-        v-for="b in brawlers"
-        :key="b"
-        :value="b"
-      >with {{ capitalize(b.toLowerCase()) }}</option>
-    </b-select>
-  </div>
+    <option
+      value=""
+    >with any</option>
+    <option
+      v-for="b in brawlers"
+      :key="b"
+      :value="b"
+    >with {{ capitalize(b.toLowerCase()) }}</option>
+  </b-select>
 </template>
 
 <script lang="ts">

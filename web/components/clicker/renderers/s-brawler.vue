@@ -1,24 +1,20 @@
 <template>
-  <div
+  <b-select
     v-if="'brawler' in value"
-    class="mr-2 my-1"
+    :value="value.brawler"
+    dark
+    sm
+    @input="v => $parent.$emit('slice', { brawler: v == '' ? [] : [v] })"
   >
-    <b-select
-      :value="value.brawler"
-      dark
-      sm
-      @input="v => $parent.$emit('slice', { brawler: v == '' ? [] : [v] })"
-    >
-      <option
-        value=""
-      >Any Brawler</option>
-      <option
-        v-for="b in brawlers"
-        :key="b"
-        :value="b"
-      >{{ capitalize(b.toLowerCase()) }}</option>
-    </b-select>
-  </div>
+    <option
+      value=""
+    >Any Brawler</option>
+    <option
+      v-for="b in brawlers"
+      :key="b"
+      :value="b"
+    >{{ capitalize(b.toLowerCase()) }}</option>
+  </b-select>
 </template>
 
 <script lang="ts">

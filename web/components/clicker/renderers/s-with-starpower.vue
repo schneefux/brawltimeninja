@@ -1,18 +1,14 @@
 <template>
-  <div
+  <b-select
     v-if="'starpowerIdNeq' in value"
-    class="mr-2 my-1"
+    :value="(value.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'"
+    dark
+    sm
+    @input="v => $parent.$emit('slice', { starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"
   >
-    <b-select
-      :value="(value.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'"
-      dark
-      sm
-      @input="v => $parent.$emit('slice', { starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"
-    >
-      <option value="0">0 Star Powers owned</option>
-      <option value="1">1 Star Power owned</option>
-    </b-select>
-  </div>
+    <option value="0">0 Star Powers owned</option>
+    <option value="1">1 Star Power owned</option>
+  </b-select>
 </template>
 
 <script lang="ts">
