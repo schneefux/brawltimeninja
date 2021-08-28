@@ -42,10 +42,11 @@
             <s-mode-map v-bind="data"></s-mode-map>
             <s-trophies v-bind="data"></s-trophies>
             <s-powerplay v-bind="data"></s-powerplay>
+            <s-competition-maps v-bind="data"></s-competition-maps>
           </template>
 
           <template v-slot:totals="data">
-            <div class="flex flex-wrap justify-center">
+            <div class="w-full flex flex-wrap">
               <v-sample-size v-bind="data"></v-sample-size>
               <v-last-update v-bind="data"></v-last-update>
             </div>
@@ -105,11 +106,13 @@ export default Vue.extend({
         dimensionsIds: ['brawler', 'day'],
         measurementsIds: ['useRate'],
         slices: {
-          season: [currentSeason.toString()],
+          season: [currentSeason.toISOString().slice(0, 10)],
           mode: [],
           trophyRangeGte: ['0'],
           trophyRangeLt: ['10'],
           powerplay: [],
+          mapLike: [],
+          mapNotLike: [],
         },
         sortId: 'day',
         comparing: false,
