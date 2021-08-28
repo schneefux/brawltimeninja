@@ -43,11 +43,6 @@ export default Vue.extend({
       const trophiesSigma = 5433
       const trophiesZ = (this.player.highestTrophies - trophiesMu) / trophiesSigma
 
-      // 2020-08-08 highest power play points only considering players with all brawlers
-      const ppMu = 835
-      const ppSigma = 229
-      const ppZ = ((this.player.highestPowerPlayPoints || 0) - ppMu) / ppSigma
-
       // 2020-08-08 max highest brawler trophies
       const brawlerMu = 640
       const brawlerSigma = 153
@@ -75,9 +70,6 @@ export default Vue.extend({
       const allAchievements = [{
         metric: this.$tc('metric.highestTrophies'),
         percentile: ztable(trophiesZ),
-      }, {
-        metric: this.$tc('metric.highestPowerPlayPoints'),
-        percentile: ztable(ppZ),
       }, {
         metric: this.$tc('metric.highestBrawlerTrophies'),
         percentile: ztable(brawlerZ),

@@ -25,10 +25,6 @@ export default Vue.extend({
       return {
         trophies: this.player.trophies,
         highestTrophies: this.player.highestTrophies,
-        ...(this.player.powerPlayPoints != undefined ? {
-          powerPlayPoints: this.player.powerPlayPoints,
-        } : {}),
-        highestPowerPlayPoints: this.player.highestPowerPlayPoints,
         expLevel: this.player.expLevel,
         victories: this.player['3vs3Victories'],
         soloVictories: this.player.soloVictories,
