@@ -1,6 +1,6 @@
 <template>
   <card v-bind="$attrs">
-    <template v-slot:content>
+    <div slot="content" class="mb-1">
       <b-button
         :selected="showFilters"
         class="mr-3 my-2 flex md:hidden"
@@ -27,7 +27,7 @@
           :value="slices"
         ></slot>
       </div>
-    </template>
+    </div>
   </card>
 </template>
 

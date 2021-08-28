@@ -19,8 +19,8 @@
 
     <b-select
       v-if="'map' in value"
-      v-show="mode != ''"
       v-model="map"
+      :class="['ml-1', { 'hidden': mode == undefined }]"
       dark
       sm
     >
