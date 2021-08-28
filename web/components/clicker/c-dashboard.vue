@@ -62,13 +62,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { State } from '~/lib/cube'
-import CDashboard from './c-dashboard.vue'
 import CSlicer from './c-slicer.vue'
 import CConfigurator from './c-configurator.vue'
 
 export default Vue.extend({
   components: {
-    CDashboard,
     CSlicer,
     CConfigurator,
   },
