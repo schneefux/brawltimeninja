@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/playwright:focal
-RUN apt-get install -y fonts-freefont-ttf
+RUN apt-get install -y fonts-freefont-ttf fonts-noto-color-emoji
 
 WORKDIR /app
 ENV PORT=80
