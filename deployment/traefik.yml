@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:1.21-alpine
+    ports:
+      - "80:80"
+    networks:
+      - traefik
+    volumes:
+      - web-root:/var/www/html:ro
+      - ./conf/nginx/:/etc/nginx/conf.d:ro
+      - certbot-etc:/etc/letsencrypt:ro
+      - certbot-var:/var/lib/letsencrypt:ro
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--api.insecure=true"
+      - "--log.level=DEBUG"
+      # Docker
+      - "--providers.docker=true"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.network=traefik"
+      - "--providers.docker.exposedbydefault=false"
+      # entrypoints
+      - "--entrypoints.http.address=:80"
+      # Cloudflare
+      - "--entrypoints.https.forwardedHeaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/12,172.64.0.0/13,131.0.72.0/22"
+    ports:
+      - "8080:8080"
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+volumes:
+  certificates:
+
+networks:
+  traefik:
+    driver: overlay
+    name: traefik

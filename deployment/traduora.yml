@@ -3,25 +3,29 @@ version: '3.7'
 services:
   traduora:
     image: everco/ever-traduora:latest
-    ports:
-     - "80:8080"
     environment:
       TR_DB_USER: tr
       TR_DB_PASSWORD: change_me
       TR_DB_DATABASE: tr_dev
-      TR_DB_HOST: mysqldb
+      TR_DB_HOST: mysql
       TR_DB_PORT: 3306
       TR_SIGNUPS_ENABLED: 'false'
       TR_AUTH_GOOGLE_ENABLED: 'true'
       TR_AUTH_GOOGLE_REDIRECT_URL: https://translate.brawltime.ninja/auth/callback
       NODE_ENV: production
     env_file: ./.env
-    depends_on:
-      - mysqldb
     networks:
-      - overlay
+      - traefik
+      - traduora
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.traduora.rule=Host(`translate.brawltime.ninja`)"
+        - "traefik.http.routers.traduora.entrypoints=https"
+        - "traefik.http.routers.traduora.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.traduora.loadbalancer.server.port=8080"
 
-  mysqldb:
+  mysql:
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: tr_dev
@@ -30,8 +34,10 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     networks:
-      - overlay
+      - traduora
 
 networks:
-  overlay:
+  traduora:
     driver: overlay
+  traefik:
+    external: true

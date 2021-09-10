@@ -26,7 +26,7 @@ resource "hcloud_server" "brawltime1" {
   server_type = "cx11"
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
-  user_data = file("init-brawltime1.yml")
+  user_data = file("conf/cloudinit/brawltime1.yml")
   network {
     network_id = hcloud_network.default.id
     ip = "10.0.0.2"

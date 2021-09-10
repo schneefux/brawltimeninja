@@ -3,6 +3,7 @@ resource "cloudflare_page_rule" "domain_cache_all" {
   status = "active"
   target = "brawltime.ninja/*"
   actions {
+    always_use_https = "on"
     cache_level = "cache_everything"
   }
   zone_id = var.cloudflare_zone_id
@@ -13,6 +14,7 @@ resource "cloudflare_page_rule" "subdomains_cache_all" {
   status = "active"
   target = "*.brawltime.ninja/*"
   actions {
+    always_use_https = "on"
     cache_level = "cache_everything"
   }
   zone_id = var.cloudflare_zone_id
