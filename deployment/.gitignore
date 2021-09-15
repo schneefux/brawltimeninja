@@ -1,5 +1,5 @@
-*.lock.hcl
 *.nomadvars
+*.lock.hcl
 # Local .terraform directories
 **/.terraform/*
 

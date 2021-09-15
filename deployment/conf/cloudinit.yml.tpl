@@ -3,6 +3,10 @@ runcmd:
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
   - systemctl enable nomad consul
   - systemctl start nomad consul
+  # https://learn.hashicorp.com/tutorials/consul/dns-forwarding#systemd-resolved-setup
+  - iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
+  - iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
+  - systemctl restart systemd-resolved
 apt:
   sources:
     hashicorp:
@@ -11,7 +15,13 @@ apt:
 packages:
   - nomad
   - consul
+  - mariadb-client
 write_files:
+  - path: /etc/systemd/resolved.conf
+    content: |
+      [Resolve]
+      DNS=127.0.0.1
+      Domains=~consul
   - path: /etc/nomad.d/nomad.hcl
     content: |
       advertise {
@@ -22,16 +32,17 @@ write_files:
       datacenter = "dc1"
       data_dir = "/opt/nomad"
 
-      ${ leader ? <<EOT
+      ${ leader ? <<EOF
       server {
         enabled = true
         bootstrap_expect = 1
       }
-      EOT
+      EOF
       : "" }
 
       client {
         enabled = true
+        network_interface = "ens10"
       }
 
       plugin "docker" {
@@ -49,10 +60,10 @@ write_files:
         enabled = true
       }
 
-      ${ leader ? <<EOT
+      ${ leader ? <<EOF
       server = true
       bootstrap_expect = 1
-      EOT
+      EOF
       : "" }
 
       retry_join = ["${leader_ip}"]

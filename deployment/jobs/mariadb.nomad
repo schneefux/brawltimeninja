@@ -1,47 +1,46 @@
-job "traduora" {
+job "mariadb" {
   datacenters = ["dc1"]
 
-  group "mysql" {
+  group "mariadb" {
     network {
       port "db" {
         static = 3306
       }
     }
 
-    volume "mysql-volume" {
+    volume "mariadb-volume" {
       type = "csi"
-      source = "traduora-database"
+      source = "mariadb-database"
+      attachment_mode = "file-system"
+      access_mode = "single-node-writer"
     }
 
     service {
+      name = "mariadb"
       port = "db"
 
       check {
-        type     = "tcp"
+        type = "tcp"
         interval = "10s"
         timeout  = "2s"
       }
     }
 
-    task "mysql" {
+    task "mariadb" {
       driver = "docker"
 
       volume_mount {
-        volume = "mysql-volume"
+        volume = "mariadb-volume"
         destination = "/srv"
       }
 
       env {
-        MYSQL_DATABASE = "traduora"
-        MYSQL_USER = "tr"
-        MYSQL_PASSWORD = "change_me"
-        MYSQL_ROOT_PASSWORD = "root"
         MYSQL_ALLOW_EMPTY_PASSWORD = 1
       }
 
       config {
-        image = "mysql:5.7"
-        args = ["--datadir", "/srv/mysql"]
+        image = "mariadb:10.5"
+        args = ["--datadir", "/srv/mariadb"]
         ports = ["db"]
       }
 

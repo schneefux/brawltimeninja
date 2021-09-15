@@ -113,7 +113,7 @@ resource "hcloud_server" "default" {
   server_type = each.value.server_type
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
-  user_data = templatefile("conf/cloudinit/brawltime.yml.tpl", {
+  user_data = templatefile("conf/cloudinit.yml.tpl", {
     bind_ip = each.value.ip,
     leader = each.value.leader,
     leader_ip = each.value.leader_ip,
@@ -146,10 +146,10 @@ resource "cloudflare_record" "translate6" {
   proxied = true
 }
 
-resource "hcloud_volume" "database" {
-  name = "traduora-database"
-  location = "nbg1"
-  size = 10
-  format = "ext4"
-  delete_protection = true
+resource "cloudflare_record" "testing" {
+  zone_id = var.cloudflare_zone_id
+  name = "testing"
+  value = hcloud_server.default["barley"].ipv6_address
+  type = "AAAA"
+  proxied = true
 }
