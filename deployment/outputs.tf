@@ -1,7 +1,3 @@
 output "public_ip4" {
-  value = hcloud_server.brawltime1.ipv4_address
-}
-
-output "status" {
-  value = hcloud_server.brawltime1.status
+  value = [for server in hcloud_server.default : server.ipv4_address]
 }
