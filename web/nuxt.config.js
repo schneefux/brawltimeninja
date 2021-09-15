@@ -166,6 +166,11 @@ export default {
     renderUrl: (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, ''),
     cubeUrl: (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, ''),
     cubeSecret: (process.env.CUBE_SECRET || ''),
+    sentry: {
+      config: {
+        dsn: process.env.SENTRY_DSN,
+      },
+    },
   },
 
   build: {
