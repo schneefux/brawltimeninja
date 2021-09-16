@@ -25,8 +25,8 @@ job "plugin-hcloud-csi" {
       }
 
       resources {
-        cpu = 500
-        memory = 256
+        cpu = 10
+        memory = 50
       }
     }
   }

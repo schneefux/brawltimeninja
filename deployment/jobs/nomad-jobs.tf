@@ -1,6 +1,5 @@
 resource "nomad_job" "ingress" {
-  depends_on = [null_resource.port_forward]
-  jobspec = file("./jobs/ingress.nomad")
+  jobspec = file("${path.module}/ingress.nomad")
 
   hcl2 {
     enabled = true
@@ -17,7 +16,7 @@ resource "hcloud_volume" "mariadb" {
 }
 
 resource "nomad_volume" "mariadb" {
-  depends_on = [null_resource.port_forward, data.nomad_plugin.hetzner]
+  depends_on = [data.nomad_plugin.hetzner]
   type = "csi"
   plugin_id = "csi.hetzner.cloud"
 
@@ -32,8 +31,8 @@ resource "nomad_volume" "mariadb" {
 }
 
 resource "nomad_job" "mariadb" {
-  depends_on = [null_resource.port_forward, nomad_volume.mariadb]
-  jobspec = file("./jobs/mariadb.nomad")
+  depends_on = [nomad_volume.mariadb]
+  jobspec = file("${path.module}/mariadb.nomad")
 }
 
 resource "hcloud_volume" "clickhouse" {
@@ -45,7 +44,7 @@ resource "hcloud_volume" "clickhouse" {
 }
 
 resource "nomad_volume" "clickhouse" {
-  depends_on = [null_resource.port_forward, data.nomad_plugin.hetzner]
+  depends_on = [data.nomad_plugin.hetzner]
   type = "csi"
   plugin_id = "csi.hetzner.cloud"
 
@@ -60,8 +59,8 @@ resource "nomad_volume" "clickhouse" {
 }
 
 resource "nomad_job" "clickhouse" {
-  depends_on = [null_resource.port_forward, nomad_volume.clickhouse]
-  jobspec = file("./jobs/clickhouse.nomad")
+  depends_on = [nomad_volume.clickhouse]
+  jobspec = file("${path.module}/clickhouse.nomad")
 
   hcl2 {
     enabled = true
@@ -69,13 +68,38 @@ resource "nomad_job" "clickhouse" {
   }
 }
 
-resource "nomad_job" "traduora" {
-  depends_on = [null_resource.port_forward]
-  jobspec = file("./jobs/traduora.nomad")
+resource "nomad_job" "redis" {
+  jobspec = file("${path.module}/redis.nomad")
 }
 
+variable "traduora_google_client_id" {}
+variable "traduora_google_client_secret" {}
+variable "traduora_secret" {}
+
+resource "nomad_job" "traduora" {
+  jobspec = file("${path.module}/traduora.nomad")
+
+  hcl2 {
+    enabled = true
+    vars = {
+      "traduora_google_client_id" = var.traduora_google_client_id
+      "traduora_google_client_secret" = var.traduora_google_client_secret
+      "traduora_secret" = var.traduora_secret
+    }
+  }
+}
+
+variable "brawlstars_token" {}
+variable "brawlapi_token" {}
 
 resource "nomad_job" "brawltime" {
-  depends_on = [null_resource.port_forward]
-  jobspec = file("./jobs/brawltime.nomad")
+  jobspec = file("${path.module}/brawltime.nomad")
+
+  hcl2 {
+    enabled = true
+    vars = {
+      "brawlstars_token" = var.brawlstars_token
+      "brawlapi_token" = var.brawlapi_token
+    }
+  }
 }

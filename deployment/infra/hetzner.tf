@@ -113,7 +113,7 @@ resource "hcloud_server" "default" {
   server_type = each.value.server_type
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
-  user_data = templatefile("conf/cloudinit.yml.tpl", {
+  user_data = templatefile("${path.module}/conf/cloudinit.yml.tpl", {
     bind_ip = each.value.ip,
     leader = each.value.leader,
     leader_ip = each.value.leader_ip,
@@ -146,10 +146,76 @@ resource "cloudflare_record" "translate6" {
   proxied = true
 }
 
+/*
 resource "cloudflare_record" "testing" {
   zone_id = var.cloudflare_zone_id
   name = "testing"
+  proxied = true
+  type = "CNAME"
+  value = "translate.brawltime.ninja"
+}
+
+resource "cloudflare_record" "cube" {
+  zone_id = var.cloudflare_zone_id
+  name = "cube"
+  proxied = true
+  type = "CNAME"
+  value = "translate.brawltime.ninja"
+}
+*/
+
+resource "cloudflare_record" "staging4" {
+  zone_id = var.cloudflare_zone_id
+  name = "staging"
+  value = hcloud_server.default["barley"].ipv4_address
+  type = "A"
+  proxied = true
+}
+
+resource "cloudflare_record" "staging6" {
+  zone_id = var.cloudflare_zone_id
+  name = "staging"
   value = hcloud_server.default["barley"].ipv6_address
   type = "AAAA"
   proxied = true
+}
+
+resource "cloudflare_record" "staging_api" {
+  zone_id = var.cloudflare_zone_id
+  name = "api-staging"
+  proxied = true
+  type = "CNAME"
+  value = "staging.brawltime.ninja"
+}
+
+resource "cloudflare_record" "staging_clicker" {
+  zone_id = var.cloudflare_zone_id
+  name = "clicker-staging"
+  proxied = true
+  type = "CNAME"
+  value = "staging.brawltime.ninja"
+}
+
+resource "cloudflare_record" "staging_render" {
+  zone_id = var.cloudflare_zone_id
+  name = "render-staging"
+  proxied = true
+  type = "CNAME"
+  value = "staging.brawltime.ninja"
+}
+
+resource "cloudflare_record" "staging_media" {
+  zone_id = var.cloudflare_zone_id
+  name = "media-staging"
+  proxied = true
+  type = "CNAME"
+  value = "staging.brawltime.ninja"
+}
+
+resource "cloudflare_record" "staging_cube" {
+  zone_id = var.cloudflare_zone_id
+  name = "cube-staging"
+  proxied = true
+  type = "CNAME"
+  value = "staging.brawltime.ninja"
 }

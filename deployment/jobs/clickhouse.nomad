@@ -16,14 +16,12 @@ job "clickhouse" {
       }
     }
 
-/*
     volume "clickhouse-volume" {
       type = "csi"
       source = "clickhouse-database"
       attachment_mode = "file-system"
       access_mode = "single-node-writer"
     }
-*/
 
     service {
       name = "clickhouse"
@@ -44,12 +42,11 @@ job "clickhouse" {
         DATA_PATH = "/srv/clickhouse/"
         TMP_PATH = "/var/lib/clickhouse/tmp/"
       }
-/*
+
       volume_mount {
         volume = "clickhouse-volume"
         destination = "/srv"
       }
-*/
 
       config {
         image = "yandex/clickhouse-server:21.7-alpine"
@@ -74,12 +71,13 @@ job "clickhouse" {
       }
 
       resources {
+        // TODO buy a bigger server
         /*
         cpu = 2000
         memory = 4000
         */
         cpu = 500
-        memory = 1000
+        memory = 512
       }
     }
   }

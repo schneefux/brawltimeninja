@@ -70,8 +70,8 @@ job "ingress" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 32
+        memory = 64
       }
     }
 
@@ -93,8 +93,8 @@ job "ingress" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 16
+        memory = 64
       }
     }
   }

@@ -1,3 +1,5 @@
+variable "ssh_private_key_path" {}
+
 output "ingress_ip4" {
   value = hcloud_server.default["barley"].ipv4_address
 }

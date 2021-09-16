@@ -1,5 +1,7 @@
+variable "cloudflare_zone_id" {}
+
 resource "cloudflare_page_rule" "domain_cache_all" {
-  priority = 2
+  priority = 1
   status = "active"
   target = "brawltime.ninja/*"
   actions {
@@ -10,7 +12,7 @@ resource "cloudflare_page_rule" "domain_cache_all" {
 }
 
 resource "cloudflare_page_rule" "subdomains_cache_all" {
-  priority = 1
+  priority = 2
   status = "active"
   target = "*.brawltime.ninja/*"
   actions {
@@ -58,15 +60,6 @@ resource "cloudflare_record" "terraform_managed_resource_49374f284aa7dc8fc8802a7
 
 resource "cloudflare_record" "terraform_managed_resource_fc65bea469080a63ebfbdb1b117e405a" {
   name = "clicker"
-  proxied = true
-  ttl = 1
-  type = "CNAME"
-  value = "brawltime.ninja"
-  zone_id = var.cloudflare_zone_id
-}
-
-resource "cloudflare_record" "terraform_managed_resource_39af234c1d34963a2b42edaf6e49f729" {
-  name = "cube"
   proxied = true
   ttl = 1
   type = "CNAME"
