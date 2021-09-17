@@ -1,6 +1,6 @@
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Browser, chromium } from 'playwright'
+import { BrowserContext, chromium } from 'playwright'
 import StatsD from 'hot-shots'
 
 const maxage = parseInt(process.env.CACHE_SECONDS || '86400') // 24h
@@ -9,7 +9,7 @@ const WEB_URL = (process.env.WEB_URL || 'https://brawltime.ninja/').replace(/\/$
 const stats = new StatsD({ prefix: 'brawltime.render.' })
 const app = new Koa()
 
-let browser: Browser
+let context: BrowserContext
 
 app.use(cors({ origin: '*' })); // TODO for development only
 app.use(async (ctx, next) => {
@@ -35,9 +35,7 @@ app.use(async (ctx, next) => {
   }
 
   const start = process.hrtime()
-  const page = await browser.newPage({
-    deviceScaleFactor: 2,
-  })
+  const page = await context.newPage()
   await page.goto(WEB_URL + path)
   await page.waitForTimeout(300) // wait for history graph
   const element = await page.$('.sharepic')
@@ -62,8 +60,18 @@ const port = parseInt(process.env.PORT || '') || 3005
 
 chromium.launch({
   args: ['--disable-dev-shm-usage'],
-}).then(b => {
-  browser = b
+}).then(browser =>
+  browser.newContext({
+    deviceScaleFactor: 2,
+    viewport: {
+      height: 2*628,
+      width: 2*1200,
+    },
+    // trigger backend is-bot to prevent POST to clicker
+    userAgent: 'brawltime.ninja render bot',
+  })
+).then(c => {
+  context = c
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
   })
