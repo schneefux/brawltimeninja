@@ -8,4 +8,6 @@ EXPOSE 80
 COPY . .
 RUN yarn install --frozen-lockfile --ignore-engines && yarn run build
 
+USER pwuser
+
 CMD [ "yarn", "run", "start" ]
