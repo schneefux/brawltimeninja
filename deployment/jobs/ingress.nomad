@@ -1,26 +1,20 @@
 job "ingress" {
   datacenters = ["dc1"]
+  type = "system"
 
-  # Cloudflare points to leader
-  constraint {
-    attribute = "${attr.unique.network.ip-address}"
-    value = "10.0.0.2"
+  update {
+    max_parallel = 1
   }
 
-  group "ingress" {
-    count = 1
+  group "nginx" {
+    volume "certs" {
+      type = "host"
+      source = "certs"
+    }
 
     network {
       port "nginx" {
         static = 80
-      }
-
-      port "traefik_http" {
-        static = 8088
-      }
-
-      port "traefik_dashboard" {
-        static = 8080
       }
     }
 
@@ -36,16 +30,10 @@ job "ingress" {
       }
     }
 
-    service {
-      name = "traefik"
-      port = "traefik_http"
-
-      check {
-        name = "alive"
-        type = "tcp"
-        interval = "10s"
-        timeout = "2s"
-      }
+    volume "certs" {
+      type = "host"
+      read_only = true
+      source = "certs"
     }
 
     task "nginx" {
@@ -55,13 +43,20 @@ job "ingress" {
         image = "nginx:1.21-alpine"
         network_mode = "host"
 
-        volumes = [
-          "./local/nginx.conf:/etc/nginx/nginx.conf:ro",
-        ]
-
         ulimit {
           nofile = "262144:262144"
         }
+
+        # TODO generate dhparams
+        volumes = [
+          "./local/nginx.conf:/etc/nginx/nginx.conf:ro",
+        ]
+      }
+
+      volume_mount {
+        volume = "certs"
+        read_only = true
+        destination = "/etc/letsencrypt"
       }
 
       template {
@@ -72,6 +67,32 @@ job "ingress" {
       resources {
         cpu = 32
         memory = 64
+      }
+    }
+  }
+
+  group "traefik" {
+    count = 1
+
+    network {
+      port "traefik_http" {
+        static = 8088
+      }
+
+      port "traefik_dashboard" {
+        static = 8080
+      }
+    }
+
+    service {
+      name = "traefik"
+      port = "traefik_http"
+
+      check {
+        name = "alive"
+        type = "tcp"
+        interval = "10s"
+        timeout = "2s"
       }
     }
 

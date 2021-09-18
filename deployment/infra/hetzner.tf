@@ -96,7 +96,7 @@ variable "servers" {
       leader_ip = ""
     }
     colt = {
-      server_type = "cx11"
+      server_type = "cx21"
       ip = "10.0.0.3"
       leader = false
       leader_ip = "10.0.0.2"
@@ -114,7 +114,7 @@ resource "hcloud_server" "default" {
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
   user_data = templatefile("${path.module}/conf/cloudinit.yml.tpl", {
-    bind_ip = each.value.ip,
+    ip = each.value.ip,
     leader = each.value.leader,
     leader_ip = each.value.leader_ip,
   })

@@ -1,12 +1,12 @@
 #cloud-config
 runcmd:
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
-  - systemctl enable nomad consul
-  - systemctl start nomad consul
-  # https://learn.hashicorp.com/tutorials/consul/dns-forwarding#systemd-resolved-setup
-  - iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
-  - iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
-  - systemctl restart systemd-resolved
+  - mkdir -p /opt/nomad/volumes/certs
+  - chown -R nomad:nomad /opt/nomad/volumes
+  - systemctl stop systemd-resolved
+  - systemctl disable systemd-resolved
+  - systemctl enable nomad consul dnsmasq
+  - systemctl start nomad consul dnsmasq
 apt:
   sources:
     hashicorp:
@@ -15,34 +15,46 @@ apt:
 packages:
   - nomad
   - consul
+  - dnsmasq
   - mariadb-client
+  - jq
 write_files:
-  - path: /etc/systemd/resolved.conf
+  - path: /etc/dnsmasq.conf
     content: |
-      [Resolve]
-      DNS=127.0.0.1
-      Domains=~consul
+      /etc/dnsmasq.conf
+      local-service
+      server=/consul/127.0.0.1#8600
+      server=185.12.64.1
+      server=185.12.64.2
+      server=1.1.1.1
+      address=/brawltime.ninja/${ip}
+      cache-size=65536
   - path: /etc/nomad.d/nomad.hcl
     content: |
       advertise {
-        http = "${bind_ip}"
-        rpc = "${bind_ip}"
-        serf = "${bind_ip}"
+        http = "${ip}"
+        rpc = "${ip}"
+        serf = "${ip}"
       }
       datacenter = "dc1"
       data_dir = "/opt/nomad"
 
-      ${ leader ? <<EOF
+      ${ leader ? <<-EOF
       server {
         enabled = true
         bootstrap_expect = 1
       }
       EOF
-      : "" }
+      : "" ~}
 
       client {
         enabled = true
         network_interface = "ens10"
+
+        host_volume "certs" {
+          path = "/opt/nomad/volumes/certs"
+          read_only = false
+        }
       }
 
       plugin "docker" {
@@ -52,7 +64,7 @@ write_files:
       }
   - path: /etc/consul.d/consul.hcl
     content: |
-      advertise_addr = "${bind_ip}"
+      advertise_addr = "${ip}"
       datacenter = "dc1"
       data_dir = "/opt/consul"
 
@@ -60,10 +72,10 @@ write_files:
         enabled = true
       }
 
-      ${ leader ? <<EOF
+      ${ leader ? <<-EOF
       server = true
       bootstrap_expect = 1
       EOF
-      : "" }
+      : "" ~}
 
       retry_join = ["${leader_ip}"]

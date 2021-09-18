@@ -30,7 +30,7 @@ http {
 	types_hash_max_size 4096;
 	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 	ssl_ciphers EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH;
-	ssl_dhparam /var/lib/dhparams/nginx.pem;
+	#ssl_dhparam /var/lib/dhparams/nginx.pem;
 	# Keep in sync with https://ssl-config.mozilla.org/#server=nginx&config=intermediate
 	ssl_session_timeout 1d;
 	ssl_session_cache shared:SSL:10m;
@@ -105,19 +105,34 @@ http {
   }
 
   server {
-    listen 80 default_server;
+    listen 80;
     listen [::]:80;
     server_name _;
+
+#    location / {
+#      return 301 https://$host$request_uri;
+#    }
+#  }
+#
+#  server {
+#    listen 443 ssl http2 default_server;
+#    listen [::]:443 ssl http2;
+#    server_name _;
     proxy_cache main-cache;
+
+    ssl_certificate {{ env "SSL_PATH" }}/fullchain.pem;
+    ssl_certificate_key {{ env "SSL_PATH" }}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
 
     location / {
       proxy_pass http://traefik;
       proxy_set_header Host $http_host;
 
+			add_header X-Proxy-Cache $upstream_cache_status;
 			proxy_cache main-cache;
 			proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429;
 			proxy_cache_lock on;
-			add_header X-Proxy-Cache $upstream_cache_status;
 			proxy_http_version 1.1;
 			proxy_set_header Connection "";
     }

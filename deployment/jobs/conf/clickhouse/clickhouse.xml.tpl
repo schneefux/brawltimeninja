@@ -5,7 +5,7 @@
 <yandex>
     <path>{{ env "DATA_PATH" }}</path>
     <tmp_path>{{ env "TMP_PATH" }}</tmp_path>
-    <max_server_memory_usage>{{ env "NOMAD_MEMORY_LIMIT" | parseInt | multiply 1024 | multiply 1024 }}</max_server_memory_usage>
+    <max_server_memory_usage>{{ env "NOMAD_MEMORY_LIMIT" | parseInt | multiply 1000000 }}</max_server_memory_usage>
 
     <logger>
         <!-- Possible levels: https://github.com/pocoproject/poco/blob/develop/Foundation/include/Poco/Logger.h#L105 -->
@@ -67,7 +67,7 @@
     <default_profile>default</default_profile>
 
     <!-- Default database. -->
-    <default_database>brawltime</default_database>
+    <default_database>default</default_database>
 
     <!-- <timezone>Europe/Moscow</timezone> -->
 

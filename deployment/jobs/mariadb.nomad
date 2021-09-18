@@ -45,8 +45,8 @@ job "mariadb" {
       }
 
       resources {
-        cpu = 200
-        memory = 512
+        cpu = 256
+        memory = 400
       }
     }
   }

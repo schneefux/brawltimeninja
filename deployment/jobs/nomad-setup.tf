@@ -1,6 +1,12 @@
 resource "nomad_job" "plugin_hcloud_csi" {
   jobspec = file("${path.module}/plugin-hcloud-csi.nomad")
 
+  lifecycle {
+    ignore_changes = [
+      allocation_ids,
+    ]
+  }
+
   hcl2 {
     enabled = true
     vars = {

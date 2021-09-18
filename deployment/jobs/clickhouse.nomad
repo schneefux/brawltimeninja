@@ -76,8 +76,8 @@ job "clickhouse" {
         cpu = 2000
         memory = 4000
         */
-        cpu = 500
-        memory = 512
+        cpu = 1000
+        memory = 1536
       }
     }
   }

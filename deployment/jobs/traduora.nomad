@@ -33,23 +33,23 @@ job "traduora" {
       env {
         NODE_ENV = "production"
         TR_PORT = "${NOMAD_PORT_http}"
-        TR_DB_USER = "traduora"
-        TR_DB_PASSWORD = "traduora"
         TR_DB_DATABASE = "traduora"
         TR_SIGNUPS_ENABLED = "false"
         TR_AUTH_GOOGLE_ENABLED = "true"
         TR_AUTH_GOOGLE_REDIRECT_URL = "https://translate.brawltime.ninja/auth/callback"
-        TR_AUTH_GOOGLE_CLIENT_ID = var.traduora_google_client_id
-        TR_AUTH_GOOGLE_CLIENT_SECRET = var.traduora_google_client_secret
-        TR_SECRET = var.traduora_secret
       }
 
       template {
-        data = <<EOF
+        data = <<-EOF
           TR_DB_HOST={{ range service "mariadb" }}{{ .Address }}{{ end }}
           TR_DB_PORT={{ range service "mariadb" }}{{ .Port }}{{ end }}
+          TR_DB_USER="traduora"
+          TR_DB_PASSWORD="traduora"
+          TR_AUTH_GOOGLE_CLIENT_ID="${var.traduora_google_client_id}"
+          TR_AUTH_GOOGLE_CLIENT_SECRET="${var.traduora_google_client_secret}"
+          TR_SECRET="${var.traduora_secret}"
         EOF
-        destination = "local/traduora.env"
+        destination = "secrets/traduora.env"
         env = true
       }
 
