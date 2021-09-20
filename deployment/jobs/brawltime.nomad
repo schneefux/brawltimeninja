@@ -1,6 +1,9 @@
 variable "brawlstars_email" {}
 variable "brawlstars_password" {}
 variable "brawlapi_token" {}
+variable "brawltime_assets_pubkey" {}
+variable "brawltime_assets_hostkey_ed" {}
+variable "brawltime_assets_hostkey_rsa" {}
 
 locals {
   root_domain = "staging.brawltime.ninja"
@@ -54,7 +57,7 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-web:latest"
         ports = ["http"]
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -146,7 +149,7 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-api:latest"
         ports = ["http"]
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -189,7 +192,7 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-clicker:latest"
         ports = ["http"]
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -202,6 +205,9 @@ job "brawltime" {
   group "media" {
     network {
       port "http" {}
+      port "ssh" {
+        to = 22
+      }
     }
 
     volume "brawltime-assets-volume" {
@@ -244,12 +250,96 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-media:latest"
         ports = ["http"]
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
         cpu = 100
         memory = 256
+      }
+    }
+
+    task "update-assets-permissions" {
+      # https://github.com/hashicorp/nomad/issues/8892
+      lifecycle {
+        hook = "prestart"
+      }
+
+      driver = "docker"
+
+      volume_mount {
+        volume = "brawltime-assets-volume"
+        destination = "/mnt/assets"
+      }
+
+      config {
+        image = "busybox:1"
+        command = "sh"
+        args = ["-c", "chown -R 1001 /mnt/assets/"]
+      }
+
+      resources {
+        cpu = 16
+        memory = 32
+      }
+    }
+
+    service {
+      name = "brawltime-media-sftp"
+      port = "ssh"
+
+      tags = [
+        "traefik.enable=true",
+        "traefik.tcp.routers.brawltime-media.entrypoints=ssh",
+        "traefik.tcp.routers.brawltime-media.rule=HostSNI(`*`)",
+        "traefik.tcp.routers.brawltime-media.service=brawltime-media-sftp",
+        "traefik.tcp.services.brawltime-media-sftp.loadbalancer.server.port=${NOMAD_HOST_PORT_ssh}",
+      ]
+
+      check {
+        type = "tcp"
+        interval = "10s"
+        timeout = "2s"
+      }
+    }
+
+    task "sftp" {
+      driver = "docker"
+
+      volume_mount {
+        volume = "brawltime-assets-volume"
+        destination = "/home/brawlbot/brawlbot/assets"
+      }
+
+      config {
+        image = "atmoz/sftp:alpine"
+        args = ["brawlbot::1001"]
+        ports = ["ssh"]
+        volumes = [
+          "secrets/pubkey.pub:/home/brawlbot/.ssh/keys/id_rsa.pub:ro",
+          "secrets/hostkey.ed:/etc/ssh/ssh_host_ed25519_key",
+          "secrets/hostkey.rsa:/etc/ssh/ssh_host_rsa_key",
+        ]
+      }
+
+      template {
+        data = "${var.brawltime_assets_pubkey}"
+        destination = "secrets/pubkey.pub"
+      }
+
+      template {
+        data = "${var.brawltime_assets_hostkey_ed}"
+        destination = "secrets/hostkey.ed"
+      }
+
+      template {
+        data = "${var.brawltime_assets_hostkey_rsa}"
+        destination = "secrets/hostkey.rsa"
+      }
+
+      resources {
+        cpu = 16
+        memory = 32
       }
     }
   }
@@ -287,8 +377,7 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-render:latest"
         ports = ["http"]
-        # TODO re-enable local DNS as soon as Let's Encrypt certificates are available
-        #dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -333,7 +422,7 @@ job "brawltime" {
       config {
         image = "ghcr.io/schneefux/brawltime-cube:latest"
         ports = ["http"]
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -356,7 +445,7 @@ job "brawltime" {
 
       config {
         image = "ghcr.io/schneefux/brawltime-cube:latest"
-        dns_servers = ["172.17.0.1"]
+        dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
@@ -365,6 +454,4 @@ job "brawltime" {
       }
     }
   }
-
-  # TODO media group
 }

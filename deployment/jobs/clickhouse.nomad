@@ -50,13 +50,24 @@ job "clickhouse" {
 
       config {
         image = "yandex/clickhouse-server:21.7-alpine"
+
         volumes = [
           "local/clickhouse.xml:/etc/clickhouse-server/config.d/config.xml:ro",
           "local/clickhouse-users.xml:/etc/clickhouse-server/users.d/users.xml:ro",
         ]
+
         ports = ["http", "tcp", "interserver"]
+
         ulimit {
           nofile = "262144:262144"
+        }
+
+        labels = {
+          "com.datadoghq.ad.check_names" = jsonencode(["clickhouse"])
+          "com.datadoghq.ad.init_configs" = jsonencode([{}])
+          "com.datadoghq.ad.instances" = jsonencode([{
+            server = "${NOMAD_IP_tcp}",
+          }])
         }
       }
 
@@ -72,11 +83,7 @@ job "clickhouse" {
 
       resources {
         // TODO buy a bigger server
-        /*
-        cpu = 2000
-        memory = 4000
-        */
-        cpu = 1000
+        cpu = 1024
         memory = 1536
       }
     }

@@ -1,5 +1,6 @@
 variable "ssh_public_key_name" {}
 variable "ssh_public_key_path" {}
+variable "datadog_api_key" {}
 
 resource "hcloud_ssh_key" "default" {
   name = var.ssh_public_key_name
@@ -64,6 +65,16 @@ resource "hcloud_firewall" "default" {
   rule {
     direction = "in"
     protocol  = "tcp"
+    port = "2222"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
     port = "80"
     source_ips = [
       "0.0.0.0/0",
@@ -117,6 +128,7 @@ resource "hcloud_server" "default" {
     ip = each.value.ip,
     leader = each.value.leader,
     leader_ip = each.value.leader_ip,
+    datadog_api_key = var.datadog_api_key,
   })
   network {
     network_id = hcloud_network.default.id
@@ -178,6 +190,22 @@ resource "cloudflare_record" "staging6" {
   value = hcloud_server.default["barley"].ipv6_address
   type = "AAAA"
   proxied = true
+}
+
+resource "cloudflare_record" "ssh4" {
+  zone_id = var.cloudflare_zone_id
+  name = "ssh"
+  value = hcloud_server.default["barley"].ipv4_address
+  type = "A"
+  proxied = false
+}
+
+resource "cloudflare_record" "ssh6" {
+  zone_id = var.cloudflare_zone_id
+  name = "ssh"
+  value = hcloud_server.default["barley"].ipv6_address
+  type = "AAAA"
+  proxied = false
 }
 
 resource "cloudflare_record" "staging_api" {

@@ -7,12 +7,15 @@ runcmd:
   - systemctl disable systemd-resolved
   - systemctl enable nomad consul dnsmasq
   - systemctl start nomad consul dnsmasq
+  - DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${datadog_api_key} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+  - usermod -a -G docker dd-agent
 apt:
   sources:
     hashicorp:
       source: "deb [arch=amd64] https://apt.releases.hashicorp.com $RELEASE main"
       keyid: E8A032E094D8EB4EA189D270DA418C88A3219F7B
 packages:
+  - apt-transport-https
   - nomad
   - consul
   - dnsmasq
@@ -23,10 +26,10 @@ write_files:
     content: |
       /etc/dnsmasq.conf
       local-service
+      no-resolv
       server=/consul/127.0.0.1#8600
       server=185.12.64.1
       server=185.12.64.2
-      server=1.1.1.1
       address=/brawltime.ninja/${ip}
       cache-size=65536
   - path: /etc/nomad.d/nomad.hcl
@@ -61,6 +64,14 @@ write_files:
         config {
           allow_privileged = true
         }
+      }
+
+      telemetry {
+        publish_allocation_metrics = true
+        publish_node_metrics = true
+        datadog_address = "localhost:8125"
+        disable_hostname = true
+        collection_interval = "10s"
       }
   - path: /etc/consul.d/consul.hcl
     content: |

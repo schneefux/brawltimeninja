@@ -105,20 +105,36 @@ http {
   }
 
   server {
+    listen {{ env "NOMAD_PORT_status" }};
+    listen [::]:{{ env "NOMAD_PORT_status" }};
+    server_name _;
+
+    location /nginx_status {
+      stub_status;
+      access_log off;
+    }
+  }
+
+  server {
     listen 80;
     listen [::]:80;
     server_name _;
 
-#    location / {
-#      return 301 https://$host$request_uri;
-#    }
-#  }
-#
-#  server {
-#    listen 443 ssl http2 default_server;
-#    listen [::]:443 ssl http2;
-#    server_name _;
+    location / {
+      return 301 https://$host$request_uri;
+    }
+  }
+
+  server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2;
+    server_name _;
     proxy_cache main-cache;
+
+    # A change to this configuration file triggers an nginx reload.
+    # Include a timestamp so that nginx reloads when the certbot job
+    # renews the certificate.
+    # Certificates last updated: {{ keyOrDefault "certs/last-update" "never" }}
 
     ssl_certificate {{ env "SSL_PATH" }}/fullchain.pem;
     ssl_certificate_key {{ env "SSL_PATH" }}/privkey.pem;

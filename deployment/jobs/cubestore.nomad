@@ -43,7 +43,7 @@ job "cubestore" {
         image = "cubejs/cubestore:v0.28"
         ports = ["http", "router", "status"]
         volumes = [
-          "./cubestore:/cube/data",
+          "cubestore:/cube/data",
         ]
       }
 

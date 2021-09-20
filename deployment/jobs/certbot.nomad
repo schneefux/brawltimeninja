@@ -27,16 +27,21 @@ job "certbot" {
         image = "certbot/dns-cloudflare"
         command = "certonly"
         args = [
-          "--staging",
           "--agree-tos",
           "--non-interactive",
           "-m", "${var.letsencrypt_mail}",
           "--dns-cloudflare",
           "--dns-cloudflare-credentials",
           "/secrets/cloudflare.ini",
-          "-d", "brawltime.ninja",
-          "-d", "*.brawltime.ninja",
+          "-d", "staging.brawltime.ninja",
+          "-d", "api-staging.brawltime.ninja",
+          "-d", "clicker-staging.brawltime.ninja",
+          "-d", "cube-staging.brawltime.ninja",
+          "-d", "media-staging.brawltime.ninja",
+          "-d", "render-staging.brawltime.ninja",
+          "-d", "render-staging.brawltime.ninja",
         ]
+          # "-d", "*.brawltime.ninja",
       }
 
       volume_mount {
@@ -53,8 +58,26 @@ job "certbot" {
       }
 
       resources {
-        cpu = 32
+        cpu = 256
         memory = 64
+      }
+    }
+
+    task "nginx-reload" {
+      lifecycle {
+        hook = "poststop"
+      }
+
+      driver = "exec"
+
+      config {
+        command = "bash"
+        args = ["-c", "consul kv put certs/last-update $(date --iso-8601=second)"]
+      }
+
+      resources {
+        cpu = 64
+        memory = 32
       }
     }
   }

@@ -11,6 +11,7 @@ job "redis" {
     service {
       name = "redis"
       port = "db"
+
       check {
         type = "tcp"
         interval = "10s"
@@ -25,6 +26,14 @@ job "redis" {
         image = "redis:6.2-alpine"
         args = ["--port", "${NOMAD_PORT_db}"]
         ports = ["db"]
+        labels = {
+          "com.datadoghq.ad.check_names" = jsonencode(["redisdb"])
+          "com.datadoghq.ad.init_configs" = jsonencode([{}])
+          "com.datadoghq.ad.instances" = jsonencode([{
+            host = "${NOMAD_IP_db}",
+            port = "${NOMAD_PORT_db}",
+          }])
+        }
       }
 
       resources {

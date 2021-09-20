@@ -6,7 +6,7 @@ resource "cloudflare_page_rule" "domain_cache_all" {
   target = "brawltime.ninja/*"
   actions {
     cache_level = "cache_everything"
-    ssl = "flexible"
+    ssl = "full"
   }
   zone_id = var.cloudflare_zone_id
 }
@@ -17,7 +17,7 @@ resource "cloudflare_page_rule" "subdomains_cache_all" {
   target = "*.brawltime.ninja/*"
   actions {
     cache_level = "cache_everything"
-    ssl = "flexible"
+    ssl = "full"
   }
   zone_id = var.cloudflare_zone_id
 }
