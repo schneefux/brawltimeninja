@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express'
-import bodyParser from 'body-parser'
 import cors from 'cors'
 import ClickerService from './services/Clicker';
 import { Player, BattleLog } from '~/model/Brawlstars';
@@ -9,7 +8,7 @@ const service = new ClickerService();
 
 const app = express()
 app.use(cors({ origin: '*' })) // TODO for development only
-app.use(bodyParser.json({ limit: '50mb' }))
+app.use(express.json({ limit: '50mb' }))
 
 // error helper
 const asyncMiddleware = (fn: (req: Request, res: Response, next: any) => Promise<void>) => (req: Request, res: Response, next: any) => Promise.resolve(fn(req, res, next)).catch(next)
