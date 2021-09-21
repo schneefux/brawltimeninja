@@ -1,8 +1,7 @@
 import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
 import { request, post } from '../lib/request';
-import { parseApiTime, xpToHours, brawlerId, capitalizeWords, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util';
-import { MapMetaMap } from '~/model/MetaEntry';
-import { MapMetaRow, LeaderboardRow } from '~/model/Clicker';
+import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util';
+import { LeaderboardRow } from '~/model/Clicker';
 import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
 import * as MAPS from '../maps.json';
 
@@ -10,6 +9,7 @@ const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/'
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const clickerUrl = process.env.CLICKER_URL || '';
+const clickerUrl2 = process.env.CLICKER_URL2 || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
@@ -258,6 +258,18 @@ export default class BrawlstarsService {
         5000)
         .catch(error => console.error(error, tag))
         .finally(() => console.timeEnd('post battles to clicker ' + tag));
+    }
+
+    if (clickerUrl2 != '' && store) {
+      console.time('post battles to clicker 2 ' + tag)
+      // do not await - process in background and resolve early
+      post<null>(
+        clickerUrl2 + '/track',
+        { player, battleLog },
+        'upload_battlelog_clicker2',
+        5000)
+        .catch(error => console.error(error, tag))
+        .finally(() => console.timeEnd('post battles to clicker 2 ' + tag));
     }
 
     const brawlers = player.brawlers
