@@ -1,10 +1,17 @@
-FROM node:16
-
+FROM node:16 AS builder
 WORKDIR /app
+COPY package.json yarn.lock .
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN yarn run build
+
+FROM node:16
+ENV NODE_ENV=production
+WORKDIR /app
+COPY package.json yarn.lock .
+RUN yarn install --frozen-lockfile
+COPY --from=builder /app/dist ./dist/
 ENV PORT=80
 EXPOSE 80
-
-COPY . .
-RUN yarn install --frozen-lockfile --ignore-engines && yarn run build
-
-CMD [ "yarn", "run", "start" ]
+USER node
+CMD [ "node", "dist/server.js" ]
