@@ -3,8 +3,12 @@ variable "letsencrypt_mail" {}
 
 job "certbot" {
   datacenters = ["dc1"]
-  # TODO after upgrading to Nomad 1.5, use sysbatch
   type = "batch"
+
+  constraint {
+    attribute = "${node.class}"
+    value = "ingress"
+  }
 
   periodic {
     cron = "@daily"
@@ -12,9 +16,6 @@ job "certbot" {
   }
 
   group "certbot" {
-    # TODO remove after changing to sysbatch
-    count = 2
-
     volume "certs" {
       type = "host"
       source = "certs"
@@ -33,15 +34,8 @@ job "certbot" {
           "--dns-cloudflare",
           "--dns-cloudflare-credentials",
           "/secrets/cloudflare.ini",
-          "-d", "staging.brawltime.ninja",
-          "-d", "api-staging.brawltime.ninja",
-          "-d", "clicker-staging.brawltime.ninja",
-          "-d", "cube-staging.brawltime.ninja",
-          "-d", "media-staging.brawltime.ninja",
-          "-d", "render-staging.brawltime.ninja",
-          "-d", "render-staging.brawltime.ninja",
+          "-d", "*.brawltime.ninja",
         ]
-          # "-d", "*.brawltime.ninja",
       }
 
       volume_mount {

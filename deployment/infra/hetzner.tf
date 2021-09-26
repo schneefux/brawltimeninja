@@ -97,19 +97,26 @@ resource "hcloud_firewall" "default" {
   ]
 }
 
+# TODO set datacenter names to Hetzner cloud region name
 variable "servers" {
   type = map
   default = {
     barley = {
       server_type = "cx11"
       ip = "10.0.0.2"
-      leader = true
+      class = "ingress"
       leader_ip = ""
     }
     colt = {
       server_type = "cx21"
       ip = "10.0.0.3"
-      leader = false
+      class = "worker"
+      leader_ip = "10.0.0.2"
+    }
+    dynamike = {
+      server_type = "cx21"
+      ip = "10.0.0.4"
+      class = "database"
       leader_ip = "10.0.0.2"
     }
   }
@@ -126,7 +133,7 @@ resource "hcloud_server" "default" {
   ssh_keys = [hcloud_ssh_key.default.id]
   user_data = templatefile("${path.module}/conf/cloudinit.yml.tpl", {
     ip = each.value.ip,
-    leader = each.value.leader,
+    class = each.value.class,
     leader_ip = each.value.leader_ip,
     datadog_api_key = var.datadog_api_key,
   })

@@ -8,13 +8,18 @@ variable "brawltime_assets_hostkey_rsa" {}
 locals {
   root_domain = "staging.brawltime.ninja"
   domain = "-staging.brawltime.ninja"
+  # docker node default UID
+  asset_uid = 1000
 }
+
+# TODO tag images using commit ID and use canary deployments
 
 job "brawltime" {
   datacenters = ["dc1"]
 
-  update {
-    max_parallel = 1
+  constraint {
+    attribute = "${node.class}"
+    value = "worker"
   }
 
   group "web" {
@@ -61,8 +66,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 200
-        memory = 400
+        cpu = 2048
+        memory = 256
       }
     }
   }
@@ -117,24 +122,13 @@ job "brawltime" {
       }
     }
 
-    task "delete-api-token" {
-      lifecycle {
-        hook = "poststop"
-      }
-
-      driver = "exec"
-      config {
-        command = "/bin/bash"
-        args = ["-c", "consul kv delete \"${NOMAD_ALLOC_ID}/token\""]
-      }
-    }
-
     task "api" {
       driver = "docker"
 
       env {
         CLICKER_URL = "https://clicker${local.domain}/clicker"
         PORT = "${NOMAD_PORT_http}"
+        DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
 
       template {
@@ -153,8 +147,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 64
+        memory = 96
       }
     }
   }
@@ -187,6 +181,7 @@ job "brawltime" {
       env {
         PORT = "${NOMAD_PORT_http}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"
+        DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
 
       config {
@@ -196,8 +191,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 192
+        memory = 96
       }
     }
   }
@@ -245,6 +240,7 @@ job "brawltime" {
       env {
         PORT = "${NOMAD_PORT_http}"
         ASSET_DIR = "/assets/"
+        DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
 
       config {
@@ -254,8 +250,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 256
+        cpu = 128
+        memory = 96
       }
     }
 
@@ -275,7 +271,7 @@ job "brawltime" {
       config {
         image = "busybox:1"
         command = "sh"
-        args = ["-c", "chown -R 1001 /mnt/assets/"]
+        args = ["-c", "chown -R ${local.asset_uid} /mnt/assets/"]
       }
 
       resources {
@@ -313,7 +309,7 @@ job "brawltime" {
 
       config {
         image = "atmoz/sftp:alpine"
-        args = ["brawlbot::1001"]
+        args = ["brawlbot::${local.asset_uid}"]
         ports = ["ssh"]
         volumes = [
           "secrets/pubkey.pub:/home/brawlbot/.ssh/keys/id_rsa.pub:ro",
@@ -372,6 +368,7 @@ job "brawltime" {
       env {
         PORT = "${NOMAD_PORT_http}"
         WEB_URL = "https://${local.root_domain}"
+        DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
 
       config {
@@ -381,8 +378,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 512
+        cpu = 768
+        memory = 1024
       }
     }
   }
@@ -426,8 +423,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 768
+        memory = 192
       }
     }
   }
@@ -449,8 +446,8 @@ job "brawltime" {
       }
 
       resources {
-        cpu = 100
-        memory = 128
+        cpu = 64
+        memory = 96
       }
     }
   }

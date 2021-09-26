@@ -94,6 +94,10 @@ resource "nomad_job" "redis" {
       allocation_ids,
     ]
   }
+
+  hcl2 {
+    enabled = true
+  }
 }
 
 variable "traduora_google_client_id" {}
@@ -122,6 +126,9 @@ resource "nomad_job" "traduora" {
 variable "brawlstars_email" {}
 variable "brawlstars_password" {}
 variable "brawlapi_token" {}
+variable "brawltime_assets_pubkey" {}
+variable "brawltime_assets_hostkey_ed" {}
+variable "brawltime_assets_hostkey_rsa" {}
 
 resource "hcloud_volume" "brawltime_assets" {
   name = "brawltime-assets"
@@ -162,6 +169,9 @@ resource "nomad_job" "brawltime" {
       "brawlstars_email" = var.brawlstars_email
       "brawlstars_password" = var.brawlstars_password
       "brawlapi_token" = var.brawlapi_token
+      "brawltime_assets_pubkey" = var.brawltime_assets_pubkey
+      "brawltime_assets_hostkey_ed" = var.brawltime_assets_hostkey_ed
+      "brawltime_assets_hostkey_rsa" = var.brawltime_assets_hostkey_rsa
     }
   }
 }

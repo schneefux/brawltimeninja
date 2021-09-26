@@ -1,10 +1,13 @@
 job "ingress" {
   datacenters = ["dc1"]
-  type = "system"
 
-  update {
-    max_parallel = 1
+  constraint {
+    attribute = "${node.class}"
+    value = "ingress"
   }
+
+  # TODO zero-downtime-deployment
+  # problem: port 80 can't be used twice
 
   group "nginx" {
     volume "certs" {
@@ -13,8 +16,12 @@ job "ingress" {
     }
 
     network {
-      port "nginx" {
+      port "nginx_http" {
         static = 80
+      }
+
+      port "nginx_https" {
+        static = 443
       }
 
       port "status" {}
@@ -22,7 +29,18 @@ job "ingress" {
 
     service {
       name = "nginx"
-      port = "nginx"
+      port = "nginx_http"
+
+      check {
+        type = "tcp"
+        interval = "10s"
+        timeout = "2s"
+      }
+    }
+
+    service {
+      name = "nginx-ssl"
+      port = "nginx_https"
 
       check {
         type = "tcp"
@@ -57,7 +75,7 @@ job "ingress" {
           "local/nginx.conf:/etc/nginx/nginx.conf:ro",
         ]
 
-        ports = ["nginx", "status"]
+        ports = ["nginx_http", "nginx_https", "status"]
 
         labels = {
           "com.datadoghq.ad.check_names" = jsonencode(["nginx"])
@@ -82,15 +100,13 @@ job "ingress" {
       }
 
       resources {
-        cpu = 64
-        memory = 64
+        cpu = 512
+        memory = 96
       }
     }
   }
 
   group "traefik" {
-    count = 1
-
     network {
       port "traefik_http" {
         static = 8088
@@ -141,7 +157,7 @@ job "ingress" {
       }
 
       resources {
-        cpu = 64
+        cpu = 256
         memory = 64
       }
     }

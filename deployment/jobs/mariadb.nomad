@@ -1,6 +1,11 @@
 job "mariadb" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = "${node.class}"
+    value = "database"
+  }
+
   group "mariadb" {
     network {
       port "db" {
@@ -45,8 +50,8 @@ job "mariadb" {
       }
 
       resources {
-        cpu = 256
-        memory = 400
+        cpu = 64
+        memory = 256
       }
     }
   }

@@ -1,6 +1,11 @@
 job "cubestore" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = "${node.class}"
+    value = "database"
+  }
+
   group "cubestore" {
     network {
       port "http" {

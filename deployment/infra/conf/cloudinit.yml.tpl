@@ -9,6 +9,7 @@ runcmd:
   - systemctl start nomad consul dnsmasq
   - DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${datadog_api_key} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
   - usermod -a -G docker dd-agent
+  - "echo \"dogstatsd_non_local_traffic: true\napm_config:\n  apm_non_local_traffic: true\" >> /etc/datadog-agent/datadog.yaml"
 apt:
   sources:
     hashicorp:
@@ -24,13 +25,12 @@ packages:
 write_files:
   - path: /etc/dnsmasq.conf
     content: |
-      /etc/dnsmasq.conf
       local-service
       no-resolv
       server=/consul/127.0.0.1#8600
       server=185.12.64.1
       server=185.12.64.2
-      address=/brawltime.ninja/${ip}
+      address=/brawltime.ninja/${leader_ip}
       cache-size=65536
   - path: /etc/nomad.d/nomad.hcl
     content: |
@@ -42,7 +42,7 @@ write_files:
       datacenter = "dc1"
       data_dir = "/opt/nomad"
 
-      ${ leader ? <<-EOF
+      ${ class == "ingress" ? <<-EOF
       server {
         enabled = true
         bootstrap_expect = 1
@@ -58,6 +58,12 @@ write_files:
           path = "/opt/nomad/volumes/certs"
           read_only = false
         }
+
+        reserved {
+          reserved_ports = "22"
+        }
+
+        node_class = "${class}"
       }
 
       plugin "docker" {
@@ -83,7 +89,7 @@ write_files:
         enabled = true
       }
 
-      ${ leader ? <<-EOF
+      ${ class == "ingress" ? <<-EOF
       server = true
       bootstrap_expect = 1
       EOF

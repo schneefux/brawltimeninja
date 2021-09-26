@@ -1,6 +1,11 @@
 job "redis" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = "${node.class}"
+    value = "database"
+  }
+
   group "redis" {
     network {
       port "db" {
@@ -37,8 +42,8 @@ job "redis" {
       }
 
       resources {
-        cpu = 100
-        memory = 256
+        cpu = 64
+        memory = 128
       }
     }
   }

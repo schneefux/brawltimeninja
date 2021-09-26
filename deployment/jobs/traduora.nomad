@@ -5,6 +5,11 @@ variable "traduora_secret" {}
 job "traduora" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = "${node.class}"
+    value = "worker"
+  }
+
   group "traduora" {
     network {
       port "http" {}
@@ -59,7 +64,7 @@ job "traduora" {
       }
 
       resources {
-        cpu = 100
+        cpu = 64
         memory = 128
       }
     }

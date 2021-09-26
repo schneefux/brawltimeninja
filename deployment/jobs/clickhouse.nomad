@@ -1,6 +1,11 @@
 job "clickhouse" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = "${node.class}"
+    value = "database"
+  }
+
   group "clickhouse" {
     network {
       port "http" {
@@ -82,9 +87,8 @@ job "clickhouse" {
       }
 
       resources {
-        // TODO buy a bigger server
-        cpu = 1024
-        memory = 1536
+        cpu = 3072
+        memory = 3072
       }
     }
   }
