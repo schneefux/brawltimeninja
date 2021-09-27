@@ -6,6 +6,12 @@ const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').t
 const slugify = (str) => str.split(' ').join('-')
 const brawlerId = (entry) => entry.name.replace(/\.| /g, '_').toLowerCase()
 
+const apiUrl = (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''); // replace trailing slash
+const mediaUrl = (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, '');
+const clickerUrl = (process.env.CLICKER_URL || 'https://clicker.brawltime.ninja').replace(/\/$/, '');
+const renderUrl = (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, '');
+const cubeUrl = (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, '');
+
 export default {
   telemetry: false,
   modern: process.env.NODE_ENV == 'development' ? false : 'server',
@@ -41,16 +47,16 @@ export default {
       // FIXME depends on env variables being available at build time
       // - use *.brawltime.ninja as urlPattern instead
       runtimeCaching: [{
-        urlPattern: process.env.MEDIA_URL + '/.*',
+        urlPattern: mediaUrl + '/.*',
         handler: 'staleWhileRevalidate',
       }, {
-        urlPattern: process.env.API_URL + '/.*',
+        urlPattern: apiUrl + '/.*',
         handler: 'networkFirst',
       }, {
-        urlPattern: process.env.CLICKER_URL + '/.*',
+        urlPattern: clickerUrl + '/.*',
         handler: 'networkFirst',
       }, {
-        urlPattern: process.env.CUBE_URL + '/.*',
+        urlPattern: cubeUrl + '/.*',
         handler: 'networkFirst',
       }],
       // prefix all cache keys with release id
@@ -160,11 +166,11 @@ export default {
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
   publicRuntimeConfig: {
-    apiUrl: (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''), // replace trailing slash
-    mediaUrl: (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, ''),
-    clickerUrl: (process.env.CLICKER_URL || 'https://clicker.brawltime.ninja').replace(/\/$/, ''),
-    renderUrl: (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, ''),
-    cubeUrl: (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, ''),
+    apiUrl,
+    clickerUrl,
+    cubeUrl,
+    mediaUrl,
+    renderUrl,
     cubeSecret: (process.env.CUBE_SECRET || ''),
     sentry: {
       config: {
@@ -191,7 +197,7 @@ export default {
       const routes = []
 
       try {
-        const events = await fetch(`${process.env.CLICKER_URL}/clicker/cube/map/query/battle_event_mode,battle_event_map?slice[trophy_season_end]=month`)
+        const events = await fetch(`${clickerUrl}/clicker/cube/map/query/battle_event_mode,battle_event_map?slice[trophy_season_end]=month`)
           .then(r => r.json())
         events.data.forEach((event) => {
           const modeRoute = `/tier-list/mode/${camelToKebab(event.battle_event_mode)}`
@@ -205,7 +211,7 @@ export default {
       }
 
       try {
-        const brawlers = await fetch(`${process.env.CLICKER_URL}/clicker/cube/map/query/brawler_name?include=brawler_name`)
+        const brawlers = await fetch(`${clickerUrl}/clicker/cube/map/query/brawler_name?include=brawler_name`)
           .then(r => r.json())
         brawlers.data.forEach(b => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
       } catch (err) {
@@ -213,7 +219,7 @@ export default {
       }
 
       try {
-        const players = await fetch(`${process.env.CLICKER_URL}/clicker/cube/battle/query/player_id?limit=1000&slice[trophy_season_end]=current&sort=-player_trophies`)
+        const players = await fetch(`${clickerUrl}/clicker/cube/battle/query/player_id?limit=1000&slice[trophy_season_end]=current&sort=-player_trophies`)
           .then(r => r.json())
         players.data.forEach(p => routes.push(`/profile/${p.player_tag}`))
       } catch (err) {
