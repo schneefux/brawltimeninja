@@ -85,6 +85,15 @@ resource "cloudflare_record" "terraform_managed_resource_72bbe75a7129d803930b3ba
   zone_id = var.cloudflare_zone_id
 }
 
+resource "cloudflare_record" "cube" {
+  name = "cube"
+  proxied = true
+  ttl = 1
+  type = "CNAME"
+  value = "brawltime.ninja"
+  zone_id = var.cloudflare_zone_id
+}
+
 resource "cloudflare_record" "terraform_managed_resource_c01031c8e5c813a113b35bcdb8dce4ea" {
   name = "www"
   proxied = true
