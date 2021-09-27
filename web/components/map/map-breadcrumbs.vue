@@ -6,6 +6,7 @@
   >
     <!-- TODO: refactor -->
     <li
+      v-if="brawlerId != undefined"
       itemprop="itemListElement"
       itemtype="https://schema.org/ListItem"
       itemscope
@@ -42,6 +43,25 @@
         <span itemprop="name">{{ brawlerName }}</span>
       </b-button>
       <meta itemprop="position" content="2" />
+    </li>
+    <li
+      v-if="mode != undefined"
+      itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem"
+      itemscope
+    >
+      <b-button
+        :to="localePath('/tier-list/map')"
+        itemid="/tier-list/map"
+        itemtype="https://schema.org/WebPage"
+        itemprop="item"
+        itemscope
+        xs
+        primary
+      >
+        <span itemprop="name">{{ $tc('map', 2) }}</span>
+      </b-button>
+      <meta itemprop="position" content="1" />
     </li>
     <li
       v-if="mode != undefined"
