@@ -426,7 +426,7 @@ const commonDimensions = asDimensions({
 
 const picks = 'SUM(picks)'
 const winRate = `toFloat64(AVG(battle_victory))`
-const zP = '((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55)'
+const zP = 'least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)'
 
 const winRateMerged = `toFloat64(avgMerge(battle_victory_state))`
 const winratePosteriorMerged = `(1583+${winRateMerged}*${picks})/(1583/${zP}+${picks})`

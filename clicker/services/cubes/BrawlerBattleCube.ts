@@ -47,7 +47,7 @@ const winRate = `toFloat64(avgMerge(battle_victory_state))`
 const wins = `${winRate} * ${picks}`
 const zN = picks
 // cheap approximation
-const zP = '((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55)'
+const zP = 'least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)'
 const zX = wins
 const zScoreConditions = `${zN}>=50 and ${zN}*${zP}>5 and ${zN}*(1-${zP})>5`
 const zScore = `(${zX}-${zN}*${zP})/SQRT(${zN}*${zP}*(1-${zP}))`
