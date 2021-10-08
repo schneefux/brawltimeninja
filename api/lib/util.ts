@@ -1,6 +1,6 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
-import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
+import { MapMetaMap, ModeMetaMap } from "../model/MetaEntry";
 import { Measurement } from "./cube";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);

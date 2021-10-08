@@ -4,11 +4,6 @@
     "target": "es2020",
     "lib": ["es2020"],
     "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./*"
-      ]
-    },
     "outDir": "./dist",
     "strict": true,
     "skipLibCheck": true,

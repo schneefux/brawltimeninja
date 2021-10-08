@@ -1,8 +1,8 @@
-import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '~/lib/util.js';
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '~/model/Brawlstars.js';
-import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api.js';
-import { LeaderboardRow } from '~/model/Clicker.js';
-import { request, post } from '~/lib/request.js';
+import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars.js';
+import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '../model/Api.js';
+import { LeaderboardRow } from '../model/Clicker.js';
+import { request, post } from '../lib/request.js';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
