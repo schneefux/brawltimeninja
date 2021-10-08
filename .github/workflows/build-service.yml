@@ -1,12 +1,18 @@
-name: Build api Docker image
+name: Build service Docker image
 
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+    secrets:
+      CR_PAT:
+        required: true
+
 
 jobs:
-  build-api:
+  build:
     runs-on: ubuntu-latest
     steps:
       -
@@ -18,7 +24,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            ghcr.io/schneefux/brawltime-api
+            ghcr.io/schneefux/brawltime-${{ inputs.service }}
           flavor: |
             latest=true
           tags: |
@@ -51,7 +57,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./api/
+          context: ./${{ inputs.service }}/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
