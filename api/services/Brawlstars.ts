@@ -1,9 +1,8 @@
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars';
-import { request, post } from '../lib/request';
-import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util';
-import { LeaderboardRow } from '~/model/Clicker';
-import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api';
-import * as MAPS from '../maps.json';
+import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '~/lib/util.js';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '~/model/Brawlstars.js';
+import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '~/model/Api.js';
+import { LeaderboardRow } from '~/model/Clicker.js';
+import { request, post } from '~/lib/request.js';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -189,11 +188,6 @@ export default class BrawlstarsService {
         } else {
           battle.event.map = 'Competition Entry'
         }
-      }
-
-      // 2021-04-09, map is null for all maps but event id isn't
-      if (battle.event.id > 0 && battle.event.map == null && `map.${battle.event.id}` in MAPS) {
-        battle.event.map = (<any>MAPS)[`map.${battle.event.id}`] as string
       }
 
       battle.event.id = battle.event.id || 0

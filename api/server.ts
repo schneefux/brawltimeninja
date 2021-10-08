@@ -3,7 +3,7 @@ import Router from '@koa/router'
 import cors from '@koa/cors'
 import isbot from 'isbot'
 import StatsD from 'hot-shots'
-import BrawlstarsService from './services/Brawlstars'
+import BrawlstarsService from './services/Brawlstars.js'
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 const service = new BrawlstarsService()
