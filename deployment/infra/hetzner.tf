@@ -119,6 +119,12 @@ variable "servers" {
       class = "database"
       leader_ip = "10.0.0.2"
     }
+    edgar = {
+      server_type = "cx21"
+      ip = "10.0.0.5"
+      class = "worker"
+      leader_ip = "10.0.0.2"
+    }
   }
 }
 
