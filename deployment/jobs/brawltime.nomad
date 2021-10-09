@@ -4,25 +4,47 @@ variable "brawlapi_token" {}
 variable "brawltime_assets_pubkey" {}
 variable "brawltime_assets_hostkey_ed" {}
 variable "brawltime_assets_hostkey_rsa" {}
+variable "sentry_dsn" {}
+
+# git hash or "latest"
+variable "tag" {}
 
 locals {
   root_domain = "staging.brawltime.ninja"
   domain = "-staging.brawltime.ninja"
-  # docker node default UID
+  # docker node image default UID
   asset_uid = 1000
 }
-
-# TODO tag images using commit ID and use canary deployments
 
 job "brawltime" {
   datacenters = ["dc1"]
 
+  spread {
+    attribute = "${node.unique.id}"
+  }
+
   constraint {
     attribute = "${node.class}"
+    operator = "regexp"
     value = "worker"
   }
 
+  update {
+    max_parallel = 1
+    canary = 1
+    min_healthy_time = "10s"
+    healthy_deadline = "5m"
+    auto_revert = true
+    auto_promote = true
+  }
+
   group "web" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 4
+    }
+
     network {
       port "http" {}
     }
@@ -56,11 +78,11 @@ job "brawltime" {
         CUBE_URL = "https://cube${local.domain}"
         MEDIA_URL = "https://media${local.domain}"
         RENDER_URL = "https://render${local.domain}"
-        // SENTRY_DSN = ""
+        SENTRY_DSN = "${var.sentry_dsn}"
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-web:latest"
+        image = "ghcr.io/schneefux/brawltime-web:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -73,6 +95,12 @@ job "brawltime" {
   }
 
   group "api" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 8
+    }
+
     network {
       port "http" {}
     }
@@ -141,7 +169,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-api:latest"
+        image = "ghcr.io/schneefux/brawltime-api:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -154,6 +182,18 @@ job "brawltime" {
   }
 
   group "clicker" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 4
+    }
+
+    constraint {
+      attribute = "${node.class}"
+      operator = "regexp"
+      value = "worker|database"
+    }
+
     network {
       port "http" {}
     }
@@ -185,7 +225,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-clicker:latest"
+        image = "ghcr.io/schneefux/brawltime-clicker:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -198,6 +238,12 @@ job "brawltime" {
   }
 
   group "media" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 8
+    }
+
     network {
       port "http" {}
       port "ssh" {
@@ -244,7 +290,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-media:latest"
+        image = "ghcr.io/schneefux/brawltime-media:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -341,6 +387,12 @@ job "brawltime" {
   }
 
   group "render" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 8
+    }
+
     network {
       port "http" {}
     }
@@ -372,7 +424,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-render:latest"
+        image = "ghcr.io/schneefux/brawltime-render:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -385,6 +437,18 @@ job "brawltime" {
   }
 
   group "cube" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 8
+    }
+
+    constraint {
+      attribute = "${node.class}"
+      operator = "regexp"
+      value = "worker|database"
+    }
+
     network {
       port "http" {}
     }
@@ -417,7 +481,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-cube:latest"
+        image = "ghcr.io/schneefux/brawltime-cube:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
@@ -430,6 +494,18 @@ job "brawltime" {
   }
 
   group "cube_refresh" {
+    scaling {
+      enabled = true
+      min = 1
+      max = 4
+    }
+
+    constraint {
+      attribute = "${node.class}"
+      operator = "regexp"
+      value = "worker|database"
+    }
+
     task "refresh" {
       driver = "docker"
 
@@ -441,7 +517,7 @@ job "brawltime" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-cube:latest"
+        image = "ghcr.io/schneefux/brawltime-cube:${var.tag}"
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
