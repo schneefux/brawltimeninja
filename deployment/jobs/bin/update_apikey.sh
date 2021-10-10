@@ -80,6 +80,6 @@ then
     | jq -r ".key.key")
 fi
 
-consul kv put "${NOMAD_ALLOC_ID}/token" "$TOKEN"
+consul kv put "brawlstars-token/alloc-${NOMAD_ALLOC_ID}" "$TOKEN"
 
 rm $COOKIE_JAR

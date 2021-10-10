@@ -87,6 +87,19 @@ job "brawltime-api" {
       }
     }
 
+    task "delete-api-token" {
+      lifecycle {
+        hook = "poststop"
+      }
+
+      driver = "exec"
+
+      config {
+        command = "consul"
+        args = ["kv", "delete", "brawlstars-token/alloc-${NOMAD_ALLOC_ID}"]
+      }
+    }
+
     task "api" {
       driver = "docker"
 
@@ -98,7 +111,7 @@ job "brawltime-api" {
 
       template {
         data = <<-EOF
-          BRAWLSTARS_TOKEN="{{ key (printf "%s/token" (env "NOMAD_ALLOC_ID")) }}"
+          BRAWLSTARS_TOKEN="{{ key (printf "brawlstars-token/alloc-%s" (env "NOMAD_ALLOC_ID")) }}"
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
         EOF
         destination = "secrets/brawlstars.env"
