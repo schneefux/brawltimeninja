@@ -138,7 +138,7 @@ export default {
     // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
     // auth token is an organization integration auth token (developer settings)
     // with project write, release admin and org read access
-    publishRelease: process.env.NODE_ENV == 'production',
+    publishRelease: !!process.env.SENTRY_AUTH_TOKEN,
     sourceMapStyle: 'source-map',
     /*
     // manually configure release for herokuish build

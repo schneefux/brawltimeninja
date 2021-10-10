@@ -9,7 +9,8 @@ on:
     secrets:
       CR_PAT:
         required: true
-
+      SENTRY_AUTH_TOKEN:
+        required: false
 
 jobs:
   build:
@@ -61,6 +62,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: GIT_REV=$GITHUB_SHA,BRANCH=$GITHUB_REF,SENTRY_ORG=schneefux,SENTRY_PROJECT=brawltime-ninja,SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
       -

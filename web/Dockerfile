@@ -1,30 +1,29 @@
-FROM node:16
-
-ARG CLICKER_URL
-ENV CLICKER_URL=$CLICKER_URL
-ARG RENDER_URL
-ENV RENDER_URL=$RENDER_URL
-ARG MEDIA_URL
-ENV MEDIA_URL=$MEDIA_URL
-ARG CUBE_URL
-ENV CUBE_URL=$CUBE_URL
-ARG API_URL
-ENV API_URL=$API_URL
-ARG SENTRY_DSN=''
-ENV SENTRY_DSN=$SENTRY_DSN
+FROM node:16 AS builder
 ARG SENTRY_ORG=''
 ENV SENTRY_ORG=$SENTRY_ORG
 ARG SENTRY_PROJECT=''
 ENV SENTRY_PROJECT=$SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN=''
 ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-
+ARG GIT_REV=''
+ENV GIT_REV=$GIT_REV
+ARG BRANCH=''
+ENV BRANCH=$BRANCH
 WORKDIR /app
+COPY package.json yarn.lock .
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN yarn run build
+
+FROM node:16
+ENV NODE_ENV=production
+ARG CLICKER_URL
+ENV CLICKER_URL=$CLICKER_URL
+WORKDIR /app
+COPY package.json yarn.lock .
+RUN yarn install --frozen-lockfile
+COPY --from=builder /app ./
 ENV PORT=80
 EXPOSE 80
-
-COPY . .
-RUN yarn install --frozen-lockfile && yarn run build
-
-ENV NODE_ENV=production
-CMD [ "yarn", "run", "start" ]
+USER node
+CMD [ "node", "./node_modules/.bin/nuxt", "start" ]

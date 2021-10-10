@@ -42,3 +42,4 @@ jobs:
       service: web
     secrets:
       CR_PAT: ${{ secrets.CR_PAT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
