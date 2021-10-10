@@ -36,24 +36,29 @@ app.use(async (ctx, next) => {
 
   const start = process.hrtime()
   const page = await context.newPage()
-  await page.goto(WEB_URL + path)
-  await page.waitForTimeout(300) // wait for history graph
-  const element = await page.$('.sharepic')
-  if (element == null) {
-    stats.increment('request.class-not-found')
-    ctx.throw(404, 'could not find sharepic class')
-    return
+
+  try {
+    await page.goto(WEB_URL + path)
+    await page.waitForTimeout(300) // wait for history graph
+    const element = await page.$('.sharepic')
+    if (element == null) {
+      stats.increment('request.class-not-found')
+      ctx.throw(404, 'could not find sharepic class')
+      return
+    }
+    const buffer = await element.screenshot({ type: 'png' })
+
+    ctx.set('Cache-Control', `public, max-age=${maxage}`)
+    ctx.length = buffer.length
+    ctx.lastModified = new Date()
+    ctx.type = 'image/png'
+    ctx.body = buffer
+  } finally {
+    await page.close()
   }
-  const buffer = await element.screenshot({ type: 'png' })
-  await page.close()
+
   const duration = process.hrtime(start)
   stats.timing('timer', duration[0] * 1000 + duration[1] / 1E6)
-
-  ctx.set('Cache-Control', `public, max-age=${maxage}`)
-  ctx.length = buffer.length
-  ctx.lastModified = new Date()
-  ctx.type = 'image/png'
-  ctx.body = buffer
 })
 
 const port = parseInt(process.env.PORT || '') || 3005
