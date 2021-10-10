@@ -6,7 +6,7 @@ variable "brawltime_assets_hostkey_rsa" {}
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 locals {
@@ -66,7 +66,7 @@ job "brawltime-media" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-media.rule=Host(`media${var.domain}`)",
+        "traefik.http.routers.brawltime-media.rule=Host(`media.${var.domain}`)",
       ]
 
       check {

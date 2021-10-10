@@ -2,7 +2,7 @@
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 job "brawltime-clicker" {
@@ -50,8 +50,7 @@ job "brawltime-clicker" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-clicker.rule=Host(`clicker${var.domain}`)",
-        "traefik.http.routers.brawltime-clicker.rule=Host(`clicker-staging${var.domain}`)",
+        "traefik.http.routers.brawltime-clicker.rule=Host(`clicker.${var.domain}`)",
       ]
 
       check {

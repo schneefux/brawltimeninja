@@ -2,7 +2,7 @@
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 job "brawltime-render" {
@@ -44,7 +44,7 @@ job "brawltime-render" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-render.rule=Host(`render${var.domain}`)",
+        "traefik.http.routers.brawltime-render.rule=Host(`render.${var.domain}`)",
       ]
 
       check {

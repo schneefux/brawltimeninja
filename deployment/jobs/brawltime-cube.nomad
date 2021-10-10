@@ -2,7 +2,7 @@
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 job "brawltime-cube" {
@@ -50,7 +50,7 @@ job "brawltime-cube" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-cube.rule=Host(`cube${var.domain}`)",
+        "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
       ]
 
       check {

@@ -6,7 +6,7 @@ variable "brawlapi_token" {}
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 job "brawltime-api" {
@@ -48,7 +48,7 @@ job "brawltime-api" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-api.rule=Host(`api${var.domain}`)",
+        "traefik.http.routers.brawltime-api.rule=Host(`api.${var.domain}`)",
       ]
 
       check {
@@ -104,7 +104,7 @@ job "brawltime-api" {
       driver = "docker"
 
       env {
-        CLICKER_URL = "https://clicker${var.domain}/clicker"
+        CLICKER_URL = "https://clicker.${var.domain}/clicker"
         PORT = "${NOMAD_PORT_http}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }

@@ -4,7 +4,7 @@ variable "sentry_dsn" {}
 variable "tag" {}
 
 variable "domain" {
-  default = ".brawltime.ninja"
+  default = "brawltime.ninja"
 }
 
 job "brawltime-web" {
@@ -47,7 +47,7 @@ job "brawltime-web" {
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`)",
-        "traefik.http.routers.brawltime-web-www.rule=Host(`www${var.domain}`)",
+        "traefik.http.routers.brawltime-web-www.rule=Host(`www.${var.domain}`)",
       ]
 
       check {
@@ -64,11 +64,11 @@ job "brawltime-web" {
       env {
         HOST = "0.0.0.0"
         PORT = "${NOMAD_PORT_http}"
-        API_URL = "https://api${var.domain}"
-        CLICKER_URL = "https://clicker${var.domain}"
-        CUBE_URL = "https://cube${var.domain}"
-        MEDIA_URL = "https://media${var.domain}"
-        RENDER_URL = "https://render${var.domain}"
+        API_URL = "https://api.${var.domain}"
+        CLICKER_URL = "https://clicker.${var.domain}"
+        CUBE_URL = "https://cube.${var.domain}"
+        MEDIA_URL = "https://media.${var.domain}"
+        RENDER_URL = "https://render.${var.domain}"
         SENTRY_DSN = "${var.sentry_dsn}"
       }
 
