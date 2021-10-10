@@ -99,7 +99,7 @@ job "brawltime-media" {
 
       resources {
         cpu = 128
-        memory = 96
+        memory = 128
       }
     }
 
