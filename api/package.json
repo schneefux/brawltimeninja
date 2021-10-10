@@ -6,7 +6,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --loader ts-node/esm ./server.ts",
+    "dev": "nodemon -e ts -x node --loader ts-node/esm ./server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
