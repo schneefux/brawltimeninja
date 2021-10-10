@@ -29,7 +29,6 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=edge
             type=sha
       -
         name: Set up QEMU

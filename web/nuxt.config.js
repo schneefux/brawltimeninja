@@ -105,7 +105,7 @@ export default {
   ],
 
   buildModules: [
-    'nuxt-vite',
+    //'nuxt-vite',
     '@nuxt/typescript-build',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/fontawesome',
