@@ -3,7 +3,7 @@ import { State } from '~/lib/cube'
 import { CubeResponse } from '~/plugins/cube'
 
 export default Vue.extend({
-  inheritAttrs: false,
+  name: 'c-query',
   props: {
     state: {
       type: Object as PropType<State>,
@@ -30,10 +30,8 @@ export default Vue.extend({
   },
   render(h): VNode {
     let nodes: VNode[] | undefined
-
     if ('default' in this.$scopedSlots && this.result != undefined) {
       nodes = this.$scopedSlots.default!({
-        ...this.$attrs,
         state: this.state,
         comparing: this.state.comparingSlices != undefined,
         loading: this.loading,
@@ -44,15 +42,11 @@ export default Vue.extend({
     }
 
     if ('empty' in this.$scopedSlots && this.result != undefined && this.result.data.length == 0) {
-      nodes = this.$scopedSlots.empty!({
-        ...this.$attrs,
-      })
+      nodes = this.$scopedSlots.empty!({})
     }
 
     if ('placeholder' in this.$scopedSlots && this.result == undefined) {
-      nodes = this.$scopedSlots.placeholder!({
-        ...this.$attrs,
-      })
+      nodes = this.$scopedSlots.placeholder!({})
     }
 
     if (nodes == undefined) {
