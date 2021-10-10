@@ -93,6 +93,7 @@ http {
   set_real_ip_from 2a06:98c0::/29;
   real_ip_header CF-Connecting-IP;
 
+  proxy_cache_key $host$request_uri;
   proxy_cache_path /var/cache/nginx/main-cache levels=1:2 keys_zone=main-cache:10m inactive=24h max_size=1g;
 
   # A change to this configuration file triggers an nginx reload.
