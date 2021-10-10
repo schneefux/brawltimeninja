@@ -9,7 +9,7 @@ const WEB_URL = (process.env.WEB_URL || 'https://brawltime.ninja/').replace(/\/$
 const stats = new StatsD({ prefix: 'brawltime.render.' })
 const app = new Koa()
 
-let context: BrowserContext
+let context: BrowserContext|undefined
 
 app.use(cors({ origin: '*' })); // TODO for development only
 app.use(async (ctx, next) => {
@@ -18,11 +18,21 @@ app.use(async (ctx, next) => {
     return
   }
 
-  ctx.body = ({ 'status': 'ok' })
+  if (context == undefined) {
+    ctx.throw(500, 'No browser context')
+    return
+  }
+
+  ctx.body = { 'status': 'ok' }
 })
 app.use(async (ctx, next) => {
   if (ctx.method != 'GET') {
     await next()
+    return
+  }
+
+  if (context == undefined) {
+    ctx.throw(500, 'Unavailable')
     return
   }
 
@@ -35,7 +45,7 @@ app.use(async (ctx, next) => {
   }
 
   const start = process.hrtime()
-  const page = await context.newPage()
+  const page = await context!.newPage()
 
   try {
     await page.goto(WEB_URL + path)
@@ -77,6 +87,7 @@ chromium.launch({
   })
 ).then(c => {
   context = c
+  context.on('close', () => context = undefined)
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
   })
