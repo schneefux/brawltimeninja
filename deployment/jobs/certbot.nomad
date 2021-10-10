@@ -34,6 +34,7 @@ job "certbot" {
           "--dns-cloudflare",
           "--dns-cloudflare-credentials",
           "/secrets/cloudflare.ini",
+          "-d", "brawltime.ninja",
           "-d", "*.brawltime.ninja",
         ]
       }
