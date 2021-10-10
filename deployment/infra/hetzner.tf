@@ -171,24 +171,6 @@ resource "cloudflare_record" "translate6" {
   proxied = true
 }
 
-/*
-resource "cloudflare_record" "testing" {
-  zone_id = var.cloudflare_zone_id
-  name = "testing"
-  proxied = true
-  type = "CNAME"
-  value = "translate.brawltime.ninja"
-}
-
-resource "cloudflare_record" "cube" {
-  zone_id = var.cloudflare_zone_id
-  name = "cube"
-  proxied = true
-  type = "CNAME"
-  value = "translate.brawltime.ninja"
-}
-*/
-
 resource "cloudflare_record" "staging4" {
   zone_id = var.cloudflare_zone_id
   name = "staging"
@@ -203,6 +185,30 @@ resource "cloudflare_record" "staging6" {
   value = hcloud_server.default["barley"].ipv6_address
   type = "AAAA"
   proxied = true
+}
+
+resource "cloudflare_record" "brawltime4" {
+  zone_id = var.cloudflare_zone_id
+  name = "brawltime.ninja"
+  value = hcloud_server.default["barley"].ipv4_address
+  type = "A"
+  proxied = true
+}
+
+resource "cloudflare_record" "brawltime6" {
+  zone_id = var.cloudflare_zone_id
+  name = "brawltime.ninja"
+  value = hcloud_server.default["barley"].ipv6_address
+  type = "AAAA"
+  proxied = true
+}
+
+resource "cloudflare_record" "www" {
+  zone_id = var.cloudflare_zone_id
+  name = "www"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
 }
 
 resource "cloudflare_record" "ssh4" {
@@ -221,42 +227,42 @@ resource "cloudflare_record" "ssh6" {
   proxied = false
 }
 
-resource "cloudflare_record" "staging_api" {
+resource "cloudflare_record" "api" {
   zone_id = var.cloudflare_zone_id
-  name = "api-staging"
+  name = "api"
   proxied = true
   type = "CNAME"
-  value = "staging.brawltime.ninja"
+  value = "brawltime.ninja"
 }
 
-resource "cloudflare_record" "staging_clicker" {
+resource "cloudflare_record" "clicker" {
   zone_id = var.cloudflare_zone_id
-  name = "clicker-staging"
+  name = "clicker"
   proxied = true
   type = "CNAME"
-  value = "staging.brawltime.ninja"
+  value = "brawltime.ninja"
 }
 
-resource "cloudflare_record" "staging_render" {
+resource "cloudflare_record" "render" {
   zone_id = var.cloudflare_zone_id
-  name = "render-staging"
+  name = "render"
   proxied = true
   type = "CNAME"
-  value = "staging.brawltime.ninja"
+  value = "brawltime.ninja"
 }
 
-resource "cloudflare_record" "staging_media" {
+resource "cloudflare_record" "media" {
   zone_id = var.cloudflare_zone_id
-  name = "media-staging"
+  name = "media"
   proxied = true
   type = "CNAME"
-  value = "staging.brawltime.ninja"
+  value = "brawltime.ninja"
 }
 
-resource "cloudflare_record" "staging_cube" {
+resource "cloudflare_record" "cube" {
   zone_id = var.cloudflare_zone_id
-  name = "cube-staging"
+  name = "cube"
   proxied = true
   type = "CNAME"
-  value = "staging.brawltime.ninja"
+  value = "brawltime.ninja"
 }
