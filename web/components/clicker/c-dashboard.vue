@@ -9,54 +9,59 @@
     ></c-configurator>
 
     <c-slicer
-      v-if="slicer"
+      v-if="'slices' in $scopedSlots"
       v-model="state"
       v-bind="$attrs"
       class="w-full md:w-auto"
       full-height
     >
-      <template v-slot:slices="data">
+      <template v-slot="slices">
         <slot
           name="slices"
-          v-bind="data"
+          v-bind="{ ...slices, ...$attrs }"
         ></slot>
       </template>
     </c-slicer>
 
     <c-slicer
-      v-if="slicer && value.comparingSlices"
+      v-if="'slices' in $scopedSlots && state.comparingSlices"
       v-model="state"
       v-bind="$attrs"
       class="w-full md:w-auto"
       comparing
       full-height
     >
-      <template v-slot:slices="data">
+      <template v-slot="slices">
         <slot
           name="slices"
-          v-bind="{ ...data, ...$attrs }"
+          v-bind="{ ...slices, ...$attrs }"
         ></slot>
       </template>
     </c-slicer>
 
     <c-query
-      v-if="metaMetrics.length > 0"
+      v-if="'totals' in $scopedSlots && metaMetrics.length > 0"
       :state="{
-        ...value,
+        ...state,
         dimensionsIds: [],
         measurementsIds: metaMetrics,
       }"
     >
-      <template v-slot="data">
-        <slot name="totals" v-bind="{ ...data, ...$attrs }"></slot>
+      <template v-slot="totals">
+        <slot name="totals" v-bind="{ ...totals, ...$attrs }"></slot>
       </template>
     </c-query>
 
-    <c-query :state="value">
+    <c-query
+      v-if="'data' in $scopedSlots"
+      :state="state"
+    >
       <template v-slot="data">
-        <slot v-bind="{ ...data, ...$attrs }"></slot>
+        <slot name="data" v-bind="{ ...data, ...$attrs }"></slot>
       </template>
     </c-query>
+
+    <slot v-bind="{ ...state, $attrs }"></slot>
   </div>
 </template>
 
@@ -65,12 +70,14 @@ import Vue, { PropType } from 'vue'
 import { State } from '~/lib/cube'
 import CSlicer from './c-slicer.vue'
 import CConfigurator from './c-configurator.vue'
+import CQuery from './c-query'
 
 export default Vue.extend({
   inheritAttrs: false,
   components: {
     CSlicer,
     CConfigurator,
+    CQuery,
   },
   props: {
     value: {
@@ -78,10 +85,6 @@ export default Vue.extend({
       required: true
     },
     configurator: {
-      type: Boolean,
-      default: false
-    },
-    slicer: {
       type: Boolean,
       default: false
     },

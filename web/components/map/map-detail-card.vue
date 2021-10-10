@@ -37,9 +37,7 @@
         <card elevation="2">
           <map-balance-score
             slot="content"
-            :mode="mode"
-            :map="map"
-            :season="season"
+            :slices="{ mode: [mode], map: [map], season: [season] }"
           ></map-balance-score>
         </card>
 
@@ -49,9 +47,7 @@
         >
           <map-best-brawlers
             slot="content"
-            :mode="mode"
-            :map="map"
-            :season="season"
+            :slices="{ mode: [mode], map: [map], season: [season] }"
             elevation="3"
           ></map-best-brawlers>
         </card>
@@ -63,9 +59,7 @@
         >
           <map-best-teams
             slot="content"
-            :mode="mode"
-            :map="map"
-            :season="season"
+            :slices="{ mode: [mode], map: [map], season: [season] }"
           ></map-best-teams>
         </card>
       </div>

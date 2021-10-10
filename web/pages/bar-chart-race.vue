@@ -35,7 +35,6 @@
         <c-dashboard
           v-model="state"
           elevation="2"
-          slicer
         >
           <template v-slot:slices="data">
             <s-season v-bind="data"></s-season>
@@ -52,7 +51,7 @@
             </div>
           </template>
 
-          <template v-slot="data">
+          <template v-slot:data="data">
             <div class="contents">
               <div class="w-full flex flex-wrap justify-center gap-2 m-2">
                 <v-csv class="flex-1" v-bind="data"></v-csv>

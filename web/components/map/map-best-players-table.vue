@@ -1,20 +1,13 @@
 <template>
   <c-query
     v-bind="$attrs"
-    :state="{
-      cubeId: 'battle',
-      dimensionsIds: ['player'],
-      measurementsIds: isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
-      slices: { mode: [mode], map: [map] },
-      sortId: isShowdown ? 'picks' : 'wins',
-    }"
+    :state="state"
     :limit="50"
   >
     <template v-slot="data">
       <v-table
         :title="title"
         v-bind="{ ...data, ...$attrs }"
-        show-link
       >
         <template v-slot:dimensions="data">
           <d-player v-bind="data"></d-player>
@@ -29,13 +22,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DPlayer from '@/components/clicker/renderers/d-player.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '~/components/clicker/c-query'
+import { SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   components: {
@@ -48,33 +42,42 @@ export default Vue.extend({
   },
   inheritAttrs: false,
   props: {
-    mode: {
-      type: String,
-    },
-    map: {
-      type: String,
-    },
     id: {
       type: [Number, String]
     },
+    slices: {
+      type: Object as PropType<SliceValue>
+    },
   },
   computed: {
+    state(): State {
+      return {
+        cubeId: 'battle',
+        dimensionsIds: ['player'],
+        measurementsIds: this.isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
+        slices: this.slices,
+        sortId: this.isShowdown ? 'picks' : 'wins',
+      }
+    },
     title(): string {
-      if (this.mode == undefined) {
+      const mode = this.slices.mode?.[0]
+      const map = this.slices.map?.[0]
+
+      if (mode == undefined) {
         return this.$i18n.t('best.players.long') as string
       }
-      if (this.map == undefined) {
+      if (map == undefined) {
         return this.$i18n.t('best.players.for.mode', {
-          mode: this.$i18n.t('mode.' + this.mode) as string,
+          mode: this.$i18n.t('mode.' + mode) as string,
         }) as string
       }
       return this.$i18n.t('best.players.for.map', {
-        mode: this.$i18n.t('mode.' + this.mode) as string,
+        mode: this.$i18n.t('mode.' + mode) as string,
         map: this.$i18n.t('map.' + this.id) as string,
       }) as string
     },
     isShowdown(): boolean {
-      return this.mode != undefined && this.mode.toLowerCase().includes('showdown')
+      return this.slices.mode?.[0]?.toLowerCase().includes('showdown')
     },
   },
 })

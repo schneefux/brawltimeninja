@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { commonMeasurements } from '~/lib/cube'
+import Vue, { PropType } from 'vue'
+import { commonMeasurements, SliceValue } from '~/lib/cube'
 
 interface Team {
   id: string
@@ -36,14 +36,8 @@ interface Team {
 
 export default Vue.extend({
   props: {
-    map: {
-      type: String,
-    },
-    mode: {
-      type: String,
-    },
-    season: {
-      type: String,
+    slices: {
+      type: Object as PropType<SliceValue>
     },
     limit: {
       type: Number,
@@ -56,23 +50,21 @@ export default Vue.extend({
     }
   },
   watch: {
-    map: '$fetch',
-    mode: '$fetch',
-    season: '$fetch',
+    slices: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
     const slices = {
       ...this.$clicker.defaultSlicesRaw('team'),
-      ...(this.map != undefined ? {
-        battle_event_map: [this.map],
+      ...(this.slices.map != undefined ? {
+        battle_event_map: this.slices.map,
       } : {}),
-      ...(this.mode != undefined ? {
-        battle_event_mode: [this.mode],
+      ...(this.slices.mode != undefined ? {
+        battle_event_mode: this.slices.mode,
       } : {}),
-      ...(this.season != undefined ? {
+      ...(this.slices.season != undefined ? {
         trophy_season_end: undefined,
-        trophy_season_end_exact: [this.season],
+        trophy_season_end_exact: this.slices.season,
       } : {}),
     }
     this.teams = []

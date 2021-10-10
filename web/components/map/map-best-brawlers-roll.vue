@@ -21,10 +21,10 @@
         dimensionsIds: ['brawler'],
         measurementsIds: ['winRate'],
         slices: {
-          map: map != undefined ? [map] : [],
-          mode: mode != undefined ? [mode] : [],
-          powerplay: powerplay != undefined ? [powerplay] : [],
-          season: season != undefined ? [season] : [],
+          map: [map],
+          mode: [mode],
+          powerplay: [powerplay],
+          season: [season],
         },
         sortId: 'winRate',
       }"

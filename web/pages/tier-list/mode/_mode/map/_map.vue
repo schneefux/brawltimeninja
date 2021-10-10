@@ -42,7 +42,7 @@
 
     <page-section>
       <map-best-brawlers-card
-        :mode="event.mode"
+        :slices="{ mode: [event.mode] }"
         class="mx-auto"
         md
         link

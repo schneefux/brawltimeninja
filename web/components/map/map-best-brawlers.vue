@@ -4,12 +4,7 @@
       cubeId: 'map',
       dimensionsIds: ['brawler'],
       measurementsIds: ['winRateAdj'],
-      slices: {
-        map: map != undefined ? [map] : [],
-        mode: mode != undefined ? [mode] : [],
-        powerplay: powerplay != undefined ? [powerplay] : [],
-        season: season != undefined ? [season] : [],
-      },
+      slices,
       sortId: 'winRateAdj',
     }"
     :limit="limit"
@@ -31,33 +26,25 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import DBrawler from '~/components/clicker/renderers/d-brawler.vue'
+import { SliceValue } from '~/lib/cube'
 
 export default Vue.extend({
   inheritAttrs: false,
+  components: {
+    DBrawler,
+    BrawlerLink,
+  },
   props: {
-    map: {
-      type: String,
-    },
-    mode: {
-      type: String,
-    },
-    season: {
-      type: String,
-    },
-    powerplay: {
-      type: Boolean,
+    slices: {
+      type: Object as PropType<SliceValue>,
     },
     limit: {
       type: Number,
       default: 5
     },
-  },
-  components: {
-    DBrawler,
-    BrawlerLink,
   },
 })
 </script>

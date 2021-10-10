@@ -30,10 +30,12 @@
         <lzy-map-best-brawlers-card
           v-for="event in filteredEvents"
           :key="event.battle_event_map + '-' + event.battle_event_id"
-          :mode="event.battle_event_mode"
-          :map="event.battle_event_map"
+          :slices="{
+            mode: [event.battle_event_mode],
+            map: [event.battle_event_map],
+            powerplay: [event.battle_event_powerplay ? 'true' : 'false'],
+          }"
           :id="event.battle_event_id"
-          :powerplay="event.battle_event_powerplay"
           :end-date="event.end"
           :eager="eager"
           link

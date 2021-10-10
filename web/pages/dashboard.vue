@@ -4,7 +4,6 @@
       v-model="state"
       class="mt-2"
       configurator
-      slicer
     >
       <template v-slot:slices="data">
         <s-season v-bind="data"></s-season>
@@ -28,7 +27,7 @@
         </div>
       </template>
 
-      <template v-slot="data">
+      <template v-slot:data="data">
         <v-dashboard v-bind="data">
           <template v-slot:visualisations="data">
             <v-moe v-bind="data"></v-moe>

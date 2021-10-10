@@ -1,19 +1,12 @@
 <template>
   <c-query
     v-bind="$attrs"
-    :state="{
-      cubeId: 'map',
-      dimensionsIds: ['brawler'],
-      measurementsIds: ['winRateAdj', 'useRate'],
-      slices: { mode: [mode], map: [map] },
-      sortId: 'winRateAdj',
-    }"
+    :state="state"
   >
     <template v-slot="data">
       <v-table
         :title="title"
         v-bind="{ ...data, ...$attrs }"
-        show-link
       >
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
@@ -24,11 +17,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import CQuery from '~/components/clicker/c-query'
+import { SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   components: {
@@ -48,19 +42,40 @@ export default Vue.extend({
     id: {
       type: [Number, String]
     },
+    // TODO remove usages of `mode` and `map`, replace by `slices`
+    slices: {
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
+    },
   },
   computed: {
+    state(): State {
+      return {
+        cubeId: 'map',
+        dimensionsIds: ['brawler'],
+        measurementsIds: ['winRateAdj', 'useRate'],
+        slices: {
+          mode: [this.mode],
+          map: [this.map],
+          ...this.slices,
+        },
+        sortId: 'winRateAdj',
+      }
+    },
     title(): string {
-      if (this.mode == undefined) {
+      const mode = this.slices.mode?.[0]
+      const map = this.slices.map?.[0]
+
+      if (mode == undefined) {
         return this.$i18n.t('best.brawlers.long') as string
       }
-      if (this.map == undefined) {
+      if (map == undefined) {
         return this.$i18n.t('best.brawlers.for.mode', {
-          mode: this.$i18n.t('mode.' + this.mode) as string,
+          mode: this.$i18n.t('mode.' + mode) as string,
         }) as string
       }
       return this.$i18n.t('best.brawlers.for.map', {
-        mode: this.$i18n.t('mode.' + this.mode) as string,
+        mode: this.$i18n.t('mode.' + mode) as string,
         map: this.$i18n.t('map.' + this.id) as string,
       }) as string
     },

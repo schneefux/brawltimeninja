@@ -51,8 +51,10 @@
           v-for="event in upcomingEvents"
           :key="event.id"
           :id="event.id"
-          :mode="unformatMode(event.mode)"
-          :map="event.map"
+          :slices="{
+            mode: [unformatMode(event.mode)],
+            map: [event.map],
+          }"
           :start-date="event.start"
           link
         ></lzy-map-best-brawlers-card>

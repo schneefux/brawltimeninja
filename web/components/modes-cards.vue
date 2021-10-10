@@ -8,7 +8,7 @@
         class="mx-2"
       >
         <map-best-brawlers-card
-          :mode="mode"
+          :slices="{ mode: [mode] }"
           link
         ></map-best-brawlers-card>
       </div>

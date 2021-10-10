@@ -3,7 +3,7 @@
     <div slot="content" class="mb-1">
       <b-button
         :selected="showFilters"
-        class="mr-3 my-2 flex md:hidden"
+        class="mr-3 my-2 md:hidden"
         primary
         sm
         @click="showFilters = !showFilters"
@@ -23,10 +23,7 @@
       >
         <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
         <div class="mb-3 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2">
-          <slot
-            name="slices"
-            :value="slices"
-          ></slot>
+          <slot :value="slices"></slot>
         </div>
       </div>
     </div>

@@ -1,20 +1,13 @@
 <template>
   <c-query
     v-bind="$attrs"
-    :state="{
-      cubeId: 'battle',
-      dimensionsIds: ['team'],
-      measurementsIds: ['wins'],
-      slices: { mode: [mode], map: [map] },
-      sortId: 'wins',
-    }"
+    :state="state"
     :limit="limit"
   >
     <template v-slot="data">
       <v-table
         :title="title"
         v-bind="{ ...data, ...$attrs }"
-        show-link
       >
         <template v-slot:dimensions="data">
           <d-team v-bind="data"></d-team>
@@ -25,11 +18,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import VTable from '@/components/clicker/visualisations/v-table.vue'
 import DTeam from '@/components/clicker/renderers/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import CQuery from '~/components/clicker/c-query'
+import { SliceValue, State } from '~/lib/cube'
 
 export default Vue.extend({
   components: {
@@ -52,20 +46,41 @@ export default Vue.extend({
     limit: {
       type: Number,
       default: 50
-    }
+    },
+    // TODO remove usages of `mode` and `map`, replace by `slices`
+    slices: {
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
+    },
   },
   computed: {
+    state(): State {
+      return {
+        cubeId: 'battle',
+        dimensionsIds: ['team'],
+        measurementsIds: ['wins'],
+        slices: {
+          mode: [this.mode],
+          map: [this.map],
+          ...this.slices,
+        },
+        sortId: 'wins',
+      }
+    },
     title(): string {
-      if (this.mode == undefined) {
+      const mode = this.slices.mode?.[0]
+      const map = this.slices.map?.[0]
+
+      if (mode == undefined) {
         return this.$i18n.t('best.teams.long') as string
       }
-      if (this.map == undefined) {
+      if (map == undefined) {
         return this.$i18n.t('best.teams.for.mode', {
-          mode: this.$i18n.t('mode.' + this.mode) as string,
+          mode: this.$i18n.t('mode.' + mode) as string,
         }) as string
       }
       return this.$i18n.t('best.teams.for.map', {
-        mode: this.$i18n.t('mode.' + this.mode) as string,
+        mode: this.$i18n.t('mode.' + mode) as string,
         map: this.$i18n.t('map.' + this.id) as string,
       }) as string
     },

@@ -38,9 +38,7 @@
 
     <map-best-brawlers
       slot="content"
-      :mode="mode"
-      :map="map"
-      :powerplay="powerplay"
+      :slices="slices"
       :elevation="2"
       class="my-4"
     ></map-best-brawlers>
@@ -59,11 +57,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { camelToKebab, slugify } from '@/lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 
 import { enUS, de } from 'date-fns/locale'
+import { SliceValue } from '~/lib/cube'
 const locales = { en: enUS, de: de }
 
 export default Vue.extend({
@@ -83,22 +82,24 @@ export default Vue.extend({
     startDate: {
       type: String,
     },
-    mode: {
-      // camel case
-      type: String,
-      required: true
-    },
-    map: {
-      type: String,
-    },
     id: {
       type: [Number, String],
     },
-    powerplay: {
-      type: Boolean,
+    slices: {
+      type: Object as PropType<SliceValue>,
+      required: true
     },
   },
   computed: {
+    mode(): string|undefined {
+      return this.slices.mode?.[0]
+    },
+    map(): string|undefined {
+      return this.slices.map?.[0]
+    },
+    powerplay(): boolean {
+      return this.slices.powerplay?.[0] == 'true'
+    },
     camelToKebab() {
       return camelToKebab
     },
