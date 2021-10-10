@@ -1,6 +1,6 @@
 <template>
   <b-select
-    v-if="'season' in value"
+    v-if="'season' in value && seasons.length > 0"
     :value="value.season[0]"
     dark
     sm
@@ -34,6 +34,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
+    console.log(this.value)
     this.seasons = await this.$cube.queryAllSeasons(8)
   },
 })
