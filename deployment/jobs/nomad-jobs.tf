@@ -153,6 +153,7 @@ resource "nomad_volume" "brawltime_assets" {
   }
 }
 
+/*
 resource "nomad_job" "brawltime" {
   jobspec = file("${path.module}/brawltime.nomad")
 
@@ -175,3 +176,4 @@ resource "nomad_job" "brawltime" {
     }
   }
 }
+*/
