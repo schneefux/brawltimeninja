@@ -12,10 +12,6 @@ variable "domain" {
 job "brawltime-api" {
   datacenters = ["dc1"]
 
-  spread {
-    attribute = "${node.unique.id}"
-  }
-
   constraint {
     attribute = "${node.class}"
     operator = "regexp"
@@ -85,6 +81,11 @@ job "brawltime-api" {
         data = file("./bin/update_apikey.sh")
         destination = "local/update_apikey.sh"
       }
+
+      resources {
+        cpu = 16
+        memory = 32
+      }
     }
 
     task "delete-api-token" {
@@ -97,6 +98,11 @@ job "brawltime-api" {
       config {
         command = "consul"
         args = ["kv", "delete", "brawlstars-token/alloc-${NOMAD_ALLOC_ID}"]
+      }
+
+      resources {
+        cpu = 16
+        memory = 32
       }
     }
 
@@ -125,8 +131,9 @@ job "brawltime-api" {
       }
 
       resources {
-        cpu = 64
-        memory = 96
+        cpu = 256
+        memory = 128
+        memory_max = 256
       }
     }
   }

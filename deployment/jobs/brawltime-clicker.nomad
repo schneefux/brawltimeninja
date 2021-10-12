@@ -8,10 +8,6 @@ variable "domain" {
 job "brawltime-clicker" {
   datacenters = ["dc1"]
 
-  spread {
-    attribute = "${node.unique.id}"
-  }
-
   constraint {
     attribute = "${node.class}"
     operator = "regexp"
@@ -77,8 +73,9 @@ job "brawltime-clicker" {
       }
 
       resources {
-        cpu = 192
-        memory = 96
+        cpu = 96
+        memory = 64
+        memory_max = 96
       }
     }
   }

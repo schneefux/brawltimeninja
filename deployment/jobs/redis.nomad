@@ -42,8 +42,9 @@ job "redis" {
       }
 
       resources {
-        cpu = 64
-        memory = 128
+        cpu = 384
+        memory = 196
+        memory_max = 256
       }
     }
   }

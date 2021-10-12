@@ -8,10 +8,6 @@ variable "domain" {
 job "brawltime-cube" {
   datacenters = ["dc1"]
 
-  spread {
-    attribute = "${node.unique.id}"
-  }
-
   constraint {
     attribute = "${node.class}"
     operator = "regexp"
@@ -78,8 +74,9 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 768
-        memory = 192
+        cpu = 1024
+        memory = 196
+        memory_max = 384
       }
     }
   }
@@ -115,6 +112,7 @@ job "brawltime-cube" {
       resources {
         cpu = 64
         memory = 96
+        memory_max = 128
       }
     }
   }

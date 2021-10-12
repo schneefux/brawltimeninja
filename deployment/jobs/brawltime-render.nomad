@@ -8,10 +8,6 @@ variable "domain" {
 job "brawltime-render" {
   datacenters = ["dc1"]
 
-  spread {
-    attribute = "${node.unique.id}"
-  }
-
   constraint {
     attribute = "${node.class}"
     operator = "regexp"
@@ -73,6 +69,7 @@ job "brawltime-render" {
       resources {
         cpu = 768
         memory = 1024
+        memory_max = 1024
       }
     }
   }

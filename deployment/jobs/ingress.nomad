@@ -100,8 +100,10 @@ job "ingress" {
       }
 
       resources {
+        # average cpu: 196
         cpu = 512
         memory = 96
+        memory_max = 512
       }
     }
   }
@@ -157,8 +159,10 @@ job "ingress" {
       }
 
       resources {
+        # average cpu: 96
         cpu = 256
         memory = 64
+        memory_max = 384
       }
     }
   }

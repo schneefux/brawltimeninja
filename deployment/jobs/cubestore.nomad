@@ -53,8 +53,9 @@ job "cubestore" {
       }
 
       resources {
-        cpu = 100
-        memory = 100
+        cpu = 64
+        memory = 32
+        memory_max = 512
       }
     }
 
