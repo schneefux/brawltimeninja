@@ -10,6 +10,7 @@ runcmd:
   - DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${datadog_api_key} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
   - usermod -a -G docker dd-agent
   - "echo \"dogstatsd_non_local_traffic: true\napm_config:\n  apm_non_local_traffic: true\" >> /etc/datadog-agent/datadog.yaml"
+  - systemctl restart datadog-agent
 apt:
   sources:
     hashicorp:
