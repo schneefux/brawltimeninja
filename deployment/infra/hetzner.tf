@@ -108,7 +108,7 @@ variable "servers" {
       leader_ip = ""
     }
     colt = {
-      server_type = "cx21"
+      server_type = "cpx11"
       ip = "10.0.0.3"
       class = "worker"
       leader_ip = "10.0.0.2"
@@ -120,11 +120,19 @@ variable "servers" {
       leader_ip = "10.0.0.2"
     }
     edgar = {
-      server_type = "cx21"
+      server_type = "cpx11"
       ip = "10.0.0.5"
       class = "worker"
       leader_ip = "10.0.0.2"
     }
+    frank = {
+      server_type = "cpx11"
+      ip = "10.0.0.6"
+      class = "worker"
+      leader_ip = "10.0.0.2"
+    }
+    # timeouts and DNS errors after change?
+    # -> restart dnsmasq (TODO investigate why)
   }
 }
 
@@ -152,6 +160,13 @@ resource "hcloud_server" "default" {
   ]
   labels = {
     "firewall" = ""
+  }
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      user_data,
+    ]
   }
 }
 

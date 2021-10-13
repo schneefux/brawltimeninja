@@ -19,6 +19,10 @@ resource "hcloud_volume" "mariadb" {
   size = 10
   format = "ext4"
   delete_protection = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "nomad_volume" "mariadb" {
@@ -53,6 +57,10 @@ resource "hcloud_volume" "clickhouse" {
   size = 40
   format = "ext4"
   delete_protection = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "nomad_volume" "clickhouse" {
@@ -136,6 +144,10 @@ resource "hcloud_volume" "brawltime_assets" {
   size = 10
   format = "ext4"
   delete_protection = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "nomad_volume" "brawltime_assets" {

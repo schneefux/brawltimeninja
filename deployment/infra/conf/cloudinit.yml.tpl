@@ -1,6 +1,7 @@
 #cloud-config
 runcmd:
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
+  - sed -i "s,INTERFACE,$(ip link show | grep -oP 'en.+(?=:)'),g" /etc/nomad.d/nomad.hcl
   - mkdir -p /opt/nomad/volumes/certs
   - chown -R nomad:nomad /opt/nomad/volumes
   - systemctl stop systemd-resolved
@@ -53,7 +54,7 @@ write_files:
 
       client {
         enabled = true
-        network_interface = "ens10"
+        network_interface = "INTERFACE"
 
         host_volume "certs" {
           path = "/opt/nomad/volumes/certs"

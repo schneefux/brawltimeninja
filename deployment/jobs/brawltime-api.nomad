@@ -65,7 +65,7 @@ job "brawltime-api" {
       # dynamically register token for current public IP address
       config {
         command = "/bin/bash"
-        args = ["${NOMAD_TASK_DIR}/update_apikey.sh"]
+        args = ["-e", "${NOMAD_TASK_DIR}/update_apikey.sh"]
       }
 
       template {
