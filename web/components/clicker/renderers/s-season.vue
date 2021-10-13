@@ -34,7 +34,6 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    console.log(this.value)
     this.seasons = await this.$cube.queryAllSeasons(8)
   },
 })
