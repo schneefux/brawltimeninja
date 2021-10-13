@@ -121,9 +121,7 @@ export interface Dimension {
   /**
    * Deprecated clicker configuration
    */
-  formatColumn: string
   column: string
-  anyColumns: string[]
 }
 
 export interface Slice {
@@ -144,11 +142,9 @@ const metaDimensions = asDimensions({
   season: {
     id: 'season',
     name: 'Bi-Week',
-    formatColumn: 'trophy_season_end',
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
     column: 'trophy_season_end',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -163,11 +159,9 @@ const metaDimensions = asDimensions({
   day: {
     id: 'day',
     name: 'Day',
-    formatColumn: '',
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
     column: '',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -182,11 +176,9 @@ const metaDimensions = asDimensions({
   timestamp: {
     id: 'timestamp',
     name: 'Timestamp',
-    formatColumn: 'timestamp',
     naturalIdAttribute: 'timestamp',
     formatter: 'yyyy-MM-ddTHH:mm',
     column: 'timestamp',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -204,11 +196,9 @@ const playerDimensions = asDimensions({
   player: {
     id: 'player',
     name: 'Player',
-    formatColumn: 'player_name',
     naturalIdAttribute: 'playerName',
     formatter: '',
     column: 'player_id',
-    anyColumns: ['player_name', 'player_icon_id'],
     additionalMeasures: ['playerName', 'playerIcon'],
     hidden: false,
     type: 'nominal',
@@ -223,11 +213,9 @@ const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
-    formatColumn: 'brawler_name',
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     column: 'brawler_name',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -239,11 +227,9 @@ const brawlerDimensions = asDimensions({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
-    formatColumn: 'brawler_id',
     naturalIdAttribute: 'brawlerId',
     formatter: '',
     column: 'brawler_id',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -255,11 +241,9 @@ const brawlerDimensions = asDimensions({
   ally: {
     id: 'ally',
     name: 'Ally',
-    formatColumn: 'ally_brawler_name',
     naturalIdAttribute: 'ally',
     formatter: 'capitalizeWords',
     column: 'ally_brawler_name',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -271,11 +255,9 @@ const brawlerDimensions = asDimensions({
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
-    formatColumn: 'ally_brawler_id',
     naturalIdAttribute: 'allyId',
     formatter: '',
     column: 'ally_brawler_id',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -287,11 +269,9 @@ const brawlerDimensions = asDimensions({
   gadget: {
     id: 'gadget',
     name: 'Gadget',
-    formatColumn: 'brawler_gadget_name',
     naturalIdAttribute: 'gadgetName',
     formatter: 'capitalizeWords',
     column: 'brawler_gadget_id',
-    anyColumns: ['brawler_gadget_name', 'brawler_name'],
     additionalMeasures: ['gadgetName', 'brawler'],
     hidden: false,
     type: 'nominal',
@@ -303,11 +283,9 @@ const brawlerDimensions = asDimensions({
   starpower: {
     id: 'starpower',
     name: 'Star Power',
-    formatColumn: '',
     naturalIdAttribute: 'starpowerName',
     formatter: 'capitalizeWords',
     column: 'brawler_starpower_id',
-    anyColumns: ['', ''],
     additionalMeasures: ['starpowerName', 'brawler'],
     hidden: false,
     type: 'nominal',
@@ -319,11 +297,9 @@ const brawlerDimensions = asDimensions({
   bigbrawler: {
     id: 'bigbrawler',
     name: 'Big Brawler',
-    formatColumn: 'battle_is_bigbrawler',
     naturalIdAttribute: 'bigbrawler',
     formatter: 'y/n',
     column: 'brawler_is_bigbrawler',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -335,11 +311,9 @@ const brawlerDimensions = asDimensions({
   trophyRange: {
     id: 'trophyRange',
     name: 'Trophy Range',
-    formatColumn: 'brawler_trophyrange',
     naturalIdAttribute: 'trophyRange',
     formatter: '',
     column: 'brawler_trophyrange',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: true,
     type: 'ordinal',
@@ -354,11 +328,9 @@ const battleDimensions = asDimensions({
   mode: {
     id: 'mode',
     name: 'Mode',
-    formatColumn: 'battle_event_mode',
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
     column: 'battle_event_mode',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -370,11 +342,9 @@ const battleDimensions = asDimensions({
   map: {
     id: 'map',
     name: 'Map',
-    formatColumn: 'battle_event_map',
     naturalIdAttribute: 'map',
     formatter: '',
     column: 'battle_event_map',
-    anyColumns: ['battle_event_mode', 'battle_event_id'],
     additionalMeasures: ['mode', 'eventId'],
     hidden: false,
     type: 'nominal',
@@ -386,11 +356,9 @@ const battleDimensions = asDimensions({
   team: {
     id: 'team',
     name: 'Team',
-    formatColumn: '',
     naturalIdAttribute: 'team',
     formatter: 'capitalizeWords',
     column: '',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -402,11 +370,9 @@ const battleDimensions = asDimensions({
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
-    formatColumn: 'battle_event_powerplay',
     naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
     column: 'battle_event_powerplay',
-    anyColumns: [],
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
