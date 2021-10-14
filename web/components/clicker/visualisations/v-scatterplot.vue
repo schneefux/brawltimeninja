@@ -48,7 +48,7 @@ export default Vue.extend({
           x: {
             field: 'measurementsRaw.' + this.measurements[0].id,
             type: this.measurements[0].type,
-            title: this.measurements[0].name,
+            title: this.$cube.getName(this.measurements[0]),
             axis: {
               format: this.measurements[0].d3formatter,
             },
@@ -57,7 +57,7 @@ export default Vue.extend({
           y: {
             field: 'measurementsRaw.' + this.measurements[1].id,
             type: this.measurements[1].type,
-            title: this.measurements[1].name,
+            title: this.$cube.getName(this.measurements[1]),
             axis: {
               format: this.measurements[1].d3formatter,
             },
@@ -77,7 +77,7 @@ export default Vue.extend({
             text: {
               field: 'dimensions.' + this.dimensions[0].id,
               type: this.dimensions[0].type,
-              title: this.dimensions[0].name,
+              title: this.$cube.getName(this.dimensions[0]),
             },
           },
         }],

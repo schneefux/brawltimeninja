@@ -168,9 +168,9 @@ export default Vue.extend({
       }
 
       return [
-        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
-        [ commonMeasurements.starRate.name, this.data.measurements.starRate ],
-        [ commonMeasurements.winRate.name, this.data.measurements.winRate ],
+        [ commonMeasurements.useRate.name!, this.$clicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
+        [ commonMeasurements.starRate.name!, this.data.measurements.starRate ],
+        [ commonMeasurements.winRate.name!, this.data.measurements.winRate ],
       ]
     },
     ...mapState({

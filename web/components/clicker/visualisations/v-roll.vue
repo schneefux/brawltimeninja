@@ -34,7 +34,7 @@
                 {{ entry.measurements[m.id] }}
               </td>
               <td>
-                {{ $t('metric.' + m.id + '.short') }}
+                {{ $cube.getName(m, 'short') }}
               </td>
             </tr>
           </tbody>

@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { TierList, TierListEntry } from '~/model/Web'
+import { TierList } from '~/model/Web'
 import { MetaGridEntry, scaleEntriesIntoTiers } from '@/lib/util'
 import VTierListSharepic from '~/components/clicker/visualisations/v-tier-list-sharepic.vue'
 import { Dimension, Measurement } from '~/lib/cube'

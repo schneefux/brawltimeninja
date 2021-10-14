@@ -44,7 +44,7 @@
                   {{ entry.measurements[m.id] }}
                 </td>
                 <td class="card-prop-label" itemprop="value">
-                  {{ $t('metric.' + m.id) }}
+                  {{ $cube.getName(m) }}
                 </td>
               </tr>
             </tbody>
@@ -75,7 +75,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { MetaGridEntry } from '@/lib/util'
-import BrawlerTeam from '~/components/brawler-team.vue'
 import { Dimension, Measurement } from '~/lib/cube'
 
 export default Vue.extend({

@@ -34,8 +34,8 @@ export default Vue.extend({
   methods: {
     download() {
       const header = (<string[]>[]).concat(
-        this.dimensions.map(d => d.name),
-        this.measurements.map(m => m.name),
+        this.dimensions.map(d => this.$cube.getName(d)),
+        this.measurements.map(m => this.$cube.getName(m)),
       ).join(',')
       const body = this.data.map(e =>
         (<(string|number)[]>[]).concat(

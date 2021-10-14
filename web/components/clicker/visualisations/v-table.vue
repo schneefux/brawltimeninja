@@ -72,14 +72,14 @@ export default Vue.extend({
   computed: {
     columns(): Column[] {
       return [<Column>{
-        title: this.dimensions.map(d => this.$t('metric.' + d.id) as string).join(', '),
+        title: this.dimensions.map(d => this.$cube.getName(d)).join(', '),
         keys: this.dimensions.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
       }].concat(
         this.measurements.map(m => (<Column>{
           // measurements are rendered 1:1
-          title: this.$t('metric.' + m.id) as string,
+          title: this.$cube.getName(m),
           keys: [`measurements.${m.id}`],
           slot: `measurements.${m.id}`,
         })),

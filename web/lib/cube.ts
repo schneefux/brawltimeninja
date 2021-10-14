@@ -56,7 +56,8 @@ export interface Cube {
  */
 export interface Measurement {
   id: string
-  name: string
+  // TODO move all `name`s to en.json
+  name?: string
   description: string
   formatter: string
   d3formatter: string
@@ -83,7 +84,8 @@ export interface Measurement {
  */
 export interface Dimension {
   id: string
-  name: string
+  // TODO move all `name`s to en.json
+  name?: string
   /**
    * Column which contains a human-readable identifier.
    * May be the dimension or one of additionalMeasures.

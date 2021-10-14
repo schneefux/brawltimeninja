@@ -146,9 +146,9 @@ export default Vue.extend({
         return []
       }
       return [
-        [ commonMeasurements.picks.name, this.$clicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
-        [ commonMeasurements.useRate.name, this.$clicker.format(commonMeasurements.useRate, (this.modeData.measurementsRaw.useRate as number) / (this.modeTotals.measurementsRaw.useRate as number)) ],
-        [ commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
+        [ commonMeasurements.picks.name!, this.$clicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
+        [ commonMeasurements.useRate.name!, this.$clicker.format(commonMeasurements.useRate, (this.modeData.measurementsRaw.useRate as number) / (this.modeTotals.measurementsRaw.useRate as number)) ],
+        [ commonMeasurements.winRate.name!, this.$clicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },

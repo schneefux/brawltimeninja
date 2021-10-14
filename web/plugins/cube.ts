@@ -35,6 +35,7 @@ interface Cube {
   queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]>
   queryAllBrawlers(): Promise<string[]>
   queryAllSeasons(limitWeeks: number): Promise<{ id: string, name: string }[]>
+  getName(measurement: Measurement|Dimension, modifier?: string): string
 }
 
 declare module 'vue/types/vue' {
@@ -283,6 +284,17 @@ const plugin: Plugin = (context, inject) => {
         sortId: 'picks',
       })
       return brawlers.data.map(b => b.dimensionsRaw.brawler.brawler)
+    },
+    getName(m: Measurement|Dimension, modifier?: string) {
+      // check if vue-i18n is loaded and whether it defines `metric.${id}.${modifier}`
+      const $te = (<any> this).$te
+      const i18nKey = 'metric.' + m.id + (modifier != undefined ? '.' + modifier : '')
+      if ($te != undefined && $te(i18nKey)) {
+        return (<any> this).$t(i18nKey) as string
+      }
+
+      // fall back to name
+      return m.name || m.id
     },
   })
 }
