@@ -14,7 +14,7 @@
       ></brawler-team>
       <p class="mt-1 self-center text-xs">
         {{ team.wins }}
-        {{ winsName }}
+        {{ $t('metric.wins.short') }}
       </p>
     </div>
     <p v-if="!$fetchState.pending && teams.length == 0">
@@ -80,11 +80,6 @@ export default Vue.extend({
       wins: this.$clicker.format(commonMeasurements.wins, Math.floor(t.wins)),
       winRate: t.wins / t.picks,
     }))
-  },
-  computed: {
-    winsName() {
-      return commonMeasurements.wins.nameShort
-    },
   },
 })
 </script>

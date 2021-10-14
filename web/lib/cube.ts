@@ -78,7 +78,6 @@ export interface Measurement {
   /**
    * old attributes, deprecate
    */
-  nameShort: string
   icon: string
   column: string
 }
@@ -404,7 +403,6 @@ export const playerMeasurements = asMeasurements({
   playerName: {
     id: 'playerName',
     name: 'Most common name',
-    nameShort: 'Name',
     icon: '',
     description: '',
     formatter: '',
@@ -420,7 +418,6 @@ export const playerMeasurements = asMeasurements({
   clubName: {
     id: 'clubName',
     name: 'Most common Club name',
-    nameShort: 'Club Name',
     icon: '',
     description: '',
     formatter: '',
@@ -436,7 +433,6 @@ export const playerMeasurements = asMeasurements({
   playerIcon: {
     id: 'playerIcon',
     name: 'Most common icon',
-    nameShort: 'Icon',
     icon: '',
     description: '',
     formatter: '',
@@ -452,7 +448,6 @@ export const playerMeasurements = asMeasurements({
   playerNameColor: {
     id: 'playerNameColor',
     name: 'Most common color',
-    nameShort: 'Name Color',
     icon: '',
     description: '',
     formatter: '',
@@ -468,7 +463,6 @@ export const playerMeasurements = asMeasurements({
   playerTrophies: {
     id: 'playerTrophies',
     name: 'Player Trophies',
-    nameShort: 'Trophies',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -487,7 +481,6 @@ export const playerMeasurements = asMeasurements({
   playerHighestTrophies: {
     id: 'playerHighestTrophies',
     name: 'Player Highest Trophies',
-    nameShort: 'Trophy Max',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -506,7 +499,6 @@ export const playerMeasurements = asMeasurements({
   victories: {
     id: 'victories',
     name: '3v3 Victories',
-    nameShort: 'Victories',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -525,7 +517,6 @@ export const playerMeasurements = asMeasurements({
   exp: {
     id: 'exp',
     name: 'Experience',
-    nameShort: 'EXP',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -544,7 +535,6 @@ export const playerMeasurements = asMeasurements({
   soloVictories: {
     id: 'soloVictories',
     name: 'Solo Victories',
-    nameShort: 'SD Victories',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -563,7 +553,6 @@ export const playerMeasurements = asMeasurements({
   duoVictories: {
     id: 'duoVictories',
     name: 'Duo Victories',
-    nameShort: 'SD Victories',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -582,7 +571,6 @@ export const playerMeasurements = asMeasurements({
   users: {
     id: 'users',
     name: 'Players',
-    nameShort: 'Players',
     icon: '🧑',
     description: 'The total number of players.',
     formatter: '.1s',
@@ -598,7 +586,6 @@ export const playerMeasurements = asMeasurements({
   powerPlayPoints: {
     id: 'powerPlayPoints',
     name: 'Power Play Points',
-    nameShort: 'Points',
     icon: '',
     description: '',
     formatter: '',
@@ -614,7 +601,6 @@ export const playerMeasurements = asMeasurements({
   highestPowerPlayPoints: {
     id: 'highestPowerPlayPoints',
     name: 'Highest Power Play Points',
-    nameShort: 'Points Max',
     icon: '',
     description: '',
     formatter: '',
@@ -630,7 +616,6 @@ export const playerMeasurements = asMeasurements({
   expLevel: {
     id: 'expLevel',
     name: 'EXP Level',
-    nameShort: 'EXP',
     icon: '',
     description: '',
     formatter: '',
@@ -646,7 +631,6 @@ export const playerMeasurements = asMeasurements({
   expPoints: {
     id: 'expPoints',
     name: 'EXP',
-    nameShort: 'EXP',
     icon: '',
     description: '',
     formatter: '',
@@ -662,7 +646,6 @@ export const playerMeasurements = asMeasurements({
   brawlers: {
     id: 'brawlers',
     name: 'Brawlers',
-    nameShort: 'Brawlers',
     icon: '',
     description: '',
     formatter: '',
@@ -681,7 +664,6 @@ export const brawlerMeasurements = asMeasurements({
   highestTrophies: {
     id: 'highestTrophies',
     name: 'Highest Trophies',
-    nameShort: 'Highest Trophies',
     icon: '',
     description: '',
     formatter: '.2s',
@@ -697,7 +679,6 @@ export const brawlerMeasurements = asMeasurements({
   trophies: {
     id: 'trophies',
     name: 'Trophies',
-    nameShort: 'Trophies',
     icon: 'trophy',
     description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
     formatter: '.2s',
@@ -716,7 +697,6 @@ export const brawlerMeasurements = asMeasurements({
   brawler: {
     id: 'brawler',
     name: 'Most played Brawler',
-    nameShort: 'Brawler',
     icon: '',
     description: '',
     formatter: 'capitalizeWords',
@@ -732,7 +712,6 @@ export const brawlerMeasurements = asMeasurements({
   starpowers: {
     id: 'starpowers',
     name: 'Star Powers',
-    nameShort: 'Star Powers',
     icon: '',
     description: '',
     formatter: '',
@@ -748,7 +727,6 @@ export const brawlerMeasurements = asMeasurements({
   gadgets: {
     id: 'gadgets',
     name: 'Gadgets',
-    nameShort: 'Gadgets',
     icon: '',
     description: '',
     formatter: '',
@@ -768,7 +746,6 @@ const metaMeasurements = asMeasurements({
     // TODO
     id: 'timestamp',
     name: 'Last Update',
-    nameShort: 'Updated',
     icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
@@ -785,7 +762,6 @@ const metaMeasurements = asMeasurements({
     // TODO
     id: 'day',
     name: 'Day',
-    nameShort: 'Day',
     icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-dd',
@@ -804,7 +780,6 @@ const battleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    nameShort: 'TrophyD',
     icon: 'trophy',
     description: '',
     formatter: '+.2f',
@@ -823,7 +798,6 @@ const battleMeasurements = asMeasurements({
   winRate: {
     id: 'winRate',
     name: 'Win Rate',
-    nameShort: 'Win',
     icon: '📈',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
     formatter: '.1%',
@@ -842,7 +816,6 @@ const battleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    nameShort: 'Win',
     icon: '📈',
     description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
     formatter: '.1%',
@@ -861,7 +834,6 @@ const battleMeasurements = asMeasurements({
   winRateDiff: {
     id: 'winRateDiff',
     name: 'Win Rate Diff',
-    nameShort: 'WinD',
     icon: '📈',
     description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
@@ -877,7 +849,6 @@ const battleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    nameShort: 'Wins',
     icon: '📈',
     description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
     formatter: '.2s',
@@ -893,7 +864,6 @@ const battleMeasurements = asMeasurements({
   winsZScore: {
     id: 'winsZScore',
     name: 'Wins z-Score',
-    nameShort: 'Win-z',
     icon: '📈',
     description: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
     formatter: '.2f',
@@ -909,7 +879,6 @@ const battleMeasurements = asMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    nameShort: 'Picks',
     icon: '👇',
     description: '',
     formatter: '.2s',
@@ -925,7 +894,6 @@ const battleMeasurements = asMeasurements({
   pickRate: {
     id: 'pickRate',
     name: 'Pick Rate',
-    nameShort: 'Picked',
     icon: '👇',
     description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
     formatter: '.2%',
@@ -945,7 +913,6 @@ const battleMeasurements = asMeasurements({
   useRate: {
     id: 'useRate',
     name: 'Use Rate',
-    nameShort: 'Used',
     icon: '🎯',
     description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     formatter: '.2%',
@@ -965,7 +932,6 @@ const battleMeasurements = asMeasurements({
   starRate: {
     id: 'starRate',
     name: 'Star Player',
-    nameShort: 'Star',
     icon: '⭐',
     description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     formatter: '.1%',
@@ -984,7 +950,6 @@ const battleMeasurements = asMeasurements({
   starRateDiff: {
     id: 'starRateDiff',
     name: 'Star Player Diff.',
-    nameShort: 'StarD',
     icon: '⭐',
     description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
@@ -1000,7 +965,6 @@ const battleMeasurements = asMeasurements({
   rank: {
     id: 'rank',
     name: 'Average Rank',
-    nameShort: 'Rank',
     icon: 'leaderboards',
     description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     formatter: '.2f',
@@ -1019,7 +983,6 @@ const battleMeasurements = asMeasurements({
   rank1: {
     id: 'rank1',
     name: '#1 Recorded',
-    nameShort: 'Rank 1',
     icon: '🏅',
     description: '',
     formatter: '.2s',
@@ -1035,7 +998,6 @@ const battleMeasurements = asMeasurements({
   rank1Rate: {
     id: 'rank1Rate',
     name: '#1 Rate',
-    nameShort: 'SD Win',
     icon: '📈',
     description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
     formatter: '.2%',
@@ -1054,7 +1016,6 @@ const battleMeasurements = asMeasurements({
   rank1RateDiff: {
     id: 'rank1RateDiff',
     name: '#1 Rate Diff.',
-    nameShort: 'SD WinD',
     icon: '📈',
     description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
@@ -1070,7 +1031,6 @@ const battleMeasurements = asMeasurements({
   duration: {
     id: 'duration',
     name: 'Duration',
-    nameShort: 'Duration',
     icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
     formatter: 'duration',
@@ -1086,7 +1046,6 @@ const battleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    nameShort: 'Level',
     icon: '🏅',
     description: '',
     formatter: '.2f',
@@ -1105,7 +1064,6 @@ const battleMeasurements = asMeasurements({
   power: {
     id: 'power',
     name: 'Power',
-    nameShort: 'Power',
     icon: '🏅',
     description: '',
     formatter: '.2f',
@@ -1124,7 +1082,6 @@ const battleMeasurements = asMeasurements({
   starpowerName: {
     id: 'starpowerName',
     name: 'Star Power',
-    nameShort: 'Star Power',
     icon: '',
     description: '',
     formatter: '',
@@ -1140,7 +1097,6 @@ const battleMeasurements = asMeasurements({
   gadgetName: {
     id: 'gadgetName',
     name: 'Gadget',
-    nameShort: 'Gadget',
     icon: '',
     description: '',
     formatter: '',
@@ -1156,7 +1112,6 @@ const battleMeasurements = asMeasurements({
   eventId: {
     id: 'eventId',
     name: 'Event ID',
-    nameShort: 'Event ID',
     icon: '',
     description: '',
     formatter: '',
@@ -1172,7 +1127,6 @@ const battleMeasurements = asMeasurements({
   map: {
     id: 'map',
     name: 'Map',
-    nameShort: 'Map',
     icon: '',
     description: '',
     formatter: '',
@@ -1188,7 +1142,6 @@ const battleMeasurements = asMeasurements({
   mode: {
     id: 'mode',
     name: 'Mode',
-    nameShort: 'Mode',
     icon: '',
     description: '',
     formatter: '',
@@ -1208,7 +1161,6 @@ const mergedbattleMeasurements = asMeasurements({
   timestamp: {
     id: 'timestamp',
     name: 'Last Update',
-    nameShort: 'Updated',
     icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
@@ -1224,7 +1176,6 @@ const mergedbattleMeasurements = asMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    nameShort: 'Picks',
     icon: '👇',
     description: '',
     formatter: '.2s',
@@ -1240,7 +1191,6 @@ const mergedbattleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    nameShort: 'TrophyD',
     icon: 'trophy',
     description: '',
     formatter: '+.2f',
@@ -1259,7 +1209,6 @@ const mergedbattleMeasurements = asMeasurements({
   winRate: {
     id: 'winRate',
     name: 'Win Rate',
-    nameShort: 'Win',
     icon: '📈',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
     formatter: '.1%',
@@ -1278,7 +1227,6 @@ const mergedbattleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    nameShort: 'Win',
     icon: '📈',
     description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
     formatter: '.1%',
@@ -1297,7 +1245,6 @@ const mergedbattleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    nameShort: 'Wins',
     icon: '📈',
     description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
     formatter: '.2s',
@@ -1313,7 +1260,6 @@ const mergedbattleMeasurements = asMeasurements({
   pickRate: {
     id: 'pickRate',
     name: 'Pick Rate',
-    nameShort: 'Picked',
     icon: '👇',
     description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
     formatter: '.2%',
@@ -1333,7 +1279,6 @@ const mergedbattleMeasurements = asMeasurements({
   useRate: {
     id: 'useRate',
     name: 'Use Rate',
-    nameShort: 'Used',
     icon: '🎯',
     description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     formatter: '.2%',
@@ -1353,7 +1298,6 @@ const mergedbattleMeasurements = asMeasurements({
   starRate: {
     id: 'starRate',
     name: 'Star Player',
-    nameShort: 'Star',
     icon: '⭐',
     description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     formatter: '.1%',
@@ -1372,7 +1316,6 @@ const mergedbattleMeasurements = asMeasurements({
   rank: {
     id: 'rank',
     name: 'Average Rank',
-    nameShort: 'Rank',
     icon: 'leaderboards',
     description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     formatter: '.2f',
@@ -1391,7 +1334,6 @@ const mergedbattleMeasurements = asMeasurements({
   rank1Rate: {
     id: 'rank1Rate',
     name: '#1 Rate',
-    nameShort: 'SD Win',
     icon: '📈',
     description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
     formatter: '.2%',
@@ -1410,7 +1352,6 @@ const mergedbattleMeasurements = asMeasurements({
   duration: {
     id: 'duration',
     name: 'Duration',
-    nameShort: 'Duration',
     icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
     formatter: 'duration',
@@ -1426,7 +1367,6 @@ const mergedbattleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    nameShort: 'Level',
     icon: '🏅',
     description: '',
     formatter: '.2f',

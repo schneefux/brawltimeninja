@@ -25,7 +25,7 @@
             <template v-slot="{ brawler }">
               <template v-if="brawler.picks >= sampleSizeThreshold">
                 {{ formatWinRateDiff(brawler) }}
-                {{ winRateDiffName }}
+                {{ $t('metric.winRateDiff.short') }}
               </template>
               <template v-else>
                 ?
@@ -86,9 +86,6 @@ export default Vue.extend({
     },
     formatWinRateDiff() {
       return (b: any) => this.$clicker.format(commonMeasurements.winRateDiff, b.battle_victory)
-    },
-    winRateDiffName(): string {
-      return commonMeasurements.winRateDiff.nameShort
     },
     description(): string {
       if (this.data.length < 5) {
