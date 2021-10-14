@@ -79,7 +79,6 @@ export interface Measurement {
    * old attributes, deprecate
    */
   icon: string
-  column: string
 }
 
 /**
@@ -117,16 +116,11 @@ export interface Dimension {
     sql: string
     type: DimensionType
   }
-  /**
-   * Deprecated clicker configuration
-   */
-  column: string
 }
 
 export interface Slice {
   id: string
   name: string
-  column: string
   config: { // cube.js config
     member: string // dimension/measure id
     operator: OperatorType
@@ -143,7 +137,6 @@ const metaDimensions = asDimensions({
     name: 'Bi-Week',
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
-    column: 'trophy_season_end',
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -160,7 +153,6 @@ const metaDimensions = asDimensions({
     name: 'Day',
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
-    column: '',
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -177,7 +169,6 @@ const metaDimensions = asDimensions({
     name: 'Timestamp',
     naturalIdAttribute: 'timestamp',
     formatter: 'yyyy-MM-ddTHH:mm',
-    column: 'timestamp',
     additionalMeasures: [],
     hidden: false,
     type: 'temporal',
@@ -197,7 +188,6 @@ const playerDimensions = asDimensions({
     name: 'Player',
     naturalIdAttribute: 'playerName',
     formatter: '',
-    column: 'player_id',
     additionalMeasures: ['playerName', 'playerIcon'],
     hidden: false,
     type: 'nominal',
@@ -214,7 +204,6 @@ const brawlerDimensions = asDimensions({
     name: 'Brawler',
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
-    column: 'brawler_name',
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -228,7 +217,6 @@ const brawlerDimensions = asDimensions({
     name: 'Brawler ID',
     naturalIdAttribute: 'brawlerId',
     formatter: '',
-    column: 'brawler_id',
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -242,7 +230,6 @@ const brawlerDimensions = asDimensions({
     name: 'Ally',
     naturalIdAttribute: 'ally',
     formatter: 'capitalizeWords',
-    column: 'ally_brawler_name',
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -256,7 +243,6 @@ const brawlerDimensions = asDimensions({
     name: 'Ally ID',
     naturalIdAttribute: 'allyId',
     formatter: '',
-    column: 'ally_brawler_id',
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -270,7 +256,6 @@ const brawlerDimensions = asDimensions({
     name: 'Gadget',
     naturalIdAttribute: 'gadgetName',
     formatter: 'capitalizeWords',
-    column: 'brawler_gadget_id',
     additionalMeasures: ['gadgetName', 'brawler'],
     hidden: false,
     type: 'nominal',
@@ -284,7 +269,6 @@ const brawlerDimensions = asDimensions({
     name: 'Star Power',
     naturalIdAttribute: 'starpowerName',
     formatter: 'capitalizeWords',
-    column: 'brawler_starpower_id',
     additionalMeasures: ['starpowerName', 'brawler'],
     hidden: false,
     type: 'nominal',
@@ -298,7 +282,6 @@ const brawlerDimensions = asDimensions({
     name: 'Big Brawler',
     naturalIdAttribute: 'bigbrawler',
     formatter: 'y/n',
-    column: 'brawler_is_bigbrawler',
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -312,7 +295,6 @@ const brawlerDimensions = asDimensions({
     name: 'Trophy Range',
     naturalIdAttribute: 'trophyRange',
     formatter: '',
-    column: 'brawler_trophyrange',
     additionalMeasures: [],
     hidden: true,
     type: 'ordinal',
@@ -329,7 +311,6 @@ const battleDimensions = asDimensions({
     name: 'Mode',
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
-    column: 'battle_event_mode',
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -343,7 +324,6 @@ const battleDimensions = asDimensions({
     name: 'Map',
     naturalIdAttribute: 'map',
     formatter: '',
-    column: 'battle_event_map',
     additionalMeasures: ['mode', 'eventId'],
     hidden: false,
     type: 'nominal',
@@ -357,7 +337,6 @@ const battleDimensions = asDimensions({
     name: 'Team',
     naturalIdAttribute: 'team',
     formatter: 'capitalizeWords',
-    column: '',
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -371,7 +350,6 @@ const battleDimensions = asDimensions({
     name: 'Power Play',
     naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
-    column: 'battle_event_powerplay',
     additionalMeasures: [],
     hidden: false,
     type: 'nominal',
@@ -408,7 +386,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_name',
     type: 'nominal',
     config: {
       sql: 'any(player_name)',
@@ -423,7 +400,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_club_name',
     type: 'nominal',
     config: {
       sql: 'any(player_club_name)',
@@ -438,7 +414,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_icon_id',
     type: 'nominal',
     config: {
       sql: 'any(player_icon_id)',
@@ -453,7 +428,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_name_color',
     type: 'nominal',
     config: {
       sql: 'any(player_name_color)',
@@ -468,7 +442,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_trophies',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -486,7 +459,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_highest_trophies',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -504,7 +476,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_3vs3_victories',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -522,7 +493,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_exp_points',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -540,7 +510,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_solo_victories',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -558,7 +527,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'player_duo_victories',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -576,7 +544,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '.1s',
     d3formatter: '.1s',
     sign: -1,
-    column: 'users',
     type: 'quantitative',
     config: {
       sql: 'uniqCombined(player_id)',
@@ -591,7 +558,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_power_play_points',
     type: 'quantitative',
     config: {
       sql: 'player_power_play_points',
@@ -606,7 +572,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_highest_power_play_points',
     type: 'quantitative',
     config: {
       sql: 'player_highest_power_play_points',
@@ -621,7 +586,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_exp_level',
     type: 'quantitative',
     config: {
       sql: 'player_exp_level',
@@ -636,7 +600,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_exp_points',
     type: 'quantitative',
     config: {
       sql: 'player_exp_points',
@@ -651,7 +614,6 @@ export const playerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'player_brawlers_length',
     type: 'quantitative',
     config: {
       sql: 'player_brawlers_length',
@@ -669,7 +631,6 @@ export const brawlerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'brawler_highest_trophies',
     type: 'quantitative',
     config: {
       sql: 'brawler_highest_trophies',
@@ -684,7 +645,6 @@ export const brawlerMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'brawler_trophies',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -702,7 +662,6 @@ export const brawlerMeasurements = asMeasurements({
     formatter: 'capitalizeWords',
     d3formatter: '',
     sign: -1,
-    column: 'brawler_name',
     type: 'nominal',
     config: {
       sql: 'anyHeavy(brawler_name)',
@@ -717,7 +676,6 @@ export const brawlerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'brawler_starpowers_length',
     type: 'quantitative',
     config: {
       sql: 'brawler_starpowers_length',
@@ -732,7 +690,6 @@ export const brawlerMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: 'brawler_gadgets_length',
     type: 'quantitative',
     config: {
       sql: 'brawler_gadgets_length',
@@ -751,7 +708,6 @@ const metaMeasurements = asMeasurements({
     formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
     sign: -1,
-    column: 'timestamp',
     type: 'temporal',
     config: {
       sql: 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
@@ -767,7 +723,6 @@ const metaMeasurements = asMeasurements({
     formatter: 'yyyy-MM-dd',
     d3formatter: '',
     sign: -1,
-    column: 'timestamp_day',
     type: 'temporal',
     config: {
       sql: 'formatDateTime(MAX(toStartOfDay(timestamp)), \'%FT%TZ\', \'UTC\')',
@@ -785,7 +740,6 @@ const battleMeasurements = asMeasurements({
     formatter: '+.2f',
     d3formatter: '+.2f',
     sign: -1,
-    column: 'battle_trophy_change',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -803,7 +757,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_victory',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -821,7 +774,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_victory_adj',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -839,7 +791,6 @@ const battleMeasurements = asMeasurements({
     formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
-    column: 'battle_victory',
     type: 'quantitative',
     config: {
       sql: '', // TODO needs join
@@ -854,7 +805,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'wins',
     type: 'quantitative',
     config: {
       sql: 'battle_victory',
@@ -869,7 +819,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
-    column: 'wins',
     type: 'quantitative',
     config: {
       sql: '', // TODO needs join
@@ -884,7 +833,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'picks',
     type: 'quantitative',
     config: {
       sql: '',
@@ -900,7 +848,6 @@ const battleMeasurements = asMeasurements({
     d3formatter: '.2%',
     sign: -1,
     percentageOver: 'brawler',
-    column: 'picks',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -919,7 +866,6 @@ const battleMeasurements = asMeasurements({
     d3formatter: '.2%',
     sign: -1,
     percentageOver: 'brawler',
-    column: 'picks_weighted',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -937,7 +883,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_starplayer',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -955,7 +900,6 @@ const battleMeasurements = asMeasurements({
     formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
-    column: 'battle_starplayer',
     type: 'quantitative',
     config: {
       sql: '', // TODO needs join
@@ -970,7 +914,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: +1,
-    column: 'battle_rank',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -988,7 +931,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'battle_rank1',
     type: 'quantitative',
     config: {
       sql: 'battle_rank1',
@@ -1003,7 +945,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    column: 'battle_rank1',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1021,7 +962,6 @@ const battleMeasurements = asMeasurements({
     formatter: '+.2%',
     d3formatter: '+.2%',
     sign: -1,
-    column: 'battle_rank1',
     type: 'quantitative',
     config: {
       sql: '', // TODO needs join
@@ -1036,7 +976,6 @@ const battleMeasurements = asMeasurements({
     formatter: 'duration',
     d3formatter: 'duration',
     sign: +1,
-    column: 'battle_duration',
     type: 'quantitative',
     config: {
       sql: 'battle_duration',
@@ -1051,7 +990,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
-    column: 'battle_level',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1069,7 +1007,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
-    column: 'brawler_power',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1087,7 +1024,6 @@ const battleMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: '',
     type: 'nominal',
     config: {
       sql: 'any(brawler_starpower_name)',
@@ -1102,7 +1038,6 @@ const battleMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: '',
     type: 'nominal',
     config: {
       sql: 'any(brawler_gadget_name)',
@@ -1117,7 +1052,6 @@ const battleMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: '',
     type: 'nominal',
     config: {
       sql: 'any(battle_event_id)',
@@ -1132,7 +1066,6 @@ const battleMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: '',
     type: 'nominal',
     config: {
       sql: 'any(battle_event_map)',
@@ -1147,7 +1080,6 @@ const battleMeasurements = asMeasurements({
     formatter: '',
     d3formatter: '',
     sign: -1,
-    column: '',
     type: 'nominal',
     config: {
       sql: 'any(battle_event_mode)',
@@ -1166,7 +1098,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
     sign: -1,
-    column: 'timestamp',
     type: 'temporal',
     config: {
       sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
@@ -1181,7 +1112,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'picks',
     type: 'quantitative',
     config: {
       sql: 'sum(picks)',
@@ -1196,7 +1126,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '+.2f',
     d3formatter: '+.2f',
     sign: -1,
-    column: 'battle_trophy_change',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1214,7 +1143,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_victory',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1232,7 +1160,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_victory_adj',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1250,7 +1177,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
-    column: 'wins',
     type: 'quantitative',
     config: {
       sql: `${winRateMerged}*${picks}`,
@@ -1266,7 +1192,6 @@ const mergedbattleMeasurements = asMeasurements({
     d3formatter: '.2%',
     sign: -1,
     percentageOver: 'brawler',
-    column: 'picks',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1285,7 +1210,6 @@ const mergedbattleMeasurements = asMeasurements({
     d3formatter: '.2%',
     sign: -1,
     percentageOver: 'brawler',
-    column: 'picks_weighted',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1303,7 +1227,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
-    column: 'battle_starplayer',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1321,7 +1244,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: +1,
-    column: 'battle_rank',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1339,7 +1261,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    column: 'battle_rank1',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1357,7 +1278,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: 'duration',
     d3formatter: 'duration',
     sign: +1,
-    column: 'battle_duration',
     type: 'quantitative',
     config: {
       sql: 'avgMerge(battle_duration_state)',
@@ -1372,7 +1292,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
-    column: 'battle_level',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1395,7 +1314,6 @@ const metaSlices = asSlice({
   season: {
     id: 'season',
     name: 'Since Time',
-    column: 'trophy_season_end',
     config: {
       member: 'season_dimension',
       operator: 'afterDate',
@@ -1404,7 +1322,6 @@ const metaSlices = asSlice({
   seasonExact: {
     id: 'seasonExact',
     name: 'Time',
-    column: 'trophy_season_end_exact',
     config: {
       member: 'season_dimension',
       operator: 'equals',
@@ -1413,7 +1330,6 @@ const metaSlices = asSlice({
   timestamp: {
     id: 'timestamp',
     name: 'Since Time',
-    column: 'timestamp',
     config: {
       member: 'timestamp_dimension',
       operator: 'afterDate',
@@ -1425,7 +1341,6 @@ const playerSlices = asSlice({
   playerName: {
     id: 'playerName',
     name: 'Player Name',
-    column: 'player_name_ilike',
     config: {
       member: 'player_name_dimension',
       operator: 'contains',
@@ -1434,7 +1349,6 @@ const playerSlices = asSlice({
   playerId: {
     id: 'playerId',
     name: 'Player ID',
-    column: 'player_id',
     config: {
       member: 'player_dimension',
       operator: 'equals',
@@ -1446,7 +1360,6 @@ const brawlerSlices = asSlice({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
-    column: 'brawler_name',
     config: {
       member: 'brawler_dimension',
       operator: 'equals',
@@ -1455,7 +1368,6 @@ const brawlerSlices = asSlice({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
-    column: 'brawler_id',
     config: {
       member: 'brawler_id_dimension',
       operator: 'equals',
@@ -1464,7 +1376,6 @@ const brawlerSlices = asSlice({
   ally: {
     id: 'ally',
     name: 'Ally',
-    column: 'ally_brawler_name',
     config: {
       member: 'ally_brawler_dimension',
       operator: 'equals',
@@ -1473,7 +1384,6 @@ const brawlerSlices = asSlice({
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
-    column: 'ally_brawler_id',
     config: {
       member: 'ally_brawler_id_dimension',
       operator: 'equals',
@@ -1482,7 +1392,6 @@ const brawlerSlices = asSlice({
   trophyRangeGte: {
     id: 'trophyRangeGte',
     name: 'Trophy Range greater than equals',
-    column: 'brawler_trophyrange',
     config: {
       member: 'trophyRange_dimension',
       operator: 'gte',
@@ -1491,7 +1400,6 @@ const brawlerSlices = asSlice({
   trophyRangeLt: {
     id: 'trophyRangeLt',
     name: 'Trophy Range lower than',
-    column: 'brawler_trophyrange',
     config: {
       member: 'trophyRange_dimension',
       operator: 'lt',
@@ -1500,7 +1408,6 @@ const brawlerSlices = asSlice({
   starpowerIdEq: {
     id: 'starpowerIdEq',
     name: 'Star Power ID equals',
-    column: '',
     config: {
       member: 'starpower_dimension',
       operator: 'equals',
@@ -1509,7 +1416,6 @@ const brawlerSlices = asSlice({
   starpowerIdNeq: {
     id: 'starpowerIdNeq',
     name: 'Star Power ID not equals',
-    column: '',
     config: {
       member: 'starpower_dimension',
       operator: 'notEquals',
@@ -1518,7 +1424,6 @@ const brawlerSlices = asSlice({
   gadgetIdEq: {
     id: 'gadgetIdEq',
     name: 'Gadget ID equals',
-    column: '',
     config: {
       member: 'gadget_dimension',
       operator: 'equals',
@@ -1527,7 +1432,6 @@ const brawlerSlices = asSlice({
   gadgetIdNeq: {
     id: 'gadgetIdNeq',
     name: 'Gadget ID not equals',
-    column: '',
     config: {
       member: 'gadget_dimension',
       operator: 'notEquals',
@@ -1539,7 +1443,6 @@ const battleSlices = asSlice({
   mode: {
     id: 'mode',
     name: 'Mode',
-    column: 'battle_event_mode',
     config: {
       member: 'mode_dimension',
       operator: 'equals',
@@ -1548,7 +1451,6 @@ const battleSlices = asSlice({
   map: {
     id: 'map',
     name: 'Map',
-    column: 'battle_event_map',
     config: {
       member: 'map_dimension',
       operator: 'equals',
@@ -1557,7 +1459,6 @@ const battleSlices = asSlice({
   id: {
     id: 'id',
     name: 'Event ID',
-    column: '',
     config: {
       member: 'eventId_measure',
       operator: 'equals',
@@ -1566,7 +1467,6 @@ const battleSlices = asSlice({
   mapLike: {
     id: 'mapLike',
     name: 'Map Name',
-    column: 'battle_event_map_like',
     config: {
       member: 'map_dimension',
       operator: 'contains',
@@ -1575,7 +1475,6 @@ const battleSlices = asSlice({
   mapNotLike: {
     id: 'mapNotLike',
     name: 'not Map Name',
-    column: 'battle_event_map_notlike',
     config: {
       member: 'map_dimension',
       operator: 'notContains',
@@ -1584,7 +1483,6 @@ const battleSlices = asSlice({
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
-    column: 'battle_event_powerplay',
     config: {
       member: 'powerplay_dimension',
       operator: 'equals',
@@ -1593,7 +1491,6 @@ const battleSlices = asSlice({
   bigbrawler: {
     id: 'bigbrawler',
     name: 'Big Brawler',
-    column: 'battle_is_bigbrawler',
     config: {
       member: 'bigbrawler_dimension',
       operator: 'equals',
