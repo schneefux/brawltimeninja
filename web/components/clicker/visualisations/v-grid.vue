@@ -40,26 +40,11 @@
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >
-                <td class="text-center">
-                  <img
-                    v-if="m.icon.length > 2"
-                    :src="require(`~/assets/images/icon/${m.icon}_optimized.png`)"
-                    :alt="m.name"
-                    class="card-prop-icon inline"
-                  >
-                  <!-- use emojis (length 2) -->
-                  <span
-                    v-else
-                    class="card-prop-icon"
-                  >
-                    {{ m.icon }}
-                  </span>
-                </td>
                 <td class="card-prop-value text-right pr-1" itemprop="unitText">
                   {{ entry.measurements[m.id] }}
                 </td>
                 <td class="card-prop-label" itemprop="value">
-                  {{ m.name }}
+                  {{ $t('metric.' + m.id) }}
                 </td>
               </tr>
             </tbody>

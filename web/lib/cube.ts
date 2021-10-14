@@ -75,10 +75,6 @@ export interface Measurement {
     sql: string
     type: MeasureType
   }
-  /**
-   * old attributes, deprecate
-   */
-  icon: string
 }
 
 /**
@@ -381,7 +377,6 @@ export const playerMeasurements = asMeasurements({
   playerName: {
     id: 'playerName',
     name: 'Most common name',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -395,7 +390,6 @@ export const playerMeasurements = asMeasurements({
   clubName: {
     id: 'clubName',
     name: 'Most common Club name',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -409,7 +403,6 @@ export const playerMeasurements = asMeasurements({
   playerIcon: {
     id: 'playerIcon',
     name: 'Most common icon',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -423,7 +416,6 @@ export const playerMeasurements = asMeasurements({
   playerNameColor: {
     id: 'playerNameColor',
     name: 'Most common color',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -437,7 +429,6 @@ export const playerMeasurements = asMeasurements({
   playerTrophies: {
     id: 'playerTrophies',
     name: 'Player Trophies',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -454,7 +445,6 @@ export const playerMeasurements = asMeasurements({
   playerHighestTrophies: {
     id: 'playerHighestTrophies',
     name: 'Player Highest Trophies',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -471,7 +461,6 @@ export const playerMeasurements = asMeasurements({
   victories: {
     id: 'victories',
     name: '3v3 Victories',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -488,7 +477,6 @@ export const playerMeasurements = asMeasurements({
   exp: {
     id: 'exp',
     name: 'Experience',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -505,7 +493,6 @@ export const playerMeasurements = asMeasurements({
   soloVictories: {
     id: 'soloVictories',
     name: 'Solo Victories',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -522,7 +509,6 @@ export const playerMeasurements = asMeasurements({
   duoVictories: {
     id: 'duoVictories',
     name: 'Duo Victories',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -539,7 +525,6 @@ export const playerMeasurements = asMeasurements({
   users: {
     id: 'users',
     name: 'Players',
-    icon: '🧑',
     description: 'The total number of players.',
     formatter: '.1s',
     d3formatter: '.1s',
@@ -553,7 +538,6 @@ export const playerMeasurements = asMeasurements({
   powerPlayPoints: {
     id: 'powerPlayPoints',
     name: 'Power Play Points',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -567,7 +551,6 @@ export const playerMeasurements = asMeasurements({
   highestPowerPlayPoints: {
     id: 'highestPowerPlayPoints',
     name: 'Highest Power Play Points',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -581,7 +564,6 @@ export const playerMeasurements = asMeasurements({
   expLevel: {
     id: 'expLevel',
     name: 'EXP Level',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -595,7 +577,6 @@ export const playerMeasurements = asMeasurements({
   expPoints: {
     id: 'expPoints',
     name: 'EXP',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -609,7 +590,6 @@ export const playerMeasurements = asMeasurements({
   brawlers: {
     id: 'brawlers',
     name: 'Brawlers',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -626,7 +606,6 @@ export const brawlerMeasurements = asMeasurements({
   highestTrophies: {
     id: 'highestTrophies',
     name: 'Highest Trophies',
-    icon: '',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -640,7 +619,6 @@ export const brawlerMeasurements = asMeasurements({
   trophies: {
     id: 'trophies',
     name: 'Trophies',
-    icon: 'trophy',
     description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -657,7 +635,6 @@ export const brawlerMeasurements = asMeasurements({
   brawler: {
     id: 'brawler',
     name: 'Most played Brawler',
-    icon: '',
     description: '',
     formatter: 'capitalizeWords',
     d3formatter: '',
@@ -671,7 +648,6 @@ export const brawlerMeasurements = asMeasurements({
   starpowers: {
     id: 'starpowers',
     name: 'Star Powers',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -685,7 +661,6 @@ export const brawlerMeasurements = asMeasurements({
   gadgets: {
     id: 'gadgets',
     name: 'Gadgets',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -703,7 +678,6 @@ const metaMeasurements = asMeasurements({
     // TODO
     id: 'timestamp',
     name: 'Last Update',
-    icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
@@ -718,7 +692,6 @@ const metaMeasurements = asMeasurements({
     // TODO
     id: 'day',
     name: 'Day',
-    icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-dd',
     d3formatter: '',
@@ -735,7 +708,6 @@ const battleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    icon: 'trophy',
     description: '',
     formatter: '+.2f',
     d3formatter: '+.2f',
@@ -752,7 +724,6 @@ const battleMeasurements = asMeasurements({
   winRate: {
     id: 'winRate',
     name: 'Win Rate',
-    icon: '📈',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -769,7 +740,6 @@ const battleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    icon: '📈',
     description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -786,7 +756,6 @@ const battleMeasurements = asMeasurements({
   winRateDiff: {
     id: 'winRateDiff',
     name: 'Win Rate Diff',
-    icon: '📈',
     description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
     d3formatter: '+.2%',
@@ -800,7 +769,6 @@ const battleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    icon: '📈',
     description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -814,7 +782,6 @@ const battleMeasurements = asMeasurements({
   winsZScore: {
     id: 'winsZScore',
     name: 'Wins z-Score',
-    icon: '📈',
     description: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
     formatter: '.2f',
     d3formatter: '.2f',
@@ -828,7 +795,6 @@ const battleMeasurements = asMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    icon: '👇',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -842,7 +808,6 @@ const battleMeasurements = asMeasurements({
   pickRate: {
     id: 'pickRate',
     name: 'Pick Rate',
-    icon: '👇',
     description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -860,7 +825,6 @@ const battleMeasurements = asMeasurements({
   useRate: {
     id: 'useRate',
     name: 'Use Rate',
-    icon: '🎯',
     description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -878,7 +842,6 @@ const battleMeasurements = asMeasurements({
   starRate: {
     id: 'starRate',
     name: 'Star Player',
-    icon: '⭐',
     description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -895,7 +858,6 @@ const battleMeasurements = asMeasurements({
   starRateDiff: {
     id: 'starRateDiff',
     name: 'Star Player Diff.',
-    icon: '⭐',
     description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
     d3formatter: '+.2%',
@@ -909,7 +871,6 @@ const battleMeasurements = asMeasurements({
   rank: {
     id: 'rank',
     name: 'Average Rank',
-    icon: 'leaderboards',
     description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     formatter: '.2f',
     d3formatter: '.2f',
@@ -926,7 +887,6 @@ const battleMeasurements = asMeasurements({
   rank1: {
     id: 'rank1',
     name: '#1 Recorded',
-    icon: '🏅',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -940,7 +900,6 @@ const battleMeasurements = asMeasurements({
   rank1Rate: {
     id: 'rank1Rate',
     name: '#1 Rate',
-    icon: '📈',
     description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -957,7 +916,6 @@ const battleMeasurements = asMeasurements({
   rank1RateDiff: {
     id: 'rank1RateDiff',
     name: '#1 Rate Diff.',
-    icon: '📈',
     description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
     formatter: '+.2%',
     d3formatter: '+.2%',
@@ -971,7 +929,6 @@ const battleMeasurements = asMeasurements({
   duration: {
     id: 'duration',
     name: 'Duration',
-    icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
     formatter: 'duration',
     d3formatter: 'duration',
@@ -985,7 +942,6 @@ const battleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    icon: '🏅',
     description: '',
     formatter: '.2f',
     d3formatter: '.2f',
@@ -1002,7 +958,6 @@ const battleMeasurements = asMeasurements({
   power: {
     id: 'power',
     name: 'Power',
-    icon: '🏅',
     description: '',
     formatter: '.2f',
     d3formatter: '.2f',
@@ -1019,7 +974,6 @@ const battleMeasurements = asMeasurements({
   starpowerName: {
     id: 'starpowerName',
     name: 'Star Power',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -1033,7 +987,6 @@ const battleMeasurements = asMeasurements({
   gadgetName: {
     id: 'gadgetName',
     name: 'Gadget',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -1047,7 +1000,6 @@ const battleMeasurements = asMeasurements({
   eventId: {
     id: 'eventId',
     name: 'Event ID',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -1061,7 +1013,6 @@ const battleMeasurements = asMeasurements({
   map: {
     id: 'map',
     name: 'Map',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -1075,7 +1026,6 @@ const battleMeasurements = asMeasurements({
   mode: {
     id: 'mode',
     name: 'Mode',
-    icon: '',
     description: '',
     formatter: '',
     d3formatter: '',
@@ -1093,7 +1043,6 @@ const mergedbattleMeasurements = asMeasurements({
   timestamp: {
     id: 'timestamp',
     name: 'Last Update',
-    icon: '⌚',
     description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
     d3formatter: '',
@@ -1107,7 +1056,6 @@ const mergedbattleMeasurements = asMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    icon: '👇',
     description: '',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -1121,7 +1069,6 @@ const mergedbattleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    icon: 'trophy',
     description: '',
     formatter: '+.2f',
     d3formatter: '+.2f',
@@ -1138,7 +1085,6 @@ const mergedbattleMeasurements = asMeasurements({
   winRate: {
     id: 'winRate',
     name: 'Win Rate',
-    icon: '📈',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -1155,7 +1101,6 @@ const mergedbattleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    icon: '📈',
     description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -1172,7 +1117,6 @@ const mergedbattleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    icon: '📈',
     description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
     formatter: '.2s',
     d3formatter: '.2s',
@@ -1186,7 +1130,6 @@ const mergedbattleMeasurements = asMeasurements({
   pickRate: {
     id: 'pickRate',
     name: 'Pick Rate',
-    icon: '👇',
     description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -1204,7 +1147,6 @@ const mergedbattleMeasurements = asMeasurements({
   useRate: {
     id: 'useRate',
     name: 'Use Rate',
-    icon: '🎯',
     description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -1222,7 +1164,6 @@ const mergedbattleMeasurements = asMeasurements({
   starRate: {
     id: 'starRate',
     name: 'Star Player',
-    icon: '⭐',
     description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
     formatter: '.1%',
     d3formatter: '.1%',
@@ -1239,7 +1180,6 @@ const mergedbattleMeasurements = asMeasurements({
   rank: {
     id: 'rank',
     name: 'Average Rank',
-    icon: 'leaderboards',
     description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
     formatter: '.2f',
     d3formatter: '.2f',
@@ -1256,7 +1196,6 @@ const mergedbattleMeasurements = asMeasurements({
   rank1Rate: {
     id: 'rank1Rate',
     name: '#1 Rate',
-    icon: '📈',
     description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
     formatter: '.2%',
     d3formatter: '.2%',
@@ -1273,7 +1212,6 @@ const mergedbattleMeasurements = asMeasurements({
   duration: {
     id: 'duration',
     name: 'Duration',
-    icon: '⏰',
     description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
     formatter: 'duration',
     d3formatter: 'duration',
@@ -1287,7 +1225,6 @@ const mergedbattleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    icon: '🏅',
     description: '',
     formatter: '.2f',
     d3formatter: '.2f',
