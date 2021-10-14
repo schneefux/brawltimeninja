@@ -343,6 +343,19 @@ const battleDimensions = asDimensions({
       type: 'string',
     },
   },
+  teamSize: {
+    id: 'teamSIze',
+    name: 'Team size',
+    naturalIdAttribute: 'team',
+    formatter: '',
+    additionalMeasures: [],
+    hidden: false,
+    type: 'quantitative',
+    config: {
+      sql: 'length(battle_allies.brawler_name) + 1',
+      type: 'number',
+    },
+  },
   powerplay: {
     id: 'powerplay',
     name: 'Power Play',
@@ -1374,6 +1387,14 @@ const brawlerSlices = asSlice({
     config: {
       member: 'gadget_dimension',
       operator: 'notEquals',
+    },
+  },
+  teamSizeEq: {
+    id: 'teamSizeEq',
+    name: 'Team size',
+    config: {
+      member: 'teamSize',
+      operator: 'equals',
     },
   },
 })
