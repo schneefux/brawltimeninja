@@ -45,7 +45,7 @@ export default Vue.extend({
       return process.server
     },
     supportsIntersectionObserver(): boolean {
-      return !this.isServer && !('IntersectionObserver' in window)
+      return process.client && 'IntersectionObserver' in window
     },
     intersection() {
       return {
