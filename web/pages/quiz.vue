@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { OEJTSEntry } from '~/lib/oejts'
-import { computed, defineComponent, ref, useContext, useMeta, useRoute, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useMeta, useRoute, wrapProperty } from '@nuxtjs/composition-api'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({

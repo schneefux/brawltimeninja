@@ -18,13 +18,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import { CQuery, VTable } from '~/klicker/components'
 import { SliceValue, State } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import useTopNTitle from '~/composables/top-n-title'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VTable,
     DTeam,
@@ -34,50 +35,37 @@ export default Vue.extend({
   inheritAttrs: false,
   props: {
     id: {
-      type: [Number, String]
+      type: [Number, String],
+      default: () => undefined
     },
     limit: {
       type: Number,
       default: 50
     },
-    // TODO remove usages of `mode` and `map`, replace by `slices`
     slices: {
       type: Object as PropType<SliceValue>,
       default: () => ({})
     },
   },
-  computed: {
-    state(): State {
-      return {
-        cubeId: 'battle',
-        dimensionsIds: ['team'],
-        measurementsIds: ['wins'],
-        slices: {
-          mode: [this.mode],
-          map: [this.map],
-          ...this.slices,
-          teamSizeGt: this.mode == 'duoShowdown' ? ['1'] : ['2'],
-        },
-        sortId: 'wins',
-      }
-    },
-    title(): string {
-      const mode = this.slices.mode?.[0]
-      const map = this.slices.map?.[0]
+  setup(props) {
+    const { id, slices } = toRefs(props)
+    const title = useTopNTitle('best.teams', slices, id)
 
-      if (mode == undefined) {
-        return this.$i18n.t('best.teams.long') as string
-      }
-      if (map == undefined) {
-        return this.$i18n.t('best.teams.for.mode', {
-          mode: this.$i18n.t('mode.' + mode) as string,
-        }) as string
-      }
-      return this.$i18n.t('best.teams.for.map', {
-        mode: this.$i18n.t('mode.' + mode) as string,
-        map: this.$i18n.t('map.' + this.id) as string,
-      }) as string
-    },
+    const state = computed(() => (<State>{
+      cubeId: 'battle',
+      dimensionsIds: ['team'],
+      measurementsIds: ['wins'],
+      slices: {
+        ...slices.value,
+        teamSizeGt: slices.value.mode[0] == 'duoShowdown' ? ['1'] : ['2'],
+      },
+      sortId: 'wins',
+    }))
+
+    return {
+      state,
+      title,
+    }
   },
 })
 </script>

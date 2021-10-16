@@ -27,6 +27,7 @@
         <b-card
           v-if="id != undefined"
           :title="$t('map.' + id)"
+          class="row-span-2"
           md
         >
           <div
@@ -74,8 +75,32 @@
             once: true,
           }"
           :id="id"
-        :slices="state.slices"
+          :slices="state.slices"
+          full-height
+          md
         ></map-best-players-table>
+
+        <map-best-starpowers-table
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'starpowers'),
+            once: true,
+          }"
+          :id="id"
+          :slices="state.slices"
+          full-height
+          md
+        ></map-best-starpowers-table>
+
+        <map-best-gadgets-table
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'gadgets'),
+            once: true,
+          }"
+          :id="id"
+          :slices="state.slices"
+          full-height
+          md
+        ></map-best-gadgets-table>
       </div>
     </template>
   </c-dashboard>

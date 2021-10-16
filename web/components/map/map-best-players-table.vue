@@ -22,15 +22,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import DPlayer from '@/components/klicker/d-player.vue'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
 import { SliceValue, State } from '~/klicker'
+import { defineComponent, toRefs, PropType, computed } from '@nuxtjs/composition-api'
+import useTopNTitle from '~/composables/top-n-title'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VTable,
     DPlayer,
@@ -42,42 +43,33 @@ export default Vue.extend({
   inheritAttrs: false,
   props: {
     id: {
-      type: [Number, String]
+      type: [Number, String],
+      default: () => undefined
     },
     slices: {
-      type: Object as PropType<SliceValue>
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
     },
   },
-  computed: {
-    state(): State {
-      return {
+  setup(props) {
+    const { id, slices } = toRefs(props)
+    const title = useTopNTitle('best.players', slices, id)
+
+    const state = computed(() => {
+      const isShowdown = slices.value.mode?.[0]?.toLowerCase().includes('showdown')
+      return <State>{
         cubeId: 'battle',
         dimensionsIds: ['player'],
-        measurementsIds: this.isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
-        slices: this.slices,
-        sortId: this.isShowdown ? 'picks' : 'wins',
+        measurementsIds: isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
+        slices: slices.value,
+        sortId: isShowdown ? 'picks' : 'wins',
       }
-    },
-    title(): string {
-      const mode = this.slices.mode?.[0]
-      const map = this.slices.map?.[0]
+    })
 
-      if (mode == undefined) {
-        return this.$i18n.t('best.players.long') as string
-      }
-      if (map == undefined) {
-        return this.$i18n.t('best.players.for.mode', {
-          mode: this.$i18n.t('mode.' + mode) as string,
-        }) as string
-      }
-      return this.$i18n.t('best.players.for.map', {
-        mode: this.$i18n.t('mode.' + mode) as string,
-        map: this.$i18n.t('map.' + this.id) as string,
-      }) as string
-    },
-    isShowdown(): boolean {
-      return this.slices.mode?.[0]?.toLowerCase().includes('showdown')
-    },
+    return {
+      state,
+      title,
+    }
   },
 })
 </script>

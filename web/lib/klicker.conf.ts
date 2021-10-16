@@ -1677,6 +1677,10 @@ const cubes: Record<string, Cube> = {
       commonSlices.teamSizeGt,
       commonSlices.map,
       commonSlices.powerplay,
+      brawlerSlices.starpowerIdEq,
+      brawlerSlices.starpowerIdNeq,
+      brawlerSlices.gadgetIdEq,
+      brawlerSlices.gadgetIdNeq,
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,
