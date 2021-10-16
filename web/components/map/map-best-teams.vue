@@ -1,5 +1,5 @@
 <template>
-  <shimmer
+  <b-shimmer
     :loading="$fetchState.pending"
     class="mx-auto flex justify-between h-12 w-72"
   >
@@ -20,12 +20,13 @@
     <p v-if="!$fetchState.pending && teams.length == 0">
       No data.
     </p>
-  </shimmer>
+  </b-shimmer>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { commonMeasurements, SliceValue } from '~/lib/cube'
+import { SliceValue } from '~/klicker'
+import { commonMeasurements } from '~/lib/klicker.conf'
 
 interface Team {
   id: string
@@ -77,7 +78,7 @@ export default Vue.extend({
     this.teams = data.data.map((t) => (<Team>{
       id: t.brawler_names.join('+'),
       brawlers: t.brawler_names,
-      wins: this.$clicker.format(commonMeasurements.wins, Math.floor(t.wins)),
+      wins: this.$klicker.format(commonMeasurements.wins, Math.floor(t.wins)),
       winRate: t.wins / t.picks,
     }))
   },

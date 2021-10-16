@@ -62,7 +62,7 @@ import { camelToKebab, slugify } from '@/lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 
 import { enUS, de } from 'date-fns/locale'
-import { SliceValue } from '~/lib/cube'
+import { SliceValue } from '~/klicker'
 const locales = { en: enUS, de: de }
 
 export default Vue.extend({

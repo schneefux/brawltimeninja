@@ -1,6 +1,6 @@
 <template>
   <dl class="flex flex-col md:flex-row md:flex-wrap md:justify-center">
-    <card
+    <b-card
       v-for="achievement in achievements"
       :key="achievement.metric"
       class="text-center"
@@ -15,7 +15,7 @@
           {{ achievement.text }}
         </dd>
       </div>
-    </card>
+    </b-card>
   </dl>
 </template>
 

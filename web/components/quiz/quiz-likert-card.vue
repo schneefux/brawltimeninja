@@ -3,7 +3,7 @@
     v-if="page < pages"
     @submit.prevent="next"
   >
-    <card
+    <b-card
       :title="`Questions ${page+1}/${pages}`"
       :subtitle="$t('oejts.intro')"
       class="mt-2 mx-auto"
@@ -49,7 +49,7 @@
         primary
         md
       >Next</b-button>
-    </card>
+    </b-card>
 </form>
 </template>
 

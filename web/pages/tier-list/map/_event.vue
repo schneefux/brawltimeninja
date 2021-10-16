@@ -3,8 +3,8 @@ import Vue from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
 export default Vue.extend({
-  async validate({ params, error, redirect, $cube }) {
-    const events = await $cube.query({
+  async validate({ params, error, redirect, $klicker }) {
+    const events = await $klicker.query({
       cubeId: 'map',
       slices: {
         id: [params.event],

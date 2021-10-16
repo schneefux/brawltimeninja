@@ -61,7 +61,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { camelToKebab } from '~/lib/util'
-import { EventMetadata } from '~/plugins/cube'
+import { EventMetadata } from '~/plugins/klicker'
 
 export default Vue.extend({
   props: {
@@ -77,7 +77,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.events = await this.$cube.queryActiveEvents()
+    this.events = await this.$klicker.queryActiveEvents()
   },
   computed: {
     camelToKebab() {

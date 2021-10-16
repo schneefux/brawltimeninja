@@ -3,34 +3,34 @@
     :title="$t('bar-chart-race.title')"
     class="max-w-2xl mx-auto"
   >
-    <card
+    <b-card
       :title="$t('bar-chart-race.howto.title')"
       class="mt-3"
     >
       <p slot="content" class="mb-2 prose text-gray-200">
         {{ $t('bar-chart-race.howto.description') }}
       </p>
-    </card>
+    </b-card>
 
-    <card :title="$t('bar-chart-race.note.title')">
+    <b-card :title="$t('bar-chart-race.note.title')">
       <div slot="content" class="mb-2">
         <p class="prose text-gray-200">
           {{ $t('bar-chart-race.note.description') }}
         </p>
         <q slot="content" class="prose text-gray-200 italic">{{ $t('attribution-example', { date: new Date().toDateString() }) }}</q>
       </div>
-    </card>
+    </b-card>
 
-    <card :title="$t('bar-chart-race.brawler')">
+    <b-card :title="$t('bar-chart-race.brawler')">
       <div slot="content">
-        <card elevation="2">
+        <b-card elevation="2">
           <div slot="content">
             <c-metric
               v-model="state"
               :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
             ></c-metric>
           </div>
-        </card>
+        </b-card>
 
         <c-dashboard
           v-model="state"
@@ -69,16 +69,22 @@
           </template>
         </c-dashboard>
       </div>
-    </card>
+    </b-card>
   </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/lib/cube'
+import { State } from '~/klicker'
+import { CDashboard, BCard, CMetric } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 export default Vue.extend({
+  components: {
+    CDashboard,
+    BCard,
+    CMetric,
+  },
   head() {
     const description = this.$t('bar-chart-race.meta.description') as string
     return {

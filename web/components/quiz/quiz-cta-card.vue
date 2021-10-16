@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     v-if="result == undefined"
     title="What is your Brawler Personality?"
     :subtitle="`Answer ${Object.keys(oejtsScores).length} questions to find out!`"
@@ -14,8 +14,8 @@
       primary
       md
     >Start Quiz</b-button>
-  </card>
-  <card
+  </b-card>
+  <b-card
     v-else
     title="Brawler Personality Test"
     :subtitle="`Your Result: ${personalityTestResult}`"
@@ -35,7 +35,7 @@
       primary
       md
     >{{ $t('action.restart') }}</b-button>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

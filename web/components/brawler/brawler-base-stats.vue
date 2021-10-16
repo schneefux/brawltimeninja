@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap justify-center w-full md:w-auto">
     <div class="w-full flex justify-center">
-      <card full-height xxl>
+      <b-card full-height xxl>
         <div
           slot="content"
           class="max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto md:py-10 md:px-6"
@@ -31,7 +31,7 @@
             ></kv-table>
           </div>
         </div>
-      </card>
+      </b-card>
     </div>
 
     <template v-if="info != undefined">
@@ -43,7 +43,7 @@
       ></brawler-attack-stats-card>
     </template>
 
-    <card
+    <b-card
       v-if="data != undefined"
       :title="$t('brawler.statistics', { brawler: brawlerName })"
       full-height
@@ -56,15 +56,16 @@
           class="mt-3"
         ></kv-table>
       </template>
-    </card>
+    </b-card>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { commonMeasurements } from '~/lib/cube'
-import { MetaGridEntry, scaleInto } from '~/lib/util'
+import { MetaGridEntry } from '~/klicker'
+import { commonMeasurements } from '~/lib/klicker.conf'
+import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
 
 export default Vue.extend({
@@ -97,7 +98,7 @@ export default Vue.extend({
     const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => undefined)
     this.info = info
 
-    const data = await this.$cube.query({
+    const data = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         brawler: [this.brawlerName.toUpperCase()],
@@ -107,7 +108,7 @@ export default Vue.extend({
       sortId: 'winRate',
     })
 
-    const totalData = await this.$cube.query({
+    const totalData = await this.$klicker.query({
       cubeId: 'map',
       slices: {},
       dimensionsIds: [],
@@ -168,7 +169,7 @@ export default Vue.extend({
       }
 
       return [
-        [ commonMeasurements.useRate.name!, this.$clicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
+        [ commonMeasurements.useRate.name!, this.$klicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
         [ commonMeasurements.starRate.name!, this.data.measurements.starRate ],
         [ commonMeasurements.winRate.name!, this.data.measurements.winRate ],
       ]

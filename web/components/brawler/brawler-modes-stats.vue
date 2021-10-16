@@ -3,7 +3,7 @@
     <p>
       {{ description }}
     </p>
-    <horizontal-scroller
+    <b-horizontal-scroller
       class="mt-2"
       expand-on-desktop
     >
@@ -31,15 +31,20 @@
           }"
         ></brawler-mode-stats>
       </lazy>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { MetaGridEntry, scaleInto } from '~/lib/util';
+import { scaleInto } from '~/lib/util'
+import { MetaGridEntry } from '~/klicker'
+import { BHorizontalScroller } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   props: {
     brawlerId: {
       type: String,
@@ -62,7 +67,7 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    const data = await this.$cube.query({
+    const data = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         brawler: [this.brawlerName.toUpperCase()],

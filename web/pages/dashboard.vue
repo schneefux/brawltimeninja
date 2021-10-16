@@ -54,37 +54,38 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/lib/cube'
-import CDashboard from '@/components/clicker/c-dashboard.vue'
-import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import { State } from '~/klicker'
+import { CDashboard, VDashboard } from '~/klicker/components'
+import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
-import DTeam from '@/components/clicker/renderers/d-team.vue'
+import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import DMode from '@/components/clicker/renderers/d-mode.vue'
-import DMap from '@/components/clicker/renderers/d-map.vue'
-import DSeason from '@/components/clicker/renderers/d-season.vue'
-import DPlayer from '@/components/clicker/renderers/d-player.vue'
-import SModeMap from '@/components/clicker/renderers/s-mode-map.vue'
-import SCompetitionMaps from '@/components/clicker/renderers/s-competition-maps.vue'
-import SAlly from '@/components/clicker/renderers/s-ally.vue'
-import SSeason from '@/components/clicker/renderers/s-season.vue'
-import SPowerplay from '@/components/clicker/renderers/s-powerplay.vue'
-import STrophies from '@/components/clicker/renderers/s-trophies.vue'
-import SWithStarpower from '@/components/clicker/renderers/s-with-starpower.vue'
-import SWithGadget from '@/components/clicker/renderers/s-with-gadget.vue'
-import SBrawler from '@/components/clicker/renderers/s-brawler.vue'
-import VGini from '@/components/clicker/renderers/v-gini.vue'
-import VLastUpdate from '@/components/clicker/renderers/v-last-update.vue'
-import VMoe from '@/components/clicker/renderers/v-moe.vue'
-import VSampleSize from '@/components/clicker/renderers/v-sample-size.vue'
-import VMeasureDescription from '@/components/clicker/renderers/v-measure-description.vue'
-import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
-import SPlayerName from '@/components/clicker/renderers/s-player-name.vue'
-import SPlayerTag from '@/components/clicker/renderers/s-player-tag.vue'
+import DMode from '@/components/klicker/d-mode.vue'
+import DMap from '@/components/klicker/d-map.vue'
+import DSeason from '@/components/klicker/d-season.vue'
+import DPlayer from '@/components/klicker/d-player.vue'
+import SModeMap from '@/components/klicker/s-mode-map.vue'
+import SCompetitionMaps from '@/components/klicker/s-competition-maps.vue'
+import SAlly from '@/components/klicker/s-ally.vue'
+import SSeason from '@/components/klicker/s-season.vue'
+import SPowerplay from '@/components/klicker/s-powerplay.vue'
+import STrophies from '@/components/klicker/s-trophies.vue'
+import SWithStarpower from '@/components/klicker/s-with-starpower.vue'
+import SWithGadget from '@/components/klicker/s-with-gadget.vue'
+import SBrawler from '@/components/klicker/s-brawler.vue'
+import VGini from '@/components/klicker/v-gini.vue'
+import VLastUpdate from '@/components/klicker/v-last-update.vue'
+import VMoe from '@/components/klicker/v-moe.vue'
+import VSampleSize from '@/components/klicker/v-sample-size.vue'
+import VMeasureDescription from '@/components/klicker/v-measure-description.vue'
+import MBrawler from '@/components/klicker/m-brawler.vue'
+import SPlayerName from '@/components/klicker/s-player-name.vue'
+import SPlayerTag from '@/components/klicker/s-player-tag.vue'
 
 export default Vue.extend({
   components: {
     CDashboard,
+    VDashboard,
     DBrawler,
     BrawlerLink, // dependency of DBrawler
     DTeam,
@@ -114,10 +115,13 @@ export default Vue.extend({
   computed: {
     state: {
       get(): State {
-        return this.$clicker.locationToState(this.$route, this.$cube.config)
+        return this.$klicker.locationToState(this.$route, this.$klicker.config, 'map')
       },
       set(s: State) {
-        this.$router.push(this.$clicker.stateToLocation(s))
+        this.$router.push({
+          ...this.$klicker.stateToLocation(s),
+          path: '/dashboard',
+        })
       }
     },
   },

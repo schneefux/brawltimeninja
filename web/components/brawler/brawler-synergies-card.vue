@@ -40,9 +40,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMeasurements } from '~/lib/cube'
 import { PicksWins } from '~/plugins/clicker'
 import { brawlerId, capitalizeWords, formatList } from '@/lib/util'
+import { commonMeasurements } from '~/lib/klicker.conf'
 
 interface Row {
   brawler_name: string
@@ -85,7 +85,7 @@ export default Vue.extend({
       return brawlerId({ name: this.brawler })
     },
     formatWinRateDiff() {
-      return (b: any) => this.$clicker.format(commonMeasurements.winRateDiff, b.battle_victory)
+      return (b: any) => this.$klicker.format(commonMeasurements.winRateDiff, b.battle_victory)
     },
     description(): string {
       if (this.data.length < 5) {

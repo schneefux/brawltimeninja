@@ -13,23 +13,23 @@
     }"
   >
     <template v-slot="data">
-      <v-lineplot-raw
+      <v-line-plot-raw
         v-if="raw"
         v-bind="{ ...data, ...$attrs }"
         full-height
-      ></v-lineplot-raw>
-      <v-lineplot
+      ></v-line-plot-raw>
+      <v-line-plot
         v-else
         v-bind="{ ...data, ...$attrs }"
         full-height
-      ></v-lineplot>
+      ></v-line-plot>
     </template>
 
     <template v-slot:empty>
       <slot name="empty"></slot>
     </template>
     <template v-slot:placeholder>
-      <card
+      <b-card
         v-bind="$attrs"
         full-height
         loading
@@ -37,7 +37,7 @@
         <template v-slot:content>
           <slot name="placeholder"></slot>
         </template>
-      </card>
+      </b-card>
     </template>
   </c-query>
 </template>
@@ -46,8 +46,13 @@
 import Vue from 'vue'
 import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
+import { VLinePlot, VLinePlotRaw } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    VLinePlot,
+    VLinePlotRaw,
+  },
   inheritAttrs: false,
   props: {
     brawler: {

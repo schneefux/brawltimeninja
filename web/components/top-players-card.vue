@@ -1,10 +1,10 @@
 <template>
-  <card
+  <b-card
     :loading="$fetchState.pending"
     :title="$t('best.players.long')"
     xxl
   >
-    <horizontal-scroller
+    <b-horizontal-scroller
       slot="content"
       expand-on-desktop
     >
@@ -14,7 +14,7 @@
         style="height: 68px;"
       ></div>
 
-      <card
+      <b-card
         v-for="player in data"
         :key="player.tag"
         :title="player.name"
@@ -35,8 +35,8 @@
           {{ player.metric }}
           {{ metricName }}
         </p>
-      </card>
-    </horizontal-scroller>
+      </b-card>
+    </b-horizontal-scroller>
 
     <b-button
       slot="actions"
@@ -47,14 +47,15 @@
     >
       {{ $t('action.open.leaderboard.metric', { metric: $t('metric.' + metric) }) }}
     </b-button>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMeasurements } from '~/lib/cube'
+import { commonMeasurements } from '~/lib/klicker.conf'
 import { capitalize } from '~/lib/util'
 import { Leaderboard } from '~/model/Api'
+import { BHorizontalScroller } from '~/klicker/components'
 
 interface Row {
   tag: string
@@ -64,6 +65,9 @@ interface Row {
 }
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   props: {
     metric: {
       type: String,
@@ -92,7 +96,7 @@ export default Vue.extend({
         tag: e.tag,
         name: e.name,
         icon: e.icon,
-        metric: this.$clicker.format(commonMeasurements[this.metric], e.metric),
+        metric: this.$klicker.format(commonMeasurements[this.metric], e.metric),
       }))
   },
   computed: {

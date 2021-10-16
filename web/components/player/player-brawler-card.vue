@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="title"
     :title-link="localePath(`/tier-list/brawler/${brawlerId}`)"
     elevation="2"
@@ -133,7 +133,7 @@
         </div>
       </div>
     </div>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
@@ -183,7 +183,7 @@ export default Vue.extend({
     }
 
     const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
-    const response = await this.$cube.query({
+    const response = await this.$klicker.query({
       cubeId: 'battle',
       slices: {
         brawler: [this.brawler.name.toUpperCase()],

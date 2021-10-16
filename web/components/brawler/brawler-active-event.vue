@@ -52,8 +52,9 @@
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { commonMeasurements } from '~/lib/cube'
-import { brawlerId, camelToKebab, MetaGridEntry, slugify } from '@/lib/util'
+import { brawlerId, camelToKebab, slugify } from '@/lib/util'
+import { MetaGridEntry } from '~/klicker'
+import { commonMeasurements } from '~/lib/klicker.conf'
 
 export default Vue.extend({
   props: {
@@ -81,7 +82,6 @@ export default Vue.extend({
   data() {
     return {
       data: undefined as undefined|MetaGridEntry,
-      totals: undefined as undefined|MetaGridEntry,
     }
   },
   watch: {
@@ -92,38 +92,23 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    const data = await this.$cube.query({
+    const data = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         map: [this.map],
         mode: [this.mode],
-        brawler: [this.brawlerName.toUpperCase()],
       },
-      dimensionsIds: [],
+      dimensionsIds: ['brawler'],
       measurementsIds: ['winRate', 'picks', 'useRate', 'wins'],
       sortId: 'picks',
     })
-
-    const totals = await this.$cube.query({
-      cubeId: 'map',
-      slices: {
-        map: [this.map],
-        mode: [this.mode],
-      },
-      dimensionsIds: [],
-      measurementsIds: ['useRate'],
-      sortId: 'picks',
-    })
+    data.data = data.data.filter(e => e.dimensionsRaw.brawler.brawler == this.brawlerName.toUpperCase())
 
     this.data = data.data[0]
-    this.totals = totals.data[0]
   },
   computed: {
     useRate(): number {
-      if (this.data == undefined || this.totals == undefined) {
-        return 0
-      }
-      return (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)
+      return this.data?.measurementsRaw?.useRate as number || 0
     },
     timeTillEnd(): string {
       if (this.end == undefined) {
@@ -137,7 +122,7 @@ export default Vue.extend({
       }
       return [
         [ this.$tc('metric.picks'), this.data.measurements.picks ],
-        [ this.$tc('metric.useRate'), this.$clicker.format(commonMeasurements.useRate, this.useRate) ],
+        [ this.$tc('metric.useRate'), this.$klicker.format(commonMeasurements.useRate, this.useRate) ],
         [ this.$tc('metric.winRate'), this.data.measurements.winRate ],
       ]
     },

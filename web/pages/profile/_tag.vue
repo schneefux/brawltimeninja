@@ -45,7 +45,7 @@
         size="h-40"
         md
       ></history-graph>
-      <card
+      <b-card
         v-else
         class="h-16 md:h-32"
         full-height
@@ -59,7 +59,7 @@
             {{ $t('player.no-history') }}
           </p>
         </div>
-      </card>
+      </b-card>
 
       <experiment experiment-id="6tVxIoWeQAqhjqUk4ow8Sw">
         <player-quiz

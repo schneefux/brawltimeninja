@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     title="BrawlClopedia scrim"
     class="relative"
     secondary
@@ -33,7 +33,7 @@
         </b-button>
       </a>
     </div>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

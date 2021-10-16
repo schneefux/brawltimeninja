@@ -166,7 +166,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const player = await this.$http.$get<Player>((<any>this).$config.apiUrl + `/api/player/${tag}`)
     commit('setPlayer', player)
 
-    const battleData = await this.$cube.query({
+    const battleData = await this.$klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
       measurementsIds: ['picks', 'winRate', 'trophyChange'],

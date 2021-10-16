@@ -36,7 +36,7 @@
         >{{ $t('action.search') }}</b-button>
       </form>
 
-      <horizontal-scroller
+      <b-horizontal-scroller
         class="mt-3"
         expand-on-desktop
       >
@@ -90,7 +90,7 @@
             </b-button>
           </event-card>
         </lazy>
-      </horizontal-scroller>
+      </b-horizontal-scroller>
 
       <div
         v-show="!showAllMaps && maps.length > 3"
@@ -144,6 +144,7 @@ import { MetaInfo } from 'vue-meta'
 import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
 import Page from '~/components/page.vue'
+import { BTextbox, BHorizontalScroller } from '~/klicker/components'
 
 interface EventIdAndMap {
   id: string
@@ -154,6 +155,8 @@ interface EventIdAndMap {
 export default Vue.extend({
   components: {
     Page,
+    BTextbox,
+    BHorizontalScroller,
   },
   head(): MetaInfo {
     const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })
@@ -186,7 +189,7 @@ export default Vue.extend({
       return
     }
 
-    const events = await this.$cube.query({
+    const events = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         mode: [this.mode],

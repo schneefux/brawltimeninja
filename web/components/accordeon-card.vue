@@ -1,5 +1,5 @@
 <template>
-  <card v-bind="$attrs">
+  <b-card v-bind="$attrs">
     <template v-slot:content>
       <slot
         name="content"
@@ -42,7 +42,7 @@
         {{ $t('action.expand') }}
       </b-button>
     </div>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

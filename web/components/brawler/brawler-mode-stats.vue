@@ -44,8 +44,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { commonMeasurements } from '~/lib/cube';
-import { camelToKebab, MetaGridEntry } from '@/lib/util';
+import { camelToKebab } from '@/lib/util';
+import { MetaGridEntry } from '~/klicker';
+import { commonMeasurements } from '~/lib/klicker.conf';
 
 export default Vue.extend({
   props: {
@@ -66,9 +67,7 @@ export default Vue.extend({
   data() {
     return {
       modeData: undefined as undefined|MetaGridEntry,
-      modeTotals: undefined as undefined|MetaGridEntry,
       mapData: [] as MetaGridEntry[],
-      mapTotals: [] as MetaGridEntry[],
     }
   },
   watch: {
@@ -81,74 +80,49 @@ export default Vue.extend({
   async fetch() {
     // TODO use brawler ID
 
-    const modeData = await this.$cube.query({
+    const modeData = await this.$klicker.query({
       cubeId: 'map',
       slices: {
-        brawler: [this.brawlerName.toUpperCase()],
         mode: [this.mode],
       },
       measurementsIds: ['winRate', 'useRate', 'picks'],
-      dimensionsIds: [],
+      dimensionsIds: ['brawler'],
       sortId: 'picks',
     })
+    modeData.data = modeData.data.filter(e => e.dimensionsRaw.brawler.brawler == this.brawlerName.toUpperCase())
 
-    const modeTotals = await this.$cube.query({
-      cubeId: 'map',
-      slices: {
-        mode: [this.mode],
-      },
-      measurementsIds: ['useRate'],
-      dimensionsIds: [],
-      sortId: 'picks',
-    })
-
-    const mapData = await this.$cube.query({
-      cubeId: 'map',
-      slices: {
-        brawler: [this.brawlerName.toUpperCase()],
-        mode: [this.mode],
-      },
-      measurementsIds: ['winRate', 'useRate'],
-      dimensionsIds: ['map'],
-      sortId: 'picks',
-    })
-
-    const mapTotals = await this.$cube.query({
+    const mapData = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         mode: [this.mode],
       },
       measurementsIds: ['winRate', 'useRate'],
-      dimensionsIds: ['map'],
+      dimensionsIds: ['map', 'brawler'],
       sortId: 'picks',
     })
+    mapData.data = mapData.data.filter(e => e.dimensionsRaw.brawler.brawler == this.brawlerName.toUpperCase())
 
     if (modeData.data.length > 0) {
       this.modeData = modeData.data[0]
     }
-    if (modeTotals.data.length > 0) {
-      this.modeTotals = modeTotals.data[0]
-    }
     this.mapData = mapData.data
-    this.mapTotals = mapTotals.data
   },
   computed: {
     aboveAverageMaps(): number {
-      const compareMaps = (m: MetaGridEntry, t: MetaGridEntry|undefined) => t == undefined ? false : (m.measurementsRaw.winRate as number) * (m.measurementsRaw.useRate as number) > (t.measurementsRaw.winRate as number) * (t.measurementsRaw.useRate as number) / this.totalBrawlers
-      const findTotal = (m: MetaGridEntry) => this.mapTotals.find(m2 => m2.dimensionsRaw.map.map == m.dimensionsRaw.map.map)
-      return this.mapData.filter(m => compareMaps(m, findTotal(m))).length
+      const compareMaps = (m: MetaGridEntry) => (m.measurementsRaw.winRate as number) * (m.measurementsRaw.useRate as number) > 0.5 * 1 / this.totalBrawlers
+      return this.mapData.filter(m => compareMaps(m)).length
     },
     camelToKebab() {
       return camelToKebab
     },
     modeTable(): string[][] {
-      if (this.modeData == undefined || this.modeTotals == undefined) {
+      if (this.modeData == undefined) {
         return []
       }
       return [
-        [ commonMeasurements.picks.name!, this.$clicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
-        [ commonMeasurements.useRate.name!, this.$clicker.format(commonMeasurements.useRate, (this.modeData.measurementsRaw.useRate as number) / (this.modeTotals.measurementsRaw.useRate as number)) ],
-        [ commonMeasurements.winRate.name!, this.$clicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
+        [ commonMeasurements.picks.name!, this.$klicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
+        [ commonMeasurements.useRate.name!, this.$klicker.format(commonMeasurements.useRate, this.modeData.measurementsRaw.useRate as number) ],
+        [ commonMeasurements.winRate.name!, this.$klicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },

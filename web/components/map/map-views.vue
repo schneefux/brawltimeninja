@@ -24,7 +24,7 @@
           '2xl:grid-cols-3': id == undefined,
         }"
       >
-        <card
+        <b-card
           v-if="id != undefined"
           :title="$t('map.' + id)"
           md
@@ -44,7 +44,7 @@
               clazz="h-auto"
             ></media-img>
           </div>
-        </card>
+        </b-card>
 
         <map-best-brawlers-table
           v-observe-visibility="{
@@ -86,10 +86,15 @@
 import Vue from 'vue'
 import { enUS, de } from 'date-fns/locale'
 import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
-import { getSeasonEnd, State } from '~/lib/cube'
+import { State } from '~/klicker'
+import { CDashboard } from '~/klicker/components'
+import { getSeasonEnd } from '~/lib/util'
 const locales = { en: enUS, de: de }
 
 export default Vue.extend({
+  components: {
+    CDashboard,
+  },
   props: {
     mode: {
       type: String

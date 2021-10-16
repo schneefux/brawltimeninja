@@ -109,10 +109,10 @@ export default Vue.extend({
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
-  async asyncData({ params, error, $cube }) {
+  async asyncData({ params, error, $klicker }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
-    const events = await $cube.query({
+    const events = await $klicker.query({
       cubeId: 'map',
       slices: {
         mode: [mode],

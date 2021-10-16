@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
     :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
@@ -26,7 +26,7 @@
         :name="slot"
       ></slot>
     </template>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

@@ -89,7 +89,7 @@ export default {
     { src: '~/plugins/scrollto', mode: 'client' },
     // { src: '~/plugins/lazy-hydrate' },
     { src: '~/plugins/clicker' },
-    { src: '~/plugins/cube' },
+    { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
     { src: '~/plugins/http', mode: 'client' },
   ],

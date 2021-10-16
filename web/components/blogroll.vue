@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-wrap justify-center">
-    <card
+    <b-card
       v-for="post in articles"
       :key="post.id"
       :title="post.title"
@@ -21,7 +21,7 @@
         prefetch
         sm
       >{{ $t('action.read') }}</b-button>
-    </card>
+    </b-card>
   </div>
 </template>
 

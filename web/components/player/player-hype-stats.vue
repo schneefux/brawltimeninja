@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-6xl">
-    <horizontal-scroller
+    <b-horizontal-scroller
       class="children-flex-auto children-flex-shrink-0"
       expand-on-desktop
     >
@@ -50,9 +50,9 @@
           </bigstat>
         </div>
       </div>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
 
-    <horizontal-scroller
+    <b-horizontal-scroller
       class="mt-2 lg:justify-start children-flex-shrink-0 children-flex-auto"
       expand-on-desktop
     >
@@ -113,7 +113,7 @@
           </ul>
         </template>
       </bigstat>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
   </div>
 </template>
 
@@ -123,8 +123,12 @@ import { mapState } from 'vuex'
 import { Player } from '@/model/Api'
 import { ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '~/store'
+import { BHorizontalScroller } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   props: {
     player: {
       type: Object as PropType<Player>,

@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="formatKind + ': ' + formatName"
     :icon="`/${kind}/${id}`"
     :icon-alt="`${brawlerName}'s ${formatKind} ${formatName}`"
@@ -22,12 +22,12 @@
         :data="statsTable"
       ></kv-table>
     </template>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMeasurements } from '~/lib/cube'
+import { commonMeasurements } from '~/lib/klicker.conf'
 import { capitalize, scaleInto } from '~/lib/util'
 
 export default Vue.extend({
@@ -71,8 +71,8 @@ export default Vue.extend({
       }
 
       return [
-        [ 'No ' + this.formatKind + ' ' + commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.withoutWinRate) ],
-        [ this.formatName + ' ' + commonMeasurements.winRate.name, this.$clicker.format(commonMeasurements.winRate, this.winRate) ],
+        [ 'No ' + this.formatKind + ' ' + commonMeasurements.winRate.name, this.$klicker.format(commonMeasurements.winRate, this.withoutWinRate) ],
+        [ this.formatName + ' ' + commonMeasurements.winRate.name, this.$klicker.format(commonMeasurements.winRate, this.winRate) ],
       ]
     },
     gameFileDescription(): string {

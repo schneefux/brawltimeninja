@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BrawlerData } from '@/model/Media'
-import { MetaGridEntry } from '~/lib/util'
+import { MetaGridEntry } from '~/klicker'
 
 export default Vue.extend({
   props: {
@@ -46,7 +46,7 @@ export default Vue.extend({
     const singular = this.kind == 'starpowers' ? 'starpower' : 'gadget'
 
     // TODO queries could be combined
-    const dataWith = await this.$cube.query({
+    const dataWith = await this.$klicker.query({
       cubeId: singular,
       slices: {
         brawler: [this.brawlerName.toUpperCase()],
@@ -57,7 +57,7 @@ export default Vue.extend({
       sortId: 'timestamp',
     })
 
-    const dataWithout = await this.$cube.query({
+    const dataWithout = await this.$klicker.query({
       cubeId: singular,
       slices: {
         brawler: [this.brawlerName.toUpperCase()],

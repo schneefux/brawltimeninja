@@ -27,7 +27,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
-import { EventMetadata } from '~/plugins/cube'
+import { EventMetadata } from '~/plugins/klicker'
 
 export default Vue.extend({
   props: {
@@ -59,8 +59,8 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.modes = await this.$cube.queryAllModes()
-    this.events = await this.$cube.queryActiveEvents()
+    this.modes = await this.$klicker.queryAllModes()
+    this.events = await this.$klicker.queryActiveEvents()
   },
 })
 </script>

@@ -44,7 +44,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const data = await this.$cube.query({
+    const data = await this.$klicker.query({
       cubeId: 'map',
       dimensionsIds: ['season'],
       measurementsIds: ['picks'],

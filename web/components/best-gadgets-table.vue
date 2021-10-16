@@ -25,10 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VTable from '@/components/clicker/visualisations/v-table.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
-import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
-import CQuery from '~/components/clicker/c-query'
+import DBrawler from '@/components/klicker/d-brawler.vue'
+import { CQuery, VTable } from '~/klicker/components'
 
 export default Vue.extend({
   inheritAttrs: false,

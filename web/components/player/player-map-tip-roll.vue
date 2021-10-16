@@ -1,10 +1,10 @@
 <template>
-  <shimmer
+  <b-shimmer
     v-if="result == undefined"
     slot="placeholder"
     width-px="265"
     height-px="72"
-  ></shimmer>
+  ></b-shimmer>
   <v-roll
     v-else
     v-bind="{ ...result, ...$attrs }"
@@ -17,11 +17,18 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MetaGridEntry } from '~/lib/util'
+import { MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker/service'
 import { Brawler } from '~/model/Brawlstars'
-import { CubeResponse } from '~/plugins/cube'
+import { VRoll, BShimmer } from '~/klicker/components'
+import DBrawler from '~/components/klicker/d-brawler.vue'
 
 export default Vue.extend({
+  components: {
+    VRoll,
+    BShimmer,
+    DBrawler,
+  },
   inheritAttrs: false,
   props: {
     mode: {
@@ -48,7 +55,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    const result = await this.$cube.query({
+    const result = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         mode: [this.mode],

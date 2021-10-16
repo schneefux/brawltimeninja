@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
     xxl
@@ -30,12 +30,12 @@
       }"
       :limit="limit"
     >
-      <shimmer
+      <b-shimmer
         slot="placeholder"
         width-px="224"
         height-px="64"
         loading
-      ></shimmer>
+      ></b-shimmer>
       <template v-slot="data">
         <v-roll v-bind="{ ...data, ...$attrs, elevation: elevation + 1 }">
           <template v-slot:dimensions="data">
@@ -44,13 +44,20 @@
         </v-roll>
       </template>
     </c-query>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { VRoll, BShimmer, BButton, CQuery } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    VRoll,
+    BShimmer,
+    BButton,
+    CQuery,
+  },
   inheritAttrs: false,
   props: {
     kind: {

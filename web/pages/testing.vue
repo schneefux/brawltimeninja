@@ -23,7 +23,7 @@ export default Vue.extend({
       headers: { },
     })
 
-    const events = await this.$cube.query({
+    const events = await this.$klicker.query({
       cubeId: 'map',
       slices: {
         id: ["15000239"],

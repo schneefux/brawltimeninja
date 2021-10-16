@@ -1,6 +1,6 @@
 <template>
   <page>
-    <card
+    <b-card
       v-if="club != undefined"
       :title="club.name"
       class="mx-auto"
@@ -53,7 +53,7 @@
           </tbody>
         </table>
       </template>
-    </card>
+    </b-card>
   </page>
 </template>
 

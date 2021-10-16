@@ -7,7 +7,7 @@
       page-tracking-id="guides"
     >
       <div class="flex flex-wrap justify-center">
-        <card
+        <b-card
           v-for="faq in faqs"
           :key="faq.id"
           :title="faq.title"
@@ -39,7 +39,7 @@
           >
             Read
           </b-button>
-        </card>
+        </b-card>
       </div>
     </page-section>
 
@@ -64,7 +64,7 @@
             ></in-feed-adsense>
           </client-only>
 
-          <card
+          <b-card
             :title="post.title"
             :title-link="`/blog/guides/${post.slug}`"
             itemscope
@@ -101,7 +101,7 @@
             >
               Read
             </b-button>
-          </card>
+          </b-card>
         </div>
       </div>
     </page-section>

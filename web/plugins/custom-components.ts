@@ -1,18 +1,14 @@
 import Vue from 'vue'
 import MediaImg from '~/components/media-img.vue'
 import Lazy from '~/components/lazy.vue'
-import WrappedComponent from '~/components/wrapped-component'
-import Card from '~/components/card.vue'
 import AccordeonCard from '~/components/accordeon-card.vue'
-import CardContent from '~/components/card-content.vue'
 import KvTable from '~/components/kv-table.vue'
 import Page from '~/components/page.vue'
 import PageDashboard from '~/components/page-dashboard.vue'
-import Shimmer from '~/components/shimmer.vue'
-import HorizontalScroller from '~/components/horizontal-scroller.vue'
+import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BWrappedComponent } from '~/klicker/components'
+import CardContent from '~/klicker/components/ui/card-content.vue'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import BrawlerTeam from '~/components/brawler/brawler-team.vue'
-import BButton from '~/components/ui/b-button.vue'
 
 // add functional components globally so that they are available
 // as children in functional components and in blog posts
@@ -21,15 +17,18 @@ import BButton from '~/components/ui/b-button.vue'
 // -> fixes `Cannot read property 'toLowerCase' of undefined at emptyNodeAt`
 Vue.component('media-img', MediaImg)
 Vue.component('lazy', Lazy)
-Vue.component('wrapped-component', WrappedComponent)
-Vue.component('card', Card)
 Vue.component('accordeon-card', AccordeonCard)
-Vue.component('card-content', CardContent)
 Vue.component('kv-table', KvTable)
 Vue.component('page', Page)
 Vue.component('page-dashboard', PageDashboard)
-Vue.component('shimmer', Shimmer)
+Vue.component('b-shimmer', BShimmer)
 Vue.component('brawler-link', BrawlerLink)
 Vue.component('brawler-team', BrawlerTeam)
-Vue.component('horizontal-scroller', HorizontalScroller)
+Vue.component('b-card', BCard)
 Vue.component('b-button', BButton)
+Vue.component('b-select', BSelect)
+Vue.component('b-lightbox', BLightbox)
+Vue.component('b-checkbox', BCheckbox)
+Vue.component('b-radio', BRadio)
+Vue.component('card-content', CardContent) // TODO don't make b-card a function component so it can import this
+Vue.component('b-wrapped-component', BWrappedComponent) // TODO don't make b-card-content a function component so it can import this

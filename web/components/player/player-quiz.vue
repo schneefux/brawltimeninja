@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="$t('player.quiz.title')"
     md
     :secondary="highlighted"
@@ -219,7 +219,7 @@
         </button>
       </div>
     </div>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

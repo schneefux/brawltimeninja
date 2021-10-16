@@ -1,5 +1,3 @@
-import { MetaGridEntry } from "~/lib/util";
-
 export interface PlayerModeStats {
   picks: number
   winRate: number
@@ -16,21 +14,6 @@ export interface Post {
   slug: string
   image?: string
   createdAt: string
-}
-
-export interface TierListEntry extends MetaGridEntry {
-  id: string
-  brawler: string
-  title: string
-  stats: {
-    winRateAdj: number
-    winsZScore: number
-  }
-  link: string
-}
-
-export interface TierList {
-  [tier: string]: MetaGridEntry[]
 }
 
 export interface BrawlerContent {

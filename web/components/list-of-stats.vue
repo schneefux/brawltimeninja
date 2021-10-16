@@ -2,7 +2,7 @@
   <dl
     class="flex flex-col md:flex-row md:flex-wrap md:justify-center"
   >
-    <card
+    <b-card
       v-for="(value, name) in stats"
       :key="name"
       :elevation="elevation"
@@ -15,7 +15,7 @@
         <dd class="text-yellow-400 font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
         <dt class="ml-2 w-full overflow-hidden">{{ $t('metric.' + name) }}</dt>
       </div>
-    </card>
+    </b-card>
   </dl>
 </template>
 

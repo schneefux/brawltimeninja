@@ -13,7 +13,7 @@
       ></adsense>
     </client-only>
 
-    <horizontal-scroller
+    <b-horizontal-scroller
       class="mt-3"
       expand-on-desktop
     >
@@ -27,10 +27,10 @@
       >
         {{ $t('metric.' + metric) }}
       </b-button>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
 
     <div class="flex justify-center">
-      <card :title="`Best Players by ${metricName}`">
+      <b-card :title="`Best Players by ${metricName}`">
         <template v-slot:content>
           <p class="mb-1">
             {{ $t('leaderboard.player.description', { length: leaderboard.length }) }}
@@ -43,7 +43,7 @@
             ></player-rank-table>
           </div>
         </template>
-      </card>
+      </b-card>
     </div>
 
     <client-only>
@@ -66,12 +66,16 @@ import { mapState } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { camelToSnakeCase, capitalizeWords } from '@/lib/util'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
+import { BHorizontalScroller } from '~/klicker/components'
 
 function formatMetric(m: string) {
   return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))
 }
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   head(): MetaInfo {
     const description = this.$tc('leaderboard.meta.description', 1, { metric: this.metricName })
     return {

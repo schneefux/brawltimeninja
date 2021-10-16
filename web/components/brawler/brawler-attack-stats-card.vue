@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="attack == 'main' ? $t('brawler.main-attack') : $t('brawler.super-attack')"
     full-height
     md
@@ -13,7 +13,7 @@
         class="mt-3"
       ></kv-table>
     </template>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

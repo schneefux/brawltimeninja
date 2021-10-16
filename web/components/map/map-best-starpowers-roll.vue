@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="$tc('best.' + kind, 1)"
     :elevation="elevation"
   >
@@ -31,12 +31,12 @@
       }"
       :limit="limit"
     >
-      <shimmer
+      <b-shimmer
         slot="placeholder"
         width-px="224"
         height-px="64"
         loading
-      ></shimmer>
+      ></b-shimmer>
       <template v-slot="data">
         <v-roll
           v-bind="{
@@ -50,14 +50,21 @@
         </v-roll>
       </template>
     </c-query>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/lib/cube'
+import { SliceValue } from '~/klicker'
+import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    VRoll,
+    BShimmer,
+    CQuery,
+    BButton,
+  },
   inheritAttrs: false,
   props: {
     kind: {

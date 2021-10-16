@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     v-bind="$attrs"
     dense
   >
@@ -12,10 +12,10 @@
       @click="tooltipOpen = !tooltipOpen"
     >?</b-button>
     <template v-slot:content>
-      <lightbox
+      <b-lightbox
         v-model="tooltipOpen"
       >
-        <card sm>
+        <b-card sm>
           <template v-slot:content>
             <slot name="tooltip">
               <p class="my-2">
@@ -23,8 +23,8 @@
               </p>
             </slot>
           </template>
-        </card>
-      </lightbox>
+        </b-card>
+      </b-lightbox>
       <slot name="value">
         <p class="text-center text-3xl font-bold text-yellow-400 mb-1">
           {{ value }}
@@ -37,7 +37,7 @@
     >
       <slot name="actions"></slot>
     </template>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

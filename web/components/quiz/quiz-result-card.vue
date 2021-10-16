@@ -1,10 +1,10 @@
 <template>
-  <card
+  <b-card
     title="Your Brawler Personality"
     lg
   >
     <div slot="content">
-      <card
+      <b-card
         elevation="2"
         dense
       >
@@ -19,9 +19,9 @@
             :path="`/brawlers/${mostSimilarBrawler.id}/model`"
           ></media-img>
         </div>
-      </card>
+      </b-card>
 
-      <card
+      <b-card
         elevation="2"
         dense
       >
@@ -44,7 +44,7 @@
             <span :key="'r-' + attr" class="text-right">{{ oejtsMap[attr[1]] }}</span>
           </template>
         </div>
-      </card>
+      </b-card>
 
       <p class="mt-2 text-left text-sm mb-1">
         The Open Extended Jungian Type Scales is a psychological test based on theories by Carl Jung.
@@ -61,7 +61,7 @@
       md
       @click="$emit('restart')"
     >{{ $t('action.restart') }}</b-button>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

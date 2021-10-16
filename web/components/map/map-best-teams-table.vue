@@ -19,11 +19,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import VTable from '@/components/clicker/visualisations/v-table.vue'
-import DTeam from '@/components/clicker/renderers/d-team.vue'
+import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import CQuery from '~/components/clicker/c-query'
-import { SliceValue, State } from '~/lib/cube'
+import { CQuery, VTable } from '~/klicker/components'
+import { SliceValue, State } from '~/klicker'
 
 export default Vue.extend({
   components: {

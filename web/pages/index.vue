@@ -75,7 +75,7 @@
         <summary>
           {{ $t('tag-help.title') }}
         </summary>
-        <card
+        <b-card
           title="How to find your tag"
           class="mt-2"
         >
@@ -94,7 +94,7 @@
               class="px-8 mt-1 w-80 max-w-full"
             >
           </template>
-        </card>
+        </b-card>
       </details>
     </div>
 
@@ -201,7 +201,7 @@ import { mapState, mapMutations } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
-import { EventMetadata } from '~/plugins/cube'
+import { EventMetadata } from '~/plugins/klicker'
 
 interface PlayerLink {
   name: string
@@ -285,7 +285,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.events = await this.$cube.queryActiveEvents()
+    this.events = await this.$klicker.queryActiveEvents()
   },
   methods: {
     async search() {

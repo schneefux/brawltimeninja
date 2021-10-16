@@ -18,11 +18,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import VTable from '@/components/clicker/visualisations/v-table.vue'
-import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
+import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
-import CQuery from '~/components/clicker/c-query'
-import { SliceValue, State } from '~/lib/cube'
+import { CQuery, VTable } from '~/klicker/components'
+import { SliceValue, State } from '~/klicker'
 
 export default Vue.extend({
   components: {

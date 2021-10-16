@@ -9,12 +9,12 @@
     }"
     :limit="limit"
   >
-    <shimmer
+    <b-shimmer
       slot="placeholder"
       width-px="265"
       height-px="72"
       loading
-    ></shimmer>
+    ></b-shimmer>
     <template v-slot="data">
       <v-roll v-bind="{ ...data, ...$attrs }">
         <template v-slot:dimensions="data">
@@ -28,12 +28,16 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
-import DBrawler from '~/components/clicker/renderers/d-brawler.vue'
-import { SliceValue } from '~/lib/cube'
+import DBrawler from '~/components/klicker/d-brawler.vue'
+import { SliceValue } from '~/klicker'
+import { VRoll, BShimmer, CQuery } from '~/klicker/components'
 
 export default Vue.extend({
   inheritAttrs: false,
   components: {
+    VRoll,
+    BShimmer,
+    CQuery,
     DBrawler,
     BrawlerLink,
   },

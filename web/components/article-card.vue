@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :title="document.title"
     tag="article"
     itemscope
@@ -28,19 +28,19 @@
         class="prose prose-sm sm:prose lg:prose-lg"
       ></nuxt-content>
 
-      <lightbox v-model="lightboxOpen">
+      <b-lightbox v-model="lightboxOpen">
         <img
           class="max-h-full max-w-full"
           :src="lightboxImage"
         >
-      </lightbox>
+      </b-lightbox>
     </div>
     <p
       slot="actions"
       v-if="document.author != undefined"
     >
       This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
-        <wrapped-component
+        <b-wrapped-component
           :wrap="document.attributionLink != undefined"
         >
           <a
@@ -50,18 +50,22 @@
             class="underline"
           ></a>
           <span>({{ document.attribution }})</span>
-        </wrapped-component>
+        </b-wrapped-component>
       </template>.
     </p>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">
 import { IContentDocument } from '@nuxt/content/types/content'
 import { format, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
+import { BWrappedComponent } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BWrappedComponent,
+  },
   props: {
     document: {
       type: Object as PropType<IContentDocument>,

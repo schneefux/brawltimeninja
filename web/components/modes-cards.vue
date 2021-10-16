@@ -1,6 +1,6 @@
 <template>
   <div>
-    <horizontal-scroller expand-on-desktop>
+    <b-horizontal-scroller expand-on-desktop>
       <div
         v-for="(mode, index) in modes"
         :key="mode"
@@ -12,7 +12,7 @@
           link
         ></map-best-brawlers-card>
       </div>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
 
     <div
       v-show="!showAllModes"
@@ -31,8 +31,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BHorizontalScroller } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   data() {
     return {
       modes: ['brawlBall'] as string[],
@@ -41,7 +45,7 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
-    this.modes = await this.$cube.queryAllModes()
+    this.modes = await this.$klicker.queryAllModes()
   },
   methods: {
     expandModes() {

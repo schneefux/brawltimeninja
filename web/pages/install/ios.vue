@@ -2,7 +2,7 @@
   <page title="Adding Brawl Time Ninja to your Home Screen">
     <ol class="flex flex-wrap justify-center">
       <li>
-        <card
+        <b-card
           title="1. Tap the &quot;Share&quot; Icon"
           xs
         >
@@ -10,10 +10,10 @@
             slot="content"
             src="~/assets/images/install/ios-1_arrow.jpg"
           >
-        </card>
+        </b-card>
       </li>
       <li>
-        <card
+        <b-card
           title="2. &quot;Add to Home Screen&quot;"
           xs
         >
@@ -21,10 +21,10 @@
             slot="content"
             src="~/assets/images/install/ios-2_arrow.jpg"
           >
-        </card>
+        </b-card>
       </li>
       <li>
-        <card
+        <b-card
           title="3. &quot;Add&quot;"
           xs
         >
@@ -32,7 +32,7 @@
             slot="content"
             src="~/assets/images/install/ios-3_arrow.jpg"
           >
-        </card>
+        </b-card>
       </li>
     </ol>
   </page>

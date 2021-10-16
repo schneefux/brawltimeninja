@@ -5,10 +5,9 @@ module.exports = {
   mode: 'jit',
   purge: {
     content: [
-      '~/pages/**/*.vue',
-      '~/layouts/**/*.vue',
-      '~/components/**/*.{js,jsx,ts,tsx,vue}',
-      '~/content/**/*.md',
+      'components/**/*.{js,jsx,ts,tsx,vue}',
+      'content/**/*.md',
+      'klicker/**/*.vue',
     ],
   },
   darkMode: false,

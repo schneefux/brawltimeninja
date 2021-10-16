@@ -23,13 +23,12 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import VTable from '@/components/clicker/visualisations/v-table.vue'
-import DPlayer from '@/components/clicker/renderers/d-player.vue'
-import DBrawler from '@/components/clicker/renderers/d-brawler.vue'
-import MBrawler from '@/components/clicker/renderers/m-brawler.vue'
+import DPlayer from '@/components/klicker/d-player.vue'
+import DBrawler from '@/components/klicker/d-brawler.vue'
+import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
-import CQuery from '~/components/clicker/c-query'
-import { SliceValue, State } from '~/lib/cube'
+import { CQuery, VTable } from '~/klicker/components'
+import { SliceValue, State } from '~/klicker'
 
 export default Vue.extend({
   components: {

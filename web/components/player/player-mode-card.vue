@@ -6,7 +6,7 @@
     full-height
   >
     <div slot="content">
-      <card
+      <b-card
         :elevation="elevation + 1"
         dense
       >
@@ -23,9 +23,9 @@
             {{ stats.wins }} {{ $t('metric.wins' )}} / {{ stats.losses }} {{ $t('metric.losses') }}
           </p>
         </div>
-      </card>
+      </b-card>
 
-      <card
+      <b-card
         v-if="activeMap != undefined"
         :title="$t('player.tips-for.map', { map: $t('map.' + activeMap.id) })"
         :elevation="elevation + 1"
@@ -55,7 +55,7 @@
         >
           {{ $t('action.open.tier-list.map', { map: $tc('map.' + activeMap.id) }) }}
         </b-button>
-      </card>
+      </b-card>
     </div>
     <div class="absolute top-0 right-0 mr-6 my-4">
       <media-img
@@ -81,9 +81,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Brawler, Battle } from '~/model/Api'
-import { camelToKebab, MetaGridEntry, slugify, tagToId } from '@/lib/util'
-import { commonMeasurements } from '~/lib/cube'
-import { EventMetadata } from '~/plugins/cube'
+import { camelToKebab, slugify, tagToId } from '@/lib/util'
+import { EventMetadata } from '~/plugins/klicker'
+import { MetaGridEntry } from '~/klicker'
+import { commonMeasurements } from '~/lib/klicker.conf'
 
 interface Stats {
   winRate: number
@@ -147,7 +148,7 @@ export default Vue.extend({
       return
     }
 
-    const data = await this.$cube.query({
+    const data = await this.$klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
       measurementsIds: ['picks', 'winRate'],
@@ -199,7 +200,7 @@ export default Vue.extend({
       }
     },
     winRate(): string {
-      return this.stats.picks > 5 ? this.$clicker.format(commonMeasurements.winRate, this.stats.winRate) : '?'
+      return this.stats.picks > 5 ? this.$klicker.format(commonMeasurements.winRate, this.stats.winRate) : '?'
     },
     modeKebab(): string {
       return camelToKebab(this.mode)

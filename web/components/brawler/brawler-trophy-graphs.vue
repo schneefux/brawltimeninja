@@ -4,44 +4,44 @@
       <p>{{ description }}</p>
     </div>
 
-    <card
+    <b-card
       v-if="trophiesUseRateChart != undefined"
       size="w-full md:w-120"
     >
-      <plotly
+      <b-plotly
         slot="content"
         :traces="trophiesUseRateChart.traces"
         :layout="trophiesUseRateChart.layout"
         :options="trophiesUseRateChart.options"
         class="h-48"
-      ></plotly>
-    </card>
+      ></b-plotly>
+    </b-card>
 
-    <card
+    <b-card
       v-if="trophiesWinRateChart != undefined"
       size="w-full md:w-120"
     >
-      <plotly
+      <b-plotly
         slot="content"
         :traces="trophiesWinRateChart.traces"
         :layout="trophiesWinRateChart.layout"
         :options="trophiesWinRateChart.options"
         class="h-48"
-      ></plotly>
-    </card>
+      ></b-plotly>
+    </b-card>
 
-    <card
+    <b-card
       v-if="trophiesStarRateChart != undefined"
       size="w-full md:w-120"
     >
-      <plotly
+      <b-plotly
         slot="content"
         :traces="trophiesStarRateChart.traces"
         :layout="trophiesStarRateChart.layout"
         :options="trophiesStarRateChart.options"
         class="h-48"
-      ></plotly>
-    </card>
+      ></b-plotly>
+    </b-card>
   </div>
 </template>
 

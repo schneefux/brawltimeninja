@@ -1,5 +1,5 @@
 <template>
-  <shimmer
+  <b-shimmer
     :loading="loading"
     class="flex justify-between"
   >
@@ -22,7 +22,7 @@
     <p v-if="!loading && brawlers.length == 0">
       {{ $t('state.no-data') }}
     </p>
-  </shimmer>
+  </b-shimmer>
 </template>
 
 <script lang="ts">

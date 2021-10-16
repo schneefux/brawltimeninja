@@ -1,5 +1,5 @@
 <template>
-  <card
+  <b-card
     :class="['relative', {
       'hidden': !isInstallable || installBannerDismissed,
     }]"
@@ -34,7 +34,7 @@
       ></font-awesome-icon>
       {{ $t('action.install') }}
     </b-button>
-  </card>
+  </b-card>
 </template>
 
 <script lang="ts">

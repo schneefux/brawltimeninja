@@ -64,10 +64,10 @@ export default Vue.extend({
 
     return RegExp(store.state.tagPattern).test(tag)
   },
-  async asyncData({ params, $http, $config, $cube }) {
+  async asyncData({ params, $http, $config, $klicker }) {
     const player = await $http.$get<Player>($config.apiUrl + `/api/player/${params.tag}`)
 
-    const battleData = await $cube.query({
+    const battleData = await $klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
       measurementsIds: ['picks', 'winRate', 'trophyChange'],

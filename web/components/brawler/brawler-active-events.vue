@@ -3,7 +3,7 @@
     <p>
       {{ description }}
     </p>
-    <horizontal-scroller
+    <b-horizontal-scroller
       class="mt-2"
       expand-on-desktop
     >
@@ -34,16 +34,20 @@
           }"
         ></brawler-active-event>
       </lazy>
-    </horizontal-scroller>
+    </b-horizontal-scroller>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
-import { EventMetadata } from '~/plugins/cube'
+import { EventMetadata } from '~/plugins/klicker'
+import { BHorizontalScroller } from '~/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BHorizontalScroller,
+  },
   props: {
     brawlerName: {
       // TODO use ID
@@ -63,7 +67,7 @@ export default Vue.extend({
   fetchDelay: 0,
   fetchOnServer: false,
   async fetch() {
-    this.events = await this.$cube.queryActiveEvents(
+    this.events = await this.$klicker.queryActiveEvents(
       ['winRateAdj'], {
       brawler: [this.brawlerName.toUpperCase()],
     }, 120)
