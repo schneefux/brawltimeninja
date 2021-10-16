@@ -26,8 +26,12 @@
         </button>
       </div>
 
-      <div class="mt-3 flex flex-wrap justify-center items-end w-full">
-        <lzy-map-best-brawlers-card
+      <lazy
+        :render="eager"
+        distance="320px"
+        class="mt-3 flex flex-wrap justify-center items-end w-full"
+      >
+        <map-best-brawlers-card
           v-for="event in filteredEvents"
           :key="event.battle_event_map + '-' + event.battle_event_id"
           :slices="{
@@ -39,8 +43,8 @@
           :end-date="event.end"
           :eager="eager"
           link
-        ></lzy-map-best-brawlers-card>
-      </div>
+        ></map-best-brawlers-card>
+      </lazy>
 
       <div
         v-show="modeFilter != 'all'"
