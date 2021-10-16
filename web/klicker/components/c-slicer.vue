@@ -40,6 +40,7 @@ export default Vue.extend({
   components: {
     BButton,
   },
+  inheritAttrs: false,
   props: {
     value: {
       type: Object as PropType<State>,

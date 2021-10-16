@@ -55,6 +55,13 @@
         </b-button>
       </div>
     </div>
+
+    <p
+      v-if="description != ''"
+      class="col-span-full my-2 prose text-gray-200"
+    >
+      {{ description }}
+    </p>
   </div>
 </template>
 
@@ -125,6 +132,12 @@ export default Vue.extend({
     },
     showAllMeasurements(): boolean {
       return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
+    },
+    description(): string {
+      if (this.numMeasurements != 1) {
+        return ''
+      }
+      return this.measurements.find(m => m.id == this.value.measurementsIds[0])?.description || ''
     },
     faPlus() {
       return faPlus

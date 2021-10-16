@@ -76,7 +76,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { State } from '~/klicker'
-import { CDashboard, BCard, CMetric } from '~/klicker/components'
+import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 export default Vue.extend({
@@ -84,6 +84,9 @@ export default Vue.extend({
     CDashboard,
     BCard,
     CMetric,
+    VTable,
+    VCsv,
+    VPivotCsv,
   },
   head() {
     const description = this.$t('bar-chart-race.meta.description') as string

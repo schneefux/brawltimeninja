@@ -1,6 +1,5 @@
 <template>
   <c-query
-    v-bind="$attrs"
     :state="state"
     :limit="50"
   >

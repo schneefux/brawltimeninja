@@ -667,7 +667,7 @@ const battleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -1664,7 +1664,6 @@ const cubes: Record<string, Cube> = {
       battleMeasurements.winRate,
       battleMeasurements.winRateAdj,
       battleMeasurements.starRate,
-      battleMeasurements.rank,
       battleMeasurements.starpowerName,
       battleMeasurements.gadgetName,
       // TODO

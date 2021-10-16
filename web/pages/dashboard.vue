@@ -23,7 +23,6 @@
         <div class="flex">
           <v-sample-size v-bind="data"></v-sample-size>
           <v-last-update v-bind="data"></v-last-update>
-          <v-measure-description v-bind="data"></v-measure-description>
         </div>
       </template>
 
@@ -77,7 +76,6 @@ import VGini from '@/components/klicker/v-gini.vue'
 import VLastUpdate from '@/components/klicker/v-last-update.vue'
 import VMoe from '@/components/klicker/v-moe.vue'
 import VSampleSize from '@/components/klicker/v-sample-size.vue'
-import VMeasureDescription from '@/components/klicker/v-measure-description.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
@@ -107,7 +105,6 @@ export default Vue.extend({
     VLastUpdate,
     VMoe,
     VSampleSize,
-    VMeasureDescription,
     MBrawler,
     SPlayerName,
     SPlayerTag,
