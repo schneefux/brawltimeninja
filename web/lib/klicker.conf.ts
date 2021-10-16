@@ -1650,6 +1650,8 @@ const cubes: Record<string, Cube> = {
       battleDimensions.powerplay,
       battleDimensions.team,
       battleDimensions.teamSize,
+      brawlerDimensions.starpower,
+      brawlerDimensions.gadget,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1663,6 +1665,8 @@ const cubes: Record<string, Cube> = {
       battleMeasurements.winRateAdj,
       battleMeasurements.starRate,
       battleMeasurements.rank,
+      battleMeasurements.starpowerName,
+      battleMeasurements.gadgetName,
       // TODO
     ],
     defaultMeasurementIds: ['picks'],

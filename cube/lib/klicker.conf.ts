@@ -1148,7 +1148,6 @@ export const commonMeasurements = asMeasurements({
 const metaSlices = asSlice({
   season: {
     id: 'season',
-    name: 'Since Time',
     config: {
       member: 'season_dimension',
       operator: 'afterDate',
@@ -1156,7 +1155,6 @@ const metaSlices = asSlice({
   },
   seasonExact: {
     id: 'seasonExact',
-    name: 'Time',
     config: {
       member: 'season_dimension',
       operator: 'equals',
@@ -1164,7 +1162,6 @@ const metaSlices = asSlice({
   },
   timestamp: {
     id: 'timestamp',
-    name: 'Since Time',
     config: {
       member: 'timestamp_dimension',
       operator: 'afterDate',
@@ -1175,7 +1172,6 @@ const metaSlices = asSlice({
 const playerSlices = asSlice({
   playerName: {
     id: 'playerName',
-    name: 'Player Name',
     config: {
       member: 'player_name_dimension',
       operator: 'contains',
@@ -1183,7 +1179,6 @@ const playerSlices = asSlice({
   },
   playerId: {
     id: 'playerId',
-    name: 'Player ID',
     config: {
       member: 'player_dimension',
       operator: 'equals',
@@ -1194,7 +1189,6 @@ const playerSlices = asSlice({
 const brawlerSlices = asSlice({
   brawler: {
     id: 'brawler',
-    name: 'Brawler',
     config: {
       member: 'brawler_dimension',
       operator: 'equals',
@@ -1202,7 +1196,6 @@ const brawlerSlices = asSlice({
   },
   brawlerId: {
     id: 'brawlerId',
-    name: 'Brawler ID',
     config: {
       member: 'brawler_id_dimension',
       operator: 'equals',
@@ -1210,7 +1203,6 @@ const brawlerSlices = asSlice({
   },
   ally: {
     id: 'ally',
-    name: 'Ally',
     config: {
       member: 'ally_brawler_dimension',
       operator: 'equals',
@@ -1218,7 +1210,6 @@ const brawlerSlices = asSlice({
   },
   allyId: {
     id: 'allyId',
-    name: 'Ally ID',
     config: {
       member: 'ally_brawler_id_dimension',
       operator: 'equals',
@@ -1226,7 +1217,6 @@ const brawlerSlices = asSlice({
   },
   trophyRangeGte: {
     id: 'trophyRangeGte',
-    name: 'Trophy Range greater than equals',
     config: {
       member: 'trophyRange_dimension',
       operator: 'gte',
@@ -1234,7 +1224,6 @@ const brawlerSlices = asSlice({
   },
   trophyRangeLt: {
     id: 'trophyRangeLt',
-    name: 'Trophy Range lower than',
     config: {
       member: 'trophyRange_dimension',
       operator: 'lt',
@@ -1242,7 +1231,6 @@ const brawlerSlices = asSlice({
   },
   starpowerIdEq: {
     id: 'starpowerIdEq',
-    name: 'Star Power ID equals',
     config: {
       member: 'starpower_dimension',
       operator: 'equals',
@@ -1250,7 +1238,6 @@ const brawlerSlices = asSlice({
   },
   starpowerIdNeq: {
     id: 'starpowerIdNeq',
-    name: 'Star Power ID not equals',
     config: {
       member: 'starpower_dimension',
       operator: 'notEquals',
@@ -1258,7 +1245,6 @@ const brawlerSlices = asSlice({
   },
   gadgetIdEq: {
     id: 'gadgetIdEq',
-    name: 'Gadget ID equals',
     config: {
       member: 'gadget_dimension',
       operator: 'equals',
@@ -1266,7 +1252,6 @@ const brawlerSlices = asSlice({
   },
   gadgetIdNeq: {
     id: 'gadgetIdNeq',
-    name: 'Gadget ID not equals',
     config: {
       member: 'gadget_dimension',
       operator: 'notEquals',
@@ -1274,9 +1259,8 @@ const brawlerSlices = asSlice({
   },
   teamSizeGt: {
     id: 'teamSizeGt',
-    name: 'Team size greater than',
     config: {
-      member: 'teamSize_measure',
+      member: 'teamSize_dimension',
       operator: 'gt',
     },
   },
@@ -1285,7 +1269,6 @@ const brawlerSlices = asSlice({
 const battleSlices = asSlice({
   mode: {
     id: 'mode',
-    name: 'Mode',
     config: {
       member: 'mode_dimension',
       operator: 'equals',
@@ -1293,7 +1276,6 @@ const battleSlices = asSlice({
   },
   map: {
     id: 'map',
-    name: 'Map',
     config: {
       member: 'map_dimension',
       operator: 'equals',
@@ -1301,7 +1283,6 @@ const battleSlices = asSlice({
   },
   id: {
     id: 'id',
-    name: 'Event ID',
     config: {
       member: 'eventId_measure',
       operator: 'equals',
@@ -1309,7 +1290,6 @@ const battleSlices = asSlice({
   },
   mapLike: {
     id: 'mapLike',
-    name: 'Map Name',
     config: {
       member: 'map_dimension',
       operator: 'contains',
@@ -1317,7 +1297,6 @@ const battleSlices = asSlice({
   },
   mapNotLike: {
     id: 'mapNotLike',
-    name: 'not Map Name',
     config: {
       member: 'map_dimension',
       operator: 'notContains',
@@ -1325,7 +1304,6 @@ const battleSlices = asSlice({
   },
   powerplay: {
     id: 'powerplay',
-    name: 'Power Play',
     config: {
       member: 'powerplay_dimension',
       operator: 'equals',
@@ -1333,7 +1311,6 @@ const battleSlices = asSlice({
   },
   bigbrawler: {
     id: 'bigbrawler',
-    name: 'Big Brawler',
     config: {
       member: 'bigbrawler_dimension',
       operator: 'equals',
@@ -1341,7 +1318,6 @@ const battleSlices = asSlice({
   },
   teamSizeGt: {
     id: 'teamSizeGt',
-    name: 'Team size greater than',
     config: {
       member: 'teamsize_measure',
       operator: 'gt',
@@ -1674,6 +1650,8 @@ const cubes: Record<string, Cube> = {
       battleDimensions.powerplay,
       battleDimensions.team,
       battleDimensions.teamSize,
+      brawlerDimensions.starpower,
+      brawlerDimensions.gadget,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1687,6 +1665,8 @@ const cubes: Record<string, Cube> = {
       battleMeasurements.winRateAdj,
       battleMeasurements.starRate,
       battleMeasurements.rank,
+      battleMeasurements.starpowerName,
+      battleMeasurements.gadgetName,
       // TODO
     ],
     defaultMeasurementIds: ['picks'],
