@@ -106,7 +106,6 @@ export interface Dimension {
 
 export interface Slice {
   id: string
-  name: string
   config: { // cube.js config
     member: string // dimension/measure id
     operator: OperatorType
