@@ -33,12 +33,6 @@ export default Vue.extend({
   },
   inheritAttrs: false,
   props: {
-    mode: {
-      type: String
-    },
-    map: {
-      type: String
-    },
     id: {
       type: [Number, String]
     },

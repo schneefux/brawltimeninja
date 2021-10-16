@@ -33,7 +33,6 @@
             slot="content"
             class="flex flex-wrap justify-center"
           >
-            <p class="w-full">{{ $t('tier-list.map.last-online', { time: lastOnlineString }) }}</p>
             <media-img
               v-observe-visibility="{
                 callback: (v, e) => trackScroll(v, e, 'image'),
@@ -84,12 +83,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { enUS, de } from 'date-fns/locale'
-import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
 import { State } from '~/klicker'
 import { CDashboard } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
-const locales = { en: enUS, de: de }
 
 export default Vue.extend({
   components: {
@@ -142,21 +138,6 @@ export default Vue.extend({
     map() {
       this.state.slices.map = [this.map]
     }
-  },
-  computed: {
-    lastOnlineString(): string {
-      if (this.timestamp == undefined) {
-        return ''
-      }
-      const date = parseISO(this.timestamp)
-      if (differenceInMinutes(new Date(), date) < 60) {
-        return this.$tc('state.event-active')
-      }
-      return formatDistanceToNow(date, {
-        addSuffix: true,
-        locale: locales[this.$i18n.locale],
-      })
-    },
   },
   methods: {
     trackScroll(visible, element, section) {

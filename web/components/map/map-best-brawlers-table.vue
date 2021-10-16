@@ -32,12 +32,6 @@ export default Vue.extend({
   },
   inheritAttrs: false,
   props: {
-    mode: {
-      type: String
-    },
-    map: {
-      type: String
-    },
     id: {
       type: [Number, String]
     },
@@ -53,11 +47,7 @@ export default Vue.extend({
         cubeId: 'map',
         dimensionsIds: ['brawler'],
         measurementsIds: ['winRateAdj', 'useRate'],
-        slices: {
-          mode: [this.mode],
-          map: [this.map],
-          ...this.slices,
-        },
+        slices: this.slices,
         sortId: 'winRateAdj',
       }
     },
