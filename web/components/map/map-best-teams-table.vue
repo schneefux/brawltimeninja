@@ -62,6 +62,7 @@ export default Vue.extend({
           mode: [this.mode],
           map: [this.map],
           ...this.slices,
+          teamSizeGt: this.mode == 'duoShowdown' ? ['1'] : ['2'],
         },
         sortId: 'wins',
       }

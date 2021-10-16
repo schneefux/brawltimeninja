@@ -1260,7 +1260,7 @@ const brawlerSlices = asSlice({
   teamSizeGt: {
     id: 'teamSizeGt',
     config: {
-      member: 'teamSize_measure',
+      member: 'teamSize_dimension',
       operator: 'gt',
     },
   },
