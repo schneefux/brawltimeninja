@@ -17,10 +17,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 };
 exports.__esModule = true;
 exports.commonMeasurements = exports.brawlerMeasurements = exports.playerMeasurements = exports.getSeasonEnd = void 0;
-// helper function which infers keys and restricts values to ElementType
-var asDimensions = function (et) { return et; };
-var asMeasurements = function (et) { return et; };
-var asSlice = function (et) { return et; };
+var klicker_1 = require("../klicker");
 /* c&p from util */
 function getSeasonEnd(timestamp) {
     var trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'));
@@ -32,7 +29,7 @@ function getSeasonEnd(timestamp) {
 exports.getSeasonEnd = getSeasonEnd;
 var monthAgo = new Date();
 monthAgo.setMonth(monthAgo.getMonth() - 1);
-var metaDimensions = asDimensions({
+var metaDimensions = klicker_1.asDimensions({
     season: {
         id: 'season',
         name: 'Bi-Week',
@@ -82,7 +79,7 @@ var metaDimensions = asDimensions({
         }
     }
 });
-var playerDimensions = asDimensions({
+var playerDimensions = klicker_1.asDimensions({
     player: {
         id: 'player',
         name: 'Player',
@@ -97,7 +94,7 @@ var playerDimensions = asDimensions({
         }
     }
 });
-var brawlerDimensions = asDimensions({
+var brawlerDimensions = klicker_1.asDimensions({
     brawler: {
         id: 'brawler',
         name: 'Brawler',
@@ -203,7 +200,7 @@ var brawlerDimensions = asDimensions({
         }
     }
 });
-var battleDimensions = asDimensions({
+var battleDimensions = klicker_1.asDimensions({
     mode: {
         id: 'mode',
         name: 'Mode',
@@ -244,7 +241,7 @@ var battleDimensions = asDimensions({
         }
     },
     teamSize: {
-        id: 'teamSIze',
+        id: 'teamSize',
         name: 'Team size',
         naturalIdAttribute: 'team',
         formatter: '',
@@ -270,7 +267,7 @@ var battleDimensions = asDimensions({
         }
     }
 });
-var commonDimensions = asDimensions(__assign(__assign(__assign(__assign({}, playerDimensions), brawlerDimensions), metaDimensions), battleDimensions));
+var commonDimensions = klicker_1.asDimensions(__assign(__assign(__assign(__assign({}, playerDimensions), brawlerDimensions), metaDimensions), battleDimensions));
 var picks = 'SUM(picks)';
 var winRate = "toFloat64(AVG(battle_victory))";
 var zP = 'least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)';
@@ -278,7 +275,7 @@ var winRateMerged = "toFloat64(avgMerge(battle_victory_state))";
 var winratePosteriorMerged = "(1583+" + winRateMerged + "*" + picks + ")/(1583/" + zP + "+" + picks + ")";
 var picksRaw = 'COUNT()';
 var winratePosteriorRaw = "(1583+" + winRate + "*" + picksRaw + ")/(1583/" + zP + "+" + picksRaw + ")";
-exports.playerMeasurements = asMeasurements({
+exports.playerMeasurements = klicker_1.asMeasurements({
     playerName: {
         id: 'playerName',
         name: 'Most common name',
@@ -506,7 +503,7 @@ exports.playerMeasurements = asMeasurements({
         }
     }
 });
-exports.brawlerMeasurements = asMeasurements({
+exports.brawlerMeasurements = klicker_1.asMeasurements({
     highestTrophies: {
         id: 'highestTrophies',
         name: 'Highest Trophies',
@@ -576,7 +573,7 @@ exports.brawlerMeasurements = asMeasurements({
         }
     }
 });
-var metaMeasurements = asMeasurements({
+var metaMeasurements = klicker_1.asMeasurements({
     timestamp: {
         // TODO
         id: 'timestamp',
@@ -606,7 +603,7 @@ var metaMeasurements = asMeasurements({
         }
     }
 });
-var battleMeasurements = asMeasurements({
+var battleMeasurements = klicker_1.asMeasurements({
     trophyChange: {
         id: 'trophyChange',
         name: 'Trophy Change',
@@ -940,7 +937,7 @@ var battleMeasurements = asMeasurements({
     }
 });
 // same as battleMeasurements, but using clickhouse merge for mv
-var mergedbattleMeasurements = asMeasurements({
+var mergedbattleMeasurements = klicker_1.asMeasurements({
     timestamp: {
         id: 'timestamp',
         name: 'Last Update',
@@ -1140,8 +1137,8 @@ var mergedbattleMeasurements = asMeasurements({
         }
     }
 });
-exports.commonMeasurements = asMeasurements(__assign(__assign(__assign(__assign({}, metaMeasurements), exports.playerMeasurements), exports.brawlerMeasurements), battleMeasurements));
-var metaSlices = asSlice({
+exports.commonMeasurements = klicker_1.asMeasurements(__assign(__assign(__assign(__assign({}, metaMeasurements), exports.playerMeasurements), exports.brawlerMeasurements), battleMeasurements));
+var metaSlices = klicker_1.asSlice({
     season: {
         id: 'season',
         name: 'Since Time',
@@ -1167,7 +1164,7 @@ var metaSlices = asSlice({
         }
     }
 });
-var playerSlices = asSlice({
+var playerSlices = klicker_1.asSlice({
     playerName: {
         id: 'playerName',
         name: 'Player Name',
@@ -1185,7 +1182,7 @@ var playerSlices = asSlice({
         }
     }
 });
-var brawlerSlices = asSlice({
+var brawlerSlices = klicker_1.asSlice({
     brawler: {
         id: 'brawler',
         name: 'Brawler',
@@ -1266,16 +1263,16 @@ var brawlerSlices = asSlice({
             operator: 'notEquals'
         }
     },
-    teamSizeEq: {
-        id: 'teamSizeEq',
-        name: 'Team size',
+    teamSizeGt: {
+        id: 'teamSizeGt',
+        name: 'Team size greater than',
         config: {
-            member: 'teamSize',
-            operator: 'equals'
+            member: 'teamSize_measure',
+            operator: 'gt'
         }
     }
 });
-var battleSlices = asSlice({
+var battleSlices = klicker_1.asSlice({
     mode: {
         id: 'mode',
         name: 'Mode',
@@ -1331,9 +1328,17 @@ var battleSlices = asSlice({
             member: 'bigbrawler_dimension',
             operator: 'equals'
         }
+    },
+    teamSizeGt: {
+        id: 'teamSizeGt',
+        name: 'Team size greater than',
+        config: {
+            member: 'teamsize_measure',
+            operator: 'gt'
+        }
     }
 });
-var commonSlices = asSlice(__assign(__assign(__assign(__assign({}, metaSlices), playerSlices), battleSlices), brawlerSlices));
+var commonSlices = klicker_1.asSlice(__assign(__assign(__assign(__assign({}, metaSlices), playerSlices), battleSlices), brawlerSlices));
 var brawlerBattleMeasurements = [
     /*
     mergedbattleMeasurements.trophySeasonEnd,
@@ -1618,6 +1623,7 @@ var cubes = {
         metaMeasurements: ['timestamp', 'picks'],
         slices: __spreadArray(__spreadArray([], playerBrawlerSlices), [
             commonSlices.mode,
+            commonSlices.teamSizeGt,
             commonSlices.map,
             commonSlices.powerplay,
         ]),

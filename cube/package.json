@@ -5,7 +5,7 @@
   "author": "schneefux",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc lib/cube.ts",
+    "build": "tsc lib/klicker.conf.ts",
     "dev": "cross-env CUBEJS_DEV_MODE=true ./node_modules/.bin/cubejs-server server"
   },
   "devDependencies": {

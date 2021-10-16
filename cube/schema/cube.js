@@ -1,4 +1,4 @@
-import config from '../lib/cube.js'
+import config from '../lib/klicker.conf.js'
 
 // cube.js imports are not 'real' imports
 // -> access `.default`

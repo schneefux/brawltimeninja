@@ -1,4 +1,4 @@
-import { asDimensions, asMeasurements, asSlice, Cube, SliceValue } from "~/klicker"
+import { asDimensions, asMeasurements, asSlice, Cube, SliceValue } from "../klicker"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -227,12 +227,12 @@ const battleDimensions = asDimensions({
     },
   },
   teamSize: {
-    id: 'teamSIze',
+    id: 'teamSize',
     name: 'Team size',
     naturalIdAttribute: 'team',
     formatter: '',
     additionalMeasures: [],
-    hidden: false,
+    hidden: true,
     type: 'quantitative',
     config: {
       sql: 'length(battle_allies.brawler_name) + 1',
@@ -1272,12 +1272,12 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
-  teamSizeEq: {
-    id: 'teamSizeEq',
-    name: 'Team size',
+  teamSizeGt: {
+    id: 'teamSizeGt',
+    name: 'Team size greater than',
     config: {
-      member: 'teamSize',
-      operator: 'equals',
+      member: 'teamSize_measure',
+      operator: 'gt',
     },
   },
 })
@@ -1337,6 +1337,14 @@ const battleSlices = asSlice({
     config: {
       member: 'bigbrawler_dimension',
       operator: 'equals',
+    },
+  },
+  teamSizeGt: {
+    id: 'teamSizeGt',
+    name: 'Team size greater than',
+    config: {
+      member: 'teamsize_measure',
+      operator: 'gt',
     },
   },
 })
@@ -1661,10 +1669,11 @@ const cubes: Record<string, Cube> = {
     hidden: true,
     dimensions: [
       ...playerBrawlerDimensions,
-      commonDimensions.mode,
-      commonDimensions.map,
-      commonDimensions.powerplay,
-      commonDimensions.team,
+      battleDimensions.mode,
+      battleDimensions.map,
+      battleDimensions.powerplay,
+      battleDimensions.team,
+      battleDimensions.teamSize,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1685,6 +1694,7 @@ const cubes: Record<string, Cube> = {
     slices: [
       ...playerBrawlerSlices,
       commonSlices.mode,
+      commonSlices.teamSizeGt,
       commonSlices.map,
       commonSlices.powerplay,
     ],

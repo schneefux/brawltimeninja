@@ -1,15 +1,4 @@
-export interface Config extends Record<string, Cube> {}
-
-// helper function which infers keys and restricts values to ElementType
-const asDimensions = <T>(et: { [K in keyof T]: Dimension }) => et
-const asMeasurements = <T>(et: { [K in keyof T]: Measurement }) => et
-const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
-
-export type ValueType = 'quantitative'|'temporal'|'ordinal'|'nominal'
-export type MeasureType = 'number'|'count'|'countDistinct'|'countDistinctApprox'|'sum'|'avg'|'min'|'max'|'runningTotal'
-export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
-export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
-export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
+import { asDimensions, asMeasurements, asSlice, Cube, SliceValue } from "../klicker"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -22,112 +11,6 @@ export function getSeasonEnd(timestamp: Date) {
 
 const monthAgo = new Date()
 monthAgo.setMonth(monthAgo.getMonth() - 1)
-
-export interface State {
-  cubeId: string
-  slices: SliceValue
-  comparingSlices?: SliceValue
-  dimensionsIds: string[]
-  measurementsIds: string[]
-  sortId: string
-}
-
-export interface Cube {
-  id: string
-  table: string
-  name: string
-  hidden: boolean
-  dimensions: Dimension[]
-  defaultDimensionsIds: string[]
-  measurements: Measurement[]
-  defaultMeasurementIds: string[]
-  slices: Slice[]
-  defaultSliceValues: SliceValue
-  /**
-   * deprecate
-   */
-  // ids
-  metaMeasurements: string[]
-}
-
-/**
- * Measure which will be transformed into a cube.js measure
- * with id `${id}_measure`.
- */
-export interface Measurement {
-  id: string
-  // TODO move all `name`s to en.json
-  name?: string
-  description: string
-  formatter: string
-  d3formatter: string
-  sign: number
-  percentageOver?: string // dimension id
-  type: ValueType
-  /**
-   * Vega.js scale configuration
-   * @see https://vega.github.io/vega-lite/docs/scale.html
-   */
-  scale?: any
-  /**
-   * cube.js configuration.
-   */
-  config: {
-    sql: string
-    type: MeasureType
-  }
-}
-
-/**
- * Dimension which will be transformed into a cube.js dimension
- * with id `${id}_dimension`.
- */
-export interface Dimension {
-  id: string
-  // TODO move all `name`s to en.json
-  name?: string
-  /**
-   * Column which contains a human-readable identifier.
-   * May be the dimension or one of additionalMeasures.
-   */
-  naturalIdAttribute: string
-  /**
-   * Specification to use for formatting the natural ID.
-   */
-  formatter: FormatType
-  /**
-   * Measures to always request when requesting dimension.
-   * Used for attributes of SCDs.
-   */
-  additionalMeasures: string[]
-  hidden: boolean
-  type: ValueType
-  /**
-   * Vega.js scale configuration
-   * @see https://vega.github.io/vega-lite/docs/scale.html
-   */
-  scale?: any
-  /**
-   * cube.js configuration.
-   */
-  config: {
-    sql: string
-    type: DimensionType
-  }
-}
-
-export interface Slice {
-  id: string
-  name: string
-  config: { // cube.js config
-    member: string // dimension/measure id
-    operator: OperatorType
-  }
-  // TODO: for description
-  // formatter: string
-}
-
-export interface SliceValue extends Record<string, string[]> { }
 
 const metaDimensions = asDimensions({
   season: {
@@ -344,12 +227,12 @@ const battleDimensions = asDimensions({
     },
   },
   teamSize: {
-    id: 'teamSIze',
+    id: 'teamSize',
     name: 'Team size',
     naturalIdAttribute: 'team',
     formatter: '',
     additionalMeasures: [],
-    hidden: false,
+    hidden: true,
     type: 'quantitative',
     config: {
       sql: 'length(battle_allies.brawler_name) + 1',
@@ -1389,12 +1272,12 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
-  teamSizeEq: {
-    id: 'teamSizeEq',
-    name: 'Team size',
+  teamSizeGt: {
+    id: 'teamSizeGt',
+    name: 'Team size greater than',
     config: {
-      member: 'teamSize',
-      operator: 'equals',
+      member: 'teamSize_measure',
+      operator: 'gt',
     },
   },
 })
@@ -1454,6 +1337,14 @@ const battleSlices = asSlice({
     config: {
       member: 'bigbrawler_dimension',
       operator: 'equals',
+    },
+  },
+  teamSizeGt: {
+    id: 'teamSizeGt',
+    name: 'Team size greater than',
+    config: {
+      member: 'teamsize_measure',
+      operator: 'gt',
     },
   },
 })
@@ -1778,10 +1669,11 @@ const cubes: Record<string, Cube> = {
     hidden: true,
     dimensions: [
       ...playerBrawlerDimensions,
-      commonDimensions.mode,
-      commonDimensions.map,
-      commonDimensions.powerplay,
-      commonDimensions.team,
+      battleDimensions.mode,
+      battleDimensions.map,
+      battleDimensions.powerplay,
+      battleDimensions.team,
+      battleDimensions.teamSize,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1802,6 +1694,7 @@ const cubes: Record<string, Cube> = {
     slices: [
       ...playerBrawlerSlices,
       commonSlices.mode,
+      commonSlices.teamSizeGt,
       commonSlices.map,
       commonSlices.powerplay,
     ],
