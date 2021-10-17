@@ -6,7 +6,7 @@
           <th
             v-if="ranked"
             scope="col"
-            class="text-right pr-2"
+            class="text-right pr-2 w-0"
           >
             #
           </th>
@@ -15,6 +15,7 @@
             :key="c.keys.join('-')"
             :class="['text-left', {
               'pr-1': index != columns.length - 1,
+              'w-0': c.shrink,
             }]"
             scope="col"
           >
@@ -70,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api'
 import BPaginator from '~/klicker/components/ui/b-paginator.vue'
 
 export interface Column {
@@ -80,13 +81,15 @@ export interface Column {
   keys: string[]
   /** cell slot to use instead. the slot receives a "row" prop. */
   slot?: string
+  /** if true, set width to minimal content width */
+  shrink?: boolean
 }
 
 interface IndexedColumn extends Column {
   index: number
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BPaginator,
   },
@@ -110,37 +113,40 @@ export default Vue.extend({
       type: Boolean
     },
   },
-  watch: {
-    columns() {
-      this.page = 0
-    },
-    rows() {
-      this.page = 0
-    },
-  },
-  data() {
-    return {
-      page: 0,
-    }
-  },
-  computed: {
-    pageRows(): object[] {
-      const offset = this.page * (this.pageSize || 0)
-      const pageRows = this.pageSize == undefined ? this.rows : this.rows.slice(offset, (this.page+1)*this.pageSize)
+  setup(props) {
+    const page = ref(0)
+
+    const pageRows = computed(() => {
+      const offset = page.value * (props.pageSize || 0)
+      const pageRows = props.pageSize == undefined ? props.rows : props.rows.slice(offset, (page.value+1)*props.pageSize)
       return pageRows.map((r, index) => ({
-        key: r[this.idKey],
+        key: r[props.idKey],
         index: offset + index,
         row: r,
-        fields: this.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
-      }))
-    },
-    renderedColumns(): IndexedColumn[] {
-      return this.columns
-        .map((c, index) => ({
-          ...c,
-          index,
-        }))
-    },
+        fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
+      })) as object[]
+    })
+
+    const renderedColumns = computed(() => props.columns
+      .map((c, index) => (<IndexedColumn>{
+        ...c,
+        index,
+      })))
+
+    watch(
+      () => props.columns,
+      () => page.value = 0
+    )
+    watch(
+      () => props.rows,
+      () => page.value = 0
+    )
+
+    return {
+      page,
+      pageRows,
+      renderedColumns,
+    }
   },
 })
 </script>

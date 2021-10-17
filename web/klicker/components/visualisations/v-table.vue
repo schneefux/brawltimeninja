@@ -25,29 +25,18 @@
           ></slot>
         </template>
       </b-table>
-
-      <b-button
-        slot="actions"
-        v-if="showLink"
-        :to="link"
-        secondary
-        sm
-      >
-        Explore in Dashboard
-      </b-button>
     </b-card>
   </client-only>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { Dimension, Measurement, MetaGridEntry, State } from '~/klicker'
-import { Location } from 'vue-router'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BTable,
     BCard,
@@ -74,32 +63,30 @@ export default Vue.extend({
       type: Number,
       default: 10
     },
-    showLink: {
-      type: Boolean
-    },
   },
-  computed: {
-    columns(): Column[] {
+  setup(props) {
+    const { $klicker } = useContext()
+
+    const columns = computed(() => {
       return [<Column>{
-        title: this.dimensions.map(d => this.$klicker.getName(d)).join(', '),
-        keys: this.dimensions.map(d => `dimensions.${d.id}`),
+        title: props.dimensions.map(d => $klicker.getName(d)).join(', '),
+        keys: props.dimensions.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
       }].concat(
-        this.measurements.map(m => (<Column>{
+        props.measurements.map(m => (<Column>{
           // measurements are rendered 1:1
-          title: this.$klicker.getName(m),
+          title: $klicker.getName(m),
           keys: [`measurements.${m.id}`],
           slot: `measurements.${m.id}`,
+          shrink: true,
         })),
       )
-    },
-    link(): Location {
-      return {
-        ...this.$klicker.stateToLocation(this.state),
-        path: '/dashboard',
-      }
-    },
+    })
+
+    return {
+      columns,
+    }
   },
 })
 </script>
