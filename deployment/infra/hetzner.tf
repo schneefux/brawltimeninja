@@ -281,3 +281,11 @@ resource "cloudflare_record" "cube" {
   type = "CNAME"
   value = "brawltime.ninja"
 }
+
+resource "cloudflare_record" "testing" {
+  zone_id = var.cloudflare_zone_id
+  name = "testing"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
