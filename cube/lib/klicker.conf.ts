@@ -667,7 +667,7 @@ const battleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -1229,6 +1229,20 @@ const brawlerSlices = asSlice({
       operator: 'lt',
     },
   },
+  powerGte: {
+    id: 'powerGte',
+    config: {
+      member: 'brawler_power_measure',
+      operator: 'gte',
+    },
+  },
+  powerLt: {
+    id: 'powerLt',
+    config: {
+      member: 'brawler_power_measure',
+      operator: 'lt',
+    },
+  },
   starpowerIdEq: {
     id: 'starpowerIdEq',
     config: {
@@ -1430,6 +1444,8 @@ const playerBrawlerSlices = [
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
+  commonSlices.powerGte,
+  commonSlices.powerLt,
 ]
 
 const playerBrawlerDefaultSliceValues = {
@@ -1594,7 +1610,7 @@ const cubes: Record<string, Cube> = {
   },
   player_brawler: {
     id: 'player_brawler',
-    table: 'player_brawler',
+    table: 'brawler_leaderboard',
     name: 'Brawler Leaderboard',
     hidden: false,
     dimensions: [
@@ -1664,7 +1680,6 @@ const cubes: Record<string, Cube> = {
       battleMeasurements.winRate,
       battleMeasurements.winRateAdj,
       battleMeasurements.starRate,
-      battleMeasurements.rank,
       battleMeasurements.starpowerName,
       battleMeasurements.gadgetName,
       // TODO
@@ -1677,6 +1692,10 @@ const cubes: Record<string, Cube> = {
       commonSlices.teamSizeGt,
       commonSlices.map,
       commonSlices.powerplay,
+      brawlerSlices.starpowerIdEq,
+      brawlerSlices.starpowerIdNeq,
+      brawlerSlices.gadgetIdEq,
+      brawlerSlices.gadgetIdNeq,
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,

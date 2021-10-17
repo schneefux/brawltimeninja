@@ -1229,6 +1229,20 @@ const brawlerSlices = asSlice({
       operator: 'lt',
     },
   },
+  powerGte: {
+    id: 'powerGte',
+    config: {
+      member: 'brawler_power_measure',
+      operator: 'gte',
+    },
+  },
+  powerLt: {
+    id: 'powerLt',
+    config: {
+      member: 'brawler_power_measure',
+      operator: 'lt',
+    },
+  },
   starpowerIdEq: {
     id: 'starpowerIdEq',
     config: {
@@ -1430,6 +1444,8 @@ const playerBrawlerSlices = [
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
+  commonSlices.powerGte,
+  commonSlices.powerLt,
 ]
 
 const playerBrawlerDefaultSliceValues = {
@@ -1594,7 +1610,7 @@ const cubes: Record<string, Cube> = {
   },
   player_brawler: {
     id: 'player_brawler',
-    table: 'player_brawler',
+    table: 'brawler_leaderboard',
     name: 'Brawler Leaderboard',
     hidden: false,
     dimensions: [
