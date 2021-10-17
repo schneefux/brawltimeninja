@@ -1232,15 +1232,15 @@ const brawlerSlices = asSlice({
   powerGte: {
     id: 'powerGte',
     config: {
-      member: 'brawler_power_measure',
+      member: 'power_measure',
       operator: 'gte',
     },
   },
-  powerLt: {
-    id: 'powerLt',
+  powerLte: {
+    id: 'powerLte',
     config: {
-      member: 'brawler_power_measure',
-      operator: 'lt',
+      member: 'power_measure',
+      operator: 'lte',
     },
   },
   starpowerIdEq: {
@@ -1440,12 +1440,13 @@ const playerBrawlerSlices = [
   commonSlices.playerId,
   commonSlices.playerName,
   commonSlices.season,
+  commonSlices.seasonExact,
   commonSlices.trophyRangeGte,
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
   commonSlices.powerGte,
-  commonSlices.powerLt,
+  commonSlices.powerLte,
 ]
 
 const playerBrawlerDefaultSliceValues = {

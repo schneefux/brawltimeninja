@@ -1,7 +1,8 @@
 <template functional>
   <div
     v-if="'team' in props.row.dimensions"
-    class="flex items-center"
+    :class="['flex items-center', data.class, data.staticClass]"
+    :style="data.staticStyle"
   >
     <brawler-team
       :brawlers="props.row.dimensionsRaw.team.team"

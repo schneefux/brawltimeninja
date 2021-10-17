@@ -2,7 +2,8 @@
   <router-link
     v-if="'mode' in props.row.dimensions"
     :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.mode)}`)"
-    class="flex items-center"
+    :class="['flex items-center', data.class, data.staticClass]"
+    :style="data.staticStyle"
   >
     <div class="mr-2 w-24 sm:w-23 md:w-40">
       <media-img

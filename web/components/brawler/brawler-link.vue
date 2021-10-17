@@ -2,7 +2,8 @@
   <router-link
     :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.brawler })}`)"
     :title="props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase())"
-    class="flex justify-center items-center"
+    :class="['flex justify-center items-center', data.class, data.staticClass]"
+    :style="data.staticStyle"
   >
     <div
       :class="['relative flex-shrink-0', {

@@ -75,8 +75,8 @@ job "brawltime-cube" {
 
       resources {
         cpu = 1024
-        memory = 196
-        memory_max = 384
+        memory = 256
+        memory_max = 512
       }
     }
   }

@@ -11,7 +11,6 @@
       >
         <template v-slot:dimensions="data">
           <d-player v-bind="data"></d-player>
-          <d-brawler v-bind="data"></d-brawler>
         </template>
         <template v-slot:[`measurements.brawler`]="data">
           <m-brawler v-bind="data"></m-brawler>
@@ -23,7 +22,6 @@
 
 <script lang="ts">
 import DPlayer from '@/components/klicker/d-player.vue'
-import DBrawler from '@/components/klicker/d-brawler.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
@@ -35,7 +33,6 @@ export default defineComponent({
   components: {
     VTable,
     DPlayer,
-    DBrawler,
     MBrawler,
     CQuery,
     BrawlerLink,

@@ -7,6 +7,8 @@
     :gadget-name="props.row.dimensions.gadget"
     :gadget-id="(props.row.dimensionsRaw.gadget || {}).gadget"
     :captioned="props.captioned"
+    :class="[data.class, data.staticClass]"
+    :style="data.staticStyle"
   ></brawler-link>
 </template>
 

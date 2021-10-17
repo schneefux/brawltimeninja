@@ -1,6 +1,8 @@
 <template functional>
   <brawler-link
     :brawler="props.row.measurementsRaw.brawler"
+    :class="[data.class, data.staticClass]"
+    :style="data.staticStyle"
   ></brawler-link>
 </template>
 

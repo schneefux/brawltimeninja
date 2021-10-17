@@ -2,12 +2,14 @@
   <b-wrapped-component
     v-if="'player' in props.row.dimensions"
     :wrap="'player' in props.row.dimensionsRaw.player"
-    class="flex items-center"
+    :class="['flex items-center', data.class, data.staticClass]"
+    :style="data.staticStyle"
   >
     <template v-slot:wrapper>
       <router-link
         :to="parent.localePath(`/profile/${props.idToTag(props.row.dimensionsRaw.player.player).substring(1)}`)"
-        class="flex items-center"
+        :class="['flex items-center', data.class, data.staticClass]"
+        :style="data.staticStyle"
       ></router-link>
     </template>
 

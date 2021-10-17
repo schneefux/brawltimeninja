@@ -26,11 +26,6 @@ import { format, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { formatClickhouse } from '~/lib/util'
 
-interface Row {
-  trophy_season_end: string
-  picks: number
-}
-
 export default Vue.extend({
   props: {
     value: {

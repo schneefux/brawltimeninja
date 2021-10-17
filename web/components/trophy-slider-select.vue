@@ -1,34 +1,11 @@
 <template>
-  <fake-select>
-    <span slot="preview" class="w-full text-left">
-      {{ format(value[0]) }}-{{ format(value[1]) }}
-      {{ name == 'Trophies' ? name : '' }}
-    </span>
-
-    <client-only>
-      <vue-range-slider
-        :min="0"
-        :max="name == 'Trophies' ? 10 : 18"
-        :step="1"
-        :min-range="1"
-        :value="value"
-        :bg-style="bgStyle"
-        :process-style="processStyle"
-        class="mt-8"
-        tooltip-dir="top"
-        lazy
-        @input="e => onInput(e)"
-      >
-        <span
-          slot="tooltip"
-          slot-scope="{ value }"
-          class="slider-tooltip !bg-gray-600 !border-gray-600"
-        >
-          {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
-        </span>
-      </vue-range-slider>
-    </client-only>
-  </fake-select>
+  <range-slider-select
+    :value="value"
+    :name="name == 'Trophies' ? name : ''"
+    :max="name == 'Trophies' ? 10 : 18"
+    :format="format"
+    @input="e => $emit('input', e)"
+  ></range-slider-select>
 </template>
 
 <script lang="ts">
@@ -45,24 +22,7 @@ export default Vue.extend({
       default: 'Trophies'
     },
   },
-  methods: {
-    onInput(e) {
-      if (JSON.stringify(e) != JSON.stringify(this.value)) {
-        this.$emit('input', e)
-      }
-    },
-  },
   computed: {
-    bgStyle() {
-      return {
-        backgroundColor: 'rgb(253, 230, 138)', // yellow-200
-      }
-    },
-    processStyle() {
-      return {
-        backgroundColor: 'rgb(251, 191, 36)', // yellow-400
-      }
-    },
     format() {
       if (this.name == 'League') {
         const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
