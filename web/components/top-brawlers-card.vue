@@ -1,0 +1,46 @@
+<template>
+  <b-card
+    :title="$t('best.brawlers.long')"
+    :elevation="elevation"
+    xxl
+  >
+    <b-button
+      slot="actions"
+      :to="localePath(`/tier-list/brawler`)"
+      primary
+      prefetch
+      sm
+    >
+      {{ $t('action.open.tier-list.brawler') }}
+    </b-button>
+
+    <map-best-brawlers
+      slot="content"
+      :elevation="elevation + 1"
+      :limit="limit"
+      long
+    ></map-best-brawlers>
+  </b-card>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { BButton, CQuery } from '~/klicker/components'
+
+export default Vue.extend({
+  components: {
+    BButton,
+    CQuery,
+  },
+  props: {
+    limit: {
+      type: Number,
+      default: 3
+    },
+    elevation: {
+      type: Number,
+      default: 2
+    },
+  },
+})
+</script>

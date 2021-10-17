@@ -87,7 +87,7 @@ export default Vue.extend({
     },
     slices: {
       type: Object as PropType<SliceValue>,
-      required: true
+      default: () => ({})
     },
   },
   computed: {

@@ -134,15 +134,14 @@
       />
     </client-only>
 
-    <map-best-brawlers-roll
+    <top-brawlers-card
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
         once: true,
       }"
       :limit="4"
       :elevation="1"
-      long
-    ></map-best-brawlers-roll>
+    ></top-brawlers-card>
 
     <top-players-card
       v-observe-visibility="{

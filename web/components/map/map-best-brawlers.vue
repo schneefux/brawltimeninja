@@ -44,6 +44,7 @@ export default Vue.extend({
   props: {
     slices: {
       type: Object as PropType<SliceValue>,
+      default: () => ({})
     },
     limit: {
       type: Number,
