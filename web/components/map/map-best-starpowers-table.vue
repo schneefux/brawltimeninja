@@ -54,7 +54,7 @@ export default defineComponent({
     const state = computed(() => (<State>{
       cubeId: 'battle',
       dimensionsIds: ['starpower'],
-      measurementsIds: ['wins'],
+      measurementsIds: ['wins', 'winRate'],
       slices: {
         ...slices.value,
         starpowerIdNeq: ['0'],
