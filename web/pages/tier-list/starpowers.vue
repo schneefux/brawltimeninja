@@ -118,6 +118,7 @@ export default Vue.extend({
           map: [],
           mapLike: [],
           mapNotLike: [],
+          starpowerIdNeq: ['0'],
         },
         sortId: 'wins',
         comparing: false,
