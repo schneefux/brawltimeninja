@@ -13,7 +13,8 @@ export default Vue.extend({
       dimensionsIds: ['mode', 'map'],
       measurementsIds: [],
       sortId: 'timestamp',
-    }, 1)
+      limit: 1,
+    })
     if (events.data.length == 0) {
       error({ statusCode: 404, message: 'Event not found' })
       return true
