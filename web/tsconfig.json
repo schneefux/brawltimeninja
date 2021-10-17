@@ -30,6 +30,7 @@
       "@nuxt/types",
       "@nuxt/http",
       "@nuxt/content",
+      "@nuxtjs/sentry",
       "nuxt-i18n"
     ]
   },

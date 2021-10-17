@@ -56,6 +56,10 @@
       v-if="'data' in $scopedSlots"
       :state="state"
     >
+      <c-error
+        slot="error"
+        v-bind="$attrs"
+      ></c-error>
       <template v-slot="data">
         <slot name="data" v-bind="{ ...data, ...$attrs }"></slot>
       </template>
@@ -71,6 +75,7 @@ import { State } from '~/klicker'
 import CQuery from '~/klicker/components/c-query'
 import CConfigurator from '~/klicker/components/c-configurator.vue'
 import CSlicer from '~/klicker/components/c-slicer.vue'
+import CError from '~/klicker/components/c-error.vue'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -78,6 +83,7 @@ export default Vue.extend({
     CSlicer,
     CConfigurator,
     CQuery,
+    CError,
   },
   props: {
     value: {

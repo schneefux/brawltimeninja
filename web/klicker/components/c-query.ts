@@ -17,6 +17,7 @@ export default Vue.extend({
     return {
       loading: false,
       result: undefined as undefined|CubeResponse,
+      error: false,
     }
   },
   watch: {
@@ -24,8 +25,15 @@ export default Vue.extend({
   },
   fetchDelay: 0,
   async fetch() {
+    this.error = false
     this.loading = true
-    this.result = await this.$klicker.query(this.state, this.limit)
+    try {
+      this.result = await this.$klicker.query(this.state, this.limit)
+    } catch (error) {
+      this.$sentry.captureException(error)
+      this.result = undefined
+      this.error = true
+    }
     this.loading = false
   },
   render(h): VNode {
@@ -47,6 +55,10 @@ export default Vue.extend({
 
     if ('placeholder' in this.$scopedSlots && this.result == undefined) {
       nodes = this.$scopedSlots.placeholder!({})
+    }
+
+    if ('error' in this.$scopedSlots && this.error) {
+      nodes = this.$scopedSlots.error!({})
     }
 
     if (nodes == undefined) {
