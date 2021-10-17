@@ -34,7 +34,8 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     id: {
-      type: [Number, String]
+      type: [Number, String],
+      default: () => undefined
     },
     // TODO remove usages of `mode` and `map`, replace by `slices`
     slices: {
