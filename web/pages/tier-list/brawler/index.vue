@@ -4,13 +4,6 @@
   >
     <p>
       {{ $t('tier-list.brawler.description') }}
-
-      <b-button
-        to="/tier-list/history"
-        xs
-        primary
-        prefetch
-      >{{ $t('tier-list.open-historical') }}</b-button>
     </p>
 
     <div class="flex flex-wrap justify-center">
