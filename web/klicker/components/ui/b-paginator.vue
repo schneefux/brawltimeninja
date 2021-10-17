@@ -33,10 +33,10 @@
 
 <script lang="ts">
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
-import Vue from 'vue'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BButton,
   },
@@ -50,21 +50,21 @@ export default Vue.extend({
       required: true
     },
   },
-  computed: {
-    page: {
+  setup(props, { emit }) {
+    const page = computed({
       get(): number {
-        return this.value
+        return props.value
       },
       set(p: number) {
-        this.$emit('input', p)
+        emit('input', p)
       }
-    },
-    faCaretLeft() {
-      return faCaretLeft
-    },
-    faCaretRight() {
-      return faCaretRight
-    },
-  }
+    })
+
+    return {
+      page,
+      faCaretLeft,
+      faCaretRight,
+    }
+  },
 })
 </script>
