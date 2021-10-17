@@ -2,7 +2,22 @@
   <page-dashboard
     :title="$t('tier-list.map.title', { map: event.id != 0 ? $t('map.' + event.id) : event.map })"
   >
-    <p>{{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}</p>
+    <breadcrumbs
+      :links="[{
+        path: '/tier-list/map',
+        name: $tc('map', 2),
+      }, {
+        path: modePath,
+        name: $t('mode.' + event.mode),
+      }, {
+        path: mapPath,
+        name: event.id != 0 ? $t('map.' + event.id) : event.map,
+      }]"
+    ></breadcrumbs>
+
+    <p class="mt-2">
+      {{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
+    </p>
     <p v-if="event.map.startsWith('Competition ')">
       {{ $t('tier-list.competition-info') }}
       <b-button
@@ -12,12 +27,6 @@
         xs
       >{{ $t('tier-list.compare-competition-winners') }}</b-button>
     </p>
-
-    <map-breadcrumbs
-      :mode="event.mode"
-      :map="event.map"
-      :id="event.id"
-    ></map-breadcrumbs>
 
     <client-only>
       <adsense
@@ -64,7 +73,7 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { deslugify, kebabToCamel } from '~/lib/util'
+import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
 
 interface Map {
   id: string
@@ -103,6 +112,12 @@ export default Vue.extend({
     }
   },
   computed: {
+    modePath(): string {
+      return `/tier-list/mode/${camelToKebab(this.event.mode)}`
+    },
+    mapPath(): string {
+      return `${this.modePath}/map/${slugify(this.event.map)}`
+    },
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),

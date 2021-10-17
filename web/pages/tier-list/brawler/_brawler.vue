@@ -1,9 +1,15 @@
 <template>
   <page :title="brawlerName">
-    <map-breadcrumbs
-      :brawler-id="brawlerId"
-      :brawler-name="brawlerName"
-    ></map-breadcrumbs>
+    <breadcrumbs
+      :links="[{
+        path: '/tier-list/brawler',
+        name: $tc('brawler', 2),
+      }, {
+        path: `/tier-list/brawler/${brawlerId}`,
+        name: brawlerName,
+      }]"
+      class="mt-2"
+    ></breadcrumbs>
 
     <page-section>
       <div class="flex flex-wrap justify-center">

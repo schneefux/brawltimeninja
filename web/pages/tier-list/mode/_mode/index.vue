@@ -1,10 +1,18 @@
 <template>
   <page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
-    <p>{{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}</p>
+    <breadcrumbs
+      :links="[{
+        path: '/tier-list/map',
+        name: $tc('map', 2),
+      }, {
+        path: modePath,
+        name: $t('mode.' + mode),
+      }]"
+    ></breadcrumbs>
 
-    <map-breadcrumbs
-      :mode="mode"
-    ></map-breadcrumbs>
+    <p class="mt-2">
+      {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
+    </p>
 
     <client-only>
       <adsense
@@ -82,7 +90,7 @@
             <b-button
               slot="actions"
               tag="router-link"
-              :to="`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map.map)}`"
+              :to="mapPath(map)"
               primary
               sm
             >
@@ -216,8 +224,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    camelToKebab() {
-      return camelToKebab
+    modePath(): string {
+      return `/tier-list/mode/${camelToKebab(this.mode)}`
+    },
+    mapPath(): (entry: { map: string }) => string {
+      return entry => `${this.modePath}/map/${slugify(entry.map)}`
     },
     slugify() {
       return slugify

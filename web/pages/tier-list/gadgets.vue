@@ -3,7 +3,16 @@
     :title="$t('tier-list.gadget.title')"
     class="max-w-2xl mx-auto"
   >
-    <map-breadcrumbs gadgets class="mt-2"></map-breadcrumbs>
+    <breadcrumbs
+      :links="[{
+        path: '/tier-list/brawler',
+        name: $tc('brawler', 2),
+      }, {
+        path: '/tier-list/gadgets',
+        name: $tc('gadget', 2),
+      }]"
+      class="mt-2"
+    ></breadcrumbs>
 
     <b-card class="mt-3">
       <p slot="content" class="my-2 prose text-gray-200">
