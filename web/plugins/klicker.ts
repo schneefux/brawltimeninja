@@ -47,7 +47,7 @@ class KlickerService extends Klicker {
 
   // override Klicker.$t
   public $te(key: string) {
-    return this.context.i18n.te(key)
+    return this.context.i18n.t(key) != key
   }
 
   // override Klicker.$t
