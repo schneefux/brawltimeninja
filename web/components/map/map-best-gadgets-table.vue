@@ -1,8 +1,5 @@
 <template>
-  <c-query
-    :state="state"
-    :limit="50"
-  >
+  <c-query :state="state">
     <template v-slot="data">
       <v-table
         :title="title"
@@ -59,6 +56,7 @@ export default defineComponent({
         gadgetIdNeq: ['0'],
       },
       sortId: 'wins',
+      limit: 50,
     }))
 
     return {

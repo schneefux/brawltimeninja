@@ -18,6 +18,7 @@ export interface State {
   dimensionsIds: string[]
   measurementsIds: string[]
   sortId: string
+  limit?: number
 }
 
 export interface Cube {

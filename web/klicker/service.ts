@@ -57,7 +57,7 @@ export default class Klicker {
     return false
   }
 
-  public async query(state: State, limit?: number): Promise<CubeResponse> {
+  public async query(state: State): Promise<CubeResponse> {
     if (!(state.cubeId in this.config)) {
       throw 'Invalid cubeId ' + state.cubeId
     }
@@ -132,7 +132,7 @@ export default class Klicker {
       dimensions: queryDimensions,
       filters: querySlices,
       order: queryOrder,
-      limit,
+      limit: state.limit,
     })
 
     let data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
@@ -146,7 +146,7 @@ export default class Klicker {
         dimensions: queryDimensions,
         filters: queryComparingSlices,
         order: queryOrder,
-        limit,
+        limit: state.limit,
       })
 
       const comparingData = this.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData, [])

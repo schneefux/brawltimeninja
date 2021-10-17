@@ -1,9 +1,5 @@
 <template>
-  <c-query
-    v-bind="$attrs"
-    :state="state"
-    :limit="50"
-  >
+  <c-query :state="state">
     <template v-slot="data">
       <v-table
         :title="title"
@@ -60,6 +56,7 @@ export default defineComponent({
         measurementsIds: isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
         slices: slices.value,
         sortId: isShowdown ? 'picks' : 'wins',
+        limit: 50,
       }
     })
 

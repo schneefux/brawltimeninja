@@ -6,8 +6,8 @@
       measurementsIds: ['winRateAdj'],
       slices,
       sortId: 'winRateAdj',
+      limit,
     }"
-    :limit="limit"
   >
     <b-shimmer
       slot="placeholder"

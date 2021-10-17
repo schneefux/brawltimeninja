@@ -9,9 +9,6 @@ export default Vue.extend({
       type: Object as PropType<State>,
       required: true
     },
-    limit: {
-      type: Number
-    },
   },
   data() {
     return {
@@ -28,7 +25,7 @@ export default Vue.extend({
     this.error = false
     this.loading = true
     try {
-      this.result = await this.$klicker.query(this.state, this.limit)
+      this.result = await this.$klicker.query(this.state)
     } catch (error) {
       this.$sentry.captureException(error)
       this.result = undefined
