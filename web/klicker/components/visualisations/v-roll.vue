@@ -4,11 +4,14 @@
     expand-on-desktop
   >
     <b-card
-      v-for="entry in data"
+      v-for="(entry, index) in data"
       :key="entry.id"
       :elevation="elevation"
       :title="long ? entry.dimensions[dimensions[0].id] : undefined"
-      class="flex-shrink-0"
+      :class="['flex-shrink-0', {
+        'ml-auto': index == 0,
+        'mr-auto': index == data.length - 1,
+      }]"
       dense
     >
       <div

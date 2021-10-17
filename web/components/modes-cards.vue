@@ -9,7 +9,6 @@
       >
         <map-best-brawlers-card
           :slices="{ mode: [mode] }"
-          link
         ></map-best-brawlers-card>
       </div>
     </b-horizontal-scroller>

@@ -44,8 +44,6 @@
       <map-best-brawlers-card
         :slices="{ mode: [event.mode] }"
         class="mx-auto"
-        md
-        link
       ></map-best-brawlers-card>
     </page-section>
 

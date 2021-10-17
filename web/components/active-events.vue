@@ -42,7 +42,6 @@
           :id="event.battle_event_id"
           :end-date="event.end"
           :eager="eager"
-          link
         ></map-best-brawlers-card>
       </lazy>
 

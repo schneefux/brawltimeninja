@@ -56,7 +56,6 @@
             map: [event.map],
           }"
           :start-date="event.start"
-          link
         ></map-best-brawlers-card>
       </lazy>
     </page-section>

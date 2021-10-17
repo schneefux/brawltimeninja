@@ -2,18 +2,10 @@
   <event-card
     :mode="mode"
     :map="map"
-    :id="!large ? id : undefined"
+    :id="id"
     v-bind="$attrs"
+    md
   >
-    <!-- large, endDate, startDate are mutually exclusive -->
-    <media-img
-      v-if="large && id != undefined"
-      slot="infobar"
-      :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
-      size="384"
-      clazz="h-48 mx-auto"
-      itemprop="image"
-    ></media-img>
     <div
       v-if="powerplay || id == 0 || endDate != undefined || startDate != undefined"
       slot="infobar"
@@ -46,7 +38,7 @@
     <b-button
       v-if="link"
       slot="actions"
-      :to="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : localePath(`/tier-list/mode/${camelToKebab(mode)}`)"
+      :to="link"
       primary
       prefetch
       sm
@@ -68,14 +60,6 @@ const locales = { en: enUS, de: de }
 export default Vue.extend({
   inheritAttrs: false,
   props: {
-    large: {
-      type: Boolean,
-      default: false
-    },
-    link: {
-      type: Boolean,
-      default: false
-    },
     endDate: {
       type: String,
     },
@@ -100,11 +84,15 @@ export default Vue.extend({
     powerplay(): boolean {
       return this.slices.powerplay?.[0] == 'true'
     },
-    camelToKebab() {
-      return camelToKebab
-    },
-    slugify() {
-      return slugify
+    link(): string|undefined {
+      if (this.mode == undefined) {
+        return undefined
+      }
+      if (this.map != undefined) {
+        return this.localePath(`/tier-list/mode/${camelToKebab(this.mode)}/map/${slugify(this.map)}`)
+      } else {
+        return this.localePath(`/tier-list/mode/${camelToKebab(this.mode)}`)
+      }
     },
     endDateString(): string {
       if (this.endDate == undefined) {
