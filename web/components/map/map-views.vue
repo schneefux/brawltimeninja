@@ -103,6 +103,8 @@
           full-height
           md
         ></map-best-starpowers-table>
+
+        <gadget-starpower-disclaimer md></gadget-starpower-disclaimer>
       </div>
     </template>
   </c-dashboard>

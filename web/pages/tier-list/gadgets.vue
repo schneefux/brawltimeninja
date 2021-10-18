@@ -20,6 +20,8 @@
       </p>
     </b-card>
 
+    <gadget-starpower-disclaimer></gadget-starpower-disclaimer>
+
     <b-card :title="$t('tier-list.gadget.gadgets')">
       <div slot="content">
         <b-card elevation="2">
