@@ -34,6 +34,10 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
+    kind: {
+      type: String as PropType<'starpowers'|'gadgets'>,
+      default: 'starpowers'
+    },
     id: {
       type: [Number, String],
       default: () => undefined
@@ -45,15 +49,15 @@ export default defineComponent({
   },
   setup(props) {
     const { id, slices } = toRefs(props)
-    const title = useTopNTitle('best.starpowers', slices, id)
+    const title = useTopNTitle('best.' + props.kind, slices, id)
 
     const state = computed(() => (<State>{
       cubeId: 'battle',
-      dimensionsIds: ['starpower'],
+      dimensionsIds: props.kind == 'starpowers' ? ['starpower'] : ['gadget'],
       measurementsIds: ['wins', 'winRate'],
       slices: {
         ...slices.value,
-        starpowerIdNeq: ['0'],
+        [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
       },
       sortId: 'wins',
       limit: 50,

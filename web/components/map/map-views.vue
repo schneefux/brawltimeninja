@@ -87,20 +87,22 @@
           }"
           :id="id"
           :slices="state.slices"
+          kind="starpowers"
           full-height
           md
         ></map-best-starpowers-table>
 
-        <map-best-gadgets-table
+        <map-best-starpowers-table
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'gadgets'),
             once: true,
           }"
           :id="id"
           :slices="state.slices"
+          kind="gadgets"
           full-height
           md
-        ></map-best-gadgets-table>
+        ></map-best-starpowers-table>
       </div>
     </template>
   </c-dashboard>

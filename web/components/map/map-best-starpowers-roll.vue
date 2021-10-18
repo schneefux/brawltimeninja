@@ -15,21 +15,7 @@
 
     <c-query
       slot="content"
-      :state="{
-        cubeId: cubeId,
-        dimensionsIds: dimensionIds,
-        measurementsIds: ['winRate'],
-        slices: {
-          /*
-          map: map != undefined ? [map] : [],
-          mode: mode != undefined ? [mode] : [],
-          powerplay: powerplay != undefined ? [powerplay] : [],
-          */
-          season: season != undefined ? [season] : [],
-        },
-        sortId: 'winRate',
-      }"
-      :limit="limit"
+      :state="state"
     >
       <b-shimmer
         slot="placeholder"
@@ -54,11 +40,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, watchEffect } from '@nuxtjs/composition-api'
+import { SliceValue, State } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VRoll,
     BShimmer,
@@ -71,17 +57,9 @@ export default Vue.extend({
       type: String as PropType<'starpowers'|'gadgets'>,
       default: 'starpowers'
     },
-    map: {
-      type: String,
-    },
-    mode: {
-      type: String,
-    },
-    season: {
-      type: String,
-    },
-    powerplay: {
-      type: Boolean,
+    slices: {
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
     },
     limit: {
       type: Number,
@@ -92,21 +70,25 @@ export default Vue.extend({
       default: 1
     },
   },
-  computed: {
-    cubeId(): string {
-      return this.kind == 'starpowers' ? 'starpower' : 'gadget'
-    },
-    dimensionIds(): string[] {
-      return this.kind == 'starpowers' ? ['starpower'] : ['gadget']
-    },
-    slices(): SliceValue {
-      return {
-        [this.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
-      }
-    },
-    kindKey(): string {
-      return this.kind == 'starpowers' ? 'starpower' : 'gadget'
-    },
+  setup(props) {
+    const kindKey = computed(() => props.kind == 'starpowers' ? 'starpower' : 'gadget')
+    const state = computed(() => (<State>{
+      cubeId: 'battle',
+      dimensionsIds: props.kind == 'starpowers' ? ['starpower'] : ['gadget'],
+      measurementsIds: ['winRate'],
+      slices: {
+        ...props.slices,
+        [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
+      },
+      sortId: 'winRate',
+      limit: props.limit,
+    }))
+    watchEffect(() => console.log(state))
+
+    return {
+      state,
+      kindKey,
+    }
   },
 })
 </script>
