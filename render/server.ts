@@ -1,6 +1,6 @@
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { BrowserContext, chromium } from 'playwright'
+import { Browser, chromium } from 'playwright'
 import StatsD from 'hot-shots'
 
 const maxage = parseInt(process.env.CACHE_SECONDS || '86400') // 24h
@@ -9,7 +9,7 @@ const WEB_URL = (process.env.WEB_URL || 'https://brawltime.ninja/').replace(/\/$
 const stats = new StatsD({ prefix: 'brawltime.render.' })
 const app = new Koa()
 
-let context: BrowserContext|undefined
+let browser: Browser|undefined
 
 app.use(cors({ origin: '*' })); // TODO for development only
 app.use(async (ctx, next) => {
@@ -18,8 +18,8 @@ app.use(async (ctx, next) => {
     return
   }
 
-  if (context == undefined) {
-    ctx.throw(500, 'No browser context')
+  if (browser == undefined) {
+    ctx.throw(500, 'No browser available')
     return
   }
 
@@ -31,7 +31,7 @@ app.use(async (ctx, next) => {
     return
   }
 
-  if (context == undefined) {
+  if (browser == undefined) {
     ctx.throw(500, 'Unavailable')
     return
   }
@@ -45,6 +45,15 @@ app.use(async (ctx, next) => {
   }
 
   const start = process.hrtime()
+  const context = await browser.newContext({
+    deviceScaleFactor: 2,
+    viewport: {
+      height: 2*628,
+      width: 2*1200,
+    },
+    // trigger backend is-bot to prevent POST to clicker
+    userAgent: 'brawltime.ninja render bot',
+  })
   const page = await context!.newPage()
 
   try {
@@ -65,6 +74,7 @@ app.use(async (ctx, next) => {
     ctx.body = buffer
   } finally {
     await page.close()
+    await context.close()
   }
 
   const duration = process.hrtime(start)
@@ -75,19 +85,9 @@ const port = parseInt(process.env.PORT || '') || 3005
 
 chromium.launch({
   args: ['--disable-dev-shm-usage'],
-}).then(browser =>
-  browser.newContext({
-    deviceScaleFactor: 2,
-    viewport: {
-      height: 2*628,
-      width: 2*1200,
-    },
-    // trigger backend is-bot to prevent POST to clicker
-    userAgent: 'brawltime.ninja render bot',
-  })
-).then(c => {
-  context = c
-  context.on('close', () => context = undefined)
+}).then(b => {
+  browser = b
+
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
   })
