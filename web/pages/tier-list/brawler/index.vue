@@ -1,59 +1,63 @@
 <template>
-  <page
+  <page-dashboard
     :title="$t('tier-list.brawler.title')"
   >
-    <p>
-      {{ $t('tier-list.brawler.description') }}
-    </p>
+    <template slot="content">
+      <p>
+        {{ $t('tier-list.brawler.description') }}
+      </p>
 
-    <div class="flex flex-wrap justify-center">
-      <map-best-starpowers-roll
-        v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'gadgets'),
-          once: true,
-        }"
-        kind="starpowers"
-        xs
-      ></map-best-starpowers-roll>
+      <div class="flex flex-wrap justify-center">
+        <map-best-starpowers-roll
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'gadgets'),
+            once: true,
+          }"
+          kind="starpowers"
+          xs
+        ></map-best-starpowers-roll>
 
-      <map-best-starpowers-roll
-        kind="gadgets"
-        xs
-      ></map-best-starpowers-roll>
-    </div>
+        <map-best-starpowers-roll
+          kind="gadgets"
+          xs
+        ></map-best-starpowers-roll>
+      </div>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6446102315"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+      <client-only>
+        <adsense
+          v-if="!isApp"
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="6446102315"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
+    </template>
 
-    <page-section
-      :title="$t('tier-list.all.title')"
-      tracking-id="widget"
-      tracking-page-id="brawler_meta"
-    >
-      <map-views
-        ga-category="brawler"
-      ></map-views>
-    </page-section>
+    <template slot="dashboard">
+      <page-section
+        :title="$t('tier-list.all.title')"
+        tracking-id="widget"
+        tracking-page-id="brawler_meta"
+      >
+        <map-views
+          ga-category="brawler"
+        ></map-views>
+      </page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="7838173054"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
-  </page>
+      <client-only>
+        <adsense
+          v-if="!isApp"
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="7838173054"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
+    </template>
+  </page-dashboard>
 </template>
 
 <script lang="ts">

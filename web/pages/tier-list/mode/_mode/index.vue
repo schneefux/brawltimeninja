@@ -1,148 +1,154 @@
 <template>
-  <page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
-    <breadcrumbs
-      :links="[{
-        path: '/tier-list/map',
-        name: $tc('map', 2),
-      }, {
-        path: modePath,
-        name: $t('mode.' + mode),
-      }]"
-    ></breadcrumbs>
+  <page-dashboard
+    :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })"
+  >
+    <template slot="content">
+      <breadcrumbs
+        :links="[{
+          path: '/tier-list/map',
+          name: $tc('map', 2),
+        }, {
+          path: modePath,
+          name: $t('mode.' + mode),
+        }]"
+      ></breadcrumbs>
 
-    <p class="mt-2">
-      {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
-    </p>
+      <p class="mt-2">
+        {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
+      </p>
 
-    <client-only>
-      <adsense
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="2291234880"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+      <client-only>
+        <adsense
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="2291234880"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
 
-    <page-section
-      :title="$t('tier-list.maps.title')"
-      tracking-id="maps"
-      tracking-page-id="mode_meta"
-    >
-      <p slot="description">{{ $t('tier-list.open-map') }}</p>
-
-      <form @submit.prevent="$fetch()">
-        <b-textbox
-          v-model="nameFilter"
-          :placeholder="$tc('map', 1)"
-          dark
-        ></b-textbox>
-        <b-button
-          type="submit"
-          primary
-          sm
-        >{{ $t('action.search') }}</b-button>
-      </form>
-
-      <b-horizontal-scroller
-        class="mt-3"
-        expand-on-desktop
+      <page-section
+        :title="$t('tier-list.maps.title')"
+        tracking-id="maps"
+        tracking-page-id="mode_meta"
       >
-        <lazy
-          v-for="(map, index) in maps"
-          :key="map.map"
-          :render="showAllMaps || index <= 3"
-          distance="600px"
+        <p slot="description">{{ $t('tier-list.open-map') }}</p>
+
+        <form @submit.prevent="$fetch()">
+          <b-textbox
+            v-model="nameFilter"
+            :placeholder="$tc('map', 1)"
+            dark
+          ></b-textbox>
+          <b-button
+            type="submit"
+            primary
+            sm
+          >{{ $t('action.search') }}</b-button>
+        </form>
+
+        <b-horizontal-scroller
+          class="mt-3"
+          expand-on-desktop
         >
-          <div
-            class="w-64"
-            style="height: 396px"
-            slot="placeholder"
-            :class="['mx-2', {
-              'md:hidden': !showAllMaps && index > 3,
-            }]"
-          ></div>
-          <event-card
-            :mode="mode"
-            :map="map.map"
-            :id="map.id"
-            :class="['mx-2', {
-              'md:hidden': !showAllMaps && index > 3,
-            }]"
-            nobackground
-            size="w-64"
+          <lazy
+            v-for="(map, index) in maps"
+            :key="map.map"
+            :render="showAllMaps || index <= 3"
+            distance="600px"
           >
-            <template v-slot:preview></template>
-            <template v-slot:content>
-              <media-img
-                v-if="map.id != 0"
-                :path="`/maps/${map.id}`"
-                size="512"
-                clazz="mx-auto h-64"
-              ></media-img>
-              <div
-                v-else
-                class="h-64 flex"
-              >
-                <p class="m-auto">{{ $t('state.no-image') }}.</p>
-              </div>
-            </template>
-            <b-button
-              slot="actions"
-              tag="router-link"
-              :to="mapPath(map)"
-              primary
-              sm
+            <div
+              class="w-64"
+              style="height: 396px"
+              slot="placeholder"
+              :class="['mx-2', {
+                'md:hidden': !showAllMaps && index > 3,
+              }]"
+            ></div>
+            <event-card
+              :mode="mode"
+              :map="map.map"
+              :id="map.id"
+              :class="['mx-2', {
+                'md:hidden': !showAllMaps && index > 3,
+              }]"
+              nobackground
+              size="w-64"
             >
-              {{ $t('action.open') }}
-            </b-button>
-          </event-card>
-        </lazy>
-      </b-horizontal-scroller>
+              <template v-slot:preview></template>
+              <template v-slot:content>
+                <media-img
+                  v-if="map.id != 0"
+                  :path="`/maps/${map.id}`"
+                  size="512"
+                  clazz="mx-auto h-64"
+                ></media-img>
+                <div
+                  v-else
+                  class="h-64 flex"
+                >
+                  <p class="m-auto">{{ $t('state.no-image') }}.</p>
+                </div>
+              </template>
+              <b-button
+                slot="actions"
+                tag="router-link"
+                :to="mapPath(map)"
+                primary
+                sm
+              >
+                {{ $t('action.open') }}
+              </b-button>
+            </event-card>
+          </lazy>
+        </b-horizontal-scroller>
 
-      <div
-        v-show="!showAllMaps && maps.length > 3"
-        class="mt-2 w-full text-right hidden md:block"
-      >
-        <b-button
-          sm
-          primary
-          @click="expandMaps()"
+        <div
+          v-show="!showAllMaps && maps.length > 3"
+          class="mt-2 w-full text-right hidden md:block"
         >
-          {{ $t('action.show-all.mode-maps', { mode: $t('mode.' + mode) }) }}
-        </b-button>
-      </div>
-    </page-section>
+          <b-button
+            sm
+            primary
+            @click="expandMaps()"
+          >
+            {{ $t('action.show-all.mode-maps', { mode: $t('mode.' + mode) }) }}
+          </b-button>
+        </div>
+      </page-section>
+    </template>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="2263314723"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <template slot="dashboard">
+      <client-only>
+        <adsense
+          v-if="!isApp"
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="2263314723"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
 
-    <page-section>
-      <map-views
-        :mode="mode"
-        ga-category="mode"
-      ></map-views>
-    </page-section>
+      <page-section>
+        <map-views
+          :mode="mode"
+          ga-category="mode"
+        ></map-views>
+      </page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="8497550588"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
-  </page>
+      <client-only>
+        <adsense
+          v-if="!isApp"
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="8497550588"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
+    </template>
+  </page-dashboard>
 </template>
 
 <script lang="ts">

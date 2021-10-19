@@ -2,6 +2,7 @@
   <c-dashboard
     v-model="state"
     elevation="2"
+    class="justify-center"
   >
     <template v-slot:slices="data">
       <s-season v-bind="data"></s-season>
@@ -10,24 +11,17 @@
     </template>
 
     <template v-slot:totals="data">
-      <div class="w-full flex flex-wrap">
-        <v-sample-size v-bind="data"></v-sample-size>
-        <v-last-update v-bind="data"></v-last-update>
+      <div class="flex flex-wrap items-end">
+        <v-sample-size full-heigth v-bind="data"></v-sample-size>
+        <v-last-update full-heigth v-bind="data"></v-last-update>
       </div>
     </template>
 
     <template v-slot="state">
-      <div
-        class="grid grid-cols-1 lg:grid-cols-2 justify-items-center"
-        :class="{
-          '2xl:grid-cols-4': id != undefined,
-          '2xl:grid-cols-3': id == undefined,
-        }"
-      >
+      <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 justify-items-center">
         <b-card
           v-if="id != undefined"
           :title="$t('map.' + id)"
-          class="row-span-2"
           md
         >
           <div
@@ -104,7 +98,29 @@
           md
         ></map-best-starpowers-table>
 
-        <gadget-starpower-disclaimer md></gadget-starpower-disclaimer>
+        <div
+          class="lg:col-span-2 w-full flex flex-col"
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'charts'),
+            once: true,
+          }"
+        >
+          <map-balance-chart
+            :id="id"
+            :slices="state.slices"
+            class="w-full"
+            full-height
+          ></map-balance-chart>
+
+          <map-winrate-userate-chart
+            :id="id"
+            :slices="state.slices"
+            class="w-full"
+            full-height
+          ></map-winrate-userate-chart>
+
+          <gadget-starpower-disclaimer md></gadget-starpower-disclaimer>
+        </div>
       </div>
     </template>
   </c-dashboard>

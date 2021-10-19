@@ -2,70 +2,74 @@
   <page-dashboard
     :title="$t('tier-list.map.title', { map: event.id != 0 ? $t('map.' + event.id) : event.map })"
   >
-    <breadcrumbs
-      :links="[{
-        path: '/tier-list/map',
-        name: $tc('map', 2),
-      }, {
-        path: modePath,
-        name: $t('mode.' + event.mode),
-      }, {
-        path: mapPath,
-        name: event.id != 0 ? $t('map.' + event.id) : event.map,
-      }]"
-    ></breadcrumbs>
+    <template slot="content">
+      <breadcrumbs
+        :links="[{
+          path: '/tier-list/map',
+          name: $tc('map', 2),
+        }, {
+          path: modePath,
+          name: $t('mode.' + event.mode),
+        }, {
+          path: mapPath,
+          name: event.id != 0 ? $t('map.' + event.id) : event.map,
+        }]"
+      ></breadcrumbs>
 
-    <p class="mt-2">
-      {{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
-    </p>
-    <p v-if="event.map.startsWith('Competition ')">
-      {{ $t('tier-list.competition-info') }}
-      <b-button
-        to="/tier-list/competition-winners"
-        prefetch
-        primary
-        xs
-      >{{ $t('tier-list.compare-competition-winners') }}</b-button>
-    </p>
+      <p class="mt-2">
+        {{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
+      </p>
+      <p v-if="event.map.startsWith('Competition ')">
+        {{ $t('tier-list.competition-info') }}
+        <b-button
+          to="/tier-list/competition-winners"
+          prefetch
+          primary
+          xs
+        >{{ $t('tier-list.compare-competition-winners') }}</b-button>
+      </p>
+    </template>
 
-    <client-only>
-      <adsense
-        ins-class="ad-section"
-        id="ezoic-pub-ad-placeholder-112"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1665534416"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <template slot="dashboard">
+      <client-only>
+        <adsense
+          ins-class="ad-section"
+          id="ezoic-pub-ad-placeholder-112"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="1665534416"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
 
-    <page-section>
-      <map-views
-        :mode="event.mode"
-        :map="event.map"
-        :id="event.id"
-        :timestamp="event.timestamp"
-        ga-category="map"
-      ></map-views>
-    </page-section>
+      <page-section>
+        <map-views
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+          :timestamp="event.timestamp"
+          ga-category="map"
+        ></map-views>
+      </page-section>
 
-    <page-section>
-      <map-best-brawlers-card
-        :slices="{ mode: [event.mode] }"
-        class="mx-auto"
-      ></map-best-brawlers-card>
-    </page-section>
+      <page-section>
+        <map-best-brawlers-card
+          :slices="{ mode: [event.mode] }"
+          class="mx-auto"
+        ></map-best-brawlers-card>
+      </page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3536131238"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+      <client-only>
+        <adsense
+          v-if="!isApp"
+          ins-class="ad-section"
+          data-ad-client="ca-pub-6856963757796636"
+          data-ad-slot="3536131238"
+          data-ad-format="auto"
+          data-full-width-responsive="yes"
+        />
+      </client-only>
+    </template>
   </page-dashboard>
 </template>
 

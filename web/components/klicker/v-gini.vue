@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && data[0].meta.picks != undefined && !comparing"
+    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && data[0].measurementsRaw.useRate != undefined && !comparing"
     v-bind="$attrs"
     :title="$t('metric.balance-rating')"
     size="w-44"
@@ -56,7 +56,7 @@ export default Vue.extend({
   },
   computed: {
     giniScore(): number {
-      const getStat = (r: MetaGridEntry) => parseInt(r.meta.picks as string) as number
+      const getStat = (r: MetaGridEntry) => r.measurementsRaw.useRate as number
 
       // calculate Gini coefficient
       let absoluteDifference = 0

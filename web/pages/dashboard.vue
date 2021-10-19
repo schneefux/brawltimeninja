@@ -1,6 +1,7 @@
 <template>
   <page-dashboard title="Brawl Stars Meta Dashboard">
     <c-dashboard
+      slot="dashboard"
       v-model="state"
       class="mt-2"
       configurator
