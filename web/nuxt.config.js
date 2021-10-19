@@ -140,7 +140,6 @@ export default {
     // with project write, release admin and org read access
     publishRelease: !!process.env.SENTRY_AUTH_TOKEN,
     sourceMapStyle: 'source-map',
-    /*
     // manually configure release for herokuish build
     webpackConfig: {
       setCommits: {
@@ -151,7 +150,6 @@ export default {
     config: {
       release: 'brawltimeninja@' + process.env.GIT_REV,
     },
-    */
     // requires @sentry/tracing
     // enable for performance metrics
     /*
