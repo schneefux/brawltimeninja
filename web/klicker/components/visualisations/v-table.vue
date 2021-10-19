@@ -5,26 +5,40 @@
       v-if="measurements.length < 5"
       v-bind="$attrs"
     >
-      <b-table
-        slot="content"
-        :columns="columns"
-        :rows="data"
-        :page-size="pageSize"
-        id-key="id"
-        class="font-semibold text-sm md:text-lg h-full overflow-auto"
-        ranked
-      >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
+      <div slot="content" class="h-full relative">
+        <b-table
+          slot="content"
+          :columns="columns"
+          :rows="data"
+          :page-size="pageSize"
+          id-key="id"
+          class="font-semibold text-sm md:text-lg h-full overflow-auto"
+          ranked
         >
-          <slot
-            :name="name"
-            v-bind="data"
-            captioned
-          ></slot>
-        </template>
-      </b-table>
+          <template
+            v-for="(_, name) in $scopedSlots"
+            v-slot:[name]="data"
+          >
+            <slot
+              :name="name"
+              v-bind="data"
+              captioned
+            ></slot>
+          </template>
+        </b-table>
+
+        <b-button
+          v-if="showLink"
+          :to="link"
+          class="absolute bottom-0 left-0 mb-1 -ml-2"
+          dark
+          xs
+        >
+          <font-awesome-icon
+            :icon="faExternalLinkAlt"
+          ></font-awesome-icon>
+        </b-button>
+      </div>
     </b-card>
   </client-only>
 </template>
@@ -34,7 +48,9 @@ import { Dimension, Measurement, MetaGridEntry, State } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
+import { Location } from 'vue-router'
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
   components: {
@@ -65,7 +81,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { $klicker, route } = useContext()
 
     const columns = computed(() => {
       return [<Column>{
@@ -84,8 +100,21 @@ export default defineComponent({
       )
     })
 
+    const link = computed(() => (<Location>{
+      ...$klicker.stateToLocation(props.state),
+      path: '/dashboard',
+    }))
+
+    const showLink = computed(() => {
+      console.log(route.value.path)
+      return route.value.path != '/dashboard'
+    })
+
     return {
       columns,
+      link,
+      showLink,
+      faExternalLinkAlt,
     }
   },
 })

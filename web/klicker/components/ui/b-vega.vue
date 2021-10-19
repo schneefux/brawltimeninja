@@ -16,7 +16,7 @@
 
     <b-button
       v-if="showDownload"
-      class="absolute bottom-0 left-0"
+      class="absolute bottom-0 left-0 mb-1 -ml-2"
       dark
       xs
       @click="download()"
