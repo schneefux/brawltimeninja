@@ -8,7 +8,7 @@ job "brawltime-testing" {
   constraint {
     attribute = "${node.class}"
     operator = "regexp"
-    value = "worker"
+    value = "worker|ingress"
   }
 
   group "testing" {

@@ -62,14 +62,15 @@ job "brawltime-render" {
 
       config {
         image = "ghcr.io/schneefux/brawltime-render:${var.tag}"
+        ipc_mode = "host"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
       }
 
       resources {
-        cpu = 1792
-        memory = 1024
-        memory_max = 1024
+        cpu = 2048
+        memory = 256
+        memory_max = 512
       }
     }
   }

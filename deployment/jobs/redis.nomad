@@ -29,8 +29,13 @@ job "redis" {
 
       config {
         image = "redis:6.2-alpine"
-        args = ["--port", "${NOMAD_PORT_db}"]
+
+        volumes = [
+          "local/redis.conf:/usr/local/etc/redis/redis.conf:ro",
+        ]
+
         ports = ["db"]
+
         labels = {
           "com.datadoghq.ad.check_names" = jsonencode(["redisdb"])
           "com.datadoghq.ad.init_configs" = jsonencode([{}])
@@ -41,10 +46,22 @@ job "redis" {
         }
       }
 
+      template {
+        data = <<-EOF
+          port {{ env "NOMAD_PORT_db" }}
+          bind {{ env "NOMAD_IP_db" }}
+          maxmemory {{ env "NOMAD_MEMORY_LIMIT" }}mb
+          maxmemory-policy allkeys-lru
+        EOF
+        destination = "local/redis.conf"
+        change_mode = "signal"
+        change_signal = "SIGHUP"
+      }
+
       resources {
         cpu = 384
-        memory = 196
-        memory_max = 256
+        memory = 256
+        memory_max = 384
       }
     }
   }
