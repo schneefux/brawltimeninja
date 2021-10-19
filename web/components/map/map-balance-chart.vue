@@ -8,7 +8,7 @@
           class="h-72 flex-auto"
           full-height
         ></v-bar-plot>
-        <div class="flex lg:flex-col flex-wrap">
+        <div class="flex-auto flex lg:flex-col flex-wrap">
           <v-gini class="flex-auto lg:flex-none" v-bind="data"></v-gini>
           <b-card class="flex-auto lg:flex-none" size="w-44">
             <p
