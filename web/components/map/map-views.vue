@@ -119,7 +119,10 @@
             full-height
           ></map-winrate-userate-chart>
 
-          <gadget-starpower-disclaimer md></gadget-starpower-disclaimer>
+          <div class="flex flex-wrap">
+            <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
+            <metric-info full-height :measurement="adjustedWinRate" md></metric-info>
+          </div>
         </div>
       </div>
     </template>
@@ -127,12 +130,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, ref, useContext, watch, wrapProperty } from '@nuxtjs/composition-api'
 import { State } from '~/klicker'
 import { CDashboard } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
-export default Vue.extend({
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
   components: {
     CDashboard,
   },
@@ -153,52 +157,48 @@ export default Vue.extend({
       type: String
     },
   },
-  data() {
+  setup(props) {
+    const { $klicker } = useContext()
+
     const twoWeeksAgo = new Date()
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
-    return {
-      state: <State>{
-        cubeId: 'battle',
-        dimensionsIds: ['brawler'],
-        measurementsIds: [],
-        slices: {
-          season: [currentSeason.toISOString().slice(0, 10)],
-          mode: [this.mode],
-          map: [this.map],
-          trophyRangeGte: ['0'],
-          trophyRangeLt: ['10'],
-          powerplay: [],
-        },
-        sortId: 'brawler',
-        comparing: false,
+    const state = ref<State>({
+      cubeId: 'battle',
+      dimensionsIds: ['brawler'],
+      measurementsIds: [],
+      slices: {
+        season: [currentSeason.toISOString().slice(0, 10)],
+        mode: [props.mode],
+        map: [props.map],
+        trophyRangeGte: ['0'],
+        trophyRangeLt: ['10'],
+        powerplay: [],
       },
-    }
-  },
-  watch: {
-    mode() {
-      this.state.slices.mode = [this.mode]
-    },
-    map() {
-      this.state.slices.map = [this.map]
-    }
-  },
-  methods: {
-    trackScroll(visible, element, section) {
-      if (this.gaCategory != undefined && visible) {
-        this.$gtag.event('scroll', {
-          'event_category': this.gaCategory,
+      sortId: 'brawler',
+    })
+
+    watch(() => props.mode, () => state.value.slices.mode = [props.mode])
+    watch(() => props.map, () => state.value.slices.map = [props.map])
+
+    const adjustedWinRate = computed(() => $klicker.config['battle'].measurements.find(m => m.id == 'winRateAdj')!)
+
+    const gtag = useGtag()
+    const trackScroll = (visible, element, section) => {
+      if (props.gaCategory != undefined && visible) {
+        gtag.event('scroll', {
+          'event_category': props.gaCategory,
           'event_label': section,
         })
       }
-    },
+    }
+
+    return {
+      state,
+      adjustedWinRate,
+      trackScroll,
+    }
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.col-span-full {
-  grid-column: 1 / -1;
-}
-</style>

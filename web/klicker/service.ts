@@ -32,7 +32,7 @@ function parseQueryParams(query: Record<string, string | (string | null)[]>, pre
   )
 }
 
-function generateQueryParams(o: Record<string, (string|number)[]>, prefix: string): Record<string, string[]> {
+function generateQueryParams(o: Record<string, (string|number|undefined)[]>, prefix: string): Record<string, string[]> {
   return Object.fromEntries(
     Object.entries(o)
       .filter(([key, value]) => value != undefined)
@@ -99,7 +99,7 @@ export default class Klicker {
           return <Filter>{
             member: cube.id + '.' + config.member,
             operator: config.operator,
-            values: values.filter(v => v != undefined).map(v => {
+            values: (<string[]>values.filter(v => v != undefined)).map(v => {
               // TODO fix typing - these are not always strings (templates are not type checked)
               if (v.toString() == 'true') {
                 return '1'

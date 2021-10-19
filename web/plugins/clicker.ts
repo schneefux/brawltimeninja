@@ -1,6 +1,7 @@
 import { parseISO } from "date-fns"
 import { formatMode } from "~/lib/util"
 import { Plugin } from "@nuxt/types"
+import { SliceValue } from "~/klicker"
 
 // deprecated plugin
 
@@ -9,8 +10,6 @@ export interface PicksWins {
   wins: number
 }
 
-export interface Slices extends Record<string, string[]|undefined> {}
-
 interface Clicker {
   defaultSlicesRaw(cubeId: string): Record<string, string[]>
   query<T=any>(
@@ -18,14 +17,14 @@ interface Clicker {
     cube: string,
     dimensions: string[],
     measures: string[],
-    slices: Slices,
+    slices: SliceValue|undefined,
     options: {
       sort?: Record<string, string>,
       limit?: number,
       cache?: number,
       totals?: boolean,
     }): Promise<{ data: T[], totals?: T, statistics: Record<string, number> }>
-  describeSlices(slices: Slices, timestamp?: string): string
+  describeSlices(slices: SliceValue|undefined, timestamp?: string): string
   calculateBayesSynergies(tag: string, brawler?: string, limit?: number): Promise<{
     sampleSize: number,
     timestamp: string,
@@ -107,7 +106,7 @@ const plugin: Plugin = (context, inject) => {
       if (options.cache != undefined) {
         headers['x-brawltime-cache'] = options.cache.toString()
       }
-      Object.entries(slices)
+      Object.entries(slices || {})
         .filter(([name, args]) => args != undefined)
         .forEach(([name, args]) => query['slice[' + name + ']'] = args!.join(','))
       const queryString = Object.entries(query)

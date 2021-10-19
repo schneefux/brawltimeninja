@@ -105,10 +105,7 @@ export default defineComponent({
       path: '/dashboard',
     }))
 
-    const showLink = computed(() => {
-      console.log(route.value.path)
-      return route.value.path != '/dashboard'
-    })
+    const showLink = computed(() => route.value.path != '/dashboard')
 
     return {
       columns,

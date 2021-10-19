@@ -638,7 +638,7 @@ const battleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+    description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,

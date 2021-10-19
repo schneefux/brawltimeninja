@@ -22,7 +22,7 @@ export default Vue.extend({
   computed: {
     nameFilter: {
       get(): string {
-        return (this.value.playerName || [])[0]
+        return (this.value.playerName || [])[0] || ''
       },
       set(v: string) {
         if (v == '') {

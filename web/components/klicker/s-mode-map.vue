@@ -63,7 +63,7 @@ export default Vue.extend({
   computed: {
     mode: {
       get(): string {
-        return (this.value.mode || {})[0]
+        return (this.value.mode || {})[0] || ''
       },
       set(v: string) {
         this.$parent.$emit('slice', {
@@ -74,7 +74,7 @@ export default Vue.extend({
     },
     map: {
       get(): string {
-        return (this.value.map || {})[0]
+        return (this.value.map || {})[0] || ''
       },
       set(v: string) {
         this.$parent.$emit('slice', {

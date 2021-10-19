@@ -83,7 +83,6 @@ export default defineComponent({
       sortId: 'winRate',
       limit: props.limit,
     }))
-    watchEffect(() => console.log(state))
 
     return {
       state,

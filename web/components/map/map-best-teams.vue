@@ -64,7 +64,7 @@ export default Vue.extend({
         battle_event_mode: this.slices.mode,
       } : {}),
       ...(this.slices.season != undefined ? {
-        trophy_season_end: undefined,
+        trophy_season_end: [],
         trophy_season_end_exact: this.slices.season,
       } : {}),
     }

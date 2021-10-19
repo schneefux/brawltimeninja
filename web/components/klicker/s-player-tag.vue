@@ -23,7 +23,7 @@ export default Vue.extend({
   computed: {
     tagFilter: {
       get(): string {
-        return (this.value.playerTag || [])[0]
+        return (this.value.playerTag || [])[0] || ''
       },
       set(v: string) {
         if (v == '') {
