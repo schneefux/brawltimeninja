@@ -2,7 +2,7 @@
   <c-dashboard
     v-model="state"
     elevation="2"
-    class="justify-center"
+    class="lg:justify-center"
   >
     <template v-slot:slices="data">
       <s-season v-bind="data"></s-season>
