@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BCard,
     BVega,
@@ -40,54 +40,60 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    show(): boolean {
-      return this.dimensions.length == 1 && this.measurements.length == 2 && this.data.length > 1 && this.data.length < 1000
-    },
-    spec(): VisualizationSpec {
-      return {
-        data: {
-          values: this.data,
+  setup(props) {
+    const show = computed(() =>
+      props.dimensions.length == 1 && props.measurements.length == 2 && props.data.length > 1 && props.data.length < 1000
+    )
+
+    const { $klicker } = useContext()
+
+    const spec = computed<VisualizationSpec>(() => ({
+      data: {
+        values: props.data,
+      },
+      encoding: {
+        x: {
+          field: 'measurementsRaw.' + props.measurements[0].id,
+          type: props.measurements[0].type,
+          title: $klicker.getName(props.measurements[0]),
+          axis: {
+            format: props.measurements[0].d3formatter,
+          },
+          scale: props.measurements[0].scale,
+        },
+        y: {
+          field: 'measurementsRaw.' + props.measurements[1].id,
+          type: props.measurements[1].type,
+          title: $klicker.getName(props.measurements[1]),
+          axis: {
+            format: props.measurements[1].d3formatter,
+          },
+          scale: props.measurements[1].scale,
+        },
+      },
+      layer: [{
+        mark: 'point',
+      }, {
+        mark: {
+          type: 'text',
+          align: 'center',
+          baseline: 'top',
+          dy: 3,
         },
         encoding: {
-          x: {
-            field: 'measurementsRaw.' + this.measurements[0].id,
-            type: this.measurements[0].type,
-            title: this.$klicker.getName(this.measurements[0]),
-            axis: {
-              format: this.measurements[0].d3formatter,
-            },
-            scale: this.measurements[0].scale,
-          },
-          y: {
-            field: 'measurementsRaw.' + this.measurements[1].id,
-            type: this.measurements[1].type,
-            title: this.$klicker.getName(this.measurements[1]),
-            axis: {
-              format: this.measurements[1].d3formatter,
-            },
-            scale: this.measurements[1].scale,
+          text: {
+            field: 'dimensions.' + props.dimensions[0].id,
+            type: props.dimensions[0].type,
+            title: $klicker.getName(props.dimensions[0]),
           },
         },
-        layer: [{
-          mark: 'point',
-        }, {
-          mark: {
-            type: 'text',
-            align: 'center',
-            baseline: 'top',
-            dy: 3,
-          },
-          encoding: {
-            text: {
-              field: 'dimensions.' + this.dimensions[0].id,
-              type: this.dimensions[0].type,
-              title: this.$klicker.getName(this.dimensions[0]),
-            },
-          },
-        }],
-      }
-    },
+      }],
+    }))
+
+    return {
+      show,
+      spec,
+    }
   },
 })
 </script>

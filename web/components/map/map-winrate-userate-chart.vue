@@ -1,19 +1,19 @@
 <template>
   <c-query :state="state">
     <template v-slot="data">
-      <v-scatter-plot
-        :title="title"
-        v-bind="data"
-        class="h-72 flex-auto"
-        full-height
-      ></v-scatter-plot>
+      <div>
+        <v-scatter-plot
+          :title="title"
+          v-bind="data"
+          class="h-72 flex-auto"
+          full-height
+        ></v-scatter-plot>
+      </div>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VScatterPlot } from '~/klicker/components'
 import { SliceValue, State } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -22,9 +22,7 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VScatterPlot,
-    DBrawler,
     CQuery,
-    BrawlerLink,
   },
   props: {
     id: {

@@ -1,18 +1,17 @@
 <template>
-  <c-query
-    v-bind="$attrs"
-    :state="state"
-    :limit="limit"
-  >
+  <c-query :state="state">
     <template v-slot="data">
-      <v-table
-        :title="title"
-        v-bind="{ ...data, ...$attrs }"
-      >
-        <template v-slot:dimensions="data">
-          <d-team v-bind="data"></d-team>
-        </template>
-      </v-table>
+      <!-- add wrapper div to work around SSR error -->
+      <div class="contents">
+        <v-table
+          :title="title"
+          v-bind="{ ...data, ...$attrs }"
+        >
+          <template v-slot:dimensions="data">
+            <d-team v-bind="data"></d-team>
+          </template>
+        </v-table>
+      </div>
     </template>
   </c-query>
 </template>
@@ -60,6 +59,7 @@ export default defineComponent({
         teamSizeGt: slices.value.mode[0] == 'duoShowdown' ? ['1'] : ['2'],
       },
       sortId: 'wins',
+      limit: props.limit,
     }))
 
     return {

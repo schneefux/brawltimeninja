@@ -1,14 +1,17 @@
 <template>
   <c-query :state="state">
     <template v-slot="data">
-      <v-table
-        :title="title"
-        v-bind="{ ...data, ...$attrs }"
-      >
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-        </template>
-      </v-table>
+      <!-- add wrapper div to work around SSR error -->
+      <div class="contents">
+        <v-table
+          :title="title"
+          v-bind="{ ...data, ...$attrs }"
+        >
+          <template v-slot:dimensions="data">
+            <d-brawler v-bind="data"></d-brawler>
+          </template>
+        </v-table>
+      </div>
     </template>
   </c-query>
 </template>

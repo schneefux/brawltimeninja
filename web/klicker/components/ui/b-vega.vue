@@ -30,18 +30,18 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import embed, { Result, VisualizationSpec } from 'vega-embed'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BShimmer from '~/klicker/components/ui/b-shimmer.vue'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from '@nuxtjs/composition-api'
 
 const gray200 = '#e4e4e7'
 const gray400 = '#a1a1aa'
 const gray900 = '#18181b'
 const yellow400 = '#facc15'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BButton,
     BShimmer,
@@ -61,68 +61,34 @@ export default Vue.extend({
       type: Boolean
     },
   },
-  data() {
-    return {
-      loading: false,
-      result: undefined as Result|undefined,
+  setup(props) {
+    const loading = ref(false)
+    const result = ref<Result|undefined>(undefined)
+
+    const cleanup = () => {
+      result.value?.finalize()
+      result.value = undefined
     }
-  },
-  mounted() {
-    this.refresh()
-  },
-  destroyed() {
-    this.cleanup()
-  },
-  computed: {
-    faDownload() {
-      return faDownload
-    },
-  },
-  methods: {
-    cleanup() {
-      if (this.result) {
-        this.result.finalize()
-        this.result = undefined
-      }
-    },
-    async download(ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
-      background: gray900,
-      // 1.91:1
-      width: 600*1.25,
-      height: 315*1.25,
-    }) {
-      if (this.result == undefined) {
+
+    onMounted(() => refresh())
+    onUnmounted(() => cleanup())
+
+    const graph = ref<ComponentPublicInstance>()
+
+    const refresh = async () => {
+      if (!process.client || graph.value == undefined) {
         return
       }
 
-      this.result.view.background(opts.background)
-      this.result.view.width(opts.width)
-      this.result.view.height(opts.height)
-
-      const imageUrl = await this.result.view.toImageURL(ext, scaleFactor)
-      // restore old background and sizes
-      this.refresh()
-
-      const downloader = document.createElement('a')
-      downloader.href = imageUrl
-      downloader.target = '_blank'
-      downloader.download = 'export.' + ext
-      downloader.click()
-    },
-    async refresh() {
-      if (!process.client) {
-        return
-      }
-
-      this.loading = true
-      this.cleanup()
+      loading.value = true
+      cleanup()
 
       const defaults: VisualizationSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        ...(this.fullWidth ? {
+        ...(props.fullWidth ? {
           width: 'container',
         } : {}),
-        ...(this.fullHeight ? {
+        ...(props.fullHeight ? {
           height: 'container',
         } : {}),
 
@@ -162,19 +128,51 @@ export default Vue.extend({
         },
       } as object
 
-      const spec = Object.assign(<VisualizationSpec>{}, this.spec, defaults)
+      const spec = Object.assign(<VisualizationSpec>{}, props.spec, defaults)
 
-      this.result = await embed((this.$refs.graph as Vue).$el as HTMLElement, spec, {
+      result.value = await embed(graph.value.$el as HTMLElement, spec, {
         actions: false,
         // canvas: better performance, svg: easily zoomable
         renderer: 'svg',
       })
 
-      this.loading = false
-    },
-  },
-  watch: {
-    spec: 'refresh',
+      loading.value = false
+    }
+
+    const download = async (ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
+      background: gray900,
+      // 1.91:1
+      width: 600*1.25,
+      height: 315*1.25,
+    }) => {
+      if (result.value == undefined) {
+        return
+      }
+
+      result.value.view.background(opts.background)
+      result.value.view.width(opts.width)
+      result.value.view.height(opts.height)
+
+      const imageUrl = await result.value.view.toImageURL(ext, scaleFactor)
+      // restore old background and sizes
+      refresh()
+
+      const downloader = document.createElement('a')
+      downloader.href = imageUrl
+      downloader.target = '_blank'
+      downloader.download = 'export.' + ext
+      downloader.click()
+    }
+
+    watch(() => props.spec, () => refresh())
+
+    return {
+      graph,
+      loading,
+      result,
+      faDownload,
+      download,
+    }
   },
 })
 </script>

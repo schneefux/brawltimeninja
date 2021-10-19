@@ -14,15 +14,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { Dimension, Measurement } from '~/klicker'
 import { MetaGridEntry } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
+import BCard from '~/klicker/components/ui/b-card.vue'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BVega,
+    BCard,
   },
   inheritAttrs: false,
   props: {
@@ -39,39 +41,43 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    show(): boolean {
-      return this.dimensions.length == 1 && this.dimensions[0].type == 'nominal' && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 100
-    },
-    spec(): VisualizationSpec {
-      return {
-        data: {
-          values: this.data,
-        },
-        mark: 'bar',
-        encoding: {
-          x: {
-            field: 'dimensions.' + this.dimensions[0].id,
-            type: this.dimensions[0].type,
-            title: this.dimensions[0].name,
-            scale: this.dimensions[0].scale,
-            sort: {
-              field: this.measurements[0].id,
-              order: this.measurements[0].sign == -1 ? 'descending' : 'ascending',
-            },
-          },
-          y: {
-            field: 'measurementsRaw.' + this.measurements[0].id,
-            type: this.measurements[0].type,
-            title: this.measurements[0].name,
-            axis: {
-              format: this.measurements[0].formatter,
-            },
-            scale: this.measurements[0].scale,
+  setup(props) {
+    const show = computed(() =>
+      props.dimensions.length == 1 && props.dimensions[0].type == 'nominal' && props.measurements.length == 1 && props.data.length > 1 && props.data.length < 100
+    )
+
+    const spec = computed<VisualizationSpec>(() => ({
+      data: {
+        values: props.data,
+      },
+      mark: 'bar',
+      encoding: {
+        x: {
+          field: 'dimensions.' + props.dimensions[0].id,
+          type: props.dimensions[0].type,
+          title: props.dimensions[0].name,
+          scale: props.dimensions[0].scale,
+          sort: {
+            field: props.measurements[0].id,
+            order: props.measurements[0].sign == -1 ? 'descending' : 'ascending',
           },
         },
-      }
-    },
+        y: {
+          field: 'measurementsRaw.' + props.measurements[0].id,
+          type: props.measurements[0].type,
+          title: props.measurements[0].name,
+          axis: {
+            format: props.measurements[0].formatter,
+          },
+          scale: props.measurements[0].scale,
+        },
+      },
+    }))
+
+    return {
+      show,
+      spec,
+    }
   },
 })
 </script>

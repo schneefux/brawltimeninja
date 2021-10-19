@@ -109,14 +109,12 @@
             :id="id"
             :slices="state.slices"
             class="w-full"
-            full-height
           ></map-balance-chart>
 
           <map-winrate-userate-chart
             :id="id"
             :slices="state.slices"
             class="w-full"
-            full-height
           ></map-winrate-userate-chart>
 
           <div class="flex flex-wrap">

@@ -54,11 +54,14 @@
           </template>
 
           <template v-slot:data="data">
-            <v-table class="w-full" v-bind="data">
-              <template v-slot:dimensions="data">
-                <d-brawler v-bind="data"></d-brawler>
-              </template>
-            </v-table>
+            <!-- add wrapper div to work around SSR error -->
+            <div class="contents">
+              <v-table class="w-full" v-bind="data">
+                <template v-slot:dimensions="data">
+                  <d-brawler v-bind="data"></d-brawler>
+                </template>
+              </v-table>
+            </div>
           </template>
         </c-dashboard>
       </div>

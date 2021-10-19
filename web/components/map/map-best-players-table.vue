@@ -1,17 +1,20 @@
 <template>
   <c-query :state="state">
     <template v-slot="data">
-      <v-table
-        :title="title"
-        v-bind="{ ...data, ...$attrs }"
-      >
-        <template v-slot:dimensions="data">
-          <d-player v-bind="data"></d-player>
-        </template>
-        <template v-slot:[`measurements.brawler`]="data">
-          <m-brawler v-bind="data"></m-brawler>
-        </template>
-      </v-table>
+      <!-- add wrapper div to work around SSR error -->
+      <div class="contents">
+        <v-table
+          :title="title"
+          v-bind="{ ...data, ...$attrs }"
+        >
+          <template v-slot:dimensions="data">
+            <d-player v-bind="data"></d-player>
+          </template>
+          <template v-slot:[`measurements.brawler`]="data">
+            <m-brawler v-bind="data"></m-brawler>
+          </template>
+        </v-table>
+      </div>
     </template>
   </c-query>
 </template>
