@@ -8,7 +8,6 @@
 
 [api]
   dashboard = true
-  insecure = true
 
 [providers.consulCatalog]
   prefix = "traefik"

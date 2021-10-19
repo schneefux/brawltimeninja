@@ -84,6 +84,7 @@ write_files:
   - path: /etc/consul.d/consul.hcl
     content: |
       advertise_addr = "${ip}"
+      client_addr = "0.0.0.0"
       datacenter = "dc1"
       data_dir = "/opt/consul"
 

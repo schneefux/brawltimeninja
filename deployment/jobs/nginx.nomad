@@ -1,4 +1,4 @@
-job "ingress" {
+job "nginx" {
   datacenters = ["dc1"]
 
   constraint {
@@ -104,65 +104,6 @@ job "ingress" {
         cpu = 512
         memory = 96
         memory_max = 512
-      }
-    }
-  }
-
-  group "traefik" {
-    network {
-      port "traefik_http" {
-        static = 8088
-      }
-
-      port "traefik_dashboard" {
-        static = 8080
-      }
-
-      port "traefik_ssh" {
-        static = 2222
-      }
-    }
-
-    service {
-      name = "traefik"
-      port = "traefik_http"
-
-      check {
-        type = "tcp"
-        interval = "10s"
-        timeout = "2s"
-      }
-    }
-
-    task "traefik" {
-      driver = "docker"
-
-      # TODO datadog does not receive anything?
-      env {
-        HOST_IP = "${attr.unique.network.ip-address}"
-      }
-
-      config {
-        image = "traefik:v2.5"
-        network_mode = "host"
-
-        volumes = [
-          "local/traefik.toml:/etc/traefik/traefik.toml:ro",
-        ]
-      }
-
-      template {
-        data = file("./conf/traefik.toml.tpl")
-        destination = "local/traefik.toml"
-        # traefik watches the config automatically
-        change_mode = "noop"
-      }
-
-      resources {
-        # average cpu: 96
-        cpu = 256
-        memory = 64
-        memory_max = 384
       }
     }
   }

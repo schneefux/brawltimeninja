@@ -289,3 +289,27 @@ resource "cloudflare_record" "testing" {
   type = "CNAME"
   value = "brawltime.ninja"
 }
+
+resource "cloudflare_record" "nomad" {
+  zone_id = var.cloudflare_zone_id
+  name = "nomad"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
+
+resource "cloudflare_record" "consul" {
+  zone_id = var.cloudflare_zone_id
+  name = "consul"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
+
+resource "cloudflare_record" "traefik" {
+  zone_id = var.cloudflare_zone_id
+  name = "traefik"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
