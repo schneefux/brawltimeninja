@@ -172,11 +172,6 @@ export default {
     mediaUrl,
     renderUrl,
     cubeSecret: (process.env.CUBE_SECRET || ''),
-    sentry: {
-      config: {
-        dsn: process.env.SENTRY_DSN,
-      },
-    },
   },
 
   build: {

@@ -1,4 +1,6 @@
 FROM node:16 AS builder
+ARG SENTRY_DSN=''
+ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
 ENV SENTRY_ORG=$SENTRY_ORG
 ARG SENTRY_PROJECT=''
@@ -9,6 +11,8 @@ ARG GIT_REV=''
 ENV GIT_REV=$GIT_REV
 ARG BRANCH=''
 ENV BRANCH=$BRANCH
+ARG CLICKER_URL=''
+ENV CLICKER_URL=$CLICKER_URL
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile
@@ -17,8 +21,6 @@ RUN yarn run build
 
 FROM node:16
 ENV NODE_ENV=production
-ARG CLICKER_URL
-ENV CLICKER_URL=$CLICKER_URL
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile
