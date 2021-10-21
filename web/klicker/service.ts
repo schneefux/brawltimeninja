@@ -171,7 +171,7 @@ export default class Klicker {
     }
   }
   private mapToMetaGridEntry(cube, dimensions, measurements, resultSet, metaColumns = []) {
-    const totals: Record<string, Record<string, number>> = {}
+    const totals: { [measure: string]: { [key: string]: number } } = {}
     const table = resultSet.tablePivot()
 
     const rowIdWithout = (percentageOver: string, row: Record<string, string | number | boolean>) => dimensions
@@ -186,7 +186,7 @@ export default class Klicker {
 
     for (const m of measurements) {
       if (m.percentageOver) {
-        // totals = sum($m.id) group by every dimenison except $m.percentageOver
+        // totals[$m.id] = sum($m.id) group by every dimension except $m.percentageOver
         const total: Record<string, number> = {}
 
         for (const row of table) {
@@ -199,7 +199,7 @@ export default class Klicker {
           total[key] += parseFloat(row[valueId] as string)
         }
 
-        totals[m.percentageOver] = total
+        totals[m.id] = total
       }
     }
 
@@ -228,7 +228,7 @@ export default class Klicker {
         const value = parseFloat(row[id] as string)
         if (m.percentageOver) {
           const key = rowIdWithout(m.percentageOver, row)
-          const total = totals[m.percentageOver][key]
+          const total = totals[m.id][key]
           return value / total
         } else {
           return value
