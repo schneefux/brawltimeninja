@@ -87,6 +87,9 @@ chromium.launch({
   args: ['--disable-dev-shm-usage'],
 }).then(b => {
   browser = b
+  browser.on('disconnected', () => {
+    browser = undefined
+  })
 
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
