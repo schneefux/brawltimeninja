@@ -1,6 +1,5 @@
 import Vue, { PropType, VNode } from 'vue'
-import { State } from '~/klicker'
-import { CubeResponse } from '~/klicker/service'
+import { State, CubeResponse } from '~/klicker'
 
 export default Vue.extend({
   name: 'c-query',
@@ -13,7 +12,7 @@ export default Vue.extend({
   data() {
     return {
       loading: false,
-      result: undefined as undefined|CubeResponse,
+      response: undefined as undefined|CubeResponse,
       error: false,
     }
   },
@@ -25,33 +24,29 @@ export default Vue.extend({
     this.error = false
     this.loading = true
     try {
-      this.result = await this.$klicker.query(this.state)
+      this.response = await this.$klicker.query(this.state)
     } catch (error) {
       console.error(error)
       this.$sentry.captureException(error)
-      this.result = undefined
+      this.response = undefined
       this.error = true
     }
     this.loading = false
   },
   render(h): VNode {
     let nodes: VNode[] | undefined
-    if ('default' in this.$scopedSlots && this.result != undefined) {
+    if ('default' in this.$scopedSlots && this.response != undefined) {
       nodes = this.$scopedSlots.default!({
-        state: this.state,
-        comparing: this.state.comparingSlices != undefined,
+        query: this.response,
         loading: this.loading,
-        data: this.result.data,
-        dimensions: this.result.dimensions,
-        measurements: this.result.measurements,
       })
     }
 
-    if ('empty' in this.$scopedSlots && this.result != undefined && this.result.data.length == 0) {
+    if ('empty' in this.$scopedSlots && this.response != undefined && this.response.data.length == 0) {
       nodes = this.$scopedSlots.empty!({})
     }
 
-    if ('placeholder' in this.$scopedSlots && this.result == undefined) {
+    if ('placeholder' in this.$scopedSlots && this.response == undefined) {
       nodes = this.$scopedSlots.placeholder!({})
     }
 

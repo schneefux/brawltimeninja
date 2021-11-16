@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="measurements.length == 1"
+    v-if="query.measurements.length == 1"
     :title="title"
     dense
   >
@@ -14,31 +14,26 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from "@nuxtjs/composition-api"
+import { CubeResponse } from "~/klicker"
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  computed: {
-    title(): string {
-      return 'About ' + this.measurements[0].name
-    },
-    description(): string {
-      return this.measurements[0].description
-    },
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const title = computed(() => 'About ' + query.value.measurements[0].name)
+    const description = computed(() => query.value.measurements[0].description)
+
+    return {
+      title,
+      description,
+    }
   },
 })
 </script>

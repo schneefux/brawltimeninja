@@ -12,36 +12,41 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, wrapProperty } from '@nuxtjs/composition-api'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
-export default Vue.extend({
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
   components: {
     BButton,
   },
-  methods: {
-    async share() {
+  setup() {
+    const gtag = useGtag()
+
+    const supportsShareApi = computed(() => global.navigator != undefined && 'share' in navigator)
+
+    const share = async() => {
       try {
         await navigator.share({
           url: window.location.href,
         })
-        this.$gtag.event('click', {
+        gtag.event('click', {
           'event_category': 'dashboard',
           'event_label': 'share',
         })
       } catch (err) {
         console.error(err);
-        this.$gtag.event('click', {
+        gtag.event('click', {
           'event_category': 'dashboard',
           'event_label': 'share_error',
         })
       }
-    },
-  },
-  computed: {
-    supportsShareApi() {
-      return global.navigator != undefined && 'share' in navigator
-    },
+    }
+
+    return {
+      share,
+      supportsShareApi,
+    }
   },
 })
 </script>

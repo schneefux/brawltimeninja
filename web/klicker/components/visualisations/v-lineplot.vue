@@ -14,61 +14,63 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
+import { CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BCard,
     BVega,
   },
   inheritAttrs: false,
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true,
     },
   },
-  computed: {
-    show(): boolean {
-      return this.dimensions.length == 1 && this.dimensions[0].type == 'temporal' && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 1000
-    },
-    spec(): VisualizationSpec {
-      return {
-        data: {
-          values: this.data,
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const show = computed(() =>
+      query.value.dimensions.length == 1 &&
+      query.value.dimensions[0].type == 'temporal' &&
+      query.value.measurements.length == 1 &&
+      query.value.data.length > 1 &&
+      query.value.data.length < 1000
+    )
+
+    const spec = computed((): VisualizationSpec => ({
+      data: {
+        values: query.value.data,
+      },
+      mark: 'line',
+      encoding: {
+        x: {
+          field: 'dimensions.' + query.value.dimensions[0].id,
+          type: query.value.dimensions[0].type,
+          title: query.value.dimensions[0].name,
+          scale: query.value.dimensions[0].scale,
         },
-        mark: 'line',
-        encoding: {
-          x: {
-            field: 'dimensions.' + this.dimensions[0].id,
-            type: this.dimensions[0].type,
-            title: this.dimensions[0].name,
-            scale: this.dimensions[0].scale,
+        y: {
+          field: 'measurementsRaw.' + query.value.measurements[0].id,
+          type: query.value.measurements[0].type,
+          title: query.value.measurements[0].name,
+          axis: {
+            format: query.value.measurements[0].d3formatter,
           },
-          y: {
-            field: 'measurementsRaw.' + this.measurements[0].id,
-            type: this.measurements[0].type,
-            title: this.measurements[0].name,
-            axis: {
-              format: this.measurements[0].d3formatter,
-            },
-            scale: this.measurements[0].scale,
-          },
+          scale: query.value.measurements[0].scale,
         },
       }
-    },
+    }))
+
+    return {
+      show,
+      spec,
+    }
   },
 })
 </script>

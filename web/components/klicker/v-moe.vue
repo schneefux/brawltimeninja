@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="dimensions.length == 1 && dimensions[0].id == 'brawler' && data.length > 0 && data[0].meta.picks != undefined && !comparing"
+    v-if="show"
     v-bind="$attrs"
     title="Margin of error"
     size="w-40"
@@ -37,31 +37,29 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { mapState } from 'vuex'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs, useStore } from '@nuxtjs/composition-api'
+import { CubeResponse } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    comparing: {
-      type: Boolean,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  computed: {
-    moe(): number {
+  setup(props) {
+    const { query } = toRefs(props)
+    const store = useStore<any>()
+
+    const show = computed(() => query.value.dimensions.length == 1
+      && query.value.dimensions[0].id == 'brawler'
+      && query.value.data.length > 0
+      && query.value.data[0].meta.picks != undefined
+      && !query.value.comparing
+    )
+
+    const moe = computed((): number => {
       // margin of error
       // moe = z * standard error
       // for binomial (normal approximation):
@@ -69,15 +67,16 @@ export default Vue.extend({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = this.data.reduce((agg, c) => agg + parseInt(c.meta.picks as string), 0)
-      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / this.totalBrawlers))
-    },
-    moePercent(): string {
-      return (this.moe * 100).toFixed(2) + '%'
-    },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers as number,
+      const sample = query.value.data.reduce((agg, c) => agg + parseInt(c.meta.picks as string), 0)
+      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
+    const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
+
+    return {
+      show,
+      moe,
+      moePercent,
+    }
   },
 })
 </script>

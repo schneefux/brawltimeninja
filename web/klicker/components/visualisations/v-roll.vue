@@ -4,13 +4,13 @@
     expand-on-desktop
   >
     <b-card
-      v-for="(entry, index) in data"
+      v-for="(entry, index) in query.data"
       :key="entry.id"
       :elevation="elevation"
-      :title="long ? entry.dimensions[dimensions[0].id] : undefined"
+      :title="long ? entry.dimensions[query.dimensions[0].id] : undefined"
       :class="['flex-shrink-0', {
         'ml-auto': index == 0,
-        'mr-auto': index == data.length - 1,
+        'mr-auto': index == query.data.length - 1,
       }]"
       dense
     >
@@ -29,7 +29,7 @@
         <table class="mx-auto my-1 text-2xs md:text-xs lg:text-base text-center">
           <tbody>
             <tr
-              v-for="m in measurements"
+              v-for="m in query.measurements"
               :key="m.id"
               class="whitespace-nowrap flex flex-col"
             >
@@ -48,29 +48,21 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BCard,
     BHorizontalScroller,
   },
   name: 'VRoll',
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true,
     },
     elevation: {
       type: Number
@@ -79,10 +71,17 @@ export default Vue.extend({
       type: Boolean
     },
   },
-  computed: {
-    show(): boolean {
-      return this.dimensions.length == 1 && this.measurements.length == 1 && this.data.length > 1 && this.data.length < 10
-    },
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const show = computed(() => query.value.dimensions.length == 1
+      && query.value.measurements.length == 1
+      && query.value.data.length > 1
+      && query.value.data.length < 10)
+
+    return {
+      show,
+    }
   },
 })
 </script>

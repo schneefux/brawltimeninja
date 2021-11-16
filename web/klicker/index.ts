@@ -129,3 +129,13 @@ export interface MetaGridEntry {
 export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
+
+export interface CubeResponse {
+  state: State
+  dimensions: Dimension[]
+  measurements: Measurement[]
+  data: MetaGridEntry[]
+
+  /** TODO deprecate */
+  comparing: boolean
+}

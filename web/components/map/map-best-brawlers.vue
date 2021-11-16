@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import DBrawler from '~/components/klicker/d-brawler.vue'
 import { SliceValue } from '~/klicker'
 import { VRoll, BShimmer, CQuery } from '~/klicker/components'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   components: {
     VRoll,

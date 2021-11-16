@@ -1,6 +1,6 @@
 <template>
   <b-button
-    v-if="data.length > 0"
+    v-if="show"
     slot="content"
     class="my-1"
     secondary
@@ -12,38 +12,36 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { CubeResponse } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BButton,
   },
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  methods: {
-    download() {
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const { $klicker } = useContext()
+
+    const show = computed(() => query.value.data.length > 0)
+
+    const download = () => {
       const header = (<string[]>[]).concat(
-        this.dimensions.map(d => this.$klicker.getName(d)),
-        this.measurements.map(m => this.$klicker.getName(m)),
+        query.value.dimensions.map(d => $klicker.getName(d)),
+        query.value.measurements.map(m => $klicker.getName(m)),
       ).join(',')
-      const body = this.data.map(e =>
+      const body = query.value.data.map(e =>
         (<(string|number)[]>[]).concat(
-          this.dimensions.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
-          this.measurements.map(m => e.measurementsRaw[m.id]),
+          query.value.dimensions.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
+          query.value.measurements.map(m => e.measurementsRaw[m.id]),
         ).join(',')
       ).join('\n')
 
@@ -52,7 +50,12 @@ export default Vue.extend({
       downloader.target = '_blank'
       downloader.download = 'export.csv'
       downloader.click()
-    },
+    }
+
+    return {
+      show,
+      download,
+    }
   },
 })
 </script>

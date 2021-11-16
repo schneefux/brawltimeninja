@@ -92,8 +92,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, State, MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 import VBarPlot from '~/klicker/components/visualisations/v-barplot.vue'
 import VScatterPlot from '~/klicker/components/visualisations/v-scatterplot.vue'
 import VLinePlot from '~/klicker/components/visualisations/v-lineplot.vue'
@@ -103,8 +102,9 @@ import VTierList from '~/klicker/components/visualisations/v-tier-list.vue'
 import VGrid from '~/klicker/components/visualisations/v-grid.vue'
 import VCsv from '~/klicker/components/visualisations/v-csv.vue'
 import VShare from '~/klicker/components/visualisations/v-share.vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VBarPlot,
     VScatterPlot,
@@ -117,27 +117,11 @@ export default Vue.extend({
     VShare,
   },
   props: {
-    state: {
-      type: Object as PropType<State>,
-      required: true
+    query: {
+      type: Object as PropType<CubeResponse>,
+      required: true,
     },
     loading: {
-      type: Boolean,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    comparing: {
       type: Boolean,
       required: true
     },

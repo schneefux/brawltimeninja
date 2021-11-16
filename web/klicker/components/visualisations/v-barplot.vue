@@ -14,12 +14,11 @@
 </template>
 
 <script lang="ts">
-import { Dimension, Measurement } from '~/klicker'
-import { MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -28,48 +27,45 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true,
     },
   },
   setup(props) {
-    const show = computed(() =>
-      props.dimensions.length == 1 && props.dimensions[0].type == 'nominal' && props.measurements.length == 1 && props.data.length > 1 && props.data.length < 100
+    const { query } = toRefs(props)
+
+    const show = computed(() => query.value.dimensions.length == 1
+      && query.value.dimensions[0].type == 'nominal'
+      && query.value.measurements.length == 1
+      && query.value.data.length > 1
+      && query.value.data.length < 100
     )
 
     const spec = computed<VisualizationSpec>(() => ({
       data: {
-        values: props.data,
+        values: query.value.data,
       },
       mark: 'bar',
       encoding: {
         x: {
-          field: 'dimensions.' + props.dimensions[0].id,
-          type: props.dimensions[0].type,
-          title: props.dimensions[0].name,
-          scale: props.dimensions[0].scale,
+          field: 'dimensions.' + query.value.dimensions[0].id,
+          type: query.value.dimensions[0].type,
+          title: query.value.dimensions[0].name,
+          scale: query.value.dimensions[0].scale,
           sort: {
-            field: props.measurements[0].id,
-            order: props.measurements[0].sign == -1 ? 'descending' : 'ascending',
+            field: query.value.measurements[0].id,
+            order: query.value.measurements[0].sign == -1 ? 'descending' : 'ascending',
           },
         },
         y: {
-          field: 'measurementsRaw.' + props.measurements[0].id,
-          type: props.measurements[0].type,
-          title: props.measurements[0].name,
+          field: 'measurementsRaw.' + query.value.measurements[0].id,
+          type: query.value.measurements[0].type,
+          title: query.value.measurements[0].name,
           axis: {
-            format: props.measurements[0].formatter,
+            format: query.value.measurements[0].formatter,
           },
-          scale: props.measurements[0].scale,
+          scale: query.value.measurements[0].scale,
         },
       },
     }))

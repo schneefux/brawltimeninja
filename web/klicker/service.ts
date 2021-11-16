@@ -1,4 +1,4 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType } from "~/klicker"
+import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse } from "~/klicker"
 import cubejs, { CubejsApi, Filter, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -6,12 +6,6 @@ import { Route, Location } from "vue-router"
 import { capitalizeWords } from "~/lib/util"
 
 // TODO refactor clicker -> move all functions into here
-
-export interface CubeResponse {
-  dimensions: Dimension[]
-  measurements: Measurement[]
-  data: MetaGridEntry[]
-}
 
 // workaround for https://github.com/vuejs/vue-router/issues/2725
 // FIXME remove when upgrading to vue-router 3
@@ -165,6 +159,8 @@ export default class Klicker {
     }
 
     return {
+      state,
+      comparing: state.comparingSlices != undefined,
       measurements,
       dimensions,
       data,

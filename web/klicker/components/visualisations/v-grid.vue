@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="measurements.length > 1"
+    v-if="query.measurements.length > 1"
     v-bind="$attrs"
   >
     <div
@@ -8,9 +8,9 @@
       class="flex flex-wrap justify-center"
     >
       <b-card
-        v-for="(entry, index) in data.slice(page*pageSize, (page+1)*pageSize)"
+        v-for="(entry, index) in query.data.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
-        :title="dimensions.map(d => entry.dimensions[d.id]).join(', ')"
+        :title="query.dimensions.map(d => entry.dimensions[d.id]).join(', ')"
         elevation="2"
         itemscope
         itemtype="http://schema.org/Person"
@@ -34,7 +34,7 @@
           <table>
             <tbody>
               <tr
-                v-for="m in measurements"
+                v-for="m in query.measurements"
                 :key="m.id"
                 class="whitespace-nowrap"
                 itemscope
@@ -63,7 +63,7 @@
         @click="page--"
       >Previous Page</b-button>
       <b-button
-        v-if="(page+1)*pageSize < data.length"
+        v-if="(page+1)*pageSize < query.data.length"
         class="ml-1 w-32"
         primary
         @click="page++"
@@ -73,38 +73,30 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { defineComponent, PropType, ref, toRefs, watch } from '@nuxtjs/composition-api'
+import { CubeResponse } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true,
     },
     pageSize: {
       type: Number,
       default: 6
     }
   },
-  data() {
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const page = ref(0)
+    watch(() => query.value.data, () => page.value = 0)
+
     return {
-      page: 0,
+      page,
     }
-  },
-  watch: {
-    data() {
-      this.page = 0
-    },
   },
 })
 </script>

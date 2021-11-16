@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="dimensions.length == 1 && measurements.length == 1 && data.length > 5 && data.length < 100"
+    v-if="show"
     v-bind="$attrs"
   >
     <template v-slot:content>
@@ -29,7 +29,7 @@
       </ul>
 
       <div
-        v-if="dimensions[0].id == 'brawler'"
+        v-if="query.dimensions[0].id == 'brawler'"
         class="mt-2"
       >
         <v-tier-list-sharepic
@@ -41,11 +41,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { CubeResponse, Measurement, MetaGridEntry } from '~/klicker'
 import VTierListSharepic from '~/klicker/components/visualisations/v-tier-list-sharepic.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'
+import { computed, PropType, toRefs } from '@vue/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 // TODO decouple v-tier-list-sharepic
 
@@ -66,30 +67,33 @@ function groupTiers(entries: MetaGridEntry[], m: Measurement): TierList {
   return tierMap
 }
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   components: {
     BCard,
     VTierListSharepic,
   },
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  computed: {
-    tiers(): TierList {
-      return groupTiers(this.data, this.measurements[0])
-    },
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const show = computed(() => query.value.dimensions.length == 1
+      && query.value.measurements.length == 1
+      && query.value.data.length > 5
+      && query.value.data.length < 100
+    )
+
+    const tiers = computed(() => groupTiers(query.value.data, query.value.measurements[0]))
+
+    return {
+      show,
+      tiers,
+    }
   },
 })
 </script>

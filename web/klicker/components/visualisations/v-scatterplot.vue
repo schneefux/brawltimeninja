@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts">
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -27,48 +27,45 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    data: {
-      type: Array as PropType<MetaGridEntry[]>,
-      required: true,
     },
   },
   setup(props) {
+    const { query } = toRefs(props)
+
     const show = computed(() =>
-      props.dimensions.length == 1 && props.measurements.length == 2 && props.data.length > 1 && props.data.length < 1000
+      query.value.dimensions.length == 1
+      && query.value.measurements.length == 2
+      && query.value.data.length > 1
+      && query.value.data.length < 1000
     )
 
     const { $klicker } = useContext()
 
     const spec = computed<VisualizationSpec>(() => ({
       data: {
-        values: props.data,
+        values: query.value.data,
       },
       encoding: {
         x: {
-          field: 'measurementsRaw.' + props.measurements[0].id,
-          type: props.measurements[0].type,
-          title: $klicker.getName(props.measurements[0]),
+          field: 'measurementsRaw.' + query.value.measurements[0].id,
+          type: query.value.measurements[0].type,
+          title: $klicker.getName(query.value.measurements[0]),
           axis: {
-            format: props.measurements[0].d3formatter,
+            format: query.value.measurements[0].d3formatter,
           },
-          scale: props.measurements[0].scale,
+          scale: query.value.measurements[0].scale,
         },
         y: {
-          field: 'measurementsRaw.' + props.measurements[1].id,
-          type: props.measurements[1].type,
-          title: $klicker.getName(props.measurements[1]),
+          field: 'measurementsRaw.' + query.value.measurements[1].id,
+          type: query.value.measurements[1].type,
+          title: $klicker.getName(query.value.measurements[1]),
           axis: {
-            format: props.measurements[1].d3formatter,
+            format: query.value.measurements[1].d3formatter,
           },
-          scale: props.measurements[1].scale,
+          scale: query.value.measurements[1].scale,
         },
       },
       layer: [{
@@ -82,9 +79,9 @@ export default defineComponent({
         },
         encoding: {
           text: {
-            field: 'dimensions.' + props.dimensions[0].id,
-            type: props.dimensions[0].type,
-            title: $klicker.getName(props.dimensions[0]),
+            field: 'dimensions.' + query.value.dimensions[0].id,
+            type: query.value.dimensions[0].type,
+            title: $klicker.getName(query.value.dimensions[0]),
           },
         },
       }],

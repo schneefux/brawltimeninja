@@ -17,8 +17,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MetaGridEntry } from '~/klicker'
-import { CubeResponse } from '~/klicker/service'
+import { MetaGridEntry, CubeResponse } from '~/klicker'
 import { Brawler } from '~/model/Brawlstars'
 import { VRoll, BShimmer } from '~/klicker/components'
 import DBrawler from '~/components/klicker/d-brawler.vue'

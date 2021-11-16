@@ -1,13 +1,13 @@
 <template>
   <!-- FIXME SSR sometimes breaks due to inheritAttrs and b-card (?) -->
   <b-card
-    v-if="measurements.length < 5"
+    v-if="query.measurements.length < 5"
     v-bind="$attrs"
   >
     <div slot="content" class="h-full relative">
       <b-table
         :columns="columns"
-        :rows="data"
+        :rows="query.data"
         :page-size="pageSize"
         id-key="id"
         class="font-semibold text-sm md:text-lg h-full overflow-auto"
@@ -41,12 +41,12 @@
 </template>
 
 <script lang="ts">
-import { Dimension, Measurement, MetaGridEntry, State } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { Location } from 'vue-router'
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
@@ -57,19 +57,8 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
-      required: true
-    },
-    state: {
-      type: Object as PropType<State>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
     pageSize: {
@@ -79,15 +68,16 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker, route } = useContext()
+    const { query } = toRefs(props)
 
     const columns = computed(() => {
       return [<Column>{
-        title: props.dimensions.map(d => $klicker.getName(d)).join(', '),
-        keys: props.dimensions.map(d => `dimensions.${d.id}`),
+        title: query.value.dimensions.map(d => $klicker.getName(d)).join(', '),
+        keys: query.value.dimensions.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
       }].concat(
-        props.measurements.map(m => (<Column>{
+        query.value.measurements.map(m => (<Column>{
           // measurements are rendered 1:1
           title: $klicker.getName(m),
           keys: [`measurements.${m.id}`],
@@ -98,7 +88,7 @@ export default defineComponent({
     })
 
     const link = computed(() => (<Location>{
-      ...$klicker.stateToLocation(props.state),
+      ...$klicker.stateToLocation(query.value.state),
       path: '/dashboard',
     }))
 

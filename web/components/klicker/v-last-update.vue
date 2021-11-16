@@ -15,31 +15,25 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  computed: {
-    show(): boolean {
-      return this.data.length > 0 && (this.data[0].meta.timestamp != undefined || this.data[0].measurementsRaw.timestamp != undefined)
-    },
-    lastUpdate(): string {
-      const timestamps = this.data
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const show = computed(() => query.value.data.length > 0
+      && (query.value.data[0].meta.timestamp != undefined || query.value.data[0].measurementsRaw.timestamp != undefined))
+    const lastUpdate = computed((): string => {
+      const timestamps = query.value.data
         .map(d => d.measurementsRaw.timestamp ?? d.meta.timestamp)
         .sort() as unknown as string[] // TODO
       const timestamp = parseISO(timestamps[timestamps.length - 1])
@@ -47,7 +41,12 @@ export default Vue.extend({
         return 'never'
       }
       return formatDistanceToNow(timestamp, { addSuffix: true })
-    },
+    })
+
+    return {
+      show,
+      lastUpdate,
+    }
   },
 })
 </script>

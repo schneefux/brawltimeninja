@@ -25,35 +25,34 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { CubeResponse } from '~/klicker'
 import { formatSI } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
-    data: {
-      type: Array as PropType<MetaGridEntry[]>
-    },
-    dimensions: {
-      type: Array as PropType<Dimension[]>,
-      required: true
-    },
-    measurements: {
-      type: Array as PropType<Measurement[]>,
+    query: {
+      type: Object as PropType<CubeResponse>,
       required: true
     },
   },
-  computed: {
-    show(): boolean {
-      return this.data.length > 0 && (this.data[0].meta.picks != undefined || this.data[0].measurementsRaw.picks != undefined)
-    },
-    sample(): number {
-      return this.data.reduce((agg, e) => agg + parseInt((e.measurementsRaw.picks ?? e.meta.picks) as string), 0)
-    },
-    sampleFormatted(): string {
-      return formatSI(this.sample, 2)
-    },
+  setup(props) {
+    const { query } = toRefs(props)
+
+    const show = computed(() => query.value.data.length > 0 &&
+      (query.value.data[0].meta.picks != undefined || query.value.data[0].measurementsRaw.picks != undefined))
+
+    const sample = computed(() => query.value.data.reduce(
+      (agg, e) => agg + parseInt((e.measurementsRaw.picks ?? e.meta.picks) as string), 0))
+
+    const sampleFormatted = computed(() => formatSI(sample.value, 2))
+
+    return {
+      show,
+      sample,
+      sampleFormatted,
+    }
   },
 })
 </script>
