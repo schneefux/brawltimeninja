@@ -33,7 +33,7 @@ job "brawltime-testing" {
       }
     }
 
-    task "web" {
+    task "testing-web" {
       driver = "docker"
 
       env {
@@ -53,7 +53,7 @@ job "brawltime-testing" {
       }
 
       resources {
-        cpu = 1536
+        cpu = 256
         memory = 256
         memory_max = 512
       }

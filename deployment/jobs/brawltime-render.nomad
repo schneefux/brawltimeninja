@@ -68,8 +68,8 @@ job "brawltime-render" {
       }
 
       resources {
-        cpu = 2048
-        memory = 256
+        cpu = 1024
+        memory = 384
         memory_max = 512
       }
     }

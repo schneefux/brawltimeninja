@@ -36,7 +36,7 @@ job "clickhouse" {
         type = "http"
         path = "/ping"
         interval = "10s"
-        timeout  = "2s"
+        timeout = "2s"
       }
     }
 
@@ -54,7 +54,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "yandex/clickhouse-server:21.7-alpine"
+        image = "yandex/clickhouse-server:21.10-alpine"
         network_mode = "host"
 
         volumes = [
