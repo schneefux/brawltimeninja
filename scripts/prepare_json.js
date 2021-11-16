@@ -43,9 +43,10 @@ async function main() {
       const character = characters.find(c => (c.itemName || '')
         .replace(/[.-]/g, '')
         .replace('ricochet', 'rico')
+        .replace('lolla', 'lola')
         .replace('ruffs', 'colonelruffs') == id.replace(/[_-]/g, ''))
       if (character == undefined) {
-        console.log('brawler not found: ' + id)
+        console.error('brawler not found: ' + id)
         console.log(characters.map(c => c.itemName))
         return null
       }
