@@ -5,7 +5,7 @@
       {{ error.oops }}
     </h1>
     <h2 class="text-2xl">
-      {{ error.message }}.
+      {{ error.message }}
     </h2>
     <h3
       v-if="error.statusCode == 429 || error.statusCode >= 500"

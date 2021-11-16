@@ -309,23 +309,21 @@ export default Vue.extend({
         this.loading = true
         await this.$store.dispatch('loadPlayer', this.cleanedTag)
         this.addLastPlayer(this.player)
-      } catch (error) {
-        if (error.response !== undefined && error.response.status === 404) {
+      } catch (error: any) {
+        if (error.response?.status === 404) {
           this.$gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_notfound',
           })
           this.error = this.$tc('error.tag.not-found')
-        } else if (error.response !== undefined && error.response.status === 429) {
+        } else if (error.response?.status === 429) {
           this.$gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_timeout',
           })
           this.error = this.$tc('error.api-unavailable')
         } else {
-          this.$gtag.exception({
-            description: 'cannot get player: ' + error.message,
-          })
+          this.$sentry.captureException(error)
           this.$gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_api',

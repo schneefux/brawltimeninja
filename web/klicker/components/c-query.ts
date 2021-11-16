@@ -27,6 +27,7 @@ export default Vue.extend({
     try {
       this.result = await this.$klicker.query(this.state)
     } catch (error) {
+      console.error(error)
       this.$sentry.captureException(error)
       this.result = undefined
       this.error = true

@@ -338,9 +338,21 @@ export default Vue.extend({
   destroyed() {
     window.clearTimeout(this.timer)
   },
-  async asyncData({ store, params }) {
+  async asyncData({ store, params, error, i18n }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {
-      await store.dispatch('loadPlayer', params.tag)
+      try {
+        await store.dispatch('loadPlayer', params.tag)
+      } catch (err: any) {
+        console.error(err)
+
+        if (err.response?.status === 404) {
+          error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
+        } else {
+          this.$sentry.captureException(err)
+          error({ statusCode: err.response.status, message: i18n.tc('error.api-unavailable') })
+        }
+        return
+      }
     }
 
     return {}
@@ -354,7 +366,12 @@ export default Vue.extend({
       this.timer = window.setTimeout(() => this.refreshTimer(), 15 * 1000)
     },
     async refresh() {
-      await this.$store.dispatch('loadPlayer', this.$route.params.tag)
+      try {
+        await this.$store.dispatch('loadPlayer', this.$route.params.tag)
+      } catch (error) {
+        console.error(error)
+        this.$sentry.captureException(error)
+      }
       this.refreshSecondsLeft = 180
     },
     trackScroll(visible, entry, section) {
