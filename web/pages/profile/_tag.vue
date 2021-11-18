@@ -136,12 +136,12 @@
         Info!
       </h2>
       <p class="text-xs ml-3">
-        {{ $t('player.disclaimer', { battles: playerTotals.picks }) }}
+        {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
       </p>
     </div>
 
     <player-teaser-card
-      v-if="playerTotals.picks > 0"
+      v-if="playerTotals != undefined && playerTotals.picks > 0"
       v-slot="props"
       :pages="Math.ceil(playerTotals.picks / 6)"
       :title="$tc('battle-log', 1)"
@@ -310,7 +310,7 @@ export default Vue.extend({
     },
     enableClickerStats(): boolean {
       // do not send queries to backend if user has no battle history in database
-      return this.playerTotals.picks > 25
+      return (this.playerTotals?.picks || 0) > 25
     },
     topBrawlerId(): string {
       const brawlerIds = [...Object.keys(this.player.brawlers)]
@@ -318,7 +318,7 @@ export default Vue.extend({
     },
     ...mapState({
       player: (state: any) => state.player as Player,
-      playerTotals: (state: any) => state.playerTotals as PlayerTotals,
+      playerTotals: (state: any) => state.playerTotals as PlayerTotals|undefined,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },

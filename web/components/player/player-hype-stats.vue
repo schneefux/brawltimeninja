@@ -86,14 +86,14 @@
       ></bigstat>
 
       <bigstat
-        v-if="playerTotals.picks > 0"
+        v-if="playerTotals != undefined && playerTotals.picks > 0"
         :title="$t('metric.recentWinrate')"
         :value="Math.floor(playerTotals.winRate * 100) + '%'"
         :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
       ></bigstat>
 
       <bigstat
-        v-if="playerTotals.picks > 0"
+        v-if="playerTotals != undefined && playerTotals.picks > 0"
         :title="$t('metric.averageTrophies')"
         :value="playerTotals.trophyChange.toFixed(2)"
       ></bigstat>
