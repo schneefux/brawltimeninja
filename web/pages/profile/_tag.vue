@@ -343,11 +343,10 @@ export default Vue.extend({
       try {
         await store.dispatch('loadPlayer', params.tag)
       } catch (err: any) {
-        console.error(err)
-
-        if (err.response?.status === 404) {
+        if (err.response?.status == 404) {
           error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
         } else {
+          console.error(err)
           this.$sentry.captureException(err)
           error({ statusCode: err.response.status, message: i18n.tc('error.api-unavailable') })
         }
@@ -368,9 +367,11 @@ export default Vue.extend({
     async refresh() {
       try {
         await this.$store.dispatch('loadPlayer', this.$route.params.tag)
-      } catch (error) {
-        console.error(error)
-        this.$sentry.captureException(error)
+      } catch (err: any) {
+        if (err.response?.status != 404) {
+          console.error(err)
+          this.$sentry.captureException(err)
+        }
       }
       this.refreshSecondsLeft = 180
     },
