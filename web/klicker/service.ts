@@ -298,7 +298,8 @@ export default class Klicker {
         for (const m in baseEntry.measurements) {
           if (mode == 'diff') {
             measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
-            measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(cube.measurements[m], measurementsRaw[m])
+            const index = cube.measurements.findIndex(mm => mm.id == m)
+            measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(cube.measurements[index], measurementsRaw[m])
           }
 
           // TODO implement z-test again

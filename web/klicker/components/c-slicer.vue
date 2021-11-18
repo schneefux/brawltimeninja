@@ -72,7 +72,7 @@ export default Vue.extend({
   },
   computed: {
     slices(): SliceValue {
-      return this.value.comparingSlices ?? this.value.slices
+      return this.comparing ? this.value.comparingSlices! : this.value.slices
     },
     faFilter() {
       return faFilter

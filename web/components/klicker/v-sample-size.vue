@@ -40,7 +40,7 @@ export default defineComponent({
   setup(props) {
     const { query } = toRefs(props)
 
-    const show = computed(() => query.value.data.length > 0 &&
+    const show = computed(() => query.value.data.length > 0 && !query.value.comparing &&
       (query.value.data[0].meta.picks != undefined || query.value.data[0].measurementsRaw.picks != undefined))
 
     const sample = computed(() => query.value.data.reduce(
