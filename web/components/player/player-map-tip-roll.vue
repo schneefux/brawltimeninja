@@ -7,7 +7,7 @@
   ></b-shimmer>
   <v-roll
     v-else
-    v-bind="{ ...result, ...$attrs }"
+    v-bind="{ query: result, ...$attrs }"
   >
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
