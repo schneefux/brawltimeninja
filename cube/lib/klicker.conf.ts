@@ -1,4 +1,4 @@
-import { asDimensions, asMeasurements, asSlice, Cube, SliceValue } from "../klicker"
+import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Measurement, Dimension } from "../klicker"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -12,6 +12,36 @@ export function getSeasonEnd(timestamp: Date) {
 const monthAgo = new Date()
 monthAgo.setMonth(monthAgo.getMonth() - 1)
 
+/**
+ * Calculate $m.useRate / sum($m.useRate over all dimensions except brawler)
+ */
+function percentageOver(measurementId: string, overDimension: Dimension) {
+  const rowIdWithout = (row: MetaGridEntry) =>
+    row.id.replace(`${overDimension.id}=${row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute]};`, '')
+
+  return (entries: MetaGridEntry[]) => {
+    if (entries.length > 0 && !(overDimension.id in entries[0].dimensionsRaw)) {
+      throw new Error('Illegal percentageOver dimension ' + overDimension)
+    }
+
+    const total: Record<string, number> = {}
+    entries.forEach((row) => {
+      const key = rowIdWithout(row)
+
+      if (!(key in total)) {
+        total[key] = 0
+      }
+
+      total[key] += row.measurementsRaw[measurementId] as number
+    })
+
+    return entries.map(row => {
+      const key = rowIdWithout(row)
+      return row.measurementsRaw.useRate as number / total[key]
+    })
+  }
+}
+
 const metaDimensions = asDimensions({
   season: {
     id: 'season',
@@ -19,7 +49,6 @@ const metaDimensions = asDimensions({
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
-    hidden: false,
     type: 'temporal',
     scale: {
       nice: 'week',
@@ -35,7 +64,6 @@ const metaDimensions = asDimensions({
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
-    hidden: false,
     type: 'temporal',
     scale: {
       nice: 'day',
@@ -51,7 +79,6 @@ const metaDimensions = asDimensions({
     naturalIdAttribute: 'timestamp',
     formatter: 'yyyy-MM-ddTHH:mm',
     additionalMeasures: [],
-    hidden: false,
     type: 'temporal',
     scale: {
       nice: 'hour',
@@ -68,9 +95,7 @@ const playerDimensions = asDimensions({
     id: 'player',
     name: 'Player',
     naturalIdAttribute: 'playerName',
-    formatter: '',
     additionalMeasures: ['playerName', 'playerIcon'],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'player_id',
@@ -86,7 +111,6 @@ const brawlerDimensions = asDimensions({
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'brawler_name',
@@ -97,7 +121,6 @@ const brawlerDimensions = asDimensions({
     id: 'brawlerId',
     name: 'Brawler ID',
     naturalIdAttribute: 'brawlerId',
-    formatter: '',
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -112,7 +135,6 @@ const brawlerDimensions = asDimensions({
     naturalIdAttribute: 'ally',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'ally_brawler_name',
@@ -123,7 +145,6 @@ const brawlerDimensions = asDimensions({
     id: 'allyId',
     name: 'Ally ID',
     naturalIdAttribute: 'allyId',
-    formatter: '',
     additionalMeasures: [],
     hidden: true,
     type: 'nominal',
@@ -138,7 +159,6 @@ const brawlerDimensions = asDimensions({
     naturalIdAttribute: 'gadgetName',
     formatter: 'capitalizeWords',
     additionalMeasures: ['gadgetName', 'brawler'],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'brawler_gadget_id',
@@ -151,7 +171,6 @@ const brawlerDimensions = asDimensions({
     naturalIdAttribute: 'starpowerName',
     formatter: 'capitalizeWords',
     additionalMeasures: ['starpowerName', 'brawler'],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'brawler_starpower_id',
@@ -175,7 +194,6 @@ const brawlerDimensions = asDimensions({
     id: 'trophyRange',
     name: 'Trophy Range',
     naturalIdAttribute: 'trophyRange',
-    formatter: '',
     additionalMeasures: [],
     hidden: true,
     type: 'ordinal',
@@ -193,7 +211,6 @@ const battleDimensions = asDimensions({
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
     additionalMeasures: [],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'battle_event_mode',
@@ -204,9 +221,7 @@ const battleDimensions = asDimensions({
     id: 'map',
     name: 'Map',
     naturalIdAttribute: 'map',
-    formatter: '',
     additionalMeasures: ['mode', 'eventId'],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'battle_event_map',
@@ -219,10 +234,9 @@ const battleDimensions = asDimensions({
     naturalIdAttribute: 'team',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
-    hidden: false,
     type: 'nominal',
     config: {
-      sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
+      sql: 'toJSONString(arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name])))',
       type: 'string',
     },
   },
@@ -230,7 +244,6 @@ const battleDimensions = asDimensions({
     id: 'teamSize',
     name: 'Team size',
     naturalIdAttribute: 'team',
-    formatter: '',
     additionalMeasures: [],
     hidden: true,
     type: 'quantitative',
@@ -245,7 +258,6 @@ const battleDimensions = asDimensions({
     naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
     additionalMeasures: [],
-    hidden: false,
     type: 'nominal',
     config: {
       sql: 'battle_event_powerplay',
@@ -271,13 +283,10 @@ const winratePosteriorMerged = `(1583+${winRateMerged}*${picks})/(1583/${zP}+${p
 const picksRaw = 'COUNT()'
 const winratePosteriorRaw = `(1583+${winRate}*${picksRaw})/(1583/${zP}+${picksRaw})`
 
-export const playerMeasurements = asMeasurements({
+export const playerStringMeasurements = asStringMeasurements({
   playerName: {
     id: 'playerName',
     name: 'Most common name',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -288,9 +297,6 @@ export const playerMeasurements = asMeasurements({
   clubName: {
     id: 'clubName',
     name: 'Most common Club name',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -301,9 +307,6 @@ export const playerMeasurements = asMeasurements({
   playerIcon: {
     id: 'playerIcon',
     name: 'Most common icon',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -314,9 +317,6 @@ export const playerMeasurements = asMeasurements({
   playerNameColor: {
     id: 'playerNameColor',
     name: 'Most common color',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -324,10 +324,12 @@ export const playerMeasurements = asMeasurements({
       type: 'number',
     },
   },
+})
+
+const playerNumberMeasurements = asNumberMeasurements({
   playerTrophies: {
     id: 'playerTrophies',
     name: 'Player Trophies',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -343,7 +345,6 @@ export const playerMeasurements = asMeasurements({
   playerHighestTrophies: {
     id: 'playerHighestTrophies',
     name: 'Player Highest Trophies',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -359,7 +360,6 @@ export const playerMeasurements = asMeasurements({
   victories: {
     id: 'victories',
     name: '3v3 Victories',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -375,7 +375,6 @@ export const playerMeasurements = asMeasurements({
   exp: {
     id: 'exp',
     name: 'Experience',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -391,7 +390,6 @@ export const playerMeasurements = asMeasurements({
   soloVictories: {
     id: 'soloVictories',
     name: 'Solo Victories',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -407,7 +405,6 @@ export const playerMeasurements = asMeasurements({
   duoVictories: {
     id: 'duoVictories',
     name: 'Duo Victories',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -436,9 +433,6 @@ export const playerMeasurements = asMeasurements({
   powerPlayPoints: {
     id: 'powerPlayPoints',
     name: 'Power Play Points',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -449,9 +443,6 @@ export const playerMeasurements = asMeasurements({
   highestPowerPlayPoints: {
     id: 'highestPowerPlayPoints',
     name: 'Highest Power Play Points',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -462,9 +453,6 @@ export const playerMeasurements = asMeasurements({
   expLevel: {
     id: 'expLevel',
     name: 'EXP Level',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -475,9 +463,6 @@ export const playerMeasurements = asMeasurements({
   expPoints: {
     id: 'expPoints',
     name: 'EXP',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -488,9 +473,6 @@ export const playerMeasurements = asMeasurements({
   brawlers: {
     id: 'brawlers',
     name: 'Brawlers',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -500,11 +482,24 @@ export const playerMeasurements = asMeasurements({
   },
 })
 
-export const brawlerMeasurements = asMeasurements({
+export const brawlerStringMeasurements = asStringMeasurements({
+  brawler: {
+    id: 'brawler',
+    name: 'Most played Brawler',
+    formatter: 'capitalizeWords',
+    sign: -1,
+    type: 'nominal',
+    config: {
+      sql: 'anyHeavy(brawler_name)',
+      type: 'number',
+    },
+  },
+})
+
+export const brawlerNumberMeasurements = asNumberMeasurements({
   highestTrophies: {
     id: 'highestTrophies',
     name: 'Highest Trophies',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -530,25 +525,9 @@ export const brawlerMeasurements = asMeasurements({
       type: 'avg',
     },
   },
-  brawler: {
-    id: 'brawler',
-    name: 'Most played Brawler',
-    description: '',
-    formatter: 'capitalizeWords',
-    d3formatter: '',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'anyHeavy(brawler_name)',
-      type: 'number',
-    },
-  },
   starpowers: {
     id: 'starpowers',
     name: 'Star Powers',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -559,9 +538,6 @@ export const brawlerMeasurements = asMeasurements({
   gadgets: {
     id: 'gadgets',
     name: 'Gadgets',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'quantitative',
     config: {
@@ -571,14 +547,12 @@ export const brawlerMeasurements = asMeasurements({
   },
 })
 
-const metaMeasurements = asMeasurements({
+const metaMeasurements = asStringMeasurements({
   timestamp: {
     // TODO
     id: 'timestamp',
     name: 'Last Update',
-    description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
-    d3formatter: '',
     sign: -1,
     type: 'temporal',
     config: {
@@ -590,9 +564,7 @@ const metaMeasurements = asMeasurements({
     // TODO
     id: 'day',
     name: 'Day',
-    description: '',
     formatter: 'yyyy-MM-dd',
-    d3formatter: '',
     sign: -1,
     type: 'temporal',
     config: {
@@ -602,11 +574,10 @@ const metaMeasurements = asMeasurements({
   },
 })
 
-const battleMeasurements = asMeasurements({
+const battleNumberMeasurements = asNumberMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    description: '',
     formatter: '+.2f',
     d3formatter: '+.2f',
     sign: -1,
@@ -638,7 +609,7 @@ const battleMeasurements = asMeasurements({
   winRateAdj: {
     id: 'winRateAdj',
     name: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+    description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
     formatter: '.1%',
     d3formatter: '.1%',
     sign: -1,
@@ -667,7 +638,6 @@ const battleMeasurements = asMeasurements({
   wins: {
     id: 'wins',
     name: 'Wins',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -693,7 +663,6 @@ const battleMeasurements = asMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -710,7 +679,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    percentageOver: 'brawler',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -719,6 +687,7 @@ const battleMeasurements = asMeasurements({
       sql: '',
       type: 'count',
     },
+    transform: percentageOver('pickRate', brawlerDimensions.brawler),
   },
   useRate: {
     id: 'useRate',
@@ -727,7 +696,6 @@ const battleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    percentageOver: 'brawler',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -736,6 +704,7 @@ const battleMeasurements = asMeasurements({
       sql: 'player_brawlers_length',
       type: 'sum',
     },
+    transform: percentageOver('useRate', brawlerDimensions.brawler),
   },
   starRate: {
     id: 'starRate',
@@ -785,7 +754,6 @@ const battleMeasurements = asMeasurements({
   rank1: {
     id: 'rank1',
     name: '#1 Recorded',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -840,7 +808,6 @@ const battleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    description: '',
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
@@ -856,7 +823,6 @@ const battleMeasurements = asMeasurements({
   power: {
     id: 'power',
     name: 'Power',
-    description: '',
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
@@ -869,12 +835,12 @@ const battleMeasurements = asMeasurements({
       type: 'avg',
     },
   },
+})
+
+const battleStringMeasurements = asStringMeasurements({
   starpowerName: {
     id: 'starpowerName',
     name: 'Star Power',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -885,9 +851,6 @@ const battleMeasurements = asMeasurements({
   gadgetName: {
     id: 'gadgetName',
     name: 'Gadget',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -898,9 +861,6 @@ const battleMeasurements = asMeasurements({
   eventId: {
     id: 'eventId',
     name: 'Event ID',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -911,9 +871,6 @@ const battleMeasurements = asMeasurements({
   map: {
     id: 'map',
     name: 'Map',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -924,9 +881,6 @@ const battleMeasurements = asMeasurements({
   mode: {
     id: 'mode',
     name: 'Mode',
-    description: '',
-    formatter: '',
-    d3formatter: '',
     sign: -1,
     type: 'nominal',
     config: {
@@ -937,13 +891,11 @@ const battleMeasurements = asMeasurements({
 })
 
 // same as battleMeasurements, but using clickhouse merge for mv
-const mergedbattleMeasurements = asMeasurements({
+const mergedbattleStringMeasurements = asStringMeasurements({
   timestamp: {
     id: 'timestamp',
     name: 'Last Update',
-    description: '',
     formatter: 'yyyy-MM-ddTHH:mm',
-    d3formatter: '',
     sign: -1,
     type: 'temporal',
     config: {
@@ -951,10 +903,12 @@ const mergedbattleMeasurements = asMeasurements({
       type: 'number',
     },
   },
+})
+
+const mergedbattleNumberMeasurements = asNumberMeasurements({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
-    description: '',
     formatter: '.2s',
     d3formatter: '.2s',
     sign: -1,
@@ -967,7 +921,6 @@ const mergedbattleMeasurements = asMeasurements({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
-    description: '',
     formatter: '+.2f',
     d3formatter: '+.2f',
     sign: -1,
@@ -1032,7 +985,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    percentageOver: 'brawler',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1041,6 +993,7 @@ const mergedbattleMeasurements = asMeasurements({
       sql: 'SUM(picks)',
       type: 'number',
     },
+    transform: percentageOver('pickRate', brawlerDimensions.brawler),
   },
   useRate: {
     id: 'useRate',
@@ -1049,7 +1002,6 @@ const mergedbattleMeasurements = asMeasurements({
     formatter: '.2%',
     d3formatter: '.2%',
     sign: -1,
-    percentageOver: 'brawler',
     type: 'quantitative',
     scale: {
       zero: false,
@@ -1058,6 +1010,7 @@ const mergedbattleMeasurements = asMeasurements({
       sql: 'picks_weighted',
       type: 'sum',
     },
+    transform: percentageOver('useRate', brawlerDimensions.brawler),
   },
   starRate: {
     id: 'starRate',
@@ -1123,7 +1076,6 @@ const mergedbattleMeasurements = asMeasurements({
   level: {
     id: 'level',
     name: 'Average Level',
-    description: '',
     formatter: '.2f',
     d3formatter: '.2f',
     sign: -1,
@@ -1138,12 +1090,15 @@ const mergedbattleMeasurements = asMeasurements({
   },
 })
 
-export const commonMeasurements = asMeasurements({
+export const commonMeasurements = {
   ...metaMeasurements,
-  ...playerMeasurements,
-  ...brawlerMeasurements,
-  ...battleMeasurements,
-})
+  ...playerStringMeasurements,
+  ...playerNumberMeasurements,
+  ...brawlerStringMeasurements,
+  ...brawlerNumberMeasurements,
+  ...battleStringMeasurements,
+  ...battleNumberMeasurements,
+}
 
 const metaSlices = asSlice({
   season: {
@@ -1232,15 +1187,15 @@ const brawlerSlices = asSlice({
   powerGte: {
     id: 'powerGte',
     config: {
-      member: 'brawler_power_measure',
+      member: 'power_measure',
       operator: 'gte',
     },
   },
-  powerLt: {
-    id: 'powerLt',
+  powerLte: {
+    id: 'powerLte',
     config: {
-      member: 'brawler_power_measure',
-      operator: 'lt',
+      member: 'power_measure',
+      operator: 'lte',
     },
   },
   starpowerIdEq: {
@@ -1269,13 +1224,6 @@ const brawlerSlices = asSlice({
     config: {
       member: 'gadget_dimension',
       operator: 'notEquals',
-    },
-  },
-  teamSizeGt: {
-    id: 'teamSizeGt',
-    config: {
-      member: 'teamSize_dimension',
-      operator: 'gt',
     },
   },
 })
@@ -1353,19 +1301,19 @@ const brawlerBattleMeasurements = [
   commonMeasurements.mode,
   commonMeasurements.map,
   commonMeasurements.eventId,
-  mergedbattleMeasurements.timestamp,
-  mergedbattleMeasurements.trophyChange,
-  mergedbattleMeasurements.winRate,
-  mergedbattleMeasurements.winRateAdj,
-  mergedbattleMeasurements.wins,
-  mergedbattleMeasurements.picks,
-  mergedbattleMeasurements.pickRate,
-  mergedbattleMeasurements.useRate,
-  mergedbattleMeasurements.starRate,
-  mergedbattleMeasurements.rank,
-  mergedbattleMeasurements.rank1Rate,
-  mergedbattleMeasurements.duration,
-  mergedbattleMeasurements.level,
+  mergedbattleStringMeasurements.timestamp,
+  mergedbattleNumberMeasurements.trophyChange,
+  mergedbattleNumberMeasurements.winRate,
+  mergedbattleNumberMeasurements.winRateAdj,
+  mergedbattleNumberMeasurements.wins,
+  mergedbattleNumberMeasurements.picks,
+  mergedbattleNumberMeasurements.pickRate,
+  mergedbattleNumberMeasurements.useRate,
+  mergedbattleNumberMeasurements.starRate,
+  mergedbattleNumberMeasurements.rank,
+  mergedbattleNumberMeasurements.rank1Rate,
+  mergedbattleNumberMeasurements.duration,
+  mergedbattleNumberMeasurements.level,
   commonMeasurements.brawler,
 ]
 
@@ -1440,12 +1388,13 @@ const playerBrawlerSlices = [
   commonSlices.playerId,
   commonSlices.playerName,
   commonSlices.season,
+  commonSlices.seasonExact,
   commonSlices.trophyRangeGte,
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
   commonSlices.powerGte,
-  commonSlices.powerLt,
+  commonSlices.powerLte,
 ]
 
 const playerBrawlerDefaultSliceValues = {
@@ -1462,7 +1411,6 @@ const cubes: Record<string, Cube> = {
     id: 'map',
     table: 'map_meta',
     name: 'Map',
-    hidden: false,
     dimensions: [
       ...brawlerBattleDimensions,
       commonDimensions.mode,
@@ -1497,7 +1445,6 @@ const cubes: Record<string, Cube> = {
     id: 'starpower',
     table: 'starpower_meta',
     name: 'Star Power',
-    hidden: false,
     dimensions: [
       ...brawlerBattleDimensions,
       commonDimensions.brawlerId,
@@ -1524,7 +1471,6 @@ const cubes: Record<string, Cube> = {
     id: 'gadget',
     table: 'gadget_meta',
     name: 'Gadget',
-    hidden: false,
     dimensions: [
       ...brawlerBattleDimensions,
       commonDimensions.brawlerId,
@@ -1551,7 +1497,6 @@ const cubes: Record<string, Cube> = {
     id: 'synergy',
     table: 'synergy_meta',
     name: 'Synergies',
-    hidden: false,
     dimensions: [
       ...brawlerBattleDimensions,
       commonDimensions.brawlerId,
@@ -1612,7 +1557,6 @@ const cubes: Record<string, Cube> = {
     id: 'player_brawler',
     table: 'brawler_leaderboard',
     name: 'Brawler Leaderboard',
-    hidden: false,
     dimensions: [
       commonDimensions.player,
       commonDimensions.brawlerId,
@@ -1672,16 +1616,16 @@ const cubes: Record<string, Cube> = {
     defaultDimensionsIds: ['player'],
     measurements: [
       ...playerBrawlerMeasurements,
-      battleMeasurements.wins,
-      battleMeasurements.duration,
-      battleMeasurements.rank,
-      battleMeasurements.rank1,
-      battleMeasurements.trophyChange,
-      battleMeasurements.winRate,
-      battleMeasurements.winRateAdj,
-      battleMeasurements.starRate,
-      battleMeasurements.starpowerName,
-      battleMeasurements.gadgetName,
+      battleNumberMeasurements.wins,
+      battleNumberMeasurements.duration,
+      battleNumberMeasurements.rank,
+      battleNumberMeasurements.rank1,
+      battleNumberMeasurements.trophyChange,
+      battleNumberMeasurements.winRate,
+      battleNumberMeasurements.winRateAdj,
+      battleNumberMeasurements.starRate,
+      battleStringMeasurements.starpowerName,
+      battleStringMeasurements.gadgetName,
       // TODO
     ],
     defaultMeasurementIds: ['picks'],
