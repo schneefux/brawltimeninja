@@ -14,12 +14,17 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse, Dimension, Measurement, MetaGridEntry } from '~/klicker'
+import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import { computed, PropType, toRefs } from '@vue/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
+import { BVega, BCard } from '~/klicker/components'
 
 export default defineComponent({
+  components: {
+    BCard,
+    BVega,
+  },
   inheritAttrs: false,
   props: {
     query: {
