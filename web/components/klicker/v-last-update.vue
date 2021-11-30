@@ -18,9 +18,13 @@
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { CubeResponse } from '~/klicker'
+import { BCard } from '~/klicker/components'
 
 export default defineComponent({
   inheritAttrs: false,
+  components: {
+    BCard,
+  },
   props: {
     query: {
       type: Object as PropType<CubeResponse>,
@@ -31,18 +35,18 @@ export default defineComponent({
     const { query } = toRefs(props)
 
     const show = computed(() => query.value.data.length > 0 && !query.value.comparing
-      && (query.value.data[0].meta.timestamp != undefined || query.value.data[0].measurementsRaw.timestamp != undefined))
+      && query.value.data[0].measurementsRaw.timestamp != undefined)
 
     const lastUpdate = computed((): string => {
       const timestamps = query.value.data
-        .map(d => d.measurementsRaw.timestamp ?? d.meta.timestamp)
+        .map(d => d.measurementsRaw.timestamp)
         .sort() as unknown as string[] // TODO
       // TODO fix types - fix null checks
-      if (timestamps.length == 0 || isNaN(timestamps[0] as any)) {
+      if (timestamps.length == 0) {
         return 'never'
       }
       const timestamp = parseISO(timestamps[timestamps.length - 1])
-      if (timestamp.valueOf() == 0) {
+      if (isNaN(timestamp.valueOf()) || timestamp.valueOf() == 0) {
         return 'never'
       }
       return formatDistanceToNow(timestamp, { addSuffix: true })
