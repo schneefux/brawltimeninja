@@ -59,7 +59,7 @@ class KlickerService extends Klicker {
   }
 
   // override Klicker.format
-  public format(spec: { type: ValueType, formatter: string }, value: number|string|string[]): string {
+  public format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string {
     if (spec.type == 'nominal' && typeof value == 'string') {
       if (spec.formatter == 'formatMode') {
         // TODO remove for i18n

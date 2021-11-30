@@ -41,10 +41,10 @@ export default defineComponent({
     const { query } = toRefs(props)
 
     const show = computed(() => query.value.data.length > 0 && !query.value.comparing &&
-      (query.value.data[0].meta.picks != undefined || query.value.data[0].measurementsRaw.picks != undefined))
+      query.value.data[0].measurementsRaw.picks != undefined)
 
     const sample = computed(() => query.value.data.reduce(
-      (agg, e) => agg + parseInt((e.measurementsRaw.picks ?? e.meta.picks) as string), 0))
+      (agg, e) => agg + (e.measurementsRaw.picks as number), 0))
 
     const sampleFormatted = computed(() => formatSI(sample.value, 2))
 

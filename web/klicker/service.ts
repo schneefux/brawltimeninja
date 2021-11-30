@@ -1,5 +1,5 @@
 import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse } from "~/klicker"
-import cubejs, { CubejsApi, Filter, TQueryOrderObject } from "@cubejs-client/core"
+import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import { Route, Location } from "vue-router"
@@ -143,7 +143,7 @@ export default class Klicker {
         limit: state.limit,
       })
 
-      const comparingData = this.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData, [])
+      const comparingData = this.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData)
 
       // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
       let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]
@@ -166,102 +166,74 @@ export default class Klicker {
       data,
     }
   }
-  private mapToMetaGridEntry(cube, dimensions, measurements, resultSet, metaColumns = []) {
-    const totals: { [measure: string]: { [key: string]: number } } = {}
-    const table = resultSet.tablePivot()
+  private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet): MetaGridEntry[] {
+    // TODO consider refactoring to store it column-based (object of arrays) for performance
+    const table = resultSet.rawData()
 
-    const rowIdWithout = (percentageOver: string, row: Record<string, string | number | boolean>) => dimensions
-      .filter(d => d.id != percentageOver)
-      .map(d => {
-        const keyId = cube.id + '.' + d.naturalIdAttribute + '_dimension'
-        if (!(keyId in row)) {
-          throw new Error('Invalid percentageOver specification, cannot find ' + keyId)
-        }
-        return row[keyId]
-      }).join('-')
-
-    for (const m of measurements) {
-      if (m.percentageOver) {
-        // totals[$m.id] = sum($m.id) group by every dimension except $m.percentageOver
-        const total: Record<string, number> = {}
-
-        for (const row of table) {
-          const key = rowIdWithout(m.percentageOver, row)
-          const valueId = cube.id + '.' + m.id + '_measure'
-
-          if (!(key in total)) {
-            total[key] = 0
-          }
-          total[key] += parseFloat(row[valueId] as string)
-        }
-
-        totals[m.id] = total
-      }
-    }
-
-    return table.map(row => {
-      const entry: MetaGridEntry = {
-        id: '',
-        dimensionsRaw: {},
-        dimensions: {},
-        measurementsRaw: {},
-        measurements: {},
-        meta: {},
-      }
-
-      for (const m of metaColumns) {
-        entry.meta[m] = row[cube.id + '.' + m + '_measure'] as string
-      }
-
-      const getValue = (m: Measurement) => {
-        const id = cube.id + '.' + m.id + '_measure'
-
-        if (m.type != 'quantitative') {
-          return row[id] as string
-        }
-
-        // ! cube.js clickhouse driver formats everything as strings
-        const value = parseFloat(row[id] as string)
-        if (m.percentageOver) {
-          const key = rowIdWithout(m.percentageOver, row)
-          const total = totals[m.id][key]
-          return value / total
-        } else {
-          return value
-        }
-      }
-
+    // transform raw data to entries
+    const entries = table.map(row => {
+      const measurementsRaw: MetaGridEntry['measurementsRaw'] = {}
       for (const m of measurements) {
-        const value = getValue(m)
-        entry.measurements[m.id] = this.format(m, value)
-        entry.measurementsRaw[m.id] = value
+        const id = cube.id + '.' + m.id + '_measure'
+        // parse strings as float (cube.js clickhouse driver bug)
+        const value = m.type == 'quantitative' ? parseFloat(row[id] as string) : row[id]
+        measurementsRaw[m.id] = value
       }
 
+      const dimensionsRaw: MetaGridEntry['dimensionsRaw'] = {}
       let id = ''
       for (const d of dimensions) {
-        const dimension = d.additionalMeasures
+        const keys = d.additionalMeasures
           .map(m => m + '_measure')
           .concat(d.id + '_dimension')
-          // pick keys from row
-          .reduce((o, c) => ({
-            ...o,
-            [c.replace(/_measure|_dimension/g, '')]: row[cube.id + '.' + c],
-          }), {})
-        entry.dimensionsRaw[d.id] = dimension
-        const naturalId = dimension[d.naturalIdAttribute]
+
+        dimensionsRaw[d.id] = {}
+        for (const k of keys) {
+          const kShort = k.replace(/_measure|_dimension/g, '')
+          dimensionsRaw[d.id][kShort] = row[cube.id + '.' + k]
+        }
+        const naturalId = dimensionsRaw[d.id][d.naturalIdAttribute]
         if (naturalId == undefined) {
           throw new Error('Invalid natural id ' + d.naturalIdAttribute + ' for dimension ' + d.id)
         }
         const formatted = this.format(d, naturalId)
-        entry.dimensions[d.id] = formatted
-        id += formatted
+        dimensions[d.id] = formatted
+        id += `${d.id}=${naturalId};`
       }
-      entry.id = id
 
-      return entry
+      return <MetaGridEntry>{
+        id,
+        measurementsRaw,
+        dimensionsRaw,
+        measurements: {},
+        dimensions: {},
+      }
     })
+
+    // apply custom transformations
+    for (const m of measurements) {
+      if (m.transform != undefined) {
+        const newValues = m.transform(entries)
+        entries.forEach((row, i) => row.measurementsRaw[m.id] = newValues[i])
+      }
+    }
+
+    // apply formatters
+    entries.forEach(entry => {
+      for (const m of measurements) {
+        entry.measurements[m.id] = this.format(m, entry.measurementsRaw[m.id])
+      }
+
+      for (const d of dimensions) {
+        const naturalId = entry.dimensionsRaw[d.id][d.naturalIdAttribute]
+        const formatted = this.format(d, naturalId)
+        entry.dimensions[d.id] = formatted
+      }
+    })
+
+    return entries
   }
-  public format(spec: { type: ValueType, formatter: string }, value: number|string|string[]): string {
+  public format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string {
     if (Array.isArray(value)) {
       return value.map(v => this.format(spec, v)).join(', ')
     }
@@ -269,9 +241,12 @@ export default class Klicker {
       if (spec.formatter == 'duration') {
         return `${Math.floor(value / 60)}:${Math.floor(value % 60).toString().padStart(2, '0')}`
       }
-      return d3format.format(spec.formatter)(value)
+      return d3format.format(spec.formatter ?? '')(value)
     }
     if (spec.type == 'temporal' && typeof value == 'string') {
+      if (spec.formatter == undefined) {
+        throw new Error('No formatter specified for temporal')
+      }
       return formatDate(parseISO(value), spec.formatter)
     }
     if (spec.type == 'nominal' && typeof value == 'string') {

@@ -137,7 +137,7 @@ export default Vue.extend({
       if (this.numMeasurements != 1) {
         return ''
       }
-      return this.measurements.find(m => m.id == this.value.measurementsIds[0])?.description || ''
+      return this.measurements.find(m => m.id == this.value.measurementsIds[0])?.description ?? ''
     },
     faPlus() {
       return faPlus

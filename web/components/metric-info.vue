@@ -1,5 +1,6 @@
 <template>
   <b-card
+    v-if="measurement.description != undefined"
     :title="`About ${measurement.name}`"
     v-bind="$attrs"
   >

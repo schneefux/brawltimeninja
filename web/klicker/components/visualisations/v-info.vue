@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="query.measurements.length == 1"
+    v-if="query.measurements.length == 1 && description != undefined"
     :title="title"
     dense
   >

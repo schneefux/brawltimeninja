@@ -55,7 +55,7 @@ export default defineComponent({
     const show = computed(() => query.value.dimensions.length == 1
       && query.value.dimensions[0].id == 'brawler'
       && query.value.data.length > 0
-      && query.value.data[0].meta.picks != undefined
+      && query.value.data[0].measurementsRaw.picks != undefined
       && !query.value.comparing
     )
 
@@ -67,7 +67,7 @@ export default defineComponent({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = query.value.data.reduce((agg, c) => agg + parseInt(c.meta.picks as string), 0)
+      const sample = query.value.data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
