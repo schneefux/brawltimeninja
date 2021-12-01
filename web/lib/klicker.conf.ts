@@ -20,8 +20,8 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
     row.id.replace(`${overDimension.id}=${row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute]};`, '')
 
   return (entries: MetaGridEntry[]) => {
-    if (entries.length > 0 && !(overDimension.id in entries[0].dimensionsRaw)) {
-      throw new Error('Illegal percentageOver dimension ' + overDimension)
+    if (entries.length == 0 || !(overDimension.id in entries[0].dimensionsRaw)) {
+      return entries.map(row => row.measurementsRaw[measurementId] as number)
     }
 
     const total: Record<string, number> = {}
@@ -37,7 +37,7 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
 
     return entries.map(row => {
       const key = rowIdWithout(row)
-      return row.measurementsRaw.useRate as number / total[key]
+      return row.measurementsRaw[measurementId] as number / total[key]
     })
   }
 }
@@ -1226,13 +1226,6 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
-  teamSizeGt: {
-    id: 'teamSizeGt',
-    config: {
-      member: 'teamSize_dimension',
-      operator: 'gt',
-    },
-  },
 })
 
 const battleSlices = asSlice({
@@ -1290,6 +1283,13 @@ const battleSlices = asSlice({
     config: {
       member: 'teamsize_measure',
       operator: 'gt',
+    },
+  },
+  teamContains: {
+    id: 'teamContains',
+    config: {
+      member: 'team_dimension',
+      operator: 'contains',
     },
   },
 })
@@ -1641,6 +1641,7 @@ const cubes: Record<string, Cube> = {
       ...playerBrawlerSlices,
       commonSlices.mode,
       commonSlices.teamSizeGt,
+      commonSlices.teamContains,
       commonSlices.map,
       commonSlices.powerplay,
       brawlerSlices.starpowerIdEq,
