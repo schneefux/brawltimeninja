@@ -236,7 +236,7 @@ const battleDimensions = asDimensions({
     additionalMeasures: [],
     type: 'nominal',
     config: {
-      sql: 'toJSONString(arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name])))',
+      sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
       type: 'string',
     },
   },
@@ -1285,6 +1285,13 @@ const battleSlices = asSlice({
       operator: 'gt',
     },
   },
+  teamContains: {
+    id: 'teamContains',
+    config: {
+      member: 'team_dimension',
+      operator: 'contains',
+    },
+  },
 })
 
 const commonSlices = asSlice({
@@ -1634,6 +1641,7 @@ const cubes: Record<string, Cube> = {
       ...playerBrawlerSlices,
       commonSlices.mode,
       commonSlices.teamSizeGt,
+      commonSlices.teamContains,
       commonSlices.map,
       commonSlices.powerplay,
       brawlerSlices.starpowerIdEq,

@@ -18,31 +18,32 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, useContext, useFetch } from '@nuxtjs/composition-api'
+import { PropType, ref } from '@vue/composition-api'
 import { SliceValue } from '~/klicker'
 import { capitalize } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
   },
-  data() {
+  setup() {
+    const { $klicker } = useContext()
+
+    const brawlers = ref<string[]>([])
+
+    useFetch(async () => {
+      const data = await $klicker.queryAllBrawlers()
+      brawlers.value = data.sort((b1, b2) => b1.localeCompare(b2))
+    })
+
     return {
-      brawlers: [] as string[],
+      brawlers,
+      capitalize,
     }
-  },
-  async fetch() {
-    const brawlers = await this.$klicker.queryAllBrawlers()
-    this.brawlers = brawlers
-      .sort((b1, b2) => b1.localeCompare(b2))
-  },
-  computed: {
-    capitalize() {
-      return capitalize
-    },
   },
 })
 </script>
