@@ -13,7 +13,15 @@
     </b-card>
 
     <div>
-      <draft-grid></draft-grid>
+      <c-slicer v-model="state">
+        <template v-slot="data">
+          <s-season v-bind="data"></s-season>
+          <s-trophies v-bind="data"></s-trophies>
+          <s-mode-map v-bind="data"></s-mode-map>
+        </template>
+      </c-slicer>
+
+      <draft-grid :state="state"></draft-grid>
     </div>
   </page>
 </template>
@@ -21,22 +29,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { State } from '~/klicker'
-import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from '~/klicker/components'
-import DTeam from '@/components/klicker/d-team.vue'
-import BrawlerTeam from '@/components/brawler/brawler-team.vue'
+import { CSlicer } from '~/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
+import { getSeasonEnd } from '~/lib/util'
 
 export default Vue.extend({
   components: {
-    CDashboard,
-    BCard,
-    CMetric,
-    VTable,
-    VCsv,
-    VPivotCsv,
-    DTeam,
-    BrawlerTeam, // dependency of DTeam
     DraftGrid,
+    CSlicer,
   },
   head() {
     const description = ''
@@ -54,15 +54,23 @@ export default Vue.extend({
   },
   middleware: ['cached'],
   data() {
+    const twoWeeksAgo = new Date()
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+    const currentSeason = getSeasonEnd(twoWeeksAgo)
+
     return {
       state: <State>{
-        cubeId: 'battle',
-        dimensionsIds: ['team'],
-        measurementsIds: ['wins'],
+        // TODO
+        cubeId: '',
+        dimensionsIds: [],
+        measurementsIds: [],
+        sortId: '',
         slices: {
+          season: [currentSeason.toISOString().slice(0, 10)],
+          trophyRangeGte: ['0'],
+          trophyRangeLt: ['10'],
+          mode: [],
         },
-        sortId: 'wins',
-        limit: 10,
       },
     }
   },

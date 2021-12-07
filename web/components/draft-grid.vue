@@ -2,6 +2,7 @@
   <div>
     <b-card
       title="Add Brawlers to your team"
+      :loading="loading > 0"
     >
       <div slot="content" class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
         <button
@@ -62,8 +63,8 @@
 
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
-import { computed, ref } from '@vue/composition-api'
-import { CubeResponse } from '~/klicker'
+import { computed, PropType, ref, watch } from '@vue/composition-api'
+import { State } from '~/klicker'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '~/klicker/components'
 
@@ -80,26 +81,51 @@ export default defineComponent({
   components: {
     BCard,
   },
-  setup() {
+  props: {
+    state: {
+      type: Object as PropType<State>,
+      required: true,
+    },
+  },
+  setup(props) {
     const { $klicker } = useContext()
 
     const team = ref<AllyData[]>([])
+    const loading = ref(0)
 
-    const brawlerData = useAsync(() => $klicker.query({
-      cubeId: 'battle',
-      slices: {},
-      dimensionsIds: ['brawler'],
-      measurementsIds: ['wins', 'picks'],
-      sortId: 'picks',
-    }), 'draft-grid-brawler-data')
+    async function getBrawlerData() {
+      loading.value++
+      const data = await $klicker.query({
+        cubeId: 'battle',
+        slices: props.state.slices,
+        dimensionsIds: ['brawler'],
+        measurementsIds: ['winRateAdj'],
+        sortId: 'winRateAdj',
+      })
+      loading.value--
+      return data
+    }
 
-    const synergyData = useAsync(() => $klicker.query({
-      cubeId: 'synergy',
-      slices: {},
-      dimensionsIds: ['brawler', 'ally'],
-      measurementsIds: ['wins', 'picks'],
-      sortId: 'picks',
-    }), 'draft-grid-synergy-data')
+    async function getSynergyData() {
+      loading.value++
+      const data = await $klicker.query({
+        cubeId: 'synergy',
+        slices: props.state.slices,
+        dimensionsIds: ['brawler', 'ally'],
+        measurementsIds: ['winRateAdj'],
+        sortId: 'winRateAdj',
+      })
+      loading.value--
+      return data
+    }
+
+    const brawlerData = useAsync(() => getBrawlerData(), 'draft-grid-brawler-data')
+    const synergyData = useAsync(() => getSynergyData(), 'draft-grid-synergy-data')
+
+    watch(() => props.state.slices, async () => {
+      brawlerData.value = await getBrawlerData()
+      synergyData.value = await getSynergyData()
+    })
 
     // TODO maybe replace by clicker bayes magic
     const allyData = computed(() => {
@@ -108,7 +134,7 @@ export default defineComponent({
       if (team.value.length == 0) {
         brawlerData.value?.data?.forEach(row => {
           const name = row.dimensionsRaw.brawler.brawler
-          const winRate = (row.measurementsRaw.wins as number) / (row.measurementsRaw.picks as number)
+          const winRate = row.measurementsRaw.winRateAdj as number
           avgWinRateByAlly[name] = [winRate]
         })
       } else {
@@ -118,7 +144,7 @@ export default defineComponent({
             avgWinRateByAlly[name] = []
           }
 
-          const winRate = (row.measurementsRaw.wins as number) / (row.measurementsRaw.picks as number)
+          const winRate = row.measurementsRaw.winRateAdj as number
           const allyId = brawlerId({ name: row.dimensionsRaw.ally.ally })
           if (team.value.find(brawler => brawler.brawlerId == allyId)) {
             avgWinRateByAlly[name].push(winRate)
@@ -128,15 +154,16 @@ export default defineComponent({
 
       const newAllyData: AllyData[] = []
       for (const [brawler, winRates] of Object.entries(avgWinRateByAlly)) {
+        const sufficientData = team.value.length == 0 || winRates.length == team.value.length
         const id = brawlerId({ name: brawler })
         const avgWinRate = winRates.reduce((sum, value) => sum + value, 0) / winRates.length
         newAllyData.push({
           winRates,
           brawlerId: id,
           brawlerName: capitalizeWords(brawler),
-          avgWinRateFormatted: `${Math.round(100*avgWinRate)}%`,
+          avgWinRateFormatted: sufficientData ? `${Math.round(100*avgWinRate)}%` : '?',
           normAvgWinRate: avgWinRate,
-          selectable: !team.value.some(b => b.brawlerId == id) && team.value.length < 3,
+          selectable: sufficientData && !team.value.some(b => b.brawlerId == id) && team.value.length < 3,
         })
       }
       const avgWinRateMin = newAllyData.reduce((min, brawler) => Math.min(min, brawler.normAvgWinRate), Infinity)
@@ -158,6 +185,7 @@ export default defineComponent({
     }
 
     return {
+      loading,
       team,
       addToTeam,
       removeFromTeam,
