@@ -60,6 +60,8 @@ job "brawltime-render" {
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
 
+      // TODO set up seccomp profile
+      // https://playwright.dev/docs/docker#crawling-and-scraping
       config {
         image = "ghcr.io/schneefux/brawltime-render:${var.tag}"
         ipc_mode = "host"

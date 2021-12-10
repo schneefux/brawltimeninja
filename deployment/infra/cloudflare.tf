@@ -40,6 +40,15 @@ resource "cloudflare_record" "google" {
   zone_id = var.cloudflare_zone_id
 }
 
+resource "cloudflare_record" "yandex" {
+  name = "brawltime.ninja"
+  proxied = false
+  ttl = 1
+  type = "TXT"
+  value = "yandex-verification: 5d2c4b43be3f62ab"
+  zone_id = var.cloudflare_zone_id
+}
+
 resource "cloudflare_record" "mbo1" {
   name = "brawltime.ninja"
   priority = 10
