@@ -224,6 +224,7 @@ export default {
   },
 
   content: {
+    useCache: true, // rebuild to update content
     // breaks media-img component registration
     // https://github.com/nuxt/content/issues/261
     liveEdit: false,
