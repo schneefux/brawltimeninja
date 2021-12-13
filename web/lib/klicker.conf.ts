@@ -1281,7 +1281,7 @@ const battleSlices = asSlice({
   teamSizeGt: {
     id: 'teamSizeGt',
     config: {
-      member: 'teamsize_measure',
+      member: 'teamSize_dimension',
       operator: 'gt',
     },
   },
