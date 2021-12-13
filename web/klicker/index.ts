@@ -24,6 +24,20 @@ export interface State {
   limit?: number
 }
 
+export interface TestState {
+  comparingMeasurementId: string
+  reference: {
+    cubeId: string
+    slices: SliceValue
+    dimensionsIds: string[]
+  }
+  test: {
+    cubeId: string
+    slices: SliceValue
+    dimensionsIds: string[]
+  }
+}
+
 export interface Cube {
   id: string
   table: string
@@ -67,6 +81,13 @@ export interface Measurement<T=string|number> {
   config: {
     sql: string
     type: MeasureType
+  }
+  /**
+   * Configuration for statistical tests
+   */
+  statistics?: {
+    test(referenceData: MetaGridEntry, testData: MetaGridEntry): number
+    requiresMeasurements: string[]
   }
 }
 
@@ -132,12 +153,29 @@ export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
 
-export interface CubeResponse {
-  state: State
+export interface MetaGridEntryTest extends MetaGridEntry {
+  test: {
+    measurements: Record<string, number|string>
+    differenceRaw: number
+    difference: string
+    annotatedDifference: string
+    pValueRaw: number
+  }
+}
+
+export interface TypedCubeResponse<S, D> {
+  state: S
   dimensions: Dimension[]
   measurements: Measurement[]
-  data: MetaGridEntry[]
+  data: D[]
+}
 
+/** TODO deprecate in favor of TypedCubeResponse */
+export interface CubeResponse extends TypedCubeResponse<State, MetaGridEntry> {
   /** TODO deprecate */
   comparing: boolean
+}
+
+export interface CubeResponseTest extends TypedCubeResponse<TestState, MetaGridEntryTest> {
+  comparingMeasurement: Measurement
 }

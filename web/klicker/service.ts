@@ -1,4 +1,4 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse } from "~/klicker"
+import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse, MetaGridEntryTest, TestState, CubeResponseTest } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -83,7 +83,12 @@ export default class Klicker {
           ...cube.defaultSliceValues,
           ...slices,
         })
-        .filter(([id, values]) => values.filter(v => v != undefined).length > 0)
+        .filter(([id, values]) => {
+          if (!Array.isArray(values)) {
+            throw new Error('Slice ' + id + ' must be an array')
+          }
+          return values.filter(v => v != undefined).length > 0
+        })
         .map(([id, values]) => {
           const slice = cube.slices.find(s => s.id == id)
           if (slice == undefined) {
@@ -149,11 +154,11 @@ export default class Klicker {
       let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]
 
       if (sortMeasurement != undefined) {
-        data = this.compareEntries(cube, left, right, 'diff')
+        data = this.compareEntries(cube, left, right)
           .sort((e1, e2) => sortMeasurement.sign * ((e1.measurementsRaw[sortMeasurement.id] as number) - (e2.measurementsRaw[sortMeasurement.id] as number)))
       }
       if (sortDimension != undefined) {
-        data = this.compareEntries(cube, left, right, 'diff')
+        data = this.compareEntries(cube, left, right)
           .sort((e1, e2) => (e1.dimensions[sortDimension.id].localeCompare(e2.dimensions[sortDimension.id])))
       }
     }
@@ -164,6 +169,48 @@ export default class Klicker {
       measurements,
       dimensions,
       data,
+    }
+  }
+  public async comparingQuery(state: TestState): Promise<CubeResponseTest> {
+    if (!state.reference.dimensionsIds.every(d => state.test.dimensionsIds.includes(d))) {
+      // TODO relax this condition and allow comparisons across different levels of the same hierarchy
+      throw new Error('Dimensions must match')
+    }
+
+    // TODO should comparisons across different cubeIds be allowed? if not -> push cubeId up
+    const referenceCube = this.config[state.reference.cubeId]
+    const comparingMeasurement = referenceCube.measurements.find(m => m.id == state.comparingMeasurementId)
+    if (comparingMeasurement == undefined) {
+      throw new Error(`Invalid comparison, missing ${state.comparingMeasurementId} in reference cube`)
+    }
+    const testCube = this.config[state.test.cubeId]
+    if (!testCube.measurements.some(m => m.id == state.comparingMeasurementId)) {
+      throw new Error(`Invalid comparison, missing ${state.comparingMeasurementId} in test cube`)
+    }
+    if (comparingMeasurement.type != 'quantitative') {
+      throw new Error(`Only quantitative measures can be compared, ${comparingMeasurement.id} is ${comparingMeasurement.type}`)
+    }
+
+    const measurementsIds = [state.comparingMeasurementId, ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
+    const partialQueryState = {
+      measurementsIds,
+      sortId: state.comparingMeasurementId,
+    }
+
+    const referenceResponse = await this.query({
+      ...state.reference,
+      ...partialQueryState,
+    })
+    const testResponse = await this.query({
+      ...state.test,
+      ...partialQueryState,
+    })
+
+    return {
+      ...referenceResponse,
+      state,
+      comparingMeasurement,
+      data: this.compare(referenceResponse.data, testResponse.data, comparingMeasurement)
     }
   }
   private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet): MetaGridEntry[] {
@@ -259,10 +306,51 @@ export default class Klicker {
     }
     return value.toString()
   }
-  private compareEntries(cube: Cube, baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[], mode: 'diff'|'test'): MetaGridEntry[] {
+  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement): MetaGridEntryTest[] {
+    const referenceDataMap: Record<string, MetaGridEntry> = {}
+    referenceData.forEach(r => referenceDataMap[r.id] = r)
+
+    return testData.map(t => {
+      const diff = (t.measurementsRaw[comparing.id] as number) - (referenceDataMap[t.id].measurementsRaw[comparing.id] as number)
+      const pValue = comparing.statistics?.test(referenceDataMap[t.id], t) || 1
+      // apply Bonferroni correction (TODO use method with better accuracy)
+      const correctedPValue = Math.min(1.0, pValue * testData.length)
+
+      const pStars = (pValue: number) => {
+        if (pValue < 0.001) {
+          return '⋆⋆⋆'
+        }
+        if (pValue < 0.01) {
+          return '⋆⋆'
+        }
+        if (pValue < 0.05) {
+          return '⋆'
+        }
+        if (pValue < 0.1) {
+          return '+'
+        }
+        return ''
+      }
+
+      const difference = (diff > 0 ? '+' : '') + this.format(comparing, diff)
+      return <MetaGridEntryTest>{
+        ...referenceDataMap[t.id],
+        test: {
+          measurements: t.measurements,
+          differenceRaw: diff,
+          difference,
+          annotatedDifference: difference + ' ' + pStars(correctedPValue),
+          pValueRaw: correctedPValue,
+        },
+      }
+    })
+  }
+  /** deprecated, remove */
+  private compareEntries(cube: Cube, baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[]): MetaGridEntry[] {
     return comparingEntries
       .map(comparingEntry => {
         // use startsWith instead of eq to allow comparisons across hierarchy levels
+        // TODO verify that most granular dimension must be the last item in the ID or replace
         const baseEntry = baseEntries.find(b => comparingEntry.id.startsWith(b.id))
         if (baseEntry == undefined) {
           return undefined
@@ -271,32 +359,9 @@ export default class Klicker {
         const measurements: Record<string, string> = {}
 
         for (const m in baseEntry.measurements) {
-          if (mode == 'diff') {
-            measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
-            const index = cube.measurements.findIndex(mm => mm.id == m)
-            measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(cube.measurements[index], measurementsRaw[m])
-          }
-
-          // TODO implement z-test again
-          /*
-          if (mode == 'test') {
-            // perform a Gauss test using normal approximation
-            // TODO quite a hack because most attributes aren't even binomial...
-            // TODO get the variances directly, then evaluate t-test or welch-test
-            // TODO requires picks... logic should be moved elsewhere
-
-            const zN = comparingEntry.meta.picks as number
-            const zX = comparingEntry.measurementsRaw[m]
-            const zP = baseEntry.measurementsRaw[m] / (baseEntry.meta.picks as number)
-            const zCondition = zN >= 50 && zN * zP > 5 && zN * (1 - zP) > 5
-            if (zCondition) {
-              measurementsRaw[m] = (zX - zN * zP) / Math.sqrt(zN * zP * (1 - zP))
-            } else {
-              measurementsRaw[m] = 0
-            }
-            measurements[m] = measurementsRaw[m].toFixed(2)
-          }
-          */
+          measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
+          const index = cube.measurements.findIndex(mm => mm.id == m)
+          measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(cube.measurements[index], measurementsRaw[m])
         }
 
         return {

@@ -27,6 +27,7 @@ export { default as VShare } from './visualisations/v-share.vue'
 export { default as VTable } from './visualisations/v-table.vue'
 export { default as VTierListSharepic } from './visualisations/v-tier-list-sharepic.vue'
 export { default as VTierList } from './visualisations/v-tier-list.vue'
+export { default as VTestInfo } from './visualisations/v-test-info.vue'
 
 export { default as CConfigurator } from './c-configurator.vue'
 export { default as CDashboard } from './c-dashboard.vue'

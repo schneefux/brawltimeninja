@@ -1,13 +1,13 @@
 <template>
   <!-- FIXME SSR sometimes breaks due to inheritAttrs and b-card (?) -->
   <b-card
-    v-if="query.measurements.length < 5"
+    v-if="show"
     v-bind="$attrs"
   >
     <div slot="content" class="h-full relative">
       <b-table
         :columns="columns"
-        :rows="query.data"
+        :rows="rows"
         :page-size="pageSize"
         id-key="id"
         class="font-semibold text-sm md:text-lg h-full overflow-auto"
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse } from '~/klicker'
+import { CubeResponse, CubeResponseTest } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
@@ -58,7 +58,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     query: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeResponseTest>,
       required: true
     },
     pageSize: {
@@ -67,36 +67,60 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, route } = useContext()
+    const { $klicker, route, i18n } = useContext()
     const { query } = toRefs(props)
 
-    const columns = computed(() => {
-      return [<Column>{
+    const show = computed(() => query.value.measurements.length < 5)
+
+    const columns = computed<Column[]>(() => {
+      const dimensionColumn: Column = {
         title: query.value.dimensions.map(d => $klicker.getName(d)).join(', '),
         keys: query.value.dimensions.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
-      }].concat(
-        query.value.measurements.map(m => (<Column>{
+      }
+
+      let columns: Column[]
+      if (!('comparingMeasurement' in query.value)) {
+        columns = query.value.measurements.map(m => (<Column>{
           // measurements are rendered 1:1
           title: $klicker.getName(m),
           keys: [`measurements.${m.id}`],
           slot: `measurements.${m.id}`,
           shrink: true,
-        })),
-      )
+        }))
+      } else {
+        columns = [{
+          title: i18n.t('comparison.reference.for.metric', { metric: $klicker.getName(query.value.comparingMeasurement) }) as string,
+          keys: [`measurements.${query.value.comparingMeasurement.id}`],
+          slot: `measurements.${query.value.comparingMeasurement.id}`,
+          shrink: true,
+        }, {
+          title: i18n.t('comparison.difference') as string,
+          keys: [`test.annotatedDifference`],
+          slot: 'difference',
+          shrink: true,
+        }]
+      }
+
+      return [dimensionColumn, ...columns]
     })
 
-    const link = computed(() => (<Location>{
+    const rows = computed(() => query.value.data)
+
+    // TODO add comparator v2 support to dashboard
+    const link = computed(() => !('comparingMeasurement' in query.value) ? <Location>{
       ...$klicker.stateToLocation(query.value.state),
       path: '/dashboard',
-    }))
+    } : {})
 
-    const showLink = computed(() => route.value.path != '/dashboard')
+    const showLink = computed(() => route.value.path != '/dashboard' && !('comparingMeasurement' in query.value))
 
     return {
-      columns,
+      show,
       link,
+      rows,
+      columns,
       showLink,
       faExternalLinkAlt,
     }

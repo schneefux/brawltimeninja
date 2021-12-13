@@ -1,4 +1,5 @@
 import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Measurement, Dimension } from "../klicker"
+import { ChiSquared } from 'sampson'
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -38,6 +39,37 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
     return entries.map(row => {
       const key = rowIdWithout(row)
       return row.measurementsRaw[measurementId] as number / total[key]
+    })
+  }
+}
+
+function calculateGTestStatistic(expectations: number[], observations: number[]) {
+  if (expectations.length != observations.length) {
+    throw new Error(`Invalid chisq test, cardinality of expectations ${expectations.length} does not match cardinality of observations ${observations.length}`)
+  }
+
+  let g = 0
+  for (let i = 0; i < observations.length; i++) {
+    g += observations[i] * Math.log(observations[i] / expectations[i])
+  }
+
+  return 2*g
+}
+
+function binomialTest(getK: (d: MetaGridEntry) => number, getN: (d: MetaGridEntry) => number) {
+  // approximate a binomial test using the G-test
+  return (r: MetaGridEntry, t: MetaGridEntry) => {
+    const testSampleSize = getN(t)
+    const observedSuccesses = getK(t)
+    const observedFailures = testSampleSize - observedSuccesses
+
+    const expectedSuccesses = getK(r) / getN(r) * testSampleSize
+    const expectedFailures = testSampleSize - expectedSuccesses
+
+    const g = calculateGTestStatistic([expectedSuccesses, expectedFailures], [observedSuccesses, observedFailures])
+    return ChiSquared.cdf(g, {
+      // df: (rows - 1) * (columns - 1)
+      df: 1
     })
   }
 }
@@ -605,6 +637,10 @@ const battleNumberMeasurements = asNumberMeasurements({
       sql: 'battle_victory',
       type: 'avg',
     },
+    statistics: {
+      test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+      requiresMeasurements: ['picks'],
+    },
   },
   winRateAdj: {
     id: 'winRateAdj',
@@ -619,19 +655,6 @@ const battleNumberMeasurements = asNumberMeasurements({
     },
     config: {
       sql: winratePosteriorRaw,
-      type: 'number',
-    },
-  },
-  winRateDiff: {
-    id: 'winRateDiff',
-    name: 'Win Rate Diff',
-    description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
       type: 'number',
     },
   },
@@ -722,19 +745,6 @@ const battleNumberMeasurements = asNumberMeasurements({
       type: 'avg',
     },
   },
-  starRateDiff: {
-    id: 'starRateDiff',
-    name: 'Star Player Diff.',
-    description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
-      type: 'number',
-    },
-  },
   rank: {
     id: 'rank',
     name: 'Average Rank',
@@ -777,19 +787,6 @@ const battleNumberMeasurements = asNumberMeasurements({
     config: {
       sql: 'battle_rank1',
       type: 'avg',
-    },
-  },
-  rank1RateDiff: {
-    id: 'rank1RateDiff',
-    name: '#1 Rate Diff.',
-    description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
-      type: 'number',
     },
   },
   duration: {
@@ -947,6 +944,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     config: {
       sql: 'avgMerge(battle_victory_state)',
       type: 'number',
+    },
+    statistics: {
+      test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+      requiresMeasurements: ['picks'],
     },
   },
   winRateAdj: {

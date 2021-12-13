@@ -31,6 +31,7 @@
     "nuxt": "2.15.8",
     "nuxt-i18n": "^6.28.1",
     "plotly.js": "^2.7.0",
+    "sampson": "^0.2.8",
     "v-click-outside": "^3.1.2",
     "vega": "^5.21.0",
     "vega-embed": "^6.20.5",
