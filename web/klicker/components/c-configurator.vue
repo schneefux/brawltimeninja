@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { State, Cube, Dimension } from '~/klicker'
+import { CubeQuery, Cube, Dimension } from '~/klicker'
 import CMetric from '~/klicker/components/c-metric.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
 import BCheckbox from '~/klicker/components/ui/b-checkbox.vue'
@@ -122,18 +122,18 @@ export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<State>,
+      type: Object as PropType<CubeQuery>,
       required: true
     },
   },
   data() {
-    const stateIsDefault = !this.$klicker.config[this.value.cubeId].hidden
+    const queryIsDefault = !this.$klicker.config[this.value.cubeId].hidden
       && this.value.measurementsIds.length == this.$klicker.config[this.value.cubeId].defaultMeasurementIds.length
       && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.$klicker.config[this.value.cubeId].defaultDimensionsIds)
       && this.value.comparingSlices == undefined
 
     return {
-      advancedMode: !stateIsDefault,
+      advancedMode: !queryIsDefault,
       numDimensions: this.value.dimensionsIds.length,
     }
   },
@@ -159,7 +159,7 @@ export default Vue.extend({
         ? this.value.measurementsIds
         : this.$klicker.config[c].defaultMeasurementIds
 
-      this.$emit('input', <State>{
+      this.$emit('input', <CubeQuery>{
         cubeId: c,
         slices: slicesDefaults,
         comparingSlices: comparingSliceDefaults,
@@ -171,7 +171,7 @@ export default Vue.extend({
     onInputDimensionsIds(index: number, d: string) {
       const dimensionsIds = this.value.dimensionsIds.slice()
       dimensionsIds[index] = d
-      this.$emit('input', <State>{
+      this.$emit('input', <CubeQuery>{
         ...this.value,
         dimensionsIds,
       })
@@ -180,7 +180,7 @@ export default Vue.extend({
     onDimensionRemove() {
       const dimensionsIds = this.value.dimensionsIds.slice()
       dimensionsIds.pop()
-      this.$emit('input', <State>{
+      this.$emit('input', <CubeQuery>{
         ...this.value,
         dimensionsIds,
       })
@@ -193,7 +193,7 @@ export default Vue.extend({
         return this.value.comparingSlices != undefined
       },
       set(comparing: boolean) {
-        this.$emit('input', <State>{
+        this.$emit('input', <CubeQuery>{
           ...this.value,
           comparingSlices: comparing ? this.$klicker.config[this.value.cubeId].defaultSliceValues : undefined,
         })

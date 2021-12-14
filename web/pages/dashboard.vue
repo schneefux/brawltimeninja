@@ -2,7 +2,7 @@
   <page-dashboard title="Brawl Stars Meta Dashboard">
     <c-dashboard
       slot="dashboard"
-      v-model="state"
+      v-model="query"
       class="mt-2"
       configurator
     >
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { CDashboard, VDashboard } from '~/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -111,13 +111,13 @@ export default Vue.extend({
     SPlayerTag,
   },
   computed: {
-    state: {
-      get(): State {
-        return this.$klicker.locationToState(this.$route, this.$klicker.config, 'map')
+    query: {
+      get(): CubeQuery {
+        return this.$klicker.locationToQuery(this.$route, this.$klicker.config, 'map')
       },
-      set(s: State) {
+      set(q: CubeQuery) {
         this.$router.push({
-          ...this.$klicker.stateToLocation(s),
+          ...this.$klicker.queryToLocation(q),
           path: '/dashboard',
         })
       }

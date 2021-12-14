@@ -15,7 +15,7 @@
 
     <c-query
       slot="content"
-      :state="state"
+      :query="query"
     >
       <b-shimmer
         slot="placeholder"
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, watchEffect } from '@nuxtjs/composition-api'
-import { SliceValue, State } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 
 export default defineComponent({
@@ -72,7 +72,7 @@ export default defineComponent({
   },
   setup(props) {
     const kindKey = computed(() => props.kind == 'starpowers' ? 'starpower' : 'gadget')
-    const state = computed(() => (<State>{
+    const query = computed<CubeQuery>(() => ({
       cubeId: 'battle',
       dimensionsIds: props.kind == 'starpowers' ? ['starpower'] : ['gadget'],
       measurementsIds: ['winRate'],
@@ -85,7 +85,7 @@ export default defineComponent({
     }))
 
     return {
-      state,
+      query,
       kindKey,
     }
   },

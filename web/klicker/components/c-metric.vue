@@ -67,14 +67,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { State, Measurement } from '~/klicker'
+import { CubeQuery, Measurement } from '~/klicker'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<State>,
+      type: Object as PropType<CubeQuery>,
       required: true
     },
     multiple: {
@@ -108,7 +108,7 @@ export default Vue.extend({
         measurementsIds = this.measurements.map(m => m.id)
       }
 
-      this.$emit('input', <State>{
+      this.$emit('input', <CubeQuery>{
         ...this.value,
         measurementsIds,
         sortId: measurementsIds[0],
@@ -118,7 +118,7 @@ export default Vue.extend({
     onMeasurementRemove() {
       const measurementsIds = this.value.measurementsIds.slice()
       measurementsIds.pop()
-      this.$emit('input', <State>{
+      this.$emit('input', <CubeQuery>{
         ...this.value,
         measurementsIds,
       })

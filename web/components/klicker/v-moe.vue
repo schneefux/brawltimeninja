@@ -43,20 +43,20 @@ import { CubeResponse } from '~/klicker'
 export default defineComponent({
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
     const store = useStore<any>()
 
-    const show = computed(() => query.value.state.dimensionsIds.length == 1
-      && query.value.state.dimensionsIds[0] == 'brawler'
-      && query.value.data.length > 0
-      && query.value.data[0].measurementsRaw.picks != undefined
-      && !query.value.comparing
+    const show = computed(() => response.value.query.dimensionsIds.length == 1
+      && response.value.query.dimensionsIds[0] == 'brawler'
+      && response.value.data.length > 0
+      && response.value.data[0].measurementsRaw.picks != undefined
+      && !response.value.comparing
     )
 
     const moe = computed((): number => {
@@ -67,7 +67,7 @@ export default defineComponent({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = query.value.data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
+      const sample = response.value.data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')

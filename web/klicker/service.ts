@@ -1,4 +1,4 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse, MetaGridEntryTest, TestState, CubeResponseTest, GenericState } from "~/klicker"
+import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, MetaGridEntryTest, CubeComparingQuery, CubeResponseTest, GenericCubeQuery } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -51,27 +51,27 @@ export default class Klicker {
     return false
   }
 
-  public async query(state: State): Promise<CubeResponse> {
-    if (!(state.cubeId in this.config)) {
-      throw 'Invalid cubeId ' + state.cubeId
+  public async query(query: CubeQuery): Promise<CubeResponse> {
+    if (!(query.cubeId in this.config)) {
+      throw 'Invalid cubeId ' + query.cubeId
     }
 
-    const cube = this.config[state.cubeId]
+    const cube = this.config[query.cubeId]
     // sort-id may either refer to a measurement or a dimension
     const sortMeasurement = cube.measurements
-      .find(m => state.sortId == m.id)
+      .find(m => query.sortId == m.id)
     const sortDimension = cube.dimensions
-      .find(d => state.sortId == d.id)
+      .find(d => query.sortId == d.id)
     if (sortMeasurement == undefined && sortDimension == undefined) {
-      throw new Error('Invalid sort id ' + state.sortId)
+      throw new Error('Invalid sort id ' + query.sortId)
     }
-    const dimensions = state.dimensionsIds
+    const dimensions = query.dimensionsIds
       .map(id => {
         const dimension = cube.dimensions.find(d => id == d.id)
         if (dimension == undefined) throw new Error('Invalid dimension id ' + id)
         return dimension
       })
-    const measurements = state.measurementsIds
+    const measurements = query.measurementsIds
       .map(id => {
         const measurement = cube.measurements.find(d => id == d.id)
         if (measurement == undefined) throw new Error('Invalid measurements id ' + id)
@@ -124,28 +124,28 @@ export default class Klicker {
       [cube.id + '.' + sortDimension!.id + '_dimension']: 'desc',
     }
 
-    const querySlices = mapSlices(state.slices)
+    const querySlices = mapSlices(query.slices)
 
     const rawData = await this.cubejsApi.load({
       measures: queryMeasures,
       dimensions: queryDimensions,
       filters: querySlices,
       order: queryOrder,
-      limit: state.limit,
+      limit: query.limit,
     })
 
     let data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
 
     // TODO refactor this - remove comparison mode from query level and move it to visualisation level
-    if (state.comparingSlices != undefined) {
-      const queryComparingSlices = mapSlices(state.comparingSlices)
+    if (query.comparingSlices != undefined) {
+      const queryComparingSlices = mapSlices(query.comparingSlices)
 
       const comparingRawData = await this.cubejsApi.load({
         measures: queryMeasures,
         dimensions: queryDimensions,
         filters: queryComparingSlices,
         order: queryOrder,
-        limit: state.limit,
+        limit: query.limit,
       })
 
       const comparingData = this.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData)
@@ -164,50 +164,50 @@ export default class Klicker {
     }
 
     return {
-      state,
-      comparing: state.comparingSlices != undefined,
+      query,
+      comparing: query.comparingSlices != undefined,
       data,
     }
   }
-  public async comparingQuery(state: TestState): Promise<CubeResponseTest> {
-    if (!state.reference.dimensionsIds.every(d => state.test.dimensionsIds.includes(d))) {
+  public async comparingQuery(query: CubeComparingQuery): Promise<CubeResponseTest> {
+    if (!query.reference.dimensionsIds.every(d => query.test.dimensionsIds.includes(d))) {
       // TODO relax this condition and allow comparisons across different levels of the same hierarchy
       throw new Error('Dimensions must match')
     }
 
     // TODO should comparisons across different cubeIds be allowed? if not -> push cubeId up
-    const referenceCube = this.config[state.reference.cubeId]
-    const comparingMeasurement = referenceCube.measurements.find(m => m.id == state.comparingMeasurementId)
+    const referenceCube = this.config[query.reference.cubeId]
+    const comparingMeasurement = referenceCube.measurements.find(m => m.id == query.comparingMeasurementId)
     if (comparingMeasurement == undefined) {
-      throw new Error(`Invalid comparison, missing ${state.comparingMeasurementId} in reference cube`)
+      throw new Error(`Invalid comparison, missing ${query.comparingMeasurementId} in reference cube`)
     }
-    const testCube = this.config[state.test.cubeId]
-    if (!testCube.measurements.some(m => m.id == state.comparingMeasurementId)) {
-      throw new Error(`Invalid comparison, missing ${state.comparingMeasurementId} in test cube`)
+    const testCube = this.config[query.test.cubeId]
+    if (!testCube.measurements.some(m => m.id == query.comparingMeasurementId)) {
+      throw new Error(`Invalid comparison, missing ${query.comparingMeasurementId} in test cube`)
     }
     if (comparingMeasurement.type != 'quantitative') {
       throw new Error(`Only quantitative measures can be compared, ${comparingMeasurement.id} is ${comparingMeasurement.type}`)
     }
 
-    const measurementsIds = [state.comparingMeasurementId, ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
-    const partialQueryState = {
+    const measurementsIds = [query.comparingMeasurementId, ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
+    const partialQuery = {
       measurementsIds,
-      sortId: state.comparingMeasurementId,
+      sortId: query.comparingMeasurementId,
     }
 
     const referenceResponse = await this.query({
-      ...state.reference,
-      ...partialQueryState,
+      ...query.reference,
+      ...partialQuery,
     })
     const testResponse = await this.query({
-      ...state.test,
-      ...partialQueryState,
+      ...query.test,
+      ...partialQuery,
     })
 
     return {
       ...referenceResponse,
       test: true,
-      state,
+      query,
       data: this.compare(referenceResponse.data, testResponse.data, comparingMeasurement)
     }
   }
@@ -380,54 +380,54 @@ export default class Klicker {
     // fall back to name
     return m.name || m.id
   }
-  public getDimensions(state: GenericState): Dimension[] {
-    return state.dimensionsIds.map(id =>  this.getDimension(state, id))
+  public getDimensions(query: GenericCubeQuery): Dimension[] {
+    return query.dimensionsIds.map(id =>  this.getDimension(query, id))
   }
-  private getDimension(state: GenericState, id: string): Dimension {
-    if (!(state.cubeId in this.config)) {
-      throw 'Invalid cubeId ' + state.cubeId
+  private getDimension(query: GenericCubeQuery, id: string): Dimension {
+    if (!(query.cubeId in this.config)) {
+      throw 'Invalid cubeId ' + query.cubeId
     }
 
-    const cube = this.config[state.cubeId]
+    const cube = this.config[query.cubeId]
     const dimension = cube.dimensions.find(d => id == d.id)
     if (dimension == undefined) {
       throw new Error('Invalid dimension id ' + id)
     }
     return dimension
   }
-  public getMeasurements(state: State): Measurement[] {
-    return state.measurementsIds.map(id =>  this.getMeasurement(state, id))
+  public getMeasurements(query: CubeQuery): Measurement[] {
+    return query.measurementsIds.map(id =>  this.getMeasurement(query, id))
   }
-  public getComparingMeasurement(state: TestState): Measurement {
-    return this.getMeasurement(state.reference, state.comparingMeasurementId)
+  public getComparingMeasurement(query: CubeComparingQuery): Measurement {
+    return this.getMeasurement(query.reference, query.comparingMeasurementId)
   }
-  private getMeasurement(state: GenericState, id: string): Measurement {
-    if (!(state.cubeId in this.config)) {
-      throw 'Invalid cubeId ' + state.cubeId
+  private getMeasurement(query: GenericCubeQuery, id: string): Measurement {
+    if (!(query.cubeId in this.config)) {
+      throw 'Invalid cubeId ' + query.cubeId
     }
 
-    const cube = this.config[state.cubeId]
+    const cube = this.config[query.cubeId]
     const measurement = cube.measurements.find(m => id == m.id)
     if (measurement == undefined) {
       throw new Error('Invalid measurement id ' + id)
     }
     return measurement
   }
-  public stateToLocation(state: Partial<State>): Location {
-    const slices = state.slices ? generateQueryParams(state.slices, 'filter') : {}
-    const comparingSlices = state.comparingSlices ? generateQueryParams(state.comparingSlices, 'compareFilter') : {}
+  public queryToLocation(query: Partial<CubeQuery>): Location {
+    const slices = query.slices ? generateQueryParams(query.slices, 'filter') : {}
+    const comparingSlices = query.comparingSlices ? generateQueryParams(query.comparingSlices, 'compareFilter') : {}
 
-    const query = Object.assign({}, {
-      cube: state.cubeId,
-      dimension: state.dimensionsIds,
-      metric: state.measurementsIds,
-      compare: state.comparingSlices ? true : undefined,
-      sort: state.sortId,
+    const queryString = Object.assign({}, {
+      cube: query.cubeId,
+      dimension: query.dimensionsIds,
+      metric: query.measurementsIds,
+      compare: query.comparingSlices ? true : undefined,
+      sort: query.sortId,
     }, slices, comparingSlices)
 
-    return { query }
+    return { query: queryString }
   }
-  locationToState(location: Route, config: Config, defaultCubeId: string): State {
+  locationToQuery(location: Route, config: Config, defaultCubeId: string): CubeQuery {
     const query = location.query || {}
 
     const cubeId = query.cube as string || defaultCubeId

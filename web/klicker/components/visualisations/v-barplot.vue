@@ -27,23 +27,23 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
     const show = computed(() => dimensions.value.length == 1
       && dimensions.value[0].type == 'nominal'
       && measurements.value.length == 1
-      && query.value.data.length > 1
-      && query.value.data.length < 100
+      && response.value.data.length > 1
+      && response.value.data.length < 100
     )
 
     const spec = computed<VisualizationSpec>(() => {
@@ -51,7 +51,7 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
       return {
         data: {
-          values: query.value.data,
+          values: response.value.data,
         },
         mark: 'bar',
         encoding: {

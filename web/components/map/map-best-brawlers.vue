@@ -1,6 +1,6 @@
 <template>
   <c-query
-    :state="{
+    :query="{
       cubeId: 'map',
       dimensionsIds: ['brawler'],
       measurementsIds: ['winRateAdj'],

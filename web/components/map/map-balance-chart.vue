@@ -1,5 +1,5 @@
 <template>
-  <c-query :state="state">
+  <c-query :query="query">
     <template v-slot="data">
       <div class="flex flex-wrap">
         <v-bar-plot
@@ -28,7 +28,7 @@
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VBarPlot } from '~/klicker/components'
-import { SliceValue, State } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
@@ -50,7 +50,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const state = computed(() => (<State>{
+    const query = computed(() => (<CubeQuery>{
         cubeId: 'map',
         dimensionsIds: ['brawler'],
         measurementsIds: ['useRate'],
@@ -64,7 +64,7 @@ export default defineComponent({
 
     return {
       title,
-      state,
+      query,
     }
   },
 })

@@ -21,29 +21,29 @@ export default defineComponent({
     BButton,
   },
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
     const { $klicker } = useContext()
 
-    const show = computed(() => query.value.data.length > 0)
-    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const show = computed(() => response.value.data.length > 0)
+    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
     const download = () => {
       const header = (<string[]>[]).concat(
         dimensions.value.map(d => $klicker.getName(d)),
         measurements.value.map(m => $klicker.getName(m)),
       ).join(',')
-      const body = query.value.data.map(e =>
+      const body = response.value.data.map(e =>
         (<(string|number)[]>[]).concat(
           dimensions.value.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
-          query.value.state.measurementsIds.map(id => e.measurementsRaw[id]),
+          measurements.value.map(m => e.measurementsRaw[m.id]),
         ).join(',')
       ).join('\n')
 

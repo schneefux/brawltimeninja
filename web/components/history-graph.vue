@@ -1,6 +1,6 @@
 <template>
   <c-query
-    :state="{
+    :query="{
       cubeId: 'brawler',
       dimensionsIds: ['day'],
       measurementsIds: brawler != undefined ? ['trophies'] : ['playerTrophies'],

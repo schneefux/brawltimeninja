@@ -1,5 +1,5 @@
 <template>
-  <c-query :state="state">
+  <c-query :query="query">
     <template v-slot="data">
       <!-- add wrapper div to work around SSR error -->
       <div class="contents">
@@ -20,7 +20,7 @@
 import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import { CQuery, VTable } from '~/klicker/components'
-import { SliceValue, State } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
@@ -50,7 +50,7 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('best.teams', slices, id)
 
-    const state = computed(() => (<State>{
+    const query = computed<CubeQuery>(() => ({
       cubeId: 'battle',
       dimensionsIds: ['team'],
       measurementsIds: ['wins'],
@@ -63,7 +63,7 @@ export default defineComponent({
     }))
 
     return {
-      state,
+      query,
       title,
     }
   },

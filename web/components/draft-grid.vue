@@ -64,7 +64,7 @@
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { computed, PropType, ref, toRefs, watch } from '@vue/composition-api'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '~/klicker/components'
 
@@ -82,14 +82,14 @@ export default defineComponent({
     BCard,
   },
   props: {
-    state: {
-      type: Object as PropType<State>,
+    query: {
+      type: Object as PropType<CubeQuery>,
       required: true,
     },
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { state } = toRefs(props)
+    const { query } = toRefs(props)
 
     const team = ref<AllyData[]>([])
     const loading = ref(0)
@@ -98,7 +98,7 @@ export default defineComponent({
       loading.value++
       const data = await $klicker.query({
         cubeId: 'battle',
-        slices: state.value.slices,
+        slices: query.value.slices,
         dimensionsIds: ['brawler'],
         measurementsIds: ['winRateAdj'],
         sortId: 'winRateAdj',
@@ -111,7 +111,7 @@ export default defineComponent({
       loading.value++
       const data = await $klicker.query({
         cubeId: 'synergy',
-        slices: state.value.slices,
+        slices: query.value.slices,
         dimensionsIds: ['brawler', 'ally'],
         measurementsIds: ['winRateAdj'],
         sortId: 'winRateAdj',
@@ -123,7 +123,7 @@ export default defineComponent({
     const brawlerData = useAsync(() => getBrawlerData(), 'draft-grid-brawler-data')
     const synergyData = useAsync(() => getSynergyData(), 'draft-grid-synergy-data')
 
-    watch(() => state.value.slices, async () => {
+    watch(() => query.value.slices, async () => {
       brawlerData.value = await getBrawlerData()
       synergyData.value = await getSynergyData()
     })

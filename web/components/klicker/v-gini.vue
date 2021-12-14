@@ -38,19 +38,19 @@ import { CubeResponse, MetaGridEntry } from '~/klicker'
 export default defineComponent({
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
-    const show = computed(() => query.value.state.dimensionsIds.length == 1
-      && query.value.state.dimensionsIds[0] == 'brawler'
-      && query.value.data.length > 0
-      && query.value.data[0].measurementsRaw.useRate != undefined
-      && !query.value.comparing
+    const show = computed(() => response.value.query.dimensionsIds.length == 1
+      && response.value.query.dimensionsIds[0] == 'brawler'
+      && response.value.data.length > 0
+      && response.value.data[0].measurementsRaw.useRate != undefined
+      && !response.value.comparing
     )
 
     const giniScore = computed((): number => {
@@ -59,13 +59,13 @@ export default defineComponent({
       // calculate Gini coefficient
       let absoluteDifference = 0
       let arithmeticMean = 0
-      for (const e1 of query.value.data) {
-        arithmeticMean += getStat(e1) / query.value.data.length
-        for (const e2 of query.value.data) {
+      for (const e1 of response.value.data) {
+        arithmeticMean += getStat(e1) / response.value.data.length
+        for (const e2 of response.value.data) {
           absoluteDifference += Math.abs(getStat(e1) - getStat(e2))
         }
       }
-      return absoluteDifference / (2 * Math.pow(query.value.data.length, 2) * arithmeticMean)
+      return absoluteDifference / (2 * Math.pow(response.value.data.length, 2) * arithmeticMean)
     })
 
     const { app: { i18n } } = useContext()

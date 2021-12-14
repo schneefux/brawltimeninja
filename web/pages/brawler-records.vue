@@ -12,7 +12,7 @@
     <b-card :title="$t('brawler-records.players')">
       <div slot="content">
         <c-dashboard
-          v-model="state"
+          v-model="query"
           elevation="2"
         >
           <template v-slot:slices="data">
@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { CDashboard, BCard, CMetric, VTable, VCsv } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
@@ -89,7 +89,7 @@ export default Vue.extend({
     const currentSeason = getSeasonEnd(new Date())
 
     return {
-      state: <State>{
+      query: <CubeQuery>{
         cubeId: 'brawler',
         dimensionsIds: ['player', 'brawler'],
         measurementsIds: ['highestTrophies'],

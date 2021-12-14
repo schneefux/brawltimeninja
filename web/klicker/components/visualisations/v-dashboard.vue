@@ -117,7 +117,7 @@ export default defineComponent({
     VShare,
   },
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true,
     },

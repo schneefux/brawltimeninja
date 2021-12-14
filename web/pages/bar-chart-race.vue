@@ -26,14 +26,14 @@
         <b-card elevation="2">
           <div slot="content">
             <c-metric
-              v-model="state"
+              v-model="query"
               :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
             ></c-metric>
           </div>
         </b-card>
 
         <c-dashboard
-          v-model="state"
+          v-model="query"
           elevation="2"
         >
           <template v-slot:slices="data">
@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
@@ -109,7 +109,7 @@ export default Vue.extend({
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
     return {
-      state: <State>{
+      query: <CubeQuery>{
         cubeId: 'battle',
         dimensionsIds: ['brawler', 'day'],
         measurementsIds: ['useRate'],

@@ -1,6 +1,6 @@
 <template>
   <c-dashboard
-    v-model="state"
+    v-model="query"
     elevation="2"
     class="lg:justify-center"
   >
@@ -17,7 +17,7 @@
       </div>
     </template>
 
-    <template v-slot="state">
+    <template v-slot="query">
       <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 justify-items-center">
         <b-card
           v-if="id != undefined"
@@ -46,7 +46,7 @@
             once: true,
           }"
           :id="id"
-          :slices="state.slices"
+          :slices="query.slices"
           full-height
           md
         ></map-best-brawlers-table>
@@ -58,7 +58,7 @@
             once: true,
           }"
           :id="id"
-          :slices="state.slices"
+          :slices="query.slices"
           full-height
           md
         ></map-best-teams-table>
@@ -69,7 +69,7 @@
             once: true,
           }"
           :id="id"
-          :slices="state.slices"
+          :slices="query.slices"
           full-height
           md
         ></map-best-players-table>
@@ -80,7 +80,7 @@
             once: true,
           }"
           :id="id"
-          :slices="state.slices"
+          :slices="query.slices"
           kind="starpowers"
           full-height
           md
@@ -92,7 +92,7 @@
             once: true,
           }"
           :id="id"
-          :slices="state.slices"
+          :slices="query.slices"
           kind="gadgets"
           full-height
           md
@@ -107,13 +107,13 @@
         >
           <map-balance-chart
             :id="id"
-            :slices="state.slices"
+            :slices="query.slices"
             class="w-full"
           ></map-balance-chart>
 
           <map-winrate-userate-chart
             :id="id"
-            :slices="state.slices"
+            :slices="query.slices"
             class="w-full"
           ></map-winrate-userate-chart>
 
@@ -129,7 +129,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, watch, wrapProperty } from '@nuxtjs/composition-api'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { CDashboard } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
@@ -162,7 +162,7 @@ export default defineComponent({
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
-    const state = ref<State>({
+    const query = ref<CubeQuery>({
       cubeId: 'battle',
       dimensionsIds: ['brawler'],
       measurementsIds: [],
@@ -177,8 +177,8 @@ export default defineComponent({
       sortId: 'brawler',
     })
 
-    watch(() => props.mode, () => state.value.slices.mode = [props.mode])
-    watch(() => props.map, () => state.value.slices.map = [props.map])
+    watch(() => props.mode, () => query.value.slices.mode = [props.mode])
+    watch(() => props.map, () => query.value.slices.map = [props.map])
 
     const adjustedWinRate = computed(() => $klicker.config['battle'].measurements.find(m => m.id == 'winRateAdj')!)
 
@@ -193,7 +193,7 @@ export default defineComponent({
     }
 
     return {
-      state,
+      query,
       adjustedWinRate,
       trackScroll,
     }

@@ -16,7 +16,7 @@
       TODO implement a v-roll that shows the highest p values
     -->
     <c-query
-      :state="{
+      :query="{
         reference: {
           cubeId: 'map',
           dimensionsIds: ['brawler'],

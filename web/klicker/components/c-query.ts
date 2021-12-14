@@ -1,14 +1,16 @@
 import Vue, { PropType, VNode } from 'vue'
-import { State, CubeResponse, TestState, CubeResponseTest } from '~/klicker'
+import { CubeQuery, CubeResponse, CubeComparingQuery, CubeResponseTest } from '~/klicker'
 
 // TODO accept `query` as prop.
-// If query.state corresponds to a state that should be fetched, re-use it.
+// If query.query corresponds to a query that should be fetched, re-use it.
 // Or just rely on browser caching instead?
+
+// TODO rewrite in composition API
 export default Vue.extend({
   name: 'c-query',
   props: {
-    state: {
-      type: Object as PropType<TestState|State>,
+    query: {
+      type: Object as PropType<CubeComparingQuery|CubeQuery>,
       required: true
     },
   },
@@ -20,17 +22,17 @@ export default Vue.extend({
     }
   },
   watch: {
-    state: '$fetch',
+    query: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
     this.error = false
     this.loading = true
     try {
-      if (!('comparingMeasurementId' in this.state)) {
-        this.response = await this.$klicker.query(this.state)
+      if (!('comparingMeasurementId' in this.query)) {
+        this.response = await this.$klicker.query(this.query)
       } else {
-        this.response = await this.$klicker.comparingQuery(this.state)
+        this.response = await this.$klicker.comparingQuery(this.query)
       }
     } catch (error) {
       console.error(error)
@@ -57,7 +59,7 @@ export default Vue.extend({
           // show default if empty and no 'empty' slot
           if ('default' in this.$scopedSlots) {
             nodes = this.$scopedSlots.default!({
-              query: this.response,
+              response: this.response,
               loading: this.loading,
             })
           }

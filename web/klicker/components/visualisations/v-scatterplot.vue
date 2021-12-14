@@ -27,22 +27,22 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
-    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
     const show = computed(() =>
-      query.value.state.dimensionsIds.length == 1
-      && query.value.state.measurementsIds.length == 2
-      && query.value.data.length > 1
-      && query.value.data.length < 1000
+      response.value.query.dimensionsIds.length == 1
+      && response.value.query.measurementsIds.length == 2
+      && response.value.data.length > 1
+      && response.value.data.length < 1000
     )
 
     const { $klicker } = useContext()
@@ -54,7 +54,7 @@ export default defineComponent({
 
       return {
         data: {
-          values: query.value.data,
+          values: response.value.data,
         },
         encoding: {
           x: {

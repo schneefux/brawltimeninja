@@ -27,25 +27,25 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
     const show = computed(() => {
-      if (dimensions.value.length == 2 && measurements.value.length == 1 && query.value.data.length > 1) {
-        const uniqueX = new Set(query.value.data.map(d => d.dimensions[dimensions.value[0].id])).size
-        const uniqueY = new Set(query.value.data.map(d => d.dimensions[dimensions.value[1].id])).size
+      if (dimensions.value.length == 2 && measurements.value.length == 1 && response.value.data.length > 1) {
+        const uniqueX = new Set(response.value.data.map(d => d.dimensions[dimensions.value[0].id])).size
+        const uniqueY = new Set(response.value.data.map(d => d.dimensions[dimensions.value[1].id])).size
 
         // less than 50% gaps
-        return query.value.data.length > 0.5 * uniqueX * uniqueY
+        return response.value.data.length > 0.5 * uniqueX * uniqueY
       }
       return false
     })
@@ -56,7 +56,7 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
       return {
         data: {
-          values: query.value.data,
+          values: response.value.data,
         },
         mark: 'rect',
         encoding: {

@@ -13,7 +13,7 @@
     </b-card>
 
     <div>
-      <c-slicer v-model="state">
+      <c-slicer v-model="query">
         <template v-slot="data">
           <s-season v-bind="data"></s-season>
           <s-trophies v-bind="data"></s-trophies>
@@ -21,14 +21,14 @@
         </template>
       </c-slicer>
 
-      <draft-grid :state="state"></draft-grid>
+      <draft-grid :query="query"></draft-grid>
     </div>
   </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import { CSlicer } from '~/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
@@ -59,7 +59,7 @@ export default Vue.extend({
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
     return {
-      state: <State>{
+      query: <CubeQuery>{
         // TODO
         cubeId: '',
         dimensionsIds: [],

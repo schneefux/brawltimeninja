@@ -41,16 +41,16 @@ export default defineComponent({
     BCard,
   },
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponseTest>,
       required: true
     },
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
-    const metricName = computed(() => $klicker.getName($klicker.getComparingMeasurement(query.value.state)))
+    const metricName = computed(() => $klicker.getName($klicker.getComparingMeasurement(response.value.query)))
 
     return {
       metricName,

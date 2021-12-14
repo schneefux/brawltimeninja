@@ -4,13 +4,13 @@
     expand-on-desktop
   >
     <b-card
-      v-for="(entry, index) in query.data"
+      v-for="(entry, index) in response.data"
       :key="entry.id"
       :elevation="elevation"
-      :title="long ? entry.dimensions[query.state.dimensionsIds[0]] : undefined"
+      :title="long ? entry.dimensions[response.query.dimensionsIds[0]] : undefined"
       :class="['flex-shrink-0', {
         'ml-auto': index == 0,
-        'mr-auto': index == query.data.length - 1,
+        'mr-auto': index == response.data.length - 1,
       }]"
       dense
     >
@@ -60,7 +60,7 @@ export default defineComponent({
   },
   name: 'VRoll',
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
@@ -73,14 +73,14 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
-    const show = computed(() => query.value.state.dimensionsIds.length == 1
-      && query.value.state.measurementsIds.length == 1
-      && query.value.data.length > 1
-      && query.value.data.length < 10)
+    const show = computed(() => response.value.query.dimensionsIds.length == 1
+      && response.value.query.measurementsIds.length == 1
+      && response.value.data.length > 1
+      && response.value.data.length < 10)
 
     const measurementsNames = computed(() => measurements.value.map(m => ({
       id: m.id,

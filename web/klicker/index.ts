@@ -15,23 +15,23 @@ export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'g
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
 
 // TODO refactor this
-export interface GenericState {
+export interface GenericCubeQuery {
   cubeId: string
   slices: SliceValue
   dimensionsIds: string[]
 }
 
-export interface State extends GenericState {
+export interface CubeQuery extends GenericCubeQuery {
   comparingSlices?: SliceValue
   measurementsIds: string[]
   sortId: string
   limit?: number
 }
 
-export interface TestState {
+export interface CubeComparingQuery {
   comparingMeasurementId: string
-  reference: GenericState
-  test: GenericState
+  reference: GenericCubeQuery
+  test: GenericCubeQuery
 }
 
 export interface Cube {
@@ -161,19 +161,19 @@ export interface MetaGridEntryTest extends MetaGridEntry {
   }
 }
 
-export interface TypedCubeResponse<S, D> {
+export interface TypedCubeResponse<Q, D> {
   // TODO remove TypedCubeResponse and push state/data to props again
-  state: S
+  query: Q
   data: D[]
 }
 
 /** TODO deprecate in favor of TypedCubeResponse */
-export interface CubeResponse extends TypedCubeResponse<State, MetaGridEntry> {
+export interface CubeResponse extends TypedCubeResponse<CubeQuery, MetaGridEntry> {
   /** TODO deprecate */
   comparing: boolean
 }
 
-export interface CubeResponseTest extends TypedCubeResponse<TestState, MetaGridEntryTest> {
+export interface CubeResponseTest extends TypedCubeResponse<CubeComparingQuery, MetaGridEntryTest> {
   // TODO type hack, remove this
   test: true
 }

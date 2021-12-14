@@ -19,20 +19,20 @@ import { CubeResponse } from "~/klicker"
 
 export default defineComponent({
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
     const title = computed(() => 'About ' + $klicker.getName(measurements[0]))
     const description = computed(() => measurements[0].description)
 
-    const show = computed(() => query.value.state.measurementsIds.length == 1 && description != undefined)
+    const show = computed(() => response.value.query.measurementsIds.length == 1 && description != undefined)
 
     return {
       show,

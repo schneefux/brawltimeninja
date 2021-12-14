@@ -1,5 +1,5 @@
 <template>
-  <c-query :state="state">
+  <c-query :query="query">
     <template v-slot="data">
       <!-- add wrapper div to work around SSR error -->
       <div class="contents">
@@ -24,7 +24,7 @@ import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
-import { SliceValue, State } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { defineComponent, toRefs, PropType, computed } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
@@ -51,9 +51,9 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('best.players', slices, id)
 
-    const state = computed(() => {
+    const query = computed<CubeQuery>(() => {
       const isShowdown = slices.value.mode?.[0]?.toLowerCase().includes('showdown')
-      return <State>{
+      return {
         cubeId: 'battle',
         dimensionsIds: ['player'],
         measurementsIds: isShowdown ? ['picks', 'rank', 'brawler'] : ['wins', 'winRate', 'brawler'],
@@ -64,7 +64,7 @@ export default defineComponent({
     })
 
     return {
-      state,
+      query,
       title,
     }
   },

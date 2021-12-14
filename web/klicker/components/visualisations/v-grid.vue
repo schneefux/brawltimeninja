@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="query.measurements.length > 1"
+    v-if="show"
     v-bind="$attrs"
   >
     <div
@@ -8,9 +8,9 @@
       class="flex flex-wrap justify-center"
     >
       <b-card
-        v-for="(entry, index) in query.data.slice(page*pageSize, (page+1)*pageSize)"
+        v-for="(entry, index) in response.data.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
-        :title="query.dimensions.map(d => entry.dimensions[d.id]).join(', ')"
+        :title="dimensions.map(d => entry.dimensions[d.id]).join(', ')"
         elevation="2"
         itemscope
         itemtype="http://schema.org/Person"
@@ -34,7 +34,7 @@
           <table>
             <tbody>
               <tr
-                v-for="m in query.measurements"
+                v-for="m in measurements"
                 :key="m.id"
                 class="whitespace-nowrap"
                 itemscope
@@ -63,7 +63,7 @@
         @click="page--"
       >Previous Page</b-button>
       <b-button
-        v-if="(page+1)*pageSize < query.data.length"
+        v-if="(page+1)*pageSize < response.data.length"
         class="ml-1 w-32"
         primary
         @click="page++"
@@ -73,13 +73,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRefs, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, toRefs, useContext, watch } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
@@ -89,13 +89,22 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
+    const { $klicker } = useContext()
+
+    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+
+    const show = computed(() => response.value.query.measurementsIds.length > 1)
 
     const page = ref(0)
-    watch(() => query.value.data, () => page.value = 0)
+    watch(() => response.value.data, () => page.value = 0)
 
     return {
+      show,
       page,
+      dimensions,
+      measurements,
     }
   },
 })

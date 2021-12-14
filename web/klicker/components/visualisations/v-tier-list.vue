@@ -29,7 +29,7 @@
       </ul>
 
       <div
-        v-if="query.dimensions[0].id == 'brawler'"
+        v-if="response.query.dimensionsIds[0] == 'brawler'"
         class="mt-2"
       >
         <v-tier-list-sharepic
@@ -74,24 +74,24 @@ export default defineComponent({
     VTierListSharepic,
   },
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const show = computed(() => query.value.state.dimensionsIds.length == 1
-      && query.value.state.measurementsIds.length == 1
-      && query.value.data.length > 5
-      && query.value.data.length < 100
+    const show = computed(() => response.value.query.dimensionsIds.length == 1
+      && response.value.query.measurementsIds.length == 1
+      && response.value.data.length > 5
+      && response.value.data.length < 100
     )
 
-    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
-    const tiers = computed(() => groupTiers(query.value.data, measurements.value[0]))
+    const tiers = computed(() => groupTiers(response.value.data, measurements.value[0]))
 
     return {
       show,

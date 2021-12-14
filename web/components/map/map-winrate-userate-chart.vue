@@ -1,5 +1,5 @@
 <template>
-  <c-query :state="state">
+  <c-query :query="query">
     <template v-slot="data">
       <div>
         <v-scatter-plot
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { CQuery, VScatterPlot } from '~/klicker/components'
-import { SliceValue, State } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
@@ -35,7 +35,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const state = computed(() => (<State>{
+    const query = computed<CubeQuery>(() => ({
         cubeId: 'map',
         dimensionsIds: ['brawler'],
         measurementsIds: ['useRate', 'winRate'],
@@ -49,7 +49,7 @@ export default defineComponent({
 
     return {
       title,
-      state,
+      query,
     }
   },
 })

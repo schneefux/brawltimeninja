@@ -2,7 +2,7 @@
   <div class="flex flex-wrap">
     <c-configurator
       v-if="configurator"
-      v-model="state"
+      v-model="query"
       v-bind="$attrs"
       class="flex-auto md:flex-none"
       full-height
@@ -10,7 +10,7 @@
 
     <c-slicer
       v-if="'slices' in $scopedSlots"
-      v-model="state"
+      v-model="query"
       v-bind="$attrs"
       class="w-full md:w-auto"
       full-height
@@ -24,8 +24,8 @@
     </c-slicer>
 
     <c-slicer
-      v-if="'slices' in $scopedSlots && state.comparingSlices"
-      v-model="state"
+      v-if="'slices' in $scopedSlots && query.comparingSlices"
+      v-model="query"
       v-bind="$attrs"
       class="w-full md:w-auto"
       comparing
@@ -41,8 +41,8 @@
 
     <c-query
       v-if="'totals' in $scopedSlots && metaMetrics.length > 0"
-      :state="{
-        ...state,
+      :query="{
+        ...query,
         dimensionsIds: [],
         measurementsIds: metaMetrics,
       }"
@@ -54,7 +54,7 @@
 
     <c-query
       v-if="'data' in $scopedSlots"
-      :state="state"
+      :query="query"
     >
       <c-error
         slot="error"
@@ -65,13 +65,13 @@
       </template>
     </c-query>
 
-    <slot v-bind="{ ...$attrs, ...state }"></slot>
+    <slot v-bind="{ ...$attrs, ...query }"></slot>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { State } from '~/klicker'
+import { CubeQuery } from '~/klicker'
 import CQuery from '~/klicker/components/c-query'
 import CConfigurator from '~/klicker/components/c-configurator.vue'
 import CSlicer from '~/klicker/components/c-slicer.vue'
@@ -87,7 +87,7 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Object as PropType<State>,
+      type: Object as PropType<CubeQuery>,
       required: true
     },
     configurator: {
@@ -99,12 +99,12 @@ export default Vue.extend({
     metaMetrics(): string[] {
       return this.$klicker.config[this.value.cubeId].metaMeasurements
     },
-    state: {
-      get(): State {
+    query: {
+      get(): CubeQuery {
         return this.value
       },
-      set(s: State) {
-        this.$emit('input', s)
+      set(q: CubeQuery) {
+        this.$emit('input', q)
       }
     },
   },

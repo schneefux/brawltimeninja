@@ -26,19 +26,19 @@ export default defineComponent({
     BCard,
   },
   props: {
-    query: {
+    response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { query } = toRefs(props)
+    const { response } = toRefs(props)
 
-    const show = computed(() => query.value.data.length > 0 && !query.value.comparing
-      && query.value.data[0].measurementsRaw.timestamp != undefined)
+    const show = computed(() => response.value.data.length > 0 && !response.value.comparing
+      && response.value.data[0].measurementsRaw.timestamp != undefined)
 
     const lastUpdate = computed((): string => {
-      const timestamps = query.value.data
+      const timestamps = response.value.data
         .map(d => d.measurementsRaw.timestamp)
         .sort() as unknown as string[] // TODO
       // TODO fix types - fix null checks
