@@ -1,12 +1,12 @@
-import Vue, { PropType, VNode } from 'vue'
+import { defineComponent, PropType, ref, toRefs, h, useContext, useAsync, watch } from '@nuxtjs/composition-api'
+import { VNode } from 'vue'
 import { CubeQuery, CubeResponse, CubeComparingQuery, CubeResponseTest } from '~/klicker'
 
 // TODO accept `query` as prop.
 // If query.query corresponds to a query that should be fetched, re-use it.
 // Or just rely on browser caching instead?
 
-// TODO rewrite in composition API
-export default Vue.extend({
+export default defineComponent({
   name: 'c-query',
   props: {
     query: {
@@ -14,69 +14,71 @@ export default Vue.extend({
       required: true
     },
   },
-  data() {
-    return {
-      loading: false,
-      response: undefined as undefined|CubeResponse|CubeResponseTest,
-      error: false,
-    }
-  },
-  watch: {
-    query: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    this.error = false
-    this.loading = true
-    try {
-      if (!('comparingMeasurementId' in this.query)) {
-        this.response = await this.$klicker.query(this.query)
-      } else {
-        this.response = await this.$klicker.comparingQuery(this.query)
-      }
-    } catch (error) {
-      console.error(error)
-      this.$sentry.captureException(error)
-      this.response = undefined
-      this.error = true
-    }
-    this.loading = false
-  },
-  render(h): VNode {
-    let nodes: VNode[] | undefined
+  setup(props, { slots }) {
+    const { $sentry, $klicker } = useContext()
+    const loading = ref(false)
+    const error = ref(false)
 
-    if (this.error) {
-      if ('error' in this.$scopedSlots) {
-        nodes = this.$scopedSlots.error!({})
-      }
-    } else {
-      const loaded = this.response != undefined
-      if (loaded) {
-        const empty = this.response!.data.length == 0
-        if (empty && 'empty' in this.$scopedSlots) {
-          nodes = this.$scopedSlots.empty!({})
+    const { query } = toRefs(props)
+
+    async function fetch(): Promise<undefined|CubeResponse|CubeResponseTest> {
+      error.value = false
+      loading.value = true
+      try {
+        if (!('comparingMeasurementId' in query.value)) {
+          return await $klicker.query(query.value)
         } else {
-          // show default if empty and no 'empty' slot
-          if ('default' in this.$scopedSlots) {
-            nodes = this.$scopedSlots.default!({
-              response: this.response,
-              loading: this.loading,
-            })
+          return await $klicker.comparingQuery(query.value)
+        }
+      } catch (err) {
+        console.error(err)
+        $sentry.captureException(err)
+        error.value = true
+        return undefined
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const response = useAsync(() => fetch(), $klicker.hash(query.value))
+    watch(query, async () => response.value = await fetch())
+
+    return () => {
+      let nodes: VNode[] | undefined
+
+      if (error.value) {
+        if ('error' in slots) {
+          nodes = slots.error!({})
+        }
+      } else {
+        const loaded = response.value != undefined
+        if (loaded) {
+          const empty = response.value!.data.length == 0
+          if (empty && 'empty' in slots) {
+            nodes = slots.empty!({})
+          } else {
+            // show default if empty and no 'empty' slot
+            if ('default' in slots) {
+              nodes = slots.default!({
+                response: response.value,
+                loading: loading.value,
+              })
+            }
+          }
+        } else {
+          if ('placeholder' in slots) {
+            nodes = slots.placeholder!({})
           }
         }
-      } else {
-        if ('placeholder' in this.$scopedSlots) {
-          nodes = this.$scopedSlots.placeholder!({})
-        }
       }
-    }
 
-    if (nodes == undefined) {
-      return h()
+      if (nodes == undefined) {
+        return h()
+      }
+      if (nodes.length > 1) {
+        return h('div', nodes)
+      }
+      return nodes[0]
     }
-    if (nodes.length > 1) {
-      return h('div', nodes)
-    }
-    return nodes[0]
   },
 })

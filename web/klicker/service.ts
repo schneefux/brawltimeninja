@@ -459,4 +459,21 @@ export default class Klicker {
       sortId,
     }
   }
+  hash(query: CubeQuery|CubeComparingQuery): string {
+    const hashCode = (s: string) => {
+      if (s.length === 0) {
+        return 0
+      }
+
+      let hash = 0;
+      for (let i = 0; i < s.length; i++) {
+        const chr = s.charCodeAt(i)
+        hash = ((hash << 5) - hash) + chr
+        hash |= 0
+      }
+      return hash
+    }
+
+    return hashCode(JSON.stringify(query)).toString()
+  }
 }
