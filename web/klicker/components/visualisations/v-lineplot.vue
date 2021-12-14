@@ -16,7 +16,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 
@@ -28,13 +28,13 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
     const { response } = toRefs(props)
-    const { $klicker } = useContext()
+    const { $klicker, i18n } = useContext()
 
     const dimensions = computed(() => $klicker.getDimensions(response.value.query))
     const measurements = computed(() => $klicker.getMeasurements(response.value.query))
@@ -50,9 +50,19 @@ export default defineComponent({
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
+
+      const comparing = response.value.kind == 'comparingResponse'
+      const values = comparing ? response.value.data.flatMap(e => [{
+        ...e,
+        source: i18n.t('comparison.test') as string,
+      }, {
+        ...e.test.reference,
+        source: i18n.t('comparison.reference') as string,
+      }]) : response.value.data
+
       return {
         data: {
-          values: response.value.data,
+          values,
         },
         mark: 'line',
         encoding: {
@@ -71,6 +81,15 @@ export default defineComponent({
             },
             scale: measurement0.scale,
           },
+          ...(comparing ? {
+            color: {
+              field: 'source',
+              legend: {
+                offset: 8,
+                orient: 'top',
+              },
+            },
+          } : {}),
         }
       }
     })

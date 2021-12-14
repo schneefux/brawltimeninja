@@ -18,13 +18,13 @@
     <c-query
       :query="{
         cubeId: 'map',
-        dimensionsIds: ['brawler'],
+        dimensionsIds: ['season'],
         slices: { mode: ['brawlBall'] },
         test: {
           measurementId: 'winRate',
           reference: {
             cubeId: 'map',
-            dimensionsIds: ['brawler'],
+            dimensionsIds: ['season'],
             slices: {},
           },
         },
@@ -38,6 +38,9 @@
             </template>
           </v-table>
 
+          <v-bar-plot class="h-80" v-bind="{ ...data, ...$attrs }" md full-height></v-bar-plot>
+          <v-line-plot class="h-80" v-bind="{ ...data, ...$attrs }" md full-height></v-line-plot>
+
           <v-test-info
             v-bind="{ ...data, ...$attrs }"
           ></v-test-info>
@@ -48,14 +51,16 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, ref } from "@nuxtjs/composition-api"
-import { CQuery, VTable, VTestInfo } from '~/klicker/components'
+import { defineComponent } from "@nuxtjs/composition-api"
+import { CQuery, VTable, VTestInfo, VBarPlot, VLinePlot } from '~/klicker/components'
 
 export default defineComponent({
   components: {
     CQuery,
     VTable,
     VTestInfo,
+    VBarPlot,
+    VLinePlot,
   },
   setup() {
     return {

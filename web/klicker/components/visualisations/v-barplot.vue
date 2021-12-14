@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
@@ -28,30 +28,41 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
     const { response } = toRefs(props)
-    const { $klicker } = useContext()
+    const { $klicker, i18n } = useContext()
 
     const dimensions = computed(() => $klicker.getDimensions(response.value.query))
     const measurements = computed(() => $klicker.getMeasurements(response.value.query))
 
-    const show = computed(() => dimensions.value.length == 1
-      && dimensions.value[0].type == 'nominal'
-      && measurements.value.length == 1
-      && response.value.data.length > 1
-      && response.value.data.length < 100
+    const show = computed(() =>
+      dimensions.value.length == 1 &&
+      dimensions.value[0].type == 'nominal' &&
+      measurements.value.length == 1 &&
+      response.value.data.length > 1 &&
+      response.value.data.length < 100
     )
 
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
+
+      const comparing = response.value.kind == 'comparingResponse'
+      const values = comparing ? response.value.data.flatMap(e => [{
+        ...e,
+        source: i18n.t('comparison.test') as string,
+      }, {
+        ...e.test.reference,
+        source: i18n.t('comparison.reference') as string,
+      }]) : response.value.data
+
       return {
         data: {
-          values: response.value.data,
+          values,
         },
         mark: 'bar',
         encoding: {
@@ -73,7 +84,20 @@ export default defineComponent({
               format: measurement0.formatter,
             },
             scale: measurement0.scale,
+            stack: null,
           },
+          ...(comparing ? {
+            color: {
+              field: 'source',
+              legend: {
+                offset: 8,
+                orient: 'top',
+              },
+            },
+            opacity: {
+              value: 0.75,
+            },
+          } : {}),
         },
       }
     })

@@ -401,8 +401,12 @@ export default class Klicker {
     }
     return dimension
   }
-  public getMeasurements(query: CubeQuery): Measurement[] {
-    return query.measurementsIds.map(id =>  this.getMeasurement(query, id))
+  public getMeasurements(query: CubeQuery|CubeComparingQuery): Measurement[] {
+    if ('test' in query) {
+      return [this.getMeasurement(query, query.test.measurementId)]
+    } else {
+      return query.measurementsIds.map(id => this.getMeasurement(query, id))
+    }
   }
   public getComparingMeasurement(query: CubeComparingQuery): Measurement {
     return this.getMeasurement(query, query.test.measurementId)

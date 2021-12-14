@@ -74,41 +74,26 @@ export default defineComponent({
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
-      if (response.value.kind == 'response') {
-        const query = response.value.query
-        const dimensions = $klicker.getDimensions(query)
-        const measurements = $klicker.getMeasurements(query)
 
-        columns.push({
-          title: dimensions.map(d => $klicker.getName(d)).join(', '),
-          keys: dimensions.map(d => `dimensions.${d.id}`),
-          // dimensions are rendered n:m
-          slot: 'dimensions',
-        })
-        measurements.forEach(m => columns.push({
-          // measurements are rendered 1:1
-          title: $klicker.getName(m),
-          keys: [`measurements.${m.id}`],
-          slot: `measurements.${m.id}`,
-          shrink: true,
-        }))
-      } else {
-        const query = response.value.query
-        const dimensions = $klicker.getDimensions(query.test.reference)
+      const query = response.value.query
+      const dimensions = $klicker.getDimensions(query)
+      const measurements = $klicker.getMeasurements(query)
 
-        columns.push({
-          title: dimensions.map(d => $klicker.getName(d)).join(', '),
-          keys: dimensions.map(d => `dimensions.${d.id}`),
-          // dimensions are rendered n:m
-          slot: 'dimensions',
-        })
-        const comparingMeasurement = $klicker.getComparingMeasurement(query)
-        columns.push({
-          title: i18n.t('comparison.reference.for.metric', { metric: $klicker.getName(comparingMeasurement) }) as string,
-          keys: [`measurements.${query.test.measurementId}`],
-          slot: `measurements.${query.test.measurementId}`,
-          shrink: true,
-        })
+      columns.push({
+        title: dimensions.map(d => $klicker.getName(d)).join(', '),
+        keys: dimensions.map(d => `dimensions.${d.id}`),
+        // dimensions are rendered n:m
+        slot: 'dimensions',
+      })
+      measurements.forEach(m => columns.push({
+        // measurements are rendered 1:1
+        title: $klicker.getName(m),
+        keys: [`measurements.${m.id}`],
+        slot: `measurements.${m.id}`,
+        shrink: true,
+      }))
+
+      if (response.value.kind == 'comparingResponse') {
         columns.push({
           title: i18n.t('comparison.difference') as string,
           keys: [`test.difference.annotatedDifference`],

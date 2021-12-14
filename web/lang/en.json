@@ -403,6 +403,7 @@
     "tier-list.starpower.starpowers": "Star Power Tier List for Brawl Stars",
     "tier-list.starpower.title": "Brawl Stars Star Powers",
     "time.ends-in": "ends in {time}",
-    "comparison.reference.for.metric": "Reference {metric}",
-    "comparison.difference": "Difference"
+    "comparison.difference": "Difference",
+    "comparison.reference": "Reference Data",
+    "comparison.test": "Test Data"
 }
