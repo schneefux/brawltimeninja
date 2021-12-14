@@ -14,9 +14,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'Shimmer',
   props: {
     tag: {
@@ -25,12 +25,15 @@ export default Vue.extend({
     },
     loading: {
       type: Boolean,
+      default: false
     },
     widthPx: {
       type: [Number, String],
+      required: false
     },
     heightPx: {
       type: [Number, String],
+      required: false
     },
   },
 })

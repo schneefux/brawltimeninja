@@ -70,19 +70,22 @@ export default defineComponent({
     const { $klicker, route, i18n } = useContext()
     const { query } = toRefs(props)
 
-    const show = computed(() => query.value.measurements.length < 5)
+    const show = computed(() => 'test' in query.value || query.value.state.measurementsIds.length < 5)
 
     const columns = computed<Column[]>(() => {
-      const dimensionColumn: Column = {
-        title: query.value.dimensions.map(d => $klicker.getName(d)).join(', '),
-        keys: query.value.dimensions.map(d => `dimensions.${d.id}`),
-        // dimensions are rendered n:m
-        slot: 'dimensions',
-      }
+      let columns: Column[] = []
+      if (!('test' in query.value)) {
+        const state = query.value.state
+        const dimensions = $klicker.getDimensions(state)
+        const measurements = $klicker.getMeasurements(state)
 
-      let columns: Column[]
-      if (!('comparingMeasurement' in query.value)) {
-        columns = query.value.measurements.map(m => (<Column>{
+        columns.push({
+          title: dimensions.map(d => $klicker.getName(d)).join(', '),
+          keys: dimensions.map(d => `dimensions.${d.id}`),
+          // dimensions are rendered n:m
+          slot: 'dimensions',
+        })
+        measurements.forEach(m => columns.push({
           // measurements are rendered 1:1
           title: $klicker.getName(m),
           keys: [`measurements.${m.id}`],
@@ -90,26 +93,37 @@ export default defineComponent({
           shrink: true,
         }))
       } else {
-        columns = [{
-          title: i18n.t('comparison.reference.for.metric', { metric: $klicker.getName(query.value.comparingMeasurement) }) as string,
-          keys: [`measurements.${query.value.comparingMeasurement.id}`],
-          slot: `measurements.${query.value.comparingMeasurement.id}`,
+        const state = query.value.state
+        const dimensions = $klicker.getDimensions(state.reference)
+
+        columns.push({
+          title: dimensions.map(d => $klicker.getName(d)).join(', '),
+          keys: dimensions.map(d => `dimensions.${d.id}`),
+          // dimensions are rendered n:m
+          slot: 'dimensions',
+        })
+        const comparingMeasurement = $klicker.getComparingMeasurement(state)
+        columns.push({
+          title: i18n.t('comparison.reference.for.metric', { metric: $klicker.getName(comparingMeasurement) }) as string,
+          keys: [`measurements.${state.comparingMeasurementId}`],
+          slot: `measurements.${state.comparingMeasurementId}`,
           shrink: true,
-        }, {
+        })
+        columns.push({
           title: i18n.t('comparison.difference') as string,
           keys: [`test.annotatedDifference`],
           slot: 'difference',
           shrink: true,
-        }]
+        })
       }
 
-      return [dimensionColumn, ...columns]
+      return columns
     })
 
     const rows = computed(() => query.value.data)
 
     // TODO add comparator v2 support to dashboard
-    const link = computed(() => !('comparingMeasurement' in query.value) ? <Location>{
+    const link = computed(() => !('comparingMeasurementId' in query.value.state) ? <Location>{
       ...$klicker.stateToLocation(query.value.state),
       path: '/dashboard',
     } : {})

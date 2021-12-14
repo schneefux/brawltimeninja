@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
@@ -28,15 +28,20 @@ export default defineComponent({
   },
   setup(props) {
     const { query } = toRefs(props)
+    const { $klicker } = useContext()
+
+    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+
     const show = () => query.value.data.length > 0
-        && query.value.dimensions.filter(d => d.type == 'temporal').length == 1
-        && query.value.dimensions.filter(m => m.type == 'nominal').length == 1
-        && query.value.measurements.length == 1
+        && dimensions.value.filter(d => d.type == 'temporal').length == 1
+        && dimensions.value.filter(m => m.type == 'nominal').length == 1
+        && measurements.value.length == 1
 
     const download = () => {
-      const temporal = query.value.dimensions.filter(d => d.type == 'temporal')[0]
-      const nominal = query.value.dimensions.filter(d => d.type == 'nominal')[0]
-      const value = query.value.measurements[0]
+      const temporal = dimensions.value.filter(d => d.type == 'temporal')[0]
+      const nominal = dimensions.value.filter(d => d.type == 'nominal')[0]
+      const value = measurements.value[0]
 
       const allDates = query.value.data.map(r => r.dimensionsRaw[temporal.id][temporal.naturalIdAttribute])
       const dates = [...new Set(allDates)].sort()

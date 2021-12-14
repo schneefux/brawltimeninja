@@ -50,7 +50,7 @@ export default defineComponent({
     const { $klicker } = useContext()
     const { query } = toRefs(props)
 
-    const metricName = computed(() => $klicker.getName(query.value.comparingMeasurement))
+    const metricName = computed(() => $klicker.getName($klicker.getComparingMeasurement(query.value.state)))
 
     return {
       metricName,

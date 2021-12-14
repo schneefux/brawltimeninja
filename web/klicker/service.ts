@@ -1,4 +1,4 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse, MetaGridEntryTest, TestState, CubeResponseTest } from "~/klicker"
+import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, State, ValueType, CubeResponse, MetaGridEntryTest, TestState, CubeResponseTest, GenericState } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -166,8 +166,6 @@ export default class Klicker {
     return {
       state,
       comparing: state.comparingSlices != undefined,
-      measurements,
-      dimensions,
       data,
     }
   }
@@ -208,8 +206,8 @@ export default class Klicker {
 
     return {
       ...referenceResponse,
+      test: true,
       state,
-      comparingMeasurement,
       data: this.compare(referenceResponse.data, testResponse.data, comparingMeasurement)
     }
   }
@@ -381,6 +379,39 @@ export default class Klicker {
 
     // fall back to name
     return m.name || m.id
+  }
+  public getDimensions(state: GenericState): Dimension[] {
+    return state.dimensionsIds.map(id =>  this.getDimension(state, id))
+  }
+  private getDimension(state: GenericState, id: string): Dimension {
+    if (!(state.cubeId in this.config)) {
+      throw 'Invalid cubeId ' + state.cubeId
+    }
+
+    const cube = this.config[state.cubeId]
+    const dimension = cube.dimensions.find(d => id == d.id)
+    if (dimension == undefined) {
+      throw new Error('Invalid dimension id ' + id)
+    }
+    return dimension
+  }
+  public getMeasurements(state: State): Measurement[] {
+    return state.measurementsIds.map(id =>  this.getMeasurement(state, id))
+  }
+  public getComparingMeasurement(state: TestState): Measurement {
+    return this.getMeasurement(state.reference, state.comparingMeasurementId)
+  }
+  private getMeasurement(state: GenericState, id: string): Measurement {
+    if (!(state.cubeId in this.config)) {
+      throw 'Invalid cubeId ' + state.cubeId
+    }
+
+    const cube = this.config[state.cubeId]
+    const measurement = cube.measurements.find(m => id == m.id)
+    if (measurement == undefined) {
+      throw new Error('Invalid measurement id ' + id)
+    }
+    return measurement
   }
   public stateToLocation(state: Partial<State>): Location {
     const slices = state.slices ? generateQueryParams(state.slices, 'filter') : {}

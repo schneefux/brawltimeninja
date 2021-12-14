@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="query.measurements.length == 1 && description != undefined"
+    v-if="show"
     :title="title"
     dense
   >
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from "@nuxtjs/composition-api"
+import { computed, defineComponent, PropType, toRefs, useContext } from "@nuxtjs/composition-api"
 import { CubeResponse } from "~/klicker"
 
 export default defineComponent({
@@ -26,11 +26,16 @@ export default defineComponent({
   },
   setup(props) {
     const { query } = toRefs(props)
+    const { $klicker } = useContext()
 
-    const title = computed(() => 'About ' + query.value.measurements[0].name)
-    const description = computed(() => query.value.measurements[0].description)
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+    const title = computed(() => 'About ' + $klicker.getName(measurements[0]))
+    const description = computed(() => measurements[0].description)
+
+    const show = computed(() => query.value.state.measurementsIds.length == 1 && description != undefined)
 
     return {
+      show,
       title,
       description,
     }

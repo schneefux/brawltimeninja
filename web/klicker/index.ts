@@ -14,11 +14,15 @@ export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
 
-export interface State {
+// TODO refactor this
+export interface GenericState {
   cubeId: string
   slices: SliceValue
-  comparingSlices?: SliceValue
   dimensionsIds: string[]
+}
+
+export interface State extends GenericState {
+  comparingSlices?: SliceValue
   measurementsIds: string[]
   sortId: string
   limit?: number
@@ -26,16 +30,8 @@ export interface State {
 
 export interface TestState {
   comparingMeasurementId: string
-  reference: {
-    cubeId: string
-    slices: SliceValue
-    dimensionsIds: string[]
-  }
-  test: {
-    cubeId: string
-    slices: SliceValue
-    dimensionsIds: string[]
-  }
+  reference: GenericState
+  test: GenericState
 }
 
 export interface Cube {
@@ -141,6 +137,8 @@ export interface Slice {
 
 export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
+export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
+
 export interface MetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
@@ -164,9 +162,8 @@ export interface MetaGridEntryTest extends MetaGridEntry {
 }
 
 export interface TypedCubeResponse<S, D> {
+  // TODO remove TypedCubeResponse and push state/data to props again
   state: S
-  dimensions: Dimension[]
-  measurements: Measurement[]
   data: D[]
 }
 
@@ -177,5 +174,6 @@ export interface CubeResponse extends TypedCubeResponse<State, MetaGridEntry> {
 }
 
 export interface CubeResponseTest extends TypedCubeResponse<TestState, MetaGridEntryTest> {
-  comparingMeasurement: Measurement
+  // TODO type hack, remove this
+  test: true
 }

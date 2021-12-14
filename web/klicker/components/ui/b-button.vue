@@ -39,40 +39,52 @@ export default Vue.extend({
       type: [String, Object]
     },
     selected: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     outline: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     round: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     dark: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     light: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     primary: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     secondary: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     link: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     xs: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     sm: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     md: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     lg: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
   },
 })

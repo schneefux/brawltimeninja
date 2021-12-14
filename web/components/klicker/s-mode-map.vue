@@ -4,7 +4,7 @@
     class="contents"
   >
     <b-select
-      v-if="'mode' in value"
+      v-if="'mode' in value && modes != undefined"
       v-model="mode"
       dark
       sm
@@ -18,7 +18,7 @@
     </b-select>
 
     <b-select
-      v-if="'map' in value"
+      v-if="'map' in value && maps != undefined"
       v-model="map"
       :class="{ 'hidden': mode == undefined }"
       dark
@@ -35,53 +35,63 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
+      required: true
+    },
   },
-  data() {
-    return {
-      maps: [] as { battle_event_map: string, battle_event_id: number }[],
-      modes: [] as string[],
-    }
-  },
-  watch: {
-    mode: '$fetch',
-    '$i18n.loale': '$fetch',
-  },
-  async fetch() {
-    this.modes = await this.$klicker.queryAllModes()
-    const maps = await this.$klicker.queryAllMaps(this.mode == '' ? undefined : this.mode)
-    this.maps = maps.sort((m1, m2) => (this.$i18n.t('map.' + m1.battle_event_id) as string).localeCompare(this.$i18n.t('map.' + m2.battle_event_id) as string))
-  },
-  computed: {
-    mode: {
+  setup(props) {
+    const { $klicker, i18n } = useContext()
+    const { value: state } = toRefs(props)
+
+    const mode = computed({
       get(): string {
-        return (this.value.mode || {})[0] || ''
+        return (state.value.mode || {})[0] || ''
       },
       set(v: string) {
-        this.$parent.$emit('slice', {
+        props.onInput({
           mode: v != '' ? [v] : [],
           map: [],
         })
       },
-    },
-    map: {
+    })
+
+    const map = computed({
       get(): string {
-        return (this.value.map || {})[0] || ''
+        return (state.value.map || {})[0] || ''
       },
       set(v: string) {
-        this.$parent.$emit('slice', {
+        props.onInput({
           map: v != '' ? [v] : [],
         })
       },
-    },
+    })
+
+    async function getMaps(): Promise<{ battle_event_map: string, battle_event_id: number }[]> {
+      const maps = await $klicker.queryAllMaps(mode.value == '' ? undefined : mode.value)
+      return maps.sort((m1, m2) => (i18n.t('map.' + m1.battle_event_id) as string).localeCompare(i18n.t('map.' + m2.battle_event_id) as string))
+    }
+
+    const maps = useAsync(() => getMaps())
+    const modes = useAsync(() => $klicker.queryAllModes())
+
+    watch(() => [state.value, i18n.locale], async () => maps.value = await getMaps())
+
+    return {
+      mode,
+      map,
+      modes,
+      maps,
+    }
   },
 })
 </script>

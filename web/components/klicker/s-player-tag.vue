@@ -9,31 +9,42 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 import { tagToId } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
+      required: true
+    },
   },
-  computed: {
-    tagFilter: {
+  setup(props) {
+    const { value: state } = toRefs(props)
+
+    const tagFilter = computed({
       get(): string {
-        return (this.value.playerTag || [])[0] || ''
+        return (state.value.playerTag || [])[0] || ''
       },
       set(v: string) {
         if (v == '') {
-          this.$parent.$emit('slice', { playerId: [] })
-        }
-        if (new RegExp('^[0289PYLQGRJCUV]{3,}$').test(v)) {
-          this.$parent.$emit('slice', { playerId: [tagToId(v)] })
+          props.onInput({ playerId: [] })
+        } else {
+          if (new RegExp('^[0289PYLQGRJCUV]{3,}$').test(v)) {
+            props.onInput({ playerId: [tagToId(v)] })
+          }
         }
       }
-    },
-  }
+    })
+
+    return {
+      tagFilter,
+    }
+  },
 })
 </script>

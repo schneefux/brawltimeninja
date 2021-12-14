@@ -1,48 +1,54 @@
 <template>
   <b-select
-    v-if="'ally' in value"
+    v-if="'ally' in value && brawlers != undefined"
     :value="value.ally"
     dark
     sm
-    @input="v => $parent.$emit('slice', { ally: v == '' ? [] : [v] })"
+    @input="v => onInput({ ally: v == '' ? [] : [v] })"
   >
     <option
       value=""
     >with any</option>
     <option
       v-for="b in brawlers"
-      :key="b"
-      :value="b"
-    >with {{ capitalize(b.toLowerCase()) }}</option>
+      :key="b.id"
+      :value="b.id"
+    >with {{ b.name }}</option>
   </b-select>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 import { capitalize } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
-  },
-  data() {
-    return {
-      brawlers: [] as string[],
-    }
-  },
-  async fetch() {
-    const brawlers = await this.$klicker.queryAllBrawlers()
-    this.brawlers = brawlers
-      .sort((b1, b2) => b1.localeCompare(b2))
-  },
-  computed: {
-    capitalize() {
-      return capitalize
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
+      required: true
     },
+  },
+  setup() {
+    const { $klicker } = useContext()
+
+    const brawlers = useAsync(async () => {
+      const brawlers = await $klicker.queryAllBrawlers()
+      return brawlers
+        .sort((b1, b2) => b1.localeCompare(b2))
+        .map(b => ({
+          id: b,
+          name: capitalize(b.toLowerCase()),
+        }))
+    })
+
+    return {
+      brawlers,
+    }
   },
 })
 </script>

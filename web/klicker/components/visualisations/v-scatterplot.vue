@@ -35,57 +35,66 @@ export default defineComponent({
   setup(props) {
     const { query } = toRefs(props)
 
+    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+
     const show = computed(() =>
-      query.value.dimensions.length == 1
-      && query.value.measurements.length == 2
+      query.value.state.dimensionsIds.length == 1
+      && query.value.state.measurementsIds.length == 2
       && query.value.data.length > 1
       && query.value.data.length < 1000
     )
 
     const { $klicker } = useContext()
 
-    const spec = computed<VisualizationSpec>(() => ({
-      data: {
-        values: query.value.data,
-      },
-      encoding: {
-        x: {
-          field: 'measurementsRaw.' + query.value.measurements[0].id,
-          type: query.value.measurements[0].type,
-          title: $klicker.getName(query.value.measurements[0]),
-          axis: {
-            format: query.value.measurements[0].d3formatter,
-          },
-          scale: query.value.measurements[0].scale,
-        },
-        y: {
-          field: 'measurementsRaw.' + query.value.measurements[1].id,
-          type: query.value.measurements[1].type,
-          title: $klicker.getName(query.value.measurements[1]),
-          axis: {
-            format: query.value.measurements[1].d3formatter,
-          },
-          scale: query.value.measurements[1].scale,
-        },
-      },
-      layer: [{
-        mark: 'point',
-      }, {
-        mark: {
-          type: 'text',
-          align: 'center',
-          baseline: 'top',
-          dy: 3,
+    const spec = computed<VisualizationSpec>(() => {
+      const measurement0 = measurements.value[0]
+      const measurement1 = measurements.value[1]
+      const dimension0 = dimensions.value[0]
+
+      return {
+        data: {
+          values: query.value.data,
         },
         encoding: {
-          text: {
-            field: 'dimensions.' + query.value.dimensions[0].id,
-            type: query.value.dimensions[0].type,
-            title: $klicker.getName(query.value.dimensions[0]),
+          x: {
+            field: 'measurementsRaw.' + measurement0.id,
+            type: measurement0.type,
+            title: $klicker.getName(measurement0),
+            axis: {
+              format: measurement0.d3formatter,
+            },
+            scale: measurement0.scale,
+          },
+          y: {
+            field: 'measurementsRaw.' + measurement1.id,
+            type: measurement1.type,
+            title: $klicker.getName(measurement1),
+            axis: {
+              format: measurement1.d3formatter,
+            },
+            scale: measurement1.scale,
           },
         },
-      }],
-    }))
+        layer: [{
+          mark: 'point',
+        }, {
+          mark: {
+            type: 'text',
+            align: 'center',
+            baseline: 'top',
+            dy: 3,
+          },
+          encoding: {
+            text: {
+              field: 'dimensions.' + dimension0.id,
+              type: dimension0.type,
+              title: $klicker.getName(dimension0),
+            },
+          },
+        }],
+      }
+    })
 
     return {
       show,

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
 import { CubeResponse } from '~/klicker'
 import BVega from '~/klicker/components/ui/b-vega.vue'
@@ -26,35 +26,44 @@ export default defineComponent({
   },
   setup(props) {
     const { query } = toRefs(props)
-    const show = computed(() => query.value.dimensions.length == 1 &&
-      query.value.dimensions[0].type == 'temporal' &&
-      query.value.measurements.length == 1 &&
+    const { $klicker } = useContext()
+
+    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+
+    const show = computed(() => dimensions.value.length == 1 &&
+      dimensions.value[0].type == 'temporal' &&
+      measurements.value.length == 1 &&
       query.value.data.length > 1 &&
       query.value.data.length < 1000)
 
-    const spec = computed((): VisualizationSpec => ({
-      data: {
-        values: query.value.data,
-      },
-      mark: 'line',
-      encoding: {
-        x: {
-          field: 'dimensions.' + query.value.dimensions[0].id,
-          type: query.value.dimensions[0].type,
-          title: query.value.dimensions[0].name,
-          scale: query.value.dimensions[0].scale,
+    const spec = computed((): VisualizationSpec => {
+      const dimension0 = dimensions.value[0]
+      const measurement0 = measurements.value[0]
+      return {
+        data: {
+          values: query.value.data,
         },
-        y: {
-          field: 'measurementsRaw.' + query.value.measurements[0].id,
-          type: query.value.measurements[0].type,
-          title: query.value.measurements[0].name,
-          axis: {
-            format: query.value.measurements[0].d3formatter,
+        mark: 'line',
+        encoding: {
+          x: {
+            field: 'dimensions.' + dimension0.id,
+            type: dimension0.type,
+            title: dimension0.name,
+            scale: dimension0.scale,
           },
-          scale: query.value.measurements[0].scale,
+          y: {
+            field: 'measurementsRaw.' + measurement0.id,
+            type: measurement0.type,
+            title: measurement0.name,
+            axis: {
+              format: measurement0.d3formatter,
+            },
+            scale: measurement0.scale,
+          },
         },
-      },
-    }))
+      }
+    })
 
     return {
       show,

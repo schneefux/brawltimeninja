@@ -12,48 +12,58 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
+      required: true
+    },
   },
-  computed: {
-    choice: {
+  setup(props) {
+    const { value: state } = toRefs(props)
+
+    const choice = computed({
       get(): string {
-        if (this.value.mapLike?.length == 1 && this.value.mapLike[0] == 'Competition') {
+        if (state.value.mapLike?.length == 1 && state.value.mapLike[0] == 'Competition') {
           return 'include'
         }
-        if (this.value.mapNotLike?.length == 1 && this.value.mapNotLike[0] == 'Competition') {
+        if (state.value.mapNotLike?.length == 1 && state.value.mapNotLike[0] == 'Competition') {
           return 'exclude'
         }
         return 'all'
       },
       set(v: string) {
         if (v == 'include') {
-          this.$parent.$emit('slice', {
+          props.onInput({
             mapLike: ['Competition'],
             mapNotLike: [],
           })
         }
         if (v == 'exclude') {
-          this.$parent.$emit('slice', {
+          props.onInput({
             mapLike: [],
             mapNotLike: ['Competition'],
           })
         }
         if (v == 'all') {
-          this.$parent.$emit('slice', {
+          props.onInput({
             mapLike: [],
             mapNotLike: [],
           })
         }
       }
-    },
+    })
+
+    return {
+      choice,
+    }
   },
 })
 </script>

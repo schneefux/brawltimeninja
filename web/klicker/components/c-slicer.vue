@@ -23,7 +23,7 @@
       >
         <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
         <div class="mb-3 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2">
-          <slot :value="slices"></slot>
+          <slot :value="slices" :on-input="onInput"></slot>
         </div>
       </div>
     </div>
@@ -32,11 +32,11 @@
 
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref, toRefs } from '@nuxtjs/composition-api'
 import { SliceValue, State } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BButton,
   },
@@ -48,35 +48,35 @@ export default Vue.extend({
     },
     comparing: {
       // true if the slicer controls comparingSlices
-      type: Boolean
+      type: Boolean,
+      default: false
     },
   },
-  data() {
-    return {
-      showFilters: false,
-    }
-  },
-  mounted() {
-    // slots cannot have event handlers, so they $parent.$emit
-    // the diff object instead
-    // capture, process and forward it
-    this.$on('slice', (s: Partial<SliceValue>) => {
-      this.$emit('input', <State>{
-        ...this.value,
-        [this.comparing ? 'comparingSlices' : 'slices']: {
-          ...this.slices,
+  setup(props, { emit }) {
+    const { value: state, comparing } = toRefs(props)
+
+    const showFilters = ref(false)
+
+    const slices = computed(() => comparing.value ? state.value.comparingSlices! : state.value.slices)
+
+    // slots cannot have event handlers,
+    // so the handler is passed down instead
+    const onInput = (s: Partial<SliceValue>) => {
+      emit('input', <State>{
+        ...state.value,
+        [comparing.value ? 'comparingSlices' : 'slices']: {
+          ...slices.value,
           ...s,
         },
       })
-    })
-  },
-  computed: {
-    slices(): SliceValue {
-      return this.comparing ? this.value.comparingSlices! : this.value.slices
-    },
-    faFilter() {
-      return faFilter
-    },
-  },
+    }
+
+    return {
+      onInput,
+      showFilters,
+      slices,
+      faFilter,
+    }
+  }
 })
 </script>

@@ -1,10 +1,10 @@
 <template>
   <b-select
-    v-if="key in value && seasons.length > 0"
+    v-if="key in value && seasons != undefined"
     :value="value[key][0]"
     dark
     sm
-    @input="v => $parent.$emit('slice', { [key]: [v] })"
+    @input="v => onInput({ [key]: [v] })"
   >
     <option
       v-for="s in seasons"
@@ -17,13 +17,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
+      required: true
+    },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
       required: true
     },
     exact: {
@@ -35,26 +39,24 @@ export default Vue.extend({
       default: 8
     },
   },
-  data() {
-    return {
-      seasons: [] as { id: string, name: string }[],
+  setup(props) {
+    const { $klicker } = useContext()
+    const { exact, limit } = toRefs(props)
+
+    const key = computed(() => exact.value != false ?  'seasonExact' : 'season')
+
+    async function getSeasons(): Promise<{ id: string, name: string }[]> {
+      return await $klicker.queryAllSeasons(limit.value)
     }
-  },
-  fetchDelay: 0,
-  async fetch() {
-    this.seasons = await this.$klicker.queryAllSeasons(this.limit)
-  },
-  watch: {
-    limit: '$fetch',
-  },
-  computed: {
-    key(): string {
-      if (this.exact != false) {
-        return 'seasonExact'
-      } else {
-        return 'season'
-      }
-    },
+
+    const seasons = useAsync(() => getSeasons())
+
+    watch(limit, async () => seasons.value = await getSeasons())
+
+    return {
+      key,
+      seasons,
+    }
   },
 })
 </script>

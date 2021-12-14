@@ -52,13 +52,16 @@ export default defineComponent({
       required: true
     },
     fullWidth: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     fullHeight: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     showDownload: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
   },
   setup(props) {

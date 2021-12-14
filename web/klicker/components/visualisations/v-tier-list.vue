@@ -46,7 +46,7 @@ import VTierListSharepic from '~/klicker/components/visualisations/v-tier-list-s
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'
 import { computed, PropType, toRefs } from '@vue/composition-api'
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
 
 // TODO decouple v-tier-list-sharepic
 
@@ -81,14 +81,17 @@ export default defineComponent({
   },
   setup(props) {
     const { query } = toRefs(props)
+    const { $klicker } = useContext()
 
-    const show = computed(() => query.value.dimensions.length == 1
-      && query.value.measurements.length == 1
+    const show = computed(() => query.value.state.dimensionsIds.length == 1
+      && query.value.state.measurementsIds.length == 1
       && query.value.data.length > 5
       && query.value.data.length < 100
     )
 
-    const tiers = computed(() => groupTiers(query.value.data, query.value.measurements[0]))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+
+    const tiers = computed(() => groupTiers(query.value.data, measurements.value[0]))
 
     return {
       show,

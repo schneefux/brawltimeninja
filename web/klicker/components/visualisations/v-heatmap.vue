@@ -17,7 +17,7 @@
 import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import { computed, PropType, toRefs } from '@vue/composition-api'
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { BVega, BCard } from '~/klicker/components'
 
 export default defineComponent({
@@ -34,11 +34,15 @@ export default defineComponent({
   },
   setup(props) {
     const { query } = toRefs(props)
+    const { $klicker } = useContext()
+
+    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
 
     const show = computed(() => {
-      if (query.value.dimensions.length == 2 && query.value.measurements.length == 1 && query.value.data.length > 1) {
-        const uniqueX = new Set(query.value.data.map(d => d.dimensions[query.value.dimensions[0].id])).size
-        const uniqueY = new Set(query.value.data.map(d => d.dimensions[query.value.dimensions[1].id])).size
+      if (dimensions.value.length == 2 && measurements.value.length == 1 && query.value.data.length > 1) {
+        const uniqueX = new Set(query.value.data.map(d => d.dimensions[dimensions.value[0].id])).size
+        const uniqueY = new Set(query.value.data.map(d => d.dimensions[dimensions.value[1].id])).size
 
         // less than 50% gaps
         return query.value.data.length > 0.5 * uniqueX * uniqueY
@@ -46,32 +50,37 @@ export default defineComponent({
       return false
     })
 
-    const spec = computed((): VisualizationSpec => ({
-      data: {
-        values: query.value.data,
-      },
-      mark: 'rect',
-      encoding: {
-        x: {
-          field: 'dimensions.' + query.value.dimensions[0].id,
-          type: query.value.dimensions[0].type,
-          title: query.value.dimensions[0].name,
-          scale: query.value.dimensions[0].scale,
+    const spec = computed((): VisualizationSpec => {
+      const dimension0 = dimensions.value[0]
+      const dimension1 = dimensions.value[1]
+      const measurement0 = measurements.value[0]
+      return {
+        data: {
+          values: query.value.data,
         },
-        y: {
-          field: 'dimensions.' + query.value.dimensions[1].id,
-          type: query.value.dimensions[1].type,
-          title: query.value.dimensions[1].name,
-          scale: query.value.dimensions[1].scale,
+        mark: 'rect',
+        encoding: {
+          x: {
+            field: 'dimensions.' + dimension0.id,
+            type: dimension0.type,
+            title: dimension0.name,
+            scale: dimension0.scale,
+          },
+          y: {
+            field: 'dimensions.' + dimension1.id,
+            type: dimension1.type,
+            title: dimension1.name,
+            scale: dimension1.scale,
+          },
+          color: {
+            field: 'measurementsRaw.' + measurement0.id,
+            type: measurement0.type,
+            title: measurement0.name,
+            scale: measurement0.scale,
+          },
         },
-        color: {
-          field: 'measurementsRaw.' + query.value.measurements[0].id,
-          type: query.value.measurements[0].type,
-          title: query.value.measurements[0].name,
-          scale: query.value.measurements[0].scale,
-        },
-      },
-    }))
+      }
+    })
 
     return {
       show,

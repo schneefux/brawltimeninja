@@ -46,8 +46,8 @@ export default defineComponent({
   setup(props) {
     const { query } = toRefs(props)
 
-    const show = computed(() => query.value.dimensions.length == 1
-      && query.value.dimensions[0].id == 'brawler'
+    const show = computed(() => query.value.state.dimensionsIds.length == 1
+      && query.value.state.dimensionsIds[0] == 'brawler'
       && query.value.data.length > 0
       && query.value.data[0].measurementsRaw.useRate != undefined
       && !query.value.comparing

@@ -40,34 +40,44 @@ export default Vue.extend({
       default: ''
     },
     xxxs: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xxs: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xs: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     sm: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     md: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     lg: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xl: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xxl: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xxxl: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     xxxxl: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
   },
 })

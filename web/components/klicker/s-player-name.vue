@@ -9,29 +9,39 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
       required: true
     },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
+      required: true
+    },
   },
-  computed: {
-    nameFilter: {
+  setup(props) {
+    const { value: state } = toRefs(props)
+
+    const nameFilter = computed({
       get(): string {
-        return (this.value.playerName || [])[0] || ''
+        return (state.value.playerName || [])[0] || ''
       },
       set(v: string) {
         if (v == '') {
-          this.$parent.$emit('slice', { playerName: [] })
+          props.onInput({ playerName: [] })
         } else {
-          this.$parent.$emit('slice', { playerName: [v] })
+          props.onInput({ playerName: [v] })
         }
       }
-    },
-  }
+    })
+
+    return {
+      nameFilter,
+    }
+  },
 })
 </script>

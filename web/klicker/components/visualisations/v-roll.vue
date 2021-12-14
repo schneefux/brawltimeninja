@@ -7,7 +7,7 @@
       v-for="(entry, index) in query.data"
       :key="entry.id"
       :elevation="elevation"
-      :title="long ? entry.dimensions[query.dimensions[0].id] : undefined"
+      :title="long ? entry.dimensions[query.state.dimensionsIds[0]] : undefined"
       :class="['flex-shrink-0', {
         'ml-auto': index == 0,
         'mr-auto': index == query.data.length - 1,
@@ -29,7 +29,7 @@
         <table class="mx-auto my-1 text-2xs md:text-xs lg:text-base text-center">
           <tbody>
             <tr
-              v-for="m in query.measurements"
+              v-for="m in measurements"
               :key="m.id"
               class="whitespace-nowrap flex flex-col"
             >
@@ -37,7 +37,7 @@
                 {{ entry.measurements[m.id] }}
               </td>
               <td>
-                {{ $klicker.getName(m, 'short') }}
+                {{ m.name }}
               </td>
             </tr>
           </tbody>
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
@@ -72,15 +72,24 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { $klicker } = useContext()
     const { query } = toRefs(props)
 
-    const show = computed(() => query.value.dimensions.length == 1
-      && query.value.measurements.length == 1
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
+
+    const show = computed(() => query.value.state.dimensionsIds.length == 1
+      && query.value.state.measurementsIds.length == 1
       && query.value.data.length > 1
       && query.value.data.length < 10)
 
+    const measurementsNames = computed(() => measurements.value.map(m => ({
+      id: m.id,
+      name: $klicker.getName(m, 'short')
+    })))
+
     return {
       show,
+      measurements: measurementsNames,
     }
   },
 })

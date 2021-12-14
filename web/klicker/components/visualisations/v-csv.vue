@@ -32,16 +32,18 @@ export default defineComponent({
     const { $klicker } = useContext()
 
     const show = computed(() => query.value.data.length > 0)
+    const dimensions = computed(() => $klicker.getDimensions(query.value.state))
+    const measurements = computed(() => $klicker.getMeasurements(query.value.state))
 
     const download = () => {
       const header = (<string[]>[]).concat(
-        query.value.dimensions.map(d => $klicker.getName(d)),
-        query.value.measurements.map(m => $klicker.getName(m)),
+        dimensions.value.map(d => $klicker.getName(d)),
+        measurements.value.map(m => $klicker.getName(m)),
       ).join(',')
       const body = query.value.data.map(e =>
         (<(string|number)[]>[]).concat(
-          query.value.dimensions.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
-          query.value.measurements.map(m => e.measurementsRaw[m.id]),
+          dimensions.value.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
+          query.value.state.measurementsIds.map(id => e.measurementsRaw[id]),
         ).join(',')
       ).join('\n')
 

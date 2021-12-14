@@ -4,7 +4,7 @@
     :value="(value.powerplay || [])[0]"
     dark
     sm
-    @input="v => $parent.$emit('slice', { powerplay: v != '' ? [v] : [] })"
+    @input="v => onInput({ powerplay: v != '' ? [v] : [] })"
   >
     <option value="">All Battles</option>
     <option value="false">Regular Battles</option>
@@ -13,13 +13,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { SliceValue } from '~/klicker'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object as PropType<SliceValue>,
+      required: true
+    },
+    onInput: {
+      type: Function as PropType<SliceValueUpdateListener>,
       required: true
     },
   },
