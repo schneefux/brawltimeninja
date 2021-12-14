@@ -17,17 +17,17 @@
     -->
     <c-query
       :query="{
-        reference: {
-          cubeId: 'map',
-          dimensionsIds: ['brawler'],
-          slices: {},
-        },
+        cubeId: 'map',
+        dimensionsIds: ['brawler'],
+        slices: { mode: ['brawlBall'] },
         test: {
-          cubeId: 'map',
-          dimensionsIds: ['brawler'],
-          slices: { mode: ['brawlBall'] },
+          measurementId: 'winRate',
+          reference: {
+            cubeId: 'map',
+            dimensionsIds: ['brawler'],
+            slices: {},
+          },
         },
-        comparingMeasurementId: 'winRate'
       }"
     >
       <template v-slot="data">

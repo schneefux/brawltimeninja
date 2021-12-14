@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponseTest } from '~/klicker'
+import { CubeComparingResponse } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
@@ -42,7 +42,7 @@ export default defineComponent({
   },
   props: {
     response: {
-      type: Object as PropType<CubeResponseTest>,
+      type: Object as PropType<CubeComparingResponse>,
       required: true
     },
   },

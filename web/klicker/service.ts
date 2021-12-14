@@ -1,4 +1,4 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, MetaGridEntryTest, CubeComparingQuery, CubeResponseTest, GenericCubeQuery } from "~/klicker"
+import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, AbstractCubeQuery, ComparingMetaGridEntry } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -164,51 +164,52 @@ export default class Klicker {
     }
 
     return {
+      kind: 'response',
       query,
       comparing: query.comparingSlices != undefined,
       data,
     }
   }
-  public async comparingQuery(query: CubeComparingQuery): Promise<CubeResponseTest> {
-    if (!query.reference.dimensionsIds.every(d => query.test.dimensionsIds.includes(d))) {
+  public async comparingQuery(query: CubeComparingQuery): Promise<CubeComparingResponse> {
+    if (!query.dimensionsIds.every(d => query.dimensionsIds.includes(d))) {
       // TODO relax this condition and allow comparisons across different levels of the same hierarchy
       throw new Error('Dimensions must match')
     }
 
     // TODO should comparisons across different cubeIds be allowed? if not -> push cubeId up
-    const referenceCube = this.config[query.reference.cubeId]
-    const comparingMeasurement = referenceCube.measurements.find(m => m.id == query.comparingMeasurementId)
+    const referenceCube = this.config[query.test.reference.cubeId]
+    const comparingMeasurement = referenceCube.measurements.find(m => m.id == query.test.measurementId)
     if (comparingMeasurement == undefined) {
-      throw new Error(`Invalid comparison, missing ${query.comparingMeasurementId} in reference cube`)
+      throw new Error(`Invalid comparison, missing ${query.test.measurementId} in reference cube`)
     }
-    const testCube = this.config[query.test.cubeId]
-    if (!testCube.measurements.some(m => m.id == query.comparingMeasurementId)) {
-      throw new Error(`Invalid comparison, missing ${query.comparingMeasurementId} in test cube`)
+    const testCube = this.config[query.cubeId]
+    if (!testCube.measurements.some(m => m.id == query.test.measurementId)) {
+      throw new Error(`Invalid comparison, missing ${query.test.measurementId} in test cube`)
     }
     if (comparingMeasurement.type != 'quantitative') {
       throw new Error(`Only quantitative measures can be compared, ${comparingMeasurement.id} is ${comparingMeasurement.type}`)
     }
 
-    const measurementsIds = [query.comparingMeasurementId, ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
+    const measurementsIds = [query.test.measurementId, ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
     const partialQuery = {
       measurementsIds,
-      sortId: query.comparingMeasurementId,
+      sortId: query.test.measurementId,
     }
 
     const referenceResponse = await this.query({
-      ...query.reference,
+      ...query.test.reference,
       ...partialQuery,
     })
     const testResponse = await this.query({
-      ...query.test,
+      ...query,
       ...partialQuery,
     })
 
     return {
-      ...referenceResponse,
-      test: true,
+      ...testResponse,
+      kind: 'comparingResponse',
       query,
-      data: this.compare(referenceResponse.data, testResponse.data, comparingMeasurement)
+      data: this.compare(referenceResponse.data, testResponse.data, comparingMeasurement),
     }
   }
   private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet): MetaGridEntry[] {
@@ -304,12 +305,13 @@ export default class Klicker {
     }
     return value.toString()
   }
-  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement): MetaGridEntryTest[] {
+  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement): ComparingMetaGridEntry[] {
     const referenceDataMap: Record<string, MetaGridEntry> = {}
     referenceData.forEach(r => referenceDataMap[r.id] = r)
 
     return testData.map(t => {
-      const diff = (t.measurementsRaw[comparing.id] as number) - (referenceDataMap[t.id].measurementsRaw[comparing.id] as number)
+      const reference = referenceDataMap[t.id]
+      const diff = (t.measurementsRaw[comparing.id] as number) - (reference.measurementsRaw[comparing.id] as number)
       const pValue = comparing.statistics?.test(referenceDataMap[t.id], t) || 1
       // apply Bonferroni correction (TODO use method with better accuracy)
       const correctedPValue = Math.min(1.0, pValue * testData.length)
@@ -330,15 +332,19 @@ export default class Klicker {
         return ''
       }
 
-      const difference = (diff > 0 ? '+' : '') + this.format(comparing, diff)
-      return <MetaGridEntryTest>{
-        ...referenceDataMap[t.id],
+      const diffFormatted = (diff > 0 ? '+' : '') + this.format(comparing, diff)
+      const difference: MetaGridEntryDiff = {
+        differenceRaw: diff,
+        difference: diffFormatted,
+        annotatedDifference: diffFormatted + ' ' + pStars(correctedPValue),
+        pValueRaw: correctedPValue,
+      }
+
+      return <ComparingMetaGridEntry>{
+        ...t,
         test: {
-          measurements: t.measurements,
-          differenceRaw: diff,
+          reference,
           difference,
-          annotatedDifference: difference + ' ' + pStars(correctedPValue),
-          pValueRaw: correctedPValue,
         },
       }
     })
@@ -380,10 +386,10 @@ export default class Klicker {
     // fall back to name
     return m.name || m.id
   }
-  public getDimensions(query: GenericCubeQuery): Dimension[] {
+  public getDimensions(query: AbstractCubeQuery): Dimension[] {
     return query.dimensionsIds.map(id =>  this.getDimension(query, id))
   }
-  private getDimension(query: GenericCubeQuery, id: string): Dimension {
+  private getDimension(query: AbstractCubeQuery, id: string): Dimension {
     if (!(query.cubeId in this.config)) {
       throw 'Invalid cubeId ' + query.cubeId
     }
@@ -399,9 +405,9 @@ export default class Klicker {
     return query.measurementsIds.map(id =>  this.getMeasurement(query, id))
   }
   public getComparingMeasurement(query: CubeComparingQuery): Measurement {
-    return this.getMeasurement(query.reference, query.comparingMeasurementId)
+    return this.getMeasurement(query, query.test.measurementId)
   }
-  private getMeasurement(query: GenericCubeQuery, id: string): Measurement {
+  private getMeasurement(query: AbstractCubeQuery, id: string): Measurement {
     if (!(query.cubeId in this.config)) {
       throw 'Invalid cubeId ' + query.cubeId
     }

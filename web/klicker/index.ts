@@ -14,26 +14,6 @@ export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
 
-// TODO refactor this
-export interface GenericCubeQuery {
-  cubeId: string
-  slices: SliceValue
-  dimensionsIds: string[]
-}
-
-export interface CubeQuery extends GenericCubeQuery {
-  comparingSlices?: SliceValue
-  measurementsIds: string[]
-  sortId: string
-  limit?: number
-}
-
-export interface CubeComparingQuery {
-  comparingMeasurementId: string
-  reference: GenericCubeQuery
-  test: GenericCubeQuery
-}
-
 export interface Cube {
   id: string
   table: string
@@ -147,33 +127,57 @@ export interface MetaGridEntry {
   measurements: Record<string, string>
 }
 
+export interface ComparingMetaGridEntry extends MetaGridEntry {
+  test: {
+    reference: MetaGridEntry
+    difference: MetaGridEntryDiff
+  }
+}
+
 export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
 
-export interface MetaGridEntryTest extends MetaGridEntry {
-  test: {
-    measurements: Record<string, number|string>
-    differenceRaw: number
-    difference: string
-    annotatedDifference: string
-    pValueRaw: number
-  }
+export interface MetaGridEntryDiff {
+  differenceRaw: number
+  difference: string
+  annotatedDifference: string
+  pValueRaw: number
 }
 
-export interface TypedCubeResponse<Q, D> {
-  // TODO remove TypedCubeResponse and push state/data to props again
+export interface AbstractCubeResponse<Q extends AbstractCubeQuery, M extends MetaGridEntry> {
+  kind: string
   query: Q
-  data: D[]
+  data: M[]
 }
 
-/** TODO deprecate in favor of TypedCubeResponse */
-export interface CubeResponse extends TypedCubeResponse<CubeQuery, MetaGridEntry> {
-  /** TODO deprecate */
+export interface CubeResponse extends AbstractCubeResponse<CubeQuery, MetaGridEntry> {
+  kind: 'response'
+
+  /** TODO deprecated, remove */
   comparing: boolean
 }
 
-export interface CubeResponseTest extends TypedCubeResponse<CubeComparingQuery, MetaGridEntryTest> {
-  // TODO type hack, remove this
-  test: true
+export interface CubeComparingResponse extends AbstractCubeResponse<CubeComparingQuery, ComparingMetaGridEntry> {
+  kind: 'comparingResponse'
+}
+
+export interface AbstractCubeQuery {
+  cubeId: string
+  slices: SliceValue
+  dimensionsIds: string[]
+}
+
+export interface CubeQuery extends AbstractCubeQuery {
+  comparingSlices?: SliceValue
+  measurementsIds: string[]
+  sortId: string
+  limit?: number
+}
+
+export interface CubeComparingQuery extends AbstractCubeQuery {
+  test: {
+    measurementId: string
+    reference: AbstractCubeQuery
+  }
 }

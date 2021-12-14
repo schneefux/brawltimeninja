@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse, CubeResponseTest } from '~/klicker'
+import { CubeResponse, CubeComparingResponse } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
@@ -58,7 +58,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse|CubeResponseTest>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
     pageSize: {
@@ -70,11 +70,11 @@ export default defineComponent({
     const { $klicker, route, i18n } = useContext()
     const { response } = toRefs(props)
 
-    const show = computed(() => 'test' in response.value || response.value.query.measurementsIds.length < 5)
+    const show = computed(() => response.value.kind == 'comparingResponse' || response.value.query.measurementsIds.length < 5)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
-      if (!('test' in response.value)) {
+      if (response.value.kind == 'response') {
         const query = response.value.query
         const dimensions = $klicker.getDimensions(query)
         const measurements = $klicker.getMeasurements(query)
@@ -94,7 +94,7 @@ export default defineComponent({
         }))
       } else {
         const query = response.value.query
-        const dimensions = $klicker.getDimensions(query.reference)
+        const dimensions = $klicker.getDimensions(query.test.reference)
 
         columns.push({
           title: dimensions.map(d => $klicker.getName(d)).join(', '),
@@ -105,13 +105,13 @@ export default defineComponent({
         const comparingMeasurement = $klicker.getComparingMeasurement(query)
         columns.push({
           title: i18n.t('comparison.reference.for.metric', { metric: $klicker.getName(comparingMeasurement) }) as string,
-          keys: [`measurements.${query.comparingMeasurementId}`],
-          slot: `measurements.${query.comparingMeasurementId}`,
+          keys: [`measurements.${query.test.measurementId}`],
+          slot: `measurements.${query.test.measurementId}`,
           shrink: true,
         })
         columns.push({
           title: i18n.t('comparison.difference') as string,
-          keys: [`test.annotatedDifference`],
+          keys: [`test.difference.annotatedDifference`],
           slot: 'difference',
           shrink: true,
         })
@@ -123,7 +123,7 @@ export default defineComponent({
     const rows = computed(() => response.value.data)
 
     // TODO add comparator v2 support to dashboard
-    const link = computed(() => !('comparingMeasurementId' in response.value.query) ? <Location>{
+    const link = computed(() => response.value.kind == 'response' ? <Location>{
       ...$klicker.queryToLocation(response.value.query),
       path: '/dashboard',
     } : {})

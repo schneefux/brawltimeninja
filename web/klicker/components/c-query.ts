@@ -1,6 +1,6 @@
 import { defineComponent, PropType, ref, toRefs, h, useContext, useAsync, watch } from '@nuxtjs/composition-api'
 import { VNode } from 'vue'
-import { CubeQuery, CubeResponse, CubeComparingQuery, CubeResponseTest } from '~/klicker'
+import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse } from '~/klicker'
 
 // TODO accept `query` as prop.
 // If query.query corresponds to a query that should be fetched, re-use it.
@@ -21,11 +21,11 @@ export default defineComponent({
 
     const { query } = toRefs(props)
 
-    async function fetch(): Promise<undefined|CubeResponse|CubeResponseTest> {
+    async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
       error.value = false
       loading.value = true
       try {
-        if (!('comparingMeasurementId' in query.value)) {
+        if (!('test' in query.value)) {
           return await $klicker.query(query.value)
         } else {
           return await $klicker.comparingQuery(query.value)
