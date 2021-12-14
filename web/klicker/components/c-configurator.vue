@@ -28,7 +28,7 @@
 
         <c-metric
           :value="value"
-          :multiple="advancedMode"
+          :multiple="!compareMode && advancedMode"
           class="col-span-2"
           @input="s => $emit('input', s)"
         ></c-metric>
@@ -89,7 +89,7 @@
         </div>
 
         <label
-          v-if="advancedMode && canCompare"
+          v-if="canCompare"
           class="col-span-2 flex items-center"
         >
           <b-checkbox v-model="compareMode"></b-checkbox>
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { CubeQuery, Cube, Dimension } from '~/klicker'
+import { CubeQuery, Cube, Dimension, CubeComparingQuery, AbstractCubeQuery } from '~/klicker'
 import CMetric from '~/klicker/components/c-metric.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
 import BCheckbox from '~/klicker/components/ui/b-checkbox.vue'
@@ -122,15 +122,14 @@ export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<CubeQuery>,
+      type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
   },
   data() {
-    const queryIsDefault = !this.$klicker.config[this.value.cubeId].hidden
+    const queryIsDefault = !('comparing' in this.value) && !this.$klicker.config[this.value.cubeId].hidden
       && this.value.measurementsIds.length == this.$klicker.config[this.value.cubeId].defaultMeasurementIds.length
       && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.$klicker.config[this.value.cubeId].defaultDimensionsIds)
-      && this.value.comparingSlices == undefined
 
     return {
       advancedMode: !queryIsDefault,
@@ -146,15 +145,9 @@ export default Vue.extend({
           Object.entries(this.value.slices)
             .filter(([key, value]) => this.$klicker.config[c].slices.some(s => s.id == key))
         ))
-      const comparingSliceDefaults = Object.assign({},
-        this.$klicker.config[c].defaultSliceValues,
-        Object.fromEntries(
-          Object.entries(this.value.comparingSlices ?? {})
-            .filter(([key, value]) => this.$klicker.config[c].slices.some(s => s.id == key))
-        ))
 
       // keep old measurements if they all exist in the new cube
-      const measurementsIdsDefaults = this.value.measurementsIds
+      const measurementsIdsDefaults = !('comparing' in this.value) && this.value.measurementsIds
         .every(m => this.$klicker.config[c].measurements.some(mm => mm.id == m))
         ? this.value.measurementsIds
         : this.$klicker.config[c].defaultMeasurementIds
@@ -162,7 +155,6 @@ export default Vue.extend({
       this.$emit('input', <CubeQuery>{
         cubeId: c,
         slices: slicesDefaults,
-        comparingSlices: comparingSliceDefaults,
         dimensionsIds: this.$klicker.config[c].defaultDimensionsIds,
         measurementsIds: measurementsIdsDefaults,
       })
@@ -190,13 +182,35 @@ export default Vue.extend({
   computed: {
     compareMode: {
       get(): boolean {
-        return this.value.comparingSlices != undefined
+        return 'comparing' in this.value
       },
-      set(comparing: boolean) {
-        this.$emit('input', <CubeQuery>{
-          ...this.value,
-          comparingSlices: comparing ? this.$klicker.config[this.value.cubeId].defaultSliceValues : undefined,
-        })
+      set(wantComparing: boolean) {
+        const isComparing = 'comparing' in this.value
+
+        if (!isComparing && wantComparing) {
+          const current = this.value as CubeQuery
+          const newQuery: AbstractCubeQuery = {
+            cubeId: current.cubeId,
+            slices: current.slices,
+            dimensionsIds: current.dimensionsIds,
+            measurementsIds: [current.measurementsIds[0]],
+          }
+          this.$emit('input', <CubeComparingQuery>{
+            ...newQuery,
+            reference: newQuery,
+            comparing: true,
+          })
+        }
+        if (isComparing && !wantComparing) {
+          const current = this.value as CubeComparingQuery
+          const newQuery: CubeQuery = {
+            ...current,
+            sortId: current.measurementsIds[0],
+          }
+          delete (<any>newQuery).reference
+          delete (<any>newQuery).comparing
+          this.$emit('input', newQuery)
+        }
       }
     },
     cubes(): Cube[] {
@@ -208,10 +222,14 @@ export default Vue.extend({
         .filter(d => this.advancedMode || !d.hidden)
     },
     canCompare(): boolean {
+      if ('comparing' in this.value) {
+        return true
+      }
+
       const measurements = this.$klicker.config[this.value.cubeId].measurements
-      return measurements
-        .filter(m => this.value.measurementsIds.includes(m.id))
-        .every(m => m.type == 'quantitative')
+      const query = this.value as CubeQuery
+      const selectedMeasurements = measurements.filter(m => query.measurementsIds.includes(m.id))
+      return selectedMeasurements.length == 1 && selectedMeasurements[0].type == 'quantitative'
     },
     faPlus() {
       return faPlus

@@ -19,6 +19,7 @@ import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { LayerSpec } from 'vega-lite/build/src/spec'
 
 export default defineComponent({
   components: {
@@ -52,19 +53,20 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
 
       const comparing = response.value.kind == 'comparingResponse'
-      const values = comparing ? response.value.data.flatMap(e => [{
+      const values = comparing ? (<CubeComparingResponse> response.value).data.flatMap(e => [{
         ...e,
         source: i18n.t('comparison.test') as string,
+        stars: e.test.difference.pValueStars,
       }, {
         ...e.test.reference,
         source: i18n.t('comparison.reference') as string,
+        stars: '',
       }]) : response.value.data
 
       return {
         data: {
           values,
         },
-        mark: 'bar',
         encoding: {
           x: {
             field: 'dimensions.' + dimension0.id,
@@ -86,19 +88,37 @@ export default defineComponent({
             scale: measurement0.scale,
             stack: null,
           },
-          ...(comparing ? {
-            color: {
-              field: 'source',
-              legend: {
-                offset: 8,
-                orient: 'top',
-              },
-            },
-            opacity: {
-              value: 0.75,
-            },
-          } : {}),
         },
+        layer: [{
+          mark: 'bar',
+          encoding: {
+            ...(comparing ? {
+              color: {
+                field: 'source',
+                legend: {
+                  title: null,
+                  offset: 8,
+                  orient: 'top',
+                },
+              },
+              opacity: {
+                value: 0.75,
+              },
+            } : {}),
+          },
+        }, ...(comparing ? [{
+          mark: {
+            type: 'text',
+            align: 'center',
+            baseline: 'top',
+          },
+          encoding: {
+            text: {
+              field: 'stars',
+              type: 'nominal',
+            },
+          },
+        }] : []) as any]
       }
     })
 

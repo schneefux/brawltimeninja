@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CubeQuery } from '~/klicker'
+import { CubeQuery, CubeComparingQuery } from '~/klicker'
 import { CDashboard, VDashboard } from '~/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -112,10 +112,10 @@ export default Vue.extend({
   },
   computed: {
     query: {
-      get(): CubeQuery {
+      get(): CubeQuery|CubeComparingQuery {
         return this.$klicker.locationToQuery(this.$route, this.$klicker.config, 'map')
       },
-      set(q: CubeQuery) {
+      set(q: CubeQuery|CubeComparingQuery) {
         this.$router.push({
           ...this.$klicker.queryToLocation(q),
           path: '/dashboard',

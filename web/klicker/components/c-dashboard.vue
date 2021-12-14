@@ -4,7 +4,7 @@
       v-if="configurator"
       v-model="query"
       v-bind="$attrs"
-      class="flex-auto md:flex-none"
+      class="flex-auto"
       full-height
     ></c-configurator>
 
@@ -24,7 +24,7 @@
     </c-slicer>
 
     <c-slicer
-      v-if="'slices' in $scopedSlots && query.comparingSlices"
+        v-if="'slices' in $scopedSlots && 'comparing' in query"
       v-model="query"
       v-bind="$attrs"
       class="w-full md:w-auto"

@@ -25,7 +25,7 @@ export default defineComponent({
       error.value = false
       loading.value = true
       try {
-        if (!('test' in query.value)) {
+        if (!('comparing' in query.value)) {
           return await $klicker.query(query.value)
         } else {
           return await $klicker.comparingQuery(query.value)

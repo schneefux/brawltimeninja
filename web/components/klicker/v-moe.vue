@@ -38,13 +38,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, toRefs, useStore } from '@nuxtjs/composition-api'
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
@@ -56,7 +56,7 @@ export default defineComponent({
       && response.value.query.dimensionsIds[0] == 'brawler'
       && response.value.data.length > 0
       && response.value.data[0].measurementsRaw.picks != undefined
-      && !response.value.comparing
+      && !('comparing' in response.value)
     )
 
     const moe = computed((): number => {
@@ -67,7 +67,7 @@ export default defineComponent({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = response.value.data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
+      const sample = (<CubeResponse>response.value).data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')

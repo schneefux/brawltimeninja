@@ -16,19 +16,20 @@
       TODO implement a v-roll that shows the highest p values
     -->
     <c-query
-      :query="{
+      :query="/*{
+        comparing: true,
         cubeId: 'map',
         dimensionsIds: ['season'],
+        measurementsIds: ['winRate'],
         slices: { mode: ['brawlBall'] },
-        test: {
-          measurementId: 'winRate',
-          reference: {
-            cubeId: 'map',
-            dimensionsIds: ['season'],
-            slices: {},
-          },
+        reference: {
+          cubeId: 'map',
+          dimensionsIds: ['season'],
+          measurementsIds: ['winRate'],
+          slices: {},
         },
-      }"
+      }*/
+      query "
     >
       <template v-slot="data">
         <div class="w-full flex flex-wrap">
@@ -64,6 +65,7 @@ export default defineComponent({
   },
   setup() {
     return {
+      query: { comparing: true, cubeId: 'map', slices: { season: [ '2021-11-15' ], trophyRangeGte: [ '0' ], 'trophyRangeLt': [ '10' ], "brawler": [], "mode": [ "heist" ], "map": [], "mapLike": [], "mapNotLike": [], "powerplay": [ "false" ] }, "dimensionsIds": [ "brawler" ], "measurementsIds": [ "winRateAdj" ], "reference": { "cubeId": "map", "dimensionsIds": [ "brawler" ], "slices": { "season": [ "2021-11-15" ], "trophyRangeGte": [ "0" ], "trophyRangeLt": [ "10" ], "brawler": [], "mode": [ "heist" ], "map": [], "mapLike": [], "mapNotLike": [], "powerplay": [ "false" ] }, "measurementsIds": [ "winRateAdj" ] } }
     }
   }
 })

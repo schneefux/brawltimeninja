@@ -67,14 +67,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { CubeQuery, Measurement } from '~/klicker'
+import { CubeComparingQuery, CubeQuery, Measurement } from '~/klicker'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default Vue.extend({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<CubeQuery>,
+      type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
     multiple: {

@@ -143,6 +143,7 @@ export interface MetaGridEntryDiff {
   difference: string
   annotatedDifference: string
   pValueRaw: number
+  pValueStars: string
 }
 
 export interface AbstractCubeResponse<Q extends AbstractCubeQuery, M extends MetaGridEntry> {
@@ -153,9 +154,6 @@ export interface AbstractCubeResponse<Q extends AbstractCubeQuery, M extends Met
 
 export interface CubeResponse extends AbstractCubeResponse<CubeQuery, MetaGridEntry> {
   kind: 'response'
-
-  /** TODO deprecated, remove */
-  comparing: boolean
 }
 
 export interface CubeComparingResponse extends AbstractCubeResponse<CubeComparingQuery, ComparingMetaGridEntry> {
@@ -166,18 +164,17 @@ export interface AbstractCubeQuery {
   cubeId: string
   slices: SliceValue
   dimensionsIds: string[]
+  measurementsIds: string[]
 }
 
 export interface CubeQuery extends AbstractCubeQuery {
-  comparingSlices?: SliceValue
-  measurementsIds: string[]
   sortId: string
   limit?: number
 }
 
 export interface CubeComparingQuery extends AbstractCubeQuery {
-  test: {
-    measurementId: string
-    reference: AbstractCubeQuery
-  }
+  comparing: true
+  reference: AbstractCubeQuery
 }
+
+// TODO type all components with CubeQuery|CubeComparingQuery

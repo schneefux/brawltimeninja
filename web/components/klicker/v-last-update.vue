@@ -17,7 +17,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { BCard } from '~/klicker/components'
 
 export default defineComponent({
@@ -27,15 +27,14 @@ export default defineComponent({
   },
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
     const { response } = toRefs(props)
 
-    const show = computed(() => response.value.data.length > 0 && !response.value.comparing
-      && response.value.data[0].measurementsRaw.timestamp != undefined)
+    const show = computed(() => response.value.data.length > 0 && response.value.data[0].measurementsRaw.timestamp != undefined)
 
     const lastUpdate = computed((): string => {
       const timestamps = response.value.data

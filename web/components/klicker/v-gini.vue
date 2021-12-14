@@ -33,13 +33,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
-import { CubeResponse, MetaGridEntry } from '~/klicker'
+import { CubeComparingResponse, CubeResponse, MetaGridEntry } from '~/klicker'
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
@@ -50,7 +50,7 @@ export default defineComponent({
       && response.value.query.dimensionsIds[0] == 'brawler'
       && response.value.data.length > 0
       && response.value.data[0].measurementsRaw.useRate != undefined
-      && !response.value.comparing
+      && !('comparing' in response.value)
     )
 
     const giniScore = computed((): number => {

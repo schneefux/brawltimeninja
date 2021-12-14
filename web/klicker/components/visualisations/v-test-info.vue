@@ -1,8 +1,11 @@
 <template>
-  <b-card md>
-    <div slot="content" class="my-2">
-      <p>A statistical test is performed on the reference {{ metricName }} and the compared {{ metricName }}. A significant result means that the difference cannot be explained by chance.</p>
-      <p>Key:</p>
+  <b-card
+    v-if="show"
+    title="Info about statistical tests"
+    lg
+  >
+    <div slot="content" class="mb-2">
+      <p>A statistical test is performed on the reference {{ metricName }} and the compared {{ metricName }}. If the result is significant, the difference cannot be explained by chance. Otherwise, there is not enough data and the effect is too small.</p>
       <table class="mx-auto mt-2">
         <tbody>
           <tr>
@@ -50,9 +53,11 @@ export default defineComponent({
     const { $klicker } = useContext()
     const { response } = toRefs(props)
 
+    const show = computed(() => response.value.kind == 'comparingResponse')
     const metricName = computed(() => $klicker.getName($klicker.getComparingMeasurement(response.value.query)))
 
     return {
+      show,
       metricName,
     }
   },

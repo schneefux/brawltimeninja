@@ -52,7 +52,7 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
 
       const comparing = response.value.kind == 'comparingResponse'
-      const values = comparing ? response.value.data.flatMap(e => [{
+      const values = comparing ? (<CubeComparingResponse> response.value).data.flatMap(e => [{
         ...e,
         source: i18n.t('comparison.test') as string,
       }, {
@@ -85,6 +85,7 @@ export default defineComponent({
             color: {
               field: 'source',
               legend: {
+                title: null,
                 offset: 8,
                 orient: 'top',
               },

@@ -12,7 +12,7 @@
           :icon="faFilter"
         ></font-awesome-icon>
 
-        Configure {{ comparing ? 'Comparing ' : '' }} Filters
+        Configure {{ compareMode ? (comparing ? 'Test Filters' : 'Reference Filters') : 'Filters' }}
       </b-button>
 
       <div
@@ -21,7 +21,7 @@
           'mt-3': showFilters,
         }]"
       >
-        <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ comparing ? 'Compare to' : 'Filters' }}</h1>
+        <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ compareMode ? (comparing ? 'Test Filters' : 'Reference Filters') : 'Filters' }}</h1>
         <div class="mb-3 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2">
           <slot :value="slices" :on-input="onInput"></slot>
         </div>
@@ -32,8 +32,8 @@
 
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, onMounted, PropType, ref, toRefs } from '@nuxtjs/composition-api'
-import { SliceValue, CubeQuery } from '~/klicker'
+import { computed, defineComponent, PropType, ref, toRefs } from '@nuxtjs/composition-api'
+import { SliceValue, CubeQuery, CubeComparingQuery } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
 export default defineComponent({
@@ -43,7 +43,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     value: {
-      type: Object as PropType<CubeQuery>,
+      type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
     comparing: {
@@ -57,21 +57,47 @@ export default defineComponent({
 
     const showFilters = ref(false)
 
-    const slices = computed(() => comparing.value ? query.value.comparingSlices! : query.value.slices)
+    const compareMode = computed(() => 'comparing' in query.value)
+
+    const slices = computed(() => {
+      if (!compareMode.value) {
+        return query.value.slices
+      }
+
+      if (comparing.value) {
+        return query.value.slices
+      } else {
+        return (<CubeComparingQuery>query.value).reference.slices
+      }
+    })
 
     // slots cannot have event handlers,
     // so the handler is passed down instead
     const onInput = (s: Partial<SliceValue>) => {
-      emit('input', <CubeQuery>{
-        ...query.value,
-        [comparing.value ? 'comparingSlices' : 'slices']: {
-          ...slices.value,
-          ...s,
-        },
-      })
+      if (!compareMode.value || comparing.value) {
+        emit('input', <CubeQuery>{
+          ...query.value,
+          slices: {
+            ...slices.value,
+            ...s,
+          },
+        })
+      } else {
+        emit('input', <CubeComparingQuery>{
+          ...query.value,
+          reference: {
+            ...(<CubeComparingQuery>query.value).reference,
+            slices: {
+              ...slices.value,
+              ...s,
+            },
+          },
+        })
+      }
     }
 
     return {
+      compareMode,
       onInput,
       showFilters,
       slices,

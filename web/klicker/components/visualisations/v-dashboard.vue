@@ -83,6 +83,8 @@
         </v-grid>
       </div>
 
+      <v-test-info v-bind="$props"></v-test-info>
+
       <div class="w-full flex flex-wrap gap-x-2">
         <v-csv v-bind="$props"></v-csv>
         <v-share v-bind="$props"></v-share>
@@ -102,6 +104,7 @@ import VTierList from '~/klicker/components/visualisations/v-tier-list.vue'
 import VGrid from '~/klicker/components/visualisations/v-grid.vue'
 import VCsv from '~/klicker/components/visualisations/v-csv.vue'
 import VShare from '~/klicker/components/visualisations/v-share.vue'
+import VTestInfo from '~/klicker/components/visualisations/v-test-info.vue'
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
 export default defineComponent({
@@ -115,15 +118,12 @@ export default defineComponent({
     VGrid,
     VCsv,
     VShare,
+    VTestInfo,
   },
   props: {
     response: {
       type: Object as PropType<CubeResponse>,
       required: true,
-    },
-    loading: {
-      type: Boolean,
-      required: true
     },
   },
 })

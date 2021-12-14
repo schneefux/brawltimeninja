@@ -74,6 +74,8 @@ function binomialTest(getK: (d: MetaGridEntry) => number, getN: (d: MetaGridEntr
   }
 }
 
+// TODO get standard deviations and implement t test for non-binomial attributes
+
 const metaDimensions = asDimensions({
   season: {
     id: 'season',
@@ -744,6 +746,10 @@ const battleNumberMeasurements = asNumberMeasurements({
       sql: 'battle_is_starplayer',
       type: 'avg',
     },
+    statistics: {
+      test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+      requiresMeasurements: ['picks'],
+    },
   },
   rank: {
     id: 'rank',
@@ -1028,6 +1034,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       sql: 'avgMerge(battle_starplayer_state)',
       type: 'number',
     },
+    statistics: {
+      test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+      requiresMeasurements: ['picks'],
+    },
   },
   rank: {
     id: 'rank',
@@ -1059,6 +1069,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     config: {
       sql: 'avgMerge(battle_rank1_state)',
       type: 'number',
+    },
+    statistics: {
+      test: binomialTest(m => (m.measurementsRaw['rank1Rate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+      requiresMeasurements: ['picks'],
     },
   },
   duration: {
