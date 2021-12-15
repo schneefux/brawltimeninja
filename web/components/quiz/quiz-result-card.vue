@@ -46,7 +46,7 @@
         </div>
       </b-card>
 
-      <p class="mt-2 text-left text-sm mb-1">
+      <p class="mt-2 text-left text-sm">
         The Open Extended Jungian Type Scales is a psychological test based on theories by Carl Jung.
         The OEJTS measures four scales to calculate an overall type.
         There is no best type, all types are considered equal.

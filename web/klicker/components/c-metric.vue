@@ -1,8 +1,5 @@
 <template>
-  <div
-    slot="content"
-    class="py-1 grid grid-cols-12-1fr items-center"
-  >
+  <div class="grid grid-cols-12-1fr items-center">
     <span class="font-semibold mr-4">
       Metric
     </span>
@@ -58,7 +55,7 @@
 
     <p
       v-if="description != ''"
-      class="col-span-full my-2 prose text-gray-200"
+      class="col-span-full mt-2 prose text-gray-200"
     >
       {{ description }}
     </p>

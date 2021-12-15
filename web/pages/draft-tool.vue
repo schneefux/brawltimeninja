@@ -7,7 +7,7 @@
       title="Title"
       class="mt-3"
     >
-      <p slot="content" class="mb-2 prose text-gray-200">
+      <p slot="content" class="prose text-gray-200">
         <i>A short introduction to the tool.</i>
       </p>
     </b-card>

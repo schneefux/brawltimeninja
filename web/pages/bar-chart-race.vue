@@ -7,13 +7,13 @@
       :title="$t('bar-chart-race.howto.title')"
       class="mt-3"
     >
-      <p slot="content" class="mb-2 prose text-gray-200">
+      <p slot="content" class="prose text-gray-200">
         {{ $t('bar-chart-race.howto.description') }}
       </p>
     </b-card>
 
     <b-card :title="$t('bar-chart-race.note.title')">
-      <div slot="content" class="mb-2">
+      <div slot="content">
         <p class="prose text-gray-200">
           {{ $t('bar-chart-race.note.description') }}
         </p>
@@ -24,12 +24,11 @@
     <b-card :title="$t('bar-chart-race.brawler')">
       <div slot="content">
         <b-card elevation="2">
-          <div slot="content">
-            <c-metric
-              v-model="query"
-              :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
-            ></c-metric>
-          </div>
+          <c-metric
+            slot="content"
+            v-model="query"
+            :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
+          ></c-metric>
         </b-card>
 
         <c-dashboard
@@ -53,7 +52,7 @@
 
           <template v-slot:data="data">
             <div class="contents">
-              <div class="w-full flex flex-wrap justify-center gap-2 m-2">
+              <div class="w-full flex flex-wrap justify-center gap-2 m-1">
                 <v-csv class="flex-1" v-bind="data"></v-csv>
                 <v-pivot-csv class="flex-1" v-bind="data"></v-pivot-csv>
               </div>
@@ -123,7 +122,6 @@ export default Vue.extend({
           mapNotLike: [],
         },
         sortId: 'day',
-        comparing: false,
       },
     }
   },

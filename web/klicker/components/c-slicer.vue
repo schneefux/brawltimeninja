@@ -1,31 +1,26 @@
 <template>
-  <b-card v-bind="$attrs">
-    <div slot="content" class="mb-1">
-      <b-button
-        :selected="showFilters"
-        class="mr-3 my-2 md:hidden"
-        primary
-        sm
-        @click="showFilters = !showFilters"
-      >
-        <font-awesome-icon
-          :icon="faFilter"
-        ></font-awesome-icon>
+  <b-card v-bind="$attrs" :title="title">
+    <b-button
+      slot="preview"
+      :selected="showFilters"
+      class="md:hidden"
+      primary
+      sm
+      @click="showFilters = !showFilters"
+    >
+      <font-awesome-icon
+        :icon="faFilter"
+      ></font-awesome-icon>
 
-        Configure {{ compareMode ? (comparing ? 'Test Filters' : 'Reference Filters') : 'Filters' }}
-      </b-button>
+      Configure
+    </b-button>
 
-      <div
-        :class="['md:block', {
-          'hidden': !showFilters,
-          'mt-3': showFilters,
-        }]"
-      >
-        <h1 class="text-xl font-semibold hidden md:block my-1 mr-4">{{ compareMode ? (comparing ? 'Test Filters' : 'Reference Filters') : 'Filters' }}</h1>
-        <div class="mb-3 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2">
-          <slot :value="slices" :on-input="onInput"></slot>
-        </div>
-      </div>
+    <div
+      v-if="breakpointMd || showFilters"
+      slot="content"
+      class="my-1 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2"
+    >
+      <slot :value="slices" :on-input="onInput"></slot>
     </div>
   </b-card>
 </template>
@@ -35,6 +30,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
 import { SliceValue, CubeQuery, CubeComparingQuery } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
+import { useBreakpointTailwindCSS } from 'vue-composable'
 
 export default defineComponent({
   components: {
@@ -94,8 +90,12 @@ export default defineComponent({
       }
     }
 
+    const title = computed(() => compareMode.value ? (props.comparing ? 'Test Filters' : 'Reference Filters') : 'Filters')
+    const { md: breakpointMd } = useBreakpointTailwindCSS()
+
     return {
-      compareMode,
+      breakpointMd,
+      title,
       onInput,
       showFilters,
       slices,

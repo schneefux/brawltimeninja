@@ -32,7 +32,7 @@
     <div class="flex justify-center">
       <b-card :title="`Best Players by ${metricName}`">
         <template v-slot:content>
-          <p class="mb-1">
+          <p>
             {{ $t('leaderboard.player.description', { length: leaderboard.length }) }}
           </p>
           <div class="mt-2">

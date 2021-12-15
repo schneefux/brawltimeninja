@@ -32,7 +32,6 @@
       slot="content"
       :slices="slices"
       :elevation="2"
-      class="my-4"
     ></map-best-brawlers>
 
     <b-button

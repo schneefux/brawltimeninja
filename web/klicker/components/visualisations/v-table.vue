@@ -28,7 +28,7 @@
       <b-button
         v-if="showLink"
         :to="link"
-        class="absolute bottom-0 left-0 mb-1 -ml-2"
+        class="absolute bottom-0 left-0 -ml-2"
         dark
         xs
       >

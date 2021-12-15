@@ -2,9 +2,9 @@
   <b-card v-bind="$attrs">
     <div
       slot="content"
-      class="flex flex-wrap items-center py-1"
+      class="flex flex-wrap items-center"
     >
-      <div class="grid grid-cols-12-1fr gap-y-3 items-center">
+      <div class="grid grid-cols-12-1fr gap-y-3 my-3 items-center">
         <h1 class="inline font-semibold mr-4">
           Source
         </h1>

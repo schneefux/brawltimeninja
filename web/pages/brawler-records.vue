@@ -4,7 +4,7 @@
     class="max-w-2xl mx-auto"
   >
     <b-card class="mt-3">
-      <p slot="content" class="my-2 prose text-gray-200">
+      <p slot="content" class="prose text-gray-200">
         {{ $t('brawler-records.info') }}
       </p>
     </b-card>
@@ -101,7 +101,6 @@ export default Vue.extend({
           powerLte: ['10'],
         },
         sortId: 'highestTrophies',
-        comparing: false,
         limit: 100,
       },
     }

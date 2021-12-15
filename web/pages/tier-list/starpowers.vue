@@ -15,7 +15,7 @@
     ></breadcrumbs>
 
     <b-card class="mt-3">
-      <p slot="content" class="my-2 prose text-gray-200">
+      <p slot="content" class="prose text-gray-200">
         {{ $t('tier-list.starpower.description') }}
       </p>
     </b-card>
@@ -135,7 +135,6 @@ export default Vue.extend({
           starpowerIdNeq: ['0'],
         },
         sortId: 'wins',
-        comparing: false,
       },
     }
   },

@@ -112,8 +112,12 @@
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': props.background != undefined,
           'px-3': !props.dense,
+          'pt-1': props.title == undefined && !props.dense,
+          'pb-1': props.background == undefined && !props.dense,
           'py-2': props.background != undefined && !props.dense,
           'px-2': props.dense,
+          'pt-px': props.title == undefined && props.dense,
+          'pb-px': props.background == undefined && props.dense,
           'py-px': props.background != undefined && props.dense,
           'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
           'h-full': props.fullHeight,

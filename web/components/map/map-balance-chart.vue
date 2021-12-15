@@ -8,12 +8,12 @@
           class="h-72 flex-auto"
           full-height
         ></v-bar-plot>
-        <div class="flex-auto flex lg:flex-col flex-wrap">
+        <div class="flex lg:flex-col flex-wrap">
           <v-gini class="flex-auto lg:flex-none" v-bind="data"></v-gini>
           <b-card class="flex-auto lg:flex-none" size="w-44">
             <p
               slot="content"
-              class="mb-2 prose text-gray-200"
+              class="prose text-gray-200"
             >
               {{ $t('brawler.balance-chart.description') }}
             </p>

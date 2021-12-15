@@ -4,7 +4,7 @@
     title="Info about statistical tests"
     lg
   >
-    <div slot="content" class="mb-2">
+    <div slot="content">
       <p>A statistical test is performed on the reference {{ metricName }} and the compared {{ metricName }}. If the result is significant, the difference cannot be explained by chance. Otherwise, there is not enough data and the effect is too small.</p>
       <table class="mx-auto mt-2">
         <tbody>

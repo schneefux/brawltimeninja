@@ -7,7 +7,7 @@
       elevation="2"
       light
     >
-      <div slot="content" class="py-2">
+      <div slot="content">
         <dt class="block text-xl font-bold">
           {{ achievement.metric }}
         </dt>
