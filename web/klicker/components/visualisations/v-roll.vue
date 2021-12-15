@@ -112,7 +112,7 @@ export default defineComponent({
         rows: measurements.value.map(m => ({
           id: m.id,
           text: e.test.difference.difference,
-          name: i18n.t('comparison.difference.short') as string,
+          name: $klicker.getName(m, 'short'),
         })),
       })), !props.significant))
 

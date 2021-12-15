@@ -59,15 +59,25 @@ function calculateGTestStatistic(expectations: number[], observations: number[])
 function binomialTest(getK: (d: MetaGridEntry) => number, getN: (d: MetaGridEntry) => number) {
   // approximate a binomial test using the G-test
   return (r: MetaGridEntry, t: MetaGridEntry) => {
-    const testSampleSize = getN(t)
-    const observedSuccesses = getK(t)
-    const observedFailures = testSampleSize - observedSuccesses
+    const total = getN(r) + getN(t)
+    const totalSuccesses = getK(r) + getK(t)
+    const totalFailures = total - totalSuccesses
 
-    const expectedSuccesses = getK(r) / getN(r) * testSampleSize
-    const expectedFailures = testSampleSize - expectedSuccesses
+    const expectedSuccessesR = getN(r) * totalSuccesses / total
+    const expectedFailuresR = getN(r) * totalFailures / total
+    const expectedSuccessesT = getN(t) * totalSuccesses / total
+    const expectedFailuresT = getN(t) * totalFailures / total
 
-    const g = calculateGTestStatistic([expectedSuccesses, expectedFailures], [observedSuccesses, observedFailures])
-    return ChiSquared.cdf(g, {
+    const observedSuccessesR = getK(r)
+    const observedFailuresR = getN(r) - getK(r)
+    const observedSuccessesT = getK(t)
+    const observedFailuresT = getN(t) - getK(t)
+
+    const g = calculateGTestStatistic(
+      [expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT],
+      [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT])
+
+    return ChiSquared.pdf(g, {
       // df: (rows - 1) * (columns - 1)
       df: 1
     })
@@ -1356,7 +1366,7 @@ const brawlerBattleSlices = [
 const brawlerBattleDefaultSliceValues: SliceValue = {
   season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophyRangeGte: ['0'],
-  trophyRangeLt: ['10'],
+  trophyRangeLt: ['15'],
   brawler: [],
 }
 
