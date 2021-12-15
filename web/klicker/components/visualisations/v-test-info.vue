@@ -53,8 +53,9 @@ export default defineComponent({
     const { $klicker } = useContext()
     const { response } = toRefs(props)
 
-    const show = computed(() => response.value.kind == 'comparingResponse')
-    const metricName = computed(() => $klicker.getName($klicker.getComparingMeasurement(response.value.query)))
+    const comparingMeasurement = computed(() => $klicker.getComparingMeasurement(response.value.query))
+    const show = computed(() => response.value.kind == 'comparingResponse' && comparingMeasurement.value.statistics != undefined)
+    const metricName = computed(() => $klicker.getName(comparingMeasurement.value))
 
     return {
       show,
