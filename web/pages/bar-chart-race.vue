@@ -117,7 +117,7 @@ export default Vue.extend({
           season: [currentSeason.toISOString().slice(0, 10)],
           mode: [],
           trophyRangeGte: ['0'],
-          trophyRangeLt: ['10'],
+          trophyRangeLt: ['15'],
           powerplay: [],
           mapLike: [],
           mapNotLike: [],

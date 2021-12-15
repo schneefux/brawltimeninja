@@ -27,7 +27,9 @@
           dimensionsIds: ['brawler'],
           measurementsIds: ['winRate'],
           slices: {},
-        }
+        },
+        sortId: 'pvalue',
+        limit: 5,
       }"
     >
       <template v-slot="data">
