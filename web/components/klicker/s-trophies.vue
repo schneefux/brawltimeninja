@@ -1,9 +1,9 @@
 <template>
   <trophy-slider-select
     v-if="'trophyRangeGte' in value"
-    :value="[(value.trophyRangeGte || [0])[0], (value.trophyRangeLt || [0])[0]]"
+    :value="{ gte: (value.trophyRangeGte || [])[0], lt: (value.trophyRangeLt || [])[0] }"
     :name="(value.powerplay || [])[0] == 'true' ? 'League' : 'Trophies'"
-    @input="v => onInput({ trophyRangeGte: [v[0]], trophyRangeLt: [v[1]] })"
+    @input="v => onInput({ trophyRangeGte: v.gte != undefined ? [v.gte] : [], trophyRangeLt: v.lt != undefined ? [v.lt] : [] })"
   ></trophy-slider-select>
 </template>
 

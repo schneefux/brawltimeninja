@@ -1,35 +1,60 @@
 <template>
   <range-slider-select
-    :value="value"
+    :value="values"
     :name="name == 'Trophies' ? name : ''"
-    :max="name == 'Trophies' ? 10 : 18"
+    :max="max"
     :format="format"
-    @input="e => $emit('input', e)"
+    @input="onInput"
   ></range-slider-select>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
-      type: Array as PropType<number[]>,
+      type: Object as PropType<{ gte: number|undefined, lt: number|undefined }>,
       required: true,
     },
     name: {
-      type: String,
+      type: String as PropType<'Trophies'|'League'>,
       default: 'Trophies'
     },
   },
-  computed: {
-    format() {
-      if (this.name == 'League') {
+  setup(props, { emit }) {
+    const format = computed(() => {
+      if (props.name == 'League') {
         const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
-        return (n: number) => `${leagues[Math.floor(n/3)]} ${n < 18 ? ['I', 'II', 'III'][n%3] : ''}`
+        return (n: number) => `${leagues[Math.floor(n/3)]} ${n < max.value ? ['I', 'II', 'III'][n%3] : ''}`
+      } else {
+        return (n: number) => n * 100 + (n == max.value ? '+' : '')
       }
-      return (n: number) => n == 10 ? '1000+' : n * 100
-    },
+    })
+
+    const max = computed(() => props.name == 'Trophies' ? 15 : 18)
+    const values = computed(() => {
+      const gte = props.value.gte || 0
+      const lt = props.value.lt || max.value
+      return [gte, lt]
+    })
+
+    const onInput = (e: number[]) => {
+      const gte = e[0] > 0 ? { gte: e[0] } : {}
+      const lt = e[1] < max.value ? { lt: e[1] } : {}
+
+      emit('input', {
+        ...gte,
+        ...lt,
+      })
+    }
+
+    return {
+      max,
+      format,
+      values,
+      onInput,
+    }
   },
 })
 </script>

@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Array as PropType<number[]>,
@@ -59,24 +59,25 @@ export default Vue.extend({
       default: (n: number|undefined) => n != undefined ? n.toString() : '?'
     },
   },
-  methods: {
-    onInput(e) {
-      if (JSON.stringify(e) != JSON.stringify(this.value)) {
-        this.$emit('input', e)
+  setup(props, { emit }) {
+    const onInput = (e: number[]) => {
+      if (JSON.stringify(e) != JSON.stringify(props.value)) {
+        emit('input', e)
       }
-    },
-  },
-  computed: {
-    bgStyle() {
-      return {
-        backgroundColor: 'rgb(253, 230, 138)', // yellow-200
-      }
-    },
-    processStyle() {
-      return {
-        backgroundColor: 'rgb(251, 191, 36)', // yellow-400
-      }
-    },
+    }
+
+    const bgStyle = {
+      backgroundColor: 'rgb(253, 230, 138)', // yellow-200
+    }
+    const processStyle = {
+      backgroundColor: 'rgb(251, 191, 36)', // yellow-400
+    }
+
+    return {
+      onInput,
+      bgStyle,
+      processStyle,
+    }
   },
 })
 </script>
