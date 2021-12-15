@@ -134,36 +134,7 @@ export default class Klicker {
       limit: query.limit,
     })
 
-    let data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
-
-    /*
-    // TODO refactor this - remove comparison mode from query level and move it to visualisation level
-    if (query.comparingSlices != undefined) {
-      const queryComparingSlices = mapSlices(query.comparingSlices)
-
-      const comparingRawData = await this.cubejsApi.load({
-        measures: queryMeasures,
-        dimensions: queryDimensions,
-        filters: queryComparingSlices,
-        order: queryOrder,
-        limit: query.limit,
-      })
-
-      const comparingData = this.mapToMetaGridEntry(cube, dimensions, measurements, comparingRawData)
-
-      // in case the comparison is 1:m (comparing across hierarchy levels), make visualisations iterate over the m
-      let [left, right] = (data.length > comparingData.length) ? [comparingData, data] : [data, comparingData]
-
-      if (sortMeasurement != undefined) {
-        data = this.compareEntries(cube, left, right)
-          .sort((e1, e2) => sortMeasurement.sign * ((e1.measurementsRaw[sortMeasurement.id] as number) - (e2.measurementsRaw[sortMeasurement.id] as number)))
-      }
-      if (sortDimension != undefined) {
-        data = this.compareEntries(cube, left, right)
-          .sort((e1, e2) => (e1.dimensions[sortDimension.id].localeCompare(e2.dimensions[sortDimension.id])))
-      }
-    }
-    */
+    const data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
 
     return {
       kind: 'response',
@@ -358,33 +329,6 @@ export default class Klicker {
           },
         }
       })
-  }
-  /** deprecated, remove */
-  private compareEntries(cube: Cube, baseEntries: MetaGridEntry[], comparingEntries: MetaGridEntry[]): MetaGridEntry[] {
-    return comparingEntries
-      .map(comparingEntry => {
-        // use startsWith instead of eq to allow comparisons across hierarchy levels
-        // TODO verify that most granular dimension must be the last item in the ID or replace
-        const baseEntry = baseEntries.find(b => comparingEntry.id.startsWith(b.id))
-        if (baseEntry == undefined) {
-          return undefined
-        }
-        const measurementsRaw: Record<string, number|string> = {}
-        const measurements: Record<string, string> = {}
-
-        for (const m in baseEntry.measurements) {
-          measurementsRaw[m] = (comparingEntry.measurementsRaw[m] as number) - (baseEntry.measurementsRaw[m] as number)
-          const index = cube.measurements.findIndex(mm => mm.id == m)
-          measurements[m] = (measurementsRaw[m] > 0 ? '+' : '') + this.format(cube.measurements[index], measurementsRaw[m])
-        }
-
-        return {
-          ...comparingEntry,
-          measurementsRaw,
-          measurements,
-        }
-      })
-    .filter(e => e != undefined) as MetaGridEntry[]
   }
   public getName(m: Measurement|Dimension, modifier?: string): string {
     const i18nKey = 'metric.' + m.id + (modifier != undefined ? '.' + modifier : '')
