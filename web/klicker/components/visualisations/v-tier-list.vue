@@ -45,7 +45,7 @@ import { CubeResponse, Measurement, MetaGridEntry } from '~/klicker'
 import VTierListSharepic from '~/klicker/components/visualisations/v-tier-list-sharepic.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'
-import { computed, PropType, toRefs } from '@vue/composition-api'
+import { computed, PropType } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
 
 // TODO decouple v-tier-list-sharepic
@@ -80,18 +80,17 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const show = computed(() => response.value.query.dimensionsIds.length == 1
-      && response.value.query.measurementsIds.length == 1
-      && response.value.data.length > 5
-      && response.value.data.length < 100
+    const show = computed(() => props.response.query.dimensionsIds.length == 1
+      && props.response.query.measurementsIds.length == 1
+      && props.response.data.length > 5
+      && props.response.data.length < 100
     )
 
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
-    const tiers = computed(() => groupTiers(response.value.data, measurements.value[0]))
+    const tiers = computed(() => groupTiers(props.response.data, measurements.value[0]))
 
     return {
       show,

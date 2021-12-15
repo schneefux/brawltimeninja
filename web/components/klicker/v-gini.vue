@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse, MetaGridEntry } from '~/klicker'
 
 export default defineComponent({
@@ -44,13 +44,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
-
-    const show = computed(() => response.value.query.dimensionsIds.length == 1
-      && response.value.query.dimensionsIds[0] == 'brawler'
-      && response.value.data.length > 0
-      && response.value.data[0].measurementsRaw.useRate != undefined
-      && !('comparing' in response.value)
+    const show = computed(() => props.response.query.dimensionsIds.length == 1
+      && props.response.query.dimensionsIds[0] == 'brawler'
+      && props.response.data.length > 0
+      && props.response.data[0].measurementsRaw.useRate != undefined
+      && !('comparing' in props.response)
     )
 
     const giniScore = computed((): number => {
@@ -59,13 +57,13 @@ export default defineComponent({
       // calculate Gini coefficient
       let absoluteDifference = 0
       let arithmeticMean = 0
-      for (const e1 of response.value.data) {
-        arithmeticMean += getStat(e1) / response.value.data.length
-        for (const e2 of response.value.data) {
+      for (const e1 of props.response.data) {
+        arithmeticMean += getStat(e1) / props.response.data.length
+        for (const e2 of props.response.data) {
           absoluteDifference += Math.abs(getStat(e1) - getStat(e2))
         }
       }
-      return absoluteDifference / (2 * Math.pow(response.value.data.length, 2) * arithmeticMean)
+      return absoluteDifference / (2 * Math.pow(props.response.data.length, 2) * arithmeticMean)
     })
 
     const { app: { i18n } } = useContext()

@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
 import { SliceValue, CubeQuery, CubeComparingQuery } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 
@@ -53,30 +53,28 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { value: query, comparing } = toRefs(props)
-
     const showFilters = ref(false)
 
-    const compareMode = computed(() => 'comparing' in query.value)
+    const compareMode = computed(() => 'comparing' in props.value)
 
     const slices = computed(() => {
       if (!compareMode.value) {
-        return query.value.slices
+        return props.value.slices
       }
 
-      if (comparing.value) {
-        return query.value.slices
+      if (props.comparing) {
+        return props.value.slices
       } else {
-        return (<CubeComparingQuery>query.value).reference.slices
+        return (<CubeComparingQuery>props.value).reference.slices
       }
     })
 
     // slots cannot have event handlers,
     // so the handler is passed down instead
     const onInput = (s: Partial<SliceValue>) => {
-      if (!compareMode.value || comparing.value) {
+      if (!compareMode.value || props.comparing) {
         emit('input', <CubeQuery>{
-          ...query.value,
+          ...props.value,
           slices: {
             ...slices.value,
             ...s,
@@ -84,9 +82,9 @@ export default defineComponent({
         })
       } else {
         emit('input', <CubeComparingQuery>{
-          ...query.value,
+          ...props.value,
           reference: {
-            ...(<CubeComparingQuery>query.value).reference,
+            ...(<CubeComparingQuery>props.value).reference,
             slices: {
               ...slices.value,
               ...s,

@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
 export default defineComponent({
@@ -51,11 +51,10 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker, i18n } = useContext()
-    const { value: state } = toRefs(props)
 
     const mode = computed({
       get(): string {
-        return (state.value.mode || {})[0] || ''
+        return (props.value.mode || {})[0] || ''
       },
       set(v: string) {
         props.onInput({
@@ -67,7 +66,7 @@ export default defineComponent({
 
     const map = computed({
       get(): string {
-        return (state.value.map || {})[0] || ''
+        return (props.value.map || {})[0] || ''
       },
       set(v: string) {
         props.onInput({
@@ -84,7 +83,7 @@ export default defineComponent({
     const maps = useAsync(() => getMaps())
     const modes = useAsync(() => $klicker.queryAllModes())
 
-    watch(() => [state.value, i18n.locale], async () => maps.value = await getMaps())
+    watch(() => [props.value, i18n.locale], async () => maps.value = await getMaps())
 
     return {
       mode,

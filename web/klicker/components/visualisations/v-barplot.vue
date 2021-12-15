@@ -18,8 +18,7 @@ import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
-import { LayerSpec } from 'vega-lite/build/src/spec'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -34,26 +33,25 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker, i18n } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
     const show = computed(() =>
       dimensions.value.length == 1 &&
       dimensions.value[0].type == 'nominal' &&
       measurements.value.length == 1 &&
-      response.value.data.length > 1 &&
-      response.value.data.length < 100
+      props.response.data.length > 1 &&
+      props.response.data.length < 100
     )
 
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
 
-      const comparing = response.value.kind == 'comparingResponse'
-      const values = comparing ? (<CubeComparingResponse> response.value).data.flatMap(e => [{
+      const comparing = props.response.kind == 'comparingResponse'
+      const values = comparing ? (<CubeComparingResponse> props.response).data.flatMap(e => [{
         ...e,
         source: i18n.t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
@@ -61,7 +59,7 @@ export default defineComponent({
         ...e.test.reference,
         source: i18n.t('comparison.dataset.reference') as string,
         stars: '',
-      }]) : response.value.data
+      }]) : props.response.data
 
       return {
         data: {

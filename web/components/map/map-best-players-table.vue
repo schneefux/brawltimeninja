@@ -25,7 +25,7 @@ import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
 import { SliceValue, CubeQuery } from '~/klicker'
-import { defineComponent, toRefs, PropType, computed } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({

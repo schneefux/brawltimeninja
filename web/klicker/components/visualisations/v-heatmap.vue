@@ -16,7 +16,7 @@
 <script lang="ts">
 import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
-import { computed, PropType, toRefs } from '@vue/composition-api'
+import { computed, PropType } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { BVega, BCard } from '~/klicker/components'
 
@@ -33,19 +33,18 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
     const show = computed(() => {
-      if (dimensions.value.length == 2 && measurements.value.length == 1 && response.value.data.length > 1) {
-        const uniqueX = new Set(response.value.data.map(d => d.dimensions[dimensions.value[0].id])).size
-        const uniqueY = new Set(response.value.data.map(d => d.dimensions[dimensions.value[1].id])).size
+      if (dimensions.value.length == 2 && measurements.value.length == 1 && props.response.data.length > 1) {
+        const uniqueX = new Set(props.response.data.map(d => d.dimensions[dimensions.value[0].id])).size
+        const uniqueY = new Set(props.response.data.map(d => d.dimensions[dimensions.value[1].id])).size
 
         // less than 50% gaps
-        return response.value.data.length > 0.5 * uniqueX * uniqueY
+        return props.response.data.length > 0.5 * uniqueX * uniqueY
       }
       return false
     })
@@ -56,7 +55,7 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
       return {
         data: {
-          values: response.value.data,
+          values: props.response.data,
         },
         mark: 'rect',
         encoding: {

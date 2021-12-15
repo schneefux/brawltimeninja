@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 
 export default defineComponent({
@@ -49,14 +49,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const store = useStore<any>()
 
-    const show = computed(() => response.value.query.dimensionsIds.length == 1
-      && response.value.query.dimensionsIds[0] == 'brawler'
-      && response.value.data.length > 0
-      && response.value.data[0].measurementsRaw.picks != undefined
-      && !('comparing' in response.value)
+    const show = computed(() => props.response.query.dimensionsIds.length == 1
+      && props.response.query.dimensionsIds[0] == 'brawler'
+      && props.response.data.length > 0
+      && props.response.data[0].measurementsRaw.picks != undefined
+      && !('comparing' in props.response)
     )
 
     const moe = computed((): number => {
@@ -67,7 +66,7 @@ export default defineComponent({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = (<CubeResponse>response.value).data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
+      const sample = (<CubeResponse>props.response).data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')

@@ -46,7 +46,7 @@ import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { Location } from 'vue-router'
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
@@ -68,14 +68,13 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker, route, i18n } = useContext()
-    const { response } = toRefs(props)
 
-    const show = computed(() => response.value.kind == 'comparingResponse' || response.value.query.measurementsIds.length < 5)
+    const show = computed(() => props.response.kind == 'comparingResponse' || props.response.query.measurementsIds.length < 5)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
 
-      const query = response.value.query
+      const query = props.response.query
       const dimensions = $klicker.getDimensions(query)
       const measurements = $klicker.getMeasurements(query)
 
@@ -93,7 +92,7 @@ export default defineComponent({
         shrink: true,
       }))
 
-      if (response.value.kind == 'comparingResponse') {
+      if (props.response.kind == 'comparingResponse') {
         columns.push({
           title: i18n.t('comparison.difference.to.dataset', { dataset: i18n.t('comparison.dataset.reference') as string }) as string,
           keys: [`test.difference.annotatedDifference`],
@@ -105,15 +104,15 @@ export default defineComponent({
       return columns
     })
 
-    const rows = computed(() => response.value.data)
+    const rows = computed(() => props.response.data)
 
     // TODO add comparator v2 support to dashboard
-    const link = computed(() => response.value.kind == 'response' ? <Location>{
-      ...$klicker.queryToLocation(response.value.query),
+    const link = computed(() => props.response.kind == 'response' ? <Location>{
+      ...$klicker.queryToLocation(props.response.query),
       path: '/dashboard',
     } : {})
 
-    const showLink = computed(() => route.value.path != '/dashboard' && !('comparingMeasurement' in response.value))
+    const showLink = computed(() => route.value.path != '/dashboard' && !('comparingMeasurement' in props.response))
 
     return {
       show,

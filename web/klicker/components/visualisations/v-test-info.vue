@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { CubeComparingResponse } from '~/klicker'
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
 export default defineComponent({
@@ -51,10 +51,9 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { response } = toRefs(props)
 
-    const comparingMeasurement = computed(() => $klicker.getComparingMeasurement(response.value.query))
-    const show = computed(() => response.value.kind == 'comparingResponse' && comparingMeasurement.value.statistics != undefined)
+    const comparingMeasurement = computed(() => $klicker.getComparingMeasurement(props.response.query))
+    const show = computed(() => props.response.kind == 'comparingResponse' && comparingMeasurement.value.statistics != undefined)
     const metricName = computed(() => $klicker.getName(comparingMeasurement.value))
 
     return {

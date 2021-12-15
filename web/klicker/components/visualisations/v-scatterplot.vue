@@ -18,7 +18,7 @@ import { CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -33,16 +33,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
-
-    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
     const show = computed(() =>
-      response.value.query.dimensionsIds.length == 1
-      && response.value.query.measurementsIds.length == 2
-      && response.value.data.length > 1
-      && response.value.data.length < 1000
+      props.response.query.dimensionsIds.length == 1
+      && props.response.query.measurementsIds.length == 2
+      && props.response.data.length > 1
+      && props.response.data.length < 1000
     )
 
     const { $klicker } = useContext()
@@ -54,7 +52,7 @@ export default defineComponent({
 
       return {
         data: {
-          values: response.value.data,
+          values: props.response.data,
         },
         encoding: {
           x: {

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from "@nuxtjs/composition-api"
+import { computed, defineComponent, PropType, useContext } from "@nuxtjs/composition-api"
 import { CubeResponse } from "~/klicker"
 
 export default defineComponent({
@@ -25,14 +25,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
     const title = computed(() => 'About ' + $klicker.getName(measurements[0]))
     const description = computed(() => measurements[0].description)
 
-    const show = computed(() => response.value.query.measurementsIds.length == 1 && description != undefined)
+    const show = computed(() => props.response.query.measurementsIds.length == 1 && description != undefined)
 
     return {
       show,

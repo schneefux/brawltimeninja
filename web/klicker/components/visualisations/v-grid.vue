@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, toRefs, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 
 export default defineComponent({
@@ -89,16 +89,15 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
-    const show = computed(() => response.value.query.measurementsIds.length > 1)
+    const show = computed(() => props.response.query.measurementsIds.length > 1)
 
     const page = ref(0)
-    watch(() => response.value.data, () => page.value = 0)
+    watch(() => props.response.data, () => page.value = 0)
 
     return {
       show,

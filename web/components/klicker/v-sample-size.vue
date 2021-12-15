@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { formatSI } from '~/lib/util'
 
@@ -38,23 +38,21 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
+    const show = computed(() => props.response.data.length > 0 &&
+      props.response.data[0].measurementsRaw.picks != undefined)
 
-    const show = computed(() => response.value.data.length > 0 &&
-      response.value.data[0].measurementsRaw.picks != undefined)
-
-    const sample = computed(() => (<CubeResponse> response.value).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
+    const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
 
     const sampleFormatted = computed(() => {
       const format = (n: number) => formatSI(n, 2)
 
-      if (response.value.kind == 'comparingResponse') {
-        return (<CubeComparingResponse> response.value).data
+      if (props.response.kind == 'comparingResponse') {
+        return (<CubeComparingResponse> props.response).data
           .reduce((agg, e) => [agg[0] + (e.test.reference.measurementsRaw.picks as number), agg[1] + (e.measurementsRaw.picks as number)], [0, 0])
           .map(format)
           .join(' / ')
       } else {
-        return format((<CubeResponse> response.value).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
+        return format((<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
       }
     })
 

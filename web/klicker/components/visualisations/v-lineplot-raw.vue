@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
 import { CubeResponse } from '~/klicker'
 import BVega from '~/klicker/components/ui/b-vega.vue'
@@ -25,24 +25,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { response } = toRefs(props)
     const { $klicker } = useContext()
 
-    const dimensions = computed(() => $klicker.getDimensions(response.value.query))
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
     const show = computed(() => dimensions.value.length == 1 &&
       dimensions.value[0].type == 'temporal' &&
       measurements.value.length == 1 &&
-      response.value.data.length > 1 &&
-      response.value.data.length < 1000)
+      props.response.data.length > 1 &&
+      props.response.data.length < 1000)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
       return {
         data: {
-          values: response.value.data,
+          values: props.response.data,
         },
         mark: 'line',
         encoding: {

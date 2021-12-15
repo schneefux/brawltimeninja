@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
@@ -73,14 +73,13 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { response } = toRefs(props)
 
-    const measurements = computed(() => $klicker.getMeasurements(response.value.query))
+    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
-    const show = computed(() => response.value.query.dimensionsIds.length == 1
-      && response.value.query.measurementsIds.length == 1
-      && response.value.data.length > 1
-      && response.value.data.length < 10)
+    const show = computed(() => props.response.query.dimensionsIds.length == 1
+      && props.response.query.measurementsIds.length == 1
+      && props.response.data.length > 1
+      && props.response.data.length < 10)
 
     const measurementsNames = computed(() => measurements.value.map(m => ({
       id: m.id,

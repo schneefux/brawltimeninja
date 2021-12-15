@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
 export default defineComponent({
@@ -24,11 +24,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { value: state } = toRefs(props)
-
     const nameFilter = computed({
       get(): string {
-        return (state.value.playerName || [])[0] || ''
+        return (props.value.playerName || [])[0] || ''
       },
       set(v: string) {
         if (v == '') {

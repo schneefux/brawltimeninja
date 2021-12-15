@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
 export default defineComponent({
@@ -41,17 +41,16 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { exact, limit } = toRefs(props)
 
-    const key = computed(() => exact.value != false ?  'seasonExact' : 'season')
+    const key = computed(() => props.exact != false ?  'seasonExact' : 'season')
 
     async function getSeasons(): Promise<{ id: string, name: string }[]> {
-      return await $klicker.queryAllSeasons(limit.value)
+      return await $klicker.queryAllSeasons(props.limit)
     }
 
     const seasons = useAsync(() => getSeasons())
 
-    watch(limit, async () => seasons.value = await getSeasons())
+    watch(() => props.limit, async () => seasons.value = await getSeasons())
 
     return {
       key,

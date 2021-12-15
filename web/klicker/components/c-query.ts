@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ref, toRefs, h, useContext, useAsync, watch } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, ref, h, useContext, useAsync, watch } from '@nuxtjs/composition-api'
 import { VNode } from 'vue'
 import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse } from '~/klicker'
 
@@ -19,16 +19,14 @@ export default defineComponent({
     const loading = ref(false)
     const error = ref<string|undefined>()
 
-    const { query } = toRefs(props)
-
     async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
       error.value = undefined
       loading.value = true
       try {
-        if (!('comparing' in query.value)) {
-          return await $klicker.query(query.value)
+        if (!('comparing' in props.query)) {
+          return await $klicker.query(props.query)
         } else {
-          return await $klicker.comparingQuery(query.value)
+          return await $klicker.comparingQuery(props.query)
         }
       } catch (err) {
         console.error(err)
@@ -40,8 +38,8 @@ export default defineComponent({
       }
     }
 
-    const response = useAsync(() => fetch(), `c-query-${$klicker.hash(query.value)}`)
-    watch(query, async () => response.value = await fetch())
+    const response = useAsync(() => fetch(), `c-query-${$klicker.hash(props.query)}`)
+    watch(() => props.query, async () => response.value = await fetch())
 
     return () => {
       let nodes: VNode[] | undefined

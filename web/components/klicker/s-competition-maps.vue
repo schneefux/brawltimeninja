@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
 export default defineComponent({
@@ -27,14 +27,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { value: state } = toRefs(props)
-
     const choice = computed({
       get(): string {
-        if (state.value.mapLike?.length == 1 && state.value.mapLike[0] == 'Competition') {
+        if (props.value.mapLike?.length == 1 && props.value.mapLike[0] == 'Competition') {
           return 'include'
         }
-        if (state.value.mapNotLike?.length == 1 && state.value.mapNotLike[0] == 'Competition') {
+        if (props.value.mapNotLike?.length == 1 && props.value.mapNotLike[0] == 'Competition') {
           return 'exclude'
         }
         return 'all'

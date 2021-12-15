@@ -20,7 +20,7 @@ import { MetaGridEntry, CubeResponse } from '~/klicker'
 import { Brawler } from '~/model/Brawlstars'
 import { VRoll, BShimmer } from '~/klicker/components'
 import DBrawler from '~/components/klicker/d-brawler.vue'
-import { computed, defineComponent, PropType, toRefs, useAsync, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -49,13 +49,12 @@ export default defineComponent({
   },
   setup(props) {
     const { $klicker } = useContext()
-    const { mode, map, limit, playerBrawlers } = toRefs(props)
 
     const response = useAsync<CubeResponse>(() => $klicker.query({
       cubeId: 'map',
       slices: {
-        mode: [mode.value],
-        map: [map.value],
+        mode: [props.mode],
+        map: [props.map],
       },
       dimensionsIds: ['brawler'],
       measurementsIds: ['winRate'],
@@ -73,7 +72,7 @@ export default defineComponent({
       //   index [ brawlers owned by player, worst first ]
       //     *
       //   index [ brawler in map meta, best first ]
-      const worstBrawlers = playerBrawlers.value.slice()
+      const worstBrawlers = props.playerBrawlers.slice()
         .sort((b1, b2) => b1.trophies - b2.trophies)
       const bestBrawlers = response.value.data
 
@@ -89,7 +88,7 @@ export default defineComponent({
       const data = response.value.data
         .slice()
         .sort((b1, b2) => score(b1) - score(b2))
-        .slice(0, limit.value)
+        .slice(0, props.limit)
 
       return {
         ...response.value,
