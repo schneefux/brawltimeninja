@@ -56,10 +56,12 @@
       v-if="'data' in $scopedSlots"
       :query="query"
     >
-      <c-error
-        slot="error"
-        v-bind="$attrs"
-      ></c-error>
+      <template v-slot:error="data">
+        <c-error
+          slot="error"
+          v-bind="{ ...data, ...$attrs }"
+        ></c-error>
+      </template>
       <template v-slot="data">
         <slot name="data" v-bind="{ ...data, ...$attrs }"></slot>
       </template>

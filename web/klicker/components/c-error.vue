@@ -4,14 +4,22 @@
     class="w-full"
   >
     <p slot="content" class="mb-2 prose text-gray-200">
-      Something went wrong. The data you requested is not available right now. Please try again later.
+      Something went wrong. The data you requested is not available right now.
+      <br v-if="error != ''">
+      {{ error }}
     </p>
   </b-card>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from "@nuxtjs/composition-api";
 
-export default Vue.extend({
+export default defineComponent({
+  props: {
+    error: {
+      type: [String, Error],
+      default: ''
+    },
+  },
 })
 </script>

@@ -17,12 +17,12 @@ export default defineComponent({
   setup(props, { slots }) {
     const { $sentry, $klicker } = useContext()
     const loading = ref(false)
-    const error = ref(false)
+    const error = ref<string|undefined>()
 
     const { query } = toRefs(props)
 
     async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
-      error.value = false
+      error.value = undefined
       loading.value = true
       try {
         if (!('comparing' in query.value)) {
@@ -33,14 +33,14 @@ export default defineComponent({
       } catch (err) {
         console.error(err)
         $sentry.captureException(err)
-        error.value = true
+        error.value = err as string
         return undefined
       } finally {
         loading.value = false
       }
     }
 
-    const response = useAsync(() => fetch(), $klicker.hash(query.value))
+    const response = useAsync(() => fetch(), `c-query-${$klicker.hash(query.value)}`)
     watch(query, async () => response.value = await fetch())
 
     return () => {
@@ -48,7 +48,9 @@ export default defineComponent({
 
       if (error.value) {
         if ('error' in slots) {
-          nodes = slots.error!({})
+          nodes = slots.error!({
+            error: error.value,
+          })
         }
       } else {
         const loaded = response.value != undefined
