@@ -55,11 +55,11 @@ export default defineComponent({
       const comparing = response.value.kind == 'comparingResponse'
       const values = comparing ? (<CubeComparingResponse> response.value).data.flatMap(e => [{
         ...e,
-        source: i18n.t('comparison.test') as string,
+        source: i18n.t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
       }, {
         ...e.test.reference,
-        source: i18n.t('comparison.reference') as string,
+        source: i18n.t('comparison.dataset.reference') as string,
         stars: '',
       }]) : response.value.data
 

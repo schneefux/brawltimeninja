@@ -95,7 +95,7 @@ export default defineComponent({
 
       if (response.value.kind == 'comparingResponse') {
         columns.push({
-          title: i18n.t('comparison.difference') as string,
+          title: i18n.t('comparison.difference.to.dataset', { dataset: i18n.t('comparison.dataset.reference') as string }) as string,
           keys: [`test.difference.annotatedDifference`],
           slot: 'difference',
           shrink: true,
