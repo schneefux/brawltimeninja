@@ -48,6 +48,8 @@ import BCard from '~/klicker/components/ui/b-card.vue'
 import { Location } from 'vue-router'
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { useCubeResponse } from '~/klicker/composables/response'
+import { convertQueryToLocation } from '~/klicker/composables/link'
 
 export default defineComponent({
   components: {
@@ -67,24 +69,21 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, route, i18n } = useContext()
+    const { route, i18n } = useContext()
 
     const show = computed(() => props.response.kind == 'comparingResponse' || props.response.query.measurementsIds.length < 5)
+    const { $klicker, dimensions, measurements } = useCubeResponse(props)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
 
-      const query = props.response.query
-      const dimensions = $klicker.getDimensions(query)
-      const measurements = $klicker.getMeasurements(query)
-
       columns.push({
-        title: dimensions.map(d => $klicker.getName(d)).join(', '),
-        keys: dimensions.map(d => `dimensions.${d.id}`),
+        title: dimensions.value.map(d => $klicker.getName(d)).join(', '),
+        keys: dimensions.value.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
       })
-      measurements.forEach(m => columns.push({
+      measurements.value.forEach(m => columns.push({
         // measurements are rendered 1:1
         title: $klicker.getName(m),
         keys: [`measurements.${m.id}`],
@@ -106,13 +105,12 @@ export default defineComponent({
 
     const rows = computed(() => props.response.data)
 
-    // TODO add comparator v2 support to dashboard
-    const link = computed(() => props.response.kind == 'response' ? <Location>{
-      ...$klicker.queryToLocation(props.response.query),
+    const link = computed(() => <Location>{
+      ...convertQueryToLocation(props.response.query),
       path: '/dashboard',
-    } : {})
+    })
 
-    const showLink = computed(() => route.value.path != '/dashboard' && !('comparingMeasurement' in props.response))
+    const showLink = computed(() => route.value.path != '/dashboard')
 
     return {
       show,

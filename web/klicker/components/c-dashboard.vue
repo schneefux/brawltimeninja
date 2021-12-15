@@ -24,7 +24,7 @@
     </c-slicer>
 
     <c-slicer
-        v-if="'slices' in $scopedSlots && 'comparing' in query"
+      v-if="'slices' in $scopedSlots && 'comparing' in query"
       v-model="query"
       v-bind="$attrs"
       class="w-full md:w-auto"
@@ -72,14 +72,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { CubeQuery } from '~/klicker'
 import CQuery from '~/klicker/components/c-query'
 import CConfigurator from '~/klicker/components/c-configurator.vue'
 import CSlicer from '~/klicker/components/c-slicer.vue'
 import CError from '~/klicker/components/c-error.vue'
+import { defineComponent, PropType, useContext, computed } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   components: {
     CSlicer,
@@ -97,18 +97,23 @@ export default Vue.extend({
       default: false
     },
   },
-  computed: {
-    metaMetrics(): string[] {
-      return this.$klicker.config[this.value.cubeId].metaMeasurements
-    },
-    query: {
+  setup(props, { emit }) {
+    const { $klicker } = useContext()
+
+    const metaMetrics = $klicker.config[props.value.cubeId].metaMeasurements
+    const query = computed({
       get(): CubeQuery {
-        return this.value
+        return props.value
       },
       set(q: CubeQuery) {
-        this.$emit('input', q)
+        emit('input', q)
       }
-    },
+    })
+
+    return {
+      metaMetrics,
+      query,
+    }
   },
 })
 </script>

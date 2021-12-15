@@ -16,6 +16,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from "@nuxtjs/composition-api"
 import { CubeResponse } from "~/klicker"
+import { useCubeResponse } from "~/klicker/composables/response"
 
 export default defineComponent({
   props: {
@@ -25,9 +26,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { $klicker, measurements } = useCubeResponse(props)
 
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
     const title = computed(() => 'About ' + $klicker.getName(measurements[0]))
     const description = computed(() => measurements[0].description)
 

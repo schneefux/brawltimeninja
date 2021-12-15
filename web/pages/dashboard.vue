@@ -53,9 +53,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { CubeQuery, CubeComparingQuery } from '~/klicker'
 import { CDashboard, VDashboard } from '~/klicker/components'
+import { useSyncQueryAndRoute } from '~/klicker/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -80,8 +80,9 @@ import VSampleSize from '@/components/klicker/v-sample-size.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     CDashboard,
     VDashboard,
@@ -110,18 +111,13 @@ export default Vue.extend({
     SPlayerName,
     SPlayerTag,
   },
-  computed: {
-    query: {
-      get(): CubeQuery|CubeComparingQuery {
-        return this.$klicker.locationToQuery(this.$route, this.$klicker.config, 'map')
-      },
-      set(q: CubeQuery|CubeComparingQuery) {
-        this.$router.push({
-          ...this.$klicker.queryToLocation(q),
-          path: '/dashboard',
-        })
-      }
-    },
+  setup() {
+    const { $klicker } = useContext()
+    const query = useSyncQueryAndRoute($klicker.config, 'map')
+
+    return {
+      query,
+    }
   },
   meta: {
     title: 'Dashboard',

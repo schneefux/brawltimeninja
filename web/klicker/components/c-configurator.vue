@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { CubeQuery, Cube, Dimension, CubeComparingQuery, AbstractCubeQuery } from '~/klicker'
+import { CubeQuery, Cube, Dimension, CubeComparingQuery } from '~/klicker'
 import CMetric from '~/klicker/components/c-metric.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
 import BCheckbox from '~/klicker/components/ui/b-checkbox.vue'
@@ -189,11 +189,12 @@ export default Vue.extend({
 
         if (!isComparing && wantComparing) {
           const current = this.value as CubeQuery
-          const newQuery: AbstractCubeQuery = {
+          const newQuery: CubeQuery = {
             cubeId: current.cubeId,
             slices: current.slices,
             dimensionsIds: current.dimensionsIds,
             measurementsIds: [current.measurementsIds[0]],
+            sortId: current.measurementsIds[0],
           }
           this.$emit('input', <CubeComparingQuery>{
             ...newQuery,

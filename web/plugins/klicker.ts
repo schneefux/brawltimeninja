@@ -71,6 +71,7 @@ class KlickerService extends Klicker {
     }
     return super.format(spec, value)
   }
+
   async queryActiveEvents<T extends EventMetadata>(measures: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<T[]> {
     const events = await this.query({
       cubeId: 'map',
@@ -112,6 +113,7 @@ class KlickerService extends Klicker {
 
     return lastEvents
   }
+
   async queryAllSeasons(limitWeeks: number = 8): Promise<{ id: string, name: string }[]> {
     const limit = subWeeks(new Date(), limitWeeks)
 
@@ -136,6 +138,7 @@ class KlickerService extends Klicker {
       .sort((e1, e2) => e1.id.localeCompare(e2.id))
       .reverse()
   }
+
   async queryAllModes(): Promise<string[]> {
     const modes = await this.query({
       cubeId: 'map',
@@ -148,6 +151,7 @@ class KlickerService extends Klicker {
     })
     return modes.data.map(row => row.dimensionsRaw.mode.mode)
   }
+
   async queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]> {
     const maps = await this.query({
       cubeId: 'map',
@@ -166,6 +170,7 @@ class KlickerService extends Klicker {
       battle_event_map: e.dimensionsRaw.map.map as string,
     }))
   }
+
   async queryAllBrawlers(): Promise<string[]> {
     const brawlers = await this.query({
       cubeId: 'map',
