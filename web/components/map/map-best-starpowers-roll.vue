@@ -29,7 +29,8 @@
             ...data,
             ...$attrs,
             elevation: elevation + 1,
-          }">
+          }"
+        >
           <template v-slot:dimensions="data">
             <d-brawler v-bind="data"></d-brawler>
           </template>
@@ -40,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, watchEffect } from '@nuxtjs/composition-api'
-import { SliceValue, CubeQuery } from '~/klicker'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { SliceValue, CubeComparingQuery } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 
 export default defineComponent({
@@ -72,16 +73,28 @@ export default defineComponent({
   },
   setup(props) {
     const kindKey = computed(() => props.kind == 'starpowers' ? 'starpower' : 'gadget')
-    const query = computed<CubeQuery>(() => ({
+    const query = computed<CubeComparingQuery>(() => ({
+      comparing: true,
+      significant: true,
       cubeId: 'battle',
-      dimensionsIds: props.kind == 'starpowers' ? ['starpower'] : ['gadget'],
+      sortId: 'difference',
+      dimensionsIds: props.kind == 'starpowers' ? ['brawler', 'starpower'] : ['brawler', 'gadget'],
       measurementsIds: ['winRate'],
       slices: {
         ...props.slices,
         [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
       },
-      sortId: 'winRate',
       limit: props.limit,
+      reference: {
+        cubeId: 'battle',
+        dimensionsIds: ['brawler'],
+        measurementsIds: ['winRate'],
+        slices: {
+          ...props.slices,
+          [props.kind == 'starpowers' ? 'starpowerIdEq' : 'gadgetIdEq']: ['0'],
+        },
+        sortId: 'difference',
+      },
     }))
 
     return {

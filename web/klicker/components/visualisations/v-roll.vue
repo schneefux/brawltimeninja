@@ -1,6 +1,7 @@
 <template>
   <b-horizontal-scroller
     v-if="show"
+    class="relative"
     expand-on-desktop
   >
     <b-card
@@ -48,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 import BCard from '~/klicker/components/ui/b-card.vue'
@@ -73,30 +74,18 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    // true: filter for significant results when comparing
-    significant: {
-      type: Boolean,
-      default: false
-    },
   },
   setup(props) {
-    const { i18n } = useContext()
     const { $klicker, measurements, switchResponse } = useCubeResponse(props)
 
-    const data = computed(() => switchResponse(
-      response => response.data,
-      response => response.data.filter(d => d.test.difference.pValueRaw <= 0.05),
-      !props.significant
-    ))
-
     const show = computed(() =>
-      props.response.query.dimensionsIds.length == 1 &&
+      props.response.query.dimensionsIds.length > 0 &&
       props.response.query.measurementsIds.length == 1 &&
-      data.value.length > 1 &&
-      data.value.length < 10)
+      props.response.data.length > 0 &&
+      props.response.data.length < 10)
 
     const cards = computed(() =>
-      switchResponse(response => data.value.map(e => ({
+      switchResponse(response => props.response.data.map(e => ({
         id: e.id,
         title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
@@ -105,7 +94,7 @@ export default defineComponent({
           text: e.measurements[m.id],
           name: $klicker.getName(m, 'short'),
         })),
-      })), response => data.value.map(e => ({
+      })), response => props.response.data.map(e => ({
         id: e.id,
         title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
@@ -114,7 +103,7 @@ export default defineComponent({
           text: e.test.difference.difference,
           name: $klicker.getName(m, 'short'),
         })),
-      })), !props.significant))
+      }))))
 
     return {
       show,

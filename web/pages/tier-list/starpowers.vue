@@ -61,6 +61,7 @@
                   <d-brawler v-bind="data"></d-brawler>
                 </template>
               </v-table>
+              <v-test-info v-bind="data"></v-test-info>
             </div>
           </template>
         </c-dashboard>
@@ -71,8 +72,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CubeQuery } from '~/klicker'
-import { CDashboard, CMetric, VTable, BCard } from '~/klicker/components'
+import { CubeComparingQuery } from '~/klicker'
+import { CDashboard, CMetric, VTable, BCard, VTestInfo } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 import VSampleSize from '~/components/klicker/v-sample-size.vue'
 import VLastUpdate from '~/components/klicker/v-last-update.vue'
@@ -97,6 +98,7 @@ export default Vue.extend({
     SPowerplay,
     SCompetitionMaps,
     SModeMap,
+    VTestInfo,
   },
   middleware: ['cached'],
   head() {
@@ -119,10 +121,10 @@ export default Vue.extend({
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
     return {
-      query: <CubeQuery>{
+      query: <CubeComparingQuery>{
         cubeId: 'battle',
-        dimensionsIds: ['starpower'],
-        measurementsIds: ['wins'],
+        dimensionsIds: ['brawler', 'starpowers'],
+        measurementsIds: ['winRate'],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           trophyRangeGte: ['0'],
@@ -134,7 +136,25 @@ export default Vue.extend({
           mapNotLike: [],
           starpowerIdNeq: ['0'],
         },
-        sortId: 'wins',
+        sortId: 'winRate',
+        comparing: true,
+        reference: {
+          cubeId: 'battle',
+          dimensionsIds: ['brawler'],
+          measurementsIds: ['winRate'],
+          slices: {
+            season: [currentSeason.toISOString().slice(0, 10)],
+            trophyRangeGte: ['0'],
+            trophyRangeLt: ['15'],
+            powerplay: [],
+            mode: [],
+            map: [],
+            mapLike: [],
+            mapNotLike: [],
+            starpowerIdEq: ['0'],
+          },
+          sortId: 'winRate',
+        },
       },
     }
   },

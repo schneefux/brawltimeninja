@@ -83,7 +83,7 @@
         </v-grid>
       </div>
 
-      <v-test-info v-bind="$props"></v-test-info>
+      <v-test-info lg v-bind="$props"></v-test-info>
 
       <div class="w-full flex flex-wrap gap-x-2">
         <v-csv v-bind="$props"></v-csv>

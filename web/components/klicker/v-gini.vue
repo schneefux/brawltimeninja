@@ -34,6 +34,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse, MetaGridEntry } from '~/klicker'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -44,12 +45,13 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { comparing } = useCubeResponse(props)
+
     const show = computed(() => props.response.query.dimensionsIds.length == 1
       && props.response.query.dimensionsIds[0] == 'brawler'
       && props.response.data.length > 0
       && props.response.data[0].measurementsRaw.useRate != undefined
-      && !('comparing' in props.response)
-    )
+      && !comparing.value)
 
     const giniScore = computed((): number => {
       const getStat = (r: MetaGridEntry) => r.measurementsRaw.useRate as number

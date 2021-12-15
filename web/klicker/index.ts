@@ -167,11 +167,13 @@ export interface CubeQuery {
   measurementsIds: string[]
   limit?: number
   sortId: string
+  comparing?: boolean
 }
 
 export interface CubeComparingQuery extends CubeQuery {
   comparing: true
   reference: CubeQuery
+  significant?: boolean
 }
 
 // TODO type all components with CubeQuery|CubeComparingQuery

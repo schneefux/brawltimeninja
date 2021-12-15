@@ -39,6 +39,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -50,13 +51,13 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore<any>()
+    const { comparing } = useCubeResponse(props)
 
     const show = computed(() => props.response.query.dimensionsIds.length == 1
       && props.response.query.dimensionsIds[0] == 'brawler'
       && props.response.data.length > 0
       && props.response.data[0].measurementsRaw.picks != undefined
-      && !('comparing' in props.response)
-    )
+      && !comparing.value)
 
     const moe = computed((): number => {
       // margin of error

@@ -46,9 +46,8 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
   const switchResponse = <R1, R2>(
     plainCallback: (r: CubeResponse) => R1,
     comparingCallback: (r: CubeComparingResponse) => R2,
-    forcePlain: boolean = false,
   ) => {
-    if (!comparing.value || forcePlain) {
+    if (!comparing.value) {
       return plainCallback(props.response as CubeResponse)
     } else {
       return comparingCallback(props.response as CubeComparingResponse)

@@ -22,7 +22,7 @@ import DBrawler from '@/components/klicker/d-brawler.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
-import { SliceValue, CubeQuery } from '~/klicker'
+import { SliceValue, CubeQuery, ComparingMetaGridEntry, CubeComparingQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import { computed, PropType } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
@@ -29,12 +29,13 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
+    const { i18n } = useContext()
+    const { dimensions, measurements, comparing } = useCubeResponse(props)
 
     const show = computed(() => {
       if (dimensions.value.length == 2 && measurements.value.length == 1 && props.response.data.length > 1) {
@@ -69,12 +70,29 @@ export default defineComponent({
             title: dimension1.name,
             scale: dimension1.scale,
           },
-          color: {
-            field: 'measurementsRaw.' + measurement0.id,
-            type: measurement0.type,
-            title: measurement0.name,
-            scale: measurement0.scale,
-          },
+          ...(!comparing.value ? {
+            color: {
+              field: 'measurementsRaw.' + measurement0.id,
+              type: measurement0.type,
+              title: measurement0.name,
+              scale: measurement0.scale,
+              legend: {
+                offset: 8,
+                orient: 'top',
+              },
+            },
+          } : {
+            color: {
+              field: 'test.difference.differenceRaw',
+              type: measurement0.type,
+              title: i18n.t('comparison.difference.to.dataset', { dataset: i18n.t('comparison.dataset.reference') as string }) as string,
+              scale: measurement0.scale,
+              legend: {
+                offset: 8,
+                orient: 'top',
+              },
+            },
+          }),
         },
       }
     })

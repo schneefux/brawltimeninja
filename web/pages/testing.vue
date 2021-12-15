@@ -18,6 +18,7 @@
     <c-query
       :query="{
         comparing: true,
+        significant: true,
         cubeId: 'map',
         dimensionsIds: ['brawler'],
         measurementsIds: ['winRate'],
@@ -34,7 +35,7 @@
     >
       <template v-slot="data">
         <div class="w-full flex flex-wrap">
-          <v-roll significant v-bind="{ ...data, ...$attrs }">
+          <v-roll v-bind="{ ...data, ...$attrs }">
             <template v-slot:dimensions="data">
               <d-brawler v-bind="data"></d-brawler>
             </template>

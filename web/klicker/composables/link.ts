@@ -30,7 +30,7 @@ function generateQueryParams(o: Record<string, (string|number|undefined)[]>, pre
 }
 
 export function convertQueryToLocation(query: CubeQuery|CubeComparingQuery) {
-  if ('comparing' in query) {
+  if (query.comparing) {
     const q = query as CubeComparingQuery
     // slices are swapped for compatibility with old dashboard links
     const slices = q.slices ? generateQueryParams(q.slices, 'compareFilter') : {}
@@ -41,7 +41,8 @@ export function convertQueryToLocation(query: CubeQuery|CubeComparingQuery) {
         ...testSlices,
         compare: 'true',
         cube: q.cubeId,
-        dimension: q.dimensionsIds,
+        compareDimension: q.dimensionsIds,
+        dimension: q.reference.dimensionsIds,
         metric: q.measurementsIds,
       },
     }
@@ -77,6 +78,14 @@ function convertToQuery(config: Config, defaultCubeId: string, route: Route): Cu
     dimensionsIds = [dimensionsIds]
   }
 
+  let compareDimensionsIds: string[]
+  if (comparing) {
+    compareDimensionsIds = query.compareDimension as string[] || config[cubeId].defaultDimensionsIds
+    if (typeof compareDimensionsIds == 'string') {
+      compareDimensionsIds = [compareDimensionsIds]
+    }
+  }
+
   let measurementsIds = query.metric as string[] || config[cubeId].defaultMeasurementIds
   if (typeof measurementsIds == 'string') {
     measurementsIds = [measurementsIds]
@@ -89,16 +98,16 @@ function convertToQuery(config: Config, defaultCubeId: string, route: Route): Cu
     return {
       comparing: true,
       cubeId,
-      slices: comparingSlices!,
       sortId,
       limit,
-      dimensionsIds,
+      slices: comparingSlices!,
+      dimensionsIds: compareDimensionsIds!,
       measurementsIds,
       reference: {
         cubeId,
         sortId,
+        slices,
         dimensionsIds,
-        slices: slices,
         measurementsIds,
       },
     }

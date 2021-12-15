@@ -165,9 +165,8 @@ export default class Klicker {
     }
 
     // validate dimensions
-    if (!query.dimensionsIds.every(d => query.dimensionsIds.includes(d))) {
-      // TODO relax this condition and allow comparisons across different levels of the same hierarchy
-      throw new Error('Dimensions must match')
+    if (!query.reference.dimensionsIds.every(d => query.dimensionsIds.includes(d))) {
+      throw new Error('Reference dataset must match or aggregate test dataset')
     }
 
     const cube = this.config[query.cubeId]
@@ -218,7 +217,7 @@ export default class Klicker {
       ...partialQuery,
     })
 
-    let data = this.compare(referenceResponse.data, testResponse.data, comparingMeasurement)
+    let data = this.compare(referenceResponse.data, testResponse.data, comparingMeasurement, query.reference.dimensionsIds)
 
     // perform client-side sort & limit
     if (query.sortId == 'difference') {
@@ -226,6 +225,10 @@ export default class Klicker {
     }
     if (query.sortId == 'pvalue') {
       data.sort((d1, d2) => d1.test.difference.pValueRaw - d2.test.difference.pValueRaw)
+    }
+
+    if (query.significant) {
+      data = data.filter(d => d.test.difference.pValueRaw <= 0.05)
     }
 
     if (query.limit) {
@@ -308,18 +311,20 @@ export default class Klicker {
     return entries
   }
 
-  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement): ComparingMetaGridEntry[] {
+  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement, referenceDimensionIds: string[]): ComparingMetaGridEntry[] {
+    // test data might be in a lower hierarchy level than reference data - calculate an ID to join them
+    const calculateId = (m: MetaGridEntry) => referenceDimensionIds.map(id => `${id}=${m.dimensions[id]};`).join('')
     const referenceDataMap: Record<string, MetaGridEntry> = {}
-    referenceData.forEach(r => referenceDataMap[r.id] = r)
+    referenceData.forEach(r => referenceDataMap[calculateId(r)] = r)
 
     return testData
-      // TODO find a better way of dealing with non-comparables (nulls)
-      .filter(t => t.id in referenceDataMap)
+      // ignore non-comparables
+      .filter(t => calculateId(t) in referenceDataMap)
       .map(t => {
-        const reference = referenceDataMap[t.id]
+        const reference = referenceDataMap[calculateId(t)]
 
         const diff = (t.measurementsRaw[comparing.id] as number) - (reference.measurementsRaw[comparing.id] as number)
-        const pValue = comparing.statistics?.test(referenceDataMap[t.id], t) || 1
+        const pValue = comparing.statistics?.test(referenceDataMap[calculateId(t)], t) || 1
         // apply Bonferroni correction (TODO use method with better accuracy)
         const correctedPValue = Math.min(1.0, pValue * testData.length)
 

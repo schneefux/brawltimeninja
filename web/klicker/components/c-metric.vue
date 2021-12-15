@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-12-1fr items-center">
+  <div class="grid grid-cols-20-1fr items-center">
     <span class="font-semibold mr-4">
       Metric
     </span>
@@ -63,11 +63,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { CubeComparingQuery, CubeQuery, Measurement } from '~/klicker'
+import { CubeComparingQuery, CubeQuery } from '~/klicker'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
     value: {
@@ -87,67 +87,66 @@ export default Vue.extend({
       default: undefined,
     },
   },
-  data() {
-    return {
-      numMeasurements: this.value.measurementsIds.length,
-    }
-  },
-  methods: {
-    onInputMeasurementsIds(index: number, m: string) {
+  setup(props, { emit }) {
+    const { $klicker } = useContext()
+    const numMeasurements = ref(props.value.measurementsIds.length)
+
+    const measurements = computed(() => $klicker.config[props.value.cubeId].measurements
+        .filter(m => props.options == undefined || props.options.includes(m.id)))
+    const showAllMeasurements = computed(() => props.value.measurementsIds.length == measurements.value.length && measurements.value.length > 1)
+    const description = computed(() => {
+      if (numMeasurements.value != 1) {
+        return ''
+      }
+      return measurements.value.find(m => m.id == props.value.measurementsIds[0])?.description ?? ''
+    })
+
+    const onInputMeasurementsIds = (index: number, m: string) => {
       let measurementsIds: string[] = []
       if (m != '') {
-        if (!this.showAllMeasurements) {
-          measurementsIds = this.value.measurementsIds.slice()
+        if (!showAllMeasurements.value) {
+          measurementsIds = props.value.measurementsIds.slice()
         }
         // else: drop every measurement and keep only the new input
         measurementsIds[index] = m
       } else {
-        measurementsIds = this.measurements.map(m => m.id)
+        measurementsIds = measurements.value.map(m => m.id)
       }
 
-      this.$emit('input', <CubeQuery>{
-        ...this.value,
+      emit('input', <CubeQuery>{
+        ...props.value,
         measurementsIds,
         sortId: measurementsIds[0],
       })
-      this.numMeasurements = measurementsIds.length
-    },
-    onMeasurementRemove() {
-      const measurementsIds = this.value.measurementsIds.slice()
+      numMeasurements.value = measurementsIds.length
+    }
+
+    const onMeasurementRemove = () => {
+      const measurementsIds = props.value.measurementsIds.slice()
       measurementsIds.pop()
-      this.$emit('input', <CubeQuery>{
-        ...this.value,
+      emit('input', <CubeQuery>{
+        ...props.value,
         measurementsIds,
       })
-      this.numMeasurements--
-    },
+      numMeasurements.value--
+    }
+
+    return {
+      description,
+      measurements,
+      numMeasurements,
+      showAllMeasurements,
+      onMeasurementRemove,
+      onInputMeasurementsIds,
+      faPlus,
+      faMinus,
+    }
   },
-  computed: {
-    measurements(): Measurement[] {
-      return this.$klicker.config[this.value.cubeId].measurements
-        .filter(m => this.options == undefined || this.options.includes(m.id))
-    },
-    showAllMeasurements(): boolean {
-      return this.value.measurementsIds.length == this.measurements.length && this.measurements.length > 1
-    },
-    description(): string {
-      if (this.numMeasurements != 1) {
-        return ''
-      }
-      return this.measurements.find(m => m.id == this.value.measurementsIds[0])?.description ?? ''
-    },
-    faPlus() {
-      return faPlus
-    },
-    faMinus() {
-      return faMinus
-    },
-  }
 })
 </script>
 
 <style lang="postcss" scoped>
-.grid-cols-12-1fr {
-  grid-template-columns: 6rem 1fr;
+.grid-cols-20-1fr {
+  grid-template-columns: 10rem 1fr;
 }
 </style>

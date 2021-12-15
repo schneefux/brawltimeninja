@@ -98,6 +98,17 @@
           md
         ></map-best-starpowers-table>
 
+        <map-insights
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'insights'),
+            once: true,
+          }"
+          :id="id"
+          :slices="query.slices"
+          full-height
+          md
+        ></map-insights>
+
         <div
           class="lg:col-span-2 w-full flex flex-col"
           v-observe-visibility="{
@@ -130,13 +141,14 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, watch, wrapProperty } from '@nuxtjs/composition-api'
 import { CubeQuery } from '~/klicker'
-import { CDashboard } from '~/klicker/components'
+import { CDashboard, VTestInfo } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     CDashboard,
+    VTestInfo,
   },
   props: {
     mode: {

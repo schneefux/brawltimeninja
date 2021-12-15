@@ -4,7 +4,7 @@
       slot="content"
       class="flex flex-wrap items-center"
     >
-      <div class="grid grid-cols-12-1fr gap-y-3 my-3 items-center">
+      <div class="grid grid-cols-20-1fr gap-y-3 my-3 items-center">
         <h1 class="inline font-semibold mr-4">
           Source
         </h1>
@@ -33,60 +33,19 @@
           @input="s => $emit('input', s)"
         ></c-metric>
 
-        <span
-          v-if="advancedMode"
-          class="font-semibold mr-2"
-        >
-          Group By
-        </span>
+        <c-dimension
+          :value="value"
+          class="col-span-2"
+          @input="s => $emit('input', s)"
+        ></c-dimension>
 
-        <div
-          v-if="advancedMode"
-          class="flex flex-wrap gap-y-1 gap-x-1"
-        >
-          <b-select
-            v-for="index in numDimensions"
-            :key="index"
-            :value="value.dimensionsIds[index - 1]"
-            dark
-            sm
-            @input="v => onInputDimensionsIds(index - 1, v)"
-          >
-            <option
-              v-for="d in dimensions.filter(d => d.id == value.dimensionsIds[index - 1] || !value.dimensionsIds.includes(d.id))"
-              :key="d.id"
-              :value="d.id"
-            >
-              {{ d.name }}
-            </option>
-          </b-select>
-
-          <div class="flex gap-x-1">
-            <b-button
-              v-if="numDimensions < dimensions.length"
-              class="font-semibold"
-              primary
-              sm
-              @click="numDimensions++"
-            >
-              <font-awesome-icon
-                :icon="faPlus"
-              ></font-awesome-icon>
-            </b-button>
-
-            <b-button
-              v-if="numDimensions > 0"
-              class="font-semibold"
-              primary
-              sm
-              @click="onDimensionRemove()"
-            >
-              <font-awesome-icon
-                :icon="faMinus"
-              ></font-awesome-icon>
-            </b-button>
-          </div>
-        </div>
+        <c-dimension
+          v-if="compareMode"
+          :value="value"
+          class="col-span-2"
+          @input="s => $emit('input', s)"
+          comparing
+        ></c-dimension>
 
         <label
           v-if="canCompare"
@@ -107,8 +66,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { CubeQuery, Cube, Dimension, CubeComparingQuery } from '~/klicker'
+import { CubeQuery, Cube, CubeComparingQuery } from '~/klicker'
 import CMetric from '~/klicker/components/c-metric.vue'
+import CDimension from '~/klicker/components/c-dimension.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
 import BCheckbox from '~/klicker/components/ui/b-checkbox.vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -116,6 +76,7 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 export default Vue.extend({
   components: {
     CMetric,
+    CDimension,
     BSelect,
     BCheckbox,
   },
@@ -127,13 +88,12 @@ export default Vue.extend({
     },
   },
   data() {
-    const queryIsDefault = !('comparing' in this.value) && !this.$klicker.config[this.value.cubeId].hidden
+    const queryIsDefault = !this.value.comparing && !this.$klicker.config[this.value.cubeId].hidden
       && this.value.measurementsIds.length == this.$klicker.config[this.value.cubeId].defaultMeasurementIds.length
       && JSON.stringify(this.value.dimensionsIds) == JSON.stringify(this.$klicker.config[this.value.cubeId].defaultDimensionsIds)
 
     return {
       advancedMode: !queryIsDefault,
-      numDimensions: this.value.dimensionsIds.length,
     }
   },
   methods: {
@@ -147,7 +107,7 @@ export default Vue.extend({
         ))
 
       // keep old measurements if they all exist in the new cube
-      const measurementsIdsDefaults = !('comparing' in this.value) && this.value.measurementsIds
+      const measurementsIdsDefaults = !this.value.comparing && this.value.measurementsIds
         .every(m => this.$klicker.config[c].measurements.some(mm => mm.id == m))
         ? this.value.measurementsIds
         : this.$klicker.config[c].defaultMeasurementIds
@@ -158,34 +118,15 @@ export default Vue.extend({
         dimensionsIds: this.$klicker.config[c].defaultDimensionsIds,
         measurementsIds: measurementsIdsDefaults,
       })
-      this.numDimensions = this.$klicker.config[c].defaultDimensionsIds.length
-    },
-    onInputDimensionsIds(index: number, d: string) {
-      const dimensionsIds = this.value.dimensionsIds.slice()
-      dimensionsIds[index] = d
-      this.$emit('input', <CubeQuery>{
-        ...this.value,
-        dimensionsIds,
-      })
-      this.numDimensions = dimensionsIds.length
-    },
-    onDimensionRemove() {
-      const dimensionsIds = this.value.dimensionsIds.slice()
-      dimensionsIds.pop()
-      this.$emit('input', <CubeQuery>{
-        ...this.value,
-        dimensionsIds,
-      })
-      this.numDimensions--
     },
   },
   computed: {
     compareMode: {
       get(): boolean {
-        return 'comparing' in this.value
+        return this.value.comparing ? true : false
       },
       set(wantComparing: boolean) {
-        const isComparing = 'comparing' in this.value
+        const isComparing = this.value.comparing ? true : false
 
         if (!isComparing && wantComparing) {
           const current = this.value as CubeQuery
@@ -218,12 +159,8 @@ export default Vue.extend({
       return Object.values(this.$klicker.config)
         .filter((cube) => this.advancedMode || !cube.hidden)
     },
-    dimensions(): Dimension[] {
-      return this.$klicker.config[this.value.cubeId].dimensions
-        .filter(d => this.advancedMode || !d.hidden)
-    },
     canCompare(): boolean {
-      if ('comparing' in this.value) {
+      if (this.value.comparing) {
         return true
       }
 
@@ -243,7 +180,7 @@ export default Vue.extend({
 </script>
 
 <style lang="postcss" scoped>
-.grid-cols-12-1fr {
-  grid-template-columns: 6rem 1fr;
+.grid-cols-20-1fr {
+  grid-template-columns: 10rem 1fr;
 }
 </style>

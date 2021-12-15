@@ -23,10 +23,10 @@ export default defineComponent({
       error.value = undefined
       loading.value = true
       try {
-        if (!('comparing' in props.query)) {
+        if (!props.query.comparing) {
           return await $klicker.query(props.query)
         } else {
-          return await $klicker.comparingQuery(props.query)
+          return await $klicker.comparingQuery(<CubeComparingQuery>props.query)
         }
       } catch (err) {
         console.error(err)

@@ -12,7 +12,7 @@
         :icon="faFilter"
       ></font-awesome-icon>
 
-      Configure
+      {{ $t('filter.configure' )}}
     </b-button>
 
     <div
@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
 import { SliceValue, CubeQuery, CubeComparingQuery } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useBreakpointTailwindCSS } from 'vue-composable'
@@ -43,22 +43,29 @@ export default defineComponent({
       required: true
     },
     comparing: {
-      // true if the slicer controls comparingSlices
+      // true if the slicer controls test slices
+      type: Boolean,
+      default: false
+    },
+    both: {
+      // true if the slicer controls test slices
+      // and reference slices simultaneously
       type: Boolean,
       default: false
     },
   },
   setup(props, { emit }) {
+    const { i18n } = useContext()
     const showFilters = ref(false)
 
-    const compareMode = computed(() => 'comparing' in props.value)
+    const compareMode = computed(() => props.value.comparing)
 
     const slices = computed(() => {
       if (!compareMode.value) {
         return props.value.slices
       }
 
-      if (props.comparing) {
+      if (props.comparing || props.both) {
         return props.value.slices
       } else {
         return (<CubeComparingQuery>props.value).reference.slices
@@ -68,7 +75,7 @@ export default defineComponent({
     // slots cannot have event handlers,
     // so the handler is passed down instead
     const onInput = (s: Partial<SliceValue>) => {
-      if (!compareMode.value || props.comparing) {
+      if (!compareMode.value) {
         emit('input', <CubeQuery>{
           ...props.value,
           slices: {
@@ -77,20 +84,49 @@ export default defineComponent({
           },
         })
       } else {
-        emit('input', <CubeComparingQuery>{
-          ...props.value,
-          reference: {
-            ...(<CubeComparingQuery>props.value).reference,
+        const query = <CubeComparingQuery> props.value
+
+        if (props.both) {
+          emit('input', <CubeComparingQuery>{
+            ...query,
             slices: {
               ...slices.value,
               ...s,
             },
-          },
-        })
+            reference: {
+              ...query.reference,
+              slices: {
+                ...slices.value,
+                ...s,
+              },
+            },
+          })
+        } else {
+          if (props.comparing) {
+            emit('input', <CubeComparingQuery>{
+              ...query,
+              slices: {
+                ...slices.value,
+                ...s,
+              },
+            })
+          } else {
+            emit('input', <CubeComparingQuery>{
+              ...query,
+              reference: {
+                ...query.reference,
+                slices: {
+                  ...slices.value,
+                  ...s,
+                },
+              },
+            })
+          }
+        }
       }
     }
 
-    const title = computed(() => compareMode.value ? (props.comparing ? 'Test Filters' : 'Reference Filters') : 'Filters')
+    const title = computed(() => compareMode.value ? (props.comparing ? i18n.t('comparison.filter.test') : i18n.t('comparison.filter.reference')) : i18n.t('filter.title'))
     const { md: breakpointMd } = useBreakpointTailwindCSS()
 
     return {

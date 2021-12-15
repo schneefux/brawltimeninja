@@ -12,6 +12,7 @@
       v-if="'slices' in $scopedSlots"
       v-model="query"
       v-bind="$attrs"
+      :both="syncSlices"
       class="w-full md:w-auto"
       full-height
     >
@@ -24,7 +25,7 @@
     </c-slicer>
 
     <c-slicer
-      v-if="'slices' in $scopedSlots && 'comparing' in query"
+      v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
       v-model="query"
       v-bind="$attrs"
       class="w-full md:w-auto"
@@ -45,6 +46,7 @@
         ...query,
         dimensionsIds: [],
         measurementsIds: metaMetrics,
+        comparing: false,
       }"
     >
       <template v-slot="totals">
@@ -93,6 +95,10 @@ export default defineComponent({
       required: true
     },
     configurator: {
+      type: Boolean,
+      default: false
+    },
+    syncSlices: {
       type: Boolean,
       default: false
     },
