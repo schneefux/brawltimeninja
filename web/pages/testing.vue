@@ -33,11 +33,11 @@
     >
       <template v-slot="data">
         <div class="w-full flex flex-wrap">
-          <v-table v-bind="{ ...data, ...$attrs }">
+          <v-roll v-bind="{ ...data, ...$attrs }">
             <template v-slot:dimensions="data">
               <d-brawler v-bind="data"></d-brawler>
             </template>
-          </v-table>
+          </v-roll>
 
           <v-bar-plot class="h-80" v-bind="{ ...data, ...$attrs }" md full-height></v-bar-plot>
           <v-line-plot class="h-80" v-bind="{ ...data, ...$attrs }" md full-height></v-line-plot>
@@ -53,7 +53,7 @@
 
 <script lang='ts'>
 import { defineComponent } from "@nuxtjs/composition-api"
-import { CQuery, VTable, VTestInfo, VBarPlot, VLinePlot } from '~/klicker/components'
+import { CQuery, VTable, VTestInfo, VBarPlot, VLinePlot, VRoll } from '~/klicker/components'
 
 export default defineComponent({
   components: {
@@ -62,6 +62,7 @@ export default defineComponent({
     VTestInfo,
     VBarPlot,
     VLinePlot,
+    VRoll,
   },
   setup() {
     return {

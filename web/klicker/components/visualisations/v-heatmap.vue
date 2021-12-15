@@ -19,6 +19,7 @@ import { VisualizationSpec } from 'vega-embed'
 import { computed, PropType } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { BVega, BCard } from '~/klicker/components'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   components: {
@@ -33,10 +34,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const { dimensions, measurements } = useCubeResponse(props)
 
     const show = computed(() => {
       if (dimensions.value.length == 2 && measurements.value.length == 1 && props.response.data.length > 1) {

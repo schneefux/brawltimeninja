@@ -2,7 +2,7 @@ import { computed, useContext, Ref } from '@nuxtjs/composition-api'
 import { SliceValue } from '~/klicker'
 
 export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValue>, id: Ref<string|number|undefined>) {
-  const { app: { i18n } } = useContext()
+  const { i18n } = useContext()
 
   return computed(() => {
     const mode = sliceRef?.value?.mode?.[0]

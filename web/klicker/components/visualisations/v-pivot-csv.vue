@@ -15,6 +15,7 @@
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   components: {
@@ -27,10 +28,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const { dimensions, measurements } = useCubeResponse(props)
 
     const show = () => props.response.data.length > 0
         && dimensions.value.filter(d => d.type == 'temporal').length == 1

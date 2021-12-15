@@ -19,6 +19,7 @@ import { VisualizationSpec } from 'vega-embed'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   components: {
@@ -33,10 +34,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
-
-    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const { i18n } = useContext()
+    const { dimensions, measurements, switchResponse, comparing } = useCubeResponse(props)
 
     const show = computed(() =>
       dimensions.value.length == 1 &&
@@ -50,14 +49,13 @@ export default defineComponent({
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
 
-      const comparing = props.response.kind == 'comparingResponse'
-      const values = comparing ? (<CubeComparingResponse> props.response).data.flatMap(e => [{
+      const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         ...e,
         source: i18n.t('comparison.dataset.test') as string,
       }, {
         ...e.test.reference,
         source: i18n.t('comparison.dataset.reference') as string,
-      }]) : props.response.data
+      }]))
 
       return {
         data: {
@@ -80,7 +78,7 @@ export default defineComponent({
             },
             scale: measurement0.scale,
           },
-          ...(comparing ? {
+          ...(comparing.value ? {
             color: {
               field: 'source',
               legend: {

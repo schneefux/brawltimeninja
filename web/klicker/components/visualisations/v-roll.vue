@@ -50,6 +50,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
+import { useCubeResponse } from '~/klicker/composables/response'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
 
@@ -72,7 +73,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { i18n } = useContext()
+    const { $klicker, measurements, comparing, switchResponse } = useCubeResponse(props)
 
     const measurements = computed(() => $klicker.getMeasurements(props.response.query))
 
@@ -82,8 +84,8 @@ export default defineComponent({
       && props.response.data.length < 10)
 
     const measurementsNames = computed(() => measurements.value.map(m => ({
-      id: m.id,
-      name: $klicker.getName(m, 'short')
+          id: m.id,
+          name: $klicker.getName(m, 'short')
     })))
 
     return {

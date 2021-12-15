@@ -12,6 +12,7 @@ import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composi
 import { VisualizationSpec } from 'vega-embed'
 import { CubeResponse } from '~/klicker'
 import BVega from '~/klicker/components/ui/b-vega.vue'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   components: {
@@ -25,10 +26,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const { dimensions, measurements } = useCubeResponse(props)
 
     const show = computed(() => dimensions.value.length == 1 &&
       dimensions.value[0].type == 'temporal' &&

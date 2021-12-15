@@ -19,6 +19,7 @@ import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   components: {
@@ -33,10 +34,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
-
-    const dimensions = computed(() => $klicker.getDimensions(props.response.query))
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const { i18n } = useContext()
+    const { comparing, dimensions, measurements, switchResponse } = useCubeResponse(props)
 
     const show = computed(() =>
       dimensions.value.length == 1 &&
@@ -50,8 +49,7 @@ export default defineComponent({
       const dimension0 = dimensions.value[0]
       const measurement0 = measurements.value[0]
 
-      const comparing = props.response.kind == 'comparingResponse'
-      const values = comparing ? (<CubeComparingResponse> props.response).data.flatMap(e => [{
+      const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         ...e,
         source: i18n.t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
@@ -59,7 +57,7 @@ export default defineComponent({
         ...e.test.reference,
         source: i18n.t('comparison.dataset.reference') as string,
         stars: '',
-      }]) : props.response.data
+      }]))
 
       return {
         data: {
@@ -90,7 +88,7 @@ export default defineComponent({
         layer: [{
           mark: 'bar',
           encoding: {
-            ...(comparing ? {
+            ...(comparing.value ? {
               color: {
                 field: 'source',
                 legend: {
@@ -104,7 +102,7 @@ export default defineComponent({
               },
             } : {}),
           },
-        }, ...(comparing ? [{
+        }, ...(comparing.value ? [{
           mark: {
             type: 'text',
             align: 'center',
@@ -116,7 +114,7 @@ export default defineComponent({
               type: 'nominal',
             },
           },
-        }] : []) as any]
+        }] : []) as any] // FIXME spread breaks types
       }
     })
 
