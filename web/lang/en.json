@@ -404,6 +404,7 @@
     "tier-list.starpower.title": "Brawl Stars Star Powers",
     "time.ends-in": "ends in {time}",
     "comparison.difference.to.dataset": "Difference to {dataset}",
+    "comparison.difference.short": "Diff.",
     "comparison.dataset.reference": "Reference",
     "comparison.dataset.test": "Test"
 }

@@ -11,12 +11,13 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
   // helper method for typed case differentiation
   const switchResponse = <R1, R2>(
     plainCallback: (r: CubeResponse) => R1,
-    comparingCallback: (r: CubeComparingResponse) => R2
+    comparingCallback: (r: CubeComparingResponse) => R2,
+    forcePlain: boolean = false,
   ) => {
-    if (comparing.value) {
-      return comparingCallback(props.response as CubeComparingResponse)
-    } else {
+    if (!comparing.value || forcePlain) {
       return plainCallback(props.response as CubeResponse)
+    } else {
+      return comparingCallback(props.response as CubeComparingResponse)
     }
   }
 

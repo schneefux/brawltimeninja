@@ -4,13 +4,13 @@
     expand-on-desktop
   >
     <b-card
-      v-for="(entry, index) in response.data"
-      :key="entry.id"
+      v-for="(card, index) in cards"
+      :key="card.id"
       :elevation="elevation"
-      :title="long ? entry.dimensions[response.query.dimensionsIds[0]] : undefined"
+      :title="card.title"
       :class="['flex-shrink-0', {
         'ml-auto': index == 0,
-        'mr-auto': index == response.data.length - 1,
+        'mr-auto': index == cards.length - 1,
       }]"
       dense
     >
@@ -23,21 +23,21 @@
         <div class="mt-2 mx-auto flex-shrink-0">
           <slot
             name="dimensions"
-            :row="entry"
+            :row="card.entry"
           ></slot>
         </div>
         <table class="mx-auto my-1 text-2xs md:text-xs lg:text-base text-center">
           <tbody>
             <tr
-              v-for="m in measurements"
-              :key="m.id"
+              v-for="r in card.rows"
+              :key="r.id"
               class="whitespace-nowrap flex flex-col"
             >
               <td>
-                {{ entry.measurements[m.id] }}
+                {{ r.text }}
               </td>
               <td>
-                {{ m.name }}
+                {{ r.name }}
               </td>
             </tr>
           </tbody>
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
-import { CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
@@ -62,35 +62,63 @@ export default defineComponent({
   name: 'VRoll',
   props: {
     response: {
-      type: Object as PropType<CubeResponse>,
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
     elevation: {
-      type: Number
+      type: Number,
+      required: false
     },
     long: {
-      type: Boolean
+      type: Boolean,
+      default: false
+    },
+    // true: filter for significant results when comparing
+    significant: {
+      type: Boolean,
+      default: false
     },
   },
   setup(props) {
     const { i18n } = useContext()
-    const { $klicker, measurements, comparing, switchResponse } = useCubeResponse(props)
+    const { $klicker, measurements, switchResponse } = useCubeResponse(props)
 
-    const measurements = computed(() => $klicker.getMeasurements(props.response.query))
+    const data = computed(() => switchResponse(
+      response => response.data,
+      response => response.data.filter(d => d.test.difference.pValueRaw <= 0.05),
+      !props.significant
+    ))
 
-    const show = computed(() => props.response.query.dimensionsIds.length == 1
-      && props.response.query.measurementsIds.length == 1
-      && props.response.data.length > 1
-      && props.response.data.length < 10)
+    const show = computed(() =>
+      props.response.query.dimensionsIds.length == 1 &&
+      props.response.query.measurementsIds.length == 1 &&
+      data.value.length > 1 &&
+      data.value.length < 10)
 
-    const measurementsNames = computed(() => measurements.value.map(m => ({
+    const cards = computed(() =>
+      switchResponse(response => data.value.map(e => ({
+        id: e.id,
+        title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
+        entry: e,
+        rows: measurements.value.map(m => ({
           id: m.id,
-          name: $klicker.getName(m, 'short')
-    })))
+          text: e.measurements[m.id],
+          name: $klicker.getName(m, 'short'),
+        })),
+      })), response => data.value.map(e => ({
+        id: e.id,
+        title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
+        entry: e,
+        rows: measurements.value.map(m => ({
+          id: m.id,
+          text: e.test.difference.difference,
+          name: i18n.t('comparison.difference.short') as string,
+        })),
+      })), !props.significant))
 
     return {
       show,
-      measurements: measurementsNames,
+      cards,
     }
   },
 })
