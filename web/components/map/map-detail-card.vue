@@ -19,7 +19,7 @@
       <div>
         <b-card
           v-if="timestamp != undefined"
-          elevation="2"
+          :elevation="2"
         >
           <dl
             slot="content"
@@ -34,7 +34,7 @@
           </dl>
         </b-card>
 
-        <b-card elevation="2">
+        <b-card :elevation="2">
           <map-balance-score
             slot="content"
             :slices="{ mode: [mode], map: [map], season: [season] }"
@@ -43,24 +43,13 @@
 
         <b-card
           title="Best Brawlers"
-          elevation="2"
+          :elevation="2"
         >
           <map-best-brawlers
             slot="content"
             :slices="{ mode: [mode], map: [map], season: [season] }"
-            elevation="3"
+            :elevation="3"
           ></map-best-brawlers>
-        </b-card>
-
-        <b-card
-          v-if="mode != 'soloShowdown'"
-          title="Teams with most wins"
-          elevation="2"
-        >
-          <map-best-teams
-            slot="content"
-            :slices="{ mode: [mode], map: [map], season: [season] }"
-          ></map-best-teams>
         </b-card>
       </div>
     </div>
