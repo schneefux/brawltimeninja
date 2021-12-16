@@ -56,9 +56,9 @@ function calculateGTestStatistic(expectations: number[], observations: number[])
   return 2*g
 }
 
-function binomialTest(getK: (d: MetaGridEntry) => number, getN: (d: MetaGridEntry) => number) {
+function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
   // approximate a binomial test using the G-test
-  return (r: MetaGridEntry, t: MetaGridEntry) => {
+  return (r: MetaGridEntry['measurementsRaw'], t: MetaGridEntry['measurementsRaw']) => {
     const total = getN(r) + getN(t)
     const totalSuccesses = getK(r) + getK(t)
     const totalFailures = total - totalSuccesses
@@ -83,6 +83,21 @@ function binomialTest(getK: (d: MetaGridEntry) => number, getN: (d: MetaGridEntr
     })
   }
 }
+
+function binomialCI(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+  // normal 95% approximation interval
+  return (d: MetaGridEntry['measurementsRaw']) => {
+    const z = 1.96
+    const n = getN(d)
+    const p = getK(d) / n
+    const diff = z*Math.sqrt(p * (1 - p) / n)
+    return {
+      lower: Math.max(0.0, p - diff),
+      upper: Math.min(1.0, p + diff),
+    }
+  }
+}
+
 
 // TODO get standard deviations and implement t test for non-binomial attributes
 
@@ -246,6 +261,7 @@ const brawlerDimensions = asDimensions({
     additionalMeasures: [],
     hidden: true,
     type: 'ordinal',
+    formatter: 'trophyRange',
     config: {
       sql: 'brawler_trophyrange',
       type: 'string',
@@ -657,9 +673,15 @@ const battleNumberMeasurements = asNumberMeasurements({
       type: 'avg',
     },
     statistics: {
+      test: {
       name: 'G-Test',
-      test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+        test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
       requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   winRateAdj: {
@@ -765,9 +787,15 @@ const battleNumberMeasurements = asNumberMeasurements({
       type: 'avg',
     },
     statistics: {
+      test: {
       name: 'G-Test',
-      test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
       requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   rank: {
@@ -971,9 +999,15 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      test: {
       name: 'G-Test',
-      test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+        test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
       requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   winRateAdj: {
@@ -1055,9 +1089,15 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      test: {
       name: 'G-Test',
-      test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
       requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   rank: {
@@ -1092,9 +1132,15 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      test: {
       name: 'G-Test',
-      test: binomialTest(m => (m.measurementsRaw['rank1Rate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
+        test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
       requiresMeasurements: ['picks'],
+      },
+      ci: {
+        ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   duration: {

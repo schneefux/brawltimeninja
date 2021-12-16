@@ -16,7 +16,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { CubeComparingResponse, CubeResponse, Measurement } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
@@ -35,11 +35,11 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { dimensions, measurements, switchResponse, comparing } = useCubeResponse(props)
+    const { $klicker, dimensions, measurements, switchResponse, comparing } = useCubeResponse(props)
 
     const show = computed(() =>
       dimensions.value.length == 1 &&
-      dimensions.value[0].type == 'temporal' &&
+      ['temporal', 'ordinal'].includes(dimensions.value[0].type) &&
       measurements.value.length == 1 &&
       props.response.data.length > 1 &&
       props.response.data.length < 1000
@@ -52,46 +52,95 @@ export default defineComponent({
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
         measurementsRaw: e.measurementsRaw,
+        measurementsCI: e.measurementsCI,
         source: i18n.t('comparison.dataset.test') as string,
       }, {
         id: e.id,
         dimensions: e.dimensions,
         measurementsRaw: e.test.reference.measurementsRaw,
+        measurementsCI: e.test.reference.measurementsCI,
         source: i18n.t('comparison.dataset.reference') as string,
       }]))
+
+      const withCI = values[0].measurementsCI[measurement0.id] != undefined
 
       return {
         data: {
           values,
         },
-        mark: 'line',
         encoding: {
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: dimension0.name,
+            title: $klicker.getName(dimension0),
             scale: dimension0.scale,
           },
           y: {
             field: 'measurementsRaw.' + measurement0.id,
             type: measurement0.type,
-            title: measurement0.name,
+            title: $klicker.getName(measurement0),
             axis: {
               format: measurement0.d3formatter,
             },
             scale: measurement0.scale,
           },
-          ...(comparing.value ? {
-            color: {
-              field: 'source',
-              legend: {
-                title: null,
-                offset: 8,
-                orient: 'top',
+          tooltip: <any>[{ // TODO spread breaks types
+            field: 'measurementsRaw.' + measurement0.id,
+            type: 'quantitative',
+            title: $klicker.getName(measurement0),
+          }, {
+            field: 'dimensions.' + dimension0.id,
+            type: 'quantitative',
+            title: $klicker.getName(dimension0),
+          },
+          ...(withCI ? [{
+            field: 'upper',
+            type: 'quantitative',
+            title: i18n.t('confidence-interval.lower', { percent: 95 }),
+          }, {
+            field: 'lower',
+            type: 'quantitative',
+            title: i18n.t('confidence-interval.upper', { percent: 95 }),
+          }] : []),
+          ],
+        },
+        ...(withCI ? {
+          // workaround for https://stackoverflow.com/questions/67358393/trouble-with-errorband-and-nested-properties
+          transform: [{
+            calculate: 'datum.measurementsCI.' + measurement0.id + '.lower',
+            as: 'lower',
+          }, {
+            calculate: 'datum.measurementsCI.' + measurement0.id + '.upper',
+            as: 'upper',
+          }],
+        } : {}),
+        layer: [{
+          mark: 'line',
+          encoding: {
+            ...(comparing.value ? {
+              color: {
+                field: 'source',
+                legend: {
+                  title: null,
+                  offset: 8,
+                  orient: 'top',
+                },
               },
+            } : {}),
+          },
+        },
+        ...(withCI ? [{
+          mark: 'errorband' as 'errorband',
+          encoding: {
+            y: {
+              field: 'lower',
+              type: 'quantitative' as 'quantitative',
             },
-          } : {}),
-        }
+            y2: {
+              field: 'upper',
+            },
+          },
+        }] : [])],
       }
     })
 

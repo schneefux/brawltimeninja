@@ -28,7 +28,7 @@ export default class Klicker {
     if (Array.isArray(value)) {
       return value.map(v => this.format(spec, v)).join(', ')
     }
-    if (spec.type == 'quantitative' && typeof value == 'number') {
+    if (['quantitative', 'ordinal'].includes(spec.type) && typeof value == 'number') {
       if (spec.formatter == 'duration') {
         return `${Math.floor(value / 60)}:${Math.floor(value % 60).toString().padStart(2, '0')}`
       }
@@ -82,6 +82,7 @@ export default class Klicker {
         if (dimension == undefined) throw new Error('Invalid dimension id ' + id)
         return dimension
       })
+
     const measurements = query.measurementsIds
       .map(id => {
         const measurement = cube.measurements.find(d => id == d.id)
@@ -123,10 +124,12 @@ export default class Klicker {
         })
     }
 
-    const queryMeasures = (<string[]>[]).concat(
-      measurements.map(m => cube.id + '.' + m.id + '_measure'),
-      ...dimensions.map(d => d.additionalMeasures.map(m => cube.id + '.' + m + '_measure')),
+    const measurementsIds = (<string[]>[]).concat(
+      measurements.map(m => m.id),
+      query.confidenceInterval ? measurements.flatMap(m => m.statistics?.ci?.requiresMeasurements || []) : [],
+      dimensions.flatMap(d => d.additionalMeasures),
     )
+    const queryMeasures = measurementsIds.map(id => `${cube.id}.${id}_measure`)
     const queryDimensions = dimensions.map(d => cube.id + '.' + d.id + '_dimension')
 
     const queryOrder = sortMeasurement ? <TQueryOrderObject>{
@@ -193,12 +196,12 @@ export default class Klicker {
     if (sortMeasurement == undefined && sortDimension == undefined && !sortSpecial) {
       throw new Error('Invalid sort id ' + query.sortId)
     }
-    if (query.sortId == 'pvalue' && comparingMeasurement.statistics == undefined) {
+    if (query.sortId == 'pvalue' && comparingMeasurement.statistics?.test == undefined) {
       throw new Error('Cannot sort ' + comparingMeasurement.id + ' by p value, no test defined')
     }
 
     // execute both queries
-    const measurementsIds = [query.measurementsIds[0], ...(comparingMeasurement.statistics?.requiresMeasurements || [])]
+    const measurementsIds = [query.measurementsIds[0], ...(comparingMeasurement.statistics?.test?.requiresMeasurements || [])]
     const partialQuery = {
       measurementsIds,
       sortId: query.measurementsIds[0],
@@ -249,12 +252,32 @@ export default class Klicker {
 
     // transform raw data to entries
     const entries = table.map(row => {
+      // parse strings as float (cube.js clickhouse driver bug)
+      const getValue = (type: Dimension['type']|Measurement['type'], id: string) => {
+        const key = cube.id + '.' + id
+        return ['quantitative', 'ordinal'].includes(type) ? parseFloat(row[key] as string) : row[key]
+      }
+
       const measurementsRaw: MetaGridEntry['measurementsRaw'] = {}
       for (const m of measurements) {
-        const id = cube.id + '.' + m.id + '_measure'
-        // parse strings as float (cube.js clickhouse driver bug)
-        const value = m.type == 'quantitative' ? parseFloat(row[id] as string) : row[id]
-        measurementsRaw[m.id] = value
+        measurementsRaw[m.id] = getValue(m.type, m.id + '_measure')
+      }
+
+      const measurementsCI: MetaGridEntry['measurementsCI'] = {}
+      for (const m of measurements) {
+        const mRaw: MetaGridEntry['measurementsRaw'] = {
+          [m.id]: measurementsRaw[m.id],
+        }
+        if (m.statistics?.ci != undefined) {
+          for (const id of m.statistics?.ci?.requiresMeasurements) {
+            const key = `${cube.id}.${id}_measure`
+            if (!(key in row)) {
+              break
+            }
+            mRaw[id] = parseFloat(row[key] as string)
+          }
+          measurementsCI[m.id] = m.statistics?.ci?.ci(mRaw)
+        }
       }
 
       const dimensionsRaw: MetaGridEntry['dimensionsRaw'] = {}
@@ -267,7 +290,7 @@ export default class Klicker {
         dimensionsRaw[d.id] = {}
         for (const k of keys) {
           const kShort = k.replace(/_measure|_dimension/g, '')
-          dimensionsRaw[d.id][kShort] = row[cube.id + '.' + k]
+          dimensionsRaw[d.id][kShort] = getValue(d.type, k)
         }
         const naturalId = dimensionsRaw[d.id][d.naturalIdAttribute]
         if (naturalId == undefined) {
@@ -281,6 +304,7 @@ export default class Klicker {
       return <MetaGridEntry>{
         id,
         measurementsRaw,
+        measurementsCI,
         dimensionsRaw,
         measurements: {},
         dimensions: {},
@@ -324,7 +348,7 @@ export default class Klicker {
         const reference = referenceDataMap[calculateId(t)]
 
         const diff = (t.measurementsRaw[comparing.id] as number) - (reference.measurementsRaw[comparing.id] as number)
-        const pValue = comparing.statistics?.test(referenceDataMap[calculateId(t)], t) || 1
+        const pValue = comparing.statistics?.test?.test(referenceDataMap[calculateId(t)].measurementsRaw, t.measurementsRaw) || 1
         // apply Bonferroni correction (TODO use method with better accuracy)
         const correctedPValue = Math.min(1.0, pValue * testData.length)
 

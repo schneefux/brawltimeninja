@@ -45,12 +45,12 @@ export interface Measurement<T=string|number> {
   formatter?: string
   d3formatter?: string
   sign: number
+  transform?: (entries: MetaGridEntry[]) => T[]
   /**
    * Vega.js scale configuration
    * @see https://vega.github.io/vega-lite/docs/scale.html
    */
   scale?: any
-  transform?: (entries: MetaGridEntry[]) => T[]
   /**
    * cube.js configuration.
    */
@@ -59,12 +59,18 @@ export interface Measurement<T=string|number> {
     type: MeasureType
   }
   /**
-   * Configuration for statistical tests
+   * Configuration for statistical tests and confidence intervals
    */
   statistics?: {
-    name: string
-    test(referenceData: MetaGridEntry, testData: MetaGridEntry): number
-    requiresMeasurements: string[]
+    test?: {
+      name: string
+      test(referenceMeasurements: MetaGridEntry['measurementsRaw'], testMeasurements: MetaGridEntry['measurementsRaw']): number
+      requiresMeasurements: string[]
+    }
+    ci?: {
+      ci(data: MetaGridEntry['measurementsRaw']): { lower: number, upper: number }
+      requiresMeasurements: string[]
+    }
   }
 }
 
@@ -128,6 +134,7 @@ export interface MetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
   measurementsRaw: Record<string, number|string>
+  measurementsCI: Record<string, { lower: number, upper: number }>
   dimensions: Record<string, string>
   measurements: Record<string, string>
 }
@@ -173,6 +180,7 @@ export interface CubeQuery {
   limit?: number
   sortId: string
   comparing?: boolean
+  confidenceInterval?: boolean
 }
 
 export interface CubeComparingQuery extends CubeQuery {

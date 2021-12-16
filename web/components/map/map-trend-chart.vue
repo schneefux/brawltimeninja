@@ -2,27 +2,34 @@
   <c-query :query="query">
     <template v-slot="data">
       <div>
-        <v-scatter-plot
+        <v-line-plot
           :title="title"
           v-bind="data"
           class="h-72 flex-auto"
           full-height
-        ></v-scatter-plot>
+        ></v-line-plot>
+        <v-bar-plot
+          :title="title"
+          v-bind="data"
+          class="h-72 flex-auto"
+          full-height
+        ></v-bar-plot>
       </div>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import { CQuery, VScatterPlot } from '~/klicker/components'
+import { CQuery, VLinePlot, VBarPlot } from '~/klicker/components'
 import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
-    VScatterPlot,
     CQuery,
+    VLinePlot,
+    VBarPlot,
   },
   props: {
     id: {
@@ -35,16 +42,21 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const query = computed<CubeQuery>(() => ({
+    const query = computed(() => (<CubeQuery>{
       cubeId: 'map',
-      dimensionsIds: ['brawler'],
-      measurementsIds: ['useRate', 'winRate'],
-      slices: props.slices,
-      sortId: 'useRate',
+      dimensionsIds: ['trophyRange'],
+      measurementsIds: ['winRate'],
+      slices: {
+        ...props.slices,
+        trophyRangeGte: [],
+        trophyRangeLt: [],
+      },
+      sortId: 'trophyRange',
+      confidenceInterval: true,
     }))
 
     const { id, slices } = toRefs(props)
-    const title = useTopNTitle('brawler.winrate-userate-chart', slices, id)
+    const title = useTopNTitle('brawler.balance-chart', slices, id)
 
     return {
       title,

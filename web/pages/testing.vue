@@ -15,6 +15,9 @@
       TODO support overlapping charts
       TODO implement a v-roll that shows the highest p values
     -->
+    <div>
+    <map-trend-chart :slices="{}"></map-trend-chart>
+    <!--
     <c-query
       :query="{
         comparing: true,
@@ -50,6 +53,8 @@
         </div>
       </template>
     </c-query>
+    -->
+    </div>
   </client-only>
 </template>
 

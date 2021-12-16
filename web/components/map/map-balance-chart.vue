@@ -25,8 +25,6 @@
 </template>
 
 <script lang="ts">
-import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VBarPlot } from '~/klicker/components'
 import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -35,9 +33,7 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VBarPlot,
-    DBrawler,
     CQuery,
-    BrawlerLink,
   },
   props: {
     id: {
@@ -51,13 +47,12 @@ export default defineComponent({
   },
   setup(props) {
     const query = computed(() => (<CubeQuery>{
-        cubeId: 'map',
-        dimensionsIds: ['brawler'],
-        measurementsIds: ['useRate'],
-        slices: props.slices,
-        sortId: 'useRate',
-      }
-    ))
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      measurementsIds: ['useRate'],
+      slices: props.slices,
+      sortId: 'useRate',
+    }))
 
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('brawler.balance-chart', slices, id)

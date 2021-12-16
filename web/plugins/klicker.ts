@@ -69,6 +69,12 @@ class KlickerService extends Klicker {
         return idToTag(value)
       }
     }
+    if (spec.type == 'ordinal' && typeof value == 'number') {
+      if (spec.formatter == 'trophyRange') {
+        // TODO format leagues
+        return (value * 100) as any as string // TODO allow format to return numbers
+      }
+    }
     return super.format(spec, value)
   }
 

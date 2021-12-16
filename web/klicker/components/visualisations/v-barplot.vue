@@ -35,11 +35,11 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { comparing, dimensions, measurements, switchResponse } = useCubeResponse(props)
+    const { $klicker, comparing, dimensions, measurements, switchResponse } = useCubeResponse(props)
 
     const show = computed(() =>
       dimensions.value.length == 1 &&
-      dimensions.value[0].type == 'nominal' &&
+      ['ordinal', 'nominal'].includes(dimensions.value[0].type) &&
       measurements.value.length == 1 &&
       props.response.data.length > 1 &&
       props.response.data.length < 100
@@ -52,15 +52,19 @@ export default defineComponent({
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
         measurementsRaw: e.measurementsRaw,
+        measurementsCI: e.test.reference.measurementsCI,
         source: i18n.t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
       }, {
         id: e.id,
         dimensions: e.dimensions,
         measurementsRaw: e.test.reference.measurementsRaw,
+        measurementsCI: e.test.reference.measurementsCI,
         source: i18n.t('comparison.dataset.reference') as string,
         stars: '',
       }]))
+
+      const withCI = values[0].measurementsCI[measurement0.id] != undefined
 
       return {
         data: {
@@ -70,7 +74,7 @@ export default defineComponent({
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: dimension0.name,
+            title: $klicker.getName(dimension0),
             scale: dimension0.scale,
             sort: {
               field: measurement0.id,
@@ -87,7 +91,36 @@ export default defineComponent({
             scale: measurement0.scale,
             stack: null,
           },
+          tooltip: <any>[{ // TODO spread breaks types
+            field: 'measurementsRaw.' + measurement0.id,
+            type: 'quantitative',
+            title: $klicker.getName(measurement0),
+          }, {
+            field: 'dimensions.' + dimension0.id,
+            type: 'quantitative',
+            title: $klicker.getName(dimension0),
+          },
+          ...(withCI ? [{
+            field: 'upper',
+            type: 'quantitative',
+            title: i18n.t('confidence-interval.lower', { percent: 95 }),
+          }, {
+            field: 'lower',
+            type: 'quantitative',
+            title: i18n.t('confidence-interval.upper', { percent: 95 }),
+          }] : []),
+          ],
         },
+        ...(withCI ? {
+          // workaround for https://stackoverflow.com/questions/67358393/trouble-with-errorband-and-nested-properties
+          transform: [{
+            calculate: 'datum.measurementsCI.' + measurement0.id + '.lower',
+            as: 'lower',
+          }, {
+            calculate: 'datum.measurementsCI.' + measurement0.id + '.upper',
+            as: 'upper',
+          }],
+        } : {}),
         layer: [{
           mark: 'bar',
           encoding: {
@@ -105,7 +138,22 @@ export default defineComponent({
               },
             } : {}),
           },
-        }, ...(comparing.value ? [{
+        },
+        ...(withCI ? [{
+          mark: 'errorbar' as 'errorbar',
+          encoding: {
+            y: {
+              field: 'lower',
+              type: 'quantitative' as 'quantitative',
+              scale: measurement0.scale,
+            },
+            y2: {
+              field: 'upper',
+              title: measurement0.name,
+            },
+          },
+        }] : []) as any,
+        ...(comparing.value ? [{
           mark: {
             type: 'text',
             align: 'center',
@@ -117,7 +165,8 @@ export default defineComponent({
               type: 'nominal',
             },
           },
-        }] : []) as any] // FIXME spread breaks types
+        }] : []) as any // FIXME spread breaks types
+        ]
       }
     })
 

@@ -128,6 +128,12 @@
             class="w-full"
           ></map-winrate-userate-chart>
 
+          <map-trend-chart
+            :id="id"
+            :slices="query.slices"
+            class="w-full"
+          ></map-trend-chart>
+
           <div class="flex flex-wrap">
             <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
             <metric-info full-height :measurement="adjustedWinRate" md></metric-info>

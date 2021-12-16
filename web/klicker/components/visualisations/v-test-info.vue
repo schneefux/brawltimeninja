@@ -54,9 +54,9 @@ export default defineComponent({
   setup(props) {
     const { $klicker, comparing, measurements } = useCubeResponse(props)
 
-    const show = computed(() => comparing.value && measurements.value[0].statistics != undefined)
+    const show = computed(() => comparing.value && measurements.value[0].statistics?.test != undefined)
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
-    const testName = computed(() => measurements.value[0].statistics?.name)
+    const testName = computed(() => measurements.value[0].statistics?.test?.name)
 
     return {
       show,
