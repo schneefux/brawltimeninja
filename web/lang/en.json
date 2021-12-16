@@ -430,5 +430,14 @@
     "comparison.test.significant": "Significant",
     "comparison.test.not-significant": "Not Significant",
     "confidence-interval.lower": "Lower {percent}% CI",
-    "confidence-interval.upper": "Upper {percent}% CI"
+    "confidence-interval.upper": "Upper {percent}% CI",
+    "draft-tool.selected-team": "Selected Team",
+    "draft-tool.none-selected": "Select a Brawler to get started.",
+    "draft-tool.estimated.win-rate": "Estimated Win Rate",
+    "draft-tool.grid-title": "Add Brawlers to your team",
+    "draft-tool.title": "Brawl Stars Draft Tool",
+    "draft-tool.description": "Use the Draft Tool during Power League or in the Lobby to build the best Brawler composition. Each Brawler is shown with their Win Rate with the selected composition. The data is updated when you add Brawlers to your team.",
+    "draft-tool.meta.title": "Brawl Stars Draft Tool",
+    "draft-tool.meta.description": "Interactive Brawl Stars Pick Guide. Build the best Brawler composition. Calculate the Win Rate for your Team. Improve in Lobbies and in Power League using statistics.",
+    "action.open.draft-tool": "Open Draft Tool"
 }

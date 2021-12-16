@@ -1,6 +1,6 @@
 <template>
   <page
-    title="Draft Helper"
+    :title="$t('draft-tool.title')"
     class="max-w-2xl mx-auto"
   >
     <b-card
@@ -8,7 +8,7 @@
       class="mt-3"
     >
       <p slot="content" class="prose text-gray-200">
-        <i>A short introduction to the tool.</i>
+        {{ $t('draft-tool.description') }}
       </p>
     </b-card>
 
@@ -16,8 +16,8 @@
       <c-slicer v-model="query">
         <template v-slot="data">
           <s-season v-bind="data"></s-season>
-          <s-trophies v-bind="data"></s-trophies>
           <s-mode-map v-bind="data"></s-mode-map>
+          <s-trophies v-bind="data"></s-trophies>
         </template>
       </c-slicer>
 
@@ -32,6 +32,7 @@ import { CubeQuery } from '~/klicker'
 import { CSlicer } from '~/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
+import { convertToSlices } from '~/klicker/composables/link'
 
 export default Vue.extend({
   components: {
@@ -39,9 +40,9 @@ export default Vue.extend({
     CSlicer,
   },
   head() {
-    const description = ''
+    const description = this.$t('draft-tool.meta.description') as string
     return {
-      title: '',
+      title: this.$t('draft-tool.meta.title') as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -60,16 +61,15 @@ export default Vue.extend({
 
     return {
       query: <CubeQuery>{
-        // TODO
         cubeId: '',
         dimensionsIds: [],
         measurementsIds: [],
         sortId: '',
-        slices: {
+        slices: convertToSlices(this.$route, {
           season: [currentSeason.toISOString().slice(0, 10)],
           trophyRangeGte: ['0'],
           mode: [],
-        },
+        }),
       },
     }
   },

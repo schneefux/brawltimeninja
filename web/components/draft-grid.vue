@@ -1,7 +1,35 @@
 <template>
   <div>
     <b-card
-      title="Add Brawlers to your team"
+      :title="$t('draft-tool.selected-team')"
+    >
+      <div slot="content">
+        <p v-show="team.length == 0">
+          {{ $t('draft-tool.none-selected') }}
+        </p>
+        <p v-if="team.length > 0">
+          {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ team[team.length - 1].avgWinRateFormatted }}</span>
+        </p>
+
+        <div v-if="team.length > 0" class="flex justify-center mx-2 my-3 space-x-2">
+          <button
+            v-for="(brawler, index) in team"
+            :key="brawler.brawlerId"
+            @click="removeFromTeam(index)"
+          >
+            <media-img
+              :path="`/brawlers/${brawler.brawlerId}/avatar`"
+              :alt="brawler.brawlerName"
+              size="160"
+              clazz="rounded-md w-12 md:w-16"
+            ></media-img>
+          </button>
+        </div>
+      </div>
+    </b-card>
+
+    <b-card
+      :title="$t('draft-tool.grid-title')"
       :loading="loading > 0"
     >
       <div slot="content" class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
@@ -22,40 +50,13 @@
             size="160"
             clazz="rounded-sm"
           ></media-img>
-          <span class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-75 leading-tight text-sm md:text-base rounded-br-sm">
+          <span
+            v-if="brawler.selectable"
+            class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-75 leading-tight text-sm md:text-base rounded-br-sm"
+          >
             {{ brawler.avgWinRateFormatted }}
           </span>
         </button>
-      </div>
-    </b-card>
-
-    <b-card
-      title="Selected Team"
-    >
-      <div slot="content" class="mb-3">
-        <p v-show="team.length == 0">
-          No Brawlers selected
-        </p>
-        <p v-if="team.length > 0">
-          Click to remove.
-          <br />
-          Estimated win rate: <span class="font-semibold">{{ team[team.length - 1].avgWinRateFormatted }}</span>
-        </p>
-
-        <div class="flex justify-center mx-2 my-3 space-x-2">
-          <button
-            v-for="(brawler, index) in team"
-            :key="brawler.brawlerId"
-            @click="removeFromTeam(index)"
-          >
-            <media-img
-              :path="`/brawlers/${brawler.brawlerId}/avatar`"
-              :alt="brawler.brawlerName"
-              size="160"
-              clazz="rounded-md w-12 md:w-16"
-            ></media-img>
-          </button>
-        </div>
       </div>
     </b-card>
   </div>
@@ -173,6 +174,11 @@ export default defineComponent({
     })
 
     const addToTeam = (brawler: AllyData) => {
+      const foundIndex = team.value.findIndex(b => b.brawlerId == brawler.brawlerId)
+      if (foundIndex != -1) {
+        return team.value.splice(foundIndex, 1)
+      }
+
       if (!brawler.selectable) {
         return
       }
@@ -180,9 +186,7 @@ export default defineComponent({
       team.value.push(brawler)
     }
 
-    const removeFromTeam = (index: number) => {
-      team.value.splice(index, 1)
-    }
+    const removeFromTeam = (index: number) => team.value.splice(index, 1)
 
     return {
       loading,

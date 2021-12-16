@@ -123,13 +123,16 @@ function convertToQuery(config: Config, defaultCubeId: string, route: Route): Cu
   }
 }
 
-function convertSlicesToLocation(slices: SliceValue): Location {
+export function convertSlicesToLocation(slices: SliceValue): Location {
   return generateQueryParams(slices, 'filter')
 }
 
-function convertToSlices(route: Route, defaults: SliceValue): SliceValue {
+export function convertToSlices(route: Route, defaults: SliceValue): SliceValue {
   const slices = parseQueryParams(route.query, 'filter') as SliceValue
-  return Object.assign({}, defaults, slices)
+  return {
+    ...defaults,
+    ...slices,
+  }
 }
 
 

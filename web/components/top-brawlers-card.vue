@@ -4,15 +4,23 @@
     :elevation="elevation"
     xxl
   >
-    <b-button
-      slot="actions"
-      :to="localePath(`/tier-list/brawler`)"
-      primary
-      prefetch
-      sm
-    >
-      {{ $t('action.open.tier-list.brawler') }}
-    </b-button>
+    <div slot="actions">
+      <b-button
+        :to="localePath(`/draft-tool`)"
+        primary
+        sm
+      >
+        {{ $t('action.open.draft-tool') }}
+      </b-button>
+      <b-button
+        :to="localePath(`/tier-list/brawler`)"
+        primary
+        prefetch
+        sm
+      >
+        {{ $t('action.open.tier-list.brawler') }}
+      </b-button>
+    </div>
 
     <map-best-brawlers
       slot="content"
