@@ -7,5 +7,6 @@ const strings = { en, de, es }
 
 export default async ({ $http, $config }, locale) => {
   const lazyStrings = await $http.$get($config.mediaUrl + '/translations/' + locale + '.json').catch(e => ({}))
-  return Object.assign({}, strings[locale], lazyStrings)
+  const localeStrings = Object.fromEntries(Object.entries(strings[locale]).filter(([key, value]) => value != ''))
+  return Object.assign({}, localeStrings, lazyStrings)
 }

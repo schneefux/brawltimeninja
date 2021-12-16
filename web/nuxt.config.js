@@ -95,7 +95,7 @@ export default {
   ],
 
   modules: [
-    'nuxt-i18n',
+    '@nuxtjs/i18n',
     '@nuxt/http',
     '@nuxt/content',
     '@nuxtjs/pwa',
@@ -238,7 +238,6 @@ export default {
   },
 
   i18n: {
-    seo: false,
     locales: [{
       code: 'en',
       iso: 'en-US',
@@ -252,9 +251,9 @@ export default {
     langDir: 'lang/',
     defaultLocale: 'en',
     detectBrowserLanguage: {
+      redirectOn: 'root',
       useCookie: true,
       cookieKey: 'i18n_redirected',
-      onlyOnRoot: true,
     },
     vueI18n: {
       fallbackLocale: 'en',

@@ -31,7 +31,7 @@
       "@nuxt/http",
       "@nuxt/content",
       "@nuxtjs/sentry",
-      "nuxt-i18n"
+      "@nuxtjs/i18n"
     ]
   },
   "exclude": [
