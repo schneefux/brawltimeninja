@@ -1,17 +1,14 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <!-- add wrapper div to work around SSR error -->
-      <div class="contents">
-        <v-table
-          :title="title"
-          v-bind="{ ...data, ...$attrs }"
-        >
-          <template v-slot:dimensions="data">
-            <d-team v-bind="data"></d-team>
-          </template>
-        </v-table>
-      </div>
+      <v-table
+        :title="title"
+        v-bind="{ ...data, ...$attrs }"
+      >
+        <template v-slot:dimensions="data">
+          <d-team v-bind="data"></d-team>
+        </template>
+      </v-table>
     </template>
   </c-query>
 </template>

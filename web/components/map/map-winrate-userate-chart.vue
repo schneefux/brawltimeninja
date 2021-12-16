@@ -1,14 +1,11 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <div>
-        <v-scatter-plot
-          :title="title"
-          v-bind="data"
-          class="h-72 flex-auto"
-          full-height
-        ></v-scatter-plot>
-      </div>
+      <v-scatter-plot
+        :title="title"
+        v-bind="data"
+        full-height
+      ></v-scatter-plot>
     </template>
   </c-query>
 </template>

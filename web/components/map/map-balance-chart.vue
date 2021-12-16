@@ -5,7 +5,7 @@
         <v-bar-plot
           :title="title"
           v-bind="data"
-          class="h-72 flex-auto"
+          class="flex-auto"
           full-height
         ></v-bar-plot>
         <div class="flex lg:flex-col flex-wrap">

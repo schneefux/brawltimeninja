@@ -18,15 +18,15 @@
     </template>
 
     <template v-slot="query">
-      <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 justify-items-center">
+      <div class="w-full grid auto-rows-[minmax(14rem,auto)] md:auto-rows-[minmax(20rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,28rem)] grid-flow-row-dense justify-center">
         <b-card
           v-if="id != undefined && id != '0'"
           :title="$t('map.' + id)"
-          md
+          class="row-span-2"
         >
           <div
             slot="content"
-            class="flex flex-wrap justify-center"
+            class="flex flex-wrap justify-center row-span-2"
           >
             <media-img
               v-observe-visibility="{
@@ -47,8 +47,8 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           full-height
-          md
         ></map-best-brawlers-table>
 
         <map-best-teams-table
@@ -59,8 +59,8 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           full-height
-          md
         ></map-best-teams-table>
 
         <map-best-players-table
@@ -70,8 +70,8 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           full-height
-          md
         ></map-best-players-table>
 
         <map-best-starpowers-table
@@ -81,9 +81,9 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           kind="starpowers"
           full-height
-          md
         ></map-best-starpowers-table>
 
         <map-best-starpowers-table
@@ -93,10 +93,21 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           kind="gadgets"
           full-height
-          md
         ></map-best-starpowers-table>
+
+        <client-only>
+          <adsense
+            v-if="!isApp"
+            data-ad-format="auto"
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="4623162753"
+            data-full-width-responsive="yes"
+            class="row-span-2 self-center"
+          />
+        </client-only>
 
         <map-insights
           v-observe-visibility="{
@@ -105,39 +116,35 @@
           }"
           :id="id"
           :slices="query.slices"
+          class="row-span-2"
           full-height
-          md
         ></map-insights>
 
-        <div
-          class="lg:col-span-2 w-full flex flex-col"
+        <map-balance-chart
+          :id="id"
+          :slices="query.slices"
+          class="row-span-2 md:row-span-1 md:col-span-2"
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'charts'),
             once: true,
           }"
-        >
-          <map-balance-chart
-            :id="id"
-            :slices="query.slices"
-            class="w-full"
-          ></map-balance-chart>
+        ></map-balance-chart>
 
-          <map-winrate-userate-chart
-            :id="id"
-            :slices="query.slices"
-            class="w-full"
-          ></map-winrate-userate-chart>
+        <map-winrate-userate-chart
+          :id="id"
+          :slices="query.slices"
+          class="md:col-span-2"
+        ></map-winrate-userate-chart>
 
-          <map-trend-chart
-            :id="id"
-            :slices="query.slices"
-            class="w-full"
-          ></map-trend-chart>
+        <map-trend-chart
+          :id="id"
+          :slices="query.slices"
+          class="md:col-span-2"
+        ></map-trend-chart>
 
-          <div class="flex flex-wrap">
-            <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
-            <metric-info full-height :measurement="adjustedWinRate" md></metric-info>
-          </div>
+        <div class="flex flex-wrap">
+          <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
+          <metric-info full-height :measurement="adjustedWinRate" md></metric-info>
         </div>
       </div>
     </template>
@@ -145,7 +152,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, watch, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useStore, watch, wrapProperty } from '@nuxtjs/composition-api'
 import { CubeQuery } from '~/klicker'
 import { CDashboard, VTestInfo } from '~/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
@@ -174,28 +181,31 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { state } = useStore<any>()
     const { $klicker } = useContext()
 
     const twoWeeksAgo = new Date()
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
     const currentSeason = getSeasonEnd(twoWeeksAgo)
 
-    const query = ref<CubeQuery>({
-      cubeId: 'battle',
-      dimensionsIds: ['brawler'],
-      measurementsIds: [],
-      slices: {
-        season: [currentSeason.toISOString().slice(0, 10)],
-        mode: [props.mode],
-        map: [props.map],
-        trophyRangeGte: ['0'],
-        powerplay: [],
-      },
-      sortId: 'brawler',
-    })
+    function defaultQuery(): CubeQuery {
+      return {
+        cubeId: 'battle',
+        dimensionsIds: ['brawler'],
+        measurementsIds: [],
+        slices: {
+          season: [currentSeason.toISOString().slice(0, 10)],
+          mode: props.mode != undefined ? [props.mode] : [],
+          map: props.map != undefined ? [props.map] : [],
+          trophyRangeGte: ['0'],
+          powerplay: [],
+        },
+        sortId: 'brawler',
+      }
+    }
+    const query = ref<CubeQuery>(defaultQuery())
 
-    watch(() => props.mode, () => query.value.slices.mode = [props.mode])
-    watch(() => props.map, () => query.value.slices.map = [props.map])
+    watch(() => [props.mode, props.map], () => query.value = defaultQuery())
 
     const adjustedWinRate = computed(() => $klicker.config['battle'].measurements.find(m => m.id == 'winRateAdj')!)
 
@@ -209,7 +219,10 @@ export default defineComponent({
       }
     }
 
+    const isApp = computed(() => state.isApp as boolean)
+
     return {
+      isApp,
       query,
       adjustedWinRate,
       trackScroll,
