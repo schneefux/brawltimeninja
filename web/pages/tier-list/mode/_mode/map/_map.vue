@@ -52,13 +52,6 @@
         ></map-views>
       </page-section>
 
-      <page-section>
-        <map-best-brawlers-card
-          :slices="{ mode: [event.mode] }"
-          class="mx-auto"
-        ></map-best-brawlers-card>
-      </page-section>
-
       <client-only>
         <adsense
           v-if="!isApp"

@@ -15,6 +15,15 @@
           class="flex-auto"
           full-height
         >
+          <b-button
+            slot="actions"
+            :to="t.link"
+            primary
+            sm
+          >
+            {{ t.linkText }}
+          </b-button>
+
           <div slot="content">
             <div
               v-for="(q, index) in t.queries"
@@ -59,9 +68,12 @@ import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
+import { camelToKebab } from '~/lib/util'
 
 interface Template {
   title: string
+  link: string
+  linkText: string
   queries: (CubeQuery|CubeComparingQuery)[]
 }
 
@@ -88,7 +100,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const { i18n, localePath } = useContext()
 
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
@@ -99,8 +111,11 @@ export default defineComponent({
       const templates: Template[] = []
 
       if (props.slices.map != undefined && props.slices.map[0] != undefined) {
+        const mode = props.slices.mode[0] as string
         templates.push({
-          title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + props.slices.mode[0]) }) as string,
+          title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string,
+          link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
+          linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
           queries: [<CubeComparingQuery>{
             comparing: true,
             cubeId: 'battle',
@@ -126,6 +141,8 @@ export default defineComponent({
 
       templates.push({
         title: i18n.t('map.insights.outstanding.gadgets') as string,
+        link: localePath(`/tier-list/gadgets`),
+        linkText: i18n.t('action.open.tier-list.gadget') as string,
         queries: [<CubeComparingQuery>{
           comparing: true,
           cubeId: 'battle',
@@ -153,6 +170,8 @@ export default defineComponent({
 
       templates.push({
         title: i18n.t('map.insights.outstanding.starpowers') as string,
+        link: localePath(`/tier-list/starpowers`),
+        linkText: i18n.t('action.open.tier-list.starpower') as string,
         queries: [<CubeComparingQuery>{
           comparing: true,
           cubeId: 'battle',
