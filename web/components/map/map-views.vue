@@ -20,7 +20,7 @@
     <template v-slot="query">
       <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 justify-items-center">
         <b-card
-          v-if="id != undefined"
+          v-if="id != undefined && id != '0'"
           :title="$t('map.' + id)"
           md
         >
@@ -33,7 +33,7 @@
                 callback: (v, e) => trackScroll(v, e, 'image'),
                 once: true,
               }"
-              :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
+              :path="id != '0' ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
               size="512"
               clazz="h-auto"
             ></media-img>

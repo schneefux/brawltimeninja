@@ -1,6 +1,6 @@
 <template>
   <page-dashboard
-    :title="$t('tier-list.map.title', { map: event.id != 0 ? $t('map.' + event.id) : event.map })"
+    :title="$t('tier-list.map.title', { map: event.id != '0' ? $t('map.' + event.id) : event.map })"
   >
     <template slot="content">
       <breadcrumbs
@@ -12,12 +12,12 @@
           name: $t('mode.' + event.mode),
         }, {
           path: mapPath,
-          name: event.id != 0 ? $t('map.' + event.id) : event.map,
+          name: event.id != '0' ? $t('map.' + event.id) : event.map,
         }]"
       ></breadcrumbs>
 
       <p class="mt-2">
-        {{ $t('tier-list.map.description', { map: event.id != 0 ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
+        {{ $t('tier-list.map.description', { map: event.id != '0' ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
       </p>
       <p v-if="event.map.startsWith('Competition ')">
         {{ $t('tier-list.competition-info') }}
@@ -76,6 +76,7 @@ interface Map {
   id: string
   mode: string
   map: string
+  timestamp: string|undefined
 }
 
 export default Vue.extend({
@@ -105,6 +106,7 @@ export default Vue.extend({
         id: '',
         mode: '',
         map: '',
+        timestamp: undefined,
       } as Map,
     }
   },

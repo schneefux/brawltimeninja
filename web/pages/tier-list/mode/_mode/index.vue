@@ -78,7 +78,7 @@
               <template v-slot:preview></template>
               <template v-slot:content>
                 <media-img
-                  v-if="map.id != 0"
+                  v-if="map.id != '0'"
                   :path="`/maps/${map.id}`"
                   size="512"
                   clazz="mx-auto h-64"

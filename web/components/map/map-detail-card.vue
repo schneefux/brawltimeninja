@@ -11,7 +11,7 @@
     >
       <media-img
         v-if="id != undefined"
-        :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
+        :path="id != '0' ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
         size="512"
         clazz="h-64"
       ></media-img>
