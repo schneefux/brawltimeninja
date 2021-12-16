@@ -50,10 +50,13 @@ export default defineComponent({
       const measurement0 = measurements.value[0]
 
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
-        ...e,
+        dimensions: e.dimensions,
+        measurementsRaw: e.measurementsRaw,
         source: i18n.t('comparison.dataset.test') as string,
       }, {
-        ...e.test.reference,
+        id: e.id,
+        dimensions: e.dimensions,
+        measurementsRaw: e.test.reference.measurementsRaw,
         source: i18n.t('comparison.dataset.reference') as string,
       }]))
 

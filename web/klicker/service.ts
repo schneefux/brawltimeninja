@@ -312,7 +312,7 @@ export default class Klicker {
   }
 
   private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement, referenceDimensionIds: string[]): ComparingMetaGridEntry[] {
-    // test data might be in a lower hierarchy level than reference data - calculate an ID to join them
+    // test data might aggregate reference data - calculate an ID to join them
     const calculateId = (m: MetaGridEntry) => referenceDimensionIds.map(id => `${id}=${m.dimensions[id]};`).join('')
     const referenceDataMap: Record<string, MetaGridEntry> = {}
     referenceData.forEach(r => referenceDataMap[calculateId(r)] = r)

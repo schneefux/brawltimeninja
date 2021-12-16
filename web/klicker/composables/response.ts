@@ -27,19 +27,22 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
   const dimensions = computed(() => {
     const query = props.response.query
 
-    return query.dimensionsIds.map(id => {
-      if (!(query.cubeId in $klicker.config)) {
-        throw 'Invalid cubeId ' + query.cubeId
-      }
+    return query.dimensionsIds
+      .map(id => {
+        if (!(query.cubeId in $klicker.config)) {
+          throw 'Invalid cubeId ' + query.cubeId
+        }
 
-      const cube = $klicker.config[query.cubeId]
-      const dimension = cube.dimensions.find(d => id == d.id)
-      if (dimension == undefined) {
-        throw new Error('Invalid dimension id ' + id)
-      }
+        const cube = $klicker.config[query.cubeId]
+        const dimension = cube.dimensions.find(d => id == d.id)
+        if (dimension == undefined) {
+          throw new Error('Invalid dimension id ' + id)
+        }
 
-      return dimension
-    })
+        return dimension
+      })
+      // for nested dimensions, return only the lowest level
+      .filter(dimension => dimension.childIds == undefined || !query.dimensionsIds.some(id => dimension.childIds!.includes(id)))
   })
 
   // helper method for typed case differentiation

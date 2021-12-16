@@ -76,6 +76,10 @@ export interface Dimension {
   // TODO move all `name`s to en.json
   name?: string
   /**
+   * IDs of the dimensions that this dimension aggregates.
+   */
+  childIds?: string[]
+  /**
    * Column which contains a human-readable identifier.
    * May be the dimension or one of additionalMeasures.
    */

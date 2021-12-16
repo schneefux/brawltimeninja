@@ -79,7 +79,7 @@ export default defineComponent({
         emit('input', <CubeQuery>{
           ...props.value,
           slices: {
-            ...slices.value,
+            ...props.value.slices,
             ...s,
           },
         })
@@ -90,13 +90,13 @@ export default defineComponent({
           emit('input', <CubeComparingQuery>{
             ...query,
             slices: {
-              ...slices.value,
+              ...query.slices,
               ...s,
             },
             reference: {
               ...query.reference,
               slices: {
-                ...slices.value,
+                ...query.reference.slices,
                 ...s,
               },
             },
@@ -106,7 +106,7 @@ export default defineComponent({
             emit('input', <CubeComparingQuery>{
               ...query,
               slices: {
-                ...slices.value,
+                ...query.slices,
                 ...s,
               },
             })
@@ -116,7 +116,7 @@ export default defineComponent({
               reference: {
                 ...query.reference,
                 slices: {
-                  ...slices.value,
+                  ...query.reference.slices,
                   ...s,
                 },
               },

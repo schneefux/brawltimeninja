@@ -76,11 +76,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, measurements, switchResponse } = useCubeResponse(props)
+    const { $klicker, measurements, dimensions, switchResponse } = useCubeResponse(props)
 
     const show = computed(() =>
-      props.response.query.dimensionsIds.length > 0 &&
-      props.response.query.measurementsIds.length == 1 &&
+      dimensions.value.length == 1 &&
+      measurements.value.length == 1 &&
       props.response.data.length > 0 &&
       props.response.data.length < 10)
 

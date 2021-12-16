@@ -37,6 +37,7 @@
           v-model="query"
           elevation="2"
           class="mt-2"
+          sync-slices
         >
           <template v-slot:slices="data">
             <s-season v-bind="data"></s-season>
@@ -123,7 +124,7 @@ export default Vue.extend({
     return {
       query: <CubeComparingQuery>{
         cubeId: 'battle',
-        dimensionsIds: ['brawler', 'starpowers'],
+        dimensionsIds: ['brawler', 'starpower'],
         measurementsIds: ['winRate'],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],

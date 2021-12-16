@@ -90,6 +90,7 @@ const metaDimensions = asDimensions({
   season: {
     id: 'season',
     name: 'Bi-Week',
+    childIds: ['day', 'timestamp'],
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
@@ -105,6 +106,7 @@ const metaDimensions = asDimensions({
   day: {
     id: 'day',
     name: 'Day',
+    childIds: ['timestamp'],
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
@@ -152,6 +154,7 @@ const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
+    childIds: ['gadget', 'starpower'],
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
@@ -164,6 +167,7 @@ const brawlerDimensions = asDimensions({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
+    childIds: ['brawler', 'gadget', 'starpower'],
     naturalIdAttribute: 'brawlerId',
     additionalMeasures: [],
     hidden: true,
@@ -188,6 +192,7 @@ const brawlerDimensions = asDimensions({
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
+    childIds: ['ally'],
     naturalIdAttribute: 'allyId',
     additionalMeasures: [],
     hidden: true,
@@ -252,6 +257,7 @@ const battleDimensions = asDimensions({
   mode: {
     id: 'mode',
     name: 'Mode',
+    childIds: ['map'],
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
     additionalMeasures: [],
@@ -287,6 +293,7 @@ const battleDimensions = asDimensions({
   teamSize: {
     id: 'teamSize',
     name: 'Team size',
+    childIds: ['team'],
     naturalIdAttribute: 'team',
     additionalMeasures: [],
     hidden: true,
