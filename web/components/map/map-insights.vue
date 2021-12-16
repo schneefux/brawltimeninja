@@ -93,10 +93,12 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
 
+    const limit = 4
+
     const templates = computed<Template[]>(() => {
       const templates: Template[] = []
 
-      if (props.slices.map != undefined) {
+      if (props.slices.map != undefined && props.slices.map[0] != undefined) {
         templates.push({
           title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + props.slices.mode[0]) }) as string,
           queries: [<CubeComparingQuery>{
@@ -105,9 +107,7 @@ export default defineComponent({
             sortId: 'pvalue',
             dimensionsIds: ['brawler'],
             measurementsIds: ['winRate'],
-            slices: {
-              ...props.slices,
-            },
+            slices: props.slices,
             reference: {
               cubeId: 'battle',
               dimensionsIds: ['brawler'],
@@ -119,7 +119,7 @@ export default defineComponent({
               sortId: 'pvalue',
             },
             significant: true,
-            limit: 5,
+            limit,
           }],
         })
       }
@@ -147,7 +147,7 @@ export default defineComponent({
             sortId: 'pvalue',
           },
           significant: true,
-          limit: 5,
+          limit,
         }],
       })
 
@@ -174,7 +174,7 @@ export default defineComponent({
             sortId: 'pvalue',
           },
           significant: true,
-          limit: 5,
+          limit,
         }],
       })
 

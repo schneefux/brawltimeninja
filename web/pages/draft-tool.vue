@@ -68,7 +68,6 @@ export default Vue.extend({
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           trophyRangeGte: ['0'],
-          trophyRangeLt: ['15'],
           mode: [],
         },
       },

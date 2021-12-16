@@ -1366,7 +1366,6 @@ const brawlerBattleSlices = [
 const brawlerBattleDefaultSliceValues: SliceValue = {
   season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophyRangeGte: ['0'],
-  trophyRangeLt: ['15'],
   brawler: [],
 }
 

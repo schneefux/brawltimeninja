@@ -415,7 +415,7 @@
     "comparison.filter.test": "Filter Test",
     "comparison.filter.reference": "Filter Reference",
     "map.insights.description": "A statistical test is used to find outliers in the data.",
-    "map.insights.title": "Insights",
+    "map.insights.title.long": "Insights",
     "map.insights.title.for.mode": "Insights for {mode}",
     "map.insights.title.for.map": "Insights for {mode} - {map}",
     "map.insights.outstanding.gadgets": "Outstanding Gadgets",

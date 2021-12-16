@@ -183,7 +183,6 @@ export default defineComponent({
         mode: [props.mode],
         map: [props.map],
         trophyRangeGte: ['0'],
-        trophyRangeLt: ['15'],
         powerplay: [],
       },
       sortId: 'brawler',
