@@ -53,14 +53,14 @@ export default defineComponent({
         dimensions: e.dimensions,
         measurementsRaw: e.measurementsRaw,
         measurementsCI: e.test.reference.measurementsCI,
-        source: i18n.t('comparison.dataset.test') as string,
+        source: response.query.name ?? i18n.t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
       }, {
         id: e.id,
         dimensions: e.dimensions,
         measurementsRaw: e.test.reference.measurementsRaw,
         measurementsCI: e.test.reference.measurementsCI,
-        source: i18n.t('comparison.dataset.reference') as string,
+        source: response.query.reference.name ?? i18n.t('comparison.dataset.reference') as string,
         stars: '',
       }]))
 
@@ -92,12 +92,10 @@ export default defineComponent({
             stack: null,
           },
           tooltip: <any>[{ // TODO spread breaks types
-            field: 'measurementsRaw.' + measurement0.id,
-            type: 'quantitative',
+            field: 'measurements.' + measurement0.id,
             title: $klicker.getName(measurement0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            type: 'quantitative',
             title: $klicker.getName(dimension0),
           },
           ...(withCI ? [{

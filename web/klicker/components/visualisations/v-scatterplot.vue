@@ -37,11 +37,10 @@ export default defineComponent({
     const { $klicker, dimensions, measurements } = useCubeResponse(props)
 
     const show = computed(() =>
-      props.response.query.dimensionsIds.length == 1
-      && props.response.query.measurementsIds.length == 2
+      dimensions.value.length == 1
+      && measurements.value.length == 2
       && props.response.data.length > 1
-      && props.response.data.length < 1000
-    )
+      && props.response.data.length < 1000)
 
     const spec = computed<VisualizationSpec>(() => {
       const measurement0 = measurements.value[0]
@@ -71,6 +70,16 @@ export default defineComponent({
             },
             scale: measurement1.scale,
           },
+          tooltip: [{
+            field: 'measurements.' + measurement0.id,
+            title: $klicker.getName(measurement0),
+          }, {
+            field: 'measurements.' + measurement1.id,
+            title: $klicker.getName(measurement1),
+          }, {
+            field: 'dimensions.' + dimension0.id,
+            title: $klicker.getName(dimension0),
+          }],
         },
         layer: [{
           mark: 'point',

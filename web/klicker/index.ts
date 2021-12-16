@@ -181,6 +181,7 @@ export interface CubeQuery {
   sortId: string
   comparing?: boolean
   confidenceInterval?: boolean
+  name?: string
 }
 
 export interface CubeComparingQuery extends CubeQuery {

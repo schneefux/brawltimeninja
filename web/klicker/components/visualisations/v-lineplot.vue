@@ -16,7 +16,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
-import { CubeComparingResponse, CubeResponse, Measurement } from '~/klicker'
+import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
@@ -51,15 +51,19 @@ export default defineComponent({
 
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
+        measurements: e.measurementsRaw,
         measurementsRaw: e.measurementsRaw,
         measurementsCI: e.measurementsCI,
-        source: i18n.t('comparison.dataset.test') as string,
+        source: response.query.name ?? i18n.t('comparison.dataset.test') as string,
+        sourceRaw: 'test',
       }, {
         id: e.id,
         dimensions: e.dimensions,
+        measurements: e.test.reference.measurementsRaw,
         measurementsRaw: e.test.reference.measurementsRaw,
         measurementsCI: e.test.reference.measurementsCI,
-        source: i18n.t('comparison.dataset.reference') as string,
+        source: response.query.reference.name ?? i18n.t('comparison.dataset.reference') as string,
+        sourceRaw: 'reference',
       }]))
 
       const withCI = values[0].measurementsCI[measurement0.id] != undefined
@@ -84,13 +88,22 @@ export default defineComponent({
             },
             scale: measurement0.scale,
           },
-          tooltip: <any>[{ // TODO spread breaks types
-            field: 'measurementsRaw.' + measurement0.id,
-            type: 'quantitative',
+          ...(comparing.value ? {
+            color: {
+              field: 'source',
+              legend: {
+                title: null,
+                offset: 8,
+                orient: 'top',
+              },
+            },
+          } : {}),
+          // TODO spread breaks types
+          tooltip: <any>[{
+            field: 'measurements.' + measurement0.id,
             title: $klicker.getName(measurement0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            type: 'quantitative',
             title: $klicker.getName(dimension0),
           },
           ...(withCI ? [{
@@ -101,7 +114,7 @@ export default defineComponent({
             field: 'lower',
             type: 'quantitative',
             title: i18n.t('confidence-interval.upper', { percent: 95 }),
-          }] : []),
+          } ] : []),
           ],
         },
         ...(withCI ? {
@@ -116,18 +129,6 @@ export default defineComponent({
         } : {}),
         layer: [{
           mark: 'line',
-          encoding: {
-            ...(comparing.value ? {
-              color: {
-                field: 'source',
-                legend: {
-                  title: null,
-                  offset: 8,
-                  orient: 'top',
-                },
-              },
-            } : {}),
-          },
         },
         ...(withCI ? [{
           mark: 'errorband' as 'errorband',
@@ -139,8 +140,20 @@ export default defineComponent({
             y2: {
               field: 'upper',
             },
+            ...(comparing.value ? {
+              color: {
+                field: 'source',
+                legend: null,
+              },
+            } : {}),
           },
         }] : [])],
+        resolve: {
+          legend: {
+            // https://github.com/vega/vega-lite/issues/6259#issuecomment-609069125
+            color: 'independent',
+          },
+        },
       }
     })
 
