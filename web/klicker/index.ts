@@ -62,6 +62,7 @@ export interface Measurement<T=string|number> {
    * Configuration for statistical tests
    */
   statistics?: {
+    name: string
     test(referenceData: MetaGridEntry, testData: MetaGridEntry): number
     requiresMeasurements: string[]
   }

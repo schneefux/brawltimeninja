@@ -420,5 +420,10 @@
     "map.insights.title.for.map": "Insights for {mode} - {map}",
     "map.insights.outstanding.gadgets": "Outstanding Gadgets",
     "map.insights.outstanding.starpowers": "Outstanding Star Powers",
-    "map.insights.compare-to.mode": "Comparing to {mode}"
+    "map.insights.compare-to.mode": "Comparing to {mode}",
+    "comparison.test.info.title": "Info about statistical tests",
+    "comparison.test.info.description": "A {testName} is performed on the reference {metricName} and the test {metricName}. If the result is significant, the difference cannot be explained by chance. Otherwise, there is not enough data and the effect is too small.",
+    "comparison.test.very-significant": "Very Significant",
+    "comparison.test.significant": "Significant",
+    "comparison.test.not-significant": "Not Significant"
 }

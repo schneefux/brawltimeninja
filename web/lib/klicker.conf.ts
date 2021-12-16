@@ -657,6 +657,7 @@ const battleNumberMeasurements = asNumberMeasurements({
       type: 'avg',
     },
     statistics: {
+      name: 'G-Test',
       test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
       requiresMeasurements: ['picks'],
     },
@@ -764,6 +765,7 @@ const battleNumberMeasurements = asNumberMeasurements({
       type: 'avg',
     },
     statistics: {
+      name: 'G-Test',
       test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
       requiresMeasurements: ['picks'],
     },
@@ -969,6 +971,7 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      name: 'G-Test',
       test: binomialTest(m => (m.measurementsRaw['winRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
       requiresMeasurements: ['picks'],
     },
@@ -1052,6 +1055,7 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      name: 'G-Test',
       test: binomialTest(m => (m.measurementsRaw['starRate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
       requiresMeasurements: ['picks'],
     },
@@ -1088,6 +1092,7 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       type: 'number',
     },
     statistics: {
+      name: 'G-Test',
       test: binomialTest(m => (m.measurementsRaw['rank1Rate'] as number) * (m.measurementsRaw['picks'] as number), m => m.measurementsRaw['picks'] as number),
       requiresMeasurements: ['picks'],
     },

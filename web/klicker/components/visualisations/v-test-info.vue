@@ -2,31 +2,31 @@
   <b-card
     v-if="show"
     v-bind="$attrs"
-    title="Info about statistical tests"
+    :title="$t('comparison.test.info.title')"
   >
     <div slot="content">
-      <p>A statistical test is performed on the reference {{ metricName }} and the compared {{ metricName }}. If the result is significant, the difference cannot be explained by chance. Otherwise, there is not enough data and the effect is too small.</p>
+      <p>{{ $t('comparison.test.info.description', { testName, metricName }) }}</p>
       <table class="mx-auto mt-2">
         <tbody>
           <tr>
             <td class="pr-1">⋆⋆⋆</td>
-            <td>Very significant</td>
+            <td>{{ $t('comparison.test.very-significant') }}</td>
           </tr>
           <tr>
             <td>⋆⋆</td>
-            <td>Very significant</td>
+            <td>{{ $t('comparison.test.very-significant') }}</td>
           </tr>
           <tr>
             <td>⋆</td>
-            <td>Significant</td>
+            <td>{{ $t('comparison.test.significant') }}</td>
           </tr>
           <tr>
             <td>+</td>
-            <td>Not significant</td>
+            <td>{{ $t('comparison.test.not-significant') }}</td>
           </tr>
           <tr>
             <td></td>
-            <td>Not significant</td>
+            <td>{{ $t('comparison.test.not-significant') }}</td>
           </tr>
         </tbody>
       </table>
@@ -56,10 +56,12 @@ export default defineComponent({
 
     const show = computed(() => comparing.value && measurements.value[0].statistics != undefined)
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
+    const testName = computed(() => measurements.value[0].statistics?.name)
 
     return {
       show,
       metricName,
+      testName,
     }
   },
 })
