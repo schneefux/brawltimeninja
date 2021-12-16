@@ -11,12 +11,8 @@
 
     -->
 
-    <!--
-      TODO support overlapping charts
-      TODO implement a v-roll that shows the highest p values
-    -->
     <div>
-    <map-trend-chart :slices="{}"></map-trend-chart>
+    <map-trend-chart :slices="{ mode: ['gemGrab'], map: ['Minecart Madness'] }"></map-trend-chart>
     <!--
     <c-query
       :query="{

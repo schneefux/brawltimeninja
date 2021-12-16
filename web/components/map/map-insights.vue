@@ -118,13 +118,13 @@ export default defineComponent({
           linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
           queries: [<CubeComparingQuery>{
             comparing: true,
-            cubeId: 'battle',
+            cubeId: 'map',
             sortId: 'pvalue',
             dimensionsIds: ['brawler'],
             measurementsIds: ['winRate'],
             slices: props.slices,
             reference: {
-              cubeId: 'battle',
+              cubeId: 'map',
               dimensionsIds: ['brawler'],
               measurementsIds: ['winRate'],
               slices: {
