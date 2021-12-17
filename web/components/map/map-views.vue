@@ -19,26 +19,17 @@
 
     <template v-slot="query">
       <div class="w-full grid auto-rows-[minmax(14rem,auto)] md:auto-rows-[minmax(20rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,28rem)] grid-flow-row-dense justify-center">
-        <b-card
-          v-if="id != undefined && id != '0'"
-          :title="$t('map.' + id)"
+        <map-image
+          v-if="id != undefined && map != 'Competition Entry'"
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'image'),
+            once: true,
+          }"
+          :id="id"
+          :map="map"
           class="row-span-2"
-        >
-          <div
-            slot="content"
-            class="flex flex-wrap justify-center row-span-2"
-          >
-            <media-img
-              v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'image'),
-                once: true,
-              }"
-              :path="id != '0' ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
-              size="512"
-              clazz="h-auto"
-            ></media-img>
-          </div>
-        </b-card>
+          full-height
+        ></map-image>
 
         <map-best-brawlers-table
           v-observe-visibility="{

@@ -68,7 +68,7 @@ export interface Measurement<T=string|number> {
       requiresMeasurements: string[]
     }
     ci?: {
-      ci(data: MetaGridEntry['measurementsRaw']): { lower: number, upper: number }
+      ci(data: MetaGridEntry['measurementsRaw']): ConfidenceInterval
       requiresMeasurements: string[]
     }
   }
