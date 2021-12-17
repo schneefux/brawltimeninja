@@ -8,14 +8,14 @@
           {{ $t('draft-tool.none-selected') }}
         </p>
         <p v-if="team.length > 0">
-          {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ team[team.length - 1].avgWinRateFormatted }}</span>
+          {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
         </p>
 
         <div v-if="team.length > 0" class="flex justify-center mx-2 my-3 space-x-2">
           <button
-            v-for="(brawler, index) in team"
+            v-for="brawler in team"
             :key="brawler.brawlerId"
-            @click="removeFromTeam(index)"
+            @click="removeFromTeam(brawler)"
           >
             <media-img
               :path="`/brawlers/${brawler.brawlerId}/avatar`"
@@ -128,7 +128,7 @@ export default defineComponent({
       synergyData.value = await getSynergyData()
     })
 
-    // TODO maybe replace by clicker bayes magic
+    // TODO replace by clicker bayes magic
     const allyData = computed(() => {
       let avgWinRateByAlly: Record<string, number[]> = {}
 
@@ -174,19 +174,22 @@ export default defineComponent({
     })
 
     const addToTeam = (brawler: AllyData) => {
-      const foundIndex = team.value.findIndex(b => b.brawlerId == brawler.brawlerId)
-      if (foundIndex != -1) {
-        return team.value.splice(foundIndex, 1)
+      if (team.value.some(b => b.brawlerId == brawler.brawlerId)) {
+        team.value = team.value.filter(b => b.brawlerId != brawler.brawlerId)
+        return
       }
 
       if (!brawler.selectable) {
         return
       }
 
-      team.value.push(brawler)
+      team.value = team.value.concat(brawler).sort((b1, b2) => b1.brawlerId < b2.brawlerId ? -1 : 1) // TODO remove this once the formula is correct
     }
 
-    const removeFromTeam = (index: number) => team.value.splice(index, 1)
+    const removeFromTeam = (brawler: AllyData) => team.value = team.value.filter(b => b.brawlerId != brawler.brawlerId)
+
+    const teamWinRate = computed(() =>
+      Math.round(100 * team.value.flatMap(b => b.winRates).reduce((avg, rate, index, arr) => avg + rate / arr.length, 0)) + '%')
 
     return {
       loading,
@@ -194,6 +197,7 @@ export default defineComponent({
       addToTeam,
       removeFromTeam,
       allyData,
+      teamWinRate,
     }
   },
 })

@@ -50,7 +50,7 @@ export default Vue.extend({
     }
   },
   meta: {
-    title: 'Draft Helper',
+    title: 'Draft Tool',
     screen: 'brawlers',
   },
   middleware: ['cached'],
