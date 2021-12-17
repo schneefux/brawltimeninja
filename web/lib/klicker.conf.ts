@@ -446,21 +446,6 @@ const playerNumberMeasurements = asNumberMeasurements({
       type: 'max',
     },
   },
-  exp: {
-    id: 'exp',
-    name: 'Experience',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    scale: {
-      zero: false,
-    },
-    config: {
-      sql: 'player_exp',
-      type: 'max',
-    },
-  },
   soloVictories: {
     id: 'soloVictories',
     name: 'Solo Victories',
