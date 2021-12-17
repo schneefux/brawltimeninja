@@ -1,7 +1,7 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <div class="flex flex-wrap">
+      <div class="flex flex-col md:flex-row">
         <v-bar-plot
           :title="title"
           v-bind="data"

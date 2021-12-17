@@ -18,7 +18,7 @@
     </template>
 
     <template v-slot="query">
-      <div class="w-full grid auto-rows-[minmax(14rem,auto)] md:auto-rows-[minmax(20rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,28rem)] grid-flow-row-dense justify-center">
+      <div class="w-full grid auto-rows-[minmax(16rem,auto)] md:auto-rows-[minmax(20rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,28rem)] grid-flow-row-dense justify-center">
         <map-image
           v-if="id != undefined && map != 'Competition Entry'"
           v-observe-visibility="{
