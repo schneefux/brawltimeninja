@@ -149,6 +149,7 @@ export default {
     },
     config: {
       release: 'brawltimeninja@' + process.env.GIT_REV,
+      ignoreErrors: [/enable_page_level_ads/],
     },
     // requires @sentry/tracing
     // enable for performance metrics
