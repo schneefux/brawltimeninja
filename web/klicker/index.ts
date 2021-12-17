@@ -130,11 +130,17 @@ export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
 export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 
+export interface ConfidenceInterval {
+  lower: number
+  mean: number
+  upper: number
+}
+
 export interface MetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
   measurementsRaw: Record<string, number|string>
-  measurementsCI: Record<string, { lower: number, upper: number }>
+  measurementsCI: Record<string, ConfidenceInterval>
   dimensions: Record<string, string>
   measurements: Record<string, string>
 }

@@ -115,6 +115,9 @@ export default defineComponent({
             calculate: 'datum.measurementsCI.' + measurement0.id + '.lower',
             as: 'lower',
           }, {
+            calculate: 'datum.measurementsCI.' + measurement0.id + '.mean',
+            as: 'measurements.' + measurement0.id,
+          }, {
             calculate: 'datum.measurementsCI.' + measurement0.id + '.upper',
             as: 'upper',
           }],
