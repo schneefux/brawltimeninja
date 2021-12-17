@@ -5,7 +5,6 @@
     xxl
   >
     <div slot="actions">
-      <!--
       <b-button
         :to="localePath(`/draft-tool`)"
         primary
@@ -13,7 +12,7 @@
       >
         {{ $t('action.open.draft-tool') }}
       </b-button>
-      -->
+
       <b-button
         :to="localePath(`/tier-list/brawler`)"
         primary

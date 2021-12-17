@@ -13,13 +13,13 @@
 
         <div v-if="team.length > 0" class="flex justify-center mx-2 my-3 space-x-2">
           <button
-            v-for="brawler in team"
-            :key="brawler.brawlerId"
-            @click="removeFromTeam(brawler)"
+            v-for="brawlerId in team"
+            :key="brawlerId"
+            @click="removeFromTeam(brawlerId)"
           >
             <media-img
-              :path="`/brawlers/${brawler.brawlerId}/avatar`"
-              :alt="brawler.brawlerName"
+              :path="`/brawlers/${brawlerId}/avatar`"
+              :alt="allyData[brawlerId].brawlerName"
               size="160"
               clazz="rounded-md w-12 md:w-16"
             ></media-img>
@@ -35,17 +35,17 @@
       <div slot="content" class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
         <button
           v-for="brawler in allyData"
-          :key="brawler.brawlerId"
+          :key="brawler.id"
           :class="['relative border-2 md:border-4 rounded-md', {
-            'border-red-400': brawler.normAvgWinRate < 0.4,
-            'border-gray-400': brawler.normAvgWinRate >= 0.4 && brawler.normAvgWinRate < 0.6,
-            'border-green-400': brawler.normAvgWinRate >= 0.6,
+            'border-red-400': brawler.normContributingWinRate < 0.4,
+            'border-gray-400': brawler.normContributingWinRate >= 0.4 && brawler.normContributingWinRate < 0.6,
+            'border-green-400': brawler.normContributingWinRate >= 0.6,
             'opacity-50': !brawler.selectable,
           }]"
-          @click="addToTeam(brawler)"
+          @click="addToTeam(brawler.id)"
         >
           <media-img
-            :path="`/brawlers/${brawler.brawlerId}/avatar`"
+            :path="`/brawlers/${brawler.id}/avatar`"
             :alt="brawler.brawlerName"
             size="160"
             clazz="rounded-sm"
@@ -54,7 +54,7 @@
             v-if="brawler.selectable"
             class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-75 leading-tight text-sm md:text-base rounded-br-sm"
           >
-            {{ brawler.avgWinRateFormatted }}
+            {{ brawler.contributingWinRateFormatted }}
           </span>
         </button>
       </div>
@@ -70,11 +70,11 @@ import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '~/klicker/components'
 
 interface AllyData {
-  brawlerId: string
+  id: string
   brawlerName: string
-  winRates: number[]
-  avgWinRateFormatted: string
-  normAvgWinRate: number
+  contributingWinRate: number
+  contributingWinRateFormatted: string
+  normContributingWinRate: number
   selectable: boolean
 }
 
@@ -91,7 +91,7 @@ export default defineComponent({
   setup(props) {
     const { $klicker } = useContext()
 
-    const team = ref<AllyData[]>([])
+    const team = ref<string[]>([])
     const loading = ref(0)
 
     async function getBrawlerData() {
@@ -128,75 +128,97 @@ export default defineComponent({
       synergyData.value = await getSynergyData()
     })
 
-    // TODO replace by clicker bayes magic
     const allyData = computed(() => {
-      let avgWinRateByAlly: Record<string, number[]> = {}
+      let contributingWinRatesByBrawler: Record<string, number[]> = {}
 
-      if (team.value.length == 0) {
-        brawlerData.value?.data?.forEach(row => {
-          const name = row.dimensionsRaw.brawler.brawler
-          const winRate = row.measurementsRaw.winRateAdj as number
-          avgWinRateByAlly[name] = [winRate]
-        })
-      } else {
+      const winRatesByBrawler: Record<string, number> = {}
+      brawlerData.value?.data?.forEach(row => {
+        const name = row.dimensionsRaw.brawler.brawler
+        const winRate = row.measurementsRaw.winRateAdj as number
+        winRatesByBrawler[name] = winRate
+        if (team.value.length == 0) {
+          contributingWinRatesByBrawler[name] = [winRate]
+        }
+      })
+
+      if (team.value.length != 0) {
         synergyData.value?.data?.forEach(row => {
           const name = row.dimensionsRaw.brawler.brawler
-          if (!(name in avgWinRateByAlly)) {
-            avgWinRateByAlly[name] = []
+          if (!(name in contributingWinRatesByBrawler)) {
+            contributingWinRatesByBrawler[name] = []
+          }
+
+          const allyName = row.dimensionsRaw.ally.ally
+          if (name == allyName) {
+            return
           }
 
           const winRate = row.measurementsRaw.winRateAdj as number
-          const allyId = brawlerId({ name: row.dimensionsRaw.ally.ally })
-          if (team.value.find(brawler => brawler.brawlerId == allyId)) {
-            avgWinRateByAlly[name].push(winRate)
+          const allyId = brawlerId({ name: allyName })
+          if (team.value.includes(allyId) && name != allyName) {
+            contributingWinRatesByBrawler[name].push(winRate)
           }
         })
       }
 
       const newAllyData: AllyData[] = []
-      for (const [brawler, winRates] of Object.entries(avgWinRateByAlly)) {
-        const sufficientData = team.value.length == 0 || winRates.length == team.value.length
+      for (const [brawler, contributingWinRates] of Object.entries(contributingWinRatesByBrawler)) {
+        let contributingWinRate: number
+        let sufficientData: boolean
+        if (contributingWinRates.length > 0) {
+          contributingWinRate = contributingWinRates.reduce((sum, value) => sum + value, 0) / contributingWinRates.length
+        } else {
+          contributingWinRate = winRatesByBrawler[brawler]
+        }
+
+        sufficientData = team.value.length == 0 || contributingWinRates.length == team.value.length
+
         const id = brawlerId({ name: brawler })
-        const avgWinRate = winRates.reduce((sum, value) => sum + value, 0) / winRates.length
         newAllyData.push({
-          winRates,
-          brawlerId: id,
+          id,
+          contributingWinRate,
           brawlerName: capitalizeWords(brawler),
-          avgWinRateFormatted: sufficientData ? `${Math.round(100*avgWinRate)}%` : '?',
-          normAvgWinRate: avgWinRate,
-          selectable: sufficientData && !team.value.some(b => b.brawlerId == id) && team.value.length < 3,
+          contributingWinRateFormatted: sufficientData ? `${Math.round(100*contributingWinRate)}%` : '?',
+          normContributingWinRate: contributingWinRate,
+          selectable: sufficientData && team.value.length < 3,
         })
       }
-      const avgWinRateMin = newAllyData.reduce((min, brawler) => Math.min(min, brawler.normAvgWinRate), Infinity)
-      const avgWinRateMax = newAllyData.reduce((max, brawler) => Math.max(max, brawler.normAvgWinRate), 0)
-      newAllyData.forEach(brawler => brawler.normAvgWinRate = (brawler.normAvgWinRate - avgWinRateMin) / (avgWinRateMax - avgWinRateMin))
-      return newAllyData.sort((b1, b2) => b1.brawlerId < b2.brawlerId ? -1 : 1)
+      const min = newAllyData.reduce((min, brawler) => Math.min(min, brawler.contributingWinRate), Infinity)
+      const max = newAllyData.reduce((max, brawler) => Math.max(max, brawler.contributingWinRate), 0)
+      newAllyData.forEach(brawler => brawler.normContributingWinRate = (brawler.contributingWinRate - min) / (max - min))
+      return Object.fromEntries(newAllyData
+        .sort((b1, b2) => b1.id < b2.id ? -1 : 1)
+        .map(b => [b.id, b])
+      )
     })
 
-    const addToTeam = (brawler: AllyData) => {
-      if (team.value.some(b => b.brawlerId == brawler.brawlerId)) {
-        team.value = team.value.filter(b => b.brawlerId != brawler.brawlerId)
+    const addToTeam = (id: string) => {
+      if (team.value.includes(id)) {
+        removeFromTeam(id)
         return
       }
 
-      if (!brawler.selectable) {
+      if (!allyData.value[id].selectable) {
         return
       }
 
-      team.value = team.value.concat(brawler).sort((b1, b2) => b1.brawlerId < b2.brawlerId ? -1 : 1) // TODO remove this once the formula is correct
+      team.value.push(id)
     }
 
-    const removeFromTeam = (brawler: AllyData) => team.value = team.value.filter(b => b.brawlerId != brawler.brawlerId)
+    const removeFromTeam = (id: string) => team.value = team.value.filter(i => i != id)
 
-    const teamWinRate = computed(() =>
-      Math.round(100 * team.value.flatMap(b => b.winRates).reduce((avg, rate, index, arr) => avg + rate / arr.length, 0)) + '%')
+    const teamWinRate = computed(() => {
+      // average of AB,BA, AC,CA, BC,CB
+      const avgWinRate = team.value.reduce((avg, id) => avg + allyData.value[id].contributingWinRate / team.value.length, 0)
+      return Math.round(100 * avgWinRate) + '%'
+    })
 
     return {
-      loading,
       team,
+      loading,
+      allyData,
       addToTeam,
       removeFromTeam,
-      allyData,
       teamWinRate,
     }
   },
