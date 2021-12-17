@@ -164,7 +164,8 @@ export default class BrawlstarsService {
       player.club.tag = player.club.tag.replace(/^#/, '');
     }
 
-    const battles = battleLog.items.map((battle) => {
+    // TODO mode=duels is a new format since 2021-12-17, hotfixed 
+    const battles = battleLog.items.filter(b => b.battle.mode != 'duels').map((battle) => {
       const transformPlayer = (player: BattlePlayer) => ({
         tag: player.tag.replace('#', ''),
         name: player.name,
