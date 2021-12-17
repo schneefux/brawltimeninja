@@ -85,15 +85,22 @@ function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, get
 }
 
 function binomialCI(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
-  // normal 95% approximation interval
+  // 95% Wilson score interval
   return (d: MetaGridEntry['measurementsRaw']) => {
     const z = 1.96
+
     const n = getN(d)
-    const p = getK(d) / n
-    const diff = z*Math.sqrt(p * (1 - p) / n)
+    const ns = getK(d)
+    const nf = n - ns
+    const z2 = Math.pow(z, 2)
+
+    const base = (ns + 0.5*z2) / (n + z2)
+    const diff = z/(n + z2) * Math.sqrt( (ns*nf)/n + z2/4 )
+
     return {
-      lower: Math.max(0.0, p - diff),
-      upper: Math.min(1.0, p + diff),
+      lower: Math.max(0.0, base - diff),
+      mean: (ns + 2) / (n + 4),
+      upper: Math.min(1.0, base + diff),
     }
   }
 }
