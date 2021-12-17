@@ -111,27 +111,32 @@
           full-height
         ></map-insights>
 
-        <map-balance-chart
-          :id="id"
-          :slices="query.slices"
-          class="row-span-2 md:row-span-1 md:col-span-2"
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'charts'),
-            once: true,
-          }"
-        ></map-balance-chart>
+        <lazy
+          distance="200px"
+          translucent
+        >
+          <map-balance-chart
+            :id="id"
+            :slices="query.slices"
+            class="row-span-2 md:row-span-1 md:col-span-2"
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'charts'),
+              once: true,
+            }"
+          ></map-balance-chart>
 
-        <map-winrate-userate-chart
-          :id="id"
-          :slices="query.slices"
-          class="md:col-span-2"
-        ></map-winrate-userate-chart>
+          <map-winrate-userate-chart
+            :id="id"
+            :slices="query.slices"
+            class="md:col-span-2"
+          ></map-winrate-userate-chart>
 
-        <map-trend-chart
-          :id="id"
-          :slices="query.slices"
-          class="md:col-span-2"
-        ></map-trend-chart>
+          <map-trend-chart
+            :id="id"
+            :slices="query.slices"
+            class="md:col-span-2"
+          ></map-trend-chart>
+        </lazy>
 
         <div class="flex flex-wrap">
           <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
