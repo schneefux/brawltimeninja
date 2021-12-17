@@ -80,7 +80,7 @@ import VSampleSize from '@/components/klicker/v-sample-size.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
-import { defineComponent, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -113,7 +113,18 @@ export default defineComponent({
   },
   setup() {
     const { $klicker } = useContext()
-    const query = useSyncQueryAndRoute($klicker.config, 'map')
+    const urlQuery = useSyncQueryAndRoute($klicker.config, 'map')
+    const query = computed<CubeQuery|CubeComparingQuery>({
+      get() {
+        return {
+          ...urlQuery.value,
+          confidenceInterval: true,
+        }
+      },
+      set(value) {
+        urlQuery.value = value
+      },
+    })
 
     return {
       query,
