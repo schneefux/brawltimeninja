@@ -1717,6 +1717,8 @@ const cubes: Record<string, Cube> = {
       commonSlices.teamSizeGt,
       commonSlices.teamContains,
       commonSlices.map,
+      commonSlices.mapLike,
+      commonSlices.mapNotLike,
       commonSlices.powerplay,
       brawlerSlices.starpowerIdEq,
       brawlerSlices.starpowerIdNeq,
