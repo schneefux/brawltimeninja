@@ -157,6 +157,10 @@ export default class ClickerService {
 
     // insert records for meta stats
     for (const battle of battles) {
+      if (battle.battle.mode == 'duels') {
+        // TODO mode=duels is a new format since 2021-12-17, hotfixed 
+        continue
+      }
       stats.increment('player.insert.prepare')
 
       // note: battle is patched by api service
