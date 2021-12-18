@@ -18,7 +18,8 @@ import { TeamCube } from './cubes/TeamCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
-const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '2020-07-01'))
+const twoMonths = 2*4*7*24*60*60*1000
+const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
 const seasonSliceStart = getSeasonEnd(balanceChangesDate);
 
 console.log(`querying data >= ${seasonSliceStart}`)
