@@ -1,14 +1,14 @@
 <template>
   <div class="md:flex md:flex-wrap md:justify-center">
     <map-trend-chart
-      :slices="{ brawler: [brawlerName.toUpperCase()] }"
+      :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
       metric="winRate"
       dimension="trophyRange"
       class="w-full md:w-120 h-64"
     ></map-trend-chart>
 
     <map-trend-chart
-      :slices="{ brawler: [brawlerName.toUpperCase()] }"
+      :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
       metric="starRate"
       dimension="trophyRange"
       class="w-full md:w-120 h-64"
