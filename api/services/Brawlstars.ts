@@ -1,5 +1,5 @@
 import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club } from '../model/Brawlstars.js';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club, BattlePlayerMultiple } from '../model/Brawlstars.js';
 import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '../model/Api.js';
 import { LeaderboardRow } from '../model/Clicker.js';
 import { request, post } from '../lib/request.js';
@@ -165,7 +165,7 @@ export default class BrawlstarsService {
     }
 
     const battles = battleLog.items.map((battle) => {
-      const transformPlayer = (player: BattlePlayer) => {
+      const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
         if ('brawler' in player) {
           return [{
             tag: player.tag.replace('#', ''),

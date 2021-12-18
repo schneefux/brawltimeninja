@@ -67,6 +67,11 @@ export interface BattlePlayer {
     power: number;
     trophies?: number; // type=tournament has no trophies
   } // showdown, bossfight
+}
+
+export interface BattlePlayerMultiple {
+  tag: string;
+  name: string;
   brawlers: {
     id: number;
     name: string;
@@ -97,7 +102,7 @@ export interface BattleLog {
       }; // bossfight
       starPlayer?: BattlePlayer;
       teams?: BattlePlayer[][]; // 3v3
-      players?: BattlePlayer[]; // showdown, bossfight, duels
+      players?: BattlePlayer[]|BattlePlayerMultiple[]; // showdown, bossfight, duels
       bigBrawler?: BattlePlayer; // bossfight
     }
   }[]

@@ -1,4 +1,4 @@
-import { MetaGridEntry } from "~/lib/util";
+import { MetaGridEntry } from "../lib/util";
 
 export interface PlayerModeStats {
   picks: number

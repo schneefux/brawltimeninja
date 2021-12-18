@@ -1,7 +1,7 @@
 import ClickHouse from '@apla/clickhouse';
 import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
-import { Player, BattleLog, BattlePlayer } from '~/model/Brawlstars';
+import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
 import { LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
 import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
@@ -157,10 +157,6 @@ export default class ClickerService {
 
     // insert records for meta stats
     for (const battle of battles) {
-      if (battle.battle.mode == 'duels') {
-        // TODO mode=duels is a new format since 2021-12-17, hotfixed 
-        continue
-      }
       stats.increment('player.insert.prepare')
 
       // note: battle is patched by api service
@@ -185,7 +181,7 @@ export default class ClickerService {
         continue
       }
 
-      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]))
+      const teamsWithoutBigBrawler = battle.battle.teams ?? battle.battle.players!.map((p: BattlePlayer|BattlePlayerMultiple) => [p])
       const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler
 
       const myTeamIndex = teams.findIndex(t => t.find(p => p.tag == player.tag))
@@ -198,118 +194,123 @@ export default class ClickerService {
       const myTeam = teams[myTeamIndex]
       const myIndex = myTeam.findIndex(p => p.tag == player.tag)
       const me = myTeam[myIndex]
-      const myBrawler = player.brawlers.find((b) => b.name == me.brawler.name)!
-      const myStarpower = myBrawler.starPowers.length != 1 ? null : myBrawler.starPowers[0]
-      const myGadget = myBrawler.gadgets.length != 1 ? null : myBrawler.gadgets[0]
-      const floatingVictory =
-          battle.battle.result == 'victory' ? 1.0
-        : battle.battle.result == 'defeat' ? 0.0
-        : battle.battle.result == 'draw' ? 0.5
-        : 'rank' in battle.battle ? 1 - (battle.battle.rank! - 1) / (teams.length - 1)
-        : null
 
-      // 2020-03-18 power play is now power league
-      const isPowerplay = battle.battle.type == 'soloRanked' || battle.battle.type == 'teamRanked'
+      const brawlers = 'brawler' in me ? [me.brawler] : me.brawlers
 
-      // type=tournament battles have no trophies, fall back to current brawler trophies
-      const myBrawlerTrophies = me.brawler.trophies || myBrawler.trophies
-      // power league has trophies = league level (0-19)
-      const trophyRange = isPowerplay ? myBrawlerTrophies : Math.floor(myBrawlerTrophies / 100) || 0
+      for (let brawler of brawlers) {
+        const myBrawler = player.brawlers.find((b) => b.name == brawler.name)!
+        const myStarpower = myBrawler.starPowers.length != 1 ? null : myBrawler.starPowers[0]
+        const myGadget = myBrawler.gadgets.length != 1 ? null : myBrawler.gadgets[0]
+        const floatingVictory =
+            battle.battle.result == 'victory' ? 1.0
+          : battle.battle.result == 'defeat' ? 0.0
+          : battle.battle.result == 'draw' ? 0.5
+          : 'rank' in battle.battle ? 1 - (battle.battle.rank! - 1) / (teams.length - 1)
+          : null
 
-      const allies = myTeam.filter(p => p.tag !== player.tag)
-      const enemies = (<BattlePlayer[]>[]).concat(...teams.filter(t => t !== myTeam))
+        // 2020-03-18 power play is now power league
+        const isPowerplay = battle.battle.type == 'soloRanked' || battle.battle.type == 'teamRanked'
 
-      const record = {
-        timestamp: battle.battleTime,
-        trophy_season_end: getSeasonEnd(battle.battleTime),
-        ...playerFacts,
-        /* player brawler */
-        // see other table
-        /* brawler */
-        brawler_id: myBrawler.id,
-        brawler_name: myBrawler.name || 'NANI', // FIXME API bug 2020-06-06
-        brawler_power: me.brawler.power,
-        brawler_trophies: myBrawlerTrophies,
-        brawler_highest_trophies: myBrawler.highestTrophies,
-        // calculated
-        brawler_trophyrange: trophyRange,
-        /* brawler starpower */
-        brawler_starpower_found: myStarpower !== null,
-        brawler_starpower_id: myStarpower?.id,
-        brawler_starpower_name: myStarpower?.name,
-        /* brawler gadget */
-        brawler_gadget_found: myGadget !== null,
-        brawler_gadget_id: myGadget?.id,
-        brawler_gadget_name: myGadget?.name,
-        /* starpowers (nested) */
-        'brawler_starpowers.id': myBrawler?.starPowers.map(sp => sp.id),
-        'brawler_starpowers.name': myBrawler?.starPowers.map(sp => sp.name),
-        brawler_starpowers_length: myBrawler?.starPowers.length,
-        /* gadgets (nested) */
-        'brawler_gadgets.id': myBrawler?.gadgets.map(g => g.id),
-        'brawler_gadgets.name': myBrawler?.gadgets.map(g => g.name),
-        brawler_gadgets_length: myBrawler?.gadgets.length,
-        /* battle event */
-        battle_event_id: battle.event.id,
-        battle_event_mode: battle.event.mode,
-        battle_event_map: battle.event.map,
-        battle_event_powerplay: isPowerplay,
-        /* battle */
-        // mode: ommitted because duplicate
-        battle_type: battle.battle.type,
-        battle_result: battle.battle.result,
-        battle_duration: battle.battle.duration,
-        battle_rank: battle.battle.rank,
-        battle_trophy_change: battle.battle.trophyChange,
-        battle_level_name: battle.battle.level?.name,
-        battle_level_id: 'level' in battle.battle ? battle.battle.level?.id : null,
-        // calculated
-        battle_victory: floatingVictory == null ? null : Math.floor(floatingVictory * 10e7) / 10e7, // Decimal(8)
-        /* battle starplayer */
-        battle_starplayer_brawler_id: battle.battle.starPlayer?.brawler.id,
-        battle_starplayer_brawler_name: battle.battle.starPlayer?.brawler.name,
-        battle_starplayer_brawler_power: battle.battle.starPlayer?.brawler.power,
-        battle_starplayer_brawler_trophies: battle.battle.starPlayer?.brawler.trophies,
-        // calculated
-        battle_is_starplayer: 'starPlayer' in battle.battle ? battle.battle.starPlayer?.tag === player.tag : null,
-        /* battle big brawler */
-        battle_bigbrawler_brawler_id: battle.battle.bigBrawler?.brawler.id,
-        battle_bigbrawler_brawler_name: battle.battle.bigBrawler?.brawler.name,
-        battle_bigbrawler_brawler_power: battle.battle.bigBrawler?.brawler.power,
-        battle_bigbrawler_brawler_trophies: battle.battle.bigBrawler?.brawler.trophies,
-        // calculated
-        battle_is_bigbrawler: 'bigBrawler' in battle.battle ? battle.battle.bigBrawler?.tag == player.tag : null,
-        /* battle allies (nested) */
-        'battle_allies.brawler_id': allies.map(a => a.brawler.id),
-        'battle_allies.brawler_name': allies.map(a => a.brawler.name),
-        'battle_allies.brawler_power': allies.map(a => a.brawler.power),
-        'battle_allies.brawler_trophies': allies.map(a => a.brawler.trophies),
-        /* battle enemies (nested) */
-        'battle_enemies.brawler_id': enemies.map(e => e.brawler.id),
-        'battle_enemies.brawler_name': enemies.map(e => e.brawler.name),
-        'battle_enemies.brawler_power': enemies.map(e => e.brawler.power),
-        'battle_enemies.brawler_trophies': enemies.map(e => e.brawler.trophies),
-      }
+        // type=tournament battles have no trophies, fall back to current brawler trophies
+        const myBrawlerTrophies = brawler.trophies || myBrawler.trophies
+        // power league has trophies = league level (0-19)
+        const trophyRange = isPowerplay ? myBrawlerTrophies : Math.floor(myBrawlerTrophies / 100) || 0
 
-      // to debug encoding errors:
-      // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
-      await new Promise<void>((resolve, reject) => {
-        stats.increment('player.insert.run')
-        if (battleStream.write(record)) {
-          return resolve()
+        const allies = myTeam.filter(p => p.tag !== player.tag).flatMap(b => 'brawler' in b ? [b.brawler] : b.brawlers)
+        const enemies = teams.filter(t => t !== myTeam).flatMap(t => t.flatMap(b => 'brawler' in b ? [b.brawler] : b.brawlers))
+
+        const record = {
+          timestamp: battle.battleTime,
+          trophy_season_end: getSeasonEnd(battle.battleTime),
+          ...playerFacts,
+          /* player brawler */
+          // see other table
+          /* brawler */
+          brawler_id: myBrawler.id,
+          brawler_name: myBrawler.name || 'NANI', // FIXME API bug 2020-06-06
+          brawler_power: brawler.power,
+          brawler_trophies: myBrawlerTrophies,
+          brawler_highest_trophies: myBrawler.highestTrophies,
+          // calculated
+          brawler_trophyrange: trophyRange,
+          /* brawler starpower */
+          brawler_starpower_found: myStarpower !== null,
+          brawler_starpower_id: myStarpower?.id,
+          brawler_starpower_name: myStarpower?.name,
+          /* brawler gadget */
+          brawler_gadget_found: myGadget !== null,
+          brawler_gadget_id: myGadget?.id,
+          brawler_gadget_name: myGadget?.name,
+          /* starpowers (nested) */
+          'brawler_starpowers.id': myBrawler?.starPowers.map(sp => sp.id),
+          'brawler_starpowers.name': myBrawler?.starPowers.map(sp => sp.name),
+          brawler_starpowers_length: myBrawler?.starPowers.length,
+          /* gadgets (nested) */
+          'brawler_gadgets.id': myBrawler?.gadgets.map(g => g.id),
+          'brawler_gadgets.name': myBrawler?.gadgets.map(g => g.name),
+          brawler_gadgets_length: myBrawler?.gadgets.length,
+          /* battle event */
+          battle_event_id: battle.event.id,
+          battle_event_mode: battle.event.mode,
+          battle_event_map: battle.event.map,
+          battle_event_powerplay: isPowerplay,
+          /* battle */
+          // mode: ommitted because duplicate
+          battle_type: battle.battle.type,
+          battle_result: battle.battle.result,
+          battle_duration: battle.battle.duration,
+          battle_rank: battle.battle.rank,
+          battle_trophy_change: battle.battle.trophyChange,
+          battle_level_name: battle.battle.level?.name,
+          battle_level_id: 'level' in battle.battle ? battle.battle.level?.id : null,
+          // calculated
+          battle_victory: floatingVictory == null ? null : Math.floor(floatingVictory * 10e7) / 10e7, // Decimal(8)
+          /* battle starplayer */
+          battle_starplayer_brawler_id: battle.battle.starPlayer?.brawler.id,
+          battle_starplayer_brawler_name: battle.battle.starPlayer?.brawler.name,
+          battle_starplayer_brawler_power: battle.battle.starPlayer?.brawler.power,
+          battle_starplayer_brawler_trophies: battle.battle.starPlayer?.brawler.trophies,
+          // calculated
+          battle_is_starplayer: 'starPlayer' in battle.battle ? battle.battle.starPlayer?.tag === player.tag : null,
+          /* battle big brawler */
+          battle_bigbrawler_brawler_id: battle.battle.bigBrawler?.brawler.id,
+          battle_bigbrawler_brawler_name: battle.battle.bigBrawler?.brawler.name,
+          battle_bigbrawler_brawler_power: battle.battle.bigBrawler?.brawler.power,
+          battle_bigbrawler_brawler_trophies: battle.battle.bigBrawler?.brawler.trophies,
+          // calculated
+          battle_is_bigbrawler: 'bigBrawler' in battle.battle ? battle.battle.bigBrawler?.tag == player.tag : null,
+          /* battle allies (nested) */
+          'battle_allies.brawler_id': allies.map(b => b.id),
+          'battle_allies.brawler_name': allies.map(b => b.name),
+          'battle_allies.brawler_power': allies.map(b => b.power),
+          'battle_allies.brawler_trophies': allies.map(b => b.trophies),
+          /* battle enemies (nested) */
+          'battle_enemies.brawler_id': enemies.map(b => b.id),
+          'battle_enemies.brawler_name': enemies.map(b => b.name),
+          'battle_enemies.brawler_power': enemies.map(b => b.power),
+          'battle_enemies.brawler_trophies': enemies.map(b => b.trophies),
         }
 
-        stats.increment('player.insert.buffering')
-        battleStream.once('drain', (err) => {
-          if (err) {
-            stats.increment('player.insert.error')
-            console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)})`, record, err)
-            return reject(err)
+        // to debug encoding errors:
+        // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
+        await new Promise<void>((resolve, reject) => {
+          stats.increment('player.insert.run')
+          if (battleStream.write(record)) {
+            return resolve()
           }
 
-          return resolve()
+          stats.increment('player.insert.buffering')
+          battleStream.once('drain', (err) => {
+            if (err) {
+              stats.increment('player.insert.error')
+              console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)})`, record, err)
+              return reject(err)
+            }
+
+            return resolve()
+          })
         })
-      })
+      }
     }
 
     battleStream.end()
