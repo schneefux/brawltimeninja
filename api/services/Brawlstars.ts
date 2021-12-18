@@ -164,15 +164,28 @@ export default class BrawlstarsService {
       player.club.tag = player.club.tag.replace(/^#/, '');
     }
 
-    // TODO mode=duels is a new format since 2021-12-17, hotfixed 
-    const battles = battleLog.items.filter(b => b.battle.mode != 'duels').map((battle) => {
-      const transformPlayer = (player: BattlePlayer) => ({
-        tag: player.tag.replace('#', ''),
-        name: player.name,
-        brawler: player.brawler.name === null ? 'nani' : brawlerId(player.brawler), // FIXME API bug reported 2020-06-06
-        brawlerTrophies: player.brawler.trophies,
-        isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
-      })
+    const battles = battleLog.items.map((battle) => {
+      const transformPlayer = (player: BattlePlayer) => {
+        if ('brawler' in player) {
+          return [{
+            tag: player.tag.replace('#', ''),
+            name: player.name,
+            brawler: brawlerId(player.brawler),
+            brawlerTrophies: player.brawler.trophies,
+            isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
+          }]
+        }
+        if ('brawlers' in player) {
+          return player.brawlers.map(brawler => ({
+            tag: player.tag.replace('#', ''),
+            name: player.name,
+            brawler: brawlerId(brawler),
+            brawlerTrophies: brawler.trophies,
+            isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
+          }))
+        }
+        return []
+      }
 
       let result = undefined as undefined|string;
       let victory = undefined as undefined|boolean;
@@ -239,7 +252,7 @@ export default class BrawlstarsService {
         result,
         victory,
         trophyChange: battle.battle.trophyChange,
-        teams: teams.map(t => t.map(transformPlayer)),
+        teams: teams.map(t => t.flatMap(t => transformPlayer(t))),
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
