@@ -129,7 +129,7 @@
       </p>
 
       <brawler-trends-card
-        :brawler="brawlerName"
+        :brawler-name="brawlerName"
       ></brawler-trends-card>
     </page-section>
 

@@ -15,7 +15,7 @@ import { CQuery, VLinePlot } from '~/klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
-import { getSeasonEnd } from '~/lib/util'
+import { capitalizeWords, getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -34,6 +34,11 @@ export default defineComponent({
     metric: {
       type: String,
       default: 'winRate'
+      // TODO add support for useRate - show use rate trends on brawler page
+    },
+    dimension: {
+      type: String,
+      default: 'day'
     },
   },
   setup(props) {
@@ -46,8 +51,8 @@ export default defineComponent({
 
       // TODO refactor: write a function that returns a query that compares to parent dimension
       if (comparingSlices == undefined && props.slices.map?.length > 0) {
-        name = i18n.t('mode.' + props.slices.mode[0]) as string + ' - ' + i18n.t('map.' + props.id) as string
-        referenceName = i18n.t('mode.' + props.slices.mode[0]) as string
+        name = i18n.t('mode.' + props.slices.mode[0]!) as string + ' - ' + i18n.t('map.' + props.id) as string
+        referenceName = i18n.t('mode.' + props.slices.mode[0]!) as string
         comparingSlices = {
           ...props.slices,
           map: [],
@@ -62,6 +67,8 @@ export default defineComponent({
         }
       }
       if (comparingSlices == undefined && props.slices.brawler?.length > 0) {
+        name = capitalizeWords(props.slices.brawler[0]!.toLowerCase())
+        referenceName = i18n.t('option.all-brawlers') as string
         comparingSlices = {
           ...props.slices,
           brawler: [],
@@ -75,7 +82,7 @@ export default defineComponent({
       return <CubeQuery|CubeComparingQuery>{
         name,
         cubeId: 'battle',
-        dimensionsIds: ['day'],
+        dimensionsIds: [props.dimension],
         measurementsIds: [props.metric],
         slices: {
           ...props.slices,
@@ -88,7 +95,7 @@ export default defineComponent({
           reference: {
             name: referenceName,
             cubeId: 'battle',
-            dimensionsIds: ['day'],
+            dimensionsIds: [props.dimension],
             measurementsIds: [props.metric],
             slices: {
               ...comparingSlices,

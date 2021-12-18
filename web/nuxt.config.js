@@ -84,7 +84,6 @@ export default {
     { src: '~/plugins/gtag', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/slider', mode: 'client' },
-    { src: '~/plugins/plotly', mode: 'client' },
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/scrollto', mode: 'client' },
     // { src: '~/plugins/lazy-hydrate' },
