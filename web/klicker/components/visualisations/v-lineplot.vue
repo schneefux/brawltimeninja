@@ -80,13 +80,13 @@ export default defineComponent({
             scale: dimension0.scale,
           },
           y: {
+            ...measurement0.vega,
             field: 'measurementsRaw.' + measurement0.id,
             type: measurement0.type,
             title: $klicker.getName(measurement0),
             axis: {
               format: measurement0.d3formatter,
             },
-            scale: measurement0.scale,
           },
           ...(comparing.value ? {
             color: {

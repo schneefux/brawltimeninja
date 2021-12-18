@@ -47,10 +47,10 @@ export interface Measurement<T=string|number> {
   sign: number
   transform?: (entries: MetaGridEntry[]) => T[]
   /**
-   * Vega.js scale configuration
-   * @see https://vega.github.io/vega-lite/docs/scale.html
+   * Vega.js encoding configuration
+   * @see https://vega.github.io/vega-lite/docs/encoding.html
    */
-  scale?: any
+  vega?: any
   /**
    * cube.js configuration.
    */

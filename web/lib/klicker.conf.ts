@@ -408,8 +408,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_trophies',
@@ -423,8 +425,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_highest_trophies',
@@ -438,8 +442,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_3vs3_victories',
@@ -453,8 +459,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_solo_victories',
@@ -468,8 +476,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_duo_victories',
@@ -576,8 +586,10 @@ export const brawlerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'brawler_trophies',
@@ -641,8 +653,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '+.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_trophy_change',
@@ -657,8 +671,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_victory',
@@ -684,8 +700,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: winratePosteriorRaw,
@@ -737,8 +755,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: '',
@@ -754,8 +774,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_brawlers_length',
@@ -771,8 +793,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_is_starplayer',
@@ -798,8 +822,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: +1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_rank',
@@ -826,8 +852,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_rank1',
@@ -854,8 +882,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_level',
@@ -869,8 +899,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'brawler_power',
@@ -967,8 +999,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '+.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_trophy_change_state)',
@@ -983,8 +1017,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_victory_state)',
@@ -1010,8 +1046,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: winratePosteriorMerged,
@@ -1039,8 +1077,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'SUM(picks)',
@@ -1056,8 +1096,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
+      stack: 'normalize',
     },
     config: {
       sql: 'picks_weighted',
@@ -1073,8 +1116,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_starplayer_state)',
@@ -1100,8 +1145,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: +1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_rank_state)',
@@ -1116,8 +1163,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_rank1_state)',
@@ -1155,8 +1204,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_level_state)',
@@ -1222,6 +1273,13 @@ const brawlerSlices = asSlice({
     config: {
       member: 'brawler_dimension',
       operator: 'equals',
+    },
+  },
+  notBrawler: {
+    id: 'notBrawler',
+    config: {
+      member: 'brawler_dimension',
+      operator: 'notEquals',
     },
   },
   brawlerId: {
@@ -1411,6 +1469,7 @@ const brawlerBattleSlices = [
   commonSlices.trophyRangeGte,
   commonSlices.trophyRangeLt,
   commonSlices.brawler,
+  commonSlices.notBrawler,
 ]
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
@@ -1474,6 +1533,7 @@ const playerBrawlerSlices = [
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
+  commonSlices.notBrawler,
   commonSlices.powerGte,
   commonSlices.powerLte,
 ]

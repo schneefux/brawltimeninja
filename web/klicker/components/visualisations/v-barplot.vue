@@ -82,13 +82,13 @@ export default defineComponent({
             },
           },
           y: {
+            ...measurement0.vega,
             field: 'measurementsRaw.' + measurement0.id,
             type: measurement0.type,
             title: measurement0.name,
             axis: {
               format: measurement0.formatter,
             },
-            scale: measurement0.scale,
             stack: null,
           },
           tooltip: <any>[{ // TODO spread breaks types
@@ -144,9 +144,9 @@ export default defineComponent({
           mark: 'errorbar' as 'errorbar',
           encoding: {
             y: {
+              ...measurement0.vega,
               field: 'lower',
               type: 'quantitative' as 'quantitative',
-              scale: measurement0.scale,
             },
             y2: {
               field: 'upper',

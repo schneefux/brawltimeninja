@@ -53,22 +53,22 @@ export default defineComponent({
         },
         encoding: {
           x: {
+            ...measurement0.vega,
             field: 'measurementsRaw.' + measurement0.id,
             type: measurement0.type,
             title: $klicker.getName(measurement0),
             axis: {
               format: measurement0.d3formatter,
             },
-            scale: measurement0.scale,
           },
           y: {
+            ...measurement1.vega,
             field: 'measurementsRaw.' + measurement1.id,
             type: measurement1.type,
             title: $klicker.getName(measurement1),
             axis: {
               format: measurement1.d3formatter,
             },
-            scale: measurement1.scale,
           },
           tooltip: [{
             field: 'measurements.' + measurement0.id,

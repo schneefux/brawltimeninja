@@ -50,13 +50,13 @@ export default defineComponent({
             scale: dimension0.scale,
           },
           y: {
+            ...measurement0.vega,
             field: 'measurementsRaw.' + measurement0.id,
             type: measurement0.type,
             title: measurement0.name,
             axis: {
               format: measurement0.d3formatter,
             },
-            scale: measurement0.scale,
           },
         },
       }

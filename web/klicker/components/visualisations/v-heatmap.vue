@@ -72,10 +72,10 @@ export default defineComponent({
           },
           ...(!comparing.value ? {
             color: {
+              ...measurement0.vega,
               field: 'measurementsRaw.' + measurement0.id,
               type: measurement0.type,
               title: measurement0.name,
-              scale: measurement0.scale,
               legend: {
                 offset: 8,
                 orient: 'top',
@@ -83,10 +83,10 @@ export default defineComponent({
             },
           } : {
             color: {
+              ...measurement0.vega,
               field: 'test.difference.differenceRaw',
               type: measurement0.type,
               title: i18n.t('comparison.difference.to.dataset', { dataset: i18n.t('comparison.dataset.reference') as string }) as string,
-              scale: measurement0.scale,
               legend: {
                 offset: 8,
                 orient: 'top',
