@@ -4,11 +4,16 @@
       :title="$t('draft-tool.selected-team')"
     >
       <div slot="content">
-        <p v-show="team.length == 0">
-          {{ $t('draft-tool.none-selected') }}
-        </p>
-        <p v-if="team.length > 0">
-          {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
+        <p>
+          <template v-if="team.length == 0">
+            {{ $t('draft-tool.none-selected') }}
+          </template>
+          <template v-else>
+            {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
+          </template>
+          <template v-if="notEnoughData">
+            <br>{{ $t('draft-tool.not-enough-data') }}
+          </template>
         </p>
 
         <div class="h-12 md:h-16 flex justify-center mx-2 my-3 space-x-2">
@@ -24,6 +29,19 @@
               clazz="rounded-md w-12 md:w-16"
             ></media-img>
           </button>
+
+          <b-button
+            v-if="team.length > 0"
+            @click="clearTeam()"
+            class="mb-auto"
+            primary
+            round
+            xs
+          >
+            <font-awesome-icon
+              :icon="faTimes"
+            ></font-awesome-icon>
+          </b-button>
         </div>
       </div>
     </b-card>
@@ -69,6 +87,7 @@ import { computed, PropType, ref, watch } from '@vue/composition-api'
 import { CubeQuery } from '~/klicker'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '~/klicker/components'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 interface AllyData {
   id: string
@@ -76,6 +95,7 @@ interface AllyData {
   contributingWinRate: number
   contributingWinRateFormatted: string
   normContributingWinRate: number
+  sufficientData: boolean
   selectable: boolean
 }
 
@@ -181,6 +201,7 @@ export default defineComponent({
           brawlerName: capitalizeWords(brawler),
           contributingWinRateFormatted: sufficientData ? `${Math.round(100*contributingWinRate)}%` : '?',
           normContributingWinRate: contributingWinRate,
+          sufficientData,
           selectable: sufficientData && team.value.length < 3,
         })
       }
@@ -207,6 +228,7 @@ export default defineComponent({
     }
 
     const removeFromTeam = (id: string) => team.value = team.value.filter(i => i != id)
+    const clearTeam = () => team.value = []
 
     const teamWinRate = computed(() => {
       // average of AB,BA, AC,CA, BC,CB
@@ -214,13 +236,18 @@ export default defineComponent({
       return Math.round(100 * avgWinRate) + '%'
     })
 
+    const notEnoughData = computed(() => Object.values(allyData.value).some(b => !b.sufficientData && !team.value.includes(b.id)))
+
     return {
       team,
       loading,
       allyData,
       addToTeam,
+      clearTeam,
       removeFromTeam,
       teamWinRate,
+      notEnoughData,
+      faTimes,
     }
   },
 })

@@ -4,7 +4,7 @@
     class="max-w-2xl mx-auto"
   >
     <b-card
-      title="Title"
+      :title="$t('draft-tool.subtitle')"
       class="mt-3"
     >
       <p slot="content" class="prose text-gray-200">
@@ -50,7 +50,7 @@ export default Vue.extend({
     }
   },
   meta: {
-    title: 'Draft Tool',
+    title: 'Team Builder',
     screen: 'brawlers',
   },
   middleware: ['cached'],
