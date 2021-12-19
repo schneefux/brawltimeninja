@@ -1100,7 +1100,6 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       scale: {
         zero: false,
       },
-      stack: 'normalize',
     },
     config: {
       sql: 'picks_weighted',
