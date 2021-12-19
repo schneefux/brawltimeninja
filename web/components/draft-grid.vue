@@ -11,7 +11,7 @@
           {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
         </p>
 
-        <div v-if="team.length > 0" class="flex justify-center mx-2 my-3 space-x-2">
+        <div class="h-12 md:h-16 flex justify-center mx-2 my-3 space-x-2">
           <button
             v-for="brawlerId in team"
             :key="brawlerId"
@@ -36,10 +36,7 @@
         <button
           v-for="brawler in allyData"
           :key="brawler.id"
-          :class="['relative border-2 md:border-4 rounded-md', {
-            'border-red-400': brawler.normContributingWinRate < 0.4,
-            'border-gray-400': brawler.normContributingWinRate >= 0.4 && brawler.normContributingWinRate < 0.6,
-            'border-green-400': brawler.normContributingWinRate >= 0.6,
+          :class="['relative border-2 border-gray-800 shadow-md rounded-md', {
             'opacity-50': !brawler.selectable,
           }]"
           @click="addToTeam(brawler.id)"
@@ -52,7 +49,11 @@
           ></media-img>
           <span
             v-if="brawler.selectable"
-            class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-75 leading-tight text-sm md:text-base rounded-br-sm"
+            class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-80 leading-tight text-sm md:text-base rounded-br-sm"
+            :class="{
+              'text-red-400': brawler.normContributingWinRate < 0.33,
+              'text-green-400': brawler.normContributingWinRate >= 0.66,
+            }"
           >
             {{ brawler.contributingWinRateFormatted }}
           </span>
