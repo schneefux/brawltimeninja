@@ -78,6 +78,7 @@
     "brawler.class.Support": "Support",
     "brawler.class.Thrower": "Thrower",
     "brawler.class.Toxic Assassin": "Toxic Assassin",
+    "brawler.class.Damage Dealer": "Damage Dealer",
     "brawler.current-maps.description": "{brawler} has a good win rate on {amount} maps today. If you want to play {brawler}, the best maps are {maps}.",
     "brawler.current-maps.title": "Current Maps for {brawler}",
     "brawler.description": "{brawler} is a {class} with {rarity} Rarity. {brawler} is unlocked {unlockCondition}.",

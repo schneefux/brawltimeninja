@@ -76,7 +76,7 @@ export default Vue.extend({
       ]
     },
     gameFileDescription(): string {
-      return this.description || ''
+      return this.description.replace(/<[^>]*>?/gm, '') || ''
     },
     metaDescription(): string {
       if (this.winRate == undefined || this.withoutWinRate == undefined) {
