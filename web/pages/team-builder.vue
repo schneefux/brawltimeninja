@@ -22,6 +22,14 @@
       </c-slicer>
 
       <draft-grid :query="query"></draft-grid>
+
+      <c-query
+        :query="query"
+      >
+        <template v-slot="totals">
+          <v-sample-size v-bind="totals"></v-sample-size>
+        </template>
+      </c-query>
     </div>
   </page>
 </template>
@@ -61,10 +69,10 @@ export default Vue.extend({
 
     return {
       query: <CubeQuery>{
-        cubeId: '',
+        cubeId: 'map',
         dimensionsIds: [],
-        measurementsIds: [],
-        sortId: '',
+        measurementsIds: ['picks'],
+        sortId: 'picks',
         slices: convertToSlices(this.$route, {
           season: [currentSeason.toISOString().slice(0, 10)],
           trophyRangeGte: ['0'],

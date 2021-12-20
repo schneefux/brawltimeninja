@@ -121,8 +121,8 @@ export default defineComponent({
         cubeId: 'battle',
         slices: props.query.slices,
         dimensionsIds: ['brawler'],
-        measurementsIds: ['winRateAdj'],
-        sortId: 'winRateAdj',
+        measurementsIds: ['winRate'],
+        sortId: 'winRate',
       })
       loading.value--
       return data
@@ -134,8 +134,8 @@ export default defineComponent({
         cubeId: 'synergy',
         slices: props.query.slices,
         dimensionsIds: ['brawler', 'ally'],
-        measurementsIds: ['winRateAdj'],
-        sortId: 'winRateAdj',
+        measurementsIds: ['winRate', 'picks'],
+        sortId: 'winRate',
       })
       loading.value--
       return data
@@ -149,13 +149,14 @@ export default defineComponent({
       synergyData.value = await getSynergyData()
     })
 
+    const picksThreshold = 200 // half the power of an A/B test with p=55%, min. effect 10%
     const allyData = computed(() => {
       let contributingWinRatesByBrawler: Record<string, number[]> = {}
 
       const winRatesByBrawler: Record<string, number> = {}
       brawlerData.value?.data?.forEach(row => {
         const name = row.dimensionsRaw.brawler.brawler
-        const winRate = row.measurementsRaw.winRateAdj as number
+        const winRate = row.measurementsRaw.winRate as number
         winRatesByBrawler[name] = winRate
         if (team.value.length == 0) {
           contributingWinRatesByBrawler[name] = [winRate]
@@ -174,9 +175,10 @@ export default defineComponent({
             return
           }
 
-          const winRate = row.measurementsRaw.winRateAdj as number
+          const winRate = row.measurementsRaw.winRate as number
+          const picks = row.measurementsRaw.picks as number
           const allyId = brawlerId({ name: allyName })
-          if (team.value.includes(allyId) && name != allyName) {
+          if (team.value.includes(allyId) && name != allyName && picks > picksThreshold) {
             contributingWinRatesByBrawler[name].push(winRate)
           }
         })
