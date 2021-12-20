@@ -132,8 +132,8 @@ job "brawltime-api" {
 
       resources {
         cpu = 256
-        memory = 128
-        memory_max = 384
+        memory = 256
+        memory_max = 512
       }
     }
   }

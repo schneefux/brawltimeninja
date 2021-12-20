@@ -1,7 +1,7 @@
 job "clickhouse" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     value = "database"
   }
