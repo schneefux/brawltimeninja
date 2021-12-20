@@ -24,7 +24,7 @@
                 <span class="!mr-2 flex-1 text-right">{{ $t('oejts.' + question.id + '.low') }}</span>
                 <b-radio
                   v-for="i in 5"
-                  v-model="oejtsAnswers[question.id]"
+                  v-model.number="oejtsAnswers[question.id]"
                   :key="i"
                   :value="i"
                   :name="question.id"
@@ -54,15 +54,56 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, ref, wrapProperty } from '@nuxtjs/composition-api'
 import { OEJTSEntry, oejtsScores } from '~/lib/oejts'
 
-export default Vue.extend({
-  data() {
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
+  props: {
+    pageSize: {
+      type: Number,
+      default: 5
+    },
+  },
+  setup(props, { emit }) {
+    const oejtsAnswers = ref<Record<string, number>>({})
+    const page = ref(0)
+
+    const oejtsScoresWithIds = computed<(OEJTSEntry & { id: string })[]>(() => {
+      return Object.entries(oejtsScores).map(([key, value]) => ({
+        ...value,
+        id: key,
+      }))
+    })
+
+    const pages = computed(() => Math.ceil(oejtsScoresWithIds.value.length / props.pageSize))
+
+    const gtag = useGtag()
+    const next = () => {
+      page.value++
+      gtag.event('step', {
+        'event_category': 'oejts',
+        'event_label': page.toString(),
+        'value': page,
+      })
+      if (page.value == pages.value) {
+        const result = Object.entries(oejtsAnswers.value).reduce((scores, [id, answer]) => ({
+          ie: scores.ie + oejtsScores[id].ie * (answer - 2.5)/5,
+          sn: scores.sn + oejtsScores[id].sn * (answer - 2.5)/5,
+          ft: scores.ft + oejtsScores[id].ft * (answer - 2.5)/5,
+          jp: scores.jp + oejtsScores[id].jp * (answer - 2.5)/5,
+        }), { ie: 0, sn: 0, ft: 0, jp: 0 } as OEJTSEntry)
+
+        emit('input', result)
+      }
+    }
+
     return {
-      oejtsAnswers: {} as Record<string, number>,
-      page: 0,
-      pageSize: 5,
+      next,
+      page,
+      pages,
+      oejtsAnswers,
+      oejtsScores: oejtsScoresWithIds,
     }
   },
   /*
@@ -76,36 +117,5 @@ export default Vue.extend({
     }
   },
   */
-  computed: {
-    oejtsScores(): (OEJTSEntry | { id: string })[] {
-      return Object.entries(oejtsScores).map(([key, value]) => ({
-        ...value,
-        id: key,
-      }))
-    },
-    pages(): number {
-      return Math.ceil(this.oejtsScores.length / this.pageSize)
-    },
-  },
-  methods: {
-    next() {
-      this.page++
-      this.$gtag.event('step', {
-        'event_category': 'oejts',
-        'event_label': this.page.toString(),
-        'value': this.page,
-      })
-      if (this.page == this.pages) {
-        const result = Object.entries(this.oejtsAnswers).reduce((scores, [id, answer]) => ({
-          ie: scores.ie + oejtsScores[id].ie * (answer - 2.5)/5,
-          sn: scores.sn + oejtsScores[id].sn * (answer - 2.5)/5,
-          ft: scores.ft + oejtsScores[id].ft * (answer - 2.5)/5,
-          jp: scores.jp + oejtsScores[id].jp * (answer - 2.5)/5,
-        }), { ie: 0, sn: 0, ft: 0, jp: 0 } as OEJTSEntry)
-
-        this.$emit('input', result)
-      }
-    },
-  },
 })
 </script>

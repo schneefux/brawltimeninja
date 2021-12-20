@@ -1,6 +1,7 @@
 <template functional>
   <input
     v-bind="data.attrs"
+    type="checkbox"
     :style="data.staticStyle"
     :class="[data.class, data.staticClass,
       // same as b-button
@@ -10,7 +11,6 @@
         'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 focus:ring-yellow-400 text-gray-200': props.dark,
     }]"
     :checked="props.value"
-    type="checkbox"
     @input="listeners.input && listeners.input($event.target.checked)"
   >
 </template>

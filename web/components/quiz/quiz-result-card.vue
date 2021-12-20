@@ -65,54 +65,42 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, PropType, onMounted, useStore } from '@nuxtjs/composition-api'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import { mapMutations } from 'vuex'
 
 function similarity(o1: OEJTSEntry, o2: OEJTSEntry) {
   // use scalar product because o1 and o2 are already -1 +1 normalized
   return (o1.ie * o2.ie + o1.sn * o2.sn + o1.ft * o2.ft + o1.jp * o2.jp) / 4
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     result: {
       type: Object as PropType<OEJTSEntry>,
       required: true
     },
   },
-  mounted() {
-    this.setPersonalityTestResult(this.mostSimilarBrawler?.name)
-  },
-  computed: {
-    oejtsAbbreviation(): string {
-      if (this.result == undefined) {
+  setup(props) {
+    const store = useStore()
+    onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
+
+    const oejtsAbbreviation = computed(() => {
+      if (props.result == undefined) {
         return ''
       }
-      return Object.entries(this.result)
+      return Object.entries(props.result)
         .map(([name, number]) => number < -0.1 ? name[0] : number > 0.1 ? name[1] : 'x')
         .join('')
         .toUpperCase()
-    },
-    oejtsMap(): Record<string, string> {
-      return {
-        i: 'Introversion',
-        e: 'Extraversion',
-        s: 'Sensing',
-        n: 'Intuition',
-        f: 'Feeling',
-        t: 'Thinking',
-        j: 'Judging',
-        p: 'Perceiving',
-      }
-    },
-    mostSimilarBrawler(): { name: string, id: string, similarity: number, scores: OEJTSEntry }|undefined {
+    })
+
+    const mostSimilarBrawler = computed<{ name: string, id: string, similarity: number, scores: OEJTSEntry }|undefined>(() => {
       const scores = Object.entries(brawlerScores)
         .map(([brawler, score]) => ({
           brawler,
           score,
-          similarity: similarity(score, this.result),
+          similarity: similarity(score, props.result),
         }))
         .sort((e1, e2) => e2.similarity - e1.similarity)
       return {
@@ -121,12 +109,24 @@ export default Vue.extend({
         similarity: Math.max(Math.min(scores[0].similarity, 1), 0),
         scores: scores[0].score,
       }
-    },
-  },
-  methods: {
-    ...mapMutations({
-      setPersonalityTestResult: 'setPersonalityTestResult',
     })
+
+    const oejtsMap = {
+      i: 'Introversion',
+      e: 'Extraversion',
+      s: 'Sensing',
+      n: 'Intuition',
+      f: 'Feeling',
+      t: 'Thinking',
+      j: 'Judging',
+      p: 'Perceiving',
+    }
+
+    return {
+      oejtsMap,
+      oejtsAbbreviation,
+      mostSimilarBrawler,
+    }
   },
 })
 </script>
