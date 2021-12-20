@@ -25,25 +25,10 @@
         elevation="2"
         dense
       >
-        <div slot="content" class="grid grid-cols-[6rem,1fr,6rem] items-center text-center gap-x-1">
-          <span class="mt-1 col-span-3 font-semibold">{{ oejtsAbbreviation }}</span>
-          <template v-for="(value, attr) in result">
-            <span :key="'l-' + attr" class="text-left">{{ oejtsMap[attr[0]] }}</span>
-            <div
-              :key="'c-' + attr"
-              class="h-2 bg-gray-100 rounded relative"
-            >
-              <div
-                :style="{ 'width': Math.min(Math.abs(value)/2 * 50, 50) + '%' }"
-                :class="['h-full bg-yellow-500 absolute', {
-                  'left-1/2 rounded-r': value > 0,
-                  'right-1/2 rounded-l': value < 0,
-                }]"
-              ></div>
-            </div>
-            <span :key="'r-' + attr" class="text-right">{{ oejtsMap[attr[1]] }}</span>
-          </template>
-        </div>
+        <oejts-table
+          slot="content"
+          :oejts="mostSimilarBrawler.score"
+        ></oejts-table>
       </b-card>
 
       <p class="mt-2 text-left text-sm">
@@ -54,26 +39,38 @@
         Brawler personalities have been voted by the community.
       </p>
     </div>
-    <b-button
-      slot="actions"
-      class="mx-auto"
-      primary
-      md
-      @click="$emit('restart')"
-    >{{ $t('action.restart') }}</b-button>
+    <div slot="actions" class="mx-auto">
+      <b-button
+        :href="sharepicUrl"
+        target="_blank"
+        tag="a"
+        class="inline-block"
+        primary
+        md
+        @click="sharepicTriggered"
+      >{{ $t('action.share') }}</b-button>
+      <b-button
+        slot="actions"
+        primary
+        md
+        @click="$emit('restart')"
+      >{{ $t('action.restart') }}</b-button>
+    </div>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, onMounted, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, onMounted, useStore, useContext, wrapProperty } from '@nuxtjs/composition-api'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import { QuizResult } from './quiz-result.vue'
 
 function similarity(o1: OEJTSEntry, o2: OEJTSEntry) {
   // use scalar product because o1 and o2 are already -1 +1 normalized
   return (o1.ie * o2.ie + o1.sn * o2.sn + o1.ft * o2.ft + o1.jp * o2.jp) / 4
 }
 
+const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   props: {
     result: {
@@ -82,20 +79,10 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { $config } = useContext()
     const store = useStore()
-    onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
 
-    const oejtsAbbreviation = computed(() => {
-      if (props.result == undefined) {
-        return ''
-      }
-      return Object.entries(props.result)
-        .map(([name, number]) => number < -0.1 ? name[0] : number > 0.1 ? name[1] : 'x')
-        .join('')
-        .toUpperCase()
-    })
-
-    const mostSimilarBrawler = computed<{ name: string, id: string, similarity: number, scores: OEJTSEntry }|undefined>(() => {
+    const mostSimilarBrawler = computed<QuizResult>(() => {
       const scores = Object.entries(brawlerScores)
         .map(([brawler, score]) => ({
           brawler,
@@ -107,24 +94,31 @@ export default defineComponent({
         id: brawlerId({ name: scores[0].brawler }),
         name: capitalizeWords(scores[0].brawler.toLowerCase()),
         similarity: Math.max(Math.min(scores[0].similarity, 1), 0),
-        scores: scores[0].score,
+        score: props.result,
       }
     })
+    onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
 
-    const oejtsMap = {
-      i: 'Introversion',
-      e: 'Extraversion',
-      s: 'Sensing',
-      n: 'Intuition',
-      f: 'Feeling',
-      t: 'Thinking',
-      j: 'Judging',
-      p: 'Perceiving',
-    }
+    const sharepicUrl = computed(() => {
+      const params = new URLSearchParams({
+        id: mostSimilarBrawler.value.id,
+        name: mostSimilarBrawler.value.name,
+        similarity: mostSimilarBrawler.value.similarity,
+      })
+      Object.entries(mostSimilarBrawler.value.score).forEach(
+        ([attribute, value]) => params.append(attribute, value.toFixed(2)))
+      return $config.renderUrl + `/embed/quiz?` + params.toString()
+    })
+
+    const gtag = useGtag()
+    const sharepicTriggered = () => gtag.event('click', {
+      'event_category': 'quiz',
+      'event_label': 'share',
+    })
 
     return {
-      oejtsMap,
-      oejtsAbbreviation,
+      sharepicUrl,
+      sharepicTriggered,
       mostSimilarBrawler,
     }
   },

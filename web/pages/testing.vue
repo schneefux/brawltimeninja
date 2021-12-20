@@ -12,7 +12,7 @@
     -->
 
     <div>
-    <map-trend-chart :slices="{ mode: ['gemGrab'], map: ['Minecart Madness'] }"></map-trend-chart>
+    <map-trend-chart class="h-80" :slices="{ mode: ['bounty'], map: ['Excel'] }"></map-trend-chart>
     <!--
     <c-query
       :query="{

@@ -1,7 +1,7 @@
 <template>
   <player-sharepic
     :player="player"
-    :winRate="winRate"
+    :win-rate="winRate"
     :total-battles="totalBattles"
     :account-rating="accountRating"
     class="sharepic"
