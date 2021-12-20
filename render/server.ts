@@ -2,6 +2,7 @@ import Koa from 'koa'
 import cors from '@koa/cors'
 import { Browser, chromium } from 'playwright'
 import StatsD from 'hot-shots'
+import { URL } from 'url'
 
 const maxage = parseInt(process.env.CACHE_SECONDS || '86400') // 24h
 const WEB_URL = (process.env.WEB_URL || 'https://brawltime.ninja/').replace(/\/$/, '') // remove trailing slash
@@ -37,8 +38,9 @@ app.use(async (ctx, next) => {
   }
 
   stats.increment('request')
-  const path = ctx.path
-  if (!path.includes('/embed/') || !/[a-zA-Z0-9\\/]*/.test(path)) {
+  const query = ctx.request.querystring
+  const url = new URL(WEB_URL + ctx.request.path + (query != '' ? '?' + query : ''))
+  if (url.origin != WEB_URL || !url.pathname.startsWith('/embed/')) {
     ctx.throw(403, 'URL not allowed')
     stats.increment('request.invalid-url')
     return
@@ -57,7 +59,7 @@ app.use(async (ctx, next) => {
   const page = await context!.newPage()
 
   try {
-    await page.goto(WEB_URL + path)
+    await page.goto(url.toString())
     await page.waitForTimeout(300) // wait for history graph
     const element = await page.$('.sharepic')
     if (element == null) {
