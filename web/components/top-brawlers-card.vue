@@ -6,7 +6,7 @@
   >
     <div slot="actions">
       <b-button
-        :to="localePath(`/draft-tool`)"
+        :to="localePath(`/team-builder`)"
         primary
         sm
       >
