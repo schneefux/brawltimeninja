@@ -149,7 +149,7 @@ export default defineComponent({
       synergyData.value = await getSynergyData()
     })
 
-    const picksThreshold = 200 // half the power of an A/B test with p=55%, min. effect 10%
+    const picksThreshold = 30
     const allyData = computed(() => {
       let contributingWinRatesByBrawler: Record<string, number[]> = {}
 

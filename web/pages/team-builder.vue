@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { CubeQuery } from '~/klicker'
 import { CSlicer } from '~/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
 import { convertToSlices } from '~/klicker/composables/link'
+import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     DraftGrid,
     CSlicer,
@@ -62,23 +62,27 @@ export default Vue.extend({
     screen: 'brawlers',
   },
   middleware: ['cached'],
-  data() {
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
+  setup() {
+    const route = useRoute()
+
+    const season = new Date()
+    season.setDate(season.getDate() - 7*4)
+    const seasonSlice = getSeasonEnd(season).toISOString().slice(0, 10)
+
+    const query = ref<CubeQuery>({
+      cubeId: 'map',
+      dimensionsIds: [],
+      measurementsIds: ['picks'],
+      sortId: 'picks',
+      slices: convertToSlices(route.value, {
+        season: [seasonSlice],
+        trophyRangeGte: ['0'],
+        mode: [],
+      }),
+    })
 
     return {
-      query: <CubeQuery>{
-        cubeId: 'map',
-        dimensionsIds: [],
-        measurementsIds: ['picks'],
-        sortId: 'picks',
-        slices: convertToSlices(this.$route, {
-          season: [currentSeason.toISOString().slice(0, 10)],
-          trophyRangeGte: ['0'],
-          mode: [],
-        }),
-      },
+      query,
     }
   },
 })
