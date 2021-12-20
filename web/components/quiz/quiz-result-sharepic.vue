@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { QuizResult } from './quiz-result.vue'
+import { QuizResult } from './quiz-result-card.vue'
 
 export default defineComponent({
   props: {

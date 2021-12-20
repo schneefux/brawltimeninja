@@ -63,7 +63,13 @@
 import { computed, defineComponent, PropType, onMounted, useStore, useContext, wrapProperty } from '@nuxtjs/composition-api'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import { QuizResult } from './quiz-result.vue'
+
+export interface QuizResult {
+  score: OEJTSEntry
+  id: string
+  name: string
+  similarity: number
+}
 
 function similarity(o1: OEJTSEntry, o2: OEJTSEntry) {
   // use scalar product because o1 and o2 are already -1 +1 normalized
@@ -103,7 +109,7 @@ export default defineComponent({
       const params = new URLSearchParams({
         id: mostSimilarBrawler.value.id,
         name: mostSimilarBrawler.value.name,
-        similarity: mostSimilarBrawler.value.similarity,
+        similarity: mostSimilarBrawler.value.similarity.toString(),
       })
       Object.entries(mostSimilarBrawler.value.score).forEach(
         ([attribute, value]) => params.append(attribute, value.toFixed(2)))
