@@ -70,6 +70,9 @@ app.use(async (ctx, next) => {
     const buffer = await element.screenshot({ type: 'png' })
 
     ctx.set('Cache-Control', `public, max-age=${maxage}`)
+    if ('download' in ctx.request.query) {
+      ctx.set('Content-Disposition', 'attachment')
+    }
     ctx.length = buffer.length
     ctx.lastModified = new Date()
     ctx.type = 'image/png'
