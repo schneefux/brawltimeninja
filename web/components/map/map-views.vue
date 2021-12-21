@@ -12,8 +12,8 @@
 
     <template v-slot:totals="data">
       <div class="flex flex-wrap items-end">
-        <v-sample-size full-heigth v-bind="data"></v-sample-size>
-        <v-last-update full-heigth v-bind="data"></v-last-update>
+        <v-sample-size full-height v-bind="data"></v-sample-size>
+        <v-last-update full-height v-bind="data"></v-last-update>
       </div>
     </template>
 
