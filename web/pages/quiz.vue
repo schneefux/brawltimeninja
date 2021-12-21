@@ -54,16 +54,16 @@ export default defineComponent({
     const restart = () => {
       oejtsResult.value = undefined
       gtag.event('click', {
-        'event_category': 'oejts',
+        'event_category': 'quiz',
         'event_label': 'restart',
       })
     }
 
     const setResult = (r: OEJTSEntry) => {
       oejtsResult.value = r
-      gtag.event('step', {
-        'event_category': 'oejts',
-        'event_label': 'result',
+      gtag.event('click', {
+        'event_category': 'quiz',
+        'event_label': 'end',
       })
     }
 

@@ -492,6 +492,10 @@ export default Vue.extend({
   methods: {
     setColor(c: Color) {
       this.userColor = c
+      this.$gtag.event('click', {
+        'event_category': 'quiz',
+        'event_label': 'start',
+      })
       this.step++
     },
     setOpenness(o: number) {
@@ -508,6 +512,10 @@ export default Vue.extend({
       setTimeout(() => {
         const result = closestBrawler(this.userTrait).name
         this.setPersonalityTestResult(result)
+        this.$gtag.event('click', {
+          'event_category': 'quiz',
+          'event_label': 'end',
+        })
         this.result = result
         this.step++
       }, 3000)

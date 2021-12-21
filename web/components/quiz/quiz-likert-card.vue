@@ -80,12 +80,21 @@ export default defineComponent({
 
     const gtag = useGtag()
     const next = () => {
+      if (page.value == 0) {
+        gtag.event('click', {
+          'event_category': 'quiz',
+          'event_label': 'start',
+        })
+      }
+
       page.value++
+
       gtag.event('step', {
         'event_category': 'oejts',
-        'event_label': page.toString(),
-        'value': page,
+        'event_label': page.value.toString(),
+        'value': page.value,
       })
+
       if (page.value == pages.value) {
         const result = Object.entries(oejtsAnswers.value).reduce((scores, [id, answer]) => ({
           ie: scores.ie + oejtsScores[id].ie * (answer - 2.5)/5,
