@@ -40,15 +40,16 @@
       </p>
     </div>
     <div slot="actions" class="mx-auto">
-      <b-button
-        :href="sharepicUrl"
-        target="_blank"
-        tag="a"
+      <share-render-button
+        :embed-url="sharepicEmbedUrl"
+        :url="quizRootUrl"
+        :title="$t('player.quiz.result.title', { brawler: mostSimilarBrawler.name })"
+        :text="$t('player.quiz.result.description', { brawler: mostSimilarBrawler.name })"
         class="inline-block"
         primary
         md
-        @click="sharepicTriggered"
-      >{{ $t('action.share') }}</b-button>
+        @share="sharepicTriggered"
+      ></share-render-button>
       <b-button
         slot="actions"
         primary
@@ -85,7 +86,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config } = useContext()
+    const { localePath } = useContext()
     const store = useStore()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
@@ -105,7 +106,8 @@ export default defineComponent({
     })
     onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
 
-    const sharepicUrl = computed(() => {
+    const quizRootUrl = computed(() => (process.client ? window.location.origin : '') + localePath('/quiz'))
+    const sharepicEmbedUrl = computed(() => {
       const params = new URLSearchParams({
         id: mostSimilarBrawler.value.id,
         name: mostSimilarBrawler.value.name,
@@ -113,7 +115,7 @@ export default defineComponent({
       })
       Object.entries(mostSimilarBrawler.value.score).forEach(
         ([attribute, value]) => params.append(attribute, value.toFixed(2)))
-      return $config.renderUrl + `/embed/quiz?` + params.toString()
+      return `/embed/quiz?${params.toString()}`
     })
 
     const gtag = useGtag()
@@ -123,7 +125,8 @@ export default defineComponent({
     })
 
     return {
-      sharepicUrl,
+      quizRootUrl,
+      sharepicEmbedUrl,
       sharepicTriggered,
       mostSimilarBrawler,
     }

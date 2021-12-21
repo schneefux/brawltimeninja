@@ -20,15 +20,14 @@
             ...
           </p>
 
-          <b-button
-            :href="sharepicUrl"
-            target="_blank"
-            tag="a"
+          <share-render-button
+            :embed-url="`/embed/profile/${player.tag}`"
+            :url="playerUrl"
             class="inline-block mb-1"
             secondary
             sm
-            @click="sharepicTriggered"
-          >{{ $t('action.share') }}</b-button>
+            @share="sharepicTriggered"
+          ></share-render-button>
         </div>
       </bigstat>
 
@@ -192,8 +191,8 @@ export default Vue.extend({
         },
       }
     },
-    sharepicUrl(): string {
-      return this.$config.renderUrl + `/embed/profile/${this.player.tag}`
+    playerUrl() {
+      return (process.client ? window.location.origin : '') + this.localePath('/player/' + this.player.tag)
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
