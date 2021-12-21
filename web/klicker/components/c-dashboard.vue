@@ -46,6 +46,7 @@
         ...query,
         dimensionsIds: [],
         measurementsIds: metaMetrics,
+        sortId: metaMetrics[0],
         comparing: false,
       }"
     >
