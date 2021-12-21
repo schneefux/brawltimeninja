@@ -191,7 +191,7 @@ export default Vue.extend({
         },
       }
     },
-    playerUrl() {
+    playerUrl(): string {
       return (process.client ? window.location.origin : '') + this.localePath('/player/' + this.player.tag)
     },
     ...mapState({
