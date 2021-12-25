@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
     :title="$t('metric.balance-rating')"
     size="w-44"
@@ -45,13 +45,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { comparing } = useCubeResponse(props)
-
-    const show = computed(() => props.response.query.dimensionsIds.length == 1
-      && props.response.query.dimensionsIds[0] == 'brawler'
-      && props.response.data.length > 0
-      && props.response.data[0].measurementsRaw.useRate != undefined
-      && !comparing.value)
+    const { applicable } = useCubeResponse('v-gini', props)
 
     const giniScore = computed((): number => {
       const getStat = (r: MetaGridEntry) => r.measurementsRaw.useRate as number
@@ -88,7 +82,7 @@ export default defineComponent({
     ]
 
     return {
-      show,
+      applicable,
       giniScore,
       giniScoreWords,
     }

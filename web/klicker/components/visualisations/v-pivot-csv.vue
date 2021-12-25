@@ -1,6 +1,6 @@
 <template>
   <b-button
-    v-if="show"
+    v-if="applicable"
     slot="content"
     class="my-1"
     secondary
@@ -28,12 +28,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
-
-    const show = () => props.response.data.length > 0
-        && dimensions.value.filter(d => d.type == 'temporal').length == 1
-        && dimensions.value.filter(m => m.type == 'nominal').length == 1
-        && measurements.value.length == 1
+    const { dimensions, measurements, applicable } = useCubeResponse('v-pivot-csv', props)
 
     const download = () => {
       const temporal = dimensions.value.filter(d => d.type == 'temporal')[0]
@@ -65,7 +60,7 @@ export default defineComponent({
     }
 
     return {
-      show,
+      applicable,
       download,
     }
   },

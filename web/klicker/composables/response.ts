@@ -1,7 +1,7 @@
 import { computed, useContext, toRef, Ref } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 
-export const useCubeResponse = (props: { response: CubeResponse|CubeComparingResponse }) => {
+export const useCubeResponse = (component: string, props: { response: CubeResponse|CubeComparingResponse }) => {
   const { $klicker } = useContext()
 
   const comparing = computed(() => props.response.kind == 'comparingResponse')
@@ -57,11 +57,21 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
     }
   }
 
+  const applicable = computed(() => {
+    const spec = $klicker.visualisations.find(v => v.component == component)
+    if (spec == undefined) {
+      throw new Error('Missing visualisation spec for ' + component)
+    }
+
+    return spec.applicable(dimensions.value, measurements.value, props.response.data.length, comparing.value, props.response.data)
+  })
+
   return {
     $klicker,
     comparing,
     dimensions,
     measurements,
     switchResponse,
+    applicable,
   }
 }

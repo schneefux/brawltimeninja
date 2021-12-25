@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
     title="Margin of error"
     size="w-40"
@@ -51,13 +51,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore<any>()
-    const { comparing } = useCubeResponse(props)
-
-    const show = computed(() => props.response.query.dimensionsIds.length == 1
-      && props.response.query.dimensionsIds[0] == 'brawler'
-      && props.response.data.length > 0
-      && props.response.data[0].measurementsRaw.picks != undefined
-      && !comparing.value)
+    const { applicable } = useCubeResponse('v-moe', props)
 
     const moe = computed((): number => {
       // margin of error
@@ -73,7 +67,7 @@ export default defineComponent({
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
 
     return {
-      show,
+      applicable,
       moe,
       moePercent,
     }

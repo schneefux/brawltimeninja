@@ -1,6 +1,6 @@
 <template>
   <b-button
-    v-if="show"
+    v-if="applicable"
     slot="content"
     class="my-1"
     secondary
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
@@ -28,10 +28,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    const show = computed(() => props.response.data.length > 0)
-    const { dimensions, measurements } = useCubeResponse(props)
+    const { $klicker, dimensions, measurements, applicable } = useCubeResponse('v-csv', props)
 
     const download = () => {
       const header = (<string[]>[]).concat(
@@ -53,7 +50,7 @@ export default defineComponent({
     }
 
     return {
-      show,
+      applicable,
       download,
     }
   },

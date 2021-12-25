@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <b-vega
@@ -35,18 +35,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { dimensions, measurements, comparing } = useCubeResponse(props)
-
-    const show = computed(() => {
-      if (dimensions.value.length == 2 && measurements.value.length == 1 && props.response.data.length > 1) {
-        const uniqueX = new Set(props.response.data.map(d => d.dimensions[dimensions.value[0].id])).size
-        const uniqueY = new Set(props.response.data.map(d => d.dimensions[dimensions.value[1].id])).size
-
-        // less than 50% gaps
-        return props.response.data.length > 0.5 * uniqueX * uniqueY
-      }
-      return false
-    })
+    const { dimensions, measurements, comparing, applicable } = useCubeResponse('v-heatmap', props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
@@ -98,7 +87,7 @@ export default defineComponent({
     })
 
     return {
-      show,
+      applicable,
       spec,
     }
   },

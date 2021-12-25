@@ -39,6 +39,7 @@
     "vue-google-adsense": "^1.10.1",
     "vue-gtag": "^1.16.1",
     "vue-lazy-hydration": "^2.0.0-beta.4",
+    "vue-moveable": "^1.8.11",
     "vue-observe-visibility": "^1.0.0",
     "vue-range-component": "git+https://github.com/xwpongithub/vue-range-slider.git",
     "vue-script2": "^2.1.0",

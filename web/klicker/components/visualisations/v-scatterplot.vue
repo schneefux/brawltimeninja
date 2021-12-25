@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <b-vega
@@ -34,13 +34,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponse(props)
-
-    const show = computed(() =>
-      dimensions.value.length == 1
-      && measurements.value.length == 2
-      && props.response.data.length > 1
-      && props.response.data.length < 1000)
+    const { $klicker, dimensions, measurements, applicable } = useCubeResponse('v-scatterplot', props)
 
     const spec = computed<VisualizationSpec>(() => {
       const measurement0 = measurements.value[0]
@@ -102,7 +96,7 @@ export default defineComponent({
     })
 
     return {
-      show,
+      applicable,
       spec,
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <!-- FIXME SSR sometimes breaks due to inheritAttrs and b-card (?) -->
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <div slot="content" class="h-full relative">
@@ -71,8 +71,7 @@ export default defineComponent({
   setup(props) {
     const { route, i18n } = useContext()
 
-    const show = computed(() => props.response.kind == 'comparingResponse' || props.response.query.measurementsIds.length < 5)
-    const { $klicker, dimensions, measurements } = useCubeResponse(props)
+    const { $klicker, dimensions, measurements, applicable } = useCubeResponse('v-table', props)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
@@ -113,7 +112,7 @@ export default defineComponent({
     const showLink = computed(() => route.value.path != '/dashboard')
 
     return {
-      show,
+      applicable,
       link,
       rows,
       columns,

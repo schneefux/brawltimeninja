@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <div
@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 
@@ -90,15 +90,13 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
-
-    const show = computed(() => props.response.query.measurementsIds.length > 1)
+    const { dimensions, measurements, applicable } = useCubeResponse('v-grid', props)
 
     const page = ref(0)
     watch(() => props.response.data, () => page.value = 0)
 
     return {
-      show,
+      applicable,
       page,
       dimensions,
       measurements,

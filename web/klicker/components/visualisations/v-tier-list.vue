@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <template v-slot:content>
@@ -81,18 +81,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { measurements } = useCubeResponse(props)
-
-    const show = computed(() => props.response.query.dimensionsIds.length == 1
-      && props.response.query.measurementsIds.length == 1
-      && props.response.data.length > 5
-      && props.response.data.length < 100
-    )
-
+    const { measurements, applicable } = useCubeResponse('v-tier-list', props)
     const tiers = computed(() => groupTiers(props.response.data, measurements.value[0]))
 
     return {
-      show,
+      applicable,
       tiers,
     }
   },

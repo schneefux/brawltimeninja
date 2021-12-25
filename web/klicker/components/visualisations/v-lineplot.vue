@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <b-vega
@@ -35,15 +35,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { $klicker, dimensions, measurements, switchResponse, comparing } = useCubeResponse(props)
-
-    const show = computed(() =>
-      dimensions.value.length == 1 &&
-      ['temporal', 'ordinal'].includes(dimensions.value[0].type) &&
-      measurements.value.length == 1 &&
-      props.response.data.length > 1 &&
-      props.response.data.length < 1000
-    )
+    const { $klicker, dimensions, measurements, switchResponse, comparing, applicable } = useCubeResponse('v-lineplot', props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
@@ -161,7 +153,7 @@ export default defineComponent({
     })
 
     return {
-      show,
+      applicable,
       spec,
     }
   },

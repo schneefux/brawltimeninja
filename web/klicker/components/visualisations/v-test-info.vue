@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
     :title="$t('comparison.test.info.title')"
   >
@@ -52,14 +52,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, comparing, measurements } = useCubeResponse(props)
+    const { $klicker, applicable, measurements } = useCubeResponse('v-test-info', props)
 
-    const show = computed(() => comparing.value && measurements.value[0].statistics?.test != undefined)
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
     const testName = computed(() => measurements.value[0].statistics?.test?.name)
 
     return {
-      show,
+      applicable,
       metricName,
       testName,
     }

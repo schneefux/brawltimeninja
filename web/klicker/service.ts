@@ -1,16 +1,21 @@
-import { Config, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry } from "~/klicker"
+import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import { capitalizeWords } from "~/lib/util"
+import defaultVisualisations from "./visualisations"
 
 // TODO refactor clicker -> move all functions into here
 
 export default class Klicker {
   private cubejsApi: CubejsApi
+  public visualisations: VisualisationSpec[] = defaultVisualisations
 
-  constructor(cubeUrl: string, public config: Config) {
+  constructor(cubeUrl: string,
+      public config: Config,
+      visualisations: VisualisationSpec[]) {
     this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
+    this.visualisations = defaultVisualisations.concat(visualisations)
   }
 
   // override

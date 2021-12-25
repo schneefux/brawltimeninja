@@ -130,6 +130,13 @@ export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
 export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 
+export interface VisualisationSpec {
+  name: string
+  component: string
+  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+}
+
 export interface ConfidenceInterval {
   lower: number
   mean: number

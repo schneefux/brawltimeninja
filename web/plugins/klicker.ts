@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import config from '~/lib/klicker.conf'
 import { Context, Plugin } from "@nuxt/types"
-import { Config, SliceValue, ValueType } from "~/klicker"
+import { Config, SliceValue, ValueType, VisualisationSpec } from "~/klicker"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatMode, getCurrentSeasonEnd, idToTag } from "~/lib/util"
 import Klicker from '~/klicker/service'
 import { CQuery } from '~/klicker/components'
+import visualisations from '~/lib/klicker.visualisations.conf'
 
 export interface EventMetadata {
   battle_event_id: number
@@ -41,8 +42,11 @@ declare module 'vuex/types/index' {
 }
 
 class KlickerService extends Klicker {
-  constructor(cubeUrl: string, public config: Config, private context: Context) {
-    super(cubeUrl, config)
+  constructor(cubeUrl: string,
+      config: Config,
+      visualisations: VisualisationSpec[],
+      private context: Context) {
+    super(cubeUrl, config, visualisations)
   }
 
   // override Klicker.$t
@@ -193,7 +197,7 @@ class KlickerService extends Klicker {
 
 const plugin: Plugin = (context, inject) => {
   Vue.component('c-query', CQuery)
-  const klickerService = new KlickerService(context.$config.cubeUrl, config, context)
+  const klickerService = new KlickerService(context.$config.cubeUrl, config, visualisations, context)
   inject('klicker', klickerService)
 }
 

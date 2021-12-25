@@ -1,6 +1,6 @@
 <template>
   <b-vega
-    v-if="show"
+    v-if="applicable"
     :spec="spec"
     full-width
     full-height
@@ -26,13 +26,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
-
-    const show = computed(() => dimensions.value.length == 1 &&
-      dimensions.value[0].type == 'temporal' &&
-      measurements.value.length == 1 &&
-      props.response.data.length > 1 &&
-      props.response.data.length < 1000)
+    const { dimensions, measurements, applicable } = useCubeResponse('v-lineplot-raw', props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
@@ -63,7 +57,7 @@ export default defineComponent({
     })
 
     return {
-      show,
+      applicable,
       spec,
     }
   },

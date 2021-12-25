@@ -1,6 +1,6 @@
 <template>
   <b-horizontal-scroller
-    v-if="show"
+    v-if="applicable"
     class="relative"
     expand-on-desktop
   >
@@ -76,13 +76,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, measurements, dimensions, switchResponse } = useCubeResponse(props)
-
-    const show = computed(() =>
-      dimensions.value.length == 1 &&
-      measurements.value.length == 1 &&
-      props.response.data.length > 0 &&
-      props.response.data.length < 10)
+    const { $klicker, measurements, switchResponse, applicable } = useCubeResponse('v-roll', props)
 
     const cards = computed(() =>
       switchResponse(response => props.response.data.map(e => ({
@@ -106,7 +100,7 @@ export default defineComponent({
       }))))
 
     return {
-      show,
+      applicable,
       cards,
     }
   },

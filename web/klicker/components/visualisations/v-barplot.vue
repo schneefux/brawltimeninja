@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-if="show"
+    v-if="applicable"
     v-bind="$attrs"
   >
     <b-vega
@@ -35,15 +35,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { $klicker, comparing, dimensions, measurements, switchResponse } = useCubeResponse(props)
-
-    const show = computed(() =>
-      dimensions.value.length == 1 &&
-      ['ordinal', 'nominal'].includes(dimensions.value[0].type) &&
-      measurements.value.length == 1 &&
-      props.response.data.length > 1 &&
-      props.response.data.length < 100
-    )
+    const { $klicker, comparing, dimensions, measurements, switchResponse, applicable } = useCubeResponse('v-barplot', props)
 
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
@@ -172,7 +164,7 @@ export default defineComponent({
     })
 
     return {
-      show,
+      applicable,
       spec,
     }
   },
