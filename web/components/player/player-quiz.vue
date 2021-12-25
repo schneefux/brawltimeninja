@@ -534,7 +534,7 @@ export default Vue.extend({
         await navigator.share({
           title: this.$t('player.quiz.result.title', { brawler: this.result }) as string,
           text: this.$t('player.quiz.result.description', { brawler: this.result }) as string,
-          url: 'https://brawltime.ninja',
+          url: 'https://brawltime.ninja/quiz?utm_source=share&utm_medium=text&utm_campaign=quiz',
         })
         this.$gtag.event('click', {
           'event_category': 'quiz',

@@ -106,7 +106,9 @@ export default defineComponent({
     })
     onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
 
-    const quizRootUrl = computed(() => (process.client ? window.location.origin : '') + localePath('/quiz'))
+    const quizRootUrl = computed(() => (process.client ? window.location.origin : '')
+      + localePath('/quiz')
+      + '?utm_source=share&utm_medium=image&utm_campaign=quiz')
     const sharepicEmbedUrl = computed(() => {
       const params = new URLSearchParams({
         id: mostSimilarBrawler.value.id,

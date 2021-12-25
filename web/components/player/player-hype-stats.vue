@@ -192,7 +192,9 @@ export default Vue.extend({
       }
     },
     playerUrl(): string {
-      return (process.client ? window.location.origin : '') + this.localePath('/player/' + this.player.tag)
+      return (process.client ? window.location.origin : '')
+        + this.localePath('/player/' + this.player.tag)
+        + '?utm_source=share&utm_medium=image&utm_campaign=hype-stats'
     },
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
