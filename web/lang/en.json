@@ -19,6 +19,7 @@
     "action.open.tier-list.mode": "Open {mode} Tier List",
     "action.open.tier-list.starpower": "Open Star Power Tier List",
     "action.read": "Read",
+    "action.next": "Next",
     "action.refresh": "Refresh",
     "action.restart": "Restart",
     "action.search": "Search",

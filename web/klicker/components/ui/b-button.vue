@@ -33,10 +33,12 @@ export default Vue.extend({
   functional: true,
   props: {
     tag: {
-      type: String
+      type: String,
+      required: false
     },
     to: {
-      type: [String, Object]
+      type: [String, Object],
+      required: false
     },
     selected: {
       type: Boolean,
