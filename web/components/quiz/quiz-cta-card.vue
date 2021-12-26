@@ -1,18 +1,20 @@
 <template>
   <b-card
     v-if="result == undefined"
-    title="What is your Brawler Personality?"
-    :subtitle="`Answer ${Object.keys(oejtsScores).length} questions to find out!`"
+    title="Brawler Personality Test"
     md
   >
-    <quiz-likert
-      slot="content"
-      :value="{}"
-      :start="0"
-      :end="1"
-      @input="onTrigger"
-    ></quiz-likert>
-    <img slot="preview" class="w-12 md:w-10 my-2" src="~/assets/images/Ranged_Bot.png">
+    <div slot="content" class="relative">
+      <p class="font-semibold text-center">Are you an artistic or scientific person?</p>
+      <quiz-likert
+        slot="content"
+        :value="{}"
+        :start="0"
+        :end="1"
+        @input="onTrigger"
+      ></quiz-likert>
+      <img class="absolute bottom-0 right-2 hidden md:inline w-10" src="~/assets/images/Ranged_Bot.png">
+    </div>
   </b-card>
 
   <b-card
