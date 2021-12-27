@@ -33,7 +33,7 @@
 
         <c-dashboard
           v-model="query"
-          elevation="2"
+          :elevation="2"
         >
           <template v-slot:slices="data">
             <s-season v-bind="data"></s-season>
@@ -56,7 +56,10 @@
                 <v-csv class="flex-1" v-bind="data"></v-csv>
                 <v-pivot-csv class="flex-1" v-bind="data"></v-pivot-csv>
               </div>
-              <v-table class="w-full" v-bind="data">
+              <v-table
+                v-bind="data"
+                :card="{ ...data.card, size: 'w-full' }"
+              >
                 <template v-slot:dimensions="data">
                   <div class="flex flex-wrap items-center">
                     <d-brawler v-bind="data"></d-brawler>

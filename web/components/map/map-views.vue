@@ -1,7 +1,7 @@
 <template>
   <c-dashboard
     v-model="query"
-    elevation="2"
+    :elevation="2"
     class="lg:justify-center"
   >
     <template v-slot:slices="data">
@@ -12,8 +12,14 @@
 
     <template v-slot:totals="data">
       <div class="flex flex-wrap items-end">
-        <v-sample-size full-height v-bind="data"></v-sample-size>
-        <v-last-update full-height v-bind="data"></v-last-update>
+        <v-sample-size
+          v-bind="data"
+          :card="true"
+        ></v-sample-size>
+        <v-last-update
+          v-bind="data"
+          :card="true"
+        ></v-last-update>
       </div>
     </template>
 
@@ -28,7 +34,6 @@
           :id="id"
           :map="map"
           class="row-span-2"
-          full-height
         ></map-image>
 
         <map-best-brawlers-table
@@ -39,7 +44,6 @@
           :id="id"
           :slices="query.slices"
           class="row-span-2"
-          full-height
         ></map-best-brawlers-table>
 
         <map-best-teams-table
@@ -51,7 +55,6 @@
           :id="id"
           :slices="query.slices"
           class="row-span-2"
-          full-height
         ></map-best-teams-table>
 
         <map-best-players-table
@@ -62,7 +65,6 @@
           :id="id"
           :slices="query.slices"
           class="row-span-2"
-          full-height
         ></map-best-players-table>
 
         <map-best-starpowers-table
@@ -74,7 +76,6 @@
           :slices="query.slices"
           class="row-span-2"
           kind="starpowers"
-          full-height
         ></map-best-starpowers-table>
 
         <map-best-starpowers-table
@@ -86,7 +87,6 @@
           :slices="query.slices"
           class="row-span-2"
           kind="gadgets"
-          full-height
         ></map-best-starpowers-table>
 
         <client-only>
@@ -108,7 +108,6 @@
           :id="id"
           :slices="query.slices"
           class="row-span-2"
-          full-height
         ></map-insights>
 
         <lazy

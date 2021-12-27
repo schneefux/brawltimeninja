@@ -448,5 +448,8 @@
     "action.open.draft-tool": "Open Team Builder",
     "nav.Team Builder": "Team Builder",
     "mode.duels": "Duels",
-    "draft-tool.not-enough-data": "Not enough data to calculate win rates for some Brawlers. Select a broader filter!"
+    "draft-tool.not-enough-data": "Not enough data to calculate win rates for some Brawlers. Select a broader filter!",
+    "metric.last-update": "Last Update",
+    "metric.margin-of-error": "Margin of Error",
+    "metric.sample-size": "Sample Size"
 }

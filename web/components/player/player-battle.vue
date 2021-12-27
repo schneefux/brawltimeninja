@@ -3,8 +3,8 @@
     :mode="battle.event.mode"
     :map="battle.event.map"
     :id="battle.event.id"
+    :elevation="2"
     size="w-80 md:w-120"
-    elevation="2"
   >
     <div
       slot="infobar"

@@ -1,14 +1,14 @@
 <template>
-  <!-- FIXME SSR sometimes breaks due to inheritAttrs and b-card (?) -->
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
+  <v-card-wrapper
+    v-bind="$props"
+    component="v-table"
   >
     <div slot="content" class="h-full relative">
       <b-table
         :columns="columns"
         :rows="rows"
         :page-size="pageSize"
+        :no-paginator="card == undefined"
         id-key="id"
         class="font-semibold text-sm md:text-lg h-full overflow-auto"
         ranked
@@ -37,28 +37,35 @@
         ></font-awesome-icon>
       </b-button>
     </div>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { CubeResponse, CubeComparingResponse } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
-import BCard from '~/klicker/components/ui/b-card.vue'
 import { Location } from 'vue-router'
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponse } from '~/klicker/composables/response'
 import { convertQueryToLocation } from '~/klicker/composables/link'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
   components: {
     BTable,
-    BCard,
     BButton,
+    VCardWrapper,
   },
-  inheritAttrs: false,
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
@@ -71,7 +78,7 @@ export default defineComponent({
   setup(props) {
     const { route, i18n } = useContext()
 
-    const { $klicker, dimensions, measurements, applicable } = useCubeResponse('v-table', props)
+    const { $klicker, dimensions, measurements } = useCubeResponse(props)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
@@ -109,10 +116,9 @@ export default defineComponent({
       path: '/dashboard',
     })
 
-    const showLink = computed(() => route.value.path != '/dashboard')
+    const showLink = computed(() => props.card != undefined && route.value.path != '/dashboard')
 
     return {
-      applicable,
       link,
       rows,
       columns,

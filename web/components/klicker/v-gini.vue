@@ -1,10 +1,8 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
-    :title="$t('metric.balance-rating')"
-    size="w-44"
-    dense
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: $t('metric.balance-rating'), size: 'w-44', dense: true }"
+    component="v-gini"
   >
     <b-button
       slot="preview"
@@ -28,25 +26,33 @@
       <br>
       <span class="text-xs">{{ $t('metric.gini-coefficient') }}: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}</span>
     </p>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse, MetaGridEntry } from '~/klicker'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
+  components: {
+    VCardWrapper,
+  },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
-    const { applicable } = useCubeResponse('v-gini', props)
-
     const giniScore = computed((): number => {
       const getStat = (r: MetaGridEntry) => r.measurementsRaw.useRate as number
 
@@ -82,7 +88,6 @@ export default defineComponent({
     ]
 
     return {
-      applicable,
       giniScore,
       giniScoreWords,
     }

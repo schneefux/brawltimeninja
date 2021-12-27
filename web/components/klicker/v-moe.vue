@@ -1,10 +1,8 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
-    title="Margin of error"
-    size="w-40"
-    dense
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: $t('metric.margin-of-error'), size: 'w-40', dense: true }"
+    component="v-moe"
   >
     <p
       slot="content"
@@ -33,17 +31,27 @@
         </template>
       </span>
     </p>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
+  components: {
+    VCardWrapper,
+  },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
@@ -51,7 +59,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore<any>()
-    const { applicable } = useCubeResponse('v-moe', props)
 
     const moe = computed((): number => {
       // margin of error
@@ -67,7 +74,6 @@ export default defineComponent({
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
 
     return {
-      applicable,
       moe,
       moePercent,
     }

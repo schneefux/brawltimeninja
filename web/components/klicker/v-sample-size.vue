@@ -1,10 +1,8 @@
 <template>
-  <b-card
-    v-if="show"
-    v-bind="$attrs"
-    title="Sample Size"
-    size="w-32"
-    dense
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: $t('metric.sample-size'), size: 'w-32', dense: true }"
+    component="v-sample-size"
   >
     <p
       v-if="sample == 0"
@@ -21,26 +19,34 @@
     >
       {{ sampleFormatted }} Battles
     </p>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { formatSI } from '~/lib/util'
+import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
+  components: {
+    VCardWrapper,
+  },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
-    const show = computed(() => props.response.data.length > 0 &&
-      props.response.data[0].measurementsRaw.picks != undefined)
-
     const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
 
     const sampleFormatted = computed(() => {
@@ -57,7 +63,6 @@ export default defineComponent({
     })
 
     return {
-      show,
       sample,
       sampleFormatted,
     }

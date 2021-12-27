@@ -3,8 +3,8 @@
     <b-card
       v-for="achievement in achievements"
       :key="achievement.metric"
+      :elevation="2"
       class="text-center"
-      elevation="2"
       light
     >
       <div slot="content">

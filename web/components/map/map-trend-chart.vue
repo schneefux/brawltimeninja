@@ -1,17 +1,16 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <v-line-plot
-        :title="title"
+      <v-lineplot
         v-bind="data"
-        full-height
-      ></v-line-plot>
+        :card="{ title, fullHeight: true, ...$attrs }"
+      ></v-lineplot>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import { CQuery, VLinePlot } from '~/klicker/components'
+import { CQuery, VLineplot } from '~/klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
@@ -20,7 +19,7 @@ import { capitalizeWords, getSeasonEnd } from '~/lib/util'
 export default defineComponent({
   components: {
     CQuery,
-    VLinePlot,
+    VLineplot,
   },
   props: {
     id: {

@@ -1,8 +1,8 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
-    :title="$t('comparison.test.info.title')"
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: $t('comparison.test.info.title') }"
+    component="v-test-info"
   >
     <div slot="content">
       <p>{{ $t('comparison.test.info.description', { testName, metricName }) }}</p>
@@ -31,34 +31,40 @@
         </tbody>
       </table>
     </div>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { CubeComparingResponse } from '~/klicker'
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import BCard from '~/klicker/components/ui/b-card.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
   components: {
-    BCard,
+    VCardWrapper,
   },
-  inheritAttrs: false,
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
-    const { $klicker, applicable, measurements } = useCubeResponse('v-test-info', props)
+    const { $klicker, measurements } = useCubeResponse(props)
 
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
     const testName = computed(() => measurements.value[0].statistics?.test?.name)
 
     return {
-      applicable,
       metricName,
       testName,
     }

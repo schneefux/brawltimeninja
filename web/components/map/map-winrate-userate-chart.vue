@@ -1,24 +1,23 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <v-scatter-plot
-        :title="title"
+      <v-scatterplot
         v-bind="data"
-        full-height
-      ></v-scatter-plot>
+        :card="{ title, fullHeight: true }"
+      ></v-scatterplot>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import { CQuery, VScatterPlot } from '~/klicker/components'
+import { CQuery, VScatterplot } from '~/klicker/components'
 import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
-    VScatterPlot,
+    VScatterplot,
     CQuery,
   },
   props: {

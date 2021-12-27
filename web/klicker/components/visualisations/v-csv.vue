@@ -1,7 +1,5 @@
 <template>
   <b-button
-    v-if="applicable"
-    slot="content"
     class="my-1"
     secondary
     sm
@@ -28,7 +26,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, dimensions, measurements, applicable } = useCubeResponse('v-csv', props)
+    const { $klicker, dimensions, measurements } = useCubeResponse(props)
 
     const download = () => {
       const header = (<string[]>[]).concat(
@@ -50,7 +48,6 @@ export default defineComponent({
     }
 
     return {
-      applicable,
       download,
     }
   },

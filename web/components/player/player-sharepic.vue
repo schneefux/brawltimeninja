@@ -60,10 +60,7 @@
           'h-36': player.club.tag == undefined,
         }"
       >
-        <history-graph
-          :player-tag="player.tag"
-          raw
-        >
+        <history-graph :player-tag="player.tag">
           <p
             slot="empty"
             class="px-20 pt-12 text-center"

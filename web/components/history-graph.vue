@@ -13,25 +13,21 @@
     }"
   >
     <template v-slot="data">
-      <v-line-plot-raw
-        v-if="raw"
-        v-bind="{ ...data, ...$attrs }"
-        full-height
-      ></v-line-plot-raw>
-      <v-line-plot
-        v-else
-        v-bind="{ ...data, ...$attrs }"
-        full-height
-      ></v-line-plot>
+      <v-lineplot
+        v-bind="data"
+        :card="card"
+      ></v-lineplot>
     </template>
 
     <template v-slot:empty>
       <slot name="empty"></slot>
     </template>
-    <template v-slot:placeholder>
+    <template
+      v-if="card"
+      v-slot:placeholder
+    >
       <b-card
-        v-bind="$attrs"
-        full-height
+        v-bind="card"
         loading
       >
         <template v-slot:content>
@@ -43,18 +39,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
-import { VLinePlot, VLinePlotRaw } from '~/klicker/components'
+import { VLineplot } from '~/klicker/components'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
-    VLinePlot,
-    VLinePlotRaw,
+    VLineplot,
   },
-  inheritAttrs: false,
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
     brawler: {
       type: String,
     },
@@ -66,14 +64,16 @@ export default Vue.extend({
       type: Boolean
     },
   },
-  computed: {
-    season() {
-      const d = new Date()
-      return formatClickhouse(getSeasonEnd(subMonths(d, 3)))
-    },
-    playerId() {
-      return tagToId(this.playerTag)
-    },
+  setup(props) {
+    const d = new Date()
+    const season = formatClickhouse(getSeasonEnd(subMonths(d, 3)))
+
+    const playerId = computed(() => tagToId(props.playerTag))
+
+    return {
+      season,
+      playerId,
+    }
   },
 })
 </script>

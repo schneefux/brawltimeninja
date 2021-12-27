@@ -42,8 +42,8 @@
       <history-graph
         v-if="enableClickerStats"
         :player-tag="tag"
-        size="h-40"
-        md
+        :card="{ md: true, fullHeight: true }"
+        class="h-40"
       ></history-graph>
       <b-card
         v-else

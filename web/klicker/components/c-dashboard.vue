@@ -3,7 +3,7 @@
     <c-configurator
       v-if="configurator"
       v-model="query"
-      v-bind="$attrs"
+      :elevation="elevation"
       class="flex-auto"
       full-height
     ></c-configurator>
@@ -11,7 +11,7 @@
     <c-slicer
       v-if="'slices' in $scopedSlots"
       v-model="query"
-      v-bind="$attrs"
+      :elevation="elevation"
       :both="syncSlices"
       class="w-full md:w-auto"
       full-height
@@ -19,7 +19,7 @@
       <template v-slot="slices">
         <slot
           name="slices"
-          v-bind="{ ...slices, ...$attrs }"
+          v-bind="{ ...slices }"
         ></slot>
       </template>
     </c-slicer>
@@ -27,7 +27,7 @@
     <c-slicer
       v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
       v-model="query"
-      v-bind="$attrs"
+      :elevation="elevation"
       class="w-full md:w-auto"
       comparing
       full-height
@@ -51,7 +51,7 @@
       }"
     >
       <template v-slot="totals">
-        <slot name="totals" v-bind="{ ...totals, ...$attrs }"></slot>
+        <slot name="totals" v-bind="{ ...totals, card: elevation && { elevation } }"></slot>
       </template>
     </c-query>
 
@@ -62,15 +62,15 @@
       <template v-slot:error="data">
         <c-error
           slot="error"
-          v-bind="{ ...data, ...$attrs }"
+          v-bind="{ ...data, elevation }"
         ></c-error>
       </template>
       <template v-slot="data">
-        <slot name="data" v-bind="{ ...data, ...$attrs }"></slot>
+        <slot name="data" v-bind="{ ...data, card: elevation && { elevation } }"></slot>
       </template>
     </c-query>
 
-    <slot v-bind="{ ...$attrs, ...query }"></slot>
+    <slot v-bind="{ ...query }"></slot>
   </div>
 </template>
 
@@ -83,7 +83,6 @@ import CError from '~/klicker/components/c-error.vue'
 import { defineComponent, PropType, useContext, computed } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  inheritAttrs: false,
   components: {
     CSlicer,
     CConfigurator,
@@ -94,6 +93,10 @@ export default defineComponent({
     value: {
       type: Object as PropType<CubeQuery>,
       required: true
+    },
+    elevation: {
+      type: Number,
+      required: false
     },
     configurator: {
       type: Boolean,

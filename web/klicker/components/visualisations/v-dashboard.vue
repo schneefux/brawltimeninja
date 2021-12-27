@@ -11,82 +11,131 @@
       </div>
 
       <div class="w-full flex flex-wrap children-flex-auto">
-        <v-bar-plot
+        <v-if-applicable
           v-bind="$props"
-          class="h-80"
-          full-height
-        ></v-bar-plot>
+          component="v-barplot"
+        >
+          <v-barplot
+            :card="{ loading, fullHeight: true }"
+            v-bind="$props"
+            class="h-80"
+          ></v-barplot>
+        </v-if-applicable>
 
-        <v-scatter-plot
+        <v-if-applicable
           v-bind="$props"
-          class="h-80"
-          full-height
-        ></v-scatter-plot>
+          component="v-scatterplot"
+        >
+          <v-scatterplot
+            v-bind="$props"
+            :card="{ loading, fullHeight: true }"
+            full-height
+            class="h-80"
+          ></v-scatterplot>
+        </v-if-applicable>
 
-        <v-line-plot
+        <v-if-applicable
           v-bind="$props"
-          class="h-80"
-          full-height
-        ></v-line-plot>
+          component="v-lineplot"
+        >
+          <v-lineplot
+            :card="{ loading, fullHeight: true }"
+            v-bind="$props"
+            class="h-80"
+          ></v-lineplot>
+        </v-if-applicable>
 
-        <v-heatmap
+        <v-if-applicable
           v-bind="$props"
-          class="h-80"
-          full-height
-        ></v-heatmap>
+          component="v-heatmap"
+        >
+          <v-heatmap
+            :card="{ loading, fullHeight: true }"
+            v-bind="$props"
+            class="h-80"
+          ></v-heatmap>
+        </v-if-applicable>
       </div>
 
       <div class="w-full flex flex-wrap children-flex-auto">
-        <v-table
+        <v-if-applicable
           v-bind="$props"
-          full-height
+          component="v-table"
         >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
+          <v-table
+            v-bind="$props"
+            :card="{ fullHeight: true }"
           >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-table>
+            <template
+              v-for="(_, name) in $scopedSlots"
+              v-slot:[name]="data"
+            >
+              <slot
+                :name="name"
+                v-bind="data"
+              ></slot>
+            </template>
+          </v-table>
+        </v-if-applicable>
 
-        <v-tier-list
+        <v-if-applicable
           v-bind="$props"
-          full-height
+          component="v-tier-list"
         >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
+          <v-tier-list
+            v-bind="$props"
+            :card="{ fullHeight: true }"
           >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-tier-list>
+            <template
+              v-for="(_, name) in $scopedSlots"
+              v-slot:[name]="data"
+            >
+              <slot
+                :name="name"
+                v-bind="data"
+              ></slot>
+            </template>
+          </v-tier-list>
+        </v-if-applicable>
 
-        <v-grid
+        <v-if-applicable
           v-bind="$props"
-          full-height
+          component="v-grid"
         >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
+          <v-grid
+            v-bind="$props"
+            :card="{ fullHeight: true }"
           >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </v-grid>
+            <template
+              v-for="(_, name) in $scopedSlots"
+              v-slot:[name]="data"
+            >
+              <slot
+                :name="name"
+                v-bind="data"
+              ></slot>
+            </template>
+          </v-grid>
+        </v-if-applicable>
       </div>
 
-      <v-test-info lg v-bind="$props"></v-test-info>
+      <v-if-applicable
+        v-bind="$props"
+        component="v-test-info"
+      >
+        <v-test-info
+          :card="{ lg: true }"
+          v-bind="$props"
+        ></v-test-info>
+      </v-if-applicable>
 
       <div class="w-full flex flex-wrap gap-x-2">
-        <v-csv v-bind="$props"></v-csv>
+        <v-if-applicable
+          v-bind="$props"
+          component="v-csv"
+        >
+          <v-csv v-bind="$props"></v-csv>
+        </v-if-applicable>
         <v-share v-bind="$props"></v-share>
       </div>
     </client-only>
@@ -95,9 +144,9 @@
 
 <script lang="ts">
 import { CubeResponse } from '~/klicker'
-import VBarPlot from '~/klicker/components/visualisations/v-barplot.vue'
-import VScatterPlot from '~/klicker/components/visualisations/v-scatterplot.vue'
-import VLinePlot from '~/klicker/components/visualisations/v-lineplot.vue'
+import VBarplot from '~/klicker/components/visualisations/v-barplot.vue'
+import VScatterplot from '~/klicker/components/visualisations/v-scatterplot.vue'
+import VLineplot from '~/klicker/components/visualisations/v-lineplot.vue'
 import VHeatmap from '~/klicker/components/visualisations/v-heatmap.vue'
 import VTable from '~/klicker/components/visualisations/v-table.vue'
 import VTierList from '~/klicker/components/visualisations/v-tier-list.vue'
@@ -105,13 +154,14 @@ import VGrid from '~/klicker/components/visualisations/v-grid.vue'
 import VCsv from '~/klicker/components/visualisations/v-csv.vue'
 import VShare from '~/klicker/components/visualisations/v-share.vue'
 import VTestInfo from '~/klicker/components/visualisations/v-test-info.vue'
+import VIfApplicable from '~/klicker/components/visualisations/v-if-applicable'
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
-    VBarPlot,
-    VScatterPlot,
-    VLinePlot,
+    VBarplot,
+    VScatterplot,
+    VLineplot,
     VHeatmap,
     VTable,
     VTierList,
@@ -119,8 +169,13 @@ export default defineComponent({
     VCsv,
     VShare,
     VTestInfo,
+    VIfApplicable,
   },
   props: {
+    loading: {
+      type: Boolean,
+      required: false
+    },
     response: {
       type: Object as PropType<CubeResponse>,
       required: true,

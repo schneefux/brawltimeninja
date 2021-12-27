@@ -1,43 +1,41 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
+  <v-card-wrapper
+    v-bind="$props"
+    component="v-tier-list"
   >
-    <template v-slot:content>
-      <ul>
-        <li
-          v-for="(entries, tier) in tiers"
-          :key="tier"
-          class="my-4 flex"
-        >
-          <div class="w-6 mr-3 flex justify-center items-center">
-            <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
-          </div>
-          <ul class="w-full flex flex-wrap justify-start items-center">
-            <li
-              v-for="entry in entries"
-              :key="entry.id"
-              class="my-px"
-            >
-              <slot
-                name="dimensions"
-                :row="entry"
-              ></slot>
-            </li>
-          </ul>
-        </li>
-      </ul>
-
-      <div
-        v-if="response.query.dimensionsIds[0] == 'brawler'"
-        class="mt-2"
+    <ul slot="content">
+      <li
+        v-for="(entries, tier) in tiers"
+        :key="tier"
+        class="my-4 flex"
       >
-        <v-tier-list-sharepic
-          :tiers="tiers"
-        ></v-tier-list-sharepic>
-      </div>
-    </template>
-  </b-card>
+        <div class="w-6 mr-3 flex justify-center items-center">
+          <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
+        </div>
+        <ul class="w-full flex flex-wrap justify-start items-center">
+          <li
+            v-for="entry in entries"
+            :key="entry.id"
+            class="my-px"
+          >
+            <slot
+              name="dimensions"
+              :row="entry"
+            ></slot>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <div
+      v-if="response.query.dimensionsIds[0] == 'brawler'"
+      class="mt-2"
+    >
+      <v-tier-list-sharepic
+        :tiers="tiers"
+      ></v-tier-list-sharepic>
+    </div>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
@@ -48,6 +46,7 @@ import { scaleEntriesIntoTiers } from '~/klicker/util'
 import { computed, PropType } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { useCubeResponse } from '~/klicker/composables/response'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 // TODO decouple v-tier-list-sharepic
 
@@ -69,23 +68,30 @@ function groupTiers(entries: MetaGridEntry[], m: Measurement): TierList {
 }
 
 export default defineComponent({
-  inheritAttrs: false,
   components: {
+    VCardWrapper,
     BCard,
     VTierListSharepic,
   },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { measurements, applicable } = useCubeResponse('v-tier-list', props)
+    const { measurements } = useCubeResponse(props)
     const tiers = computed(() => groupTiers(props.response.data, measurements.value[0]))
 
     return {
-      applicable,
       tiers,
     }
   },

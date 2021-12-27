@@ -21,8 +21,8 @@
         :link="localePath(`/profile/${player.tag}`)"
         :icon="`/avatars/${player.icon}`"
         :icon-alt="player.name"
+        :elevation="2"
         size="w-40"
-        elevation="2"
         class="flex-shrink-0 whitespace-nowrap"
         itemscope
         itemtype="http://schema.org/Person"

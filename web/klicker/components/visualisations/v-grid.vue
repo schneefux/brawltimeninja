@@ -1,7 +1,7 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
+  <v-card-wrapper
+    v-bind="$props"
+    component="v-grid"
   >
     <div
       slot="content"
@@ -11,7 +11,7 @@
         v-for="(entry, index) in response.data.slice(page*pageSize, (page+1)*pageSize)"
         :key="entry.id"
         :title="dimensions.map(d => entry.dimensions[d.id]).join(', ')"
-        elevation="2"
+        :elevation="(card != undefined ? card.elevation : 1) + 1"
         itemscope
         itemtype="http://schema.org/Person"
       >
@@ -53,6 +53,7 @@
       </b-card>
     </div>
     <div
+      v-if="card != undefined"
       slot="actions"
       class="w-full flex justify-center"
     >
@@ -69,17 +70,32 @@
         @click="page++"
       >Next Page</b-button>
     </div>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
+import BVega from '~/klicker/components/ui/b-card.vue'
+import BButton from '~/klicker/components/ui/b-button.vue'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
+import BCard from '~/klicker/components/ui/b-card.vue'
 
 export default defineComponent({
-  inheritAttrs: false,
+  components: {
+    BCard,
+    VCardWrapper,
+  },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse>,
       required: true
@@ -90,13 +106,12 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { dimensions, measurements, applicable } = useCubeResponse('v-grid', props)
+    const { dimensions, measurements } = useCubeResponse(props)
 
     const page = ref(0)
     watch(() => props.response.data, () => page.value = 0)
 
     return {
-      applicable,
       page,
       dimensions,
       measurements,

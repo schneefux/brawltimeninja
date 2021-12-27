@@ -57,13 +57,6 @@ const defaultVisualisations: VisualisationSpec[] = [{
       measurements.length == 1 && size > 1 && size < 1000
   },
 }, {
-  name: 'Line Plot (raw)',
-  component: 'v-lineplot-raw',
-  applicable(dimensions, measurements, size) {
-    return dimensions.length == 1 && dimensions[0].type == 'temporal' &&
-          measurements.length == 1 && size > 1 && size < 1000
-  },
-}, {
   name: 'Measurement Info',
   component: 'v-info',
   applicable(dimensions, measurements) {

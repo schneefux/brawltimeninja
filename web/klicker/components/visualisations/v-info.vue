@@ -1,8 +1,9 @@
 <template>
-  <b-card
-    v-if="applicable && description != undefined"
-    :title="title"
-    dense
+  <v-card-wrapper
+    v-if="description != undefined"
+    v-bind="$props"
+    :card="card && { ...card, title, dense: true }"
+    component="v-info"
   >
     <p
       slot="content"
@@ -10,29 +11,40 @@
     >
       {{ description }}
     </p>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from "@nuxtjs/composition-api"
 import { CubeResponse } from "~/klicker"
 import { useCubeResponse } from "~/klicker/composables/response"
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
+  components: {
+    VCardWrapper,
+  },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse>,
       required: true
     },
   },
   setup(props) {
-    const { $klicker, measurements, applicable } = useCubeResponse('v-info', props)
+    const { $klicker, measurements } = useCubeResponse(props)
 
     const title = computed(() => 'About ' + $klicker.getName(measurements[0]))
     const description = computed(() => measurements[0].description)
 
     return {
-      applicable,
       title,
       description,
     }

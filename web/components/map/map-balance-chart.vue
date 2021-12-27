@@ -2,14 +2,17 @@
   <c-query :query="query">
     <template v-slot="data">
       <div class="flex flex-col md:flex-row">
-        <v-bar-plot
-          :title="title"
+        <v-barplot
           v-bind="data"
+          :card="{ title, fullHeight: true }"
           class="flex-auto"
-          full-height
-        ></v-bar-plot>
+        ></v-barplot>
         <div class="flex lg:flex-col flex-wrap">
-          <v-gini class="flex-auto lg:flex-none" v-bind="data"></v-gini>
+          <v-gini
+            v-bind="data"
+            :card="true"
+            class="flex-auto lg:flex-none"
+          ></v-gini>
           <b-card class="flex-auto lg:flex-none" size="w-44">
             <p
               slot="content"
@@ -25,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import { CQuery, VBarPlot } from '~/klicker/components'
+import { CQuery, VBarplot } from '~/klicker/components'
 import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
-    VBarPlot,
+    VBarplot,
     CQuery,
   },
   props: {

@@ -5,7 +5,7 @@
   >
     <div slot="content">
       <b-card
-        elevation="2"
+        :elevation="2"
         dense
       >
         <div
@@ -22,7 +22,7 @@
       </b-card>
 
       <b-card
-        elevation="2"
+        :elevation="2"
         dense
       >
         <oejts-table

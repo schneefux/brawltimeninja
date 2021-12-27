@@ -24,7 +24,7 @@
 
     <b-card :title="$t('tier-list.gadget.gadgets')">
       <div slot="content">
-        <b-card elevation="2">
+        <b-card :elevation="2">
           <div slot="content">
             <c-metric
               v-model="query"
@@ -35,7 +35,7 @@
 
         <c-dashboard
           v-model="query"
-          elevation="2"
+          :elevation="2"
           class="mt-2"
           sync-slices
         >

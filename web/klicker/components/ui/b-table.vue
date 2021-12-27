@@ -62,7 +62,7 @@
     </table>
 
     <b-paginator
-      v-if="pageSize != undefined"
+      v-if="!noPaginator && pageSize != undefined"
       v-model="page"
       :pages="Math.ceil(rows.length / pageSize) - 1"
       class="pt-2 pb-1 mt-auto"
@@ -107,10 +107,16 @@ export default defineComponent({
       required: true
     },
     pageSize: {
-      type: Number
+      type: Number,
+      required: false
     },
     ranked: {
-      type: Boolean
+      type: Boolean,
+      default: false
+    },
+    noPaginator: {
+      type: Boolean,
+      default: false
     },
   },
   setup(props) {

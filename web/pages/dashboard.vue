@@ -30,8 +30,18 @@
       <template v-slot:data="data">
         <v-dashboard v-bind="data">
           <template v-slot:visualisations="data">
-            <v-moe v-bind="data"></v-moe>
-            <v-gini v-bind="data"></v-gini>
+            <v-if-applicable
+              v-bind="data"
+              component="v-moe"
+            >
+              <v-moe v-bind="data"></v-moe>
+            </v-if-applicable>
+            <v-if-applicable
+              v-bind="data"
+              component="v-gini"
+            >
+              <v-gini v-bind="data"></v-gini>
+            </v-if-applicable>
           </template>
 
           <template v-slot:dimensions="data">
@@ -54,7 +64,7 @@
 
 <script lang="ts">
 import { CubeQuery, CubeComparingQuery } from '~/klicker'
-import { CDashboard, VDashboard } from '~/klicker/components'
+import { CDashboard, VDashboard, VIfApplicable } from '~/klicker/components'
 import { useSyncQueryAndRoute } from '~/klicker/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -110,6 +120,7 @@ export default defineComponent({
     MBrawler,
     SPlayerName,
     SPlayerTag,
+    VIfApplicable,
   },
   setup() {
     const { $klicker } = useContext()

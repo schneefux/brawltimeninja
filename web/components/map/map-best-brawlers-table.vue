@@ -2,8 +2,8 @@
   <c-query :query="query">
     <template v-slot="data">
       <v-table
-        :title="title"
-        v-bind="{ ...data, ...$attrs }"
+        v-bind="data"
+        :card="{ title, fullHeight: true, ...$attrs }"
       >
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
@@ -28,7 +28,6 @@ export default defineComponent({
     CQuery,
     BrawlerLink,
   },
-  inheritAttrs: false,
   props: {
     id: {
       type: [Number, String],

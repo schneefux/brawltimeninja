@@ -192,7 +192,7 @@ export default Vue.extend({
       type: Boolean
     },
     elevation: {
-      type: [Number, String],
+      type: Number,
       default: 1,
     },
     fullHeight: {

@@ -13,7 +13,7 @@
       <div slot="content">
         <c-dashboard
           v-model="query"
-          elevation="2"
+          :elevation="2"
         >
           <template v-slot:slices="data">
             <s-season
@@ -33,7 +33,10 @@
 
           <template v-slot:data="data">
             <div class="contents">
-              <v-table class="w-full" v-bind="data">
+              <v-table
+                v-bind="data"
+                :card="{ ...data.card, size: 'w-full' }"
+              >
                 <template v-slot:dimensions="data">
                   <div class="flex flex-wrap items-center">
                     <d-player class="w-full md:w-auto md:flex-1 !justify-start" v-bind="data"></d-player>

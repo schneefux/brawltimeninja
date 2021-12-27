@@ -1,33 +1,40 @@
 <template>
-  <b-card
-    v-if="applicable"
-    v-bind="$attrs"
+  <v-card-wrapper
+    v-bind="$props"
+    component="v-barplot"
   >
     <b-vega
       slot="content"
       :spec="spec"
+      :show-download="card != undefined"
       full-width
       full-height
-      show-download
     ></b-vega>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
-import BCard from '~/klicker/components/ui/b-card.vue'
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { useCubeResponse } from '~/klicker/composables/response'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
   components: {
     BVega,
-    BCard,
+    VCardWrapper,
   },
-  inheritAttrs: false,
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
@@ -35,7 +42,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { $klicker, comparing, dimensions, measurements, switchResponse, applicable } = useCubeResponse('v-barplot', props)
+    const { $klicker, comparing, dimensions, measurements, switchResponse } = useCubeResponse(props)
 
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
@@ -164,7 +171,6 @@ export default defineComponent({
     })
 
     return {
-      applicable,
       spec,
     }
   },

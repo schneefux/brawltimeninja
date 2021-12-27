@@ -2,7 +2,7 @@
   <b-card
     :title="title"
     :elevation="elevation"
-    v-bind="$attrs"
+    full-height
   >
     <div slot="content">
       <p class="mb-2">{{ $t('map.insights.description') }}</p>
@@ -84,7 +84,6 @@ export default defineComponent({
     CQuery,
     BButton,
   },
-  inheritAttrs: false,
   props: {
     slices: {
       type: Object as PropType<SliceValue>,

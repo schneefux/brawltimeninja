@@ -1,9 +1,8 @@
 <template>
-  <b-card
-    v-if="show"
-    v-bind="$attrs"
-    title="Last Update"
-    dense
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: $t('metric.last-update'), dense: true }"
+    component="v-last-update"
   >
     <p
       slot="content"
@@ -11,29 +10,34 @@
     >
       {{ lastUpdate }}
     </p>
-  </b-card>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { CubeComparingResponse, CubeResponse } from '~/klicker'
-import { BCard } from '~/klicker/components'
+import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
   components: {
-    BCard,
+    VCardWrapper,
   },
   props: {
+    card: {
+      type: undefined,
+      required: false
+    },
+    loading: {
+      type: Boolean,
+      required: true
+    },
     response: {
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },
   setup(props) {
-    const show = computed(() => props.response.data.length > 0 && props.response.data[0].measurementsRaw.timestamp != undefined)
-
     const lastUpdate = computed((): string => {
       const timestamps = props.response.data
         .map(d => d.measurementsRaw.timestamp)
@@ -50,7 +54,6 @@ export default defineComponent({
     })
 
     return {
-      show,
       lastUpdate,
     }
   },
