@@ -9,6 +9,7 @@
       :show-download="card != undefined"
       full-width
       full-height
+      class="min-h-[8rem] min-w-[12rem]"
     ></b-vega>
   </v-card-wrapper>
 </template>

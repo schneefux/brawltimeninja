@@ -22,8 +22,14 @@
 
       <template v-slot:totals="data">
         <div class="flex">
-          <v-sample-size v-bind="data"></v-sample-size>
-          <v-last-update v-bind="data"></v-last-update>
+          <v-sample-size
+            v-bind="data"
+            :card="true"
+          ></v-sample-size>
+          <v-last-update
+            v-bind="data"
+            :card="true"
+          ></v-last-update>
         </div>
       </template>
 

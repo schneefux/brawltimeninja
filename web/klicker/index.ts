@@ -135,6 +135,13 @@ export interface VisualisationSpec {
   component: string
   applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  canvas?: {
+    resizable: boolean
+    initialDimensions: {
+      width: number
+      height: number
+    }
+  }
 }
 
 export interface ConfidenceInterval {

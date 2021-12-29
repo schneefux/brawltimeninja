@@ -10,6 +10,13 @@ const defaultVisualisations: VisualisationSpec[] = [{
       size > 1 &&
       size < 100
   },
+  canvas: {
+    resizable: true,
+    initialDimensions: {
+      height: 200,
+      width: 200,
+    },
+  },
 }, {
   name: 'Tier List',
   component: 'v-tier-list',
@@ -34,6 +41,13 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size) {
     return dimensions.length == 1 && measurements.length == 2 && size > 1 && size < 1000
   },
+  canvas: {
+    resizable: true,
+    initialDimensions: {
+      height: 200,
+      width: 200,
+    },
+  },
 }, {
   name: 'Horizontal Cards',
   component: 'v-roll',
@@ -56,6 +70,13 @@ const defaultVisualisations: VisualisationSpec[] = [{
       ['temporal', 'ordinal'].includes(dimensions[0].type) &&
       measurements.length == 1 && size > 1 && size < 1000
   },
+  canvas: {
+    resizable: true,
+    initialDimensions: {
+      height: 200,
+      width: 200,
+    },
+  },
 }, {
   name: 'Measurement Info',
   component: 'v-info',
@@ -74,6 +95,13 @@ const defaultVisualisations: VisualisationSpec[] = [{
       return size > 0.5 * uniqueX * uniqueY
     }
     return false
+  },
+  canvas: {
+    resizable: true,
+    initialDimensions: {
+      height: 200,
+      width: 200,
+    },
   },
 }, {
   name: 'Grid',
