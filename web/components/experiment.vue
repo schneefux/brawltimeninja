@@ -1,4 +1,5 @@
 <template>
+  <!-- always wrap in <client-only> -->
   <div class="contents">
     <slot v-if="activeVariant == '0'"></slot>
     <slot

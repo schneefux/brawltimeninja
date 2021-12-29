@@ -61,23 +61,25 @@
         </div>
       </b-card>
 
-      <experiment experiment-id="FMx-6NeaSwCpwc0UMG4NFg">
-        <player-quiz
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'quiz'),
-            once: true,
-          }"
-          :player="player"
-        ></player-quiz>
+      <client-only>
+        <experiment experiment-id="WZKGuVAqQXyPTvzDnZUR2A">
+          <player-quiz
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              once: true,
+            }"
+            :player="player"
+          ></player-quiz>
 
-        <quiz-card
-          slot="1"
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'quiz'),
-            once: true,
-          }"
-        ></quiz-card>
-      </experiment>
+          <quiz-card
+            slot="1"
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              once: true,
+            }"
+          ></quiz-card>
+        </experiment>
+      </client-only>
     </div>
 
     <client-only>
