@@ -1,5 +1,14 @@
 <template>
   <c-query :query="query">
+    <b-card
+      slot="empty"
+      :title="title"
+      full-height
+    >
+      <p slot="content" class="text-center">
+        {{ $t('state.no-data') }}
+      </p>
+    </b-card>
     <template v-slot="data">
       <v-lineplot
         v-bind="data"
