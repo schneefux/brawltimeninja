@@ -49,6 +49,10 @@ job "brawltime-render" {
         interval = "10s"
         timeout = "2s"
       }
+
+      check_restart {
+        limit = 5
+      }
     }
 
     task "render" {
