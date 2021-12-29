@@ -54,7 +54,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "yandex/clickhouse-server:21.10-alpine"
+        image = "yandex/clickhouse-server:21.12-alpine"
         network_mode = "host"
 
         volumes = [

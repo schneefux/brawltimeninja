@@ -53,6 +53,8 @@ export default class ClickerService {
         readonly: 1,
         max_threads: 1,
         output_format_json_quote_64bit_integers: 1,
+        async_insert: 1,
+        wait_for_async_insert: 1,
       },
       // clickhouse allows only a single query per session!
       isSessionPerQuery: true,
