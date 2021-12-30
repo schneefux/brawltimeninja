@@ -10,9 +10,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, wrapProperty } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
   props: {
     experimentId: {
       type: String,
@@ -22,31 +23,39 @@ export default Vue.extend({
       type: String
     },
   },
-  data() {
-    return {
-      activeVariant: this.debug || '0',
-      callback: undefined as ((v: string) => void)|undefined,
-    }
-  },
-  created() {
-    if (process.client) {
-      this.callback = (value) => {
-        console.log('enabling variant ' + value + ' for experiment ' + this.experimentId)
-        this.$set(this, 'activeVariant', value)
+  setup(props) {
+    const activeVariant = ref(props.debug || '0')
+    let callback: ((v: string) => void)|undefined = undefined
+
+    const gtag = useGtag()
+    onMounted(() => {
+      callback = (value) => {
+        value ??= '0' // deactivated -> undefined
+        console.log('enabling variant ' + value + ' for experiment ' + props.experimentId)
+        activeVariant.value = value
       }
-      this.$gtag.event('optimize.callback', {
-        name: this.experimentId,
-        callback: this.callback,
+      gtag.event('optimize.callback', {
+        name: props.experimentId,
+        callback,
       })
-    }
-  },
-  destroyed() {
-    if (process.client && this.callback != undefined) {
-      this.$gtag.event('optimize.callback', {
-        name: this.experimentId,
-        callback: this.callback,
-        remove: true,
+      // https://support.google.com/optimize/answer/7008840
+      gtag.event('optimize.activate', {
+        non_interaction: true,
       })
+    })
+
+    onUnmounted(() => {
+      if (process.client && callback != undefined) {
+        gtag.event('optimize.callback', {
+          name: props.experimentId,
+          callback,
+          remove: true,
+        })
+      }
+    })
+
+    return {
+      activeVariant,
     }
   },
 })
