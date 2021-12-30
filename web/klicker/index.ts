@@ -144,6 +144,12 @@ export interface VisualisationSpec {
   }
 }
 
+export interface SlicerSpec {
+  name: string
+  component: string
+  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+}
+
 export interface ConfidenceInterval {
   lower: number
   mean: number
