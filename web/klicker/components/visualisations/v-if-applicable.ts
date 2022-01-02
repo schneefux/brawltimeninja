@@ -1,16 +1,13 @@
-import { defineComponent, PropType, h, computed } from '@nuxtjs/composition-api'
+import { defineComponent, h, computed } from '@nuxtjs/composition-api'
 import { VNode } from 'vue'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 
 export default defineComponent({
   props: {
+    ...VisualisationProps,
     component: {
       type: String,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },

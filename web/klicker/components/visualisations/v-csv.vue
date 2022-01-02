@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import { CubeResponse } from '~/klicker'
+import { defineComponent } from '@nuxtjs/composition-api'
+import { VisualisationProps } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
 
@@ -20,10 +20,7 @@ export default defineComponent({
     BButton,
   },
   props: {
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const { $klicker, dimensions, measurements } = useCubeResponse(props)

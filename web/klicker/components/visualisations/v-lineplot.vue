@@ -14,9 +14,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { VisualizationSpec } from 'vega-embed'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
@@ -27,18 +27,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const { i18n } = useContext()

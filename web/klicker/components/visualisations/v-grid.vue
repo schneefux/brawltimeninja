@@ -74,11 +74,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api'
-import { CubeResponse } from '~/klicker'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
+import { VisualisationProps } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
-import BVega from '~/klicker/components/ui/b-card.vue'
-import BButton from '~/klicker/components/ui/b-button.vue'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
@@ -88,18 +86,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true
-    },
+    ...VisualisationProps,
     pageSize: {
       type: Number,
       default: 6

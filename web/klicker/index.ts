@@ -1,3 +1,5 @@
+import { PropType } from "@nuxtjs/composition-api"
+
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
@@ -133,6 +135,7 @@ export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 export interface VisualisationSpec {
   name: string
   component: string
+  import: () => Promise<any>
   applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   canvas?: {
@@ -217,3 +220,18 @@ export interface CubeComparingQuery extends CubeQuery {
 }
 
 // TODO type all components with CubeQuery|CubeComparingQuery
+
+export const VisualisationProps = {
+  card: {
+    type: undefined,
+    required: false as false
+  },
+  loading: {
+    type: Boolean,
+    required: true as true
+  },
+  response: {
+    type: Object as PropType<CubeResponse|CubeComparingResponse>,
+    required: true as true
+  },
+}

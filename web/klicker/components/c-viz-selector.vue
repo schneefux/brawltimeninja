@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { VisualisationProps } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { useCubeResponse } from '../composables'
 
@@ -26,12 +26,9 @@ export default defineComponent({
     BCard,
   },
   props: {
+    ...VisualisationProps,
     value: {
       type: String,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: true
     },
   },

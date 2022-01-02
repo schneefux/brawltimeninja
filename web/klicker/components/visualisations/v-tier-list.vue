@@ -39,12 +39,12 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse, Measurement, MetaGridEntry } from '~/klicker'
+import { Measurement, MetaGridEntry, VisualisationProps } from '~/klicker'
 import VTierListSharepic from '~/klicker/components/visualisations/v-tier-list-sharepic.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'
-import { computed, PropType } from '@vue/composition-api'
-import { defineComponent, useContext } from '@nuxtjs/composition-api'
+import { computed } from '@vue/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { useCubeResponse } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
@@ -74,18 +74,7 @@ export default defineComponent({
     VTierListSharepic,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const { measurements } = useCubeResponse(props)

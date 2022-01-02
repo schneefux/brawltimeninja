@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@nuxtjs/composition-api"
-import { CubeResponse } from "~/klicker"
+import { computed, defineComponent } from "@nuxtjs/composition-api"
+import { VisualisationProps } from "~/klicker"
 import { useCubeResponse } from "~/klicker/composables/response"
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
@@ -25,18 +25,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const { $klicker, measurements } = useCubeResponse(props)

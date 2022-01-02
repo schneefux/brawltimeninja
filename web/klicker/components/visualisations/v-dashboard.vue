@@ -143,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import VBarplot from '~/klicker/components/visualisations/v-barplot.vue'
 import VScatterplot from '~/klicker/components/visualisations/v-scatterplot.vue'
 import VLineplot from '~/klicker/components/visualisations/v-lineplot.vue'
@@ -155,7 +155,7 @@ import VCsv from '~/klicker/components/visualisations/v-csv.vue'
 import VShare from '~/klicker/components/visualisations/v-share.vue'
 import VTestInfo from '~/klicker/components/visualisations/v-test-info.vue'
 import VIfApplicable from '~/klicker/components/visualisations/v-if-applicable'
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -172,14 +172,7 @@ export default defineComponent({
     VIfApplicable,
   },
   props: {
-    loading: {
-      type: Boolean,
-      required: false
-    },
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true,
-    },
+    ...VisualisationProps,
   },
 })
 </script>

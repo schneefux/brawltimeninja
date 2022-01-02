@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse, CubeComparingResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { Location } from 'vue-router'
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponse } from '~/klicker/composables/response'
 import { convertQueryToLocation } from '~/klicker/composables/link'
@@ -58,18 +58,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
     pageSize: {
       type: Number,
       default: 10

@@ -30,8 +30,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse, MetaGridEntry } from '~/klicker'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { MetaGridEntry, VisualisationProps } from '~/klicker'
 import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
@@ -39,18 +39,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const giniScore = computed((): number => {

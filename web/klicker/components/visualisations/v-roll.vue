@@ -48,8 +48,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { VisualisationProps } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
@@ -61,10 +61,7 @@ export default defineComponent({
   },
   name: 'VRoll',
   props: {
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
     elevation: {
       type: Number,
       required: false

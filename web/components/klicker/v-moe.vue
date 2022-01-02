@@ -35,8 +35,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { CubeResponse, VisualisationProps } from '~/klicker'
 import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
@@ -44,18 +44,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const store = useStore<any>()

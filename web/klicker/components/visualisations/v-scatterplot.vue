@@ -14,9 +14,8 @@
 </template>
 
 <script lang="ts">
-import { CubeResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import { VisualizationSpec } from 'vega-embed'
-import BCard from '~/klicker/components/ui/b-card.vue'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { useCubeResponse } from '~/klicker/composables/response'
@@ -28,18 +27,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const { $klicker, dimensions, measurements } = useCubeResponse(props)

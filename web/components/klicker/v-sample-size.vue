@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { CubeComparingResponse, CubeResponse, VisualisationProps } from '~/klicker'
 import { formatSI } from '~/lib/util'
 import { VCardWrapper } from '~/klicker/components'
 
@@ -33,18 +33,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))

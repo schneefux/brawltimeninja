@@ -14,9 +14,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { VisualisationProps } from '~/klicker'
 import { VCardWrapper } from '~/klicker/components'
 
 export default defineComponent({
@@ -24,18 +24,7 @@ export default defineComponent({
     VCardWrapper,
   },
   props: {
-    card: {
-      type: undefined,
-      required: false
-    },
-    loading: {
-      type: Boolean,
-      required: true
-    },
-    response: {
-      type: Object as PropType<CubeResponse|CubeComparingResponse>,
-      required: true
-    },
+    ...VisualisationProps,
   },
   setup(props) {
     const lastUpdate = computed((): string => {
