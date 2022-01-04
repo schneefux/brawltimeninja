@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.margin-of-error'), size: 'w-40', dense: true }"
+    :card="card && { ...card, title: $t('metric.margin-of-error'), dense: true }"
     component="v-moe"
   >
     <p

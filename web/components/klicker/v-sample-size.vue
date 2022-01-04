@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.sample-size'), size: 'w-32', dense: true }"
+    :card="card && { ...card, title: $t('metric.sample-size'), dense: true }"
     component="v-sample-size"
   >
     <p

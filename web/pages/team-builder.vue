@@ -23,11 +23,12 @@
 
       <draft-grid :query="query"></draft-grid>
 
-      <c-query
-        :query="query"
-      >
+      <c-query :query="query">
         <template v-slot="totals">
-          <v-sample-size v-bind="totals"></v-sample-size>
+          <v-sample-size
+            v-bind="totals"
+            :card="true"
+          ></v-sample-size>
         </template>
       </c-query>
     </div>

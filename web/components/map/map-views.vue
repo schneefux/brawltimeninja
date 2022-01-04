@@ -11,15 +11,19 @@
     </template>
 
     <template v-slot:totals="data">
-      <div class="flex flex-wrap items-end">
+      <div class="flex flex-wrap">
         <v-sample-size
           v-bind="data"
-          :card="true"
+          :card="{ fullHeight: true }"
         ></v-sample-size>
         <v-last-update
           v-bind="data"
-          :card="true"
+          :card="{ fullHeight: true }"
         ></v-last-update>
+        <v-moe
+          v-bind="data"
+          :card="{ fullHeight: true }"
+        ></v-moe>
       </div>
     </template>
 

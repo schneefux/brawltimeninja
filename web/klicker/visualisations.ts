@@ -11,6 +11,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
       size > 1 &&
       size < 100
   },
+  grid: {
+    initialDimensions: {
+      rows: 2,
+      columns: 4,
+    },
+  },
   canvas: {
     resizable: true,
     initialDimensions: {
@@ -24,6 +30,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
   import: () => import('~/klicker/components/visualisations/v-tier-list.vue'),
   applicable(dimensions, measurements, size) {
     return dimensions.length == 1 && measurements.length == 1 && size > 5 && size < 100
+  },
+  grid: {
+    initialDimensions: {
+      rows: 4,
+      columns: 4,
+    },
   },
 }, {
   name: 'Test Info',
@@ -39,6 +51,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size, comparing) {
     return comparing || measurements.length < 5
   },
+  grid: {
+    initialDimensions: {
+      rows: 4,
+      columns: 2,
+    },
+  },
 }, {
   name: 'Scatter Chart',
   component: 'v-scatterplot',
@@ -51,6 +69,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
     initialDimensions: {
       height: 200,
       width: 200,
+    },
+  },
+  grid: {
+    initialDimensions: {
+      rows: 2,
+      columns: 4,
     },
   },
 }, {
@@ -85,6 +109,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
       width: 200,
     },
   },
+  grid: {
+    initialDimensions: {
+      rows: 2,
+      columns: 4,
+    },
+  },
 }, {
   name: 'Measurement Info',
   component: 'v-info',
@@ -113,12 +143,24 @@ const defaultVisualisations: VisualisationSpec[] = [{
       width: 200,
     },
   },
+  grid: {
+    initialDimensions: {
+      rows: 2,
+      columns: 4,
+    },
+  },
 }, {
   name: 'Grid',
   component: 'v-grid',
   import: () => import('~/klicker/components/visualisations/v-grid.vue'),
   applicable(dimensions, measurements) {
     return measurements.length > 1
+  },
+  grid: {
+    initialDimensions: {
+      rows: 2,
+      columns: 4,
+    },
   },
 }, {
   name: 'CSV Download',

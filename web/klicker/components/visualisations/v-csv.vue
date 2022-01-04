@@ -1,12 +1,19 @@
 <template>
-  <b-button
-    class="my-1"
-    secondary
-    sm
-    @click="download()"
+  <v-card-wrapper
+    v-bind="$props"
+    :card="card && { ...card, title: 'Download the data', dense: true }"
+    component="v-csv"
   >
-    {{ $t('action.export-csv') }}
-  </b-button>
+    <b-button
+      slot="content"
+      class="my-1"
+      secondary
+      sm
+      @click="download()"
+    >
+      {{ $t('action.export-csv') }}
+    </b-button>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
@@ -14,10 +21,12 @@ import { defineComponent } from '@nuxtjs/composition-api'
 import { VisualisationProps } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
+import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
   components: {
     BButton,
+    VCardWrapper,
   },
   props: {
     ...VisualisationProps,

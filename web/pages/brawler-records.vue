@@ -33,23 +33,23 @@
 
           <template v-slot:data="data">
             <div class="contents">
-              <v-table
-                v-bind="data"
-                :card="{ ...data.card, size: 'w-full' }"
-              >
-                <template v-slot:dimensions="data">
-                  <div class="flex flex-wrap items-center">
-                    <d-player class="w-full md:w-auto md:flex-1 !justify-start" v-bind="data"></d-player>
-                    <d-brawler class="w-full md:w-auto md:flex-1 !justify-start" v-bind="data"></d-brawler>
-                  </div>
-                </template>
+              <div class="flex flex-wrap justify-center">
+                <v-table class="w-full" v-bind="data">
+                  <template v-slot:dimensions="data">
+                    <div class="flex flex-wrap items-center">
+                      <d-player class="w-full md:w-auto md:flex-1 !justify-start" v-bind="data"></d-player>
+                      <d-brawler class="w-full md:w-auto md:flex-1 !justify-start" v-bind="data"></d-brawler>
+                    </div>
+                  </template>
 
-                <template v-slot:[`measurements.highestTrophies`]="data">
-                  {{ data.row.measurementsRaw.highestTrophies }}
-                </template>
-              </v-table>
-              <div class="p-1">
-                <v-csv v-bind="data"></v-csv>
+                  <template v-slot:[`measurements.highestTrophies`]="data">
+                    {{ data.row.measurementsRaw.highestTrophies }}
+                  </template>
+                </v-table>
+                <v-csv
+                  v-bind="data"
+                  :card="undefined"
+                ></v-csv>
               </div>
             </div>
           </template>

@@ -35,21 +35,6 @@
 
       <template v-slot:data="data">
         <v-dashboard v-bind="data">
-          <template v-slot:visualisations="data">
-            <v-if-applicable
-              v-bind="data"
-              component="v-moe"
-            >
-              <v-moe v-bind="data"></v-moe>
-            </v-if-applicable>
-            <v-if-applicable
-              v-bind="data"
-              component="v-gini"
-            >
-              <v-gini v-bind="data"></v-gini>
-            </v-if-applicable>
-          </template>
-
           <template v-slot:dimensions="data">
             <d-brawler v-bind="data"></d-brawler>
             <d-team v-bind="data"></d-team>
@@ -70,7 +55,7 @@
 
 <script lang="ts">
 import { CubeQuery, CubeComparingQuery } from '~/klicker'
-import { CDashboard, VDashboard, VIfApplicable } from '~/klicker/components'
+import { CDashboard, VDashboard } from '~/klicker/components'
 import { useSyncQueryAndRoute } from '~/klicker/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -89,10 +74,6 @@ import STrophies from '@/components/klicker/s-trophies.vue'
 import SWithStarpower from '@/components/klicker/s-with-starpower.vue'
 import SWithGadget from '@/components/klicker/s-with-gadget.vue'
 import SBrawler from '@/components/klicker/s-brawler.vue'
-import VGini from '@/components/klicker/v-gini.vue'
-import VLastUpdate from '@/components/klicker/v-last-update.vue'
-import VMoe from '@/components/klicker/v-moe.vue'
-import VSampleSize from '@/components/klicker/v-sample-size.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
@@ -119,14 +100,9 @@ export default defineComponent({
     SWithStarpower,
     SWithGadget,
     SBrawler,
-    VGini,
-    VLastUpdate,
-    VMoe,
-    VSampleSize,
     MBrawler,
     SPlayerName,
     SPlayerTag,
-    VIfApplicable,
   },
   setup() {
     const { $klicker } = useContext()

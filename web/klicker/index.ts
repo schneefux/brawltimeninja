@@ -138,6 +138,18 @@ export interface VisualisationSpec {
   import: () => Promise<any>
   applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  grid?: {
+    initialDimensions: {
+      /**
+       * Grid rows are 8rem, md and above: 10rem
+       */
+      rows: number
+      /**
+       * Grid columns are 100%, md and above: 14rem
+       */
+      columns: number
+    }
+  }
   canvas?: {
     resizable: boolean
     initialDimensions: {

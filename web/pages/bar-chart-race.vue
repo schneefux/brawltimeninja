@@ -23,7 +23,7 @@
 
     <b-card :title="$t('bar-chart-race.brawler')">
       <div slot="content">
-        <b-card elevation="2">
+        <b-card :elevation="2">
           <c-metric
             slot="content"
             v-model="query"
@@ -52,21 +52,26 @@
 
           <template v-slot:data="data">
             <div class="contents">
-              <div class="w-full flex flex-wrap justify-center gap-2 m-1">
-                <v-csv class="flex-1" v-bind="data"></v-csv>
-                <v-pivot-csv class="flex-1" v-bind="data"></v-pivot-csv>
+              <div class="flex flex-wrap justify-center">
+                <v-table class="w-full" v-bind="data">
+                  <template v-slot:dimensions="data">
+                    <div class="flex flex-wrap items-center">
+                      <d-brawler v-bind="data"></d-brawler>
+                      <span class="mr-2">{{ data.row.dimensions.day }}</span>
+                    </div>
+                  </template>
+                </v-table>
+                <v-csv
+                  v-bind="data"
+                  :card="undefined"
+                  class="flex-1"
+                ></v-csv>
+                <v-pivot-csv
+                  v-bind="data"
+                  :card="undefined"
+                  class="flex-1"
+                ></v-pivot-csv>
               </div>
-              <v-table
-                v-bind="data"
-                :card="{ ...data.card, size: 'w-full' }"
-              >
-                <template v-slot:dimensions="data">
-                  <div class="flex flex-wrap items-center">
-                    <d-brawler v-bind="data"></d-brawler>
-                    <span class="mr-2">{{ data.row.dimensions.day }}</span>
-                  </div>
-                </template>
-              </v-table>
             </div>
           </template>
         </c-dashboard>

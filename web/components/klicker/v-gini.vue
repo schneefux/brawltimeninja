@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.balance-rating'), size: 'w-44', dense: true }"
+    :card="card && { ...card, title: $t('metric.balance-rating'), dense: true }"
     component="v-gini"
   >
     <b-button
