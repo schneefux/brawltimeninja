@@ -59,7 +59,6 @@ interface TotalsRow {
 }
 
 export default Vue.extend({
-  inheritAttrs: false,
   props: {
     row: {
       type: Object,

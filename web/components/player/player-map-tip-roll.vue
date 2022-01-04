@@ -7,7 +7,9 @@
   ></b-shimmer>
   <v-roll
     v-else
-    v-bind="{ response, ...$attrs }"
+    :loading="false"
+    :response="response"
+    :card="{ elevation }"
   >
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
@@ -28,7 +30,6 @@ export default defineComponent({
     BShimmer,
     DBrawler,
   },
-  inheritAttrs: false,
   props: {
     mode: {
       type: String,
@@ -45,6 +46,9 @@ export default defineComponent({
     limit: {
       type: Number,
       default: 3
+    },
+    elevation: {
+      type: Number
     },
   },
   setup(props) {
@@ -92,6 +96,7 @@ export default defineComponent({
 
       return {
         ...response.value,
+        loading: false,
         data,
       }
     })

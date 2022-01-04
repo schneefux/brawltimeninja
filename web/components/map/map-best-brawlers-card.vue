@@ -57,7 +57,6 @@ import { SliceValue } from '~/klicker'
 const locales = { en: enUS, de: de }
 
 export default Vue.extend({
-  inheritAttrs: false,
   props: {
     endDate: {
       type: String,
