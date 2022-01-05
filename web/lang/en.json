@@ -451,5 +451,6 @@
     "draft-tool.not-enough-data": "Not enough data to calculate win rates for some Brawlers. Select a broader filter!",
     "metric.last-update": "Last Update",
     "metric.margin-of-error": "Margin of Error",
-    "metric.sample-size": "Sample Size"
+    "metric.sample-size": "Sample Size",
+    "configurator.title": "Configure Data Source"
 }

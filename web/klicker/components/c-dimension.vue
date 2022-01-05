@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-20-1fr items-center">
-    <span class="font-semibold mr-4">
+  <div class="contents">
+    <span class="font-semibold">
       {{ title }}
     </span>
 
@@ -58,7 +58,6 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  inheritAttrs: false,
   props: {
     value: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
@@ -174,9 +173,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.grid-cols-20-1fr {
-  grid-template-columns: 10rem 1fr;
-}
-</style>

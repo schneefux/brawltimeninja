@@ -1,7 +1,10 @@
 <template>
-  <client-only>
-    <div>
-      <c-canvas-builder v-model="widgets">
+  <page-dashboard title="Brawl Stars Report Builder">
+    <div slot="dashboard">
+      <c-canvas
+        v-model="report"
+        :default-query="defaultQuery"
+      >
         <template v-slot:slices="data">
           <s-season v-bind="data"></s-season>
           <s-mode-map v-bind="data"></s-mode-map>
@@ -17,25 +20,10 @@
         </template>
 
         <template v-slot:totals="data">
-          <v-sample-size
-            v-bind="data"
-            :card="true"
-          ></v-sample-size>
-          <v-last-update
-            v-bind="data"
-            :card="true"
-          ></v-last-update>
+          <v-sample-size v-bind="data"></v-sample-size>
+          <v-last-update v-bind="data"></v-last-update>
         </template>
-      </c-canvas-builder>
 
-      <share-render-button
-        :embed-url="embedUrl"
-        secondary
-        sm
-        class="mx-2 my-3"
-      ></share-render-button>
-
-      <c-canvas :widgets="widgets">
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
           <d-team v-bind="data"></d-team>
@@ -49,13 +37,21 @@
           <m-brawler v-bind="data"></m-brawler>
         </template>
       </c-canvas>
+
+      <share-render-button
+        :embed-url="embedUrl"
+        secondary
+        sm
+        class="my-3"
+      ></share-render-button>
     </div>
-  </client-only>
+  </page-dashboard>
 </template>
 
 <script lang='ts'>
 import { defineComponent, computed } from "@nuxtjs/composition-api"
-import { CCanvas, CCanvasBuilder, CQuery, VTable, VTestInfo, VBarplot, VLineplot, VRoll, VDashboard } from '~/klicker/components'
+import { CCanvas } from '~/klicker/components'
+import { Report, CubeQuery } from '~/klicker'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -73,27 +69,15 @@ import STrophies from '@/components/klicker/s-trophies.vue'
 import SWithStarpower from '@/components/klicker/s-with-starpower.vue'
 import SWithGadget from '@/components/klicker/s-with-gadget.vue'
 import SBrawler from '@/components/klicker/s-brawler.vue'
-import VGini from '@/components/klicker/v-gini.vue'
-import VLastUpdate from '@/components/klicker/v-last-update.vue'
-import VMoe from '@/components/klicker/v-moe.vue'
-import VSampleSize from '@/components/klicker/v-sample-size.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
 import { useLocalStorage } from 'vue-composable'
-import { Widget } from '~/klicker/components/c-canvas.vue'
+import { getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
     CCanvas,
-    CCanvasBuilder,
-    CQuery,
-    VTable,
-    VTestInfo,
-    VBarplot,
-    VLineplot,
-    VRoll,
-    VDashboard,
     DBrawler,
     BrawlerLink, // dependency of DBrawler
     DTeam,
@@ -111,29 +95,41 @@ export default defineComponent({
     SWithStarpower,
     SWithGadget,
     SBrawler,
-    VGini,
-    VLastUpdate,
-    VMoe,
-    VSampleSize,
     MBrawler,
     SPlayerName,
     SPlayerTag,
   },
   setup() {
-    // TODO run only on client
-    const { storage: widgets } = useLocalStorage<Widget[]>('canvas', [], true)
+    const { storage: report } = useLocalStorage<Report>('report', {
+      width: 1200,
+      height: 630,
+      widgets: [],
+    }, true)
 
-    const embedUrl = computed(() => {
-      if (process.client) {
-        return `/embed/canvas?conf=` + encodeURIComponent(btoa(JSON.stringify(widgets.value)))
-      } else {
-        return ''
-      }
-    })
+    const embedUrl = computed<string>(() =>
+      `/embed/report?conf=` + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
+
+    const twoWeeksAgo = new Date()
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+    const currentSeason = getSeasonEnd(twoWeeksAgo)
+    const defaultQuery: CubeQuery = {
+      cubeId: 'battle',
+      dimensionsIds: ['brawler'],
+      measurementsIds: ['winRate'],
+      slices: {
+        season: [currentSeason.toISOString().slice(0, 10)],
+        mode: [],
+        map: [],
+        trophyRangeGte: ['0'],
+        powerplay: [],
+      },
+      sortId: 'winRate',
+    }
 
     return {
-      widgets,
+      report,
       embedUrl,
+      defaultQuery,
     }
   }
 })

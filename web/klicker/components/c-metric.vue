@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-20-1fr items-center">
-    <span class="font-semibold mr-4">
+  <div class="contents">
+    <span class="font-semibold">
       Metric
     </span>
 
@@ -26,9 +26,12 @@
         </option>
       </b-select>
 
-      <div class="flex gap-x-1">
+      <div
+        v-if="!showAllMeasurements && multiple"
+        class="flex gap-x-1"
+      >
         <b-button
-          v-if="numMeasurements < maxMeasurements && !showAllMeasurements && multiple"
+          v-if="numMeasurements < maxMeasurements"
           class="font-semibold"
           primary
           sm
@@ -40,7 +43,7 @@
         </b-button>
 
         <b-button
-          v-if="numMeasurements > 1 && !showAllMeasurements && multiple"
+          v-if="numMeasurements > 1"
           class="font-semibold"
           primary
           sm
@@ -144,9 +147,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.grid-cols-20-1fr {
-  grid-template-columns: 10rem 1fr;
-}
-</style>

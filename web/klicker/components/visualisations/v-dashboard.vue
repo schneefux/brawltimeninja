@@ -3,7 +3,8 @@
     <v-auto
       v-bind="$props"
       :card="{ loading, fullHeight: true, elevation: 2 }"
-      class="w-full grid auto-rows-[minmax(8rem,auto)] md:auto-rows-[minmax(10rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,14rem)] grid-flow-row-dense"
+      class="w-full grid auto-rows-[minmax(8rem,auto)] md:auto-rows-[minmax(10rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,14rem)] md:grid-flow-row-dense"
+      for-grid
       all
     >
       <template

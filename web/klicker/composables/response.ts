@@ -1,12 +1,16 @@
-import { computed, useContext, Ref } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse } from '~/klicker'
+import { computed, useContext } from '@nuxtjs/composition-api'
+import { CubeComparingResponse, CubeResponse, VisualisationSpec } from '~/klicker'
 
-export const useCubeResponse = (props: { response: CubeResponse|CubeComparingResponse }) => {
+export const useCubeResponse = (props: { response?: CubeResponse|CubeComparingResponse }) => {
   const { $klicker } = useContext()
 
-  const comparing = computed(() => props.response.kind == 'comparingResponse')
+  const comparing = computed(() => props.response?.kind == 'comparingResponse')
 
   const measurements = computed(() => {
+    if (props.response == undefined) {
+      return []
+    }
+
     const query = props.response.query
 
     return query.measurementsIds.map(id => {
@@ -25,6 +29,10 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
   })
 
   const dimensions = computed(() => {
+    if (props.response == undefined) {
+      return []
+    }
+
     const query = props.response.query
 
     return query.dimensionsIds
@@ -57,11 +65,15 @@ export const useCubeResponse = (props: { response: CubeResponse|CubeComparingRes
     }
   }
 
+  const checkApplicable = (spec: VisualisationSpec) =>
+    spec.applicable(dimensions.value, measurements.value, props.response?.data.length || 0, comparing.value, props.response?.data || [])
+
   return {
     $klicker,
     comparing,
     dimensions,
     measurements,
     switchResponse,
+    checkApplicable,
   }
 }

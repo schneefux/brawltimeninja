@@ -3,18 +3,16 @@
     <c-configurator
       v-if="configurator"
       v-model="query"
-      :elevation="elevation"
+      :card="{ fullHeight: true, elevation }"
       class="flex-auto"
-      full-height
     ></c-configurator>
 
     <c-slicer
       v-if="'slices' in $scopedSlots"
       v-model="query"
-      :elevation="elevation"
+      :card="{ fullHeight: true, elevation }"
       :both="syncSlices"
       class="w-full md:w-auto"
-      full-height
     >
       <template v-slot="slices">
         <slot
@@ -27,10 +25,9 @@
     <c-slicer
       v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
       v-model="query"
-      :elevation="elevation"
+      :card="{ fullHeight: true, elevation }"
       class="w-full md:w-auto"
       comparing
-      full-height
     >
       <template v-slot="slices">
         <slot
@@ -51,7 +48,7 @@
       }"
     >
       <template v-slot="totals">
-        <slot name="totals" v-bind="{ ...totals, card: elevation && { elevation } }"></slot>
+        <slot name="totals" v-bind="{ ...totals, card: { elevation } }"></slot>
       </template>
     </c-query>
 
@@ -66,7 +63,7 @@
         ></c-error>
       </template>
       <template v-slot="data">
-        <slot name="data" v-bind="{ ...data, card: elevation && { elevation } }"></slot>
+        <slot name="data" v-bind="{ ...data, card: { elevation } }"></slot>
       </template>
     </c-query>
 

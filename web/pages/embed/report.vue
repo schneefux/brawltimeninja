@@ -1,6 +1,6 @@
 <template>
   <c-canvas-renderer
-    :widgets="widgets"
+    :report="report"
     class="sharepic"
   >
     <template v-slot:dimensions="data">
@@ -29,25 +29,9 @@ import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
 import DSeason from '@/components/klicker/d-season.vue'
 import DPlayer from '@/components/klicker/d-player.vue'
-import SModeMap from '@/components/klicker/s-mode-map.vue'
-import SCompetitionMaps from '@/components/klicker/s-competition-maps.vue'
-import SAlly from '@/components/klicker/s-ally.vue'
-import SSeason from '@/components/klicker/s-season.vue'
-import SPowerplay from '@/components/klicker/s-powerplay.vue'
-import STrophies from '@/components/klicker/s-trophies.vue'
-import SWithStarpower from '@/components/klicker/s-with-starpower.vue'
-import SWithGadget from '@/components/klicker/s-with-gadget.vue'
-import SBrawler from '@/components/klicker/s-brawler.vue'
-import VGini from '@/components/klicker/v-gini.vue'
-import VLastUpdate from '@/components/klicker/v-last-update.vue'
-import VMoe from '@/components/klicker/v-moe.vue'
-import VSampleSize from '@/components/klicker/v-sample-size.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
-import SPlayerName from '@/components/klicker/s-player-name.vue'
-import SPlayerTag from '@/components/klicker/s-player-tag.vue'
-import { useLocalStorage } from 'vue-composable'
-import { Widget } from '~/klicker/components/c-canvas.vue'
 import { MetaInfo } from 'vue-meta'
+import { Report } from "~/klicker"
 
 export default defineComponent({
   components: {
@@ -68,10 +52,6 @@ export default defineComponent({
     DMap,
     DSeason,
     DPlayer,
-    VGini,
-    VLastUpdate,
-    VMoe,
-    VSampleSize,
     MBrawler,
   },
   head(): MetaInfo {
@@ -89,17 +69,12 @@ export default defineComponent({
   middleware: ['cached'],
   setup() {
     const route = useRoute()
-    // TODO runs only on client
-    const widgets = computed<Widget[]>(() => {
-      if (process.client) {
-        return JSON.parse(atob(decodeURIComponent(route.value.query['conf'] as string)))
-      } else {
-        return []
-      }
-    })
+
+    const report = computed<Report>(() =>
+      JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString()))
 
     return {
-      widgets,
+      report,
     }
   }
 })

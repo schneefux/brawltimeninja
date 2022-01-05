@@ -1,6 +1,6 @@
 <template functional>
   <input
-    type="text"
+    type="number"
     v-bind="data.attrs"
     :style="data.staticStyle"
     :class="[data.class, data.staticClass,
@@ -10,7 +10,7 @@
         'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 focus:ring-yellow-400 text-gray-200': props.dark,
     }]"
     :value="props.value"
-    @input="listeners.input && listeners.input($event.target.value)"
+    @input="listeners.input && listeners.input(parseInt($event.target.value))"
   >
 </template>
 

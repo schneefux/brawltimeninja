@@ -24,11 +24,12 @@
     <b-card :title="$t('bar-chart-race.brawler')">
       <div slot="content">
         <b-card :elevation="2">
-          <c-metric
-            slot="content"
-            v-model="query"
-            :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
-          ></c-metric>
+          <div slot="content" class="grid grid-cols-[auto,auto] gap-x-4 items-center">
+            <c-metric
+              v-model="query"
+              :options="['pickRate', 'useRate', 'winRate', 'winRateAdj', 'starRate']"
+            ></c-metric>
+          </div>
         </b-card>
 
         <c-dashboard

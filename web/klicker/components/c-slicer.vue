@@ -1,5 +1,5 @@
 <template>
-  <b-card v-bind="$attrs" :title="title">
+  <b-card v-bind="{ ...card, title }">
     <b-button
       slot="preview"
       :selected="showFilters"
@@ -36,11 +36,14 @@ export default defineComponent({
   components: {
     BButton,
   },
-  inheritAttrs: false,
   props: {
     value: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
+    },
+    card: {
+      type: undefined,
+      required: false
     },
     comparing: {
       // true if the slicer controls test slices

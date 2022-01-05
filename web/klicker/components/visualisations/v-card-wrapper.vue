@@ -1,43 +1,46 @@
-<template>
-  <!-- TODO add 'open in dashboard' here -->
-  <b-card
-    v-if="card"
-    v-bind="card"
-    :loading="loading"
-  >
-    <template
-      v-for="(_, slot) of $scopedSlots"
-      v-slot:[slot]="slotProps"
-    >
-      <slot
-        v-bind="slotProps"
-        :name="slot"
-      ></slot>
-    </template>
-  </b-card>
-  <div
-    v-else
-    class="contents"
-  >
-    <slot name="content"></slot>
-  </div>
-</template>
-
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
-import { VisualisationProps } from '~/klicker'
+import { defineComponent, h } from '@nuxtjs/composition-api'
+import { OptionalVisualisationProps } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
+/**
+ * Visualisation component that wraps another one in a <b-card>, if the card prop is set.
+ * Should be used internally to build visualisation components.
+ */
 export default defineComponent({
   components: {
     BCard,
   },
   props: {
-    ...VisualisationProps,
+    ...OptionalVisualisationProps,
     component: {
       type: String,
       required: true
     },
+  },
+  setup(props, { slots }) {
+    // TODO add 'open in dashboard' button
+    return () => {
+      if (props.card != undefined) {
+        return h(BCard, {
+          attrs: { // attrs instead of props because b-card is functional
+            ...props.card as any,
+            loading: props.loading,
+          },
+          scopedSlots: slots,
+        })
+      } else {
+        const nodes = slots['content'] != undefined ? slots['content']() : undefined
+        if (nodes == undefined) {
+          return h()
+        }
+        if (nodes.length > 1) {
+          // workaround because Vue does not allow returning multiple nodes from root
+          return h('div', nodes)
+        }
+        return nodes[0]
+      }
+    }
   },
 })
 </script>

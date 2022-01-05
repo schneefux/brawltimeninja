@@ -4,8 +4,11 @@
     <component
       v-for="spec in specs"
       :key="spec.name"
-      v-bind="$props"
       :is="spec.import"
+      v-bind="props"
+      :card="card"
+      :loading="loading"
+      :response="response"
       :style="spec.style"
     >
       <template
@@ -21,8 +24,11 @@
   </div>
   <component
     v-else-if="specs.length == 1"
-    v-bind="$props"
     :is="specs[0].import"
+    v-bind="props"
+    :card="card"
+    :loading="loading"
+    :response="response"
     :style="specs[0].style"
   >
     <template
@@ -39,33 +45,79 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@nuxtjs/composition-api'
-import { VisualisationProps, VisualisationSpec } from '~/klicker'
+import { OptionalVisualisationProps, VisualisationSpec } from '~/klicker'
 import { useCubeResponse } from '~/klicker/composables/response'
 
 /**
  * Visualisation component that renders the given component, if applicable.
- * Otherwise, it renders an applicable component.
  */
 export default defineComponent({
   props: {
-    ...VisualisationProps,
+    ...OptionalVisualisationProps,
+    /**
+     * Visualisation component to render, if applicable.
+     */
     component: {
       type: String,
       required: false
     },
+    /**
+     * Render all applicable visualisations.
+     */
     all: {
       type: Boolean,
       default: false
     },
+    /**
+     * Apply default styling for canvas layout.
+     */
+    forCanvas: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Apply default styling for grid layout.
+     */
+    forGrid: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Raw props to pass on to the component.
+     */
+    props: {
+      type: undefined,
+      required: false
+    },
   },
   setup(props) {
-    const { $klicker, dimensions, measurements, comparing } = useCubeResponse(props)
+    const { $klicker, checkApplicable } = useCubeResponse(props)
 
     function getStyle(spec: VisualisationSpec) {
-      return spec.grid != undefined ? {
-        'grid-row': `span ${spec.grid.initialDimensions.rows} / span ${spec.grid.initialDimensions.rows}`,
-        'grid-column': `span ${spec.grid.initialDimensions.columns} / span ${spec.grid.initialDimensions.columns}`,
-      } : {}
+      if (props.forGrid) {
+        if (spec.grid != undefined) {
+          return {
+            'grid-row': `span ${spec.grid.initialDimensions.rows} / span ${spec.grid.initialDimensions.rows}`,
+            'grid-column': `span ${spec.grid.initialDimensions.columns} / span ${spec.grid.initialDimensions.columns}`,
+          }
+        }
+      }
+
+      if (props.forCanvas) {
+        if (spec.canvas?.initialDimensions != undefined) {
+          return {
+            width: `${spec.canvas.initialDimensions.width}px`,
+            height: `${spec.canvas.initialDimensions.height}px`,
+          }
+        } else {
+          return {
+            width: 'max-content',
+            height: 'max-content',
+          }
+        }
+      }
+
+      return {}
     }
 
     const specs = computed(() => {
@@ -75,7 +127,7 @@ export default defineComponent({
           throw new Error('Missing visualisation spec for ' + props.component)
         }
 
-        if (spec.applicable(dimensions.value, measurements.value, props.response.data.length, comparing.value, props.response.data)) {
+        if (checkApplicable(spec)) {
           return [{
             name: spec.name,
             import: spec.import,
@@ -84,10 +136,11 @@ export default defineComponent({
         }
 
         console.warn('Visualisation spec for ' + props.component + ' not applicable')
+        return []
       }
 
       const specs = $klicker.visualisations
-        .filter(v => v.applicable(dimensions.value, measurements.value, props.response.data.length, comparing.value, props.response.data))
+        .filter(v => checkApplicable(v))
         .slice(0, props.all ? undefined : 1)
 
       if (specs.length > 0) {

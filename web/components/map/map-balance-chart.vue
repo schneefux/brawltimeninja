@@ -19,7 +19,7 @@
         <div class="flex lg:flex-col flex-wrap">
           <v-gini
             v-bind="data"
-            :card="true"
+            :card="{}"
             class="flex-auto lg:flex-none"
           ></v-gini>
           <b-card class="flex-auto lg:flex-none" size="w-44">

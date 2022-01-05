@@ -27,7 +27,7 @@
         <template v-slot="totals">
           <v-sample-size
             v-bind="totals"
-            :card="true"
+            :card="{}"
           ></v-sample-size>
         </template>
       </c-query>

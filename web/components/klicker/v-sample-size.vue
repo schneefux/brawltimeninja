@@ -24,9 +24,10 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse, VisualisationProps } from '~/klicker'
+import { CubeResponse, VisualisationProps } from '~/klicker'
 import { formatSI } from '~/lib/util'
 import { VCardWrapper } from '~/klicker/components'
+import { useCubeResponse } from '~/klicker/composables'
 
 export default defineComponent({
   components: {
@@ -36,19 +37,21 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { switchResponse } = useCubeResponse(props)
+
     const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
 
     const sampleFormatted = computed(() => {
       const format = (n: number) => formatSI(n, 2)
 
-      if (props.response.kind == 'comparingResponse') {
-        return (<CubeComparingResponse> props.response).data
+      return switchResponse((response) => {
+        return format(response.data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
+      }, (response) => {
+        return response.data
           .reduce((agg, e) => [agg[0] + (e.test.reference.measurementsRaw.picks as number), agg[1] + (e.measurementsRaw.picks as number)], [0, 0])
           .map(format)
           .join(' / ')
-      } else {
-        return format((<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
-      }
+      })
     })
 
     return {

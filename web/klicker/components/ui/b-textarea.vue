@@ -1,6 +1,5 @@
 <template functional>
-  <input
-    type="text"
+  <textarea
     v-bind="data.attrs"
     :style="data.staticStyle"
     :class="[data.class, data.staticClass,
@@ -11,7 +10,7 @@
     }]"
     :value="props.value"
     @input="listeners.input && listeners.input($event.target.value)"
-  >
+  ></textarea>
 </template>
 
 <script lang="ts">

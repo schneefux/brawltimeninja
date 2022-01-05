@@ -25,7 +25,7 @@
     <b-card :title="$t('tier-list.starpower.starpowers')">
       <div slot="content">
         <b-card :elevation="2">
-          <div slot="content">
+          <div slot="content" class="grid grid-cols-[auto,auto] gap-x-4 items-center">
             <c-metric
               v-model="query"
               :options="['picks', 'wins', 'winRate', 'winRateAdj', 'starRate', 'rank']"

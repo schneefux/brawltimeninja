@@ -132,6 +132,22 @@ export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
 export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 
+export interface VisualisationProp {
+  name: string
+  /**
+   * Component to bind to
+   */
+  component: string
+  /**
+   * Component import (optional, for non-global components)
+   */
+  import?: () => Promise<any>
+  /**
+   * HTML attributes or props to apply to the validator
+   */
+  props: Record<string, any>
+}
+
 export interface VisualisationSpec {
   name: string
   component: string
@@ -151,12 +167,14 @@ export interface VisualisationSpec {
     }
   }
   canvas?: {
-    resizable: boolean
-    initialDimensions: {
+    resizable?: boolean
+    scalable?: boolean
+    initialDimensions?: {
       width: number
       height: number
     }
   }
+  props?: Record<string, VisualisationProp>
 }
 
 export interface SlicerSpec {
@@ -231,8 +249,9 @@ export interface CubeComparingQuery extends CubeQuery {
   significant?: boolean
 }
 
-// TODO type all components with CubeQuery|CubeComparingQuery
-
+/**
+ * Props definition for visualisation components
+ */
 export const VisualisationProps = {
   card: {
     type: undefined,
@@ -246,4 +265,39 @@ export const VisualisationProps = {
     type: Object as PropType<CubeResponse|CubeComparingResponse>,
     required: true as true
   },
+}
+
+/**
+ * Props definition for visualisation or static components
+ */
+export const OptionalVisualisationProps = {
+  ...VisualisationProps,
+  loading: {
+    type: Boolean,
+    required: false as false
+  },
+  response: {
+    type: Object as PropType<CubeResponse|CubeComparingResponse>,
+    required: false as false
+  },
+}
+
+export interface Report {
+  width: number
+  height: number
+  widgets: Widget[]
+}
+
+export interface Widget {
+  id: string
+  query: CubeQuery|CubeComparingQuery|undefined
+  component: string
+  frame: {
+    translate: number[]
+    scale: number[]
+    rotate: number
+    width: number
+    height: number
+  }
+  props: Record<string, any>
 }

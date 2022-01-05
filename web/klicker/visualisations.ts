@@ -49,13 +49,25 @@ const defaultVisualisations: VisualisationSpec[] = [{
   component: 'v-table',
   import: () => import('~/klicker/components/visualisations/v-table.vue'),
   applicable(dimensions, measurements, size, comparing) {
-    return comparing || measurements.length < 5
+    return size > 0 && (comparing || measurements.length < 5)
   },
   grid: {
     initialDimensions: {
       rows: 4,
       columns: 2,
     },
+  },
+  props: {
+    pageSize: {
+      name: 'Page Size',
+      component: 'b-input',
+      import: () => import('~/klicker/components/ui/b-number.vue'),
+      props: {
+        dark: true,
+        min: 1,
+        max: 20,
+      },
+    }
   },
 }, {
   name: 'Scatter Chart',
@@ -85,7 +97,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return dimensions.length == 1 && measurements.length == 1 && size > 0 && size < 10
   },
 }, {
-  name: 'Pivot Table CSV Download',
+  name: 'Pivot Table CSV Download Button',
   component: 'v-pivot-csv',
   import: () => import('~/klicker/components/visualisations/v-pivot-csv.vue'),
   applicable(dimensions, measurements, size) {
@@ -163,11 +175,27 @@ const defaultVisualisations: VisualisationSpec[] = [{
     },
   },
 }, {
-  name: 'CSV Download',
+  name: 'CSV Download Button',
   component: 'v-csv',
   import: () => import('~/klicker/components/visualisations/v-csv.vue'),
   applicable(dimensions, measurements, size) {
     return size > 0
+  },
+}, {
+  name: 'Markdown',
+  component: 'v-markdown',
+  import: () => import('~/klicker/components/visualisations/v-markdown.vue'),
+  applicable(dimensions, measurements, size) {
+    return size == 0
+  },
+  props: {
+    markdown: {
+      name: 'Markdown',
+      component: 'b-markdown',
+      import: () => import('~/klicker/components/ui/b-markdown.vue'),
+      props: {
+      },
+    },
   },
 }]
 

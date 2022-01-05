@@ -21,7 +21,7 @@ const visualisations: VisualisationSpec[] = [{
   component: 'v-sample-size',
   import: () => import('~/components/klicker/v-sample-size.vue'),
   applicable(dimensions, measurements, size, comparing, data) {
-    return !comparing && (<MetaGridEntry>data[0]).measurementsRaw.picks != undefined
+    return !comparing && size > 0 && (<MetaGridEntry>data[0]).measurementsRaw.picks != undefined
   },
 }, {
   name: 'Last Update',
@@ -29,6 +29,26 @@ const visualisations: VisualisationSpec[] = [{
   import: () => import('~/components/klicker/v-last-update.vue'),
   applicable(dimensions, measurements, size, comparing, data) {
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).measurementsRaw.timestamp != undefined
+  },
+}, {
+  name: 'Image',
+  component: 'v-media-img',
+  import: () => import('~/components/klicker/v-media-img.vue'),
+  applicable(dimensions, measurements, size) {
+    return size == 0
+  },
+  canvas: {
+    scalable: true,
+  },
+  props: {
+    path: {
+      name: 'Path',
+      component: 'b-textbox',
+      import: () => import('~/klicker/components/ui/b-textbox.vue'),
+      props: {
+        dark: true,
+      },
+    },
   },
 }]
 
