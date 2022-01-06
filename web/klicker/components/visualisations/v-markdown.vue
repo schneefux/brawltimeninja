@@ -6,7 +6,7 @@
   >
     <div
       slot="content"
-      class="prose prose-invert text-gray-200"
+      class="prose prose-invert"
       v-html="html"
     ></div>
   </v-card-wrapper>

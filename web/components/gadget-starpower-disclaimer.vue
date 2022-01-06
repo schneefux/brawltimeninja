@@ -3,7 +3,7 @@
     :title="$t('starpower-gadget-data.disclaimer.title')"
     v-bind="$attrs"
   >
-    <p slot="content" class="prose text-gray-200">
+    <p slot="content" class="prose prose-invert">
       {{ $t('starpower-gadget-data.disclaimer.description') }}
     </p>
   </b-card>

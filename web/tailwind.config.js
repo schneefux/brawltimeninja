@@ -2,32 +2,28 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  mode: 'jit',
-  purge: {
-    content: [
-      'components/**/*.{js,jsx,ts,tsx,vue}',
-      'layouts/**/*.vue',
-      'pages/**/*.vue',
-      'plugins/**/*.{js,ts}',
-      'content/**/*.md',
-      'klicker/**/*.vue',
-    ],
-  },
-  darkMode: false,
+  content: [
+    'components/**/*.{js,jsx,ts,tsx,vue}',
+    'layouts/**/*.vue',
+    'pages/**/*.vue',
+    'plugins/**/*.{js,ts}',
+    'content/**/*.md',
+    'klicker/**/*.vue',
+  ],
   theme: {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
 
-      gray: colors.gray,
-      yellow: colors.yellow,
+      gray: colors.zinc,
+      yellow: colors.amber,
       red: colors.red,
 
       white: colors.white,
-      green: colors.green,
+      green: colors.emerald,
       orange: colors.orange,
       blue: colors.blue,
-      purple: colors.purple,
+      purple: colors.violet,
       pink: colors.pink,
     },
     extend: {
@@ -44,7 +40,6 @@ module.exports = {
       },
     },
   },
-  variants: {},
   plugins: [
     // for 'prose'
     require('@tailwindcss/typography'),

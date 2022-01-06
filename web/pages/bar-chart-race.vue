@@ -7,17 +7,17 @@
       :title="$t('bar-chart-race.howto.title')"
       class="mt-3"
     >
-      <p slot="content" class="prose text-gray-200">
+      <p slot="content" class="prose prose-invert">
         {{ $t('bar-chart-race.howto.description') }}
       </p>
     </b-card>
 
     <b-card :title="$t('bar-chart-race.note.title')">
       <div slot="content">
-        <p class="prose text-gray-200">
+        <p class="prose prose-invert">
           {{ $t('bar-chart-race.note.description') }}
         </p>
-        <q slot="content" class="prose text-gray-200 italic">{{ $t('attribution-example', { date: new Date().toDateString() }) }}</q>
+        <q slot="content" class="prose prose-invert italic">{{ $t('attribution-example', { date: new Date().toDateString() }) }}</q>
       </div>
     </b-card>
 

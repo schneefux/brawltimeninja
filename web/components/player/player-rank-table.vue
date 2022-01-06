@@ -45,7 +45,7 @@
             <media-img
               :path="`/avatars/${row.player_icon_id}`"
               clazz="h-8"
-              wrapper-class="flex-shrink-0"
+              wrapper-class="shrink-0"
             ></media-img>
             <span class="ml-2">
               {{ row.player_name }}

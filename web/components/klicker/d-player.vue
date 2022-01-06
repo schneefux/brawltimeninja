@@ -17,7 +17,7 @@
       v-if="'playerIcon' in props.row.dimensionsRaw.player"
       :path="`/avatars/${props.row.dimensionsRaw.player.playerIcon}`"
       clazz="h-8"
-      wrapper-class="flex-shrink-0"
+      wrapper-class="shrink-0"
     ></media-img>
     <span class="ml-2">
       {{ props.row.dimensions.player }}

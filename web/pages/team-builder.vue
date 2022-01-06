@@ -7,7 +7,7 @@
       :title="$t('draft-tool.subtitle')"
       class="mt-3"
     >
-      <p slot="content" class="prose text-gray-200">
+      <p slot="content" class="prose prose-invert">
         {{ $t('draft-tool.description') }}
       </p>
     </b-card>

@@ -6,7 +6,7 @@
     :style="data.staticStyle"
   >
     <div
-      :class="['relative flex-shrink-0', {
+      :class="['relative shrink-0', {
         'pr-3 md:pr-4': props.starpowerId != undefined || props.gadgetId != undefined,
       }]"
     >

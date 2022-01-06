@@ -47,7 +47,7 @@
             tag="input"
             :value="$t('action.search')"
             type="submit"
-            class="flex-shrink-0 mr-3"
+            class="shrink-0 mr-3"
             secondary
             lg
           ></b-button>

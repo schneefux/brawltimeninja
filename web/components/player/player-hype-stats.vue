@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto max-w-6xl">
     <b-horizontal-scroller
-      class="children-flex-auto children-flex-shrink-0"
+      class="children-flex-auto children-shrink-0"
       expand-on-desktop
     >
       <bigstat
@@ -33,7 +33,7 @@
 
       <div class="flex flex-col">
         <p class="mx-2">{{ $t('player.equals') }}</p>
-        <div class="flex children-flex-auto children-flex-shrink-0">
+        <div class="flex children-flex-auto children-shrink-0">
           <bigstat
             v-for="(stat, statName) in funStats"
             :key="statName"
@@ -52,7 +52,7 @@
     </b-horizontal-scroller>
 
     <b-horizontal-scroller
-      class="mt-2 lg:justify-start children-flex-shrink-0 children-flex-auto"
+      class="mt-2 lg:justify-start children-shrink-0 children-flex-auto"
       expand-on-desktop
     >
       <bigstat
@@ -251,7 +251,7 @@ export default Vue.extend({
   @apply flex-auto;
 }
 
-.children-flex-shrink-0 > * {
-  @apply flex-shrink-0;
+.children-shrink-0 > * {
+  @apply shrink-0;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-yellow-400 text-gray-800 px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
-    <div class="bg-yellow-400 flex-shrink-0 z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
+    <div class="bg-yellow-400 shrink-0 z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
       <nuxt-link
         :to="localePath('/')"
         class="font-semibold text-xl tracking-tighter leading-tight"

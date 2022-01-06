@@ -8,7 +8,7 @@
       :key="card.id"
       :elevation="elevation"
       :title="card.title"
-      :class="['flex-shrink-0', {
+      :class="['shrink-0', {
         'ml-auto': index == 0,
         'mr-auto': index == cards.length - 1,
       }]"
@@ -20,7 +20,7 @@
           'flex items-center gap-2 my-1 mx-2': long,
         }"
       >
-        <div class="mt-2 mx-auto flex-shrink-0">
+        <div class="mt-2 mx-auto shrink-0">
           <slot
             name="dimensions"
             :row="card.entry"

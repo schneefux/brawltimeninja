@@ -15,7 +15,7 @@
     ></breadcrumbs>
 
     <b-card class="mt-3">
-      <p slot="content" class="prose text-gray-200">
+      <p slot="content" class="prose prose-invert">
         {{ $t('tier-list.gadget.description') }}
       </p>
     </b-card>

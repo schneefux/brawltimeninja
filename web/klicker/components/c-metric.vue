@@ -58,7 +58,7 @@
 
     <p
       v-if="description != ''"
-      class="col-span-full mt-2 prose text-gray-200"
+      class="col-span-full mt-2 prose prose-invert"
     >
       {{ description }}
     </p>

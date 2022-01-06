@@ -23,7 +23,7 @@
         :icon-alt="player.name"
         :elevation="2"
         size="w-40"
-        class="flex-shrink-0 whitespace-nowrap"
+        class="shrink-0 whitespace-nowrap"
         itemscope
         itemtype="http://schema.org/Person"
         dense
