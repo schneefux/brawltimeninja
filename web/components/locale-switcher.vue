@@ -1,6 +1,7 @@
 <template>
   <b-select
     :value="$i18n.locale"
+    primary
     sm
     @input="v => changeLanguage(v)"
   >
@@ -15,25 +16,28 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, useContext, useRouter } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  computed: {
-    locales() {
-      const emoji = {
-        'en': '🇬🇧',
-        'de': '🇩🇪',
-      }
-      return this.$i18n.locales?.map((l: any) => ({
-        code: l.code,
-        emoji: emoji[l.code],
-      })) || []
-    },
-  },
-  methods: {
-    changeLanguage(code) {
-      this.$router.push(this.switchLocalePath(code))
+export default defineComponent({
+  setup() {
+    const { i18n, switchLocalePath } = useContext()
+    const router = useRouter()
+
+    const emoji = {
+      'en': '🇬🇧',
+      'de': '🇩🇪',
+      'es': '🇪🇸',
     }
-  }
+    const locales = i18n.locales?.map((l: any) => ({
+      code: l.code,
+      emoji: emoji[l.code],
+    })) || []
+    const changeLanguage = (code) => router.push(switchLocalePath(code))
+
+    return {
+      locales,
+      changeLanguage,
+    }
+  },
 })
 </script>

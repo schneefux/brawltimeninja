@@ -41,7 +41,7 @@
           </nuxt-link>
 
           <locale-switcher
-            class="lg:border-0 align-text-top !text-2xs pr-7 bg-gray-200"
+            class="lg:border-0 align-text-top !text-2xs pr-7"
           ></locale-switcher>
         </div>
       </div>

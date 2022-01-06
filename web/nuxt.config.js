@@ -249,6 +249,10 @@ export default {
       code: 'de',
       iso: 'de-DE',
       file: 'index.js',
+    }, {
+      code: 'es',
+      iso: 'es-ES',
+      file: 'index.js',
     }],
     lazy: true,
     langDir: 'lang/',

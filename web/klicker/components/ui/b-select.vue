@@ -7,6 +7,7 @@
       'rounded font-semibold text-sm py-1 pl-2 border-2', {
         '': props.sm, // default
         'bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-gray-200': props.dark,
+        'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 text-gray-800': props.primary,
     }]"
     :value="props.value"
     @input="listeners.input && listeners.input($event.target.value)"
@@ -16,9 +17,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   functional: true,
   props: {
     value: {
@@ -28,6 +29,9 @@ export default Vue.extend({
       type: Boolean
     },
     sm: {
+      type: Boolean
+    },
+    primary: {
       type: Boolean
     },
   },

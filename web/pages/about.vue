@@ -3,7 +3,7 @@
     title="About"
     class="bg-gray-100 prose prose-sm sm:prose lg:prose-lg"
   >
-    <copyright></copyright>
+    <copyright light></copyright>
     <p>
       Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account. Read guides written by the community to improve your gameplay.
       Brawl Time Ninja uses the official and unofficial Brawl Stars API. The service may be unreliable at times.

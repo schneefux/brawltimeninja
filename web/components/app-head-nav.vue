@@ -23,20 +23,21 @@
     </nuxt-link>
 
     <install-button
-      class="h-6 mr-4"
+      class="h-6 mr-1"
     ></install-button>
 
-    <nuxt-link
+    <b-button
       :to="'/about'"
-      class="h-6 mr-4"
+      class="w-6 text-center h-6 mr-1"
+      primary
     >
       <font-awesome-icon
         :icon="faInfo"
       ></font-awesome-icon>
-    </nuxt-link>
+    </b-button>
 
     <locale-switcher
-      class="h-6 text-2xs pr-7 bg-gray-200"
+      class="h-6 !text-2xs pr-7"
     ></locale-switcher>
   </div>
 </template>

@@ -1,30 +1,31 @@
 <template>
   <div>
     <p>
-      &#169; 2018 - 2021 Brawl Time Ninja
+      &#169; 2018 - 2022 Brawl Time Ninja
       ({{ releaseVersion }})
     </p>
-    <div class="text-center my-1">
-      Support me:
+    <div class="my-1 flex justify-center items-center gap-x-2">
+      <span>Support me:</span>
       <b-button
-        tag="a"
+        :secondary="!light"
+        :light="light"
         href="https://discord.gg/uYfgznq"
-        class="ml-1"
-        secondary
+        tag="a"
         xs
       >Discord</b-button>
       <b-button
-        tag="a"
+        :secondary="!light"
+        :light="light"
         href="https://twitter.com/brawltimeninja"
-        class="ml-1"
-        secondary
+        tag="a"
         xs
       >Twitter</b-button>
       <b-button
-        tag="a"
+        v-if="!isApp"
+        :secondary="!light"
+        :light="light"
         href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y9TKS7F2E2A2E"
-        class="ml-1"
-        secondary
+        tag="a"
         xs
       >PayPal</b-button>
     </div>
@@ -35,13 +36,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  computed: {
-    releaseVersion(): string {
-      return process.env.release!
+export default defineComponent({
+  props: {
+    light: {
+      type: Boolean,
+      default: false
     },
+  },
+  setup() {
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
+    return {
+      isApp,
+      releaseVersion: process.env.release!,
+    }
   },
 })
 </script>
