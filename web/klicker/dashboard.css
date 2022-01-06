@@ -1,0 +1,96 @@
+.dashboard-grid {
+  display: grid;
+  /*
+   * Add as many rows as necessary, at least 150px.
+   * If the min-content is more than 150px, stretch that row.
+   */
+  grid-auto-rows: minmax(150px, min-content);
+  /*
+   * Densely pack rows, filling remaining space.
+   */
+  grid-auto-flow: row dense;
+  /*
+   * Fit as many columns as possible, at least 150px.
+   * If the min-content is more than 150px, stretch the columns.
+   */
+  grid-template-columns: repeat(auto-fill, minmax(150px, auto));
+}
+
+@layer components {
+  .var--rows-1 {
+    --rows: 1;
+  }
+  .var--rows-2 {
+    --rows: 2;
+  }
+  .var--rows-3 {
+    --rows: 3;
+  }
+  .var--rows-4 {
+    --rows: 4;
+  }
+  .var--rows-5 {
+    --rows: 5;
+  }
+  .var--rows-6 {
+    --rows: 6;
+  }
+  .var--columns-1 {
+    --columns: 1
+  }
+  .var--columns-2 {
+    --columns: 2;
+  }
+  .var--columns-3 {
+    --columns: 3;
+  }
+  .var--columns-4 {
+    --columns: 4;
+  }
+  .var--columns-5 {
+    --columns: 5;
+  }
+  .var--columns-6 {
+    --columns: 6;
+  }
+}
+
+.dashboard-grid .dashboard-cell {
+  grid-row: span var(--rows) / span var(--rows);
+  grid-column: span min(1, var(--columns)) / span min(1, var(--columns));
+}
+@media (min-width: 300px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(2, var(--columns)) / span min(2, var(--columns));
+  }
+}
+@media (min-width: 450px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(3, var(--columns)) / span min(3, var(--columns));
+  }
+}
+@media (min-width: 600px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(4, var(--columns)) / span min(4, var(--columns));
+  }
+}
+@media (min-width: 750px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(5, var(--columns)) / span min(5, var(--columns));
+  }
+}
+@media (min-width: 900px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(6, var(--columns)) / span min(6, var(--columns));
+  }
+}
+@media (min-width: 1050px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(7, var(--columns)) / span min(7, var(--columns));
+  }
+}
+@media (min-width: 1200px) {
+  .dashboard-grid .dashboard-cell {
+    grid-column: span min(8, var(--columns)) / span min(8, var(--columns));
+  }
+}

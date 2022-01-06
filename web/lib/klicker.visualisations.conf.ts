@@ -8,6 +8,10 @@ const visualisations: VisualisationSpec[] = [{
     return dimensions.length == 1 && dimensions[0].id == 'brawler' && size > 0
       && measurements.some(m => m.id == 'picks') && !comparing
   },
+  initialDimensions: {
+    rows: 1,
+    columns: 1,
+  },
 }, {
   name: 'Gini Coefficient',
   component: 'v-gini',
@@ -16,12 +20,20 @@ const visualisations: VisualisationSpec[] = [{
     return dimensions.length == 1 && dimensions[0].id == 'brawler' && size > 0
       && measurements.some(m => m.id == 'useRate') && !comparing
   },
+  initialDimensions: {
+    rows: 1,
+    columns: 2,
+  },
 }, {
   name: 'Sample Size',
   component: 'v-sample-size',
   import: () => import('~/components/klicker/v-sample-size.vue'),
   applicable(dimensions, measurements, size, comparing, data) {
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).measurementsRaw.picks != undefined
+  },
+  initialDimensions: {
+    rows: 1,
+    columns: 1,
   },
 }, {
   name: 'Last Update',
@@ -30,6 +42,10 @@ const visualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size, comparing, data) {
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).measurementsRaw.timestamp != undefined
   },
+  initialDimensions: {
+    rows: 1,
+    columns: 1,
+  },
 }, {
   name: 'Image',
   component: 'v-media-img',
@@ -37,9 +53,11 @@ const visualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size) {
     return size == 0
   },
-  canvas: {
-    scalable: true,
+  initialDimensions: {
+    rows: 2,
+    columns: 2,
   },
+  scalable: true,
   props: {
     path: {
       name: 'Path',

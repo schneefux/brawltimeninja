@@ -10,25 +10,31 @@
       </p>
     </b-card>
     <template v-slot="data">
-      <div class="flex flex-col md:flex-row">
+      <div class="contents">
         <v-barplot
           v-bind="data"
           :card="{ title, fullHeight: true }"
-          class="flex-auto"
+          class="dashboard-cell"
+          style="--columns: 4; --rows: 2;"
         ></v-barplot>
-        <div class="flex lg:flex-col flex-wrap">
-          <v-gini
-            v-bind="data"
-            :card="{}"
-            class="flex-auto lg:flex-none"
-          ></v-gini>
-          <b-card class="flex-auto lg:flex-none" size="w-44">
-            <p
-              slot="content"
-              class="prose text-gray-200"
-            >
-              {{ $t('brawler.balance-chart.description') }}
-            </p>
+        <div
+          class="dashboard-cell"
+          style="--columns: 2; --rows: 1;"
+        >
+          <b-card
+            :title="$t('metric.gini-coefficient')"
+            full-height
+            dense
+          >
+            <div slot="content">
+              <v-gini v-bind="data"></v-gini>
+              <p
+                slot="content"
+                class="mt-1 prose text-gray-200"
+              >
+                {{ $t('brawler.balance-chart.description') }}
+              </p>
+            </div>
           </b-card>
         </div>
       </div>

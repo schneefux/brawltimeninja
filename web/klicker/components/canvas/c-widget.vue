@@ -76,9 +76,9 @@ export function render(frame: Widget['frame'], spec: VisualisationSpec) {
 
   style.transform = transform
 
-  if (spec.canvas?.initialDimensions != undefined) {
-    style.width = `${spec.canvas.initialDimensions.width}px`
-    style.height = `${spec.canvas.initialDimensions.height}px`
+  if (spec.resizable) {
+    style.width = `${spec.initialDimensions.columns * 150}px`
+    style.height = `${spec.initialDimensions.rows * 150}px`
   } else {
     style.width = 'max-content'
     style.height = 'max-content'

@@ -74,6 +74,7 @@ export default {
   loading: { color: '#dc2626' }, // red-600
 
   css: [
+    '~/assets/css/tailwind.css',
     '~/assets/css/transitions.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
@@ -104,9 +105,8 @@ export default {
   ],
 
   buildModules: [
-    //'nuxt-vite',
     '@nuxt/typescript-build',
-    '@nuxtjs/tailwindcss',
+    '@nuxt/postcss8',
     '@nuxtjs/fontawesome',
     '@nuxtjs/google-fonts',
     '@nuxtjs/composition-api/module',
@@ -176,6 +176,9 @@ export default {
     postcss: {
       plugins: {
         'postcss-color-function': {},
+        'postcss-import': {},
+        'tailwindcss': {},
+        'autoprefixer': {},
       },
     },
     // https://github.com/nuxt/nuxt.js/issues/9221
@@ -258,10 +261,6 @@ export default {
     vueI18n: {
       fallbackLocale: 'en',
     },
-  },
-
-  tailwindcss: {
-    viewer: false,
   },
 
   googleFonts: {

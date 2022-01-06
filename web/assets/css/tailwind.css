@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import '~/klicker/dashboard.css';
+@import 'tailwindcss/utilities';
 
 @layer utilities {
   .text-shadow {

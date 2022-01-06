@@ -28,16 +28,17 @@
     </template>
 
     <template v-slot="query">
-      <div class="w-full grid auto-rows-[minmax(16rem,auto)] md:auto-rows-[minmax(20rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,28rem)] grid-flow-row-dense justify-center">
+      <div class="w-full dashboard-grid">
         <map-image
-          v-if="id != undefined && map != 'Competition Entry'"
+          v-if="showImage"
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'image'),
             once: true,
           }"
           :id="id"
           :map="map"
-          class="row-span-2"
+          class="dashboard-cell"
+          style="--columns: 3; --rows: 4;"
         ></map-image>
 
         <map-best-brawlers-table
@@ -47,7 +48,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
+          class="dashboard-cell var--rows-3 md:var--rows-4"
+          style="--columns: 3;"
         ></map-best-brawlers-table>
 
         <map-best-teams-table
@@ -58,7 +60,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
+          class="dashboard-cell var--rows-3 md:var--rows-4"
+          style="--columns: 3;"
         ></map-best-teams-table>
 
         <map-best-players-table
@@ -68,7 +71,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
+          class="dashboard-cell"
+          style="--columns: 3; --rows: 4;"
         ></map-best-players-table>
 
         <map-best-starpowers-table
@@ -78,8 +82,9 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
           kind="starpowers"
+          class="dashboard-cell var--rows-3 md:var--rows-4"
+          style="--columns: 3;"
         ></map-best-starpowers-table>
 
         <map-best-starpowers-table
@@ -89,8 +94,9 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
           kind="gadgets"
+          class="dashboard-cell var--rows-3 md:var--rows-4"
+          style="--columns: 3;"
         ></map-best-starpowers-table>
 
         <client-only>
@@ -100,7 +106,11 @@
             data-ad-client="ca-pub-6856963757796636"
             data-ad-slot="4623162753"
             data-full-width-responsive="yes"
-            class="row-span-2 self-center"
+            class="self-center dashboard-cell"
+            :style="{
+              '--columns': showImage ? 1 : 2,
+              '--rows': 4,
+            }"
           />
         </client-only>
 
@@ -111,7 +121,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="row-span-2"
+          class="dashboard-cell"
+          style="--columns: 3; --rows: 4;"
         ></map-insights>
 
         <lazy
@@ -121,7 +132,6 @@
           <map-balance-chart
             :id="id"
             :slices="query.slices"
-            class="row-span-2 md:row-span-1 md:col-span-2"
             v-observe-visibility="{
               callback: (v, e) => trackScroll(v, e, 'charts'),
               once: true,
@@ -131,20 +141,31 @@
           <map-winrate-userate-chart
             :id="id"
             :slices="query.slices"
-            class="md:col-span-2"
+            class="dashboard-cell"
+            style="--columns: 4; --rows: 3;"
           ></map-winrate-userate-chart>
 
           <map-trend-chart
             :id="id"
             :slices="query.slices"
-            class="md:col-span-2"
+            class="dashboard-cell"
+            style="--columns: 4; --rows: 2;"
           ></map-trend-chart>
-        </lazy>
 
-        <div class="flex flex-wrap">
-          <gadget-starpower-disclaimer full-height md></gadget-starpower-disclaimer>
-          <metric-info full-height :measurement="adjustedWinRate" md></metric-info>
-        </div>
+          <gadget-starpower-disclaimer
+            class="dashboard-cell"
+            style="--columns: 2; --rows: 1;"
+            full-height
+            dense
+          ></gadget-starpower-disclaimer>
+          <metric-info
+            :measurement="adjustedWinRate"
+            class="dashboard-cell"
+            style="--columns: 2; --rows: 1;"
+            full-height
+            dense
+          ></metric-info>
+        </lazy>
       </div>
     </template>
   </c-dashboard>
@@ -180,7 +201,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { state } = useStore<any>()
+    const store = useStore<any>()
     const { $klicker } = useContext()
 
     const twoWeeksAgo = new Date()
@@ -218,11 +239,14 @@ export default defineComponent({
       }
     }
 
-    const isApp = computed(() => state.isApp as boolean)
+    const isApp = computed(() => store.state.isApp as boolean)
+
+    const showImage = computed(() => props.id != undefined && props.map != 'Competition Entry')
 
     return {
       isApp,
       query,
+      showImage,
       adjustedWinRate,
       trackScroll,
     }

@@ -154,26 +154,15 @@ export interface VisualisationSpec {
   import: () => Promise<any>
   applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
-  grid?: {
-    initialDimensions: {
-      /**
-       * Grid rows are 8rem, md and above: 10rem
-       */
-      rows: number
-      /**
-       * Grid columns are 100%, md and above: 14rem
-       */
-      columns: number
-    }
+  /**
+   * Grid cells are 150px * 150px per unit.
+   */
+  initialDimensions: {
+    rows: number
+    columns: number
   }
-  canvas?: {
-    resizable?: boolean
-    scalable?: boolean
-    initialDimensions?: {
-      width: number
-      height: number
-    }
-  }
+  resizable?: boolean
+  scalable?: boolean
   props?: Record<string, VisualisationProp>
 }
 

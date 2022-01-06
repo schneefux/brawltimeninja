@@ -10,6 +10,7 @@
       :loading="loading"
       :response="response"
       :style="spec.style"
+      class="dashboard-cell"
     >
       <template
         v-for="(_, slot) of $scopedSlots"
@@ -30,6 +31,7 @@
     :loading="loading"
     :response="response"
     :style="specs[0].style"
+    class="dashboard-cell"
   >
     <template
       v-for="(_, slot) of $scopedSlots"
@@ -94,30 +96,22 @@ export default defineComponent({
     const { $klicker, checkApplicable } = useCubeResponse(props)
 
     function getStyle(spec: VisualisationSpec) {
-      if (props.forGrid) {
-        if (spec.grid != undefined) {
-          return {
-            'grid-row': `span ${spec.grid.initialDimensions.rows} / span ${spec.grid.initialDimensions.rows}`,
-            'grid-column': `span ${spec.grid.initialDimensions.columns} / span ${spec.grid.initialDimensions.columns}`,
-          }
-        }
+      const style: Record<string, string> = {
+        '--rows': `${spec.initialDimensions.rows}`,
+        '--columns': `${spec.initialDimensions.columns}`,
       }
 
       if (props.forCanvas) {
-        if (spec.canvas?.initialDimensions != undefined) {
-          return {
-            width: `${spec.canvas.initialDimensions.width}px`,
-            height: `${spec.canvas.initialDimensions.height}px`,
-          }
+        if (spec.resizable) {
+          style.width = `${spec.initialDimensions.columns * 150}px`
+          style.height = `${spec.initialDimensions.rows * 150}px`
         } else {
-          return {
-            width: 'max-content',
-            height: 'max-content',
-          }
+          style.width = 'max-content'
+          style.height = 'max-content'
         }
       }
 
-      return {}
+      return style
     }
 
     const specs = computed(() => {

@@ -11,19 +11,11 @@ const defaultVisualisations: VisualisationSpec[] = [{
       size > 1 &&
       size < 100
   },
-  grid: {
-    initialDimensions: {
-      rows: 2,
-      columns: 4,
-    },
+  initialDimensions: {
+    rows: 3,
+    columns: 4,
   },
-  canvas: {
-    resizable: true,
-    initialDimensions: {
-      height: 200,
-      width: 200,
-    },
-  },
+  resizable: true,
 }, {
   name: 'Tier List',
   component: 'v-tier-list',
@@ -31,11 +23,9 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size) {
     return dimensions.length == 1 && measurements.length == 1 && size > 5 && size < 100
   },
-  grid: {
-    initialDimensions: {
-      rows: 4,
-      columns: 4,
-    },
+  initialDimensions: {
+    rows: 3,
+    columns: 5,
   },
 }, {
   name: 'Test Info',
@@ -43,7 +33,11 @@ const defaultVisualisations: VisualisationSpec[] = [{
   import: () => import('~/klicker/components/visualisations/v-test-info.vue'),
   applicable(dimensions, measurements, size, comparing) {
     return comparing && measurements[0].statistics?.test != undefined
-  }
+  },
+  initialDimensions: {
+    rows: 2,
+    columns: 3,
+  },
 }, {
   name: 'Table',
   component: 'v-table',
@@ -51,11 +45,9 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size, comparing) {
     return size > 0 && (comparing || measurements.length < 5)
   },
-  grid: {
-    initialDimensions: {
-      rows: 4,
-      columns: 2,
-    },
+  initialDimensions: {
+    rows: 4,
+    columns: 3,
   },
   props: {
     pageSize: {
@@ -76,18 +68,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size) {
     return dimensions.length == 1 && measurements.length == 2 && size > 1 && size < 1000
   },
-  canvas: {
-    resizable: true,
-    initialDimensions: {
-      height: 200,
-      width: 200,
-    },
-  },
-  grid: {
-    initialDimensions: {
-      rows: 2,
-      columns: 4,
-    },
+  resizable: true,
+  initialDimensions: {
+    rows: 3,
+    columns: 4,
   },
 }, {
   name: 'Horizontal Cards',
@@ -95,6 +79,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   import: () => import('~/klicker/components/visualisations/v-roll.vue'),
   applicable(dimensions, measurements, size) {
     return dimensions.length == 1 && measurements.length == 1 && size > 0 && size < 10
+  },
+  initialDimensions: {
+    rows: 1,
+    columns: 4,
   },
 }, {
   name: 'Pivot Table CSV Download Button',
@@ -105,6 +93,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
         && dimensions.filter(m => m.type == 'nominal').length == 1
         && measurements.length == 1
   },
+  initialDimensions: {
+    rows: 1,
+    columns: 1,
+  },
 }, {
   name: 'Line Plot',
   component: 'v-lineplot',
@@ -114,18 +106,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
       ['temporal', 'ordinal'].includes(dimensions[0].type) &&
       measurements.length == 1 && size > 1 && size < 1000
   },
-  canvas: {
-    resizable: true,
-    initialDimensions: {
-      height: 200,
-      width: 200,
-    },
-  },
-  grid: {
-    initialDimensions: {
-      rows: 2,
-      columns: 4,
-    },
+  resizable: true,
+  initialDimensions: {
+    rows: 3,
+    columns: 4,
   },
 }, {
   name: 'Measurement Info',
@@ -133,6 +117,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   import: () => import('~/klicker/components/visualisations/v-info.vue'),
   applicable(dimensions, measurements) {
     return measurements.length == 1
+  },
+  initialDimensions: {
+    rows: 1,
+    columns: 2,
   },
 }, {
   name: 'Heatmap',
@@ -148,18 +136,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
     }
     return false
   },
-  canvas: {
-    resizable: true,
-    initialDimensions: {
-      height: 200,
-      width: 200,
-    },
-  },
-  grid: {
-    initialDimensions: {
-      rows: 2,
-      columns: 4,
-    },
+  resizable: true,
+  initialDimensions: {
+    rows: 3,
+    columns: 4,
   },
 }, {
   name: 'Grid',
@@ -168,11 +148,9 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements) {
     return measurements.length > 1
   },
-  grid: {
-    initialDimensions: {
-      rows: 2,
-      columns: 4,
-    },
+  initialDimensions: {
+    rows: 3,
+    columns: 4,
   },
 }, {
   name: 'CSV Download Button',
@@ -181,12 +159,20 @@ const defaultVisualisations: VisualisationSpec[] = [{
   applicable(dimensions, measurements, size) {
     return size > 0
   },
+  initialDimensions: {
+    rows: 1,
+    columns: 1,
+  },
 }, {
   name: 'Markdown',
   component: 'v-markdown',
   import: () => import('~/klicker/components/visualisations/v-markdown.vue'),
   applicable(dimensions, measurements, size) {
     return size == 0
+  },
+  initialDimensions: {
+    rows: 4,
+    columns: 4,
   },
   props: {
     markdown: {

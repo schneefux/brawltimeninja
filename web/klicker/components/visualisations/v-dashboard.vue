@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="w-full">
     <v-auto
       v-bind="$props"
       :card="{ loading, fullHeight: true, elevation: 2 }"
-      class="w-full grid auto-rows-[minmax(8rem,auto)] md:auto-rows-[minmax(10rem,auto)] grid-cols-1 md:grid-cols-[repeat(auto-fill,14rem)] md:grid-flow-row-dense"
+      class="w-full dashboard-grid"
       for-grid
       all
     >
@@ -38,9 +38,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.children-flex-auto > * {
-  @apply flex-auto;
-}
-</style>
