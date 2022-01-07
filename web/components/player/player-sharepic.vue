@@ -39,7 +39,7 @@
         </span>
 
         <span class="text-right text-yellow-400 text-3xl font-bold">
-          {{ Math.floor(player.hoursSpent) }}
+          {{ hours }}
         </span>
         <span class="whitespace-nowrap text-2xl">
           {{ $t('metric.hours-spent') }}
@@ -125,11 +125,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { Player } from '@/model/Brawlstars'
-import { Brawler } from '@/model/Api'
+import { xpToHours } from '~/lib/util'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     player: {
       type: Object as PropType<Player>,
@@ -148,15 +148,19 @@ export default Vue.extend({
       required: true
     },
   },
-  computed: {
-    bestBrawlers(): Brawler[] {
-      return Object.entries(this.player.brawlers)
-        .map(([id, brawler]) => ({
-          ...brawler,
-          id,
-        }))
-        .sort((b1, b2) => b2.trophies - b1.trophies)
-    },
+  setup(props) {
+    const hours = computed(() => Math.floor(xpToHours(props.player.expPoints)))
+    const bestBrawlers = computed(() => Object.entries(props.player.brawlers)
+      .map(([id, brawler]) => ({
+        ...brawler,
+        id,
+      }))
+      .sort((b1, b2) => b2.trophies - b1.trophies))
+
+    return {
+      hours,
+      bestBrawlers,
+    }
   },
 })
 </script>

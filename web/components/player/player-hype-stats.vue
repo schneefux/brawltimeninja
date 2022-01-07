@@ -117,14 +117,24 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { mapState } from 'vuex'
 import { Player } from '@/model/Api'
-import { ratingPercentiles } from '~/lib/util'
+import { ratingPercentiles, xpToHours } from '~/lib/util'
 import { PlayerTotals } from '~/store'
 import { BHorizontalScroller } from '~/klicker/components'
+import { computed, defineComponent, nextTick, onBeforeUpdate, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+interface FunStat {
+  label: string
+  value: (n: number) => number
+}
+
+interface CounterRef {
+  element: HTMLElement
+  stat: FunStat
+}
+
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
   components: {
     BHorizontalScroller,
   },
@@ -138,82 +148,34 @@ export default Vue.extend({
       required: false
     },
   },
-  mounted() {
-    this.$nextTick(() => this.startCounter())
-  },
-  computed: {
-    ratingPercentiles() {
-      return ratingPercentiles
-    },
-    brawlersUnlocked(): number|string {
-      return Object.keys(this.player.brawlers).length
-    },
-    trophiesGoal(): number|string {
-      const brawlerTrophies = [...Object.values(this.player.brawlers)]
-        .map(({ trophies }) => trophies)
-      brawlerTrophies.sort()
-      const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-      return medBrawlerTrophies * this.totalBrawlers
-    },
-    accountRating(): string {
-      const medTrophies = this.trophiesGoal as number / this.totalBrawlers
-      // measured on 2020-11-01 with data from 2020-10-01
-      // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
-      for (const key in ratingPercentiles) {
-        if (medTrophies <= ratingPercentiles[key][1]) {
-          return key
-        }
+  // TODO replace refs by function ref when migrating to Vue 3
+  setup(props, { refs }) {
+    const store = useStore<any>()
+    const { localePath, i18n } = useContext()
+
+    let counterRefs: CounterRef[] = []
+    onBeforeUpdate(() => counterRefs = [])
+    const setCounterRef = (stat: FunStat) => (element: HTMLElement) => {
+      console.log('set counter ref', stat, element)
+      if (element) {
+        counterRefs.push({ element, stat })
       }
-      return '?'
-    },
-    funStats(): { [name: string]: { label: string, value: (n: number) => number } } {
-      return {
-        recharges: {
-          // measured with AccuBattery on my phone
-          label: this.$t('metric.battery') as string,
-          value: (h) => h / 4.27
-        },
-        toiletBreaks: {
-          // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
-          // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
-          label: this.$t('metric.toilet') as string,
-          value: (h) => h / (102 / 7 / 60)
-        },
-        books: {
-          // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
-          label: this.$t('metric.book') as string,
-          value: (h) => h / 7.72
-        },
-        songs: {
-          // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
-          label: this.$t('metric.song') as string,
-          value: (h) => h / (3.7 / 60)
-        },
-      }
-    },
-    playerUrl(): string {
-      return (process.client ? window.location.origin : '')
-        + this.localePath('/player/' + this.player.tag)
-        + '?utm_source=share&utm_medium=image&utm_campaign=hype-stats'
-    },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers as number,
-    })
-  },
-  methods: {
-    startCounter() {
-      const playerHours = Math.max(this.player.hoursSpent, 1)
+    }
+
+    function startCounter() {
+      console.log('start', counterRefs)
+      const playerHours = Math.max(hours.value, 1)
       const animationDuration = 3000
 
       const setCounters = (hoursSpent: number) => {
-        const counter = this.$refs['counter-hours'] as HTMLElement
+        const counter = refs['counter-hours'] as HTMLElement
         if (counter == undefined) {
           // not rendered yet
           return
         }
         counter.textContent = Math.floor(hoursSpent).toString()
-        Object.values(this.funStats).forEach((stat, index) => {
-          const funCounter = this.$refs['counter-funstats']![index] as HTMLElement
+        Object.values(funStats.value).forEach((stat, index) => {
+          const funCounter = refs['counter-funstats']![index] as HTMLElement
           funCounter.textContent = Math.floor(stat.value(hoursSpent)).toString()
         })
       }
@@ -235,13 +197,76 @@ export default Vue.extend({
       })
 
       animateHours()
-    },
-    sharepicTriggered() {
-      this.$gtag.event('click', {
-        'event_category': 'profile',
-        'event_label': 'share',
-      })
-    },
+    }
+
+    onMounted(() => nextTick(() => startCounter()))
+
+    const hours = computed(() => xpToHours(props.player.expPoints))
+    const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
+    const trophiesGoal = computed(() => {
+      const brawlerTrophies = [...Object.values(props.player.brawlers)]
+        .map(({ trophies }) => trophies)
+      brawlerTrophies.sort()
+      const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
+      return medBrawlerTrophies * store.state.totalBrawlers
+    })
+    const accountRating = computed(() => {
+      const medTrophies = trophiesGoal.value as number / store.state.totalBrawlers
+      // measured on 2020-11-01 with data from 2020-10-01
+      // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
+      for (const key in ratingPercentiles) {
+        if (medTrophies <= ratingPercentiles[key][1]) {
+          return key
+        }
+      }
+      return '?'
+    })
+
+    const funStats = computed<{ [name: string]: FunStat }>(() => ({
+      recharges: {
+        // measured with AccuBattery on my phone
+        label: i18n.t('metric.battery') as string,
+        value: (h) => h / 4.27
+      },
+      toiletBreaks: {
+        // https://www.unilad.co.uk/featured/this-is-how-much-of-your-life-youve-spent-on-the-toilet/
+        // 102 minutes over 7 days = 1/4 h/day, assuming 1 session/day
+        label: i18n.t('metric.toilet') as string,
+        value: (h) => h / (102 / 7 / 60)
+      },
+      books: {
+        // https://io9.gizmodo.com/how-long-will-it-take-to-read-that-book-this-chart-giv-1637170555
+        label: i18n.t('metric.book') as string,
+        value: (h) => h / 7.72
+      },
+      songs: {
+        // https://www.statcrunch.com/5.0/viewreport.php?reportid=28647&groupid=948
+        label: i18n.t('metric.song') as string,
+        value: (h) => h / (3.7 / 60)
+      },
+    }))
+
+    const playerUrl = computed(() => `${process.client ? window.location.origin : ''}${localePath('/player/' + props.player.tag)}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
+
+    const totalBrawlers = computed<number>(() => store.state.totalBrawlers)
+
+    const gtag = useGtag()
+    const sharepicTriggered = () => gtag.event('click', {
+      'event_category': 'profile',
+      'event_label': 'share',
+    })
+
+    return {
+      funStats,
+      playerUrl,
+      trophiesGoal,
+      totalBrawlers,
+      accountRating,
+      setCounterRef,
+      brawlersUnlocked,
+      ratingPercentiles,
+      sharepicTriggered,
+    }
   },
 })
 </script>
