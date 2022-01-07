@@ -37,7 +37,6 @@ export default class ClickerService {
   private synergyMetaCube: SynergyMetaCube
   private leaderboardCube: LeaderboardCube
   private brawlerLeaderboardCube: BrawlerLeaderboardCube
-  private teamCube: TeamCube
 
   constructor() {
     this.chRw = new ClickHouse2({
@@ -67,7 +66,6 @@ export default class ClickerService {
     this.synergyMetaCube = new SynergyMetaCube(this.chRo)
     this.leaderboardCube = new LeaderboardCube(this.chRo)
     this.brawlerLeaderboardCube = new BrawlerLeaderboardCube(this.chRo)
-    this.teamCube = new TeamCube(this.synergyMetaCube, this.mapMetaCube, this.chRo)
   }
 
   private insert(sql: string, callback: (error?: Error) => void) {
@@ -102,7 +100,6 @@ export default class ClickerService {
     await this.synergyMetaCube.up(this.chRw)
     await this.leaderboardCube.up(this.chRw)
     await this.brawlerLeaderboardCube.up(this.chRw)
-    await this.teamCube.up(this.chRw)
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -230,7 +227,7 @@ export default class ClickerService {
           // see other table
           /* brawler */
           brawler_id: myBrawler.id,
-          brawler_name: myBrawler.name || 'NANI', // FIXME API bug 2020-06-06
+          brawler_name: myBrawler.name,
           brawler_power: brawler.power,
           brawler_trophies: myBrawlerTrophies,
           brawler_highest_trophies: myBrawler.highestTrophies,
@@ -343,7 +340,7 @@ export default class ClickerService {
         trophy_season_end: formatClickhouseDate(getCurrentSeasonEnd()),
         ...playerFacts,
         brawler_id: brawler.id,
-        brawler_name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
+        brawler_name: brawler.name,
         brawler_power: brawler.power,
         brawler_trophies: brawler.trophies,
         brawler_highest_trophies: brawler.highestTrophies,
