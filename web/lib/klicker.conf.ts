@@ -1,4 +1,5 @@
 import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Measurement, Dimension } from "../klicker"
+// @ts-ignore
 import { ChiSquared } from 'sampson'
 
 /* c&p from util */
@@ -77,6 +78,7 @@ function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, get
       [expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT],
       [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT])
 
+    // @ts-ignore
     return ChiSquared.pdf(g, {
       // df: (rows - 1) * (columns - 1)
       df: 1
@@ -176,7 +178,7 @@ const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
-    childIds: ['gadget', 'starpower'],
+    childIds: ['gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
@@ -189,7 +191,7 @@ const brawlerDimensions = asDimensions({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
-    childIds: ['brawler', 'gadget', 'starpower'],
+    childIds: ['brawler', 'gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawlerId',
     additionalMeasures: [],
     hidden: true,
@@ -245,6 +247,18 @@ const brawlerDimensions = asDimensions({
     type: 'nominal',
     config: {
       sql: 'brawler_starpower_id',
+      type: 'string',
+    },
+  },
+  gear: {
+    id: 'gear',
+    name: 'Gear',
+    naturalIdAttribute: 'gearName',
+    formatter: 'capitalizeWords',
+    additionalMeasures: ['gearName'],
+    type: 'nominal',
+    config: {
+      sql: 'brawler_gear_id',
       type: 'string',
     },
   },
@@ -616,6 +630,16 @@ export const brawlerNumberMeasurements = asNumberMeasurements({
       type: 'max',
     },
   },
+  gears: {
+    id: 'gears',
+    name: 'Gears',
+    sign: -1,
+    type: 'quantitative',
+    config: {
+      sql: 'brawler_gears_length',
+      type: 'max',
+    },
+  },
 })
 
 const metaMeasurements = asStringMeasurements({
@@ -929,6 +953,16 @@ const battleStringMeasurements = asStringMeasurements({
     type: 'nominal',
     config: {
       sql: 'any(brawler_gadget_name)',
+      type: 'number',
+    },
+  },
+  gearName: {
+    id: 'gearName',
+    name: 'Gear',
+    sign: -1,
+    type: 'nominal',
+    config: {
+      sql: 'any(brawler_gear_name)',
       type: 'number',
     },
   },
@@ -1358,6 +1392,20 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
+  gearIdEq: {
+    id: 'gearIdEq',
+    config: {
+      member: 'gear_dimension',
+      operator: 'equals',
+    },
+  },
+  gearIdNeq: {
+    id: 'gearIdNeq',
+    config: {
+      member: 'gear_dimension',
+      operator: 'notEquals',
+    },
+  },
 })
 
 const battleSlices = asSlice({
@@ -1521,6 +1569,7 @@ const playerBrawlerMeasurements = [
   commonMeasurements.highestTrophies,
   commonMeasurements.starpowers,
   commonMeasurements.gadgets,
+  commonMeasurements.gears,
 ]
 
 const playerBrawlerSlices = [
@@ -1631,6 +1680,31 @@ const cubes: Record<string, Cube> = {
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
       gadgetIdNeq: ['0'],
+    },
+  },
+  gear: {
+    id: 'gear',
+    table: 'gear_meta',
+    name: 'Gear',
+    dimensions: [
+      ...brawlerBattleDimensions,
+      commonDimensions.gear,
+    ],
+    defaultDimensionsIds: ['gear'],
+    measurements: [
+      ...brawlerBattleMeasurements,
+      commonMeasurements.gearName,
+    ],
+    defaultMeasurementIds: ['winRateAdj'],
+    metaMeasurements: ['picks', 'timestamp'],
+    slices: [
+      ...brawlerBattleSlices,
+      commonSlices.gearIdEq,
+      commonSlices.gearIdNeq,
+    ],
+    defaultSliceValues: {
+      ...brawlerBattleDefaultSliceValues,
+      gearIdNeq: ['0'],
     },
   },
   synergy: {
@@ -1752,6 +1826,7 @@ const cubes: Record<string, Cube> = {
       battleDimensions.teamSize,
       brawlerDimensions.starpower,
       brawlerDimensions.gadget,
+      brawlerDimensions.gear,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1766,6 +1841,7 @@ const cubes: Record<string, Cube> = {
       battleNumberMeasurements.starRate,
       battleStringMeasurements.starpowerName,
       battleStringMeasurements.gadgetName,
+      battleStringMeasurements.gearName,
       // TODO
     ],
     defaultMeasurementIds: ['picks'],
@@ -1783,6 +1859,8 @@ const cubes: Record<string, Cube> = {
       brawlerSlices.starpowerIdNeq,
       brawlerSlices.gadgetIdEq,
       brawlerSlices.gadgetIdNeq,
+      brawlerSlices.gearIdEq,
+      brawlerSlices.gearIdNeq,
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { PropType } from "@nuxtjs/composition-api"
 
 export interface Config extends Record<string, Cube> {}
@@ -269,6 +270,7 @@ export const OptionalVisualisationProps = {
     required: false as false
   },
   response: {
+    // @ts-ignore
     type: Object as PropType<CubeResponse|CubeComparingResponse>,
     required: false as false
   },

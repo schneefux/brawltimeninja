@@ -1,3 +1,6 @@
+// @ts-ignore
+import { PropType } from "@nuxtjs/composition-api"
+
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
@@ -13,16 +16,6 @@ export type MeasureType = 'number'|'count'|'countDistinct'|'countDistinctApprox'
 export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
-
-export interface State {
-  cubeId: string
-  slices: SliceValue
-  comparingSlices?: SliceValue
-  dimensionsIds: string[]
-  measurementsIds: string[]
-  sortId: string
-  limit?: number
-}
 
 export interface Cube {
   id: string
@@ -55,18 +48,32 @@ export interface Measurement<T=string|number> {
   formatter?: string
   d3formatter?: string
   sign: number
-  /**
-   * Vega.js scale configuration
-   * @see https://vega.github.io/vega-lite/docs/scale.html
-   */
-  scale?: any
   transform?: (entries: MetaGridEntry[]) => T[]
+  /**
+   * Vega.js encoding configuration
+   * @see https://vega.github.io/vega-lite/docs/encoding.html
+   */
+  vega?: any
   /**
    * cube.js configuration.
    */
   config: {
     sql: string
     type: MeasureType
+  }
+  /**
+   * Configuration for statistical tests and confidence intervals
+   */
+  statistics?: {
+    test?: {
+      name: string
+      test(referenceMeasurements: MetaGridEntry['measurementsRaw'], testMeasurements: MetaGridEntry['measurementsRaw']): number
+      requiresMeasurements: string[]
+    }
+    ci?: {
+      ci(data: MetaGridEntry['measurementsRaw']): ConfidenceInterval
+      requiresMeasurements: string[]
+    }
   }
 }
 
@@ -78,6 +85,10 @@ export interface Dimension {
   id: string
   // TODO move all `name`s to en.json
   name?: string
+  /**
+   * IDs of the dimensions that this dimension aggregates.
+   */
+  childIds?: string[]
   /**
    * Column which contains a human-readable identifier.
    * May be the dimension or one of additionalMeasures.
@@ -120,24 +131,167 @@ export interface Slice {
 
 export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
+export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
+
+export interface VisualisationProp {
+  name: string
+  /**
+   * Component to bind to
+   */
+  component: string
+  /**
+   * Component import (optional, for non-global components)
+   */
+  import?: () => Promise<any>
+  /**
+   * HTML attributes or props to apply to the validator
+   */
+  props: Record<string, any>
+}
+
+export interface VisualisationSpec {
+  name: string
+  component: string
+  import: () => Promise<any>
+  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  /**
+   * Grid cells are 150px * 150px per unit.
+   */
+  initialDimensions: {
+    rows: number
+    columns: number
+  }
+  resizable?: boolean
+  scalable?: boolean
+  props?: Record<string, VisualisationProp>
+}
+
+export interface SlicerSpec {
+  name: string
+  component: string
+  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+}
+
+export interface ConfidenceInterval {
+  lower: number
+  mean: number
+  upper: number
+}
+
 export interface MetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
   measurementsRaw: Record<string, number|string>
+  measurementsCI: Record<string, ConfidenceInterval>
   dimensions: Record<string, string>
   measurements: Record<string, string>
+}
+
+export interface ComparingMetaGridEntry extends MetaGridEntry {
+  test: {
+    reference: MetaGridEntry
+    difference: MetaGridEntryDiff
+  }
 }
 
 export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
 
-export interface CubeResponse {
-  state: State
-  dimensions: Dimension[]
-  measurements: Measurement[]
-  data: MetaGridEntry[]
+export interface MetaGridEntryDiff {
+  differenceRaw: number
+  difference: string
+  annotatedDifference: string
+  pValueRaw: number
+  pValueStars: string
+}
 
-  /** TODO deprecate */
-  comparing: boolean
+export interface AbstractCubeResponse<Q extends CubeQuery, M extends MetaGridEntry> {
+  kind: string
+  query: Q
+  data: M[]
+}
+
+export interface CubeResponse extends AbstractCubeResponse<CubeQuery, MetaGridEntry> {
+  kind: 'response'
+}
+
+export interface CubeComparingResponse extends AbstractCubeResponse<CubeComparingQuery, ComparingMetaGridEntry> {
+  kind: 'comparingResponse'
+}
+
+export interface CubeQuery {
+  cubeId: string
+  slices: SliceValue
+  dimensionsIds: string[]
+  measurementsIds: string[]
+  limit?: number
+  sortId: string
+  comparing?: boolean
+  confidenceInterval?: boolean
+  name?: string
+}
+
+export type CubeQueryFilter = (e: MetaGridEntry) => boolean
+
+export interface CubeComparingQuery extends CubeQuery {
+  comparing: true
+  reference: CubeQuery
+}
+
+export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
+
+/**
+ * Props definition for visualisation components
+ */
+export const VisualisationProps = {
+  card: {
+    type: undefined,
+    required: false as false
+  },
+  loading: {
+    type: Boolean,
+    required: true as true
+  },
+  response: {
+    type: Object as PropType<CubeResponse|CubeComparingResponse>,
+    required: true as true
+  },
+}
+
+/**
+ * Props definition for visualisation or static components
+ */
+export const OptionalVisualisationProps = {
+  ...VisualisationProps,
+  loading: {
+    type: Boolean,
+    required: false as false
+  },
+  response: {
+    // @ts-ignore
+    type: Object as PropType<CubeResponse|CubeComparingResponse>,
+    required: false as false
+  },
+}
+
+export interface Report {
+  width: number
+  height: number
+  widgets: Widget[]
+}
+
+export interface Widget {
+  id: string
+  query: CubeQuery|CubeComparingQuery|undefined
+  component: string
+  frame: {
+    translate: number[]
+    scale: number[]
+    rotate: number
+    width: number
+    height: number
+  }
+  props: Record<string, any>
 }

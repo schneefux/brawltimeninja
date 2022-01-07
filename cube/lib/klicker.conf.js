@@ -18,6 +18,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 exports.__esModule = true;
 exports.commonMeasurements = exports.brawlerNumberMeasurements = exports.brawlerStringMeasurements = exports.playerStringMeasurements = exports.getSeasonEnd = void 0;
 var klicker_1 = require("../klicker");
+// @ts-ignore
+var sampson_1 = require("sampson");
 /* c&p from util */
 function getSeasonEnd(timestamp) {
     var trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'));
@@ -37,8 +39,8 @@ function percentageOver(measurementId, overDimension) {
         return row.id.replace(overDimension.id + "=" + row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute] + ";", '');
     };
     return function (entries) {
-        if (entries.length > 0 && !(overDimension.id in entries[0].dimensionsRaw)) {
-            throw new Error('Illegal percentageOver dimension ' + overDimension);
+        if (entries.length == 0 || !(overDimension.id in entries[0].dimensionsRaw)) {
+            return entries.map(function (row) { return row.measurementsRaw[measurementId]; });
         }
         var total = {};
         entries.forEach(function (row) {
@@ -50,14 +52,65 @@ function percentageOver(measurementId, overDimension) {
         });
         return entries.map(function (row) {
             var key = rowIdWithout(row);
-            return row.measurementsRaw.useRate / total[key];
+            return row.measurementsRaw[measurementId] / total[key];
         });
     };
 }
+function calculateGTestStatistic(expectations, observations) {
+    if (expectations.length != observations.length) {
+        throw new Error("Invalid chisq test, cardinality of expectations " + expectations.length + " does not match cardinality of observations " + observations.length);
+    }
+    var g = 0;
+    for (var i = 0; i < observations.length; i++) {
+        g += observations[i] * Math.log(observations[i] / expectations[i]);
+    }
+    return 2 * g;
+}
+function binomialTest(getK, getN) {
+    // approximate a binomial test using the G-test
+    return function (r, t) {
+        var total = getN(r) + getN(t);
+        var totalSuccesses = getK(r) + getK(t);
+        var totalFailures = total - totalSuccesses;
+        var expectedSuccessesR = getN(r) * totalSuccesses / total;
+        var expectedFailuresR = getN(r) * totalFailures / total;
+        var expectedSuccessesT = getN(t) * totalSuccesses / total;
+        var expectedFailuresT = getN(t) * totalFailures / total;
+        var observedSuccessesR = getK(r);
+        var observedFailuresR = getN(r) - getK(r);
+        var observedSuccessesT = getK(t);
+        var observedFailuresT = getN(t) - getK(t);
+        var g = calculateGTestStatistic([expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT], [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT]);
+        // @ts-ignore
+        return sampson_1.ChiSquared.pdf(g, {
+            // df: (rows - 1) * (columns - 1)
+            df: 1
+        });
+    };
+}
+function binomialCI(getK, getN) {
+    // 95% Wilson score interval
+    return function (d) {
+        var z = 1.96;
+        var n = getN(d);
+        var ns = getK(d);
+        var nf = n - ns;
+        var z2 = Math.pow(z, 2);
+        var base = (ns + 0.5 * z2) / (n + z2);
+        var diff = z / (n + z2) * Math.sqrt((ns * nf) / n + z2 / 4);
+        return {
+            lower: Math.max(0.0, base - diff),
+            mean: (ns + 2) / (n + 4),
+            upper: Math.min(1.0, base + diff)
+        };
+    };
+}
+// TODO get standard deviations and implement t test for non-binomial attributes
 var metaDimensions = klicker_1.asDimensions({
     season: {
         id: 'season',
         name: 'Bi-Week',
+        childIds: ['day', 'timestamp'],
         naturalIdAttribute: 'season',
         formatter: 'yyyy-MM-dd',
         additionalMeasures: [],
@@ -73,6 +126,7 @@ var metaDimensions = klicker_1.asDimensions({
     day: {
         id: 'day',
         name: 'Day',
+        childIds: ['timestamp'],
         naturalIdAttribute: 'day',
         formatter: 'yyyy-MM-dd',
         additionalMeasures: [],
@@ -118,6 +172,7 @@ var brawlerDimensions = klicker_1.asDimensions({
     brawler: {
         id: 'brawler',
         name: 'Brawler',
+        childIds: ['gadget', 'starpower', 'gear'],
         naturalIdAttribute: 'brawler',
         formatter: 'capitalizeWords',
         additionalMeasures: [],
@@ -130,6 +185,7 @@ var brawlerDimensions = klicker_1.asDimensions({
     brawlerId: {
         id: 'brawlerId',
         name: 'Brawler ID',
+        childIds: ['brawler', 'gadget', 'starpower', 'gear'],
         naturalIdAttribute: 'brawlerId',
         additionalMeasures: [],
         hidden: true,
@@ -154,6 +210,7 @@ var brawlerDimensions = klicker_1.asDimensions({
     allyId: {
         id: 'allyId',
         name: 'Ally ID',
+        childIds: ['ally'],
         naturalIdAttribute: 'allyId',
         additionalMeasures: [],
         hidden: true,
@@ -187,6 +244,18 @@ var brawlerDimensions = klicker_1.asDimensions({
             type: 'string'
         }
     },
+    gear: {
+        id: 'gear',
+        name: 'Gear',
+        naturalIdAttribute: 'gearName',
+        formatter: 'capitalizeWords',
+        additionalMeasures: ['gearName'],
+        type: 'nominal',
+        config: {
+            sql: 'brawler_gear_id',
+            type: 'string'
+        }
+    },
     bigbrawler: {
         id: 'bigbrawler',
         name: 'Big Brawler',
@@ -207,6 +276,7 @@ var brawlerDimensions = klicker_1.asDimensions({
         additionalMeasures: [],
         hidden: true,
         type: 'ordinal',
+        formatter: 'trophyRange',
         config: {
             sql: 'brawler_trophyrange',
             type: 'string'
@@ -217,6 +287,7 @@ var battleDimensions = klicker_1.asDimensions({
     mode: {
         id: 'mode',
         name: 'Mode',
+        childIds: ['map'],
         naturalIdAttribute: 'mode',
         formatter: 'formatMode',
         additionalMeasures: [],
@@ -245,13 +316,14 @@ var battleDimensions = klicker_1.asDimensions({
         additionalMeasures: [],
         type: 'nominal',
         config: {
-            sql: 'toJSONString(arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name])))',
+            sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
             type: 'string'
         }
     },
     teamSize: {
         id: 'teamSize',
         name: 'Team size',
+        childIds: ['team'],
         naturalIdAttribute: 'team',
         additionalMeasures: [],
         hidden: true,
@@ -332,8 +404,10 @@ var playerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_trophies',
@@ -347,8 +421,10 @@ var playerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_highest_trophies',
@@ -362,26 +438,13 @@ var playerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_3vs3_victories',
-            type: 'max'
-        }
-    },
-    exp: {
-        id: 'exp',
-        name: 'Experience',
-        formatter: '.2s',
-        d3formatter: '.2s',
-        sign: -1,
-        type: 'quantitative',
-        scale: {
-            zero: false
-        },
-        config: {
-            sql: 'player_exp',
             type: 'max'
         }
     },
@@ -392,8 +455,10 @@ var playerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_solo_victories',
@@ -407,8 +472,10 @@ var playerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_duo_victories',
@@ -513,8 +580,10 @@ exports.brawlerNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2s',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'brawler_trophies',
@@ -538,6 +607,16 @@ exports.brawlerNumberMeasurements = klicker_1.asNumberMeasurements({
         type: 'quantitative',
         config: {
             sql: 'brawler_gadgets_length',
+            type: 'max'
+        }
+    },
+    gears: {
+        id: 'gears',
+        name: 'Gears',
+        sign: -1,
+        type: 'quantitative',
+        config: {
+            sql: 'brawler_gears_length',
             type: 'max'
         }
     }
@@ -576,8 +655,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '+.2f',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_trophy_change',
@@ -592,12 +673,25 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_victory',
             type: 'avg'
+        },
+        statistics: {
+            test: {
+                name: 'G-Test',
+                test: binomialTest(function (m) { return m['winRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            },
+            ci: {
+                ci: binomialCI(function (m) { return m['winRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            }
         }
     },
     winRateAdj: {
@@ -608,24 +702,13 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: winratePosteriorRaw,
-            type: 'number'
-        }
-    },
-    winRateDiff: {
-        id: 'winRateDiff',
-        name: 'Win Rate Diff',
-        description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
-        formatter: '+.2%',
-        d3formatter: '+.2%',
-        sign: -1,
-        type: 'quantitative',
-        config: {
-            sql: '',
             type: 'number'
         }
     },
@@ -674,8 +757,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: '',
@@ -691,8 +776,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'player_brawlers_length',
@@ -708,25 +795,25 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_is_starplayer',
             type: 'avg'
-        }
-    },
-    starRateDiff: {
-        id: 'starRateDiff',
-        name: 'Star Player Diff.',
-        description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
-        formatter: '+.2%',
-        d3formatter: '+.2%',
-        sign: -1,
-        type: 'quantitative',
-        config: {
-            sql: '',
-            type: 'number'
+        },
+        statistics: {
+            test: {
+                name: 'G-Test',
+                test: binomialTest(function (m) { return m['starRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            },
+            ci: {
+                ci: binomialCI(function (m) { return m['starRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            }
         }
     },
     rank: {
@@ -737,8 +824,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2f',
         sign: +1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_rank',
@@ -765,25 +854,14 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_rank1',
             type: 'avg'
-        }
-    },
-    rank1RateDiff: {
-        id: 'rank1RateDiff',
-        name: '#1 Rate Diff.',
-        description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
-        formatter: '+.2%',
-        d3formatter: '+.2%',
-        sign: -1,
-        type: 'quantitative',
-        config: {
-            sql: '',
-            type: 'number'
         }
     },
     duration: {
@@ -806,8 +884,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2f',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'battle_level',
@@ -821,8 +901,10 @@ var battleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2f',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'brawler_power',
@@ -848,6 +930,16 @@ var battleStringMeasurements = klicker_1.asStringMeasurements({
         type: 'nominal',
         config: {
             sql: 'any(brawler_gadget_name)',
+            type: 'number'
+        }
+    },
+    gearName: {
+        id: 'gearName',
+        name: 'Gear',
+        sign: -1,
+        type: 'nominal',
+        config: {
+            sql: 'any(brawler_gear_name)',
             type: 'number'
         }
     },
@@ -916,8 +1008,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '+.2f',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_trophy_change_state)',
@@ -932,12 +1026,25 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_victory_state)',
             type: 'number'
+        },
+        statistics: {
+            test: {
+                name: 'G-Test',
+                test: binomialTest(function (m) { return m['winRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            },
+            ci: {
+                ci: binomialCI(function (m) { return m['winRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            }
         }
     },
     winRateAdj: {
@@ -948,8 +1055,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: winratePosteriorMerged,
@@ -977,8 +1086,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'SUM(picks)',
@@ -994,8 +1105,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'picks_weighted',
@@ -1011,12 +1124,25 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.1%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_starplayer_state)',
             type: 'number'
+        },
+        statistics: {
+            test: {
+                name: 'G-Test',
+                test: binomialTest(function (m) { return m['starRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            },
+            ci: {
+                ci: binomialCI(function (m) { return m['starRate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            }
         }
     },
     rank: {
@@ -1027,8 +1153,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2f',
         sign: +1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_rank_state)',
@@ -1043,12 +1171,25 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2%',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_rank1_state)',
             type: 'number'
+        },
+        statistics: {
+            test: {
+                name: 'G-Test',
+                test: binomialTest(function (m) { return m['rank1Rate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            },
+            ci: {
+                ci: binomialCI(function (m) { return m['rank1Rate'] * m['picks']; }, function (m) { return m['picks']; }),
+                requiresMeasurements: ['picks']
+            }
         }
     },
     duration: {
@@ -1071,8 +1212,10 @@ var mergedbattleNumberMeasurements = klicker_1.asNumberMeasurements({
         d3formatter: '.2f',
         sign: -1,
         type: 'quantitative',
-        scale: {
-            zero: false
+        vega: {
+            scale: {
+                zero: false
+            }
         },
         config: {
             sql: 'avgMerge(battle_level_state)',
@@ -1126,6 +1269,13 @@ var brawlerSlices = klicker_1.asSlice({
         config: {
             member: 'brawler_dimension',
             operator: 'equals'
+        }
+    },
+    notBrawler: {
+        id: 'notBrawler',
+        config: {
+            member: 'brawler_dimension',
+            operator: 'notEquals'
         }
     },
     brawlerId: {
@@ -1204,6 +1354,20 @@ var brawlerSlices = klicker_1.asSlice({
             member: 'gadget_dimension',
             operator: 'notEquals'
         }
+    },
+    gearIdEq: {
+        id: 'gearIdEq',
+        config: {
+            member: 'gear_dimension',
+            operator: 'equals'
+        }
+    },
+    gearIdNeq: {
+        id: 'gearIdNeq',
+        config: {
+            member: 'gear_dimension',
+            operator: 'notEquals'
+        }
     }
 });
 var battleSlices = klicker_1.asSlice({
@@ -1259,8 +1423,15 @@ var battleSlices = klicker_1.asSlice({
     teamSizeGt: {
         id: 'teamSizeGt',
         config: {
-            member: 'teamsize_measure',
+            member: 'teamSize_dimension',
             operator: 'gt'
+        }
+    },
+    teamContains: {
+        id: 'teamContains',
+        config: {
+            member: 'team_dimension',
+            operator: 'contains'
         }
     }
 });
@@ -1298,11 +1469,11 @@ var brawlerBattleSlices = [
     commonSlices.trophyRangeGte,
     commonSlices.trophyRangeLt,
     commonSlices.brawler,
+    commonSlices.notBrawler,
 ];
 var brawlerBattleDefaultSliceValues = {
     season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
     trophyRangeGte: ['0'],
-    trophyRangeLt: ['10'],
     brawler: []
 };
 var playerBrawlerDimensions = [
@@ -1347,6 +1518,7 @@ var playerBrawlerMeasurements = [
     exports.commonMeasurements.highestTrophies,
     exports.commonMeasurements.starpowers,
     exports.commonMeasurements.gadgets,
+    exports.commonMeasurements.gears,
 ];
 var playerBrawlerSlices = [
     commonSlices.playerId,
@@ -1357,6 +1529,7 @@ var playerBrawlerSlices = [
     commonSlices.trophyRangeLt,
     commonSlices.brawlerId,
     commonSlices.brawler,
+    commonSlices.notBrawler,
     commonSlices.powerGte,
     commonSlices.powerLte,
 ];
@@ -1431,6 +1604,25 @@ var cubes = {
             commonSlices.gadgetIdNeq,
         ]),
         defaultSliceValues: __assign(__assign({}, brawlerBattleDefaultSliceValues), { gadgetIdNeq: ['0'] })
+    },
+    gear: {
+        id: 'gear',
+        table: 'gear_meta',
+        name: 'Gear',
+        dimensions: __spreadArray(__spreadArray([], brawlerBattleDimensions), [
+            commonDimensions.gear,
+        ]),
+        defaultDimensionsIds: ['gear'],
+        measurements: __spreadArray(__spreadArray([], brawlerBattleMeasurements), [
+            exports.commonMeasurements.gearName,
+        ]),
+        defaultMeasurementIds: ['winRateAdj'],
+        metaMeasurements: ['picks', 'timestamp'],
+        slices: __spreadArray(__spreadArray([], brawlerBattleSlices), [
+            commonSlices.gearIdEq,
+            commonSlices.gearIdNeq,
+        ]),
+        defaultSliceValues: __assign(__assign({}, brawlerBattleDefaultSliceValues), { gearIdNeq: ['0'] })
     },
     synergy: {
         id: 'synergy',
@@ -1533,6 +1725,7 @@ var cubes = {
             battleDimensions.teamSize,
             brawlerDimensions.starpower,
             brawlerDimensions.gadget,
+            brawlerDimensions.gear,
         ]),
         defaultDimensionsIds: ['player'],
         measurements: __spreadArray(__spreadArray([], playerBrawlerMeasurements), [
@@ -1546,18 +1739,24 @@ var cubes = {
             battleNumberMeasurements.starRate,
             battleStringMeasurements.starpowerName,
             battleStringMeasurements.gadgetName,
+            battleStringMeasurements.gearName,
         ]),
         defaultMeasurementIds: ['picks'],
         metaMeasurements: ['timestamp', 'picks'],
         slices: __spreadArray(__spreadArray([], playerBrawlerSlices), [
             commonSlices.mode,
             commonSlices.teamSizeGt,
+            commonSlices.teamContains,
             commonSlices.map,
+            commonSlices.mapLike,
+            commonSlices.mapNotLike,
             commonSlices.powerplay,
             brawlerSlices.starpowerIdEq,
             brawlerSlices.starpowerIdNeq,
             brawlerSlices.gadgetIdEq,
             brawlerSlices.gadgetIdNeq,
+            brawlerSlices.gearIdEq,
+            brawlerSlices.gearIdNeq,
         ]),
         defaultSliceValues: __assign(__assign({}, playerBrawlerDefaultSliceValues), { mode: [], map: [], powerplay: [] })
     }

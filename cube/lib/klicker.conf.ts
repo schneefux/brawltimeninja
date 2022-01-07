@@ -1,4 +1,6 @@
 import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Measurement, Dimension } from "../klicker"
+// @ts-ignore
+import { ChiSquared } from 'sampson'
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -20,8 +22,8 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
     row.id.replace(`${overDimension.id}=${row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute]};`, '')
 
   return (entries: MetaGridEntry[]) => {
-    if (entries.length > 0 && !(overDimension.id in entries[0].dimensionsRaw)) {
-      throw new Error('Illegal percentageOver dimension ' + overDimension)
+    if (entries.length == 0 || !(overDimension.id in entries[0].dimensionsRaw)) {
+      return entries.map(row => row.measurementsRaw[measurementId] as number)
     }
 
     const total: Record<string, number> = {}
@@ -37,15 +39,82 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
 
     return entries.map(row => {
       const key = rowIdWithout(row)
-      return row.measurementsRaw.useRate as number / total[key]
+      return row.measurementsRaw[measurementId] as number / total[key]
     })
   }
 }
+
+function calculateGTestStatistic(expectations: number[], observations: number[]) {
+  if (expectations.length != observations.length) {
+    throw new Error(`Invalid chisq test, cardinality of expectations ${expectations.length} does not match cardinality of observations ${observations.length}`)
+  }
+
+  let g = 0
+  for (let i = 0; i < observations.length; i++) {
+    g += observations[i] * Math.log(observations[i] / expectations[i])
+  }
+
+  return 2*g
+}
+
+function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+  // approximate a binomial test using the G-test
+  return (r: MetaGridEntry['measurementsRaw'], t: MetaGridEntry['measurementsRaw']) => {
+    const total = getN(r) + getN(t)
+    const totalSuccesses = getK(r) + getK(t)
+    const totalFailures = total - totalSuccesses
+
+    const expectedSuccessesR = getN(r) * totalSuccesses / total
+    const expectedFailuresR = getN(r) * totalFailures / total
+    const expectedSuccessesT = getN(t) * totalSuccesses / total
+    const expectedFailuresT = getN(t) * totalFailures / total
+
+    const observedSuccessesR = getK(r)
+    const observedFailuresR = getN(r) - getK(r)
+    const observedSuccessesT = getK(t)
+    const observedFailuresT = getN(t) - getK(t)
+
+    const g = calculateGTestStatistic(
+      [expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT],
+      [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT])
+
+    // @ts-ignore
+    return ChiSquared.pdf(g, {
+      // df: (rows - 1) * (columns - 1)
+      df: 1
+    })
+  }
+}
+
+function binomialCI(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+  // 95% Wilson score interval
+  return (d: MetaGridEntry['measurementsRaw']) => {
+    const z = 1.96
+
+    const n = getN(d)
+    const ns = getK(d)
+    const nf = n - ns
+    const z2 = Math.pow(z, 2)
+
+    const base = (ns + 0.5*z2) / (n + z2)
+    const diff = z/(n + z2) * Math.sqrt( (ns*nf)/n + z2/4 )
+
+    return {
+      lower: Math.max(0.0, base - diff),
+      mean: (ns + 2) / (n + 4),
+      upper: Math.min(1.0, base + diff),
+    }
+  }
+}
+
+
+// TODO get standard deviations and implement t test for non-binomial attributes
 
 const metaDimensions = asDimensions({
   season: {
     id: 'season',
     name: 'Bi-Week',
+    childIds: ['day', 'timestamp'],
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
@@ -61,6 +130,7 @@ const metaDimensions = asDimensions({
   day: {
     id: 'day',
     name: 'Day',
+    childIds: ['timestamp'],
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
     additionalMeasures: [],
@@ -108,6 +178,7 @@ const brawlerDimensions = asDimensions({
   brawler: {
     id: 'brawler',
     name: 'Brawler',
+    childIds: ['gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
     additionalMeasures: [],
@@ -120,6 +191,7 @@ const brawlerDimensions = asDimensions({
   brawlerId: {
     id: 'brawlerId',
     name: 'Brawler ID',
+    childIds: ['brawler', 'gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawlerId',
     additionalMeasures: [],
     hidden: true,
@@ -144,6 +216,7 @@ const brawlerDimensions = asDimensions({
   allyId: {
     id: 'allyId',
     name: 'Ally ID',
+    childIds: ['ally'],
     naturalIdAttribute: 'allyId',
     additionalMeasures: [],
     hidden: true,
@@ -177,6 +250,18 @@ const brawlerDimensions = asDimensions({
       type: 'string',
     },
   },
+  gear: {
+    id: 'gear',
+    name: 'Gear',
+    naturalIdAttribute: 'gearName',
+    formatter: 'capitalizeWords',
+    additionalMeasures: ['gearName'],
+    type: 'nominal',
+    config: {
+      sql: 'brawler_gear_id',
+      type: 'string',
+    },
+  },
   bigbrawler: {
     id: 'bigbrawler',
     name: 'Big Brawler',
@@ -197,6 +282,7 @@ const brawlerDimensions = asDimensions({
     additionalMeasures: [],
     hidden: true,
     type: 'ordinal',
+    formatter: 'trophyRange',
     config: {
       sql: 'brawler_trophyrange',
       type: 'string',
@@ -208,6 +294,7 @@ const battleDimensions = asDimensions({
   mode: {
     id: 'mode',
     name: 'Mode',
+    childIds: ['map'],
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
     additionalMeasures: [],
@@ -243,6 +330,7 @@ const battleDimensions = asDimensions({
   teamSize: {
     id: 'teamSize',
     name: 'Team size',
+    childIds: ['team'],
     naturalIdAttribute: 'team',
     additionalMeasures: [],
     hidden: true,
@@ -334,8 +422,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_trophies',
@@ -349,8 +439,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_highest_trophies',
@@ -364,26 +456,13 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_3vs3_victories',
-      type: 'max',
-    },
-  },
-  exp: {
-    id: 'exp',
-    name: 'Experience',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    scale: {
-      zero: false,
-    },
-    config: {
-      sql: 'player_exp',
       type: 'max',
     },
   },
@@ -394,8 +473,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_solo_victories',
@@ -409,8 +490,10 @@ const playerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_duo_victories',
@@ -517,8 +600,10 @@ export const brawlerNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2s',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'brawler_trophies',
@@ -542,6 +627,16 @@ export const brawlerNumberMeasurements = asNumberMeasurements({
     type: 'quantitative',
     config: {
       sql: 'brawler_gadgets_length',
+      type: 'max',
+    },
+  },
+  gears: {
+    id: 'gears',
+    name: 'Gears',
+    sign: -1,
+    type: 'quantitative',
+    config: {
+      sql: 'brawler_gears_length',
       type: 'max',
     },
   },
@@ -582,8 +677,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '+.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_trophy_change',
@@ -598,12 +695,25 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_victory',
       type: 'avg',
+    },
+    statistics: {
+      test: {
+        name: 'G-Test',
+        test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   winRateAdj: {
@@ -614,24 +724,13 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: winratePosteriorRaw,
-      type: 'number',
-    },
-  },
-  winRateDiff: {
-    id: 'winRateDiff',
-    name: 'Win Rate Diff',
-    description: 'The Win Rate Difference compares the Win Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
       type: 'number',
     },
   },
@@ -680,8 +779,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: '',
@@ -697,8 +798,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'player_brawlers_length',
@@ -714,25 +817,25 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_is_starplayer',
       type: 'avg',
     },
-  },
-  starRateDiff: {
-    id: 'starRateDiff',
-    name: 'Star Player Diff.',
-    description: 'The Star Rate Difference compares the Star Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
-      type: 'number',
+    statistics: {
+      test: {
+        name: 'G-Test',
+        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   rank: {
@@ -743,8 +846,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: +1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_rank',
@@ -771,25 +876,14 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_rank1',
       type: 'avg',
-    },
-  },
-  rank1RateDiff: {
-    id: 'rank1RateDiff',
-    name: '#1 Rate Diff.',
-    description: 'The #1 Rate Difference compares the #1 Rate of Brawlers with a Star Power / Gadget to those without.',
-    formatter: '+.2%',
-    d3formatter: '+.2%',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
-      type: 'number',
     },
   },
   duration: {
@@ -812,8 +906,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'battle_level',
@@ -827,8 +923,10 @@ const battleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'brawler_power',
@@ -855,6 +953,16 @@ const battleStringMeasurements = asStringMeasurements({
     type: 'nominal',
     config: {
       sql: 'any(brawler_gadget_name)',
+      type: 'number',
+    },
+  },
+  gearName: {
+    id: 'gearName',
+    name: 'Gear',
+    sign: -1,
+    type: 'nominal',
+    config: {
+      sql: 'any(brawler_gear_name)',
       type: 'number',
     },
   },
@@ -925,8 +1033,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '+.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_trophy_change_state)',
@@ -941,12 +1051,25 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_victory_state)',
       type: 'number',
+    },
+    statistics: {
+      test: {
+        name: 'G-Test',
+        test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   winRateAdj: {
@@ -957,8 +1080,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: winratePosteriorMerged,
@@ -986,8 +1111,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'SUM(picks)',
@@ -1003,8 +1130,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'picks_weighted',
@@ -1020,12 +1149,25 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.1%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_starplayer_state)',
       type: 'number',
+    },
+    statistics: {
+      test: {
+        name: 'G-Test',
+        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+    },
+      ci: {
+        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   rank: {
@@ -1036,8 +1178,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: +1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_rank_state)',
@@ -1052,12 +1196,25 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2%',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_rank1_state)',
       type: 'number',
+    },
+    statistics: {
+      test: {
+        name: 'G-Test',
+        test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
+      ci: {
+        ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+        requiresMeasurements: ['picks'],
+      },
     },
   },
   duration: {
@@ -1080,8 +1237,10 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     d3formatter: '.2f',
     sign: -1,
     type: 'quantitative',
-    scale: {
-      zero: false,
+    vega: {
+      scale: {
+        zero: false,
+      },
     },
     config: {
       sql: 'avgMerge(battle_level_state)',
@@ -1147,6 +1306,13 @@ const brawlerSlices = asSlice({
     config: {
       member: 'brawler_dimension',
       operator: 'equals',
+    },
+  },
+  notBrawler: {
+    id: 'notBrawler',
+    config: {
+      member: 'brawler_dimension',
+      operator: 'notEquals',
     },
   },
   brawlerId: {
@@ -1226,6 +1392,20 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
+  gearIdEq: {
+    id: 'gearIdEq',
+    config: {
+      member: 'gear_dimension',
+      operator: 'equals',
+    },
+  },
+  gearIdNeq: {
+    id: 'gearIdNeq',
+    config: {
+      member: 'gear_dimension',
+      operator: 'notEquals',
+    },
+  },
 })
 
 const battleSlices = asSlice({
@@ -1281,7 +1461,7 @@ const battleSlices = asSlice({
   teamSizeGt: {
     id: 'teamSizeGt',
     config: {
-      member: 'teamsize_measure',
+      member: 'teamSize_dimension',
       operator: 'gt',
     },
   },
@@ -1336,12 +1516,12 @@ const brawlerBattleSlices = [
   commonSlices.trophyRangeGte,
   commonSlices.trophyRangeLt,
   commonSlices.brawler,
+  commonSlices.notBrawler,
 ]
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
   season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
   trophyRangeGte: ['0'],
-  trophyRangeLt: ['10'],
   brawler: [],
 }
 
@@ -1389,6 +1569,7 @@ const playerBrawlerMeasurements = [
   commonMeasurements.highestTrophies,
   commonMeasurements.starpowers,
   commonMeasurements.gadgets,
+  commonMeasurements.gears,
 ]
 
 const playerBrawlerSlices = [
@@ -1400,6 +1581,7 @@ const playerBrawlerSlices = [
   commonSlices.trophyRangeLt,
   commonSlices.brawlerId,
   commonSlices.brawler,
+  commonSlices.notBrawler,
   commonSlices.powerGte,
   commonSlices.powerLte,
 ]
@@ -1498,6 +1680,31 @@ const cubes: Record<string, Cube> = {
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
       gadgetIdNeq: ['0'],
+    },
+  },
+  gear: {
+    id: 'gear',
+    table: 'gear_meta',
+    name: 'Gear',
+    dimensions: [
+      ...brawlerBattleDimensions,
+      commonDimensions.gear,
+    ],
+    defaultDimensionsIds: ['gear'],
+    measurements: [
+      ...brawlerBattleMeasurements,
+      commonMeasurements.gearName,
+    ],
+    defaultMeasurementIds: ['winRateAdj'],
+    metaMeasurements: ['picks', 'timestamp'],
+    slices: [
+      ...brawlerBattleSlices,
+      commonSlices.gearIdEq,
+      commonSlices.gearIdNeq,
+    ],
+    defaultSliceValues: {
+      ...brawlerBattleDefaultSliceValues,
+      gearIdNeq: ['0'],
     },
   },
   synergy: {
@@ -1619,6 +1826,7 @@ const cubes: Record<string, Cube> = {
       battleDimensions.teamSize,
       brawlerDimensions.starpower,
       brawlerDimensions.gadget,
+      brawlerDimensions.gear,
     ],
     defaultDimensionsIds: ['player'],
     measurements: [
@@ -1633,6 +1841,7 @@ const cubes: Record<string, Cube> = {
       battleNumberMeasurements.starRate,
       battleStringMeasurements.starpowerName,
       battleStringMeasurements.gadgetName,
+      battleStringMeasurements.gearName,
       // TODO
     ],
     defaultMeasurementIds: ['picks'],
@@ -1643,11 +1852,15 @@ const cubes: Record<string, Cube> = {
       commonSlices.teamSizeGt,
       commonSlices.teamContains,
       commonSlices.map,
+      commonSlices.mapLike,
+      commonSlices.mapNotLike,
       commonSlices.powerplay,
       brawlerSlices.starpowerIdEq,
       brawlerSlices.starpowerIdNeq,
       brawlerSlices.gadgetIdEq,
       brawlerSlices.gadgetIdNeq,
+      brawlerSlices.gearIdEq,
+      brawlerSlices.gearIdNeq,
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,
