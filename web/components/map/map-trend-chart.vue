@@ -1,5 +1,8 @@
 <template>
-  <c-query :query="query">
+  <c-query
+    :query="query"
+    :filter="filter"
+  >
     <b-card
       slot="empty"
       :title="title"
@@ -20,7 +23,7 @@
 
 <script lang="ts">
 import { CQuery, VLineplot } from '~/klicker/components'
-import { SliceValue, CubeComparingQuery, CubeQuery } from '~/klicker'
+import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 import { capitalizeWords, getSeasonEnd } from '~/lib/util'
@@ -42,11 +45,22 @@ export default defineComponent({
     metric: {
       type: String,
       default: 'winRate'
-      // TODO add support for useRate - show use rate trends on brawler page
     },
-    dimension: {
+    dimensions: {
+      type: Array as PropType<string[]>,
+      default: () => ['day']
+    },
+    sort: {
       type: String,
       default: 'day'
+    },
+    filter: {
+      type: Function as PropType<CubeComparingQueryFilter>,
+      required: false
+    },
+    noCompare: {
+      type: Boolean,
+      default: false
     },
   },
   setup(props) {
@@ -87,29 +101,37 @@ export default defineComponent({
       oneMonthAgo.setDate(oneMonthAgo.getDate() - 4*7)
       const season = getSeasonEnd(oneMonthAgo).toISOString().slice(0, 10)
 
-      return <CubeQuery|CubeComparingQuery>{
+      const query: CubeQuery = {
         name,
         cubeId: 'battle',
-        dimensionsIds: [props.dimension],
+        dimensionsIds: props.dimensions,
         measurementsIds: [props.metric],
         slices: {
           ...props.slices,
           season: [season],
         },
-        sortId: 'day',
+        sortId: props.sort,
         confidenceInterval: true,
+      }
+
+      if (props.noCompare) {
+        return query
+      }
+
+      return <CubeComparingQuery>{
+        ...query,
         ...(comparingSlices != undefined ? {
           comparing: true,
           reference: {
             name: referenceName,
             cubeId: 'battle',
-            dimensionsIds: [props.dimension],
+            dimensionsIds: props.dimensions,
             measurementsIds: [props.metric],
             slices: {
               ...comparingSlices,
               season: [season],
             },
-            sortId: 'day',
+            sortId: props.sort,
             confidenceInterval: true,
           },
         } : {})

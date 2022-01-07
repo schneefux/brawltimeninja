@@ -2,19 +2,29 @@
   <div class="md:flex md:flex-wrap md:justify-center">
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
+      :dimensions="['trophyRange']"
+      sort="trophyRange"
       metric="winRate"
-      dimension="trophyRange"
       class="w-full md:w-120 h-64"
     ></map-trend-chart>
 
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
+      :dimensions="['trophyRange']"
+      sort="trophyRange"
       metric="starRate"
-      dimension="trophyRange"
       class="w-full md:w-120 h-64"
     ></map-trend-chart>
 
-    <!-- TODO Use Rate chart -->
+    <map-trend-chart
+      :slices="{ powerplay: ['false'] }"
+      :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+      :dimensions="['trophyRange', 'brawler']"
+      sort="trophyRange"
+      metric="useRate"
+      class="w-full md:w-120 h-64"
+      no-compare
+    ></map-trend-chart>
   </div>
 </template>
 

@@ -2,19 +2,28 @@
   <div class="md:flex md:flex-wrap md:justify-center">
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()] }"
+      :dimensions="['day']"
+      sort="day"
       metric="winRate"
-      dimension="day"
       class="w-full md:w-120 h-64"
     ></map-trend-chart>
 
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()] }"
+      :dimensions="['day']"
+      sort="day"
       metric="starRate"
-      dimension="day"
       class="w-full md:w-120 h-64"
     ></map-trend-chart>
 
-    <!-- TODO Use Rate chart -->
+    <map-trend-chart
+      :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+      :dimensions="['day', 'brawler']"
+      sort="day"
+      metric="useRate"
+      class="w-full md:w-120 h-64"
+      no-compare
+    ></map-trend-chart>
   </div>
 </template>
 

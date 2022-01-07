@@ -1,4 +1,4 @@
-import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry } from "~/klicker"
+import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -65,7 +65,11 @@ export default class Klicker {
     return m.name || m.id
   }
 
-  public async query(query: CubeQuery): Promise<CubeResponse> {
+  /**
+   * @param query Query specification
+   * @param filter Filter to apply after client-side joins and transformations
+   */
+  public async query(query: CubeQuery, filter?: CubeQueryFilter): Promise<CubeResponse> {
     if (!(query.cubeId in this.config)) {
       throw 'Invalid cubeId ' + query.cubeId
     }
@@ -151,7 +155,11 @@ export default class Klicker {
       limit: query.limit,
     })
 
-    const data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
+    let data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
+
+    if (filter != undefined) {
+      data = data.filter(filter)
+    }
 
     return {
       kind: 'response',
@@ -160,7 +168,11 @@ export default class Klicker {
     }
   }
 
-  public async comparingQuery(query: CubeComparingQuery): Promise<CubeComparingResponse> {
+  /**
+   * @param query Query specification
+   * @param filter Filter to apply after client-side joins and transformations
+   */
+  public async comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse> {
     // validate cube
     if (!(query.cubeId in this.config)) {
       throw 'Invalid cubeId ' + query.cubeId
@@ -233,7 +245,8 @@ export default class Klicker {
       data.sort((d1, d2) => d1.test.difference.pValueRaw - d2.test.difference.pValueRaw)
     }
 
-    if (query.significant) {
+    if (filter) {
+      data = data.filter(filter)
       data = data.filter(d => d.test.difference.pValueRaw <= 0.05)
     }
 

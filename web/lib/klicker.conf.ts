@@ -682,9 +682,9 @@ const battleNumberMeasurements = asNumberMeasurements({
     },
     statistics: {
       test: {
-      name: 'G-Test',
+        name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-      requiresMeasurements: ['picks'],
+        requiresMeasurements: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
@@ -804,9 +804,9 @@ const battleNumberMeasurements = asNumberMeasurements({
     },
     statistics: {
       test: {
-      name: 'G-Test',
+        name: 'G-Test',
         test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-      requiresMeasurements: ['picks'],
+        requiresMeasurements: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
@@ -1028,9 +1028,9 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     },
     statistics: {
       test: {
-      name: 'G-Test',
+        name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-      requiresMeasurements: ['picks'],
+        requiresMeasurements: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
@@ -1126,9 +1126,9 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     },
     statistics: {
       test: {
-      name: 'G-Test',
+        name: 'G-Test',
         test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-      requiresMeasurements: ['picks'],
+        requiresMeasurements: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
@@ -1173,9 +1173,9 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
     },
     statistics: {
       test: {
-      name: 'G-Test',
+        name: 'G-Test',
         test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-      requiresMeasurements: ['picks'],
+        requiresMeasurements: ['picks'],
       },
       ci: {
         ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),

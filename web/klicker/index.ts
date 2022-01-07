@@ -232,11 +232,14 @@ export interface CubeQuery {
   name?: string
 }
 
+export type CubeQueryFilter = (e: MetaGridEntry) => boolean
+
 export interface CubeComparingQuery extends CubeQuery {
   comparing: true
   reference: CubeQuery
-  significant?: boolean
 }
+
+export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
 
 /**
  * Props definition for visualisation components

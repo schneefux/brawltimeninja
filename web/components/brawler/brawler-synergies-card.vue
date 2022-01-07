@@ -1,5 +1,8 @@
 <template>
-  <c-query :query="query">
+  <c-query
+    :query="query"
+    :filter="filter"
+  >
     <b-shimmer
       slot="placeholder"
       width-px="224"
@@ -27,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { CubeComparingQuery } from '~/klicker'
+import { CubeComparingQuery, CubeComparingQueryFilter } from '~/klicker'
 import { CQuery, VRoll } from '~/klicker/components'
 
 export default defineComponent({
@@ -44,7 +47,6 @@ export default defineComponent({
   setup(props) {
     const query: CubeComparingQuery = {
       comparing: true,
-      significant: true,
       cubeId: 'synergy',
       slices: {
         brawler: [props.brawler.toUpperCase()],
@@ -62,7 +64,10 @@ export default defineComponent({
       },
     }
 
+    const filter: CubeComparingQueryFilter = (e) => e.test.difference.pValueRaw <= 0.05
+
     return {
+      filter,
       query,
     }
   },

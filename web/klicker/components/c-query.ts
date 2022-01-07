@@ -1,6 +1,6 @@
 import { defineComponent, PropType, ref, h, useContext, useAsync, watch } from '@nuxtjs/composition-api'
 import { VNode } from 'vue'
-import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse } from '~/klicker'
+import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '~/klicker'
 
 // TODO accept `query` as prop.
 // If query.query corresponds to a query that should be fetched, re-use it.
@@ -13,6 +13,10 @@ export default defineComponent({
       type: Object as PropType<CubeComparingQuery|CubeQuery>,
       required: true
     },
+    filter: {
+      type: Function as PropType<CubeComparingQueryFilter|CubeQueryFilter>,
+      required: false
+    },
   },
   setup(props, { slots }) {
     const { $sentry, $klicker } = useContext()
@@ -24,9 +28,9 @@ export default defineComponent({
       loading.value = true
       try {
         if (!props.query.comparing) {
-          return await $klicker.query(props.query)
+          return await $klicker.query(props.query, <CubeQueryFilter>props.filter)
         } else {
-          return await $klicker.comparingQuery(<CubeComparingQuery>props.query)
+          return await $klicker.comparingQuery(<CubeComparingQuery>props.query, <CubeComparingQueryFilter>props.filter)
         }
       } catch (err) {
         console.error(err)

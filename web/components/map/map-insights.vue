@@ -32,6 +32,7 @@
               <c-query
                 slot="content"
                 :query="q"
+                :filter="filter"
               >
                 <b-shimmer
                   slot="placeholder"
@@ -66,7 +67,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
-import { SliceValue, CubeComparingQuery, CubeQuery } from '~/klicker'
+import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 import { camelToKebab } from '~/lib/util'
 
@@ -132,7 +133,6 @@ export default defineComponent({
               },
               sortId: 'pvalue',
             },
-            significant: true,
             limit,
           }],
         })
@@ -162,7 +162,6 @@ export default defineComponent({
             },
             sortId: 'pvalue',
           },
-          significant: true,
           limit,
         }],
       })
@@ -191,7 +190,6 @@ export default defineComponent({
             },
             sortId: 'pvalue',
           },
-          significant: true,
           limit,
         }],
       })
@@ -199,9 +197,12 @@ export default defineComponent({
       return templates
     })
 
+    const filter: CubeComparingQueryFilter = (e) => e.test.difference.pValueRaw <= 0.05
+
     return {
-      templates,
       title,
+      filter,
+      templates,
     }
   },
 })

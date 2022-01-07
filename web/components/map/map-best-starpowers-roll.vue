@@ -16,6 +16,7 @@
     <c-query
       slot="content"
       :query="query"
+      :filter="filter"
     >
       <b-shimmer
         slot="placeholder"
@@ -42,7 +43,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { SliceValue, CubeComparingQuery } from '~/klicker'
+import { SliceValue, CubeComparingQuery, CubeComparingQueryFilter } from '~/klicker'
 import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
 
 export default defineComponent({
@@ -75,7 +76,6 @@ export default defineComponent({
     const kindKey = computed(() => props.kind == 'starpowers' ? 'starpower' : 'gadget')
     const query = computed<CubeComparingQuery>(() => ({
       comparing: true,
-      significant: true,
       cubeId: 'battle',
       sortId: 'difference',
       dimensionsIds: props.kind == 'starpowers' ? ['brawler', 'starpower'] : ['brawler', 'gadget'],
@@ -97,8 +97,11 @@ export default defineComponent({
       },
     }))
 
+    const filter: CubeComparingQueryFilter = (e) => e.test.difference.pValueRaw <= 0.05
+
     return {
       query,
+      filter,
       kindKey,
     }
   },
