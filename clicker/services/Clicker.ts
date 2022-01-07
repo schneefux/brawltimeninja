@@ -3,7 +3,7 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { LeaderboardRow, BrawlerLeaderboardRow } from '~/model/Clicker';
+import { LeaderboardRow } from '~/model/Clicker';
 import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './cubes/MapMetaCube';
 import GadgetMetaCube from './cubes/GadgetMetaCube';
@@ -13,7 +13,6 @@ import BrawlerLeaderboardCube from './cubes/BrawlerLeaderboardCube';
 import SynergyMetaCube from './cubes/SynergyCube';
 import PlayerBrawlerCube from './cubes/PlayerBrawlerCube';
 import PlayerBattleCube from './cubes/PlayerBattleCube';
-import Cube, { Order } from './cubes/Cube';
 import { TeamCube } from './cubes/TeamCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
@@ -417,122 +416,5 @@ export default class ClickerService {
       icon: r.player_icon_id,
       [metric]: r[metricMeasure],
     }))
-  }
-
-  public async getTopBrawlerByMetric(brawlerId: string, metric: string, limit: number) {
-    const metrics = {
-      'trophies': 'brawler_trophies',
-      'highestTrophies': 'brawler_highest_trophies',
-    }
-
-    if (isNaN(parseInt(brawlerId))) {
-      console.error('invalid brawlerId', brawlerId)
-      return []
-    }
-
-    const metricMeasure = ((<any>metrics)[metric] || metric) as any
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-
-    const rows = await this.brawlerLeaderboardCube.query(
-      'brawler_leaderboard',
-      [metricMeasure, 'player_name'],
-      ['player_id'],
-      {
-        'timestamp': [formatClickhouse(oneWeekAgo)],
-      },
-      { [metricMeasure]: 'desc' },
-      false,
-      limit,
-    )
-
-    return rows.data.map(r => (<Partial<BrawlerLeaderboardRow>>{
-      name: r.player_name,
-      brawlerName: r.brawler_name,
-      tag: idToTag(r.player_id as string).replace('#', ''),
-      id: r.player_id,
-      icon: r.player_icon_id,
-      [metric]: r[metricMeasure],
-    }))
-  }
-
-  private getCubeByName(cubeName: string): Cube {
-    switch (cubeName) {
-      // raw cubes
-      case 'battle':
-        return this.playerBattleCube
-      case 'brawler':
-        return this.playerBrawlerCube
-      // materialized cubes
-      case 'player':
-        return this.leaderboardCube
-      case 'player_brawler':
-        return this.brawlerLeaderboardCube
-      case 'map':
-        return this.mapMetaCube
-      case 'synergy':
-        return this.synergyMetaCube
-      case 'gadget':
-        return this.gadgetMetaCube
-      case 'starpower':
-        return this.starpowerMetaCube
-      // virtual cubes
-      case 'team':
-        return this.teamCube
-      default:
-        throw new Error('Invalid cube: ' + cubeName)
-    }
-  }
-
-  public getCubeMetadata(cubeName: string) {
-    const cube = this.getCubeByName(cubeName)
-    return {
-      dimensions: cube.dimensions,
-      measures: Object.keys(cube.measures),
-      slices: cube.slices,
-    }
-  }
-
-  public async queryCube(cubeName: string,
-      measures: string[],
-      dimensions: string[],
-      slices: { [name: string]: string[] },
-      order: { [column: string]: Order },
-      limit: number,
-      totals: boolean|undefined,
-      name: string|undefined,
-      format: string|undefined) {
-    const cube = this.getCubeByName(cubeName)
-    limit = Math.min(1000, limit)
-
-    if (format == 'totals') {
-      totals = true
-    }
-
-    console.log('executing cube query ' + name, cubeName, measures, dimensions, slices, order, limit, totals, format)
-    const data = await cube.query(
-      name || 'cube.' + cubeName + '.' + dimensions.join(','),
-      measures,
-      dimensions,
-      slices,
-      order,
-      totals,
-      limit,
-    )
-
-    switch (format) {
-      case 'data':
-        return data.data
-      case 'first':
-        return data.data[0]
-      case 'totals':
-        return data.totals
-      case 'csv':
-        const attrs = [...new Set([...dimensions, ...measures, ...Object.keys(order)])]
-        return attrs.join(',') + '\n'
-          + data.data.map(row => attrs.map(a => row[a]).join(',')).join('\n')
-      default:
-        return data
-    }
   }
 }
