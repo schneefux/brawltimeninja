@@ -29,6 +29,10 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
         brawler_gadget_found UInt8 Codec(Gorilla, LZ4HC),
         brawler_gadget_id UInt32 Codec(LZ4HC),
         brawler_gadget_name LowCardinality(String) Codec(LZ4HC),
+        -- brawler active gear
+        brawler_gear_found UInt8 Codec(Gorilla, LZ4HC),
+        brawler_gear_id UInt32 Codec(LZ4HC),
+        brawler_gear_name LowCardinality(String) Codec(LZ4HC),
         -- battle event
         battle_event_id UInt32 Codec(Gorilla, LZ4HC),
         battle_event_mode LowCardinality(String) Codec(LZ4HC),
@@ -86,6 +90,25 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
     // backwards compat
     await this.execute(ch2, stripIndent`
       ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS battle_event_powerplay UInt8 Codec(Gorilla, LZ4HC) AFTER battle_event_map
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gear_found UInt8 Codec(Gorilla, LZ4HC) AFTER brawler_gadget_name
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gear_id UInt32 Codec(LZ4HC) AFTER brawler_gear_found
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gear_name LowCardinality(String) Codec(LZ4HC) AFTER brawler_gear_id
+    `)
+
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.id\` Array(UInt32) Codec(LZ4HC) AFTER brawler_gadgets_length
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) AFTER \`brawler_gears.id\`
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.name\`
     `)
   }
 

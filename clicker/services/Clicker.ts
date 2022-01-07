@@ -141,7 +141,7 @@ export default class ClickerService {
       player_icon_id: player.icon.id,
       player_trophies: player.trophies,
       player_highest_trophies: player.highestTrophies,
-      player_power_play_points: player.powerPlayPoints,
+      player_power_play_points: undefined,
       player_highest_power_play_points: player.highestPowerPlayPoints,
       player_exp_points: player.expPoints,
       player_is_qualified_from_championship_challenge: player.isQualifiedFromChampionshipChallenge,
@@ -204,6 +204,7 @@ export default class ClickerService {
         const myBrawler = player.brawlers.find((b) => b.name == brawler.name)!
         const myStarpower = myBrawler.starPowers.length != 1 ? null : myBrawler.starPowers[0]
         const myGadget = myBrawler.gadgets.length != 1 ? null : myBrawler.gadgets[0]
+        const myGear = myBrawler.gears.length != 1 ? null : myBrawler.gears[0]
         const floatingVictory =
             battle.battle.result == 'victory' ? 1.0
           : battle.battle.result == 'defeat' ? 0.0
@@ -244,6 +245,10 @@ export default class ClickerService {
           brawler_gadget_found: myGadget !== null,
           brawler_gadget_id: myGadget?.id,
           brawler_gadget_name: myGadget?.name,
+          /* brawler gear */
+          brawler_gear_found: myGear !== null,
+          brawler_gear_id: myGear?.id,
+          brawler_gear_name: myGear?.name,
           /* starpowers (nested) */
           'brawler_starpowers.id': myBrawler?.starPowers.map(sp => sp.id),
           'brawler_starpowers.name': myBrawler?.starPowers.map(sp => sp.name),
@@ -252,6 +257,10 @@ export default class ClickerService {
           'brawler_gadgets.id': myBrawler?.gadgets.map(g => g.id),
           'brawler_gadgets.name': myBrawler?.gadgets.map(g => g.name),
           brawler_gadgets_length: myBrawler?.gadgets.length,
+          /* gears (nested) */
+          'brawler_gears.id': myBrawler?.gears.map(g => g.id),
+          'brawler_gears.name': myBrawler?.gears.map(g => g.name),
+          brawler_gears_length: myBrawler?.gears.length,
           /* battle event */
           battle_event_id: battle.event.id,
           battle_event_mode: battle.event.mode,
@@ -347,6 +356,10 @@ export default class ClickerService {
         'brawler_gadgets.id': brawler.gadgets.map(g => g.id),
         'brawler_gadgets.name': brawler.gadgets.map(g => g.name),
         brawler_gadgets_length: brawler.gadgets.length,
+        /* gears (nested) */
+        'brawler_gears.id': brawler.gears.map(sp => sp.id),
+        'brawler_gears.name': brawler.gears.map(sp => sp.name),
+        brawler_gears_length: brawler.gears.length,
       }
 
       await new Promise<void>((resolve, reject) => {

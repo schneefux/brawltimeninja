@@ -52,7 +52,11 @@ export default class PlayerBrawlerCube extends Cube {
     -- gadgets (nested)
     \`brawler_gadgets.id\` Array(UInt32) Codec(LZ4HC),
     \`brawler_gadgets.name\` Array(LowCardinality(String)) Codec(LZ4HC),
-    brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC)
+    brawler_gadgets_length UInt16 Codec(Gorilla, LZ4HC),
+    -- gears (nested)
+    \`brawler_gears.id\` Array(UInt32) Codec(LZ4HC),
+    \`brawler_gears.name\` Array(LowCardinality(String)) Codec(LZ4HC),
+    brawler_gears_length UInt16 Codec(Gorilla, LZ4HC)
   `
 
   public async up(ch2: ClickHouse) {
@@ -75,6 +79,16 @@ export default class PlayerBrawlerCube extends Cube {
       -- TTL timestamp + INTERVAL 6 MONTH DELETE
       -- ca. 30 brawlers per player, 30 days
       SETTINGS index_granularity=1024;
+    `)
+
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.id\` Array(UInt32) Codec(LZ4HC) AFTER brawler_gadgets_length
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) AFTER \`brawler_gears.id\`
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.name\`
     `)
   }
 
