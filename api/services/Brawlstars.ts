@@ -1,14 +1,14 @@
 import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club, BattlePlayerMultiple } from '../model/Brawlstars.js';
+import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../model/Brawlstars.js';
 import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '../model/Api.js';
 import { LeaderboardRow } from '../model/Clicker.js';
 import { request, post } from '../lib/request.js';
+import { StarlistEvent } from 'model/Starlist.js';
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const clickerUrl = process.env.CLICKER_URL || '';
-const clickerUrl2 = process.env.CLICKER_URL2 || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
@@ -30,8 +30,14 @@ export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
   private readonly apiOfficial = apiOfficialUrl;
 
+  private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
+    return request<T>(path, this.apiOfficial, metricName,
+      {}, { 'Authorization': 'Bearer ' + tokenOfficial }, timeout)
+  }
+
+  // TODO official API does not show all future events as of 2022-01-07
   public async getActiveEvents() {
-    const response = await request<{ active: BrawlstarsEvent[], upcoming: BrawlstarsEvent[] }>(
+    const response = await request<{ active: StarlistEvent[], upcoming: StarlistEvent[] }>(
       'events',
       this.apiUnofficial,
       'fetch_events',
@@ -40,7 +46,7 @@ export default class BrawlstarsService {
       1000,
     );
 
-    const mapper = (events: BrawlstarsEvent[]) => events.map((event) => ({
+    const mapper = (events: StarlistEvent[]) => events.map((event) => ({
       id: event.map.id.toString(),
       map: event.map.name,
       mode: event.map.gameMode.name,
@@ -53,6 +59,21 @@ export default class BrawlstarsService {
     }
   }
 
+  public async getPlayerRanking(countryCode: string) {
+    const response = await this.apiRequest<{ items: PlayerRanking[] }>(`rankings/${countryCode}/players`, 'fetch_player_rankings')
+    return response.items
+  }
+
+  public async getClubRanking(countryCode: string) {
+    const response = await this.apiRequest<{ items: ClubRanking[] }>(`rankings/${countryCode}/clubs`, 'fetch_club_rankings')
+    return response.items
+  }
+
+  public async getBrawlerRanking(countryCode: string, brawlerId: string) {
+    const response = await this.apiRequest<{ items: PlayerRanking[] }>(`rankings/${countryCode}/brawlers/${brawlerId}`, 'fetch_brawler_rankings')
+    return response.items
+  }
+
   public async getLeaderboard(metric: string): Promise<Leaderboard> {
     let entries = [] as LeaderboardEntry[]
 
@@ -60,23 +81,6 @@ export default class BrawlstarsService {
       const response = await request<any>('rankings/global/players',
         this.apiOfficial,
         'fetch_trophies_leaderboard',
-        { },
-        { 'Authorization': 'Bearer ' + tokenOfficial },
-        10000,
-      );
-
-      entries = response.items.map((d: any) => ({
-        tag: d.tag.replace(/^#/, ''),
-        name: d.name,
-        icon: d.icon.id,
-        metric: d.trophies,
-      }));
-    }
-
-    if (metric == 'powerPlayPoints') {
-      const response = await request<any>('rankings/global/powerplay/seasons/latest',
-        this.apiOfficial,
-        'fetch_powerplay_leaderboard',
         { },
         { 'Authorization': 'Bearer ' + tokenOfficial },
         10000,
@@ -268,33 +272,10 @@ export default class BrawlstarsService {
         .finally(() => console.timeEnd('post battles to clicker ' + tag));
     }
 
-    if (clickerUrl2 != '' && store) {
-      console.time('post battles to clicker 2 ' + tag)
-      // do not await - process in background and resolve early
-      post<null>(
-        clickerUrl2 + '/track',
-        { player, battleLog },
-        'upload_battlelog_clicker2',
-        5000)
-        .catch(error => console.error(error, tag))
-        .finally(() => console.timeEnd('post battles to clicker 2 ' + tag));
-    }
-
-    const brawlers = player.brawlers
-      .sort((b1, b2) => b2.trophies - b1.trophies)
-      .reduce((brawlers, brawler) => ({
-        ...brawlers,
-        [brawler.name === null ? 'nani' : brawlerId(brawler)]: { // FIXME
-          ...brawler,
-          name: brawler.name || 'NANI', // FIXME API bug 2020-06-06
-        } as Brawler,
-      }), {} as Record<string, Brawler>);
-
-    const hoursSpent = xpToHours(player.expPoints);
+    const brawlers: Record<string, Brawler> = Object.fromEntries(player.brawlers.map(b => [brawlerId(b), b]))
 
     return {
       ...player,
-      hoursSpent,
       // overwrite brawlers
       brawlers,
       battles,

@@ -19,7 +19,6 @@ router.get('/status', (ctx) => {
   ctx.body = { 'status': 'ok' }
 })
 
-// TODO validate schema via https://www.router.io/docs/latest/Getting-Started/#serialize-your-data
 router.get('/player/:tag', async (ctx) => {
   const bot = isbot(ctx.req.headers['user-agent'] || '')
   if (bot) {
@@ -47,6 +46,36 @@ router.get('/club/:tag', async (ctx) => {
   }
 })
 
+router.get('/rankings/:country/clubs', async (ctx) => {
+  try {
+    ctx.body = await service.getClubRanking(ctx.params.country);
+    ctx.set('Cache-Control', 'public, max-age=300')
+  } catch (error: any) {
+    console.log(error)
+    ctx.throw(error.status, error.reason)
+  }
+})
+
+router.get('/rankings/:country/brawlers/:id', async (ctx) => {
+  try {
+    ctx.body = await service.getBrawlerRanking(ctx.params.country, ctx.params.id);
+    ctx.set('Cache-Control', 'public, max-age=300')
+  } catch (error: any) {
+    console.log(error)
+    ctx.throw(error.status, error.reason)
+  }
+})
+
+router.get('/rankings/:country/players', async (ctx) => {
+  try {
+    ctx.body = await service.getPlayerRanking(ctx.params.country);
+    ctx.set('Cache-Control', 'public, max-age=300')
+  } catch (error: any) {
+    console.log(error)
+    ctx.throw(error.status, error.reason)
+  }
+})
+
 router.get('/events/active', async (ctx) => {
   try {
     ctx.body = await service.getActiveEvents();
@@ -57,6 +86,9 @@ router.get('/events/active', async (ctx) => {
   }
 })
 
+/**
+ * @deprecated use /rankings instead or cube
+ */
 router.get('/leaderboard/:metric', async (ctx) => {
   try {
     ctx.body = await service.getLeaderboard(ctx.params['metric'])

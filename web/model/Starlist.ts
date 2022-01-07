@@ -88,3 +88,18 @@ export interface StarlistIcon {
   imageUrl2: string; // low-res
   brawler: number|null;
 }
+
+export interface StarlistEvent {
+  slot: {
+    id: number;
+    name: string;
+    hash: string;
+    listAlone: boolean;
+    background: string|null;
+  };
+  startTime: string;
+  endTime: string;
+  reward: number;
+  map: StarlistMap;
+  modifier: null; // TODO
+}

@@ -38,7 +38,6 @@ export interface Battle {
 }
 
 export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
-  hoursSpent: number;
   brawlers: Record<string, Brawler>
   battles: Battle[];
 }

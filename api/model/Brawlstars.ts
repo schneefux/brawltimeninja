@@ -1,5 +1,3 @@
-import { StarlistMap } from "./Starlist";
-
 export interface Brawler {
   id: number;
   name: string;
@@ -7,6 +5,11 @@ export interface Brawler {
   rank: number;
   trophies: number;
   highestTrophies: number;
+  gears: {
+    id: number;
+    name: string;
+    level: number;
+  }[];
   starPowers: {
     id: number;
     name: string;
@@ -26,7 +29,6 @@ export interface Player {
   };
   trophies: number;
   highestTrophies: number;
-  powerPlayPoints: number;
   highestPowerPlayPoints: number;
   expLevel: number;
   expPoints: number;
@@ -44,18 +46,13 @@ export interface Player {
 }
 
 export interface Event {
-  slot: {
-    id: number;
-    name: string;
-    hash: string;
-    listAlone: boolean;
-    background: string|null;
-  };
   startTime: string;
   endTime: string;
-  reward: number;
-  map: StarlistMap;
-  modifier: null; // TODO
+  event: {
+    id: number;
+    mode: string;
+    map: string;
+  }
 }
 
 export interface BattlePlayer {
@@ -128,4 +125,27 @@ export interface Club {
   requiredTrophies: number
   trophies: number
   members: ClubMember[]
+}
+
+export interface PlayerRanking {
+  tag: string
+  name: string
+  nameColor: string
+  icon: {
+    id: number
+  }
+  trophies: number
+  rank: number
+  club?: {
+    name: string
+  }
+}
+
+export interface ClubRanking {
+  tag: string
+  name: string
+  badgeId: number
+  trophies: number
+  rank: number
+  memberCount: number
 }
