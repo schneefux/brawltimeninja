@@ -1,6 +1,3 @@
-// @ts-ignore
-import { PropType } from "@nuxtjs/composition-api"
-
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
@@ -241,40 +238,6 @@ export interface CubeComparingQuery extends CubeQuery {
 }
 
 export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
-
-/**
- * Props definition for visualisation components
- */
-export const VisualisationProps = {
-  card: {
-    type: undefined,
-    required: false as false
-  },
-  loading: {
-    type: Boolean,
-    required: true as true
-  },
-  response: {
-    type: Object as PropType<CubeResponse|CubeComparingResponse>,
-    required: true as true
-  },
-}
-
-/**
- * Props definition for visualisation or static components
- */
-export const OptionalVisualisationProps = {
-  ...VisualisationProps,
-  loading: {
-    type: Boolean,
-    required: false as false
-  },
-  response: {
-    // @ts-ignore
-    type: Object as PropType<CubeResponse|CubeComparingResponse>,
-    required: false as false
-  },
-}
 
 export interface Report {
   width: number

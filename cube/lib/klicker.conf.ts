@@ -1,6 +1,4 @@
 import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Measurement, Dimension } from "../klicker"
-// @ts-ignore
-import { ChiSquared } from 'sampson'
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
