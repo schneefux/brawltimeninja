@@ -13,7 +13,6 @@ import BrawlerLeaderboardCube from './cubes/BrawlerLeaderboardCube';
 import SynergyMetaCube from './cubes/SynergyCube';
 import PlayerBrawlerCube from './cubes/PlayerBrawlerCube';
 import PlayerBattleCube from './cubes/PlayerBattleCube';
-import { TeamCube } from './cubes/TeamCube';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
