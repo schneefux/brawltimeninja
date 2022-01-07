@@ -245,6 +245,7 @@ export default class ClickerService {
           brawler_gear_found: myGear !== null,
           brawler_gear_id: myGear?.id,
           brawler_gear_name: myGear?.name,
+          brawler_gear_level: myGear?.level,
           /* starpowers (nested) */
           'brawler_starpowers.id': myBrawler?.starPowers.map(sp => sp.id),
           'brawler_starpowers.name': myBrawler?.starPowers.map(sp => sp.name),
@@ -256,6 +257,7 @@ export default class ClickerService {
           /* gears (nested) */
           'brawler_gears.id': myBrawler?.gears.map(g => g.id),
           'brawler_gears.name': myBrawler?.gears.map(g => g.name),
+          'brawler_gears.level': myBrawler?.gears.map(g => g.level),
           brawler_gears_length: myBrawler?.gears.length,
           /* battle event */
           battle_event_id: battle.event.id,
@@ -353,8 +355,9 @@ export default class ClickerService {
         'brawler_gadgets.name': brawler.gadgets.map(g => g.name),
         brawler_gadgets_length: brawler.gadgets.length,
         /* gears (nested) */
-        'brawler_gears.id': brawler.gears.map(sp => sp.id),
-        'brawler_gears.name': brawler.gears.map(sp => sp.name),
+        'brawler_gears.id': brawler.gears.map(g => g.id),
+        'brawler_gears.name': brawler.gears.map(g => g.name),
+        'brawler_gears.level': brawler.gears.map(g => g.level),
         brawler_gears_length: brawler.gears.length,
       }
 

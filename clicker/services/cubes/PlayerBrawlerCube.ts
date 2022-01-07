@@ -85,10 +85,13 @@ export default class PlayerBrawlerCube extends Cube {
       ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.id\` Array(UInt32) Codec(LZ4HC) AFTER brawler_gadgets_length
     `)
     await this.execute(ch2, stripIndent`
-      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) AFTER \`brawler_gears.id\`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) Codec(LZ4HC) AFTER \`brawler_gears.id\`
     `)
     await this.execute(ch2, stripIndent`
-      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.name\`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS \`brawler_gears.level\` Array(UInt8) Codec(LZ4HC) AFTER \`brawler_gears.name\`
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.brawler ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.level\`
     `)
   }
 

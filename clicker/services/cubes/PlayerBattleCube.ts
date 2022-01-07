@@ -100,15 +100,21 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
     await this.execute(ch2, stripIndent`
       ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gear_name LowCardinality(String) Codec(LZ4HC) AFTER brawler_gear_id
     `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gear_level UInt8 Codec(LZ4HC) AFTER brawler_gear_name
+    `)
 
     await this.execute(ch2, stripIndent`
       ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.id\` Array(UInt32) Codec(LZ4HC) AFTER brawler_gadgets_length
     `)
     await this.execute(ch2, stripIndent`
-      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) AFTER \`brawler_gears.id\`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.name\` Array(LowCardinality(String)) Codec(LZ4HC) AFTER \`brawler_gears.id\`
     `)
     await this.execute(ch2, stripIndent`
-      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.name\`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS \`brawler_gears.level\` Array(UInt8) Codec(LZ4HC) AFTER \`brawler_gears.name\`
+    `)
+    await this.execute(ch2, stripIndent`
+      ALTER TABLE brawltime.battle ADD COLUMN IF NOT EXISTS brawler_gears_length UInt16 Codec(Gorilla, LZ4HC) AFTER \`brawler_gears.level\`
     `)
   }
 
