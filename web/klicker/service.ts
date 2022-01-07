@@ -5,8 +5,6 @@ import { format as formatDate, parseISO } from "date-fns"
 import { capitalizeWords } from "~/lib/util"
 import defaultVisualisations from "./visualisations"
 
-// TODO refactor clicker -> move all functions into here
-
 export default class Klicker {
   private cubejsApi: CubejsApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
@@ -67,7 +65,7 @@ export default class Klicker {
     return m.name || m.id
   }
 
-  public async query(query: CubeQuery|CubeComparingQuery): Promise<CubeResponse> {
+  public async query(query: CubeQuery): Promise<CubeResponse> {
     if (!(query.cubeId in this.config)) {
       throw 'Invalid cubeId ' + query.cubeId
     }

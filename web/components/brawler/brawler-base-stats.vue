@@ -83,7 +83,7 @@ export default Vue.extend({
     return {
       // game files
       info: undefined as BrawlerData|undefined,
-      // clicker data
+      // klicker data
       data: undefined as MetaGridEntry|undefined,
       totals: undefined as MetaGridEntry|undefined,
     }

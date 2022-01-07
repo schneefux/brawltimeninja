@@ -7,7 +7,7 @@
   >
     <div
       :class="['relative shrink-0', {
-        'pr-3 md:pr-4': props.starpowerId != undefined || props.gadgetId != undefined,
+        'pr-3 md:pr-4': props.ally != undefined || props.starpowerId != undefined || props.gadgetId != undefined,
       }]"
     >
       <media-img
@@ -15,6 +15,13 @@
         :alt="props.capitalizeWords(props.brawler.toLowerCase())"
         size="160"
         clazz="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
+      ></media-img>
+      <media-img
+        v-if="props.ally != undefined"
+        :path="`/brawlers/${props.brawlerId({ name: props.ally })}/avatar`"
+        :alt="props.capitalizeWords(props.ally.toLowerCase())"
+        size="80"
+        clazz="w-6 sm:w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
       ></media-img>
       <media-img
         v-if="props.starpowerId != undefined"
@@ -34,7 +41,7 @@
     <span
       v-if="props.captioned"
       class="ml-2 w-16 md:w-24"
-    >{{ props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase()) }}</span>
+    >{{ props.ally || props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase()) }}</span>
   </router-link>
 </template>
 
@@ -48,6 +55,9 @@ export default Vue.extend({
     brawler: {
       type: String,
       required: true
+    },
+    ally: {
+      type: String,
     },
     starpowerName: {
       type: String,

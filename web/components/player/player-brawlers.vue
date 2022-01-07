@@ -11,7 +11,7 @@
       <player-brawler-card
         :brawler="brawler"
         :player-tag="player.tag"
-        :enable-clicker-stats="enableClickerStats"
+        :enable-klicker-stats="enableklickerStats"
       ></player-brawler-card>
     </lazy>
   </div>
@@ -35,7 +35,7 @@ export default Vue.extend({
       type: Number,
       required: false
     },
-    enableClickerStats: {
+    enableklickerStats: {
       type: Boolean,
       required: true
     },

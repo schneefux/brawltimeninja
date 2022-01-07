@@ -1,149 +1,70 @@
 <template>
-  <accordeon-card
-    :title="$t('brawler.synergy.title', { brawler })"
-    :icon="'/brawlers/' + brawlerId + '/avatar'"
-    :pages="Math.ceil(data.length / (rowSize * rowsPerPage)) - 1"
-    md
-  >
-    <template v-slot:content="{ page }">
-      <p class="mb-2">
-        {{ description }}
-      </p>
-      <template
-        v-for="p in (page + 1)"
+  <c-query :query="query">
+    <b-shimmer
+      slot="placeholder"
+      width-px="224"
+      height-px="64"
+      loading
+    ></b-shimmer>
+    <p slot="empty" class="text-center">
+      {{ $t('state.no-data') }}
+    </p>
+    <template v-slot="data">
+      <v-roll
+        v-bind="{
+          ...data,
+          title: $t('brawler.synergy.title', { brawler }),
+          elevation: 1,
+        }"
       >
-        <template
-          v-for="row in rowsPerPage"
-        >
-          <brawlers-row
-            v-if="$fetchState.pending || data.length >= (p - 1) * (rowSize * rowsPerPage) + (row - 1) * rowSize"
-            :key="row + '-' + p"
-            :loading="$fetchState.pending"
-            :brawlers="data.slice((p - 1) * (rowSize * rowsPerPage) + (row - 1) * rowSize, (p - 1) * (rowSize * rowsPerPage) + row * rowSize)"
-            class="mx-auto mt-2"
-          >
-            <template v-slot="{ brawler }">
-              <template v-if="brawler.picks >= sampleSizeThreshold">
-                {{ formatWinRateDiff(brawler) }}
-                {{ $t('metric.winRateDiff.short') }}
-              </template>
-              <template v-else>
-                ?
-              </template>
-            </template>
-          </brawlers-row>
+        <template v-slot:dimensions="data">
+          <d-brawler v-bind="data"></d-brawler>
         </template>
-      </template>
+      </v-roll>
     </template>
-  </accordeon-card>
+  </c-query>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PicksWins } from '~/plugins/clicker'
-import { brawlerId, capitalizeWords, formatList } from '@/lib/util'
+import { defineComponent } from '@nuxtjs/composition-api'
+import { CubeComparingQuery } from '~/klicker'
+import { CQuery, VRoll } from '~/klicker/components'
 
-interface Row {
-  brawler_name: string
-  picks: number
-  battle_victory: number
-}
-
-export default Vue.extend({
+export default defineComponent({
+  components: {
+    VRoll,
+    CQuery,
+  },
   props: {
     brawler: {
       type: String,
       required: true
     },
-    sampleSizeThreshold: {
-      type: Number,
-      default: 1000
-    },
-    mode: {
-      type: String,
-      required: false
-    },
-    map: {
-      type: String,
-      required: false
-    },
-    id: {
-      type: String,
-      required: false
-    },
   },
-  data() {
-    return {
-      data: [] as Row[],
-      rowSize: 4,
-      rowsPerPage: 2,
+  setup(props) {
+    const query: CubeComparingQuery = {
+      comparing: true,
+      significant: true,
+      cubeId: 'synergy',
+      slices: {
+        brawler: [props.brawler.toUpperCase()],
+      },
+      dimensionsIds: ['brawler', 'ally'],
+      measurementsIds: ['winRate'],
+      sortId: 'pvalue',
+      limit: 10,
+      reference: {
+        cubeId: 'map',
+        slices: {},
+        dimensionsIds: ['brawler'],
+        measurementsIds: ['winRate'],
+        sortId: 'winRate',
+      },
     }
-  },
-  computed: {
-    brawlerId(): string {
-      return brawlerId({ name: this.brawler })
-    },
-    formatWinRateDiff() {
-      return (b: any) => this.$klicker.format({
-        formatter: '+.2%',
-        type: 'quantitative',
-      }, b.battle_victory)
-    },
-    description(): string {
-      if (this.data.length < 5) {
-        return ''
-      }
-      const formatName = (r: Row) => capitalizeWords(r.brawler_name.toLowerCase())
-      const topText = formatList(this.data.slice(0, 4).map(formatName))
-      const bottomText = formatList(this.data.slice(-3).map(formatName))
-      return this.$i18n.t('brawler.synergy.description', { brawler: this.brawler, goodBrawlers: topText, badBrawlers: bottomText }) as string
-    },
-  },
-  fetchDelay: 0,
-  fetchOnServer: false,
-  async fetch() {
-    /*
-      Calculate the difference between
-      assumed independence: P(brawler,ally) = P(brawler) * P(ally) = H(brawler) * H(ally) / H^2
-      and observation:      P(brawler,ally) = H(brawler,ally) / H
-    */
 
-    const bayesStats = await this.$clicker.calculateBayesSynergies('meta.synergy.widget', this.brawler)
-
-    const data: Row[] = []
-    const brawler = this.brawler.toUpperCase()
-    bayesStats.pairData.get(brawler)!.forEach((picksWins, allyBrawler) => {
-      if (brawler == allyBrawler) {
-        return
-      }
-
-      const hBrawler = bayesStats.data.get(brawler)!
-      const hAlly = bayesStats.data.get(allyBrawler)!
-      const hBrawlerAlly = picksWins
-      const h = bayesStats.totals
-      const h2: PicksWins = {
-        wins: bayesStats.totals.wins * bayesStats.totals.wins,
-        picks: bayesStats.totals.picks * bayesStats.totals.picks,
-      }
-
-      const assumption: PicksWins = {
-        picks: hBrawler.picks * hAlly.picks / h2.picks,
-        wins: hBrawler.wins * hAlly.wins / h2.wins,
-      }
-      const observation: PicksWins = {
-        picks: hBrawlerAlly.picks / h.picks,
-        wins: hBrawlerAlly.wins / h.wins,
-      }
-
-      data.push({
-        brawler_name: allyBrawler,
-        picks: bayesStats.sampleSize,
-        battle_victory: observation.wins / observation.picks - assumption.wins / assumption.picks,
-      })
-    })
-
-    data.sort((e1, e2) => e2.picks >= this.sampleSizeThreshold && e1.picks >= this.sampleSizeThreshold ? e2.battle_victory - e1.battle_victory : e2.picks - e1.picks)
-    this.data = data
+    return {
+      query,
+    }
   },
 })
 </script>

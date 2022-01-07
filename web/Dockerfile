@@ -11,8 +11,6 @@ ARG GIT_REV=''
 ENV GIT_REV=$GIT_REV
 ARG BRANCH=''
 ENV BRANCH=$BRANCH
-ARG CLICKER_URL=''
-ENV CLICKER_URL=$CLICKER_URL
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile

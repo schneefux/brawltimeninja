@@ -10,6 +10,7 @@
           :map="map.map"
           :mode="map.mode"
           :timestamp="map.timestamp"
+          id="0"
           link
         ></map-detail-card>
       </lazy>
@@ -18,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { camelToKebab, slugify } from '~/lib/util'
+import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { camelToKebab, getSeasonEnd, slugify } from '~/lib/util'
 
 interface Event {
   timestamp: string
@@ -28,39 +29,45 @@ interface Event {
   link: string
 }
 
-export default Vue.extend({
-  data() {
-    return {
-      maps: [] as Event[],
-    }
-  },
+export default defineComponent({
   middleware: ['cached'],
-  fetchDelay: 0,
-  async fetch() {
-    const data = await this.$clicker.query('meta.mode.competition', 'map',
-      ['battle_event_map', 'battle_event_mode'],
-      ['battle_event_map', 'battle_event_mode', 'timestamp', 'picks'], {
-        ...this.$clicker.defaultSlicesRaw('map'),
-        trophy_season_end: ['month'],
-        battle_event_map_like: ['Competition Winner %'],
-      }, {
-        cache: 60*30,
-        sort: { timestamp: 'desc' },
-      })
-
-    this.maps = data.data
-      // events overlap slightly and get misclassified... TODO fix this in backend
-      .filter(row => row.picks > 1000)
-      .map(row => ({
-        timestamp: row.timestamp,
-        map: row.battle_event_map,
-        mode: row.battle_event_mode,
-        link: `/tier-list/mode/${camelToKebab(row.battle_event_mode)}/map/${slugify(row.battle_event_map)}`,
-      }))
-  },
   meta: {
     title: 'Competition Winners',
     screen: 'events',
+  },
+  setup() {
+    const { $klicker } = useContext()
+
+    const twoMonthsAgo = new Date()
+    twoMonthsAgo.setDate(twoMonthsAgo.getDate() - 8*7)
+    const season = getSeasonEnd(twoMonthsAgo).toISOString().slice(0, 10)
+
+    const maps = useAsync<Event[]>(async () => {
+      const data = await $klicker.query({
+        cubeId: 'map',
+        dimensionsIds: ['mode', 'map'],
+        measurementsIds: ['timestamp', 'picks'],
+        slices: {
+          season: [season],
+          mapLike: ['Competition Winner'],
+        },
+        sortId: 'timestamp',
+      })
+
+      return data.data
+        // events overlap slightly and get misclassified... TODO fix this in backend
+        .filter(row => row.measurementsRaw.picks > 1000)
+        .map(row => ({
+          timestamp: row.measurementsRaw.timestamp as string,
+          map: row.dimensionsRaw.map.map,
+          mode: row.dimensionsRaw.mode.mode,
+          link: `/tier-list/mode/${camelToKebab(row.dimensionsRaw.mode.mode)}/map/${slugify(row.dimensionsRaw.map.map)}`,
+        }))
+    })
+
+    return {
+      maps,
+    }
   },
 })
 </script>

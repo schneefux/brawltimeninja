@@ -1,7 +1,9 @@
 <template functional>
+  <!-- Swap brawler and ally so that the ally will be large -->
   <brawler-link
     v-if="'brawler' in props.row.dimensions || 'starpower' in props.row.dimensions || 'gadget' in props.row.dimensions"
-    :brawler="(props.row.dimensionsRaw.brawler || {}).brawler || (props.row.dimensionsRaw.starpower || {}).brawler || (props.row.dimensionsRaw.gadget || {}).brawler"
+    :brawler="(props.row.dimensionsRaw.ally || {}).ally || (props.row.dimensionsRaw.brawler || {}).brawler || (props.row.dimensionsRaw.starpower || {}).brawler || (props.row.dimensionsRaw.gadget || {}).brawler"
+    :ally="props.row.dimensionsRaw.ally != undefined ? (props.row.dimensionsRaw.brawler || {}).brawler : undefined"
     :starpower-name="props.row.dimensions.starpower"
     :starpower-id="(props.row.dimensionsRaw.starpower || {}).starpower"
     :gadget-name="props.row.dimensions.gadget"

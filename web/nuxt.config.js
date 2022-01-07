@@ -8,7 +8,6 @@ const brawlerId = (entry) => entry.name.replace(/\.| /g, '_').toLowerCase()
 
 const apiUrl = (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''); // replace trailing slash
 const mediaUrl = (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, '');
-const clickerUrl = (process.env.CLICKER_URL || 'https://clicker.brawltime.ninja').replace(/\/$/, '');
 const renderUrl = (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, '');
 const cubeUrl = (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, '');
 
@@ -53,9 +52,6 @@ export default {
         urlPattern: apiUrl + '/.*',
         handler: 'networkFirst',
       }, {
-        urlPattern: clickerUrl + '/.*',
-        handler: 'networkFirst',
-      }, {
         urlPattern: cubeUrl + '/.*',
         handler: 'networkFirst',
       }],
@@ -88,7 +84,6 @@ export default {
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/scrollto', mode: 'client' },
     // { src: '~/plugins/lazy-hydrate' },
-    { src: '~/plugins/clicker' },
     { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
     { src: '~/plugins/http', mode: 'client' },
@@ -165,7 +160,6 @@ export default {
   },
   publicRuntimeConfig: {
     apiUrl,
-    clickerUrl,
     cubeUrl,
     mediaUrl,
     renderUrl,
@@ -192,35 +186,7 @@ export default {
     async routes() {
       const routes = []
 
-      try {
-        const events = await fetch(`${clickerUrl}/clicker/cube/map/query/battle_event_mode,battle_event_map?slice[trophy_season_end]=month`)
-          .then(r => r.json())
-        events.data.forEach((event) => {
-          const modeRoute = `/tier-list/mode/${camelToKebab(event.battle_event_mode)}`
-          if (!routes.includes(modeRoute)) {
-            routes.push(modeRoute)
-          }
-          routes.push(`/tier-list/mode/${camelToKebab(event.battle_event_mode)}/map/${slugify(event.battle_event_map)}`)
-        })
-      } catch (err) {
-        console.error('error adding events to sitemap', err)
-      }
-
-      try {
-        const brawlers = await fetch(`${clickerUrl}/clicker/cube/map/query/brawler_name?include=brawler_name`)
-          .then(r => r.json())
-        brawlers.data.forEach(b => routes.push(`/tier-list/brawler/${brawlerId({ name: b.brawler_name })}`))
-      } catch (err) {
-        console.error('error adding brawlers to sitemap', err)
-      }
-
-      try {
-        const players = await fetch(`${clickerUrl}/clicker/cube/battle/query/player_id?limit=1000&slice[trophy_season_end]=current&sort=-player_trophies`)
-          .then(r => r.json())
-        players.data.forEach(p => routes.push(`/profile/${p.player_tag}`))
-      } catch (err) {
-        console.error(`error adding top players to sitemap`, err)
-      }
+      // TODO
 
       return routes
     },
