@@ -18,8 +18,6 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 exports.__esModule = true;
 exports.commonMeasurements = exports.brawlerNumberMeasurements = exports.brawlerStringMeasurements = exports.playerStringMeasurements = exports.getSeasonEnd = void 0;
 var klicker_1 = require("../klicker");
-// @ts-ignore
-var sampson_1 = require("sampson");
 /* c&p from util */
 function getSeasonEnd(timestamp) {
     var trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'));
@@ -82,7 +80,7 @@ function binomialTest(getK, getN) {
         var observedFailuresT = getN(t) - getK(t);
         var g = calculateGTestStatistic([expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT], [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT]);
         // @ts-ignore
-        return sampson_1.ChiSquared.pdf(g, {
+        return ChiSquared.pdf(g, {
             // df: (rows - 1) * (columns - 1)
             df: 1
         });

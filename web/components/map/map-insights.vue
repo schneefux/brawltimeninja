@@ -194,6 +194,34 @@ export default defineComponent({
         }],
       })
 
+      templates.push({
+        title: i18n.t('map.insights.outstanding.gears') as string,
+        link: localePath(`/tier-list/gears`),
+        linkText: i18n.t('action.open.tier-list.gear') as string,
+        queries: [<CubeComparingQuery>{
+          comparing: true,
+          cubeId: 'battle',
+          sortId: 'pvalue',
+          dimensionsIds: ['gear'],
+          measurementsIds: ['winRate'],
+          slices: {
+            ...props.slices,
+            gearIdNeq: ['0'],
+          },
+          reference: {
+            cubeId: 'battle',
+            dimensionsIds: [],
+            measurementsIds: ['winRate'],
+            slices: {
+              ...props.slices,
+              gearIdEq: ['0'],
+            },
+            sortId: 'pvalue',
+          },
+          limit,
+        }],
+      })
+
       return templates
     })
 

@@ -33,6 +33,7 @@ export default class PlayerBattleCube extends PlayerBrawlerCube {
         brawler_gear_found UInt8 Codec(Gorilla, LZ4HC),
         brawler_gear_id UInt32 Codec(LZ4HC),
         brawler_gear_name LowCardinality(String) Codec(LZ4HC),
+        brawler_gear_level UInt8 Codec(LZ4HC),
         -- battle event
         battle_event_id UInt32 Codec(Gorilla, LZ4HC),
         battle_event_mode LowCardinality(String) Codec(LZ4HC),

@@ -16,10 +16,9 @@
 <script lang="ts">
 import DPlayer from '@/components/klicker/d-player.vue'
 import DBrawler from '@/components/klicker/d-brawler.vue'
-import MBrawler from '@/components/klicker/m-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '~/klicker/components'
-import { SliceValue, CubeQuery, ComparingMetaGridEntry, CubeComparingQuery } from '~/klicker'
+import { SliceValue, CubeQuery } from '~/klicker'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
@@ -28,13 +27,12 @@ export default defineComponent({
     VTable,
     DPlayer,
     DBrawler,
-    MBrawler,
     CQuery,
     BrawlerLink,
   },
   props: {
     kind: {
-      type: String as PropType<'starpowers'|'gadgets'>,
+      type: String as PropType<'starpowers'|'gadgets'|'gears'>,
       default: 'starpowers'
     },
     id: {
@@ -50,13 +48,24 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('best.' + props.kind, slices, id)
 
+    const dimensionMap = {
+      starpowers: 'starpower',
+      gadgets: 'gadget',
+      gears: 'gear',
+    }
+    const sliceMap = {
+      starpowers: 'starpowerIdNeq',
+      gadgets: 'gadgetIdNeq',
+      gears: 'gearIdNeq',
+    }
+
     const query = computed<CubeQuery>(() => ({
       cubeId: 'battle',
-      dimensionsIds: props.kind == 'starpowers' ? ['starpower'] : ['gadget'],
+      dimensionsIds: [dimensionMap[props.kind]],
       measurementsIds: ['wins', 'winRate'],
       slices: {
         ...slices.value,
-        [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
+        [sliceMap[props.kind]]: ['0'],
       },
       sortId: 'wins',
       limit: 50,
