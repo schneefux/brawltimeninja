@@ -40,6 +40,7 @@ job "traduora" {
         TR_PORT = "${NOMAD_PORT_http}"
         TR_DB_DATABASE = "traduora"
         TR_SIGNUPS_ENABLED = "false"
+        TR_CORS_ENABLED = "true"
         TR_AUTH_GOOGLE_ENABLED = "true"
         TR_AUTH_GOOGLE_REDIRECT_URL = "https://translate.brawltime.ninja/auth/callback"
       }

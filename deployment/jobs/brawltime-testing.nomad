@@ -2,6 +2,10 @@ variable "domain" {
   default = "brawltime.ninja"
 }
 
+variable "web_traduora_client_id" {}
+variable "web_traduora_secret" {}
+variable "web_traduora_project_id" {}
+
 job "brawltime-testing" {
   datacenters = ["dc1"]
 
@@ -44,6 +48,10 @@ job "brawltime-testing" {
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
+        TRADUORA_URL = "https://translate.${var.domain}"
+        TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
+        TRADUORA_SECRET = "${var.web_traduora_secret}"
+        TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
       }
 
       config {

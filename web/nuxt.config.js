@@ -10,6 +10,7 @@ const apiUrl = (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\
 const mediaUrl = (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, '');
 const renderUrl = (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, '');
 const cubeUrl = (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, '');
+const traduoraUrl = (process.env.TRADUORA_URL || 'https://translate.brawltime.ninja').replace(/\/$/, '');
 
 export default {
   telemetry: false,
@@ -163,6 +164,10 @@ export default {
     cubeUrl,
     mediaUrl,
     renderUrl,
+    traduoraUrl,
+    traduoraClientId: (process.env.TRADUORA_CLIENT_ID || ''),
+    traduoraSecret: (process.env.TRADUORA_SECRET || ''),
+    traduoraProjectId: (process.env.TRADUORA_PROJECT_ID || ''),
     cubeSecret: (process.env.CUBE_SECRET || ''),
   },
 
