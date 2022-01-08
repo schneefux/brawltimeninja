@@ -4,8 +4,9 @@
     title="Brawler Personality Test"
     md
   >
-    <div slot="content" class="relative">
-      <p class="font-semibold text-center">Are you an artistic or scientific person?</p>
+    <div slot="content" class="relative mt-1">
+      <p class="font-semibold text-center">Are you organized or chaotic?</p>
+      <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
       <quiz-likert
         slot="content"
         :value="{}"
@@ -13,7 +14,7 @@
         :end="1"
         @input="onTrigger"
       ></quiz-likert>
-      <img class="absolute bottom-0 right-2 hidden md:inline w-10" src="~/assets/images/Ranged_Bot.png">
+      <img class="absolute top-[7px] right-0 w-10" src="~/assets/images/chaotic.png">
     </div>
   </b-card>
 

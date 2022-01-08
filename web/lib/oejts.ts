@@ -10,6 +10,12 @@ export interface OEJTSEntry {
 // items with the largest mean level difference (dark red)
 // selecting top 10 that are easiest to translate
 const oejtsScores = <Record<string, OEJTSEntry>>{
+  organizedChaotic: {
+    ie: +0.16,
+    sn: +0.21,
+    ft: -0.25,
+    jp: +1.15,
+  },
   artisticScientific: {
     ie: -0.21,
     sn: +0.31,
@@ -130,12 +136,6 @@ const oejtsScores = <Record<string, OEJTSEntry>>{
     jp: -0.33,
   },
   */
-  organizedChaotic: {
-    ie: +0.16,
-    sn: +0.21,
-    ft: -0.25,
-    jp: +1.15,
-  },
   /*
   peopleOrientedTaskOriented: {
     ie: -1.23,
