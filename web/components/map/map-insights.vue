@@ -16,6 +16,7 @@
           full-height
         >
           <b-button
+            v-if="t.link"
             slot="actions"
             :to="t.link"
             primary
@@ -73,7 +74,7 @@ import { camelToKebab } from '~/lib/util'
 
 interface Template {
   title: string
-  link: string
+  link?: string
   linkText: string
   queries: (CubeQuery|CubeComparingQuery)[]
 }
@@ -196,7 +197,7 @@ export default defineComponent({
 
       templates.push({
         title: i18n.t('map.insights.outstanding.gears') as string,
-        link: localePath(`/tier-list/gears`),
+        // link: localePath(`/tier-list/gears`),
         linkText: i18n.t('action.open.tier-list.gear') as string,
         queries: [<CubeComparingQuery>{
           comparing: true,
