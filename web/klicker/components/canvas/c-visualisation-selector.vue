@@ -45,6 +45,14 @@
         </template>
       </div>
     </div>
+
+    <div slot="actions">
+      <b-button
+        sm
+        primary
+        @click="$emit('delete')"
+      >Delete Widget</b-button>
+    </div>
   </b-card>
 </template>
 

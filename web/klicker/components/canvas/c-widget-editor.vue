@@ -76,6 +76,7 @@
               class="w-full md:w-auto"
               for-canvas
               @input="v => $emit('input', v)"
+              @delete="$emit('delete')"
             ></c-visualisation-selector>
             <slot></slot>
           </div>
@@ -93,6 +94,7 @@
           class="w-full md:w-auto"
           for-canvas
           @input="v => $emit('input', v)"
+          @delete="$emit('delete')"
         ></c-visualisation-selector>
 
         <slot></slot>

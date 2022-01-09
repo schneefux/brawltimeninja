@@ -17,6 +17,7 @@
         :value="widgetsKeyed[selectedWidgetId]"
         :default-query="defaultQuery"
         @input="updateWidget"
+        @delete="deleteSelectedWidget"
       >
         <template
           v-for="(_, name) in $scopedSlots"
@@ -171,6 +172,10 @@ export default defineComponent({
       ...widgetsKeyed.value,
       [widget.id]: widget,
     }
+    const deleteSelectedWidget = (widgetId: string) => {
+      widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
+      selectedWidgetId.value = undefined
+    }
     const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => widgetsKeyed.value = {
       ...widgetsKeyed.value,
       [widgetId]: {
@@ -191,6 +196,7 @@ export default defineComponent({
       addWidget,
       updateWidget,
       updateWidgetFrame,
+      deleteSelectedWidget,
       selectedWidgetId,
     }
   },

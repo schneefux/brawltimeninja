@@ -47,6 +47,7 @@
         :value="widgets[selectedWidgetId]"
         :default-query="defaultQuery"
         @input="updateWidget"
+        @delete="deleteSelectedWidget"
       >
         <template
           v-for="(_, name) in $scopedSlots"
@@ -112,7 +113,6 @@
           TODO:
             - Limit festlegen
             - Recommendations highlighten
-            - Löschen von Visualisierungen
         -->
       </div>
     </div>
@@ -227,6 +227,11 @@ export default defineComponent({
     }
 
     const updateWidget = (widget: ReportWidget) => widgets.value = { ...widgets.value, [widget.id]: widget }
+    const deleteSelectedWidget = (widgetId: string) => {
+      widgets.value = Object.fromEntries(Object.entries(widgets.value)
+        .filter(([id, widget]) => id != selectedWidgetId.value))
+      selectedWidgetId.value = undefined
+    }
 
     const bounds = computed(() => ({
       left: 0,
@@ -247,6 +252,7 @@ export default defineComponent({
       widgets,
       addWidget,
       updateWidget,
+      deleteSelectedWidget,
       selectedWidgetId,
       faSearchMinus,
       faSearchPlus,
