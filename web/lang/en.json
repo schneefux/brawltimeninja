@@ -462,5 +462,8 @@
     "metric.last-update": "Last Update",
     "metric.margin-of-error": "Margin of Error",
     "metric.sample-size": "Sample Size",
-    "configurator.title": "Configure Data Source"
+    "configurator.title": "Configure Data Source",
+    "action.download-snapshot": "Download Snapshot",
+    "action.share-url": "Share URL",
+    "report-designer.title": "Brawl Stars Report Designer"
 }

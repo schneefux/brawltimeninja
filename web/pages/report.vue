@@ -1,5 +1,7 @@
 <template>
-  <page-dashboard title="Brawl Stars Report Builder">
+  <page-dashboard
+    :title="$t('report-designer.title')"
+  >
     <div slot="dashboard">
       <c-canvas
         v-model="report"
@@ -38,19 +40,33 @@
         </template>
       </c-canvas>
 
-      <share-render-button
-        :embed-url="embedUrl"
-        secondary
-        sm
-        class="my-3"
-      ></share-render-button>
+      <div class="mt-2">
+        <share-render-button
+          :embed-url="embedUrl"
+          :button-text="$t('action.download-snapshot')"
+          secondary
+          sm
+        ></share-render-button>
+
+        <div class="mt-3">
+          <label>
+            {{ $t('action.share-url') }}
+            <b-textbox
+              :value="shareUrl"
+              class="ml-1"
+              readonly
+              dark
+            ></b-textbox>
+          </label>
+        </div>
+      </div>
     </div>
   </page-dashboard>
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed } from "@nuxtjs/composition-api"
-import { CCanvas } from '~/klicker/components'
+import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
+import { CCanvas, BTextbox } from '~/klicker/components'
 import { Report, CubeQuery } from '~/klicker'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -77,6 +93,7 @@ import { getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
+    BTextbox,
     CCanvas,
     DBrawler,
     BrawlerLink, // dependency of DBrawler
@@ -106,8 +123,21 @@ export default defineComponent({
       widgets: [],
     }, true)
 
+    const route = useRoute()
+    onMounted(() => {
+      if (route.value.query['conf'] != undefined) {
+        report.value = JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString())
+      }
+    })
     const embedUrl = computed<string>(() =>
-      `/embed/report?conf=` + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
+      '/embed/report?conf=' + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
+    const shareUrl = computed<string>(() => {
+      if (process.client) {
+        return window.location.href + '?conf=' + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64'))
+      } else {
+        return ''
+      }
+    })
 
     const twoWeeksAgo = new Date()
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
@@ -129,6 +159,7 @@ export default defineComponent({
     return {
       report,
       embedUrl,
+      shareUrl,
       defaultQuery,
     }
   }

@@ -5,7 +5,7 @@
     target="_blank"
     tag="a"
     @click.once="share($event)"
-  >{{ $t('action.share') }}</b-button>
+  >{{ buttonText || $t('action.share') }}</b-button>
 </template>
 
 <script lang="ts">
@@ -31,6 +31,10 @@ export default defineComponent({
       required: false
     },
     url: {
+      type: String,
+      required: false
+    },
+    buttonText: {
       type: String,
       required: false
     },
