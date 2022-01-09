@@ -79,7 +79,7 @@
     >
       <c-widget
         v-for="w in widgets"
-        :key="w.id"
+        :key="w.id + keys[w.id]"
         :widget="w"
         for-grid
         @click.native="selectedWidgetId = w.id"
@@ -176,20 +176,27 @@ export default defineComponent({
       widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
       selectedWidgetId.value = undefined
     }
-    const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => widgetsKeyed.value = {
-      ...widgetsKeyed.value,
-      [widgetId]: {
-        ...widgetsKeyed.value[widgetId],
-        frame: {
-          ...widgetsKeyed.value[widgetId].frame,
-          ...framePartial,
+
+    const keys = ref<Record<string, number>>({})
+    const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => {
+      widgetsKeyed.value = {
+        ...widgetsKeyed.value,
+        [widgetId]: {
+          ...widgetsKeyed.value[widgetId],
+          frame: {
+            ...widgetsKeyed.value[widgetId].frame,
+            ...framePartial,
+          },
         },
-      },
+      }
+
+      keys.value[widgetId] = (keys.value[widgetId] ?? 0) + 1
     }
 
     const prefix = Math.random().toString().slice(2)
 
     return {
+      keys,
       prefix,
       widgets,
       widgetsKeyed,
