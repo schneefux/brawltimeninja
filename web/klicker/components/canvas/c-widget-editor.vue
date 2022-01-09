@@ -5,9 +5,9 @@
   >
     <div
       slot="content"
-      class="flex flex-wrap"
+      class="my-1 flex flex-col gap-y-2"
     >
-      <div class="w-full ml-2 flex gap-5 mt-2">
+      <div class="ml-2 w-full flex gap-5">
         <h1 class="inline font-semibold mr-5">
           Widget Kind
         </h1>
@@ -39,7 +39,6 @@
         v-if="query != undefined"
         v-model="query"
         :elevation="elevation + 1"
-        class="mt-4 w-full"
         configurator
       >
         <template v-slot:slices="data">
@@ -49,31 +48,53 @@
           ></slot>
         </template>
         <template v-slot:totals="data">
-          <slot
-            name="totals"
-            v-bind="data"
-          ></slot>
+          <b-card
+            :elevation="elevation + 1"
+            title="Data Source Info"
+            class="w-full md:w-auto"
+            full-height
+          >
+            <div
+              slot="content"
+              class="flex flex-wrap"
+            >
+              <slot
+                name="totals"
+                v-bind="data"
+                :card="{ ...data.card, elevation: data.card && (data.card.elevation + 2) }"
+              ></slot>
+            </div>
+          </b-card>
         </template>
         <template v-slot:data="data">
-          <c-visualisation-selector
-            v-bind="data"
-            :value="value"
-            :spec="spec"
-            :elevation="elevation + 1"
-            class="w-full"
-            @input="v => $emit('input', v)"
-          ></c-visualisation-selector>
+          <div class="contents">
+            <c-visualisation-selector
+              v-bind="data"
+              :value="value"
+              :spec="spec"
+              :elevation="elevation + 1"
+              class="w-full md:w-auto"
+              @input="v => $emit('input', v)"
+            ></c-visualisation-selector>
+            <slot></slot>
+          </div>
         </template>
       </c-dashboard>
 
-      <c-visualisation-selector
+      <div
         v-else
-        :value="value"
-        :elevation="elevation + 1"
-        :spec="spec"
-        class="w-full"
-        @input="v => $emit('input', v)"
-      ></c-visualisation-selector>
+        class="flex flex-wrap"
+      >
+        <c-visualisation-selector
+          :value="value"
+          :elevation="elevation + 1"
+          :spec="spec"
+          class="w-full md:w-auto"
+          @input="v => $emit('input', v)"
+        ></c-visualisation-selector>
+
+        <slot></slot>
+      </div>
     </div>
   </b-card>
 </template>

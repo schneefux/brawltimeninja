@@ -2,6 +2,7 @@
   <b-card
     title="Configure Widget"
     :elevation="elevation"
+    full-height
   >
     <div slot="content">
       <div class="grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 my-1 items-center">
@@ -76,6 +77,14 @@ export default defineComponent({
       type: Number,
       default: 1
     },
+    forCanvas: {
+      type: Boolean,
+      default: false
+    },
+    forGrid: {
+      type: Boolean,
+      default: false
+    },
   },
   setup(props, { emit }) {
     const { $klicker, checkApplicable } = useCubeResponse(props)
@@ -89,13 +98,20 @@ export default defineComponent({
       set(component: Widget['component']) {
         emit('input', {
           ...props.value,
-          frame: {
-            translate: [0, 0],
-            scale: [1, 1],
-            rotate: 0,
-            width: 0,
-            height: 0,
-          },
+          ...(props.forCanvas ? {
+            frame: {
+              translate: [0, 0],
+              scale: [1, 1],
+              rotate: 0,
+              width: 0,
+              height: 0,
+            },
+          } : {
+            frame: {
+              rows: props.spec.initialDimensions.rows,
+              columns: props.spec.initialDimensions.columns,
+            },
+          }),
           props: {},
           component,
         })

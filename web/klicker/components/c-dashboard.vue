@@ -1,41 +1,43 @@
 <template>
   <div class="flex flex-wrap">
-    <c-configurator
-      v-if="configurator"
-      v-model="query"
-      :card="{ fullHeight: true, elevation }"
-      class="flex-auto"
-    ></c-configurator>
+    <div class="w-full grid grid-cols-1 lg:grid-cols-3">
+      <c-configurator
+        v-if="configurator"
+        v-model="query"
+        :card="{ fullHeight: true, elevation }"
+        class="row-span-2"
+      ></c-configurator>
 
-    <c-slicer
-      v-if="'slices' in $scopedSlots"
-      v-model="query"
-      :card="{ fullHeight: true, elevation }"
-      :both="syncSlices"
-      class="w-full md:w-auto"
-    >
-      <template v-slot="slices">
-        <slot
-          name="slices"
-          v-bind="{ ...slices }"
-        ></slot>
-      </template>
-    </c-slicer>
+      <c-slicer
+        v-if="'slices' in $scopedSlots"
+        v-model="query"
+        :card="{ fullHeight: true, elevation }"
+        :both="syncSlices"
+        class="col-span-2"
+      >
+        <template v-slot="slices">
+          <slot
+            name="slices"
+            v-bind="{ ...slices }"
+          ></slot>
+        </template>
+      </c-slicer>
 
-    <c-slicer
-      v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
-      v-model="query"
-      :card="{ fullHeight: true, elevation }"
-      class="w-full md:w-auto"
-      comparing
-    >
-      <template v-slot="slices">
-        <slot
-          name="slices"
-          v-bind="{ ...slices, ...$attrs }"
-        ></slot>
-      </template>
-    </c-slicer>
+      <c-slicer
+        v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
+        v-model="query"
+        :card="{ fullHeight: true, elevation }"
+        class="col-span-2"
+        comparing
+      >
+        <template v-slot="slices">
+          <slot
+            name="slices"
+            v-bind="{ ...slices, ...$attrs }"
+          ></slot>
+        </template>
+      </c-slicer>
+    </div>
 
     <c-query
       v-if="'totals' in $scopedSlots && metaMetrics.length > 0"
@@ -67,7 +69,7 @@
       </template>
     </c-query>
 
-    <slot v-bind="{ ...query }"></slot>
+    <slot v-bind="query"></slot>
   </div>
 </template>
 

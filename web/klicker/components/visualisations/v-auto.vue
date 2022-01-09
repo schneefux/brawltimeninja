@@ -85,6 +85,22 @@ export default defineComponent({
       default: false
     },
     /**
+     * Row dimension to set.
+     * If unset, the specification default will be used.
+     */
+    rows: {
+      type: Number,
+      required: false
+    },
+    /**
+     * Column dimension to set.
+     * If unset, the specification default will be used.
+     */
+    columns: {
+      type: Number,
+      required: false
+    },
+    /**
      * Raw props to pass on to the component.
      */
     props: {
@@ -96,15 +112,20 @@ export default defineComponent({
     const { $klicker, checkApplicable } = useCubeResponse(props)
 
     function getStyle(spec: VisualisationSpec) {
-      const style: Record<string, string> = {
-        '--rows': `${spec.initialDimensions.rows}`,
-        '--columns': `${spec.initialDimensions.columns}`,
+      const style: Record<string, string> = {}
+
+      const rows = props.rows ?? spec.initialDimensions.rows
+      const columns = props.columns ?? spec.initialDimensions.columns
+
+      if (props.forGrid) {
+        style['--rows'] = `${rows}`
+        style['--columns'] = `${columns}`
       }
 
       if (props.forCanvas) {
         if (spec.resizable) {
-          style.width = `${spec.initialDimensions.columns * 150}px`
-          style.height = `${spec.initialDimensions.rows * 150}px`
+          style.width = `${columns * 150}px`
+          style.height = `${rows * 150}px`
         } else {
           style.width = 'max-content'
           style.height = 'max-content'

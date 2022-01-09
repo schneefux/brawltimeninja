@@ -464,6 +464,8 @@
     "metric.sample-size": "Sample Size",
     "configurator.title": "Configure Data Source",
     "action.download-snapshot": "Download Snapshot",
-    "action.share-url": "Share URL",
-    "report-designer.title": "Brawl Stars Report Designer"
+    "action.editor-url": "URL for editing",
+    "action.viewer-url": "URL for viewing",
+    "report-designer.title": "Brawl Stars Report Designer",
+    "dashboard-designer.title": "Brawl Stars Dashboard Designer"
 }

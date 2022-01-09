@@ -1,13 +1,10 @@
 <template>
-  <div
-    :style="{ width: `${report.width}px`, height: `${report.height}px` }"
-    class="overflow-hidden relative bg-gray-800"
-  >
+  <div class="dashboard-grid min-h-screen bg-gray-900 text-gray-200">
     <c-widget
-      v-for="w in report.widgets"
+      v-for="w in grid.widgets"
       :key="w.id"
       :widget="w"
-      for-canvas
+      for-grid
     >
       <template
         v-for="(_, name) in $scopedSlots"
@@ -24,19 +21,19 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import { Report } from '~/klicker'
+import { Grid } from '~/klicker'
 import CWidget from './c-widget.vue'
 
 /**
- * Read-only view of a canvas.
+ * Read-only view of a grid.
  */
 export default defineComponent({
   components: {
     CWidget,
   },
   props: {
-    report: {
-      type: Object as PropType<Report>,
+    grid: {
+      type: Object as PropType<Grid>,
       required: true
     },
   },

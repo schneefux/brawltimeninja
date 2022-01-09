@@ -10,6 +10,10 @@
         :component="widget.component"
         :style="style"
         :for-canvas="forCanvas"
+        :for-grid="forGrid"
+        :rows="forGrid ? widget.frame.rows : undefined"
+        :columns="forGrid ? widget.frame.columns : undefined"
+        :card="forGrid ? { fullHeight: true } : undefined"
       >
         <template
           v-for="(_, name) in $scopedSlots"
@@ -29,8 +33,12 @@
     :component="widget.component"
     :style="style"
     :for-canvas="forCanvas"
+    :for-grid="forGrid"
+    :rows="forGrid ? widget.frame.rows : undefined"
+    :columns="forGrid ? widget.frame.columns : undefined"
     :loading="false"
     :response="undefined"
+    :card="forGrid ? { fullHeight: true } : undefined"
   >
     <template
       v-for="(_, name) in $scopedSlots"
@@ -47,14 +55,14 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import CQuery from '~/klicker/components/c-query'
-import { VisualisationSpec, Widget } from '~/klicker'
+import { GridWidget, ReportWidget, VisualisationSpec, Widget } from '~/klicker'
 import VAuto from '~/klicker/components/visualisations/v-auto.vue'
 
 /**
  * Return a style object to position this widget on a canvas.
  * Uses frame sizings or specified defaults, if available.
  */
-export function render(frame: Widget['frame'], spec: VisualisationSpec) {
+export function render(frame: ReportWidget['frame'], spec: VisualisationSpec) {
   const { translate, scale, rotate, width, height } = frame
   const style: Record<string, string> = {
     position: 'absolute',
@@ -106,7 +114,7 @@ export default defineComponent({
   },
   props: {
     widget: {
-      type: Object as PropType<Widget>,
+      type: Object as PropType<ReportWidget|GridWidget>,
       required: true
     },
     /**
@@ -116,7 +124,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    // TODO forGrid
+    /**
+     * Apply styles for rendering in a grid.
+     */
+    forGrid: {
+      type: Boolean,
+      default: false
+    },
   },
   setup(props) {
     const { $klicker } = useContext()
@@ -135,7 +149,7 @@ export default defineComponent({
       }
     })
 
-    const style = computed(() => props.forCanvas && valid.value ? render(props.widget.frame, spec.value!) : {})
+    const style = computed(() => props.forCanvas && valid.value ? render((<ReportWidget> props.widget).frame, spec.value!) : {})
 
     return {
       valid,

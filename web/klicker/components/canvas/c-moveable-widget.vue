@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, useContext, watch, nextTick, onMounted } from "@nuxtjs/composition-api";
-import { VisualisationSpec, Widget } from "../..";
+import { ReportWidget, VisualisationSpec } from "../..";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
 
@@ -70,7 +70,7 @@ export default defineComponent({
       required: true
     },
     value: {
-      type: Object as PropType<Widget>,
+      type: Object as PropType<ReportWidget>,
       required: true
     },
   },
@@ -82,7 +82,7 @@ export default defineComponent({
 
     // Keep a local copy of the frame and lazy-sync it on *end to prevent event spam
     const clone = (o: any) => JSON.parse(JSON.stringify(o))
-    let frame: Widget['frame'] = clone(props.value.frame)
+    let frame: ReportWidget['frame'] = clone(props.value.frame)
     watch(() => props.value, (after, before) => {
       if (JSON.stringify(after) != JSON.stringify(before)) {
         frame = clone(props.value.frame)

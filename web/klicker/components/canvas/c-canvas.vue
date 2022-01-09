@@ -17,7 +17,7 @@
       ></b-number>
 
       <label
-        :for="`${prefix}-width`"
+        :for="`${prefix}-height`"
         class="font-semibold"
       >
         Height
@@ -39,9 +39,11 @@
       >Add a new Widget</b-button>
     </div>
 
-    <div class="w-full mt-2">
+    <div
+      v-if="selectedWidgetId != undefined && widgets[selectedWidgetId] != undefined"
+      class="w-full mt-2"
+    >
       <c-widget-editor
-        v-if="selectedWidgetId != undefined && widgets[selectedWidgetId] != undefined"
         :value="widgets[selectedWidgetId]"
         :default-query="defaultQuery"
         @input="updateWidget"
@@ -88,8 +90,6 @@
             - Limit festlegen
             - Recommendations highlighten
             - Löschen von Visualisierungen
-            - Customization erlauben, z.B. page size von v-table (als args in VisualisationSpec definieren)
-            - Beliebige andere Elemente supporten, z.B. Bilder und Text
         -->
       </div>
     </div>
@@ -101,7 +101,7 @@ import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-ap
 import CMoveableWidget from '~/klicker/components/canvas/c-moveable-widget.vue'
 import CWidgetEditor from '~/klicker/components/canvas/c-widget-editor.vue'
 import BNumber from '~/klicker/components/ui/b-number.vue'
-import { Report, Widget, CubeQuery } from '~/klicker'
+import { Report, ReportWidget, CubeQuery } from '~/klicker'
 
 /**
  * Interactive canvas editor.
@@ -127,10 +127,10 @@ export default defineComponent({
     const selectedWidgetId = ref<string>()
 
     const widgets = computed({
-      get(): Record<string, Widget> {
+      get(): Record<string, ReportWidget> {
         return Object.fromEntries(props.value.widgets.map(w => [w.id, w]))
       },
-      set(widgets: Record<string, Widget>) {
+      set(widgets: Record<string, ReportWidget>) {
         emit('input', { ...props.value, widgets: Object.values(widgets) })
       }
     })
@@ -155,10 +155,13 @@ export default defineComponent({
 
     const addWidget = () => {
       const id = Math.random().toString().slice(2)
-      const newWidget: Widget = {
+      const newWidget: ReportWidget = {
         id,
         query: undefined,
         component: 'v-markdown',
+        props: {
+          markdown: 'Hello World!',
+        },
         frame: {
           translate: [0, 0],
           scale: [1, 1],
@@ -166,15 +169,12 @@ export default defineComponent({
           width: 0,
           height: 0,
         },
-        props: {
-          markdown: 'Hello World!',
-        },
       }
       updateWidget(newWidget)
       selectedWidgetId.value = id
     }
 
-    const updateWidget = (widget: Widget) => widgets.value = { ...widgets.value, [widget.id]: widget }
+    const updateWidget = (widget: ReportWidget) => widgets.value = { ...widgets.value, [widget.id]: widget }
 
     const bounds = computed(() => ({
       left: 0,

@@ -279,13 +279,17 @@ export const OptionalVisualisationProps = {
 export interface Report {
   width: number
   height: number
-  widgets: Widget[]
+  widgets: ReportWidget[]
 }
 
 export interface Widget {
   id: string
   query: CubeQuery|CubeComparingQuery|undefined
   component: string
+  props: Record<string, any>
+}
+
+export interface ReportWidget extends Widget {
   frame: {
     translate: number[]
     scale: number[]
@@ -293,5 +297,15 @@ export interface Widget {
     width: number
     height: number
   }
-  props: Record<string, any>
+}
+
+export interface Grid {
+  widgets: GridWidget[]
+}
+
+export interface GridWidget extends Widget {
+  frame: {
+    rows: number
+    columns: number
+  }
 }

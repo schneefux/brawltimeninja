@@ -40,32 +40,40 @@
         </template>
       </c-canvas>
 
-      <div class="mt-2">
+      <div class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center">
+        <label :for="`${prefix}-editor`">
+          {{ $t('action.editor-url') }}
+        </label>
+        <b-textbox
+          :id="`${prefix}-editor`"
+          :value="editorUrl"
+          readonly
+          dark
+        ></b-textbox>
+
+        <label :for="`${prefix}-viewer`">
+          {{ $t('action.viewer-url') }}
+        </label>
+        <b-textbox
+          :id="`${prefix}-viewer`"
+          :value="viewerUrl"
+          readonly
+          dark
+        ></b-textbox>
+
         <share-render-button
           :embed-url="embedUrl"
           :button-text="$t('action.download-snapshot')"
           secondary
           sm
         ></share-render-button>
-
-        <div class="mt-3">
-          <label>
-            {{ $t('action.share-url') }}
-            <b-textbox
-              :value="shareUrl"
-              class="ml-1"
-              readonly
-              dark
-            ></b-textbox>
-          </label>
-        </div>
       </div>
     </div>
   </page-dashboard>
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
+import { defineComponent, computed, onMounted, useRoute, ref } from "@nuxtjs/composition-api"
 import { CCanvas, BTextbox } from '~/klicker/components'
 import { Report, CubeQuery } from '~/klicker'
 import DBrawler from '@/components/klicker/d-brawler.vue'
@@ -129,11 +137,18 @@ export default defineComponent({
         report.value = JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString())
       }
     })
-    const embedUrl = computed<string>(() =>
-      '/embed/report?conf=' + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
-    const shareUrl = computed<string>(() => {
+    const conf = computed(() => encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
+    const embedUrl = computed<string>(() => '/embed/report?conf=' + conf.value)
+    const editorUrl = computed<string>(() => {
       if (process.client) {
-        return window.location.href + '?conf=' + encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64'))
+        return window.location.href + '?conf=' + conf.value
+      } else {
+        return ''
+      }
+    })
+    const viewerUrl = computed<string>(() => {
+      if (process.client) {
+        return window.location.origin + '/embed/dashboard?conf=' + conf.value
       } else {
         return ''
       }
@@ -156,10 +171,14 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
+    const prefix = Math.random().toString().slice(2)
+
     return {
+      prefix,
       report,
       embedUrl,
-      shareUrl,
+      editorUrl,
+      viewerUrl,
       defaultQuery,
     }
   }

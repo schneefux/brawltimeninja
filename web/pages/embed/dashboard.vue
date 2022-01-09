@@ -1,8 +1,5 @@
 <template>
-  <c-canvas-renderer
-    :report="report"
-    class="sharepic"
-  >
+  <c-grid-renderer :grid="grid">
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
       <d-team v-bind="data"></d-team>
@@ -15,12 +12,12 @@
     <template v-slot:[`measurements.brawler`]="data">
       <m-brawler v-bind="data"></m-brawler>
     </template>
-  </c-canvas-renderer>
+  </c-grid-renderer>
 </template>
 
 <script lang='ts'>
 import { defineComponent, computed, useRoute } from "@nuxtjs/composition-api"
-import { CCanvas, CCanvasRenderer, CQuery, VTable, VTestInfo, VBarplot, VLineplot, VRoll, VDashboard } from '~/klicker/components'
+import { CGridRenderer } from '~/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -31,11 +28,11 @@ import DSeason from '@/components/klicker/d-season.vue'
 import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
-import { Report } from "~/klicker"
+import { Grid } from "~/klicker"
 
 export default defineComponent({
   components: {
-    CCanvasRenderer,
+    CGridRenderer,
     DBrawler,
     BrawlerLink, // dependency of DBrawler
     DTeam,
@@ -62,11 +59,11 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
-    const report = computed<Report>(() =>
+    const grid = computed<Grid>(() =>
       JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString()))
 
     return {
-      report,
+      grid,
     }
   }
 })
