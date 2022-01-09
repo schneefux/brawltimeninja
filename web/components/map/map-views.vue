@@ -11,7 +11,7 @@
     </template>
 
     <template v-slot:totals="data">
-      <div class="flex flex-wrap">
+      <div class="w-full flex flex-wrap">
         <v-sample-size
           v-bind="data"
           :card="{ fullHeight: true }"

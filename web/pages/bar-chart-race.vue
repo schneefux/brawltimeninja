@@ -53,7 +53,7 @@
 
           <template v-slot:data="data">
             <div class="contents">
-              <div class="flex flex-wrap justify-center">
+              <div class="flex flex-wrap justify-center gap-x-2">
                 <v-table class="w-full" v-bind="data">
                   <template v-slot:dimensions="data">
                     <div class="flex flex-wrap items-center">

@@ -1,6 +1,11 @@
 <template>
   <div class="flex flex-wrap">
-    <div class="w-full grid grid-cols-1 lg:grid-cols-3">
+    <div
+      class="w-full"
+      :class="{
+        'grid grid-cols-1 lg:grid-cols-3': configurator && 'slices' in $scopedSlots,
+      }"
+    >
       <c-configurator
         v-if="configurator"
         v-model="query"
