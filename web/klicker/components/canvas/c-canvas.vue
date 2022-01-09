@@ -60,11 +60,33 @@
       </c-widget-editor>
     </div>
 
-    <div class="w-full mx-1 my-3 flex justify-center">
+    <div
+      class="w-full h-[75vh] relative mx-1 my-3 border-4 rounded border-gray-400"
+      style="overflow: hidden; user-select: unset !important;"
+      ref="containerParent"
+    >
+      <div class="panzoom-exclude absolute bottom-2 right-3 flex gap-x-2 z-10">
+        <button@click="zoomOut">
+          <font-awesome-icon
+            :icon="faSearchMinus"
+          ></font-awesome-icon>
+        </button>
+        <button @click="zoomIn">
+          <font-awesome-icon
+            :icon="faSearchPlus"
+          ></font-awesome-icon>
+        </button>
+        <button @click="toggleFullscreen">
+          <font-awesome-icon
+            :icon="isFullscreen ? faCompress : faExpand"
+          ></font-awesome-icon>
+        </button>
+      </div>
+
       <div
         :style="{ width: width + 'px', height: height + 'px' }"
         ref="container"
-        class="overflow-auto relative bg-gray-800"
+        class="relative bg-gray-800"
       >
         <c-moveable-widget
           v-for="(w, id) in widgets"
@@ -72,6 +94,7 @@
           :value="widgets[id]"
           :container="container"
           :bounds="bounds"
+          class="panzoom-exclude"
           @input="updateWidget"
           @click="selectedWidgetId = w.id"
         >
@@ -97,11 +120,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from '@nuxtjs/composition-api'
 import CMoveableWidget from '~/klicker/components/canvas/c-moveable-widget.vue'
 import CWidgetEditor from '~/klicker/components/canvas/c-widget-editor.vue'
 import BNumber from '~/klicker/components/ui/b-number.vue'
 import { Report, ReportWidget, CubeQuery } from '~/klicker'
+import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
+import { useFullscreen } from '@vueuse/core'
+import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * Interactive canvas editor.
@@ -124,7 +150,33 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const container = ref<HTMLElement>()
+    const containerParent = ref<HTMLElement>()
     const selectedWidgetId = ref<string>()
+
+    const panzoomInstance = ref<PanzoomObject>()
+    onMounted(() => {
+      const rect = containerParent.value!.getBoundingClientRect()
+      const width = rect.width - 2*4 // border
+      const height = rect.height - 2*4 // border
+      const zoom = Math.min(width / props.value.width, height / props.value.height)
+      panzoomInstance.value = Panzoom(container.value!, {
+        canvas: true,
+        cursor: undefined,
+        excludeClass: 'panzoom-exclude',
+        startX: -props.value.width / 2 / zoom + width / 2 / zoom,
+        startY: -props.value.height / 2 / zoom + height / 2 / zoom,
+        startScale: zoom,
+      })
+      containerParent.value!.addEventListener('wheel', panzoomInstance.value.zoomWithWheel)
+    })
+    onUnmounted(() => {
+      panzoomInstance.value!.destroy()
+      panzoomInstance.value = undefined
+    })
+    const zoomIn = () => panzoomInstance.value!.zoomIn()
+    const zoomOut = () => panzoomInstance.value!.zoomOut()
+
+    const { toggle: toggleFullscreen, isFullscreen } = useFullscreen(containerParent)
 
     const widgets = computed({
       get(): Record<string, ReportWidget> {
@@ -189,12 +241,21 @@ export default defineComponent({
       prefix,
       bounds,
       container,
+      containerParent,
       width,
       height,
       widgets,
       addWidget,
       updateWidget,
       selectedWidgetId,
+      faSearchMinus,
+      faSearchPlus,
+      faExpand,
+      faCompress,
+      zoomIn,
+      zoomOut,
+      isFullscreen,
+      toggleFullscreen,
     }
   },
 })

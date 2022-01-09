@@ -7,6 +7,7 @@
     :scalable="spec != undefined ? spec.scalable : false"
     :keep-ratio="spec != undefined ? spec.scalable : false"
     :style="initialStyle"
+    class-name="panzoom-exclude"
     snappable
     draggable
     rotatable
