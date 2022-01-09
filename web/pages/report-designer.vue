@@ -148,7 +148,7 @@ export default defineComponent({
     })
     const viewerUrl = computed<string>(() => {
       if (process.client) {
-        return window.location.origin + '/embed/dashboard?conf=' + conf.value
+        return window.location.origin + embedUrl.value
       } else {
         return ''
       }
