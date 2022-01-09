@@ -74,6 +74,7 @@
               :spec="spec"
               :elevation="elevation + 1"
               class="w-full md:w-auto"
+              for-canvas
               @input="v => $emit('input', v)"
             ></c-visualisation-selector>
             <slot></slot>
@@ -90,6 +91,7 @@
           :elevation="elevation + 1"
           :spec="spec"
           class="w-full md:w-auto"
+          for-canvas
           @input="v => $emit('input', v)"
         ></c-visualisation-selector>
 

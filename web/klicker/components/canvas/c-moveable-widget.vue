@@ -3,9 +3,9 @@
     ref="moveable"
     :container="container"
     :bounds="bounds"
-    :resizable="spec != undefined && spec.canvas != undefined ? spec.canvas.resizable : false"
-    :scalable="spec != undefined && spec.canvas != undefined ? spec.canvas.scalable : false"
-    :keep-ratio="spec != undefined && spec.canvas != undefined ? spec.canvas.scalable : false"
+    :resizable="spec != undefined ? spec.resizable : false"
+    :scalable="spec != undefined ? spec.scalable : false"
+    :keep-ratio="spec != undefined ? spec.scalable : false"
     :style="initialStyle"
     snappable
     draggable
@@ -136,6 +136,9 @@ export default defineComponent({
       onResizeStart(e) {
       },
       onResize(e) {
+        const beforeTranslate = e.drag.beforeTranslate
+        frame.translate = beforeTranslate
+
         frame.width = e.width
         frame.height = e.height
       },
