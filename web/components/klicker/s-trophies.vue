@@ -1,14 +1,13 @@
 <template>
   <trophy-slider-select
     v-if="'trophyRangeGte' in value || 'trophyRangeLt' in value"
-    :value="{ gte: (value.trophyRangeGte || [])[0], lt: (value.trophyRangeLt || [])[0] }"
+    v-model="model"
     :name="(value.powerplay || [])[0] == 'true' ? 'League' : 'Trophies'"
-    @input="v => onInput({ trophyRangeGte: v.gte != undefined ? [v.gte] : [], trophyRangeLt: v.lt != undefined ? [v.lt] : [] })"
   ></trophy-slider-select>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
 
 export default defineComponent({
@@ -22,5 +21,28 @@ export default defineComponent({
       required: true
     },
   },
+  setup(props) {
+    const model = computed({
+      get() {
+        const gte = props.value.trophyRangeGte != undefined ? props.value.trophyRangeGte[0] : undefined
+        const lt = props.value.trophyRangeLt != undefined ? props.value.trophyRangeLt[0] : undefined
+
+        return {
+          gte: gte != undefined ? parseInt(gte) : undefined,
+          lt: lt != undefined ? parseInt(lt) : undefined,
+        }
+      },
+      set(v: { gte: number|undefined, lt: number|undefined }) {
+        props.onInput({
+          trophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
+          trophyRangeLt: v.lt != undefined ? [v.lt.toString()] : [],
+        })
+      }
+    })
+
+    return {
+      model,
+    }
+  }
 })
 </script>
