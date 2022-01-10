@@ -181,7 +181,7 @@ export default {
       },
     },
     // https://github.com/nuxt/nuxt.js/issues/9221
-    transpile: ['vega-lite', 'd3-format'],
+    transpile: ['vega-lite', 'd3-format', 'jsoncrush'],
   },
 
   sitemap: {

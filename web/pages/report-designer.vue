@@ -98,6 +98,7 @@ import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
 import { useLocalStorage } from 'vue-composable'
 import { getSeasonEnd } from '~/lib/util'
+import JSONCrush from 'jsoncrush'
 
 export default defineComponent({
   components: {
@@ -134,10 +135,10 @@ export default defineComponent({
     const route = useRoute()
     onMounted(() => {
       if (route.value.query['conf'] != undefined) {
-        report.value = JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString())
+        report.value = JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string))
       }
     })
-    const conf = computed(() => encodeURIComponent(Buffer.from(JSON.stringify(report.value)).toString('base64')))
+    const conf = computed(() => JSONCrush.crush(JSON.stringify(report.value)))
     const embedUrl = computed<string>(() => '/embed/report?conf=' + conf.value)
     const editorUrl = computed<string>(() => {
       if (process.client) {

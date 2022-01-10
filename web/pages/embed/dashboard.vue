@@ -29,6 +29,7 @@ import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
 import { Grid } from "~/klicker"
+import JSONCrush from 'jsoncrush'
 
 export default defineComponent({
   components: {
@@ -59,8 +60,7 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
-    const grid = computed<Grid>(() =>
-      JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString()))
+    const grid = computed<Grid>(() => JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string)))
 
     return {
       grid,

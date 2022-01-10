@@ -32,6 +32,7 @@ import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
 import { Report } from "~/klicker"
+import JSONCrush from 'jsoncrush'
 
 export default defineComponent({
   components: {
@@ -62,8 +63,7 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
-    const report = computed<Report>(() =>
-      JSON.parse(Buffer.from(decodeURIComponent(route.value.query['conf'] as string), 'base64').toString()))
+    const report = computed<Report>(() => JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string)))
 
     return {
       report,
