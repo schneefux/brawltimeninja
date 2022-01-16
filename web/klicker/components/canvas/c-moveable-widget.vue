@@ -93,10 +93,11 @@ export default defineComponent({
     })
 
     const sync = () => {
-      emit('input', {
+      const widget: ReportWidget = {
         ...props.value,
         frame: clone(frame),
-      })
+      }
+      emit('input', widget)
     }
 
     // Style DOM directly for better performance

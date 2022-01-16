@@ -36,6 +36,12 @@ jobs:
       service: render
     secrets:
       CR_PAT: ${{ secrets.CR_PAT }}
+  build-manager:
+    uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
+    with:
+      service: manager
+    secrets:
+      CR_PAT: ${{ secrets.CR_PAT }}
   build-web:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:

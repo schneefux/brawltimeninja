@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import CShare from '~/klicker/components/c-share.vue'
 import VAuto from '~/klicker/components/visualisations/v-auto.vue'
 import { defineComponent } from '@nuxtjs/composition-api'

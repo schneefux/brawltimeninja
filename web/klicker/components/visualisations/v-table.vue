@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import BTable, { Column } from '~/klicker/components/ui/b-table.vue'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { Location } from 'vue-router'

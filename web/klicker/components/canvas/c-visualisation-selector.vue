@@ -58,10 +58,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { OptionalVisualisationProps, VisualisationSpec, Widget } from '~/klicker'
+import { GridWidget, ReportWidget, VisualisationSpec, Widget } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
 import { useCubeResponse } from '~/klicker/composables'
+import { OptionalVisualisationProps } from '~/klicker/props'
 
 /**
  * Show applicable visualisations and bind one of them.
@@ -104,9 +105,11 @@ export default defineComponent({
         return props.value.component
       },
       set(component: Widget['component']) {
-        emit('input', {
-          ...props.value,
-          ...(props.forCanvas ? {
+        if (props.forCanvas) {
+          const widget: ReportWidget = {
+            ...props.value as ReportWidget,
+            props: {},
+            component,
             frame: {
               translate: [0, 0],
               scale: [1, 1],
@@ -114,26 +117,37 @@ export default defineComponent({
               width: 0,
               height: 0,
             },
-          } : {
+          }
+
+          emit('input', widget)
+        }
+
+        if (props.forGrid) {
+          const widget: GridWidget = {
+            ...props.value as GridWidget,
+            props: {},
+            component,
             frame: {
               rows: props.spec.initialDimensions.rows,
               columns: props.spec.initialDimensions.columns,
             },
-          }),
-          props: {},
-          component,
-        })
+          }
+
+          emit('input', widget)
+        }
       }
     })
 
     const setWidgetProp = (prop: string, value: any) => {
-      emit('input', {
+      const widget: Widget = {
         ...props.value,
         props: {
           ...props.value.props,
           [prop]: value,
-        },
-      })
+        }
+      }
+
+      emit('input', widget)
     }
 
     const prefix = Math.random().toString().slice(2)

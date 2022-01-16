@@ -2,6 +2,18 @@
   <div class="flex flex-wrap justify-center items-center">
     <div class="w-full mt-1 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 items-center">
       <label
+        :for="`${prefix}-title`"
+        class="font-semibold"
+      >
+        Title
+      </label>
+      <b-textbox
+        v-model="title"
+        :id="`${prefix}-title`"
+        dark
+      ></b-textbox>
+
+      <label
         :for="`${prefix}-width`"
         class="font-semibold"
       >
@@ -124,6 +136,7 @@ import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from
 import CMoveableWidget from '~/klicker/components/canvas/c-moveable-widget.vue'
 import CWidgetEditor from '~/klicker/components/canvas/c-widget-editor.vue'
 import BNumber from '~/klicker/components/ui/b-number.vue'
+import BTextbox from '~/klicker/components/ui/b-textbox.vue'
 import { Report, ReportWidget, CubeQuery } from '~/klicker'
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
@@ -135,6 +148,7 @@ import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/
 export default defineComponent({
   components: {
     BNumber,
+    BTextbox,
     CWidgetEditor,
     CMoveableWidget,
   },
@@ -184,6 +198,15 @@ export default defineComponent({
       },
       set(widgets: Record<string, ReportWidget>) {
         emit('input', { ...props.value, widgets: Object.values(widgets) })
+      }
+    })
+
+    const title = computed({
+      get() {
+        return props.value.title
+      },
+      set(title: string) {
+        emit('input', { ...props.value, title })
       }
     })
 
@@ -247,6 +270,7 @@ export default defineComponent({
       bounds,
       container,
       containerParent,
+      title,
       width,
       height,
       widgets,

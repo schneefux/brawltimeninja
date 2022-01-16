@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useCubeResponse } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'

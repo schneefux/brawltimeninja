@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h } from '@nuxtjs/composition-api'
-import { OptionalVisualisationProps } from '~/klicker'
+import { OptionalVisualisationProps } from '~/klicker/props'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
 /**

@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import { useCubeResponse } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'

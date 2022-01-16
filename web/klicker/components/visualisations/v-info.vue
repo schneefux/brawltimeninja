@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "@nuxtjs/composition-api"
-import { VisualisationProps } from "~/klicker"
+import { VisualisationProps } from "~/klicker/props"
 import { useCubeResponse } from "~/klicker/composables/response"
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 

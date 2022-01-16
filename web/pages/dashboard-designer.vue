@@ -40,7 +40,10 @@
         </template>
       </c-grid>
 
-      <div class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center">
+      <div
+        v-if="canSave"
+        class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+      >
         <label :for="`${prefix}-editor`">
           {{ $t('action.editor-url') }}
         </label>
@@ -61,12 +64,16 @@
           dark
         ></b-textbox>
       </div>
+      <div v-else>
+        <p>Log in to share this report.</p>
+        <login-button class="mt-2"></login-button>
+      </div>
     </div>
   </page-dashboard>
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, useRoute, ref } from "@nuxtjs/composition-api"
+import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
 import { CGrid, BTextbox } from '~/klicker/components'
 import { Grid, CubeQuery } from '~/klicker'
 import DBrawler from '@/components/klicker/d-brawler.vue'
@@ -89,9 +96,8 @@ import SBrawler from '@/components/klicker/s-brawler.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
-import { useLocalStorage } from 'vue-composable'
+import { useStorage } from '~/klicker/composables'
 import { getSeasonEnd } from '~/lib/util'
-import JSONCrush from 'jsoncrush'
 
 export default defineComponent({
   components: {
@@ -119,27 +125,29 @@ export default defineComponent({
     SPlayerTag,
   },
   setup() {
-    const { storage: grid } = useLocalStorage<Grid>('grid', {
+    const { storage: grid, update, canSave } = useStorage<Grid>('grids', {
+      id: undefined,
+      title: 'New Dashboard',
       widgets: [],
-    }, true)
+    })
 
     const route = useRoute()
-    onMounted(() => {
-      if (route.value.query['conf'] != undefined) {
-        grid.value = JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string))
+    onMounted(async () => {
+      if (route.value.query['id'] != undefined) {
+        await update(parseInt(route.value.query['id'] as string))
       }
     })
-    const conf = computed(() => JSONCrush.crush(JSON.stringify(grid.value)))
+
     const editorUrl = computed<string>(() => {
       if (process.client) {
-        return window.location.href + '?conf=' + conf.value
+        return window.location.href + '?id=' + grid.value.id
       } else {
         return ''
       }
     })
     const viewerUrl = computed<string>(() => {
       if (process.client) {
-        return window.location.origin + '/embed/dashboard?conf=' + conf.value
+        return window.location.origin + '/embed/dashboard?id=' + grid.value.id
       } else {
         return ''
       }
@@ -167,6 +175,7 @@ export default defineComponent({
     return {
       prefix,
       grid,
+      canSave,
       editorUrl,
       viewerUrl,
       defaultQuery,

@@ -1,7 +1,5 @@
 <template>
-  <page-dashboard
-    :title="$t('report-designer.title')"
-  >
+  <page-dashboard :title="$t('report-designer.title')">
     <div slot="dashboard">
       <c-canvas
         v-model="report"
@@ -40,42 +38,52 @@
         </template>
       </c-canvas>
 
-      <div class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center">
-        <label :for="`${prefix}-editor`">
-          {{ $t('action.editor-url') }}
-        </label>
-        <b-textbox
-          :id="`${prefix}-editor`"
-          :value="editorUrl"
-          readonly
-          dark
-        ></b-textbox>
+      <div
+        v-if="canSave"
+        class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+      >
+        <template v-if="report.id != undefined">
+          <label :for="`${prefix}-editor`">
+            {{ $t('action.editor-url') }}
+          </label>
+          <b-textbox
+            :id="`${prefix}-editor`"
+            :value="editorUrl"
+            readonly
+            dark
+          ></b-textbox>
 
-        <label :for="`${prefix}-viewer`">
-          {{ $t('action.viewer-url') }}
-        </label>
-        <b-textbox
-          :id="`${prefix}-viewer`"
-          :value="viewerUrl"
-          readonly
-          dark
-        ></b-textbox>
+          <label :for="`${prefix}-viewer`">
+            {{ $t('action.viewer-url') }}
+          </label>
+          <b-textbox
+            :id="`${prefix}-viewer`"
+            :value="viewerUrl"
+            readonly
+            dark
+          ></b-textbox>
 
-        <share-render-button
-          :embed-url="embedUrl"
-          :button-text="$t('action.download-snapshot')"
-          secondary
-          sm
-        ></share-render-button>
+          <share-render-button
+            :embed-url="embedUrl"
+            :button-text="$t('action.download-snapshot')"
+            secondary
+            sm
+          ></share-render-button>
+        </template>
+      </div>
+      <div v-else>
+        <p>Log in to share this report.</p>
+        <login-button class="mt-2"></login-button>
       </div>
     </div>
   </page-dashboard>
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, useRoute, ref } from "@nuxtjs/composition-api"
+import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
 import { CCanvas, BTextbox } from '~/klicker/components'
 import { Report, CubeQuery } from '~/klicker'
+import { useStorage } from '~/klicker/composables'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -96,9 +104,7 @@ import SBrawler from '@/components/klicker/s-brawler.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import SPlayerName from '@/components/klicker/s-player-name.vue'
 import SPlayerTag from '@/components/klicker/s-player-tag.vue'
-import { useLocalStorage } from 'vue-composable'
 import { getSeasonEnd } from '~/lib/util'
-import JSONCrush from 'jsoncrush'
 
 export default defineComponent({
   components: {
@@ -126,29 +132,37 @@ export default defineComponent({
     SPlayerTag,
   },
   setup() {
-    const { storage: report } = useLocalStorage<Report>('report', {
+    const { storage: report, update, canSave } = useStorage<Report>('reports', {
+      id: undefined,
+      title: 'New Report',
       width: 1200,
       height: 630,
       widgets: [],
-    }, true)
+    })
 
     const route = useRoute()
-    onMounted(() => {
-      if (route.value.query['conf'] != undefined) {
-        report.value = JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string))
+    onMounted(async () => {
+      if (route.value.query['id'] != undefined) {
+        await update(parseInt(route.value.query['id'] as string))
       }
     })
-    const conf = computed(() => JSONCrush.crush(JSON.stringify(report.value)))
-    const embedUrl = computed<string>(() => '/embed/report?conf=' + conf.value)
+
+    const embedUrl = computed<string>(() => {
+      if (report.value.id != undefined) {
+        return '/embed/report?id=' + report.value.id + '&t=' + report.value.updated_at
+      } else {
+        return ''
+      }
+    })
     const editorUrl = computed<string>(() => {
-      if (process.client) {
-        return window.location.href + '?conf=' + conf.value
+      if (process.client && report.value.id != undefined) {
+        return window.location.href.replace(location.search, '') + '?id=' + report.value.id
       } else {
         return ''
       }
     })
     const viewerUrl = computed<string>(() => {
-      if (process.client) {
+      if (process.client && embedUrl.value != undefined) {
         return window.location.origin + embedUrl.value
       } else {
         return ''
@@ -177,6 +191,7 @@ export default defineComponent({
     return {
       prefix,
       report,
+      canSave,
       embedUrl,
       editorUrl,
       viewerUrl,

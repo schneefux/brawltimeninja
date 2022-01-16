@@ -14,8 +14,8 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
-import { OptionalVisualisationProps } from '~/klicker'
 import { VCardWrapper } from '~/klicker/components'
+import { OptionalVisualisationProps } from '~/klicker/props'
 import '@kangc/v-md-editor/lib/style/preview-html.css'
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index'

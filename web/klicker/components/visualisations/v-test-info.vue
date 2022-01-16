@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { useCubeResponse } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'

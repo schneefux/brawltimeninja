@@ -47,7 +47,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@nuxtjs/composition-api'
-import { OptionalVisualisationProps, VisualisationSpec } from '~/klicker'
+import { VisualisationSpec } from '~/klicker'
+import { OptionalVisualisationProps } from '~/klicker/props'
 import { useCubeResponse } from '~/klicker/composables/response'
 
 /**
@@ -107,6 +108,15 @@ export default defineComponent({
       type: undefined,
       required: false
     },
+    /**
+     * Additional styles to apply
+     *
+     * Workaround for SSR not applying c-widget styles.
+     */
+    ztyle: {
+      type: Object,
+      required: false
+    }
   },
   setup(props) {
     const { $klicker, checkApplicable } = useCubeResponse(props)
@@ -132,7 +142,7 @@ export default defineComponent({
         }
       }
 
-      return style
+      return Object.assign(style, props.ztyle)
     }
 
     const specs = computed(() => {

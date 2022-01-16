@@ -172,7 +172,7 @@ export default defineComponent({
       ...widgetsKeyed.value,
       [widget.id]: widget,
     }
-    const deleteSelectedWidget = (widgetId: string) => {
+    const deleteSelectedWidget = () => {
       widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
       selectedWidgetId.value = undefined
     }

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { VisualisationProps } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '~/klicker/components/ui/b-vega.vue'
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'

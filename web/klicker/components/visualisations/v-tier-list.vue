@@ -39,7 +39,8 @@
 </template>
 
 <script lang="ts">
-import { Measurement, MetaGridEntry, VisualisationProps } from '~/klicker'
+import { Measurement, MetaGridEntry } from '~/klicker'
+import { VisualisationProps } from '~/klicker/props'
 import VTierListSharepic from '~/klicker/components/visualisations/v-tier-list-sharepic.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'

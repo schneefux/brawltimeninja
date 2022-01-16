@@ -1,5 +1,8 @@
 <template>
-  <c-grid-renderer :grid="grid">
+  <c-grid-renderer
+    :grid="grid"
+    class="sharepic"
+  >
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
       <d-team v-bind="data"></d-team>
@@ -16,7 +19,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, useRoute } from "@nuxtjs/composition-api"
+import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
 import { CGridRenderer } from '~/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
@@ -29,7 +32,7 @@ import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
 import { Grid } from "~/klicker"
-import JSONCrush from 'jsoncrush'
+import useFeathers from "~/klicker/composables/feathers"
 
 export default defineComponent({
   components: {
@@ -60,7 +63,8 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
-    const grid = computed<Grid>(() => JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string)))
+    const { client } = useFeathers()
+    const grid = useAsync<Grid>(() => client.service('grids').get(parseInt(route.value.query['id'] as string)))
 
     return {
       grid,

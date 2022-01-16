@@ -19,8 +19,8 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, useRoute } from "@nuxtjs/composition-api"
-import { CCanvas, CCanvasRenderer, CQuery, VTable, VTestInfo, VBarplot, VLineplot, VRoll, VDashboard } from '~/klicker/components'
+import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
+import { CCanvasRenderer } from '~/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -32,7 +32,7 @@ import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
 import { Report } from "~/klicker"
-import JSONCrush from 'jsoncrush'
+import useFeathers from "~/klicker/composables/feathers"
 
 export default defineComponent({
   components: {
@@ -63,7 +63,8 @@ export default defineComponent({
   setup() {
     const route = useRoute()
 
-    const report = computed<Report>(() => JSON.parse(JSONCrush.uncrush(route.value.query['conf'] as string)))
+    const { client } = useFeathers()
+    const report = useAsync<Report>(() => client.service('reports').get(parseInt(route.value.query['id'] as string)))
 
     return {
       report,

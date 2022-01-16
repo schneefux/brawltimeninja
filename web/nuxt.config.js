@@ -1,16 +1,11 @@
 import path from 'path'
-import fetch from 'node-fetch'
-
-// TODO migrate this file to ts and import from util
-const camelToKebab = (s) => s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
-const slugify = (str) => str.split(' ').join('-')
-const brawlerId = (entry) => entry.name.replace(/\.| /g, '_').toLowerCase()
 
 const apiUrl = (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''); // replace trailing slash
 const mediaUrl = (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, '');
 const renderUrl = (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, '');
 const cubeUrl = (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, '');
 const traduoraUrl = (process.env.TRADUORA_URL || 'https://translate.brawltime.ninja').replace(/\/$/, '');
+const managerUrl = (process.env.MANAGER_URL || 'https://manager.brawltime.ninja').replace(/\/$/, '');
 
 export default {
   telemetry: false,
@@ -54,6 +49,9 @@ export default {
         handler: 'networkFirst',
       }, {
         urlPattern: cubeUrl + '/.*',
+        handler: 'networkFirst',
+      }, {
+        urlPattern: managerUrl + '/.*',
         handler: 'networkFirst',
       }],
       // prefix all cache keys with release id
@@ -164,6 +162,7 @@ export default {
     cubeUrl,
     mediaUrl,
     renderUrl,
+    managerUrl,
     traduoraUrl,
     traduoraClientId: (process.env.TRADUORA_CLIENT_ID || ''),
     traduoraSecret: (process.env.TRADUORA_SECRET || ''),
@@ -181,7 +180,7 @@ export default {
       },
     },
     // https://github.com/nuxt/nuxt.js/issues/9221
-    transpile: ['vega-lite', 'd3-format', 'jsoncrush'],
+    transpile: ['vega-lite', 'd3-format'],
   },
 
   sitemap: {

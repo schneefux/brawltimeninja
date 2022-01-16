@@ -240,10 +240,6 @@ export interface CubeComparingQuery extends CubeQuery {
 export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
 
 export interface Report {
-  id: number|undefined
-  created_at: string|undefined
-  updated_at: string|undefined
-  title: string
   width: number
   height: number
   widgets: ReportWidget[]
@@ -267,10 +263,6 @@ export interface ReportWidget extends Widget {
 }
 
 export interface Grid {
-  id: number|undefined
-  created_at: string|undefined
-  updated_at: string|undefined
-  title: string
   widgets: GridWidget[]
 }
 
@@ -279,10 +271,4 @@ export interface GridWidget extends Widget {
     rows: number
     columns: number
   }
-}
-
-export interface User {
-  id: number
-  reports: Report[]
-  grids: Grid[]
 }

@@ -16,8 +16,8 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import { VisualisationProps } from '~/klicker'
 import { VCardWrapper } from '~/klicker/components'
+import { VisualisationProps } from '~/klicker/props'
 
 export default defineComponent({
   components: {
