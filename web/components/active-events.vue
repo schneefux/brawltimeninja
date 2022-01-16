@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mt-2 flex flex-wrap justify-center w-full max-w-2xl">
+    <div class="mt-2 flex flex-wrap justify-center w-full">
       <button
         v-for="(mode, index) in modes"
         :key="mode"

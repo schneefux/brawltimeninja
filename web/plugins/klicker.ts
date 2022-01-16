@@ -92,7 +92,7 @@ class KlickerService extends Klicker {
         ...slices,
       },
       sortId: 'timestamp',
-      limit: 10,
+      limit: 15,
     })
 
     const lastEvents = events.data

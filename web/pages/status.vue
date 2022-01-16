@@ -1,7 +1,5 @@
 <template>
-  <div class="container mx-auto py-4 px-4">
-    <h1 class="text-4xl font-semibold mt-2">{{ $t('status.title') }}</h1>
-
+  <page :title="$t('status.title')">
     <div class="px-2 mt-8 mx-auto max-w-lg">
       <p v-show="status == undefined">{{ $t('state.checking') }}…</p>
       <div v-show="status == 'down'">
@@ -23,7 +21,7 @@
         <Timeline id="BrawlStars" sourceType="profile" :options="{ theme: 'dark', height: 600, dnt: true }" />
       </div>
     </div>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">

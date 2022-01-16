@@ -2,17 +2,17 @@
   <table class="w-full">
     <thead>
       <tr class="h-8 border-b border-gray-600">
-        <th scope="col" class="text-right pr-2 font-semibold">
+        <th scope="col" class="text-right pr-2">
           #
         </th>
-        <th scope="col" class="text-left font-semibold">
+        <th scope="col" class="text-left">
           {{ $t('metric.player') }}
         </th>
         <th
           v-for="(column, index) in columns"
           :key="column"
           scope="col"
-          class="text-center font-semibold"
+          class="text-center"
         >
           {{ columnNames[index] || column }}
         </th>
@@ -34,10 +34,10 @@
         v-for="(row, index) in rows"
         :key="row.player_tag"
       >
-        <th scope="row" class="text-right pr-2 pt-1 font-semibold">
+        <th scope="row" class="text-right pr-2 pt-1">
           {{ index+1 }}
         </th>
-        <td class="font-semibold">
+        <td>
           <router-link
             :to="localePath(`/profile/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`)"
             class="flex items-center"

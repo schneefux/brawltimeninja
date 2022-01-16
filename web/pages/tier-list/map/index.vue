@@ -14,15 +14,6 @@
     </client-only>
 
     <page-section
-      :title="$t('tier-list.modes.title')"
-      tracking-id="modes"
-      tracking-page-id="maps"
-    >
-      <p slot="description">{{ $t('tier-list.modes.description') }}</p>
-      <modes-cards></modes-cards>
-    </page-section>
-
-    <page-section
       :title="$t('events.active.title')"
       tracking-id="current_events"
       tracking-page-id="maps"
@@ -58,6 +49,15 @@
           :start-date="event.start"
         ></map-best-brawlers-card>
       </lazy>
+    </page-section>
+
+    <page-section
+      :title="$t('tier-list.modes.title')"
+      tracking-id="modes"
+      tracking-page-id="maps"
+    >
+      <p slot="description">{{ $t('tier-list.modes.description') }}</p>
+      <modes-cards></modes-cards>
     </page-section>
 
     <client-only>
