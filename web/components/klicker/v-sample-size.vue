@@ -15,7 +15,7 @@
     <p
       v-else
       slot="content"
-      class="text-lg"
+      class="text-lg md:text-xl"
     >
       {{ sampleFormatted }} Battles
     </p>

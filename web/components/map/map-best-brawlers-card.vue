@@ -51,10 +51,10 @@
 import Vue, { PropType } from 'vue'
 import { camelToKebab, slugify } from '@/lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
-
-import { enUS, de } from 'date-fns/locale'
 import { SliceValue } from '~/klicker'
-const locales = { en: enUS, de: de }
+
+import { enUS, de, es } from 'date-fns/locale'
+const locales = { en: enUS, de, es }
 
 export default Vue.extend({
   props: {

@@ -2,7 +2,7 @@
   <main class="container mx-auto p-4">
     <h1
       v-if="title != ''"
-      class="text-3xl font-semibold"
+      class="text-2xl font-semibold"
     >{{ title }}</h1>
 
     <slot></slot>

@@ -18,7 +18,7 @@
     <div
       v-if="breakpointMd || showFilters"
       slot="content"
-      class="my-1 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2"
+      class="mb-1 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2"
     >
       <slot :value="slices" :on-input="onInput"></slot>
     </div>

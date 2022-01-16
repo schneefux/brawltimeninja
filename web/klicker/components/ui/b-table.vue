@@ -6,14 +6,14 @@
           <th
             v-if="ranked"
             scope="col"
-            class="text-right pr-2 w-0"
+            class="text-right pr-2 w-0 font-normal"
           >
             #
           </th>
           <th
             v-for="(c, index) in columns"
             :key="c.keys.join('-')"
-            :class="['text-left', {
+            :class="['text-left leading-tight font-normal', {
               'pr-1': index != columns.length - 1,
               'w-0': c.shrink,
             }]"

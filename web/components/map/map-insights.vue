@@ -1,68 +1,58 @@
 <template>
-  <b-card
-    :title="title"
-    :elevation="elevation"
-    full-height
-  >
-    <div slot="content">
-      <p class="mb-2">{{ $t('map.insights.description') }}</p>
-      <div class="flex flex-wrap">
-        <b-card
-          v-for="t in templates"
-          :key="t.title"
-          :title="t.title"
-          :elevation="elevation + 1"
-          class="flex-auto"
-          full-height
+  <div class="contents">
+    <div
+      v-for="t in templates"
+      :key="t.title"
+      class="dashboard-cell var--rows-1 md:var--rows-2"
+      style="--columns: 3;"
+    >
+      <b-card
+        :title="t.title"
+        :elevation="elevation + 1"
+        class="h-full"
+        full-height
+      >
+        <b-button
+          v-if="t.link"
+          slot="actions"
+          :to="t.link"
+          primary
+          sm
         >
-          <b-button
-            v-if="t.link"
-            slot="actions"
-            :to="t.link"
-            primary
-            sm
-          >
-            {{ t.linkText }}
-          </b-button>
+          {{ t.linkText }}
+        </b-button>
 
-          <div slot="content">
-            <div
-              v-for="(q, index) in t.queries"
-              :key="index"
+        <c-query
+          slot="content"
+          :query="t.query"
+          :filter="filter"
+        >
+          <b-shimmer
+            slot="placeholder"
+            width-px="224"
+            height-px="64"
+            loading
+          ></b-shimmer>
+          <p slot="empty" class="text-center">
+            {{ $t('state.no-data') }}
+          </p>
+          <template v-slot="data">
+            <v-roll
+              v-bind="{
+                ...data,
+                elevation: elevation + 2,
+                long: t.long,
+              }"
             >
-              <c-query
-                slot="content"
-                :query="q"
-                :filter="filter"
-              >
-                <b-shimmer
-                  slot="placeholder"
-                  width-px="224"
-                  height-px="64"
-                  loading
-                ></b-shimmer>
-                <p slot="empty" class="text-center">
-                  {{ $t('state.no-data') }}
-                </p>
-                <template v-slot="data">
-                  <v-roll
-                    v-bind="{
-                      ...data,
-                      elevation: elevation + 2,
-                    }"
-                  >
-                    <template v-slot:dimensions="data">
-                      <d-brawler v-bind="data"></d-brawler>
-                    </template>
-                  </v-roll>
-                </template>
-              </c-query>
-            </div>
-          </div>
-        </b-card>
-      </div>
+              <template v-slot:dimensions="data">
+                <d-brawler v-bind="data"></d-brawler>
+              </template>
+            </v-roll>
+          </template>
+        </c-query>
+      </b-card>
     </div>
-  </b-card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -76,7 +66,8 @@ interface Template {
   title: string
   link?: string
   linkText: string
-  queries: (CubeQuery|CubeComparingQuery)[]
+  query: (CubeQuery|CubeComparingQuery)
+  long?: boolean
 }
 
 export default defineComponent({
@@ -106,7 +97,7 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
 
-    const limit = 4
+    const limit = 5
 
     const templates = computed<Template[]>(() => {
       const templates: Template[] = []
@@ -117,7 +108,7 @@ export default defineComponent({
           title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string,
           link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
           linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
-          queries: [<CubeComparingQuery>{
+          query: <CubeComparingQuery>{
             comparing: true,
             cubeId: 'map',
             sortId: 'pvalue',
@@ -135,7 +126,7 @@ export default defineComponent({
               sortId: 'pvalue',
             },
             limit,
-          }],
+          },
         })
       }
 
@@ -143,7 +134,7 @@ export default defineComponent({
         title: i18n.t('map.insights.outstanding.gadgets') as string,
         link: localePath(`/tier-list/gadgets`),
         linkText: i18n.t('action.open.tier-list.gadget') as string,
-        queries: [<CubeComparingQuery>{
+        query: <CubeComparingQuery>{
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -164,14 +155,14 @@ export default defineComponent({
             sortId: 'pvalue',
           },
           limit,
-        }],
+        },
       })
 
       templates.push({
         title: i18n.t('map.insights.outstanding.starpowers') as string,
         link: localePath(`/tier-list/starpowers`),
         linkText: i18n.t('action.open.tier-list.starpower') as string,
-        queries: [<CubeComparingQuery>{
+        query: <CubeComparingQuery>{
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -192,14 +183,15 @@ export default defineComponent({
             sortId: 'pvalue',
           },
           limit,
-        }],
+        },
       })
 
       templates.push({
         title: i18n.t('map.insights.outstanding.gears') as string,
         // link: localePath(`/tier-list/gears`),
         linkText: i18n.t('action.open.tier-list.gear') as string,
-        queries: [<CubeComparingQuery>{
+        long: true,
+        query: <CubeComparingQuery>{
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -220,7 +212,7 @@ export default defineComponent({
             sortId: 'pvalue',
           },
           limit,
-        }],
+        },
       })
 
       return templates

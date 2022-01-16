@@ -26,7 +26,7 @@
             :row="card.entry"
           ></slot>
         </div>
-        <table class="mx-auto my-1 text-2xs md:text-xs lg:text-base text-center">
+        <table class="mx-auto my-1 text-sm md:text-base text-center !leading-tight">
           <tbody>
             <tr
               v-for="r in card.rows"

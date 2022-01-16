@@ -16,7 +16,7 @@
       class="text-center leading-none"
     >
       <span
-        class="text-lg font-bold"
+        class="text-xl"
         :class="{
           'text-red-400': giniScore > 0.4,
           'text-orange-400': giniScore > 0.3 && giniScore <= 0.4,

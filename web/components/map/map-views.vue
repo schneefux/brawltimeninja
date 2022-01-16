@@ -123,11 +123,6 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard-cell"
-          :style="{
-            '--columns': 3,
-            '--rows': showImage ? 6 : 4,
-          }"
         ></map-insights>
 
         <map-best-accessory-roll
@@ -139,7 +134,7 @@
           :slices="query.slices"
           kind="gears"
           class="dashboard-cell"
-          style="--columns: 3; --rows: 1;"
+          style="--columns: 4; --rows: 1;"
         ></map-best-accessory-roll>
 
         <lazy

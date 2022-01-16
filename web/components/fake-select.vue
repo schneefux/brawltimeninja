@@ -4,7 +4,7 @@
     v-click-outside="() => dropdownOpen = false"
   >
     <b-button
-      class="w-full flex justify-center"
+      class="w-full flex justify-center font-normal text-sm md:text-base"
       dark
       sm
       @click="dropdownOpen = !dropdownOpen"

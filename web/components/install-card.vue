@@ -3,13 +3,10 @@
     :class="['relative', {
       'hidden': !isInstallable || installBannerDismissed,
     }]"
-    title="Install the web app"
-    secondary
+    :title="$t('banner.install.title')"
     md
   >
-    <div
-      slot="content"
-    >
+    <div slot="content">
       <button
         class="absolute top-0 right-0 mr-3 mt-2"
         @click="dismissInstall"

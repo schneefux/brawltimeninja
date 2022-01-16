@@ -6,7 +6,7 @@
   >
     <p
       slot="content"
-      class="text-lg"
+      class="text-lg md:text-xl"
     >
       {{ lastUpdate }}
     </p>

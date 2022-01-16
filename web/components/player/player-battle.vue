@@ -14,7 +14,10 @@
         <span class="mr-2">
           {{ battle.result }}
         </span>
-        <span v-if="battle.trophyChange != undefined">
+        <span
+          v-if="battle.trophyChange != undefined"
+          class="font-semibold"
+        >
           {{ battle.trophyChange > 0 ? '+' : ''}}{{ battle.trophyChange }}
           <img
             :src="isPowerplay ? require('~/assets/images/icon/power_play_optimized.png') : require('~/assets/images/icon/trophy_optimized.png')"

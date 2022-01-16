@@ -30,7 +30,7 @@
               <v-gini v-bind="data"></v-gini>
               <p
                 slot="content"
-                class="mt-1 prose prose-invert"
+                class="mt-1 prose prose-invert leading-snug"
               >
                 {{ $t('brawler.balance-chart.description') }}
               </p>

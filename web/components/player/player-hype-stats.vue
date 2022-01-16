@@ -15,7 +15,7 @@
         >
           <p
             ref="counter-hours"
-            class="text-6xl font-bold text-yellow-400 mb-2"
+            class="text-4xl font-bold text-yellow-400 mb-2"
           >
             ...
           </p>
@@ -65,7 +65,7 @@
         >
           <nuxt-link
             :to="localePath(`/club/${player.club.tag}`)"
-            class="text-center text-3xl font-semibold underline text-red-500 mb-1"
+            class="text-center text-2xl font-semibold underline text-red-500 mb-1"
           >
             [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
           </nuxt-link>

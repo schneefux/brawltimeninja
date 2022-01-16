@@ -40,7 +40,7 @@
     </div>
     <span
       v-if="props.captioned"
-      class="ml-2 w-16 md:w-24"
+      class="ml-2 w-16 md:w-24 leading-none"
     >{{ props.ally || props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase()) }}</span>
   </router-link>
 </template>

@@ -91,9 +91,10 @@
       class="w-full"
     >
       <b-button
-        @click="open = !open"
-        primary
         class="w-full"
+        primary
+        xs
+        @click="open = !open"
       >
         {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}
       </b-button>
@@ -104,9 +105,9 @@
           class="h-32 mt-3"
         ></history-graph>
         <div class="my-2 text-gray-200">
-          <table class="mt-4 w-full font-semibold leading-none">
+          <table class="w-full leading-tight">
             <tbody>
-              <tr class="flex text-2xl">
+              <tr class="flex">
                 <td class="w-1/2 pr-1 text-right">{{ $t('metric.winRate') }}</td>
                 <td class="w-1/2 pl-1 text-left text-yellow-400">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
               </tr>

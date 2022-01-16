@@ -33,7 +33,7 @@
     >
       <div
         v-if="'infobar' in $scopedSlots"
-        class="rounded-t w-full px-2 py-1 text-lg font-semibold"
+        class="rounded-t w-full px-2 py-1"
       >
         <slot name="infobar"></slot>
       </div>
@@ -41,8 +41,8 @@
       <header
         v-if="props.title != undefined || props.icon != undefined || 'preview' in $scopedSlots"
         :class="['shrink-0 w-full flex font-semibold items-center overflow-hidden', (props.color !== undefined ? `bg-${props.color}` : ''), {
-          'px-3': !props.dense,
-          'px-2': props.dense,
+          'px-3 py-2': !props.dense,
+          'px-2 pt-1': props.dense,
           'rounded-t': !('infobar' in $scopedSlots),
         }]"
       >
@@ -64,15 +64,15 @@
         <div
           v-if="props.title != undefined"
           :class="['mr-auto', {
-            'my-2': !props.dense,
+            'my-px': !props.dense,
             'my-px': props.dense,
           }]"
         >
           <h1
             v-if="props.title != undefined"
             :class="{
-              'text-xl': !props.dense,
-              'text-lg': props.dense
+              'text-lg leading-snug': !props.dense,
+              'leading-tight': props.dense,
             }"
           >
             <b-wrapped-component :wrap="props.titleLink != undefined">
@@ -88,8 +88,10 @@
           <h2
             v-if="props.subtitle != undefined"
             :class="['whitespace-nowrap', {
-              'text-xl': props.subtitle.length < 20,
+              'text-lg': props.subtitle.length < 20,
               'text-xs': props.subtitle.length >= 30,
+              'leading-snug': !props.dense,
+              'leading-tight': props.dense,
             }]"
           >
             <b-wrapped-component :wrap="props.subtitleLink != undefined">
@@ -131,7 +133,7 @@
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b text-gray-800 w-full mt-auto font-semibold flex justify-end', {
+        :class="['rounded-b text-gray-800 w-full mt-auto flex justify-end', {
           'px-3 py-2': !props.dense,
           'px-2 py-1': props.dense,
         }]"

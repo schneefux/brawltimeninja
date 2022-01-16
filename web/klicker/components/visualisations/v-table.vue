@@ -10,7 +10,7 @@
         :page-size="pageSize"
         :no-paginator="card == undefined"
         id-key="id"
-        class="font-semibold text-sm md:text-lg h-full overflow-auto"
+        class="text-sm md:text-base h-full overflow-auto"
         ranked
       >
         <template

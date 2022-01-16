@@ -29,6 +29,7 @@
     "action.show-all.modes": "Show all Modes",
     "attribution-example": "Data provided by Brawl Time Ninja (https://brawltime.ninja), collected from its users and exported on {date}.",
     "banner.install.catchphrase": "Track your trophies easily. Light, fast and free.",
+    "banner.install.title": "Install the web app",
     "bar-chart-race.brawler": "Bar Chart Race for Brawl Stars Brawlers",
     "bar-chart-race.howto.description": "Create Bar Chart Race diagrams for Brawl Stars using data from Brawl Time Ninja. First, configure the data source for your Bar Chart Race. You can preview the data in the table. Then you can download a CSV file which you can import into your favorite spreadsheet software. Alternatively, you can export a CSV in the Bar Chart format and import it into an app such as Flourish.",
     "bar-chart-race.howto.title": "Howto",

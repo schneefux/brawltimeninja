@@ -4,7 +4,7 @@
     :title="`About ${measurement.name}`"
     v-bind="$attrs"
   >
-    <p slot="content" class="prose prose-invert">
+    <p slot="content" class="prose prose-invert leading-snug">
       {{ measurement.description }}
     </p>
   </b-card>

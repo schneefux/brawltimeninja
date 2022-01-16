@@ -10,7 +10,7 @@
     >
       <h1
         v-if="props.title != ''"
-        class="text-3xl font-semibold"
+        class="text-2xl font-semibold"
       >{{ props.title }}</h1>
 
       <slot name="content"></slot>
@@ -18,7 +18,7 @@
 
     <h1
       v-if="!('content' in $scopedSlots)"
-      class="text-3xl font-semibold"
+      class="text-2xl font-semibold"
     >{{ props.title }}</h1>
 
     <slot name="dashboard"></slot>

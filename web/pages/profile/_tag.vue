@@ -20,9 +20,9 @@
     >
       <media-img
         :path="`/avatars/${player.icon.id}`"
-        clazz="absolute w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 right-0 z-0"
+        clazz="absolute w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 right-0 z-0"
       ></media-img>
-      <h1 class="text-4xl font-semibold relative z-10">
+      <h1 class="text-2xl font-semibold relative z-10">
         {{ $t('player.statistics-for') }}
         <span class="text-yellow-400">{{ player.name }}</span>
         <span
@@ -112,7 +112,7 @@
     </player-teaser-card>
 
     <div class="my-1 md:my-4 mx-1 md:ml-4 flex items-center">
-      <h2 class="text-2xl font-semibold">
+      <h2 class="text-xl font-semibold">
         Info!
       </h2>
       <p class="text-xs ml-3">
@@ -203,9 +203,9 @@
       >
         <b-button
           :to="localePath('/tier-list/map')"
-          md
           primary
           prefetch
+          sm
         >
           {{ $t('action.open.tier-list.maps') }}
         </b-button>
