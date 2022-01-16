@@ -8,7 +8,7 @@
     >
       <b-card
         :title="t.title"
-        :elevation="elevation + 1"
+        :elevation="elevation"
         class="h-full"
         full-height
       >
@@ -40,7 +40,7 @@
             <v-roll
               v-bind="{
                 ...data,
-                elevation: elevation + 2,
+                elevation: elevation + 1,
                 long: t.long,
               }"
             >
