@@ -159,7 +159,7 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    enableklickerStats: {
+    enableKlickerStats: {
       type: Boolean,
       default: false,
     },
@@ -173,11 +173,11 @@ export default Vue.extend({
   },
   watch: {
     open: '$fetch',
-    enableklickerStats: '$fetch',
+    enableKlickerStats: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
-    if (!this.open || !this.enableklickerStats) {
+    if (!this.open || !this.enableKlickerStats) {
       return
     }
 

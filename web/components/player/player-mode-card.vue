@@ -122,7 +122,7 @@ export default Vue.extend({
       type: Array as PropType<EventMetadata[]>,
       required: true,
     },
-    enableklickerStats: {
+    enableKlickerStats: {
       type: Boolean,
       required: true
     },
@@ -140,11 +140,11 @@ export default Vue.extend({
     playerTag: '$fetch',
     mode: '$fetch',
     activeEvents: '$fetch',
-    enableklickerStats: '$fetch',
+    enableKlickerStats: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
-    if (!this.enableklickerStats) {
+    if (!this.enableKlickerStats) {
       return
     }
 

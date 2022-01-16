@@ -13,7 +13,7 @@
         :active-events="events"
         :player-brawlers="Object.values(player.brawlers)"
         :player-tag="player.tag"
-        :enable-klicker-stats="enableklickerStats"
+        :enable-klicker-stats="enableKlickerStats"
         :elevation="elevation"
         :class="{
           'hidden md:block': tease && index > 0,
@@ -43,7 +43,7 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    enableklickerStats: {
+    enableKlickerStats: {
       type: Boolean,
       required: true
     },

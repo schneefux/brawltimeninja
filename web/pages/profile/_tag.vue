@@ -20,7 +20,7 @@
     >
       <media-img
         :path="`/avatars/${player.icon.id}`"
-        clazz="absolute w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 right-0 z-0"
+        clazz="absolute w-16 h-16 md:w-24 md:h-24 right-0 z-0"
       ></media-img>
       <h1 class="text-2xl font-semibold relative z-10">
         {{ $t('player.statistics-for') }}
@@ -40,7 +40,7 @@
 
     <div class="mt-2 flex flex-wrap justify-center items-center">
       <history-graph
-        v-if="enableklickerStats"
+        v-if="enableKlickerStats"
         :player-tag="tag"
         :card="{ md: true, fullHeight: true }"
         class="h-40"
@@ -193,7 +193,7 @@
         :player="player"
         :battles="player.battles"
         :tease="!props.open"
-        :enable-klicker-stats="enableklickerStats"
+        :enable-klicker-stats="enableKlickerStats"
         :elevation="2"
       ></player-mode-winrates>
 
@@ -233,7 +233,7 @@
         :player="player"
         :tease="!props.open"
         :limit="props.page * 15"
-        :enable-klicker-stats="enableklickerStats"
+        :enable-klicker-stats="enableKlickerStats"
       ></player-brawlers>
     </player-teaser-card>
 
@@ -288,7 +288,7 @@ export default Vue.extend({
     tag(): string {
       return this.$route.params.tag
     },
-    enableklickerStats(): boolean {
+    enableKlickerStats(): boolean {
       // do not send queries to backend if user has no battle history in database
       return (this.playerTotals?.picks || 0) > 25
     },
