@@ -163,7 +163,6 @@ export default defineComponent({
     }
 
     function startCounter() {
-      console.log('start', counterRefs)
       const playerHours = Math.max(hours.value, 1)
       const animationDuration = 3000
 

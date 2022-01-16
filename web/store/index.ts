@@ -55,7 +55,6 @@ export const state = () => ({
   totalBrawlers: 49,
   isApp: false,
   installPrompt: undefined as any,
-  testGroup: undefined as undefined|string,
   player: undefined as undefined|Player,
   playerTotals: undefined as undefined|PlayerTotals,
 })
@@ -114,9 +113,6 @@ export const mutations: MutationTree<RootState> = {
   },
   clearInstallPrompt(state) {
     state.installPrompt = undefined
-  },
-  setTestGroup(state, group) {
-    state.testGroup = group
   },
   setPersonalityTestResult(state, result) {
     state.personalityTestResult = result

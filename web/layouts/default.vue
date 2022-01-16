@@ -41,7 +41,6 @@ export default Vue.extend({
       adsAllowed: (state: any) => state.adsAllowed as boolean,
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
       consentPopupVisible: (state: any) => state.consentPopupVisible as boolean,
-      testGroup: (state: any) => state.testGroup as string,
       isApp: (state: any) => state.isApp as boolean,
     }),
   },
@@ -130,7 +129,6 @@ export default Vue.extend({
       hideConsentPopup: 'hideConsentPopup',
       showConsentPopup: 'showConsentPopup',
       setIsApp: 'setIsApp',
-      setTestGroup: 'setTestGroup',
     }),
   },
   watch: {
@@ -151,24 +149,6 @@ export default Vue.extend({
           this.hideAds()
         }
       }
-
-      // custom A/B test flag
-      if ('group' in this.$route.query) {
-        console.log('overriding test group from query string')
-        this.setTestGroup(this.$route.query['group'])
-      } else {
-        const groups = ['appnav', 'appnav-control', 'appnav-control', 'appnav-control'] as string[]
-        if (!groups.includes(this.testGroup)) {
-          const group = groups[Math.floor(Math.random() * groups.length)]
-          this.setTestGroup(group)
-          console.log('user assigned to test group', this.testGroup)
-        }
-      }
-      this.$gtag.event('test_group_dimension', {
-        'test_group': this.testGroup,
-        'non_interaction': true,
-      })
-      console.log('user is part of test group', this.testGroup)
     },
   },
 })

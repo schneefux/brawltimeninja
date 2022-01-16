@@ -10,7 +10,6 @@ const plugin: Plugin = ({ store }) => {
       cookiesAllowed: state.cookiesAllowed,
       adsAllowed: state.adsAllowed,
       installBannerDismissed: state.installBannerDismissed,
-      testGroup: state.testGroup,
       personalityTestResult: state.personalityTestResult,
     }),
     restoreState: (key: string, storage: any) => {

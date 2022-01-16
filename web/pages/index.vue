@@ -278,7 +278,6 @@ export default Vue.extend({
       lastPlayers: (state: any) => state.lastPlayers,
       featuredPlayers: (state: any) => state.featuredPlayers,
       isApp: (state: any) => state.isApp as boolean,
-      testGroup: (state: any) => state.testGroup as string,
       cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
     }),
   },
