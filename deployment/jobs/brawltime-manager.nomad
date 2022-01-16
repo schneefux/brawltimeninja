@@ -64,7 +64,7 @@ job "brawltime-manager" {
       driver = "docker"
 
       env {
-        NODE_CONFIG_DIR = "/local/config"
+        NODE_CONFIG_DIR = "/secrets/config"
         NODE_CONIFG_ENV = "production"
       }
 
@@ -95,7 +95,7 @@ job "brawltime-manager" {
           }
         }
         EOF
-        destination = "local/config/production.json"
+        destination = "secrets/config/production.json"
       }
 
       config {

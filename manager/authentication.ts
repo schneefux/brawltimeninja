@@ -21,7 +21,7 @@ export default (app: Application) => {
   app.use('/authentication', authentication)
   app.configure(expressOauth({
     expressSession: session({
-      secret: app.get('authentication.secret'),
+      secret: app.get('authentication')['secret'],
       resave: false,
       saveUninitialized: false,
       store: new (knexSession(session))({
