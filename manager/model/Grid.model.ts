@@ -35,7 +35,7 @@ export class GridModel extends Model {
 export async function migrate(db: Knex) {
   if (!await db.schema.hasTable('grid')) {
     await db.schema.createTable('grid', (table) => {
-      table.integer('id').unsigned().primary()
+      table.increments('id').unsigned().primary()
       table.integer('user_id').unsigned().notNullable().references('user.id')
       table.datetime('created_at').notNullable().defaultTo(db.fn.now())
       table.datetime('updated_at').notNullable().defaultTo(db.fn.now())

@@ -43,7 +43,7 @@ export class UserModel extends Model {
 export async function migrate(db: Knex) {
   if (!await db.schema.hasTable('user')) {
     await db.schema.createTable('user', (table) => {
-      table.integer('id').unsigned().primary()
+      table.increments('id').unsigned().primary()
       table.string('googleId').unique()
     })
   }
