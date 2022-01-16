@@ -28,6 +28,16 @@ export class UserModel extends Model {
       },
     }
   }
+
+  static get jsonSchema() {
+    return {
+      type: 'object',
+      properties: {
+        id: { type: 'integer' },
+        googleId: { type: 'string' },
+      },
+    }
+  }
 }
 
 export async function migrate(db: Knex) {
