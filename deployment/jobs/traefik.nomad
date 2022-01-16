@@ -2,8 +2,7 @@ variable "domain" {
   default = "brawltime.ninja"
 }
 
-variable "basic_auth" {
-}
+variable "basic_auth" {}
 
 job "traefik" {
   datacenters = ["dc1"]
@@ -35,6 +34,10 @@ job "traefik" {
         type = "tcp"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
 
       # 4646: default Nomad port

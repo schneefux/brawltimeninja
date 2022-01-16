@@ -9,10 +9,10 @@ variable "web_traduora_project_id" {}
 job "brawltime-testing" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     operator = "regexp"
-    value = "worker|ingress"
+    value = "worker"
   }
 
   group "testing" {

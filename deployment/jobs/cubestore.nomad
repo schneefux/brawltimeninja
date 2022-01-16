@@ -1,7 +1,7 @@
 job "cubestore" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     value = "database"
   }
@@ -29,6 +29,10 @@ job "cubestore" {
         path = "/livez"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 

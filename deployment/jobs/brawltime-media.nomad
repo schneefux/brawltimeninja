@@ -17,7 +17,7 @@ locals {
 job "brawltime-media" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     operator = "regexp"
     value = "worker"
@@ -74,6 +74,10 @@ job "brawltime-media" {
         path = "/status"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 
@@ -145,6 +149,10 @@ job "brawltime-media" {
         type = "tcp"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 

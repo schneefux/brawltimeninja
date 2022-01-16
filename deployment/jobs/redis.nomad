@@ -22,6 +22,10 @@ job "redis" {
         interval = "10s"
         timeout = "2s"
       }
+
+      check_restart {
+        limit = 5
+      }
     }
 
     task "redis" {

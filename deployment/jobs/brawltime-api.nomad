@@ -12,7 +12,7 @@ variable "domain" {
 job "brawltime-api" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     operator = "regexp"
     value = "worker"
@@ -28,6 +28,8 @@ job "brawltime-api" {
   }
 
   group "api" {
+    count = 2
+
     scaling {
       enabled = true
       min = 1
@@ -52,6 +54,10 @@ job "brawltime-api" {
         path = "/api/status"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 

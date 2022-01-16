@@ -27,6 +27,8 @@ job "brawltime-manager" {
   }
 
   group "manager" {
+    count = 2
+
     scaling {
       enabled = true
       min = 1
@@ -51,6 +53,10 @@ job "brawltime-manager" {
         path = "/users"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 

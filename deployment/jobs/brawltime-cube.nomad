@@ -8,7 +8,7 @@ variable "domain" {
 job "brawltime-cube" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     operator = "regexp"
     value = "worker"
@@ -24,13 +24,15 @@ job "brawltime-cube" {
   }
 
   group "cube" {
+    count = 2
+
     scaling {
       enabled = true
       min = 1
       max = 8
     }
 
-    constraint {
+    affinity {
       attribute = "${node.class}"
       operator = "regexp"
       value = "worker|database"
@@ -54,6 +56,10 @@ job "brawltime-cube" {
         path = "/livez"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 
@@ -75,7 +81,7 @@ job "brawltime-cube" {
 
       resources {
         cpu = 1024
-        memory = 256
+        memory = 384
         memory_max = 512
       }
     }
@@ -88,7 +94,7 @@ job "brawltime-cube" {
       max = 4
     }
 
-    constraint {
+    affinity {
       attribute = "${node.class}"
       operator = "regexp"
       value = "worker|database"

@@ -1,7 +1,7 @@
 job "mariadb" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     value = "database"
   }
@@ -29,6 +29,10 @@ job "mariadb" {
         interval = "10s"
         timeout  = "2s"
       }
+
+      check_restart {
+        limit = 5
+      }
     }
 
     task "mariadb" {
@@ -50,9 +54,9 @@ job "mariadb" {
       }
 
       resources {
-        cpu = 64
-        memory = 64
-        memory_max = 256
+        cpu = 256
+        memory = 256
+        memory_max = 512
       }
     }
   }

@@ -37,6 +37,10 @@ job "clickhouse" {
         path = "/ping"
         interval = "10s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 
@@ -92,7 +96,7 @@ job "clickhouse" {
 
       resources {
         cpu = 2048
-        memory = 3072
+        memory = 3584
         memory_max = 4096
       }
     }

@@ -5,7 +5,7 @@ variable "traduora_secret" {}
 job "traduora" {
   datacenters = ["dc1"]
 
-  constraint {
+  affinity {
     attribute = "${node.class}"
     value = "worker"
   }
@@ -29,6 +29,10 @@ job "traduora" {
         path = "/health"
         interval = "2s"
         timeout = "2s"
+
+        check_restart {
+          limit = 5
+        }
       }
     }
 
