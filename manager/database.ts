@@ -88,4 +88,17 @@ export default async (app: Application) => {
   }))
 
   app.service('reports').hooks(readAllWriteOwner)
+
+  const errorHandler = (error: any) => {
+    const symbol = (<any>objectionService).ERROR
+    if (error.error != undefined && error.error[symbol] != undefined) {
+      console.error(error.error[symbol])
+    }
+  }
+
+  app.hooks({
+    error: {
+      all: [errorHandler],
+    },
+  })
 }
