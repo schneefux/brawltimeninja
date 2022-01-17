@@ -1,5 +1,5 @@
 import { Knex } from 'knex'
-import { Model } from 'objection'
+import { Model, Pojo } from 'objection'
 
 export class GridModel extends Model {
   private created_at!: Date
@@ -29,6 +29,13 @@ export class GridModel extends Model {
 
   $beforeUpdate() {
     this.updated_at = new Date()
+  }
+
+  $parseJson(json: Pojo) {
+    json = super.$parseJson(json)
+    delete json['created_at']
+    delete json['updated_at']
+    return json
   }
 }
 

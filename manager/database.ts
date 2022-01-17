@@ -62,18 +62,10 @@ export default async (app: Application) => {
 
   app.service('users').hooks({
     before: {
-      create: [
-        <any> hooks.disallow('external')
-      ],
-      update: [
-        <any> hooks.disallow('external')
-      ],
-      patch: [
-        <any> hooks.disallow('external')
-      ],
-      remove: [
-        <any> hooks.disallow('external')
-      ],
+      create: <any> hooks.disallow('external'),
+      update: <any> hooks.disallow('external'),
+      patch: <any> hooks.disallow('external'),
+      remove: <any> hooks.disallow('external'),
     },
   })
 
