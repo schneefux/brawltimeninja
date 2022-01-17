@@ -2,8 +2,8 @@ import { Knex } from 'knex'
 import { Model } from 'objection'
 
 export class ReportModel extends Model {
-  private created_at!: string
-  private updated_at!: string
+  private created_at!: Date
+  private updated_at!: Date
 
   static get tableName() {
     return 'report'
@@ -25,12 +25,12 @@ export class ReportModel extends Model {
   }
 
   $beforeInsert() {
-    this.created_at = new Date().toISOString();
-    this.updated_at = new Date().toISOString();
+    this.created_at = new Date()
+    this.updated_at = new Date()
   }
 
   $beforeUpdate() {
-    this.updated_at = new Date().toISOString()
+    this.updated_at = new Date()
   }
 }
 

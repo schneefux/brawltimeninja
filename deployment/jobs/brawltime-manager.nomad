@@ -89,6 +89,9 @@ job "brawltime-manager" {
             "service": "users",
             "authStrategies": ["jwt", "oauth"],
             "oauth": {
+              "defaults": {
+                "origin": "https://manager.${var.domain}"
+              },
               "redirect": "https://${var.domain}/account",
               "google": ${var.manager_google_oauth}
             }
