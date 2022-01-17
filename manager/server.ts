@@ -13,6 +13,11 @@ app.configure(configuration())
 app.use(cors({ origin: true })) // TODO only for development
 app.use(json())
 app.use(urlencoded({ extended: true }))
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'public, max-age=0')
+  next()
+})
+
 app.configure(rest())
 app.configure(authentication)
 
