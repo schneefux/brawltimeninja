@@ -180,9 +180,6 @@ export default defineComponent({
           if (spec == undefined) {
             return false
           }
-          if (props.excludeComponents.includes(spec.component)) {
-            return false
-          }
 
           if (checkSlicerApplicable(spec)) {
             return true
@@ -199,10 +196,12 @@ export default defineComponent({
         }
       }
 
-      return applicableSpecs.map((spec) => ({
-        name: spec.name,
-        import: spec.import,
-      }))
+      return applicableSpecs
+        .filter((spec) => !props.excludeComponents.includes(spec.component))
+        .map((spec) => ({
+          name: spec.name,
+          import: spec.import,
+        }))
     })
 
     return {

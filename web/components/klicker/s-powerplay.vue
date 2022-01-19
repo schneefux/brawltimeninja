@@ -1,6 +1,5 @@
 <template>
   <b-select
-    v-if="'powerplay' in value"
     :value="(value.powerplay || [])[0]"
     dark
     sm

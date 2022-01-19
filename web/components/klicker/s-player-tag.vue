@@ -1,6 +1,5 @@
 <template>
   <input
-    v-if="'playerTag' in value"
     type="text"
     v-model.lazy="tagFilter"
     placeholder="Player Tag"

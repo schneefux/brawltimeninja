@@ -1,7 +1,7 @@
 <template>
   <b-select
-    v-if="'ally' in value && brawlers != undefined"
-    :value="value.ally"
+    v-if="brawlers != undefined"
+    :value="value.ally || ''"
     dark
     sm
     @input="v => onInput({ ally: v == '' ? [] : [v] })"

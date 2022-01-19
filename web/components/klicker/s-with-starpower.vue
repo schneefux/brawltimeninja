@@ -1,6 +1,5 @@
 <template>
   <b-select
-    v-if="'starpowerIdNeq' in value"
     :value="(value.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'"
     dark
     sm

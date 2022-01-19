@@ -35,6 +35,7 @@
         <c-dashboard
           v-model="query"
           :elevation="2"
+          :slicer-components="['s-season', 's-mode-map', 's-trophies', 's-powerplay', 's-competition-maps', 's-power']"
           slicer
         >
           <template v-slot:totals="data">

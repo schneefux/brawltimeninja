@@ -36,7 +36,7 @@
         <c-dashboard
           v-model="query"
           :elevation="2"
-          :slicer-exclude-components="['s-with-starpower']"
+          :slicer-components="['s-season', 's-mode-map', 's-trophies', 's-powerplay', 's-competition-maps']"
           class="mt-2"
           sync-slices
           slicer
@@ -112,12 +112,6 @@ export default Vue.extend({
         measurementsIds: ['winRate'],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
-          trophyRangeGte: ['0'],
-          powerplay: [],
-          mode: [],
-          map: [],
-          mapLike: [],
-          mapNotLike: [],
           starpowerIdNeq: ['0'],
         },
         sortId: 'winRate',
@@ -128,12 +122,6 @@ export default Vue.extend({
           measurementsIds: ['winRate'],
           slices: {
             season: [currentSeason.toISOString().slice(0, 10)],
-            trophyRangeGte: ['0'],
-            powerplay: [],
-            mode: [],
-            map: [],
-            mapLike: [],
-            mapNotLike: [],
             starpowerIdEq: ['0'],
           },
           sortId: 'winRate',

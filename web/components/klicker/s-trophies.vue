@@ -1,6 +1,5 @@
 <template>
   <trophy-slider-select
-    v-if="'trophyRangeGte' in value || 'trophyRangeLt' in value"
     v-model="model"
     :name="(value.powerplay || [])[0] == 'true' ? 'League' : 'Trophies'"
   ></trophy-slider-select>

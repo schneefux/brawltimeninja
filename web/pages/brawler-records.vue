@@ -14,6 +14,7 @@
         <c-dashboard
           v-model="query"
           :elevation="2"
+          :slicer-components="['s-season-exact', 's-brawler', 's-power']"
           slicer
         >
           <template v-slot:totals="data">

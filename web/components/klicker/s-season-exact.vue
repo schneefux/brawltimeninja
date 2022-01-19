@@ -1,11 +1,16 @@
 <template>
   <b-select
-    v-if="'seasonExact' in value && seasons != undefined"
-    :value="value['seasonExact'][0]"
+    v-if="seasons != undefined"
+    :value="(value.seasonExact || [])[0]"
     dark
     sm
-    @input="v => onInput({ [key]: [v] })"
+    @input="v => onInput({ seasonExact: [v] })"
   >
+    <option
+      value=""
+    >
+      Any Season
+    </option>
     <option
       v-for="s in seasons"
       :key="s.id"

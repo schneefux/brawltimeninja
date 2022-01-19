@@ -1,6 +1,5 @@
 <template>
   <input
-    v-if="'playerName' in value"
     type="text"
     v-model.lazy="nameFilter"
     placeholder="Player Name Pattern"

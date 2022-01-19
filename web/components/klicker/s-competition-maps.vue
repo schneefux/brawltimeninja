@@ -1,6 +1,5 @@
 <template>
   <b-select
-    v-if="'mapLike' in value && 'mapNotLike' in value"
     v-model="choice"
     dark
     sm

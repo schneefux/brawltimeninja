@@ -1,10 +1,7 @@
 <template>
-  <div
-    v-if="'mode' in value || 'map' in value"
-    class="contents"
-  >
+  <div class="contents">
     <b-select
-      v-if="'mode' in value && modes != undefined"
+      v-if="modes != undefined"
       v-model="mode"
       dark
       sm
@@ -18,7 +15,7 @@
     </b-select>
 
     <b-select
-      v-if="'map' in value && maps != undefined"
+      v-if="maps != undefined"
       v-model="map"
       :class="{ 'hidden': mode == undefined }"
       dark
