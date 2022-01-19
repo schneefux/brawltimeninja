@@ -1521,8 +1521,6 @@ const brawlerBattleSlices = [
 
 const brawlerBattleDefaultSliceValues: SliceValue = {
   season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
-  trophyRangeGte: ['0'],
-  brawler: [],
 }
 
 const playerBrawlerDimensions = [
@@ -1623,10 +1621,6 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
-      mode: [],
-      map: [],
-      mapLike: [],
-      mapNotLike: [],
       powerplay: ['false'],
     },
   },
@@ -1735,9 +1729,6 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
-      mode: [],
-      map: [],
-      ally: [],
     },
   },
   player: {
@@ -1764,7 +1755,6 @@ const cubes: Record<string, Cube> = {
       commonSlices.timestamp,
     ],
     defaultSliceValues: {
-      timestamp: [],
     },
   },
   player_brawler: {
@@ -1788,7 +1778,6 @@ const cubes: Record<string, Cube> = {
       commonSlices.timestamp,
     ],
     defaultSliceValues: {
-      timestamp: [],
     },
   },
   brawler: {
@@ -1864,9 +1853,6 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,
-      mode: [],
-      map: [],
-      powerplay: [],
     },
   },
 }
