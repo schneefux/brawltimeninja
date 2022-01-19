@@ -171,7 +171,7 @@ export interface VisualisationSpec extends StaticWidgetSpec {
 }
 
 export interface SlicerSpec extends WidgetSpec {
-  applicable(dimensions: Dimension[], measurements: Measurement[]): boolean
+  applicable(dimensions: Dimension[], measurements: Measurement[], cubeId: string): boolean
 }
 
 export interface ConfidenceInterval {

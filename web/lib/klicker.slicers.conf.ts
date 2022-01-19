@@ -1,10 +1,5 @@
 import { SlicerSpec } from "~/klicker"
 
-// TODO refactor slicers:
-//  * Build <s-if-applicable>
-//  * Remove slicer specs from cube configuration
-//  * Emit Filters from slicers directly
-
 const slicers: SlicerSpec[] = [{
   name: 'Ally',
   component: 's-ally',
@@ -86,15 +81,15 @@ const slicers: SlicerSpec[] = [{
   name: 'With Gadget',
   component: 's-with-gadget',
   import: () => import('~/components/klicker/s-with-gadget.vue'),
-  applicable(dimensions) {
-    return dimensions.some(d => d.id == 'gadget')
+  applicable(dimensions, measurements, cubeId) {
+    return cubeId == 'gadget' && dimensions.some(d => d.id == 'gadget')
   },
 }, {
   name: 'With Star Power',
   component: 's-with-starpower',
   import: () => import('~/components/klicker/s-with-starpower.vue'),
-  applicable(dimensions) {
-    return dimensions.some(d => d.id == 'starpower')
+  applicable(dimensions, measurements, cubeId) {
+    return cubeId == 'starpower' && dimensions.some(d => d.id == 'starpower')
   },
 }]
 

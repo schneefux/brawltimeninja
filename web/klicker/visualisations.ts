@@ -163,26 +163,6 @@ const defaultVisualisations: VisualisationSpec[] = [{
     rows: 1,
     columns: 1,
   },
-}, {
-  name: 'Markdown',
-  component: 'v-markdown',
-  import: () => import('~/klicker/components/visualisations/v-markdown.vue'),
-  applicable(dimensions, measurements, size) {
-    return size == 0
-  },
-  initialDimensions: {
-    rows: 4,
-    columns: 4,
-  },
-  props: {
-    markdown: {
-      name: 'Markdown',
-      component: 'b-markdown',
-      import: () => import('~/klicker/components/ui/b-markdown.vue'),
-      props: {
-      },
-    },
-  },
 }]
 
 export default defaultVisualisations

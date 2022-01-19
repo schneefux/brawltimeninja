@@ -47,9 +47,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, useContext, ref } from '@nuxtjs/composition-api'
-import { CubeComparingResponse, CubeResponse, StaticWidgetSpec, VisualisationSpec } from '~/klicker'
+import { CubeComparingResponse, CubeResponse, StaticWidgetSpec } from '~/klicker'
 import { StaticProps } from '~/klicker/props'
-import { useCubeResponse, useCubeResponseProps } from '~/klicker/composables/response'
+import { useCubeResponse } from '~/klicker/composables/response'
 
 /**
  * Visualisation component that renders the given component, if applicable.

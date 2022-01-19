@@ -10,7 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '~/klicker'
-import { tagToId } from '~/lib/util'
+import { idToTag, tagToId } from '~/lib/util'
 
 export default defineComponent({
   props: {
@@ -26,13 +26,13 @@ export default defineComponent({
   setup(props) {
     const tagFilter = computed({
       get(): string {
-        return (props.value.playerTag || [])[0] || ''
+        return idToTag((props.value.playerId || [])[0] || '')
       },
       set(v: string) {
         if (v == '') {
           props.onInput({ playerId: [] })
         } else {
-          if (new RegExp('^[0289PYLQGRJCUV]{3,}$').test(v)) {
+          if (new RegExp('^#?[0289PYLQGRJCUV]{3,}$').test(v)) {
             props.onInput({ playerId: [tagToId(v)] })
           }
         }

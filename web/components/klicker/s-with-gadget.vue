@@ -1,6 +1,6 @@
 <template>
   <b-select
-    :value="(value.gadgetIdNeq || ['0'])[0] == '0' ? '1' : '0'"
+    :value="(value.gadgetIdNeq || [])[0] == '0' ? '1' : '0'"
     dark
     sm
     @input="v => onInput({ gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })"

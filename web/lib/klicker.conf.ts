@@ -1378,6 +1378,13 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
+  starpowersLength: {
+    id: 'starpowersLength',
+    config: {
+      member: 'brawler_starpowers_length',
+      operator: 'equals',
+    },
+  },
   gadgetIdEq: {
     id: 'gadgetIdEq',
     config: {
@@ -1392,6 +1399,13 @@ const brawlerSlices = asSlice({
       operator: 'notEquals',
     },
   },
+  gadgetsLength: {
+    id: 'gadgetsLength',
+    config: {
+      member: 'brawler_gadgets_length',
+      operator: 'equals',
+    },
+  },
   gearIdEq: {
     id: 'gearIdEq',
     config: {
@@ -1404,6 +1418,13 @@ const brawlerSlices = asSlice({
     config: {
       member: 'gear_dimension',
       operator: 'notEquals',
+    },
+  },
+  gearsLength: {
+    id: 'gearsLength',
+    config: {
+      member: 'brawler_gears_length',
+      operator: 'equals',
     },
   },
 })
@@ -1846,10 +1867,13 @@ const cubes: Record<string, Cube> = {
       commonSlices.powerplay,
       brawlerSlices.starpowerIdEq,
       brawlerSlices.starpowerIdNeq,
+      brawlerSlices.starpowersLength,
       brawlerSlices.gadgetIdEq,
       brawlerSlices.gadgetIdNeq,
+      brawlerSlices.gadgetsLength,
       brawlerSlices.gearIdEq,
       brawlerSlices.gearIdNeq,
+      brawlerSlices.gearsLength,
     ],
     defaultSliceValues: {
       ...playerBrawlerDefaultSliceValues,
