@@ -17,7 +17,7 @@
             :value="value.cubeId"
             dark
             sm
-            @input="v => onInputCubeId(v)"
+            @input="onInputCubeId"
           >
             <option
               v-for="c in cubes"
@@ -108,18 +108,14 @@ export default defineComponent({
             .filter(([key, value]) => $klicker.config[c].slices.some(s => s.id == key))
         ))
 
-      // keep old measurements if they all exist in the new cube
-      const measurementsIdsDefaults = !props.value.comparing && props.value.measurementsIds
-        .every(m => $klicker.config[c].measurements.some(mm => mm.id == m))
-        ? props.value.measurementsIds
-        : $klicker.config[c].defaultMeasurementIds
-
-      emit('input', <CubeQuery>{
+      const newQuery: CubeQuery = {
         cubeId: c,
         slices: slicesDefaults,
         dimensionsIds: $klicker.config[c].defaultDimensionsIds,
-        measurementsIds: measurementsIdsDefaults,
-      })
+        measurementsIds: $klicker.config[c].defaultMeasurementIds,
+        sortId: $klicker.config[c].defaultMeasurementIds[0],
+      }
+      emit('input', newQuery)
     }
 
     const compareMode = computed({
