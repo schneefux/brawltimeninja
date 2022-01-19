@@ -1,2 +1,2 @@
-export { useCubeResponse } from './response'
+export { useCubeResponseProps } from './response'
 export { useStorage } from './storage'

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h } from '@nuxtjs/composition-api'
-import { OptionalVisualisationProps } from '~/klicker/props'
+import { StaticProps } from '~/klicker/props'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
 /**
@@ -12,7 +12,11 @@ export default defineComponent({
     BCard,
   },
   props: {
-    ...OptionalVisualisationProps,
+    ...StaticProps,
+    loading: {
+      type: Boolean,
+      required: true as true
+    },
     component: {
       type: String,
       required: true

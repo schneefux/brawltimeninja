@@ -2,14 +2,10 @@
   <c-dashboard
     v-model="query"
     :elevation="2"
+    :slicer-components="['s-season', 's-trophies', 's-powerplay']"
     class="lg:justify-center"
+    slicer
   >
-    <template v-slot:slices="data">
-      <s-season v-bind="data"></s-season>
-      <s-trophies v-bind="data"></s-trophies>
-      <s-powerplay v-bind="data"></s-powerplay>
-    </template>
-
     <template v-slot:totals="data">
       <div class="w-full flex flex-wrap">
         <v-sample-size

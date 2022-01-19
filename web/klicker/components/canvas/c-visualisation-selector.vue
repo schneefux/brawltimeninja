@@ -26,7 +26,7 @@
           </option>
         </b-select>
 
-        <template v-for="(propSpec, prop) in spec.props">
+        <template v-for="(propSpec, prop) in (spec.props || {})">
           <label
             :key="`${prop}-label`"
             :for="`${prefix}-${prop}`"
@@ -57,12 +57,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { GridWidget, ReportWidget, VisualisationSpec, Widget } from '~/klicker'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
+import { CubeComparingResponse, CubeResponse, GridWidget, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '~/klicker'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BSelect from '~/klicker/components/ui/b-select.vue'
-import { useCubeResponse } from '~/klicker/composables'
-import { OptionalVisualisationProps } from '~/klicker/props'
+import { useCubeResponse } from '~/klicker/composables/response'
+import { StaticProps } from '~/klicker/props'
 
 /**
  * Show applicable visualisations and bind one of them.
@@ -73,7 +73,11 @@ export default defineComponent({
     BSelect,
   },
   props: {
-    ...OptionalVisualisationProps,
+    ...StaticProps,
+    response: {
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
+      required: false
+    },
     value: {
       type: Object as PropType<Widget>,
       required: true
@@ -96,9 +100,15 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker, checkApplicable } = useCubeResponse(props)
-
-    const visualisations = computed(() => $klicker.visualisations.filter(v => checkApplicable(v)))
+    const visualisations = computed<StaticWidgetSpec[]>(() => {
+      const { $klicker } = useContext()
+      if (props.response != undefined) {
+        const { checkVisualisationApplicable } = useCubeResponse(ref(props.response))
+        return $klicker.visualisations.filter(v => checkVisualisationApplicable(v))
+      } else {
+        return $klicker.staticWidgets
+      }
+    })
 
     const component = computed({
       get() {

@@ -146,12 +146,13 @@ export interface VisualisationProp {
   props: Record<string, any>
 }
 
-export interface VisualisationSpec {
+export interface WidgetSpec {
   name: string
   component: string
   import: () => Promise<any>
-  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
-  recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+}
+
+export interface StaticWidgetSpec extends WidgetSpec {
   /**
    * Grid cells are 150px * 150px per unit.
    */
@@ -164,10 +165,13 @@ export interface VisualisationSpec {
   props?: Record<string, VisualisationProp>
 }
 
-export interface SlicerSpec {
-  name: string
-  component: string
+export interface VisualisationSpec extends StaticWidgetSpec {
   applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+}
+
+export interface SlicerSpec extends WidgetSpec {
+  applicable(dimensions: Dimension[], measurements: Measurement[]): boolean
 }
 
 export interface ConfidenceInterval {

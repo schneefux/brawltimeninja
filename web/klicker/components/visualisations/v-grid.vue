@@ -76,7 +76,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 import { VisualisationProps } from '~/klicker/props'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 import BCard from '~/klicker/components/ui/b-card.vue'
 
@@ -93,7 +93,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
+    const { dimensions, measurements } = useCubeResponseProps(props)
 
     const page = ref(0)
     watch(() => props.response.data, () => page.value = 0)

@@ -13,13 +13,10 @@
     </b-card>
 
     <div>
-      <c-slicer v-model="query">
-        <template v-slot="data">
-          <s-season v-bind="data"></s-season>
-          <s-mode-map v-bind="data"></s-mode-map>
-          <s-trophies v-bind="data"></s-trophies>
-        </template>
-      </c-slicer>
+      <c-slicer
+        v-model="query"
+        :components="['s-season', 's-mode-map', 's-trophies']"
+      ></c-slicer>
 
       <draft-grid :query="query"></draft-grid>
 

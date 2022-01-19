@@ -46,17 +46,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@nuxtjs/composition-api'
-import { VisualisationSpec } from '~/klicker'
-import { OptionalVisualisationProps } from '~/klicker/props'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { defineComponent, computed, PropType, useContext, ref } from '@nuxtjs/composition-api'
+import { CubeComparingResponse, CubeResponse, StaticWidgetSpec, VisualisationSpec } from '~/klicker'
+import { StaticProps } from '~/klicker/props'
+import { useCubeResponse, useCubeResponseProps } from '~/klicker/composables/response'
 
 /**
  * Visualisation component that renders the given component, if applicable.
  */
 export default defineComponent({
   props: {
-    ...OptionalVisualisationProps,
+    ...StaticProps,
+    loading: {
+      type: Boolean,
+      required: true as true
+    },
+    response: {
+      type: Object as PropType<CubeResponse|CubeComparingResponse>,
+      required: false
+    },
     /**
      * Visualisation component to render, if applicable.
      */
@@ -119,9 +127,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { $klicker, checkApplicable } = useCubeResponse(props)
-
-    function getStyle(spec: VisualisationSpec) {
+    function getStyle(spec: StaticWidgetSpec) {
       const style: Record<string, string> = {}
 
       const rows = props.rows ?? spec.initialDimensions.rows
@@ -146,38 +152,48 @@ export default defineComponent({
     }
 
     const specs = computed(() => {
+      const { $klicker } = useContext()
+
+      let allSpecs: StaticWidgetSpec[]
+      let checkApplicable: (spec: any) => boolean
+
+      if (props.response != undefined) {
+        const { checkVisualisationApplicable } = useCubeResponse(ref(props.response))
+        allSpecs = $klicker.visualisations.filter(checkVisualisationApplicable)
+        checkApplicable = checkVisualisationApplicable
+      } else {
+        allSpecs = $klicker.staticWidgets
+        checkApplicable = () => true
+      }
+
+      let applicableSpecs: StaticWidgetSpec[] = []
+
       if (props.component != undefined) {
-        const spec = $klicker.visualisations.find(v => v.component == props.component)
+        const spec = allSpecs.find(v => v.component == props.component)
         if (spec == undefined) {
-          throw new Error('Missing visualisation spec for ' + props.component)
+          console.warn('Could not find requested visualisation spec ' + props.component)
+        } else {
+          if (checkApplicable(spec)) {
+            applicableSpecs = [spec]
+          } else {
+            console.warn('Requested visualisation spec ' + props.component + ' not applicable')
+          }
         }
+      } else {
+        applicableSpecs = allSpecs
+          .filter(checkApplicable)
+          .slice(0, props.all ? undefined : 1)
 
-        if (checkApplicable(spec)) {
-          return [{
-            name: spec.name,
-            import: spec.import,
-            style: getStyle(spec),
-          }]
+        if (applicableSpecs.length == 0) {
+          console.warn('Could not find any applicable visualisation specs')
         }
-
-        console.warn('Visualisation spec for ' + props.component + ' not applicable')
-        return []
       }
 
-      const specs = $klicker.visualisations
-        .filter(v => checkApplicable(v))
-        .slice(0, props.all ? undefined : 1)
-
-      if (specs.length > 0) {
-        return specs.map(s => ({
-          name: s.name,
-          import: s.import,
-          style: getStyle(s),
-        }))
-      }
-
-      console.warn('Could not find an applicable spec')
-      return []
+      return applicableSpecs.map((spec) => ({
+        name: spec.name,
+        import: spec.import,
+        style: getStyle(spec),
+      }))
     })
 
     return {

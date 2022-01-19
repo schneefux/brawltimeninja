@@ -19,7 +19,7 @@ import { VisualizationSpec } from 'vega-embed'
 import { computed } from '@vue/composition-api'
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { BVega } from '~/klicker/components'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
-    const { dimensions, measurements, comparing } = useCubeResponse(props)
+    const { dimensions, measurements, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]

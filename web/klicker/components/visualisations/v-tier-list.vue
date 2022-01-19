@@ -46,7 +46,7 @@ import BCard from '~/klicker/components/ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '~/klicker/util'
 import { computed } from '@vue/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 // TODO decouple v-tier-list-sharepic
@@ -78,7 +78,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { measurements } = useCubeResponse(props)
+    const { measurements } = useCubeResponseProps(props)
     const tiers = computed(() => groupTiers(props.response.data, measurements.value[0]))
 
     return {

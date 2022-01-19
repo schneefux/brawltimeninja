@@ -47,7 +47,7 @@ import BButton from '~/klicker/components/ui/b-button.vue'
 import { Location } from 'vue-router'
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import { convertQueryToLocation } from '~/klicker/composables/link'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
@@ -67,7 +67,7 @@ export default defineComponent({
   setup(props) {
     const { route, i18n } = useContext()
 
-    const { $klicker, dimensions, measurements } = useCubeResponse(props)
+    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []

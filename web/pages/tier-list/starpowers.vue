@@ -36,17 +36,11 @@
         <c-dashboard
           v-model="query"
           :elevation="2"
+          :slicer-exclude-components="['s-with-starpower']"
           class="mt-2"
           sync-slices
+          slicer
         >
-          <template v-slot:slices="data">
-            <s-season v-bind="data"></s-season>
-            <s-trophies v-bind="data"></s-trophies>
-            <s-powerplay v-bind="data"></s-powerplay>
-            <s-competition-maps v-bind="data"></s-competition-maps>
-            <s-mode-map v-bind="data"></s-mode-map>
-          </template>
-
           <template v-slot:totals="data">
             <div class="w-full flex flex-wrap">
               <v-sample-size v-bind="data"></v-sample-size>
@@ -79,11 +73,6 @@ import { getSeasonEnd } from '~/lib/util'
 import VSampleSize from '~/components/klicker/v-sample-size.vue'
 import VLastUpdate from '~/components/klicker/v-last-update.vue'
 import DBrawler from '~/components/klicker/d-brawler.vue'
-import SSeason from '~/components/klicker/s-season.vue'
-import STrophies from '~/components/klicker/s-trophies.vue'
-import SPowerplay from '~/components/klicker/s-powerplay.vue'
-import SCompetitionMaps from '~/components/klicker/s-competition-maps.vue'
-import SModeMap from '~/components/klicker/s-mode-map.vue'
 
 export default Vue.extend({
   components: {
@@ -94,11 +83,6 @@ export default Vue.extend({
     VSampleSize,
     VLastUpdate,
     DBrawler,
-    SSeason,
-    STrophies,
-    SPowerplay,
-    SCompetitionMaps,
-    SModeMap,
     VTestInfo,
   },
   middleware: ['cached'],

@@ -50,7 +50,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { VisualisationProps } from '~/klicker/props'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import BCard from '~/klicker/components/ui/b-card.vue'
 import BHorizontalScroller from '~/klicker/components/ui/b-horizontal-scroller.vue'
 
@@ -72,7 +72,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, measurements, switchResponse } = useCubeResponse(props)
+    const { $klicker, measurements, switchResponse } = useCubeResponseProps(props)
 
     const cards = computed(() =>
       switchResponse(response => response.data.map(e => ({

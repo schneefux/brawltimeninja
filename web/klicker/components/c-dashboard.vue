@@ -3,7 +3,7 @@
     <div
       class="w-full"
       :class="{
-        'grid grid-cols-1 lg:grid-cols-3': configurator && 'slices' in $scopedSlots,
+        'grid grid-cols-1 lg:grid-cols-3': configurator && slicer,
       }"
     >
       <c-configurator
@@ -14,34 +14,24 @@
       ></c-configurator>
 
       <c-slicer
-        v-if="'slices' in $scopedSlots"
+        v-if="slicer"
         v-model="query"
         :card="{ fullHeight: true, elevation }"
         :both="syncSlices"
+        :components="slicerComponents"
+        :exclude-components="slicerExcludeComponents"
         class="col-span-2"
-      >
-        <template v-slot="slices">
-          <slot
-            name="slices"
-            v-bind="{ ...slices }"
-          ></slot>
-        </template>
-      </c-slicer>
+      ></c-slicer>
 
       <c-slicer
-        v-if="'slices' in $scopedSlots && query.comparing && !syncSlices"
+        v-if="slicer && query.comparing && !syncSlices"
         v-model="query"
         :card="{ fullHeight: true, elevation }"
+        :components="slicerComponents"
+        :exclude-components="slicerExcludeComponents"
         class="col-span-2"
         comparing
-      >
-        <template v-slot="slices">
-          <slot
-            name="slices"
-            v-bind="{ ...slices, ...$attrs }"
-          ></slot>
-        </template>
-      </c-slicer>
+      ></c-slicer>
     </div>
 
     <c-query
@@ -106,9 +96,21 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    slicer: {
+      type: Boolean,
+      default: false
+    },
     syncSlices: {
       type: Boolean,
       default: false
+    },
+    slicerComponents: {
+      type: Array as PropType<string[]>,
+      required: false
+    },
+    slicerExcludeComponents: {
+      type: Array as PropType<string[]>,
+      required: false
     },
   },
   setup(props, { emit }) {

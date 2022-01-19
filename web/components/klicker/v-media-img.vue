@@ -14,14 +14,14 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import { VCardWrapper } from '~/klicker/components'
-import { OptionalVisualisationProps } from '~/klicker/props'
+import { StaticProps } from '~/klicker/props'
 
 export default defineComponent({
   components: {
     VCardWrapper,
   },
   props: {
-    ...OptionalVisualisationProps,
+    ...StaticProps,
     title: {
       type: String,
       required: false

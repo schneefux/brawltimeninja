@@ -40,13 +40,8 @@
         v-model="query"
         :elevation="elevation + 1"
         configurator
+        slicer
       >
-        <template v-slot:slices="data">
-          <slot
-            name="slices"
-            v-bind="data"
-          ></slot>
-        </template>
         <template v-slot:totals="data">
           <b-card
             :elevation="elevation + 1"

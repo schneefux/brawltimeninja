@@ -20,7 +20,7 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 import { VisualisationProps } from '~/klicker/props'
 import BButton from '~/klicker/components/ui/b-button.vue'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponse(props)
+    const { dimensions, measurements } = useCubeResponseProps(props)
 
     const download = () => {
       const temporal = dimensions.value.filter(d => d.type == 'temporal')[0]

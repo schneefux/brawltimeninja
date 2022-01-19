@@ -14,17 +14,8 @@
         <c-dashboard
           v-model="query"
           :elevation="2"
+          slicer
         >
-          <template v-slot:slices="data">
-            <s-season
-              v-bind="data"
-              :limit="52"
-              exact
-            ></s-season>
-            <s-brawler v-bind="data"></s-brawler>
-            <s-power v-bind="data"></s-power>
-          </template>
-
           <template v-slot:totals="data">
             <div class="w-full flex flex-wrap">
               <v-last-update v-bind="data"></v-last-update>

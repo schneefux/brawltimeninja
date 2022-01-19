@@ -37,7 +37,7 @@
 <script lang="ts">
 import { VisualisationProps } from '~/klicker/props'
 import { computed, defineComponent } from '@nuxtjs/composition-api'
-import { useCubeResponse } from '~/klicker/composables/response'
+import { useCubeResponseProps } from '~/klicker/composables/response'
 import VCardWrapper from '~/klicker/components/visualisations/v-card-wrapper.vue'
 
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, measurements } = useCubeResponse(props)
+    const { $klicker, measurements } = useCubeResponseProps(props)
 
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
     const testName = computed(() => measurements.value[0].statistics?.test?.name)

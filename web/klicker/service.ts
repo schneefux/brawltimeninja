@@ -1,19 +1,26 @@
-import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter } from "~/klicker"
+import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec } from "~/klicker"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import { capitalizeWords } from "~/lib/util"
 import defaultVisualisations from "./visualisations"
+import defaultStaticWidgets from "./static-widgets"
 
 export default class Klicker {
   private cubejsApi: CubejsApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
+  public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
+  public slicers: SlicerSpec[] = []
 
   constructor(cubeUrl: string,
       public config: Config,
-      visualisations: VisualisationSpec[]) {
+      visualisations: VisualisationSpec[],
+      staticWidgets: StaticWidgetSpec[],
+      slicers: SlicerSpec[]) {
     this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
     this.visualisations = defaultVisualisations.concat(visualisations)
+    this.staticWidgets = defaultStaticWidgets.concat(this.staticWidgets)
+    this.slicers = slicers
   }
 
   // override

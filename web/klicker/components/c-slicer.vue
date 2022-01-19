@@ -20,7 +20,23 @@
       slot="content"
       class="mb-1 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2"
     >
-      <slot :value="slices" :on-input="onInput"></slot>
+      <component
+        v-for="spec in specs"
+        :key="spec.name"
+        :is="spec.import"
+        :value="slices"
+        :on-input="onInput"
+      >
+        <template
+          v-for="(_, slot) of $scopedSlots"
+          v-slot:[slot]="slotProps"
+        >
+          <slot
+            v-bind="slotProps"
+            :name="slot"
+          ></slot>
+        </template>
+      </component>
     </div>
   </b-card>
 </template>
@@ -28,9 +44,10 @@
 <script lang="ts">
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
-import { SliceValue, CubeQuery, CubeComparingQuery } from '~/klicker'
+import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '~/klicker'
 import BButton from '~/klicker/components/ui/b-button.vue'
 import { useBreakpointTailwindCSS } from 'vue-composable'
+import { useCubeConfig } from '../composables/config'
 
 export default defineComponent({
   components: {
@@ -40,6 +57,14 @@ export default defineComponent({
     value: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
+    },
+    components: {
+      type: Array as PropType<string[]>,
+      required: false
+    },
+    excludeComponents: {
+      type: Array as PropType<string[]>,
+      default: () => []
     },
     card: {
       type: undefined,
@@ -132,6 +157,54 @@ export default defineComponent({
     const title = computed(() => compareMode.value ? (props.comparing ? i18n.t('comparison.filter.test') : i18n.t('comparison.filter.reference')) : i18n.t('filter.title'))
     const { md: breakpointMd } = useBreakpointTailwindCSS()
 
+    const cubeId = computed(() => {
+      if (compareMode.value) {
+        return props.comparing || props.both ? (<CubeComparingQuery> props.value).cubeId : (<CubeComparingQuery> props.value).reference.cubeId
+      } else {
+        return (<CubeQuery> props.value).cubeId
+      }
+    })
+
+    const { $klicker, checkSlicerApplicable } = useCubeConfig(cubeId)
+    const specs = computed(() => {
+      let applicableSpecs: SlicerSpec[] = []
+
+      if (props.components != undefined) {
+        applicableSpecs = props.components.map((component) => {
+          const spec = $klicker.slicers.find(v => v.component == component)
+          if (spec == undefined) {
+            console.warn('Could not find requested slicer spec ' + component)
+          }
+          return spec!
+        }).filter((spec) => {
+          if (spec == undefined) {
+            return false
+          }
+          if (props.excludeComponents.includes(spec.component)) {
+            return false
+          }
+
+          if (checkSlicerApplicable(spec)) {
+            return true
+          } else {
+            console.warn('Requested slicer spec ' + spec.component + ' not applicable')
+            return false
+          }
+        })
+      } else {
+        applicableSpecs = $klicker.slicers.filter(checkSlicerApplicable)
+
+        if (applicableSpecs.length == 0) {
+          console.warn('Could not find any applicable slicer specs')
+        }
+      }
+
+      return applicableSpecs.map((spec) => ({
+        name: spec.name,
+        import: spec.import,
+      }))
+    })
+
     return {
       breakpointMd,
       title,
@@ -139,6 +212,7 @@ export default defineComponent({
       showFilters,
       slices,
       faFilter,
+      specs,
     }
   }
 })

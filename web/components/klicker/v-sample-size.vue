@@ -27,7 +27,7 @@ import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { CubeResponse } from '~/klicker'
 import { formatSI } from '~/lib/util'
 import { VCardWrapper } from '~/klicker/components'
-import { useCubeResponse } from '~/klicker/composables'
+import { useCubeResponseProps } from '~/klicker/composables'
 import { VisualisationProps } from '~/klicker/props'
 
 export default defineComponent({
@@ -38,7 +38,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { switchResponse } = useCubeResponse(props)
+    const { switchResponse } = useCubeResponseProps(props)
 
     const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
 

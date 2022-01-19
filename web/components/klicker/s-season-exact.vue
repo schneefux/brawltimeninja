@@ -1,7 +1,7 @@
 <template>
   <b-select
-    v-if="'season' in value && seasons != undefined"
-    :value="value['season'][0]"
+    v-if="'seasonExact' in value && seasons != undefined"
+    :value="value['seasonExact'][0]"
     dark
     sm
     @input="v => onInput({ [key]: [v] })"
@@ -11,7 +11,7 @@
       :key="s.id"
       :value="s.id"
     >
-      Since {{ s.name }}
+      At {{ s.name }}
     </option>
   </b-select>
 </template>
@@ -32,7 +32,7 @@ export default defineComponent({
     },
     limit: {
       type: Number,
-      default: 8
+      default: 52
     },
   },
   setup(props) {

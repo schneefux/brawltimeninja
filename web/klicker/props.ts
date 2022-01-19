@@ -2,35 +2,26 @@ import { PropType } from '@nuxtjs/composition-api'
 import { CubeComparingResponse, CubeResponse } from '.'
 
 /**
- * Props definition for visualisation components
+ * Props definition for static components
  */
-export const VisualisationProps = {
+export const StaticProps = {
   card: {
     type: undefined,
     required: false as false
   },
-  loading: {
-    type: Boolean,
-    required: true as true
-  },
-  response: {
-    type: Object as PropType<CubeResponse|CubeComparingResponse>,
-    required: true as true
-  },
 }
 
 /**
- * Props definition for visualisation or static components
+ * Props definition for visualisation components
  */
-export const OptionalVisualisationProps = {
-  ...VisualisationProps,
+export const VisualisationProps = {
+  ...StaticProps,
   loading: {
     type: Boolean,
-    required: false as false
+    required: true as true
   },
   response: {
-    // @ts-ignore
     type: Object as PropType<CubeResponse|CubeComparingResponse>,
-    required: false as false
+    required: true as true
   },
 }

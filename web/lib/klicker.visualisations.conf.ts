@@ -46,28 +46,6 @@ const visualisations: VisualisationSpec[] = [{
     rows: 1,
     columns: 1,
   },
-}, {
-  name: 'Image',
-  component: 'v-media-img',
-  import: () => import('~/components/klicker/v-media-img.vue'),
-  applicable(dimensions, measurements, size) {
-    return size == 0
-  },
-  initialDimensions: {
-    rows: 2,
-    columns: 2,
-  },
-  scalable: true,
-  props: {
-    path: {
-      name: 'Path',
-      component: 'b-textbox',
-      import: () => import('~/klicker/components/ui/b-textbox.vue'),
-      props: {
-        dark: true,
-      },
-    },
-  },
 }]
 
 export default visualisations
