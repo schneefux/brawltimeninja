@@ -31,7 +31,7 @@
 
         <c-metric
           :value="value"
-          :multiple="!compareMode && advancedMode"
+          :multiple="!compareMode"
           @input="s => $emit('input', s)"
         ></c-metric>
 
@@ -53,11 +53,6 @@
         >
           <b-checkbox v-model="compareMode"></b-checkbox>
           <span class="ml-2">Comparison Mode</span>
-        </label>
-
-        <label class="col-span-2 flex items-center">
-          <b-checkbox v-model="advancedMode"></b-checkbox>
-          <span class="ml-2">Expert Options</span>
         </label>
       </div>
     </div>
@@ -92,12 +87,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { $klicker } = useContext()
-
-    const queryIsDefault = !props.value.comparing && !$klicker.config[props.value.cubeId].hidden
-      && props.value.measurementsIds.length == $klicker.config[props.value.cubeId].defaultMeasurementIds.length
-      && JSON.stringify(props.value.dimensionsIds) == JSON.stringify($klicker.config[props.value.cubeId].defaultDimensionsIds)
-
-    const advancedMode = ref(!queryIsDefault)
 
     const onInputCubeId = (c: string) => {
       // filter & keep old slice values that exist in the new cube too
@@ -153,8 +142,7 @@ export default defineComponent({
       }
     })
 
-    const cubes = computed<Cube[]>(() => Object.values($klicker.config)
-      .filter((cube) => advancedMode.value || !cube.hidden))
+    const cubes = computed<Cube[]>(() => Object.values($klicker.config))
 
     const canCompare = computed(() => {
       if (props.value.comparing) {
@@ -173,7 +161,6 @@ export default defineComponent({
       cubes,
       canCompare,
       compareMode,
-      advancedMode,
       onInputCubeId,
       prefix,
       faPlus,
