@@ -89,17 +89,9 @@ export default defineComponent({
     const { $klicker } = useContext()
 
     const onInputCubeId = (c: string) => {
-      // filter & keep old slice values that exist in the new cube too
-      const slicesDefaults = Object.assign({},
-        $klicker.config[c].defaultSliceValues,
-        Object.fromEntries(
-          Object.entries(props.value.slices)
-            .filter(([key, value]) => $klicker.config[c].slices.some(s => s.id == key))
-        ))
-
       const newQuery: CubeQuery = {
         cubeId: c,
-        slices: slicesDefaults,
+        slices: $klicker.config[c].defaultSliceValues,
         dimensionsIds: $klicker.config[c].defaultDimensionsIds,
         measurementsIds: $klicker.config[c].defaultMeasurementIds,
         sortId: $klicker.config[c].defaultMeasurementIds[0],
