@@ -41,7 +41,7 @@
 <script lang="ts">
 import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
-import { VLineplot } from 'klicker'
+import { VLineplot } from 'klicker/components'
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({

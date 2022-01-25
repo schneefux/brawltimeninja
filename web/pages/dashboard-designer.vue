@@ -60,7 +60,7 @@
 
 <script lang='ts'>
 import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
-import { CGrid, BTextbox } from 'klicker'
+import { CGrid, BTextbox } from 'klicker/components'
 import { Grid, CubeQuery } from 'klicker/types'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'

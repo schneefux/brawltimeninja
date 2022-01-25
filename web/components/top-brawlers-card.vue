@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BButton, CQuery } from 'klicker'
+import { BButton, CQuery } from 'klicker/components'
 
 export default Vue.extend({
   components: {

@@ -1,32 +1,32 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('comparison.test.info.title') }"
+    :card="card && { ...card, title: translate('comparison.test.info.title') }"
     component="v-test-info"
   >
     <div slot="content">
-      <p>{{ $t('comparison.test.info.description', { testName, metricName }) }}</p>
+      <p>{{ translate('comparison.test.info.description', { testName, metricName }) }}</p>
       <table class="mx-auto mt-2">
         <tbody>
           <tr>
             <td class="pr-1">⋆⋆⋆</td>
-            <td>{{ $t('comparison.test.very-significant') }}</td>
+            <td>{{ translate('comparison.test.very-significant') }}</td>
           </tr>
           <tr>
             <td>⋆⋆</td>
-            <td>{{ $t('comparison.test.very-significant') }}</td>
+            <td>{{ translate('comparison.test.very-significant') }}</td>
           </tr>
           <tr>
             <td>⋆</td>
-            <td>{{ $t('comparison.test.significant') }}</td>
+            <td>{{ translate('comparison.test.significant') }}</td>
           </tr>
           <tr>
             <td>+</td>
-            <td>{{ $t('comparison.test.not-significant') }}</td>
+            <td>{{ translate('comparison.test.not-significant') }}</td>
           </tr>
           <tr>
             <td></td>
-            <td>{{ $t('comparison.test.not-significant') }}</td>
+            <td>{{ translate('comparison.test.not-significant') }}</td>
           </tr>
         </tbody>
       </table>
@@ -52,10 +52,12 @@ export default defineComponent({
 
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
     const testName = computed(() => measurements.value[0].statistics?.test?.name)
+    const translate = $klicker.$t
 
     return {
       metricName,
       testName,
+      translate,
     }
   },
 })

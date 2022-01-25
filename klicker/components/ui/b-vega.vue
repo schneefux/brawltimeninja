@@ -81,7 +81,7 @@ export default defineComponent({
     const graph = ref<ComponentPublicInstance>()
 
     const refresh = async () => {
-      if (!process.client || graph.value == undefined) {
+      if (graph.value == undefined) {
         return
       }
 

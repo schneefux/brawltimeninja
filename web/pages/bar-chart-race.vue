@@ -78,7 +78,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { CubeQuery } from 'klicker/types'
-import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from 'klicker'
+import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from 'klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 export default Vue.extend({

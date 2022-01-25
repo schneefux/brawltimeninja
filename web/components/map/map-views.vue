@@ -133,10 +133,6 @@
           style="--columns: 4; --rows: 1;"
         ></map-best-accessory-roll>
 
-        <lazy
-          distance="200px"
-          translucent
-        >
           <map-balance-chart
             :id="id"
             :slices="query.slices"
@@ -173,7 +169,6 @@
             full-height
             dense
           ></metric-info>
-        </lazy>
       </div>
     </template>
   </c-dashboard>
@@ -182,7 +177,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useStore, watch, wrapProperty } from '@nuxtjs/composition-api'
 import { CubeQuery } from 'klicker/types'
-import { CDashboard, VTestInfo } from 'klicker'
+import { CDashboard, VTestInfo } from 'klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 const useGtag = wrapProperty('$gtag', false)

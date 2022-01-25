@@ -67,7 +67,7 @@
 
 <script lang='ts'>
 import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
-import { CCanvas, BTextbox } from 'klicker'
+import { CCanvas, BTextbox } from 'klicker/components'
 import { Report, CubeQuery } from 'klicker/types'
 import { useStorage } from 'klicker/composables'
 import DBrawler from '@/components/klicker/d-brawler.vue'

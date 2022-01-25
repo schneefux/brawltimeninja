@@ -13,7 +13,7 @@ const staticWidgets: StaticWidgetSpec[] = [{
     path: {
       name: 'Path',
       component: 'b-textbox',
-      import: async () => (await import('klicker')).BTextbox,
+      import: () => import('klicker/components/ui/b-textbox.vue'),
       props: {
         dark: true,
       },

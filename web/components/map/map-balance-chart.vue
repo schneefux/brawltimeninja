@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { CQuery, VBarplot } from 'klicker'
+import { CQuery, VBarplot } from 'klicker/components'
 import { SliceValue, CubeQuery } from 'klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'

@@ -26,7 +26,7 @@
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { CubeResponse } from 'klicker/types'
 import { formatSI } from '~/lib/util'
-import { VCardWrapper } from 'klicker'
+import { VCardWrapper } from 'klicker/components'
 import { useCubeResponseProps } from 'klicker/composables'
 import { VisualisationProps } from 'klicker/props'
 

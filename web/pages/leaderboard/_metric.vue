@@ -66,7 +66,7 @@ import { mapState } from 'vuex'
 import { Leaderboard, LeaderboardEntry } from '@/model/Api'
 import { camelToSnakeCase, capitalizeWords } from '@/lib/util'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
-import { BHorizontalScroller } from 'klicker'
+import { BHorizontalScroller } from 'klicker/components'
 
 function formatMetric(m: string) {
   return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))

@@ -1,42 +1,53 @@
+const path = require('path')
+const webpack = require('webpack')
+
 module.exports = {
-  framework: '@storybook/vue3',
+  framework: '@storybook/vue',
   stories: [
     '../components/**/*.stories.mdx',
     '../components/**/*.stories.@(js|jsx|ts|tsx)'
   ],
-  core: {
-    builder: 'storybook-builder-vite',
-  },
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     'storybook-dark-mode',
-  ],
-  /*
-  webpackFinal: (config) => {
-    // modify Vue and CSS rule to add postcss loader
-
-    const vueRule = config.module.rules.find(r => r.loader == require.resolve('vue-loader'))
-    vueRule.options = {
-      loaders: {
-        postcss: 'vue-style-loader!css-loader!postcss-loader',
-      }
-    }
-    console.log(JSON.stringify(vueRule, null, 2))
-
-    config.module.rules.push({
-      test: /\.css$/,
-      use: [
-        'vue-style-loader',
-        {
-          loader: 'css-loader',
-          options: { importLoaders: 1 }
+    {
+      name: '@storybook/addon-postcss',
+      options: {
+        postcssLoaderOptions: {
+          implementation: require('postcss'),
         },
-        'postcss-loader'
-      ]
+      },
+    },
+  ],
+  webpackFinal: (config) => {
+    config.module.rules.push({
+      test: /\.postcss$/, // for lang="postcss"
+      sideEffects: true,
+      use: [
+        'vue-style-loader', {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+          },
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            implementation: require('postcss'),
+          },
+        },
+      ],
     })
 
-    return config;
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    })
+
+    config.resolve.alias[path.resolve(__dirname, '../composables/klicker.ts')] = path.resolve(__dirname, '../fixtures/klicker.shim.ts')
+    config.resolve.alias['@nuxtjs/composition-api'] = path.resolve(__dirname, '../fixtures/nuxtjs-composition-api.shim.ts')
+
+    return config
   },
-  */
 }

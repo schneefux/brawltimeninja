@@ -69,7 +69,6 @@ export default {
   loading: { color: '#dc2626' }, // red-600
 
   css: [
-    'klicker/dist/style.css', // import these tailwind rules first so that they don't overwrite main tailwind
     '~/assets/css/tailwind.css',
     '~/assets/css/transitions.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),

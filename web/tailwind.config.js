@@ -8,7 +8,7 @@ module.exports = {
     'pages/**/*.vue',
     'plugins/**/*.{js,ts}',
     'content/**/*.md',
-    'klicker/**/*.vue',
+    'node_modules/klicker/components/**/*.vue',
   ],
   theme: {
     colors: {

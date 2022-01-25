@@ -6,12 +6,10 @@ export default {
   title: 'Button',
 } as Meta
 
-const Template: Story = (args) => ({
+const Template: Story = (args, { argTypes }) => ({
   components: { BButton },
-  template: `<b-button v-bind="args">Click me</b-button>`,
-  setup() {
-    return { args }
-  },
+  props: Object.keys(argTypes),
+  template: `<b-button v-bind="$props">Click me</b-button>`,
 })
 
 export const Primary: Story = Template.bind({})

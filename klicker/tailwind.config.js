@@ -6,7 +6,7 @@ module.exports = {
     'components/**/*.{js,jsx,ts,tsx,vue}',
   ],
   safelist: [{
-    pattern: /var--.*/,
+    pattern: /var--/,
     variants: ['sm', 'md', 'lg', 'xl', '2xl'],
   }, {
     pattern: /dashboard-/,

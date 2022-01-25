@@ -320,15 +320,19 @@ export default class Klicker implements KlickerService {
         const mRaw: MetaGridEntry['measurementsRaw'] = {
           [m.id]: measurementsRaw[m.id],
         }
+        let missingRequiredKey = false
         if (m.statistics?.ci != undefined) {
           for (const id of m.statistics?.ci?.requiresMeasurements) {
             const key = `${cube.id}.${id}_measure`
             if (!(key in row)) {
+              missingRequiredKey = true
               break
             }
             mRaw[id] = parseFloat(row[key] as string)
           }
-          measurementsCI[m.id] = m.statistics?.ci?.ci(mRaw)
+          if (!missingRequiredKey) {
+            measurementsCI[m.id] = m.statistics?.ci?.ci(mRaw)
+          }
         }
       }
 

@@ -59,7 +59,7 @@
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from 'klicker/types'
-import { VRoll, BShimmer, CQuery, BButton } from 'klicker'
+import { VRoll, BShimmer, CQuery, BButton } from 'klicker/components'
 import { camelToKebab } from '~/lib/util'
 
 interface Template {

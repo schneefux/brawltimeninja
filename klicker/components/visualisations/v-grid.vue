@@ -79,10 +79,12 @@ import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import BCard from '../ui/b-card.vue'
+import BButton from '../ui/b-button.vue'
 import { Measurement } from '../../types'
 
 export default defineComponent({
   components: {
+    BButton,
     BCard,
     VCardWrapper,
   },
@@ -91,7 +93,7 @@ export default defineComponent({
     pageSize: {
       type: Number,
       default: 6
-    }
+    },
   },
   setup(props) {
     const { $klicker, dimensions, measurements } = useCubeResponseProps(props)

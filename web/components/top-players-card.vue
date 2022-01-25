@@ -55,7 +55,7 @@ import Vue from 'vue'
 import { commonMeasurements } from '~/lib/klicker.conf'
 import { capitalize } from '~/lib/util'
 import { Leaderboard } from '~/model/Api'
-import { BHorizontalScroller } from 'klicker'
+import { BHorizontalScroller } from 'klicker/components'
 
 interface Row {
   tag: string

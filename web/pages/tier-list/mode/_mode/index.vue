@@ -158,7 +158,7 @@ import { MetaInfo } from 'vue-meta'
 import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
 import Page from '~/components/page.vue'
-import { BTextbox, BHorizontalScroller } from 'klicker'
+import { BTextbox, BHorizontalScroller } from 'klicker/components'
 
 interface EventIdAndMap {
   id: string

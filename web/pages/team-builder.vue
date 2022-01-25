@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { CubeQuery } from 'klicker/types'
-import { CSlicer } from 'klicker'
+import { CSlicer } from 'klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'

@@ -6,12 +6,10 @@ export default {
   title: 'Query Error',
 } as Meta
 
-const Template: Story = (args) => ({
+const Template: Story = (args, { argTypes }) => ({
   components: { CError },
-  template: `<c-error v-bind="args"></c-error>`,
-  setup() {
-    return { args }
-  },
+  props: Object.keys(argTypes),
+  template: `<c-error v-bind="$props"></c-error>`,
 })
 
 export const WithMessage: Story = Template.bind({})

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { CQuery, VLineplot } from 'klicker'
+import { CQuery, VLineplot } from 'klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from 'klicker/types'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'

@@ -20,7 +20,7 @@
 
 <script lang='ts'>
 import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
-import { CGridRenderer } from 'klicker'
+import { CGridRenderer } from 'klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'

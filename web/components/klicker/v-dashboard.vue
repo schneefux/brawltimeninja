@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { VisualisationProps } from 'klicker/props'
-import { VAuto } from 'klicker'
+import { VAuto } from 'klicker/components'
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({

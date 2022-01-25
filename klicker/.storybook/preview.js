@@ -1,4 +1,10 @@
-import '../index.css'
+import '../components/index.css'
+import '../fixtures/layout.css'
+
+import Vue from 'vue'
+import VueCompositionApi from '@vue/composition-api'
+
+Vue.use(VueCompositionApi)
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

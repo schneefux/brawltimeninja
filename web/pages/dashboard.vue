@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { CubeQuery, CubeComparingQuery } from 'klicker/types'
-import { CDashboard } from 'klicker'
+import { CDashboard } from 'klicker/components'
 import { useSyncQueryAndRoute } from '~/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'

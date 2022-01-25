@@ -30,7 +30,7 @@ import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import DBrawler from '~/components/klicker/d-brawler.vue'
 import { SliceValue } from 'klicker/types'
-import { VRoll, BShimmer, CQuery } from 'klicker'
+import { VRoll, BShimmer, CQuery } from 'klicker/components'
 
 export default defineComponent({
   inheritAttrs: false,

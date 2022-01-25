@@ -1,18 +1,28 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "strict": true,
+    "target": "es2019",
     "module": "esnext",
-    "skipLibCheck": true,
     "moduleResolution": "node",
+    "lib": [
+      "esnext",
+      "esnext.asynciterable",
+      "dom"
+    ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,
     "outDir": "dist",
-    "jsx": "preserve",
     "types": [
-      "@types/node",
+      "@types/node"
     ],
-    "baseUrl": "."
   },
   "exclude": [
     "node_modules",
