@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts">
-import { CubeQuery, CubeComparingQuery } from '~/klicker'
-import { CDashboard, VDashboard } from '~/klicker/components'
-import { useSyncQueryAndRoute } from '~/klicker/composables/link'
+import { CubeQuery, CubeComparingQuery } from 'klicker/types'
+import { CDashboard } from 'klicker'
+import { useSyncQueryAndRoute } from '~/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -52,7 +52,6 @@ import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 export default defineComponent({
   components: {
     CDashboard,
-    VDashboard,
     DBrawler,
     BrawlerLink, // dependency of DBrawler
     DTeam,

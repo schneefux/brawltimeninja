@@ -82,8 +82,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, watch } from "@nuxtjs/composition-api"
-import useFeathers from '~/klicker/composables/feathers'
-import { Grid, Report, User } from "~/klicker"
+import useFeathers from 'klicker/composables/feathers'
+import { Grid, Report, User } from "klicker/types"
 
 export default defineComponent({
   setup() {

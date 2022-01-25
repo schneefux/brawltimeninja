@@ -31,9 +31,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
-import { MetaGridEntry } from '~/klicker'
-import { VCardWrapper } from '~/klicker/components'
-import { VisualisationProps } from '~/klicker/props'
+import { MetaGridEntry } from 'klicker/types'
+import { VCardWrapper } from 'klicker'
+import { VisualisationProps } from 'klicker/props'
 
 export default defineComponent({
   components: {

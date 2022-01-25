@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { CQuery, VScatterplot } from '~/klicker/components'
-import { SliceValue, CubeQuery } from '~/klicker'
+import { CQuery, VScatterplot } from 'klicker'
+import { SliceValue, CubeQuery } from 'klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 

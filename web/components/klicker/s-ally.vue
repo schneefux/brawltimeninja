@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
-import { SliceValue, SliceValueUpdateListener } from '~/klicker'
+import { SliceValue, SliceValueUpdateListener } from 'klicker/types'
 import { capitalize } from '~/lib/util'
 
 export default defineComponent({

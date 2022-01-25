@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { SliceValue, CubeComparingQuery, CubeComparingQueryFilter } from '~/klicker'
-import { VRoll, BShimmer, CQuery, BButton } from '~/klicker/components'
+import { SliceValue, CubeComparingQuery, CubeComparingQueryFilter } from 'klicker/types'
+import { VRoll, BShimmer, CQuery, BButton } from 'klicker'
 
 export default defineComponent({
   components: {

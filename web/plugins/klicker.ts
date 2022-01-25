@@ -1,15 +1,20 @@
 import Vue from 'vue'
 import config from '~/lib/klicker.conf'
-import { Context, Plugin } from "@nuxt/types"
-import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec } from "~/klicker"
+import { Context } from "@nuxt/types"
+import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec } from "klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatMode, getCurrentSeasonEnd, idToTag } from "~/lib/util"
-import Klicker from '~/klicker/service'
-import { CQuery } from '~/klicker/components'
+import Klicker from 'klicker/service'
+import { CQuery } from 'klicker'
 import visualisations from '~/lib/klicker.visualisations.conf'
 import slicers from '~/lib/klicker.slicers.conf'
 import staticWidgets from '~/lib/klicker.widgets.conf'
+import { defineNuxtPlugin } from '@nuxtjs/composition-api'
+import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BWrappedComponent } from 'klicker'
+import klickerPlugin from 'klicker/plugin'
+
+import 'klicker/dist/style.css'
 
 export interface EventMetadata {
   battle_event_id: number
@@ -24,26 +29,27 @@ export interface EventMetadata {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $klicker: KlickerService
+    $klicker: CustomKlicker
+    $managerUrl: string
   }
 }
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
-    $klicker: KlickerService
+    $klicker: CustomKlicker
   }
   interface Context {
-    $klicker: KlickerService
+    $klicker: CustomKlicker
   }
 }
 
 declare module 'vuex/types/index' {
   interface Store<S> {
-    $klicker: KlickerService
+    $klicker: CustomKlicker
   }
 }
 
-class KlickerService extends Klicker {
+class CustomKlicker extends Klicker {
   constructor(cubeUrl: string,
       config: Config,
       visualisations: VisualisationSpec[],
@@ -59,11 +65,11 @@ class KlickerService extends Klicker {
   }
 
   // override Klicker.$t
-  public $t(key: string) {
+  public $t(key: string, args?: any) {
     if (this.$te(key)) {
-      return this.context.i18n.t(key) as string
+      return this.context.i18n.t(key, args) as string
     }
-    return super.$t(key)
+    return super.$t(key, args)
   }
 
   // override Klicker.format
@@ -199,10 +205,22 @@ class KlickerService extends Klicker {
   }
 }
 
-const plugin: Plugin = (context, inject) => {
+export default defineNuxtPlugin((context, inject) => {
   Vue.component('c-query', CQuery)
-  const klickerService = new KlickerService(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, context)
-  inject('klicker', klickerService)
-}
+  Vue.component('b-shimmer', BShimmer)
+  Vue.component('b-card', BCard)
+  Vue.component('b-button', BButton)
+  Vue.component('b-select', BSelect)
+  Vue.component('b-lightbox', BLightbox)
+  Vue.component('b-checkbox', BCheckbox)
+  Vue.component('b-radio', BRadio)
+  Vue.component('b-wrapped-component', BWrappedComponent) // TODO don't make b-card-content a function component so it can import this
 
-export default plugin
+  const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, context)
+
+  // onGlobalSetup(() => {
+  // })
+
+  inject('klicker', service)
+  inject('managerUrl', context.$config.managerUrl)
+})

@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { MetaGridEntry, CubeResponse } from '~/klicker'
+import { MetaGridEntry, CubeResponse } from 'klicker/types'
 import { Brawler } from '~/model/Brawlstars'
-import { VRoll, BShimmer } from '~/klicker/components'
+import { VRoll, BShimmer } from 'klicker'
 import DBrawler from '~/components/klicker/d-brawler.vue'
 import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
 

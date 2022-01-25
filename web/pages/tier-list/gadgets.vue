@@ -51,7 +51,11 @@
           <template v-slot:data="data">
             <!-- add wrapper div to work around SSR error -->
             <div class="contents">
-              <v-table class="w-full" v-bind="data">
+              <v-table
+                v-bind="data"
+                class="w-full"
+                link-path="/dashboard"
+              >
                 <template v-slot:dimensions="data">
                   <d-brawler v-bind="data"></d-brawler>
                 </template>
@@ -67,8 +71,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CubeComparingQuery } from '~/klicker'
-import { CDashboard, CMetric, VTable, BCard, VTestInfo } from '~/klicker/components'
+import { CubeComparingQuery } from 'klicker/types'
+import { CDashboard, CMetric, VTable, BCard, VTestInfo } from 'klicker'
 import { getSeasonEnd } from '~/lib/util'
 import VSampleSize from '~/components/klicker/v-sample-size.vue'
 import VLastUpdate from '~/components/klicker/v-last-update.vue'

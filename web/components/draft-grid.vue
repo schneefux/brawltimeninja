@@ -84,9 +84,9 @@
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { computed, PropType, ref, watch } from '@vue/composition-api'
-import { CubeQuery } from '~/klicker'
+import { CubeQuery } from 'klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import { BCard } from '~/klicker/components'
+import { BCard } from 'klicker'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 interface AllyData {

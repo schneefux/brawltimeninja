@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { SliceValue, SliceValueUpdateListener } from '~/klicker'
+import { SliceValue, SliceValueUpdateListener } from 'klicker/types'
 import { idToTag, tagToId } from '~/lib/util'
 
 export default defineComponent({

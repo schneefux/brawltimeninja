@@ -63,7 +63,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { MetaGridEntry } from '~/klicker'
+import { MetaGridEntry } from 'klicker/types'
 import { commonMeasurements } from '~/lib/klicker.conf'
 import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'

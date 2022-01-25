@@ -42,7 +42,7 @@
 import Vue from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { BHorizontalScroller } from '~/klicker/components'
+import { BHorizontalScroller } from 'klicker'
 
 export default Vue.extend({
   components: {

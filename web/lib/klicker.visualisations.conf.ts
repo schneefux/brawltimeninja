@@ -1,4 +1,4 @@
-import { MetaGridEntry, VisualisationSpec } from "~/klicker"
+import { MetaGridEntry, VisualisationSpec } from "klicker/types"
 
 const visualisations: VisualisationSpec[] = [{
   name: 'Margin of Error',

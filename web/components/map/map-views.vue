@@ -181,8 +181,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useStore, watch, wrapProperty } from '@nuxtjs/composition-api'
-import { CubeQuery } from '~/klicker'
-import { CDashboard, VTestInfo } from '~/klicker/components'
+import { CubeQuery } from 'klicker/types'
+import { CDashboard, VTestInfo } from 'klicker'
 import { getSeasonEnd } from '~/lib/util'
 
 const useGtag = wrapProperty('$gtag', false)

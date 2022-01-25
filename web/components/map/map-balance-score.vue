@@ -15,10 +15,10 @@
 </template>
 
 <script lang="ts">
-import { CQuery } from '~/klicker/components'
+import { CQuery } from 'klicker'
 import VGini from '~/components/klicker/v-gini.vue'
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { CubeQuery, SliceValue } from '~/klicker'
+import { CubeQuery, SliceValue } from 'klicker/types'
 
 export default defineComponent({
   components: {

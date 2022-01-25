@@ -1,4 +1,4 @@
-import { SlicerSpec } from "~/klicker"
+import { SlicerSpec } from "klicker/types"
 
 const slicers: SlicerSpec[] = [{
   name: 'Ally',

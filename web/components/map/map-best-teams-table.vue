@@ -4,6 +4,7 @@
       <v-table
         v-bind="data"
         :card="{ title, fullHeight: true, ...$attrs }"
+        link-path="/dashboard"
       >
         <template v-slot:dimensions="data">
           <d-team v-bind="data"></d-team>
@@ -16,8 +17,8 @@
 <script lang="ts">
 import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import { CQuery, VTable } from '~/klicker/components'
-import { SliceValue, CubeQuery } from '~/klicker'
+import { CQuery, VTable } from 'klicker'
+import { SliceValue, CubeQuery } from 'klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 

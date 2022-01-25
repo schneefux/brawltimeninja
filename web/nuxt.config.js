@@ -69,6 +69,7 @@ export default {
   loading: { color: '#dc2626' }, // red-600
 
   css: [
+    'klicker/dist/style.css', // import these tailwind rules first so that they don't overwrite main tailwind
     '~/assets/css/tailwind.css',
     '~/assets/css/transitions.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
@@ -173,14 +174,14 @@ export default {
   build: {
     postcss: {
       plugins: {
-        'postcss-color-function': {},
         'postcss-import': {},
+        'postcss-color-function': {},
         'tailwindcss': {},
         'autoprefixer': {},
       },
     },
     // https://github.com/nuxt/nuxt.js/issues/9221
-    transpile: ['vega-lite', 'd3-format'],
+    transpile: ['vega-lite', 'd3-format', 'klicker'],
   },
 
   sitemap: {

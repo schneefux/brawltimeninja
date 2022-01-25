@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts">
-import { CubeQuery } from '~/klicker'
-import { CSlicer } from '~/klicker/components'
+import { CubeQuery } from 'klicker/types'
+import { CSlicer } from 'klicker'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
-import { convertToSlices } from '~/klicker/composables/link'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
+import { useKlicker } from '~/../klicker/composables/klicker'
 
 export default defineComponent({
   components: {
@@ -62,6 +62,7 @@ export default defineComponent({
   middleware: ['cached'],
   setup() {
     const route = useRoute()
+    const { $klicker } = useKlicker()
 
     const season = new Date()
     season.setDate(season.getDate() - 7*4)
@@ -72,7 +73,7 @@ export default defineComponent({
       dimensionsIds: [],
       measurementsIds: ['picks'],
       sortId: 'picks',
-      slices: convertToSlices(route.value, {
+      slices: $klicker.convertLocationToSlices(route.value, {
         season: [seasonSlice],
         trophyRangeGte: ['0'],
         mode: [],

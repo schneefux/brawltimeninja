@@ -120,7 +120,7 @@
 import { Player } from '@/model/Api'
 import { ratingPercentiles, xpToHours } from '~/lib/util'
 import { PlayerTotals } from '~/store'
-import { BHorizontalScroller } from '~/klicker/components'
+import { BHorizontalScroller } from 'klicker'
 import { computed, defineComponent, nextTick, onBeforeUpdate, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
 interface FunStat {

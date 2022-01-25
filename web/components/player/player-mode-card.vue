@@ -83,7 +83,7 @@ import Vue, { PropType } from 'vue'
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { MetaGridEntry } from '~/klicker'
+import { MetaGridEntry } from 'klicker/types'
 import { commonMeasurements } from '~/lib/klicker.conf'
 
 interface Stats {

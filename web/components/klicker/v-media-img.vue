@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { VCardWrapper } from '~/klicker/components'
-import { StaticProps } from '~/klicker/props'
+import { VCardWrapper } from 'klicker'
+import { StaticProps } from 'klicker/props'
 
 export default defineComponent({
   components: {
