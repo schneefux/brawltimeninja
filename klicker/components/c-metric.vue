@@ -71,10 +71,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import { useKlicker } from '../composables/klicker'
+import BSelect from './ui/b-select.vue'
+import BButton from './ui/b-button.vue'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
+    BSelect,
+    BButton,
   },
   inheritAttrs: false,
   props: {

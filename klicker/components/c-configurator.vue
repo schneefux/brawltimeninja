@@ -1,7 +1,7 @@
 <template>
   <b-card
     v-bind="card"
-    :title="$t('configurator.title')"
+    :title="translate('configurator.title')"
   >
     <div
       slot="content"
@@ -63,6 +63,7 @@
 import { CubeQuery, Cube, CubeComparingQuery } from '../types'
 import CMetric from './c-metric.vue'
 import CDimension from './c-dimension.vue'
+import BCard from './ui/b-card.vue'
 import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -77,6 +78,7 @@ export default defineComponent({
     CDimension,
     BSelect,
     BCheckbox,
+    BCard,
   },
   props: {
     value: {
@@ -152,6 +154,8 @@ export default defineComponent({
 
     const prefix = Math.random().toString().slice(2)
 
+    const translate = $klicker.$t
+
     return {
       cubes,
       canCompare,
@@ -160,6 +164,7 @@ export default defineComponent({
       prefix,
       faPlus,
       faMinus,
+      translate,
     }
   },
 })

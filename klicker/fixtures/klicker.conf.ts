@@ -1,19 +1,6 @@
 import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, MetaGridEntry } from "../types"
 import { ChiSquared } from 'sampson'
 
-/* c&p from util */
-export function getSeasonEnd(timestamp: Date) {
-  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
-  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
-  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
-  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
-  return trophySeasonEnd
-}
-
-const monthAgo = new Date()
-monthAgo.setMonth(monthAgo.getMonth() - 1)
-const currentSeason = getSeasonEnd(monthAgo).toISOString().slice(0, 10)
-
 function calculateGTestStatistic(expectations: number[], observations: number[]) {
   if (expectations.length != observations.length) {
     throw new Error(`Invalid chisq test, cardinality of expectations ${expectations.length} does not match cardinality of observations ${observations.length}`)
@@ -263,12 +250,12 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
 })
 
 const battleSlices = asSlice({
-  season: {
-    id: 'season',
+  seasonBetween: {
+    id: 'seasonBetween',
     config: {
       member: 'season_dimension',
-      operator: 'afterDate',
-    },
+      operator: 'inDateRange',
+    }
   },
   mode: {
     id: 'mode',
@@ -310,12 +297,12 @@ const cubes: Record<string, Cube> = {
     defaultMeasurementIds: ['winRateAdj'],
     metaMeasurements: ['picks', 'timestamp'],
     slices: [
-      battleSlices.season,
+      battleSlices.seasonBetween,
       battleSlices.mode,
       battleSlices.map,
     ],
     defaultSliceValues: {
-      season: [currentSeason],
+      seasonBetween: ['2021-11-01', '2021-12-31'],
     },
   },
 }

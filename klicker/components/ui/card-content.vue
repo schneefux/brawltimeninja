@@ -13,14 +13,12 @@
       :is="$props.tag"
       :class="['flex flex-col rounded', {
         'h-full': $props.fullHeight,
-        'bg-dark-0': !$props.light && !$props.primary && !$props.secondary && $props.elevation == 0,
-        'bg-dark-1': !$props.light && !$props.primary && !$props.secondary && $props.elevation == 1,
-        'bg-dark-2': !$props.light && !$props.primary && !$props.secondary && $props.elevation == 2,
-        'bg-dark-3': !$props.light && !$props.primary && !$props.secondary && $props.elevation == 3,
-        'bg-dark-4': !$props.light && !$props.primary && !$props.secondary && $props.elevation == 4,
+        'bg-dark-0': !$props.light && $props.elevation == 0,
+        'bg-dark-1': !$props.light && $props.elevation == 1,
+        'bg-dark-2': !$props.light && $props.elevation == 2,
+        'bg-dark-3': !$props.light && $props.elevation == 3,
+        'bg-dark-4': !$props.light && $props.elevation == 4,
         'bg-gray-100 text-gray-800': $props.light,
-        'bg-yellow-900': $props.primary,
-        'bg-red-900': $props.secondary,
         'shadow-sm': $props.elevation == 0,
         'shadow': $props.elevation == 1,
         'shadow-md': $props.elevation == 2,
@@ -46,18 +44,15 @@
         }]"
       >
         <div
-          v-if="$props.icon != undefined"
+          v-if="$props.icon != undefined || 'icon' in $scopedSlots"
           :class="['shrink-0 flex justify-center items-center mr-3', {
             'w-10 h-10 my-2': !$props.dense,
             'w-6 h-6 my-1': $props.dense,
           }]"
         >
-          <!-- TODO decouple media-img from klicker -->
-          <media-img
-            :path="$props.icon"
-            :alt="$props.iconAlt"
-            size="120"
-          ></media-img>
+          <slot name="icon" v-bind="{ icon: $props.icon, alt: $props.iconAlt }">
+            <img :src="$props.icon" :alt="$props.iconAlt">
+          </slot>
         </div>
 
         <div
@@ -157,7 +152,7 @@ export default defineComponent({
       default: 'section'
     },
     link: {
-      type: String,
+      type: String,
     },
     title: {
       type: String,
@@ -187,12 +182,6 @@ export default defineComponent({
       type: Boolean,
     },
     light: {
-      type: Boolean
-    },
-    primary: {
-      type: Boolean
-    },
-    secondary: {
       type: Boolean
     },
     elevation: {

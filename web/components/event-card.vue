@@ -5,10 +5,15 @@
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
-    :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
     v-bind="$attrs"
   >
+    <media-img
+      slot="icon"
+      :path="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
+      size="120"
+    ></media-img>
+
     <media-img
       slot="preview"
       v-if="id != undefined"

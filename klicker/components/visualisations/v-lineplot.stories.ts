@@ -72,7 +72,9 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
   measurementsIds: ['winRate'],
-  slices: {},
+  slices: {
+    seasonBetween: ['2021-11-01', '2021-12-31'],
+  },
   sortId: 'winRate',
   comparing: true,
   reference: {
@@ -82,6 +84,7 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     measurementsIds: ['winRate'],
     slices: {
       mode: ['gemGrab'],
+      seasonBetween: ['2021-11-01', '2021-12-31'],
     },
     sortId: 'winRate',
   },

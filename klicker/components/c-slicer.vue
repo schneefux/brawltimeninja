@@ -12,7 +12,7 @@
         :icon="faFilter"
       ></font-awesome-icon>
 
-      {{ $t('filter.configure' )}}
+      {{ translate('filter.configure' )}}
     </b-button>
 
     <div
@@ -48,6 +48,7 @@ import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BButton from './ui/b-button.vue'
+import BCard from './ui/b-card.vue'
 import { useCubeConfig } from '../composables/config'
 import { useKlicker } from '../composables/klicker'
 
@@ -55,6 +56,7 @@ export default defineComponent({
   components: {
     FontAwesomeIcon,
     BButton,
+    BCard,
   },
   props: {
     value: {
@@ -208,6 +210,8 @@ export default defineComponent({
         }))
     })
 
+    const translate = $klicker.$t
+
     return {
       breakpointMd,
       title,
@@ -216,6 +220,7 @@ export default defineComponent({
       slices,
       faFilter,
       specs,
+      translate,
     }
   }
 })

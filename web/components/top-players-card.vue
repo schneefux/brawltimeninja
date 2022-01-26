@@ -19,7 +19,6 @@
         :key="player.tag"
         :title="player.name"
         :link="localePath(`/profile/${player.tag}`)"
-        :icon="`/avatars/${player.icon}`"
         :icon-alt="player.name"
         :elevation="2"
         size="w-40"
@@ -28,6 +27,13 @@
         itemtype="http://schema.org/Person"
         dense
       >
+        <media-img
+          slot="icon"
+          :path="`/avatars/${player.icon}`"
+          :alt="player.name"
+          size="120"
+        ></media-img>
+
         <p
           slot="content"
           class="text-sm text-center"

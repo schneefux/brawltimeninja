@@ -1,0 +1,19 @@
+import BTextbox from './b-textbox.vue'
+import { Meta, Story } from '@storybook/vue'
+
+export default {
+  component: BTextbox,
+  title: 'Textbox',
+} as Meta
+
+export const Default: Story = (args, { argTypes }) => ({
+  components: { BTextbox },
+  props: Object.keys(argTypes),
+  template: `
+    <b-textbox v-bind="$props"></b-textbox>
+  `,
+})
+Default.args = {
+  dark: true,
+  value: 'Enter some text here',
+}

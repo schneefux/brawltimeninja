@@ -5,11 +5,16 @@
       :key="post.id"
       :title="post.title"
       :title-link="`/blog/${topic}/${post.slug}`"
-      :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
       full-height
       light
       sm
     >
+      <media-img
+        slot="icon"
+        :path="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
+        size="120"
+      ></media-img>
+
       <p slot="content">
         {{ post.description }}
       </p>
