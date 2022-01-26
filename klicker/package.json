@@ -22,7 +22,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@cubejs-client/core": "^0.29.8",
+    "@cubejs-client/core": "^0.29.23",
     "@feathersjs/authentication-client": "5.0.0-pre.16",
     "@feathersjs/feathers": "5.0.0-pre.16",
     "@feathersjs/rest-client": "5.0.0-pre.16",
@@ -50,6 +50,8 @@
     "@storybook/addon-essentials": "^6.4.14",
     "@storybook/addon-links": "^6.4.14",
     "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack5": "^6.4.14",
+    "@storybook/manager-webpack5": "^6.4.14",
     "@storybook/vue": "^6.4.14",
     "@types/d3-format": "^3.0.1",
     "@types/node": "^17.0.10",
@@ -60,12 +62,12 @@
     "postcss": "^8.4.5",
     "postcss-color-function": "^4.1.0",
     "postcss-import": "^14.0.2",
-    "postcss-loader": "^4.3.0",
+    "postcss-loader": "^6.2.1",
     "rollup-plugin-visualizer": "^5.5.4",
     "sampson": "^0.2.8",
     "storybook-dark-mode": "^1.0.8",
     "tailwindcss": "^3.0.15",
-    "ts-loader": "~8.2.0",
+    "ts-loader": "~9.2.6",
     "typescript": "^4.5.5",
     "vite": "^2.7.13",
     "vite-plugin-vue2": "^1.9.2",
@@ -74,7 +76,7 @@
     "vue-loader": "^15.9.8",
     "vue-router": "^3.5.3",
     "vue-template-compiler": "^2.6.14",
-    "webpack": "^4.46.0"
+    "webpack": "5"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",

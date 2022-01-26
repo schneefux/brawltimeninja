@@ -20,6 +20,9 @@ module.exports = {
       },
     },
   ],
+  core: {
+    builder: 'webpack5',
+  },
   webpackFinal: (config) => {
     config.module.rules.push({
       test: /\.postcss$/, // for lang="postcss"
