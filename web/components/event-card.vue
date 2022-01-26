@@ -5,7 +5,7 @@
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
     :background="background"
-    :color="mode != undefined ? 'color-' + mode.toLowerCase() : undefined"
+    :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
     v-bind="$attrs"
   >
     <media-img

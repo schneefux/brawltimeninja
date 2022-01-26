@@ -6,7 +6,7 @@ export default {
   title: 'Select',
 } as Meta
 
-export const Default: Story = (args, { argTypes }) => ({
+export const Dark: Story = (args, { argTypes }) => ({
   components: { BSelect },
   props: Object.keys(argTypes),
   template: `
@@ -17,7 +17,24 @@ export const Default: Story = (args, { argTypes }) => ({
     </b-select>
   `,
 })
-Default.args = {
+Dark.args = {
   dark: true,
   value: '1',
+}
+
+export const Multiple: Story = (args, { argTypes }) => ({
+  components: { BSelect },
+  props: Object.keys(argTypes),
+  template: `
+    <b-select v-bind="$props">
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </b-select>
+  `,
+})
+Multiple.args = {
+  dark: true,
+  value: '1',
+  multiple: true,
 }

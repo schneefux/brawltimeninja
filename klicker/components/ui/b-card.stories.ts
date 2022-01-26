@@ -7,12 +7,14 @@ export default {
   title: 'Card',
 } as Meta
 
+const lipsum = `Brawl Stars has almost 200 distinct maps. With the daily Map Maker Competition Winner, there is a new map available to play every day. Unarguably, some maps must be better than others. How can we measure that?`
+
 export const Default: Story = (args, { argTypes }) => ({
   components: { BCard },
   props: Object.keys(argTypes),
   template: `
     <b-card v-bind="$props">
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
     </b-card>
   `,
 })
@@ -27,7 +29,7 @@ export const Loading: Story = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
     <b-card v-bind="$props">
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
     </b-card>
   `,
 })
@@ -43,7 +45,7 @@ export const Light: Story = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
     <b-card v-bind="$props">
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
     </b-card>
   `,
 })
@@ -60,7 +62,7 @@ export const Infobar: Story = (args, { argTypes }) => ({
   template: `
     <b-card v-bind="$props">
       <p slot="infobar" style="text-align: right;">Some meta information</p>
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
     </b-card>
   `,
 })
@@ -75,7 +77,7 @@ export const SubtitleAndIcon: Story = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
     <b-card v-bind="$props">
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
     </b-card>
   `,
 })
@@ -101,6 +103,28 @@ Dense.args = {
   elevation: 1,
   xxs: true,
   dense: true,
+}
+
+const style = document.createElement('style')
+style.innerHTML = '.bg-yellow-400 { background-color: #BF8A28; }'
+document.getElementsByTagName('head')[0].appendChild(style)
+
+export const BackgroundColor: Story = (args, { argTypes }) => ({
+  components: { BCard },
+  props: Object.keys(argTypes),
+  template: `
+    <div>
+      <b-card v-bind="$props">
+        <p slot="content">${lipsum}</p>
+      </b-card>
+    </div>
+  `,
+})
+BackgroundColor.args = {
+  title: 'Storybook Demo',
+  elevation: 1,
+  md: true,
+  color: 'bg-yellow-400',
 }
 
 export const BackgroundImage: Story = (args, { argTypes }) => ({
@@ -139,7 +163,7 @@ export const Actions: Story = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
     <b-card v-bind="$props">
-      <p slot="content">Content goes here</p>
+      <p slot="content">${lipsum}</p>
       <div slot="actions">
         <b-button primary sm>Open</b-button>
       </div>

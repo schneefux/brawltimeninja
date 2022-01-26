@@ -51,7 +51,7 @@
           v-if="canCompare"
           class="col-span-2 flex items-center"
         >
-          <b-checkbox v-model="compareMode"></b-checkbox>
+          <b-checkbox dark v-model="compareMode"></b-checkbox>
           <span class="ml-2">Comparison Mode</span>
         </label>
       </div>
