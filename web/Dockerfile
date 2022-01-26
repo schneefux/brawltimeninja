@@ -13,7 +13,7 @@ ARG BRANCH=''
 ENV BRANCH=$BRANCH
 ARG GITHUB_TOKEN=''
 WORKDIR /app
-COPY .npmrc package.json yarn.lock .
+COPY ./.npmrc ./package.json ./yarn.lock .
 RUN sed -i -E 's_"@schneefux/klicker": ".*"_"@schneefux/klicker": "*"_g' ./package.json
 RUN echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" >> .npmrc
 RUN yarn add @schneefux/klicker
@@ -24,9 +24,8 @@ RUN yarn run build
 FROM node:16
 ENV NODE_ENV=production
 WORKDIR /app
-COPY --from=builder package.json yarn.lock .
-RUN yarn install --frozen-lockfile
 COPY --from=builder /app ./
+RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
