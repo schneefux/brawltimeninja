@@ -218,6 +218,6 @@ export default defineNuxtPlugin((context, inject) => {
   // onGlobalSetup(() => {
   // })
 
-  inject('@schneefux/klicker', service)
+  inject('klicker', service)
   inject('managerUrl', context.$config.managerUrl)
 })
