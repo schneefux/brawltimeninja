@@ -7,8 +7,6 @@ on:
         required: true
         type: string
     secrets:
-      CR_PAT:
-        required: true
       SENTRY_DSN:
         required: false
       SENTRY_AUTH_TOKEN:
@@ -21,6 +19,10 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
+      -
+        name: Replace all references to klicker package
+        run: |
+          sed -E 's_"klicker": ".*"_"klicker": "github:schneefux/klicker"_g' ./*/package.json
       -
         name: Docker meta
         id: meta
@@ -51,7 +53,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
         uses: docker/build-push-action@v2

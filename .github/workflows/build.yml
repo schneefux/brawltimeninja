@@ -10,43 +10,62 @@ jobs:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: api
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-clicker:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: clicker
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-cube:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: cube
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-media:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: media
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-render:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: render
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-manager:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: manager
-    secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
   build-web:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: web
+    needs: build-klicker
     secrets:
-      CR_PAT: ${{ secrets.CR_PAT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  build-klicker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./klicker
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build
+      -
+        name: Publish package to GitHub package registry
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          workingDir: ./klicker
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,7 @@
 {
   "name": "@schneefux/klicker",
   "version": "1.0.0",
+  "author": "schneefux",
   "description": "",
   "sideEffects": false,
   "main": "dist/index.cjs.js",
@@ -12,7 +13,13 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
-  "author": "",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schneefux/brawltimeninja.git"
+  },
   "license": "UNLICENSED",
   "dependencies": {
     "@cubejs-client/core": "^0.29.8",
@@ -49,6 +56,7 @@
     "@vue/composition-api": "^1.4.4",
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.3",
+    "chromatic": "^6.4.1",
     "postcss": "^8.4.5",
     "postcss-color-function": "^4.1.0",
     "postcss-import": "^14.0.2",
