@@ -6,7 +6,7 @@ import auth from '@feathersjs/authentication-client'
 import { useContext } from '@nuxtjs/composition-api'
 
 export default function useFeathers() {
-  const { $managerUrl } = useContext()
+  const { $managerUrl }: any = useContext()
 
   const client = feathers()
 

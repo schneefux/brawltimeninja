@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { VisualisationProps } from 'klicker/props'
-import { VAuto } from 'klicker/components'
+import { VisualisationProps } from '@schneefux/klicker/props'
+import { VAuto } from '@schneefux/klicker/components'
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({

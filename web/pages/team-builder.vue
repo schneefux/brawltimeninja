@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts">
-import { CubeQuery } from 'klicker/types'
-import { CSlicer } from 'klicker/components'
+import { CubeQuery } from '@schneefux/klicker/types'
+import { CSlicer } from '@schneefux/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
-import { useKlicker } from '~/../klicker/composables/klicker'
+import { useKlicker } from '@schneefux/klicker/composables/klicker'
 
 export default defineComponent({
   components: {

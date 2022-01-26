@@ -20,7 +20,7 @@
 
 <script lang='ts'>
 import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
-import { CGridRenderer } from 'klicker/components'
+import { CGridRenderer } from '@schneefux/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -31,8 +31,8 @@ import DSeason from '@/components/klicker/d-season.vue'
 import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { MetaInfo } from 'vue-meta'
-import { Grid } from "klicker/types"
-import useFeathers from "klicker/composables/feathers"
+import { Grid } from "@schneefux/klicker/types"
+import useFeathers from "@schneefux/klicker/composables/feathers"
 
 export default defineComponent({
   components: {

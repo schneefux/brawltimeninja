@@ -58,6 +58,10 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run build
       -
+        name: Update klicker version
+        run: |
+          sed -i -E 's/"version": "(.*)"/"version": "\1-${{ github.sha }}"/g' ./package.json
+      -
         name: Publish package to GitHub package registry
         run: yarn publish
         env:

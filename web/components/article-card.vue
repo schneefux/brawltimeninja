@@ -60,7 +60,7 @@
 import { IContentDocument } from '@nuxt/content/types/content'
 import { format, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
-import { BWrappedComponent } from 'klicker/components'
+import { BWrappedComponent } from '@schneefux/klicker/components'
 
 export default Vue.extend({
   components: {

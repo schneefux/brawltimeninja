@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BHorizontalScroller } from 'klicker/components'
+import { BHorizontalScroller } from '@schneefux/klicker/components'
 
 export default Vue.extend({
   components: {

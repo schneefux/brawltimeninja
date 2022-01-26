@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import { Measurement } from 'klicker/types'
+import { Measurement } from '@schneefux/klicker/types'
 
 export default defineComponent({
   inheritAttrs: false,

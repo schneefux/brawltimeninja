@@ -63,6 +63,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
             GIT_REV=${{ github.sha }}
             BRANCH=${{ github.ref }}
             SENTRY_ORG=schneefux

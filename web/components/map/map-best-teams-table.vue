@@ -17,8 +17,8 @@
 <script lang="ts">
 import DTeam from '@/components/klicker/d-team.vue'
 import BrawlerTeam from '@/components/brawler/brawler-team.vue'
-import { CQuery, VTable } from 'klicker/components'
-import { SliceValue, CubeQuery } from 'klicker/types'
+import { CQuery, VTable } from '@schneefux/klicker/components'
+import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 

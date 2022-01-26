@@ -51,7 +51,7 @@
 import Vue, { PropType } from 'vue'
 import { camelToKebab, slugify } from '@/lib/util'
 import { parseISO, formatDistanceToNow } from 'date-fns'
-import { SliceValue } from 'klicker/types'
+import { SliceValue } from '@schneefux/klicker/types'
 
 import { enUS, de, es } from 'date-fns/locale'
 const locales = { en: enUS, de, es }

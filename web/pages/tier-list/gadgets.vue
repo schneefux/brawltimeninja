@@ -71,8 +71,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CubeComparingQuery } from 'klicker/types'
-import { CDashboard, CMetric, VTable, BCard, VTestInfo } from 'klicker/components'
+import { CubeComparingQuery } from '@schneefux/klicker/types'
+import { CDashboard, CMetric, VTable, BCard, VTestInfo } from '@schneefux/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 import VSampleSize from '~/components/klicker/v-sample-size.vue'
 import VLastUpdate from '~/components/klicker/v-last-update.vue'

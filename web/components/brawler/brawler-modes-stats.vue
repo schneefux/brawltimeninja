@@ -38,8 +38,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { scaleInto } from '~/lib/util'
-import { MetaGridEntry } from 'klicker/types'
-import { BHorizontalScroller } from 'klicker/components'
+import { MetaGridEntry } from '@schneefux/klicker/types'
+import { BHorizontalScroller } from '@schneefux/klicker/components'
 
 export default Vue.extend({
   components: {

@@ -45,7 +45,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { camelToKebab } from '@/lib/util';
-import { MetaGridEntry } from 'klicker/types';
+import { MetaGridEntry } from '@schneefux/klicker/types';
 import { commonMeasurements } from '~/lib/klicker.conf';
 
 export default Vue.extend({

@@ -1,4 +1,4 @@
-import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Dimension } from "klicker/types"
+import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Dimension } from "@schneefux/klicker/types"
 // @ts-ignore
 import { ChiSquared } from 'sampson'
 

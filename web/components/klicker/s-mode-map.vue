@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
-import { SliceValue, SliceValueUpdateListener } from 'klicker/types'
+import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {

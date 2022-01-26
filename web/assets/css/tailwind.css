@@ -2,7 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import "klicker/components/dashboard.css";
+@import "@schneefux/klicker/components/dashboard.css";
 
 @layer utilities {
   .text-shadow {

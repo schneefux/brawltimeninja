@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, wrapProperty } from '@nuxtjs/composition-api'
-import { BButton } from 'klicker/components'
+import { BButton } from '@schneefux/klicker/components'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({

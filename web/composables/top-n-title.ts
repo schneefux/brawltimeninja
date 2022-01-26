@@ -1,5 +1,5 @@
 import { computed, useContext, Ref } from '@nuxtjs/composition-api'
-import { SliceValue } from 'klicker/types'
+import { SliceValue } from '@schneefux/klicker/types'
 
 export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValue>, id: Ref<string|number|undefined>, args?: Ref<Record<string, any>>) {
   const { i18n } = useContext()

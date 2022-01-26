@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BrawlerData } from '@/model/Media'
-import { MetaGridEntry } from 'klicker/types'
+import { MetaGridEntry } from '@schneefux/klicker/types'
 
 export default Vue.extend({
   props: {

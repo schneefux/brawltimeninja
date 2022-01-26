@@ -1,4 +1,4 @@
-import { MetaGridEntry, VisualisationSpec } from "klicker/types"
+import { MetaGridEntry, VisualisationSpec } from "@schneefux/klicker/types"
 
 const visualisations: VisualisationSpec[] = [{
   name: 'Margin of Error',

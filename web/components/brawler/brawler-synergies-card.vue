@@ -30,8 +30,8 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { CubeComparingQuery, CubeComparingQueryFilter } from 'klicker/types'
-import { CQuery, VRoll } from 'klicker/components'
+import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
+import { CQuery, VRoll } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {

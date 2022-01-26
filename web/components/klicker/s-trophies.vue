@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
-import { SliceValue, SliceValueUpdateListener } from 'klicker/types'
+import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {

@@ -1,6 +1,6 @@
 import { computed, useRoute, useRouter, Ref } from '@nuxtjs/composition-api'
-import { Config, CubeComparingQuery, CubeQuery } from 'klicker/types'
-import { useKlicker } from 'klicker/composables/klicker'
+import { Config, CubeComparingQuery, CubeQuery } from '@schneefux/klicker/types'
+import { useKlicker } from '@schneefux/klicker/composables/klicker'
 
 export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
   const { $klicker } = useKlicker()

@@ -77,8 +77,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CubeQuery } from 'klicker/types'
-import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from 'klicker/components'
+import { CubeQuery } from '@schneefux/klicker/types'
+import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv } from '@schneefux/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 export default Vue.extend({

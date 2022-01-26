@@ -1,4 +1,4 @@
-import { StaticWidgetSpec } from 'klicker/types'
+import { StaticWidgetSpec } from '@schneefux/klicker/types'
 
 const staticWidgets: StaticWidgetSpec[] = [{
   name: 'Image',
@@ -13,7 +13,7 @@ const staticWidgets: StaticWidgetSpec[] = [{
     path: {
       name: 'Path',
       component: 'b-textbox',
-      import: () => import('klicker/components/ui/b-textbox.vue'),
+      import: () => import('@schneefux/klicker/components/ui/b-textbox.vue'),
       props: {
         dark: true,
       },

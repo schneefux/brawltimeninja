@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import config from '~/lib/klicker.conf'
 import { Context } from "@nuxt/types"
-import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec } from "klicker/types"
+import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatMode, getCurrentSeasonEnd, idToTag } from "~/lib/util"
-import Klicker from 'klicker/service'
-import { CQuery } from 'klicker/components'
+import Klicker from '@schneefux/klicker/service'
+import { CQuery } from '@schneefux/klicker/components'
 import visualisations from '~/lib/klicker.visualisations.conf'
 import slicers from '~/lib/klicker.slicers.conf'
 import staticWidgets from '~/lib/klicker.widgets.conf'
 import { defineNuxtPlugin } from '@nuxtjs/composition-api'
-import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BWrappedComponent } from 'klicker/components'
+import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BWrappedComponent } from '@schneefux/klicker/components'
 
 export interface EventMetadata {
   battle_event_id: number
@@ -218,6 +218,6 @@ export default defineNuxtPlugin((context, inject) => {
   // onGlobalSetup(() => {
   // })
 
-  inject('klicker', service)
+  inject('@schneefux/klicker', service)
   inject('managerUrl', context.$config.managerUrl)
 })

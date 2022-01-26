@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
-import { CubeResponse } from 'klicker/types'
+import { CubeResponse } from '@schneefux/klicker/types'
 import { formatSI } from '~/lib/util'
-import { VCardWrapper } from 'klicker/components'
-import { useCubeResponseProps } from 'klicker/composables'
-import { VisualisationProps } from 'klicker/props'
+import { VCardWrapper } from '@schneefux/klicker/components'
+import { useCubeResponseProps } from '@schneefux/klicker/composables'
+import { VisualisationProps } from '@schneefux/klicker/props'
 
 export default defineComponent({
   components: {
