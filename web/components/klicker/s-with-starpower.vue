@@ -5,8 +5,8 @@
     sm
     @input="v => onInput({ starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"
   >
-    <option value="0">0 Star Powers owned</option>
-    <option value="1">1 Star Power owned</option>
+    <option value="0">{{ $t('filter.starpowers.0') }}</option>
+    <option value="1">{{ $t('filter.starpowers.1') }}</option>
   </b-select>
 </template>
 

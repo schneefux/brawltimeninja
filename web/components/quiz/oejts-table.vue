@@ -17,7 +17,7 @@
       </div>
       <span :key="'r-' + attr" class="text-right">{{ oejtsMap[attr[1]] }}</span>
     </template>
-    <span class="mt-1 col-span-3">Your OEJTS Personality</span>
+    <span class="mt-1 col-span-3">{{ $t('oejts.result.oejts') }}</span>
   </div>
 </template>
 

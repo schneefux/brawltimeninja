@@ -11,7 +11,7 @@
       :key="s.id"
       :value="s.id"
     >
-      Since {{ s.name }}
+      {{ $t('option.season-since', { season: s.name }) }}
     </option>
   </b-select>
 </template>

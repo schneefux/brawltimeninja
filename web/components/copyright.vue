@@ -4,8 +4,11 @@
       &#169; 2018 - 2022 Brawl Time Ninja
       ({{ releaseVersion }})
     </p>
+    <p v-if="$i18n.locale != 'en'">
+      {{ $t('footer.translated-by') }} {{ $t('translators') }}
+    </p>
     <div class="my-1 flex justify-center items-center gap-x-2">
-      <span>Support me:</span>
+      <span>{{ $t('footer.support-me') }}</span>
       <b-button
         :secondary="!light"
         :light="light"

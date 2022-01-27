@@ -9,14 +9,14 @@
     <option
       value=""
     >
-      Any Season
+      {{ $t('option.any-season') }}
     </option>
     <option
       v-for="s in seasons"
       :key="s.id"
       :value="s.id"
     >
-      At {{ s.name }}
+      {{ $t('option.at-season', { season: s.name }) }}
     </option>
   </b-select>
 </template>

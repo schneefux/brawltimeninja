@@ -18,16 +18,16 @@
       <br>
       <span class="text-sm">
         <template v-if="moe <= 0.005">
-          (perfect accuracy)
+          {{ $t('moe.perfect') }}
         </template>
         <template v-if="moe > 0.005 && moe <= 0.01">
-          (good accuracy)
+          {{ $t('moe.good') }}
         </template>
         <template v-if="moe > 0.01 && moe <= 0.025">
-          (mediocre accuracy)
+          {{ $t('moe.mediocre') }}
         </template>
         <template v-if="moe > 0.025">
-          (poor accuracy)
+          {{ $t('moe.poor') }}
         </template>
       </span>
     </p>

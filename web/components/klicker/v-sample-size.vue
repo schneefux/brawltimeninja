@@ -9,15 +9,14 @@
       slot="content"
       class="text-red-400"
     >
-      No data!
-      Select a different filter.
+      {{ $t('no-data.please-change-filter') }}
     </p>
     <p
       v-else
       slot="content"
       class="text-lg md:text-xl"
     >
-      {{ sampleFormatted }} Battles
+      {{ $t('sample-size', { count: sampleFormatted }) }}
     </p>
   </v-card-wrapper>
 </template>

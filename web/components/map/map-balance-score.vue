@@ -1,8 +1,8 @@
 <template>
   <dl class="flex justify-between">
     <dt class="text-center mr-1">
-      <span class="text-lg font-semibold">Balance Rating:</span><br>
-      <span class="text-xs">How diverse is the Meta?</span>
+      <span class="text-lg font-semibold">{{ $t('metric.balance-rating') }}:</span><br>
+      <span class="text-xs">{{ $t('balance-rating.question') }}</span>
     </dt>
     <dd class="text-center ml-1">
       <c-query :query="query">

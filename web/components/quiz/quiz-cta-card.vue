@@ -1,11 +1,11 @@
 <template>
   <b-card
     v-if="result == undefined"
-    title="Brawler Personality Test"
+    :title="$t('player.quiz.title')"
     md
   >
     <div slot="content" class="relative mt-1">
-      <p class="font-semibold text-center">Are you organized or chaotic?</p>
+      <p class="font-semibold text-center">{{ $t('oejts.cta-question') }}</p>
       <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
       <quiz-likert
         slot="content"
@@ -20,8 +20,8 @@
 
   <b-card
     v-else
-    title="Brawler Personality Test"
-    :subtitle="`Your Result: ${resultName}`"
+    :title="$t('player.quiz.title')"
+    :subtitle="$t('oejts.result.short', { brawler: resultName })"
     md
   >
     <media-img

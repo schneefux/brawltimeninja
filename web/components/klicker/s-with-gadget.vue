@@ -5,8 +5,8 @@
     sm
     @input="v => onInput({ gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })"
   >
-    <option value="0">0 Gadgets owned</option>
-    <option value="1">1 Gadget owned</option>
+    <option value="0">{{ $t('filter.gadgets.0') }}</option>
+    <option value="1">{{ $t('filter.gadgets.1') }}</option>
   </b-select>
 </template>
 

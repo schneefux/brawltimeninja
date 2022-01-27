@@ -26,7 +26,7 @@
             class="flex justify-between"
           >
             <dt class="text-left font-semibold mr-1">
-              Last Online:
+              {{ $t('tier-list.map.last-online') }}
             </dt>
             <dd class="text-right ml-1">
               {{ lastOnlineString }}

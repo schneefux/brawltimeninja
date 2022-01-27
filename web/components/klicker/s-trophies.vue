@@ -1,7 +1,7 @@
 <template>
   <trophy-slider-select
     v-model="model"
-    :name="(value.powerplay || [])[0] == 'true' ? 'League' : 'Trophies'"
+    :name="(value.powerplay || [])[0] == 'true' ? 'playerLeague' : 'playerTrophies'"
   ></trophy-slider-select>
 </template>
 

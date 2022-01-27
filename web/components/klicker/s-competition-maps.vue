@@ -4,9 +4,9 @@
     dark
     sm
   >
-    <option value="all">Include Competition Maps</option>
-    <option value="include">Only Competition Maps</option>
-    <option value="exclude">Exclude Competition Maps</option>
+    <option value="all">{{ $t('option.competition-maps.include') }}</option>
+    <option value="include">{{ $t('option.competition-maps.only') }}</option>
+    <option value="exclude">{{ $t('option.competition-maps.exclude') }}</option>
   </b-select>
 </template>
 

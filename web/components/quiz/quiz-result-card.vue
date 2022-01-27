@@ -1,6 +1,6 @@
 <template>
   <b-card
-    title="Your Brawler Personality"
+    :title="$t('oejts.result.title')"
     lg
   >
     <div slot="content">
@@ -13,7 +13,7 @@
           class="flex flex-col items-center"
         >
           <span class="mt-1 font-semibold">{{ mostSimilarBrawler.name }}</span>
-          <span class="whitespace-nowrap">{{ Math.round(mostSimilarBrawler.similarity * 100) }}% match</span>
+          <span class="whitespace-nowrap">{{ $t('oejts.result.percent-match', { percent: Math.round(mostSimilarBrawler.similarity * 100) }) }}</span>
           <media-img
             clazz="h-48 m-2"
             :path="`/brawlers/${mostSimilarBrawler.id}/model`"

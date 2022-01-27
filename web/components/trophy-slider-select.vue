@@ -1,7 +1,7 @@
 <template>
   <range-slider-select
     :value="values"
-    :name="name == 'Trophies' ? name : ''"
+    :name="name == 'playerTrophies' ? $t('metric.playerTrophies') : ''"
     :max="max"
     :format="format"
     @input="onInput"
@@ -18,13 +18,13 @@ export default defineComponent({
       required: true,
     },
     name: {
-      type: String as PropType<'Trophies'|'League'>,
-      default: 'Trophies'
+      type: String as PropType<'playerTrophies'|'playerLeague'>,
+      default: 'playerTrophies'
     },
   },
   setup(props, { emit }) {
     const format = computed(() => {
-      if (props.name == 'League') {
+      if (props.name == 'playerLeague') {
         const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
         return (n: number) => `${leagues[Math.floor(n/3)]} ${n < max.value ? ['I', 'II', 'III'][n%3] : ''}`
       } else {
@@ -32,7 +32,7 @@ export default defineComponent({
       }
     })
 
-    const max = computed(() => props.name == 'Trophies' ? 15 : 18)
+    const max = computed(() => props.name == 'playerTrophies' ? 15 : 18)
     const values = computed(() => {
       const gte = props.value.gte || 0
       const lt = props.value.lt || max.value

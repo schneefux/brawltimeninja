@@ -8,7 +8,7 @@
   >
     <option
       value=""
-    >Any Brawler</option>
+    >{{ $t('option.any-brawler') }}</option>
     <option
       v-for="b in brawlers"
       :key="b.id"

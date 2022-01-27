@@ -4,7 +4,7 @@
     @submit.prevent="next"
   >
     <b-card
-      :title="`Questions ${page+1}/${pages}`"
+      :title="$t('oejts.questions.page', { page: page + 1, total: pages })"
       :subtitle="$t('oejts.intro')"
       class="mt-2"
       lg

@@ -5,9 +5,9 @@
     sm
     @input="v => onInput({ powerplay: v != '' ? [v] : [] })"
   >
-    <option value="">All Battles</option>
-    <option value="false">Regular Battles</option>
-    <option value="true">Power League</option>
+    <option value="">{{ $t('option.powerplay.all') }}</option>
+    <option value="false">{{ $t('option.powerplay.regular') }}</option>
+    <option value="true">{{ $t('option.powerplay.powerleague') }}</option>
   </b-select>
 </template>
 
