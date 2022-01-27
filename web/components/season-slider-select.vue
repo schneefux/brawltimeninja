@@ -1,24 +1,29 @@
 <template>
-  <fake-select>
+  <b-fake-select dark>
     <template v-slot:preview>
       {{ formattedValue }}
     </template>
 
     <client-only>
-      <season-slider
-        :value="value"
-        @input="e => $emit('input', e)"
-        class="mt-10"
-      ></season-slider>
+      <div class="mt-10 w-56 px-4 pt-1">
+        <season-slider
+          :value="value"
+          @input="e => $emit('input', e)"
+        ></season-slider>
+      </div>
     </client-only>
-  </fake-select>
+  </b-fake-select>
 </template>
 
 <script lang="ts">
 import { format, parseISO } from 'date-fns'
 import Vue from 'vue'
+import { BFakeSelect } from '@schneefux/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BFakeSelect,
+  },
   props: {
     value: {
       type: String,

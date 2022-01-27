@@ -1,38 +1,43 @@
 <template>
-  <fake-select>
+  <b-fake-select dark>
     <span slot="preview" class="w-full text-left">
       {{ format(value[0]) }}-{{ format(value[1]) }}
       {{ name }}
     </span>
 
     <client-only>
-      <vue-range-slider
-        :min="min"
-        :max="max"
-        :step="1"
-        :min-range="minRange"
-        :value="value"
-        :bg-style="bgStyle"
-        :process-style="processStyle"
-        class="mt-8"
-        tooltip-dir="top"
-        lazy
-        @input="e => onInput(e)"
-      >
-        <template v-slot:tooltip="{ value }">
-          <span class="slider-tooltip !bg-gray-600 !border-gray-600">
-            {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
-          </span>
-        </template>
-      </vue-range-slider>
+      <div class="mt-8 w-56 px-4 pt-1">
+        <vue-range-slider
+          :min="min"
+          :max="max"
+          :step="1"
+          :min-range="minRange"
+          :value="value"
+          :bg-style="bgStyle"
+          :process-style="processStyle"
+          tooltip-dir="top"
+          lazy
+          @input="e => onInput(e)"
+        >
+          <template v-slot:tooltip="{ value }">
+            <span class="slider-tooltip !bg-gray-600 !border-gray-600">
+              {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
+            </span>
+          </template>
+        </vue-range-slider>
+      </div>
     </client-only>
-  </fake-select>
+  </b-fake-select>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { BFakeSelect } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BFakeSelect,
+  },
   props: {
     value: {
       type: Array as PropType<number[]>,

@@ -3,10 +3,13 @@
     class="inline-block relative"
     v-click-outside="() => dropdownOpen = false"
   >
-    <b-button
+    <button
       class="w-full flex justify-center font-normal text-sm md:text-base"
-      dark
-      sm
+      :class="[
+        'form-select transition duration-100 ease-in-out focus:ring focus:ring-offset-0 focus:ring-opacity-50',
+        'rounded py-1 px-2 border-2', {
+          'bg-gray-700 hover:bg-gray-600 border-gray-500 hover:border-gray-400 focus:border-gray-400 focus:ring-gray-400 text-gray-200': dark,
+        }]"
       @click="dropdownOpen = !dropdownOpen"
     >
       <slot name="preview"></slot>
@@ -23,13 +26,15 @@
           clip-rule="evenodd"
         ></path>
       </svg>
-    </b-button>
+    </button>
 
     <!-- rerender because slider is buggy -->
     <div
       v-show="dropdownOpen"
       :key="dropdownOpen"
-      class="absolute left-0 mt-1 px-6 pt-2 pb-1 w-56 rounded-md shadow-lg bg-gray-700 z-10"
+      :class="['absolute left-0 px-2 py-1 pb-1 rounded-b shadow-lg z-10', {
+        'bg-gray-700': dark,
+      }]"
     >
       <slot></slot>
     </div>
@@ -43,6 +48,12 @@ import vClickOutside from 'v-click-outside'
 export default Vue.extend({
   directives: {
     clickOutside: vClickOutside.directive,
+  },
+  props: {
+    dark: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
