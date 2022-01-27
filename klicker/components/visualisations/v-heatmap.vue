@@ -30,12 +30,12 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, measurements, comparing } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
       const dimension1 = dimensions.value[1]
-      const measurement0 = measurements.value[0]
+      const metric0 = metrics.value[0]
       return {
         data: {
           values: props.response.data,
@@ -56,10 +56,10 @@ export default defineComponent({
           },
           ...(!comparing.value ? {
             color: {
-              ...measurement0.vega,
-              field: 'measurementsRaw.' + measurement0.id,
-              type: measurement0.type,
-              title: measurement0.name,
+              ...metric0.vega,
+              field: 'metricsRaw.' + metric0.id,
+              type: metric0.type,
+              title: metric0.name,
               legend: {
                 offset: 8,
                 orient: 'top',
@@ -67,9 +67,9 @@ export default defineComponent({
             },
           } : {
             color: {
-              ...measurement0.vega,
+              ...metric0.vega,
               field: 'test.difference.differenceRaw',
-              type: measurement0.type,
+              type: metric0.type,
               title: $klicker.$t('comparison.difference.to.dataset', { dataset: $klicker.$t('comparison.dataset.reference') as string }) as string,
               legend: {
                 offset: 8,

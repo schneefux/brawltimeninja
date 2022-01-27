@@ -3,7 +3,7 @@
     :query="{
       cubeId: 'brawler',
       dimensionsIds: ['day'],
-      measurementsIds: brawler != undefined ? ['trophies'] : ['playerTrophies'],
+      metricsIds: brawler != undefined ? ['trophies'] : ['playerTrophies'],
       slices: {
         season: [season],
         playerId: [playerId],

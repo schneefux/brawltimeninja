@@ -46,8 +46,8 @@ const slicers: SlicerSpec[] = [{
   name: 'Power Level',
   component: 's-power',
   import: () => import('~/components/klicker/s-power.vue'),
-  applicable(dimensions, measurements) {
-    return measurements.some(d => d.id == 'power')
+  applicable(dimensions, metrics) {
+    return metrics.some(d => d.id == 'power')
   },
 }, {
   name: 'Power Play',
@@ -81,14 +81,14 @@ const slicers: SlicerSpec[] = [{
   name: 'With Gadget',
   component: 's-with-gadget',
   import: () => import('~/components/klicker/s-with-gadget.vue'),
-  applicable(dimensions, measurements, cubeId) {
+  applicable(dimensions, metrics, cubeId) {
     return cubeId == 'gadget' && dimensions.some(d => d.id == 'gadget')
   },
 }, {
   name: 'With Star Power',
   component: 's-with-starpower',
   import: () => import('~/components/klicker/s-with-starpower.vue'),
-  applicable(dimensions, measurements, cubeId) {
+  applicable(dimensions, metrics, cubeId) {
     return cubeId == 'starpower' && dimensions.some(d => d.id == 'starpower')
   },
 }]

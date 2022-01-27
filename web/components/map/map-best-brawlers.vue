@@ -3,7 +3,7 @@
     :query="{
       cubeId: 'map',
       dimensionsIds: ['brawler'],
-      measurementsIds: ['winRateAdj'],
+      metricsIds: ['winRateAdj'],
       slices,
       sortId: 'winRateAdj',
       limit,

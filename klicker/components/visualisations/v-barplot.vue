@@ -31,28 +31,28 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, comparing, dimensions, measurements, switchResponse } = useCubeResponseProps(props)
+    const { $klicker, comparing, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
-      const measurement0 = measurements.value[0]
+      const metric0 = metrics.value[0]
 
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
-        measurementsRaw: e.measurementsRaw,
-        measurementsCI: e.test.reference.measurementsCI,
+        metricsRaw: e.metricsRaw,
+        metricsCI: e.test.reference.metricsCI,
         source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
         stars: e.test.difference.pValueStars,
       }, {
         id: e.id,
         dimensions: e.dimensions,
-        measurementsRaw: e.test.reference.measurementsRaw,
-        measurementsCI: e.test.reference.measurementsCI,
+        metricsRaw: e.test.reference.metricsRaw,
+        metricsCI: e.test.reference.metricsCI,
         source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
         stars: '',
       }]))
 
-      const withCI = values[0].measurementsCI[measurement0.id] != undefined
+      const withCI = values[0].metricsCI[metric0.id] != undefined
 
       return {
         data: {
@@ -65,23 +65,23 @@ export default defineComponent({
             title: $klicker.getName(dimension0),
             scale: dimension0.scale,
             sort: {
-              field: measurement0.id,
-              order: measurement0.sign == -1 ? 'descending' : 'ascending',
+              field: metric0.id,
+              order: metric0.sign == -1 ? 'descending' : 'ascending',
             },
           },
           y: {
-            ...measurement0.vega,
-            field: 'measurementsRaw.' + measurement0.id,
-            type: measurement0.type,
-            title: measurement0.name,
+            ...metric0.vega,
+            field: 'metricsRaw.' + metric0.id,
+            type: metric0.type,
+            title: metric0.name,
             axis: {
-              format: measurement0.formatter,
+              format: metric0.formatter,
             },
             stack: null,
           },
           tooltip: <any>[{ // TODO spread breaks types
-            field: 'measurements.' + measurement0.id,
-            title: $klicker.getName(measurement0),
+            field: 'metrics.' + metric0.id,
+            title: $klicker.getName(metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
             title: $klicker.getName(dimension0),
@@ -100,13 +100,13 @@ export default defineComponent({
         ...(withCI ? {
           // workaround for https://stackoverflow.com/questions/67358393/trouble-with-errorband-and-nested-properties
           transform: [{
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.lower',
+            calculate: 'datum.metricsCI.' + metric0.id + '.lower',
             as: 'lower',
           }, {
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.mean',
-            as: 'measurements.' + measurement0.id,
+            calculate: 'datum.metricsCI.' + metric0.id + '.mean',
+            as: 'metrics.' + metric0.id,
           }, {
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.upper',
+            calculate: 'datum.metricsCI.' + metric0.id + '.upper',
             as: 'upper',
           }],
         } : {}),
@@ -132,13 +132,13 @@ export default defineComponent({
           mark: 'errorbar' as 'errorbar',
           encoding: {
             y: {
-              ...measurement0.vega,
+              ...metric0.vega,
               field: 'lower',
               type: 'quantitative' as 'quantitative',
             },
             y2: {
               field: 'upper',
-              title: measurement0.name,
+              title: metric0.name,
             },
           },
         }] : []) as any,

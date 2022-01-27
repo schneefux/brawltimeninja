@@ -84,7 +84,7 @@ import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import { commonMeasurements } from '~/lib/klicker.conf'
+import { commonMetrics } from '~/lib/klicker.conf'
 
 interface Stats {
   winRate: number
@@ -151,7 +151,7 @@ export default Vue.extend({
     const data = await this.$klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
-      measurementsIds: ['picks', 'winRate'],
+      metricsIds: ['picks', 'winRate'],
       sortId: 'picks',
       slices: {
         playerId: [tagToId(this.playerTag)],
@@ -176,12 +176,12 @@ export default Vue.extend({
   },
   computed: {
     stats(): Stats {
-      if (this.data?.measurementsRaw?.picks != undefined && this.data.measurementsRaw.picks > 0) {
-        const wins = Math.floor((this.data.measurementsRaw.winRate as number) * (this.data.measurementsRaw.picks as number))
-        const losses = (this.data.measurementsRaw.picks as number) - wins
+      if (this.data?.metricsRaw?.picks != undefined && this.data.metricsRaw.picks > 0) {
+        const wins = Math.floor((this.data.metricsRaw.winRate as number) * (this.data.metricsRaw.picks as number))
+        const losses = (this.data.metricsRaw.picks as number) - wins
         return {
-          winRate: this.data.measurementsRaw.winRate as number,
-          picks: this.data.measurementsRaw.picks as number,
+          winRate: this.data.metricsRaw.winRate as number,
+          picks: this.data.metricsRaw.picks as number,
           wins,
           losses,
         }
@@ -200,7 +200,7 @@ export default Vue.extend({
       }
     },
     winRate(): string {
-      return this.stats.picks > 5 ? this.$klicker.format(commonMeasurements.winRate, this.stats.winRate) : '?'
+      return this.stats.picks > 5 ? this.$klicker.format(commonMetrics.winRate, this.stats.winRate) : '?'
     },
     modeKebab(): string {
       return camelToKebab(this.mode)

@@ -8,8 +8,8 @@
       :name="getStrings(entry).name || entry.dimensions.gadget || entry.dimensions.starpower"
       :brawler-name="brawlerName"
       :description="getStrings(entry).description"
-      :win-rate="entry.measurementsRaw.winRate"
-      :without-win-rate="totals == undefined ? 0 : totals.measurementsRaw.winRate"
+      :win-rate="entry.metricsRaw.winRate"
+      :without-win-rate="totals == undefined ? 0 : totals.metricsRaw.winRate"
     ></brawler-starpower-card>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default Vue.extend({
         [this.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
       },
       dimensionsIds: [singular],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       sortId: 'timestamp',
     })
 
@@ -66,7 +66,7 @@ export default Vue.extend({
         [this.kind == 'starpowers' ? 'starpowerIdEq' : 'gadgetIdEq']: ['0'],
       },
       dimensionsIds: [singular],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       sortId: 'timestamp',
     })
 

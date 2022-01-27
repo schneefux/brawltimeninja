@@ -5,12 +5,12 @@ import { SlicerSpec } from '../types'
 export const useCubeConfig = (cubeId: Ref<string>) => {
   const { $klicker } = useKlicker()
 
-  const allMeasurements = computed(() => {
+  const allMetrics = computed(() => {
     if (!(cubeId.value in $klicker.config)) {
       throw 'Invalid cubeId ' + cubeId.value
     }
 
-    return $klicker.config[cubeId.value].measurements
+    return $klicker.config[cubeId.value].metrics
   })
 
   const allDimensions = computed(() => {
@@ -22,11 +22,11 @@ export const useCubeConfig = (cubeId: Ref<string>) => {
   })
 
   const checkSlicerApplicable = (spec: SlicerSpec) =>
-    spec.applicable(allDimensions.value, allMeasurements.value, cubeId.value)
+    spec.applicable(allDimensions.value, allMetrics.value, cubeId.value)
 
   return {
     $klicker,
-    allMeasurements,
+    allMetrics,
     allDimensions,
     checkSlicerApplicable,
   }

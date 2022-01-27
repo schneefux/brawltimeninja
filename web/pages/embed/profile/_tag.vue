@@ -70,16 +70,16 @@ export default Vue.extend({
     const battleData = await $klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
-      measurementsIds: ['picks', 'winRate', 'trophyChange'],
+      metricsIds: ['picks', 'winRate', 'trophyChange'],
       slices: {
         playerId: [tagToId(params.tag)],
       },
       sortId: 'picks',
     })
 
-    const winRate = battleData.data[0].measurementsRaw.winRate as number
+    const winRate = battleData.data[0].metricsRaw.winRate as number
       || (player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length)
-    const totalBattles = battleData.data[0].measurementsRaw.picks as number
+    const totalBattles = battleData.data[0].metricsRaw.picks as number
       || player.battles.length
 
     return {

@@ -46,7 +46,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import { camelToKebab } from '@/lib/util';
 import { MetaGridEntry } from '@schneefux/klicker/types';
-import { commonMeasurements } from '~/lib/klicker.conf';
+import { commonMetrics } from '~/lib/klicker.conf';
 
 export default Vue.extend({
   props: {
@@ -85,7 +85,7 @@ export default Vue.extend({
       slices: {
         mode: [this.mode],
       },
-      measurementsIds: ['winRate', 'useRate', 'picks'],
+      metricsIds: ['winRate', 'useRate', 'picks'],
       dimensionsIds: ['brawler'],
       sortId: 'picks',
     })
@@ -96,7 +96,7 @@ export default Vue.extend({
       slices: {
         mode: [this.mode],
       },
-      measurementsIds: ['winRate', 'useRate'],
+      metricsIds: ['winRate', 'useRate'],
       dimensionsIds: ['map', 'brawler'],
       sortId: 'picks',
     })
@@ -109,7 +109,7 @@ export default Vue.extend({
   },
   computed: {
     aboveAverageMaps(): number {
-      const compareMaps = (m: MetaGridEntry) => (m.measurementsRaw.winRate as number) * (m.measurementsRaw.useRate as number) > 0.5 * 1 / this.totalBrawlers
+      const compareMaps = (m: MetaGridEntry) => (m.metricsRaw.winRate as number) * (m.metricsRaw.useRate as number) > 0.5 * 1 / this.totalBrawlers
       return this.mapData.filter(m => compareMaps(m)).length
     },
     camelToKebab() {
@@ -120,9 +120,9 @@ export default Vue.extend({
         return []
       }
       return [
-        [ commonMeasurements.picks.name!, this.$klicker.format(commonMeasurements.picks, this.modeData.measurementsRaw.picks) ],
-        [ commonMeasurements.useRate.name!, this.$klicker.format(commonMeasurements.useRate, this.modeData.measurementsRaw.useRate as number) ],
-        [ commonMeasurements.winRate.name!, this.$klicker.format(commonMeasurements.winRate, this.modeData.measurementsRaw.winRate as number) ],
+        [ commonMetrics.picks.name!, this.$klicker.format(commonMetrics.picks, this.modeData.metricsRaw.picks) ],
+        [ commonMetrics.useRate.name!, this.$klicker.format(commonMetrics.useRate, this.modeData.metricsRaw.useRate as number) ],
+        [ commonMetrics.winRate.name!, this.$klicker.format(commonMetrics.winRate, this.modeData.metricsRaw.winRate as number) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },

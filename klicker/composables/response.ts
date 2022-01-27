@@ -7,21 +7,21 @@ export const useCubeResponse = (response: Ref<CubeResponse|CubeComparingResponse
 
   const comparing = computed(() => response.value.query.comparing == true)
 
-  const measurements = computed(() => {
+  const metrics = computed(() => {
     const query = response.value.query
 
-    return query.measurementsIds.map(id => {
+    return query.metricsIds.map(id => {
       if (!(query.cubeId in $klicker.config)) {
         throw 'Invalid cubeId ' + query.cubeId
       }
 
       const cube = $klicker.config[query.cubeId]
-      const measurement = cube.measurements.find(d => id == d.id)
-      if (measurement == undefined) {
-        throw new Error('Invalid measurement id ' + id)
+      const metric = cube.metrics.find(d => id == d.id)
+      if (metric == undefined) {
+        throw new Error('Invalid metric id ' + id)
       }
 
-      return measurement
+      return metric
     })
   })
 
@@ -59,13 +59,13 @@ export const useCubeResponse = (response: Ref<CubeResponse|CubeComparingResponse
   }
 
   const checkVisualisationApplicable = (spec: VisualisationSpec) =>
-    spec.applicable(dimensions.value, measurements.value, response.value.data.length || 0, comparing.value, response.value.data || [])
+    spec.applicable(dimensions.value, metrics.value, response.value.data.length || 0, comparing.value, response.value.data || [])
 
   return {
     $klicker,
     comparing,
     dimensions,
-    measurements,
+    metrics,
     switchResponse,
     checkVisualisationApplicable,
   }

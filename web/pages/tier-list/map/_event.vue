@@ -11,7 +11,7 @@ export default Vue.extend({
         season: [],
       },
       dimensionsIds: ['mode', 'map'],
-      measurementsIds: [],
+      metricsIds: [],
       sortId: 'timestamp',
       limit: 1,
     })

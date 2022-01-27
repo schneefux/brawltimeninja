@@ -61,7 +61,7 @@ export default defineComponent({
         map: [props.map],
       },
       dimensionsIds: ['brawler'],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       sortId: 'winRate',
     }))
 

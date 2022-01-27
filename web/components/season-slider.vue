@@ -42,7 +42,7 @@ export default Vue.extend({
     const data = await this.$klicker.query({
       cubeId: 'map',
       dimensionsIds: ['season'],
-      measurementsIds: ['picks'],
+      metricsIds: ['picks'],
       sortId: 'picks',
       slices: {
         season: ['2020-06-15 08:00:00'],
@@ -51,7 +51,7 @@ export default Vue.extend({
 
     data.data.sort((e1, e2) => e1.dimensionsRaw.season.season.localeCompare(e2.dimensionsRaw.season.season))
     // slice season with low sample size
-    const firstIndex = data.data.findIndex(e => e.measurementsRaw.picks > 1000000)
+    const firstIndex = data.data.findIndex(e => e.metricsRaw.picks > 1000000)
     this.seasons = data.data.slice(firstIndex)
       .map(e => formatClickhouse(parseISO(e.dimensionsRaw.season.season)))
       .sort()

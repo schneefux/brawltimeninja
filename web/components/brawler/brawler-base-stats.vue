@@ -64,7 +64,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import { commonMeasurements } from '~/lib/klicker.conf'
+import { commonMetrics } from '~/lib/klicker.conf'
 import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
 
@@ -104,7 +104,7 @@ export default Vue.extend({
         brawler: [this.brawlerName.toUpperCase()],
       },
       dimensionsIds: [],
-      measurementsIds: ['winRate', 'starRate', 'useRate'],
+      metricsIds: ['winRate', 'starRate', 'useRate'],
       sortId: 'winRate',
     })
 
@@ -112,7 +112,7 @@ export default Vue.extend({
       cubeId: 'map',
       slices: {},
       dimensionsIds: [],
-      measurementsIds: ['useRate'],
+      metricsIds: ['useRate'],
       sortId: 'winRate',
     })
 
@@ -142,9 +142,9 @@ export default Vue.extend({
         return ''
       }
 
-      const useRate = (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)
+      const useRate = (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)
       const popularity = scaleInto(0.02, 0.03, 3, useRate)
-      const metaness = scaleInto(0.55, 0.60, 4, this.data.measurementsRaw.winRate as number)
+      const metaness = scaleInto(0.55, 0.60, 4, this.data.metricsRaw.winRate as number)
 
       return this.$i18n.t('brawler.rating', {
         brawler: this.brawlerName,
@@ -169,9 +169,9 @@ export default Vue.extend({
       }
 
       return [
-        [ commonMeasurements.useRate.name!, this.$klicker.format(commonMeasurements.useRate, (this.data.measurementsRaw.useRate as number) / (this.totals.measurementsRaw.useRate as number)) ],
-        [ commonMeasurements.starRate.name!, this.data.measurements.starRate ],
-        [ commonMeasurements.winRate.name!, this.data.measurements.winRate ],
+        [ commonMetrics.useRate.name!, this.$klicker.format(commonMetrics.useRate, (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)) ],
+        [ commonMetrics.starRate.name!, this.data.metrics.starRate ],
+        [ commonMetrics.winRate.name!, this.data.metrics.winRate ],
       ]
     },
     ...mapState({

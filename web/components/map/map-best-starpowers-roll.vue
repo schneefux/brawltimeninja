@@ -79,7 +79,7 @@ export default defineComponent({
       cubeId: 'battle',
       sortId: 'difference',
       dimensionsIds: props.kind == 'starpowers' ? ['brawler', 'starpower'] : ['brawler', 'gadget'],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       slices: {
         ...props.slices,
         [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
@@ -88,7 +88,7 @@ export default defineComponent({
       reference: {
         cubeId: 'battle',
         dimensionsIds: ['brawler'],
-        measurementsIds: ['winRate'],
+        metricsIds: ['winRate'],
         slices: {
           ...props.slices,
           [props.kind == 'starpowers' ? 'starpowerIdEq' : 'gadgetIdEq']: ['0'],

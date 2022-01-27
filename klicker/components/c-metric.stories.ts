@@ -10,7 +10,7 @@ export default {
 const query = <CubeQuery>{
   cubeId: 'map',
   dimensionsIds: ['brawler'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {
     brawler: ['1'],
   },

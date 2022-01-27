@@ -12,7 +12,7 @@
       <d-player v-bind="data"></d-player>
     </template>
 
-    <template v-slot:[`measurements.brawler`]="data">
+    <template v-slot:[`metrics.brawler`]="data">
       <m-brawler v-bind="data"></m-brawler>
     </template>
   </c-grid-renderer>

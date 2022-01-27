@@ -52,14 +52,14 @@ export default defineComponent({
         brawler: [props.brawler.toUpperCase()],
       },
       dimensionsIds: ['brawler', 'ally'],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       sortId: 'pvalue',
       limit: 10,
       reference: {
         cubeId: 'map',
         slices: {},
         dimensionsIds: ['brawler'],
-        measurementsIds: ['winRate'],
+        metricsIds: ['winRate'],
         sortId: 'winRate',
       },
     }

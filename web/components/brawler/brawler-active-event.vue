@@ -54,7 +54,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import { brawlerId, camelToKebab, slugify } from '@/lib/util'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import { commonMeasurements } from '~/lib/klicker.conf'
+import { commonMetrics } from '~/lib/klicker.conf'
 
 export default Vue.extend({
   props: {
@@ -99,7 +99,7 @@ export default Vue.extend({
         mode: [this.mode],
       },
       dimensionsIds: ['brawler'],
-      measurementsIds: ['winRate', 'picks', 'useRate', 'wins'],
+      metricsIds: ['winRate', 'picks', 'useRate', 'wins'],
       sortId: 'picks',
     })
     data.data = data.data.filter(e => e.dimensionsRaw.brawler.brawler == this.brawlerName.toUpperCase())
@@ -108,7 +108,7 @@ export default Vue.extend({
   },
   computed: {
     useRate(): number {
-      return this.data?.measurementsRaw?.useRate as number || 0
+      return this.data?.metricsRaw?.useRate as number || 0
     },
     timeTillEnd(): string {
       if (this.end == undefined) {
@@ -121,9 +121,9 @@ export default Vue.extend({
         return []
       }
       return [
-        [ this.$tc('metric.picks'), this.data.measurements.picks ],
-        [ this.$tc('metric.useRate'), this.$klicker.format(commonMeasurements.useRate, this.useRate) ],
-        [ this.$tc('metric.winRate'), this.data.measurements.winRate ],
+        [ this.$tc('metric.picks'), this.data.metrics.picks ],
+        [ this.$tc('metric.useRate'), this.$klicker.format(commonMetrics.useRate, this.useRate) ],
+        [ this.$tc('metric.winRate'), this.data.metrics.winRate ],
       ]
     },
     brawlerId(): string {

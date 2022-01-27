@@ -29,7 +29,7 @@ export default defineComponent({
   setup(props) {
     const lastUpdate = computed((): string => {
       const timestamps = props.response.data
-        .map(d => d.measurementsRaw.timestamp)
+        .map(d => d.metricsRaw.timestamp)
         .sort() as unknown as string[] // TODO
       // TODO fix types - fix null checks
       if (timestamps.length == 0) {

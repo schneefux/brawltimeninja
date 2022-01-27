@@ -113,12 +113,12 @@ export default defineComponent({
             cubeId: 'map',
             sortId: 'pvalue',
             dimensionsIds: ['brawler'],
-            measurementsIds: ['winRate'],
+            metricsIds: ['winRate'],
             slices: props.slices,
             reference: {
               cubeId: 'map',
               dimensionsIds: ['brawler'],
-              measurementsIds: ['winRate'],
+              metricsIds: ['winRate'],
               slices: {
                 ...props.slices,
                 map: [],
@@ -139,7 +139,7 @@ export default defineComponent({
           cubeId: 'battle',
           sortId: 'pvalue',
           dimensionsIds: ['brawler', 'gadget'],
-          measurementsIds: ['winRate'],
+          metricsIds: ['winRate'],
           slices: {
             ...props.slices,
             gadgetIdNeq: ['0'],
@@ -147,7 +147,7 @@ export default defineComponent({
           reference: {
             cubeId: 'battle',
             dimensionsIds: ['brawler'],
-            measurementsIds: ['winRate'],
+            metricsIds: ['winRate'],
             slices: {
               ...props.slices,
               gadgetIdEq: ['0'],
@@ -167,7 +167,7 @@ export default defineComponent({
           cubeId: 'battle',
           sortId: 'pvalue',
           dimensionsIds: ['brawler', 'starpower'],
-          measurementsIds: ['winRate'],
+          metricsIds: ['winRate'],
           slices: {
             ...props.slices,
             starpowerIdNeq: ['0'],
@@ -175,7 +175,7 @@ export default defineComponent({
           reference: {
             cubeId: 'battle',
             dimensionsIds: ['brawler'],
-            measurementsIds: ['winRate'],
+            metricsIds: ['winRate'],
             slices: {
               ...props.slices,
               starpowerIdEq: ['0'],
@@ -196,7 +196,7 @@ export default defineComponent({
           cubeId: 'battle',
           sortId: 'pvalue',
           dimensionsIds: ['gear'],
-          measurementsIds: ['winRate'],
+          metricsIds: ['winRate'],
           slices: {
             ...props.slices,
             gearIdNeq: ['0'],
@@ -204,7 +204,7 @@ export default defineComponent({
           reference: {
             cubeId: 'battle',
             dimensionsIds: [],
-            measurementsIds: ['winRate'],
+            metricsIds: ['winRate'],
             slices: {
               ...props.slices,
               gearIdEq: ['0'],

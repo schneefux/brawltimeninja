@@ -98,8 +98,8 @@ export default defineComponent({
         cubeId: c,
         slices: $klicker.config[c].defaultSliceValues,
         dimensionsIds: $klicker.config[c].defaultDimensionsIds,
-        measurementsIds: $klicker.config[c].defaultMeasurementIds,
-        sortId: $klicker.config[c].defaultMeasurementIds[0],
+        metricsIds: $klicker.config[c].defaultMetricIds,
+        sortId: $klicker.config[c].defaultMetricIds[0],
       }
       emit('input', newQuery)
     }
@@ -117,8 +117,8 @@ export default defineComponent({
             cubeId: current.cubeId,
             slices: current.slices,
             dimensionsIds: current.dimensionsIds,
-            measurementsIds: [current.measurementsIds[0]],
-            sortId: current.measurementsIds[0],
+            metricsIds: [current.metricsIds[0]],
+            sortId: current.metricsIds[0],
           }
           emit('input', <CubeComparingQuery>{
             ...newQuery,
@@ -130,7 +130,7 @@ export default defineComponent({
           const current = props.value as CubeComparingQuery
           const newQuery: CubeQuery = {
             ...current,
-            sortId: current.measurementsIds[0],
+            sortId: current.metricsIds[0],
           }
           delete (<any>newQuery).reference
           delete (<any>newQuery).comparing
@@ -146,10 +146,10 @@ export default defineComponent({
         return true
       }
 
-      const measurements = $klicker.config[props.value.cubeId].measurements
+      const metrics = $klicker.config[props.value.cubeId].metrics
       const query = props.value as CubeQuery
-      const selectedMeasurements = measurements.filter(m => query.measurementsIds.includes(m.id))
-      return selectedMeasurements.length == 1 && selectedMeasurements[0].type == 'quantitative'
+      const selectedMetrics = metrics.filter(m => query.metricsIds.includes(m.id))
+      return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
 
     const prefix = Math.random().toString().slice(2)

@@ -1,4 +1,4 @@
-import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, MetaGridEntry } from "../types"
+import { asDimensions, asNumberMetrics, asSlice, asStringMetrics, Cube, MetaGridEntry } from "../types"
 import { ChiSquared } from 'sampson'
 
 function calculateGTestStatistic(expectations: number[], observations: number[]) {
@@ -14,9 +14,9 @@ function calculateGTestStatistic(expectations: number[], observations: number[])
   return 2*g
 }
 
-function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+function binomialTest(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: MetaGridEntry['metricsRaw']) => number) {
   // approximate a binomial test using the G-test
-  return (r: MetaGridEntry['measurementsRaw'], t: MetaGridEntry['measurementsRaw']) => {
+  return (r: MetaGridEntry['metricsRaw'], t: MetaGridEntry['metricsRaw']) => {
     const total = getN(r) + getN(t)
     const totalSuccesses = getK(r) + getK(t)
     const totalFailures = total - totalSuccesses
@@ -43,9 +43,9 @@ function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, get
   }
 }
 
-function binomialCI(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+function binomialCI(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: MetaGridEntry['metricsRaw']) => number) {
   // 95% Wilson score interval
-  return (d: MetaGridEntry['measurementsRaw']) => {
+  return (d: MetaGridEntry['metricsRaw']) => {
     const z = 1.96
 
     const n = getN(d)
@@ -71,7 +71,7 @@ const battleDimensions = asDimensions({
     childIds: ['day', 'timestamp'],
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'temporal',
     scale: {
       nice: 'week',
@@ -87,7 +87,7 @@ const battleDimensions = asDimensions({
     childIds: ['gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'brawler_name',
@@ -100,7 +100,7 @@ const battleDimensions = asDimensions({
     childIds: ['map'],
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'battle_event_mode',
@@ -111,7 +111,7 @@ const battleDimensions = asDimensions({
     id: 'map',
     name: 'Map',
     naturalIdAttribute: 'map',
-    additionalMeasures: ['mode', 'eventId'],
+    additionalMetrics: ['mode', 'eventId'],
     type: 'nominal',
     config: {
       sql: 'battle_event_map',
@@ -123,7 +123,7 @@ const battleDimensions = asDimensions({
     name: 'Power Play',
     naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'battle_event_powerplay',
@@ -132,7 +132,7 @@ const battleDimensions = asDimensions({
   },
 })
 
-const mergedbattleStringMeasurements = asStringMeasurements({
+const mergedbattleStringMetrics = asStringMetrics({
   timestamp: {
     id: 'timestamp',
     name: 'Last Update',
@@ -146,7 +146,7 @@ const mergedbattleStringMeasurements = asStringMeasurements({
   },
 })
 
-const mergedbattleNumberMeasurements = asNumberMeasurements({
+const mergedbattleNumberMetrics = asNumberMetrics({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
@@ -197,11 +197,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -226,11 +226,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -286,16 +286,16 @@ const cubes: Record<string, Cube> = {
       battleDimensions.powerplay,
     ],
     defaultDimensionsIds: ['brawler'],
-    measurements: [
-      mergedbattleStringMeasurements.timestamp,
-      mergedbattleNumberMeasurements.picks,
-      mergedbattleNumberMeasurements.trophyChange,
-      mergedbattleNumberMeasurements.winRate,
-      mergedbattleNumberMeasurements.starRate,
-      mergedbattleNumberMeasurements.duration,
+    metrics: [
+      mergedbattleStringMetrics.timestamp,
+      mergedbattleNumberMetrics.picks,
+      mergedbattleNumberMetrics.trophyChange,
+      mergedbattleNumberMetrics.winRate,
+      mergedbattleNumberMetrics.starRate,
+      mergedbattleNumberMetrics.duration,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       battleSlices.seasonBetween,
       battleSlices.mode,

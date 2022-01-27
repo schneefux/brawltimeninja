@@ -32,17 +32,17 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {
       const header = (<string[]>[]).concat(
         dimensions.value.map(d => $klicker.getName(d)),
-        measurements.value.map(m => $klicker.getName(m)),
+        metrics.value.map(m => $klicker.getName(m)),
       ).join(',')
       const body = props.response.data.map(e =>
         (<(string|number)[]>[]).concat(
           dimensions.value.map(d => e.dimensionsRaw[d.id][d.naturalIdAttribute]),
-          measurements.value.map(m => e.measurementsRaw[m.id]),
+          metrics.value.map(m => e.metricsRaw[m.id]),
         ).join(',')
       ).join('\n')
 

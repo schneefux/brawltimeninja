@@ -131,7 +131,7 @@ export default Vue.extend({
         map: [map],
       },
       dimensionsIds: [],
-      measurementsIds: ['eventId', 'timestamp'],
+      metricsIds: ['eventId', 'timestamp'],
       sortId: 'timestamp',
       limit: 1,
     })
@@ -142,10 +142,10 @@ export default Vue.extend({
 
     return {
       event: {
-        id: event.measurementsRaw.eventId,
+        id: event.metricsRaw.eventId,
         map,
         mode,
-        timestamp: event.measurementsRaw.timestamp,
+        timestamp: event.metricsRaw.timestamp,
       } as Map,
     }
   },

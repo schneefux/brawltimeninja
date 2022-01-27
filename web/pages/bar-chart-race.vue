@@ -114,7 +114,7 @@ export default Vue.extend({
       query: <CubeQuery>{
         cubeId: 'battle',
         dimensionsIds: ['brawler', 'day'],
-        measurementsIds: ['useRate'],
+        metricsIds: ['useRate'],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           mode: [],

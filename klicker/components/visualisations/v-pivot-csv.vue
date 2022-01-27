@@ -32,12 +32,12 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {
       const temporal = dimensions.value.filter(d => d.type == 'temporal')[0]
       const nominal = dimensions.value.filter(d => d.type == 'nominal')[0]
-      const value = measurements.value[0]
+      const value = metrics.value[0]
 
       const allDates = props.response.data.map(r => r.dimensionsRaw[temporal.id][temporal.naturalIdAttribute])
       const dates = [...new Set(allDates)].sort()
@@ -50,7 +50,7 @@ export default defineComponent({
         }
         const date = row.dimensionsRaw[temporal.id][temporal.naturalIdAttribute]
         const index = dates.indexOf(date)
-        table[keyId][index] = row.measurementsRaw[value.id] as number
+        table[keyId][index] = row.metricsRaw[value.id] as number
       }
 
       const header = (<string[]>[nominal.name]).concat(dates).join(',')

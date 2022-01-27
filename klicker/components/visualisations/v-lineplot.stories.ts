@@ -17,7 +17,7 @@ export default {
 const query = JSON.stringify(<CubeQuery>{
   cubeId: 'map',
   dimensionsIds: ['season'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
 })
@@ -37,7 +37,7 @@ export const Default: Story = (args, { argTypes }) => ({
 const ciQuery = JSON.stringify(<CubeQuery>{
   cubeId: 'map',
   dimensionsIds: ['season'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
   confidenceInterval: true,
@@ -71,7 +71,7 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {
     seasonBetween: ['2021-11-01', '2021-12-31'],
   },
@@ -81,7 +81,7 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     name: 'Reference Dataset',
     cubeId: 'map',
     dimensionsIds: ['brawler'],
-    measurementsIds: ['winRate'],
+    metricsIds: ['winRate'],
     slices: {
       mode: ['gemGrab'],
       seasonBetween: ['2021-11-01', '2021-12-31'],

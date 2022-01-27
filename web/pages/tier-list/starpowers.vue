@@ -113,7 +113,7 @@ export default Vue.extend({
       query: <CubeComparingQuery>{
         cubeId: 'battle',
         dimensionsIds: ['brawler', 'starpower'],
-        measurementsIds: ['winRate'],
+        metricsIds: ['winRate'],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           starpowerIdNeq: ['0'],
@@ -123,7 +123,7 @@ export default Vue.extend({
         reference: {
           cubeId: 'battle',
           dimensionsIds: ['brawler'],
-          measurementsIds: ['winRate'],
+          metricsIds: ['winRate'],
           slices: {
             season: [currentSeason.toISOString().slice(0, 10)],
             starpowerIdEq: ['0'],

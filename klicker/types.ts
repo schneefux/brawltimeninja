@@ -4,14 +4,14 @@ export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
 export const asDimensions = <T>(et: { [K in keyof T]: Dimension }) => et
-export const asNumberMeasurements = <T>(et: { [K in keyof T]: Measurement<number> }) => et
-export const asStringMeasurements = <T>(et: { [K in keyof T]: Measurement<string> }) => et
+export const asNumberMetrics = <T>(et: { [K in keyof T]: Metric<number> }) => et
+export const asStringMetrics = <T>(et: { [K in keyof T]: Metric<string> }) => et
 export const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
 
 export type ValueTypeNumber = 'quantitative'|'ordinal'
 export type ValueTypeString = 'temporal'|'nominal'
 export type ValueType = ValueTypeNumber | ValueTypeString
-export type MeasureType = 'number'|'count'|'countDistinct'|'countDistinctApprox'|'sum'|'avg'|'min'|'max'|'runningTotal'
+export type MetricType = 'number'|'count'|'countDistinct'|'countDistinctApprox'|'sum'|'avg'|'min'|'max'|'runningTotal'
 export type DimensionType = 'time'|'string'|'number'|'boolean'|'geo'
 export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'gte'|'lt'|'lte'|'set'|'notSet'|'inDateRange'|'notInDateRange'|'beforeDate'|'afterDate'
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
@@ -23,22 +23,22 @@ export interface Cube {
   hidden?: boolean
   dimensions: Dimension[]
   defaultDimensionsIds: string[]
-  measurements: Measurement<any>[]
-  defaultMeasurementIds: string[]
+  metrics: Metric<any>[]
+  defaultMetricIds: string[]
   slices: Slice[]
   defaultSliceValues: SliceValue
   /**
    * deprecate
    */
   // ids
-  metaMeasurements: string[]
+  metaMetrics: string[]
 }
 
 /**
- * Measure which will be transformed into a cube.js measure
+ * Metric which will be transformed into a cube.js measure
  * with id `${id}_measure`.
  */
-export interface Measurement<T=string|number> {
+export interface Metric<T=string|number> {
   id: string
   type: T extends string ? ValueTypeString : ValueTypeNumber
   // TODO move all `name`s to en.json
@@ -58,7 +58,7 @@ export interface Measurement<T=string|number> {
    */
   config: {
     sql: string
-    type: MeasureType
+    type: MetricType
   }
   /**
    * Configuration for statistical tests and confidence intervals
@@ -66,12 +66,12 @@ export interface Measurement<T=string|number> {
   statistics?: {
     test?: {
       name: string
-      test(referenceMeasurements: MetaGridEntry['measurementsRaw'], testMeasurements: MetaGridEntry['measurementsRaw']): number
-      requiresMeasurements: string[]
+      test(referenceMetrics: MetaGridEntry['metricsRaw'], testMetrics: MetaGridEntry['metricsRaw']): number
+      requiresMetrics: string[]
     }
     ci?: {
-      ci(data: MetaGridEntry['measurementsRaw']): ConfidenceInterval
-      requiresMeasurements: string[]
+      ci(data: MetaGridEntry['metricsRaw']): ConfidenceInterval
+      requiresMetrics: string[]
     }
   }
 }
@@ -90,7 +90,7 @@ export interface Dimension {
   childIds?: string[]
   /**
    * Column which contains a human-readable identifier.
-   * May be the dimension or one of additionalMeasures.
+   * May be the dimension or one of additionalMetrics.
    */
   naturalIdAttribute: string
   /**
@@ -98,10 +98,10 @@ export interface Dimension {
    */
   formatter?: FormatType
   /**
-   * Measures to always request when requesting dimension.
+   * Metrics to always request when requesting dimension.
    * Used for attributes of SCDs.
    */
-  additionalMeasures: string[]
+  additionalMetrics: string[]
   hidden?: boolean
   type: ValueType
   /**
@@ -168,12 +168,12 @@ export interface StaticWidgetSpec extends WidgetSpec {
 }
 
 export interface VisualisationSpec extends StaticWidgetSpec {
-  applicable(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
-  recommended?(dimensions: Dimension[], measurements: Measurement[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  applicable(dimensions: Dimension[], metrics: Metric[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
+  recommended?(dimensions: Dimension[], metrics: Metric[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
 }
 
 export interface SlicerSpec extends WidgetSpec {
-  applicable(dimensions: Dimension[], measurements: Measurement[], cubeId: string): boolean
+  applicable(dimensions: Dimension[], metrics: Metric[], cubeId: string): boolean
 }
 
 export interface ConfidenceInterval {
@@ -185,10 +185,10 @@ export interface ConfidenceInterval {
 export interface MetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
-  measurementsRaw: Record<string, number|string>
-  measurementsCI: Record<string, ConfidenceInterval>
+  metricsRaw: Record<string, number|string>
+  metricsCI: Record<string, ConfidenceInterval>
   dimensions: Record<string, string>
-  measurements: Record<string, string>
+  metrics: Record<string, string>
 }
 
 export interface ComparingMetaGridEntry extends MetaGridEntry {
@@ -228,7 +228,7 @@ export interface CubeQuery {
   cubeId: string
   slices: SliceValue
   dimensionsIds: string[]
-  measurementsIds: string[]
+  metricsIds: string[]
   limit?: number
   sortId: string
   comparing?: boolean
@@ -305,7 +305,7 @@ export interface KlickerService {
 
   format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string
 
-  getName(m: Measurement|Dimension, modifier?: string): string
+  getName(m: Metric|Dimension, modifier?: string): string
 
   /**
    * @param query Query specification

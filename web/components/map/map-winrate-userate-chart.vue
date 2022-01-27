@@ -43,7 +43,7 @@ export default defineComponent({
     const query = computed<CubeQuery>(() => ({
       cubeId: 'map',
       dimensionsIds: ['brawler'],
-      measurementsIds: ['useRate', 'winRate'],
+      metricsIds: ['useRate', 'winRate'],
       slices: props.slices,
       sortId: 'useRate',
     }))

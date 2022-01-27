@@ -6,19 +6,19 @@
 
     <div class="flex flex-wrap gap-y-1 gap-x-1">
       <b-select
-        v-for="index in (showAllMeasurements ? 1 : numMeasurements)"
+        v-for="index in (showAllMetrics ? 1 : numMetrics)"
         :key="index"
-        :value="showAllMeasurements ? '' : value.measurementsIds[index - 1]"
+        :value="showAllMetrics ? '' : value.metricsIds[index - 1]"
         dark
         sm
-        @input="v => onInputMeasurementsIds(index - 1, v)"
+        @input="v => onInputMetricsIds(index - 1, v)"
       >
         <option
-          v-if="multiple && index == 1 && measurements.length > 1 && measurements.length < maxMeasurements"
+          v-if="multiple && index == 1 && metrics.length > 1 && metrics.length < maxMetrics"
           value=""
         >{{ translate('option.all') }}</option>
         <option
-          v-for="m in (showAllMeasurements ? measurements : measurements.filter(m => m.id == value.measurementsIds[index - 1] || !value.measurementsIds.includes(m.id)))"
+          v-for="m in (showAllMetrics ? metrics : metrics.filter(m => m.id == value.metricsIds[index - 1] || !value.metricsIds.includes(m.id)))"
           :key="m.id"
           :value="m.id"
         >
@@ -27,15 +27,15 @@
       </b-select>
 
       <div
-        v-if="!showAllMeasurements && multiple"
+        v-if="!showAllMetrics && multiple"
         class="flex gap-x-1"
       >
         <b-button
-          v-if="numMeasurements < maxMeasurements"
+          v-if="numMetrics < maxMetrics"
           class="font-semibold"
           primary
           sm
-          @click="numMeasurements++"
+          @click="numMetrics++"
         >
           <font-awesome-icon
             :icon="faPlus"
@@ -43,11 +43,11 @@
         </b-button>
 
         <b-button
-          v-if="numMeasurements > 1"
+          v-if="numMetrics > 1"
           class="font-semibold"
           primary
           sm
-          @click="onMeasurementRemove()"
+          @click="onMetricRemove()"
         >
           <font-awesome-icon
             :icon="faMinus"
@@ -90,7 +90,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    maxMeasurements: {
+    maxMetrics: {
       type: Number,
       default: 10
     },
@@ -101,57 +101,57 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { $klicker } = useKlicker()
-    const numMeasurements = ref(props.value.measurementsIds.length)
+    const numMetrics = ref(props.value.metricsIds.length)
 
-    const measurements = computed(() => $klicker.config[props.value.cubeId].measurements
+    const metrics = computed(() => $klicker.config[props.value.cubeId].metrics
         .filter(m => props.options == undefined || props.options.includes(m.id)))
-    const showAllMeasurements = computed(() => props.value.measurementsIds.length == measurements.value.length && measurements.value.length > 1)
+    const showAllMetrics = computed(() => props.value.metricsIds.length == metrics.value.length && metrics.value.length > 1)
     const description = computed(() => {
-      if (numMeasurements.value != 1) {
+      if (numMetrics.value != 1) {
         return ''
       }
-      return measurements.value.find(m => m.id == props.value.measurementsIds[0])?.description ?? ''
+      return metrics.value.find(m => m.id == props.value.metricsIds[0])?.description ?? ''
     })
 
-    const onInputMeasurementsIds = (index: number, m: string) => {
-      let measurementsIds: string[] = []
+    const onInputMetricsIds = (index: number, m: string) => {
+      let metricsIds: string[] = []
       if (m != '') {
-        if (!showAllMeasurements.value) {
-          measurementsIds = props.value.measurementsIds.slice()
+        if (!showAllMetrics.value) {
+          metricsIds = props.value.metricsIds.slice()
         }
-        // else: drop every measurement and keep only the new input
-        measurementsIds[index] = m
+        // else: drop every metric and keep only the new input
+        metricsIds[index] = m
       } else {
-        measurementsIds = measurements.value.map(m => m.id)
+        metricsIds = metrics.value.map(m => m.id)
       }
 
       emit('input', <CubeQuery>{
         ...props.value,
-        measurementsIds,
-        sortId: measurementsIds[0],
+        metricsIds,
+        sortId: metricsIds[0],
       })
-      numMeasurements.value = measurementsIds.length
+      numMetrics.value = metricsIds.length
     }
 
-    const onMeasurementRemove = () => {
-      const measurementsIds = props.value.measurementsIds.slice()
-      measurementsIds.pop()
+    const onMetricRemove = () => {
+      const metricsIds = props.value.metricsIds.slice()
+      metricsIds.pop()
       emit('input', <CubeQuery>{
         ...props.value,
-        measurementsIds,
+        metricsIds,
       })
-      numMeasurements.value--
+      numMetrics.value--
     }
 
     const translate = (key: string) => $klicker.$t(key)
 
     return {
       description,
-      measurements,
-      numMeasurements,
-      showAllMeasurements,
-      onMeasurementRemove,
-      onInputMeasurementsIds,
+      metrics,
+      numMetrics,
+      showAllMetrics,
+      onMetricRemove,
+      onInputMetricsIds,
       faPlus,
       faMinus,
       translate,

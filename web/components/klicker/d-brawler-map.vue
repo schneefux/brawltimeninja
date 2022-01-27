@@ -21,7 +21,7 @@
           clazz="w-16 mr-2"
         ></media-img>
         <kv-table
-          v-if="row.measurementsRaw.picks > 0"
+          v-if="row.metricsRaw.picks > 0"
           class="w-48 px-3 py-2"
           :data="table"
         ></kv-table>
@@ -52,7 +52,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { brawlerId, camelToKebab, slugify } from '@/lib/util'
-import { commonMeasurements } from '~/lib/klicker.conf'
+import { commonMetrics } from '~/lib/klicker.conf'
 
 interface TotalsRow {
   picks_weighted: number
@@ -75,7 +75,7 @@ export default Vue.extend({
   },
   computed: {
     useRate(): number {
-      return this.row.measurementsRaw.picks / this.totals.picks_weighted
+      return this.row.metricsRaw.picks / this.totals.picks_weighted
     },
     timeTillEnd(): string {
       if (this.end == undefined) {
@@ -85,9 +85,9 @@ export default Vue.extend({
     },
     table(): string[][] {
       return [
-        [ this.$tc('metric.picks'), this.$klicker.format(commonMeasurements.picks, this.row.measurementsRaw.picks) ],
-        [ this.$tc('metric.useRate'), this.$klicker.format(commonMeasurements.useRate, this.useRate) ],
-        [ this.$tc('metric.winRate'), this.$klicker.format(commonMeasurements.winRate, this.row.measurementsRaw.winRate) ],
+        [ this.$tc('metric.picks'), this.$klicker.format(commonMetrics.picks, this.row.metricsRaw.picks) ],
+        [ this.$tc('metric.useRate'), this.$klicker.format(commonMetrics.useRate, this.useRate) ],
+        [ this.$tc('metric.winRate'), this.$klicker.format(commonMetrics.winRate, this.row.metricsRaw.winRate) ],
       ]
     },
     brawlerId(): string {

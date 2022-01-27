@@ -46,7 +46,7 @@ export default defineComponent({
       const data = await $klicker.query({
         cubeId: 'map',
         dimensionsIds: ['mode', 'map'],
-        measurementsIds: ['timestamp', 'picks'],
+        metricsIds: ['timestamp', 'picks'],
         slices: {
           season: [season],
           mapLike: ['Competition Winner'],
@@ -56,9 +56,9 @@ export default defineComponent({
 
       return data.data
         // events overlap slightly and get misclassified... TODO fix this in backend
-        .filter(row => row.measurementsRaw.picks > 1000)
+        .filter(row => row.metricsRaw.picks > 1000)
         .map(row => ({
-          timestamp: row.measurementsRaw.timestamp as string,
+          timestamp: row.metricsRaw.timestamp as string,
           map: row.dimensionsRaw.map.map,
           mode: row.dimensionsRaw.mode.mode,
           link: `/tier-list/mode/${camelToKebab(row.dimensionsRaw.mode.mode)}/map/${slugify(row.dimensionsRaw.map.map)}`,

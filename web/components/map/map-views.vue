@@ -163,7 +163,7 @@
             dense
           ></gadget-starpower-disclaimer>
           <metric-info
-            :measurement="adjustedWinRate"
+            :metric="adjustedWinRate"
             class="dashboard-cell"
             style="--columns: 2; --rows: 1;"
             full-height
@@ -215,7 +215,7 @@ export default defineComponent({
       return {
         cubeId: 'battle',
         dimensionsIds: ['brawler'],
-        measurementsIds: [],
+        metricsIds: [],
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           mode: props.mode != undefined ? [props.mode] : [],
@@ -230,7 +230,7 @@ export default defineComponent({
 
     watch(() => [props.mode, props.map], () => query.value = defaultQuery())
 
-    const adjustedWinRate = computed(() => $klicker.config['battle'].measurements.find(m => m.id == 'winRateAdj')!)
+    const adjustedWinRate = computed(() => $klicker.config['battle'].metrics.find(m => m.id == 'winRateAdj')!)
 
     const gtag = useGtag()
     const trackScroll = (visible, element, section) => {

@@ -50,7 +50,7 @@ export default defineComponent({
     const query = computed<CubeQuery>(() => ({
       cubeId: 'battle',
       dimensionsIds: ['team'],
-      measurementsIds: ['wins'],
+      metricsIds: ['wins'],
       slices: {
         ...slices.value,
         teamSizeGt: slices.value.mode[0] == 'duoShowdown' ? ['1'] : ['2'],

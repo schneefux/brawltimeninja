@@ -4,10 +4,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Bar Chart',
   component: 'v-barplot',
   import: () => import('./components/visualisations/v-barplot.vue'),
-  applicable(dimensions, measurements, size) {
+  applicable(dimensions, metrics, size) {
     return dimensions.length == 1 &&
       ['ordinal', 'nominal'].includes(dimensions[0].type) &&
-      measurements.length == 1 &&
+      metrics.length == 1 &&
       size > 1 &&
       size < 100
   },
@@ -20,8 +20,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Tier List',
   component: 'v-tier-list',
   import: () => import('./components/visualisations/v-tier-list.vue'),
-  applicable(dimensions, measurements, size) {
-    return dimensions.length == 1 && measurements.length == 1 && size > 5 && size < 100
+  applicable(dimensions, metrics, size) {
+    return dimensions.length == 1 && metrics.length == 1 && size > 5 && size < 100
   },
   initialDimensions: {
     rows: 3,
@@ -31,8 +31,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Test Info',
   component: 'v-test-info',
   import: () => import('./components/visualisations/v-test-info.vue'),
-  applicable(dimensions, measurements, size, comparing) {
-    return comparing && measurements[0].statistics?.test != undefined
+  applicable(dimensions, metrics, size, comparing) {
+    return comparing && metrics[0].statistics?.test != undefined
   },
   initialDimensions: {
     rows: 2,
@@ -42,8 +42,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Table',
   component: 'v-table',
   import: () => import('./components/visualisations/v-table.vue'),
-  applicable(dimensions, measurements, size, comparing) {
-    return size > 0 && (comparing || measurements.length < 5)
+  applicable(dimensions, metrics, size, comparing) {
+    return size > 0 && (comparing || metrics.length < 5)
   },
   initialDimensions: {
     rows: 4,
@@ -65,8 +65,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Scatter Chart',
   component: 'v-scatterplot',
   import: () => import('./components/visualisations/v-scatterplot.vue'),
-  applicable(dimensions, measurements, size) {
-    return dimensions.length == 1 && measurements.length == 2 && size > 1 && size < 1000
+  applicable(dimensions, metrics, size) {
+    return dimensions.length == 1 && metrics.length == 2 && size > 1 && size < 1000
   },
   resizable: true,
   initialDimensions: {
@@ -77,8 +77,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Horizontal Cards',
   component: 'v-roll',
   import: () => import('./components/visualisations/v-roll.vue'),
-  applicable(dimensions, measurements, size) {
-    return dimensions.length == 1 && measurements.length == 1 && size > 0 && size < 10
+  applicable(dimensions, metrics, size) {
+    return dimensions.length == 1 && metrics.length == 1 && size > 0 && size < 10
   },
   initialDimensions: {
     rows: 1,
@@ -88,10 +88,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Pivot Table CSV Download Button',
   component: 'v-pivot-csv',
   import: () => import('./components/visualisations/v-pivot-csv.vue'),
-  applicable(dimensions, measurements, size) {
+  applicable(dimensions, metrics, size) {
     return size > 0 && dimensions.filter(d => d.type == 'temporal').length == 1
         && dimensions.filter(m => m.type == 'nominal').length == 1
-        && measurements.length == 1
+        && metrics.length == 1
   },
   initialDimensions: {
     rows: 1,
@@ -101,10 +101,10 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Line Plot',
   component: 'v-lineplot',
   import: () => import('./components/visualisations/v-lineplot.vue'),
-  applicable(dimensions, measurements, size) {
+  applicable(dimensions, metrics, size) {
     return dimensions.length == 1 &&
       ['temporal', 'ordinal'].includes(dimensions[0].type) &&
-      measurements.length == 1 && size > 1 && size < 1000
+      metrics.length == 1 && size > 1 && size < 1000
   },
   resizable: true,
   initialDimensions: {
@@ -112,11 +112,11 @@ const defaultVisualisations: VisualisationSpec[] = [{
     columns: 4,
   },
 }, {
-  name: 'Measurement Info',
+  name: 'Metric Info',
   component: 'v-info',
   import: () => import('./components/visualisations/v-info.vue'),
-  applicable(dimensions, measurements) {
-    return measurements.length == 1
+  applicable(dimensions, metrics) {
+    return metrics.length == 1
   },
   initialDimensions: {
     rows: 1,
@@ -126,12 +126,12 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Heatmap',
   component: 'v-heatmap',
   import: () => import('./components/visualisations/v-heatmap.vue'),
-  applicable(dimensions, measurements, size, comparing, data) {
+  applicable(dimensions, metrics, size, comparing, data) {
     if (comparing) {
       return false
     }
     data = data as MetaGridEntry[]
-    if (dimensions.length == 2 && measurements.length == 1 && size > 1) {
+    if (dimensions.length == 2 && metrics.length == 1 && size > 1) {
       const uniqueX = new Set(data.map(d => d.dimensions[dimensions[0].id])).size
       const uniqueY = new Set(data.map(d => d.dimensions[dimensions[1].id])).size
 
@@ -149,8 +149,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Grid',
   component: 'v-grid',
   import: () => import('./components/visualisations/v-grid.vue'),
-  applicable(dimensions, measurements) {
-    return measurements.length > 1
+  applicable(dimensions, metrics) {
+    return metrics.length > 1
   },
   initialDimensions: {
     rows: 3,
@@ -160,7 +160,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
   name: 'CSV Download Button',
   component: 'v-csv',
   import: () => import('./components/visualisations/v-csv.vue'),
-  applicable(dimensions, measurements, size) {
+  applicable(dimensions, metrics, size) {
     return size > 0
   },
   initialDimensions: {

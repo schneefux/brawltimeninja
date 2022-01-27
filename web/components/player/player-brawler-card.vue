@@ -190,12 +190,12 @@ export default Vue.extend({
         season: [season],
       },
       dimensionsIds: [],
-      measurementsIds: ['winRate', 'picks'],
+      metricsIds: ['winRate', 'picks'],
       sortId: 'picks',
     })
-    if (response.data[0].measurementsRaw.picks > 0) {
-      this.winrate = response.data[0].measurementsRaw.winRate as number
-      this.picks = response.data[0].measurementsRaw.picks as number
+    if (response.data[0].metricsRaw.picks > 0) {
+      this.winrate = response.data[0].metricsRaw.winRate as number
+      this.picks = response.data[0].metricsRaw.picks as number
     }
   },
   computed: {

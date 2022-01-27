@@ -70,7 +70,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {
       let columns: Column[] = []
@@ -81,11 +81,11 @@ export default defineComponent({
         // dimensions are rendered n:m
         slot: 'dimensions',
       })
-      measurements.value.forEach(m => columns.push({
-        // measurements are rendered 1:1
+      metrics.value.forEach(m => columns.push({
+        // metrics are rendered 1:1
         title: $klicker.getName(m),
-        keys: [`measurements.${m.id}`],
-        slot: `measurements.${m.id}`,
+        keys: [`metrics.${m.id}`],
+        slot: `metrics.${m.id}`,
         shrink: true,
       }))
 

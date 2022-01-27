@@ -40,16 +40,16 @@ export default defineComponent({
   setup(props) {
     const { switchResponse } = useCubeResponseProps(props)
 
-    const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
+    const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.metricsRaw.picks as number), 0))
 
     const sampleFormatted = computed(() => {
       const format = (n: number) => formatSI(n, 2)
 
       return switchResponse((response) => {
-        return format(response.data.reduce((agg, e) => agg + (e.measurementsRaw.picks as number), 0))
+        return format(response.data.reduce((agg, e) => agg + (e.metricsRaw.picks as number), 0))
       }, (response) => {
         return response.data
-          .reduce((agg, e) => [agg[0] + (e.test.reference.measurementsRaw.picks as number), agg[1] + (e.measurementsRaw.picks as number)], [0, 0])
+          .reduce((agg, e) => [agg[0] + (e.test.reference.metricsRaw.picks as number), agg[1] + (e.metricsRaw.picks as number)], [0, 0])
           .map(format)
           .join(' / ')
       })

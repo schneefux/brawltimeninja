@@ -71,7 +71,7 @@ export default defineComponent({
     const query = ref<CubeQuery>({
       cubeId: 'map',
       dimensionsIds: [],
-      measurementsIds: ['picks'],
+      metricsIds: ['picks'],
       sortId: 'picks',
       slices: $klicker.convertLocationToSlices(route.value, {
         season: [seasonSlice],

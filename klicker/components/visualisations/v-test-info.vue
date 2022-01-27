@@ -48,10 +48,10 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, measurements } = useCubeResponseProps(props)
+    const { $klicker, metrics } = useCubeResponseProps(props)
 
-    const metricName = computed(() => $klicker.getName(measurements.value[0]))
-    const testName = computed(() => measurements.value[0].statistics?.test?.name)
+    const metricName = computed(() => $klicker.getName(metrics.value[0]))
+    const testName = computed(() => metrics.value[0].statistics?.test?.name)
     const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     return {

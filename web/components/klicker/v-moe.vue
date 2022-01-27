@@ -58,7 +58,7 @@ export default defineComponent({
       // worst case, p=50%
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
-      const sample = (<CubeResponse>props.response).data.reduce((agg, c) => agg + (c.measurementsRaw.picks as number), 0)
+      const sample = (<CubeResponse>props.response).data.reduce((agg, c) => agg + (c.metricsRaw.picks as number), 0)
       return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')

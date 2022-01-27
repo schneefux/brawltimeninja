@@ -165,15 +165,15 @@ export const actions: ActionTree<RootState, RootState> = {
     const battleData = await this.$klicker.query({
       cubeId: 'battle',
       dimensionsIds: [],
-      measurementsIds: ['picks', 'winRate', 'trophyChange'],
+      metricsIds: ['picks', 'winRate', 'trophyChange'],
       slices: {
         playerId: [tagToId(tag)],
       },
       sortId: 'picks',
     })
 
-    if (battleData.data[0].measurementsRaw.picks > 0) {
-      const totals = battleData.data[0].measurementsRaw as any as PlayerTotals
+    if (battleData.data[0].metricsRaw.picks > 0) {
+      const totals = battleData.data[0].metricsRaw as any as PlayerTotals
       commit('setPlayerTotals', totals)
     } else {
       // calculate player totals from battle log

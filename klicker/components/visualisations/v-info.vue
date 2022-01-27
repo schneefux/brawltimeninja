@@ -28,10 +28,10 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, measurements } = useCubeResponseProps(props)
+    const { $klicker, metrics } = useCubeResponseProps(props)
 
-    const title = computed(() => 'About ' + $klicker.getName(measurements.value[0]))
-    const description = computed(() => measurements.value[0].description)
+    const title = computed(() => 'About ' + $klicker.getName(metrics.value[0]))
+    const description = computed(() => metrics.value[0].description)
 
     return {
       title,

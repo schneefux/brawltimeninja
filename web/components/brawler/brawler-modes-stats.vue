@@ -73,7 +73,7 @@ export default Vue.extend({
         brawler: [this.brawlerName.toUpperCase()],
       },
       dimensionsIds: ['mode'],
-      measurementsIds: ['winRateAdj'],
+      metricsIds: ['winRateAdj'],
       sortId: 'winRateAdj',
     })
 
@@ -84,10 +84,10 @@ export default Vue.extend({
       if (this.data.length == 0) {
         return ''
       }
-      const bestModes = this.data.slice().sort((e1, e2) => (e2.measurementsRaw.winRateAdj as number) - (e1.measurementsRaw.winRateAdj as number))
+      const bestModes = this.data.slice().sort((e1, e2) => (e2.metricsRaw.winRateAdj as number) - (e1.metricsRaw.winRateAdj as number))
 
       const bestMode = this.$i18n.t('mode.' + bestModes[0].dimensionsRaw.mode.mode)
-      const viableModes = bestModes.filter(e => (e.measurementsRaw.winRateAdj as number) > 0.55).length
+      const viableModes = bestModes.filter(e => (e.metricsRaw.winRateAdj as number) > 0.55).length
       const viability = scaleInto(0, 1, 3, viableModes / bestModes.length)
 
       return this.$i18n.t('brawler.modes.description', {

@@ -30,30 +30,30 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, measurements, switchResponse, comparing } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics, switchResponse, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
-      const measurement0 = measurements.value[0]
+      const metric0 = metrics.value[0]
 
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
-        measurements: e.measurementsRaw,
-        measurementsRaw: e.measurementsRaw,
-        measurementsCI: e.measurementsCI,
+        metrics: e.metricsRaw,
+        metricsRaw: e.metricsRaw,
+        metricsCI: e.metricsCI,
         source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
         sourceRaw: 'test',
       }, {
         id: e.id,
         dimensions: e.dimensions,
-        measurements: e.test.reference.measurementsRaw,
-        measurementsRaw: e.test.reference.measurementsRaw,
-        measurementsCI: e.test.reference.measurementsCI,
+        metrics: e.test.reference.metricsRaw,
+        metricsRaw: e.test.reference.metricsRaw,
+        metricsCI: e.test.reference.metricsCI,
         source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
         sourceRaw: 'reference',
       }]))
 
-      const withCI = values[0].measurementsCI[measurement0.id] != undefined
+      const withCI = values[0].metricsCI[metric0.id] != undefined
 
       return {
         data: {
@@ -67,12 +67,12 @@ export default defineComponent({
             scale: dimension0.scale,
           },
           y: {
-            ...measurement0.vega,
-            field: 'measurementsRaw.' + measurement0.id,
-            type: measurement0.type,
-            title: $klicker.getName(measurement0),
+            ...metric0.vega,
+            field: 'metricsRaw.' + metric0.id,
+            type: metric0.type,
+            title: $klicker.getName(metric0),
             axis: {
-              format: measurement0.d3formatter,
+              format: metric0.d3formatter,
             },
           },
           ...(comparing.value ? {
@@ -87,8 +87,8 @@ export default defineComponent({
           } : {}),
           // TODO spread breaks types
           tooltip: <any>[{
-            field: 'measurements.' + measurement0.id,
-            title: $klicker.getName(measurement0),
+            field: 'metrics.' + metric0.id,
+            title: $klicker.getName(metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
             title: $klicker.getName(dimension0),
@@ -107,13 +107,13 @@ export default defineComponent({
         ...(withCI ? {
           // workaround for https://stackoverflow.com/questions/67358393/trouble-with-errorband-and-nested-properties
           transform: [{
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.lower',
+            calculate: 'datum.metricsCI.' + metric0.id + '.lower',
             as: 'lower',
           }, {
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.mean',
-            as: 'measurementsRaw.' + measurement0.id,
+            calculate: 'datum.metricsCI.' + metric0.id + '.mean',
+            as: 'metricsRaw.' + metric0.id,
           }, {
-            calculate: 'datum.measurementsCI.' + measurement0.id + '.upper',
+            calculate: 'datum.metricsCI.' + metric0.id + '.upper',
             as: 'upper',
           }],
         } : {}),

@@ -34,14 +34,14 @@
           <table>
             <tbody>
               <tr
-                v-for="m in measurements"
+                v-for="m in metrics"
                 :key="m.id"
                 class="whitespace-nowrap"
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >
                 <td class="font-semibold text-right pr-1" itemprop="unitText">
-                  {{ entry.measurements[m.id] }}
+                  {{ entry.metrics[m.id] }}
                 </td>
                 <td itemprop="value">
                   {{ getName(m) }}
@@ -80,7 +80,7 @@ import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import BCard from '../ui/b-card.vue'
 import BButton from '../ui/b-button.vue'
-import { Measurement } from '../../types'
+import { Metric } from '../../types'
 
 export default defineComponent({
   components: {
@@ -96,18 +96,18 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const page = ref(0)
     watch(() => props.response.data, () => page.value = 0)
 
-    const getName = (m: Measurement) => $klicker.getName(m)
+    const getName = (m: Metric) => $klicker.getName(m)
 
     return {
       page,
       getName,
       dimensions,
-      measurements,
+      metrics,
     }
   },
 })

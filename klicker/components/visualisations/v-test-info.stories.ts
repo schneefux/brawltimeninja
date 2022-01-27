@@ -12,7 +12,7 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
   comparing: true,
@@ -20,7 +20,7 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     name: 'Reference Dataset',
     cubeId: 'map',
     dimensionsIds: ['brawler'],
-    measurementsIds: ['winRate'],
+    metricsIds: ['winRate'],
     slices: {
       mode: ['gemGrab'],
     },

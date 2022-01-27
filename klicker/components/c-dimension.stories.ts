@@ -10,7 +10,7 @@ export default {
 const query = <CubeQuery>{
   cubeId: 'map',
   dimensionsIds: ['brawler'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {
     brawler: ['1'],
   },
@@ -33,7 +33,7 @@ const comparingQuery = <CubeComparingQuery>{
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
   comparing: true,
@@ -41,7 +41,7 @@ const comparingQuery = <CubeComparingQuery>{
     name: 'Reference Dataset',
     cubeId: 'map',
     dimensionsIds: ['brawler'],
-    measurementsIds: ['winRate'],
+    metricsIds: ['winRate'],
     slices: {
       mode: ['gemGrab'],
     },

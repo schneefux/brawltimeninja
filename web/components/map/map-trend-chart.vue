@@ -105,7 +105,7 @@ export default defineComponent({
         name,
         cubeId: 'battle',
         dimensionsIds: props.dimensions,
-        measurementsIds: [props.metric],
+        metricsIds: [props.metric],
         slices: {
           ...props.slices,
           season: [season],
@@ -126,7 +126,7 @@ export default defineComponent({
             name: referenceName,
             cubeId: 'battle',
             dimensionsIds: props.dimensions,
-            measurementsIds: [props.metric],
+            metricsIds: [props.metric],
             slices: {
               ...comparingSlices,
               season: [season],

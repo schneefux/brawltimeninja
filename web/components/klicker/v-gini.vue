@@ -44,7 +44,7 @@ export default defineComponent({
   },
   setup(props) {
     const giniScore = computed((): number => {
-      const getStat = (r: MetaGridEntry) => r.measurementsRaw.useRate as number
+      const getStat = (r: MetaGridEntry) => r.metricsRaw.useRate as number
 
       // calculate Gini coefficient
       let absoluteDifference = 0

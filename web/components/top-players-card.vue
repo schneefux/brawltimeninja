@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMeasurements } from '~/lib/klicker.conf'
+import { commonMetrics } from '~/lib/klicker.conf'
 import { capitalize } from '~/lib/util'
 import { Leaderboard } from '~/model/Api'
 import { BHorizontalScroller } from '@schneefux/klicker/components'
@@ -102,12 +102,12 @@ export default Vue.extend({
         tag: e.tag,
         name: e.name,
         icon: e.icon,
-        metric: this.$klicker.format(commonMeasurements[this.metric], e.metric),
+        metric: this.$klicker.format(commonMetrics[this.metric], e.metric),
       }))
   },
   computed: {
     metricName(): string {
-      return capitalize(commonMeasurements[this.metric].name)
+      return capitalize(commonMetrics[this.metric].name)
     },
   },
 })

@@ -89,11 +89,11 @@ class CustomKlicker extends Klicker {
     return super.format(spec, value)
   }
 
-  async queryActiveEvents<T extends EventMetadata>(measures: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<T[]> {
+  async queryActiveEvents<T extends EventMetadata>(metrics: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<T[]> {
     const events = await this.query({
       cubeId: 'map',
       dimensionsIds: ['mode', 'map', 'powerplay'],
-      measurementsIds: ['eventId', 'timestamp', 'picks', ...measures],
+      metricsIds: ['eventId', 'timestamp', 'picks', ...metrics],
       slices: {
         season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
         ...slices,
@@ -104,15 +104,15 @@ class CustomKlicker extends Klicker {
 
     const lastEvents = events.data
       .map(e => (<T>{
-        battle_event_id: parseInt(e.measurementsRaw.eventId as string),
+        battle_event_id: parseInt(e.metricsRaw.eventId as string),
         battle_event_map: e.dimensionsRaw.map.map as string,
         battle_event_mode: e.dimensionsRaw.mode.mode as string,
         battle_event_powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
-        picks: e.measurementsRaw.picks as number,
-        timestamp: e.measurementsRaw.timestamp as string,
-        ...(measures.reduce((agg, m) => ({
+        picks: e.metricsRaw.picks as number,
+        timestamp: e.metricsRaw.timestamp as string,
+        ...(metrics.reduce((agg, m) => ({
           ...agg,
-          [m]: e.measurementsRaw[m],
+          [m]: e.metricsRaw[m],
         }), {})),
       }))
       .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
@@ -137,7 +137,7 @@ class CustomKlicker extends Klicker {
     const data = await this.query({
       cubeId: 'map',
       dimensionsIds: ['season'],
-      measurementsIds: [],
+      metricsIds: [],
       slices: {
         season: [limit.toISOString().slice(0, 10)],
       },
@@ -160,7 +160,7 @@ class CustomKlicker extends Klicker {
     const modes = await this.query({
       cubeId: 'map',
       dimensionsIds: ['mode'],
-      measurementsIds: [],
+      metricsIds: [],
       slices: {
         season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
       },
@@ -173,7 +173,7 @@ class CustomKlicker extends Klicker {
     const maps = await this.query({
       cubeId: 'map',
       dimensionsIds: ['map'],
-      measurementsIds: ['eventId'],
+      metricsIds: ['eventId'],
       slices: {
         season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
         ...(mode != undefined ? {
@@ -183,7 +183,7 @@ class CustomKlicker extends Klicker {
       sortId: 'picks',
     })
     return maps.data.map(e => ({
-      battle_event_id: e.measurementsRaw.eventId as number,
+      battle_event_id: e.metricsRaw.eventId as number,
       battle_event_map: e.dimensionsRaw.map.map as string,
     }))
   }
@@ -192,7 +192,7 @@ class CustomKlicker extends Klicker {
     const brawlers = await this.query({
       cubeId: 'map',
       dimensionsIds: ['brawler'],
-      measurementsIds: [],
+      metricsIds: [],
       slices: {
         season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
       },

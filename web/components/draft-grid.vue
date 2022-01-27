@@ -121,7 +121,7 @@ export default defineComponent({
         cubeId: 'battle',
         slices: props.query.slices,
         dimensionsIds: ['brawler'],
-        measurementsIds: ['winRate'],
+        metricsIds: ['winRate'],
         sortId: 'winRate',
       })
       loading.value--
@@ -134,7 +134,7 @@ export default defineComponent({
         cubeId: 'synergy',
         slices: props.query.slices,
         dimensionsIds: ['brawler', 'ally'],
-        measurementsIds: ['winRate', 'picks'],
+        metricsIds: ['winRate', 'picks'],
         sortId: 'winRate',
       })
       loading.value--
@@ -156,7 +156,7 @@ export default defineComponent({
       const winRatesByBrawler: Record<string, number> = {}
       brawlerData.value?.data?.forEach(row => {
         const name = row.dimensionsRaw.brawler.brawler
-        const winRate = row.measurementsRaw.winRate as number
+        const winRate = row.metricsRaw.winRate as number
         winRatesByBrawler[name] = winRate
         if (team.value.length == 0) {
           contributingWinRatesByBrawler[name] = [winRate]
@@ -175,8 +175,8 @@ export default defineComponent({
             return
           }
 
-          const winRate = row.measurementsRaw.winRate as number
-          const picks = row.measurementsRaw.picks as number
+          const winRate = row.metricsRaw.winRate as number
+          const picks = row.metricsRaw.picks as number
           const allyId = brawlerId({ name: allyName })
           if (team.value.includes(allyId) && name != allyName && picks > picksThreshold) {
             contributingWinRatesByBrawler[name].push(winRate)

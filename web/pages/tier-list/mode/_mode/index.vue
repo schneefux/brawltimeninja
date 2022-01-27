@@ -210,16 +210,16 @@ export default Vue.extend({
         mapLike: [this.nameFilter],
       },
       dimensionsIds: ['map'],
-      measurementsIds: ['eventId', 'picks', 'timestamp'],
+      metricsIds: ['eventId', 'picks', 'timestamp'],
       sortId: 'timestamp',
     })
 
     this.maps = events.data
-      .filter(e => e.measurementsRaw.picks > 1000)
+      .filter(e => e.metricsRaw.picks > 1000)
       .map(e => ({
         map: e.dimensionsRaw.map.map,
-        id: e.measurementsRaw.eventId as string,
-        timestamp: e.measurementsRaw.timestamp as string,
+        id: e.metricsRaw.eventId as string,
+        timestamp: e.metricsRaw.timestamp as string,
       }))
   },
   async asyncData({ params }) {

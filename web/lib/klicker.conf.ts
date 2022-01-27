@@ -1,4 +1,4 @@
-import { asDimensions, asNumberMeasurements, asSlice, asStringMeasurements, Cube, SliceValue, MetaGridEntry, Dimension } from "@schneefux/klicker/types"
+import { asDimensions, asNumberMetrics, asSlice, asStringMetrics, Cube, SliceValue, MetaGridEntry, Dimension } from "@schneefux/klicker/types"
 // @ts-ignore
 import { ChiSquared } from 'sampson'
 
@@ -17,13 +17,13 @@ monthAgo.setMonth(monthAgo.getMonth() - 1)
 /**
  * Calculate $m.useRate / sum($m.useRate over all dimensions except brawler)
  */
-function percentageOver(measurementId: string, overDimension: Dimension) {
+function percentageOver(metricId: string, overDimension: Dimension) {
   const rowIdWithout = (row: MetaGridEntry) =>
     row.id.replace(`${overDimension.id}=${row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute]};`, '')
 
   return (entries: MetaGridEntry[]) => {
     if (entries.length == 0 || !(overDimension.id in entries[0].dimensionsRaw)) {
-      return entries.map(row => row.measurementsRaw[measurementId] as number)
+      return entries.map(row => row.metricsRaw[metricId] as number)
     }
 
     const total: Record<string, number> = {}
@@ -34,12 +34,12 @@ function percentageOver(measurementId: string, overDimension: Dimension) {
         total[key] = 0
       }
 
-      total[key] += row.measurementsRaw[measurementId] as number
+      total[key] += row.metricsRaw[metricId] as number
     })
 
     return entries.map(row => {
       const key = rowIdWithout(row)
-      return row.measurementsRaw[measurementId] as number / total[key]
+      return row.metricsRaw[metricId] as number / total[key]
     })
   }
 }
@@ -57,9 +57,9 @@ function calculateGTestStatistic(expectations: number[], observations: number[])
   return 2*g
 }
 
-function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+function binomialTest(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: MetaGridEntry['metricsRaw']) => number) {
   // approximate a binomial test using the G-test
-  return (r: MetaGridEntry['measurementsRaw'], t: MetaGridEntry['measurementsRaw']) => {
+  return (r: MetaGridEntry['metricsRaw'], t: MetaGridEntry['metricsRaw']) => {
     const total = getN(r) + getN(t)
     const totalSuccesses = getK(r) + getK(t)
     const totalFailures = total - totalSuccesses
@@ -86,9 +86,9 @@ function binomialTest(getK: (d: MetaGridEntry['measurementsRaw']) => number, get
   }
 }
 
-function binomialCI(getK: (d: MetaGridEntry['measurementsRaw']) => number, getN: (d: MetaGridEntry['measurementsRaw']) => number) {
+function binomialCI(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: MetaGridEntry['metricsRaw']) => number) {
   // 95% Wilson score interval
-  return (d: MetaGridEntry['measurementsRaw']) => {
+  return (d: MetaGridEntry['metricsRaw']) => {
     const z = 1.96
 
     const n = getN(d)
@@ -117,7 +117,7 @@ const metaDimensions = asDimensions({
     childIds: ['day', 'timestamp'],
     naturalIdAttribute: 'season',
     formatter: 'yyyy-MM-dd',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'temporal',
     scale: {
       nice: 'week',
@@ -133,7 +133,7 @@ const metaDimensions = asDimensions({
     childIds: ['timestamp'],
     naturalIdAttribute: 'day',
     formatter: 'yyyy-MM-dd',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'temporal',
     scale: {
       nice: 'day',
@@ -148,7 +148,7 @@ const metaDimensions = asDimensions({
     name: 'Timestamp',
     naturalIdAttribute: 'timestamp',
     formatter: 'yyyy-MM-ddTHH:mm',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'temporal',
     scale: {
       nice: 'hour',
@@ -165,7 +165,7 @@ const playerDimensions = asDimensions({
     id: 'player',
     name: 'Player',
     naturalIdAttribute: 'playerName',
-    additionalMeasures: ['playerName', 'playerIcon'],
+    additionalMetrics: ['playerName', 'playerIcon'],
     type: 'nominal',
     config: {
       sql: 'player_id',
@@ -181,7 +181,7 @@ const brawlerDimensions = asDimensions({
     childIds: ['gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawler',
     formatter: 'capitalizeWords',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'brawler_name',
@@ -193,7 +193,7 @@ const brawlerDimensions = asDimensions({
     name: 'Brawler ID',
     childIds: ['brawler', 'gadget', 'starpower', 'gear'],
     naturalIdAttribute: 'brawlerId',
-    additionalMeasures: [],
+    additionalMetrics: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -206,7 +206,7 @@ const brawlerDimensions = asDimensions({
     name: 'Ally',
     naturalIdAttribute: 'ally',
     formatter: 'capitalizeWords',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'ally_brawler_name',
@@ -218,7 +218,7 @@ const brawlerDimensions = asDimensions({
     name: 'Ally ID',
     childIds: ['ally'],
     naturalIdAttribute: 'allyId',
-    additionalMeasures: [],
+    additionalMetrics: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -231,7 +231,7 @@ const brawlerDimensions = asDimensions({
     name: 'Gadget',
     naturalIdAttribute: 'gadgetName',
     formatter: 'capitalizeWords',
-    additionalMeasures: ['gadgetName', 'brawler'],
+    additionalMetrics: ['gadgetName', 'brawler'],
     type: 'nominal',
     config: {
       sql: 'brawler_gadget_id',
@@ -243,7 +243,7 @@ const brawlerDimensions = asDimensions({
     name: 'Star Power',
     naturalIdAttribute: 'starpowerName',
     formatter: 'capitalizeWords',
-    additionalMeasures: ['starpowerName', 'brawler'],
+    additionalMetrics: ['starpowerName', 'brawler'],
     type: 'nominal',
     config: {
       sql: 'brawler_starpower_id',
@@ -255,7 +255,7 @@ const brawlerDimensions = asDimensions({
     name: 'Gear',
     naturalIdAttribute: 'gearName',
     formatter: 'capitalizeWords',
-    additionalMeasures: ['gearName'],
+    additionalMetrics: ['gearName'],
     type: 'nominal',
     config: {
       sql: 'brawler_gear_id',
@@ -267,7 +267,7 @@ const brawlerDimensions = asDimensions({
     name: 'Big Brawler',
     naturalIdAttribute: 'bigbrawler',
     formatter: 'y/n',
-    additionalMeasures: [],
+    additionalMetrics: [],
     hidden: true,
     type: 'nominal',
     config: {
@@ -279,7 +279,7 @@ const brawlerDimensions = asDimensions({
     id: 'trophyRange',
     name: 'Trophy Range',
     naturalIdAttribute: 'trophyRange',
-    additionalMeasures: [],
+    additionalMetrics: [],
     hidden: true,
     type: 'ordinal',
     formatter: 'trophyRange',
@@ -297,7 +297,7 @@ const battleDimensions = asDimensions({
     childIds: ['map'],
     naturalIdAttribute: 'mode',
     formatter: 'formatMode',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'battle_event_mode',
@@ -308,7 +308,7 @@ const battleDimensions = asDimensions({
     id: 'map',
     name: 'Map',
     naturalIdAttribute: 'map',
-    additionalMeasures: ['mode', 'eventId'],
+    additionalMetrics: ['mode', 'eventId'],
     type: 'nominal',
     config: {
       sql: 'battle_event_map',
@@ -320,7 +320,7 @@ const battleDimensions = asDimensions({
     name: 'Team',
     naturalIdAttribute: 'team',
     formatter: 'capitalizeWords',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
@@ -332,7 +332,7 @@ const battleDimensions = asDimensions({
     name: 'Team size',
     childIds: ['team'],
     naturalIdAttribute: 'team',
-    additionalMeasures: [],
+    additionalMetrics: [],
     hidden: true,
     type: 'quantitative',
     config: {
@@ -345,7 +345,7 @@ const battleDimensions = asDimensions({
     name: 'Power Play',
     naturalIdAttribute: 'powerplay',
     formatter: 'y/n',
-    additionalMeasures: [],
+    additionalMetrics: [],
     type: 'nominal',
     config: {
       sql: 'battle_event_powerplay',
@@ -371,7 +371,7 @@ const winratePosteriorMerged = `(1583+${winRateMerged}*${picks})/(1583/${zP}+${p
 const picksRaw = 'COUNT()'
 const winratePosteriorRaw = `(1583+${winRate}*${picksRaw})/(1583/${zP}+${picksRaw})`
 
-export const playerStringMeasurements = asStringMeasurements({
+export const playerStringMetrics = asStringMetrics({
   playerName: {
     id: 'playerName',
     name: 'Most common name',
@@ -414,7 +414,7 @@ export const playerStringMeasurements = asStringMeasurements({
   },
 })
 
-const playerNumberMeasurements = asNumberMeasurements({
+const playerNumberMetrics = asNumberMetrics({
   playerTrophies: {
     id: 'playerTrophies',
     name: 'Player Trophies',
@@ -565,7 +565,7 @@ const playerNumberMeasurements = asNumberMeasurements({
   },
 })
 
-export const brawlerStringMeasurements = asStringMeasurements({
+export const brawlerStringMetrics = asStringMetrics({
   brawler: {
     id: 'brawler',
     name: 'Most played Brawler',
@@ -579,7 +579,7 @@ export const brawlerStringMeasurements = asStringMeasurements({
   },
 })
 
-export const brawlerNumberMeasurements = asNumberMeasurements({
+export const brawlerNumberMetrics = asNumberMetrics({
   highestTrophies: {
     id: 'highestTrophies',
     name: 'Highest Trophies',
@@ -642,7 +642,7 @@ export const brawlerNumberMeasurements = asNumberMeasurements({
   },
 })
 
-const metaMeasurements = asStringMeasurements({
+const metaMetrics = asStringMetrics({
   timestamp: {
     // TODO
     id: 'timestamp',
@@ -669,7 +669,7 @@ const metaMeasurements = asStringMeasurements({
   },
 })
 
-const battleNumberMeasurements = asNumberMeasurements({
+const battleNumberMetrics = asNumberMetrics({
   trophyChange: {
     id: 'trophyChange',
     name: 'Trophy Change',
@@ -708,11 +708,11 @@ const battleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -830,11 +830,11 @@ const battleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -935,7 +935,7 @@ const battleNumberMeasurements = asNumberMeasurements({
   },
 })
 
-const battleStringMeasurements = asStringMeasurements({
+const battleStringMetrics = asStringMetrics({
   starpowerName: {
     id: 'starpowerName',
     name: 'Star Power',
@@ -998,8 +998,8 @@ const battleStringMeasurements = asStringMeasurements({
   },
 })
 
-// same as battleMeasurements, but using clickhouse merge for mv
-const mergedbattleStringMeasurements = asStringMeasurements({
+// same as battleMetrics, but using clickhouse merge for mv
+const mergedbattleStringMetrics = asStringMetrics({
   timestamp: {
     id: 'timestamp',
     name: 'Last Update',
@@ -1013,7 +1013,7 @@ const mergedbattleStringMeasurements = asStringMeasurements({
   },
 })
 
-const mergedbattleNumberMeasurements = asNumberMeasurements({
+const mergedbattleNumberMetrics = asNumberMetrics({
   picks: {
     id: 'picks',
     name: 'Picks recorded',
@@ -1064,11 +1064,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -1162,11 +1162,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
     },
       ci: {
         ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -1209,11 +1209,11 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
       ci: {
         ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMeasurements: ['picks'],
+        requiresMetrics: ['picks'],
       },
     },
   },
@@ -1249,14 +1249,14 @@ const mergedbattleNumberMeasurements = asNumberMeasurements({
   },
 })
 
-export const commonMeasurements = {
-  ...metaMeasurements,
-  ...playerStringMeasurements,
-  ...playerNumberMeasurements,
-  ...brawlerStringMeasurements,
-  ...brawlerNumberMeasurements,
-  ...battleStringMeasurements,
-  ...battleNumberMeasurements,
+export const commonMetrics = {
+  ...metaMetrics,
+  ...playerStringMetrics,
+  ...playerNumberMetrics,
+  ...brawlerStringMetrics,
+  ...brawlerNumberMetrics,
+  ...battleStringMetrics,
+  ...battleNumberMetrics,
 }
 
 const metaSlices = asSlice({
@@ -1502,27 +1502,27 @@ const commonSlices = asSlice({
   ...brawlerSlices,
 })
 
-const brawlerBattleMeasurements = [
+const brawlerBattleMetrics = [
   /*
-  mergedbattleMeasurements.trophySeasonEnd,
+  mergedbattleMetrics.trophySeasonEnd,
   */
-  commonMeasurements.mode,
-  commonMeasurements.map,
-  commonMeasurements.eventId,
-  mergedbattleStringMeasurements.timestamp,
-  mergedbattleNumberMeasurements.trophyChange,
-  mergedbattleNumberMeasurements.winRate,
-  mergedbattleNumberMeasurements.winRateAdj,
-  mergedbattleNumberMeasurements.wins,
-  mergedbattleNumberMeasurements.picks,
-  mergedbattleNumberMeasurements.pickRate,
-  mergedbattleNumberMeasurements.useRate,
-  mergedbattleNumberMeasurements.starRate,
-  mergedbattleNumberMeasurements.rank,
-  mergedbattleNumberMeasurements.rank1Rate,
-  mergedbattleNumberMeasurements.duration,
-  mergedbattleNumberMeasurements.level,
-  commonMeasurements.brawler,
+  commonMetrics.mode,
+  commonMetrics.map,
+  commonMetrics.eventId,
+  mergedbattleStringMetrics.timestamp,
+  mergedbattleNumberMetrics.trophyChange,
+  mergedbattleNumberMetrics.winRate,
+  mergedbattleNumberMetrics.winRateAdj,
+  mergedbattleNumberMetrics.wins,
+  mergedbattleNumberMetrics.picks,
+  mergedbattleNumberMetrics.pickRate,
+  mergedbattleNumberMetrics.useRate,
+  mergedbattleNumberMetrics.starRate,
+  mergedbattleNumberMetrics.rank,
+  mergedbattleNumberMetrics.rank1Rate,
+  mergedbattleNumberMetrics.duration,
+  mergedbattleNumberMetrics.level,
+  commonMetrics.brawler,
 ]
 
 const brawlerBattleDimensions = [
@@ -1554,41 +1554,41 @@ const playerBrawlerDimensions = [
   commonDimensions.trophyRange,
 ]
 
-const playerBrawlerMeasurements = [
-  commonMeasurements.picks,
-  commonMeasurements.pickRate,
-  commonMeasurements.useRate,
-  commonMeasurements.users,
-  // commonMeasurements.season,
-  commonMeasurements.timestamp,
-  commonMeasurements.day,
-  commonMeasurements.playerName,
-  commonMeasurements.playerNameColor,
-  commonMeasurements.playerIcon,
-  commonMeasurements.playerTrophies,
-  commonMeasurements.playerHighestTrophies,
-  commonMeasurements.powerPlayPoints,
-  commonMeasurements.highestPowerPlayPoints,
-  commonMeasurements.expPoints,
-  // commonMeasurements.championshipQualified,
-  commonMeasurements.victories,
-  commonMeasurements.soloVictories,
-  commonMeasurements.duoVictories,
-  // commonMeasurements.roboRumble,
-  // commonMeasurements.bigBrawler,
-  commonMeasurements.brawlers,
-  // commonMeasurements.clubId,
-  // commonMeasurements.clubTag,
-  commonMeasurements.clubName,
+const playerBrawlerMetrics = [
+  commonMetrics.picks,
+  commonMetrics.pickRate,
+  commonMetrics.useRate,
+  commonMetrics.users,
+  // commonMetrics.season,
+  commonMetrics.timestamp,
+  commonMetrics.day,
+  commonMetrics.playerName,
+  commonMetrics.playerNameColor,
+  commonMetrics.playerIcon,
+  commonMetrics.playerTrophies,
+  commonMetrics.playerHighestTrophies,
+  commonMetrics.powerPlayPoints,
+  commonMetrics.highestPowerPlayPoints,
+  commonMetrics.expPoints,
+  // commonMetrics.championshipQualified,
+  commonMetrics.victories,
+  commonMetrics.soloVictories,
+  commonMetrics.duoVictories,
+  // commonMetrics.roboRumble,
+  // commonMetrics.bigBrawler,
+  commonMetrics.brawlers,
+  // commonMetrics.clubId,
+  // commonMetrics.clubTag,
+  commonMetrics.clubName,
 
-  // commonMeasurements.brawlerId,
-  commonMeasurements.brawler,
-  commonMeasurements.power,
-  commonMeasurements.trophies,
-  commonMeasurements.highestTrophies,
-  commonMeasurements.starpowers,
-  commonMeasurements.gadgets,
-  commonMeasurements.gears,
+  // commonMetrics.brawlerId,
+  commonMetrics.brawler,
+  commonMetrics.power,
+  commonMetrics.trophies,
+  commonMetrics.highestTrophies,
+  commonMetrics.starpowers,
+  commonMetrics.gadgets,
+  commonMetrics.gears,
 ]
 
 const playerBrawlerSlices = [
@@ -1626,11 +1626,11 @@ const cubes: Record<string, Cube> = {
       commonDimensions.powerplay,
     ],
     defaultDimensionsIds: ['brawler'],
-    measurements: [
-      ...brawlerBattleMeasurements,
+    metrics: [
+      ...brawlerBattleMetrics,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
       commonSlices.mode,
@@ -1655,12 +1655,12 @@ const cubes: Record<string, Cube> = {
       commonDimensions.starpower,
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
-    measurements: [
-      ...brawlerBattleMeasurements,
-      commonMeasurements.starpowerName,
+    metrics: [
+      ...brawlerBattleMetrics,
+      commonMetrics.starpowerName,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
       commonSlices.starpowerIdEq,
@@ -1681,12 +1681,12 @@ const cubes: Record<string, Cube> = {
       commonDimensions.gadget,
     ],
     defaultDimensionsIds: ['brawler', 'gadget'],
-    measurements: [
-      ...brawlerBattleMeasurements,
-      commonMeasurements.gadgetName,
+    metrics: [
+      ...brawlerBattleMetrics,
+      commonMetrics.gadgetName,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
       commonSlices.gadgetIdEq,
@@ -1706,12 +1706,12 @@ const cubes: Record<string, Cube> = {
       commonDimensions.gear,
     ],
     defaultDimensionsIds: ['gear'],
-    measurements: [
-      ...brawlerBattleMeasurements,
-      commonMeasurements.gearName,
+    metrics: [
+      ...brawlerBattleMetrics,
+      commonMetrics.gearName,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
       commonSlices.gearIdEq,
@@ -1735,11 +1735,11 @@ const cubes: Record<string, Cube> = {
       commonDimensions.map,
     ],
     defaultDimensionsIds: ['brawler'],
-    measurements: [
-      ...brawlerBattleMeasurements,
+    metrics: [
+      ...brawlerBattleMetrics,
     ],
-    defaultMeasurementIds: ['winRateAdj'],
-    metaMeasurements: ['picks', 'timestamp'],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
     slices: [
       ...brawlerBattleSlices,
       commonSlices.mode,
@@ -1761,17 +1761,17 @@ const cubes: Record<string, Cube> = {
       commonDimensions.player,
     ],
     defaultDimensionsIds: ['player'],
-    measurements: [
-      commonMeasurements.timestamp,
-      commonMeasurements.playerName,
-      commonMeasurements.playerIcon,
-      commonMeasurements.expPoints,
-      commonMeasurements.victories,
-      commonMeasurements.soloVictories,
-      commonMeasurements.duoVictories,
+    metrics: [
+      commonMetrics.timestamp,
+      commonMetrics.playerName,
+      commonMetrics.playerIcon,
+      commonMetrics.expPoints,
+      commonMetrics.victories,
+      commonMetrics.soloVictories,
+      commonMetrics.duoVictories,
     ],
-    defaultMeasurementIds: ['victories'],
-    metaMeasurements: ['timestamp'],
+    defaultMetricIds: ['victories'],
+    metaMetrics: ['timestamp'],
     slices: [
       commonSlices.timestamp,
     ],
@@ -1787,14 +1787,14 @@ const cubes: Record<string, Cube> = {
       commonDimensions.brawlerId,
     ],
     defaultDimensionsIds: ['player'],
-    measurements: [
-      commonMeasurements.playerName,
-      commonMeasurements.playerIcon,
-      commonMeasurements.brawler,
-      commonMeasurements.highestTrophies,
+    metrics: [
+      commonMetrics.playerName,
+      commonMetrics.playerIcon,
+      commonMetrics.brawler,
+      commonMetrics.highestTrophies,
     ],
-    defaultMeasurementIds: ['highestTrophies'],
-    metaMeasurements: ['timestamp'],
+    defaultMetricIds: ['highestTrophies'],
+    metaMetrics: ['timestamp'],
     slices: [
       commonSlices.timestamp,
     ],
@@ -1810,11 +1810,11 @@ const cubes: Record<string, Cube> = {
       ...playerBrawlerDimensions,
     ],
     defaultDimensionsIds: ['player'],
-    measurements: [
-      ...playerBrawlerMeasurements,
+    metrics: [
+      ...playerBrawlerMetrics,
     ],
-    defaultMeasurementIds: ['picks'],
-    metaMeasurements: ['timestamp'],
+    defaultMetricIds: ['picks'],
+    metaMetrics: ['timestamp'],
     slices: [
       ...playerBrawlerSlices,
     ],
@@ -1839,23 +1839,23 @@ const cubes: Record<string, Cube> = {
       brawlerDimensions.gear,
     ],
     defaultDimensionsIds: ['player'],
-    measurements: [
-      ...playerBrawlerMeasurements,
-      battleNumberMeasurements.wins,
-      battleNumberMeasurements.duration,
-      battleNumberMeasurements.rank,
-      battleNumberMeasurements.rank1,
-      battleNumberMeasurements.trophyChange,
-      battleNumberMeasurements.winRate,
-      battleNumberMeasurements.winRateAdj,
-      battleNumberMeasurements.starRate,
-      battleStringMeasurements.starpowerName,
-      battleStringMeasurements.gadgetName,
-      battleStringMeasurements.gearName,
+    metrics: [
+      ...playerBrawlerMetrics,
+      battleNumberMetrics.wins,
+      battleNumberMetrics.duration,
+      battleNumberMetrics.rank,
+      battleNumberMetrics.rank1,
+      battleNumberMetrics.trophyChange,
+      battleNumberMetrics.winRate,
+      battleNumberMetrics.winRateAdj,
+      battleNumberMetrics.starRate,
+      battleStringMetrics.starpowerName,
+      battleStringMetrics.gadgetName,
+      battleStringMetrics.gearName,
       // TODO
     ],
-    defaultMeasurementIds: ['picks'],
-    metaMeasurements: ['timestamp', 'picks'],
+    defaultMetricIds: ['picks'],
+    metaMetrics: ['timestamp', 'picks'],
     slices: [
       ...playerBrawlerSlices,
       commonSlices.mode,

@@ -19,7 +19,7 @@
           <d-player v-bind="data"></d-player>
         </template>
 
-        <template v-slot:[`measurements.brawler`]="data">
+        <template v-slot:[`metrics.brawler`]="data">
           <m-brawler v-bind="data"></m-brawler>
         </template>
       </c-canvas>
@@ -139,7 +139,7 @@ export default defineComponent({
     const defaultQuery: CubeQuery = {
       cubeId: 'battle',
       dimensionsIds: ['brawler'],
-      measurementsIds: ['winRate'],
+      metricsIds: ['winRate'],
       slices: {
         season: [currentSeason.toISOString().slice(0, 10)],
         mode: [],

@@ -34,8 +34,8 @@
                     </div>
                   </template>
 
-                  <template v-slot:[`measurements.highestTrophies`]="data">
-                    {{ data.row.measurementsRaw.highestTrophies }}
+                  <template v-slot:[`metrics.highestTrophies`]="data">
+                    {{ data.row.metricsRaw.highestTrophies }}
                   </template>
                 </v-table>
                 <v-csv
@@ -87,7 +87,7 @@ export default Vue.extend({
       query: <CubeQuery>{
         cubeId: 'brawler',
         dimensionsIds: ['player', 'brawler'],
-        measurementsIds: ['highestTrophies'],
+        metricsIds: ['highestTrophies'],
         slices: {
           season: [],
           seasonExact: [currentSeason.toISOString().slice(0, 10)],

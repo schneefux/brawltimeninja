@@ -72,23 +72,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, measurements, switchResponse } = useCubeResponseProps(props)
+    const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const cards = computed(() =>
       switchResponse(response => response.data.map(e => ({
         id: e.id,
         title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
-        rows: measurements.value.map(m => ({
+        rows: metrics.value.map(m => ({
           id: m.id,
-          text: e.measurements[m.id],
+          text: e.metrics[m.id],
           name: $klicker.getName(m, 'short'),
         })),
       })), response => response.data.map(e => ({
         id: e.id,
         title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
-        rows: measurements.value.map(m => ({
+        rows: metrics.value.map(m => ({
           id: m.id,
           text: e.test.difference.difference,
           name: $klicker.getName(m, 'short'),

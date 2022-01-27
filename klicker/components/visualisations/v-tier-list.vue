@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Measurement, MetaGridEntry } from '../../types'
+import { Metric, MetaGridEntry } from '../../types'
 import { VisualisationProps } from '../../props'
 import BCard from '../ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '../../util'
@@ -43,7 +43,7 @@ export interface TierList {
   [tier: string]: MetaGridEntry[]
 }
 
-function groupTiers(entries: MetaGridEntry[], m: Measurement): TierList {
+function groupTiers(entries: MetaGridEntry[], m: Metric): TierList {
   if (entries.length <= 2) {
     return {}
   }
@@ -65,8 +65,8 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { measurements } = useCubeResponseProps(props)
-    const tiers = computed(() => groupTiers(props.response.data, measurements.value[0]))
+    const { metrics } = useCubeResponseProps(props)
+    const tiers = computed(() => groupTiers(props.response.data, metrics.value[0]))
 
     return {
       tiers,

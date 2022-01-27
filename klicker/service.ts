@@ -1,4 +1,4 @@
-import { Config, VisualisationSpec, Cube, Dimension, Measurement, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService } from "./types"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService } from "./types"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -90,7 +90,7 @@ export default class Klicker implements KlickerService {
     return value.toString()
   }
 
-  public getName(m: Measurement|Dimension, modifier?: string): string {
+  public getName(m: Metric|Dimension, modifier?: string): string {
     const i18nKey = 'metric.' + m.id + (modifier != undefined ? '.' + modifier : '')
 
     if (this.$te(i18nKey)) {
@@ -111,12 +111,12 @@ export default class Klicker implements KlickerService {
     }
 
     const cube = this.config[query.cubeId]
-    // sort-id may either refer to a measurement or a dimension
-    const sortMeasurement = cube.measurements
+    // sort-id may either refer to a metric or a dimension
+    const sortMetric = cube.metrics
       .find(m => query.sortId == m.id)
     const sortDimension = cube.dimensions
       .find(d => query.sortId == d.id)
-    if (sortMeasurement == undefined && sortDimension == undefined) {
+    if (sortMetric == undefined && sortDimension == undefined) {
       throw new Error('Invalid sort id ' + query.sortId)
     }
     const dimensions = query.dimensionsIds
@@ -126,11 +126,11 @@ export default class Klicker implements KlickerService {
         return dimension
       })
 
-    const measurements = query.measurementsIds
+    const metrics = query.metricsIds
       .map(id => {
-        const measurement = cube.measurements.find(d => id == d.id)
-        if (measurement == undefined) throw new Error('Invalid measurements id ' + id)
-        return measurement
+        const metric = cube.metrics.find(d => id == d.id)
+        if (metric == undefined) throw new Error('Invalid metrics id ' + id)
+        return metric
       })
 
     function mapSlices(slices: SliceValue) {
@@ -167,16 +167,16 @@ export default class Klicker implements KlickerService {
         })
     }
 
-    const measurementsIds = (<string[]>[]).concat(
-      measurements.map(m => m.id),
-      query.confidenceInterval ? measurements.flatMap(m => m.statistics?.ci?.requiresMeasurements || []) : [],
-      dimensions.flatMap(d => d.additionalMeasures),
+    const metricsIds = (<string[]>[]).concat(
+      metrics.map(m => m.id),
+      query.confidenceInterval ? metrics.flatMap(m => m.statistics?.ci?.requiresMetrics || []) : [],
+      dimensions.flatMap(d => d.additionalMetrics),
     )
-    const queryMeasures = measurementsIds.map(id => `${cube.id}.${id}_measure`)
+    const queryMetrics = metricsIds.map(id => `${cube.id}.${id}_measure`)
     const queryDimensions = dimensions.map(d => cube.id + '.' + d.id + '_dimension')
 
-    const queryOrder = sortMeasurement ? <TQueryOrderObject>{
-      [cube.id + '.' + sortMeasurement.id + '_measure']: sortMeasurement.sign == +1 ? 'asc' : 'desc',
+    const queryOrder = sortMetric ? <TQueryOrderObject>{
+      [cube.id + '.' + sortMetric.id + '_measure']: sortMetric.sign == +1 ? 'asc' : 'desc',
     } : <TQueryOrderObject>{
       [cube.id + '.' + sortDimension!.id + '_dimension']: 'desc',
     }
@@ -184,14 +184,14 @@ export default class Klicker implements KlickerService {
     const querySlices = mapSlices(query.slices)
 
     const rawData = await this.cubejsApi.load({
-      measures: queryMeasures,
+      measures: queryMetrics,
       dimensions: queryDimensions,
       filters: querySlices,
       order: queryOrder,
       limit: query.limit,
     })
 
-    let data = this.mapToMetaGridEntry(cube, dimensions, measurements, rawData)
+    let data = this.mapToMetaGridEntry(cube, dimensions, metrics, rawData)
 
     if (filter != undefined) {
       data = data.filter(filter)
@@ -225,37 +225,37 @@ export default class Klicker implements KlickerService {
 
     const cube = this.config[query.cubeId]
 
-    // validate measurement
-    const comparingMeasurement = cube.measurements.find(m => m.id == query.measurementsIds[0])
-    if (comparingMeasurement == undefined) {
-      throw new Error(`Invalid comparison, missing ${query.measurementsIds[0]} in test cube`)
+    // validate metric
+    const comparingMetric = cube.metrics.find(m => m.id == query.metricsIds[0])
+    if (comparingMetric == undefined) {
+      throw new Error(`Invalid comparison, missing ${query.metricsIds[0]} in test cube`)
     }
     const testCube = this.config[query.reference.cubeId]
-    if (!testCube.measurements.some(m => m.id == query.measurementsIds[0])) {
-      throw new Error(`Invalid comparison, missing ${query.measurementsIds[0]} in reference cube`)
+    if (!testCube.metrics.some(m => m.id == query.metricsIds[0])) {
+      throw new Error(`Invalid comparison, missing ${query.metricsIds[0]} in reference cube`)
     }
-    if (comparingMeasurement.type != 'quantitative') {
-      throw new Error(`Only quantitative measures can be compared, ${comparingMeasurement.id} is ${comparingMeasurement.type}`)
+    if (comparingMetric.type != 'quantitative') {
+      throw new Error(`Only quantitative metrics can be compared, ${comparingMetric.id} is ${comparingMetric.type}`)
     }
 
     // validate sortId
-    const sortMeasurement = cube.measurements
+    const sortMetric = cube.metrics
       .find(m => query.sortId == m.id)
     const sortDimension = cube.dimensions
       .find(d => query.sortId == d.id)
     const sortSpecial = ['difference', 'pvalue'].includes(query.sortId)
-    if (sortMeasurement == undefined && sortDimension == undefined && !sortSpecial) {
+    if (sortMetric == undefined && sortDimension == undefined && !sortSpecial) {
       throw new Error('Invalid sort id ' + query.sortId)
     }
-    if (query.sortId == 'pvalue' && comparingMeasurement.statistics?.test == undefined) {
-      throw new Error('Cannot sort ' + comparingMeasurement.id + ' by p value, no test defined')
+    if (query.sortId == 'pvalue' && comparingMetric.statistics?.test == undefined) {
+      throw new Error('Cannot sort ' + comparingMetric.id + ' by p value, no test defined')
     }
 
     // execute both queries
-    const measurementsIds = [query.measurementsIds[0], ...(comparingMeasurement.statistics?.test?.requiresMeasurements || [])]
+    const metricsIds = [query.metricsIds[0], ...(comparingMetric.statistics?.test?.requiresMetrics || [])]
     const partialQuery = {
-      measurementsIds,
-      sortId: query.measurementsIds[0],
+      metricsIds,
+      sortId: query.metricsIds[0],
     }
 
     const referenceResponse = await this.query({
@@ -271,7 +271,7 @@ export default class Klicker implements KlickerService {
       ...partialQuery,
     })
 
-    let data = this.compare(referenceResponse.data, testResponse.data, comparingMeasurement, query.reference.dimensionsIds)
+    let data = this.compare(referenceResponse.data, testResponse.data, comparingMetric, query.reference.dimensionsIds)
 
     // perform client-side sort & limit
     if (query.sortId == 'difference') {
@@ -298,31 +298,31 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], measurements: Measurement[], resultSet: ResultSet): MetaGridEntry[] {
+  private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], metrics: Metric[], resultSet: ResultSet): MetaGridEntry[] {
     // TODO consider refactoring to store it column-based (object of arrays) for performance
     const table = resultSet.rawData()
 
     // transform raw data to entries
     const entries = table.map(row => {
       // parse strings as float (cube.js clickhouse driver bug)
-      const getValue = (type: Dimension['type']|Measurement['type'], id: string) => {
+      const getValue = (type: Dimension['type']|Metric['type'], id: string) => {
         const key = cube.id + '.' + id
         return ['quantitative', 'ordinal'].includes(type) ? parseFloat(row[key] as string) : row[key]
       }
 
-      const measurementsRaw: MetaGridEntry['measurementsRaw'] = {}
-      for (const m of measurements) {
-        measurementsRaw[m.id] = getValue(m.type, m.id + '_measure')
+      const metricsRaw: MetaGridEntry['metricsRaw'] = {}
+      for (const m of metrics) {
+        metricsRaw[m.id] = getValue(m.type, m.id + '_measure')
       }
 
-      const measurementsCI: MetaGridEntry['measurementsCI'] = {}
-      for (const m of measurements) {
-        const mRaw: MetaGridEntry['measurementsRaw'] = {
-          [m.id]: measurementsRaw[m.id],
+      const metricsCI: MetaGridEntry['metricsCI'] = {}
+      for (const m of metrics) {
+        const mRaw: MetaGridEntry['metricsRaw'] = {
+          [m.id]: metricsRaw[m.id],
         }
         let missingRequiredKey = false
         if (m.statistics?.ci != undefined) {
-          for (const id of m.statistics?.ci?.requiresMeasurements) {
+          for (const id of m.statistics?.ci?.requiresMetrics) {
             const key = `${cube.id}.${id}_measure`
             if (!(key in row)) {
               missingRequiredKey = true
@@ -331,7 +331,7 @@ export default class Klicker implements KlickerService {
             mRaw[id] = parseFloat(row[key] as string)
           }
           if (!missingRequiredKey) {
-            measurementsCI[m.id] = m.statistics?.ci?.ci(mRaw)
+            metricsCI[m.id] = m.statistics?.ci?.ci(mRaw)
           }
         }
       }
@@ -339,7 +339,7 @@ export default class Klicker implements KlickerService {
       const dimensionsRaw: MetaGridEntry['dimensionsRaw'] = {}
       let id = ''
       for (const d of dimensions) {
-        const keys = d.additionalMeasures
+        const keys = d.additionalMetrics
           .map(m => m + '_measure')
           .concat(d.id + '_dimension')
 
@@ -357,26 +357,26 @@ export default class Klicker implements KlickerService {
 
       return <MetaGridEntry>{
         id,
-        measurementsRaw,
-        measurementsCI,
+        metricsRaw,
+        metricsCI,
         dimensionsRaw,
-        measurements: {},
+        metrics: {},
         dimensions: {},
       }
     })
 
     // apply custom transformations
-    for (const m of measurements) {
+    for (const m of metrics) {
       if (m.transform != undefined) {
         const newValues = m.transform(entries)
-        entries.forEach((row, i) => row.measurementsRaw[m.id] = newValues[i])
+        entries.forEach((row, i) => row.metricsRaw[m.id] = newValues[i])
       }
     }
 
     // apply formatters
     entries.forEach(entry => {
-      for (const m of measurements) {
-        entry.measurements[m.id] = this.format(m, entry.measurementsRaw[m.id])
+      for (const m of metrics) {
+        entry.metrics[m.id] = this.format(m, entry.metricsRaw[m.id])
       }
 
       for (const d of dimensions) {
@@ -389,7 +389,7 @@ export default class Klicker implements KlickerService {
     return entries
   }
 
-  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Measurement, referenceDimensionIds: string[]): ComparingMetaGridEntry[] {
+  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Metric, referenceDimensionIds: string[]): ComparingMetaGridEntry[] {
     // test data might aggregate reference data - calculate an ID to join them
     const calculateId = (m: MetaGridEntry) => referenceDimensionIds.map(id => `${id}=${m.dimensions[id]};`).join('')
     const referenceDataMap: Record<string, MetaGridEntry> = {}
@@ -401,8 +401,8 @@ export default class Klicker implements KlickerService {
       .map(t => {
         const reference = referenceDataMap[calculateId(t)]
 
-        const diff = (t.measurementsRaw[comparing.id] as number) - (reference.measurementsRaw[comparing.id] as number)
-        const pValue = comparing.statistics?.test?.test(referenceDataMap[calculateId(t)].measurementsRaw, t.measurementsRaw) || 1
+        const diff = (t.metricsRaw[comparing.id] as number) - (reference.metricsRaw[comparing.id] as number)
+        const pValue = comparing.statistics?.test?.test(referenceDataMap[calculateId(t)].metricsRaw, t.metricsRaw) || 1
         // apply Bonferroni correction (TODO use method with better accuracy)
         const correctedPValue = Math.min(1.0, pValue * testData.length)
 
@@ -455,7 +455,7 @@ export default class Klicker implements KlickerService {
           cube: q.cubeId,
           compareDimension: q.dimensionsIds,
           dimension: q.reference.dimensionsIds,
-          metric: q.measurementsIds,
+          metric: q.metricsIds,
         },
       }
     } else {
@@ -467,7 +467,7 @@ export default class Klicker implements KlickerService {
           compare: undefined,
           cube: q.cubeId,
           dimension: q.dimensionsIds,
-          metric: q.measurementsIds,
+          metric: q.metricsIds,
           sort: q.sortId,
         },
       }
@@ -498,12 +498,12 @@ export default class Klicker implements KlickerService {
       }
     }
 
-    let measurementsIds = query.metric as string[] || config[cubeId].defaultMeasurementIds
-    if (typeof measurementsIds == 'string') {
-      measurementsIds = [measurementsIds]
+    let metricsIds = query.metric as string[] || config[cubeId].defaultMetricIds
+    if (typeof metricsIds == 'string') {
+      metricsIds = [metricsIds]
     }
 
-    const sortId = query.sort as string || measurementsIds[0]
+    const sortId = query.sort as string || metricsIds[0]
     const limit = typeof query.limit == 'string' ? parseInt(query.limit) : undefined
 
     if (comparing) {
@@ -514,13 +514,13 @@ export default class Klicker implements KlickerService {
         limit,
         slices: comparingSlices!,
         dimensionsIds: compareDimensionsIds!,
-        measurementsIds,
+        metricsIds,
         reference: {
           cubeId,
           sortId,
           slices,
           dimensionsIds,
-          measurementsIds,
+          metricsIds,
         },
       }
     } else {
@@ -530,7 +530,7 @@ export default class Klicker implements KlickerService {
         slices,
         limit,
         dimensionsIds,
-        measurementsIds,
+        metricsIds,
       }
     }
   }

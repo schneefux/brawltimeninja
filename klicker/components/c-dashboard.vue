@@ -39,7 +39,7 @@
       :query="{
         ...query,
         dimensionsIds: [],
-        measurementsIds: metaMetrics,
+        metricsIds: metaMetrics,
         sortId: metaMetrics[0],
         comparing: false,
       }"
@@ -117,7 +117,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { $klicker } = useKlicker()
 
-    const metaMetrics = $klicker.config[props.value.cubeId].metaMeasurements
+    const metaMetrics = $klicker.config[props.value.cubeId].metaMetrics
     const query = computed({
       get(): CubeQuery {
         return props.value

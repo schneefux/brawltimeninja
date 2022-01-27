@@ -17,7 +17,7 @@ export default {
 const query = JSON.stringify(<CubeQuery>{
   cubeId: 'map',
   dimensionsIds: ['brawler', 'mode'],
-  measurementsIds: ['winRate'],
+  metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
 })

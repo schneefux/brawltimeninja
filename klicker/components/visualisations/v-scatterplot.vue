@@ -30,11 +30,11 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const spec = computed<VisualizationSpec>(() => {
-      const measurement0 = measurements.value[0]
-      const measurement1 = measurements.value[1]
+      const metric0 = metrics.value[0]
+      const metric1 = metrics.value[1]
       const dimension0 = dimensions.value[0]
 
       return {
@@ -43,29 +43,29 @@ export default defineComponent({
         },
         encoding: {
           x: {
-            ...measurement0.vega,
-            field: 'measurementsRaw.' + measurement0.id,
-            type: measurement0.type,
-            title: $klicker.getName(measurement0),
+            ...metric0.vega,
+            field: 'metricsRaw.' + metric0.id,
+            type: metric0.type,
+            title: $klicker.getName(metric0),
             axis: {
-              format: measurement0.d3formatter,
+              format: metric0.d3formatter,
             },
           },
           y: {
-            ...measurement1.vega,
-            field: 'measurementsRaw.' + measurement1.id,
-            type: measurement1.type,
-            title: $klicker.getName(measurement1),
+            ...metric1.vega,
+            field: 'metricsRaw.' + metric1.id,
+            type: metric1.type,
+            title: $klicker.getName(metric1),
             axis: {
-              format: measurement1.d3formatter,
+              format: metric1.d3formatter,
             },
           },
           tooltip: [{
-            field: 'measurements.' + measurement0.id,
-            title: $klicker.getName(measurement0),
+            field: 'metrics.' + metric0.id,
+            title: $klicker.getName(metric0),
           }, {
-            field: 'measurements.' + measurement1.id,
-            title: $klicker.getName(measurement1),
+            field: 'metrics.' + metric1.id,
+            title: $klicker.getName(metric1),
           }, {
             field: 'dimensions.' + dimension0.id,
             title: $klicker.getName(dimension0),
