@@ -14,9 +14,9 @@
       'text-lg py-1 px-2 border-8': $props.lg,
       'bg-gray-700 hover:bg-gray-600 border-gray-700 hover:border-gray-600 focus:ring-gray-600 text-gray-200': $props.dark,
       'bg-gray-300 hover:bg-gray-200 border-gray-300 hover:border-gray-200 focus:ring-gray-200 text-gray-800': $props.light,
-      'bg-yellow-400 hover:bg-yellow-300 border-yellow-400 hover:border-yellow-300 focus:ring-yellow-300 text-gray-800': $props.primary,
-      'border-yellow-600': $props.primary && $props.outline,
-      'bg-red-600 hover:bg-red-500 border-red-600 hover:border-red-500 focus:ring-red-500 text-gray-200': $props.secondary,
+      'bg-primary-400 hover:bg-primary-300 border-primary-400 hover:border-primary-300 focus:ring-primary-300 text-gray-800': $props.primary,
+      'border-primary-600': $props.primary && $props.outline,
+      'bg-secondary-600 hover:bg-secondary-500 border-secondary-600 hover:border-secondary-500 focus:ring-secondary-500 text-gray-200': $props.secondary,
     }]"
     :to="$props.to"
   >

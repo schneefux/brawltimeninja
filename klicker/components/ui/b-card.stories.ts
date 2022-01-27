@@ -106,7 +106,7 @@ Dense.args = {
 }
 
 const style = document.createElement('style')
-style.innerHTML = '.bg-yellow-demo { background-color: #BF8A28; }'
+style.innerHTML = '.bg-primary-demo { background-color: #BF8A28; }'
 document.getElementsByTagName('head')[0].appendChild(style)
 
 export const BackgroundColor: Story = (args, { argTypes }) => ({
@@ -124,7 +124,7 @@ BackgroundColor.args = {
   title: 'Storybook Demo',
   elevation: 1,
   md: true,
-  color: 'bg-yellow-demo',
+  color: 'bg-primary-demo',
 }
 
 export const BackgroundImage: Story = (args, { argTypes }) => ({

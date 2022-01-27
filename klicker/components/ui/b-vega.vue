@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['relative', {
+    :class="['inject-colors relative', {
       'w-full': fullWidth,
       'h-full': fullHeight,
     }]"
@@ -37,10 +37,10 @@ import BButton from './b-button.vue'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue-demi'
 
-const gray200 = '#e4e4e7'
-const gray400 = '#a1a1aa'
-const gray900 = '#18181b'
-const yellow400 = '#facc15'
+const gray200 = 'var(--gray-200)'
+const gray400 = 'var(--gray-400)'
+const gray900 = 'var(--gray-900)'
+const primary400 = 'var(--primary-400)'
 
 export default defineComponent({
   components: {
@@ -105,16 +105,16 @@ export default defineComponent({
             subtitleColor: gray200,
           },
 
-          arc: { fill: yellow400 },
-          area: { fill: yellow400 },
-          line: { stroke: yellow400 },
-          path: { stroke: yellow400 },
-          rect: { fill: yellow400 },
-          shape: { stroke: yellow400 },
-          symbol: { fill: yellow400 },
-          bar: { fill: yellow400 },
+          arc: { fill: primary400 },
+          area: { fill: primary400 },
+          line: { stroke: primary400 },
+          path: { stroke: primary400 },
+          rect: { fill: primary400 },
+          shape: { stroke: primary400 },
+          symbol: { fill: primary400 },
+          bar: { fill: primary400 },
           text: { fill: gray200 },
-          point: { fill: yellow400, filled: true },
+          point: { fill: primary400, filled: true },
 
           style: {
             'guide-label': {
@@ -181,3 +181,12 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped lang="postcss">
+.inject-colors {
+  --gray-200: theme('colors.gray.200');
+  --gray-400: theme('colors.gray.400');
+  --gray-900: theme('colors.gray.900');
+  --primary-400: theme('colors.primary.400');
+}
+</style>

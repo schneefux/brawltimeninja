@@ -17,15 +17,11 @@ module.exports = {
       current: 'currentColor',
 
       gray: colors.zinc,
-      yellow: colors.amber,
-      red: colors.red,
+      primary: colors.amber,
+      secondary: colors.red,
 
       white: colors.white,
-      green: colors.emerald,
-      orange: colors.orange,
-      blue: colors.blue,
-      purple: colors.violet,
-      pink: colors.pink,
+      red: colors.red,
     },
     extend: {
       fontFamily: {
@@ -33,11 +29,6 @@ module.exports = {
       },
       spacing: {
         120: '30rem',
-        160: '40rem',
-        180: '50rem',
-      },
-      fontSize: {
-        '2xs': ['0.625rem', { lineHeight: '0.75rem' }],
       },
     },
   },
