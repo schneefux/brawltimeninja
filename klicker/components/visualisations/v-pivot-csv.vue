@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: 'Download the data', dense: true }"
+    :card="card && { ...card, title: translate('dashboard.export-data'), dense: true }"
     component="v-pivot-csv"
   >
     <b-button
@@ -11,7 +11,7 @@
       sm
       @click="download()"
     >
-      {{ $t('action.export-bar-chart-race-csv') }}
+      {{ translate('action.export-bar-chart-race-csv') }}
     </b-button>
   </v-card-wrapper>
 </template>
@@ -32,7 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { dimensions, measurements } = useCubeResponseProps(props)
+    const { $klicker, dimensions, measurements } = useCubeResponseProps(props)
 
     const download = () => {
       const temporal = dimensions.value.filter(d => d.type == 'temporal')[0]
@@ -63,7 +63,10 @@ export default defineComponent({
       downloader.click()
     }
 
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
+
     return {
+      translate,
       download,
     }
   },

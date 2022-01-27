@@ -1,7 +1,7 @@
 <template>
   <div class="contents">
     <span class="font-semibold">
-      Metric
+      {{ translate('configurator.metric') }}
     </span>
 
     <div class="flex flex-wrap gap-y-1 gap-x-1">
@@ -16,7 +16,7 @@
         <option
           v-if="multiple && index == 1 && measurements.length > 1 && measurements.length < maxMeasurements"
           value=""
-        >All</option>
+        >{{ translate('option.all') }}</option>
         <option
           v-for="m in (showAllMeasurements ? measurements : measurements.filter(m => m.id == value.measurementsIds[index - 1] || !value.measurementsIds.includes(m.id)))"
           :key="m.id"
@@ -143,6 +143,8 @@ export default defineComponent({
       numMeasurements.value--
     }
 
+    const translate = (key: string) => $klicker.$t(key)
+
     return {
       description,
       measurements,
@@ -152,6 +154,7 @@ export default defineComponent({
       onInputMeasurementsIds,
       faPlus,
       faMinus,
+      translate,
     }
   },
 })

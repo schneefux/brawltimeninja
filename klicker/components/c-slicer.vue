@@ -210,7 +210,7 @@ export default defineComponent({
         }))
     })
 
-    const translate = $klicker.$t
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     return {
       breakpointMd,

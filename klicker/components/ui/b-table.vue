@@ -29,7 +29,7 @@
             :colspan="(ranked ? 1 : 0) + columns.length"
             class="text-center overflow-auto"
           >
-            {{ $t('state.no-data') }}
+            {{ translate('state.no-data') }}
           </td>
         </tr>
         <tr
@@ -71,6 +71,7 @@
 </template>
 
 <script lang="ts">
+import { useKlicker } from '../../composables/klicker'
 import { computed, defineComponent, PropType, ref, watch } from 'vue-demi'
 import BPaginator from './b-paginator.vue'
 
@@ -148,7 +149,11 @@ export default defineComponent({
       () => page.value = 0
     )
 
+    const { $klicker } = useKlicker()
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
+
     return {
+      translate,
       page,
       pageRows,
       renderedColumns,

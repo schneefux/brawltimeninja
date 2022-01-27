@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: 'Download the data', dense: true }"
+    :card="card && { ...card, title: translate('dashboard.export-data'), dense: true }"
     component="v-csv"
   >
     <b-button
@@ -11,7 +11,7 @@
       sm
       @click="download()"
     >
-      {{ $t('action.export-csv') }}
+      {{ translate('action.export-csv') }}
     </b-button>
   </v-card-wrapper>
 </template>
@@ -53,7 +53,10 @@ export default defineComponent({
       downloader.click()
     }
 
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
+
     return {
+      translate,
       download,
     }
   },

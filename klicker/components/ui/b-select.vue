@@ -3,7 +3,7 @@
     v-bind="$attrs"
     :class="[
       'form-select transition duration-100 ease-in-out focus:ring focus:ring-offset-0 focus:ring-opacity-50',
-      'rounded py-1 px-2 border-2', {
+      'rounded py-1 pl-2 pr-8 border-2', {
         'bg-gray-700 hover:bg-gray-600 border-gray-500 hover:border-gray-400 focus:border-gray-400 focus:ring-gray-400 text-gray-200': $props.dark,
     }]"
     :value="$props.value"

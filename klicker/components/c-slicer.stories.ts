@@ -1,7 +1,5 @@
 import CSlicer from './c-slicer.vue'
 import BSelect from './ui/b-select.vue'
-import Klicker from '../service'
-import config from '../fixtures/klicker.conf'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery, SlicerSpec } from '../types'
 import Vue from 'vue'
@@ -22,14 +20,14 @@ const query = <CubeQuery>{
   limit: 5,
 }
 
-const slicers: SlicerSpec[] = [{
+const slicer: SlicerSpec = {
   name: 'Brawler',
   component: 'brawler-select',
   import: () => Promise.resolve(BrawlerSelect),
   applicable() {
     return true
   },
-}]
+}
 
 const BrawlerSelect = Vue.component('brawler-select', {
   components: { BSelect },
@@ -48,14 +46,18 @@ const BrawlerSelect = Vue.component('brawler-select', {
   `,
 });
 
-(<any>window).$klicker = new Klicker('https://cube.brawltime.ninja', config, [], [], slicers);
-
 export const Default: Story = (args, { argTypes }) => ({
   components: { CSlicer },
   props: Object.keys(argTypes),
   template: `
     <c-slicer v-bind="$props"></c-slicer>
   `,
+  mounted() {
+    (<any>window).$klicker.slicers.push(slicer)
+  },
+  destroyed() {
+    (<any>window).$klicker.slicers.pop()
+  },
 })
 Default.args = {
   value: query,
@@ -90,6 +92,12 @@ export const Comparing: Story = (args, { argTypes }) => ({
       <c-slicer v-bind="$props" comparing></c-slicer>
     </div>
   `,
+  mounted() {
+    (<any>window).$klicker.slicers.push(slicer)
+  },
+  destroyed() {
+    (<any>window).$klicker.slicers.pop()
+  },
 })
 Comparing.args = {
   value: comparingQuery,

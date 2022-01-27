@@ -9,7 +9,7 @@
     >
       <div class="grid grid-cols-[auto,auto] gap-x-4 gap-y-2 my-1 items-center">
         <h1 class="inline font-semibold">
-          Source
+          {{ translate('configurator.source') }}
         </h1>
 
         <div>
@@ -52,7 +52,7 @@
           class="col-span-2 flex items-center"
         >
           <b-checkbox dark v-model="compareMode"></b-checkbox>
-          <span class="ml-2">Comparison Mode</span>
+          <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
         </label>
       </div>
     </div>
@@ -154,7 +154,7 @@ export default defineComponent({
 
     const prefix = Math.random().toString().slice(2)
 
-    const translate = $klicker.$t
+    const translate = (key: string) => $klicker.$t(key)
 
     return {
       cubes,

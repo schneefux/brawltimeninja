@@ -52,7 +52,7 @@ export default defineComponent({
 
     const metricName = computed(() => $klicker.getName(measurements.value[0]))
     const testName = computed(() => measurements.value[0].statistics?.test?.name)
-    const translate = $klicker.$t
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     return {
       metricName,
