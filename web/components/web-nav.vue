@@ -77,17 +77,8 @@ export default Vue.extend({
         name: 'Map Tier Lists',
         target: this.localePath('/tier-list/map'),
       }, {
-        name: 'Leaderboards',
-        target: this.localePath('/leaderboard/hours'),
-      }, {
         name: 'Guides',
         target: '/blog/guides',
-      }, {
-        name: 'Status',
-        target: this.localePath('/status'),
-      }, {
-        name: 'Privacy',
-        target: '/about',
       }]
     },
   },

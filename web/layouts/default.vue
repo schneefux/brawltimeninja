@@ -15,9 +15,20 @@
 
     <app-bottom-nav class="md:hidden"></app-bottom-nav>
     <footer
-      class="bg-yellow-400 text-gray-800 py-2 text-sm text-center leading-normal hidden md:block"
+      class="bg-yellow-400 text-gray-800 py-2 text-center leading-normal hidden md:block"
     >
-      <copyright></copyright>
+      <div class="space-x-2">
+        <nuxt-link
+          v-for="link in links"
+          :key="link.target"
+          :to="link.target"
+          class="inline-block underline lg:border-0 hover:text-red-800"
+          exact-active-class="text-red-800"
+        >
+          {{ $t('nav.' + link.name) }}
+        </nuxt-link>
+      </div>
+      <copyright class="mt-1 text-sm"></copyright>
     </footer>
 
     <adblock-bait></adblock-bait>
@@ -36,6 +47,21 @@ export default Vue.extend({
     return this.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
   },
   computed: {
+    links(): { name: string, target: string }[] {
+      return [ {
+        name: 'Leaderboards',
+        target: this.localePath('/leaderboard/hours'),
+      }, {
+        name: 'Guides',
+        target: '/blog/guides',
+      }, {
+        name: 'Status',
+        target: this.localePath('/status'),
+      }, {
+        name: 'Privacy',
+        target: '/about',
+      }]
+    },
     ...mapState({
       version: (state: any) => state.version as number,
       adsAllowed: (state: any) => state.adsAllowed as boolean,
