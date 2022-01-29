@@ -30,43 +30,35 @@
     >
       <div
         v-if="'infobar' in $scopedSlots"
-        class="rounded-t w-full px-2 py-1"
+        class="rounded-t w-full px-2 py-1 text-sm"
       >
         <slot name="infobar"></slot>
       </div>
 
       <header
         v-if="$props.title != undefined || $props.icon != undefined || 'preview' in $scopedSlots"
-        :class="['shrink-0 w-full flex font-semibold items-center overflow-hidden', ($props.color !== undefined ? $props.color : ''), {
-          'px-3 py-2': !$props.dense,
-          'px-2 pt-1': $props.dense,
+        :class="['shrink-0 grid items-center overflow-hidden', ($props.color !== undefined ? $props.color : ''), {
+          'px-3 gap-x-3 py-2': !$props.dense,
+          'px-2 gap-x-2 pt-1': $props.dense,
           'rounded-t': !('infobar' in $scopedSlots),
+          'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
+          'grid-cols-[1fr,auto]': !('icon' in $scopedSlots),
         }]"
       >
-        <div
+        <slot
+          name="icon"
           v-if="$props.icon != undefined || 'icon' in $scopedSlots"
-          :class="['shrink-0 flex justify-center items-center mr-3', {
-            'w-10 h-10 my-2': !$props.dense,
-            'w-6 h-6 my-1': $props.dense,
-          }]"
+          v-bind="{ icon: $props.icon, alt: $props.iconAlt }"
         >
-          <slot name="icon" v-bind="{ icon: $props.icon, alt: $props.iconAlt }">
-            <img :src="$props.icon" :alt="$props.iconAlt">
-          </slot>
-        </div>
+          <img :src="$props.icon" :alt="$props.iconAlt">
+        </slot>
 
-        <div
-          v-if="$props.title != undefined"
-          :class="['mr-auto', {
-            'my-px': !$props.dense,
-            'my-px': $props.dense,
-          }]"
-        >
+        <div v-if="$props.title != undefined">
           <h1
             v-if="$props.title != undefined"
             :class="{
               'text-lg leading-snug': !$props.dense,
-              'leading-tight': $props.dense,
+              'text-sm leading-tight': $props.dense,
             }"
           >
             <b-wrapped-component :wrap="$props.titleLink != undefined">
@@ -82,7 +74,6 @@
           <h2
             v-if="$props.subtitle != undefined"
             :class="['whitespace-nowrap', {
-              'text-lg': $props.subtitle.length < 20,
               'text-xs': $props.subtitle.length >= 30,
               'leading-snug': !$props.dense,
               'leading-tight': $props.dense,
@@ -127,9 +118,9 @@
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b text-gray-800 w-full mt-auto flex justify-end', {
-          'px-3 py-2': !$props.dense,
-          'px-2 py-1': $props.dense,
+        :class="['rounded-b text-gray-800 flex justify-end', {
+          'px-3 gap-x-3 py-2': !$props.dense,
+          'px-2 gap-x-2 py-1': $props.dense,
         }]"
       >
         <slot name="actions"></slot>

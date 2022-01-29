@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['overflow-x-auto flex items-center', {
-      'md:items-end md:justify-center md:flex-wrap': expandOnDesktop,
+      'md:justify-center md:flex-wrap': expandOnDesktop,
     }]"
   >
     <slot></slot>

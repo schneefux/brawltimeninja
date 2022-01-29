@@ -1,5 +1,5 @@
 <template>
-  <main class="container mx-auto p-4">
+  <main class="container mx-auto py-4 px-4 md:px-0">
     <h1
       v-if="title != ''"
       class="text-2xl font-semibold"

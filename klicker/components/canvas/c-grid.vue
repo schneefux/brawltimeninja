@@ -75,7 +75,7 @@
 
     <draggable
       v-model="widgets"
-      class="w-full dashboard-grid"
+      class="w-full dashboard"
     >
       <c-widget
         v-for="w in widgets"

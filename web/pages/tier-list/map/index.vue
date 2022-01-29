@@ -18,7 +18,10 @@
       tracking-id="current_events"
       tracking-page-id="maps"
     >
-      <active-events eager></active-events>
+      <active-events
+        class="mt-4"
+        eager
+      ></active-events>
     </page-section>
 
     <client-only>

@@ -3,20 +3,13 @@
     :mode="mode"
     :map="map"
     :id="id"
-    v-bind="$attrs"
-    md
+    full-height
   >
     <div
-      v-if="powerplay || id == 0 || endDate != undefined || startDate != undefined"
+      v-if="powerplay || endDate != undefined || startDate != undefined"
       slot="infobar"
       class="flex justify-end"
     >
-      <span v-if="id == 0 && map.startsWith('Competition Entry')" class="mr-auto">
-        {{ $tc('competition-map', 1) }}
-      </span>
-      <span v-if="id == 0 && map.startsWith('Competition Winner')" class="mr-auto">
-        {{ $tc('competition-winner', 1) }}
-      </span>
       <span v-if="powerplay" class="mr-auto">
         {{ $tc('power-play', 1) }}
       </span>
@@ -32,31 +25,20 @@
       slot="content"
       :slices="slices"
       :elevation="2"
+      class="h-full items-center"
     ></map-best-brawlers>
-
-    <b-button
-      v-if="link"
-      slot="actions"
-      :to="link"
-      primary
-      prefetch
-      sm
-    >
-      {{ $t('action.open') }}
-    </b-button>
   </event-card>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import { camelToKebab, slugify } from '@/lib/util'
+import { defineComponent, PropType, computed, useContext } from '@nuxtjs/composition-api'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
 
 import { enUS, de, es } from 'date-fns/locale'
 const locales = { en: enUS, de, es }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     endDate: {
       type: String,
@@ -72,46 +54,40 @@ export default Vue.extend({
       default: () => ({})
     },
   },
-  computed: {
-    mode(): string|undefined {
-      return this.slices.mode?.[0]
-    },
-    map(): string|undefined {
-      return this.slices.map?.[0]
-    },
-    powerplay(): boolean {
-      return this.slices.powerplay?.[0] == 'true'
-    },
-    link(): string|undefined {
-      if (this.mode == undefined) {
-        return undefined
-      }
-      if (this.map != undefined) {
-        return this.localePath(`/tier-list/mode/${camelToKebab(this.mode)}/map/${slugify(this.map)}`)
-      } else {
-        return this.localePath(`/tier-list/mode/${camelToKebab(this.mode)}`)
-      }
-    },
-    endDateString(): string {
-      if (this.endDate == undefined) {
+  setup(props) {
+    const { i18n } = useContext()
+
+    const mode = computed(() => props.slices.mode?.[0])
+    const map = computed(() => props.slices.map?.[0])
+    const powerplay = computed(() => props.slices.powerplay?.[0] == 'true')
+    const endDateString = computed(() => {
+      if (props.endDate == undefined) {
         return ''
       }
 
-      const date = parseISO(this.endDate)
+      const date = parseISO(props.endDate)
       const dist = formatDistanceToNow(date, {
-        locale: locales[this.$i18n.locale],
+        locale: locales[i18n.locale],
       })
 
-      return this.$t('time.ends-in', { time: dist }) as string
-    },
-    startDateString(): string {
-      if (this.startDate == undefined) {
+      return i18n.t('time.ends-in', { time: dist }) as string
+    })
+    const startDateString = computed(() => {
+      if (props.startDate == undefined) {
         return ''
       }
 
-      const date = parseISO(this.startDate)
+      const date = parseISO(props.startDate)
       return 'starts in ' + formatDistanceToNow(date)
-    },
+    })
+
+    return {
+      mode,
+      map,
+      powerplay,
+      endDateString,
+      startDateString,
+    }
   },
 })
 </script>

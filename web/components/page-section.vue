@@ -11,7 +11,7 @@
     </div>
 
     <div
-      class="mt-4 md:mx-8"
+      class="mt-6"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e),
         once: true,

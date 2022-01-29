@@ -141,6 +141,7 @@
       }"
       :limit="4"
       :elevation="1"
+      class="mt-6"
     ></top-brawlers-card>
 
     <top-players-card
@@ -148,6 +149,7 @@
         callback: (v, e) => trackScroll(v, e, 'best_players'),
         once: true,
       }"
+      class="mt-6"
     ></top-players-card>
 
     <client-only>
@@ -162,24 +164,18 @@
       />
     </client-only>
 
-    <div
+    <page-section
       v-if="events.length > 0"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'live_events'),
-        once: true,
-      }"
-      class="home-section container"
+      :title="$t('index.events.title')"
+      tracking-id="live_events"
+      tracking-page-id="maps"
+      class="container"
     >
-      <div class="home-section-heading-container">
-        <div class="home-section-heading-left">
-          {{ $t('index.events.title')}}
-        </div>
-      </div>
-
       <active-events
-        class="home-section-content px-2">
+        class="mt-4"
+        eager
       ></active-events>
-    </div>
+    </page-section>
 
     <client-only>
       <adsense

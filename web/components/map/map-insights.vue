@@ -3,25 +3,16 @@
     <div
       v-for="t in templates"
       :key="t.title"
-      class="dashboard-cell var--rows-1 md:var--rows-2"
+      class="dashboard__cell"
       style="--columns: 3;"
     >
       <b-card
         :title="t.title"
         :elevation="elevation"
+        :link="t.link"
         class="h-full"
         full-height
       >
-        <b-button
-          v-if="t.link"
-          slot="actions"
-          :to="t.link"
-          primary
-          sm
-        >
-          {{ t.linkText }}
-        </b-button>
-
         <c-query
           slot="content"
           :query="t.query"
@@ -97,7 +88,7 @@ export default defineComponent({
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
 
-    const limit = 5
+    const limit = 4
 
     const templates = computed<Template[]>(() => {
       const templates: Template[] = []

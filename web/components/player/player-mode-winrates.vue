@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap justify-center pt-2">
+  <div class="pt-2 w-full dashboard dashboard--responsive">
     <lazy
       v-for="(mode, index) in modes.slice(0, tease ? 3 : undefined)"
       :key="mode"
@@ -15,10 +15,10 @@
         :player-tag="player.tag"
         :enable-klicker-stats="enableKlickerStats"
         :elevation="elevation"
-        :class="{
+        :class="['dashboard__cell', {
           'hidden md:block': tease && index > 0,
-        }"
-        sm
+        }]"
+        style="--rows: 2; --columns: 3;"
       ></player-mode-card>
     </lazy>
   </div>

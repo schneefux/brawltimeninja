@@ -1,13 +1,9 @@
 <template>
-  <div class="mx-auto max-w-6xl">
-    <b-horizontal-scroller
-      class="children-flex-auto children-shrink-0"
-      expand-on-desktop
-    >
+  <div>
+    <div class="grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto">
       <bigstat
-        :title="$t('metric.hours-spent')"
-        class="relative"
-        md
+        :label="$t('metric.hours-spent')"
+        class="relative row-span-2"
       >
         <div
           slot="value"
@@ -31,74 +27,87 @@
         </div>
       </bigstat>
 
-      <div class="flex flex-col">
-        <p class="mx-2">{{ $t('player.equals') }}</p>
-        <div class="flex children-flex-auto children-shrink-0">
-          <bigstat
-            v-for="(stat, statName) in funStats"
-            :key="statName"
-            :title="stat.label"
-          >
-            <p
-              slot="value"
-              ref="counter-funstats"
-              class="text-center text-3xl font-bold text-yellow-400 mb-1"
-            >
-              ...
-            </p>
-          </bigstat>
-        </div>
-      </div>
-    </b-horizontal-scroller>
+      <p
+        class="ml-1 mt-2 col-span-4 text-sm"
+      >{{ $t('player.equals') }}</p>
 
-    <b-horizontal-scroller
-      class="mt-2 lg:justify-start children-shrink-0 children-flex-auto"
-      expand-on-desktop
-    >
+      <bigstat
+        v-for="(stat, statName) in funStats"
+        :key="statName"
+        :label="stat.label"
+      >
+        <p
+          slot="value"
+          ref="counter-funstats"
+        >
+          ...
+        </p>
+      </bigstat>
+    </div>
+
+    <div class="mt-6 grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto">
+      <history-graph
+        v-if="enableKlickerStats"
+        :card="{ fullHeight: true }"
+        :player-tag="player.tag"
+        class="row-span-2"
+      ></history-graph>
+      <b-card
+        v-else
+        class="row-span-2"
+        full-height
+      >
+        <div slot="content" class="flex flex-col justify-center h-full">
+          <p
+            slot="content"
+            class="italic text-center"
+          >
+            {{ $t('player.no-history') }}
+          </p>
+        </div>
+      </b-card>
+
       <bigstat
         v-if="player != undefined && player.club.tag != undefined"
-        :title="$t('club')"
+        :label="$t('club')"
+        class="col-span-2"
       >
-        <div
+        <nuxt-link
           slot="value"
-          class="flex justify-center"
+          :to="localePath(`/club/${player.club.tag}`)"
+          class="underline"
         >
-          <nuxt-link
-            :to="localePath(`/club/${player.club.tag}`)"
-            class="text-center text-2xl font-semibold underline text-red-500 mb-1"
-          >
-            [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
-          </nuxt-link>
-        </div>
+          [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
+        </nuxt-link>
       </bigstat>
 
       <bigstat
-        :title="$t('metric.trophies')"
+        :label="$t('metric.trophies')"
         :value="player != undefined ? player.trophies.toLocaleString() : '?'"
       ></bigstat>
 
       <bigstat
         v-if="brawlersUnlocked < totalBrawlers"
-        :title="$t('metric.potentialTrophies')"
+        :label="$t('metric.potentialTrophies')"
         :value="Math.floor(trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
       ></bigstat>
 
       <bigstat
         v-if="playerTotals != undefined && playerTotals.picks > 0"
-        :title="$t('metric.recentWinrate')"
+        :label="$t('metric.recentWinrate')"
         :value="Math.floor(playerTotals.winRate * 100) + '%'"
         :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
       ></bigstat>
 
       <bigstat
         v-if="playerTotals != undefined && playerTotals.picks > 0"
-        :title="$t('metric.averageTrophies')"
+        :label="$t('metric.averageTrophies')"
         :value="playerTotals.trophyChange.toFixed(2)"
       ></bigstat>
 
       <bigstat
-        :title="$t('metric.accountRating')"
+        :label="$t('metric.accountRating')"
         :value="accountRating"
         tooltip
       >
@@ -112,7 +121,7 @@
           </ul>
         </template>
       </bigstat>
-    </b-horizontal-scroller>
+    </div>
   </div>
 </template>
 
@@ -146,6 +155,10 @@ export default defineComponent({
     playerTotals: {
       type: Object as PropType<PlayerTotals>,
       required: false
+    },
+    enableKlickerStats: {
+      type: Boolean,
+      default: false
     },
   },
   // TODO replace refs by function ref when migrating to Vue 3

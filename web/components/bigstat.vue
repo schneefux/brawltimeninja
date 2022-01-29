@@ -1,20 +1,20 @@
 <template>
   <b-card
-    v-bind="$attrs"
+    v-bind="card"
+    :title="label"
+    full-height
     dense
   >
     <b-button
       v-if="tooltip != undefined"
       slot="preview"
-      class="my-px"
+      class="-my-1"
       dark
       xs
       @click="tooltipOpen = !tooltipOpen"
     >?</b-button>
-    <template v-slot:content>
-      <b-lightbox
-        v-model="tooltipOpen"
-      >
+    <div slot="content">
+      <b-lightbox v-model="tooltipOpen">
         <b-card sm>
           <template v-slot:content>
             <slot name="tooltip">
@@ -25,12 +25,12 @@
           </template>
         </b-card>
       </b-lightbox>
-      <slot name="value">
-        <p class="text-center text-2xl font-bold text-yellow-400 mb-1">
+      <p class="text-center text-3xl font-bold text-yellow-400 my-1">
+        <slot name="value">
           {{ value }}
-        </p>
-      </slot>
-    </template>
+        </slot>
+      </p>
+    </div>
     <template
       v-if="'actions' in $scopedSlots"
       v-slot:actions
@@ -41,24 +41,33 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
     value: {
       type: [Number, String],
+      required: false
     },
     label: {
       type: String,
+      required: false
     },
     tooltip: {
-      type: String
+      type: String,
+      required: false
+    },
+    card: {
+      type: undefined,
+      required: false
     },
   },
-  data() {
+  setup() {
+    const tooltipOpen = ref(false)
+
     return {
-      tooltipOpen: false,
+      tooltipOpen,
     }
   },
 })

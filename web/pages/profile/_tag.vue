@@ -1,5 +1,5 @@
 <template>
-  <page>
+  <page class="space-y-6">
     <client-only>
       <adsense
         ins-class="ad-section"
@@ -12,17 +12,13 @@
     </client-only>
 
     <div
-      class="mt-4 relative"
+      class="flex"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
         once: true,
       }"
     >
-      <media-img
-        :path="`/avatars/${player.icon.id}`"
-        clazz="absolute w-16 h-16 md:w-24 md:h-24 right-0 z-0"
-      ></media-img>
-      <h1 class="text-2xl font-semibold relative z-10">
+      <h1 class="text-3xl font-semibold relative z-10 mr-auto">
         {{ $t('player.statistics-for') }}
         <span class="text-yellow-400">{{ player.name }}</span>
         <span
@@ -30,37 +26,20 @@
           class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
         >DEV</span>
       </h1>
+      <media-img
+        :path="`/avatars/${player.icon.id}`"
+        clazz="w-16 h-16 md:w-24 md:h-24"
+        class="flex-shrink-0"
+      ></media-img>
     </div>
 
     <player-hype-stats
       :player="player"
       :player-totals="playerTotals"
-      class="mt-6"
+      :enable-klicker-stats="enableKlickerStats"
     ></player-hype-stats>
 
-    <div class="mt-2 flex flex-wrap justify-center items-center">
-      <history-graph
-        v-if="enableKlickerStats"
-        :player-tag="tag"
-        :card="{ md: true, fullHeight: true }"
-        class="h-40"
-      ></history-graph>
-      <b-card
-        v-else
-        class="h-16 md:h-32"
-        full-height
-        md
-      >
-        <div slot="content" class="flex flex-col justify-center h-full">
-          <p
-            slot="content"
-            class="italic text-center"
-          >
-            {{ $t('player.no-history') }}
-          </p>
-        </div>
-      </b-card>
-
+    <div class="flex flex-wrap justify-center items-center">
       <experiment experiment-id="ieQ8BYYpS9Cwd7qcpBj8tQ">
         <player-quiz
           v-observe-visibility="{
@@ -85,7 +64,7 @@
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
+        ins-class="w-screen -mx-4 md:w-full ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
       />

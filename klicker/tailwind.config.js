@@ -9,7 +9,7 @@ module.exports = {
     pattern: /var--/,
     variants: ['sm', 'md', 'lg', 'xl', '2xl'],
   }, {
-    pattern: /dashboard-/,
+    pattern: /dashboard/,
   }],
   theme: {
     colors: {

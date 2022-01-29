@@ -7,7 +7,7 @@
     slicer
   >
     <template v-slot:totals="data">
-      <div class="w-full flex flex-wrap">
+      <div class="w-full flex flex-wrap gap-x-6">
         <v-sample-size
           v-bind="data"
           :card="{ fullHeight: true }"
@@ -24,7 +24,7 @@
     </template>
 
     <template v-slot="query">
-      <div class="w-full dashboard-grid">
+      <div class="w-full dashboard dashboard--responsive">
         <map-image
           v-if="showImage"
           v-observe-visibility="{
@@ -33,7 +33,7 @@
           }"
           :id="id"
           :map="map"
-          class="dashboard-cell"
+          class="dashboard__cell"
           style="--columns: 3; --rows: 4;"
         ></map-image>
 
@@ -44,7 +44,7 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard-cell var--rows-3 md:var--rows-4"
+          class="dashboard__cell var--rows-3 md:var--rows-4"
           style="--columns: 3;"
         ></map-best-brawlers-table>
 
@@ -56,7 +56,7 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard-cell var--rows-3 md:var--rows-4"
+          class="dashboard__cell var--rows-3 md:var--rows-4"
           style="--columns: 3;"
         ></map-best-teams-table>
 
@@ -67,7 +67,7 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard-cell"
+          class="dashboard__cell"
           style="--columns: 3; --rows: 4;"
         ></map-best-players-table>
 
@@ -79,7 +79,7 @@
           :id="id"
           :slices="query.slices"
           kind="starpowers"
-          class="dashboard-cell var--rows-3 md:var--rows-4"
+          class="dashboard__cell var--rows-3 md:var--rows-4"
           style="--columns: 3;"
         ></map-best-accessory-table>
 
@@ -91,7 +91,7 @@
           :id="id"
           :slices="query.slices"
           kind="gadgets"
-          class="dashboard-cell var--rows-3 md:var--rows-4"
+          class="dashboard__cell var--rows-3 md:var--rows-4"
           style="--columns: 3;"
         ></map-best-accessory-table>
 
@@ -103,7 +103,7 @@
             data-ad-client="ca-pub-6856963757796636"
             data-ad-slot="4623162753"
             data-full-width-responsive="yes"
-            class="self-center dashboard-cell"
+            class="self-center dashboard__cell"
             :style="{
               '--columns': showImage ? 1 : 2,
               '--rows': 4,
@@ -129,7 +129,7 @@
           :id="id"
           :slices="query.slices"
           kind="gears"
-          class="dashboard-cell"
+          class="dashboard__cell"
           style="--columns: 4; --rows: 1;"
         ></map-best-accessory-roll>
 
@@ -145,29 +145,27 @@
           <map-winrate-userate-chart
             :id="id"
             :slices="query.slices"
-            class="dashboard-cell"
+            class="dashboard__cell"
             style="--columns: 4; --rows: 3;"
           ></map-winrate-userate-chart>
 
           <map-trend-chart
             :id="id"
             :slices="query.slices"
-            class="dashboard-cell"
+            class="dashboard__cell"
             style="--columns: 4; --rows: 2;"
           ></map-trend-chart>
 
           <gadget-starpower-disclaimer
-            class="dashboard-cell"
+            class="dashboard__cell"
             style="--columns: 2; --rows: 1;"
             full-height
-            dense
           ></gadget-starpower-disclaimer>
           <metric-info
             :metric="adjustedWinRate"
-            class="dashboard-cell"
+            class="dashboard__cell"
             style="--columns: 2; --rows: 1;"
             full-height
-            dense
           ></metric-info>
       </div>
     </template>

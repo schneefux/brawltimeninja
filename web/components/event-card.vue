@@ -4,15 +4,21 @@
     :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
+    :link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
     v-bind="$attrs"
   >
-    <media-img
+    <div
       slot="icon"
-      :path="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
-      size="120"
-    ></media-img>
+      class="w-10 h-10"
+    >
+      <media-img
+        :path="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
+        size="120"
+        clazz="h-full"
+      ></media-img>
+    </div>
 
     <media-img
       slot="preview"

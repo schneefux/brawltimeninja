@@ -14,11 +14,11 @@
         <v-barplot
           v-bind="data"
           :card="{ title, fullHeight: true }"
-          class="dashboard-cell"
+          class="dashboard__cell"
           style="--columns: 4; --rows: 2;"
         ></v-barplot>
         <div
-          class="dashboard-cell"
+          class="dashboard__cell"
           style="--columns: 2; --rows: 1;"
         >
           <b-card

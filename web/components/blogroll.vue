@@ -10,9 +10,11 @@
       sm
     >
       <media-img
+        v-if="post.mode != undefined"
         slot="icon"
-        :path="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
+        :path="`/modes/${post.mode}/icon`"
         size="120"
+        clazz="h-8"
       ></media-img>
 
       <p slot="content">

@@ -1,7 +1,7 @@
 <template>
   <b-card
     v-if="metric.description != undefined"
-    :title="$t('about-metric', { metric: $t('metric.' + metric.name) })"
+    :title="$t('about-metric', { metric: $t('metric.' + metric.id) })"
     v-bind="$attrs"
   >
     <p slot="content" class="prose prose-invert leading-snug">

@@ -32,6 +32,7 @@
           :path="`/avatars/${player.icon}`"
           :alt="player.name"
           size="120"
+          clazz="w-8"
         ></media-img>
 
         <p

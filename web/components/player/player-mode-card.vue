@@ -46,15 +46,6 @@
           :elevation="elevation + 2"
           class="mx-auto"
         ></player-map-tip-roll>
-        <b-button
-          slot="actions"
-          tag="router-link"
-          :to="localePath(activeMap.url)"
-          primary
-          xs
-        >
-          {{ $t('action.open.tier-list.map', { map: $tc('map.' + activeMap.id) }) }}
-        </b-button>
       </b-card>
     </div>
     <div class="absolute top-0 right-0 mr-6 my-4">
@@ -65,16 +56,6 @@
         clazz="w-12 mr-1"
       ></media-img>
     </div>
-    <b-button
-      v-if="activeMap == undefined"
-      slot="actions"
-      tag="router-link"
-      :to="localePath(`/tier-list/mode/${modeKebab}`)"
-      primary
-      xs
-    >
-      {{ $t('action.open.tier-list.mode', { mode: $tc('mode.' + mode) }) }}
-    </b-button>
   </event-card>
 </template>
 

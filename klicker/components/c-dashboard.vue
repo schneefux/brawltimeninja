@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap">
+  <div class="flex flex-wrap space-y-6">
     <div
       class="w-full"
       :class="{

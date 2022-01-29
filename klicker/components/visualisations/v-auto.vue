@@ -10,7 +10,7 @@
       :loading="loading"
       :response="response"
       :style="spec.style"
-      class="dashboard-cell"
+      class="dashboard__cell"
     >
       <template
         v-for="(_, slot) of $scopedSlots"
@@ -31,7 +31,7 @@
     :loading="loading"
     :response="response"
     :style="specs[0].style"
-    class="dashboard-cell"
+    class="dashboard__cell"
   >
     <template
       v-for="(_, slot) of $scopedSlots"

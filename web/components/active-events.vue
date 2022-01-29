@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mt-2 flex flex-wrap justify-center w-full">
+    <div class="ml-1 flex flex-wrap">
       <button
         v-for="(mode, index) in modes"
         :key="mode"
@@ -25,7 +25,7 @@
     <lazy
       :render="eager"
       distance="320px"
-      class="mt-3 flex flex-wrap justify-center items-end w-full"
+      class="mt-8 w-full dashboard dashboard--relaxed dashboard--responsive"
     >
       <map-best-brawlers-card
         v-for="event in filteredEvents"
@@ -38,21 +38,10 @@
         :id="event.battle_event_id"
         :end-date="event.end"
         :eager="eager"
+        class="dashboard__cell"
+        style="--rows: 1; --columns: 3;"
       ></map-best-brawlers-card>
     </lazy>
-
-    <div
-      v-show="modeFilter != 'all'"
-      class="mt-3 text-right w-full max-w-2xl"
-    >
-      <b-button
-        sm
-        primary
-        :to="localePath(`/tier-list/mode/${camelToKebab(modeFilter)}`)"
-      >
-        {{ $t('action.open.tier-list.mode', { mode: $tc('mode.' + modeFilter) }) }}
-      </b-button>
-    </div>
   </div>
 </template>
 
