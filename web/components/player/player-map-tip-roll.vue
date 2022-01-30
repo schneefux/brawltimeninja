@@ -1,7 +1,6 @@
 <template>
   <b-shimmer
     v-if="response == undefined"
-    slot="placeholder"
     width-px="265"
     height-px="72"
   ></b-shimmer>

@@ -18,12 +18,6 @@
       :query="query"
       :filter="filter"
     >
-      <b-shimmer
-        slot="placeholder"
-        width-px="224"
-        height-px="64"
-        loading
-      ></b-shimmer>
       <template v-slot="data">
         <v-roll
           v-bind="{

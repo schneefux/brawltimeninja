@@ -1,6 +1,7 @@
 import { VNode, defineComponent, PropType, h, toRefs } from 'vue-demi'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 import { useCubeQuery } from '../composables/query'
+import BShimmer from './ui/b-shimmer.vue'
 
 export default defineComponent({
   name: 'c-query',
@@ -45,6 +46,8 @@ export default defineComponent({
         } else {
           if ('placeholder' in slots) {
             nodes = slots.placeholder!({})
+          } else {
+            nodes = [h(BShimmer as any, { props: { loading: true } })]
           }
         }
       }

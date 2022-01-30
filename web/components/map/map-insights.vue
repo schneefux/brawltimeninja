@@ -18,12 +18,6 @@
           :query="t.query"
           :filter="filter"
         >
-          <b-shimmer
-            slot="placeholder"
-            width-px="224"
-            height-px="64"
-            loading
-          ></b-shimmer>
           <p slot="empty" class="text-center">
             {{ $t('state.no-data') }}
           </p>

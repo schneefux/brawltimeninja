@@ -4,15 +4,13 @@
       cubeId: 'map',
       dimensionsIds: ['brawler'],
       metricsIds: ['winRateAdj'],
-      slices,
       sortId: 'winRateAdj',
+      slices,
       limit,
     }"
   >
     <b-shimmer
       slot="placeholder"
-      width-px="265"
-      height-px="72"
       loading
     ></b-shimmer>
     <template v-slot="data">
