@@ -202,7 +202,7 @@ export default defineComponent({
             },
             sortId: 'pvalue',
           },
-          limit,
+          limit: 3,
         },
       })
 

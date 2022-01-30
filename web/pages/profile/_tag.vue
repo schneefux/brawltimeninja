@@ -12,13 +12,13 @@
     </client-only>
 
     <div
-      class="flex"
+      class="flex justify-between"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'hours'),
         once: true,
       }"
     >
-      <h1 class="text-3xl font-semibold relative z-10 mr-auto">
+      <h1 class="text-3xl font-semibold relative z-10">
         {{ $t('player.statistics-for') }}
         <span class="text-yellow-400">{{ player.name }}</span>
         <span
@@ -29,7 +29,7 @@
       <media-img
         :path="`/avatars/${player.icon.id}`"
         clazz="w-16 h-16 md:w-24 md:h-24"
-        class="flex-shrink-0"
+        wrapper-class="flex-shrink-0"
       ></media-img>
     </div>
 

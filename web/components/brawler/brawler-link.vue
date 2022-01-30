@@ -1,56 +1,54 @@
-<template functional>
+<template>
   <router-link
-    :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: props.brawler })}`)"
-    :title="props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase())"
-    :class="['flex justify-center items-center', data.class, data.staticClass]"
-    :style="data.staticStyle"
+    :to="link"
+    :title="title"
+    class="flex items-center"
   >
     <div
       :class="['relative shrink-0', {
-        'pr-3 md:pr-4': props.ally != undefined || props.starpowerId != undefined || props.gadgetId != undefined,
+        'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,
       }]"
     >
       <media-img
-        :path="`/brawlers/${props.brawlerId({ name: props.brawler })}/avatar`"
-        :alt="props.capitalizeWords(props.brawler.toLowerCase())"
+        :path="`/brawlers/${brawlerBrawlerId}/avatar`"
+        :alt="brawlerBrawlerName"
         size="160"
-        clazz="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
+        clazz="h-8 w-8"
       ></media-img>
       <media-img
-        v-if="props.ally != undefined"
-        :path="`/brawlers/${props.brawlerId({ name: props.ally })}/avatar`"
-        :alt="props.capitalizeWords(props.ally.toLowerCase())"
+        v-if="ally != undefined"
+        :path="`/brawlers/${brawlerAllyId}/avatar`"
+        :alt="brawlerAllyName"
         size="80"
-        clazz="w-6 sm:w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
       ></media-img>
       <media-img
-        v-if="props.starpowerId != undefined"
-        :path="`/starpowers/${props.starpowerId}`"
-        :alt="props.starpowerName"
+        v-if="starpowerId != undefined"
+        :path="`/starpowers/${starpowerId}`"
+        :alt="starpowerName"
         size="80"
-        clazz="w-6 sm:w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
       ></media-img>
       <media-img
-        v-if="props.gadgetId != undefined"
-        :path="`/gadgets/${props.gadgetId}`"
-        :alt="props.gadgetName"
+        v-if="gadgetId != undefined"
+        :path="`/gadgets/${gadgetId}`"
+        :alt="gadgetName"
         size="80"
-        clazz="w-6 sm:w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
       ></media-img>
     </div>
     <span
-      v-if="props.captioned"
-      class="ml-2 w-16 md:w-24 leading-none"
-    >{{ props.ally || props.starpowerName || props.gadgetName || props.capitalizeWords(props.brawler.toLowerCase()) }}</span>
+      v-if="captioned"
+      class="ml-2 leading-none"
+    >{{ brawlerAllyName || starpowerName || gadgetName || brawlerBrawlerName }}</span>
   </router-link>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     brawler: {
       type: String,
@@ -82,6 +80,24 @@ export default Vue.extend({
       type: Function,
       default: capitalizeWords
     },
+  },
+  setup(props) {
+    const { localePath } = useContext()
+    const brawlerBrawlerId = computed(() => brawlerId({ name: props.brawler }))
+    const brawlerBrawlerName = computed(() => capitalizeWords(props.brawler.toLowerCase()))
+    const brawlerAllyId = computed(() => props.ally != undefined ? brawlerId({ name: props.ally }) : undefined)
+    const brawlerAllyName = computed(() => props.ally != undefined ? capitalizeWords(props.ally.toLowerCase()) : undefined)
+    const link = computed(() => localePath(`/tier-list/brawler/${brawlerBrawlerId.value}`))
+    const title = computed(() => props.starpowerName || props.gadgetName || capitalizeWords(props.brawler.toLowerCase()))
+
+    return {
+      link,
+      title,
+      brawlerAllyId,
+      brawlerAllyName,
+      brawlerBrawlerId,
+      brawlerBrawlerName,
+    }
   },
 })
 </script>

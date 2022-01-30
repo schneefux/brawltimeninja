@@ -1,34 +1,47 @@
 <template>
   <page-dashboard
-    :title="$t('tier-list.map.title', { map: event.id != '0' ? $t('map.' + event.id) : event.map })"
+    :title="$t('tier-list.map.title', { map: title })"
   >
-    <template slot="content">
-      <breadcrumbs
-        :links="[{
-          path: '/tier-list/map',
-          name: $tc('map', 2),
-        }, {
-          path: modePath,
-          name: $t('mode.' + event.mode),
-        }, {
-          path: mapPath,
-          name: event.id != '0' ? $t('map.' + event.id) : event.map,
-        }]"
-      ></breadcrumbs>
+    <div
+      slot="content"
+      class="flex flex-wrap justify-center md:justify-between"
+    >
+      <div>
+        <breadcrumbs
+          :links="[{
+            path: '/tier-list/map',
+            name: $tc('map', 2),
+          }, {
+            path: modePath,
+            name: $t('mode.' + event.mode),
+          }, {
+            path: mapPath,
+            name: event.id != '0' ? $t('map.' + event.id) : event.map,
+          }]"
+        ></breadcrumbs>
 
-      <p class="mt-2">
-        {{ $t('tier-list.map.description', { map: event.id != '0' ? $t('map.' + event.id) : event.map, mode: $t('mode.' + event.mode) }) }}
-      </p>
-      <p v-if="event.map.startsWith('Competition ')">
-        {{ $t('tier-list.competition-info') }}
-        <b-button
-          to="/tier-list/competition-winners"
-          prefetch
-          primary
-          xs
-        >{{ $t('tier-list.compare-competition-winners') }}</b-button>
-      </p>
-    </template>
+        <p class="mt-2">
+          {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
+        </p>
+        <p v-if="event.map.startsWith('Competition ')">
+          {{ $t('tier-list.competition-info') }}
+          <b-button
+            to="/tier-list/competition-winners"
+            prefetch
+            primary
+            xs
+          >{{ $t('tier-list.compare-competition-winners') }}</b-button>
+        </p>
+      </div>
+
+      <media-img
+        v-if="showImage"
+        :path="`/maps/${event.id}`"
+        :alt="title"
+        size="256"
+        clazz="h-64 mt-6 md:mt-0"
+      ></media-img>
+    </div>
 
     <template slot="dashboard">
       <client-only>
@@ -111,6 +124,15 @@ export default Vue.extend({
     }
   },
   computed: {
+    title(): string {
+      return this.event.id == '0' ? this.$tc('competition-winner', 1) as string : this.$t('map.' + this.event.id) as string
+    },
+    image(): string {
+      return this.event.id == '0' ? `/maps/competition-winners/${this.event.map.replace('Competition Winner ', '')}` : `/maps/${this.event.id}`
+    },
+    showImage(): boolean {
+      return this.event.id != undefined && this.event.map != 'Competition Entry'
+    },
     modePath(): string {
       return `/tier-list/mode/${camelToKebab(this.event.mode)}`
     },

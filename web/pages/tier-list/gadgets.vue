@@ -53,7 +53,7 @@
             <div class="contents">
               <v-table
                 v-bind="data"
-                class="w-full"
+                class="mx-auto"
                 link-path="/dashboard"
               >
                 <template v-slot:dimensions="data">

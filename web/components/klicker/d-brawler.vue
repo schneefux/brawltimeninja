@@ -1,27 +1,25 @@
-<template functional>
+<template>
   <!-- Swap brawler and ally so that the ally will be large -->
   <brawler-link
-    v-if="'brawler' in props.row.dimensions || 'starpower' in props.row.dimensions || 'gadget' in props.row.dimensions"
-    :brawler="(props.row.dimensionsRaw.ally || {}).ally || (props.row.dimensionsRaw.brawler || {}).brawler || (props.row.dimensionsRaw.starpower || {}).brawler || (props.row.dimensionsRaw.gadget || {}).brawler"
-    :ally="props.row.dimensionsRaw.ally != undefined ? (props.row.dimensionsRaw.brawler || {}).brawler : undefined"
-    :starpower-name="props.row.dimensions.starpower"
-    :starpower-id="(props.row.dimensionsRaw.starpower || {}).starpower"
-    :gadget-name="props.row.dimensions.gadget"
-    :gadget-id="(props.row.dimensionsRaw.gadget || {}).gadget"
-    :captioned="props.captioned"
-    :class="[data.class, data.staticClass]"
-    :style="data.staticStyle"
+    v-if="'brawler' in row.dimensions || 'starpower' in row.dimensions || 'gadget' in row.dimensions"
+    :brawler="(row.dimensionsRaw.ally || {}).ally || (row.dimensionsRaw.brawler || {}).brawler || (row.dimensionsRaw.starpower || {}).brawler || (row.dimensionsRaw.gadget || {}).brawler"
+    :ally="row.dimensionsRaw.ally != undefined ? (row.dimensionsRaw.brawler || {}).brawler : undefined"
+    :starpower-name="row.dimensions.starpower"
+    :starpower-id="(row.dimensionsRaw.starpower || {}).starpower"
+    :gadget-name="row.dimensions.gadget"
+    :gadget-id="(row.dimensionsRaw.gadget || {}).gadget"
+    :captioned="captioned"
   ></brawler-link>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { MetaGridEntry } from '@schneefux/klicker/types'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     row: {
-      type: Object,
+      type: Object as PropType<MetaGridEntry>,
       required: true
     },
     captioned: {

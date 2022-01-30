@@ -25,18 +25,6 @@
 
     <template v-slot="query">
       <div class="w-full dashboard dashboard--responsive">
-        <map-image
-          v-if="showImage"
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'image'),
-            once: true,
-          }"
-          :id="id"
-          :map="map"
-          class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
-        ></map-image>
-
         <map-best-brawlers-table
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'brawlers'),
@@ -44,8 +32,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell var--rows-3 md:var--rows-4"
-          style="--columns: 3;"
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 4;"
         ></map-best-brawlers-table>
 
         <map-best-teams-table
@@ -56,8 +44,8 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell var--rows-3 md:var--rows-4"
-          style="--columns: 3;"
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 4;"
         ></map-best-teams-table>
 
         <map-best-players-table
@@ -79,8 +67,8 @@
           :id="id"
           :slices="query.slices"
           kind="starpowers"
-          class="dashboard__cell var--rows-3 md:var--rows-4"
-          style="--columns: 3;"
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 4;"
         ></map-best-accessory-table>
 
         <map-best-accessory-table
@@ -91,8 +79,8 @@
           :id="id"
           :slices="query.slices"
           kind="gadgets"
-          class="dashboard__cell var--rows-3 md:var--rows-4"
-          style="--columns: 3;"
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 4;"
         ></map-best-accessory-table>
 
 <!--
@@ -105,7 +93,7 @@
             data-full-width-responsive="yes"
             class="self-center dashboard__cell"
             :style="{
-              '--columns': showImage ? 1 : 2,
+              '--columns': 2,
               '--rows': 4,
             }"
           />
@@ -242,12 +230,9 @@ export default defineComponent({
 
     const isApp = computed(() => store.state.isApp as boolean)
 
-    const showImage = computed(() => props.id != undefined && props.map != 'Competition Entry')
-
     return {
       isApp,
       query,
-      showImage,
       adjustedWinRate,
       trackScroll,
     }

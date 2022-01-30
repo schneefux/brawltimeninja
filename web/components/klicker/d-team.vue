@@ -1,28 +1,27 @@
-<template functional>
+<template>
   <div
-    v-if="'team' in props.row.dimensions"
-    :class="['flex items-center', data.class, data.staticClass]"
-    :style="data.staticStyle"
+    v-if="'team' in row.dimensions"
+    class="flex items-center"
   >
     <brawler-team
-      :brawlers="props.row.dimensionsRaw.team.team"
-      class="shrink-0 md:mr-2 w-16 sm:w-20 md:w-24"
-      height="h-6 sm:h-8 md:h-10"
-      width="w-6 sm:w-8 md:w-10"
-      snug="-ml-2 sm:-ml-3 md:-ml-4"
+      :brawlers="row.dimensionsRaw.team.team"
+      class="shrink-0 w-20"
+      height="h-8"
+      width="w-8"
+      snug="-ml-3"
     ></brawler-team>
-    <span class="text-xs sm:text-sm md:text-base tracking-tight leading-tight! w-28 md:w-36">{{ props.row.dimensions.team }}</span>
+    <span class="tracking-tight leading-tight">{{ row.dimensions.team }}</span>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { MetaGridEntry } from '@schneefux/klicker/types'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     row: {
-      type: Object,
+      type: Object as PropType<MetaGridEntry>,
       required: true
     },
   },

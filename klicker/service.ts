@@ -426,7 +426,7 @@ export default class Klicker implements KlickerService {
         const difference: MetaGridEntryDiff = {
           differenceRaw: diff,
           difference: diffFormatted,
-          annotatedDifference: diffFormatted + ' ' + pStars(correctedPValue),
+          annotatedDifference: diffFormatted + pStars(correctedPValue),
           pValueRaw: correctedPValue,
           pValueStars: pStars(correctedPValue),
         }
