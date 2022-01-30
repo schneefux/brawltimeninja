@@ -43,7 +43,7 @@
       <header
         v-if="title != undefined || icon != undefined || 'preview' in $scopedSlots"
         :class="['shrink-0 grid items-center overflow-hidden', (color !== undefined ? color : ''), {
-          'px-3 gap-x-3 py-2': !dense,
+          'px-6 gap-x-3 pt-4 pb-2': !dense,
           'px-2 gap-x-2 pt-1': dense,
           'rounded-t': !('infobar' in $scopedSlots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
@@ -109,9 +109,9 @@
         v-if="'content' in $scopedSlots"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
-          'px-3': !dense,
-          'pt-1': title == undefined && !dense,
-          'pb-1': background == undefined && !dense,
+          'px-6': !dense,
+          'pt-4': title == undefined && !dense,
+          'pb-4': background == undefined && !dense,
           'py-2': background != undefined && !dense,
           'px-2': dense,
           'pt-px': title == undefined && dense,
@@ -130,7 +130,7 @@
       <footer
         v-if="'actions' in $scopedSlots"
         :class="['rounded-b text-gray-800 flex justify-end', {
-          'px-3 gap-x-3 py-2': !dense,
+          'px-6 gap-x-3 pt-2 pb-4': !dense,
           'px-2 gap-x-2 py-1': dense,
         }]"
       >

@@ -64,7 +64,7 @@
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen -mx-4 md:w-full ad-section"
+        ins-class="w-screen md:w-full ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
       />
@@ -153,7 +153,7 @@
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
+        ins-class="w-screen md:w-full ad-section mb-4"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
       />
@@ -196,7 +196,7 @@
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen -mx-4 md:w-full ad-section mb-4"
+        ins-class="w-screen md:w-full ad-section mb-4"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
       />

@@ -383,6 +383,7 @@
     "no-data.please-change-filter": "No data! Select a different filter.",
     "sample-size": "{count} Battles",
     "state.no-image": "No image available",
+    "state.no-data": "No data",
     "state.searching": "Searching",
     "status.check-twitter": "Check the official Brawl Stars Twitter feed to find out whether there is a maintenance ongoing:",
     "status.down.description": "No connection to Brawl Stars servers possible. It's not just you!",

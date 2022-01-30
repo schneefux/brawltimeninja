@@ -44,7 +44,7 @@
      * Add as many rows as necessary, at least 125px.
      * If the min-content is more than 125px, stretch that row.
      */
-    grid-auto-rows: minmax(125px, min-content);
+    grid-auto-rows: minmax(135px, min-content);
     /*
      * Densely pack rows, filling remaining space.
      */
@@ -53,12 +53,12 @@
      * Add a gap so the desktop layout looks less cramped.
      * Cells spanning multiple rows/columns can use this space.
      */
-    grid-gap: 25px;
+    grid-gap: 15px;
     /*
      * By default, dashboards have a fixed width and scroll horizontally.
      */
     --columns: 12;
-    grid-template-columns: repeat(var(--columns), minmax(125px, auto));
+    grid-template-columns: repeat(var(--columns), minmax(135px, auto));
     overflow-x: auto;
   }
 
@@ -67,11 +67,11 @@
      * Fit as many columns as possible, each at least 125px wide.
      * If the min-content is more than 125px, stretch the columns.
      */
-    grid-template-columns: repeat(auto-fill, minmax(125px, auto));
+    grid-template-columns: repeat(auto-fill, minmax(135px, auto));
   }
 
   .dashboard--relaxed {
-    grid-gap: 50px;
+    grid-gap: 30px;
   }
 
   .dashboard__cell {
