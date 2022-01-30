@@ -171,6 +171,12 @@ export default {
   },
 
   build: {
+    loaders: {
+      css: {
+        // https://github.com/nuxt/postcss8/issues/24
+        modules: false,
+      },
+    },
     postcss: {
       plugins: {
         'postcss-import': {},
