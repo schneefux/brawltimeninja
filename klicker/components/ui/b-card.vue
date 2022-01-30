@@ -109,6 +109,7 @@
         v-if="'content' in $scopedSlots"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
+          'bg-inherit': background == undefined,
           'px-6': !dense,
           'pt-4': title == undefined && !dense,
           'pb-4': background == undefined && !dense,

@@ -8,10 +8,12 @@
         <v-roll
           slot="content"
           v-bind="data"
-          :elevation="2"
-          long
+          :card="{ elevation: 2 }"
         >
-          <template v-slot:dimensions="data">
+          <template
+            v-if="kind != 'gears'"
+            v-slot:dimensions="data"
+          >
             <d-brawler v-bind="data"></d-brawler>
           </template>
         </v-roll>

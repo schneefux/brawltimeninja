@@ -25,9 +25,7 @@
 
     <map-best-brawlers
       slot="content"
-      :elevation="elevation + 1"
       :limit="limit"
-      long
     ></map-best-brawlers>
   </b-card>
 </template>

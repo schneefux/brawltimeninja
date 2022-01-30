@@ -13,8 +13,8 @@
           <th
             v-for="(c, index) in columns"
             :key="c.keys.join('-')"
-            :class="['text-left leading-tight pb-1 font-normal', {
-              'pr-1': index != columns.length - 1,
+            :class="['text-left leading-tight pb-2 font-normal', {
+              'pr-3': index != columns.length - 1,
               'w-0': c.shrink,
             }]"
             scope="col"

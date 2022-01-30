@@ -24,8 +24,8 @@
     <map-best-brawlers
       slot="content"
       :slices="slices"
-      :elevation="2"
-      class="h-full items-center"
+      :card="{ elevation: 2, dense: true, fullHeight: true }"
+      class="h-full"
     ></map-best-brawlers>
   </event-card>
 </template>

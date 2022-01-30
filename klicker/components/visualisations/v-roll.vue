@@ -1,50 +1,51 @@
 <template>
-  <b-horizontal-scroller
-    class="relative"
-    expand-on-desktop
+  <v-card-wrapper
+    v-bind="$props"
+    component="v-roll"
   >
-    <b-card
-      v-for="(card, index) in cards"
-      :key="card.id"
-      :elevation="elevation"
-      :title="card.title"
-      :class="['shrink-0', {
-        'ml-auto': index == 0,
-        'mr-auto': index == cards.length - 1,
-      }]"
-      dense
+    <div
+      slot="content"
+      class="h-full w-full overflow-x-auto bg-inherit"
     >
-      <div
-        slot="content"
-        :class="{
-          'flex items-center gap-2 my-1 mx-2': long,
-        }"
-      >
-        <div class="mt-2 mx-auto shrink-0">
-          <slot
-            name="dimensions"
-            :row="card.entry"
-          ></slot>
-        </div>
-        <table class="mx-auto my-1 text-sm md:text-base text-center !leading-tight">
-          <tbody>
-            <tr
-              v-for="r in card.rows"
-              :key="r.id"
-              class="whitespace-nowrap flex flex-col"
+      <table class="h-full w-full bg-inherit border-separate border-spacing-0">
+        <tbody class="bg-inherit">
+          <tr class="bg-inherit">
+            <th
+              scope="row"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0"
+            >{{ dimensionName }}</th>
+            <td
+              v-for="row in rows"
+              :key="row.id"
+              class="text-left pt-2 pl-3"
             >
-              <td>
-                {{ r.text }}
-              </td>
-              <td>
-                {{ r.name }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </b-card>
-  </b-horizontal-scroller>
+              <slot
+                name="dimensions"
+                :row="row.entry"
+              >{{ row.title }}</slot>
+            </td>
+          </tr>
+
+          <tr class="bg-inherit">
+            <th
+              scope="row"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0"
+            >{{ metricName }}</th>
+            <td
+              v-for="row in rows"
+              :key="row.id"
+              class="text-left pt-2 pl-3"
+            >
+              <slot
+                :name="`metrics.${metric.id}`"
+                :row="row.entry"
+              >{{ row.text }}</slot>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">
@@ -52,12 +53,12 @@ import { computed, defineComponent } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BCard from '../ui/b-card.vue'
-import BHorizontalScroller from '../ui/b-horizontal-scroller.vue'
+import VCardWrapper from './v-card-wrapper.vue'
 
 export default defineComponent({
   components: {
     BCard,
-    BHorizontalScroller,
+    VCardWrapper,
   },
   name: 'VRoll',
   props: {
@@ -72,32 +73,39 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
+    const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
-    const cards = computed(() =>
+    const metric = computed(() => metrics.value[0])
+    const dimension = computed(() => dimensions.value[0])
+
+    const rows = computed(() =>
       switchResponse(response => response.data.map(e => ({
         id: e.id,
-        title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
-        rows: metrics.value.map(m => ({
-          id: m.id,
-          text: e.metrics[m.id],
-          name: $klicker.getName(m, 'short'),
-        })),
+        title: e.dimensions[dimension.value.id][dimension.value.naturalIdAttribute],
+        text: e.metrics[metric.value.id],
       })), response => response.data.map(e => ({
         id: e.id,
-        title: props.long ? e.dimensions[response.query.dimensionsIds[0]] : undefined,
         entry: e,
-        rows: metrics.value.map(m => ({
-          id: m.id,
-          text: e.test.difference.difference,
-          name: $klicker.getName(m, 'short'),
-        })),
+        title: e.dimensions[dimension.value.id][dimension.value.naturalIdAttribute],
+        text: e.test.difference.difference,
       }))))
 
+    const metricName = computed(() => $klicker.getName(metric.value, 'short'))
+    const dimensionName = computed(() => $klicker.getName(dimension.value, 'short'))
+
     return {
-      cards,
+      rows,
+      metric,
+      metricName,
+      dimensionName,
     }
   },
 })
 </script>
+
+<style scoped lang="postcss">
+.border-spacing-0 {
+  border-spacing: 0;
+}
+</style>

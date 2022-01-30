@@ -16,7 +16,6 @@
       <media-img
         :path="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
         size="120"
-        clazz="h-full"
       ></media-img>
     </div>
 
