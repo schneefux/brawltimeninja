@@ -17,8 +17,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { MetaGridEntry } from '@schneefux/klicker/types'
+import BrawlerTeam from '~/components/brawler/brawler-team.vue'
 
 export default defineComponent({
+  components: {
+    BrawlerTeam,
+  },
   props: {
     row: {
       type: Object as PropType<MetaGridEntry>,

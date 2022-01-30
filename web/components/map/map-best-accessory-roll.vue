@@ -15,6 +15,7 @@
             v-slot:dimensions="data"
           >
             <d-brawler v-bind="data"></d-brawler>
+            <d-gear v-bind="data"></d-gear>
           </template>
         </v-roll>
       </b-card>
@@ -23,9 +24,8 @@
 </template>
 
 <script lang="ts">
-import DPlayer from '@/components/klicker/d-player.vue'
 import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
+import DGear from '@/components/klicker/d-gear.vue'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -34,10 +34,9 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VRoll,
-    DPlayer,
     DBrawler,
+    DGear,
     CQuery,
-    BrawlerLink,
   },
   props: {
     kind: {

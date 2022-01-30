@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import DTeam from '@/components/klicker/d-team.vue'
-import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -26,7 +25,6 @@ export default defineComponent({
   components: {
     VTable,
     DTeam,
-    BrawlerTeam, // dependency of DTeam
     CQuery,
   },
   props: {

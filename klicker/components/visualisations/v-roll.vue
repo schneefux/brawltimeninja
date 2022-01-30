@@ -82,12 +82,12 @@ export default defineComponent({
       switchResponse(response => response.data.map(e => ({
         id: e.id,
         entry: e,
-        title: e.dimensions[dimension.value.id][dimension.value.naturalIdAttribute],
+        title: e.dimensions[dimension.value.id],
         text: e.metrics[metric.value.id],
       })), response => response.data.map(e => ({
         id: e.id,
         entry: e,
-        title: e.dimensions[dimension.value.id][dimension.value.naturalIdAttribute],
+        title: e.dimensions[dimension.value.id],
         text: e.test.difference.difference,
       }))))
 

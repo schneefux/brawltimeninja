@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import BrawlerLink from '~/components/brawler/brawler-link.vue'
 import DBrawler from '~/components/klicker/d-brawler.vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
@@ -39,7 +38,6 @@ export default defineComponent({
     BShimmer,
     CQuery,
     DBrawler,
-    BrawlerLink,
   },
   props: {
     slices: {

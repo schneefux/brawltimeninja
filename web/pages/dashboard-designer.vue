@@ -63,9 +63,7 @@ import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composit
 import { CGrid, BTextbox } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
-import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
 import DSeason from '@/components/klicker/d-season.vue'
@@ -79,9 +77,7 @@ export default defineComponent({
     BTextbox,
     CGrid,
     DBrawler,
-    BrawlerLink, // dependency of DBrawler
     DTeam,
-    BrawlerTeam, // dependency of DTeam
     DMode,
     DMap,
     DSeason,

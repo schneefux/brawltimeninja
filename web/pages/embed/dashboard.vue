@@ -5,6 +5,7 @@
   >
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
+      <d-gear v-bind="data"></d-gear>
       <d-team v-bind="data"></d-team>
       <d-mode v-bind="data"></d-mode>
       <d-map v-bind="data"></d-map>
@@ -22,9 +23,7 @@
 import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
 import { CGridRenderer } from '@schneefux/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import DTeam from '@/components/klicker/d-team.vue'
-import BrawlerTeam from '@/components/brawler/brawler-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
 import DSeason from '@/components/klicker/d-season.vue'
@@ -38,9 +37,7 @@ export default defineComponent({
   components: {
     CGridRenderer,
     DBrawler,
-    BrawlerLink, // dependency of DBrawler
     DTeam,
-    BrawlerTeam, // dependency of DTeam
     DMode,
     DMap,
     DSeason,

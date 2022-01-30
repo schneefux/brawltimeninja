@@ -1,20 +1,14 @@
 <template>
-  <brawler-link
-    :brawler="props.row.metricsRaw.brawler"
-    :class="[data.class, data.staticClass]"
-    :style="data.staticStyle"
-  ></brawler-link>
+  <span v-if="'gear' in row.dimensions">
+    {{ row.dimensions.gear }}
+  </span>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import BrawlerLink from '~/components/brawler/brawler-link.vue'
 
 export default defineComponent({
-  components: {
-    BrawlerLink,
-  },
   props: {
     row: {
       type: Object as PropType<MetaGridEntry>,

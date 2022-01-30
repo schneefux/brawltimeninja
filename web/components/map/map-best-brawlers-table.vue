@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import DBrawler from '@/components/klicker/d-brawler.vue'
-import BrawlerLink from '@/components/brawler/brawler-link.vue'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -27,7 +26,6 @@ export default defineComponent({
     VTable,
     DBrawler,
     CQuery,
-    BrawlerLink,
   },
   props: {
     id: {
