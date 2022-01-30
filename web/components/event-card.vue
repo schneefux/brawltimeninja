@@ -1,10 +1,10 @@
 <template>
   <b-card
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
-    :title-link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
+    :title-link="modeLink"
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
-    :subtitle-link="map != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`) : undefined"
-    :link="mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(mode)}`) : undefined"
+    :subtitle-link="mapLink"
+    :link="mapLink || modeLink"
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
     v-bind="$attrs"
@@ -41,10 +41,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { camelToKebab, slugify } from '@/lib/util'
+import { defineComponent, computed, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
     mode: {
@@ -62,22 +62,29 @@ export default Vue.extend({
       type: Boolean
     },
   },
-  computed: {
-    camelToKebab() {
-      return camelToKebab
-    },
-    slugify() {
-      return slugify
-    },
-    background(): string|undefined {
-      if (this.nobackground) {
+  setup(props) {
+    const { $config, $supportsWebp, localePath } = useContext()
+
+    const background = computed(() => {
+      if (props.nobackground) {
         return undefined
       }
-      const path = '/modes/' + this.mode + '/background'
+      const path = '/modes/' + props.mode + '/background'
       const query = '?size=800'
-      const url = this.$config.mediaUrl + path + (this.$supportsWebp ? '.webp' : '.jpg') + query
+      const url = $config.mediaUrl + path + ($supportsWebp ? '.webp' : '.jpg') + query
       return url
-    },
+    })
+
+    const modeLink = computed(() => props.mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}`) : undefined)
+    const mapLink = computed(() => props.mode != undefined && props.map != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`) : undefined)
+
+    return {
+      camelToKebab,
+      slugify,
+      background,
+      modeLink,
+      mapLink,
+    }
   },
 })
 </script>

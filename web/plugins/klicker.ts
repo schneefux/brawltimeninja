@@ -211,7 +211,6 @@ export default defineNuxtPlugin((context, inject) => {
   Vue.component('b-lightbox', BLightbox)
   Vue.component('b-checkbox', BCheckbox)
   Vue.component('b-radio', BRadio)
-  Vue.component('b-wrapped-component', BWrappedComponent) // TODO don't make b-card-content a function component so it can import this
 
   const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, context)
 

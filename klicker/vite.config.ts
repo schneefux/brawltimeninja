@@ -24,12 +24,13 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['vue', 'vue-demi', /\@nuxtjs\/composition-api/],
+      external: ['vue', 'vue-demi', /\@nuxtjs\/composition-api/, 'vue-router'],
       output: {
         globals: {
           'vue': 'Vue',
           'vue-demi': 'VueDemi',
           '@nuxtjs/composition-api': 'NuxtJSCompositionApi',
+          'vue-router': 'VueRouter',
         },
       },
     },
