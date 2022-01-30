@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto">
+    <div class="grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
       <bigstat
         :label="$t('metric.hours-spent')"
         class="relative row-span-2"
@@ -45,7 +45,7 @@
       </bigstat>
     </div>
 
-    <div class="mt-6 grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto">
+    <div class="mt-6 grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
       <history-graph
         v-if="enableKlickerStats"
         :card="{ fullHeight: true }"

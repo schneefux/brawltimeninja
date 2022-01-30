@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="title != undefined"
-      class="mt-8"
+      class="mt-8 mx-1"
     >
       <h2 class="text-2xl font-semibold">
         {{ title }}

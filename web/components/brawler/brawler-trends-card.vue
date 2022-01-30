@@ -1,11 +1,12 @@
 <template>
-  <div class="md:flex md:flex-wrap md:justify-center">
+  <div class="dashboard dashboard--responsive dashboard--relaxed">
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()] }"
       :dimensions="['day']"
       sort="day"
       metric="winRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
     ></map-trend-chart>
 
     <map-trend-chart
@@ -13,7 +14,8 @@
       :dimensions="['day']"
       sort="day"
       metric="starRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
     ></map-trend-chart>
 
     <map-trend-chart
@@ -21,7 +23,8 @@
       :dimensions="['day', 'brawler']"
       sort="day"
       metric="useRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
       no-compare
     ></map-trend-chart>
   </div>

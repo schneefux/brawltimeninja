@@ -1,11 +1,12 @@
 <template>
-  <div class="md:flex md:flex-wrap md:justify-center">
+  <div class="dashboard dashboard--responsive dashboard--relaxed">
     <map-trend-chart
       :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
       :dimensions="['trophyRange']"
       sort="trophyRange"
       metric="winRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
     ></map-trend-chart>
 
     <map-trend-chart
@@ -13,7 +14,8 @@
       :dimensions="['trophyRange']"
       sort="trophyRange"
       metric="starRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
     ></map-trend-chart>
 
     <map-trend-chart
@@ -22,7 +24,8 @@
       :dimensions="['trophyRange', 'brawler']"
       sort="trophyRange"
       metric="useRate"
-      class="w-full md:w-120 h-64"
+      class="dashboard__cell"
+      style="--rows: 2; --columns: 3;"
       no-compare
     ></map-trend-chart>
   </div>

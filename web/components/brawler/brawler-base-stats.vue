@@ -1,10 +1,13 @@
 <template>
-  <div class="flex flex-wrap justify-center w-full md:w-auto">
-    <div class="w-full flex justify-center">
-      <b-card full-height xxl>
+  <div>
+    <div class="grid grid-cols-[minmax(80vw,2fr),minmax(350px,1fr)] lg:grid-cols-[2fr,minmax(350px,1fr)] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
+      <b-card
+        class="row-span-2"
+        full-height
+      >
         <div
           slot="content"
-          class="max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto md:py-10 md:px-6"
+          class="h-full max-w-xl flex flex-wrap md:flex-nowrap justify-center items-center mx-auto md:py-10 md:px-6"
         >
           <div class="w-32 md:w-48 md:pr-6 h-64 flex justify-center items-center">
             <media-img
@@ -32,31 +35,52 @@
           </div>
         </div>
       </b-card>
+
+      <template v-if="info != undefined">
+        <brawler-attack-stats-card
+          v-for="attack in ['main', 'super']"
+          :key="attack"
+          :attack="attack"
+          :info="info"
+        ></brawler-attack-stats-card>
+      </template>
     </div>
 
-    <template v-if="info != undefined">
-      <brawler-attack-stats-card
-        v-for="attack in ['main', 'super']"
-        :key="attack"
-        :attack="attack"
-        :info="info"
-      ></brawler-attack-stats-card>
-    </template>
+    <div class="mt-6 grid grid-flow-col lg:grid-flow-row auto-cols-[minmax(350px,80vw)] lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
+      <b-card
+        v-if="data != undefined"
+        :title="$t('brawler.statistics', { brawler: brawlerName })"
+        full-height
+      >
+        <template v-slot:content>
+          <p>{{ statisticsDescription }}</p>
+          <kv-table
+            :data="statsTable"
+            class="mt-3"
+          ></kv-table>
+        </template>
+      </b-card>
 
-    <b-card
-      v-if="data != undefined"
-      :title="$t('brawler.statistics', { brawler: brawlerName })"
-      full-height
-      md
-    >
-      <template v-slot:content>
-        <p>{{ statisticsDescription }}</p>
-        <kv-table
-          :data="statsTable"
-          class="mt-3"
-        ></kv-table>
-      </template>
-    </b-card>
+      <brawler-starpower-stats
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'starpowers'),
+          once: true,
+        }"
+        :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
+        kind="starpowers"
+      ></brawler-starpower-stats>
+
+      <brawler-starpower-stats
+        v-observe-visibility="{
+          callback: (v, e) => trackScroll(v, e, 'gadgets'),
+          once: true,
+        }"
+        :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
+        kind="gadgets"
+      ></brawler-starpower-stats>
+    </div>
   </div>
 </template>
 
@@ -177,6 +201,16 @@ export default Vue.extend({
     ...mapState({
       totalBrawlers: (state: any) => state.totalBrawlers,
     })
+  },
+  methods: {
+    trackScroll(visible: boolean, element: any, section: string): void {
+      if (visible) {
+        this.$gtag.event('scroll', {
+          'event_category': 'brawler',
+          'event_label': section,
+        })
+      }
+    },
   },
 })
 </script>

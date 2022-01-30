@@ -4,7 +4,6 @@
     :icon="`/${kind}/${id}`"
     :icon-alt="`${brawlerName}'s ${formatKind} ${formatName}`"
     full-height
-    md
   >
     <template v-slot:content>
       <p>

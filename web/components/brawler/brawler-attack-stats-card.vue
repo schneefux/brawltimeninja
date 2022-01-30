@@ -2,7 +2,6 @@
   <b-card
     :title="attack == 'main' ? $t('brawler.main-attack') : $t('brawler.super-attack')"
     full-height
-    md
   >
     <template v-slot:content>
       <p>

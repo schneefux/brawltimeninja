@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap justify-around">
+  <div class="contents">
     <brawler-starpower-card
       v-for="entry in data"
       :key="entry.id"
@@ -10,6 +10,7 @@
       :description="getStrings(entry).description"
       :win-rate="entry.metricsRaw.winRate"
       :without-win-rate="totals == undefined ? 0 : totals.metricsRaw.winRate"
+      class="w-full"
     ></brawler-starpower-card>
   </div>
 </template>

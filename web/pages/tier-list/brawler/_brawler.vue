@@ -12,58 +12,15 @@
     ></breadcrumbs>
 
     <page-section>
-      <div class="flex flex-wrap justify-center">
-        <brawler-base-stats
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-        ></brawler-base-stats>
+      <brawler-base-stats
+        :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
+      ></brawler-base-stats>
 
-        <brawler-starpower-stats
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'starpowers'),
-            once: true,
-          }"
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-          kind="starpowers"
-        ></brawler-starpower-stats>
-
-        <brawler-starpower-stats
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'gadgets'),
-            once: true,
-          }"
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-          kind="gadgets"
-        ></brawler-starpower-stats>
-
-        <p class="mt-4">
-          Info:
-          Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
-        </p>
-
-        <div class="mt-2 w-full flex justify-end">
-          <b-button
-            to="/tier-list/starpowers"
-            primary
-            sm
-            prefetch
-          >
-            {{ $t('action.open.tier-list.starpower') }}
-          </b-button>
-
-          <b-button
-            class="ml-3"
-            to="/tier-list/gadgets"
-            primary
-            sm
-            prefetch
-          >
-            {{ $t('action.open.tier-list.gadget') }}
-          </b-button>
-        </div>
-      </div>
+      <p class="mt-4 mx-1">
+        Info:
+        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
+      </p>
     </page-section>
 
     <client-only>
@@ -97,26 +54,6 @@
         :show-all-maps="showAllMaps"
         :brawler-name="brawlerName"
       ></brawler-active-events>
-
-      <div class="mt-1 w-full flex justify-end">
-        <b-button
-          @click="showAllMaps = true"
-          :class="{ 'md:block': !showAllMaps }"
-          class="mr-3 hidden"
-          sm
-          primary
-        >
-          {{ $t('action.expand') }}
-        </b-button>
-        <b-button
-          to="/tier-list/map"
-          sm
-          primary
-          prefetch
-        >
-          {{ $t('action.open.tier-list.maps') }}
-        </b-button>
-      </div>
     </page-section>
 
     <page-section
@@ -142,20 +79,9 @@
         :brawler-name="brawlerName"
       ></brawler-trophy-graphs>
 
-      <p class="mt-4">
+      <p class="mt-6 ml-1">
         {{ $t('brawler.disclaimer') }}
       </p>
-
-      <div class="mt-1 w-full flex justify-end">
-        <b-button
-          to="/tier-list/brawler"
-          primary
-          sm
-          prefetch
-        >
-          {{ $t('action.open.tier-list.brawler') }}
-        </b-button>
-      </div>
     </page-section>
 
     <page-section
@@ -166,24 +92,11 @@
       <brawler-modes-stats
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
-        :show-all-modes="showAllModes"
       ></brawler-modes-stats>
 
-      <p class="mt-2">
+      <p class="mt-6 mx-1">
         {{ $t('brawler.viable-info') }}
       </p>
-
-      <div class="mt-1 w-full flex justify-end">
-        <b-button
-          @click="showAllModes = true"
-          :class="{ 'md:block': !showAllModes }"
-          class="mr-3 hidden"
-          sm
-          primary
-        >
-          {{ $t('action.expand') }}
-        </b-button>
-      </div>
     </page-section>
 
     <client-only>
@@ -226,7 +139,6 @@ export default Vue.extend({
     return {
       brawlerId: '',
       brawlerName: '',
-      showAllModes: false,
       showAllMaps: false,
     }
   },

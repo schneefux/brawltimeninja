@@ -4,7 +4,7 @@
     :map="map"
     :id="id"
     :loading="$fetchState.pending"
-    size="w-80"
+    full-height
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
       {{ $t('time.ends-in', { time: timeTillEnd }) }}
@@ -12,7 +12,7 @@
 
     <div
       slot="content"
-      class="flex justify-center"
+      class="flex justify-center h-full items-center"
     >
       <div class="flex items-end bg-gray-800 rounded">
         <media-img
@@ -35,16 +35,6 @@
         </div>
       </div>
     </div>
-
-    <b-button
-      slot="actions"
-      :to="localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`)"
-      primary
-      prefetch
-      sm
-    >
-      {{ $t('action.open') }}
-    </b-button>
   </event-card>
 </template>
 

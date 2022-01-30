@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    :class="['p-1', size, {
+    :class="[size, 'p-1', {
       'w-48': xxxs,
       'w-64': xxs,
       'w-full max-w-xs': xs,

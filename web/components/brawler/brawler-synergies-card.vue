@@ -3,19 +3,13 @@
     :query="query"
     :filter="filter"
   >
-    <b-shimmer
-      slot="placeholder"
-      width-px="224"
-      height-px="64"
-      loading
-    ></b-shimmer>
     <p slot="empty" class="text-center">
       {{ $t('state.no-data') }}
     </p>
     <template v-slot="data">
       <v-roll
-        v-bind="{
-          ...data,
+        v-bind="data"
+        :card="{
           title: $t('brawler.synergy.title', { brawler }),
           elevation: 1,
         }"
@@ -54,7 +48,7 @@ export default defineComponent({
       dimensionsIds: ['brawler', 'ally'],
       metricsIds: ['winRate'],
       sortId: 'pvalue',
-      limit: 10,
+      limit: 15,
       reference: {
         cubeId: 'map',
         slices: {},

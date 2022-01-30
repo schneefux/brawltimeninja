@@ -2,11 +2,11 @@
   <event-card
     :mode="mode"
     :loading="$fetchState.pending"
-    size="w-80"
+    full-height
   >
     <div
       slot="content"
-      class="flex justify-center"
+      class="flex justify-center h-full items-center"
     >
       <div class="flex items-end bg-gray-800 rounded">
         <media-img
@@ -28,23 +28,12 @@
         </div>
       </div>
     </div>
-
-    <b-button
-      slot="actions"
-      :to="localePath(`/tier-list/mode/${camelToKebab(mode)}`)"
-      primary
-      prefetch
-      sm
-    >
-      {{ $t('action.open') }}
-    </b-button>
   </event-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { camelToKebab } from '@/lib/util';
 import { MetaGridEntry } from '@schneefux/klicker/types';
 import { commonMetrics } from '~/lib/klicker.conf';
 
@@ -111,9 +100,6 @@ export default Vue.extend({
     aboveAverageMaps(): number {
       const compareMaps = (m: MetaGridEntry) => (m.metricsRaw.winRate as number) * (m.metricsRaw.useRate as number) > 0.5 * 1 / this.totalBrawlers
       return this.mapData.filter(m => compareMaps(m)).length
-    },
-    camelToKebab() {
-      return camelToKebab
     },
     modeTable(): string[][] {
       if (this.modeData == undefined) {
