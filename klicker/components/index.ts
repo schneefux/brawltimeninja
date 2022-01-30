@@ -12,7 +12,6 @@ export { default as BShimmer } from './ui/b-shimmer.vue'
 export { default as BTable } from './ui/b-table.vue'
 export { default as BTextbox } from './ui/b-textbox.vue'
 export { default as BVega } from './ui/b-vega.vue'
-export { default as BWrappedComponent } from './ui/b-wrapped-component'
 
 export { default as VBarplot } from './visualisations/v-barplot.vue'
 export { default as VCsv } from './visualisations/v-csv.vue'

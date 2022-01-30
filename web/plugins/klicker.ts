@@ -11,7 +11,7 @@ import visualisations from '~/lib/klicker.visualisations.conf'
 import slicers from '~/lib/klicker.slicers.conf'
 import staticWidgets from '~/lib/klicker.widgets.conf'
 import { defineNuxtPlugin } from '@nuxtjs/composition-api'
-import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BWrappedComponent } from '@schneefux/klicker/components'
+import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio } from '@schneefux/klicker/components'
 
 export interface EventMetadata {
   battle_event_id: number

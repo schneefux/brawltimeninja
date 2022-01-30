@@ -40,17 +40,17 @@
       v-if="document.author != undefined"
     >
       This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
-        <b-wrapped-component
-          :wrap="document.attributionLink != undefined"
+        <a
+          v-if="document.attributionLink != undefined"
+          :href="document.attributionLink"
+          rel="nofollow"
+          class="underline"
         >
-          <a
-            slot="wrapper"
-            :href="document.attributionLink"
-            rel="nofollow"
-            class="underline"
-          ></a>
-          <span>({{ document.attribution }})</span>
-        </b-wrapped-component>
+          ({{ document.attribution }})
+        </a>
+        <span v-else>
+          ({{ document.attribution }})
+        </span>
       </template>.
     </p>
   </b-card>
@@ -60,12 +60,8 @@
 import { IContentDocument } from '@nuxt/content/types/content'
 import { format, parseISO } from 'date-fns'
 import Vue, { PropType } from 'vue'
-import { BWrappedComponent } from '@schneefux/klicker/components'
 
 export default Vue.extend({
-  components: {
-    BWrappedComponent,
-  },
   props: {
     document: {
       type: Object as PropType<IContentDocument>,
