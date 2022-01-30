@@ -1,8 +1,6 @@
 <template>
   <brawler-link
-    :brawler="props.row.metricsRaw.brawler"
-    :class="[data.class, data.staticClass]"
-    :style="data.staticStyle"
+    :brawler="row.metricsRaw.brawler"
   ></brawler-link>
 </template>
 
