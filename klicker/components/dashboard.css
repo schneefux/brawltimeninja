@@ -65,10 +65,9 @@
   .dashboard--responsive {
     /*
      * Fit as many columns as possible, each at least 125px wide.
-     * If tthere are empty columns, kill them with auto-fit and stretch the others.
      * If the min-content is more than 125px, stretch the columns.
      */
-    grid-template-columns: repeat(auto-fit, minmax(125px, auto));
+    grid-template-columns: repeat(auto-fill, minmax(125px, auto));
   }
 
   .dashboard--relaxed {
