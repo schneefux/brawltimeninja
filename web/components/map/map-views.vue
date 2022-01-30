@@ -7,18 +7,21 @@
     slicer
   >
     <template v-slot:totals="data">
-      <div class="w-full flex flex-wrap gap-x-6">
+      <div class="w-full dashboard dashboard--responsive dashboard--half">
         <v-sample-size
           v-bind="data"
           :card="{ fullHeight: true }"
+          class="dashboard__cell"
         ></v-sample-size>
         <v-last-update
           v-bind="data"
           :card="{ fullHeight: true }"
+          class="dashboard__cell"
         ></v-last-update>
         <v-moe
           v-bind="data"
           :card="{ fullHeight: true }"
+          class="dashboard__cell"
         ></v-moe>
       </div>
     </template>

@@ -47,6 +47,13 @@
     grid-auto-rows: minmax(135px, min-content);
   }
 
+  .dashboard--half {
+    /*
+     * Dashboard with smaller rows.
+     */
+    grid-auto-rows: minmax(90px, min-content);
+  }
+
   .dashboard {
     /*
      * Apply defaults: normal gaps, responsive and vertical.
