@@ -11,7 +11,8 @@
           v-for="faq in faqs"
           :key="faq.id"
           :title="faq.title"
-          :title-link="`/faq/${faq.slug}`"
+          :link="`/faq/${faq.slug}`"
+          class="mx-4 my-4"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
           light
@@ -66,7 +67,8 @@
 
           <b-card
             :title="post.title"
-            :title-link="`/blog/guides/${post.slug}`"
+            :link="`/blog/guides/${post.slug}`"
+            class="mx-4 my-4"
             itemscope
             itemtype="http://schema.org/AnalysisNewsArticle"
             light

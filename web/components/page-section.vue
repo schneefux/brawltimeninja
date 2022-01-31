@@ -2,16 +2,19 @@
   <div>
     <div
       v-if="title != undefined"
-      class="mt-8 mx-1"
+      class="mt-8"
     >
-      <h2 class="text-2xl font-semibold">
+      <h2 class="text-2xl">
         {{ title }}
       </h2>
       <slot name="description"></slot>
     </div>
 
     <div
-      class="mt-6"
+      :class="{
+        'mt-4': title != undefined,
+        'mt-8': title == undefined,
+      }"
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e),
         once: true,
@@ -23,9 +26,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, wrapProperty } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
   props: {
     title: {
       type: String
@@ -37,15 +41,20 @@ export default Vue.extend({
       type: String
     },
   },
-  methods: {
-    trackScroll(visible: boolean, element: any): void {
-      if (visible && this.trackingPageId != undefined && this.trackingId != undefined) {
-        this.$gtag.event('scroll', {
-          'event_category': this.trackingPageId,
-          'event_label': this.trackingId,
+  setup(props) {
+    const gtag = useGtag()
+    const trackScroll = (visible: boolean, element: any) =>  {
+      if (visible && props.trackingPageId != undefined && props.trackingId != undefined) {
+        gtag.event('scroll', {
+          'event_category': props.trackingPageId,
+          'event_label': props.trackingId,
         })
       }
-    },
+    }
+
+    return {
+      trackScroll,
+    }
   },
 })
 </script>

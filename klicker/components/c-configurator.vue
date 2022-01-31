@@ -8,11 +8,14 @@
       class="flex flex-wrap items-center"
     >
       <div class="grid grid-cols-[auto,auto] gap-x-4 gap-y-2 my-1 items-center">
-        <h1 class="inline font-semibold">
+        <h1
+          v-if="configureCube"
+          class="inline font-semibold"
+        >
           {{ translate('configurator.source') }}
         </h1>
 
-        <div>
+        <div v-if="configureCube">
           <b-select
             :value="value.cubeId"
             dark
@@ -30,25 +33,28 @@
         </div>
 
         <c-metric
+          v-if="configureMetrics"
+          :options="configureMetricsOptions"
           :value="value"
-          :multiple="!compareMode"
+          :multiple="configureMultipleMetrics && !compareMode"
           @input="s => $emit('input', s)"
         ></c-metric>
 
         <c-dimension
+          v-if="configureDimensions"
           :value="value"
           @input="s => $emit('input', s)"
         ></c-dimension>
 
         <c-dimension
-          v-if="compareMode"
+          v-if="configureDimensions && compareMode"
           :value="value"
           @input="s => $emit('input', s)"
           comparing
         ></c-dimension>
 
         <label
-          v-if="canCompare"
+          v-if="configureCompareMode && canCompare"
           class="col-span-2 flex items-center"
         >
           <b-checkbox dark v-model="compareMode"></b-checkbox>
@@ -88,6 +94,30 @@ export default defineComponent({
     card: {
       type: undefined,
       required: false
+    },
+    configureCube: {
+      type: Boolean,
+      default: false
+    },
+    configureMetrics: {
+      type: Boolean,
+      default: false
+    },
+    configureMetricsOptions: {
+      type: Array as PropType<string[]>,
+      required: false
+    },
+    configureMultipleMetrics: {
+      type: Boolean,
+      default: false
+    },
+    configureDimensions: {
+      type: Boolean,
+      default: false
+    },
+    configureCompareMode: {
+      type: Boolean,
+      default: false
     },
   },
   setup(props, { emit }) {
@@ -169,13 +199,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.grid-cols-20-1fr {
-  grid-template-columns: 10rem 1fr;
-}
-
-.grid-cols-10-1fr {
-  grid-template-columns: 5rem 1fr;
-}
-</style>

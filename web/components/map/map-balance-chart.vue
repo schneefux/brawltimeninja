@@ -15,22 +15,24 @@
           v-bind="data"
           :card="{ title, fullHeight: true }"
           class="dashboard__cell"
-          style="--columns: 4; --rows: 2;"
+          style="--columns: 6; --rows: 3;"
         ></v-barplot>
         <div
           class="dashboard__cell"
-          style="--columns: 2; --rows: 1;"
+          style="--columns: 3; --rows: 2;"
         >
           <b-card
             :title="$t('metric.gini-coefficient')"
             full-height
-            dense
           >
             <div slot="content">
-              <v-gini v-bind="data"></v-gini>
+              <v-gini
+                v-bind="data"
+                class="mt-2"
+              ></v-gini>
               <p
                 slot="content"
-                class="mt-1 prose prose-invert leading-snug"
+                class="mt-4 prose prose-invert leading-snug"
               >
                 {{ $t('brawler.balance-chart.description') }}
               </p>

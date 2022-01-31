@@ -1,16 +1,29 @@
 <template>
   <page-dashboard title="Brawl Stars Meta Dashboard">
     <c-dashboard
-      slot="dashboard"
       v-model="query"
+      :configurator="{
+        configureCube: true,
+        configureMetrics: true,
+        configureMultipleMetrics: true,
+        configureDimensions: true,
+        configureCompareMode: true,
+      }"
       class="mt-2"
-      configurator
       slicer
     >
       <template v-slot:totals="data">
-        <div class="flex">
-          <v-sample-size v-bind="data"></v-sample-size>
-          <v-last-update v-bind="data"></v-last-update>
+        <div class="dashboard dashboard--responsive">
+          <v-sample-size
+            v-bind="data"
+            :card="{ fullHeight: true }"
+            class="dashboard__cell"
+          ></v-sample-size>
+          <v-last-update
+            v-bind="data"
+            :card="{ fullHeight: true }"
+            class="dashboard__cell"
+          ></v-last-update>
         </div>
       </template>
 
@@ -53,13 +66,13 @@ export default defineComponent({
   components: {
     CDashboard,
     DBrawler,
+    DGear,
     DTeam,
     DMode,
     DMap,
     DSeason,
     DPlayer,
     MBrawler,
-    DGear,
   },
   setup() {
     const { $klicker } = useContext()

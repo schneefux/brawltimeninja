@@ -1,7 +1,5 @@
 <template>
-  <dl
-    class="flex flex-col md:flex-row md:flex-wrap md:justify-center"
-  >
+  <dl class="flex flex-col md:flex-row md:flex-wrap md:justify-center space-y-2 md:space-y-0 md:space-x-8">
     <b-card
       v-for="(value, name) in stats"
       :key="name"

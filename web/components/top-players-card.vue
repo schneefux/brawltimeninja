@@ -2,7 +2,7 @@
   <b-card
     :loading="$fetchState.pending"
     :title="$t('best.players.long')"
-    xxl
+    full-height
   >
     <b-horizontal-scroller
       slot="content"
@@ -19,6 +19,7 @@
         :key="player.tag"
         :title="player.name"
         :link="localePath(`/profile/${player.tag}`)"
+        :icon="`/avatars/${player.icon}`"
         :icon-alt="player.name"
         :elevation="2"
         size="w-40"
@@ -27,13 +28,9 @@
         itemtype="http://schema.org/Person"
         dense
       >
-        <media-img
-          slot="icon"
-          :path="`/avatars/${player.icon}`"
-          :alt="player.name"
-          size="120"
-          clazz="w-8"
-        ></media-img>
+        <template v-slot:icon="data">
+          <media-img-icon v-bind="data"></media-img-icon>
+        </template>
 
         <p
           slot="content"
@@ -82,7 +79,7 @@ export default Vue.extend({
     },
     limit: {
       type: Number,
-      default: 4
+      default: 3
     },
   },
   data() {

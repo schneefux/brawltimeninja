@@ -9,8 +9,8 @@ const visualisations: VisualisationSpec[] = [{
       && metrics.some(m => m.id == 'picks') && !comparing
   },
   initialDimensions: {
-    rows: 1,
-    columns: 1,
+    rows: 2,
+    columns: 2,
   },
 }, {
   name: 'Gini Coefficient',
@@ -21,8 +21,8 @@ const visualisations: VisualisationSpec[] = [{
       && metrics.some(m => m.id == 'useRate') && !comparing
   },
   initialDimensions: {
-    rows: 1,
-    columns: 2,
+    rows: 2,
+    columns: 3,
   },
 }, {
   name: 'Sample Size',
@@ -32,8 +32,8 @@ const visualisations: VisualisationSpec[] = [{
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.picks != undefined
   },
   initialDimensions: {
-    rows: 1,
-    columns: 1,
+    rows: 2,
+    columns: 2,
   },
 }, {
   name: 'Last Update',
@@ -43,8 +43,8 @@ const visualisations: VisualisationSpec[] = [{
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.timestamp != undefined
   },
   initialDimensions: {
-    rows: 1,
-    columns: 1,
+    rows: 2,
+    columns: 2,
   },
 }]
 

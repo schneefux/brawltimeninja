@@ -1,6 +1,5 @@
 <template>
   <list-of-stats
-    :class="{ 'h-28 md:h-10 overflow-hidden': tease }"
     :stats="stats"
   ></list-of-stats>
 </template>
@@ -14,10 +13,6 @@ export default Vue.extend({
     player: {
       type: Object as PropType<Player>,
       required: true,
-    },
-    tease: {
-      type: Boolean,
-      default: false
     },
   },
   computed: {

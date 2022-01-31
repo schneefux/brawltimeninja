@@ -4,13 +4,12 @@
       v-for="t in templates"
       :key="t.title"
       class="dashboard__cell"
-      style="--columns: 3;"
+      style="--columns: 4; --rows: 2;"
     >
       <b-card
         :title="t.title"
         :elevation="elevation"
-        :link="t.link"
-        class="h-full"
+        :title-link="t.link"
         full-height
       >
         <c-query
@@ -19,18 +18,13 @@
           :filter="filter"
         >
           <p slot="empty" class="text-center">
-            {{ $t('state.no-data') }}
+            {{ $t('state.no-outliers') }}
           </p>
           <template v-slot="data">
-            <v-roll
-              v-bind="{
-                ...data,
-                elevation: elevation + 1,
-                long: t.long,
-              }"
-            >
+            <v-roll v-bind="data">
               <template v-slot:dimensions="data">
                 <d-brawler v-bind="data"></d-brawler>
+                <d-gear v-bind="data"></d-gear>
               </template>
             </v-roll>
           </template>
@@ -49,7 +43,7 @@ import { camelToKebab } from '~/lib/util'
 
 interface Template {
   title: string
-  link?: string
+  link: string
   linkText: string
   query: (CubeQuery|CubeComparingQuery)
   long?: boolean
@@ -173,7 +167,7 @@ export default defineComponent({
 
       templates.push({
         title: i18n.t('map.insights.outstanding.gears') as string,
-        // link: localePath(`/tier-list/gears`),
+        link: localePath(`/tier-list/gears`),
         linkText: i18n.t('action.open.tier-list.gear') as string,
         long: true,
         query: <CubeComparingQuery>{

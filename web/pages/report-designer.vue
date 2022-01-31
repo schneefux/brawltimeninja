@@ -1,66 +1,65 @@
 <template>
   <page-dashboard :title="$t('report-designer.title')">
-    <div slot="dashboard">
-      <c-canvas
-        v-model="report"
-        :default-query="defaultQuery"
-      >
-        <template v-slot:totals="data">
-          <v-sample-size v-bind="data"></v-sample-size>
-          <v-last-update v-bind="data"></v-last-update>
-        </template>
+    <c-canvas
+      v-model="report"
+      :default-query="defaultQuery"
+    >
+      <template v-slot:totals="data">
+        <v-sample-size v-bind="data"></v-sample-size>
+        <v-last-update v-bind="data"></v-last-update>
+      </template>
 
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-          <d-team v-bind="data"></d-team>
-          <d-mode v-bind="data"></d-mode>
-          <d-map v-bind="data"></d-map>
-          <d-season v-bind="data"></d-season>
-          <d-player v-bind="data"></d-player>
-        </template>
+      <template v-slot:dimensions="data">
+        <d-gear v-bind="data"></d-gear>
+        <d-brawler v-bind="data"></d-brawler>
+        <d-team v-bind="data"></d-team>
+        <d-mode v-bind="data"></d-mode>
+        <d-map v-bind="data"></d-map>
+        <d-season v-bind="data"></d-season>
+        <d-player v-bind="data"></d-player>
+      </template>
 
-        <template v-slot:[`metrics.brawler`]="data">
-          <m-brawler v-bind="data"></m-brawler>
-        </template>
-      </c-canvas>
+      <template v-slot:[`metrics.brawler`]="data">
+        <m-brawler v-bind="data"></m-brawler>
+      </template>
+    </c-canvas>
 
-      <div
-        v-if="canSave"
-        class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
-      >
-        <template v-if="report.id != undefined">
-          <label :for="`${prefix}-editor`">
-            {{ $t('action.editor-url') }}
-          </label>
-          <b-textbox
-            :id="`${prefix}-editor`"
-            :value="editorUrl"
-            readonly
-            dark
-          ></b-textbox>
+    <div
+      v-if="canSave"
+      class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+    >
+      <template v-if="report.id != undefined">
+        <label :for="`${prefix}-editor`">
+          {{ $t('action.editor-url') }}
+        </label>
+        <b-textbox
+          :id="`${prefix}-editor`"
+          :value="editorUrl"
+          readonly
+          dark
+        ></b-textbox>
 
-          <label :for="`${prefix}-viewer`">
-            {{ $t('action.viewer-url') }}
-          </label>
-          <b-textbox
-            :id="`${prefix}-viewer`"
-            :value="viewerUrl"
-            readonly
-            dark
-          ></b-textbox>
+        <label :for="`${prefix}-viewer`">
+          {{ $t('action.viewer-url') }}
+        </label>
+        <b-textbox
+          :id="`${prefix}-viewer`"
+          :value="viewerUrl"
+          readonly
+          dark
+        ></b-textbox>
 
-          <share-render-button
-            :embed-url="embedUrl"
-            :button-text="$t('action.download-snapshot')"
-            secondary
-            sm
-          ></share-render-button>
-        </template>
-      </div>
-      <div v-else>
-        <p>Log in to share this report.</p>
-        <login-button class="mt-2"></login-button>
-      </div>
+        <share-render-button
+          :embed-url="embedUrl"
+          :button-text="$t('action.download-snapshot')"
+          secondary
+          sm
+        ></share-render-button>
+      </template>
+    </div>
+    <div v-else>
+      <p>Log in to share this report.</p>
+      <login-button class="mt-2"></login-button>
     </div>
   </page-dashboard>
 </template>
@@ -71,6 +70,7 @@ import { CCanvas, BTextbox } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import DBrawler from '@/components/klicker/d-brawler.vue'
+import DGear from '@/components/klicker/d-gear.vue'
 import DTeam from '@/components/klicker/d-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
@@ -84,6 +84,7 @@ export default defineComponent({
     BTextbox,
     CCanvas,
     DBrawler,
+    DGear,
     DTeam,
     DMode,
     DMap,

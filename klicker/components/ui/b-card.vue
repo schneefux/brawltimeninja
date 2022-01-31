@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    :class="[size, 'p-1', {
+    :class="[size, {
       'w-48': xxxs,
       'w-64': xxs,
       'w-full max-w-xs': xs,
@@ -12,6 +12,7 @@
       'w-full max-w-2xl': xxl,
       'w-full max-w-3xl': xxxl,
       'w-full max-w-4xl': xxxxl,
+      'h-full': fullHeight,
     }]"
   >
     <div
@@ -41,9 +42,11 @@
       </div>
 
       <header
-        v-if="title != undefined || icon != undefined || 'preview' in $scopedSlots"
+        v-if="renderTitle"
         :class="['shrink-0 grid items-center overflow-hidden', (color !== undefined ? color : ''), {
-          'px-6 gap-x-3 pt-4 pb-2': !dense,
+          'px-6 gap-x-3 pb-2': !dense,
+          'pt-4': !dense && !('infobar' in $scopedSlots),
+          'pt-2': !dense && 'infobar' in $scopedSlots,
           'px-2 gap-x-2 pt-1': dense,
           'rounded-t': !('infobar' in $scopedSlots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
@@ -52,7 +55,7 @@
       >
         <slot
           name="icon"
-          v-if="icon != undefined || 'icon' in $scopedSlots"
+          v-if="icon != undefined"
           v-bind="{ icon: icon, alt: iconAlt }"
         >
           <img :src="icon" :alt="iconAlt">
@@ -67,9 +70,9 @@
             }"
           >
             <router-link
-              v-if="titleLink != undefined"
+              v-if="titleLink != undefined || link != undefined"
               v-slot="{ href, navigate }"
-              :to="titleLink"
+              :to="titleLink || link"
               class="contents"
               custom
             >
@@ -115,9 +118,7 @@
           'pb-4': background == undefined && !dense,
           'py-2': background != undefined && !dense,
           'px-2': dense,
-          'pt-px': title == undefined && dense,
-          'pb-px': background == undefined && dense,
-          'py-px': background != undefined && dense,
+          'rounded-t bg-filter-rounded-t': !renderTitle,
           'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
           'h-full': fullHeight,
         }]"
@@ -142,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
+import { defineComponent, computed } from 'vue-demi'
 
 export default defineComponent({
   props: {
@@ -237,6 +238,13 @@ export default defineComponent({
     loading: {
       type: Boolean
     },
+  },
+  setup(props, { slots }) {
+    const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
+
+    return {
+      renderTitle,
+    }
   },
 })
 </script>

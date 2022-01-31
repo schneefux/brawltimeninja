@@ -2,7 +2,6 @@
   <event-card
     :mode="mode"
     :elevation="elevation"
-    v-bind="$attrs"
     full-height
   >
     <div slot="content">
@@ -81,7 +80,6 @@ interface ActiveMap {
 }
 
 export default Vue.extend({
-  inheritAttrs: false,
   props: {
     playerTag: {
       type: String,
@@ -108,7 +106,8 @@ export default Vue.extend({
       required: true
     },
     elevation: {
-      type: Number
+      type: Number,
+      default: 1
     },
   },
   data() {

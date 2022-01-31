@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center">
+  <page class="flex flex-col justify-center">
     <div class="relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
@@ -13,22 +13,21 @@
       </span>
     </div>
 
-    <div class="mt-6 md:mt-10 text-center mx-2">
+    <page-section class="text-center">
       <h1 class="text-4xl font-bold">
         {{ $t('index.title') }}
       </h1>
-    </div>
-
-    <p class="mt-3 text-center text-lg mx-2">
-      {{ $t('index.subtitle') }}
-    </p>
+      <p class="mt-3 text-center text-lg mx-2">
+        {{ $t('index.subtitle') }}
+      </p>
+    </page-section>
 
     <form
       v-observe-visibility="{
         callback: (v, e) => trackScroll(v, e, 'search'),
         once: true,
       }"
-      class="mt-4 mx-4 flex flex-wrap justify-center"
+      class="mt-10 mx-4 flex flex-wrap justify-center"
       :action="`/profile/${cleanedTag}`"
       :target="isInIframe ? '_parent' : ''"
       :onSubmit="isInIframe ? '' : 'return false;'"
@@ -67,38 +66,41 @@
       </p>
     </form>
 
-    <div class="mt-2 text-center">
-      <details
-        ref="help-dropdown"
-        class="mx-6"
-      >
-        <summary>
-          {{ $t('tag-help.title') }}
-        </summary>
-        <b-card
-          title="How to find your tag"
-          class="mt-2"
+    <page-section class="text-center">
+      <div class="flex justify-center">
+        <details
+          ref="help-dropdown"
+          class="mx-6"
         >
-          <template v-slot:content>
-            <p>{{ $t('tag-help.step.1') }}</p>
-            <p>{{ $t('tag-help.step.2') }}</p>
-            <img
-              loading="lazy"
-              src="~/assets/images/tag/tag-1.jpg"
-              class="px-8 mt-1 w-80 max-w-full"
-            >
-            <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
-            <img
-              loading="lazy"
-              src="~/assets/images/tag/tag-2.jpg"
-              class="px-8 mt-1 w-80 max-w-full"
-            >
-          </template>
-        </b-card>
-      </details>
-    </div>
+          <summary>
+            {{ $t('tag-help.title') }}
+          </summary>
+          <b-card
+            title="How to find your tag"
+            class="mt-6 text-left"
+            md
+          >
+            <div slot="content">
+              <p>{{ $t('tag-help.step.1') }}</p>
+              <p>{{ $t('tag-help.step.2') }}</p>
+              <img
+                loading="lazy"
+                src="~/assets/images/tag/tag-1.jpg"
+                class="px-8 mt-1 w-80 max-w-full"
+              >
+              <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
+              <img
+                loading="lazy"
+                src="~/assets/images/tag/tag-2.jpg"
+                class="px-8 mt-1 w-80 max-w-full"
+              >
+            </div>
+          </b-card>
+        </details>
+      </div>
+    </page-section>
 
-    <div class="my-2 mx-6 max-w-lg flex flex-wrap justify-center">
+    <div class="mt-6 mx-6 flex flex-wrap justify-center">
       <div class="mt-1">
         <template v-if="lastPlayers.length === 0">
           {{ $t('index.recommended') }}
@@ -127,38 +129,38 @@
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        class="container flex justify-center"
-        ins-class="w-screen md:w-full text-center"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6067985913"
       />
     </client-only>
 
-    <top-brawlers-card
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
-        once: true,
-      }"
-      :limit="4"
-      :elevation="1"
-      class="mt-6"
-    ></top-brawlers-card>
+    <page-section class="mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <top-brawlers-card
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
+            once: true,
+          }"
+          :limit="4"
+          :elevation="1"
+        ></top-brawlers-card>
 
-    <top-players-card
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'best_players'),
-        once: true,
-      }"
-      class="mt-6"
-    ></top-players-card>
+        <top-players-card
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'best_players'),
+            once: true,
+          }"
+        ></top-players-card>
+      </div>
+    </page-section>
 
     <client-only>
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        class="container flex justify-center"
-        ins-class="w-screen md:w-full text-center"
+        ins-class="mt-10 text-center"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6709232983"
       />
@@ -169,17 +171,13 @@
       :title="$t('index.events.title')"
       tracking-id="live_events"
       tracking-page-id="maps"
-      class="container"
     >
-      <active-events
-        class="mt-4"
-        eager
-      ></active-events>
+      <active-events eager></active-events>
     </page-section>
 
     <client-only>
       <adsense
-        class="home-section container flex justify-center"
+        class="mt-8 mb-6 flex justify-center"
         ins-class="w-full"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6736366415"
@@ -187,7 +185,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </div>
+  </page>
 </template>
 
 <script lang="ts">
@@ -357,25 +355,5 @@ export default Vue.extend({
 <style scoped lang="postcss">
 .placeholder\:normal-case::placeholder {
   @apply normal-case;
-}
-
-.home-section {
-  @apply my-6;
-}
-
-.home-section-heading-container {
-  @apply w-full max-w-xl mx-auto mb-1 relative;
-}
-
-.home-section-heading-left {
-  @apply text-left text-lg ml-5 leading-none;
-}
-
-.home-section-heading-right {
-  @apply text-right text-sm absolute bottom-0 right-0 mr-5 leading-none;
-}
-
-.home-section-content {
-  @apply w-full flex flex-wrap justify-center;
 }
 </style>

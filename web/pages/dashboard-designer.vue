@@ -2,58 +2,57 @@
   <page-dashboard
     :title="$t('dashboard-designer.title')"
   >
-    <div slot="dashboard">
-      <c-grid
-        v-model="grid"
-        :default-query="defaultQuery"
-      >
-        <template v-slot:totals="data">
-          <v-sample-size v-bind="data"></v-sample-size>
-          <v-last-update v-bind="data"></v-last-update>
-        </template>
+    <c-grid
+      v-model="grid"
+      :default-query="defaultQuery"
+    >
+      <template v-slot:totals="data">
+        <v-sample-size v-bind="data"></v-sample-size>
+        <v-last-update v-bind="data"></v-last-update>
+      </template>
 
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-          <d-team v-bind="data"></d-team>
-          <d-mode v-bind="data"></d-mode>
-          <d-map v-bind="data"></d-map>
-          <d-season v-bind="data"></d-season>
-          <d-player v-bind="data"></d-player>
-        </template>
+      <template v-slot:dimensions="data">
+        <d-brawler v-bind="data"></d-brawler>
+        <d-gear v-bind="data"></d-gear>
+        <d-team v-bind="data"></d-team>
+        <d-mode v-bind="data"></d-mode>
+        <d-map v-bind="data"></d-map>
+        <d-season v-bind="data"></d-season>
+        <d-player v-bind="data"></d-player>
+      </template>
 
-        <template v-slot:[`metrics.brawler`]="data">
-          <m-brawler v-bind="data"></m-brawler>
-        </template>
-      </c-grid>
+      <template v-slot:[`metrics.brawler`]="data">
+        <m-brawler v-bind="data"></m-brawler>
+      </template>
+    </c-grid>
 
-      <div
-        v-if="canSave"
-        class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
-      >
-        <label :for="`${prefix}-editor`">
-          {{ $t('action.editor-url') }}
-        </label>
-        <b-textbox
-          :id="`${prefix}-editor`"
-          :value="editorUrl"
-          readonly
-          dark
-        ></b-textbox>
+    <div
+      v-if="canSave"
+      class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+    >
+      <label :for="`${prefix}-editor`">
+        {{ $t('action.editor-url') }}
+      </label>
+      <b-textbox
+        :id="`${prefix}-editor`"
+        :value="editorUrl"
+        readonly
+        dark
+      ></b-textbox>
 
-        <label :for="`${prefix}-viewer`">
-          {{ $t('action.viewer-url') }}
-        </label>
-        <b-textbox
-          :id="`${prefix}-viewer`"
-          :value="viewerUrl"
-          readonly
-          dark
-        ></b-textbox>
-      </div>
-      <div v-else>
-        <p>Log in to share this report.</p>
-        <login-button class="mt-2"></login-button>
-      </div>
+      <label :for="`${prefix}-viewer`">
+        {{ $t('action.viewer-url') }}
+      </label>
+      <b-textbox
+        :id="`${prefix}-viewer`"
+        :value="viewerUrl"
+        readonly
+        dark
+      ></b-textbox>
+    </div>
+    <div v-else>
+      <p>Log in to share this report.</p>
+      <login-button class="mt-2"></login-button>
     </div>
   </page-dashboard>
 </template>
@@ -63,6 +62,7 @@ import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composit
 import { CGrid, BTextbox } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import DBrawler from '@/components/klicker/d-brawler.vue'
+import DGear from '@/components/klicker/d-gear.vue'
 import DTeam from '@/components/klicker/d-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
@@ -77,6 +77,7 @@ export default defineComponent({
     BTextbox,
     CGrid,
     DBrawler,
+    DGear,
     DTeam,
     DMode,
     DMap,

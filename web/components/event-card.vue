@@ -1,23 +1,17 @@
 <template>
   <b-card
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
-    :title-link="modeLink"
+    :link="mapLink || modeLink"
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="mapLink"
-    :link="mapLink || modeLink"
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
+    :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     v-bind="$attrs"
   >
-    <div
-      slot="icon"
-      class="w-10 h-10"
-    >
-      <media-img
-        :path="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
-        size="120"
-      ></media-img>
-    </div>
+    <template v-slot:icon="data">
+      <media-img-icon v-bind="data"></media-img-icon>
+    </template>
 
     <media-img
       slot="preview"

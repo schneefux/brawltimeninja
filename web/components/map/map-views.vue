@@ -7,7 +7,7 @@
     slicer
   >
     <template v-slot:totals="data">
-      <div class="w-full dashboard dashboard--responsive dashboard--half">
+      <div class="dashboard dashboard--responsive">
         <v-sample-size
           v-bind="data"
           :card="{ fullHeight: true }"
@@ -17,6 +17,7 @@
           v-bind="data"
           :card="{ fullHeight: true }"
           class="dashboard__cell"
+          style="--columns: 2;"
         ></v-last-update>
         <v-moe
           v-bind="data"
@@ -27,7 +28,7 @@
     </template>
 
     <template v-slot="query">
-      <div class="w-full dashboard dashboard--responsive">
+      <div class="dashboard dashboard--responsive">
         <map-best-brawlers-table
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'brawlers'),
@@ -36,7 +37,7 @@
           :id="id"
           :slices="query.slices"
           class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
+          style="--columns: 4; --rows: 5;"
         ></map-best-brawlers-table>
 
         <map-best-teams-table
@@ -48,7 +49,7 @@
           :id="id"
           :slices="query.slices"
           class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
+          style="--columns: 4; --rows: 5;"
         ></map-best-teams-table>
 
         <map-best-players-table
@@ -59,7 +60,7 @@
           :id="id"
           :slices="query.slices"
           class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
+          style="--columns: 4; --rows: 5;"
         ></map-best-players-table>
 
         <map-best-accessory-table
@@ -71,7 +72,7 @@
           :slices="query.slices"
           kind="starpowers"
           class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
+          style="--columns: 4; --rows: 5;"
         ></map-best-accessory-table>
 
         <map-best-accessory-table
@@ -83,7 +84,7 @@
           :slices="query.slices"
           kind="gadgets"
           class="dashboard__cell"
-          style="--columns: 3; --rows: 4;"
+          style="--columns: 4; --rows: 5;"
         ></map-best-accessory-table>
 
 <!--
@@ -121,43 +122,43 @@
           :slices="query.slices"
           kind="gears"
           class="dashboard__cell"
-          style="--columns: 4; --rows: 1;"
+          style="--columns: 5; --rows: 2;"
         ></map-best-accessory-roll>
 
-          <map-balance-chart
-            :id="id"
-            :slices="query.slices"
-            v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'charts'),
-              once: true,
-            }"
-          ></map-balance-chart>
+        <map-balance-chart
+          :id="id"
+          :slices="query.slices"
+          v-observe-visibility="{
+            callback: (v, e) => trackScroll(v, e, 'charts'),
+            once: true,
+          }"
+        ></map-balance-chart>
 
-          <map-winrate-userate-chart
-            :id="id"
-            :slices="query.slices"
-            class="dashboard__cell"
-            style="--columns: 4; --rows: 3;"
-          ></map-winrate-userate-chart>
+        <map-winrate-userate-chart
+          :id="id"
+          :slices="query.slices"
+          class="dashboard__cell"
+          style="--columns: 5; --rows: 4;"
+        ></map-winrate-userate-chart>
 
-          <map-trend-chart
-            :id="id"
-            :slices="query.slices"
-            class="dashboard__cell"
-            style="--columns: 4; --rows: 2;"
-          ></map-trend-chart>
+        <map-trend-chart
+          :id="id"
+          :slices="query.slices"
+          class="dashboard__cell"
+          style="--columns: 5; --rows: 3;"
+        ></map-trend-chart>
 
-          <gadget-starpower-disclaimer
-            class="dashboard__cell"
-            style="--columns: 2; --rows: 1;"
-            full-height
-          ></gadget-starpower-disclaimer>
-          <metric-info
-            :metric="adjustedWinRate"
-            class="dashboard__cell"
-            style="--columns: 2; --rows: 1;"
-            full-height
-          ></metric-info>
+        <gadget-starpower-disclaimer
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 2;"
+          card
+        ></gadget-starpower-disclaimer>
+        <metric-info
+          :metric="adjustedWinRate"
+          class="dashboard__cell"
+          style="--columns: 3; --rows: 1;"
+          full-height
+        ></metric-info>
       </div>
     </template>
   </c-dashboard>

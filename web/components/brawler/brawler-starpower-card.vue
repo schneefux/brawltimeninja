@@ -5,6 +5,10 @@
     :icon-alt="`${brawlerName}'s ${formatKind} ${formatName}`"
     full-height
   >
+    <template v-slot:icon="data">
+      <media-img-icon v-bind="data"></media-img-icon>
+    </template>
+
     <template v-slot:content>
       <p>
         <q

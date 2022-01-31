@@ -1,6 +1,8 @@
 <template>
   <page :title="$t('tier-list.maps.title')">
-    <p>{{ $t('tier-list.maps.description') }}</p>
+    <p class="mt-4 prose prose-invert">
+      {{ $t('tier-list.maps.description') }}
+     </p>
 
     <client-only>
       <adsense
@@ -18,10 +20,7 @@
       tracking-id="current_events"
       tracking-page-id="maps"
     >
-      <active-events
-        class="mt-4"
-        eager
-      ></active-events>
+      <active-events eager></active-events>
     </page-section>
 
     <client-only>
@@ -40,18 +39,31 @@
       tracking-id="upcoming_events"
       tracking-page-id="maps"
     >
-      <lazy class="flex flex-wrap justify-center">
-        <map-best-brawlers-card
-          v-for="event in upcomingEvents"
-          :key="event.id"
-          :id="event.id"
-          :slices="{
-            mode: [unformatMode(event.mode)],
-            map: [event.map],
-          }"
-          :start-date="event.start"
-        ></map-best-brawlers-card>
+      <lazy>
+        <scrolling-dashboard>
+          <map-best-brawlers-card
+            v-for="(event, index) in upcomingEvents"
+            :key="event.id"
+            :id="event.id"
+            :slices="{
+              mode: [unformatMode(event.mode)],
+              map: [event.map],
+            }"
+            :start-date="event.start"
+            :class="{
+              'md:hidden': index >= (page + 1) * 3,
+            }"
+            class="dashboard__cell"
+            style="--rows: 1; --columns: 4;"
+          ></map-best-brawlers-card>
+        </scrolling-dashboard>
       </lazy>
+
+      <accordeon-buttons
+        v-model="page"
+        :pages="upcomingEvents != undefined ? upcomingEvents.length / 3 : 0"
+        class="hidden md:flex"
+      ></accordeon-buttons>
     </page-section>
 
     <page-section
@@ -59,7 +71,6 @@
       tracking-id="modes"
       tracking-page-id="maps"
     >
-      <p slot="description">{{ $t('tier-list.modes.description') }}</p>
       <modes-cards></modes-cards>
     </page-section>
 
@@ -90,6 +101,7 @@ export default Vue.extend({
       currentEvents: [] as ActiveEvent[],
       upcomingEvents: [] as ActiveEvent[],
       unformatMode,
+      page: 0,
     }
   },
   head(): MetaInfo {

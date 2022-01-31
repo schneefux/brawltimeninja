@@ -12,8 +12,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
       size < 100
   },
   initialDimensions: {
-    rows: 3,
-    columns: 4,
+    rows: 4,
+    columns: 5,
   },
   resizable: true,
 }, {
@@ -24,8 +24,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return dimensions.length == 1 && metrics.length == 1 && size > 5 && size < 100
   },
   initialDimensions: {
-    rows: 3,
-    columns: 5,
+    rows: 4,
+    columns: 6,
   },
 }, {
   name: 'Test Info',
@@ -35,8 +35,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return comparing && metrics[0].statistics?.test != undefined
   },
   initialDimensions: {
-    rows: 2,
-    columns: 3,
+    rows: 3,
+    columns: 4,
   },
 }, {
   name: 'Table',
@@ -46,8 +46,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return size > 0 && (comparing || metrics.length < 5)
   },
   initialDimensions: {
-    rows: 4,
-    columns: 3,
+    rows: 5,
+    columns: 4,
   },
   props: {
     pageSize: {
@@ -70,8 +70,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   },
   resizable: true,
   initialDimensions: {
-    rows: 3,
-    columns: 4,
+    rows: 4,
+    columns: 5,
   },
 }, {
   name: 'Horizontal Cards',
@@ -81,8 +81,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return dimensions.length == 1 && metrics.length == 1 && size > 0 && size < 10
   },
   initialDimensions: {
-    rows: 1,
-    columns: 4,
+    rows: 2,
+    columns: 5,
   },
 }, {
   name: 'Pivot Table CSV Download Button',
@@ -94,8 +94,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
         && metrics.length == 1
   },
   initialDimensions: {
-    rows: 1,
-    columns: 1,
+    rows: 2,
+    columns: 2,
   },
 }, {
   name: 'Line Plot',
@@ -108,8 +108,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   },
   resizable: true,
   initialDimensions: {
-    rows: 3,
-    columns: 4,
+    rows: 4,
+    columns: 5,
   },
 }, {
   name: 'Metric Info',
@@ -119,8 +119,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return metrics.length == 1
   },
   initialDimensions: {
-    rows: 1,
-    columns: 2,
+    rows: 2,
+    columns: 3,
   },
 }, {
   name: 'Heatmap',
@@ -142,8 +142,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
   },
   resizable: true,
   initialDimensions: {
-    rows: 3,
-    columns: 4,
+    rows: 4,
+    columns: 5,
   },
 }, {
   name: 'Grid',
@@ -153,8 +153,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return metrics.length > 1
   },
   initialDimensions: {
-    rows: 3,
-    columns: 4,
+    rows: 4,
+    columns: 5,
   },
 }, {
   name: 'CSV Download Button',
@@ -164,8 +164,8 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return size > 0
   },
   initialDimensions: {
-    rows: 1,
-    columns: 1,
+    rows: 2,
+    columns: 2,
   },
 }]
 

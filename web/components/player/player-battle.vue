@@ -4,7 +4,7 @@
     :map="battle.event.map"
     :id="battle.event.id"
     :elevation="2"
-    size="w-80 md:w-120"
+    full-height
   >
     <div
       slot="infobar"
@@ -32,7 +32,7 @@
 
     <div
       slot="content"
-      class="flex flex-wrap justify-center -mx-4"
+      class="flex flex-wrap justify-center -mx-4 h-full items-center"
     >
       <div
         v-for="(team, index) in battle.teams"

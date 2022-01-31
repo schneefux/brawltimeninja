@@ -159,7 +159,17 @@ export default defineComponent({
       }
     }
 
-    const title = computed(() => compareMode.value ? (props.comparing ? $klicker.$t('comparison.filter.test') : $klicker.$t('comparison.filter.reference')) : $klicker.$t('filter.title'))
+    const title = computed(() => {
+      if (props.both || !compareMode.value) {
+        return $klicker.$t('filter.title')
+      }
+
+      if (props.comparing) {
+        return $klicker.$t('comparison.filter.test')
+      } else {
+        return $klicker.$t('comparison.filter.reference')
+      }
+    })
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const breakpointMd = breakpoints.greater('md')
 

@@ -25,7 +25,6 @@
       slot="content"
       :slices="slices"
       :card="{ elevation: 2, dense: true, fullHeight: true }"
-      class="h-full"
     ></map-best-brawlers>
   </event-card>
 </template>

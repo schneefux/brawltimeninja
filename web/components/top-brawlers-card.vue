@@ -2,9 +2,9 @@
   <b-card
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
-    xxl
+    full-height
   >
-    <div slot="actions">
+    <div slot="actions" class="space-x-2">
       <b-button
         :to="localePath(`/team-builder`)"
         primary

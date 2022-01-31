@@ -1,9 +1,14 @@
 <template>
   <b-card
     :title="title"
-    :title-link="localePath(`/tier-list/brawler/${brawlerId}`)"
+    :link="localePath(`/tier-list/brawler/${brawlerId}`)"
     :elevation="2"
-    sm
+    :style="{
+      '--rows': open ? 3 : 2,
+    }"
+    style="--rows: 2; --columns: 3;"
+    class="dashboard__cell"
+    full-height
   >
     <div
       slot="content"
@@ -94,7 +99,7 @@
         class="w-full"
         primary
         xs
-        @click="open = !open"
+        @click.stop="open = !open"
       >
         {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}
       </b-button>

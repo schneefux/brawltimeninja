@@ -2,61 +2,67 @@
   <page-dashboard
     :title="$t('tier-list.brawler.title')"
   >
-    <template slot="content">
-      <p>
-        {{ $t('tier-list.brawler.description') }}
-      </p>
+    <p class="mt-4 prose prose-invert">
+      {{ $t('tier-list.brawler.description') }}
+    </p>
 
-      <div class="flex flex-wrap justify-center">
+    <page-section>
+      <div class="dashboard dashboard--responsive">
         <map-best-starpowers-roll
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'gadgets'),
             once: true,
           }"
           kind="starpowers"
-          xs
+          class="dashboard__cell"
+          style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
 
         <map-best-starpowers-roll
           kind="gadgets"
-          xs
+          class="dashboard__cell"
+          style="--columns: 4; --rows: 2;"
+        ></map-best-starpowers-roll>
+
+        <map-best-starpowers-roll
+          kind="gears"
+          class="dashboard__cell"
+          style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
       </div>
+    </page-section>
 
-      <client-only>
-        <adsense
-          v-if="!isApp"
-          ins-class="ad-section"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="6446102315"
-          data-ad-format="auto"
-          data-full-width-responsive="yes"
-        />
-      </client-only>
-    </template>
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="6446102315"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+        ins-class="ad-section"
+      />
+    </client-only>
 
-    <template slot="dashboard">
-      <page-section
-        :title="$t('tier-list.all.title')"
-        tracking-id="widget"
-        tracking-page-id="brawler_meta"
-      >
-        <map-views
-          ga-category="brawler"
-        ></map-views>
-      </page-section>
+    <page-section
+      :title="$t('tier-list.all.title')"
+      tracking-id="widget"
+      tracking-page-id="brawler_meta"
+    >
+      <map-views
+        ga-category="brawler"
+      ></map-views>
+    </page-section>
 
-      <client-only>
-        <adsense
-          v-if="!isApp"
-          ins-class="ad-section"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="7838173054"
-          data-ad-format="auto"
-          data-full-width-responsive="yes"
-        />
-      </client-only>
-    </template>
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="7838173054"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+        ins-class="ad-section"
+      />
+    </client-only>
   </page-dashboard>
 </template>
 

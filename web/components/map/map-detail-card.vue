@@ -3,6 +3,7 @@
     v-bind="$attrs"
     :mode="mode"
     :map="map"
+    :link="localePath(linkTarget)"
     nobackground
   >
     <div
@@ -14,9 +15,10 @@
         :path="id != '0' ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
         size="512"
         clazz="h-64"
+        wrapper-class="mt-4"
       ></media-img>
 
-      <div>
+      <div class="mt-4">
         <b-card
           v-if="timestamp != undefined"
           :elevation="2"
@@ -26,7 +28,7 @@
             class="flex justify-between"
           >
             <dt class="text-left font-semibold mr-1">
-              {{ $t('tier-list.map.last-online') }}
+              {{ $t('tier-list.map.last-online', { time: '' }) }}
             </dt>
             <dd class="text-right ml-1">
               {{ lastOnlineString }}
@@ -53,19 +55,6 @@
         </b-card>
       </div>
     </div>
-
-    <template v-slot:actions>
-      <slot name="actions"></slot>
-      <b-button
-        v-if="link"
-        tag="router-link"
-        :to="localePath(linkTarget)"
-        primary
-        sm
-      >
-        Open
-      </b-button>
-    </template>
   </event-card>
 </template>
 

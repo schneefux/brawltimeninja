@@ -12,23 +12,31 @@
       </p>
     </b-card>
 
-    <div>
-      <c-slicer
-        v-model="query"
-        :components="['s-season', 's-mode-map', 's-trophies']"
-      ></c-slicer>
+    <c-slicer
+      v-model="query"
+      :components="['s-season', 's-mode-map', 's-trophies']"
+      class="mt-8"
+    ></c-slicer>
 
-      <draft-grid :query="query"></draft-grid>
+    <draft-grid
+      :query="query"
+      class="mt-8"
+    ></draft-grid>
 
-      <c-query :query="query">
-        <template v-slot="totals">
+    <c-query
+      :query="query"
+      class="mt-8"
+    >
+      <template v-slot="totals">
+        <div class="dashboard dashboard--responsive">
           <v-sample-size
             v-bind="totals"
-            :card="{}"
+            :card="{ fullHeight: true }"
+            class="dashboard__cell"
           ></v-sample-size>
-        </template>
-      </c-query>
-    </div>
+        </div>
+      </template>
+    </c-query>
   </page>
 </template>
 

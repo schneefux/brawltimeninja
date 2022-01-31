@@ -8,7 +8,7 @@
         path: `/tier-list/brawler/${brawlerId}`,
         name: brawlerName,
       }]"
-      class="mt-2"
+      class="mt-4"
     ></breadcrumbs>
 
     <page-section>
@@ -17,16 +17,15 @@
         :brawler-name="brawlerName"
       ></brawler-base-stats>
 
-      <p class="mt-4 mx-1">
-        Info:
-        Star Power and Gadget statistics are calculated as the difference between a Brawler with one Star Power or Gadget and a Brawler with zero Star Powers or Gadgets.
+      <p class="mt-8 prose prose-invert">
+        {{ $t('starpower-gadget-comparison.info') }}
       </p>
     </page-section>
 
     <client-only>
       <adsense
         id="ezoic-pub-ad-placeholder-108"
-        ins-class="w-full md:w-1/2 mt-4 mx-auto"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="8533352178"
         data-ad-format="auto"
@@ -39,10 +38,7 @@
       tracking-id="synergies"
       tracking-page-id="brawler"
     >
-      <brawler-synergies-card
-        :brawler="brawlerName"
-        class="mx-auto"
-      ></brawler-synergies-card>
+      <brawler-synergies-card :brawler="brawlerName"></brawler-synergies-card>
     </page-section>
 
     <page-section
@@ -61,12 +57,16 @@
       tracking-id="trends"
       tracking-page-id="brawler"
     >
-      <p slot="description">
+      <p
+        slot="description"
+        class="mt-4 prose prose-invert"
+      >
         {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
       </p>
 
       <brawler-trends-card
         :brawler-name="brawlerName"
+        class="mt-4"
       ></brawler-trends-card>
     </page-section>
 
@@ -79,7 +79,7 @@
         :brawler-name="brawlerName"
       ></brawler-trophy-graphs>
 
-      <p class="mt-6 ml-1">
+      <p class="mt-4 prose prose-invert">
         {{ $t('brawler.disclaimer') }}
       </p>
     </page-section>
@@ -94,7 +94,7 @@
         :brawler-name="brawlerName"
       ></brawler-modes-stats>
 
-      <p class="mt-6 mx-1">
+      <p class="mt-4 prose prose-invert">
         {{ $t('brawler.viable-info') }}
       </p>
     </page-section>
@@ -103,7 +103,7 @@
       <adsense
         v-if="!isApp"
         id="ezoic-pub-ad-placeholder-109"
-        ins-class="w-full mt-6 mx-auto h-32"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="6837127123"
         data-ad-format="auto"

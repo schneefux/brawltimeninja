@@ -1,10 +1,15 @@
 <template>
   <page :title="$t('tier-list.competition-winners.title')">
-    <div class="flex flex-wrap justify-center">
+    <scrolling-dashboard class="mt-8">
       <lazy
         v-for="(map, index) in maps"
         :key="map.mode + map.map"
-        :render="index < 3"
+        :render="index <= 2"
+        :class="{
+          'md:hidden': index >= (page + 1) * 3,
+        }"
+        class="dashboard__cell"
+        style="--rows: 4; --columns: 4;"
       >
         <map-detail-card
           :map="map.map"
@@ -14,12 +19,18 @@
           link
         ></map-detail-card>
       </lazy>
-    </div>
+    </scrolling-dashboard>
+
+    <accordeon-buttons
+      v-model="page"
+      :pages="maps != undefined ? maps.length / 3 : 0"
+      class="hidden md:flex"
+    ></accordeon-buttons>
   </page>
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, useAsync, useContext, ref } from '@nuxtjs/composition-api'
 import { camelToKebab, getSeasonEnd, slugify } from '~/lib/util'
 
 interface Event {
@@ -65,8 +76,11 @@ export default defineComponent({
         }))
     })
 
+    const page = ref(0)
+
     return {
       maps,
+      page,
     }
   },
 })

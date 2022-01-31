@@ -9,7 +9,7 @@
         data-ad-slot="4579727583"
         data-ad-format="auto"
         data-full-width-responsive="yes"
-        ins-class="mt-3"
+        ins-class="ad-section"
       ></adsense>
     </client-only>
 
@@ -29,7 +29,7 @@
       </b-button>
     </b-horizontal-scroller>
 
-    <div class="flex justify-center">
+    <div class="flex justify-center mt-8">
       <b-card :title="`Best Players by ${metricName}`">
         <template v-slot:content>
           <p>
@@ -54,6 +54,7 @@
         data-ad-slot="5140154307"
         data-ad-format="auto"
         data-full-width-responsive="yes"
+        ins-class="ad-section"
       />
     </client-only>
   </page>

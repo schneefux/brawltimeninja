@@ -1,27 +1,29 @@
 <template>
   <list-of-stats
-    class="mt-3 mb-6"
     :stats="stats"
+    :elevation="1"
   ></list-of-stats>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, computed } from '@nuxtjs/composition-api'
 import { PlayerTotals } from '~/store'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     playerTotals: {
       type: Object as PropType<PlayerTotals>,
       required: true
     },
   },
-  computed: {
-    stats(): Record<string, number> {
-      return {
-        wins: Math.floor(this.playerTotals.winRate * this.playerTotals.picks),
-        losses: Math.floor((1 - this.playerTotals.winRate) * this.playerTotals.picks),
-      }
+  setup(props) {
+    const stats = computed(() => ({
+      wins: Math.floor(props.playerTotals.winRate * props.playerTotals.picks),
+      losses: Math.floor((1 - props.playerTotals.winRate) * props.playerTotals.picks),
+    }))
+
+    return {
+      stats,
     }
   },
 })

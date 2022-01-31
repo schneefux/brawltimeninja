@@ -9,7 +9,7 @@
       :key="key"
       class="flex justify-between"
     >
-      <dt class="font-semibold mr-2">{{ key }}</dt>
+      <dt class="mr-2">{{ key }}</dt>
       <dd>{{ value }}</dd>
     </div>
   </dl>

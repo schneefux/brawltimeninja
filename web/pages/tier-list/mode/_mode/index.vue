@@ -2,152 +2,133 @@
   <page-dashboard
     :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })"
   >
-    <template slot="content">
-      <breadcrumbs
-        :links="[{
-          path: '/tier-list/map',
-          name: $tc('map', 2),
-        }, {
-          path: modePath,
-          name: $t('mode.' + mode),
-        }]"
-      ></breadcrumbs>
+    <breadcrumbs
+      :links="[{
+        path: '/tier-list/map',
+        name: $tc('map', 2),
+      }, {
+        path: modePath,
+        name: $t('mode.' + mode),
+      }]"
+      class="mt-4"
+    ></breadcrumbs>
 
-      <p class="mt-2">
-        {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
+    <p class="mt-4 prose prose-invert">
+      {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
+    </p>
+
+    <client-only>
+      <adsense
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="2291234880"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+      />
+    </client-only>
+
+    <page-section
+      :title="$t('tier-list.maps.title')"
+      tracking-id="maps"
+      tracking-page-id="mode_meta"
+    >
+      <p
+        slot="description"
+        class="mt-4 prose prose-invert"
+      >
+        {{ $t('tier-list.open-map') }}
       </p>
 
-      <client-only>
-        <adsense
-          ins-class="ad-section"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="2291234880"
-          data-ad-format="auto"
-          data-full-width-responsive="yes"
-        />
-      </client-only>
-
-      <page-section
-        :title="$t('tier-list.maps.title')"
-        tracking-id="maps"
-        tracking-page-id="mode_meta"
+      <form
+        class="mt-4"
+        @submit.prevent="$fetch()"
       >
-        <p slot="description">{{ $t('tier-list.open-map') }}</p>
+        <b-textbox
+          v-model="nameFilter"
+          :placeholder="$tc('map', 1)"
+          dark
+        ></b-textbox>
+        <b-button
+          type="submit"
+          primary
+          sm
+        >{{ $t('action.search') }}</b-button>
+      </form>
 
-        <form @submit.prevent="$fetch()">
-          <b-textbox
-            v-model="nameFilter"
-            :placeholder="$tc('map', 1)"
-            dark
-          ></b-textbox>
-          <b-button
-            type="submit"
-            primary
-            sm
-          >{{ $t('action.search') }}</b-button>
-        </form>
-
-        <b-horizontal-scroller
-          class="mt-3"
-          expand-on-desktop
+      <scrolling-dashboard class="mt-8">
+        <lazy
+          v-for="(map, index) in maps"
+          :key="map.map"
+          :render="index <= 4"
+          distance="600px"
+          :class="{
+            'md:hidden': index >= (page + 1) * 4,
+          }"
+          class="dashboard__cell"
+          style="--rows: 3; --columns: 2;"
         >
-          <lazy
-            v-for="(map, index) in maps"
-            :key="map.map"
-            :render="showAllMaps || index <= 3"
-            distance="600px"
+          <div slot="placeholder"></div>
+          <event-card
+            :mode="mode"
+            :map="map.map"
+            :link="mapPath(map)"
+            :id="map.id"
+            nobackground
           >
-            <div
-              class="w-64"
-              style="height: 396px"
-              slot="placeholder"
-              :class="['mx-2', {
-                'md:hidden': !showAllMaps && index > 3,
-              }]"
-            ></div>
-            <event-card
-              :mode="mode"
-              :map="map.map"
-              :id="map.id"
-              :class="['mx-2', {
-                'md:hidden': !showAllMaps && index > 3,
-              }]"
-              nobackground
-              size="w-64"
-            >
-              <template v-slot:preview></template>
-              <template v-slot:content>
-                <media-img
-                  v-if="map.id != '0'"
-                  :path="`/maps/${map.id}`"
-                  size="512"
-                  clazz="mx-auto h-64"
-                ></media-img>
-                <div
-                  v-else
-                  class="h-64 flex"
-                >
-                  <p class="m-auto">{{ $t('state.no-image') }}.</p>
-                </div>
-              </template>
-              <b-button
-                slot="actions"
-                tag="router-link"
-                :to="mapPath(map)"
-                primary
-                sm
+            <template v-slot:preview></template>
+            <template v-slot:content>
+              <media-img
+                v-if="map.id != '0'"
+                :path="`/maps/${map.id}`"
+                size="512"
+                clazz="mx-auto h-64"
+              ></media-img>
+              <div
+                v-else
+                class="h-64 flex"
               >
-                {{ $t('action.open') }}
-              </b-button>
-            </event-card>
-          </lazy>
-        </b-horizontal-scroller>
+                <p class="m-auto">{{ $t('state.no-image') }}.</p>
+              </div>
+            </template>
+          </event-card>
+        </lazy>
+      </scrolling-dashboard>
 
-        <div
-          v-show="!showAllMaps && maps.length > 3"
-          class="mt-2 w-full text-right hidden md:block"
-        >
-          <b-button
-            sm
-            primary
-            @click="expandMaps()"
-          >
-            {{ $t('action.show-all.mode-maps', { mode: $t('mode.' + mode) }) }}
-          </b-button>
-        </div>
-      </page-section>
-    </template>
+      <accordeon-buttons
+        v-model="page"
+        :pages="maps.length / 4"
+        class="hidden md:flex"
+      ></accordeon-buttons>
+    </page-section>
 
-    <template slot="dashboard">
-      <client-only>
-        <adsense
-          v-if="!isApp"
-          ins-class="ad-section"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="2263314723"
-          data-ad-format="auto"
-          data-full-width-responsive="yes"
-        />
-      </client-only>
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="2263314723"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+      />
+    </client-only>
 
-      <page-section>
-        <map-views
-          :mode="mode"
-          ga-category="mode"
-        ></map-views>
-      </page-section>
+    <page-section>
+      <map-views
+        :mode="mode"
+        ga-category="mode"
+      ></map-views>
+    </page-section>
 
-      <client-only>
-        <adsense
-          v-if="!isApp"
-          ins-class="ad-section"
-          data-ad-client="ca-pub-6856963757796636"
-          data-ad-slot="8497550588"
-          data-ad-format="auto"
-          data-full-width-responsive="yes"
-        />
-      </client-only>
-    </template>
+    <client-only>
+      <adsense
+        v-if="!isApp"
+        ins-class="ad-section"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="8497550588"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+      />
+    </client-only>
   </page-dashboard>
 </template>
 
@@ -188,7 +169,7 @@ export default Vue.extend({
   middleware: ['cached'],
   data() {
     return {
-      showAllMaps: false,
+      page: 0,
       mode: '',
       maps: [] as EventIdAndMap[],
       nameFilter: '',
@@ -242,22 +223,6 @@ export default Vue.extend({
     ...mapState({
       isApp: (state: any) => state.isApp as boolean,
     }),
-  },
-  methods: {
-    expandMaps() {
-      this.showAllMaps = true
-      this.$gtag.event('load_more', {
-        'event_category': 'meta_mode',
-      })
-    },
-    trackScroll(visible: boolean, element: any, section: string) {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'mode_meta',
-          'event_label': section,
-        })
-      }
-    },
   },
 })
 </script>

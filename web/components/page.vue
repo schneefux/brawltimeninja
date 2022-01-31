@@ -1,8 +1,8 @@
 <template>
-  <main class="container mx-auto py-4 px-4 lg:px-0">
+  <main class="container mx-auto p-4 mt-8 mb-8">
     <h1
       v-if="title != ''"
-      class="text-2xl font-semibold"
+      class="text-3xl"
     >{{ title }}</h1>
 
     <slot></slot>
@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     title: {
       type: String,

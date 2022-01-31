@@ -23,6 +23,7 @@
 import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
 import { CGridRenderer } from '@schneefux/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
+import DGear from '@/components/klicker/d-gear.vue'
 import DTeam from '@/components/klicker/d-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
@@ -37,6 +38,7 @@ export default defineComponent({
   components: {
     CGridRenderer,
     DBrawler,
+    DGear,
     DTeam,
     DMode,
     DMap,

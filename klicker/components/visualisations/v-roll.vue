@@ -12,7 +12,7 @@
           <tr class="bg-inherit">
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0 z-10 whitespace-nowrap"
             >{{ dimensionName }}</th>
             <td
               v-for="row in rows"
@@ -29,7 +29,7 @@
           <tr class="bg-inherit">
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0 z-10 whitespace-nowrap"
             >{{ metricName }}</th>
             <td
               v-for="row in rows"

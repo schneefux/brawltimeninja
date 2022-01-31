@@ -1,9 +1,9 @@
 <template>
   <page
-    :title="$t('tier-list.starpower.title')"
+    :title="$t('tier-list.gear.title')"
     class="container"
   >
-    <accessory-tier-list kind="starpowers"></accessory-tier-list>
+    <accessory-tier-list kind="gears"></accessory-tier-list>
   </page>
 </template>
 
@@ -13,9 +13,9 @@ import Vue from 'vue'
 export default Vue.extend({
   middleware: ['cached'],
   head() {
-    const description = this.$t('tier-list.starpower.meta.description') as string
+    const description = this.$t('tier-list.gear.meta.description') as string
     return {
-      title: this.$t('tier-list.starpower.meta.title') as string,
+      title: this.$t('tier-list.gear.meta.title') as string,
       meta: [
         { hid: 'description', name: 'description', content: description },
         { hid: 'og:description', property: 'og:description', content: description },
@@ -23,7 +23,7 @@ export default Vue.extend({
     }
   },
   meta: {
-    title: 'Star Powers',
+    title: 'Gears',
     screen: 'brawlers',
   },
 })

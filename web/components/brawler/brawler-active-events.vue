@@ -1,21 +1,22 @@
 <template>
   <div>
-    <p class="mx-1">
+    <p class="prose prose-invert">
       {{ description }}
     </p>
-    <div
+    <scrolling-dashboard
       v-if="events != undefined"
-      class="mt-6 dashboard dashboard--horizontal md:dashboard--vertical md:dashboard--responsive dashboard--relaxed"
+      class="mt-8"
     >
       <lazy
         v-for="(event, index) in events"
         :key="event.battle_event_mode + event.battle_event_map"
-        :render="index <= 2"
-        distance="600px"
-        :class="['dashboard__cell', {
+        :render="index <= 3"
+        :class="{
           'md:hidden': index >= (page + 1) * 3,
-        }]"
+        }"
         style="--rows: 2; --columns: 3;"
+        distance="600px"
+        class="dashboard__cell"
       >
         <div slot="placeholder"></div>
         <brawler-active-event
@@ -28,28 +29,13 @@
           class="w-full h-full"
         ></brawler-active-event>
       </lazy>
-    </div>
+    </scrolling-dashboard>
 
-    <div class="mt-4 w-full flex justify-end">
-      <b-button
-        v-if="page > 0"
-        class="mx-2"
-        primary
-        sm
-        @click="collapse"
-      >
-        {{ $t('action.collapse') }}
-      </b-button>
-      <b-button
-        v-if="page < pages"
-        class="mx-2"
-        primary
-        sm
-        @click="expand"
-      >
-        {{ $t('action.expand') }}
-      </b-button>
-    </div>
+    <accordeon-buttons
+      v-model="page"
+      :pages="events != undefined ? events.length / 3 : 0"
+      class="hidden md:flex"
+    ></accordeon-buttons>
   </div>
 </template>
 
@@ -102,17 +88,11 @@ export default defineComponent({
     })
 
     const page = ref(0)
-    const expand = () => page.value++
-    const collapse = () => page.value = 0
-    const pages = computed(() => events.value == undefined ? 0 : events.value.length)
 
     return {
       events,
       description,
       page,
-      expand,
-      collapse,
-      pages,
     }
   },
 })

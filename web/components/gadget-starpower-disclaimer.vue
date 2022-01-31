@@ -1,18 +1,28 @@
 <template>
-  <b-card
+   <component
+    :is="card ? 'b-card' : 'div'"
     :title="$t('starpower-gadget-data.disclaimer.title')"
-    v-bind="$attrs"
+    full-height
   >
     <p slot="content" class="prose prose-invert leading-snug">
       {{ $t('starpower-gadget-data.disclaimer.description') }}
     </p>
-  </b-card>
+   </component>
 </template>
 
-<script>
-import { defineComponent } from "@nuxtjs/composition-api";
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import { BCard } from '@schneefux/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
+  components: {
+    BCard,
+  },
+  props: {
+    card: {
+      type: Boolean,
+      default: false
+    },
+  },
 })
 </script>

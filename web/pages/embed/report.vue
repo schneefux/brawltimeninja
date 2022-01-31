@@ -4,6 +4,7 @@
     class="sharepic"
   >
     <template v-slot:dimensions="data">
+      <d-gear v-bind="data"></d-gear>
       <d-brawler v-bind="data"></d-brawler>
       <d-team v-bind="data"></d-team>
       <d-mode v-bind="data"></d-mode>
@@ -22,6 +23,7 @@
 import { defineComponent, useRoute, useAsync } from "@nuxtjs/composition-api"
 import { CCanvasRenderer } from '@schneefux/klicker/components'
 import DBrawler from '@/components/klicker/d-brawler.vue'
+import DGear from '@/components/klicker/d-gear.vue'
 import DTeam from '@/components/klicker/d-team.vue'
 import DMode from '@/components/klicker/d-mode.vue'
 import DMap from '@/components/klicker/d-map.vue'
@@ -36,6 +38,7 @@ export default defineComponent({
   components: {
     CCanvasRenderer,
     DBrawler,
+    DGear,
     DTeam,
     DMode,
     DMap,

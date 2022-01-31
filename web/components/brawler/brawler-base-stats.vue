@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-[minmax(80vw,2fr),minmax(350px,1fr)] lg:grid-cols-[2fr,minmax(350px,1fr)] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
+    <div class="grid grid-cols-[minmax(80vw,2fr),minmax(350px,1fr)] lg:grid-cols-[2fr,minmax(350px,1fr)] gap-8 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
       <b-card
         class="row-span-2"
         full-height
@@ -46,7 +46,7 @@
       </template>
     </div>
 
-    <div class="mt-6 grid grid-flow-col lg:grid-flow-row auto-cols-[minmax(350px,80vw)] lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
+    <div class="mt-8 grid grid-flow-col lg:grid-flow-row auto-cols-[minmax(350px,80vw)] lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-8 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
       <b-card
         v-if="data != undefined"
         :title="$t('brawler.statistics', { brawler: brawlerName })"

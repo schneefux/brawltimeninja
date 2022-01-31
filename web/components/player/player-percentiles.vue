@@ -1,22 +1,22 @@
 <template>
-  <dl class="flex flex-col md:flex-row md:flex-wrap md:justify-center">
+  <scrolling-dashboard>
     <b-card
       v-for="achievement in achievements"
       :key="achievement.metric"
-      :elevation="2"
-      class="text-center"
-      light
+      class="text-center dashboard__cell"
+      style="--columns: 2;"
+      full-height
     >
       <div slot="content">
-        <dt class="block text-xl font-bold">
+        <span class="block text-xl font-bold">
           {{ achievement.metric }}
-        </dt>
-        <dd class="block text-yellow-700 font-semibold">
+        </span>
+        <span class="block text-yellow-400 font-semibold">
           {{ achievement.text }}
-        </dd>
+        </span>
       </div>
     </b-card>
-  </dl>
+  </scrolling-dashboard>
 </template>
 
 <script lang="ts">

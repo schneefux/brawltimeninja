@@ -1,21 +1,22 @@
 <template>
   <div>
-    <p class="ml-1">
+    <p class="prose prose-invert">
       {{ description }}
     </p>
-    <div
+    <scrolling-dashboard
       v-if="data != undefined"
-      class="mt-6 dashboard dashboard--horizontal md:dashboard--vertical md:dashboard--responsive dashboard--relaxed"
+      class="mt-8"
     >
       <lazy
         v-for="(row, index) in data"
         :key="row.dimensionsRaw.mode.mode"
         :render="index <= 2"
-        distance="600px"
-        :class="['dashboard__cell', {
+        :class="{
           'md:hidden': index >= (page + 1) * 3,
-        }]"
-        style="--rows: 2; --columns: 3;"
+        }"
+        distance="600px"
+        class="dashboard__cell"
+        style="--rows: 2; --columns: 4;"
       >
         <div slot="placeholder"></div>
         <brawler-mode-stats
@@ -25,28 +26,13 @@
           class="w-full h-full"
         ></brawler-mode-stats>
       </lazy>
-    </div>
+    </scrolling-dashboard>
 
-    <div class="mt-4 w-full flex justify-end">
-      <b-button
-        v-if="page > 0"
-        class="mx-2"
-        primary
-        sm
-        @click="collapse"
-      >
-        {{ $t('action.collapse') }}
-      </b-button>
-      <b-button
-        v-if="page < pages"
-        class="mx-2"
-        primary
-        sm
-        @click="expand"
-      >
-        {{ $t('action.expand') }}
-      </b-button>
-    </div>
+    <accordeon-buttons
+      v-model="page"
+      :pages="data != undefined ? data.length / 3 : 0"
+      class="hidden md:flex"
+    ></accordeon-buttons>
   </div>
 </template>
 
@@ -101,17 +87,11 @@ export default defineComponent({
     })
 
     const page = ref(0)
-    const expand = () => page.value++
-    const collapse = () => page.value = 0
-    const pages = computed(() => data.value == undefined ? 0 : data.value.length)
 
     return {
       data,
       description,
       page,
-      expand,
-      collapse,
-      pages,
     }
   },
 })

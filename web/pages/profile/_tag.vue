@@ -1,22 +1,20 @@
 <template>
-  <page class="space-y-6">
+  <page>
     <client-only>
       <adsense
-        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="9429125351"
         data-ad-format="auto"
         data-full-width-responsive="yes"
+        ins-class="ad-section"
       />
       <div style="height: 300px;" class="adswrapper ad-section w-full" slot="placeholder"></div>
     </client-only>
 
-    <div
-      class="flex justify-between"
-      v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'hours'),
-        once: true,
-      }"
+    <page-section
+      class="w-full flex justify-between"
+      tracking-id="hours"
+      tracking-page-id="profile"
     >
       <h1 class="text-3xl font-semibold relative z-10">
         {{ $t('player.statistics-for') }}
@@ -26,144 +24,140 @@
           class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
         >DEV</span>
       </h1>
+
       <media-img
         :path="`/avatars/${player.icon.id}`"
         clazz="w-16 h-16 md:w-24 md:h-24"
         wrapper-class="flex-shrink-0"
       ></media-img>
-    </div>
+    </page-section>
 
-    <player-hype-stats
-      :player="player"
-      :player-totals="playerTotals"
-      :enable-klicker-stats="enableKlickerStats"
-    ></player-hype-stats>
+    <page-section>
+      <player-hype-stats
+        :player="player"
+        :player-totals="playerTotals"
+        :enable-klicker-stats="enableKlickerStats"
+      ></player-hype-stats>
+    </page-section>
 
-    <div class="flex flex-wrap justify-center items-center">
-      <experiment experiment-id="ieQ8BYYpS9Cwd7qcpBj8tQ">
-        <player-quiz
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'quiz'),
-            once: true,
-          }"
-          :player="player"
-        ></player-quiz>
+    <page-section>
+      <div class="flex flex-wrap justify-center items-center">
+        <experiment experiment-id="ieQ8BYYpS9Cwd7qcpBj8tQ">
+          <player-quiz
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              once: true,
+            }"
+            :player="player"
+          ></player-quiz>
 
-        <quiz-card
-          slot="1"
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'quiz'),
-            once: true,
-          }"
-        ></quiz-card>
-      </experiment>
-    </div>
+          <quiz-card
+            slot="1"
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              once: true,
+            }"
+          ></quiz-card>
+        </experiment>
+      </div>
+    </page-section>
 
     <client-only>
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen md:w-full ad-section"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="3933066188"
       />
     </client-only>
 
-    <player-teaser-card
-      v-slot="props"
-      :title="$t('player.records.title')"
-      :description="$t('player.records.description')"
-    >
+    <page-section :title="$t('player.records.title')">
+      <p class="mt-4 prose prose-invert w-full">
+        {{ $t('player.records.description') }}
+      </p>
+
       <player-lifetime
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'lifetime'),
           once: true,
         }"
         :player="player"
-        :tease="!props.open"
+        class="mt-8"
       ></player-lifetime>
 
       <player-percentiles
-        v-show="props.open"
         :player="player"
+        class="mt-8"
       ></player-percentiles>
-    </player-teaser-card>
+    </page-section>
 
-    <div class="my-1 md:my-4 mx-1 md:ml-4 flex items-center">
-      <h2 class="text-xl font-semibold">
-        Info!
-      </h2>
-      <p class="text-xs ml-3">
+    <page-section title="Info">
+      <p class="prose prose-invert max-w-none">
         {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
       </p>
-    </div>
+    </page-section>
 
-    <player-teaser-card
+    <page-section
       v-if="playerTotals != undefined && playerTotals.picks > 0"
-      v-slot="props"
-      :pages="Math.ceil(playerTotals.picks / 6)"
       :title="$tc('battle-log', 1)"
-      :description="$t('player.battle-log.description')"
     >
+      <p class="mt-4 prose prose-invert w-full">
+        {{ $t('player.battle-log.description') }}
+        {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
+      </p>
+      <b-button
+        class="mt-2"
+        sm
+        primary
+        @click="refresh"
+      >
+        {{ $t('action.refresh') }}
+      </b-button>
+
       <player-battles-squares
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'battles'),
           once: true,
         }"
         :battles="player.battles"
-        :tease="!props.open"
+        class="mt-8"
       ></player-battles-squares>
 
-      <div
-        v-show="props.open"
-        class="w-full md:w-auto md:ml-auto mt-2 flex items-center"
-      >
-        <span class="text-sm text-grey-lighter">
-          {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
-        </span>
-        <b-button
-          class="ml-auto md:ml-4"
-          sm
-          primary
-          @click="refresh"
-        >
-          {{ $t('action.refresh') }}
-        </b-button>
-      </div>
-
       <player-battles-stats
-        v-show="props.open"
         :player-totals="playerTotals"
+        class="mt-8"
       ></player-battles-stats>
 
       <player-battles
-        v-show="props.open"
         :player="player"
-        :limit="(props.page || 1) * 6"
+        class="mt-8"
       ></player-battles>
-    </player-teaser-card>
+    </page-section>
 
-    <install-card
-      class="mx-auto"
-    ></install-card>
+    <page-section>
+      <install-card
+        class="mx-auto"
+      ></install-card>
+    </page-section>
 
     <client-only>
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen md:w-full ad-section mb-4"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="4129048243"
       />
     </client-only>
 
-    <player-teaser-card
-      v-slot="props"
-      :title="$tc('mode', 2)"
-      :description="$t('player.modes.description')"
-    >
+    <page-section :title="$tc('mode', 2)">
+      <p class="prose prose-invert">
+        {{ $t('player.modes.description') }}
+      </p>
+
       <player-mode-winrates
         v-observe-visibility="{
           callback: (v, e) => trackScroll(v, e, 'gamemodes'),
@@ -171,50 +165,33 @@
         }"
         :player="player"
         :battles="player.battles"
-        :tease="!props.open"
         :enable-klicker-stats="enableKlickerStats"
-        :elevation="2"
+        class="mt-4"
       ></player-mode-winrates>
-
-      <div
-        v-show="props.open"
-        class="mt-2 w-full flex justify-end"
-      >
-        <b-button
-          :to="localePath('/tier-list/map')"
-          primary
-          prefetch
-          sm
-        >
-          {{ $t('action.open.tier-list.maps') }}
-        </b-button>
-      </div>
-    </player-teaser-card>
+    </page-section>
 
     <client-only>
       <adsense
         v-if="!isApp"
         data-ad-format="auto"
         data-full-width-responsive="no"
-        ins-class="w-screen md:w-full ad-section mb-4"
+        ins-class="ad-section"
         data-ad-client="ca-pub-6856963757796636"
         data-ad-slot="1752268168"
       />
     </client-only>
 
-    <player-teaser-card
-      v-slot="props"
-      :pages="Math.ceil(Object.keys(player.brawlers).length) / 15"
-      :title="$tc('brawler', 2)"
-      :description="$t('player.brawlers.description')"
-    >
+    <page-section :title="$tc('brawler', 2)">
+      <p class="prose prose-invert">
+        {{ $t('player.brawlers.description') }}
+      </p>
+
       <player-brawlers
         :player="player"
-        :tease="!props.open"
-        :limit="props.page * 15"
         :enable-klicker-stats="enableKlickerStats"
+        class="mt-4"
       ></player-brawlers>
-    </player-teaser-card>
+    </page-section>
 
     <page-section
       title="Guides from the Blog"

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <b-card
-      :title="$t('draft-tool.selected-team')"
-    >
+    <b-card :title="$t('draft-tool.selected-team')">
       <div slot="content">
         <p>
           <template v-if="team.length == 0">
@@ -49,6 +47,7 @@
     <b-card
       :title="$t('draft-tool.grid-title')"
       :loading="loading > 0"
+      class="mt-8"
     >
       <div slot="content" class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
         <button

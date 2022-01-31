@@ -2,32 +2,19 @@
   <b-card
     :title="$tc('best.' + kind, 1)"
     :elevation="elevation"
+    :link="localePath(`/tier-list/${kind}`)"
+    full-height
   >
-    <b-button
-      slot="actions"
-      :to="localePath(`/tier-list/${kind}`)"
-      primary
-      prefetch
-      sm
-    >
-      {{ $t('action.open.tier-list.' + kindKey) }}
-    </b-button>
-
     <c-query
       slot="content"
       :query="query"
       :filter="filter"
     >
       <template v-slot="data">
-        <v-roll
-          v-bind="{
-            ...data,
-            ...$attrs,
-            elevation: elevation + 1,
-          }"
-        >
+        <v-roll v-bind="data">
           <template v-slot:dimensions="data">
             <d-brawler v-bind="data"></d-brawler>
+            <d-gear v-bind="data"></d-gear>
           </template>
         </v-roll>
       </template>
@@ -47,10 +34,9 @@ export default defineComponent({
     CQuery,
     BButton,
   },
-  inheritAttrs: false,
   props: {
     kind: {
-      type: String as PropType<'starpowers'|'gadgets'>,
+      type: String as PropType<'starpowers'|'gadgets'|'gears'>,
       default: 'starpowers'
     },
     slices: {
@@ -59,7 +45,7 @@ export default defineComponent({
     },
     limit: {
       type: Number,
-      default: 3
+      default: 4
     },
     elevation: {
       type: Number,
@@ -67,25 +53,30 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const kindKey = computed(() => props.kind == 'starpowers' ? 'starpower' : 'gadget')
+    const keys = {
+      'starpowers': 'starpower',
+      'gadgets': 'gadget',
+      'gears': 'gear',
+    }
+    const kindKey = computed(() => keys[props.kind])
     const query = computed<CubeComparingQuery>(() => ({
       comparing: true,
       cubeId: 'battle',
       sortId: 'difference',
-      dimensionsIds: props.kind == 'starpowers' ? ['brawler', 'starpower'] : ['brawler', 'gadget'],
+      dimensionsIds: props.kind == 'gears' ? [keys[props.kind]] : ['brawler', keys[props.kind]],
       metricsIds: ['winRate'],
       slices: {
         ...props.slices,
-        [props.kind == 'starpowers' ? 'starpowerIdNeq' : 'gadgetIdNeq']: ['0'],
+        [keys[props.kind] + 'IdNeq']: ['0'],
       },
       limit: props.limit,
       reference: {
         cubeId: 'battle',
-        dimensionsIds: ['brawler'],
+        dimensionsIds: props.kind == 'gears' ? [] : ['brawler'],
         metricsIds: ['winRate'],
         slices: {
           ...props.slices,
-          [props.kind == 'starpowers' ? 'starpowerIdEq' : 'gadgetIdEq']: ['0'],
+          [keys[props.kind] + 'IdEq']: ['0'],
         },
         sortId: 'difference',
       },

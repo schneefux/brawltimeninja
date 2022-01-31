@@ -18,6 +18,7 @@
     "action.open.tier-list.maps": "Open Maps Tier List",
     "action.open.tier-list.mode": "Open {mode} Tier List",
     "action.open.tier-list.starpower": "Open Star Power Tier List",
+    "action.open.tier-list.gear": "Open Gears Tier List",
     "action.read": "Read",
     "action.next": "Next",
     "action.refresh": "Refresh",
@@ -375,8 +376,9 @@
     "rating.relative.3": "above average",
     "rating.relative.4": "excellent",
     "starpower": "Star Power | Star Powers",
-    "starpower-gadget-data.disclaimer.description": "Data for Star Powers and Gadgets is collected for players who own only a single Star Power or Gadget for a Brawler.",
-    "starpower-gadget-data.disclaimer.title": "Info about Star Powers and Gadgets",
+    "starpower-gadget-data.disclaimer.description": "Data for Star Powers, Gadgets and Gears is collected for players who own only a single Star Power, Gadget or Gear for a Brawler.",
+    "starpower-gadget-data.disclaimer.title": "Info about Star Powers, Gadgets and Gears",
+    "starpower-gadget-comparison.info": "Info: Star Power, Gadget and Gear statistics are calculated as the difference between a Brawler with one Star Power, Gadget or Gear and a Brawler with zero Star Powers, Gadgets or Gears.",
     "state.checking": "Checking",
     "state.event-active": "Active",
     "state.generating-sharepic": "Generating your Sharepic",
@@ -505,5 +507,6 @@
     "footer.translated-by": "Translated by",
     "footer.support-me": "Support me",
     "translators": "",
-    "about-metric": "About {metric}"
+    "about-metric": "About {metric}",
+    "state.no-outliers": "No outliers"
 }

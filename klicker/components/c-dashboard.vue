@@ -1,16 +1,20 @@
 <template>
-  <div class="flex flex-wrap space-y-6">
+  <div class="space-y-4">
     <div
-      class="w-full"
+      class="grid gap-4 grid-cols-1"
       :class="{
-        'grid grid-cols-1 lg:grid-cols-3': configurator && slicer,
+        'lg:grid-cols-[3fr,5fr]': configurator && slicer,
       }"
     >
       <c-configurator
         v-if="configurator"
         v-model="query"
+        v-bind="configurator"
         :card="{ fullHeight: true, elevation }"
-        class="row-span-2"
+        :class="{
+          'row-span-2': renderComparingSlicer,
+        }"
+        class="lg:col-start-1"
       ></c-configurator>
 
       <c-slicer
@@ -20,16 +24,18 @@
         :both="syncSlices"
         :components="slicerComponents"
         :exclude-components="slicerExcludeComponents"
-        class="col-span-2"
+        :class="{
+          'lg:col-start-2': configurator,
+        }"
       ></c-slicer>
 
       <c-slicer
-        v-if="slicer && query.comparing && !syncSlices"
+        v-if="renderComparingSlicer"
         v-model="query"
         :card="{ fullHeight: true, elevation }"
         :components="slicerComponents"
         :exclude-components="slicerExcludeComponents"
-        class="col-span-2"
+        class="lg:col-start-2"
         comparing
       ></c-slicer>
     </div>
@@ -94,8 +100,15 @@ export default defineComponent({
       required: false
     },
     configurator: {
-      type: Boolean,
-      default: false
+      type: Object as PropType<{
+        configureCube: boolean,
+        configureMetrics: boolean,
+        configureMetricsOptions: string[],
+        configureMultipleMetrics: boolean,
+        configureDimensions: boolean,
+        configureCompareMode: boolean,
+      }>,
+      required: false
     },
     slicer: {
       type: Boolean,
@@ -127,7 +140,10 @@ export default defineComponent({
       }
     })
 
+    const renderComparingSlicer = computed(() => props.slicer && query.value.comparing && !props.syncSlices)
+
     return {
+      renderComparingSlicer,
       metaMetrics,
       query,
     }

@@ -1,21 +1,19 @@
 <template>
-  <div class="flex flex-wrap justify-center">
+  <div class="dashboard dashboard--responsive dashboard--responsive-stretch">
     <b-card
       v-for="post in articles"
       :key="post.id"
       :title="post.title"
-      :title-link="`/blog/${topic}/${post.slug}`"
+      :link="`/blog/${topic}/${post.slug}`"
+      :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
+      class="dashboard__cell"
+      style="--rows: 1; --columns: 3;"
       full-height
       light
-      sm
     >
-      <media-img
-        v-if="post.mode != undefined"
-        slot="icon"
-        :path="`/modes/${post.mode}/icon`"
-        size="120"
-        clazz="h-8"
-      ></media-img>
+      <template v-slot:icon="data">
+        <media-img-icon v-bind="data"></media-img-icon>
+      </template>
 
       <p slot="content">
         {{ post.description }}

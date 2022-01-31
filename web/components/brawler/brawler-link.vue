@@ -4,7 +4,7 @@
     :title="title"
     class="flex items-center"
   >
-    <div
+    <span
       :class="['relative shrink-0', {
         'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,
       }]"
@@ -36,7 +36,7 @@
         size="80"
         clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
       ></media-img>
-    </div>
+    </span>
     <span
       v-if="captioned"
       class="ml-2 leading-none"

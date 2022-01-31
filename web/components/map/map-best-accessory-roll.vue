@@ -8,7 +8,6 @@
         <v-roll
           slot="content"
           v-bind="data"
-          :card="{ elevation: 2 }"
         >
           <template
             v-if="kind != 'gears'"

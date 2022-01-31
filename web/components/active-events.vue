@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="ml-1 flex flex-wrap">
+    <div class="flex flex-wrap">
       <button
         v-for="(mode, index) in modes"
         :key="mode"
@@ -25,23 +25,33 @@
     <lazy
       :render="eager"
       distance="320px"
-      class="mt-8 w-full dashboard dashboard--relaxed dashboard--responsive"
     >
-      <map-best-brawlers-card
-        v-for="event in filteredEvents"
-        :key="event.battle_event_map + '-' + event.battle_event_id"
-        :slices="{
-          mode: [event.battle_event_mode],
-          map: [event.battle_event_map],
-          powerplay: [event.battle_event_powerplay ? 'true' : 'false'],
-        }"
-        :id="event.battle_event_id"
-        :end-date="event.end"
-        :eager="eager"
-        class="dashboard__cell"
-        style="--rows: 1; --columns: 3;"
-      ></map-best-brawlers-card>
+      <scrolling-dashboard class="mt-8">
+        <map-best-brawlers-card
+          v-for="(event, index) in filteredEvents"
+          :key="event.battle_event_map + '-' + event.battle_event_id"
+          :slices="{
+            mode: [event.battle_event_mode],
+            map: [event.battle_event_map],
+            powerplay: [event.battle_event_powerplay ? 'true' : 'false'],
+          }"
+          :id="event.battle_event_id"
+          :end-date="event.end"
+          :eager="eager"
+          :class="{
+            'md:hidden': index >= (page + 1) * 3,
+          }"
+          class="dashboard__cell"
+          style="--rows: 1; --columns: 4;"
+        ></map-best-brawlers-card>
+      </scrolling-dashboard>
     </lazy>
+
+    <accordeon-buttons
+      v-model="page"
+      :pages="events != undefined ? events.length / 3 : 0"
+      class="hidden md:flex"
+    ></accordeon-buttons>
   </div>
 </template>
 
@@ -60,6 +70,7 @@ export default Vue.extend({
     return {
       events: [] as EventMetadata[],
       modeFilter: 'all',
+      page: 0,
     }
   },
   fetchDelay: 0,
