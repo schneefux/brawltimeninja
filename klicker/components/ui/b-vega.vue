@@ -182,7 +182,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="postcss">
+<style lang="postcss">
 .inject-colors {
   --gray-200: theme('colors.gray.200');
   --gray-400: theme('colors.gray.400');
