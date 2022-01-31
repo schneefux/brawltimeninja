@@ -39,6 +39,7 @@ export default defineComponent({
 
       const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
         dimensions: e.dimensions,
+        metrics: e.metrics,
         metricsRaw: e.metricsRaw,
         metricsCI: e.test.reference.metricsCI,
         source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
@@ -46,6 +47,7 @@ export default defineComponent({
       }, {
         id: e.id,
         dimensions: e.dimensions,
+        metrics: e.test.reference.metrics,
         metricsRaw: e.test.reference.metricsRaw,
         metricsCI: e.test.reference.metricsCI,
         source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
