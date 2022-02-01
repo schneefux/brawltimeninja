@@ -174,7 +174,7 @@ export default {
     loaders: {
       css: {
         // https://github.com/nuxt/postcss8/issues/24
-        modules: false,
+        modules: process.env.NODE_ENV == 'development' ? false : undefined,
       },
     },
     postcss: {
