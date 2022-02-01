@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <scrolling-dashboard>
+  <scrolling-dashboard
+    :length="Object.values(player.brawlers).length"
+  >
+    <template v-slot="{ limit }">
       <lazy
-        v-for="(brawler, index) in Object.values(player.brawlers)"
-        :key="brawler.id"
+        v-for="(brawler, id, index) in player.brawlers"
+        :key="id"
         :render="index < 3"
         :class="{
-          'md:hidden': index >= (page + 1) * 3,
+          'lg:hidden': index >= limit,
         }"
         distance="200px"
         translucent
@@ -22,18 +24,12 @@
           :enable-klicker-stats="enableKlickerStats"
         ></player-brawler-card>
       </lazy>
-    </scrolling-dashboard>
-
-    <accordeon-buttons
-      v-model="page"
-      :pages="Object.values(player.brawlers).length / 3"
-      class="hidden md:flex"
-    ></accordeon-buttons>
-  </div>
+    </template>
+  </scrolling-dashboard>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Api'
 
 export default defineComponent({
@@ -46,13 +42,6 @@ export default defineComponent({
       type: Boolean,
       required: true
     },
-  },
-  setup() {
-    const page = ref(0)
-
-    return {
-      page,
-    }
   },
 })
 </script>

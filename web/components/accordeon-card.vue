@@ -10,7 +10,7 @@
 
     <div
       slot="actions"
-      class="w-full flex justify-center"
+      class="w-full flex justify-center space-x-2"
       ref="top"
       :key="page"
     >
@@ -25,7 +25,6 @@
       -->
       <b-button
         v-if="page > 0"
-        class="mx-2"
         primary
         sm
         @click="collapse"
@@ -34,7 +33,6 @@
       </b-button>
       <b-button
         v-if="page < pages"
-        class="mx-2"
         primary
         sm
         @click="expand"

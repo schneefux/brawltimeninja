@@ -40,30 +40,29 @@
       tracking-page-id="maps"
     >
       <lazy>
-        <scrolling-dashboard>
-          <map-best-brawlers-card
-            v-for="(event, index) in upcomingEvents"
-            :key="event.id"
-            :id="event.id"
-            :slices="{
-              mode: [unformatMode(event.mode)],
-              map: [event.map],
-            }"
-            :start-date="event.start"
-            :class="{
-              'md:hidden': index >= (page + 1) * 3,
-            }"
-            class="dashboard__cell"
-            style="--rows: 1; --columns: 4;"
-          ></map-best-brawlers-card>
+        <scrolling-dashboard
+          v-if="upcomingEvents != undefined"
+          :length="upcomingEvents.length"
+        >
+          <template v-slot="{ limit }">
+            <map-best-brawlers-card
+              v-for="(event, index) in upcomingEvents"
+              :key="event.id"
+              :id="event.id"
+              :slices="{
+                mode: [unformatMode(event.mode)],
+                map: [event.map],
+              }"
+              :start-date="event.start"
+              :class="{
+                'lg:hidden': index >= limit,
+              }"
+              class="dashboard__cell"
+              style="--rows: 1; --columns: 4;"
+            ></map-best-brawlers-card>
+          </template>
         </scrolling-dashboard>
       </lazy>
-
-      <accordeon-buttons
-        v-model="page"
-        :pages="upcomingEvents != undefined ? upcomingEvents.length / 3 : 0"
-        class="hidden md:flex"
-      ></accordeon-buttons>
     </page-section>
 
     <page-section
@@ -101,7 +100,6 @@ export default Vue.extend({
       currentEvents: [] as ActiveEvent[],
       upcomingEvents: [] as ActiveEvent[],
       unformatMode,
-      page: 0,
     }
   },
   head(): MetaInfo {

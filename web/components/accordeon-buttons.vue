@@ -1,11 +1,10 @@
 <template>
   <div
     v-if="pages > 0"
-    class="mt-4 w-full flex justify-end"
+    class="w-full flex justify-end space-x-2"
   >
     <b-button
       v-if="value > 0"
-      class="mx-2"
       primary
       sm
       @click="collapse"
@@ -14,7 +13,6 @@
     </b-button>
     <b-button
       v-if="value < Math.ceil(pages) - 1"
-      class="mx-2"
       primary
       sm
       @click="expand"

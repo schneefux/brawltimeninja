@@ -1,16 +1,40 @@
 <template>
   <div class="relative">
-    <div class="dashboard dashboard--horizontal md:dashboard--vertical dashboard--responsive dashboard--responsive-stretch dashboard--relaxed -mr-4 pr-4 md:mr-0 md:pr-0">
-      <slot></slot>
+    <div class="dashboard dashboard--horizontal lg:dashboard--vertical dashboard--responsive dashboard--responsive-stretch dashboard--relaxed -mr-4 pr-4 lg:mr-0 lg:pr-0">
+      <slot :limit="(page + 1) * pageSize"></slot>
     </div>
-    <div class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 md:hidden"></div>
+    <div class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 lg:hidden"></div>
+
+    <accordeon-buttons
+      v-if="length != undefined"
+      v-model="page"
+      :pages="length / pageSize"
+      class="mt-4 hidden lg:flex"
+    ></accordeon-buttons>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 
 export default defineComponent({
+  props: {
+    length: {
+      type: Number,
+      required: false
+    },
+    pageSize: {
+      type: Number,
+      default: 3
+    },
+  },
+  setup() {
+    const page = ref(0)
+
+    return {
+      page,
+    }
+  },
 })
 </script>
 

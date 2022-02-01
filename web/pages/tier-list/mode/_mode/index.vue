@@ -55,50 +55,50 @@
         >{{ $t('action.search') }}</b-button>
       </form>
 
-      <scrolling-dashboard class="mt-8">
-        <lazy
-          v-for="(map, index) in maps"
-          :key="map.map"
-          :render="index <= 4"
-          distance="600px"
-          :class="{
-            'md:hidden': index >= (page + 1) * 4,
-          }"
-          class="dashboard__cell"
-          style="--rows: 3; --columns: 2;"
-        >
-          <div slot="placeholder"></div>
-          <event-card
-            :mode="mode"
-            :map="map.map"
-            :link="mapPath(map)"
-            :id="map.id"
-            nobackground
+      <scrolling-dashboard
+        :length="maps.length"
+        page-size="4"
+        class="mt-8"
+      >
+        <template v-slot="{ limit }">
+          <lazy
+            v-for="(map, index) in maps"
+            :key="map.map"
+            :render="index <= 4"
+            distance="600px"
+            :class="{
+              'lg:hidden': index >= limit,
+            }"
+            class="dashboard__cell"
+            style="--rows: 3; --columns: 2;"
           >
-            <template v-slot:preview></template>
-            <template v-slot:content>
-              <media-img
-                v-if="map.id != '0'"
-                :path="`/maps/${map.id}`"
-                size="512"
-                clazz="mx-auto h-64"
-              ></media-img>
-              <div
-                v-else
-                class="h-64 flex"
-              >
-                <p class="m-auto">{{ $t('state.no-image') }}.</p>
-              </div>
-            </template>
-          </event-card>
-        </lazy>
+            <div slot="placeholder"></div>
+            <event-card
+              :mode="mode"
+              :map="map.map"
+              :link="mapPath(map)"
+              :id="map.id"
+              nobackground
+            >
+              <template v-slot:preview></template>
+              <template v-slot:content>
+                <media-img
+                  v-if="map.id != '0'"
+                  :path="`/maps/${map.id}`"
+                  size="512"
+                  clazz="mx-auto h-64"
+                ></media-img>
+                <div
+                  v-else
+                  class="h-64 flex"
+                >
+                  <p class="m-auto">{{ $t('state.no-image') }}.</p>
+                </div>
+              </template>
+            </event-card>
+          </lazy>
+        </template>
       </scrolling-dashboard>
-
-      <accordeon-buttons
-        v-model="page"
-        :pages="maps.length / 4"
-        class="hidden md:flex"
-      ></accordeon-buttons>
     </page-section>
 
     <client-only>
@@ -169,7 +169,6 @@ export default Vue.extend({
   middleware: ['cached'],
   data() {
     return {
-      page: 0,
       mode: '',
       maps: [] as EventIdAndMap[],
       nameFilter: '',

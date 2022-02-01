@@ -5,37 +5,34 @@
     </p>
     <scrolling-dashboard
       v-if="events != undefined"
+      :length="events.length"
       class="mt-8"
     >
-      <lazy
-        v-for="(event, index) in events"
-        :key="event.battle_event_mode + event.battle_event_map"
-        :render="index <= 3"
-        :class="{
-          'md:hidden': index >= (page + 1) * 3,
-        }"
-        style="--rows: 2; --columns: 3;"
-        distance="600px"
-        class="dashboard__cell"
-      >
-        <div slot="placeholder"></div>
-        <brawler-active-event
-          :mode="event.battle_event_mode"
-          :map="event.battle_event_map"
-          :id="event.battle_event_id"
-          :end="event.end"
-          :brawler-name="brawlerName"
-          :data="event"
-          class="w-full h-full"
-        ></brawler-active-event>
-      </lazy>
+      <template v-slot="{ limit }">
+        <lazy
+          v-for="(event, index) in events"
+          :key="event.battle_event_mode + event.battle_event_map"
+          :render="index <= 3"
+          :class="{
+            'lg:hidden': index >= limit,
+          }"
+          style="--rows: 2; --columns: 3;"
+          distance="600px"
+          class="dashboard__cell"
+        >
+          <div slot="placeholder"></div>
+          <brawler-active-event
+            :mode="event.battle_event_mode"
+            :map="event.battle_event_map"
+            :id="event.battle_event_id"
+            :end="event.end"
+            :brawler-name="brawlerName"
+            :data="event"
+            class="w-full h-full"
+          ></brawler-active-event>
+        </lazy>
+      </template>
     </scrolling-dashboard>
-
-    <accordeon-buttons
-      v-model="page"
-      :pages="events != undefined ? events.length / 3 : 0"
-      class="hidden md:flex"
-    ></accordeon-buttons>
   </div>
 </template>
 
@@ -87,12 +84,9 @@ export default defineComponent({
       }) as string
     })
 
-    const page = ref(0)
-
     return {
       events,
       description,
-      page,
     }
   },
 })

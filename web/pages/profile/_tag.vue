@@ -12,24 +12,25 @@
     </client-only>
 
     <page-section
-      class="w-full flex justify-between"
       tracking-id="hours"
       tracking-page-id="profile"
     >
-      <h1 class="text-3xl font-semibold relative z-10">
-        {{ $t('player.statistics-for') }}
-        <span class="text-yellow-400">{{ player.name }}</span>
-        <span
-          v-if="tag == 'V8LLPPC'"
-          class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
-        >DEV</span>
-      </h1>
+      <div class="w-full flex justify-between">
+        <h1 class="text-3xl font-semibold relative z-10">
+          {{ $t('player.statistics-for') }}
+          <span class="text-yellow-400">{{ player.name }}</span>
+          <span
+            v-if="tag == 'V8LLPPC'"
+            class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
+          >DEV</span>
+        </h1>
 
-      <media-img
-        :path="`/avatars/${player.icon.id}`"
-        clazz="w-16 h-16 md:w-24 md:h-24"
-        wrapper-class="flex-shrink-0"
-      ></media-img>
+        <media-img
+          :path="`/avatars/${player.icon.id}`"
+          clazz="w-16 h-16 md:w-24 md:h-24"
+          wrapper-class="flex-shrink-0"
+        ></media-img>
+      </div>
     </page-section>
 
     <page-section>

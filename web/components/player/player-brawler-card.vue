@@ -98,7 +98,7 @@
       <b-button
         class="w-full"
         primary
-        xs
+        sm
         @click.stop="open = !open"
       >
         {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}

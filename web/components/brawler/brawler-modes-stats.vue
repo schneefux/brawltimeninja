@@ -5,34 +5,31 @@
     </p>
     <scrolling-dashboard
       v-if="data != undefined"
+      :length="data.length"
       class="mt-8"
     >
-      <lazy
-        v-for="(row, index) in data"
-        :key="row.dimensionsRaw.mode.mode"
-        :render="index <= 2"
-        :class="{
-          'md:hidden': index >= (page + 1) * 3,
-        }"
-        distance="600px"
-        class="dashboard__cell"
-        style="--rows: 2; --columns: 4;"
-      >
-        <div slot="placeholder"></div>
-        <brawler-mode-stats
-          :mode="row.dimensionsRaw.mode.mode"
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-          class="w-full h-full"
-        ></brawler-mode-stats>
-      </lazy>
+      <template v-slot="{ limit }">
+        <lazy
+          v-for="(row, index) in data"
+          :key="row.dimensionsRaw.mode.mode"
+          :render="index <= 2"
+          :class="{
+            'lg:hidden': index >= limit,
+          }"
+          distance="600px"
+          class="dashboard__cell"
+          style="--rows: 2; --columns: 4;"
+        >
+          <div slot="placeholder"></div>
+          <brawler-mode-stats
+            :mode="row.dimensionsRaw.mode.mode"
+            :brawler-id="brawlerId"
+            :brawler-name="brawlerName"
+            class="w-full h-full"
+          ></brawler-mode-stats>
+        </lazy>
+      </template>
     </scrolling-dashboard>
-
-    <accordeon-buttons
-      v-model="page"
-      :pages="data != undefined ? data.length / 3 : 0"
-      class="hidden md:flex"
-    ></accordeon-buttons>
   </div>
 </template>
 
@@ -86,12 +83,9 @@ export default defineComponent({
       }) as string
     })
 
-    const page = ref(0)
-
     return {
       data,
       description,
-      page,
     }
   },
 })

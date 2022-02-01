@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <scrolling-dashboard>
+  <scrolling-dashboard
+    :length="player.battles.length"
+  >
+    <template v-slot="{ limit }">
       <lazy
         v-for="(battle, index) in player.battles"
         :key="battle.timestamp"
@@ -13,24 +15,18 @@
           :battle="battle"
           :player-tag="player.tag"
           :class="{
-            'md:hidden': index >= (page + 1) * 3,
+            'lg:hidden': index >= limit,
           }"
           class="dashboard__cell"
           style="--rows: 2; --columns: 4;"
         ></player-battle>
       </lazy>
-    </scrolling-dashboard>
-
-    <accordeon-buttons
-      v-model="page"
-      :pages="player.battles.length / 3"
-      class="hidden md:flex"
-    ></accordeon-buttons>
-  </div>
+    </template>
+  </scrolling-dashboard>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Api'
 
 export default defineComponent({
@@ -39,13 +35,6 @@ export default defineComponent({
       type: Object as PropType<Player>,
       required: true
     },
-  },
-  setup(props) {
-    const page = ref(0)
-
-    return {
-      page,
-    }
   },
 })
 </script>

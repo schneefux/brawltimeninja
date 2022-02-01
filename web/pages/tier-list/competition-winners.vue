@@ -1,36 +1,36 @@
 <template>
   <page :title="$t('tier-list.competition-winners.title')">
-    <scrolling-dashboard class="mt-8">
-      <lazy
-        v-for="(map, index) in maps"
-        :key="map.mode + map.map"
-        :render="index <= 2"
-        :class="{
-          'md:hidden': index >= (page + 1) * 3,
-        }"
-        class="dashboard__cell"
-        style="--rows: 4; --columns: 4;"
-      >
-        <map-detail-card
-          :map="map.map"
-          :mode="map.mode"
-          :timestamp="map.timestamp"
-          id="0"
-          link
-        ></map-detail-card>
-      </lazy>
+    <scrolling-dashboard
+      v-if="maps != undefined"
+      :length="maps.length"
+      class="mt-8"
+    >
+      <template v-slot="{ limit }">
+        <lazy
+          v-for="(map, index) in maps"
+          :key="map.mode + map.map"
+          :render="index <= 2"
+          :class="{
+            'lg:hidden': index >= limit,
+          }"
+          class="dashboard__cell"
+          style="--rows: 4; --columns: 4;"
+        >
+          <map-detail-card
+            :map="map.map"
+            :mode="map.mode"
+            :timestamp="map.timestamp"
+            id="0"
+            link
+          ></map-detail-card>
+        </lazy>
+      </template>
     </scrolling-dashboard>
-
-    <accordeon-buttons
-      v-model="page"
-      :pages="maps != undefined ? maps.length / 3 : 0"
-      class="hidden md:flex"
-    ></accordeon-buttons>
   </page>
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext, ref } from '@nuxtjs/composition-api'
+import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { camelToKebab, getSeasonEnd, slugify } from '~/lib/util'
 
 interface Event {
@@ -76,11 +76,8 @@ export default defineComponent({
         }))
     })
 
-    const page = ref(0)
-
     return {
       maps,
-      page,
     }
   },
 })
