@@ -47,7 +47,7 @@
           'px-6 gap-x-3 pb-2': !dense,
           'pt-4': !dense && !('infobar' in $scopedSlots),
           'pt-2': !dense && 'infobar' in $scopedSlots,
-          'px-2 gap-x-2 pt-1': dense,
+          'px-3 gap-x-2 pt-2': dense,
           'rounded-t': !('infobar' in $scopedSlots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
           'grid-cols-[1fr,auto]': !('icon' in $scopedSlots),
@@ -117,7 +117,7 @@
           'pt-4': title == undefined && !dense,
           'pb-4': background == undefined && !dense,
           'py-2': background != undefined && !dense,
-          'px-2': dense,
+          'px-3': dense,
           'rounded-t bg-filter-rounded-t': !renderTitle,
           'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
           'h-full': fullHeight,
@@ -133,7 +133,7 @@
         v-if="'actions' in $scopedSlots"
         :class="['rounded-b text-gray-800 flex justify-end', {
           'px-6 gap-x-3 pt-2 pb-4': !dense,
-          'px-2 gap-x-2 py-1': dense,
+          'px-3 gap-x-2 py-1': dense,
         }]"
       >
         <slot name="actions"></slot>

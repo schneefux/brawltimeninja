@@ -2,6 +2,7 @@
 import { defineComponent, h } from 'vue-demi'
 import { StaticProps } from '../../props'
 import BCard from '../ui/b-card.vue'
+import BBigstat from '../ui/b-bigstat.vue'
 
 /**
  * Visualisation component that wraps another one in a <b-card>, if the card prop is set.
@@ -9,24 +10,29 @@ import BCard from '../ui/b-card.vue'
  */
 export default defineComponent({
   components: {
+    BBigstat,
     BCard,
   },
   props: {
     ...StaticProps,
     loading: {
       type: Boolean,
-      required: true as true
+      required: true
     },
     component: {
       type: String,
       required: true
+    },
+    wrapper: {
+      type: String,
+      default: 'b-card'
     },
   },
   setup(props, { slots }) {
     // TODO add 'open in dashboard' button
     return () => {
       if (props.card != undefined) {
-        return h(BCard, {
+        return h(props.wrapper, {
           attrs: { // attrs instead of props because b-card is functional
             ...props.card as any,
             loading: props.loading,

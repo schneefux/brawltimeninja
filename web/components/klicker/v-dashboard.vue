@@ -2,7 +2,7 @@
   <div class="w-full">
     <v-auto
       v-bind="$props"
-      :card="{ loading, fullHeight: true, elevation: 2 }"
+      :card="{ loading, fullHeight: true }"
       class="w-full dashboard dashboard--responsive"
       for-grid
       all

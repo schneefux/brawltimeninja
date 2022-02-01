@@ -1,5 +1,5 @@
 <template>
-  <dl class="flex flex-col md:flex-row md:flex-wrap md:justify-center space-y-2 md:space-y-0 md:space-x-8">
+  <dl class="flex flex-col md:flex-row md:flex-wrap md:justify-center gap-y-2 gap-x-8">
     <b-card
       v-for="(value, name) in stats"
       :key="name"
@@ -10,7 +10,7 @@
         slot="content"
         class="text-lg flex"
       >
-        <dd class="text-yellow-400 font-semibold w-16 md:w-auto text-right">{{ value }}</dd>
+        <dd class="text-yellow-400 w-16 md:w-auto text-right">{{ value }}</dd>
         <dt class="ml-2 w-full overflow-hidden">{{ $t('metric.' + name) }}</dt>
       </div>
     </b-card>

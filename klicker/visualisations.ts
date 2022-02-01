@@ -85,6 +85,17 @@ const defaultVisualisations: VisualisationSpec[] = [{
     columns: 5,
   },
 }, {
+  name: 'Big Numbers',
+  component: 'v-bigstats',
+  import: () => import('./components/visualisations/v-bigstats.vue'),
+  applicable(dimensions, metrics, size) {
+    return size == 1 && metrics.length > 0 && metrics.length < 5
+  },
+  initialDimensions: {
+    rows: 1,
+    columns: 3,
+  },
+}, {
   name: 'Pivot Table CSV Download Button',
   component: 'v-pivot-csv',
   import: () => import('./components/visualisations/v-pivot-csv.vue'),

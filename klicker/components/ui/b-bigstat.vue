@@ -1,13 +1,9 @@
 <template>
-  <b-card
-    v-bind="card"
-    :title="label"
-    full-height
-    dense
-  >
+  <b-card v-bind="{ fullHeight: true, dense: true, ...$attrs }">
     <b-button
-      v-if="tooltip != undefined"
+      v-if="tooltip != undefined || tooltipLink != undefined"
       slot="preview"
+      :to="tooltipLink"
       class="-my-1"
       dark
       xs
@@ -25,41 +21,40 @@
           </template>
         </b-card>
       </b-lightbox>
-      <p class="text-center text-3xl font-bold text-yellow-400 my-1">
-        <slot name="value">
+      <div class="text-2xl text-primary-300 my-4 text-center">
+        <slot name="content">
           {{ value }}
         </slot>
-      </p>
+      </div>
     </div>
-    <template
-      v-if="'actions' in $scopedSlots"
-      v-slot:actions
-    >
-      <slot name="actions"></slot>
-    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from 'vue-demi'
+import BCard from './b-card.vue'
+import BButton from './b-button.vue'
+import BLightbox from './b-lightbox.vue'
+import { StaticProps } from '../../props'
 
 export default defineComponent({
   inheritAttrs: false,
+  components: {
+    BCard,
+    BButton,
+    BLightbox,
+  },
   props: {
     value: {
       type: [Number, String],
-      required: false
-    },
-    label: {
-      type: String,
       required: false
     },
     tooltip: {
       type: String,
       required: false
     },
-    card: {
-      type: undefined,
+    tooltipLink: {
+      type: String,
       required: false
     },
   },

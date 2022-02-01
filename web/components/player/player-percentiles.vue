@@ -8,10 +8,10 @@
       full-height
     >
       <div slot="content">
-        <span class="block text-xl font-bold">
+        <span class="block text-xl">
           {{ achievement.metric }}
         </span>
-        <span class="block text-yellow-400 font-semibold">
+        <span class="block text-primary-400">
           {{ achievement.text }}
         </span>
       </div>

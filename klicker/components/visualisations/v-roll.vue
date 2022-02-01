@@ -63,14 +63,6 @@ export default defineComponent({
   name: 'VRoll',
   props: {
     ...VisualisationProps,
-    elevation: {
-      type: Number,
-      required: false
-    },
-    long: {
-      type: Boolean,
-      default: false
-    },
   },
   setup(props) {
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)

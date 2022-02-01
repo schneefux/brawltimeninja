@@ -21,8 +21,8 @@ const visualisations: VisualisationSpec[] = [{
       && metrics.some(m => m.id == 'useRate') && !comparing
   },
   initialDimensions: {
-    rows: 2,
-    columns: 3,
+    rows: 1,
+    columns: 2,
   },
 }, {
   name: 'Sample Size',
@@ -32,7 +32,7 @@ const visualisations: VisualisationSpec[] = [{
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.picks != undefined
   },
   initialDimensions: {
-    rows: 2,
+    rows: 1,
     columns: 2,
   },
 }, {
@@ -43,7 +43,7 @@ const visualisations: VisualisationSpec[] = [{
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.timestamp != undefined
   },
   initialDimensions: {
-    rows: 2,
+    rows: 1,
     columns: 2,
   },
 }]

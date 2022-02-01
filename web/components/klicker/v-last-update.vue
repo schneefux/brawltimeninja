@@ -1,13 +1,12 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.last-update'), dense: true }"
+    :card="card && { ...card, title: $t('metric.last-update') }"
+    :value="lastUpdate"
     component="v-last-update"
+    wrapper="b-bigstat"
   >
-    <p
-      slot="content"
-      class="text-lg md:text-xl"
-    >
+    <p slot="content">
       {{ lastUpdate }}
     </p>
   </v-card-wrapper>

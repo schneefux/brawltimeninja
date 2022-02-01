@@ -139,7 +139,7 @@ import { MetaInfo } from 'vue-meta'
 import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
 import Page from '~/components/page.vue'
-import { BTextbox, BHorizontalScroller } from '@schneefux/klicker/components'
+import { BTextbox } from '@schneefux/klicker/components'
 
 interface EventIdAndMap {
   id: string
@@ -151,7 +151,6 @@ export default Vue.extend({
   components: {
     Page,
     BTextbox,
-    BHorizontalScroller,
   },
   head(): MetaInfo {
     const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })

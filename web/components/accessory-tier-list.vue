@@ -37,11 +37,13 @@
               v-bind="data"
               :card="{ fullHeight: true }"
               class="dashboard__cell"
+              style="--columns: 2"
             ></v-sample-size>
             <v-last-update
               v-bind="data"
               :card="{ fullHeight: true }"
               class="dashboard__cell"
+              style="--columns: 2"
             ></v-last-update>
           </div>
         </template>

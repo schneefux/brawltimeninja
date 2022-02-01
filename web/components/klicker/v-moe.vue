@@ -1,22 +1,21 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.margin-of-error'), dense: true }"
+    :card="card && { ...card, title: $t('metric.margin-of-error') }"
     component="v-moe"
+    wrapper="b-bigstat"
   >
-    <p
-      slot="content"
-      class="text-center leading-none"
-    >
+    <p slot="content" class="text-center leading-none">
       <span
-        :class="['text-lg md:text-xl', {
+        class="text-xl"
+        :class="{
           'text-green-400': moe <= 0.01,
           'text-orange-400': moe > 0.01 && moe <= 0.025,
           'text-red-400': moe > 0.025,
-        }]"
+        }"
       >{{ moePercent }}</span>
       <br>
-      <span class="text-sm">
+      <span class="text-sm text-white">
         <template v-if="moe <= 0.005">
           {{ $t('moe.perfect') }}
         </template>

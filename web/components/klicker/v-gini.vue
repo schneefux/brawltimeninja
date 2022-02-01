@@ -1,22 +1,15 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.balance-rating'), dense: true }"
+    :card="card && { ...card, title: $t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' }"
     component="v-gini"
+    wrapper="b-bigstat"
   >
-    <b-button
-      slot="preview"
-      to="/faq/measuring-map-quality"
-      class="my-px"
-      dark
-      xs
-    >?</b-button>
     <p
       slot="content"
-      class="text-center leading-none"
+      class="leading-none"
     >
       <span
-        class="text-xl"
         :class="{
           'text-red-400': giniScore > 0.4,
           'text-orange-400': giniScore > 0.3 && giniScore <= 0.4,
@@ -24,7 +17,9 @@
         }"
       >{{ giniScore == undefined ? '?' : giniScoreWords[Math.floor(giniScore * 10)] }}</span>
       <br>
-      <span class="text-xs">{{ $t('metric.gini-coefficient') }}: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}</span>
+      <span class="text-xs text-white">
+        {{ $t('metric.gini-coefficient') }}: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}
+      </span>
     </p>
   </v-card-wrapper>
 </template>

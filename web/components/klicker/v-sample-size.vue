@@ -1,8 +1,9 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.sample-size'), dense: true }"
+    :card="card && { ...card, title: $t('metric.sample-size') }"
     component="v-sample-size"
+    wrapper="b-bigstat"
   >
     <p
       v-if="sample == 0"
@@ -14,7 +15,6 @@
     <p
       v-else
       slot="content"
-      class="text-lg md:text-xl"
     >
       {{ $t('sample-size', { count: sampleFormatted }) }}
     </p>

@@ -1,17 +1,14 @@
 <template>
   <div>
     <div class="grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-8 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
-      <bigstat
-        :label="$t('metric.hours-spent')"
+      <b-bigstat
+        :title="$t('metric.hours-spent')"
         class="relative row-span-2"
       >
-        <div
-          slot="value"
-          class="w-full text-center"
-        >
+        <div slot="content">
           <p
             ref="counter-hours"
-            class="text-4xl font-bold text-yellow-400 mb-2"
+            class="text-4xl text-yellow-400 mb-2"
           >
             ...
           </p>
@@ -25,24 +22,24 @@
             @share="sharepicTriggered"
           ></share-render-button>
         </div>
-      </bigstat>
+      </b-bigstat>
 
       <p
         class="ml-1 mt-2 col-span-4 text-sm"
       >{{ $t('player.equals') }}</p>
 
-      <bigstat
+      <b-bigstat
         v-for="(stat, statName) in funStats"
         :key="statName"
-        :label="stat.label"
+        :title="stat.label"
       >
         <p
-          slot="value"
+          slot="content"
           ref="counter-funstats"
         >
           ...
         </p>
-      </bigstat>
+      </b-bigstat>
     </div>
 
     <div class="mt-6 grid grid-cols-[80vw,repeat(4,minmax(150px,1fr))] lg:grid-cols-[3fr,repeat(4,minmax(150px,1fr))] gap-8 overflow-x-auto -mr-4 pr-4 lg:mr-0 lg:pr-0">
@@ -67,47 +64,47 @@
         </div>
       </b-card>
 
-      <bigstat
+      <b-bigstat
         v-if="player != undefined && player.club.tag != undefined"
-        :label="$t('club')"
+        :title="$t('club')"
         class="col-span-2"
       >
         <nuxt-link
-          slot="value"
+          slot="content"
           :to="localePath(`/club/${player.club.tag}`)"
           class="underline"
         >
           [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
         </nuxt-link>
-      </bigstat>
+      </b-bigstat>
 
-      <bigstat
-        :label="$t('metric.trophies')"
+      <b-bigstat
+        :title="$t('metric.trophies')"
         :value="player != undefined ? player.trophies.toLocaleString() : '?'"
-      ></bigstat>
+      ></b-bigstat>
 
-      <bigstat
+      <b-bigstat
         v-if="brawlersUnlocked < totalBrawlers"
-        :label="$t('metric.potentialTrophies')"
+        :title="$t('metric.potentialTrophies')"
         :value="Math.floor(trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
-      ></bigstat>
+      ></b-bigstat>
 
-      <bigstat
+      <b-bigstat
         v-if="playerTotals != undefined && playerTotals.picks > 0"
-        :label="$t('metric.recentWinrate')"
+        :title="$t('metric.recentWinrate')"
         :value="Math.floor(playerTotals.winRate * 100) + '%'"
         :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
-      ></bigstat>
+      ></b-bigstat>
 
-      <bigstat
+      <b-bigstat
         v-if="playerTotals != undefined && playerTotals.picks > 0"
-        :label="$t('metric.averageTrophies')"
+        :title="$t('metric.averageTrophies')"
         :value="playerTotals.trophyChange.toFixed(2)"
-      ></bigstat>
+      ></b-bigstat>
 
-      <bigstat
-        :label="$t('metric.accountRating')"
+      <b-bigstat
+        :title="$t('metric.accountRating')"
         :value="accountRating"
         tooltip
       >
@@ -120,7 +117,7 @@
             >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
           </ul>
         </template>
-      </bigstat>
+      </b-bigstat>
     </div>
   </div>
 </template>
@@ -129,7 +126,7 @@
 import { Player } from '@/model/Api'
 import { ratingPercentiles, xpToHours } from '~/lib/util'
 import { PlayerTotals } from '~/store'
-import { BHorizontalScroller } from '@schneefux/klicker/components'
+import { BBigstat } from '@schneefux/klicker/components'
 import { computed, defineComponent, nextTick, onBeforeUpdate, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
 interface FunStat {
@@ -145,7 +142,7 @@ interface CounterRef {
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
-    BHorizontalScroller,
+    BBigstat,
   },
   props: {
     player: {

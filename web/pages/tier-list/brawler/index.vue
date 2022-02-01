@@ -7,7 +7,7 @@
     </p>
 
     <page-section>
-      <div class="dashboard dashboard--responsive">
+      <scrolling-dashboard>
         <map-best-starpowers-roll
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'gadgets'),
@@ -29,7 +29,7 @@
           class="dashboard__cell"
           style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
-      </div>
+      </scrolling-dashboard>
     </page-section>
 
     <client-only>
@@ -69,8 +69,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import scrollingDashboard from '~/components/scrolling-dashboard.vue'
 
 export default Vue.extend({
+  components: { scrollingDashboard },
   head() {
     const description = this.$t('tier-list.brawlers.meta.description') as string
     return {
