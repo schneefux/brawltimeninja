@@ -59,8 +59,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, inject } from 'vue-demi'
-import { CubeComparingResponse, CubeResponse, GridWidget, KlickerService, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '../../types'
+import { computed, defineComponent, PropType, ref } from 'vue-demi'
+import { CubeComparingResponse, CubeResponse, GridWidget, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '../../types'
 import BCard from '../ui/b-card.vue'
 import BSelect from '../ui/b-select.vue'
 import { useCubeResponse } from '../../composables/response'
@@ -83,10 +83,6 @@ export default defineComponent({
     },
     value: {
       type: Object as PropType<Widget>,
-      required: true
-    },
-    spec: {
-      type: Object as PropType<VisualisationSpec>,
       required: true
     },
     elevation: {
@@ -114,6 +110,11 @@ export default defineComponent({
       }
     })
 
+    const spec = computed(() => (
+      $klicker.visualisations.find(v => v.component == props.value.component) ??
+      $klicker.staticWidgets.find(w => w.component == props.value.component)
+    )!)
+
     const component = computed({
       get() {
         return props.value.component
@@ -137,13 +138,14 @@ export default defineComponent({
         }
 
         if (props.forGrid) {
+          const s: VisualisationSpec = spec.value
           const widget: GridWidget = {
             ...props.value as GridWidget,
             props: {},
             component,
             frame: {
-              rows: props.spec.initialDimensions.rows,
-              columns: props.spec.initialDimensions.columns,
+              rows: s.initialDimensions.rows,
+              columns: s.initialDimensions.columns,
             },
           }
 
@@ -167,6 +169,7 @@ export default defineComponent({
     const prefix = Math.random().toString().slice(2)
 
     return {
+      spec,
       component,
       setWidgetProp,
       visualisations,

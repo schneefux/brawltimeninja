@@ -66,7 +66,6 @@
             <c-visualisation-selector
               v-bind="data"
               :value="value"
-              :spec="spec"
               :elevation="elevation + 1"
               class="w-full md:w-auto"
               for-canvas
@@ -85,7 +84,6 @@
         <c-visualisation-selector
           :value="value"
           :elevation="elevation + 1"
-          :spec="spec"
           class="w-full md:w-auto"
           for-canvas
           @input="v => $emit('input', v)"
@@ -99,13 +97,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, inject } from 'vue-demi'
-import { CubeComparingQuery, CubeQuery, KlickerService, VisualisationSpec, Widget } from '../../types'
+import { defineComponent, PropType, computed } from 'vue-demi'
+import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
 import CWidgetPropEditor from './c-widget-prop-editor.vue'
 import BCard from '../ui/b-card.vue'
-import { useKlicker } from '../../composables/klicker'
 
 /**
  * Form to edit a widget.
@@ -132,9 +129,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
-    const spec = computed<VisualisationSpec>(() => $klicker.visualisations.find(v => v.component == props.value.component)!)
-
     const withQuery = computed({
       get() {
         return props.value.query == undefined ? 'false' : 'true'
@@ -173,7 +167,6 @@ export default defineComponent({
     })
 
     return {
-      spec,
       query,
       withQuery,
     }
