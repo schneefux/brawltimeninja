@@ -1,7 +1,7 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-8">
     <div
-      class="grid gap-4 grid-cols-1"
+      class="grid gap-8 grid-cols-1"
       :class="{
         'lg:grid-cols-[3fr,5fr]': configurator && slicer,
       }"

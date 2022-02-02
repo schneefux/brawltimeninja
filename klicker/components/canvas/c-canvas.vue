@@ -1,9 +1,8 @@
 <template>
-  <div class="flex flex-wrap justify-center items-center">
-    <div class="w-full mt-1 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 items-center">
+  <div>
+    <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
       <label
         :for="`${prefix}-title`"
-        class="font-semibold"
       >
         Title
       </label>
@@ -15,7 +14,6 @@
 
       <label
         :for="`${prefix}-width`"
-        class="font-semibold"
       >
         Width
       </label>
@@ -30,7 +28,6 @@
 
       <label
         :for="`${prefix}-height`"
-        class="font-semibold"
       >
         Height
       </label>
@@ -53,7 +50,7 @@
 
     <div
       v-if="selectedWidgetId != undefined && widgets[selectedWidgetId] != undefined"
-      class="w-full mt-2"
+      class="mt-8"
     >
       <c-widget-editor
         :value="widgets[selectedWidgetId]"

@@ -3,6 +3,7 @@
     <c-canvas
       v-model="report"
       :default-query="defaultQuery"
+      class="mt-8"
     >
       <template v-slot:totals="data">
         <v-sample-size v-bind="data"></v-sample-size>
@@ -26,7 +27,7 @@
 
     <div
       v-if="canSave"
-      class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+      class="mt-8 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-8 items-center"
     >
       <template v-if="report.id != undefined">
         <label :for="`${prefix}-editor`">
@@ -57,9 +58,9 @@
         ></share-render-button>
       </template>
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col gap-y-4">
       <p>Log in to share this report.</p>
-      <login-button class="mt-2"></login-button>
+      <login-button></login-button>
     </div>
   </page-dashboard>
 </template>

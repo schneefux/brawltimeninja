@@ -1,14 +1,13 @@
 <template>
   <page title="Account">
-    <div v-if="user != undefined">
-      <h2 class="mt-3 text-xl font-semibold">Your Reports</h2>
+    <page-section v-if="user != undefined" title="Your Reports">
       <b-button
         to="/report-designer"
-        class="ml-1 mt-2"
+        class="mt-4"
         primary
         md
       >Create new Report</b-button>
-      <div class="mt-2 flex flex-wrap">
+      <div class="mt-4 flex flex-wrap">
         <b-card
           v-for="report in user.reports"
           :key="report.id"
@@ -36,15 +35,16 @@
           </div>
         </b-card>
       </div>
+    </page-section>
 
-      <h2 class="mt-4 text-xl font-semibold">Your Dashboards</h2>
+    <page-section v-if="user != undefined" title="Your Dashboards">
       <b-button
         to="/dashboard-designer"
-        class="ml-1 mt-2"
+        class="mt-4"
         primary
         md
       >Create new Dashboard</b-button>
-      <div class="mt-2 flex flex-wrap">
+      <div class="mt-4 flex flex-wrap">
         <b-card
           v-for="grid in user.grids"
           :key="grid.id"
@@ -72,9 +72,9 @@
           </div>
         </b-card>
       </div>
-    </div>
+    </page-section>
 
-    <div v-else class="mt-3">
+    <div v-if="user == undefined" class="mt-4">
       <login-button></login-button>
     </div>
   </page>

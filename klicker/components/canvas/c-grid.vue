@@ -1,81 +1,79 @@
 <template>
-  <div class="flex flex-wrap justify-center items-center">
-    <div class="w-full mt-1 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 items-center">
-      <b-button
-        class="col-span-full"
-        primary
-        md
-        @click="addWidget"
-      >Add a new Widget</b-button>
-    </div>
+  <div>
+    <div class="flex flex-col justify-center">
+      <div>
+        <b-button
+          primary
+          md
+          @click="addWidget"
+        >Add a new Widget</b-button>
+      </div>
 
-    <div
-      v-if="selectedWidgetId != undefined && widgetsKeyed[selectedWidgetId] != undefined"
-      class="w-full mt-2"
-    >
-      <c-widget-editor
-        :value="widgetsKeyed[selectedWidgetId]"
-        :default-query="defaultQuery"
-        @input="updateWidget"
-        @delete="deleteSelectedWidget"
+      <div
+        v-if="selectedWidgetId != undefined && widgetsKeyed[selectedWidgetId] != undefined"
+        class="mt-4"
       >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
+        <c-widget-editor
+          :value="widgetsKeyed[selectedWidgetId]"
+          :default-query="defaultQuery"
+          @input="updateWidget"
+          @delete="deleteSelectedWidget"
         >
-          <slot
-            :name="name"
-            v-bind="data"
-          ></slot>
-        </template>
-
-        <b-card
-          :elevation="3"
-          title="Configure Widget Dimensions"
-          class="w-full md:w-auto"
-          full-height
-        >
-          <div
-            slot="content"
-            class="grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 items-center"
+          <template
+            v-for="(_, name) in $scopedSlots"
+            v-slot:[name]="data"
           >
-            <label
-              :for="`${prefix}-columns`"
-              class="font-semibold"
-            >
-              Columns
-            </label>
-            <b-number
-              :value="widgetsKeyed[selectedWidgetId].frame.columns"
-              :id="`${prefix}-width`"
-              min="1"
-              max="8"
-              dark
-              @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
-            ></b-number>
+            <slot
+              :name="name"
+              v-bind="data"
+            ></slot>
+          </template>
 
-            <label
-              :for="`${prefix}-rows`"
-              class="font-semibold"
+          <b-card
+            :elevation="2"
+            title="Configure Widget Dimensions"
+            full-height
+          >
+            <div
+              slot="content"
+              class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
             >
-              Rows
-            </label>
-            <b-number
-              :value="widgetsKeyed[selectedWidgetId].frame.rows"
-              :id="`${prefix}-rows`"
-              min="1"
-              max="8"
-              dark
-              @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
-            ></b-number>
-          </div>
-        </b-card>
-      </c-widget-editor>
+              <label
+                :for="`${prefix}-columns`"
+              >
+                Columns
+              </label>
+              <b-number
+                :value="widgetsKeyed[selectedWidgetId].frame.columns"
+                :id="`${prefix}-width`"
+                min="1"
+                max="8"
+                dark
+                @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
+              ></b-number>
+
+              <label
+                :for="`${prefix}-rows`"
+              >
+                Rows
+              </label>
+              <b-number
+                :value="widgetsKeyed[selectedWidgetId].frame.rows"
+                :id="`${prefix}-rows`"
+                min="1"
+                max="8"
+                dark
+                @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
+              ></b-number>
+            </div>
+          </b-card>
+        </c-widget-editor>
+      </div>
     </div>
 
     <draggable
       v-model="widgets"
-      class="w-full dashboard"
+      class="mt-16 w-full dashboard"
     >
       <c-widget
         v-for="w in widgets"

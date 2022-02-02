@@ -5,10 +5,19 @@
     <c-grid
       v-model="grid"
       :default-query="defaultQuery"
+      class="mt-8"
     >
       <template v-slot:totals="data">
-        <v-sample-size v-bind="data"></v-sample-size>
-        <v-last-update v-bind="data"></v-last-update>
+        <v-sample-size
+          v-bind="data"
+          class="dashboard__cell"
+          style="--columns: 2;"
+        ></v-sample-size>
+        <v-last-update
+          v-bind="data"
+          class="dashboard__cell"
+          style="--columns: 2;"
+        ></v-last-update>
       </template>
 
       <template v-slot:dimensions="data">
@@ -28,7 +37,7 @@
 
     <div
       v-if="canSave"
-      class="mt-2 grid grid-cols-[max-content,max-content] gap-x-2 gap-y-2 items-center"
+      class="mt-8 grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center"
     >
       <label :for="`${prefix}-editor`">
         {{ $t('action.editor-url') }}
@@ -50,9 +59,9 @@
         dark
       ></b-textbox>
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col gap-y-4">
       <p>Log in to share this report.</p>
-      <login-button class="mt-2"></login-button>
+      <login-button></login-button>
     </div>
   </page-dashboard>
 </template>

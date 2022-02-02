@@ -53,9 +53,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, inject } from 'vue-demi'
+import { computed, defineComponent, PropType } from 'vue-demi'
 import CQuery from '../c-query'
-import { GridWidget, KlickerService, ReportWidget, VisualisationSpec, Widget } from '../../types'
+import { GridWidget, ReportWidget, StaticWidgetSpec } from '../../types'
 import VAuto from '../visualisations/v-auto.vue'
 import { useKlicker } from '../../composables/klicker'
 
@@ -63,7 +63,7 @@ import { useKlicker } from '../../composables/klicker'
  * Return a style object to position this widget on a canvas.
  * Uses frame sizings or specified defaults, if available.
  */
-export function render(frame: ReportWidget['frame'], spec: VisualisationSpec) {
+export function render(frame: ReportWidget['frame'], spec: StaticWidgetSpec) {
   const { translate, scale, rotate, width, height } = frame
   const style: Record<string, string> = {
     position: 'absolute',

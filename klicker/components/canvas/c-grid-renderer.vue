@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard min-h-screen bg-gray-900 text-gray-200">
+  <div class="dashboard dashboard--responsive min-h-screen bg-gray-900 text-gray-200">
     <c-widget
       v-for="w in grid.widgets"
       :key="w.id"

@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted } from "vue-demi";
-import { ReportWidget, VisualisationSpec } from "../../types";
+import { ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
 import { useKlicker } from '../../composables/klicker'
@@ -80,7 +80,10 @@ export default defineComponent({
     const { $klicker } = useKlicker()
     const moveable = ref<MoveableInterface>()
 
-    const spec = computed<VisualisationSpec>(() => $klicker.visualisations.find(v => v.component == props.value.component)!)
+    const spec = computed<StaticWidgetSpec>(() => (
+      $klicker.visualisations.find(v => v.component == props.value.component) ??
+      $klicker.staticWidgets.find(v => v.component == props.value.component)
+    )!)
 
     // Keep a local copy of the frame and lazy-sync it on *end to prevent event spam
     const clone = (o: any) => JSON.parse(JSON.stringify(o))

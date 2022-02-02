@@ -5,10 +5,10 @@
   >
     <div
       slot="content"
-      class="my-1 flex flex-col gap-y-2"
+      class="mt-4 flex flex-col gap-y-8"
     >
-      <div class="ml-2 w-full flex gap-5">
-        <h1 class="inline font-semibold mr-5">
+      <div class="w-full flex gap-4">
+        <h1 class="inline mr-4">
           Widget Kind
         </h1>
         <label class="flex items-center">
@@ -39,19 +39,24 @@
         v-if="query != undefined"
         v-model="query"
         :elevation="elevation + 1"
-        configurator
+        :configurator="{
+          configureCube: true,
+          configureMetrics: true,
+          configureMultipleMetrics: true,
+          configureDimensions: true,
+          configureCompareMode: true,
+        }"
         slicer
       >
         <template v-slot:totals="data">
           <b-card
             :elevation="elevation + 1"
             title="Data Source Info"
-            class="w-full md:w-auto"
             full-height
           >
             <div
               slot="content"
-              class="flex flex-wrap"
+              class="dashboard dashboard--responsive"
             >
               <slot
                 name="totals"
@@ -62,12 +67,11 @@
           </b-card>
         </template>
         <template v-slot:data="data">
-          <div class="contents">
+          <div class="flex flex-wrap gap-8">
             <c-visualisation-selector
               v-bind="data"
               :value="value"
               :elevation="elevation + 1"
-              class="w-full md:w-auto"
               for-canvas
               @input="v => $emit('input', v)"
               @delete="$emit('delete')"
@@ -79,12 +83,11 @@
 
       <div
         v-else
-        class="flex flex-wrap"
+        class="flex flex-wrap gap-8"
       >
         <c-visualisation-selector
           :value="value"
           :elevation="elevation + 1"
-          class="w-full md:w-auto"
           for-canvas
           @input="v => $emit('input', v)"
           @delete="$emit('delete')"
@@ -101,7 +104,6 @@ import { defineComponent, PropType, computed } from 'vue-demi'
 import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
-import CWidgetPropEditor from './c-widget-prop-editor.vue'
 import BCard from '../ui/b-card.vue'
 
 /**
@@ -112,7 +114,6 @@ export default defineComponent({
     BCard,
     CDashboard,
     CVisualisationSelector,
-    CWidgetPropEditor,
   },
   props: {
     value: {

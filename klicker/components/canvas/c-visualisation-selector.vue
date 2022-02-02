@@ -5,10 +5,9 @@
     full-height
   >
     <div slot="content">
-      <div class="grid grid-cols-[max-content,max-content] gap-x-4 gap-y-2 my-1 items-center">
+      <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
         <label
           for="`${prefix}-widget`"
-          class="font-semibold"
         >Widget</label>
         <b-select
           :id="`${prefix}-widget`"
@@ -32,7 +31,6 @@
           <label
             :for="`${prefix}-${prop}`"
             :key="`${prop}-label`"
-            class="font-semibold"
           >
             {{ propSpec.name }}
           </label>
@@ -50,7 +48,7 @@
 
     <div slot="actions">
       <b-button
-        sm
+        md
         primary
         @click="$emit('delete')"
       >Delete Widget</b-button>
