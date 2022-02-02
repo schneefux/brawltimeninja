@@ -74,7 +74,7 @@ import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType } from 'vue-demi'
+import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import { useKlicker } from '../composables/klicker'
 
 export default defineComponent({
@@ -182,7 +182,7 @@ export default defineComponent({
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
 
-    const prefix = Math.random().toString().slice(2)
+    const prefix = ref(Math.random().toString().slice(2))
 
     const translate = (key: string) => $klicker.$t(key)
 

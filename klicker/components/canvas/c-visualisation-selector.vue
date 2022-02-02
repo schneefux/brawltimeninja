@@ -164,7 +164,7 @@ export default defineComponent({
       emit('input', widget)
     }
 
-    const prefix = Math.random().toString().slice(2)
+    const prefix = ref(Math.random().toString().slice(2))
 
     return {
       spec,

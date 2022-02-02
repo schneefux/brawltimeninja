@@ -41,7 +41,7 @@
       ></b-number>
 
       <b-button
-        class="col-span-full"
+        class="mt-4 col-span-full"
         primary
         md
         @click="addWidget"
@@ -262,7 +262,7 @@ export default defineComponent({
       bottom: props.value.height,
     }))
 
-    const prefix = Math.random().toString().slice(2)
+    const prefix = ref(Math.random().toString().slice(2))
 
     return {
       prefix,

@@ -98,7 +98,7 @@
      * Set a fixed width and scroll horizontally.
      */
     --columns: 12;
-    grid-template-columns: repeat(var(--columns), minmax(96px, auto));
+    grid-template-columns: repeat(var(--columns), minmax(96px, min-content));
     overflow-x: auto;
   }
 

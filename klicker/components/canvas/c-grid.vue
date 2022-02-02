@@ -1,84 +1,154 @@
 <template>
   <div>
-    <div class="flex flex-col justify-center">
-      <div>
-        <b-button
-          primary
-          md
-          @click="addWidget"
-        >Add a new Widget</b-button>
-      </div>
-
-      <div
-        v-if="selectedWidgetId != undefined && widgetsKeyed[selectedWidgetId] != undefined"
-        class="mt-4"
+    <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
+      <label
+        :for="`${prefix}-title`"
       >
-        <c-widget-editor
-          :value="widgetsKeyed[selectedWidgetId]"
-          :default-query="defaultQuery"
-          @input="updateWidget"
-          @delete="deleteSelectedWidget"
-        >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
+        Title
+      </label>
+      <b-textbox
+        v-model="title"
+        :id="`${prefix}-title`"
+        dark
+      ></b-textbox>
 
-          <b-card
-            :elevation="2"
-            title="Configure Widget Dimensions"
-            full-height
+      <div class="col-span-full space-y-2">
+        <div class="flex gap-x-2 items-center">
+          <b-radio
+            :model-value="columns == undefined"
+            :id="`${prefix}-responsive`"
+            :value="true"
+            name="responsive"
+            required
+            primary
+            @input="v => columns = undefined"
+          ></b-radio>
+          <label
+            :for="`${prefix}-responsive`"
           >
-            <div
-              slot="content"
-              class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
-            >
-              <label
-                :for="`${prefix}-columns`"
-              >
-                Columns
-              </label>
-              <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.columns"
-                :id="`${prefix}-width`"
-                min="1"
-                max="8"
-                dark
-                @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
-              ></b-number>
+            Responsive layout
+          </label>
+        </div>
 
-              <label
-                :for="`${prefix}-rows`"
-              >
-                Rows
-              </label>
-              <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.rows"
-                :id="`${prefix}-rows`"
-                min="1"
-                max="8"
-                dark
-                @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
-              ></b-number>
-            </div>
-          </b-card>
-        </c-widget-editor>
+        <div class="flex gap-x-2 items-center">
+          <b-radio
+            :model-value="columns != undefined"
+            :id="`${prefix}-fixed`"
+            :value="true"
+            name="responsive"
+            required
+            primary
+            @input="v => columns = columns || 12"
+          ></b-radio>
+          <label
+            :for="`${prefix}-fixed`"
+          >
+            Fixed width layout
+          </label>
+        </div>
       </div>
+
+      <label
+        v-if="columns != undefined"
+        :for="`${prefix}-width`"
+      >
+        Width in columns
+      </label>
+      <b-number
+        v-if="columns != undefined"
+        v-model="columns"
+        :id="`${prefix}-width`"
+        min="1"
+        max="24"
+        required
+        dark
+      ></b-number>
+
+      <b-button
+        class="mt-4 col-span-full"
+        primary
+        md
+        @click="addWidget"
+      >Add a new Widget</b-button>
+    </div>
+
+    <div
+      v-if="selectedWidgetId != undefined && widgetsKeyed[selectedWidgetId] != undefined"
+      class="mt-4"
+    >
+      <c-widget-editor
+        :value="widgetsKeyed[selectedWidgetId]"
+        :default-query="defaultQuery"
+        @input="updateWidget"
+        @delete="deleteSelectedWidget"
+      >
+        <template
+          v-for="(_, name) in $scopedSlots"
+          v-slot:[name]="data"
+        >
+          <slot
+            :name="name"
+            v-bind="data"
+          ></slot>
+        </template>
+
+        <b-card
+          :elevation="2"
+          title="Configure Widget Dimensions"
+          full-height
+        >
+          <div
+            slot="content"
+            class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
+          >
+            <label
+              :for="`${prefix}-columns`"
+            >
+              Columns
+            </label>
+            <b-number
+              :value="widgetsKeyed[selectedWidgetId].frame.columns"
+              :id="`${prefix}-width`"
+              min="1"
+              max="8"
+              dark
+              @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
+            ></b-number>
+
+            <label
+              :for="`${prefix}-rows`"
+            >
+              Rows
+            </label>
+            <b-number
+              :value="widgetsKeyed[selectedWidgetId].frame.rows"
+              :id="`${prefix}-rows`"
+              min="1"
+              max="8"
+              dark
+              @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
+            ></b-number>
+          </div>
+        </b-card>
+      </c-widget-editor>
     </div>
 
     <draggable
       v-model="widgets"
+      :style="{
+        '--columns': columns,
+      }"
+      :class="{
+        'dashboard--fixed': columns != undefined,
+        'dashboard--responsive': columns == undefined,
+      }"
       class="mt-16 w-full dashboard"
     >
       <c-widget
         v-for="w in widgets"
         :key="w.id + key"
         :widget="w"
+        class="pointer-events-none"
         for-grid
         @click.native="selectedWidgetId = w.id"
       >
@@ -101,6 +171,7 @@ import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import CWidgetEditor from './c-widget-editor.vue'
 import CWidget from './c-widget.vue'
 import BNumber from '../ui/b-number.vue'
+import BTextbox from '../ui/b-textbox.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
 
@@ -110,6 +181,7 @@ import Draggable from 'vuedraggable'
 export default defineComponent({
   components: {
     BNumber,
+    BTextbox,
     CWidget,
     CWidgetEditor,
     Draggable,
@@ -191,11 +263,31 @@ export default defineComponent({
       key.value++
     }
 
-    const prefix = Math.random().toString().slice(2)
+    const title = computed({
+      get() {
+        return props.value.title
+      },
+      set(title: string) {
+        emit('input', { ...props.value, title })
+      }
+    })
+
+    const columns = computed({
+      get() {
+        return props.value.columns
+      },
+      set(columns: number|undefined) {
+        emit('input', { ...props.value, columns })
+      }
+    })
+
+    const prefix = ref(Math.random().toString().slice(2))
 
     return {
       key,
+      title,
       prefix,
+      columns,
       widgets,
       widgetsKeyed,
       addWidget,

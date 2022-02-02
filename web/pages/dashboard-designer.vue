@@ -59,7 +59,7 @@
         dark
       ></b-textbox>
     </div>
-    <div v-else class="flex flex-col gap-y-4">
+    <div v-else class="mt-8 flex flex-col gap-y-4">
       <p>Log in to share this report.</p>
       <login-button></login-button>
     </div>

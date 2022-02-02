@@ -277,6 +277,7 @@ export interface Grid {
   created_at?: string
   updated_at?: string
   title: string
+  columns: number|undefined
   widgets: GridWidget[]
 }
 

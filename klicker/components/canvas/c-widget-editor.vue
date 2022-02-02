@@ -7,31 +7,39 @@
       slot="content"
       class="mt-4 flex flex-col gap-y-8"
     >
-      <div class="w-full flex gap-4">
+      <div class="w-full flex gap-4 items-center">
         <h1 class="inline mr-4">
           Widget Kind
         </h1>
-        <label class="flex items-center">
-          <b-radio
-            :model-value="withQuery"
-            value="false"
-            name="withQuery"
-            required
-            primary
-            @input="v => withQuery = v"
-          ></b-radio>
-          <span class="ml-2">Static Widget</span>
+
+        <b-radio
+          :model-value="withQuery"
+          :id="`${prefix}-static`"
+          value="false"
+          name="withQuery"
+          required
+          primary
+          @input="v => withQuery = v"
+        ></b-radio>
+        <label
+          :for="`${prefix}-static`"
+        >
+          Static Widget
         </label>
-        <label class="flex items-center">
-          <b-radio
-            :model-value="withQuery"
-            value="true"
-            name="withQuery"
-            required
-            primary
-            @input="v => withQuery = v"
-          ></b-radio>
-          <span class="ml-2">Widget with Data</span>
+
+        <b-radio
+          :model-value="withQuery"
+          :id="`${prefix}-data`"
+          value="true"
+          name="withQuery"
+          required
+          primary
+          @input="v => withQuery = v"
+        ></b-radio>
+        <label
+          :for="`${prefix}-data`"
+        >
+          Widget with Data
         </label>
       </div>
 
@@ -100,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue-demi'
+import { defineComponent, PropType, computed, ref } from 'vue-demi'
 import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
@@ -167,7 +175,10 @@ export default defineComponent({
       }
     })
 
+    const prefix = ref(Math.random().toString().slice(2))
+
     return {
+      prefix,
       query,
       withQuery,
     }

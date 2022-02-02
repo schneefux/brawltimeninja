@@ -17,6 +17,7 @@ export class GridModel extends Model {
         id: { type: 'integer' },
         user_id: { type: 'integer' },
         title: { type: 'string' },
+        columns: { type: 'integer' },
         widgets: { type: 'array' },
       },
     }
@@ -47,6 +48,7 @@ export async function migrate(db: Knex) {
       table.datetime('created_at').notNullable().defaultTo(db.fn.now())
       table.datetime('updated_at').notNullable().defaultTo(db.fn.now())
       table.string('title').notNullable()
+      table.integer('columns')
       table.json('widgets').notNullable()
     })
   }
