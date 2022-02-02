@@ -28,7 +28,7 @@
             <div slot="content">
               <v-gini
                 v-bind="data"
-                class="mt-2"
+                class="mt-2 text-center"
               ></v-gini>
               <p
                 slot="content"
