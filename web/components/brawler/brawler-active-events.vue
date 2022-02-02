@@ -20,7 +20,6 @@
           distance="600px"
           class="dashboard__cell"
         >
-          <div slot="placeholder"></div>
           <brawler-active-event
             :mode="event.battle_event_mode"
             :map="event.battle_event_map"

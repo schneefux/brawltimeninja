@@ -5,7 +5,7 @@
       :dimensions="['trophyRange']"
       sort="trophyRange"
       metric="winRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
     ></map-trend-chart>
 
@@ -14,7 +14,7 @@
       :dimensions="['trophyRange']"
       sort="trophyRange"
       metric="starRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
     ></map-trend-chart>
 
@@ -24,7 +24,7 @@
       :dimensions="['trophyRange', 'brawler']"
       sort="trophyRange"
       metric="useRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
       no-compare
     ></map-trend-chart>

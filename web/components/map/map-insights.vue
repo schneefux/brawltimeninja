@@ -3,33 +3,26 @@
     <div
       v-for="t in templates"
       :key="t.title"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--columns: 4; --rows: 2;"
     >
-      <b-card
-        :title="t.title"
-        :elevation="elevation"
-        :title-link="t.link"
-        full-height
+      <c-query
+        slot="content"
+        :query="t.query"
+        :filter="filter"
       >
-        <c-query
-          slot="content"
-          :query="t.query"
-          :filter="filter"
-        >
-          <p slot="empty" class="text-center">
-            {{ $t('state.no-outliers') }}
-          </p>
-          <template v-slot="data">
-            <v-roll v-bind="data">
-              <template v-slot:dimensions="data">
-                <d-brawler v-bind="data"></d-brawler>
-                <d-gear v-bind="data"></d-gear>
-              </template>
-            </v-roll>
-          </template>
-        </c-query>
-      </b-card>
+        <template v-slot="data">
+          <v-roll
+            v-bind="data"
+            :card="{ title: t.title, elevation: elevation, titleLink: t.link, fullHeight: true }"
+          >
+            <template v-slot:dimensions="data">
+              <d-brawler v-bind="data"></d-brawler>
+              <d-gear v-bind="data"></d-gear>
+            </template>
+          </v-roll>
+        </template>
+      </c-query>
     </div>
   </div>
 </template>

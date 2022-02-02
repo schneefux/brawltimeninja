@@ -8,9 +8,8 @@
         :key="battle.timestamp"
         :render="index <= 3"
         distance="640px"
-        translucent
+        class="contents"
       >
-        <div slot="placeholder"></div>
         <player-battle
           :battle="battle"
           :player-tag="player.tag"

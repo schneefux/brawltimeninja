@@ -9,10 +9,6 @@
       limit,
     }"
   >
-    <b-shimmer
-      slot="placeholder"
-      loading
-    ></b-shimmer>
     <template v-slot="data">
       <v-roll v-bind="{ ...data, ...$attrs }">
         <template v-slot:dimensions="data">

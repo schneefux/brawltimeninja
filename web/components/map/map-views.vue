@@ -36,19 +36,19 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 5;"
         ></map-best-brawlers-table>
 
         <map-best-teams-table
-          v-if="mode != 'soloShowdown'"
+          v-if="mode != 'soloShowdown' && mode != 'duels'"
           v-observe-visibility="{
             callback: (v, e) => trackScroll(v, e, 'teams'),
             once: true,
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 5;"
         ></map-best-teams-table>
 
@@ -59,7 +59,7 @@
           }"
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 5;"
         ></map-best-players-table>
 
@@ -71,7 +71,7 @@
           :id="id"
           :slices="query.slices"
           kind="starpowers"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 5;"
         ></map-best-accessory-table>
 
@@ -83,7 +83,7 @@
           :id="id"
           :slices="query.slices"
           kind="gadgets"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 5;"
         ></map-best-accessory-table>
 
@@ -121,7 +121,7 @@
           :id="id"
           :slices="query.slices"
           kind="gears"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 5; --rows: 2;"
         ></map-best-accessory-roll>
 
@@ -137,25 +137,25 @@
         <map-winrate-userate-chart
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 5; --rows: 4;"
         ></map-winrate-userate-chart>
 
         <map-trend-chart
           :id="id"
           :slices="query.slices"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 5; --rows: 3;"
         ></map-trend-chart>
 
         <gadget-starpower-disclaimer
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 3; --rows: 2;"
           card
         ></gadget-starpower-disclaimer>
         <metric-info
           :metric="adjustedWinRate"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 3; --rows: 1;"
           full-height
         ></metric-info>

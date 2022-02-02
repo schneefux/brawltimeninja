@@ -1,24 +1,15 @@
 <template>
   <c-query :query="query">
-    <b-card
-      slot="empty"
-      :title="title"
-      full-height
-    >
-      <p slot="content" class="text-center">
-        {{ $t('state.no-data') }}
-      </p>
-    </b-card>
     <template v-slot="data">
       <div class="contents">
         <v-barplot
           v-bind="data"
           :card="{ title, fullHeight: true }"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 6; --rows: 3;"
         ></v-barplot>
         <div
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 3; --rows: 2;"
         >
           <b-card

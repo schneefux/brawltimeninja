@@ -5,7 +5,7 @@
       :dimensions="['day']"
       sort="day"
       metric="winRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
     ></map-trend-chart>
 
@@ -14,7 +14,7 @@
       :dimensions="['day']"
       sort="day"
       metric="starRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
     ></map-trend-chart>
 
@@ -23,7 +23,7 @@
       :dimensions="['day', 'brawler']"
       sort="day"
       metric="useRate"
-      class="dashboard__cell"
+      class="dashboard__cell dashboard__cell--hide-empty"
       style="--rows: 2; --columns: 4;"
       no-compare
     ></map-trend-chart>

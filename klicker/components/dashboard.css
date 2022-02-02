@@ -119,6 +119,10 @@
     --columns: 1;
   }
 
+  .dashboard__cell--hide-empty:empty {
+    display: none;
+  }
+
   .dashboard .dashboard__cell {
     grid-row: span var(--rows) / span var(--rows);
     grid-column: span var(--columns) / span var(--columns);

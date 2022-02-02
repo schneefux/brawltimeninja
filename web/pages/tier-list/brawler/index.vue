@@ -14,19 +14,19 @@
             once: true,
           }"
           kind="starpowers"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
 
         <map-best-starpowers-roll
           kind="gadgets"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
 
         <map-best-starpowers-roll
           kind="gears"
-          class="dashboard__cell"
+          class="dashboard__cell dashboard__cell--hide-empty"
           style="--columns: 4; --rows: 2;"
         ></map-best-starpowers-roll>
       </scrolling-dashboard>

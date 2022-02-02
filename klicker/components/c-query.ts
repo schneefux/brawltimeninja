@@ -14,6 +14,10 @@ export default defineComponent({
       type: Function as PropType<CubeComparingQueryFilter|CubeQueryFilter>,
       required: false
     },
+    disappearWhenEmpty: {
+      type: Boolean,
+      default: false
+    },
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
@@ -32,10 +36,11 @@ export default defineComponent({
         const loaded = response.value != undefined
         if (loaded) {
           const empty = response.value!.data.length == 0
-          if (empty && 'empty' in slots) {
-            nodes = slots.empty!({})
+          if (empty) {
+            if ('empty' in slots) {
+              nodes = slots.empty!({})
+            }
           } else {
-            // show default if empty and no 'empty' slot
             if ('default' in slots) {
               nodes = slots.default!({
                 response: response.value,

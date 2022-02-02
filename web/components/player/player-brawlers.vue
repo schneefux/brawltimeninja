@@ -11,7 +11,7 @@
           'lg:hidden': index >= limit,
         }"
         distance="200px"
-        translucent
+        class="contents"
       >
         <div
           slot="placeholder"

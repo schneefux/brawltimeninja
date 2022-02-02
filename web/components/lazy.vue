@@ -1,5 +1,5 @@
 <template>
-  <div v-if="render || visible" :class="{ 'contents': translucent }">
+  <div v-if="render || visible">
     <slot></slot>
   </div>
   <!--
@@ -9,7 +9,7 @@
   <div v-else-if="isServer">
     <slot name="placeholder"></slot>
   </div>
-  <div v-else-if="!supportsIntersectionObserver" :class="{ 'contents': translucent }">
+  <div v-else-if="!supportsIntersectionObserver">
     <slot></slot>
   </div>
   <div v-else v-observe-visibility="{ callback, intersection, once: true }">
@@ -30,9 +30,6 @@ export default Vue.extend({
     distance: {
       type: String,
       default: '500px'
-    },
-    translucent: {
-      type: Boolean
     },
   },
   data() {

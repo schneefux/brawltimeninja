@@ -8,10 +8,13 @@
         v-for="(mode, index) in modes"
         :key="mode"
         :render="index <= 3"
+        :class="{
+          'lg:hidden': index >= limit,
+        }"
         distance="600px"
-        translucent
+        class="dashboard__cell"
+        style="--rows: 2; --columns: 4;"
       >
-        <div slot="placeholder"></div>
         <player-mode-card
           :mode="mode"
           :battles="battles"
@@ -22,8 +25,6 @@
           :class="{
             'lg:hidden': index >= limit,
           }"
-          class="dashboard__cell"
-          style="--rows: 2; --columns: 4;"
         ></player-mode-card>
       </lazy>
     </template>

@@ -72,7 +72,6 @@
             class="dashboard__cell"
             style="--rows: 3; --columns: 2;"
           >
-            <div slot="placeholder"></div>
             <event-card
               :mode="mode"
               :map="map.map"

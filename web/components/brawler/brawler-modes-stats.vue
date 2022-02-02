@@ -20,7 +20,6 @@
           class="dashboard__cell"
           style="--rows: 2; --columns: 4;"
         >
-          <div slot="placeholder"></div>
           <brawler-mode-stats
             :mode="row.dimensionsRaw.mode.mode"
             :brawler-id="brawlerId"
