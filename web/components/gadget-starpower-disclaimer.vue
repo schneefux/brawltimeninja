@@ -4,7 +4,7 @@
     :title="$t('starpower-gadget-data.disclaimer.title')"
     full-height
   >
-    <p slot="content" class="prose prose-invert leading-snug">
+    <p slot="content">
       {{ $t('starpower-gadget-data.disclaimer.description') }}
     </p>
    </component>

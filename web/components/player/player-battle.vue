@@ -8,7 +8,7 @@
   >
     <div
       slot="infobar"
-      class="flex justify-between"
+      class="mx-4 flex justify-between"
     >
       <div>
         <span class="mr-2">

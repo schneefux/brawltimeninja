@@ -7,6 +7,7 @@
     <b-horizontal-scroller
       slot="content"
       expand-on-desktop
+      class="gap-x-4"
     >
       <div
         v-if="$fetchState.pending"

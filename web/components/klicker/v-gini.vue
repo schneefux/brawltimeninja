@@ -5,20 +5,17 @@
     component="v-gini"
     wrapper="b-bigstat"
   >
-    <p
-      slot="content"
-      class="leading-none"
-    >
+    <p slot="content">
       <span
+        class="text-xl"
         :class="{
           'text-red-400': giniScore > 0.4,
           'text-orange-400': giniScore > 0.3 && giniScore <= 0.4,
           'text-green-400': giniScore <= 0.3,
         }"
       >{{ giniScore == undefined ? '?' : giniScoreWords[Math.floor(giniScore * 10)] }}</span>
-      <br>
-      <span class="text-xs text-white">
-        {{ $t('metric.gini-coefficient') }}: {{ giniScore == undefined ? '?' : giniScore.toFixed(2) }}
+      <span>
+        ({{ giniScore == undefined ? '?' : giniScore.toFixed(2) }})
       </span>
     </p>
   </v-card-wrapper>

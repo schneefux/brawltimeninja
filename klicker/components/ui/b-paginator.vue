@@ -1,33 +1,32 @@
 <template>
   <div class="flex justify-center">
-    <b-button
-      :class="['w-8 text-center', {
-        'hidden': page == 0,
-        'mr-10': page == pages,
-        'mr-1': page < pages,
-      }]"
-      primary
+    <button
+      v-show="page != 0"
+      class="w-8 text-center"
       @click="page--"
     >
       <font-awesome-icon
         :icon="faCaretLeft"
       ></font-awesome-icon>
-    </b-button>
+    </button>
 
-    <b-button
+    <span
+      class="whitespace-nowrap"
+      :class="{
+        'ml-8': page == 0,
+        'mr-8': page == pages,
+      }"
+    >{{ page + 1 }} / {{ pages + 1 }}</span>
+
+    <button
+      v-show="page != pages"
       class="w-8 text-center"
-      :class="['w-8 text-center', {
-        'hidden': page == pages,
-        'ml-10': page == 0,
-        'ml-1': page > 0,
-      }]"
-      primary
       @click="page++"
     >
       <font-awesome-icon
         :icon="faCaretRight"
       ></font-awesome-icon>
-    </b-button>
+    </button>
   </div>
 </template>
 
@@ -35,12 +34,10 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent } from 'vue-demi'
-import BButton from './b-button.vue'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
-    BButton,
   },
   props: {
     value: {

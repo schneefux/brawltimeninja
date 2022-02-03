@@ -15,20 +15,20 @@
 
     <app-bottom-nav class="md:hidden"></app-bottom-nav>
     <footer
-      class="bg-yellow-400 text-gray-800 py-2 text-center leading-normal hidden md:block"
+      class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden md:block"
     >
-      <div class="space-x-2">
+      <div class="space-x-4 mt-2">
         <nuxt-link
           v-for="link in links"
           :key="link.target"
           :to="link.target"
-          class="inline-block underline lg:border-0 hover:text-red-800"
+          class="inline-block lg:border-0 hover:text-gray-800/75"
           exact-active-class="text-red-800"
         >
           {{ $t('nav.' + link.name) }}
         </nuxt-link>
       </div>
-      <copyright class="mt-1 text-sm"></copyright>
+      <copyright class="mt-4 text-sm"></copyright>
     </footer>
 
     <adblock-bait></adblock-bait>

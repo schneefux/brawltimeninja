@@ -11,10 +11,10 @@
         v-for="row in rows"
         :key="row.id"
       >
-        <dt class="text-sm">
+        <dt class="text-gray-200/75">
           {{ row.title }}
         </dt>
-        <dd class="text-2xl text-primary-300 mt-1">
+        <dd class="text-xl text-gray-200">
           {{ row.value }}
         </dd>
       </dl>

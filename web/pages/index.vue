@@ -34,13 +34,13 @@
       @submit="search"
     >
       <div class="w-full flex justify-center">
-        <div class="py-2 border-4 rounded-lg border-yellow-400 bg-gray-800">
+        <div class="py-2 border-4 rounded-full border-yellow-400 bg-gray-800">
           <input
             v-model="tag"
             :placeholder="$t('action.enter-tag')"
             type="text"
             autocomplete="off"
-            class="transition duration-100 ease-in-out form-input w-40 md:w-48 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent border-none ml-3 mr-2 focus:ring focus:ring-gray-400 rounded py-2"
+            class="transition duration-100 ease-in-out form-input w-40 md:w-48 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
           >
           <b-button
             tag="input"
@@ -48,19 +48,20 @@
             type="submit"
             class="shrink-0 mr-3"
             secondary
+            round
             lg
           ></b-button>
         </div>
       </div>
       <p
         v-show="loading"
-        class="mt-2 text-red-500"
+        class="mt-4 text-red-500"
       >
         {{ $t('state.searching') }}…
       </p>
       <p
         v-show="error"
-        class="mt-2 font-semibold text-red-500"
+        class="mt-4 font-semibold text-red-500"
       >
         {{ error }}
       </p>
@@ -101,7 +102,7 @@
     </page-section>
 
     <div class="mt-6 mx-6 flex flex-wrap justify-center">
-      <div class="mt-1">
+      <div class="mt-2">
         <template v-if="lastPlayers.length === 0">
           {{ $t('index.recommended') }}
         </template>
@@ -109,7 +110,7 @@
           {{ $t('index.recents') }}
         </template>
       </div>
-      <div>
+      <div class="ml-2">
         <b-button
           v-for="player in playerLinks"
           :key="player.tag"

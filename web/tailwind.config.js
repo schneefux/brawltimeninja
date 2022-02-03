@@ -23,6 +23,7 @@ module.exports = {
       secondary: colors.red,
 
       white: colors.white,
+      black: colors.black,
       green: colors.emerald,
       orange: colors.orange,
       blue: colors.blue,

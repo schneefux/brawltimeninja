@@ -5,7 +5,7 @@
     component="v-moe"
     wrapper="b-bigstat"
   >
-    <p slot="content" class="text-center leading-none">
+    <p slot="content" class="flex items-center">
       <span
         class="text-xl"
         :class="{
@@ -14,8 +14,7 @@
           'text-red-400': moe > 0.025,
         }"
       >{{ moePercent }}</span>
-      <br>
-      <span class="text-sm text-white">
+      <span class="ml-2 text-base">
         <template v-if="moe <= 0.005">
           {{ $t('moe.perfect') }}
         </template>

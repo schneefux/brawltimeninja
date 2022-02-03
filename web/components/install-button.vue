@@ -1,10 +1,11 @@
 <template>
   <b-button
-    :class="['text-sm px-2 md:py-1', {
+    :class="{
       'hidden': !isInstallable,
-    }]"
+    }"
+    class="!py-1 !px-2 -my-1 !text-xs md:text-sm"
     secondary
-    outline
+    sm
     @click="clickInstall"
   >
     <font-awesome-icon

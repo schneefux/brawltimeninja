@@ -1,19 +1,15 @@
 <template>
   <b-card v-bind="{ ...card, title }">
-    <b-button
+    <button
       slot="preview"
       :selected="showFilters"
-      class="md:hidden"
-      primary
-      sm
+      class="md:hidden w-10"
       @click="showFilters = !showFilters"
     >
       <font-awesome-icon
         :icon="faFilter"
       ></font-awesome-icon>
-
-      {{ translate('filter.configure' )}}
-    </b-button>
+    </button>
 
     <div
       v-if="breakpointMd || showFilters"
@@ -47,7 +43,6 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
-import BButton from './ui/b-button.vue'
 import BCard from './ui/b-card.vue'
 import { useCubeConfig } from '../composables/config'
 import { useKlicker } from '../composables/klicker'
@@ -55,7 +50,6 @@ import { useKlicker } from '../composables/klicker'
 export default defineComponent({
   components: {
     FontAwesomeIcon,
-    BButton,
     BCard,
   },
   props: {

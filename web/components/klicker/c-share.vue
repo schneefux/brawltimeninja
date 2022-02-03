@@ -1,8 +1,7 @@
 <template>
   <b-button
     v-show="supportsShareApi"
-    class="my-1"
-    secondary
+    primary
     sm
     @click="share"
   >

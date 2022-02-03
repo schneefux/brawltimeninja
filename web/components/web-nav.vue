@@ -3,7 +3,7 @@
     <div class="bg-yellow-400 shrink-0 z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
       <nuxt-link
         :to="localePath('/')"
-        class="font-semibold text-xl tracking-tighter leading-tight"
+        class="font-semibold text-xl tracking-tight leading-tight"
         prefetch
       >
         Brawl Time Ninja
@@ -25,8 +25,8 @@
       class="w-full lg:w-auto relative z-0"
     >
       <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap">
-        <div class="pt-3 pb-3 lg:py-0 lg:my-0 space-x-3">
-          <div class="hidden lg:inline-block">
+        <div class="pt-3 pb-3 lg:py-0 lg:my-0">
+          <div class="hidden lg:inline-block mr-4">
             <install-button></install-button>
           </div>
 
@@ -34,7 +34,7 @@
             v-for="link in links"
             :key="link.target"
             :to="link.target"
-            class="inline-block underline lg:border-0 text-lg font-medium hover:text-red-800"
+            class="inline-block lg:border-0 text-lg hover:text-gray-800/75 mr-4"
             exact-active-class="text-red-800"
           >
             {{ $t('nav.' + link.name) }}

@@ -2,7 +2,7 @@
   <b-card
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
-    :elevation="2"
+    :elevation="1"
     :style="{
       '--rows': open ? 3 : 2,
     }"
@@ -98,7 +98,7 @@
       <b-button
         class="w-full"
         primary
-        sm
+        xs
         @click.stop="open = !open"
       >
         {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}

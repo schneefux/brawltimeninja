@@ -10,7 +10,7 @@
       width="w-8"
       snug="-ml-3"
     ></brawler-team>
-    <span class="tracking-tight leading-tight">{{ row.dimensions.team }}</span>
+    <span class="ml-1 leading-tight">{{ row.dimensions.team }}</span>
   </div>
 </template>
 

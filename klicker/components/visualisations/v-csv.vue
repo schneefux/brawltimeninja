@@ -1,13 +1,12 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: translate('dashboard.export-data'), dense: true }"
+    :card="card && { ...card, title: translate('dashboard.export-data') }"
     component="v-csv"
   >
     <b-button
-      slot="content"
-      class="my-1"
-      secondary
+      slot="actions"
+      primary
       sm
       @click="download()"
     >

@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col">
     <table class="w-full">
-      <thead class="text-sm">
+      <thead>
         <tr class="h-8 border-b border-gray-600">
           <th
             v-if="ranked"
             scope="col"
-            class="text-right pr-3 w-0 font-normal"
+            class="text-right pb-2 pr-3 w-0 font-normal"
           >
             #
           </th>
@@ -65,7 +65,7 @@
       v-if="!noPaginator && pageSize != undefined"
       v-model="page"
       :pages="Math.ceil(rows.length / pageSize) - 1"
-      class="pt-4 mt-auto"
+      class="pt-4 mt-auto mx-auto"
     ></b-paginator>
   </div>
 </template>

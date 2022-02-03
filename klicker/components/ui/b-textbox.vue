@@ -1,13 +1,11 @@
 <template>
   <input
     type="text"
-    v-bind="$attrs"
-    :class="[
-      'form-input transition duration-100 ease-in-out ring-0 focus:ring focus:ring-offset-0 focus:ring-opacity-50',
-      'rounded py-1 px-2 border-2', {
-        'bg-gray-700 hover:bg-gray-600 border-gray-500 hover:border-gray-400 focus:border-gray-400 focus:ring-gray-400 text-gray-200': $props.dark,
-    }]"
-    :value="$props.value"
+    :class="{
+      'bg-white/5 hover:bg-white/10': dark,
+    }"
+    :value="value"
+    class="form-input transition duration-100 ease-in-out rounded-2xl py-2 px-4 border-none focus:ring-0"
     @input="$listeners.input && $listeners.input($event.target.value)"
   >
 </template>

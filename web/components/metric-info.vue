@@ -4,7 +4,7 @@
     :title="$t('about-metric', { metric: $t('metric.' + metric.id) })"
     v-bind="$attrs"
   >
-    <p slot="content" class="prose prose-invert leading-snug">
+    <p slot="content">
       {{ metric.description }}
     </p>
   </b-card>

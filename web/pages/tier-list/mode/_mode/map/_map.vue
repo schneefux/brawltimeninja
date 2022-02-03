@@ -17,18 +17,20 @@
     ></breadcrumbs>
 
     <div class="mt-4 flex flex-wrap justify-center md:justify-between">
-      <p class="prose prose-invert">
-        {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
-      </p>
-      <p v-if="event.map.startsWith('Competition ')">
-        {{ $t('tier-list.competition-info') }}
-        <b-button
-          to="/tier-list/competition-winners"
-          prefetch
-          primary
-          xs
-        >{{ $t('tier-list.compare-competition-winners') }}</b-button>
-      </p>
+      <div>
+        <p class="prose prose-invert">
+          {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
+        </p>
+        <p v-if="event.map.startsWith('Competition ')">
+          {{ $t('tier-list.competition-info') }}
+          <b-button
+            to="/tier-list/competition-winners"
+            prefetch
+            primary
+            xs
+          >{{ $t('tier-list.compare-competition-winners') }}</b-button>
+        </p>
+      </div>
 
       <media-img
         v-if="showImage"

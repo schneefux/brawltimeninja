@@ -3,10 +3,10 @@
     title="Error!"
     class="w-full"
   >
-    <p slot="content" class="mb-2 prose prose-invert">
+    <p slot="content" class="mb-2">
       Something went wrong. The data you requested is not available right now.
       <br v-if="error != ''">
-      {{ error }}
+      Error message from server: {{ error }}
     </p>
   </b-card>
 </template>

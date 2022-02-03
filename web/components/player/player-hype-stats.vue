@@ -8,7 +8,7 @@
         <div slot="content">
           <p
             ref="counter-hours"
-            class="text-4xl text-yellow-400 mb-2"
+            class="text-4xl mb-2"
           >
             ...
           </p>

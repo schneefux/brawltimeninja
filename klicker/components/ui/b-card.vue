@@ -16,14 +16,14 @@
     }]"
   >
     <div
-      :class="['flex flex-col rounded', {
+      :class="{
         'h-full': fullHeight,
-        'bg-dark-0': !light && elevation == 0,
-        'bg-dark-1': !light && elevation == 1,
-        'bg-dark-2': !light && elevation == 2,
-        'bg-dark-3': !light && elevation == 3,
-        'bg-dark-4': !light && elevation == 4,
-        'bg-gray-100 text-gray-800': light,
+        'bg-gray-900/75 hover:bg-gray-900/60': !light && elevation == 0,
+        'bg-white/[.03] hover:bg-white/[.04]': !light && elevation == 1,
+        'bg-white/[.05] hover:bg-white/[.06]': !light && elevation == 2,
+        'bg-white/[.07] hover:bg-white/[0.08]': !light && elevation == 3,
+        'bg-white/[.1] hover:bg-white/[0.11]': !light && elevation == 4,
+        'bg-gray-100': light,
         'shadow-sm': elevation == 0,
         'shadow': elevation == 1,
         'shadow-md': elevation == 2,
@@ -31,27 +31,33 @@
         'shadow-xl': elevation == 4,
         'relative loading': loading,
         'cursor-pointer': link != undefined,
-      }]"
+      }"
+      class="flex flex-col rounded-2xl"
       @click="link != undefined ? $router.push(link) : undefined"
     >
       <div
         v-if="'infobar' in $scopedSlots"
-        class="rounded-t w-full px-2 py-1 text-sm"
+        class="rounded-t-2xl w-full px-2 py-1 text-sm"
       >
         <slot name="infobar"></slot>
       </div>
 
       <header
         v-if="renderTitle"
-        :class="['shrink-0 grid items-center overflow-hidden', (color !== undefined ? color : ''), {
-          'px-6 gap-x-3 pb-2': !dense,
-          'pt-4': !dense && !('infobar' in $scopedSlots),
+        :class="[(color !== undefined ? color : ''), {
+          'px-6 gap-x-3': !dense,
+          'pb-4': !dense && ('content' in $scopedSlots) && !('infobar' in $scopedSlots),
+          'pb-2': !dense && ('content' in $scopedSlots) && ('infobar' in $scopedSlots),
+          'pb-6': !dense && !('content' in $scopedSlots),
+          'pt-6': !dense && !('infobar' in $scopedSlots),
           'pt-2': !dense && 'infobar' in $scopedSlots,
           'px-3 gap-x-2 pt-2': dense,
-          'rounded-t': !('infobar' in $scopedSlots),
+          'rounded-t-2xl': !('infobar' in $scopedSlots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
           'grid-cols-[1fr,auto]': !('icon' in $scopedSlots),
+          'text-gray-800': light,
         }]"
+        class="shrink-0 grid items-center overflow-hidden"
       >
         <slot
           name="icon"
@@ -112,15 +118,16 @@
         v-if="'content' in $scopedSlots"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
-          'bg-inherit': background == undefined,
           'px-6': !dense,
-          'pt-4': title == undefined && !dense,
-          'pb-4': background == undefined && !dense,
+          'pt-4': background == undefined && !dense && !renderTitle,
+          'pb-4': background == undefined && !dense && !('actions' in $scopedSlots),
           'py-2': background != undefined && !dense,
-          'px-3': dense,
-          'rounded-t bg-filter-rounded-t': !renderTitle,
-          'rounded-b bg-filter-rounded-b': !('actions' in $scopedSlots),
+          'px-3 py-1': dense,
+          'rounded-t-2xl bg-filter-rounded-t-2xl': !renderTitle,
+          'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $scopedSlots),
           'h-full': fullHeight,
+          'text-gray-200/75': !light,
+          'text-gray-800': light,
         }]"
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
@@ -131,8 +138,8 @@
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b text-gray-800 flex justify-end', {
-          'px-6 gap-x-3 pt-2 pb-4': !dense,
+        :class="['rounded-b-2xl text-gray-800 flex justify-end mt-auto', {
+          'px-6 gap-x-3 pt-4 pb-6': !dense,
           'px-3 gap-x-2 py-1': dense,
         }]"
       >
@@ -257,8 +264,8 @@ export default defineComponent({
   z-index: -1;
 }
 
-.bg-filter-rounded-b::after {
-  @apply rounded-b;
+.bg-filter-rounded-b-2xl::after {
+  @apply rounded-b-2xl;
 }
 
 .loading:before {
@@ -284,32 +291,5 @@ export default defineComponent({
     margin-left: 100%;
     margin-right: 0;
   }
-}
-</style>
-
-<style lang="postcss" scoped>
-/* https://material.io/design/color/dark-theme.html#behavior */
-/*
-  theme('colors.gray.900') does not work,
-  perhaps the colors plugin is executed before tailwind?
-*/
-.bg-dark-0 {
-  background-color: color(#1a202c blend(white 0%));
-}
-
-.bg-dark-1 {
-  background-color: color(#1a202c blend(white 5%));
-}
-
-.bg-dark-2 {
-  background-color: color(#1a202c blend(white 7%));
-}
-
-.bg-dark-3 {
-  background-color: color(#1a202c blend(white 8%));
-}
-
-.bg-dark-4 {
-  background-color: color(#1a202c blend(white 9%));
 }
 </style>

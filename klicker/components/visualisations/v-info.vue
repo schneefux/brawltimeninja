@@ -2,7 +2,7 @@
   <v-card-wrapper
     v-if="description != undefined"
     v-bind="$props"
-    :card="card && { ...card, title, dense: true }"
+    :card="card && { ...card, title }"
     component="v-info"
   >
     <p

@@ -6,16 +6,18 @@
     <button
       class="w-full flex justify-center font-normal text-sm md:text-base"
       :class="[
-        'form-select transition duration-100 ease-in-out focus:ring focus:ring-offset-0 focus:ring-opacity-50',
-        'rounded py-1 px-2 border-2', {
-          'bg-gray-700 hover:bg-gray-600 border-gray-500 hover:border-gray-400 focus:border-gray-400 focus:ring-gray-400 text-gray-200': dark,
+        'form-select transition duration-100 ease-in-out',
+        'py-2 pl-4 pr-2', {
+          'hover:bg-white/10': dark && !dropdownOpen,
+          'rounded-2xl': !dropdownOpen,
+          'bg-gray-800 rounded-t-2xl': dropdownOpen,
         }]"
       @click="dropdownOpen = !dropdownOpen"
     >
       <slot name="preview"></slot>
       <!-- Tailwind Heroicon name: chevron-down -->
       <svg
-        class="ml-2 h-5 w-6 text-gray-500"
+        class="ml-2 h-6 w-6 text-gray-500"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -33,7 +35,7 @@
       v-show="dropdownOpen"
       :key="dropdownOpen"
       :class="['absolute left-0 px-2 py-1 pb-1 rounded-b shadow-lg z-10', {
-        'bg-gray-700': dark,
+        'bg-gray-800': dark,
       }]"
     >
       <slot></slot>

@@ -22,6 +22,7 @@ module.exports = {
       secondary: colors.red,
 
       white: colors.white,
+      black: colors.black,
       red: colors.red,
     },
     extend: {

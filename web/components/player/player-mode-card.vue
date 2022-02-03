@@ -6,7 +6,7 @@
   >
     <div slot="content">
       <b-card
-        :elevation="elevation + 1"
+        :elevation="0"
         dense
       >
         <div slot="content">

@@ -105,7 +105,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
         && metrics.length == 1
   },
   initialDimensions: {
-    rows: 2,
+    rows: 1,
     columns: 2,
   },
 }, {
@@ -175,7 +175,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
     return size > 0
   },
   initialDimensions: {
-    rows: 2,
+    rows: 1,
     columns: 2,
   },
 }]

@@ -2,12 +2,11 @@
   <input
     v-bind="$attrs"
     type="checkbox"
-    :class="[
-      'form-input transition duration-100 ease-in-out focus:ring focus:ring-offset-0 focus:ring-opacity-50',
-      'rounded border-2', {
-        'bg-gray-700 hover:bg-gray-600 border-gray-500 hover:border-gray-400 focus:ring-gray-400 text-gray-500 checked:text-gray-400': $props.dark,
-    }]"
+    :class="{
+      'bg-white/5 hover:bg-white/10 focus:bg-white/20 text-white/30 checked:text-white/40': dark,
+    }"
     :checked="$props.value"
+    class="form-input rounded transition duration-100 ease-in-out focus:ring-0"
     @input="$listeners.input && $listeners.input($event.target.checked)"
   >
 </template>

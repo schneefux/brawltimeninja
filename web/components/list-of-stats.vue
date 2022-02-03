@@ -10,7 +10,7 @@
         slot="content"
         class="text-lg flex"
       >
-        <dd class="text-yellow-400 w-16 md:w-auto text-right">{{ value }}</dd>
+        <dd class="w-16 text-primary-400/75 md:w-auto text-right">{{ value }}</dd>
         <dt class="ml-2 w-full overflow-hidden">{{ $t('metric.' + name) }}</dt>
       </div>
     </b-card>
@@ -28,7 +28,7 @@ export default Vue.extend({
     },
     elevation: {
       type: Number,
-      default: 2
+      default: 1
     },
   },
 })

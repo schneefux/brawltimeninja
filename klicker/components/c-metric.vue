@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <span class="font-semibold">
+    <span>
       {{ translate('configurator.metric') }}
     </span>
 
@@ -10,7 +10,6 @@
         :key="index"
         :value="showAllMetrics ? '' : value.metricsIds[index - 1]"
         dark
-        sm
         @input="v => onInputMetricsIds(index - 1, v)"
       >
         <option
@@ -30,55 +29,65 @@
         v-if="!showAllMetrics && multiple"
         class="flex gap-x-1"
       >
-        <b-button
-          v-if="numMetrics < maxMetrics"
-          class="font-semibold"
-          primary
-          sm
-          @click="numMetrics++"
-        >
-          <font-awesome-icon
-            :icon="faPlus"
-          ></font-awesome-icon>
-        </b-button>
-
-        <b-button
+        <button
           v-if="numMetrics > 1"
-          class="font-semibold"
-          primary
-          sm
+          class="w-10 h-10"
           @click="onMetricRemove()"
         >
           <font-awesome-icon
             :icon="faMinus"
           ></font-awesome-icon>
-        </b-button>
+        </button>
+
+        <button
+          v-if="numMetrics < maxMetrics"
+          class="w-10 h-10"
+          @click="numMetrics++"
+        >
+          <font-awesome-icon
+            :icon="faPlus"
+          ></font-awesome-icon>
+        </button>
       </div>
+
+      <button
+        v-if="description != ''"
+        class="w-10 h-10"
+        @click="tooltipOpen = !tooltipOpen"
+      >
+        <font-awesome-icon
+          :icon="faQuestion"
+        ></font-awesome-icon>
+      </button>
     </div>
 
-    <p
-      v-if="description != ''"
-      class="col-span-full mt-2 prose prose-invert"
-    >
-      {{ description }}
-    </p>
+    <b-lightbox v-model="tooltipOpen">
+      <b-card
+        :elevation="0"
+        class="w-full max-w-md"
+      >
+        <p slot="content" class="my-2">
+          {{ description }}
+        </p>
+      </b-card>
+    </b-lightbox>
   </div>
 </template>
 
 <script lang="ts">
 import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue-demi'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
-import BButton from './ui/b-button.vue'
+import BLightbox from './ui/b-lightbox.vue'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
     BSelect,
-    BButton,
+    BLightbox,
   },
   inheritAttrs: false,
   props: {
@@ -145,15 +154,19 @@ export default defineComponent({
 
     const translate = (key: string) => $klicker.$t(key)
 
+    const tooltipOpen = ref(false)
+
     return {
       description,
       metrics,
       numMetrics,
+      tooltipOpen,
       showAllMetrics,
       onMetricRemove,
       onInputMetricsIds,
       faPlus,
       faMinus,
+      faQuestion,
       translate,
     }
   },

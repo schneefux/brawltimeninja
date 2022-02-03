@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <span class="font-semibold">
+    <span>
       {{ title }}
     </span>
 
@@ -11,7 +11,6 @@
         :value="value.dimensionsIds[index - 1]"
         :disabled="!editable"
         dark
-        sm
         @input="v => onInputDimensionsIds(index - 1, v)"
       >
         <option
@@ -24,29 +23,25 @@
       </b-select>
 
       <div class="flex gap-x-1">
-        <b-button
+        <button
           v-if="numDimensions < maxDimensions"
-          class="font-semibold"
-          primary
-          sm
+          class="w-10 h-10"
           @click="onDimensionAdd()"
         >
           <font-awesome-icon
             :icon="faPlus"
           ></font-awesome-icon>
-        </b-button>
+        </button>
 
-        <b-button
+        <button
           v-if="numDimensions > 0"
-          class="font-semibold"
-          primary
-          sm
+          class="w-10 h-10"
           @click="onDimensionRemove()"
         >
           <font-awesome-icon
             :icon="faMinus"
           ></font-awesome-icon>
-        </b-button>
+        </button>
       </div>
     </div>
   </div>

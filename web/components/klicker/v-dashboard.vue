@@ -18,7 +18,7 @@
       </template>
     </v-auto>
 
-    <c-share></c-share>
+    <c-share class="mt-8"></c-share>
   </div>
 </template>
 

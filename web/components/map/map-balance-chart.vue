@@ -19,11 +19,10 @@
             <div slot="content">
               <v-gini
                 v-bind="data"
-                class="mt-2 text-center"
               ></v-gini>
               <p
                 slot="content"
-                class="mt-4 prose prose-invert leading-snug"
+                class="mt-4"
               >
                 {{ $t('brawler.balance-chart.description') }}
               </p>

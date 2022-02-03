@@ -24,26 +24,24 @@
           ></slot>
         </template>
       </b-table>
-
-      <b-button
-        v-if="linkWithParams != undefined"
-        :to="linkWithParams"
-        class="absolute bottom-0 left-0 -ml-2"
-        dark
-        xs
-      >
-        <font-awesome-icon
-          :icon="faExternalLinkAlt"
-        ></font-awesome-icon>
-      </b-button>
     </div>
+
+    <button
+      slot="preview"
+      v-if="linkWithParams != undefined"
+      :to="linkWithParams"
+      class="opacity-75"
+    >
+      <font-awesome-icon
+        :icon="faExternalLinkAlt"
+      ></font-awesome-icon>
+    </button>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
 import { VisualisationProps } from '../../props'
 import BTable, { Column } from '../ui/b-table.vue'
-import BButton from '../ui/b-button.vue'
 import { Location } from 'vue-router'
 import { computed, defineComponent } from 'vue-demi'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -55,7 +53,6 @@ export default defineComponent({
   components: {
     FontAwesomeIcon,
     BTable,
-    BButton,
     VCardWrapper,
   },
   props: {

@@ -14,18 +14,15 @@
       }"
     ></b-shimmer>
 
-    <b-button
+    <button
       v-if="showDownload"
-      class="absolute bottom-0 left-0 -ml-2"
-      dark
-      xs
+      class="w-10 h-10 absolute bottom-0 left-0 -ml-2"
       @click="download()"
     >
       <font-awesome-icon
         :icon="faDownload"
-        class="pb-px"
       ></font-awesome-icon>
-    </b-button>
+    </button>
   </div>
 </template>
 
@@ -33,19 +30,17 @@
 import embed, { Result, VisualizationSpec } from 'vega-embed'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
-import BButton from './b-button.vue'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue-demi'
 
-const gray200 = 'var(--gray-200)'
-const gray400 = 'var(--gray-400)'
-const gray900 = 'var(--gray-900)'
-const primary400 = 'var(--primary-400)'
+const textColor = 'var(--text-color)'
+const gridColor = 'var(--grid-color)'
+const backgroundColor = 'var(--background-color)'
+const primaryColor = 'var(--primary-color)'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
-    BButton,
     BShimmer,
   },
   props: {
@@ -100,35 +95,39 @@ export default defineComponent({
         config: {
           autosize: 'fit',
           background: 'transparent',
+          view: {
+            stroke: gridColor,
+            fill: 'transparent',
+          },
           title: {
-            color: gray200,
-            subtitleColor: gray200,
+            color: textColor,
+            subtitleColor: textColor,
           },
 
-          arc: { fill: primary400 },
-          area: { fill: primary400 },
-          line: { stroke: primary400 },
-          path: { stroke: primary400 },
-          rect: { fill: primary400 },
-          shape: { stroke: primary400 },
-          symbol: { fill: primary400 },
-          bar: { fill: primary400 },
-          text: { fill: gray200 },
-          point: { fill: primary400, filled: true },
+          arc: { fill: primaryColor },
+          area: { fill: primaryColor },
+          line: { stroke: primaryColor },
+          path: { stroke: primaryColor },
+          rect: { fill: primaryColor },
+          shape: { stroke: primaryColor },
+          symbol: { fill: primaryColor },
+          bar: { fill: primaryColor },
+          text: { fill: textColor },
+          point: { fill: primaryColor, filled: true },
 
           style: {
             'guide-label': {
-              fill: gray200,
+              fill: textColor,
             },
             'guide-title': {
-              fill: gray200,
+              fill: textColor,
             },
           },
 
           axis: {
-            domainColor: gray200,
-            gridColor: gray400,
-            tickColor: gray200,
+            domainColor: textColor,
+            gridColor: gridColor,
+            tickColor: textColor,
           },
         },
       } as object
@@ -145,7 +144,7 @@ export default defineComponent({
     }
 
     const download = async (ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
-      background: gray900,
+      background: backgroundColor,
       // 1.91:1
       width: 600*1.25,
       height: 315*1.25,
@@ -184,9 +183,10 @@ export default defineComponent({
 
 <style scoped lang="postcss">
 .inject-colors {
-  --gray-200: theme('colors.gray.200');
-  --gray-400: theme('colors.gray.400');
-  --gray-900: theme('colors.gray.900');
-  --primary-400: theme('colors.primary.400');
+  /* gray-200 */
+  --text-color: rgb(228 228 231 / 0.75);
+  --grid-color: rgb(228 228 231 / 0.25);
+  --background-color: theme('colors.gray.900');
+  --primary-color: theme('colors.primary.400');
 }
 </style>

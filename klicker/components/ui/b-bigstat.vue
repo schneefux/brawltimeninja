@@ -1,17 +1,11 @@
 <template>
-  <b-card v-bind="{ fullHeight: true, dense: true, ...$attrs }">
-    <b-button
-      v-if="tooltip != undefined || tooltipLink != undefined"
-      slot="preview"
-      :to="tooltipLink"
-      class="-my-1"
-      dark
-      xs
-      @click="tooltipOpen = !tooltipOpen"
-    >?</b-button>
-    <div slot="content">
+  <b-card v-bind="{ fullHeight: true, ...$attrs }">
+    <div slot="content" class="relative">
       <b-lightbox v-model="tooltipOpen">
-        <b-card sm>
+        <b-card
+          :elevation="0"
+          class="w-full max-w-md"
+        >
           <template v-slot:content>
             <slot name="tooltip">
               <p class="my-2">
@@ -21,30 +15,49 @@
           </template>
         </b-card>
       </b-lightbox>
-      <div class="text-2xl text-primary-300 my-4 text-center">
-        <slot name="content">
-          {{ value }}
-        </slot>
-      </div>
+      <button
+        v-if="tooltip != undefined || tooltipLink != undefined"
+        :to="tooltipLink"
+        class="w-4 text-sm leading-none absolute top-1 right-0"
+        @click="tooltipOpen = !tooltipOpen"
+      >
+        <font-awesome-icon
+          :icon="faQuestion"
+        ></font-awesome-icon>
+      </button>
+      <dl>
+        <dt class="text-gray-200/75">
+          {{ title }}
+        </dt>
+        <dd class="text-xl text-gray-200">
+          <slot name="content">
+            {{ value }}
+          </slot>
+        </dd>
+      </dl>
     </div>
   </b-card>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { defineComponent, ref } from 'vue-demi'
 import BCard from './b-card.vue'
-import BButton from './b-button.vue'
 import BLightbox from './b-lightbox.vue'
-import { StaticProps } from '../../props'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
   inheritAttrs: false,
   components: {
     BCard,
-    BButton,
     BLightbox,
+    FontAwesomeIcon,
   },
   props: {
+    title: {
+      type: String,
+      required: true
+    },
     value: {
       type: [Number, String],
       required: false
@@ -62,6 +75,7 @@ export default defineComponent({
     const tooltipOpen = ref(false)
 
     return {
+      faQuestion,
       tooltipOpen,
     }
   },

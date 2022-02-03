@@ -2,7 +2,7 @@
   <div class="h-8">
     <b-button
       v-if="!loading"
-      secondary
+      primary
       sm
       @click="trigger"
     >{{ $t('action.share') }}</b-button>
