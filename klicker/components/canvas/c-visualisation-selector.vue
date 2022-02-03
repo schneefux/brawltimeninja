@@ -136,7 +136,7 @@ export default defineComponent({
         }
 
         if (props.forGrid) {
-          const s: VisualisationSpec = spec.value
+          const s: VisualisationSpec = spec.value as VisualisationSpec
           const widget: GridWidget = {
             ...props.value as GridWidget,
             props: {},

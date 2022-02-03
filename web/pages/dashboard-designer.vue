@@ -99,6 +99,7 @@ export default defineComponent({
       id: undefined,
       title: 'New Dashboard',
       widgets: [],
+      columns: undefined,
     })
 
     const route = useRoute()
