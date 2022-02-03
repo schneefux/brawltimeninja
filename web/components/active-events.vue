@@ -29,6 +29,7 @@
       <scrolling-dashboard
         v-if="events != undefined"
         :length="events.length"
+        :page-size="4"
         class="mt-8"
       >
         <template v-slot="{ limit }">
@@ -47,7 +48,7 @@
               'lg:hidden': index >= limit,
             }"
             class="dashboard__cell"
-            style="--rows: 1; --columns: 4;"
+            style="--rows: 2; --columns: 3;"
           ></map-best-brawlers-card>
         </template>
       </scrolling-dashboard>
