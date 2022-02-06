@@ -113,6 +113,7 @@ import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
 import BCard from '../ui/b-card.vue'
+import { useUniqueId } from '../../composables/id'
 
 /**
  * Form to edit a widget.
@@ -175,7 +176,7 @@ export default defineComponent({
       }
     })
 
-    const prefix = ref(Math.random().toString().slice(2))
+    const { id: prefix } = useUniqueId()
 
     return {
       prefix,

@@ -139,6 +139,7 @@ import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
+import { useUniqueId } from '../../composables/id'
 
 /**
  * Interactive canvas editor.
@@ -262,7 +263,7 @@ export default defineComponent({
       bottom: props.value.height,
     }))
 
-    const prefix = ref(Math.random().toString().slice(2))
+    const { id: prefix } = useUniqueId()
 
     return {
       prefix,

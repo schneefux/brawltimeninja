@@ -174,6 +174,7 @@ import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
+import { useUniqueId } from '../../composables/id'
 
 /**
  * Interactive grid editor.
@@ -278,7 +279,7 @@ export default defineComponent({
       }
     })
 
-    const prefix = ref(Math.random().toString().slice(2))
+    const { id: prefix } = useUniqueId()
 
     return {
       title,

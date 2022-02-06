@@ -64,6 +64,7 @@ import BSelect from '../ui/b-select.vue'
 import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
+import { useUniqueId } from '../../composables/id'
 
 /**
  * Show applicable visualisations and bind one of them.
@@ -164,7 +165,7 @@ export default defineComponent({
       emit('input', widget)
     }
 
-    const prefix = ref(Math.random().toString().slice(2))
+    const { id: prefix } = useUniqueId()
 
     return {
       spec,
