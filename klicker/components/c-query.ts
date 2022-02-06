@@ -52,7 +52,10 @@ export default defineComponent({
           if ('placeholder' in slots) {
             nodes = slots.placeholder!({})
           } else {
-            nodes = [h(BShimmer as any, { props: { loading: true } })]
+            nodes = [h(BShimmer as any, {
+              props: { loading: true },
+              class: 'h-full',
+            })]
           }
         }
       }
