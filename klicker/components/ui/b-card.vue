@@ -37,7 +37,7 @@
     >
       <div
         v-if="'infobar' in $scopedSlots"
-        class="rounded-t-2xl w-full px-2 py-1 text-sm"
+        class="rounded-t-2xl w-full py-1 text-sm px-6"
       >
         <slot name="infobar"></slot>
       </div>
