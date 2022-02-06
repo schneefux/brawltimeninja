@@ -5,14 +5,14 @@
   >
     <div
       slot="content"
-      class="h-full w-full overflow-x-auto bg-inherit"
+      class="h-full w-full overflow-x-auto"
     >
-      <table class="h-full w-full bg-inherit border-separate border-spacing-0">
-        <tbody class="bg-inherit">
-          <tr class="bg-inherit">
+      <table class="h-full w-full border-separate border-spacing-0">
+        <tbody>
+          <tr>
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0 z-10 whitespace-nowrap"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 whitespace-nowrap"
             >{{ dimensionName }}</th>
             <td
               v-for="row in rows"
@@ -26,10 +26,10 @@
             </td>
           </tr>
 
-          <tr class="bg-inherit">
+          <tr>
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 bg-inherit sticky left-0 z-10 whitespace-nowrap"
+              class="font-normal text-sm text-left pt-2 pr-3 border-r border-gray-600 whitespace-nowrap"
             >{{ metricName }}</th>
             <td
               v-for="row in rows"
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue-demi'
+import { computed, defineComponent, onMounted } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BCard from '../ui/b-card.vue'
