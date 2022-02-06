@@ -32,6 +32,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue-demi'
+import { useResizeObserver } from '@vueuse/core'
 
 const textColor = 'var(--text-color)'
 const gridColor = 'var(--grid-color)'
@@ -169,6 +170,8 @@ export default defineComponent({
     }
 
     watch(() => props.spec, () => refresh())
+
+    useResizeObserver(graph, () => refresh())
 
     return {
       graph,

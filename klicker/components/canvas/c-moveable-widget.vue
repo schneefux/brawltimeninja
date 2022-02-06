@@ -109,8 +109,6 @@ export default defineComponent({
     // workaround for slow component rendering
     onMounted(() => setTimeout(() => moveable.value!.updateRect(), 1000))
 
-    const key = ref(0)
-
     const handlers = {
       onDragStart(e) {
         e.set(frame.translate)
@@ -149,9 +147,6 @@ export default defineComponent({
         frame.height = e.height
       },
       onResizeEnd(e) {
-        // re-render child component in case it depends on the initial dimensions
-        // (such as <b-vega>)
-        key.value++
         sync()
       },
       onRender(e) {
@@ -164,7 +159,6 @@ export default defineComponent({
 
     return {
       spec,
-      key,
       moveable,
       initialStyle,
       ...handlers,

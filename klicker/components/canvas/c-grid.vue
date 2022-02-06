@@ -146,7 +146,7 @@
     >
       <c-widget
         v-for="w in widgets"
-        :key="w.id + key"
+        :key="w.id"
         :widget="w"
         class="pointer-events-none"
         for-grid
@@ -247,7 +247,6 @@ export default defineComponent({
       selectedWidgetId.value = undefined
     }
 
-    const key = ref(0)
     const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => {
       widgetsKeyed.value = {
         ...widgetsKeyed.value,
@@ -259,8 +258,6 @@ export default defineComponent({
           },
         },
       }
-
-      key.value++
     }
 
     const title = computed({
@@ -284,7 +281,6 @@ export default defineComponent({
     const prefix = ref(Math.random().toString().slice(2))
 
     return {
-      key,
       title,
       prefix,
       columns,
