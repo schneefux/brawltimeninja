@@ -3,11 +3,6 @@
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
     :elevation="1"
-    :style="{
-      '--rows': open ? 3 : 2,
-    }"
-    style="--rows: 2; --columns: 3;"
-    class="dashboard__cell"
     full-height
   >
     <div

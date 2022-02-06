@@ -4,24 +4,30 @@
     :length="modes.length"
   >
     <template v-slot="{ limit }">
-      <map-best-brawlers-card
+      <c-dashboard-cell
         v-for="(mode, index) in modes"
         :key="mode"
         :class="{
           'lg:hidden': index >= limit,
         }"
-        :slices="{ mode: [mode] }"
-        class="dashboard__cell"
-        style="--rows: 1; --columns: 4;"
-      ></map-best-brawlers-card>
+        :columns="4"
+      >
+        <map-best-brawlers-card
+          :slices="{ mode: [mode] }"
+        ></map-best-brawlers-card>
+      </c-dashboard-cell>
     </template>
   </scrolling-dashboard>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useAsync, ref } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useAsync } from '@nuxtjs/composition-api'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   setup() {
     const { $klicker } = useContext()
     const modes = useAsync(() => $klicker.queryAllModes())

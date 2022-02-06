@@ -6,8 +6,12 @@
       class="mt-8"
     >
       <template v-slot:totals="data">
-        <v-sample-size v-bind="data"></v-sample-size>
-        <v-last-update v-bind="data"></v-last-update>
+        <c-dashboard-cell :columns="2">
+          <v-sample-size v-bind="data"></v-sample-size>
+        </c-dashboard-cell>
+        <c-dashboard-cell :columns="2">
+          <v-last-update v-bind="data"></v-last-update>
+        </c-dashboard-cell>
       </template>
 
       <template v-slot:dimensions="data">
@@ -67,7 +71,7 @@
 
 <script lang='ts'>
 import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
-import { CCanvas, BTextbox } from '@schneefux/klicker/components'
+import { CCanvas, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import DBrawler from '@/components/klicker/d-brawler.vue'
@@ -82,6 +86,7 @@ import { getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
+    CDashboardCell,
     BTextbox,
     CCanvas,
     DBrawler,

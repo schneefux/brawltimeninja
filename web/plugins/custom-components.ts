@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import MediaImg from '~/components/media-img.vue'
-import Lazy from '~/components/lazy.vue'
 import AccordeonCard from '~/components/accordeon-card.vue'
 import KvTable from '~/components/kv-table.vue'
 import Page from '~/components/page.vue'
@@ -12,7 +11,6 @@ import PageDashboard from '~/components/page-dashboard.vue'
 // see https://github.com/nuxt/components/issues/159
 // -> fixes `Cannot read property 'toLowerCase' of undefined at emptyNodeAt`
 Vue.component('media-img', MediaImg)
-Vue.component('lazy', Lazy)
 Vue.component('accordeon-card', AccordeonCard)
 Vue.component('kv-table', KvTable)
 Vue.component('page', Page)

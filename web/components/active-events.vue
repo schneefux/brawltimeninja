@@ -22,20 +22,24 @@
       </button>
     </div>
 
-    <lazy
-      :render="eager"
-      distance="320px"
+    <scrolling-dashboard
+      v-if="events != undefined"
+      :length="events.length"
+      :page-size="4"
+      class="mt-8"
     >
-      <scrolling-dashboard
-        v-if="events != undefined"
-        :length="events.length"
-        :page-size="4"
-        class="mt-8"
-      >
-        <template v-slot="{ limit }">
+      <template v-slot="{ limit }">
+        <c-dashboard-cell
+          v-for="(event, index) in filteredEvents"
+          :key="event.battle_event_map + '-' + event.battle_event_id"
+          :rows="2"
+          :columns="3"
+          :class="{
+            'lg:hidden': index >= limit,
+          }"
+          :lazy="!eager && index > 4"
+        >
           <map-best-brawlers-card
-            v-for="(event, index) in filteredEvents"
-            :key="event.battle_event_map + '-' + event.battle_event_id"
             :slices="{
               mode: [event.battle_event_mode],
               map: [event.battle_event_map],
@@ -43,16 +47,10 @@
             }"
             :id="event.battle_event_id"
             :end-date="event.end"
-            :eager="eager"
-            :class="{
-              'lg:hidden': index >= limit,
-            }"
-            class="dashboard__cell"
-            style="--rows: 2; --columns: 3;"
           ></map-best-brawlers-card>
-        </template>
-      </scrolling-dashboard>
-    </lazy>
+        </c-dashboard-cell>
+      </template>
+    </scrolling-dashboard>
   </div>
 </template>
 
@@ -60,8 +58,12 @@
 import Vue from 'vue'
 import { camelToKebab } from '~/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default Vue.extend({
+  components: {
+    CDashboardCell,
+  },
   props: {
     eager: {
       type: Boolean,

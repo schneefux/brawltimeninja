@@ -9,16 +9,15 @@
       class="mt-8"
     >
       <template v-slot="{ limit }">
-        <lazy
+        <c-dashboard-cell
           v-for="(row, index) in data"
           :key="row.dimensionsRaw.mode.mode"
-          :render="index <= 2"
           :class="{
             'lg:hidden': index >= limit,
           }"
-          distance="600px"
-          class="dashboard__cell"
-          style="--rows: 2; --columns: 4;"
+          :rows="2"
+          :columns="4"
+          :lazy="index > 2"
         >
           <brawler-mode-stats
             :mode="row.dimensionsRaw.mode.mode"
@@ -26,18 +25,22 @@
             :brawler-name="brawlerName"
             class="w-full h-full"
           ></brawler-mode-stats>
-        </lazy>
+        </c-dashboard-cell>
       </template>
     </scrolling-dashboard>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useAsync, computed, ref } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useAsync, computed } from '@nuxtjs/composition-api'
 import { scaleInto } from '~/lib/util'
 import { MetaGridEntry } from '@schneefux/klicker/types'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     brawlerId: {
       type: String,

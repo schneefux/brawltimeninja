@@ -6,19 +6,19 @@
     <scrolling-dashboard
       v-if="events != undefined"
       :length="events.length"
+      :page-size="4"
       class="mt-8"
     >
       <template v-slot="{ limit }">
-        <lazy
+        <c-dashboard-cell
           v-for="(event, index) in events"
           :key="event.battle_event_mode + event.battle_event_map"
-          :render="index <= 3"
+          :rows="2"
+          :columns="3"
           :class="{
             'lg:hidden': index >= limit,
           }"
-          style="--rows: 2; --columns: 3;"
-          distance="600px"
-          class="dashboard__cell"
+          :lazy="index > 3"
         >
           <brawler-active-event
             :mode="event.battle_event_mode"
@@ -29,18 +29,22 @@
             :data="event"
             class="w-full h-full"
           ></brawler-active-event>
-        </lazy>
+        </c-dashboard-cell>
       </template>
     </scrolling-dashboard>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useContext, useAsync, ref } from '@nuxtjs/composition-api'
+import { defineComponent, computed, useContext, useAsync } from '@nuxtjs/composition-api'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     brawlerName: {
       // TODO use ID

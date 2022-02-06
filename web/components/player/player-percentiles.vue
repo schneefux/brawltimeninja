@@ -1,14 +1,14 @@
 <template>
   <scrolling-dashboard>
-    <b-bigstat
-      v-for="achievement in achievements"
-      :key="achievement.metric"
-      :title="achievement.metric"
-      :value="achievement.text"
-      class="dashboard__cell"
-      style="--columns: 2;"
-      full-height
-    ></b-bigstat>
+    <c-dashboard-cell :columns="2">
+      <b-bigstat
+        v-for="achievement in achievements"
+        :key="achievement.metric"
+        :title="achievement.metric"
+        :value="achievement.text"
+        full-height
+      ></b-bigstat>
+    </c-dashboard-cell>
   </scrolling-dashboard>
 </template>
 
@@ -16,7 +16,7 @@
 import { defineComponent, PropType, computed, useContext } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Api'
 import ztable from 'ztable'
-import { BBigstat } from '@schneefux/klicker/components'
+import { BBigstat, CDashboardCell } from '@schneefux/klicker/components'
 
 interface Achievement {
   metric: string
@@ -26,6 +26,7 @@ interface Achievement {
 export default defineComponent({
   components: {
     BBigstat,
+    CDashboardCell,
   },
   props: {
     player: {

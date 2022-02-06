@@ -61,16 +61,15 @@
         class="mt-8"
       >
         <template v-slot="{ limit }">
-          <lazy
+          <c-dashboard-cell
             v-for="(map, index) in maps"
             :key="map.map"
-            :render="index <= 4"
-            distance="600px"
+            :rows="3"
+            :columns="2"
             :class="{
               'lg:hidden': index >= limit,
             }"
-            class="dashboard__cell"
-            style="--rows: 3; --columns: 2;"
+            :lazy="index > 4"
           >
             <event-card
               :mode="mode"
@@ -95,7 +94,7 @@
                 </div>
               </template>
             </event-card>
-          </lazy>
+          </c-dashboard-cell>
         </template>
       </scrolling-dashboard>
     </page-section>
@@ -138,7 +137,7 @@ import { MetaInfo } from 'vue-meta'
 import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
 import Page from '~/components/page.vue'
-import { BTextbox } from '@schneefux/klicker/components'
+import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 
 interface EventIdAndMap {
   id: string
@@ -150,6 +149,7 @@ export default Vue.extend({
   components: {
     Page,
     BTextbox,
+    CDashboardCell,
   },
   head(): MetaInfo {
     const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })

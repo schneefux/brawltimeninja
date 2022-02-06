@@ -1,39 +1,43 @@
 <template>
   <scrolling-dashboard>
-    <map-trend-chart
-      :slices="{ brawler: [brawlerName.toUpperCase()] }"
-      :dimensions="['day']"
-      sort="day"
-      metric="winRate"
-      class="dashboard__cell dashboard__cell--hide-empty"
-      style="--rows: 2; --columns: 4;"
-    ></map-trend-chart>
+    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
+      <map-trend-chart
+        :slices="{ brawler: [brawlerName.toUpperCase()] }"
+        :dimensions="['day']"
+        sort="day"
+        metric="winRate"
+      ></map-trend-chart>
+    </c-dashboard-cell>
 
-    <map-trend-chart
-      :slices="{ brawler: [brawlerName.toUpperCase()] }"
-      :dimensions="['day']"
-      sort="day"
-      metric="starRate"
-      class="dashboard__cell dashboard__cell--hide-empty"
-      style="--rows: 2; --columns: 4;"
-    ></map-trend-chart>
+    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
+      <map-trend-chart
+        :slices="{ brawler: [brawlerName.toUpperCase()] }"
+        :dimensions="['day']"
+        sort="day"
+        metric="starRate"
+      ></map-trend-chart>
+    </c-dashboard-cell>
 
-    <map-trend-chart
-      :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
-      :dimensions="['day', 'brawler']"
-      sort="day"
-      metric="useRate"
-      class="dashboard__cell dashboard__cell--hide-empty"
-      style="--rows: 2; --columns: 4;"
-      no-compare
-    ></map-trend-chart>
+    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
+      <map-trend-chart
+        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :dimensions="['day', 'brawler']"
+        sort="day"
+        metric="useRate"
+        no-compare
+      ></map-trend-chart>
+    </c-dashboard-cell>
   </scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@nuxtjs/composition-api"
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     brawlerName: {
       type: String,

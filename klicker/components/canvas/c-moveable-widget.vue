@@ -27,7 +27,6 @@
     @click="$emit('click')"
   >
     <c-widget
-      :key="key"
       :widget="value"
       class="pointer-events-none"
       no-style

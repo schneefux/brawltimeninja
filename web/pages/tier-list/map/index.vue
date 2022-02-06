@@ -39,30 +39,31 @@
       tracking-id="upcoming_events"
       tracking-page-id="maps"
     >
-      <lazy>
-        <scrolling-dashboard
-          v-if="upcomingEvents != undefined"
-          :length="upcomingEvents.length"
-        >
-          <template v-slot="{ limit }">
+      <scrolling-dashboard
+        v-if="upcomingEvents != undefined"
+        :length="upcomingEvents.length"
+      >
+        <template v-slot="{ limit }">
+          <c-dashboard-cell
+            v-for="(event, index) in upcomingEvents"
+            :key="event.id"
+            :columns="4"
+            :class="{
+              'lg:hidden': index >= limit,
+            }"
+            :lazy="index > 3"
+          >
             <map-best-brawlers-card
-              v-for="(event, index) in upcomingEvents"
-              :key="event.id"
               :id="event.id"
               :slices="{
                 mode: [unformatMode(event.mode)],
                 map: [event.map],
               }"
               :start-date="event.start"
-              :class="{
-                'lg:hidden': index >= limit,
-              }"
-              class="dashboard__cell"
-              style="--rows: 1; --columns: 4;"
             ></map-best-brawlers-card>
-          </template>
-        </scrolling-dashboard>
-      </lazy>
+          </c-dashboard-cell>
+        </template>
+      </scrolling-dashboard>
     </page-section>
 
     <page-section
@@ -93,8 +94,12 @@ import { mapState } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default Vue.extend({
+  components: {
+    CDashboardCell,
+  },
   data() {
     return {
       currentEvents: [] as ActiveEvent[],

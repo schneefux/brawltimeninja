@@ -57,35 +57,22 @@
         slicer
       >
         <template v-slot:totals="data">
-          <b-card
-            :elevation="elevation + 1"
-            title="Data Source Info"
-            full-height
-          >
-            <div
-              slot="content"
-              class="dashboard dashboard--responsive"
-            >
-              <slot
-                name="totals"
-                v-bind="data"
-                :card="{ ...data.card, elevation: data.card && (data.card.elevation + 2) }"
-              ></slot>
-            </div>
-          </b-card>
+          <slot
+            name="totals"
+            v-bind="data"
+            :card="{ ...data.card, elevation: data.card && (data.card.elevation + 1) }"
+          ></slot>
         </template>
         <template v-slot:data="data">
-          <div class="flex flex-wrap gap-8">
-            <c-visualisation-selector
-              v-bind="data"
-              :value="value"
-              :elevation="elevation + 1"
-              for-canvas
-              @input="v => $emit('input', v)"
-              @delete="$emit('delete')"
-            ></c-visualisation-selector>
-            <slot></slot>
-          </div>
+          <c-visualisation-selector
+            v-bind="data"
+            :value="value"
+            :elevation="elevation + 1"
+            for-canvas
+            @input="v => $emit('input', v)"
+            @delete="$emit('delete')"
+          ></c-visualisation-selector>
+          <slot></slot>
         </template>
       </c-dashboard>
 

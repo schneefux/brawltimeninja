@@ -28,13 +28,12 @@
       class="mt-8"
     >
       <template v-slot="totals">
-        <div class="dashboard dashboard--responsive">
+        <c-dashboard-cell>
           <v-sample-size
             v-bind="totals"
             :card="{ fullHeight: true }"
-            class="dashboard__cell"
           ></v-sample-size>
-        </div>
+        </c-dashboard-cell>
       </template>
     </c-query>
   </page>
@@ -42,7 +41,7 @@
 
 <script lang="ts">
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CSlicer } from '@schneefux/klicker/components'
+import { CSlicer, CDashboardCell } from '@schneefux/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { getSeasonEnd } from '~/lib/util'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
@@ -50,6 +49,7 @@ import { useKlicker } from '@schneefux/klicker/composables/klicker'
 
 export default defineComponent({
   components: {
+    CDashboardCell,
     DraftGrid,
     CSlicer,
   },

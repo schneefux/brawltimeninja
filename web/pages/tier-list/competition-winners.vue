@@ -6,15 +6,15 @@
       class="mt-8"
     >
       <template v-slot="{ limit }">
-        <lazy
+        <c-dashboard-cell
           v-for="(map, index) in maps"
           :key="map.mode + map.map"
-          :render="index <= 2"
+          :rows="4"
+          :columns="4"
           :class="{
             'lg:hidden': index >= limit,
           }"
-          class="dashboard__cell"
-          style="--rows: 4; --columns: 4;"
+          :lazy="index > 3"
         >
           <map-detail-card
             :map="map.map"
@@ -23,7 +23,7 @@
             id="0"
             link
           ></map-detail-card>
-        </lazy>
+        </c-dashboard-cell>
       </template>
     </scrolling-dashboard>
   </page>
@@ -32,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { camelToKebab, getSeasonEnd, slugify } from '~/lib/util'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 interface Event {
   timestamp: string
@@ -41,6 +42,9 @@ interface Event {
 }
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   middleware: ['cached'],
   meta: {
     title: 'Competition Winners',

@@ -41,7 +41,7 @@
     </div>
 
     <c-query
-      v-if="'totals' in $scopedSlots && metaMetrics.length > 0"
+      v-if="renderTotals"
       :query="{
         ...query,
         dimensionsIds: [],
@@ -51,12 +51,14 @@
       }"
     >
       <template v-slot="totals">
-        <slot name="totals" v-bind="{ ...totals, card: { elevation } }"></slot>
+        <div class="dashboard dashboard--responsive">
+          <slot name="totals" v-bind="{ ...totals, card: { elevation } }"></slot>
+        </div>
       </template>
     </c-query>
 
     <c-query
-      v-if="'data' in $scopedSlots"
+      v-if="renderData"
       :query="query"
     >
       <template v-slot:error="data">
@@ -66,11 +68,22 @@
         ></c-error>
       </template>
       <template v-slot="data">
-        <slot name="data" v-bind="{ ...data, card: { elevation } }"></slot>
+        <div
+          class="dashboard"
+          :class="dashboardClass"
+        >
+          <slot name="data" v-bind="{ ...data, card: { elevation } }"></slot>
+        </div>
       </template>
     </c-query>
 
-    <slot v-bind="query"></slot>
+    <div
+      v-if="'default' in $scopedSlots"
+      class="dashboard"
+      :class="dashboardClass"
+    >
+      <slot v-bind="query"></slot>
+    </div>
   </div>
 </template>
 
@@ -126,8 +139,12 @@ export default defineComponent({
       type: Array as PropType<string[]>,
       required: false
     },
+    dashboardClass: {
+      type: String,
+      default: 'dashboard--responsive'
+    },
   },
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const { $klicker } = useKlicker()
 
     const metaMetrics = $klicker.config[props.value.cubeId].metaMetrics
@@ -141,9 +158,13 @@ export default defineComponent({
     })
 
     const renderComparingSlicer = computed(() => props.slicer && query.value.comparing && !props.syncSlices)
+    const renderTotals = computed(() => 'totals' in slots && metaMetrics.length > 0)
+    const renderData = computed(() => 'data' in slots)
 
     return {
       renderComparingSlicer,
+      renderTotals,
+      renderData,
       metaMetrics,
       query,
     }

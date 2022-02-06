@@ -1,59 +1,61 @@
 <template>
-  <b-card
-    title="Configure Widget"
-    :elevation="elevation"
-    full-height
-  >
-    <div slot="content">
-      <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-        <label
-          for="`${prefix}-widget`"
-        >Widget</label>
-        <b-select
-          :id="`${prefix}-widget`"
-          :value="component"
-          dark
-          sm
-          @input="c => component = c"
-        >
-          <option
-            v-for="v in visualisations"
-            :key="v.component"
-            :value="v.component"
-          >
-            {{ v.name }}
-          </option>
-        </b-select>
-
-        <template
-          v-for="(propSpec, prop) in (spec.props || {})"
-        >
+  <c-dashboard-cell :columns="4" :rows="3">
+    <b-card
+      title="Configure Widget"
+      :elevation="elevation"
+      full-height
+    >
+      <div slot="content">
+        <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
           <label
-            :for="`${prefix}-${prop}`"
-            :key="`${prop}-label`"
+            for="`${prefix}-widget`"
+          >Widget</label>
+          <b-select
+            :id="`${prefix}-widget`"
+            :value="component"
+            dark
+            sm
+            @input="c => component = c"
           >
-            {{ propSpec.name }}
-          </label>
-          <component
-            v-bind="propSpec.props"
-            :key="`${prop}-component`"
-            :id="`${prefix}-${prop}`"
-            :value="value.props[prop]"
-            :is="propSpec.import || propSpec.component"
-            @input="v => setWidgetProp(prop, v)"
-          ></component>
-        </template>
-      </div>
-    </div>
+            <option
+              v-for="v in visualisations"
+              :key="v.component"
+              :value="v.component"
+            >
+              {{ v.name }}
+            </option>
+          </b-select>
 
-    <div slot="actions">
-      <b-button
-        md
-        primary
-        @click="$emit('delete')"
-      >Delete Widget</b-button>
-    </div>
-  </b-card>
+          <template
+            v-for="(propSpec, prop) in (spec.props || {})"
+          >
+            <label
+              :for="`${prefix}-${prop}`"
+              :key="`${prop}-label`"
+            >
+              {{ propSpec.name }}
+            </label>
+            <component
+              v-bind="propSpec.props"
+              :key="`${prop}-component`"
+              :id="`${prefix}-${prop}`"
+              :value="value.props[prop]"
+              :is="propSpec.import || propSpec.component"
+              @input="v => setWidgetProp(prop, v)"
+            ></component>
+          </template>
+        </div>
+      </div>
+
+      <div slot="actions">
+        <b-button
+          md
+          primary
+          @click="$emit('delete')"
+        >Delete Widget</b-button>
+      </div>
+    </b-card>
+  </c-dashboard-cell>
 </template>
 
 <script lang="ts">
@@ -64,6 +66,7 @@ import BSelect from '../ui/b-select.vue'
 import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
+import CDashboardCell from '../c-dashboard-cell.vue'
 import { useUniqueId } from '../../composables/id'
 
 /**
@@ -73,6 +76,7 @@ export default defineComponent({
   components: {
     BCard,
     BSelect,
+    CDashboardCell,
   },
   props: {
     ...StaticProps,

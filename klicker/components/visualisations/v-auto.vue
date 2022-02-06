@@ -1,16 +1,48 @@
 <template>
   <!-- workaround for Vue 2 not allowing multiple root elements -->
-  <div v-if="specs.length > 1">
-    <component
+  <div
+    v-if="specs.length > 1"
+    class="contents"
+  >
+    <c-dashboard-cell
       v-for="spec in specs"
       :key="spec.name"
-      :is="spec.import"
+      :style="spec.style"
+      :rows="spec.rows"
+      :columns="spec.columns"
+    >
+      <component
+        :is="spec.import"
+        v-bind="props"
+        :card="card"
+        :loading="loading"
+        :response="response"
+      >
+        <template
+          v-for="(_, slot) of $scopedSlots"
+          v-slot:[slot]="slotProps"
+        >
+          <slot
+            v-bind="slotProps"
+            :name="slot"
+          ></slot>
+        </template>
+      </component>
+    </c-dashboard-cell>
+  </div>
+  <c-dashboard-cell
+    v-else-if="specs.length == 1"
+    :key="specs[0].name"
+    :style="specs[0].style"
+    :rows="specs[0].rows"
+    :columns="specs[0].columns"
+  >
+    <component
+      :is="specs[0].import"
       v-bind="props"
       :card="card"
       :loading="loading"
       :response="response"
-      :style="spec.style"
-      class="dashboard__cell"
     >
       <template
         v-for="(_, slot) of $scopedSlots"
@@ -22,40 +54,24 @@
         ></slot>
       </template>
     </component>
-  </div>
-  <component
-    v-else-if="specs.length == 1"
-    :is="specs[0].import"
-    v-bind="props"
-    :card="card"
-    :loading="loading"
-    :response="response"
-    :style="specs[0].style"
-    class="dashboard__cell"
-  >
-    <template
-      v-for="(_, slot) of $scopedSlots"
-      v-slot:[slot]="slotProps"
-    >
-      <slot
-        v-bind="slotProps"
-        :name="slot"
-      ></slot>
-    </template>
-  </component>
+  </c-dashboard-cell>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, inject, ref } from 'vue-demi'
-import { CubeComparingResponse, CubeResponse, KlickerService, StaticWidgetSpec } from '../../types'
+import { defineComponent, computed, PropType, ref } from 'vue-demi'
+import { CubeComparingResponse, CubeResponse, StaticWidgetSpec } from '../../types'
 import { StaticProps } from '../../props'
 import { useCubeResponse } from '../../composables/response'
 import { useKlicker } from '../../composables/klicker'
+import CDashboardCell from '../c-dashboard-cell.vue'
 
 /**
  * Visualisation component that renders the given component, if applicable.
  */
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     ...StaticProps,
     loading: {
@@ -134,11 +150,6 @@ export default defineComponent({
       const rows = props.rows ?? spec.initialDimensions.rows
       const columns = props.columns ?? spec.initialDimensions.columns
 
-      if (props.forGrid) {
-        style['--rows'] = `${rows}`
-        style['--columns'] = `${columns}`
-      }
-
       if (props.forCanvas) {
         if (spec.resizable) {
           style.width = `${columns * 150}px`
@@ -149,7 +160,11 @@ export default defineComponent({
         }
       }
 
-      return Object.assign(style, props.ztyle)
+      return {
+        rows,
+        columns,
+        style: Object.assign(style, props.ztyle),
+      }
     }
 
     const { $klicker } = useKlicker()
@@ -193,7 +208,7 @@ export default defineComponent({
       return applicableSpecs.map((spec) => ({
         name: spec.name,
         import: spec.import,
-        style: getStyle(spec),
+        ...getStyle(spec),
       }))
     })
 

@@ -47,12 +47,6 @@
     grid-auto-rows: minmax(96px, min-content);
   }
 
-  .dashboard--half {
-    /*
-     * Dashboard with smaller rows.
-     */
-  }
-
   .dashboard {
     /*
      * Apply defaults: normal gaps, responsive and vertical.
@@ -112,15 +106,6 @@
 
   .dashboard--relaxed {
     @apply gap-8;
-  }
-
-  .dashboard__cell {
-    --rows: 1;
-    --columns: 1;
-  }
-
-  .dashboard__cell--hide-empty:empty {
-    display: none;
   }
 
   .dashboard .dashboard__cell {

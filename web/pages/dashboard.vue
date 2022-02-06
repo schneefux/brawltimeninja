@@ -13,24 +13,27 @@
       slicer
     >
       <template v-slot:totals="data">
-        <div class="dashboard dashboard--responsive">
+        <c-dashboard-cell :columns="2">
           <v-sample-size
             v-bind="data"
             :card="{ fullHeight: true }"
-            class="dashboard__cell"
-            style="--columns: 2;"
           ></v-sample-size>
+        </c-dashboard-cell>
+        <c-dashboard-cell :columns="2">
           <v-last-update
             v-bind="data"
             :card="{ fullHeight: true }"
-            class="dashboard__cell"
-            style="--columns: 2;"
           ></v-last-update>
-        </div>
+        </c-dashboard-cell>
       </template>
 
       <template v-slot:data="data">
-        <v-dashboard v-bind="data">
+        <v-auto
+          v-bind="data"
+          :card="{ fullHeight: true }"
+          for-grid
+          all
+        >
           <template v-slot:dimensions="data">
             <d-gear v-bind="data"></d-gear>
             <d-brawler v-bind="data"></d-brawler>
@@ -44,15 +47,17 @@
           <template v-slot:[`metrics.brawler`]="data">
             <m-brawler v-bind="data"></m-brawler>
           </template>
-        </v-dashboard>
+        </v-auto>
       </template>
     </c-dashboard>
+
+    <c-share class="mt-8"></c-share>
   </page-dashboard>
 </template>
 
 <script lang="ts">
 import { CubeQuery, CubeComparingQuery } from '@schneefux/klicker/types'
-import { CDashboard } from '@schneefux/klicker/components'
+import { CDashboard, VAuto, CDashboardCell } from '@schneefux/klicker/components'
 import { useSyncQueryAndRoute } from '~/composables/link'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import DTeam from '@/components/klicker/d-team.vue'
@@ -67,6 +72,7 @@ import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 export default defineComponent({
   components: {
     CDashboard,
+    CDashboardCell,
     DBrawler,
     DGear,
     DTeam,
@@ -75,6 +81,7 @@ export default defineComponent({
     DSeason,
     DPlayer,
     MBrawler,
+    VAuto,
   },
   setup() {
     const { $klicker } = useContext()

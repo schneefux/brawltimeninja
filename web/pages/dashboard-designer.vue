@@ -1,23 +1,17 @@
 <template>
-  <page-dashboard
-    :title="$t('dashboard-designer.title')"
-  >
+  <page-dashboard :title="$t('dashboard-designer.title')">
     <c-grid
       v-model="grid"
       :default-query="defaultQuery"
       class="mt-8"
     >
       <template v-slot:totals="data">
-        <v-sample-size
-          v-bind="data"
-          class="dashboard__cell"
-          style="--columns: 2;"
-        ></v-sample-size>
-        <v-last-update
-          v-bind="data"
-          class="dashboard__cell"
-          style="--columns: 2;"
-        ></v-last-update>
+        <c-dashboard-cell :columns="2">
+          <v-sample-size v-bind="data"></v-sample-size>
+        </c-dashboard-cell>
+        <c-dashboard-cell :columns="2">
+          <v-last-update v-bind="data"></v-last-update>
+        </c-dashboard-cell>
       </template>
 
       <template v-slot:dimensions="data">
@@ -66,9 +60,9 @@
   </page-dashboard>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
-import { CGrid, BTextbox } from '@schneefux/klicker/components'
+import { CGrid, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import DBrawler from '@/components/klicker/d-brawler.vue'
 import DGear from '@/components/klicker/d-gear.vue'
@@ -83,6 +77,7 @@ import { getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
+    CDashboardCell,
     BTextbox,
     CGrid,
     DBrawler,

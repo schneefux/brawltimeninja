@@ -1,10 +1,11 @@
 <template>
   <div class="contents">
-    <div
+    <c-dashboard-cell
       v-for="t in templates"
       :key="t.title"
-      class="dashboard__cell dashboard__cell--hide-empty"
-      style="--columns: 4; --rows: 2;"
+      :columns="4"
+      :rows="2"
+      hide-empty
     >
       <c-query
         slot="content"
@@ -23,7 +24,7 @@
           </v-roll>
         </template>
       </c-query>
-    </div>
+    </c-dashboard-cell>
   </div>
 </template>
 
@@ -31,7 +32,7 @@
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
-import { VRoll, BShimmer, CQuery, BButton } from '@schneefux/klicker/components'
+import { VRoll, BShimmer, CQuery, BButton, CDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 
 interface Template {
@@ -44,6 +45,7 @@ interface Template {
 
 export default defineComponent({
   components: {
+    CDashboardCell,
     VRoll,
     BShimmer,
     CQuery,

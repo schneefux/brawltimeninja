@@ -27,54 +27,51 @@
           configureMetrics: true,
           configureMetricsOptions: ['picks', 'wins', 'winRate', 'winRateAdj', 'starRate', 'rank'],
         }"
+        dashboard-class="dashboard--responsive dashboard--responsive-stretch"
         class="mt-4"
         sync-slices
         slicer
       >
         <template v-slot:totals="data">
-          <div class="dashboard dashboard--responsive">
+          <c-dashboard-cell :columns="2">
             <v-sample-size
               v-bind="data"
               :card="{ fullHeight: true }"
-              class="dashboard__cell"
-              style="--columns: 2"
             ></v-sample-size>
+          </c-dashboard-cell>
+          <c-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
               :card="{ fullHeight: true }"
-              class="dashboard__cell"
-              style="--columns: 2"
             ></v-last-update>
-          </div>
+          </c-dashboard-cell>
         </template>
 
         <template v-slot:data="data">
-          <div class="dashboard dashboard--responsive dashboard--responsive-stretch">
+          <c-dashboard-cell :rows="5" :columns="4">
             <v-table
               v-bind="data"
               :card="{ fullHeight: true }"
               link-path="/dashboard"
-              class="dashboard__cell"
-              style="--rows: 5; --columns: 4;"
             >
               <template v-slot:dimensions="data">
                 <d-brawler v-bind="data"></d-brawler>
                 <d-gear v-bind="data"></d-gear>
               </template>
             </v-table>
+          </c-dashboard-cell>
+          <c-dashboard-cell :rows="5" :columns="9">
             <v-barplot
               v-bind="data"
               :card="{ fullHeight: true }"
-              class="dashboard__cell"
-              style="--rows: 5; --columns: 9;"
             ></v-barplot>
+          </c-dashboard-cell>
+          <c-dashboard-cell :rows="3" :columns="3">
             <v-test-info
               v-bind="data"
               :card="{ fullHeight: true }"
-              class="dashboard__cell"
-              style="--rows: 3; --columns: 3;"
             ></v-test-info>
-          </div>
+          </c-dashboard-cell>
         </template>
       </c-dashboard>
     </page-section>
@@ -84,13 +81,14 @@
 <script lang="ts">
 import { CubeComparingQuery } from '@schneefux/klicker/types'
 import { defineComponent, computed, ref, PropType } from '@nuxtjs/composition-api'
-import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo } from '@schneefux/klicker/components'
+import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, CDashboardCell } from '@schneefux/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
     BCard,
     CDashboard,
+    CDashboardCell,
     CMetric,
     VTable,
     VBarplot,

@@ -4,16 +4,15 @@
     :length="modes.length"
   >
     <template v-slot="{ limit }">
-      <lazy
+      <c-dashboard-cell
         v-for="(mode, index) in modes"
         :key="mode"
-        :render="index <= 3"
+        :rows="2"
+        :columns="4"
         :class="{
           'lg:hidden': index >= limit,
         }"
-        distance="600px"
-        class="dashboard__cell"
-        style="--rows: 2; --columns: 4;"
+        :lazy="index > 3"
       >
         <player-mode-card
           :mode="mode"
@@ -22,11 +21,8 @@
           :player-brawlers="Object.values(player.brawlers)"
           :player-tag="player.tag"
           :enable-klicker-stats="enableKlickerStats"
-          :class="{
-            'lg:hidden': index >= limit,
-          }"
         ></player-mode-card>
-      </lazy>
+      </c-dashboard-cell>
     </template>
   </scrolling-dashboard>
 </template>
@@ -34,8 +30,12 @@
 <script lang="ts">
 import { defineComponent, PropType, useContext, useAsync } from '@nuxtjs/composition-api'
 import { Player, Battle } from '~/model/Api'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     player: {
       type: Object as PropType<Player>,

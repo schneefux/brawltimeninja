@@ -32,6 +32,7 @@ export { default as VBigstats } from './visualisations/v-bigstats.vue'
 
 export { default as CConfigurator } from './c-configurator.vue'
 export { default as CDashboard } from './c-dashboard.vue'
+export { default as CDashboardCell } from './c-dashboard-cell.vue'
 export { default as CMetric } from './c-metric.vue'
 export { default as CQuery } from './c-query'
 export { default as CSlicer } from './c-slicer.vue'

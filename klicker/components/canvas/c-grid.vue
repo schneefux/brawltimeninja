@@ -92,44 +92,46 @@
           ></slot>
         </template>
 
-        <b-card
-          :elevation="2"
-          title="Configure Widget Dimensions"
-          full-height
-        >
-          <div
-            slot="content"
-            class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
+        <c-dashboard-cell :columns="2" :rows="2">
+          <b-card
+            :elevation="2"
+            title="Configure Widget Dimensions"
+            full-height
           >
-            <label
-              :for="`${prefix}-columns`"
+            <div
+              slot="content"
+              class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
             >
-              Columns
-            </label>
-            <b-number
-              :value="widgetsKeyed[selectedWidgetId].frame.columns"
-              :id="`${prefix}-width`"
-              min="1"
-              max="8"
-              dark
-              @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
-            ></b-number>
+              <label
+                :for="`${prefix}-columns`"
+              >
+                Columns
+              </label>
+              <b-number
+                :value="widgetsKeyed[selectedWidgetId].frame.columns"
+                :id="`${prefix}-width`"
+                min="1"
+                max="8"
+                dark
+                @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
+              ></b-number>
 
-            <label
-              :for="`${prefix}-rows`"
-            >
-              Rows
-            </label>
-            <b-number
-              :value="widgetsKeyed[selectedWidgetId].frame.rows"
-              :id="`${prefix}-rows`"
-              min="1"
-              max="8"
-              dark
-              @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
-            ></b-number>
-          </div>
-        </b-card>
+              <label
+                :for="`${prefix}-rows`"
+              >
+                Rows
+              </label>
+              <b-number
+                :value="widgetsKeyed[selectedWidgetId].frame.rows"
+                :id="`${prefix}-rows`"
+                min="1"
+                max="8"
+                dark
+                @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
+              ></b-number>
+            </div>
+          </b-card>
+        </c-dashboard-cell>
       </c-widget-editor>
     </div>
 
@@ -174,6 +176,7 @@ import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
+import CDashboardCell from '../c-dashboard-cell.vue'
 import { useUniqueId } from '../../composables/id'
 
 /**
@@ -181,6 +184,7 @@ import { useUniqueId } from '../../composables/id'
  */
 export default defineComponent({
   components: {
+    CDashboardCell,
     BNumber,
     BTextbox,
     CWidget,

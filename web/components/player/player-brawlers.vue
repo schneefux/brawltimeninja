@@ -3,27 +3,22 @@
     :length="Object.values(player.brawlers).length"
   >
     <template v-slot="{ limit }">
-      <lazy
+      <c-dashboard-cell
         v-for="(brawler, id, index) in player.brawlers"
         :key="id"
-        :render="index < 3"
+        :rows="3"
+        :columns="3"
+        :lazy="index > 3"
         :class="{
           'lg:hidden': index >= limit,
         }"
-        distance="200px"
-        class="contents"
       >
-        <div
-          slot="placeholder"
-          class="dashboard__cell"
-          style="--rows: 2; --columns: 3;"
-        ></div>
         <player-brawler-card
           :brawler="brawler"
           :player-tag="player.tag"
           :enable-klicker-stats="enableKlickerStats"
         ></player-brawler-card>
-      </lazy>
+      </c-dashboard-cell>
     </template>
   </scrolling-dashboard>
 </template>
@@ -31,8 +26,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Api'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   props: {
     player: {
       type: Object as PropType<Player>,

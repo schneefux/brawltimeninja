@@ -3,7 +3,7 @@
     type="text"
     v-model.lazy="tagFilter"
     placeholder="Player Tag"
-    class="rounded font-semibold text-sm py-1 pl-2 border-2 form-input bg-gray-700 hover:bg-gray-500 border-gray-500 hover:border-yellow-400 text-gray-200"
+    class="bg-white/5 hover:bg-white/10 form-input transition duration-100 ease-in-out rounded-2xl py-2 px-4 border-none focus:ring-0"
   >
 </template>
 

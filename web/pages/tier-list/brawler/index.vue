@@ -8,27 +8,27 @@
 
     <page-section>
       <scrolling-dashboard>
-        <map-best-starpowers-roll
-          v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'gadgets'),
-            once: true,
-          }"
-          kind="starpowers"
-          class="dashboard__cell dashboard__cell--hide-empty"
-          style="--columns: 4; --rows: 2;"
-        ></map-best-starpowers-roll>
+        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
+          <map-best-starpowers-roll
+            v-observe-visibility="{
+              callback: (v, e) => trackScroll(v, e, 'gadgets'),
+              once: true,
+            }"
+            kind="starpowers"
+          ></map-best-starpowers-roll>
+        </c-dashboard-cell>
 
-        <map-best-starpowers-roll
-          kind="gadgets"
-          class="dashboard__cell dashboard__cell--hide-empty"
-          style="--columns: 4; --rows: 2;"
-        ></map-best-starpowers-roll>
+        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
+          <map-best-starpowers-roll
+            kind="gadgets"
+          ></map-best-starpowers-roll>
+        </c-dashboard-cell>
 
-        <map-best-starpowers-roll
-          kind="gears"
-          class="dashboard__cell dashboard__cell--hide-empty"
-          style="--columns: 4; --rows: 2;"
-        ></map-best-starpowers-roll>
+        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
+          <map-best-starpowers-roll
+            kind="gears"
+          ></map-best-starpowers-roll>
+        </c-dashboard-cell>
       </scrolling-dashboard>
     </page-section>
 
@@ -70,9 +70,12 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import scrollingDashboard from '~/components/scrolling-dashboard.vue'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default Vue.extend({
-  components: { scrollingDashboard },
+  components: {
+    CDashboardCell,
+  },
   head() {
     const description = this.$t('tier-list.brawlers.meta.description') as string
     return {

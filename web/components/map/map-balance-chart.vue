@@ -2,16 +2,13 @@
   <c-query :query="query">
     <template v-slot="data">
       <div class="contents">
-        <v-barplot
-          v-bind="data"
-          :card="{ title, fullHeight: true }"
-          class="dashboard__cell dashboard__cell--hide-empty"
-          style="--columns: 6; --rows: 3;"
-        ></v-barplot>
-        <div
-          class="dashboard__cell dashboard__cell--hide-empty"
-          style="--columns: 3; --rows: 2;"
-        >
+        <c-dashboard-cell :columns="6" :rows="3"  hide-empty>
+          <v-barplot
+            v-bind="data"
+            :card="{ title, fullHeight: true }"
+          ></v-barplot>
+        </c-dashboard-cell>
+        <c-dashboard-cell :columns="3" :rows="2" hide-empty>
           <b-card
             :title="$t('metric.gini-coefficient')"
             full-height
@@ -28,20 +25,21 @@
               </p>
             </div>
           </b-card>
-        </div>
+        </c-dashboard-cell>
       </div>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import { CQuery, VBarplot } from '@schneefux/klicker/components'
+import { CQuery, VBarplot, CDashboardCell } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
+    CDashboardCell,
     VBarplot,
     CQuery,
   },
