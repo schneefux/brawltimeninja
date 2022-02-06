@@ -8,7 +8,6 @@
       hide-empty
     >
       <c-query
-        slot="content"
         :query="t.query"
         :filter="filter"
       >
@@ -36,6 +35,7 @@ import { VRoll, BShimmer, CQuery, BButton, CDashboardCell } from '@schneefux/kli
 import { camelToKebab } from '~/lib/util'
 
 interface Template {
+  tab: string
   title: string
   link: string
   linkText: string
@@ -64,6 +64,10 @@ export default defineComponent({
       type: Number,
       default: 1
     },
+    tab: {
+      type: String,
+      required: true
+    },
   },
   setup(props) {
     const { i18n, localePath } = useContext()
@@ -79,6 +83,7 @@ export default defineComponent({
       if (props.slices.map != undefined && props.slices.map[0] != undefined) {
         const mode = props.slices.mode[0] as string
         templates.push({
+          tab: 'brawlers',
           title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string,
           link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
           linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
@@ -105,6 +110,7 @@ export default defineComponent({
       }
 
       templates.push({
+        tab: 'gadgets',
         title: i18n.t('map.insights.outstanding.gadgets') as string,
         link: localePath(`/tier-list/gadgets`),
         linkText: i18n.t('action.open.tier-list.gadget') as string,
@@ -133,6 +139,7 @@ export default defineComponent({
       })
 
       templates.push({
+        tab: 'starpowers',
         title: i18n.t('map.insights.outstanding.starpowers') as string,
         link: localePath(`/tier-list/starpowers`),
         linkText: i18n.t('action.open.tier-list.starpower') as string,
@@ -161,6 +168,7 @@ export default defineComponent({
       })
 
       templates.push({
+        tab: 'gears',
         title: i18n.t('map.insights.outstanding.gears') as string,
         link: localePath(`/tier-list/gears`),
         linkText: i18n.t('action.open.tier-list.gear') as string,
@@ -189,7 +197,7 @@ export default defineComponent({
         },
       })
 
-      return templates
+      return templates.filter(t => t.tab == props.tab)
     })
 
     const filter: CubeComparingQueryFilter = (e) => e.test.difference.pValueRaw <= 0.05

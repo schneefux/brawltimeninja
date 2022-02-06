@@ -1,5 +1,10 @@
 <template>
-  <main class="container mx-auto p-4 mt-8 mb-8">
+  <main
+    class="p-4 mt-8 mb-8"
+    :class="{
+      'container mx-auto': !noContainer,
+    }"
+  >
     <h1
       v-if="title != ''"
       class="text-3xl"
@@ -17,6 +22,10 @@ export default defineComponent({
     title: {
       type: String,
       default: ''
+    },
+    noContainer: {
+      type: Boolean,
+      default: false
     },
   },
 })

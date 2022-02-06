@@ -1,36 +1,8 @@
 <template>
-  <page-dashboard
-    :title="$t('tier-list.brawler.title')"
-  >
+  <page :title="$t('tier-list.brawler.title')">
     <p class="mt-4 prose prose-invert">
       {{ $t('tier-list.brawler.description') }}
     </p>
-
-    <page-section>
-      <scrolling-dashboard>
-        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
-          <map-best-starpowers-roll
-            v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'gadgets'),
-              once: true,
-            }"
-            kind="starpowers"
-          ></map-best-starpowers-roll>
-        </c-dashboard-cell>
-
-        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
-          <map-best-starpowers-roll
-            kind="gadgets"
-          ></map-best-starpowers-roll>
-        </c-dashboard-cell>
-
-        <c-dashboard-cell :columns="4" :rows="2" hide-empty>
-          <map-best-starpowers-roll
-            kind="gears"
-          ></map-best-starpowers-roll>
-        </c-dashboard-cell>
-      </scrolling-dashboard>
-    </page-section>
 
     <client-only>
       <adsense
@@ -63,19 +35,14 @@
         ins-class="ad-section"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import scrollingDashboard from '~/components/scrolling-dashboard.vue'
-import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default Vue.extend({
-  components: {
-    CDashboardCell,
-  },
   head() {
     const description = this.$t('tier-list.brawlers.meta.description') as string
     return {

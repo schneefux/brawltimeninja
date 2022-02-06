@@ -1,5 +1,5 @@
 <template>
-  <page-dashboard title="Brawl Stars Meta Dashboard">
+  <page title="Brawl Stars Meta Dashboard" no-container>
     <c-dashboard
       v-model="query"
       :configurator="{
@@ -52,7 +52,7 @@
     </c-dashboard>
 
     <c-share class="mt-8"></c-share>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">

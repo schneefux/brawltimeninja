@@ -1,5 +1,5 @@
 <template>
-  <page-dashboard :title="$t('report-designer.title')">
+  <page :title="$t('report-designer.title')" no-container>
     <c-canvas
       v-model="report"
       :default-query="defaultQuery"
@@ -66,7 +66,7 @@
       <p>Log in to share this report.</p>
       <login-button></login-button>
     </div>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang='ts'>

@@ -40,7 +40,7 @@ export default defineComponent({
       default: 'starpowers'
     },
     slices: {
-      type: Object as PropType<SliceValue>,
+      type: Object as PropType<SliceValue>,
       default: () => ({})
     },
     limit: {

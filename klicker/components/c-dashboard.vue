@@ -77,13 +77,7 @@
       </template>
     </c-query>
 
-    <div
-      v-if="'default' in $scopedSlots"
-      class="dashboard"
-      :class="dashboardClass"
-    >
-      <slot v-bind="query"></slot>
-    </div>
+    <slot v-bind="query"></slot>
   </div>
 </template>
 

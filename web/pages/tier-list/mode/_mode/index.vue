@@ -1,7 +1,5 @@
 <template>
-  <page-dashboard
-    :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })"
-  >
+  <page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
     <breadcrumbs
       :links="[{
         path: '/tier-list/map',
@@ -57,7 +55,7 @@
 
       <scrolling-dashboard
         :length="maps.length"
-        page-size="4"
+        :page-size="4"
         class="mt-8"
       >
         <template v-slot="{ limit }">
@@ -127,7 +125,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">

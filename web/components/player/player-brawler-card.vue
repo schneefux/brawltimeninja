@@ -2,7 +2,6 @@
   <b-card
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
-    :elevation="1"
     full-height
   >
     <div
@@ -84,51 +83,36 @@
           </tr>
         </tbody>
       </table>
-    </div>
 
-    <div
-      slot="actions"
-      class="w-full"
-    >
-      <b-button
-        class="w-full"
-        primary
-        xs
-        @click.stop="open = !open"
-      >
-        {{ open ? $t('action.collapse-details') : $t('action.expand-details') }}
-      </b-button>
-      <div v-if="open">
-        <history-graph
-          :brawler="brawler.name"
-          :player-tag="playerTag"
-          class="h-32 mt-3"
-        ></history-graph>
-        <div class="my-2 text-gray-200">
-          <table class="w-full leading-tight">
-            <tbody>
-              <tr class="flex">
-                <td class="w-1/2 pr-1 text-right">{{ $t('metric.winRate') }}</td>
-                <td class="w-1/2 pl-1 text-left text-yellow-400">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
-              </tr>
-              <tr class="flex">
-                <td class="w-1/2 pr-1 text-right">{{ $t('metric.highest-trophies') }}</td>
-                <td class="w-1/2 pl-1 text-left text-yellow-400">{{ brawler.highestTrophies }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div
-            v-if="picks > 0"
-            class="flex justify-center"
-          >
-            <span class="w-16 text-green-500 text-right">
-              {{ Math.floor(this.winrate * this.picks) }}{{ $t('metric.wins.letter') }}
-            </span>
-            <span class="px-1">-</span>
-            <span class="w-16 text-red-500 text-left">
-              {{ Math.floor((1-this.winrate) * this.picks) }}{{ $t('metric.losses.letter') }}
-            </span>
-          </div>
+      <history-graph
+        :brawler="brawler.name"
+        :player-tag="playerTag"
+        class="h-32 mt-3"
+      ></history-graph>
+      <div class="my-2 text-gray-200">
+        <table class="w-full leading-tight">
+          <tbody>
+            <tr class="flex">
+              <td class="w-1/2 pr-1 text-right">{{ $t('metric.winRate') }}</td>
+              <td class="w-1/2 pl-1 text-left text-yellow-400">{{ picks == 0 ? '?' : Math.round(this.winrate * 100) + '%' }}</td>
+            </tr>
+            <tr class="flex">
+              <td class="w-1/2 pr-1 text-right">{{ $t('metric.highest-trophies') }}</td>
+              <td class="w-1/2 pl-1 text-left text-yellow-400">{{ brawler.highestTrophies }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          v-if="picks > 0"
+          class="flex justify-center"
+        >
+          <span class="w-16 text-green-500 text-right">
+            {{ Math.floor(this.winrate * this.picks) }}{{ $t('metric.wins.letter') }}
+          </span>
+          <span class="px-1">-</span>
+          <span class="w-16 text-red-500 text-left">
+            {{ Math.floor((1-this.winrate) * this.picks) }}{{ $t('metric.losses.letter') }}
+          </span>
         </div>
       </div>
     </div>
@@ -155,10 +139,6 @@ export default Vue.extend({
       type: Object as PropType<BrawlerWithId>,
       required: true,
     },
-    defaultOpen: {
-      type: Boolean,
-      default: false
-    },
     enableKlickerStats: {
       type: Boolean,
       default: false,
@@ -166,18 +146,16 @@ export default Vue.extend({
   },
   data() {
     return {
-      open: this.defaultOpen,
       winrate: 0,
       picks: 0,
     }
   },
   watch: {
-    open: '$fetch',
     enableKlickerStats: '$fetch',
   },
   fetchDelay: 0,
   async fetch() {
-    if (!this.open || !this.enableKlickerStats) {
+    if (!this.enableKlickerStats) {
       return
     }
 

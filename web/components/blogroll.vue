@@ -1,9 +1,12 @@
 <template>
   <div class="dashboard dashboard--responsive dashboard--responsive-stretch">
-    <c-dashboard-cell :rows="1" :columns="3">
+    <c-dashboard-cell
+      v-for="post in articles"
+      :key="post.id"
+      :rows="1"
+      :columns="3"
+    >
       <b-card
-        v-for="post in articles"
-        :key="post.id"
         :title="post.title"
         :link="`/blog/${topic}/${post.slug}`"
         :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"

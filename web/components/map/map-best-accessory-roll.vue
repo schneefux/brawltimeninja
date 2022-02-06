@@ -1,23 +1,15 @@
 <template>
   <c-query :query="query">
     <template v-slot="data">
-      <b-card
-        :title="title"
-        full-height
+      <v-roll
+        v-bind="data"
+        :card="{ title, fullHeight: true }"
       >
-        <v-roll
-          slot="content"
-          v-bind="data"
-        >
-          <template
-            v-if="kind != 'gears'"
-            v-slot:dimensions="data"
-          >
-            <d-brawler v-bind="data"></d-brawler>
-            <d-gear v-bind="data"></d-gear>
-          </template>
-        </v-roll>
-      </b-card>
+        <template v-slot:dimensions="data">
+          <d-brawler v-bind="data"></d-brawler>
+          <d-gear v-bind="data"></d-gear>
+        </template>
+      </v-roll>
     </template>
   </c-query>
 </template>
@@ -44,10 +36,10 @@ export default defineComponent({
     },
     id: {
       type: [Number, String],
-      default: () => undefined
+      required: false
     },
     slices: {
-      type: Object as PropType<SliceValue>,
+      type: Object as PropType<SliceValue>,
       default: () => ({})
     },
   },

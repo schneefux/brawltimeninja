@@ -39,7 +39,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
+    const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const rows = computed(() => switchResponse(
       response => metrics.value.map(m => ({
@@ -49,7 +49,7 @@ export default defineComponent({
       })), response => metrics.value.map(m => ({
         id: m.id,
         title: $klicker.getName(m, 'short'),
-        value: response.data[0].metrics[m.id],
+        value: response.data[0].test.difference.difference,
       }))
     ))
 

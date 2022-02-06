@@ -13,6 +13,7 @@ export { default as BTable } from './ui/b-table.vue'
 export { default as BTextbox } from './ui/b-textbox.vue'
 export { default as BVega } from './ui/b-vega.vue'
 export { default as BBigstat } from './ui/b-bigstat.vue'
+export { default as BTabs } from './ui/b-tabs.vue'
 
 export { default as VBarplot } from './visualisations/v-barplot.vue'
 export { default as VCsv } from './visualisations/v-csv.vue'

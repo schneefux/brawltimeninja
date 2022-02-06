@@ -2,7 +2,7 @@
   <c-query :query="query">
     <template v-slot="data">
       <div class="contents">
-        <c-dashboard-cell :columns="6" :rows="3"  hide-empty>
+        <c-dashboard-cell :columns="8" :rows="4"  hide-empty>
           <v-barplot
             v-bind="data"
             :card="{ title, fullHeight: true }"

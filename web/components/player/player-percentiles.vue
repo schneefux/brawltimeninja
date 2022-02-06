@@ -1,9 +1,11 @@
 <template>
   <scrolling-dashboard>
-    <c-dashboard-cell :columns="2">
+    <c-dashboard-cell
+      v-for="achievement in achievements"
+      :key="achievement.metric"
+      :columns="2"
+    >
       <b-bigstat
-        v-for="achievement in achievements"
-        :key="achievement.metric"
         :title="achievement.metric"
         :value="achievement.text"
         full-height

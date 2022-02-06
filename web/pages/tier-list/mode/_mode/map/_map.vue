@@ -1,7 +1,5 @@
 <template>
-  <page-dashboard
-    :title="$t('tier-list.map.title', { map: title })"
-  >
+  <page :title="$t('tier-list.map.title', { map: title })">
     <breadcrumbs
       :links="[{
         path: '/tier-list/map',
@@ -72,7 +70,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page-dashboard>
+  </page>
 </template>
 
 <script lang="ts">
