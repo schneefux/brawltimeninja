@@ -26,7 +26,7 @@
       </b-table>
     </div>
 
-    <button
+    <router-link
       slot="preview"
       v-if="linkWithParams != undefined"
       :to="linkWithParams"
@@ -35,7 +35,7 @@
       <font-awesome-icon
         :icon="faExternalLinkAlt"
       ></font-awesome-icon>
-    </button>
+    </router-link>
   </v-card-wrapper>
 </template>
 
