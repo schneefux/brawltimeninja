@@ -12,6 +12,7 @@
           'lg:hidden': index >= limit,
         }"
         :lazy="index > 3"
+        :ssr-key="`player-battles-${battle.timestamp}`"
       >
         <player-battle
           :battle="battle"

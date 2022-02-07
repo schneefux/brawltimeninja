@@ -8,13 +8,14 @@
       <template v-slot="{ limit }">
         <c-dashboard-cell
           v-for="(map, index) in maps"
-          :key="map.mode + map.map"
+          :key="map.mode + '-' + map.map"
           :rows="4"
           :columns="4"
           :class="{
             'lg:hidden': index >= limit,
           }"
           :lazy="index > 3"
+          :ssr-key="`competition-winners-${map.mode}-${map.map}`"
         >
           <map-detail-card
             :map="map.map"

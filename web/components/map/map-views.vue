@@ -29,7 +29,6 @@
 
     <template v-slot="query">
       <b-tabs
-        v-model="tab"
         :tabs="tabs"
         class="!mt-12 -mx-4 md:mx-0 px-4 md:px-0"
         nav-class="top-14 z-20"
@@ -94,7 +93,9 @@
           <c-dashboard-cell
             :columns="5"
             :rows="4"
+            ssr-key="map-winrate-userate-chart"
             hide-empty
+            lazy
           >
             <map-winrate-userate-chart
               :id="id"
@@ -105,7 +106,9 @@
           <c-dashboard-cell
             :columns="8"
             :rows="4"
+            ssr-key="map-trend-chart"
             hide-empty
+            lazy
           >
             <map-trend-chart
               :id="id"
@@ -131,7 +134,9 @@
           <c-dashboard-cell
             :columns="4"
             :rows="5"
+            ssr-key="map-best-players-table"
             hide-empty
+            lazy
           >
             <map-best-players-table
               v-observe-visibility="{
@@ -164,7 +169,9 @@
           <c-dashboard-cell
             :columns="4"
             :rows="5"
+            ssr-key="map-best-starpowers-table"
             hide-empty
+            lazy
           >
             <map-best-accessory-table
               key="starpowers-table"
@@ -218,7 +225,9 @@
           <c-dashboard-cell
             :columns="4"
             :rows="5"
+            ssr-key="map-best-gadgets-table"
             hide-empty
+            lazy
           >
             <map-best-accessory-table
               key="gadgets-table"
@@ -272,7 +281,9 @@
           <c-dashboard-cell
             :columns="5"
             :rows="2"
+            ssr-key="map-best-gears-table"
             hide-empty
+            lazy
           >
             <map-best-accessory-roll
               v-observe-visibility="{
@@ -394,11 +405,9 @@ export default defineComponent({
 
     const isApp = computed(() => store.state.isApp as boolean)
 
-    const tab = ref('brawlers')
     const tabs = [{ id: 'brawlers', title: 'Brawlers' }, { id: 'starpowers', title: 'Star Powers' }, { id: 'gadgets', title: 'Gadgets' }, { id: 'gears', title: 'Gears' }, { id: 'leaderboard', title: 'Leaderboard' }]
 
     return {
-      tab,
       tabs,
       isApp,
       query,

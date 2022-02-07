@@ -52,6 +52,7 @@
               'lg:hidden': index >= limit,
             }"
             :lazy="index > 3"
+            :ssr-key="`upcoming-${event.id}`"
           >
             <map-best-brawlers-card
               :id="event.id"

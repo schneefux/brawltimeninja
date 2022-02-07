@@ -2,7 +2,7 @@
   <div
     ref="cell"
     :class="{
-      'hide-empty': hideEmpty && !lazy,
+      'hide-empty': hideEmpty && visible,
     }"
     :style="`--rows: ${rows}; --columns: ${columns};`"
     class="dashboard__cell"
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, onMounted, ref } from 'vue-demi'
 import { useIntersectionObserver } from '@vueuse/core'
 import { ssrRef } from '@nuxtjs/composition-api'
 
@@ -36,29 +36,35 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    ssrKey: {
+      type: String,
+      required: false,
+    },
   },
   setup(props) {
     const cell = ref(null)
-    const visible = ssrRef != undefined ? ssrRef(!props.lazy) : ref(!props.lazy)
+    const visible = props.ssrKey != undefined ? ssrRef(!props.lazy, props.ssrKey) : ref(!props.lazy)
 
     if ((<any>process).server) {
       visible.value = true
     }
 
-    if (!visible.value) {
-      const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }], observerElement) => {
-        if (isIntersecting) {
-          visible.value = isIntersecting
-          stop()
-        }
-      }, {
-        rootMargin: `50% 50% 50% 50%`,
-      })
+    onMounted(() => {
+      if (!visible.value) {
+        const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
+          if (isIntersecting) {
+            visible.value = isIntersecting
+            stop()
+          }
+        }, {
+          rootMargin: `50% 50% 50% 50%`,
+        })
 
-      if (!isSupported) {
-        visible.value = true
+        if (!isSupported) {
+          visible.value = true
+        }
       }
-    }
+    })
 
     return {
       cell,

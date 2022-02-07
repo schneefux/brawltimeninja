@@ -38,7 +38,7 @@
       </p>
 
       <form
-        class="mt-4"
+        class="mt-4 space-x-4"
         @submit.prevent="$fetch()"
       >
         <b-textbox
@@ -68,6 +68,7 @@
               'lg:hidden': index >= limit,
             }"
             :lazy="index > 4"
+            :ssr-key="`tier-list-mode-${map.map}`"
           >
             <event-card
               :mode="mode"

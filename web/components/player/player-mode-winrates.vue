@@ -13,6 +13,7 @@
           'lg:hidden': index >= limit,
         }"
         :lazy="index > 3"
+        :ssr-key="`player-mode-winrates-${mode}`"
       >
         <player-mode-card
           :mode="mode"

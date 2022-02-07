@@ -13,6 +13,7 @@
         :class="{
           'lg:hidden': index >= limit,
         }"
+        :ssr-key="`player-brawlers-${id}`"
       >
         <player-brawler-card
           :brawler="brawler"

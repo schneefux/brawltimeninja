@@ -38,6 +38,7 @@
             'lg:hidden': index >= limit,
           }"
           :lazy="!eager && index > 4"
+          :ssr-key="`active-event-${event.battle_event_map}-${event.battle_event_id}`"
         >
           <map-best-brawlers-card
             :slices="{

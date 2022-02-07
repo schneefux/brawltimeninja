@@ -18,6 +18,7 @@
           :rows="2"
           :columns="4"
           :lazy="index > 2"
+          :ssr-key="`brawler-mode-${row.dimensionsRaw.mode.mode}`"
         >
           <brawler-mode-stats
             :mode="row.dimensionsRaw.mode.mode"

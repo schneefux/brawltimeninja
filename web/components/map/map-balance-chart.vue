@@ -2,13 +2,25 @@
   <c-query :query="query">
     <template v-slot="data">
       <div class="contents">
-        <c-dashboard-cell :columns="8" :rows="4"  hide-empty>
+        <c-dashboard-cell
+          :columns="8"
+          :rows="4"
+          ssr-key="map-balance-chart-barplot"
+          hide-empty
+          lazy
+        >
           <v-barplot
             v-bind="data"
             :card="{ title, fullHeight: true }"
           ></v-barplot>
         </c-dashboard-cell>
-        <c-dashboard-cell :columns="3" :rows="2" hide-empty>
+        <c-dashboard-cell
+          :columns="3"
+          :rows="2"
+          ssr-key="map-balance-chart-gini"
+          hide-empty
+          lazy
+        >
           <b-card
             :title="$t('metric.gini-coefficient')"
             full-height
