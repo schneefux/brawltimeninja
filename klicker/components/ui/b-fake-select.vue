@@ -4,12 +4,11 @@
     v-click-outside="() => dropdownOpen = false"
   >
     <button
-      class="w-full flex justify-center font-normal text-sm md:text-base"
+      class="w-full flex justify-center font-normal"
       :class="[
         'form-select transition duration-100 ease-in-out',
-        'py-2 pl-4 pr-2 bg-black/10 dark:hover:bg-white/10', {
-          'rounded-2xl': !dropdownOpen,
-          'bg-gray-200 dark:bg-gray-800 rounded-t-2xl': dropdownOpen,
+        'py-2 pl-4 pr-2 ring-2 ring-black/10 dark:ring-white/10 hover:ring-black/20 dark:hover:ring-white/20 rounded-2xl', {
+          'bg-gray-200 dark:bg-gray-800': dropdownOpen,
         }]"
       @click="dropdownOpen = !dropdownOpen"
     >
@@ -33,7 +32,7 @@
     <div
       v-show="dropdownOpen"
       :key="dropdownOpen"
-      class="absolute left-0 px-2 py-1 pb-1 rounded-b shadow-lg z-10 bg-gray-200 dark:bg-gray-800"
+      class="absolute ring-2 ring-black/10 dark:ring-white/10 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-gray-200 dark:bg-gray-800 z-10"
     >
       <slot></slot>
     </div>

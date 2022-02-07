@@ -51,7 +51,7 @@
       </template>
     </c-dashboard>
 
-    <c-share class="mt-8"></c-share>
+    <c-share class="mt-4"></c-share>
   </page>
 </template>
 

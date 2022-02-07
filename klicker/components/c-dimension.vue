@@ -4,7 +4,7 @@
       {{ title }}
     </span>
 
-    <div class="flex flex-wrap gap-y-1 gap-x-1">
+    <div class="flex flex-wrap gap-4">
       <b-select
         v-for="index in numDimensions"
         :key="index"

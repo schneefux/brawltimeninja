@@ -7,10 +7,10 @@
       slot="content"
       class="flex flex-wrap items-center"
     >
-      <div class="grid grid-cols-[auto,auto] gap-x-4 gap-y-2 my-1 items-center">
+      <div class="grid grid-cols-[auto,auto] gap-6 items-center">
         <h1
           v-if="configureCube"
-          class="inline font-semibold"
+          class="inline"
         >
           {{ translate('configurator.source') }}
         </h1>

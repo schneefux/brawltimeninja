@@ -6,7 +6,7 @@
       'rounded-2xl': !round,
       'rounded-full': round,
       'inline-block': to != undefined,
-      'text-sm py-1 px-2 border-1': xs,
+      'text-sm py-1 px-3 border-1': xs,
       'text-sm py-2 px-4 border-1': sm,
       'text-sm py-2 px-4 border-2': md,
       'py-4 px-8 border-4': lg,

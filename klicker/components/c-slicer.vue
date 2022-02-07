@@ -1,5 +1,8 @@
 <template>
-  <b-card v-bind="{ ...card, title }">
+  <b-card
+    class="z-10"
+    v-bind="{ ...card, title }"
+  >
     <button
       slot="preview"
       :selected="showFilters"
@@ -14,7 +17,7 @@
     <div
       v-if="breakpointMd || showFilters"
       slot="content"
-      class="mb-1 flex flex-col md:flex-row flex-wrap gap-x-2 gap-y-2"
+      class="flex flex-col md:flex-row flex-wrap gap-4"
     >
       <component
         v-for="spec in specs"
