@@ -9,7 +9,6 @@
       <b-textbox
         v-model="title"
         :id="`${prefix}-title`"
-        dark
       ></b-textbox>
 
       <label
@@ -23,7 +22,6 @@
         min="300"
         max="4096"
         step="64"
-        dark
       ></b-number>
 
       <label
@@ -37,7 +35,6 @@
         min="300"
         max="16384"
         step="64"
-        dark
       ></b-number>
 
       <b-button

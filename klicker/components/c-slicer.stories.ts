@@ -35,7 +35,6 @@ const BrawlerSelect = Vue.component('brawler-select', {
   template: `
     <b-select
       :value="value.brawler"
-      dark
       sm
       @input="v => onInput({ brawler: v == '' ? [] : [v] })"
     >

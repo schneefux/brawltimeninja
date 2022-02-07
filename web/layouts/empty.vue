@@ -1,3 +1,3 @@
 <template>
-  <nuxt class="text-gray-200" />
+  <nuxt class="dark text-gray-200" />
 </template>

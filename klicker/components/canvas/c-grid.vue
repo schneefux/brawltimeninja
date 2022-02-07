@@ -9,7 +9,6 @@
       <b-textbox
         v-model="title"
         :id="`${prefix}-title`"
-        dark
       ></b-textbox>
 
       <div class="col-span-full space-y-2">
@@ -61,7 +60,6 @@
         min="1"
         max="24"
         required
-        dark
       ></b-number>
 
       <b-button
@@ -112,7 +110,6 @@
                 :id="`${prefix}-width`"
                 min="1"
                 max="8"
-                dark
                 @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
               ></b-number>
 
@@ -126,7 +123,6 @@
                 :id="`${prefix}-rows`"
                 min="1"
                 max="8"
-                dark
                 @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
               ></b-number>
             </div>

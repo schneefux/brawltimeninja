@@ -18,12 +18,11 @@
     <div
       :class="{
         'h-full': fullHeight,
-        'bg-gray-900/75 hover:bg-gray-900/60': !light && elevation == 0,
-        'bg-white/[.03] hover:bg-white/[.04]': !light && elevation == 1,
-        'bg-white/[.05] hover:bg-white/[.06]': !light && elevation == 2,
-        'bg-white/[.07] hover:bg-white/[0.08]': !light && elevation == 3,
-        'bg-white/[.1] hover:bg-white/[0.11]': !light && elevation == 4,
-        'bg-gray-100': light,
+        'bg-gray-100/75 dark:bg-gray-900/75 hover:bg-gray-100/80 dark:hover:bg-gray-900/60': elevation == 0,
+        'dark:bg-white/[.05] dark:hover:bg-white/[.06]': elevation == 1,
+        'dark:bg-white/[.02] dark:hover:bg-white/[.03]': elevation == 2,
+        'dark:bg-white/[.01] dark:hover:bg-white/[.02]': elevation > 2,
+        'border border-black/[.07]': elevation > 0,
         'shadow-sm': elevation == 0,
         'shadow': elevation == 1,
         'shadow-md': elevation == 2,
@@ -32,7 +31,7 @@
         'relative loading': loading,
         'cursor-pointer': link != undefined,
       }"
-      class="flex flex-col rounded-2xl"
+      class="flex flex-col rounded-2xl backdrop-blur"
       @click="link != undefined ? $router.push(link) : undefined"
     >
       <div
@@ -55,9 +54,8 @@
           'rounded-t-2xl': !('infobar' in $scopedSlots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
           'grid-cols-[1fr,auto]': !('icon' in $scopedSlots),
-          'text-gray-800': light,
         }]"
-        class="shrink-0 grid items-center overflow-hidden"
+        class="shrink-0 grid items-center overflow-hidden text-gray-800 dark:text-gray-200"
       >
         <slot
           name="icon"
@@ -126,12 +124,11 @@
           'rounded-t-2xl bg-filter-rounded-t-2xl': !renderTitle,
           'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $scopedSlots),
           'h-full': fullHeight,
-          'text-gray-200/75': !light,
-          'text-gray-800': light,
         }]"
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
+        class="text-gray-800/75 dark:text-gray-200/75"
       >
         <slot name="content"></slot>
       </div>
@@ -231,9 +228,6 @@ export default defineComponent({
     },
     dense: {
       type: Boolean,
-    },
-    light: {
-      type: Boolean
     },
     elevation: {
       type: Number,

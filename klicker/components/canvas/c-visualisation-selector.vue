@@ -13,7 +13,6 @@
           <b-select
             :id="`${prefix}-widget`"
             :value="component"
-            dark
             sm
             @input="c => component = c"
           >

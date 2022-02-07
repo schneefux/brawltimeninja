@@ -1,37 +1,39 @@
 <template>
-  <div class="flex flex-col justify-between min-h-screen bg-gray-900 text-gray-200">
-    <web-nav class="hidden md:flex"></web-nav>
-    <app-head-nav class="md:hidden"></app-head-nav>
+  <div class="dark">
+    <div class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+      <web-nav class="hidden md:flex"></web-nav>
+      <app-head-nav class="md:hidden"></app-head-nav>
 
-    <nuxt />
+      <nuxt />
 
-    <install-prompt-capture></install-prompt-capture>
-    <cookie-consent-popup
-      v-if="consentPopupVisible"
-      @enable-none="disableCookies"
-      @enable-cookies="enableCookies"
-      @enable-all="enableCookiesAndAds"
-    ></cookie-consent-popup>
+      <install-prompt-capture></install-prompt-capture>
+      <cookie-consent-popup
+        v-if="consentPopupVisible"
+        @enable-none="disableCookies"
+        @enable-cookies="enableCookies"
+        @enable-all="enableCookiesAndAds"
+      ></cookie-consent-popup>
 
-    <app-bottom-nav class="md:hidden"></app-bottom-nav>
-    <footer
-      class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden md:block"
-    >
-      <div class="space-x-4 mt-2">
-        <nuxt-link
-          v-for="link in links"
-          :key="link.target"
-          :to="link.target"
-          class="inline-block lg:border-0 hover:text-gray-800/75"
-          exact-active-class="text-red-800"
-        >
-          {{ $t('nav.' + link.name) }}
-        </nuxt-link>
-      </div>
-      <copyright class="mt-4 text-sm"></copyright>
-    </footer>
+      <app-bottom-nav class="md:hidden"></app-bottom-nav>
+      <footer
+        class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden md:block"
+      >
+        <div class="space-x-4 mt-2">
+          <nuxt-link
+            v-for="link in links"
+            :key="link.target"
+            :to="link.target"
+            class="inline-block lg:border-0 hover:text-gray-800/75"
+            exact-active-class="text-red-800"
+          >
+            {{ $t('nav.' + link.name) }}
+          </nuxt-link>
+        </div>
+        <copyright class="mt-4 text-sm"></copyright>
+      </footer>
 
-    <adblock-bait></adblock-bait>
+      <adblock-bait></adblock-bait>
+    </div>
   </div>
 </template>
 

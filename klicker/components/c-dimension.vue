@@ -10,7 +10,6 @@
         :key="index"
         :value="value.dimensionsIds[index - 1]"
         :disabled="!editable"
-        dark
         @input="v => onInputDimensionsIds(index - 1, v)"
       >
         <option

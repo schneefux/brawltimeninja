@@ -9,7 +9,6 @@
         v-for="index in (showAllMetrics ? 1 : numMetrics)"
         :key="index"
         :value="showAllMetrics ? '' : value.metricsIds[index - 1]"
-        dark
         @input="v => onInputMetricsIds(index - 1, v)"
       >
         <option

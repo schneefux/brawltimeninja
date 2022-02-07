@@ -7,10 +7,9 @@
       class="w-full flex justify-center font-normal text-sm md:text-base"
       :class="[
         'form-select transition duration-100 ease-in-out',
-        'py-2 pl-4 pr-2', {
-          'hover:bg-white/10': dark && !dropdownOpen,
+        'py-2 pl-4 pr-2 bg-black/10 dark:hover:bg-white/10', {
           'rounded-2xl': !dropdownOpen,
-          'bg-gray-800 rounded-t-2xl': dropdownOpen,
+          'bg-gray-200 dark:bg-gray-800 rounded-t-2xl': dropdownOpen,
         }]"
       @click="dropdownOpen = !dropdownOpen"
     >
@@ -34,9 +33,7 @@
     <div
       v-show="dropdownOpen"
       :key="dropdownOpen"
-      :class="['absolute left-0 px-2 py-1 pb-1 rounded-b shadow-lg z-10', {
-        'bg-gray-800': dark,
-      }]"
+      class="absolute left-0 px-2 py-1 pb-1 rounded-b shadow-lg z-10 bg-gray-200 dark:bg-gray-800"
     >
       <slot></slot>
     </div>
@@ -44,22 +41,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, ref } from 'vue-demi'
 import vClickOutside from 'v-click-outside'
 
-export default Vue.extend({
+export default defineComponent({
   directives: {
     clickOutside: vClickOutside.directive,
   },
-  props: {
-    dark: {
-      type: Boolean,
-      default: false
-    },
-  },
-  data() {
+  setup() {
+    const dropdownOpen = ref(false)
+
     return {
-      dropdownOpen: false,
+      dropdownOpen,
     }
   },
 })

@@ -2,6 +2,7 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
+  darkMode: 'class',
   content: [
     'components/**/*.{js,jsx,ts,tsx,vue}',
     'layouts/**/*.vue',

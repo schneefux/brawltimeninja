@@ -18,7 +18,6 @@
         <div v-if="configureCube">
           <b-select
             :value="value.cubeId"
-            dark
             sm
             @input="onInputCubeId"
           >
@@ -57,7 +56,7 @@
           v-if="configureCompareMode && canCompare"
           class="col-span-2 flex items-center"
         >
-          <b-checkbox dark v-model="compareMode"></b-checkbox>
+          <b-checkbox v-model="compareMode"></b-checkbox>
           <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
         </label>
       </div>
