@@ -11,7 +11,7 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <p class="mt-4 prose prose-invert">
+    <p class="mt-4 prose dark:prose-invert">
       {{ $t(`tier-list.${singular}.description`) }}
     </p>
 

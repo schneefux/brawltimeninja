@@ -11,7 +11,6 @@
         :link="`/blog/${topic}/${post.slug}`"
         :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
         full-height
-        light
       >
         <template v-slot:icon="data">
           <media-img-icon v-bind="data"></media-img-icon>

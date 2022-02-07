@@ -11,7 +11,7 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <p class="mt-4 prose prose-invert">
+    <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
@@ -32,7 +32,7 @@
     >
       <p
         slot="description"
-        class="mt-4 prose prose-invert"
+        class="mt-4 prose dark:prose-invert"
       >
         {{ $t('tier-list.open-map') }}
       </p>

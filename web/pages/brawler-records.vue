@@ -4,7 +4,7 @@
     class="max-w-2xl mx-auto"
   >
     <b-card class="mt-3">
-      <p slot="content" class="prose prose-invert">
+      <p slot="content" class="prose dark:prose-invert">
         {{ $t('brawler-records.info') }}
       </p>
     </b-card>

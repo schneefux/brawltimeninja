@@ -1,6 +1,6 @@
 <template>
   <page :title="$t('tier-list.maps.title')">
-    <p class="mt-4 prose prose-invert">
+    <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.maps.description') }}
      </p>
 

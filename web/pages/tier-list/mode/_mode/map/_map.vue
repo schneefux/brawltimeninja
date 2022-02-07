@@ -16,7 +16,7 @@
 
     <div class="mt-4 flex flex-wrap justify-center md:justify-between">
       <div>
-        <p class="prose prose-invert">
+        <p class="prose dark:prose-invert">
           {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
         </p>
         <p v-if="event.map.startsWith('Competition ')">

@@ -1,7 +1,7 @@
 <template>
   <page
     title="About"
-    class="bg-gray-100 prose prose-sm sm:prose lg:prose-lg"
+    class="bg-gray-100 prose dark:prose-invert prose-sm sm:prose lg:prose-lg"
   >
     <copyright light></copyright>
     <p>

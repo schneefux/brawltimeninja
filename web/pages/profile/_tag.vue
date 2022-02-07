@@ -75,7 +75,7 @@
     </client-only>
 
     <page-section :title="$t('player.records.title')">
-      <p class="mt-4 prose prose-invert w-full">
+      <p class="mt-4 prose dark:prose-invert w-full">
         {{ $t('player.records.description') }}
       </p>
 
@@ -95,7 +95,7 @@
     </page-section>
 
     <page-section title="Info">
-      <p class="prose prose-invert max-w-none">
+      <p class="prose dark:prose-invert max-w-none">
         {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
       </p>
     </page-section>
@@ -104,7 +104,7 @@
       v-if="playerTotals != undefined && playerTotals.picks > 0"
       :title="$tc('battle-log', 1)"
     >
-      <p class="mt-4 prose prose-invert w-full">
+      <p class="mt-4 prose dark:prose-invert w-full">
         {{ $t('player.battle-log.description') }}
         {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
       </p>
@@ -155,7 +155,7 @@
     </client-only>
 
     <page-section :title="$tc('mode', 2)">
-      <p class="prose prose-invert">
+      <p class="prose dark:prose-invert">
         {{ $t('player.modes.description') }}
       </p>
 
@@ -183,7 +183,7 @@
     </client-only>
 
     <page-section :title="$tc('brawler', 2)">
-      <p class="prose prose-invert">
+      <p class="prose dark:prose-invert">
         {{ $t('player.brawlers.description') }}
       </p>
 

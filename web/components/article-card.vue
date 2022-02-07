@@ -4,7 +4,6 @@
     tag="article"
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
-    light
     xxl
   >
     <div
@@ -16,7 +15,7 @@
     ></div>
     <span
       slot="preview"
-      class="text-gray-400 text-sm"
+      class="text-sm"
     >
       {{ date }}
     </span>
@@ -25,7 +24,7 @@
         :document="document"
         ref="content"
         itemprop="articleBody"
-        class="prose prose-sm sm:prose lg:prose-lg"
+        class="prose dark:prose-invert lg:prose-lg"
       ></nuxt-content>
 
       <b-lightbox v-model="lightboxOpen">
@@ -38,6 +37,7 @@
     <p
       slot="actions"
       v-if="document.author != undefined"
+      class="prose dark:prose-invert"
     >
       This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
         <a

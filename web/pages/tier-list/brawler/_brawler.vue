@@ -17,7 +17,7 @@
         :brawler-name="brawlerName"
       ></brawler-base-stats>
 
-      <p class="mt-8 prose prose-invert">
+      <p class="mt-8 prose dark:prose-invert">
         {{ $t('starpower-gadget-comparison.info') }}
       </p>
     </page-section>
@@ -59,7 +59,7 @@
     >
       <p
         slot="description"
-        class="mt-4 prose prose-invert"
+        class="mt-4 prose dark:prose-invert"
       >
         {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
       </p>
@@ -79,7 +79,7 @@
         :brawler-name="brawlerName"
       ></brawler-trophy-graphs>
 
-      <p class="mt-4 prose prose-invert">
+      <p class="mt-4 prose dark:prose-invert">
         {{ $t('brawler.disclaimer') }}
       </p>
     </page-section>
@@ -94,7 +94,7 @@
         :brawler-name="brawlerName"
       ></brawler-modes-stats>
 
-      <p class="mt-4 prose prose-invert">
+      <p class="mt-4 prose dark:prose-invert">
         {{ $t('brawler.viable-info') }}
       </p>
     </page-section>

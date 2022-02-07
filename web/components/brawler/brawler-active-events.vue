@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="prose prose-invert">
+    <p class="prose dark:prose-invert">
       {{ description }}
     </p>
     <scrolling-dashboard
