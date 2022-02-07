@@ -1,5 +1,5 @@
 <template>
-  <div ref="tabContainer">
+  <div ref="container">
     <nav
       :class="navClass"
       class="sticky md:static bg-gray-900"
@@ -23,19 +23,25 @@
       </ul>
     </nav>
 
-    <transition :name="transition" mode="out-in">
+    <div
+      ref="tabContainer"
+      class="mt-4 snap-x snap-mandatory flex overflow-x-auto hide-scrollbar"
+    >
       <div
-        :key="activeTab"
-        class="mt-4"
+        v-for="tab in tabs"
+        :key="tab.id"
+        :ref="tab.id"
+        class="w-full flex-shrink-0 snap-start"
       >
-        <slot :name="activeTab"></slot>
+        <slot :name="tab.id"></slot>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, nextTick } from 'vue-demi'
+import { defineComponent, onMounted, PropType, ref } from 'vue-demi'
+import { useIntersectionObserver } from '@vueuse/core'
 
 interface Tab {
   id: string
@@ -53,63 +59,47 @@ export default defineComponent({
       default: 'top-0'
     },
   },
-  setup(props) {
+  // TODO replace refs by function ref when migrating to Vue 3
+  setup(props, { refs }) {
+    const container = ref<HTMLElement|null>(null)
     const tabContainer = ref<HTMLElement|null>(null)
     const activeTab = ref(props.tabs[0].id)
-    const transition = ref('')
-    const activeTabIndex = ref(0)
 
     const setActiveTab = (tab: Tab) => {
-      if (tab.id == activeTab.value) {
-        return
-      }
+      const tabElement = refs[tab.id][0] as HTMLElement
+      const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
+      tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
 
-      activeTab.value = tab.id
-
-      const newIndex = props.tabs.findIndex(t => t.id == tab.id)
-      if (newIndex > activeTabIndex.value) {
-        transition.value = 'slide-fade-rtl'
-      }
-      if (newIndex < activeTabIndex.value) {
-        transition.value = 'slide-fade-ltr'
-      }
-      activeTabIndex.value = newIndex
-
-      if (tabContainer.value!.getBoundingClientRect().top < 0) {
-        nextTick(() => tabContainer.value!.scrollIntoView())
+      if (container.value!.getBoundingClientRect().top < 0) {
+        // TODO does not work
+        container.value!.scrollIntoView({ behavior: 'smooth' })
       }
     }
 
+    onMounted(() => {
+      for (const tab of props.tabs) {
+        if (tab.id in refs && (refs[tab.id] as HTMLElement[]).length > 0) {
+          useIntersectionObserver(refs[tab.id][0], ([{ isIntersecting }]) => {
+            if (isIntersecting) {
+              activeTab.value = tab.id
+            }
+          })
+        }
+      }
+    })
+
     return {
+      container,
       tabContainer,
       setActiveTab,
-      transition,
       activeTab,
-      activeTabIndex,
     }
   },
 })
 </script>
 
 <style lang="postcss">
-.slide-fade-ltr-enter-active, .slide-fade--ltr-leave-active,
-.slide-fade-rtl-enter-active, .slide-fade--rtl-leave-active {
-  transition: all .3s ease;
-}
-
-.slide-fade-rtl-leave-to,
-.slide-fade-ltr-leave-to {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.slide-fade-rtl-enter {
-  transform: translateX(+10rem);
-  opacity: 0;
-}
-
-.slide-fade-ltr-enter {
-  transform: translateX(-10rem);
-  opacity: 0;
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 </style>
