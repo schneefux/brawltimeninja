@@ -127,16 +127,11 @@ import { Player } from '@/model/Api'
 import { ratingPercentiles, xpToHours } from '~/lib/util'
 import { PlayerTotals } from '~/store'
 import { BBigstat } from '@schneefux/klicker/components'
-import { computed, defineComponent, nextTick, onBeforeUpdate, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, nextTick, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
 interface FunStat {
   label: string
   value: (n: number) => number
-}
-
-interface CounterRef {
-  element: HTMLElement
-  stat: FunStat
 }
 
 const useGtag = wrapProperty('$gtag', false)
@@ -162,15 +157,6 @@ export default defineComponent({
   setup(props, { refs }) {
     const store = useStore<any>()
     const { localePath, i18n } = useContext()
-
-    let counterRefs: CounterRef[] = []
-    onBeforeUpdate(() => counterRefs = [])
-    const setCounterRef = (stat: FunStat) => (element: HTMLElement) => {
-      console.log('set counter ref', stat, element)
-      if (element) {
-        counterRefs.push({ element, stat })
-      }
-    }
 
     function startCounter() {
       const playerHours = Math.max(hours.value, 1)
@@ -271,7 +257,6 @@ export default defineComponent({
       trophiesGoal,
       totalBrawlers,
       accountRating,
-      setCounterRef,
       brawlersUnlocked,
       ratingPercentiles,
       sharepicTriggered,
