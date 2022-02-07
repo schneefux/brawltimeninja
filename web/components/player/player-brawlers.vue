@@ -1,6 +1,7 @@
 <template>
   <scrolling-dashboard
     :length="Object.values(player.brawlers).length"
+    :page-size="4"
   >
     <template v-slot="{ limit }">
       <c-dashboard-cell
@@ -8,7 +9,7 @@
         :key="id"
         :rows="3"
         :columns="3"
-        :lazy="index > 3"
+        :lazy="index > 4"
         :class="{
           'lg:hidden': index >= limit,
         }"

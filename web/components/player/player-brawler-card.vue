@@ -6,7 +6,7 @@
   >
     <div
       slot="content"
-      class="flex items-center"
+      class="flex flex-wrap justify-center items-center"
     >
       <div class="flex rounded overflow-hidden">
         <media-img
@@ -37,7 +37,7 @@
           ></media-img>
         </div>
       </div>
-      <table class="ml-auto text-sm sm:text-base">
+      <table class="mt-4 ml-auto text-sm sm:text-base">
         <tbody>
           <tr>
             <td class="text-center">
