@@ -1,6 +1,6 @@
 <template>
   <scrolling-dashboard
-    v-if="modes != undefined"
+    v-if="modes != undefined && events != undefined"
     :length="modes.length"
   >
     <template v-slot="{ limit }">
