@@ -69,6 +69,11 @@
     grid-template-columns: none;
     grid-auto-columns: minmax(96px, min-content);
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .dashboard--horizontal .dashboard__cell {
+    scroll-snap-align: start;
   }
 
   .dashboard--responsive {
