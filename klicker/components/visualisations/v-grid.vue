@@ -5,7 +5,7 @@
   >
     <div
       slot="content"
-      class="flex flex-wrap justify-center"
+      class="flex flex-wrap justify-center gap-4"
     >
       <b-card
         v-for="(entry, index) in response.data.slice(page*pageSize, (page+1)*pageSize)"
@@ -40,7 +40,7 @@
                 itemscope
                 itemtype="http://schema.org/QuantitativeValue"
               >
-                <td class="font-semibold text-right pr-1" itemprop="unitText">
+                <td class="text-right pr-1" itemprop="unitText">
                   {{ entry.metrics[m.id] }}
                 </td>
                 <td itemprop="value">
