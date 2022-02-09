@@ -18,10 +18,10 @@
     <div
       :class="{
         'h-full': fullHeight,
-        'bg-gray-100/75 dark:bg-gray-900/75 hover:bg-gray-100/80 dark:hover:bg-gray-900/60': elevation == 0,
-        'dark:bg-white/[.05] dark:hover:bg-white/[.06]': elevation == 1,
-        'dark:bg-white/[.02] dark:hover:bg-white/[.03]': elevation == 2,
-        'dark:bg-white/[.01] dark:hover:bg-white/[.02]': elevation > 2,
+        'bg-gray-100/75 dark:bg-gray-900/75': elevation == 0,
+        'dark:bg-white/[.05]': elevation == 1,
+        'dark:bg-white/[.02]': elevation == 2,
+        'dark:bg-white/[.01]': elevation > 2,
         'border border-black/[.07]': elevation > 0,
         'shadow-sm': elevation == 0,
         'shadow': elevation == 1,
