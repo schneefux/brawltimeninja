@@ -2,7 +2,7 @@
   <div ref="container">
     <nav
       :class="navClass"
-      class="sticky md:static bg-gray-900"
+      class="sticky md:static bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[0.10] dark:border-white/[0.10]"
     >
       <ul class="flex mx-6 gap-x-8 overflow-x-auto">
         <li
@@ -10,10 +10,10 @@
           :key="tab.id"
         >
           <button
-            class="text-lg px-8 py-2 whitespace-nowrap"
+            class="text-lg px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out"
             :class="{
               'border-primary-400 border-b-2': tab.id == activeTab,
-              'hover:border-primary-200 hover:border-b-2 text-gray-200/75 hover:text-gray-200': tab.id != activeTab,
+              'hover:border-primary-200 hover:border-b-2 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': tab.id != activeTab,
             }"
             @click="setActiveTab(tab)"
           >

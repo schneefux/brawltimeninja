@@ -19,9 +19,9 @@
       :class="{
         'h-full': fullHeight,
         'bg-gray-100/75 dark:bg-gray-900/75': elevation == 0,
-        'dark:bg-white/[.05]': elevation == 1,
-        'dark:bg-white/[.02]': elevation == 2,
-        'dark:bg-white/[.01]': elevation > 2,
+        'bg-black/[0.08] dark:bg-white/[.05]': elevation == 1,
+        'bg-white/[.02]': elevation == 2,
+        'bg-white/[.01]': elevation > 2,
         'border border-black/[.07]': elevation > 0,
         'shadow-sm': elevation == 0,
         'shadow': elevation == 1,
