@@ -31,7 +31,7 @@
         v-for="tab in tabs"
         :key="tab.id"
         :ref="tab.id"
-        class="w-full flex-shrink-0 snap-start"
+        class="mr-8 w-full flex-shrink-0 snap-center"
       >
         <slot :name="tab.id"></slot>
       </div>
