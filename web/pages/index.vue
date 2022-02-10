@@ -251,6 +251,8 @@ export default defineComponent({
 
     const gtag = useGtag()
 
+    const addLastPlayer = (player: any) => store.commit('addLastPlayer', player)
+
     const router = useRouter()
     const loading = ref(false)
     const error = ref<string|undefined>()
@@ -346,6 +348,7 @@ export default defineComponent({
     }
 
     return {
+      addLastPlayer,
       playerLinks,
       isInIframe,
       helpDropdown,
