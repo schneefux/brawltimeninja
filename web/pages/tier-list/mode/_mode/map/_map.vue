@@ -30,13 +30,12 @@
         </p>
       </div>
 
-      <media-img
+      <map-img
         v-if="showImage"
-        :path="`/maps/${event.id}`"
-        :alt="title"
-        size="256"
+        :id="event.id"
+        :map="event.map"
         clazz="h-64 mt-6 md:mt-0"
-      ></media-img>
+      ></map-img>
     </div>
 
     <client-only>
@@ -120,9 +119,6 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.event.id == '0' ? this.$tc('competition-winner', 1) as string : this.$t('map.' + this.event.id) as string
-    },
-    image(): string {
-      return this.event.id == '0' ? `/maps/competition-winners/${this.event.map.replace('Competition Winner ', '')}` : `/maps/${this.event.id}`
     },
     showImage(): boolean {
       return this.event.id != undefined && this.event.map != 'Competition Entry'

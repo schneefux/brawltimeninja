@@ -30,12 +30,12 @@
         class="mt-2"
         dense
       >
-        <media-img
+        <map-img
           slot="preview"
-          :path="`/maps/${activeMap.id}`"
-          size="80"
+          :id="activeMap.id"
+          :map="activeMap.map"
           clazz="h-10"
-        ></media-img>
+        ></map-img>
         <player-map-tip-roll
           slot="content"
           :map="activeMap.map"

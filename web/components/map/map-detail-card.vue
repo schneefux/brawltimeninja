@@ -10,13 +10,13 @@
       slot="content"
       class="flex flex-wrap justify-evenly items-center"
     >
-      <media-img
+      <map-img
         v-if="id != undefined"
-        :path="id != '0' ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
-        size="512"
+        :id="id"
+        :map="map"
         clazz="h-64"
-        wrapper-class="mt-4"
-      ></media-img>
+        class="mt-4"
+      ></map-img>
 
       <div class="mt-4">
         <b-card

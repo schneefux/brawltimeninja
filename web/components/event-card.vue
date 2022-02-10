@@ -14,13 +14,13 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <media-img
-      slot="preview"
+    <map-img
       v-if="id != undefined"
-      :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
-      size="80"
+      slot="preview"
+      :id="id"
+      :map="map"
       clazz="h-12"
-    ></media-img>
+    ></map-img>
 
     <template
       v-for="(_, slot) of $scopedSlots"

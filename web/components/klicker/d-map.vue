@@ -6,12 +6,11 @@
     :style="data.staticStyle"
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">
-      <media-img
-        :path="`/maps/${props.row.dimensionsRaw.map.eventId}`"
-        :alt="props.row.dimensions.map"
-        size="160"
+      <map-img
+        :id="props.row.dimensionsRaw.map.eventId"
+        :map="props.row.dimensionsRaw.map.map"
         clazz="h-6 sm:h-8 md:h-10"
-      ></media-img>
+      ></map-img>
     </div>
     <span
       v-if="props.captioned"

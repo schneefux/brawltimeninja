@@ -1,12 +1,12 @@
 <template>
   <b-card :title="title">
     <div slot="content" class="flex justify-content">
-      <media-img
-        :path="image"
+      <map-img
+        :id="id"
+        :map="map"
         slot="content"
-        size="512"
         clazz="h-auto"
-      ></media-img>
+      ></map-img>
     </div>
   </b-card>
 </template>
@@ -28,11 +28,9 @@ export default defineComponent({
   setup(props) {
     const { i18n } = useContext()
     const title = computed(() => props.id == '0' ? i18n.tc('competition-winner', 1) : i18n.t('map.' + props.id))
-    const image = computed(() => props.id == '0' ? `/maps/competition-winners/${props.map.replace('Competition Winner ', '')}` : `/maps/${props.id}`)
 
     return {
       title,
-      image,
     }
   },
 })
