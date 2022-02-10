@@ -3,7 +3,7 @@
     :class="{
       'hidden': !isInstallable,
     }"
-    class="!py-1 !px-2 -my-1 !text-xs md:text-sm"
+    class="!py-1 !px-2 -my-1 !text-xs md:text-sm whitespace-nowrap"
     secondary
     sm
     @click="clickInstall"
