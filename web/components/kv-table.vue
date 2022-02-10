@@ -1,11 +1,7 @@
-<template functional>
-  <dl
-    v-bind="data.attrs"
-    :class="[data.class, data.staticClass]"
-    :style="data.staticStyle"
-  >
+<template>
+  <dl>
     <div
-      v-for="[key, value] in props.data"
+      v-for="[key, value] in data"
       :key="key"
       class="flex justify-between"
     >
@@ -16,10 +12,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     data: {
       type: Array as PropType<string[][]>,
