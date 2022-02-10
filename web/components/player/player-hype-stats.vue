@@ -127,7 +127,7 @@ import { Player } from '@/model/Api'
 import { ratingPercentiles, xpToHours } from '~/lib/util'
 import { PlayerTotals } from '~/store'
 import { BBigstat } from '@schneefux/klicker/components'
-import { computed, defineComponent, nextTick, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
 
 interface FunStat {
   label: string
@@ -158,7 +158,7 @@ export default defineComponent({
     const store = useStore<any>()
     const { localePath, i18n } = useContext()
 
-    function startCounter() {
+    const startCounter = () => {
       const playerHours = Math.max(hours.value, 1)
       const animationDuration = 3000
 
@@ -180,21 +180,20 @@ export default defineComponent({
         if (animationStart == undefined) {
           animationStart = timestamp
         }
-        if (timestamp - animationStart >= animationDuration) {
-          return
-        }
 
-        const easeOutCubic = 1 - Math.pow(1 - (timestamp - animationStart) / animationDuration, 3)
+        const easeOutCubic = 1 - Math.pow(1 - Math.min(1, (timestamp - animationStart) / animationDuration), 3)
         const hoursSpent = playerHours * easeOutCubic
         setCounters(hoursSpent)
 
-        animateHours()
+        if (timestamp - animationStart <= animationDuration) {
+          animateHours()
+        }
       })
 
       animateHours()
     }
 
-    onMounted(() => nextTick(() => startCounter()))
+    onMounted(() => startCounter())
 
     const hours = computed(() => xpToHours(props.player.expPoints))
     const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
