@@ -20,7 +20,7 @@
           {{ $t('player.statistics-for') }}
           <span class="text-yellow-400">{{ player.name }}</span>
           <span
-            v-if="tag == 'V8LLPPC'"
+            v-if="player.tag == 'V8LLPPC'"
             class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
           >DEV</span>
         </h1>
@@ -205,29 +205,90 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import { mapState } from 'vuex'
+import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore, wrapProperty } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    const description = this.$t('player.meta.description', { name: this.player.name }) as string
-    const name = this.player.name
-    const tag = this.$route.params.tag
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
+  head: {},
+  setup() {
+    const { i18n, $config, $sentry } = useContext()
+
+    const route = useRoute()
+
+    const enableKlickerStats = computed(() =>
+      // do not send queries to backend if user has no battle history in database
+      (playerTotals.value?.picks || 0) > 25
+    )
+
+    const timer = ref<undefined|number>()
+    const refreshSecondsLeft = ref(180)
+    const refreshTimer = async () => {
+      refreshSecondsLeft.value -= 15
+      if (refreshSecondsLeft.value <= 0) {
+        await refresh()
+      }
+      timer.value = window.setTimeout(() => refreshTimer(), 15 * 1000)
+    }
+    const refresh = async () => {
+      try {
+        await store.dispatch('loadPlayer', route.value.params.tag)
+      } catch (err: any) {
+        if (err.response?.status != 404) {
+          console.error(err)
+          $sentry.captureException(err)
+        }
+      }
+      refreshSecondsLeft.value = 180
+    }
+
+    onMounted(() => timer.value = window.setTimeout(() => refreshTimer(), 15 * 1000))
+    onUnmounted(() => window.clearTimeout(timer.value))
+
+    const store = useStore<any>()
+    const player = computed(() => store.state.player as Player)
+    const playerTotals = computed(() => store.state.playerTotals as PlayerTotals|undefined)
+
+    const gtag = useGtag()
+    const trackScroll = (visible, entry, section) => {
+      if (visible) {
+        gtag.event('scroll', {
+          'event_category': 'profile',
+          'event_label': section,
+        })
+      }
+    }
+
+    const isApp = computed(() => store.state.isApp as boolean)
+
+    useMeta(() => {
+      const description = i18n.t('player.meta.description', { name: player.value.name }) as string
+      const name = player.value.name
+      const tag = route.value.params.tag
+      return {
+        title: i18n.t('player.meta.title', { name }) as string,
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'og:image', property: 'og:image', content: $config.renderUrl + `/embed/profile/${tag}` },
+          { hid: 'og:image:alt', property: 'og:image:alt', content: `${name} Brawl Stars Profile share image` },
+          { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+          // 2x the .sharepic size
+          { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
+          { hid: 'og:image:height', property: 'og:image:height', content: '630' },
+        ]
+      }
+    })
+
     return {
-      title: this.$t('player.meta.title', { name }) as string,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-        { hid: 'og:image', property: 'og:image', content: this.$config.renderUrl + `/embed/profile/${tag}` },
-        { hid: 'og:image:alt', property: 'og:image:alt', content: `${name} Brawl Stars Profile share image` },
-        { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
-        // 2x the .sharepic size
-        { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
-        { hid: 'og:image:height', property: 'og:image:height', content: '630' },
-      ]
+      refreshSecondsLeft,
+      refresh,
+      enableKlickerStats,
+      trackScroll,
+      isApp,
+      player,
+      playerTotals,
     }
   },
   meta: {
@@ -235,30 +296,6 @@ export default Vue.extend({
     screen: 'profile',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      refreshSecondsLeft: 180,
-      timer: undefined as undefined|number,
-    }
-  },
-  computed: {
-    tag(): string {
-      return this.$route.params.tag
-    },
-    enableKlickerStats(): boolean {
-      // do not send queries to backend if user has no battle history in database
-      return (this.playerTotals?.picks || 0) > 25
-    },
-    topBrawlerId(): string {
-      const brawlerIds = [...Object.keys(this.player.brawlers)]
-      return brawlerIds[0]
-    },
-    ...mapState({
-      player: (state: any) => state.player as Player,
-      playerTotals: (state: any) => state.playerTotals as PlayerTotals|undefined,
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
   async validate({ store, params, redirect }) {
     const tag = params.tag.toUpperCase()
     if (tag != params.tag) {
@@ -268,12 +305,6 @@ export default Vue.extend({
     }
 
     return RegExp(store.state.tagPattern).test(tag)
-  },
-  mounted() {
-    this.timer = window.setTimeout(() => this.refreshTimer(), 15 * 1000)
-  },
-  destroyed() {
-    window.clearTimeout(this.timer)
   },
   async asyncData({ store, params, error, i18n }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {
@@ -290,36 +321,6 @@ export default Vue.extend({
         return
       }
     }
-
-    return {}
-  },
-  methods: {
-    async refreshTimer() {
-      this.refreshSecondsLeft -= 15
-      if (this.refreshSecondsLeft <= 0) {
-        await this.refresh()
-      }
-      this.timer = window.setTimeout(() => this.refreshTimer(), 15 * 1000)
-    },
-    async refresh() {
-      try {
-        await this.$store.dispatch('loadPlayer', this.$route.params.tag)
-      } catch (err: any) {
-        if (err.response?.status != 404) {
-          console.error(err)
-          this.$sentry.captureException(err)
-        }
-      }
-      this.refreshSecondsLeft = 180
-    },
-    trackScroll(visible, entry, section) {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'profile',
-          'event_label': section,
-        })
-      }
-    },
   },
 })
 </script>

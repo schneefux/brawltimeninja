@@ -166,6 +166,7 @@
     "metric.battles-total": "Battles",
     "metric.book": "Books unread",
     "metric.brawler": "Brawler",
+    "metric.brawler.short": "Brawler",
     "metric.club-role": "Role",
     "metric.day": "Day",
     "metric.duoVictories": "Duo Showdown Wins",

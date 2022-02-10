@@ -55,13 +55,13 @@
       </div>
       <p
         v-show="loading"
-        class="mt-4 text-red-500"
+        class="mt-4 text-red-400"
       >
         {{ $t('state.searching') }}…
       </p>
       <p
         v-show="error"
-        class="mt-4 font-semibold text-red-500"
+        class="mt-4 text-red-400"
       >
         {{ error }}
       </p>
@@ -70,7 +70,7 @@
     <page-section class="text-center">
       <div class="flex justify-center">
         <details
-          ref="help-dropdown"
+          ref="helpDropdown"
           class="mx-6"
         >
           <summary>
@@ -103,10 +103,10 @@
 
     <div class="mt-6 mx-6 flex flex-wrap justify-center">
       <div class="mt-2">
-        <template v-if="lastPlayers.length === 0">
+        <template v-if="playerLinks.length === 0">
           {{ $t('index.recommended') }}
         </template>
-        <template v-if="lastPlayers.length > 0">
+        <template v-if="playerLinks.length > 0">
           {{ $t('index.recents') }}
         </template>
       </div>
@@ -168,7 +168,7 @@
     </client-only>
 
     <page-section
-      v-if="events.length > 0"
+      v-if="events != undefined && events.length > 0"
       :title="$t('index.events.title')"
       tracking-id="live_events"
       tracking-page-id="maps"
@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore, wrapProperty } from '@nuxtjs/composition-api'
 import { mapState, mapMutations } from 'vuex'
 import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd } from '@/lib/util'
@@ -203,53 +203,25 @@ interface PlayerLink {
   link: any
 }
 
-export default Vue.extend({
-  head(): MetaInfo {
-    const description = this.$tc('index.meta.description')
-    const structuredData = this.events
-      .map((event) => ({
-        type: 'application/ld+json',
-        json: formatAsJsonLd({
-          id: event.battle_event_id.toString(),
-          map: event.battle_event_map,
-          mode: this.$t('mode.' + event.battle_event_mode, 'en') as string,
-          start: event.start,
-          end: event.end,
-        }, this.$config.mediaUrl),
-      }))
+const useGtag = wrapProperty('$gtag', false)
+export default defineComponent({
+  head: {},
+  setup() {
+    const { i18n, $config, $klicker, $sentry, localePath } = useContext()
 
-    return {
-      title: this.$tc('index.meta.title'),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ],
-      script: structuredData,
-    }
-  },
-  meta: {
-    title: 'Profile',
-    screen: 'profile',
-  },
-  middleware: ['cached'],
-  data() {
-    return {
-      tag: undefined as string|undefined,
-      loading: false,
-      error: undefined as string|undefined,
-      events: [] as EventMetadata[],
-    }
-  },
-  computed: {
-    cleanedTag(): string {
-      return (this.tag || '')
+    const tag = ref<string|undefined>()
+    const events = useAsync(() => $klicker.queryActiveEvents())
+
+    const cleanedTag = computed(() =>
+      (tag.value || '')
         .trim()
         .replace('#', '')
         .toUpperCase()
         .replace(/O/g, '0')
-    },
-    playerLinks(): PlayerLink[] {
-      const players = this.lastPlayers.length == 0 ? this.featuredPlayers : this.lastPlayers
+    )
+
+    const playerLinks = computed(() => {
+      const players = lastPlayers.value.length == 0 ? featuredPlayers.value : lastPlayers.value
       return players
         .slice().sort(() => 0.5 - Math.random())
         .slice(0, 3)
@@ -258,98 +230,141 @@ export default Vue.extend({
           name: p.name,
           link: `/profile/${p.tag}`,
         }))
-    },
-    isInIframe(): boolean {
+    })
+
+    const isInIframe = ref(false)
+    onMounted(() => {
       try {
-        return (<any>global).window === undefined || (<any>global).window.self !== (<any>global).window.top
+        isInIframe.value = (<any>global).window === undefined || (<any>global).window.self !== (<any>global).window.top
       } catch (e) {
-        return true
+        isInIframe.value = true
       }
-    },
-    ...mapState({
-      player: (state: any) => state.player as Player,
-      userTag: (state: any) => state.userTag as undefined|string,
-      tagPattern: (state: any) => state.tagPattern as string,
-      lastPlayers: (state: any) => state.lastPlayers,
-      featuredPlayers: (state: any) => state.featuredPlayers,
-      isApp: (state: any) => state.isApp as boolean,
-      cookiesAllowed: (state: any) => state.cookiesAllowed as boolean,
-    }),
-  },
-  fetchDelay: 0,
-  async fetch() {
-    this.events = await this.$klicker.queryActiveEvents()
-  },
-  methods: {
-    async search() {
-      this.error = undefined
+    })
 
-      const tagRegex = new RegExp(this.tagPattern)
+    const store = useStore<any>()
+    const cookiesAllowed = computed(() => store.state.cookiesAllowed as boolean)
+    const player = computed(() => store.state.player as Player|undefined)
+    const lastPlayers = computed(() => store.state.lastPlayers)
+    const featuredPlayers = computed(() => store.state.featuredPlayers)
+    const isApp = computed(() => store.state.isApp)
 
-      if (!tagRegex.test(this.cleanedTag)) {
-        this.$gtag.event('search', {
+    const helpDropdown = ref<HTMLElement>()
+
+    const gtag = useGtag()
+
+    const router = useRouter()
+    const loading = ref(false)
+    const error = ref<string|undefined>()
+    const search = async () => {
+      error.value = undefined
+
+      const tagRegex = new RegExp(store.state.tagPattern)
+
+      if (!tagRegex.test(cleanedTag.value)) {
+        gtag.event('search', {
           'event_category': 'player',
           'event_label': 'error_invalid',
         })
-        this.error = this.$tc('error.tag.invalid')
-        const dropdown = this.$refs['help-dropdown'] as HTMLElement
+        error.value = i18n.tc('error.tag.invalid')
+        const dropdown = helpDropdown.value!
         dropdown.setAttribute('open', '')
-        // key events would cancel scroll
-        this.$scrollTo(dropdown, 1000, { cancelable: false, offset: -300 })
+        dropdown.scrollIntoView({ behavior: 'smooth' })
         return
       }
 
       try {
-        this.loading = true
-        await this.$store.dispatch('loadPlayer', this.cleanedTag)
-        this.addLastPlayer(this.player)
-      } catch (error: any) {
-        if (error.response?.status === 404) {
-          this.$gtag.event('search', {
+        loading.value = true
+        await store.dispatch('loadPlayer', cleanedTag.value)
+        store.commit('addLastPlayer', player.value)
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          error.value = i18n.tc('error.tag.not-found')
+          gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_notfound',
           })
-          this.error = this.$tc('error.tag.not-found')
-        } else if (error.response?.status === 429) {
-          this.$gtag.event('search', {
+        } else if (err.response?.status === 429) {
+          error.value = i18n.tc('error.api-unavailable')
+          gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_timeout',
           })
-          this.error = this.$tc('error.api-unavailable')
         } else {
-          this.$sentry.captureException(error)
-          this.$gtag.event('search', {
+          error.value = i18n.tc('error.api-unavailable')
+          $sentry.captureException(err)
+          gtag.event('search', {
             'event_category': 'player',
             'event_label': 'error_api',
           })
-          this.error = this.$tc('error.api-unavailable')
         }
         return
       } finally {
-        this.loading = false
+        loading.value = false
       }
 
-      this.$gtag.event('search', {
+      gtag.event('search', {
         'event_category': 'player',
         'event_label': 'success',
       })
-      if (this.cookiesAllowed) {
-        document.cookie = `usertag=${this.cleanedTag}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      if (cookiesAllowed.value) {
+        document.cookie = `usertag=${cleanedTag.value}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
-      this.$router.push(this.localePath(`/profile/${this.cleanedTag}`))
-    },
-    trackScroll(visible, element, section) {
+
+      router.push(localePath(`/profile/${cleanedTag.value}`))
+    }
+
+    useMeta(() => {
+      const description = i18n.tc('index.meta.description')
+      const structuredData = (events.value || [])
+        .map((event) => ({
+          type: 'application/ld+json',
+          json: formatAsJsonLd({
+            id: event.battle_event_id.toString(),
+            map: event.battle_event_map,
+            mode: i18n.t('mode.' + event.battle_event_mode, 'en') as string,
+            start: event.start,
+            end: event.end,
+          }, $config.mediaUrl),
+        }))
+
+      return {
+        title: i18n.tc('index.meta.title'),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ],
+        script: structuredData,
+      }
+    })
+
+    const trackScroll = (visible, element, section) => {
       if (visible) {
-        this.$gtag.event('scroll', {
+        gtag.event('scroll', {
           'event_category': 'home',
           'event_label': section,
         })
       }
-    },
-    ...mapMutations({
-      addLastPlayer: 'addLastPlayer',
-    }),
+    }
+
+    return {
+      playerLinks,
+      isInIframe,
+      helpDropdown,
+      isApp,
+      trackScroll,
+      search,
+      error,
+      tag,
+      cleanedTag,
+      events,
+      loading,
+    }
   },
+  meta: {
+    title: 'Profile',
+    screen: 'profile',
+  },
+  middleware: ['cached'],
 })
 </script>
 
