@@ -16,7 +16,7 @@
       tracking-page-id="profile"
     >
       <div class="w-full flex justify-between">
-        <h1 class="text-3xl font-semibold relative z-10">
+        <h1 class="text-3xl relative z-10">
           {{ $t('player.statistics-for') }}
           <span class="text-yellow-400">{{ player.name }}</span>
           <span
