@@ -2,6 +2,7 @@
   <b-card
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
     :link="mapLink || modeLink"
+    :title-link="modeLink"
     :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
     :subtitle-link="mapLink"
     :background="background"
