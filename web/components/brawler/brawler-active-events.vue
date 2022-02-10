@@ -12,19 +12,19 @@
       <template v-slot="{ limit }">
         <c-dashboard-cell
           v-for="(event, index) in events"
-          :key="event.battle_event_mode + '-' + event.battle_event_map"
+          :key="event.mode + '-' + event.map"
           :rows="2"
           :columns="3"
           :class="{
             'lg:hidden': index >= limit,
           }"
           :lazy="index > 3"
-          :ssr-key="`brawler-active-event${event.battle_event_mode}-${event.battle_event_map}`"
+          :ssr-key="`brawler-active-event${event.mode}-${event.map}`"
         >
           <brawler-active-event
-            :mode="event.battle_event_mode"
-            :map="event.battle_event_map"
-            :id="event.battle_event_id"
+            :mode="event.mode"
+            :map="event.map"
+            :id="event.id"
             :end="event.end"
             :brawler-name="brawlerName"
             :data="event"

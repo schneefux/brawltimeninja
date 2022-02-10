@@ -3,18 +3,21 @@
     :mode="mode"
     :map="map"
     :id="id"
-    :loading="$fetchState.pending"
     full-height
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
       {{ $t('time.ends-in', { time: timeTillEnd }) }}
     </p>
 
-    <div
+    <b-card
       slot="content"
-      class="flex justify-center h-full items-center"
+      :elevation="0"
+      dense
     >
-      <div class="flex items-end bg-gray-800 rounded">
+      <div
+        slot="content"
+        class="flex items-end"
+      >
         <media-img
           :path="`/brawlers/${brawlerId}/avatar`"
           :alt="brawlerName"
@@ -34,19 +37,21 @@
           <p class="m-auto">{{ $t('state.no-data') }}</p>
         </div>
       </div>
-    </div>
+    </b-card>
   </event-card>
 </template>
 
 <script lang="ts">
+import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { brawlerId, camelToKebab, slugify } from '@/lib/util'
-import { MetaGridEntry } from '@schneefux/klicker/types'
+import { brawlerId as getBrawlerId, camelToKebab, slugify } from '@/lib/util'
 import { commonMetrics } from '~/lib/klicker.conf'
+import { BCard } from '@schneefux/klicker/components'
 
-export default Vue.extend({
+export default defineComponent({
+  components: {
+    BCard,
+  },
   props: {
     mode: {
       // camel case
@@ -69,65 +74,53 @@ export default Vue.extend({
       type: String,
     },
   },
-  data() {
-    return {
-      data: undefined as undefined|MetaGridEntry,
-    }
-  },
-  watch: {
-    mode: '$fetch',
-    map: '$fetch',
-    brawlerName: '$fetch',
-  },
-  fetchDelay: 0,
-  fetchOnServer: false,
-  async fetch() {
-    const data = await this.$klicker.query({
-      cubeId: 'map',
-      slices: {
-        map: [this.map],
-        mode: [this.mode],
-      },
-      dimensionsIds: ['brawler'],
-      metricsIds: ['winRate', 'picks', 'useRate', 'wins'],
-      sortId: 'picks',
-    })
-    data.data = data.data.filter(e => e.dimensionsRaw.brawler.brawler == this.brawlerName.toUpperCase())
+  setup(props) {
+    const { $klicker, i18n } = useContext()
 
-    this.data = data.data[0]
-  },
-  computed: {
-    useRate(): number {
-      return this.data?.metricsRaw?.useRate as number || 0
-    },
-    timeTillEnd(): string {
-      if (this.end == undefined) {
+    const data = useAsync(async () => {
+      const data = await $klicker.query({
+        cubeId: 'map',
+        slices: {
+          map: [props.map],
+          mode: [props.mode],
+        },
+        dimensionsIds: ['brawler'],
+        metricsIds: ['winRate', 'picks', 'useRate', 'wins'],
+        sortId: 'picks',
+      })
+
+      return data.data.filter(e => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())[0]
+    })
+
+    const useRate = computed(() => data.value?.metricsRaw?.useRate as number || 0)
+    const timeTillEnd = computed(() => {
+      if (props.end == undefined) {
         return ''
       }
-      return formatDistanceToNow(parseISO(this.end))
-    },
-    table(): string[][] {
-      if (this.data == undefined) {
+      return formatDistanceToNow(parseISO(props.end))
+    })
+
+    const table = computed(() => {
+      if (data.value == undefined) {
         return []
       }
       return [
-        [ this.$tc('metric.picks'), this.data.metrics.picks ],
-        [ this.$tc('metric.useRate'), this.$klicker.format(commonMetrics.useRate, this.useRate) ],
-        [ this.$tc('metric.winRate'), this.data.metrics.winRate ],
+        [ i18n.tc('metric.picks'), data.value.metrics.picks ],
+        [ i18n.tc('metric.useRate'), $klicker.format(commonMetrics.useRate, useRate.value) ],
+        [ i18n.tc('metric.winRate'), data.value.metrics.winRate ],
       ]
-    },
-    brawlerId(): string {
-      return brawlerId({ name: this.brawlerName })
-    },
-    camelToKebab() {
-      return camelToKebab
-    },
-    slugify() {
-      return slugify
-    },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers,
     })
+
+    const brawlerId = computed(() => getBrawlerId({ name: props.brawlerName }))
+
+    return {
+      data,
+      timeTillEnd,
+      table,
+      camelToKebab,
+      slugify,
+      brawlerId,
+    }
   },
 })
 </script>
