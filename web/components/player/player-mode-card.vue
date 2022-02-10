@@ -62,7 +62,6 @@ import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxt
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { MetaGridEntry } from '@schneefux/klicker/types'
 import { commonMetrics } from '~/lib/klicker.conf'
 
 interface Stats {
@@ -70,12 +69,6 @@ interface Stats {
   picks: number
   wins: number
   losses: number
-}
-
-interface ActiveMap {
-  id: number
-  map: string
-  url: string
 }
 
 export default defineComponent({
@@ -132,14 +125,14 @@ export default defineComponent({
     const activeMap = computed(() => {
       // TODO there might be a second one when Power Play or competition entry is online
       const map = props.activeEvents
-        .filter(e => !e.battle_event_map.startsWith('Competition '))
-        .find(e => e.battle_event_mode == props.mode)
+        .filter(e => !e.map.startsWith('Competition '))
+        .find(e => e.map == props.mode)
 
       if (map != undefined) {
         return {
-          id: map.battle_event_id,
-          map: map.battle_event_map,
-          url: `/tier-list/mode/${camelToKebab(map.battle_event_mode)}/map/${slugify(map.battle_event_map)}`,
+          id: map.id,
+          map: map.map,
+          url: `/tier-list/mode/${camelToKebab(map.mode)}/map/${slugify(map.map)}`,
         }
       }
     })

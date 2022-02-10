@@ -60,24 +60,20 @@ export default defineComponent({
   setup(props) {
     const { $klicker, i18n } = useContext()
 
-    function fetch() {
-      return $klicker.queryActiveEvents(
+    const events = useAsync(() => $klicker.queryActiveEvents(
         ['winRateAdj'], {
         brawler: [props.brawlerName.toUpperCase()],
-      }, 120) as Promise<EventMetadata[]>
-    }
-
-    const events = useAsync(() => fetch())
+      }))
 
     const description = computed(() => {
       if (events.value == undefined) {
         return ''
       }
-      const bestEvents = events.value.slice().sort((e1, e2) => (<any>e2).winRateAdj - (<any>e1).winRateAdj)
+      const bestEvents = events.value.slice().sort((e1, e2) => (e2.metrics.winRateAdj as number) - (e1.metrics.winRateAdj as number))
 
-      const formatEvent = (r: EventMetadata) => `${i18n.t('mode.' + r.battle_event_mode) as string} - ${i18n.t('map.' + r.battle_event_id) as string}`
+      const formatEvent = (r: EventMetadata) => `${i18n.t('mode.' + r.mode) as string} - ${i18n.t('map.' + r.id) as string}`
 
-      const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.battle_event_mode)).slice(0, 2).map(formatEvent))
+      const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => (<any>e).winRateAdj > 0.55).length
       const viableAmount = scaleInto(0, 1, 3, viableMaps / bestEvents.length)
 

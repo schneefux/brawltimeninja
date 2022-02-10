@@ -10,13 +10,13 @@
       slot="infobar"
       class="flex justify-end"
     >
-      <span v-if="powerplay" class="mr-auto">
+      <span v-if="powerplay">
         {{ $tc('power-play', 1) }}
       </span>
-      <span v-if="endDate != undefined">
+      <span v-else-if="endDate != undefined">
         {{ endDateString }}
       </span>
-      <span v-if="startDate != undefined">
+      <span v-else-if="startDate != undefined">
         {{ startDateString }}
       </span>
     </div>
@@ -41,12 +41,15 @@ export default defineComponent({
   props: {
     endDate: {
       type: String,
+      required: false
     },
     startDate: {
       type: String,
+      required: false
     },
     id: {
       type: [Number, String],
+      required: false
     },
     slices: {
       type: Object as PropType<SliceValue>,

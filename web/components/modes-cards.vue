@@ -2,6 +2,7 @@
   <scrolling-dashboard
     v-if="modes != undefined"
     :length="modes.length"
+    :page-size="4"
   >
     <template v-slot="{ limit }">
       <c-dashboard-cell
@@ -10,10 +11,13 @@
         :class="{
           'lg:hidden': index >= limit,
         }"
-        :columns="4"
+        :rows="2"
+        :columns="3"
       >
         <map-best-brawlers-card
-          :slices="{ mode: [mode] }"
+          :slices="{
+            mode: [mode],
+          }"
         ></map-best-brawlers-card>
       </c-dashboard-cell>
     </template>

@@ -14,15 +14,15 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio } from '@schneefux/klicker/components'
 
 export interface EventMetadata {
-  battle_event_id: number
-  battle_event_map: string
-  battle_event_mode: string
-  battle_event_powerplay: boolean
-  timestamp: string
-  picks: number
+  id: number
+  map: string
+  mode: string
   start?: string
   end?: string
+  powerplay: boolean
+  metrics: Record<string, string|number>
 }
+
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -89,39 +89,35 @@ class CustomKlicker extends Klicker {
     return super.format(spec, value)
   }
 
-  async queryActiveEvents<T extends EventMetadata>(metrics: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<T[]> {
+  async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<EventMetadata[]> {
     const events = await this.query({
       cubeId: 'map',
       dimensionsIds: ['mode', 'map', 'powerplay'],
-      metricsIds: ['eventId', 'timestamp', 'picks', ...metrics],
+      metricsIds: ['eventId', 'timestamp', ...metricsIds],
       slices: {
         season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
         ...slices,
       },
       sortId: 'timestamp',
-      limit: 15,
+      limit: 20,
     })
 
     const lastEvents = events.data
-      .map(e => (<T>{
-        battle_event_id: parseInt(e.metricsRaw.eventId as string),
-        battle_event_map: e.dimensionsRaw.map.map as string,
-        battle_event_mode: e.dimensionsRaw.mode.mode as string,
-        battle_event_powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
-        picks: e.metricsRaw.picks as number,
-        timestamp: e.metricsRaw.timestamp as string,
-        ...(metrics.reduce((agg, m) => ({
-          ...agg,
-          [m]: e.metricsRaw[m],
-        }), {})),
+      .map(e => ({
+        id: parseInt(e.metricsRaw.eventId as string),
+        map: e.dimensionsRaw.map.map as string,
+        mode: e.dimensionsRaw.mode.mode as string,
+        powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
+        start: undefined as undefined|string,
+        end: undefined as undefined|string,
+        metrics: e.metricsRaw,
       }))
-      .filter(e => differenceInMinutes(new Date(), parseISO(e.timestamp)) <= maxage)
-      .sort((e1, e2) => e2.picks - e1.picks)
+      .filter(e => differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
 
     const starlistData = await this.context.$http.$get(this.context.$config.apiUrl + '/api/events/active')
       .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents
     starlistData.current.forEach(s => {
-      const match = lastEvents.find(e => e.battle_event_id.toString() == s.id)
+      const match = lastEvents.find(e => e.id.toString() == s.id)
       if (match) {
         match.start = s.start
         match.end = s.end

@@ -1642,7 +1642,6 @@ const cubes: Record<string, Cube> = {
     ],
     defaultSliceValues: {
       ...brawlerBattleDefaultSliceValues,
-      powerplay: ['false'],
     },
   },
   starpower: {

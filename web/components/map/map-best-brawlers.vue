@@ -10,7 +10,10 @@
     }"
   >
     <template v-slot="data">
-      <v-roll v-bind="{ ...data, ...$attrs }">
+      <v-roll
+        v-bind="data"
+        :card="card"
+      >
         <template v-slot:dimensions="data">
           <d-brawler v-bind="data"></d-brawler>
         </template>
@@ -26,7 +29,6 @@ import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
 
 export default defineComponent({
-  inheritAttrs: false,
   components: {
     VRoll,
     BShimmer,
@@ -41,6 +43,10 @@ export default defineComponent({
     limit: {
       type: Number,
       default: 3
+    },
+    card: {
+      type: undefined,
+      required: false
     },
   },
 })

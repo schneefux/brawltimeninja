@@ -173,7 +173,7 @@
       tracking-id="live_events"
       tracking-page-id="maps"
     >
-      <active-events eager></active-events>
+      <events-roll :events="events"></events-roll>
     </page-section>
 
     <client-only>
@@ -191,11 +191,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore, wrapProperty } from '@nuxtjs/composition-api'
-import { mapState, mapMutations } from 'vuex'
-import { MetaInfo } from 'vue-meta'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
-import { EventMetadata } from '~/plugins/klicker'
 
 interface PlayerLink {
   name: string
@@ -210,7 +207,9 @@ export default defineComponent({
     const { i18n, $config, $klicker, $sentry, localePath } = useContext()
 
     const tag = ref<string|undefined>()
-    const events = useAsync(() => $klicker.queryActiveEvents())
+    const events = useAsync(() => $klicker.queryActiveEvents([], {
+      powerplay: ['0'],
+    }))
 
     const cleanedTag = computed(() =>
       (tag.value || '')
@@ -319,9 +318,9 @@ export default defineComponent({
         .map((event) => ({
           type: 'application/ld+json',
           json: formatAsJsonLd({
-            id: event.battle_event_id.toString(),
-            map: event.battle_event_map,
-            mode: i18n.t('mode.' + event.battle_event_mode, 'en') as string,
+            id: event.id.toString(),
+            map: i18n.t('map.' + event.id) as string,
+            mode: i18n.t('mode.' + event.mode) as string,
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),

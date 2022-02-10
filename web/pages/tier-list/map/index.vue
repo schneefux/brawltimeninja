@@ -16,11 +16,21 @@
     </client-only>
 
     <page-section
+      v-if="currentEvents.length > 0"
       :title="$t('events.active.title')"
       tracking-id="current_events"
       tracking-page-id="maps"
     >
-      <active-events eager></active-events>
+      <events-roll :events="currentEvents"></events-roll>
+    </page-section>
+
+    <page-section
+      v-if="powerleagueEvents != undefined"
+      :title="$t('events.powerleague.title')"
+      tracking-id="powerleagu_events"
+      tracking-page-id="maps"
+    >
+      <events-roll :events="powerleagueEvents"></events-roll>
     </page-section>
 
     <client-only>
@@ -35,36 +45,12 @@
     </client-only>
 
     <page-section
+      v-if="upcomingEvents.length > 0"
       :title="$t('events.upcoming.title')"
       tracking-id="upcoming_events"
       tracking-page-id="maps"
     >
-      <scrolling-dashboard
-        v-if="upcomingEvents != undefined"
-        :length="upcomingEvents.length"
-      >
-        <template v-slot="{ limit }">
-          <c-dashboard-cell
-            v-for="(event, index) in upcomingEvents"
-            :key="event.id"
-            :columns="4"
-            :class="{
-              'lg:hidden': index >= limit,
-            }"
-            :lazy="index > 3"
-            :ssr-key="`upcoming-${event.id}`"
-          >
-            <map-best-brawlers-card
-              :id="event.id"
-              :slices="{
-                mode: [unformatMode(event.mode)],
-                map: [event.map],
-              }"
-              :start-date="event.start"
-            ></map-best-brawlers-card>
-          </c-dashboard-cell>
-        </template>
-      </scrolling-dashboard>
+      <events-roll :events="upcomingEvents"></events-roll>
     </page-section>
 
     <page-section
@@ -90,45 +76,65 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaInfo } from 'vue-meta'
+import { computed, defineComponent, useAsync, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { CDashboardCell } from '@schneefux/klicker/components'
 
-export default Vue.extend({
+export default defineComponent({
+  head: {},
   components: {
     CDashboardCell,
   },
-  data() {
-    return {
-      currentEvents: [] as ActiveEvent[],
-      upcomingEvents: [] as ActiveEvent[],
-      unformatMode,
-    }
-  },
-  head(): MetaInfo {
-    const description = this.$tc('tier-list.maps.meta.description', 1)
-    const structuredData = this.currentEvents.concat(this.upcomingEvents)
-      .map((event) => ({
-        type: 'application/ld+json',
-        json: formatAsJsonLd({
-          id: event.id,
-          map: event.map,
-          mode: this.$t('mode.' + event.mode, 'en') as string,
-          start: event.start,
-          end: event.end,
-        }, this.$config.mediaUrl),
-      }))
+  setup() {
+    const { $http, $config, i18n, $klicker } = useContext()
+    const events = useAsync(() => $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active'))
+    const currentEvents = computed(() => (events.value?.current ?? []).map(e => ({
+      ...e,
+      mode: unformatMode(e.mode)
+    })))
+    const upcomingEvents = computed(() => (events.value?.upcoming ?? []).map(e => ({
+      ...e,
+      mode: unformatMode(e.mode)
+    })))
+
+    const powerleagueEvents = useAsync(() => $klicker.queryActiveEvents([], {
+      powerplay: ['1'],
+    }))
+
+    useMeta(() => {
+      const description = i18n.tc('tier-list.maps.meta.description', 1)
+      const structuredData = (<ActiveEvent[]>[]).concat(events.value?.current ?? [], events.value?.upcoming ?? [])
+        .map((event) => ({
+          type: 'application/ld+json',
+          json: formatAsJsonLd({
+            id: event.id,
+            map: i18n.t('map.' + event.id) as string,
+            mode: i18n.t('mode.' + event.mode) as string,
+            start: event.start,
+            end: event.end,
+          }, $config.mediaUrl),
+        }))
+
+      return {
+        title: i18n.tc('tier-list.maps.meta.title', 1),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ],
+        script: structuredData,
+      }
+    })
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp)
 
     return {
-      title: this.$tc('tier-list.maps.meta.title', 1),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ],
-      script: structuredData,
+      currentEvents,
+      upcomingEvents,
+      powerleagueEvents,
+      unformatMode,
+      isApp,
     }
   },
   meta: {
@@ -136,27 +142,5 @@ export default Vue.extend({
     screen: 'events',
   },
   middleware: ['cached'],
-  computed: {
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
-  async asyncData({ $http, $config }) {
-    const events = await $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active')
-    return {
-      currentEvents: events.current,
-      upcomingEvents: events.upcoming,
-    }
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string) {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'maps',
-          'event_label': section,
-        })
-      }
-    },
-  },
 })
 </script>

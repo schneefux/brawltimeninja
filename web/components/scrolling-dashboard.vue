@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="dashboard dashboard--horizontal lg:dashboard--vertical dashboard--responsive dashboard--responsive-stretch dashboard--relaxed -mr-4 pr-4 lg:mr-0 lg:pr-0">
+    <div class="dashboard dashboard--horizontal lg:dashboard--vertical dashboard--responsive dashboard--relaxed -mr-4 pr-4 lg:mr-0 lg:pr-0">
       <slot :limit="(page + 1) * pageSize"></slot>
     </div>
     <div class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 lg:hidden"></div>
