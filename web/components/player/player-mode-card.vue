@@ -1,7 +1,6 @@
 <template>
   <event-card
     :mode="mode"
-    :elevation="elevation"
     full-height
   >
     <div slot="content">
@@ -27,7 +26,8 @@
       <b-card
         v-if="activeMap != undefined"
         :title="$t('player.tips-for.map', { map: $t('map.' + activeMap.id) })"
-        :elevation="elevation + 1"
+        :elevation="0"
+        class="mt-2"
         dense
       >
         <media-img
@@ -42,7 +42,6 @@
           :mode="mode"
           :player-brawlers="playerBrawlers"
           :limit="4"
-          :elevation="elevation + 2"
           class="mx-auto"
         ></player-map-tip-roll>
       </b-card>
@@ -59,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
@@ -79,7 +78,7 @@ interface ActiveMap {
   url: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     playerTag: {
       type: String,
@@ -105,69 +104,59 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    elevation: {
-      type: Number,
-      default: 1
-    },
   },
-  data() {
-    return {
-      data: undefined as undefined|MetaGridEntry,
-      activeMap: undefined as undefined|ActiveMap,
-    }
-  },
-  watch: {
-    playerTag: '$fetch',
-    mode: '$fetch',
-    activeEvents: '$fetch',
-    enableKlickerStats: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    if (!this.enableKlickerStats) {
-      return
+  setup(props) {
+    const { $klicker } = useContext()
+
+    const updateData = async () => {
+      if (!props.enableKlickerStats) {
+        return undefined
+      }
+
+      const data = await $klicker.query({
+        cubeId: 'battle',
+        dimensionsIds: [],
+        metricsIds: ['picks', 'winRate'],
+        sortId: 'picks',
+        slices: {
+          playerId: [tagToId(props.playerTag)],
+          mode: [props.mode],
+        },
+      })
+
+      return data.data[0]
     }
 
-    const data = await this.$klicker.query({
-      cubeId: 'battle',
-      dimensionsIds: [],
-      metricsIds: ['picks', 'winRate'],
-      sortId: 'picks',
-      slices: {
-        playerId: [tagToId(this.playerTag)],
-        mode: [this.mode],
-      },
+    const data = useAsync(updateData, `player-${props.playerTag}-mode-${props.mode}`)
+
+    const activeMap = computed(() => {
+      // TODO there might be a second one when Power Play or competition entry is online
+      const map = props.activeEvents
+        .filter(e => !e.battle_event_map.startsWith('Competition '))
+        .find(e => e.battle_event_mode == props.mode)
+
+      if (map != undefined) {
+        return {
+          id: map.battle_event_id,
+          map: map.battle_event_map,
+          url: `/tier-list/mode/${camelToKebab(map.battle_event_mode)}/map/${slugify(map.battle_event_map)}`,
+        }
+      }
     })
 
-    this.data = data.data[0]
-
-    // TODO there might be a second one when Power Play or competition entry is online
-    const map = this.activeEvents
-      .filter(e => !e.battle_event_map.startsWith('Competition '))
-      .find(e => e.battle_event_mode == this.mode)
-
-    if (map != undefined) {
-      this.activeMap = {
-        id: map.battle_event_id,
-        map: map.battle_event_map,
-        url: `/tier-list/mode/${camelToKebab(map.battle_event_mode)}/map/${slugify(map.battle_event_map)}`,
-      }
-    }
-  },
-  computed: {
-    stats(): Stats {
-      if (this.data?.metricsRaw?.picks != undefined && this.data.metricsRaw.picks > 0) {
-        const wins = Math.floor((this.data.metricsRaw.winRate as number) * (this.data.metricsRaw.picks as number))
-        const losses = (this.data.metricsRaw.picks as number) - wins
+    const stats = computed<Stats>(() => {
+      if (data.value?.metricsRaw?.picks != undefined && data.value.metricsRaw.picks > 0) {
+        const wins = Math.floor((data.value.metricsRaw.winRate as number) * (data.value.metricsRaw.picks as number))
+        const losses = (data.value.metricsRaw.picks as number) - wins
         return {
-          winRate: this.data.metricsRaw.winRate as number,
-          picks: this.data.metricsRaw.picks as number,
+          winRate: data.value.metricsRaw.winRate as number,
+          picks: data.value.metricsRaw.picks as number,
           wins,
           losses,
         }
       }
 
-      const battles = this.battles.filter((b) => b.event.mode == this.mode)
+      const battles = props.battles.filter((b) => b.event.mode == props.mode)
       const picks = battles.length
       const wins = battles.filter(b => b.victory).length
       const losses = picks - wins
@@ -178,13 +167,17 @@ export default Vue.extend({
         wins,
         losses,
       }
-    },
-    winRate(): string {
-      return this.stats.picks > 5 ? this.$klicker.format(commonMetrics.winRate, this.stats.winRate) : '?'
-    },
-    modeKebab(): string {
-      return camelToKebab(this.mode)
-    },
+    })
+
+    const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(commonMetrics.winRate, stats.value.winRate) : '?')
+    const modeKebab = computed(() => camelToKebab(props.mode))
+
+    return {
+      activeMap,
+      stats,
+      modeKebab,
+      winRate,
+    }
   },
 })
 </script>

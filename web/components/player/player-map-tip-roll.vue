@@ -8,7 +8,6 @@
     v-else
     :loading="false"
     :response="response"
-    :card="{ elevation }"
   >
     <template v-slot:dimensions="data">
       <d-brawler v-bind="data"></d-brawler>
@@ -45,9 +44,6 @@ export default defineComponent({
     limit: {
       type: Number,
       default: 3
-    },
-    elevation: {
-      type: Number
     },
   },
   setup(props) {
