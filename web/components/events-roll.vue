@@ -45,6 +45,7 @@
               mode: [event.mode],
               map: [event.map],
             }"
+            :powerplay="event.powerplay"
             :id="event.id"
             :start-date="event.start"
             :end-date="event.end"

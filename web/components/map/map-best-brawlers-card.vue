@@ -51,6 +51,10 @@ export default defineComponent({
       type: [Number, String],
       required: false
     },
+    powerplay: {
+      type: Boolean,
+      default: false
+    },
     slices: {
       type: Object as PropType<SliceValue>,
       default: () => ({})
@@ -61,7 +65,6 @@ export default defineComponent({
 
     const mode = computed(() => props.slices.mode?.[0])
     const map = computed(() => props.slices.map?.[0])
-    const powerplay = computed(() => props.slices.powerplay?.[0] == 'true')
     const endDateString = computed(() => {
       if (props.endDate == undefined) {
         return ''
@@ -86,7 +89,6 @@ export default defineComponent({
     return {
       mode,
       map,
-      powerplay,
       endDateString,
       startDateString,
     }
