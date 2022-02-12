@@ -6,10 +6,6 @@ python csv_to_json.py
 node prepare_json.js
 node download_maps.js
 node download_translations.js
-sftp -r -i ~/.ssh/brawlbot.key brawlbot@schneefux.xyz << EOT
-  put ./out/* /brawlbot/assets/
-  quit
-EOT
 sftp -r -P 2222 -i ~/.ssh/brawlbot.key brawlbot@ssh.brawltime.ninja << EOT
   put ./out/* /brawlbot/assets/
   quit
