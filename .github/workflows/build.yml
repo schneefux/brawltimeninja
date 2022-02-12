@@ -64,13 +64,16 @@ jobs:
           sed -i -E 's/"version": "(.*)"/"version": "\1-${{ github.sha }}"/g' ./package.json
       -
         name: Publish package to GitHub package registry
+        continue-on-error: true
         run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Publish to Chromatic
+        continue-on-error: true
         uses: chromaui/action@v1
         with:
           workingDir: ./klicker
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          exitOnceUploaded: true
