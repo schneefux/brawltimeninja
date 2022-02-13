@@ -65,7 +65,6 @@ export default defineComponent({
       // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
 
       const newTitle = root.$nuxt.$options.context.route.meta[0]?.title
-      console.log(route.value.meta)
       if (newTitle != undefined) {
         title.value = newTitle
       }

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, ref, useContext, useRoute, watch, computed } from '@nuxtjs/composition-api'
 import { faCalendarDay, faSearch, faMask, faNewspaper, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 interface Screen {
@@ -32,59 +32,58 @@ interface Screen {
   target: string
 }
 
-export default Vue.extend({
-  data() {
-    return {
-      active: 'profile',
-    }
-  },
-  methods: {
-    update() {
+export default defineComponent({
+  setup(props, { root }) {
+    const active = ref('profile')
+
+    const { localePath } = useContext()
+    const screens = computed<Screen[]>(() => [ {
+      id: 'profile',
+      icon: faSearch,
+      name: 'Profile',
+      target: localePath('/'),
+    }, {
+      id: 'events',
+      icon: faCalendarDay,
+      name: 'Events',
+      target: localePath('/tier-list/map'),
+    }, {
+      id: 'brawlers',
+      icon: faMask,
+      name: 'Brawlers',
+      target: localePath('/tier-list/brawler'),
+    }, {
+      id: 'guides',
+      icon: faNewspaper,
+      name: 'Guides',
+      target: '/blog/guides',
+    } ])
+
+    const update = () => {
       // TODO: update with Nuxt 3
       // $route.meta is merged into $nuxt.$options.context.route.meta
       // and not reactive
       // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
 
-      const newScreen = this.$nuxt.$options.context.route.meta[0]?.screen
+      const newScreen = root.$nuxt.$options.context.route.meta[0]?.screen
       if (newScreen != undefined) {
-        if (this.screens.some(s => s.id == newScreen)) {
-          this.active = newScreen
+        if (screens.value.some(s => s.id == newScreen)) {
+          active.value = newScreen
         } else {
           console.error('Screen does not exist: ' + newScreen)
         }
       }
-    },
-  },
-  computed: {
-    screens(): Screen[] {
-      return [ {
-        id: 'profile',
-        icon: faSearch,
-        name: 'Profile',
-        target: this.localePath('/'),
-      }, {
-        id: 'events',
-        icon: faCalendarDay,
-        name: 'Events',
-        target: this.localePath('/tier-list/map'),
-      }, {
-        id: 'brawlers',
-        icon: faMask,
-        name: 'Brawlers',
-        target: this.localePath('/tier-list/brawler'),
-      }, {
-        id: 'guides',
-        icon: faNewspaper,
-        name: 'Guides',
-        target: '/blog/guides',
-      } ]
-    },
-  },
-  created() {
-    this.update()
-  },
-  watch: {
-    '$route': 'update',
+    }
+
+    update()
+
+    const route = useRoute()
+    watch(route, update)
+
+    return {
+      active,
+      screens,
+    }
   },
 })
 </script>

@@ -1,122 +1,57 @@
 <template>
-  <nav class="bg-yellow-400 text-gray-800 px-4 pb-2 lg:p-6 flex justify-between items-center flex-wrap sticky z-40 top-0 lg:static">
-    <div class="bg-yellow-400 shrink-0 z-40 pt-3 pb-1 lg:py-0 w-full lg:w-auto">
-      <nuxt-link
-        :to="localePath('/')"
-        class="font-semibold text-xl tracking-tight leading-tight"
-        prefetch
-      >
-        Brawl Time Ninja
-      </nuxt-link>
-      <div class="lg:hidden float-right">
-        <install-button></install-button>
-        <button
-          v-show="menuButtonVisible"
-          class="ml-4 px-2 py-1 border-2 -my-2 rounded border-yellow-600 leading-none"
-          @click="openMenu"
-        >
-          {{ $t('nav.Menu') }}
-        </button>
-      </div>
-    </div>
-
-    <div
-      ref="menu"
-      class="w-full lg:w-auto relative z-0"
+  <nav class="bg-yellow-400 text-gray-800 p-6 flex justify-between items-center flex-wrap gap-y-3 z-40 sticky top-0 lg:static">
+    <nuxt-link
+      :to="localePath('/')"
+      class="font-semibold text-xl tracking-tight leading-tight"
+      prefetch
     >
-      <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap">
-        <div class="pt-3 pb-3 lg:py-0 lg:my-0">
-          <div class="hidden lg:inline-block mr-4">
-            <install-button></install-button>
-          </div>
+      Brawl Time Ninja
+    </nuxt-link>
 
-          <nuxt-link
-            v-for="link in links"
-            :key="link.target"
-            :to="link.target"
-            class="inline-block lg:border-0 text-lg hover:text-gray-800/75 mr-4"
-            exact-active-class="text-red-800"
-          >
-            {{ $t('nav.' + link.name) }}
-          </nuxt-link>
+    <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-4">
+      <install-button></install-button>
 
-          <locale-switcher
-            class="lg:border-0 align-text-top !text-2xs pr-7"
-          ></locale-switcher>
-        </div>
-      </div>
+      <nuxt-link
+        v-for="link in links"
+        :key="link.target"
+        :to="link.target"
+        class="text-lg hover:text-gray-800/75"
+        exact-active-class="text-red-800"
+      >
+        {{ $t('nav.' + link.name) }}
+      </nuxt-link>
+
+      <locale-switcher
+        class="border-0 align-text-top !text-2xs pr-7"
+      ></locale-switcher>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  data() {
+export default defineComponent({
+  setup() {
+    const { localePath } = useContext()
+
+    const links = computed(() => [ {
+      name: 'Profile Search',
+      target: localePath('/'),
+    }, {
+      name: 'Brawler Tier List',
+      target: localePath('/tier-list/brawler'),
+    }, {
+      name: 'Map Tier Lists',
+      target: localePath('/tier-list/map'),
+    }, {
+      name: 'Guides',
+      target: '/blog/guides',
+    } ])
+
     return {
-      lastScrollY: 0,
-      lastScrollUpY: 0,
-      menuButtonVisible: false,
-      menuLocked: false,
+      links,
     }
-  },
-  mounted() {
-    window.addEventListener('scroll', () => this.onScroll())
-    this.openMenu()
-  },
-  computed: {
-    links() {
-      return [ {
-        name: 'Profile Search',
-        target: this.localePath('/'),
-      }, {
-        name: 'Brawler Tier List',
-        target: this.localePath('/tier-list/brawler'),
-      }, {
-        name: 'Map Tier Lists',
-        target: this.localePath('/tier-list/map'),
-      }, {
-        name: 'Guides',
-        target: '/blog/guides',
-      }]
-    },
-  },
-  methods: {
-    onScroll() {
-      if (this.menuLocked) {
-        // ignore
-        this.lastScrollY = window.scrollY
-        this.lastScrollUpY = window.scrollY
-        return
-      }
-
-      if (Math.abs(window.scrollY - this.lastScrollY) < 10) {
-        return
-      }
-
-      const menu = this.$refs.menu as HTMLElement
-      if (window.scrollY < this.lastScrollY) {
-        // scrolled up
-        menu.style['margin-top'] = '0px'
-        this.menuButtonVisible = false
-        this.lastScrollUpY = window.scrollY
-      } else {
-        // scrolled down
-        menu.style['margin-top'] = `-${(window.scrollY - this.lastScrollUpY) / 4}px`
-        this.menuButtonVisible = true
-      }
-
-      this.lastScrollY = window.scrollY
-    },
-    openMenu() {
-      this.menuButtonVisible = false
-      const menu = this.$refs.menu as any
-      menu.style['margin-top'] = '0px'
-      // important: header style changes modify window.scrollY!
-      this.lastScrollY = window.scrollY
-      this.lastScrollUpY = window.scrollY
-    },
   },
 })
 </script>

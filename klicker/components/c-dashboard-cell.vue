@@ -14,7 +14,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue-demi'
 import { useIntersectionObserver } from '@vueuse/core'
-import { ssrRef } from '@nuxtjs/composition-api'
 
 // :style object syntax does not work for some reason - Nuxt silently swallows the variables
 
@@ -42,7 +41,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const cell = ref(null)
+    const cell = ref<HTMLElement|null>()
     const visible = ref(!props.lazy)
 
     onMounted(() => {
