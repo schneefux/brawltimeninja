@@ -43,11 +43,7 @@ export default defineComponent({
   },
   setup(props) {
     const cell = ref(null)
-    const visible = props.ssrKey != undefined ? ssrRef(!props.lazy, props.ssrKey) : ref(!props.lazy)
-
-    if ((<any>process).server) {
-      visible.value = true
-    }
+    const visible = ref(!props.lazy)
 
     onMounted(() => {
       if (!visible.value) {
