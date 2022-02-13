@@ -131,6 +131,12 @@ variable "servers" {
       class = "worker"
       leader_ip = "10.0.0.2"
     }
+    gene = {
+      server_type = "cpx11"
+      ip = "10.0.0.7"
+      class = "worker"
+      leader_ip = "10.0.0.2"
+    }
     # timeouts and DNS errors after change?
     # -> restart dnsmasq (TODO investigate why)
   }
