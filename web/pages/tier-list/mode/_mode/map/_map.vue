@@ -1,5 +1,8 @@
 <template>
-  <page :title="$t('tier-list.map.title', { map: title })">
+  <page
+    v-if="event != undefined"
+    :title="$t('tier-list.map.title', { map: title })"
+  >
     <breadcrumbs
       :links="[{
         path: '/tier-list/map',
@@ -73,9 +76,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import { mapState } from 'vuex'
+import { defineComponent, useContext, useMeta, computed, useStore, useAsync, useRoute } from '@nuxtjs/composition-api'
 import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
 
 interface Map {
@@ -85,57 +86,85 @@ interface Map {
   timestamp: string|undefined
 }
 
-export default Vue.extend({
-  head(): MetaInfo {
-    const description = this.$tc('tier-list.map.meta.description', 1, {
-      map: this.$i18n.t('map.' + this.event.id),
-      mode: this.$i18n.t('mode.' + this.event.mode),
+export default defineComponent({
+  head: {},
+  setup() {
+    const { i18n, $config, $klicker } = useContext()
+
+    const route = useRoute()
+    const event = useAsync(async () => {
+      const mode = kebabToCamel(route.value.params.mode)
+      const map = deslugify(route.value.params.map)
+      const events = await $klicker.query({
+        cubeId: 'map',
+        slices: {
+          mode: [mode],
+          map: [map],
+        },
+        dimensionsIds: [],
+        metricsIds: ['eventId', 'timestamp'],
+        sortId: 'timestamp',
+        limit: 1,
+      })
+      const event = events.data[0]
+
+      return {
+        id: event.metricsRaw.eventId,
+        map,
+        mode,
+        timestamp: event.metricsRaw.timestamp,
+      } as Map
+    }, 'map')
+
+    useMeta(() => {
+      if (event.value == undefined) {
+        return {}
+      }
+
+      const description = i18n.tc('tier-list.map.meta.description', 1, {
+        map: i18n.t('map.' + event.value.id),
+        mode: i18n.t('mode.' + event.value.mode),
+      })
+      return {
+        title: i18n.tc('tier-list.map.meta.title', 1, {
+          map: i18n.t('map.' + event.value.id),
+        }),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+          ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
+        ]
+      }
     })
+
+    const title = computed(() => event.value == undefined ? '' : (event.value.id == '0' ? i18n.tc('competition-winner', 1) as string : i18n.t('map.' + event.value.id) as string))
+    const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
+    const modePath = computed(() => event.value == undefined ? '' : `/tier-list/mode/${camelToKebab(event.value.mode)}`)
+    const mapPath = computed(() => event.value == undefined ? '' : `${modePath.value}/map/${slugify(event.value.map)}`)
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
     return {
-      title: this.$tc('tier-list.map.meta.title', 1, {
-        map: this.$i18n.t('map.' + this.event.id),
-      }),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-        ...(this.event.id != undefined && this.event.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: this.$config.mediaUrl + '/maps/' + this.event.id + '.png' }] : []),
-      ]
+      event,
+      title,
+      showImage,
+      modePath,
+      mapPath,
+      isApp,
     }
   },
   meta: {
     screen: 'events',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      event: {
-        id: '',
-        mode: '',
-        map: '',
-        timestamp: undefined,
-      } as Map,
-    }
-  },
-  computed: {
-    title(): string {
-      return this.event.id == '0' ? this.$tc('competition-winner', 1) as string : this.$t('map.' + this.event.id) as string
-    },
-    showImage(): boolean {
-      return this.event.id != undefined && this.event.map != 'Competition Entry'
-    },
-    modePath(): string {
-      return `/tier-list/mode/${camelToKebab(this.event.mode)}`
-    },
-    mapPath(): string {
-      return `${this.modePath}/map/${slugify(this.event.map)}`
-    },
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
-  async asyncData({ params, error, $klicker }) {
+  async validate({ params, $klicker }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
+    if (map.startsWith('Competition')) {
+      return true
+    }
+
     const events = await $klicker.query({
       cubeId: 'map',
       slices: {
@@ -143,33 +172,11 @@ export default Vue.extend({
         map: [map],
       },
       dimensionsIds: [],
-      metricsIds: ['eventId', 'timestamp'],
-      sortId: 'timestamp',
+      metricsIds: ['eventId'],
+      sortId: 'eventId',
       limit: 1,
     })
-    if (events.data.length == 0) {
-      return error({ statusCode: 404, message: 'Map not found' })
-    }
-    const event = events.data[0]
-
-    return {
-      event: {
-        id: event.metricsRaw.eventId,
-        map,
-        mode,
-        timestamp: event.metricsRaw.timestamp,
-      } as Map,
-    }
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string) {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'map_meta',
-          'event_label': section,
-        })
-      }
-    },
+    return events.data[0].metricsRaw.eventId != '0'
   },
 })
 </script>
