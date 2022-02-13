@@ -180,6 +180,7 @@ arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_
 
 /**
  * Encode tag string into 64bit unsigned integer string.
+ * TODO: Use BigInt if tags are >2^53 at some point.
  */
 export function tagToId(tag: string) {
   if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
@@ -189,21 +190,22 @@ export function tagToId(tag: string) {
     tag = tag.substring(1)
   }
 
-  const result = tag.split('').reduce((sum, c) => sum*BigInt(14) + BigInt('0289PYLQGRJCUV'.indexOf(c)), BigInt(0))
+  const result = tag.split('').reduce((sum, c) => sum*14 + '0289PYLQGRJCUV'.indexOf(c), 0)
   return result.toString()
 }
 
 /**
  * Decode 64bit unsigned integer string into tag string with hash.
+ * TODO: Use BigInt if tags are >2^53 at some point.
  */
 export function idToTag(idString: string) {
-  let id = BigInt(idString)
+  let id = Number(idString)
 
   let tag = ''
-  while (id != BigInt(0)) {
-    const i = Number(id % BigInt(14))
+  while (id != 0) {
+    const i = id % 14
     tag = '0289PYLQGRJCUV'[i] + tag
-    id /= BigInt(14)
+    id /= 14
   }
 
   return '#' + tag
