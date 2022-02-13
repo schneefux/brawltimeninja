@@ -39,18 +39,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
+import { computed, defineComponent, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
-  head() {
-    const description = this.$t('tier-list.brawlers.meta.description') as string
+export default defineComponent({
+  head: {},
+  setup() {
+    const { i18n } = useContext()
+
+    useMeta(() => {
+      const description = i18n.t('tier-list.brawlers.meta.description') as string
+      return {
+        title: i18n.t('tier-list.brawlers.meta.title') as string,
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
+    })
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
     return {
-      title: this.$t('tier-list.brawlers.meta.title') as string,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
+      isApp,
     }
   },
   meta: {
@@ -58,20 +69,5 @@ export default Vue.extend({
     screen: 'brawlers',
   },
   middleware: ['cached'],
-  computed: {
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string): void {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'brawler_meta',
-          'event_label': section,
-        })
-      }
-    },
-  },
 })
 </script>
