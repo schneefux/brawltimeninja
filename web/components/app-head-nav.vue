@@ -43,49 +43,48 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, ref, useRouter, useContext, watch } from '@nuxtjs/composition-api'
 import { faInfo, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
-export default Vue.extend({
-  data() {
-    return {
-      depth: 0,
-      title: 'Brawl Time Ninja',
+export default defineComponent({
+  setup(props, { root }) {
+    const depth = ref(0)
+    const title = ref('Brawl Time Ninja')
+
+    const router = useRouter()
+    const back = () => {
+      depth.value -= 2
+      router.go(-1)
     }
-  },
-  methods: {
-    back() {
-      this.depth -= 2
-      this.$router.go(-1)
-    },
-    update() {
+
+    const { route } = useContext()
+    const update = () => {
       // TODO: update with Nuxt 3
       // $route.meta is merged into $nuxt.$options.context.route.meta
       // and not reactive
       // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
 
-      const newTitle = this.$nuxt.$options.context.route.meta[0]?.title
+      const newTitle = root.$nuxt.$options.context.route.meta[0]?.title
+      console.log(route.value.meta)
       if (newTitle != undefined) {
-        this.title = newTitle
+        title.value = newTitle
       }
-    },
-  },
-  created() {
-    this.update()
-  },
-  watch: {
-    '$route'() {
-      this.depth++
-      this.update()
-    },
-  },
-  computed: {
-    faArrowLeft() {
-      return faArrowLeft
-    },
-    faInfo() {
-      return faInfo
-    },
+    }
+
+    update()
+
+    watch(route, () => {
+      depth.value++
+      update()
+    })
+
+    return {
+      back,
+      depth,
+      title,
+      faArrowLeft,
+      faInfo,
+    }
   },
 })
 </script>
