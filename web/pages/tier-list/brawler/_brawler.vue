@@ -46,10 +46,7 @@
       tracking-id="current-maps"
       tracking-page-id="brawler"
     >
-      <brawler-active-events
-        :show-all-maps="showAllMaps"
-        :brawler-name="brawlerName"
-      ></brawler-active-events>
+      <brawler-active-events :brawler-name="brawlerName"></brawler-active-events>
     </page-section>
 
     <page-section
@@ -114,20 +111,38 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaInfo } from 'vue-meta'
+import { computed, defineComponent, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    const description = this.$t('tier-list.brawler.meta.description', { brawler: this.brawlerName }) as string
+export default defineComponent({
+  head: {},
+  setup() {
+    const { i18n } = useContext()
+
+    const route = useRoute()
+    const brawlerId = computed(() => route.value.params.brawler)
+
+    // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
+    const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
+
+    useMeta(() => {
+      const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) as string
+      return {
+        title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }) as string,
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
+    })
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
     return {
-      title: this.$t('tier-list.brawler.meta.title', { brawler: this.brawlerName }) as string,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
+      brawlerId,
+      brawlerName,
+      isApp,
     }
   },
   meta: {
@@ -135,34 +150,21 @@ export default Vue.extend({
     screen: 'brawlers',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      brawlerId: '',
-      brawlerName: '',
-      showAllMaps: false,
-    }
-  },
-  computed: {
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
-  async asyncData({ params }) {
-    const brawlerId = params.brawler
-    return {
-      brawlerId,
-      brawlerName: capitalizeWords(brawlerId.replace(/__/g, '. ').replace(/_/g, ' ')), // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
-    }
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string): void {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'brawler',
-          'event_label': section,
-        })
-      }
-    },
+  async validate({ params, $klicker }) {
+    const brawlerName = capitalizeWords(params.brawler.replace(/__/g, '. ').replace(/_/g, ' '))
+
+    const brawler = await $klicker.query({
+      cubeId: 'map',
+      slices: {
+        brawler: [brawlerName.toUpperCase()],
+      },
+      dimensionsIds: [],
+      metricsIds: ['picks'],
+      sortId: 'picks',
+      limit: 1,
+    })
+
+    return brawler.data[0].metricsRaw.picks > 0
   },
 })
 </script>

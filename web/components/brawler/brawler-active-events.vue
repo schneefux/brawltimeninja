@@ -52,10 +52,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-    showAllMaps: {
-      type: Boolean,
-      default: false
-    },
   },
   setup(props) {
     const { $klicker, i18n } = useContext()
