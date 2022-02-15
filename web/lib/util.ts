@@ -12,9 +12,9 @@ export const kebabToCamel = (s: string) =>
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 export const decapitalizeFirstLetter = (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
-export const slugify = (str: string) => str.split(' ').join('-')
-// special case: transform "Competition-Winner-2021-01-01" to "Competition Winner 2021-01-01"
-export const deslugify = (str: string) => str.startsWith('Competition-Winner-') ? str.replace('Competition-Winner-', 'Competition Winner ') : str.split('-').join(' ')
+
+export const slugify = (str: string) => str.replace(/-/g, '--').replace(/ /g, '-')
+export const deslugify = (str: string) => str.replace(/-/g, ' ').replace(/  /g, '-')
 
 export function scaleMinMax(values: number[]) {
   const min = Math.min.apply(Math, values)
