@@ -26,6 +26,7 @@
     </client-only>
 
     <page-section
+      v-if="events != undefined && events.length > 0"
       :title="$t('tier-list.maps.title')"
       tracking-id="maps"
       tracking-page-id="mode_meta"
@@ -37,57 +38,7 @@
         {{ $t('tier-list.open-map') }}
       </p>
 
-      <form
-        class="mt-4 space-x-4"
-        @submit.prevent="$fetch()"
-      >
-        <b-textbox
-          v-model="nameFilter"
-          :placeholder="$tc('map', 1)"
-          dark
-        ></b-textbox>
-        <b-button
-          type="submit"
-          primary
-          sm
-        >{{ $t('action.search') }}</b-button>
-      </form>
-
-      <scrolling-dashboard
-        :length="maps.length"
-        :page-size="4"
-        class="mt-8"
-      >
-        <template v-slot="{ limit }">
-          <c-dashboard-cell
-            v-for="(map, index) in maps"
-            :key="map.map"
-            :rows="3"
-            :columns="2"
-            :class="{
-              'lg:hidden': index >= limit,
-            }"
-            :lazy="index > 4"
-            :ssr-key="`tier-list-mode-${map.map}`"
-          >
-            <event-card
-              :mode="mode"
-              :map="map.map"
-              :link="mapPath(map)"
-              :id="map.id"
-              nobackground
-            >
-              <template v-slot:preview></template>
-              <map-img
-                slot="content"
-                :id="map.id"
-                :map="map.map"
-                clazz="mx-auto h-64"
-              ></map-img>
-            </event-card>
-          </c-dashboard-cell>
-        </template>
-      </scrolling-dashboard>
+      <events-roll :events="events"></events-roll>
     </page-section>
 
     <client-only>
@@ -122,95 +73,53 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaInfo } from 'vue-meta'
-import { kebabToCamel } from '~/lib/util'
 import { camelToKebab, slugify } from '@/lib/util'
-import Page from '~/components/page.vue'
 import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
+import { defineComponent, useAsync, computed, useRoute, useStore, useContext, useMeta } from '@nuxtjs/composition-api'
+import { EventMetadata } from '~/plugins/klicker'
 
-interface EventIdAndMap {
-  id: string
-  map: string
-  timestamp: string
-}
-
-export default Vue.extend({
+export default defineComponent({
   components: {
-    Page,
     BTextbox,
     CDashboardCell,
   },
-  head(): MetaInfo {
-    const description = this.$tc('tier-list.mode.meta.description', 1, { mode: this.$i18n.t('mode.' + this.mode) as string })
-    return {
-      title: this.$tc('tier-list.mode.meta.title', 1, { mode: this.$i18n.t('mode.' + this.mode) as string }),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
+  head: {},
   meta: {
     screen: 'events',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      mode: '',
-      maps: [] as EventIdAndMap[],
-      nameFilter: '',
-    }
-  },
-  watch: {
-    mode: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    if (this.mode == '') {
-      return
-    }
+  setup() {
+    const { i18n, $klicker } = useContext()
 
-    const events = await this.$klicker.query({
-      cubeId: 'map',
-      slices: {
-        mode: [this.mode],
-        mapLike: [this.nameFilter],
-      },
-      dimensionsIds: ['map'],
-      metricsIds: ['eventId', 'picks', 'timestamp'],
-      sortId: 'timestamp',
+    const route = useRoute()
+
+    const mode = computed(() => route.value.params.mode)
+    const events = useAsync(() => $klicker.queryActiveEvents([], {
+      mode: [mode.value],
+    }, null))
+
+    const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
+    useMeta(() => {
+      const description = i18n.tc('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
+      return {
+        title: i18n.tc('tier-list.mode.meta.title', 1, { mode: i18n.t('mode.' + mode.value) as string }),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
     })
 
-    this.maps = events.data
-      .filter(e => e.metricsRaw.picks > 1000)
-      .map(e => ({
-        map: e.dimensionsRaw.map.map,
-        id: e.metricsRaw.eventId as string,
-        timestamp: e.metricsRaw.timestamp as string,
-      }))
-  },
-  async asyncData({ params }) {
-    const mode = kebabToCamel(params.mode as string)
-
     return {
+      events,
       mode,
+      modePath,
+      isApp,
     }
-  },
-  computed: {
-    modePath(): string {
-      return `/tier-list/mode/${camelToKebab(this.mode)}`
-    },
-    mapPath(): (entry: { map: string }) => string {
-      return entry => `${this.modePath}/map/${slugify(entry.map)}`
-    },
-    slugify() {
-      return slugify
-    },
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
   },
 })
 </script>

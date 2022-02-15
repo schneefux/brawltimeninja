@@ -515,5 +515,6 @@
     "footer.support-me": "Support me",
     "translators": "",
     "about-metric": "About {metric}",
-    "state.no-outliers": "No outliers"
+    "state.no-outliers": "No outliers",
+    "events.season.title": "All Maps in this season"
 }

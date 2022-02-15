@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="flex flex-wrap">
+    <div
+      v-if="modes.length > 2"
+      class="flex flex-wrap"
+    >
       <button
         v-for="(mode, index) in modes"
         :key="mode"
@@ -23,6 +26,17 @@
       </button>
     </div>
 
+    <div
+      v-if="events.length >= 20"
+      class="mt-4 space-x-4"
+    >
+      <b-textbox
+        v-model="nameFilter"
+        :placeholder="$tc('map', 1)"
+        dark
+      ></b-textbox>
+    </div>
+
     <scrolling-dashboard
       :length="filteredEvents.length"
       :page-size="4"
@@ -31,25 +45,44 @@
       <template v-slot="{ limit }">
         <c-dashboard-cell
           v-for="(event, index) in filteredEvents"
-          :key="event.map + '-' + event.id"
+          :key="event.map + '-' + event.id + '-' + event.powerplay"
           :rows="2"
-          :columns="3"
+          :columns="withData ? 3 : 2"
           :class="{
             'lg:hidden': index >= limit,
           }"
           :lazy="index > 4"
           :ssr-key="`active-event-${event.map}-${event.id}`"
         >
-          <map-best-brawlers-card
-            :slices="{
-              mode: [event.mode],
-              map: [event.map],
-            }"
-            :powerplay="event.powerplay"
-            :id="event.id"
-            :start-date="event.start"
-            :end-date="event.end"
-          ></map-best-brawlers-card>
+          <slot :event="event">
+            <map-best-brawlers-card
+              v-if="withData"
+              :slices="{
+                mode: [event.mode],
+                map: [event.map],
+              }"
+              :powerplay="event.powerplay"
+              :id="event.id"
+              :start-date="event.start"
+              :end-date="event.end"
+            ></map-best-brawlers-card>
+            <event-card
+              v-else
+              :mode="event.mode"
+              :map="event.map"
+              :link="mapPath(event)"
+              :id="event.id"
+              nobackground
+            >
+              <template v-slot:preview></template>
+              <map-img
+                slot="content"
+                :id="event.id"
+                :map="event.map"
+                clazz="mx-auto h-64"
+              ></map-img>
+            </event-card>
+          </slot>
         </c-dashboard-cell>
       </template>
     </scrolling-dashboard>
@@ -58,18 +91,23 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
-import { camelToKebab } from '~/lib/util'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { camelToKebab, slugify } from '~/lib/util'
+import { CDashboardCell, BTextbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker'
 
 export default defineComponent({
   components: {
     CDashboardCell,
+    BTextbox,
   },
   props: {
     events: {
       type: Array as PropType<EventMetadata[]>,
       required: true
+    },
+    withData: {
+      type: Boolean,
+      default: false
     },
   },
   setup(props) {
@@ -78,15 +116,22 @@ export default defineComponent({
       [...new Set(['all', ...props.events.map(e => e.mode).sort()])]
     )
 
+    const nameFilter = ref('')
+
     const filteredEvents = computed(() =>
       props.events
-        .filter(e => modeFilter.value == 'all' || modeFilter.value == e.mode)
+        .filter(e => (modeFilter.value == 'all' || modeFilter.value == e.mode)
+                  && (nameFilter.value == '' || e.map.toLowerCase().includes(nameFilter.value.toLowerCase())))
         .sort((e1, e2) => e1.mode.localeCompare(e2.mode))
     )
 
+    const mapPath = (entry: EventMetadata) =>  `/tier-list/mode/${camelToKebab(entry.mode)}/map/${slugify(entry.map)}`
+
     return {
+      mapPath,
       modes,
       modeFilter,
+      nameFilter,
       camelToKebab,
       filteredEvents,
     }

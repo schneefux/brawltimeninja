@@ -89,7 +89,7 @@ class CustomKlicker extends Klicker {
     return super.format(spec, value)
   }
 
-  async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number = 60): Promise<EventMetadata[]> {
+  async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60): Promise<EventMetadata[]> {
     const events = await this.query({
       cubeId: 'map',
       dimensionsIds: ['mode', 'map', 'powerplay'],
@@ -112,7 +112,7 @@ class CustomKlicker extends Klicker {
         end: undefined as undefined|string,
         metrics: e.metricsRaw,
       }))
-      .filter(e => differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
+      .filter(e => maxage == null || differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
 
     const starlistData = await this.context.$http.$get(this.context.$config.apiUrl + '/api/events/active')
       .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents

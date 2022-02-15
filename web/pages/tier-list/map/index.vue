@@ -21,7 +21,10 @@
       tracking-id="current_events"
       tracking-page-id="maps"
     >
-      <events-roll :events="currentEvents"></events-roll>
+      <events-roll
+        :events="currentEvents"
+        with-data
+      ></events-roll>
     </page-section>
 
     <page-section
@@ -30,7 +33,10 @@
       tracking-id="powerleagu_events"
       tracking-page-id="maps"
     >
-      <events-roll :events="powerleagueEvents"></events-roll>
+      <events-roll
+        :events="powerleagueEvents"
+        with-data
+      ></events-roll>
     </page-section>
 
     <client-only>
@@ -50,15 +56,19 @@
       tracking-id="upcoming_events"
       tracking-page-id="maps"
     >
-      <events-roll :events="upcomingEvents"></events-roll>
+      <events-roll
+        :events="upcomingEvents"
+        with-data
+      ></events-roll>
     </page-section>
 
     <page-section
-      :title="$t('tier-list.modes.title')"
-      tracking-id="modes"
+      :title="$t('events.season.title')"
+      v-if="allEvents != undefined && allEvents.length > 0"
+      tracking-id="maps"
       tracking-page-id="maps"
     >
-      <modes-cards></modes-cards>
+      <events-roll :events="allEvents"></events-roll>
     </page-section>
 
     <client-only>
@@ -77,7 +87,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, useAsync, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
-import { formatAsJsonLd, unformatMode } from '@/lib/util'
+import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { CDashboardCell } from '@schneefux/klicker/components'
 
@@ -97,6 +107,13 @@ export default defineComponent({
       ...e,
       mode: unformatMode(e.mode)
     })))
+
+    const twoWeeksAgo = new Date()
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+    const currentSeason = getSeasonEnd(twoWeeksAgo)
+    const allEvents = useAsync(() => $klicker.queryActiveEvents([], {
+      season: [currentSeason.toISOString().slice(0, 10)],
+    }, null))
 
     const powerleagueEvents = useAsync(() => $klicker.queryActiveEvents([], {
       powerplay: ['1'],
@@ -130,6 +147,7 @@ export default defineComponent({
     const isApp = computed(() => store.state.isApp)
 
     return {
+      allEvents,
       currentEvents,
       upcomingEvents,
       powerleagueEvents,

@@ -173,7 +173,10 @@
       tracking-id="live_events"
       tracking-page-id="maps"
     >
-      <events-roll :events="events"></events-roll>
+      <events-roll
+        :events="events"
+        with-data
+      ></events-roll>
     </page-section>
 
     <client-only>
