@@ -48,7 +48,7 @@ export async function migrate(db: Knex) {
       table.datetime('created_at').notNullable().defaultTo(db.fn.now())
       table.datetime('updated_at').notNullable().defaultTo(db.fn.now())
       table.string('title').notNullable()
-      table.integer('columns')
+      table.integer('columns').unsigned();
       table.json('widgets').notNullable()
     })
   }
