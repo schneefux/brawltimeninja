@@ -1,8 +1,7 @@
 <template>
   <b-select
     :value="$i18n.locale"
-    class="!py-1 -my-1 !text-xs md:text-sm"
-    primary
+    class="!py-1 -my-1 !text-xs md:text-sm focus:!bg-white"
     sm
     @input="v => changeLanguage(v)"
   >
