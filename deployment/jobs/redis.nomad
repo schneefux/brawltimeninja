@@ -56,16 +56,18 @@ job "redis" {
           bind {{ env "NOMAD_IP_db" }}
           maxmemory {{ env "NOMAD_MEMORY_LIMIT" }}mb
           maxmemory-policy allkeys-lru
+          stop-writes-on-bgsave-error no
         EOF
+        # when memory is low, bgsave fails -> don't throw error
         destination = "local/redis.conf"
         change_mode = "signal"
         change_signal = "SIGHUP"
       }
 
       resources {
-        cpu = 512
-        memory = 384
-        memory_max = 512
+        cpu = 1024
+        memory = 1024
+        memory_max = 1536
       }
     }
   }
