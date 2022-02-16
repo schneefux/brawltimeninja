@@ -29,7 +29,6 @@
     <c-widget
       :widget="value"
       class="pointer-events-none"
-      no-style
     >
       <template
         v-for="(_, name) in $scopedSlots"

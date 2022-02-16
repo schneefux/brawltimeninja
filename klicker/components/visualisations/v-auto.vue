@@ -97,20 +97,6 @@ export default defineComponent({
       default: false
     },
     /**
-     * Apply default styling for canvas layout.
-     */
-    forCanvas: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * Apply default styling for grid layout.
-     */
-    forGrid: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * Row dimension to set.
      * If unset, the specification default will be used.
      */
@@ -145,25 +131,13 @@ export default defineComponent({
   },
   setup(props) {
     function getStyle(spec: StaticWidgetSpec) {
-      const style: Record<string, string> = {}
-
       const rows = props.rows ?? spec.initialDimensions.rows
       const columns = props.columns ?? spec.initialDimensions.columns
-
-      if (props.forCanvas) {
-        if (spec.resizable) {
-          style.width = `${columns * 150}px`
-          style.height = `${rows * 150}px`
-        } else {
-          style.width = 'max-content'
-          style.height = 'max-content'
-        }
-      }
 
       return {
         rows,
         columns,
-        style: Object.assign(style, props.ztyle),
+        style: props.ztyle,
       }
     }
 

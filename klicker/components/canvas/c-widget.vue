@@ -9,8 +9,6 @@
         :props="widget.props"
         :component="widget.component"
         :ztyle="style"
-        :for-canvas="forCanvas"
-        :for-grid="forGrid"
         :rows="forGrid ? widget.frame.rows : undefined"
         :columns="forGrid ? widget.frame.columns : undefined"
         :card="forGrid ? { fullHeight: true } : undefined"
@@ -32,8 +30,6 @@
     :props="widget.props"
     :component="widget.component"
     :ztyle="style"
-    :for-canvas="forCanvas"
-    :for-grid="forGrid"
     :rows="forGrid ? widget.frame.rows : undefined"
     :columns="forGrid ? widget.frame.columns : undefined"
     :loading="false"
@@ -154,7 +150,13 @@ export default defineComponent({
       }
     })
 
-    const style = computed(() => props.forCanvas && valid.value ? render((<ReportWidget> props.widget).frame, spec.value!) : {})
+    const style = computed(() => ({
+      // c-moveable-widget does not set forCanvas because the parent applies all styles
+      // grow the <c-dashboard-cell> container by default so that the visualisations fill it by default
+      height: '100%',
+      width: '100%',
+      ...(props.forCanvas && valid.value ? render((<ReportWidget> props.widget).frame, spec.value!) : {})
+    }))
 
     return {
       valid,
