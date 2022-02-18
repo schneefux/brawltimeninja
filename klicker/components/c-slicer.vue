@@ -1,6 +1,7 @@
 <template>
+  <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
-    class="z-10"
+    class="relative z-10"
     v-bind="{ ...card, title }"
   >
     <button
