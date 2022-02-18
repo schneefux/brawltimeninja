@@ -73,10 +73,9 @@
 </template>
 
 <script lang="ts">
-import { camelToKebab, slugify } from '@/lib/util'
+import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { defineComponent, useAsync, computed, useRoute, useStore, useContext, useMeta } from '@nuxtjs/composition-api'
-import { EventMetadata } from '~/plugins/klicker'
 
 export default defineComponent({
   components: {
@@ -93,7 +92,7 @@ export default defineComponent({
 
     const route = useRoute()
 
-    const mode = computed(() => route.value.params.mode)
+    const mode = computed(() => kebabToCamel(route.value.params.mode))
     const events = useAsync(() => $klicker.queryActiveEvents([], {
       mode: [mode.value],
     }, null))
