@@ -10,7 +10,7 @@
       <v-roll
         v-bind="data"
         :card="{
-          title: $t('brawler.synergy.title', { brawler }),
+          title: $t('brawler.weakness.title', { brawler }),
           fullHeight: true,
         }"
       >
@@ -41,11 +41,11 @@ export default defineComponent({
   setup(props) {
     const query: CubeComparingQuery = {
       comparing: true,
-      cubeId: 'brawlerAllies',
+      cubeId: 'brawlerEnemies',
       slices: {
         brawler: [props.brawler.toUpperCase()],
       },
-      dimensionsIds: ['brawler', 'ally'],
+      dimensionsIds: ['brawler', 'enemy'],
       metricsIds: ['winRate'],
       sortId: 'pvalue',
       limit: 8,

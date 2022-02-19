@@ -130,7 +130,7 @@ export default defineComponent({
     async function getSynergyData() {
       loading.value++
       const data = await $klicker.query({
-        cubeId: 'brawler_allies_mv',
+        cubeId: 'brawlerAllies',
         slices: props.query.slices,
         dimensionsIds: ['brawler', 'ally'],
         metricsIds: ['winRate', 'picks'],

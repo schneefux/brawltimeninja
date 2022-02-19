@@ -34,11 +34,22 @@
     </client-only>
 
     <page-section
-      :title="$t('brawler.synergies-for', { brawler: brawlerName })"
+      :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
       tracking-id="synergies"
       tracking-page-id="brawler"
     >
-      <brawler-synergies-card :brawler="brawlerName"></brawler-synergies-card>
+    <scrolling-dashboard>
+      <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+        <brawler-synergies-card
+          :brawler="brawlerName"
+        ></brawler-synergies-card>
+      </c-dashboard-cell>
+      <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+        <brawler-weaknesses-card
+          :brawler="brawlerName"
+        ></brawler-weaknesses-card>
+      </c-dashboard-cell>
+    </scrolling-dashboard>
     </page-section>
 
     <page-section
@@ -113,8 +124,12 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    CDashboardCell,
+  },
   head: {},
   setup() {
     const { i18n } = useContext()
