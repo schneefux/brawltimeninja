@@ -8,6 +8,9 @@
     "build": "tsc lib/klicker.conf.ts",
     "dev": "cross-env CUBEJS_DEV_MODE=true ./node_modules/.bin/cubejs-server server"
   },
+  "dependencies": {
+    "@schneefux/klicker": "link:../klicker"
+  },
   "devDependencies": {
     "@cubejs-backend/clickhouse-driver": "^0.28.11",
     "@cubejs-backend/server": "^0.28.11",
