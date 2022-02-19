@@ -251,4 +251,8 @@ export default {
     download: true,
     subsets: 'latin',
   },
+
+  serverMiddleware: [
+    { path: '/klicker', handler: '~/server-middleware/klicker.ts' },
+  ],
 }

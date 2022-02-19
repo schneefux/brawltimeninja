@@ -34,7 +34,7 @@ jobs:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: web
-    needs: klicker
+    needs: build-klicker
     secrets:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

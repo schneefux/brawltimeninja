@@ -1,6 +1,6 @@
 FROM node:16 AS builder
 WORKDIR /app
-COPY ./.npmrc ./package.json ./yarn.lock .
+COPY ./package.json ./yarn.lock .
 RUN yarn install --frozen-lockfile
 COPY . .
 

@@ -1695,7 +1695,7 @@ const cubes: Record<string, Cube> = {
     name: 'Star Power',
     dimensions: [
       ...brawlerBattleDimensions,
-      brawlerDimension,
+      brawlerIdDimension,
       starpowerDimension,
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
