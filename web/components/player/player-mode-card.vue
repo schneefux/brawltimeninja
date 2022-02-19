@@ -62,7 +62,7 @@ import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxt
 import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { commonMetrics } from '~/lib/klicker.conf'
+import { winRateMetric } from '~/lib/klicker.conf'
 
 interface Stats {
   winRate: number
@@ -162,7 +162,7 @@ export default defineComponent({
       }
     })
 
-    const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(commonMetrics.winRate, stats.value.winRate) : '?')
+    const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
     const modeKebab = computed(() => camelToKebab(props.mode))
 
     return {

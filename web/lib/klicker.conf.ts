@@ -1,4 +1,4 @@
-import { asDimensions, asNumberMetrics, asSlice, asStringMetrics, Cube, SliceValue, MetaGridEntry, Dimension } from "@schneefux/klicker/types"
+import { asSlice, Cube, SliceValue, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
 // @ts-ignore
 import { ChiSquared } from 'sampson'
 
@@ -110,256 +110,283 @@ function binomialCI(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: 
 
 // TODO get standard deviations and implement t test for non-binomial attributes
 
-const metaDimensions = asDimensions({
-  season: {
-    id: 'season',
-    name: 'Bi-Week',
-    childIds: ['day', 'timestamp'],
-    naturalIdAttribute: 'season',
-    formatter: 'yyyy-MM-dd',
-    additionalMetrics: [],
-    type: 'temporal',
-    scale: {
-      nice: 'week',
-    },
-    config: {
-      sql: 'trophy_season_end',
-      type: 'time',
-    },
+const seasonDimension: Dimension = {
+  id: 'season',
+  name: 'Bi-Week',
+  childIds: ['day', 'timestamp'],
+  naturalIdAttribute: 'season',
+  formatter: 'yyyy-MM-dd',
+  additionalMetrics: [],
+  type: 'temporal',
+  scale: {
+    nice: 'week',
   },
-  day: {
-    id: 'day',
-    name: 'Day',
-    childIds: ['timestamp'],
-    naturalIdAttribute: 'day',
-    formatter: 'yyyy-MM-dd',
-    additionalMetrics: [],
-    type: 'temporal',
-    scale: {
-      nice: 'day',
-    },
-    config: {
-      sql: 'toStartOfDay(timestamp)',
-      type: 'time',
-    },
+  config: {
+    sql: 'trophy_season_end',
+    type: 'time',
   },
-  timestamp: {
-    id: 'timestamp',
-    name: 'Timestamp',
-    naturalIdAttribute: 'timestamp',
-    formatter: 'yyyy-MM-ddTHH:mm',
-    additionalMetrics: [],
-    type: 'temporal',
-    scale: {
-      nice: 'hour',
-    },
-    config: {
-      sql: 'timestamp',
-      type: 'time',
-    },
-  },
-})
+}
 
-const playerDimensions = asDimensions({
-  player: {
-    id: 'player',
-    name: 'Player',
-    naturalIdAttribute: 'playerName',
-    additionalMetrics: ['playerName', 'playerIcon'],
-    type: 'nominal',
-    config: {
-      sql: 'player_id',
-      type: 'string',
-    },
+const dayDimension: Dimension = {
+  id: 'day',
+  name: 'Day',
+  childIds: ['timestamp'],
+  naturalIdAttribute: 'day',
+  formatter: 'yyyy-MM-dd',
+  additionalMetrics: [],
+  type: 'temporal',
+  scale: {
+    nice: 'day',
   },
-})
+  config: {
+    sql: 'toStartOfDay(timestamp)',
+    type: 'time',
+  },
+}
 
-const brawlerDimensions = asDimensions({
-  brawler: {
-    id: 'brawler',
-    name: 'Brawler',
-    childIds: ['gadget', 'starpower', 'gear'],
-    naturalIdAttribute: 'brawler',
-    formatter: 'capitalizeWords',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'brawler_name',
-      type: 'string',
-    },
+const timestampDimension: Dimension = {
+  id: 'timestamp',
+  name: 'Timestamp',
+  naturalIdAttribute: 'timestamp',
+  formatter: 'yyyy-MM-ddTHH:mm',
+  additionalMetrics: [],
+  type: 'temporal',
+  scale: {
+    nice: 'hour',
   },
-  brawlerId: {
-    id: 'brawlerId',
-    name: 'Brawler ID',
-    childIds: ['brawler', 'gadget', 'starpower', 'gear'],
-    naturalIdAttribute: 'brawlerId',
-    additionalMetrics: [],
-    hidden: true,
-    type: 'nominal',
-    config: {
-      sql: 'brawler_id',
-      type: 'string',
-    },
+  config: {
+    sql: 'timestamp',
+    type: 'time',
   },
-  ally: {
-    id: 'ally',
-    name: 'Ally',
-    naturalIdAttribute: 'ally',
-    formatter: 'capitalizeWords',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'ally_brawler_name',
-      type: 'string',
-    },
-  },
-  allyId: {
-    id: 'allyId',
-    name: 'Ally ID',
-    childIds: ['ally'],
-    naturalIdAttribute: 'allyId',
-    additionalMetrics: [],
-    hidden: true,
-    type: 'nominal',
-    config: {
-      sql: 'ally_brawler_id',
-      type: 'string',
-    },
-  },
-  gadget: {
-    id: 'gadget',
-    name: 'Gadget',
-    naturalIdAttribute: 'gadgetName',
-    formatter: 'capitalizeWords',
-    additionalMetrics: ['gadgetName', 'brawler'],
-    type: 'nominal',
-    config: {
-      sql: 'brawler_gadget_id',
-      type: 'string',
-    },
-  },
-  starpower: {
-    id: 'starpower',
-    name: 'Star Power',
-    naturalIdAttribute: 'starpowerName',
-    formatter: 'capitalizeWords',
-    additionalMetrics: ['starpowerName', 'brawler'],
-    type: 'nominal',
-    config: {
-      sql: 'brawler_starpower_id',
-      type: 'string',
-    },
-  },
-  gear: {
-    id: 'gear',
-    name: 'Gear',
-    naturalIdAttribute: 'gearName',
-    formatter: 'capitalizeWords',
-    additionalMetrics: ['gearName'],
-    type: 'nominal',
-    config: {
-      sql: 'brawler_gear_id',
-      type: 'string',
-    },
-  },
-  bigbrawler: {
-    id: 'bigbrawler',
-    name: 'Big Brawler',
-    naturalIdAttribute: 'bigbrawler',
-    formatter: 'y/n',
-    additionalMetrics: [],
-    hidden: true,
-    type: 'nominal',
-    config: {
-      sql: 'battle_is_bigbrawler',
-      type: 'boolean',
-    },
-  },
-  trophyRange: {
-    id: 'trophyRange',
-    name: 'Trophy Range',
-    naturalIdAttribute: 'trophyRange',
-    additionalMetrics: [],
-    hidden: true,
-    type: 'ordinal',
-    formatter: 'trophyRange',
-    config: {
-      sql: 'brawler_trophyrange',
-      type: 'string',
-    },
-  },
-})
+}
 
-const battleDimensions = asDimensions({
-  mode: {
-    id: 'mode',
-    name: 'Mode',
-    childIds: ['map'],
-    naturalIdAttribute: 'mode',
-    formatter: 'formatMode',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_mode',
-      type: 'string',
-    },
+const playerDimension: Dimension = {
+  id: 'player',
+  name: 'Player',
+  naturalIdAttribute: 'playerName',
+  additionalMetrics: ['playerName', 'playerIcon'],
+  type: 'nominal',
+  config: {
+    sql: 'player_id',
+    type: 'string',
   },
-  map: {
-    id: 'map',
-    name: 'Map',
-    naturalIdAttribute: 'map',
-    additionalMetrics: ['mode', 'eventId'],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_map',
-      type: 'string',
-    },
-  },
-  team: {
-    id: 'team',
-    name: 'Team',
-    naturalIdAttribute: 'team',
-    formatter: 'capitalizeWords',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
-      type: 'string',
-    },
-  },
-  teamSize: {
-    id: 'teamSize',
-    name: 'Team size',
-    childIds: ['team'],
-    naturalIdAttribute: 'team',
-    additionalMetrics: [],
-    hidden: true,
-    type: 'quantitative',
-    config: {
-      sql: 'length(battle_allies.brawler_name) + 1',
-      type: 'number',
-    },
-  },
-  powerplay: {
-    id: 'powerplay',
-    name: 'Power Play',
-    naturalIdAttribute: 'powerplay',
-    formatter: 'y/n',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_powerplay',
-      type: 'boolean',
-    },
-  },
-})
+}
 
-const commonDimensions = asDimensions({
-  ...playerDimensions,
-  ...brawlerDimensions,
-  ...metaDimensions,
-  ...battleDimensions,
-})
+
+const allyIdDimension: Dimension = {
+  id: 'allyId',
+  name: 'Ally ID',
+  childIds: ['ally'],
+  naturalIdAttribute: 'allyId',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'nominal',
+  config: {
+    sql: 'ally_brawler_id',
+    type: 'string',
+  },
+}
+
+const allyDimension: Dimension = {
+  id: 'ally',
+  name: 'Ally',
+  naturalIdAttribute: 'ally',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'ally_brawler_name',
+    type: 'string',
+  },
+}
+
+const enemyIdDimension: Dimension = {
+  id: 'enemyId',
+  name: 'Enemy ID',
+  childIds: ['enemy'],
+  naturalIdAttribute: 'enemyId',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'nominal',
+  config: {
+    sql: 'enemy_brawler_id',
+    type: 'string',
+  },
+}
+
+const enemyDimension: Dimension = {
+  id: 'enemy',
+  name: 'Enemery',
+  naturalIdAttribute: 'enemy',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'enemy_brawler_name',
+    type: 'string',
+  },
+}
+
+const brawlerDimension: Dimension = {
+  id: 'brawler',
+  name: 'Brawler',
+  childIds: ['gadget', 'starpower', 'gear'],
+  naturalIdAttribute: 'brawler',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_name',
+    type: 'string',
+  },
+}
+
+const brawlerIdDimension: Dimension = {
+  id: 'brawlerId',
+  name: 'Brawler ID',
+  childIds: ['brawler', 'gadget', 'starpower', 'gear'],
+  naturalIdAttribute: 'brawlerId',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'nominal',
+  config: {
+    sql: 'brawler_id',
+    type: 'string',
+  },
+}
+
+const gadgetDimension: Dimension = {
+  id: 'gadget',
+  name: 'Gadget',
+  naturalIdAttribute: 'gadgetName',
+  formatter: 'capitalizeWords',
+  additionalMetrics: ['gadgetName', 'brawler'],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_gadget_id',
+    type: 'string',
+  },
+}
+
+const starpowerDimension: Dimension = {
+  id: 'starpower',
+  name: 'Star Power',
+  naturalIdAttribute: 'starpowerName',
+  formatter: 'capitalizeWords',
+  additionalMetrics: ['starpowerName', 'brawler'],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_starpower_id',
+    type: 'string',
+  },
+}
+
+const gearDimension: Dimension = {
+  id: 'gear',
+  name: 'Gear',
+  naturalIdAttribute: 'gearName',
+  formatter: 'capitalizeWords',
+  additionalMetrics: ['gearName'],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_gear_id',
+    type: 'string',
+  },
+}
+
+const bigbrawlerDimension: Dimension = {
+  id: 'bigbrawler',
+  name: 'Big Brawler',
+  naturalIdAttribute: 'bigbrawler',
+  formatter: 'y/n',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'nominal',
+  config: {
+    sql: 'battle_is_bigbrawler',
+    type: 'boolean',
+  },
+}
+
+const trophyRangeDimension: Dimension = {
+  id: 'trophyRange',
+  name: 'Trophy Range',
+  naturalIdAttribute: 'trophyRange',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'ordinal',
+  formatter: 'trophyRange',
+  config: {
+    sql: 'brawler_trophyrange',
+    type: 'string',
+  },
+}
+
+const modeDimension: Dimension = {
+  id: 'mode',
+  name: 'Mode',
+  childIds: ['map'],
+  naturalIdAttribute: 'mode',
+  formatter: 'formatMode',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_mode',
+    type: 'string',
+  },
+}
+
+const mapDimension: Dimension = {
+  id: 'map',
+  name: 'Map',
+  naturalIdAttribute: 'map',
+  additionalMetrics: ['mode', 'eventId'],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_map',
+    type: 'string',
+  },
+}
+
+const teamDimension: Dimension = {
+  id: 'team',
+  name: 'Team',
+  naturalIdAttribute: 'team',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))',
+    type: 'string',
+  },
+}
+
+const teamSizeDimension: Dimension = {
+  id: 'teamSize',
+  name: 'Team size',
+  childIds: ['team'],
+  naturalIdAttribute: 'team',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'quantitative',
+  config: {
+    sql: 'length(battle_allies.brawler_name) + 1',
+    type: 'number',
+  },
+}
+
+const powerplayDimension: Dimension = {
+  id: 'powerplay',
+  name: 'Power Play',
+  naturalIdAttribute: 'powerplay',
+  formatter: 'y/n',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_powerplay',
+    type: 'boolean',
+  },
+}
 
 const picks = 'SUM(picks)'
 const winRate = `toFloat64(AVG(battle_victory))`
@@ -371,679 +398,672 @@ const winratePosteriorMerged = `(1583+${winRateMerged}*${picks})/(1583/${zP}+${p
 const picksRaw = 'COUNT()'
 const winratePosteriorRaw = `(1583+${winRate}*${picksRaw})/(1583/${zP}+${picksRaw})`
 
-export const playerStringMetrics = asStringMetrics({
-  playerName: {
-    id: 'playerName',
-    name: 'Most common name',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(player_name)',
-      type: 'number',
-    },
+const playerNameMetric: Metric = {
+  id: 'playerName',
+  name: 'Most common name',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(player_name)',
+    type: 'number',
   },
-  clubName: {
-    id: 'clubName',
-    name: 'Most common Club name',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(player_club_name)',
-      type: 'number',
-    },
-  },
-  playerIcon: {
-    id: 'playerIcon',
-    name: 'Most common icon',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(player_icon_id)',
-      type: 'number',
-    },
-  },
-  playerNameColor: {
-    id: 'playerNameColor',
-    name: 'Most common color',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(player_name_color)',
-      type: 'number',
-    },
-  },
-})
+}
 
-const playerNumberMetrics = asNumberMetrics({
-  playerTrophies: {
-    id: 'playerTrophies',
-    name: 'Player Trophies',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_trophies',
-      type: 'max',
-    },
+const clubNameMetric: Metric = {
+  id: 'clubName',
+  name: 'Most common Club name',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(player_club_name)',
+    type: 'number',
   },
-  playerHighestTrophies: {
-    id: 'playerHighestTrophies',
-    name: 'Player Highest Trophies',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_highest_trophies',
-      type: 'max',
-    },
-  },
-  victories: {
-    id: 'victories',
-    name: '3v3 Victories',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_3vs3_victories',
-      type: 'max',
-    },
-  },
-  soloVictories: {
-    id: 'soloVictories',
-    name: 'Solo Victories',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_solo_victories',
-      type: 'max',
-    },
-  },
-  duoVictories: {
-    id: 'duoVictories',
-    name: 'Duo Victories',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_duo_victories',
-      type: 'max',
-    },
-  },
-  users: {
-    id: 'users',
-    name: 'Players',
-    description: 'The total number of players.',
-    formatter: '.1s',
-    d3formatter: '.1s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'uniqCombined(player_id)',
-      type: 'number',
-    },
-  },
-  powerPlayPoints: {
-    id: 'powerPlayPoints',
-    name: 'Power Play Points',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'player_power_play_points',
-      type: 'max',
-    },
-  },
-  highestPowerPlayPoints: {
-    id: 'highestPowerPlayPoints',
-    name: 'Highest Power Play Points',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'player_highest_power_play_points',
-      type: 'max',
-    },
-  },
-  expLevel: {
-    id: 'expLevel',
-    name: 'EXP Level',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'player_exp_level',
-      type: 'max',
-    },
-  },
-  expPoints: {
-    id: 'expPoints',
-    name: 'EXP',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'player_exp_points',
-      type: 'max',
-    },
-  },
-  brawlers: {
-    id: 'brawlers',
-    name: 'Brawlers',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'player_brawlers_length',
-      type: 'max',
-    },
-  },
-})
+}
 
-export const brawlerStringMetrics = asStringMetrics({
-  brawler: {
-    id: 'brawler',
-    name: 'Most played Brawler',
-    formatter: 'capitalizeWords',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'anyHeavy(brawler_name)',
-      type: 'number',
-    },
+const playerIconMetric: Metric = {
+  id: 'playerIcon',
+  name: 'Most common icon',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(player_icon_id)',
+    type: 'number',
   },
-})
+}
 
-export const brawlerNumberMetrics = asNumberMetrics({
-  highestTrophies: {
-    id: 'highestTrophies',
-    name: 'Highest Trophies',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'brawler_highest_trophies',
-      type: 'max',
-    },
+const playerNameColorMetric: Metric = {
+  id: 'playerNameColor',
+  name: 'Most common color',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(player_name_color)',
+    type: 'number',
   },
-  trophies: {
-    id: 'trophies',
-    name: 'Trophies',
-    description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'brawler_trophies',
-      type: 'avg',
-    },
-  },
-  starpowers: {
-    id: 'starpowers',
-    name: 'Star Powers',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'brawler_starpowers_length',
-      type: 'max',
-    },
-  },
-  gadgets: {
-    id: 'gadgets',
-    name: 'Gadgets',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'brawler_gadgets_length',
-      type: 'max',
-    },
-  },
-  gears: {
-    id: 'gears',
-    name: 'Gears',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'brawler_gears_length',
-      type: 'max',
-    },
-  },
-})
+}
 
-const metaMetrics = asStringMetrics({
-  timestamp: {
-    // TODO
-    id: 'timestamp',
-    name: 'Last Update',
-    formatter: 'yyyy-MM-ddTHH:mm',
-    sign: -1,
-    type: 'temporal',
-    config: {
-      sql: 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
-      type: 'number',
+const playerTrophiesMetric: Metric = {
+  id: 'playerTrophies',
+  name: 'Player Trophies',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  day: {
-    // TODO
-    id: 'day',
-    name: 'Day',
-    formatter: 'yyyy-MM-dd',
-    sign: -1,
-    type: 'temporal',
-    config: {
-      sql: 'formatDateTime(MAX(toStartOfDay(timestamp)), \'%FT%TZ\', \'UTC\')',
-      type: 'number',
-    },
+  config: {
+    sql: 'player_trophies',
+    type: 'max',
   },
-})
+}
 
-const battleNumberMetrics = asNumberMetrics({
-  trophyChange: {
-    id: 'trophyChange',
-    name: 'Trophy Change',
-    formatter: '+.2f',
-    d3formatter: '+.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_trophy_change',
-      type: 'avg',
+const playerHighestTrophiesMetric: Metric = {
+  id: 'playerHighestTrophies',
+  name: 'Player Highest Trophies',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  winRate: {
-    id: 'winRate',
-    name: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_victory',
-      type: 'avg',
-    },
-    statistics: {
-      test: {
-        name: 'G-Test',
-        test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-    },
-      ci: {
-        ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-    },
+  config: {
+    sql: 'player_highest_trophies',
+    type: 'max',
   },
-  winRateAdj: {
-    id: 'winRateAdj',
-    name: 'Adjusted Win Rate',
-    description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: winratePosteriorRaw,
-      type: 'number',
-    },
-  },
-  wins: {
-    id: 'wins',
-    name: 'Wins',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'battle_victory',
-      type: 'sum',
-    },
-  },
-  winsZScore: {
-    id: 'winsZScore',
-    name: 'Wins z-Score',
-    description: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '', // TODO needs join
-      type: 'number',
-    },
-  },
-  picks: {
-    id: 'picks',
-    name: 'Picks recorded',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '',
-      type: 'count',
-    },
-  },
-  pickRate: {
-    id: 'pickRate',
-    name: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: '',
-      type: 'count',
-    },
-    transform: percentageOver('pickRate', brawlerDimensions.brawler),
-  },
-  useRate: {
-    id: 'useRate',
-    name: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'player_brawlers_length',
-      type: 'sum',
-    },
-    transform: percentageOver('useRate', brawlerDimensions.brawler),
-  },
-  starRate: {
-    id: 'starRate',
-    name: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_is_starplayer',
-      type: 'avg',
-    },
-    statistics: {
-      test: {
-        name: 'G-Test',
-        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-    },
-      ci: {
-        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-    },
-  },
-  rank: {
-    id: 'rank',
-    name: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: +1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_rank',
-      type: 'avg',
-    },
-  },
-  rank1: {
-    id: 'rank1',
-    name: '#1 Recorded',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'battle_rank1',
-      type: 'sum',
-    },
-  },
-  rank1Rate: {
-    id: 'rank1Rate',
-    name: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_rank1',
-      type: 'avg',
-    },
-  },
-  duration: {
-    id: 'duration',
-    name: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    formatter: 'duration',
-    d3formatter: 'duration',
-    sign: +1,
-    type: 'quantitative',
-    config: {
-      sql: 'battle_duration',
-      type: 'avg',
-    },
-  },
-  level: {
-    id: 'level',
-    name: 'Average Level',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_level',
-      type: 'avg',
-    },
-  },
-  power: {
-    id: 'power',
-    name: 'Power',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'brawler_power',
-      type: 'avg',
-    },
-  },
-})
+}
 
-const battleStringMetrics = asStringMetrics({
-  starpowerName: {
-    id: 'starpowerName',
-    name: 'Star Power',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(brawler_starpower_name)',
-      type: 'number',
+const victoriesMetric: Metric = {
+  id: 'victories',
+  name: '3v3 Victories',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  gadgetName: {
-    id: 'gadgetName',
-    name: 'Gadget',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(brawler_gadget_name)',
-      type: 'number',
+  config: {
+    sql: 'player_3vs3_victories',
+    type: 'max',
+  },
+}
+
+const soloVictoriesMetric: Metric = {
+  id: 'soloVictories',
+  name: 'Solo Victories',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  gearName: {
-    id: 'gearName',
-    name: 'Gear',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(brawler_gear_name)',
-      type: 'number',
+  config: {
+    sql: 'player_solo_victories',
+    type: 'max',
+  },
+}
+
+const duoVictoriesMetric: Metric = {
+  id: 'duoVictories',
+  name: 'Duo Victories',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  eventId: {
-    id: 'eventId',
-    name: 'Event ID',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(battle_event_id)',
-      type: 'number',
+  config: {
+    sql: 'player_duo_victories',
+    type: 'max',
+  },
+}
+
+const usersMetric: Metric = {
+  id: 'users',
+  name: 'Players',
+  description: 'The total number of players.',
+  formatter: '.1s',
+  d3formatter: '.1s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'uniqCombined(player_id)',
+    type: 'number',
+  },
+}
+
+const powerPlayPointsMetric: Metric = {
+  id: 'powerPlayPoints',
+  name: 'Power Play Points',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_power_play_points',
+    type: 'max',
+  },
+}
+
+const highestPowerPlayPointsMetric: Metric = {
+  id: 'highestPowerPlayPoints',
+  name: 'Highest Power Play Points',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_highest_power_play_points',
+    type: 'max',
+  },
+}
+
+const expLevelMetric: Metric = {
+  id: 'expLevel',
+  name: 'EXP Level',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_exp_level',
+    type: 'max',
+  },
+}
+
+const expPointsMetric: Metric = {
+  id: 'expPoints',
+  name: 'EXP',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_exp_points',
+    type: 'max',
+  },
+}
+
+const brawlersMetric: Metric = {
+  id: 'brawlers',
+  name: 'Brawlers',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_brawlers_length',
+    type: 'max',
+  },
+}
+
+const brawlerMetric: Metric = {
+  id: 'brawler',
+  name: 'Most played Brawler',
+  formatter: 'capitalizeWords',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'anyHeavy(brawler_name)',
+    type: 'number',
+  },
+}
+
+const highestTrophiesMetric: Metric = {
+  id: 'highestTrophies',
+  name: 'Highest Trophies',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'brawler_highest_trophies',
+    type: 'max',
+  },
+}
+
+export const trophiesMetric: Metric = {
+  id: 'trophies',
+  name: 'Trophies',
+  description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  map: {
-    id: 'map',
-    name: 'Map',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(battle_event_map)',
-      type: 'number',
+  config: {
+    sql: 'brawler_trophies',
+    type: 'avg',
+  },
+}
+
+const starpowersMetric: Metric = {
+  id: 'starpowers',
+  name: 'Star Powers',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'brawler_starpowers_length',
+    type: 'max',
+  },
+}
+
+const gadgetsMetric: Metric = {
+  id: 'gadgets',
+  name: 'Gadgets',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'brawler_gadgets_length',
+    type: 'max',
+  },
+}
+
+const gearsMetric: Metric = {
+  id: 'gears',
+  name: 'Gears',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'brawler_gears_length',
+    type: 'max',
+  },
+}
+
+const timestampMetric: Metric = {
+  // TODO
+  id: 'timestamp',
+  name: 'Last Update',
+  formatter: 'yyyy-MM-ddTHH:mm',
+  sign: -1,
+  type: 'temporal',
+  config: {
+    sql: 'formatDateTime(MAX(timestamp), \'%FT%TZ\', \'UTC\')',
+    type: 'number',
+  },
+}
+
+const dayMetric: Metric = {
+  // TODO
+  id: 'day',
+  name: 'Day',
+  formatter: 'yyyy-MM-dd',
+  sign: -1,
+  type: 'temporal',
+  config: {
+    sql: 'formatDateTime(MAX(toStartOfDay(timestamp)), \'%FT%TZ\', \'UTC\')',
+    type: 'number',
+  },
+}
+
+const trophyChangeMetric: Metric = {
+  id: 'trophyChange',
+  name: 'Trophy Change',
+  formatter: '+.2f',
+  d3formatter: '+.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  mode: {
-    id: 'mode',
-    name: 'Mode',
-    sign: -1,
-    type: 'nominal',
-    config: {
-      sql: 'any(battle_event_mode)',
-      type: 'number',
+  config: {
+    sql: 'battle_trophy_change',
+    type: 'avg',
+  },
+}
+
+const winRateAdjMetric: Metric = {
+  id: 'winRateAdj',
+  name: 'Adjusted Win Rate',
+  description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
+  formatter: '.1%',
+  d3formatter: '.1%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-})
+  config: {
+    sql: winratePosteriorRaw,
+    type: 'number',
+  },
+}
+
+const winsMetric: Metric = {
+  id: 'wins',
+  name: 'Wins',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'battle_victory',
+    type: 'sum',
+  },
+}
+
+const winsZScoreMetric: Metric = {
+  id: 'winsZScore',
+  name: 'Wins z-Score',
+  description: 'The Wins z-score uses a statistical test to compare the wins of Brawlers with a Star Power / Gadget to those without. Scores higher/lower than 2 are good/bad.',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: '', // TODO needs join
+    type: 'number',
+  },
+}
+
+export const picksMetric: Metric = {
+  id: 'picks',
+  name: 'Picks recorded',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: '',
+    type: 'count',
+  },
+}
+
+const pickRateMetric: Metric = {
+  id: 'pickRate',
+  name: 'Pick Rate',
+  description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: '',
+    type: 'count',
+  },
+  transform: percentageOver('pickRate', brawlerDimension),
+}
+
+export const useRateMetric: Metric = {
+  id: 'useRate',
+  name: 'Use Rate',
+  description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'player_brawlers_length',
+    type: 'sum',
+  },
+  transform: percentageOver('useRate', brawlerDimension),
+}
+
+export const starRateMetric: Metric = {
+  id: 'starRate',
+  name: 'Star Player',
+  description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+  formatter: '.1%',
+  d3formatter: '.1%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'battle_is_starplayer',
+    type: 'avg',
+  },
+  statistics: {
+    test: {
+      name: 'G-Test',
+      test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+  },
+    ci: {
+      ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+    },
+  },
+}
+
+const rankMetric: Metric = {
+  id: 'rank',
+  name: 'Average Rank',
+  description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: +1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'battle_rank',
+    type: 'avg',
+  },
+}
+
+const rank1Metric: Metric = {
+  id: 'rank1',
+  name: '#1 Recorded',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'battle_rank1',
+    type: 'sum',
+  },
+}
+
+const rank1RateMetric: Metric = {
+  id: 'rank1Rate',
+  name: '#1 Rate',
+  description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'battle_rank1',
+    type: 'avg',
+  },
+}
+
+const durationMetric: Metric = {
+  id: 'duration',
+  name: 'Duration',
+  description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+  formatter: 'duration',
+  d3formatter: 'duration',
+  sign: +1,
+  type: 'quantitative',
+  config: {
+    sql: 'battle_duration',
+    type: 'avg',
+  },
+}
+
+const levelMetric: Metric = {
+  id: 'level',
+  name: 'Average Level',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'battle_level',
+    type: 'avg',
+  },
+}
+
+const powerMetric: Metric = {
+  id: 'power',
+  name: 'Power',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'brawler_power',
+    type: 'avg',
+  },
+}
+
+const starpowerNameMetric: Metric = {
+  id: 'starpowerName',
+  name: 'Star Power',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(brawler_starpower_name)',
+    type: 'number',
+  },
+}
+
+const gadgetNameMetric: Metric = {
+  id: 'gadgetName',
+  name: 'Gadget',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(brawler_gadget_name)',
+    type: 'number',
+  },
+}
+
+const gearNameMetric: Metric = {
+  id: 'gearName',
+  name: 'Gear',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(brawler_gear_name)',
+    type: 'number',
+  },
+}
+
+const eventIdMetric: Metric = {
+  id: 'eventId',
+  name: 'Event ID',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(battle_event_id)',
+    type: 'number',
+  },
+}
+
+const mapMetric: Metric = {
+  id: 'map',
+  name: 'Map',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(battle_event_map)',
+    type: 'number',
+  },
+}
+
+const modeMetric: Metric = {
+  id: 'mode',
+  name: 'Mode',
+  sign: -1,
+  type: 'nominal',
+  config: {
+    sql: 'any(battle_event_mode)',
+    type: 'number',
+  },
+}
 
 // same as battleMetrics, but using clickhouse merge for mv
-const mergedbattleStringMetrics = asStringMetrics({
-  timestamp: {
-    id: 'timestamp',
-    name: 'Last Update',
-    formatter: 'yyyy-MM-ddTHH:mm',
-    sign: -1,
-    type: 'temporal',
-    config: {
-      sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
-      type: 'number',
-    },
+const timestampMergedMetric: Metric = {
+  id: 'timestamp',
+  name: 'Last Update',
+  formatter: 'yyyy-MM-ddTHH:mm',
+  sign: -1,
+  type: 'temporal',
+  config: {
+    sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
+    type: 'number',
   },
-})
+}
 
-const mergedbattleNumberMetrics = asNumberMetrics({
-  picks: {
-    id: 'picks',
-    name: 'Picks recorded',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: 'sum(picks)',
-      type: 'number',
+const picksMergedMetric: Metric = {
+  id: 'picks',
+  name: 'Picks recorded',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'sum(picks)',
+    type: 'number',
+  },
+}
+
+const trophyChangeMergedMetric: Metric = {
+  id: 'trophyChange',
+  name: 'Trophy Change',
+  formatter: '+.2f',
+  d3formatter: '+.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
     },
   },
-  trophyChange: {
-    id: 'trophyChange',
-    name: 'Trophy Change',
-    formatter: '+.2f',
-    d3formatter: '+.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_trophy_change_state)',
-      type: 'number',
-    },
+  config: {
+    sql: 'avgMerge(battle_trophy_change_state)',
+    type: 'number',
   },
-  winRate: {
+}
+
+const makeWinRateMetric = (config: Metric['config']): Metric => {
+  return {
     id: 'winRate',
     name: 'Win Rate',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
@@ -1056,207 +1076,218 @@ const mergedbattleNumberMetrics = asNumberMetrics({
         zero: false,
       },
     },
-    config: {
-      sql: 'avgMerge(battle_victory_state)',
-      type: 'number',
-    },
+    config,
     statistics: {
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
         requiresMetrics: ['picks'],
-    },
+      },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
         requiresMetrics: ['picks'],
       },
     },
-  },
-  winRateAdj: {
-    id: 'winRateAdj',
-    name: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: winratePosteriorMerged,
-      type: 'number',
-    },
-  },
-  wins: {
-    id: 'wins',
-    name: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: `${winRateMerged}*${picks}`,
-      type: 'number',
-    },
-  },
-  pickRate: {
-    id: 'pickRate',
-    name: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'SUM(picks)',
-      type: 'number',
-    },
-    transform: percentageOver('pickRate', brawlerDimensions.brawler),
-  },
-  useRate: {
-    id: 'useRate',
-    name: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'picks_weighted',
-      type: 'sum',
-    },
-    transform: percentageOver('useRate', brawlerDimensions.brawler),
-  },
-  starRate: {
-    id: 'starRate',
-    name: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_starplayer_state)',
-      type: 'number',
-    },
-    statistics: {
-      test: {
-        name: 'G-Test',
-        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-    },
-      ci: {
-        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-    },
-  },
-  rank: {
-    id: 'rank',
-    name: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: +1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_rank_state)',
-      type: 'number',
-    },
-  },
-  rank1Rate: {
-    id: 'rank1Rate',
-    name: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    formatter: '.2%',
-    d3formatter: '.2%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_rank1_state)',
-      type: 'number',
-    },
-    statistics: {
-      test: {
-        name: 'G-Test',
-        test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-      ci: {
-        ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-    },
-  },
-  duration: {
-    id: 'duration',
-    name: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    formatter: 'duration',
-    d3formatter: 'duration',
-    sign: +1,
-    type: 'quantitative',
-    config: {
-      sql: 'avgMerge(battle_duration_state)',
-      type: 'number',
-    },
-  },
-  level: {
-    id: 'level',
-    name: 'Average Level',
-    formatter: '.2f',
-    d3formatter: '.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_level_state)',
-      type: 'number',
-    },
-  },
+  }
+}
+
+const winRateMergedMetric = makeWinRateMetric({
+  sql: 'avgMerge(battle_victory_state)',
+  type: 'number',
 })
 
-export const commonMetrics = {
-  ...metaMetrics,
-  ...playerStringMetrics,
-  ...playerNumberMetrics,
-  ...brawlerStringMetrics,
-  ...brawlerNumberMetrics,
-  ...battleStringMetrics,
-  ...battleNumberMetrics,
+const winRateSumMergedMetric = makeWinRateMetric({
+  sql: 'sum(battle_victory) / sum(picks)',
+  type: 'number',
+})
+
+export const winRateMetric = makeWinRateMetric({
+  sql: 'battle_victory',
+  type: 'avg',
+})
+
+const winRateAdjMergedMetric: Metric = {
+  id: 'winRateAdj',
+  name: 'Adjusted Win Rate',
+  description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+  formatter: '.1%',
+  d3formatter: '.1%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: winratePosteriorMerged,
+    type: 'number',
+  },
+}
+
+const winsMergedMetric: Metric = {
+  id: 'wins',
+  name: 'Wins',
+  description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: `${winRateMerged}*${picks}`,
+    type: 'number',
+  },
+}
+
+const pickRateMergedMetric: Metric = {
+  id: 'pickRate',
+  name: 'Pick Rate',
+  description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'SUM(picks)',
+    type: 'number',
+  },
+  transform: percentageOver('pickRate', brawlerDimension),
+}
+
+const useRateMergedMetric: Metric = {
+  id: 'useRate',
+  name: 'Use Rate',
+  description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'picks_weighted',
+    type: 'sum',
+  },
+  transform: percentageOver('useRate', brawlerDimension),
+}
+
+const starRateMergedMetric: Metric = {
+  id: 'starRate',
+  name: 'Star Player',
+  description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+  formatter: '.1%',
+  d3formatter: '.1%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'avgMerge(battle_starplayer_state)',
+    type: 'number',
+  },
+  statistics: {
+    test: {
+      name: 'G-Test',
+      test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+  },
+    ci: {
+      ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+    },
+  },
+}
+
+const rankMergedMetric: Metric = {
+  id: 'rank',
+  name: 'Average Rank',
+  description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: +1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'avgMerge(battle_rank_state)',
+    type: 'number',
+  },
+}
+
+const rank1RateMergedMetric: Metric = {
+  id: 'rank1Rate',
+  name: '#1 Rate',
+  description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'avgMerge(battle_rank1_state)',
+    type: 'number',
+  },
+  statistics: {
+    test: {
+      name: 'G-Test',
+      test: binomialTest(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+    },
+    ci: {
+      ci: binomialCI(m => (m['rank1Rate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+    },
+  },
+}
+
+const durationMergedMetric: Metric = {
+  id: 'duration',
+  name: 'Duration',
+  description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+  formatter: 'duration',
+  d3formatter: 'duration',
+  sign: +1,
+  type: 'quantitative',
+  config: {
+    sql: 'avgMerge(battle_duration_state)',
+    type: 'number',
+  },
+}
+
+const levelMergedMetric: Metric = {
+  id: 'level',
+  name: 'Average Level',
+  formatter: '.2f',
+  d3formatter: '.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'avgMerge(battle_level_state)',
+    type: 'number',
+  },
 }
 
 const metaSlices = asSlice({
@@ -1333,6 +1364,20 @@ const brawlerSlices = asSlice({
     id: 'allyId',
     config: {
       member: 'ally_brawler_id_dimension',
+      operator: 'equals',
+    },
+  },
+  enemy: {
+    id: 'enemy',
+    config: {
+      member: 'enemy_brawler_dimension',
+      operator: 'equals',
+    },
+  },
+  enemyId: {
+    id: 'enemyId',
+    config: {
+      member: 'enemy_brawler_id_dimension',
       operator: 'equals',
     },
   },
@@ -1506,29 +1551,29 @@ const brawlerBattleMetrics = [
   /*
   mergedbattleMetrics.trophySeasonEnd,
   */
-  commonMetrics.mode,
-  commonMetrics.map,
-  commonMetrics.eventId,
-  mergedbattleStringMetrics.timestamp,
-  mergedbattleNumberMetrics.trophyChange,
-  mergedbattleNumberMetrics.winRate,
-  mergedbattleNumberMetrics.winRateAdj,
-  mergedbattleNumberMetrics.wins,
-  mergedbattleNumberMetrics.picks,
-  mergedbattleNumberMetrics.pickRate,
-  mergedbattleNumberMetrics.useRate,
-  mergedbattleNumberMetrics.starRate,
-  mergedbattleNumberMetrics.rank,
-  mergedbattleNumberMetrics.rank1Rate,
-  mergedbattleNumberMetrics.duration,
-  mergedbattleNumberMetrics.level,
-  commonMetrics.brawler,
+  modeMetric,
+  mapMetric,
+  eventIdMetric,
+  timestampMergedMetric,
+  trophyChangeMergedMetric,
+  winRateMergedMetric,
+  winRateAdjMergedMetric,
+  winsMergedMetric,
+  picksMergedMetric,
+  pickRateMergedMetric,
+  useRateMergedMetric,
+  starRateMergedMetric,
+  rankMergedMetric,
+  rank1RateMergedMetric,
+  durationMergedMetric,
+  levelMergedMetric,
+  brawlerMetric,
 ]
 
 const brawlerBattleDimensions = [
-  commonDimensions.brawler,
-  commonDimensions.season,
-  commonDimensions.trophyRange,
+  brawlerDimension,
+  seasonDimension,
+  trophyRangeDimension,
 ]
 
 const brawlerBattleSlices = [
@@ -1545,50 +1590,50 @@ const brawlerBattleDefaultSliceValues: SliceValue = {
 }
 
 const playerBrawlerDimensions = [
-  commonDimensions.season,
-  commonDimensions.timestamp,
-  commonDimensions.day,
-  commonDimensions.player,
-  commonDimensions.brawler,
-  commonDimensions.brawlerId,
-  commonDimensions.trophyRange,
+  seasonDimension,
+  timestampDimension,
+  dayDimension,
+  playerDimension,
+  brawlerDimension,
+  brawlerIdDimension,
+  trophyRangeDimension,
 ]
 
 const playerBrawlerMetrics = [
-  commonMetrics.picks,
-  commonMetrics.pickRate,
-  commonMetrics.useRate,
-  commonMetrics.users,
+  picksMetric,
+  pickRateMetric,
+  useRateMetric,
+  usersMetric,
   // commonMetrics.season,
-  commonMetrics.timestamp,
-  commonMetrics.day,
-  commonMetrics.playerName,
-  commonMetrics.playerNameColor,
-  commonMetrics.playerIcon,
-  commonMetrics.playerTrophies,
-  commonMetrics.playerHighestTrophies,
-  commonMetrics.powerPlayPoints,
-  commonMetrics.highestPowerPlayPoints,
-  commonMetrics.expPoints,
+  timestampMetric,
+  dayMetric,
+  playerNameMetric,
+  playerNameColorMetric,
+  playerIconMetric,
+  playerTrophiesMetric,
+  playerHighestTrophiesMetric,
+  powerPlayPointsMetric,
+  highestPowerPlayPointsMetric,
+  expPointsMetric,
   // commonMetrics.championshipQualified,
-  commonMetrics.victories,
-  commonMetrics.soloVictories,
-  commonMetrics.duoVictories,
+  victoriesMetric,
+  soloVictoriesMetric,
+  duoVictoriesMetric,
   // commonMetrics.roboRumble,
   // commonMetrics.bigBrawler,
-  commonMetrics.brawlers,
+  brawlersMetric,
   // commonMetrics.clubId,
   // commonMetrics.clubTag,
-  commonMetrics.clubName,
+  clubNameMetric,
 
   // commonMetrics.brawlerId,
-  commonMetrics.brawler,
-  commonMetrics.power,
-  commonMetrics.trophies,
-  commonMetrics.highestTrophies,
-  commonMetrics.starpowers,
-  commonMetrics.gadgets,
-  commonMetrics.gears,
+  brawlerMetric,
+  powerMetric,
+  trophiesMetric,
+  highestTrophiesMetric,
+  starpowersMetric,
+  gadgetsMetric,
+  gearsMetric,
 ]
 
 const playerBrawlerSlices = [
@@ -1621,9 +1666,9 @@ const cubes: Record<string, Cube> = {
     name: 'Map',
     dimensions: [
       ...brawlerBattleDimensions,
-      commonDimensions.mode,
-      commonDimensions.map,
-      commonDimensions.powerplay,
+      modeDimension,
+      mapDimension,
+      powerplayDimension,
     ],
     defaultDimensionsIds: ['brawler'],
     metrics: [
@@ -1650,13 +1695,13 @@ const cubes: Record<string, Cube> = {
     name: 'Star Power',
     dimensions: [
       ...brawlerBattleDimensions,
-      commonDimensions.brawlerId,
-      commonDimensions.starpower,
+      brawlerDimension,
+      starpowerDimension,
     ],
     defaultDimensionsIds: ['brawler', 'starpower'],
     metrics: [
       ...brawlerBattleMetrics,
-      commonMetrics.starpowerName,
+      starpowerNameMetric,
     ],
     defaultMetricIds: ['winRateAdj'],
     metaMetrics: ['picks', 'timestamp'],
@@ -1676,13 +1721,13 @@ const cubes: Record<string, Cube> = {
     name: 'Gadget',
     dimensions: [
       ...brawlerBattleDimensions,
-      commonDimensions.brawlerId,
-      commonDimensions.gadget,
+      brawlerIdDimension,
+      gadgetDimension,
     ],
     defaultDimensionsIds: ['brawler', 'gadget'],
     metrics: [
       ...brawlerBattleMetrics,
-      commonMetrics.gadgetName,
+      gadgetNameMetric,
     ],
     defaultMetricIds: ['winRateAdj'],
     metaMetrics: ['picks', 'timestamp'],
@@ -1702,12 +1747,12 @@ const cubes: Record<string, Cube> = {
     name: 'Gear',
     dimensions: [
       ...brawlerBattleDimensions,
-      commonDimensions.gear,
+      gearDimension,
     ],
     defaultDimensionsIds: ['gear'],
     metrics: [
       ...brawlerBattleMetrics,
-      commonMetrics.gearName,
+      gearNameMetric,
     ],
     defaultMetricIds: ['winRateAdj'],
     metaMetrics: ['picks', 'timestamp'],
@@ -1721,21 +1766,22 @@ const cubes: Record<string, Cube> = {
       gearIdNeq: ['0'],
     },
   },
-  synergy: {
-    id: 'synergy',
-    table: 'synergy_meta',
+  brawlerAllies: {
+    id: 'brawlerAllies',
+    table: 'brawler_allies_mv',
     name: 'Synergies',
     dimensions: [
       ...brawlerBattleDimensions,
-      commonDimensions.brawlerId,
-      commonDimensions.ally,
-      commonDimensions.allyId,
-      commonDimensions.mode,
-      commonDimensions.map,
+      brawlerIdDimension,
+      allyDimension,
+      allyIdDimension,
+      modeDimension,
+      mapDimension,
     ],
     defaultDimensionsIds: ['brawler'],
     metrics: [
-      ...brawlerBattleMetrics,
+      winRateSumMergedMetric,
+      picksMergedMetric,
     ],
     defaultMetricIds: ['winRateAdj'],
     metaMetrics: ['picks', 'timestamp'],
@@ -1751,48 +1797,56 @@ const cubes: Record<string, Cube> = {
       ...brawlerBattleDefaultSliceValues,
     },
   },
+  brawlerEnemies: {
+    id: 'brawlerEnemies',
+    table: 'brawler_enemies_mv',
+    name: 'Weaknesses',
+    dimensions: [
+      ...brawlerBattleDimensions,
+      brawlerIdDimension,
+      enemyDimension,
+      enemyIdDimension,
+      modeDimension,
+      mapDimension,
+    ],
+    defaultDimensionsIds: ['brawler'],
+    metrics: [
+      winRateSumMergedMetric,
+      picksMergedMetric,
+    ],
+    defaultMetricIds: ['winRateAdj'],
+    metaMetrics: ['picks', 'timestamp'],
+    slices: [
+      ...brawlerBattleSlices,
+      commonSlices.mode,
+      commonSlices.map,
+      commonSlices.brawlerId,
+      commonSlices.enemy,
+      commonSlices.enemyId,
+    ],
+    defaultSliceValues: {
+      ...brawlerBattleDefaultSliceValues,
+    },
+  },
   player: {
     id: 'leaderboard',
     table: 'leaderboard',
     name: 'Leaderboard',
     hidden: true,
     dimensions: [
-      commonDimensions.player,
+      playerDimension,
     ],
     defaultDimensionsIds: ['player'],
     metrics: [
-      commonMetrics.timestamp,
-      commonMetrics.playerName,
-      commonMetrics.playerIcon,
-      commonMetrics.expPoints,
-      commonMetrics.victories,
-      commonMetrics.soloVictories,
-      commonMetrics.duoVictories,
+      timestampMetric,
+      playerNameMetric,
+      playerIconMetric,
+      expPointsMetric,
+      victoriesMetric,
+      soloVictoriesMetric,
+      duoVictoriesMetric,
     ],
     defaultMetricIds: ['victories'],
-    metaMetrics: ['timestamp'],
-    slices: [
-      commonSlices.timestamp,
-    ],
-    defaultSliceValues: {
-    },
-  },
-  player_brawler: {
-    id: 'player_brawler',
-    table: 'brawler_leaderboard',
-    name: 'Brawler Leaderboard',
-    dimensions: [
-      commonDimensions.player,
-      commonDimensions.brawlerId,
-    ],
-    defaultDimensionsIds: ['player'],
-    metrics: [
-      commonMetrics.playerName,
-      commonMetrics.playerIcon,
-      commonMetrics.brawler,
-      commonMetrics.highestTrophies,
-    ],
-    defaultMetricIds: ['highestTrophies'],
     metaMetrics: ['timestamp'],
     slices: [
       commonSlices.timestamp,
@@ -1828,29 +1882,29 @@ const cubes: Record<string, Cube> = {
     hidden: true,
     dimensions: [
       ...playerBrawlerDimensions,
-      battleDimensions.mode,
-      battleDimensions.map,
-      battleDimensions.powerplay,
-      battleDimensions.team,
-      battleDimensions.teamSize,
-      brawlerDimensions.starpower,
-      brawlerDimensions.gadget,
-      brawlerDimensions.gear,
+      modeDimension,
+      mapDimension,
+      powerplayDimension,
+      teamDimension,
+      teamSizeDimension,
+      starpowerDimension,
+      gadgetDimension,
+      gearDimension,
     ],
     defaultDimensionsIds: ['player'],
     metrics: [
       ...playerBrawlerMetrics,
-      battleNumberMetrics.wins,
-      battleNumberMetrics.duration,
-      battleNumberMetrics.rank,
-      battleNumberMetrics.rank1,
-      battleNumberMetrics.trophyChange,
-      battleNumberMetrics.winRate,
-      battleNumberMetrics.winRateAdj,
-      battleNumberMetrics.starRate,
-      battleStringMetrics.starpowerName,
-      battleStringMetrics.gadgetName,
-      battleStringMetrics.gearName,
+      winsMetric,
+      durationMetric,
+      rankMetric,
+      rank1Metric,
+      trophyChangeMetric,
+      winRateMetric,
+      winRateAdjMetric,
+      starRateMetric,
+      starpowerNameMetric,
+      gadgetNameMetric,
+      gearNameMetric,
       // TODO
     ],
     defaultMetricIds: ['picks'],

@@ -88,9 +88,9 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import { commonMetrics } from '~/lib/klicker.conf'
 import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
+import { starRateMetric, useRateMetric, winRateMetric } from '~/lib/klicker.conf'
 
 export default Vue.extend({
   props: {
@@ -193,9 +193,9 @@ export default Vue.extend({
       }
 
       return [
-        [ commonMetrics.useRate.name!, this.$klicker.format(commonMetrics.useRate, (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)) ],
-        [ commonMetrics.starRate.name!, this.data.metrics.starRate ],
-        [ commonMetrics.winRate.name!, this.data.metrics.winRate ],
+        [ useRateMetric.name!, this.$klicker.format(useRateMetric, (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)) ],
+        [ starRateMetric.name!, this.data.metrics.starRate ],
+        [ winRateMetric.name!, this.data.metrics.winRate ],
       ]
     },
     ...mapState({

@@ -38,27 +38,26 @@
           class="text-sm text-center"
         >
           {{ player.metric }}
-          {{ metricName }}
+          {{ $t('metric.trophies') }}
         </p>
       </b-card>
     </b-horizontal-scroller>
 
     <b-button
       slot="actions"
-      :to="localePath(`/leaderboard/${metric}`)"
+      :to="localePath(`/leaderboard/trophies`)"
       primary
       prefetch
       sm
     >
-      {{ $t('action.open.leaderboard.metric', { metric: $t('metric.' + metric) }) }}
+      {{ $t('action.open.leaderboard.metric', { metric: $t('metric.trophies') }) }}
     </b-button>
   </b-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMetrics } from '~/lib/klicker.conf'
-import { capitalize } from '~/lib/util'
+import { trophiesMetric } from '~/lib/klicker.conf'
 import { Leaderboard } from '~/model/Api'
 import { BHorizontalScroller } from '@schneefux/klicker/components'
 
@@ -74,10 +73,6 @@ export default Vue.extend({
     BHorizontalScroller,
   },
   props: {
-    metric: {
-      type: String,
-      default: 'trophies'
-    },
     limit: {
       type: Number,
       default: 3
@@ -94,20 +89,15 @@ export default Vue.extend({
     limit: '$fetch',
   },
   async fetch() {
-    const leaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/' + this.metric)
+    const leaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/trophies')
     this.data = leaderboard.entries
       .slice(0, this.limit)
       .map(e => (<Row>{
         tag: e.tag,
         name: e.name,
         icon: e.icon,
-        metric: this.$klicker.format(commonMetrics[this.metric], e.metric),
+        metric: this.$klicker.format(trophiesMetric, e.metric),
       }))
-  },
-  computed: {
-    metricName(): string {
-      return capitalize(commonMetrics[this.metric].name)
-    },
   },
 })
 </script>

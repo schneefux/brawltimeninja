@@ -71,16 +71,16 @@
 
     <!-- <timezone>Europe/Moscow</timezone> -->
 
-    <query_log remove="remove" />
 <!--
+    <query_log remove="remove" />
+-->
     <query_log>
-     	<database>system</database>
+      <database>system</database>
       <table>query_log</table>
       <partition_by>toYYYYMM(event_date)</partition_by>
-      <ttl>event_date + INTERVAL 30 DAY DELETE</ttl>
+      <ttl>event_date + INTERVAL 1 DAY DELETE</ttl>
       <flush_interval_milliseconds>7500</flush_interval_milliseconds>
     </query_log>
--->
 
     <!-- Trace log. Stores stack traces collected by query profilers.
          See query_profiler_real_time_period_ns and query_profiler_cpu_time_period_ns settings. -->

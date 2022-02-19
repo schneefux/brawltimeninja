@@ -35,7 +35,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MetaGridEntry } from '@schneefux/klicker/types';
-import { commonMetrics } from '~/lib/klicker.conf';
+import { picksMetric, useRateMetric, winRateMetric } from '~/lib/klicker.conf';
 
 export default Vue.extend({
   props: {
@@ -106,9 +106,9 @@ export default Vue.extend({
         return []
       }
       return [
-        [ commonMetrics.picks.name!, this.$klicker.format(commonMetrics.picks, this.modeData.metricsRaw.picks) ],
-        [ commonMetrics.useRate.name!, this.$klicker.format(commonMetrics.useRate, this.modeData.metricsRaw.useRate as number) ],
-        [ commonMetrics.winRate.name!, this.$klicker.format(commonMetrics.winRate, this.modeData.metricsRaw.winRate as number) ],
+        [ picksMetric.name!, this.$klicker.format(picksMetric, this.modeData.metricsRaw.picks) ],
+        [ useRateMetric.name!, this.$klicker.format(useRateMetric, this.modeData.metricsRaw.useRate as number) ],
+        [ winRateMetric.name!, this.$klicker.format(winRateMetric, this.modeData.metricsRaw.winRate as number) ],
         [ 'Viable Maps', this.aboveAverageMaps + '/' + this.mapData.length ],
       ]
     },

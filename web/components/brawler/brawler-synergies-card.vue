@@ -41,7 +41,7 @@ export default defineComponent({
   setup(props) {
     const query: CubeComparingQuery = {
       comparing: true,
-      cubeId: 'synergy',
+      cubeId: 'brawler_allies',
       slices: {
         brawler: [props.brawler.toUpperCase()],
       },

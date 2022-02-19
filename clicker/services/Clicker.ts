@@ -9,10 +9,9 @@ import MapMetaCube from './cubes/MapMetaCube';
 import GadgetMetaCube from './cubes/GadgetMetaCube';
 import StarpowerMetaCube from './cubes/StarpowerMetaCube';
 import LeaderboardCube from './cubes/LeaderboardCube';
-import BrawlerLeaderboardCube from './cubes/BrawlerLeaderboardCube';
-import SynergyMetaCube from './cubes/SynergyCube';
 import PlayerBrawlerCube from './cubes/PlayerBrawlerCube';
 import PlayerBattleCube from './cubes/PlayerBattleCube';
+import Materializer from './Materializer';
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
@@ -28,14 +27,18 @@ export default class ClickerService {
   // readwrite
   private chRw: ClickHouse2;
 
+  /** @deprecated */
   private playerBrawlerCube: PlayerBrawlerCube
+  /** @deprecated */
   private playerBattleCube: PlayerBattleCube
+  /** @deprecated */
   private mapMetaCube: MapMetaCube
+  /** @deprecated */
   private gadgetMetaCube: GadgetMetaCube
+  /** @deprecated */
   private starpowerMetaCube: StarpowerMetaCube
-  private synergyMetaCube: SynergyMetaCube
+  /** @deprecated */
   private leaderboardCube: LeaderboardCube
-  private brawlerLeaderboardCube: BrawlerLeaderboardCube
 
   constructor() {
     this.chRw = new ClickHouse2({
@@ -62,9 +65,7 @@ export default class ClickerService {
     this.mapMetaCube = new MapMetaCube(this.chRo)
     this.gadgetMetaCube = new GadgetMetaCube(this.chRo)
     this.starpowerMetaCube = new StarpowerMetaCube(this.chRo)
-    this.synergyMetaCube = new SynergyMetaCube(this.chRo)
     this.leaderboardCube = new LeaderboardCube(this.chRo)
-    this.brawlerLeaderboardCube = new BrawlerLeaderboardCube(this.chRo)
   }
 
   private insert(sql: string, callback: (error?: Error) => void) {
@@ -96,9 +97,10 @@ export default class ClickerService {
     await this.mapMetaCube.up(this.chRw)
     await this.gadgetMetaCube.up(this.chRw)
     await this.starpowerMetaCube.up(this.chRw)
-    await this.synergyMetaCube.up(this.chRw)
     await this.leaderboardCube.up(this.chRw)
-    await this.brawlerLeaderboardCube.up(this.chRw)
+
+    const materializer = new Materializer(this.chRo, this.chRw)
+    await materializer.up()
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {

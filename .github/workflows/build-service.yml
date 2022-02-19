@@ -20,9 +20,10 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: Replace all references to klicker package
+        name:
         run: |
-          sed -E 's_"klicker": ".*"_"klicker": "github:schneefux/klicker"_g' ./*/package.json
+          echo "@schneefux:registry=https://npm.pkg.github.com" >> ./${{ inputs.service }}/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ./${{ inputs.service }}/.npmrc
       -
         name: Docker meta
         id: meta

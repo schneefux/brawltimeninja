@@ -52,7 +52,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { brawlerId, camelToKebab, slugify } from '@/lib/util'
-import { commonMetrics } from '~/lib/klicker.conf'
+import { picksMetric, useRateMetric, winRateMetric } from '~/lib/klicker.conf'
 
 interface TotalsRow {
   picks_weighted: number
@@ -85,9 +85,9 @@ export default Vue.extend({
     },
     table(): string[][] {
       return [
-        [ this.$tc('metric.picks'), this.$klicker.format(commonMetrics.picks, this.row.metricsRaw.picks) ],
-        [ this.$tc('metric.useRate'), this.$klicker.format(commonMetrics.useRate, this.useRate) ],
-        [ this.$tc('metric.winRate'), this.$klicker.format(commonMetrics.winRate, this.row.metricsRaw.winRate) ],
+        [ this.$tc('metric.picks'), this.$klicker.format(picksMetric, this.row.metricsRaw.picks) ],
+        [ this.$tc('metric.useRate'), this.$klicker.format(useRateMetric, this.useRate) ],
+        [ this.$tc('metric.winRate'), this.$klicker.format(winRateMetric, this.row.metricsRaw.winRate) ],
       ]
     },
     brawlerId(): string {

@@ -45,7 +45,7 @@
 import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { brawlerId as getBrawlerId, camelToKebab, slugify } from '@/lib/util'
-import { commonMetrics } from '~/lib/klicker.conf'
+import { useRateMetric } from '~/lib/klicker.conf'
 import { BCard } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -106,7 +106,7 @@ export default defineComponent({
       }
       return [
         [ i18n.tc('metric.picks'), data.value.metrics.picks ],
-        [ i18n.tc('metric.useRate'), $klicker.format(commonMetrics.useRate, useRate.value) ],
+        [ i18n.tc('metric.useRate'), $klicker.format(useRateMetric, useRate.value) ],
         [ i18n.tc('metric.winRate'), data.value.metrics.winRate ],
       ]
     })

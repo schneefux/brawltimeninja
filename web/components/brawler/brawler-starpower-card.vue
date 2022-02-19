@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { commonMetrics } from '~/lib/klicker.conf'
+import { winRateMetric } from '~/lib/klicker.conf'
 import { capitalize, scaleInto } from '~/lib/util'
 
 export default Vue.extend({
@@ -74,8 +74,8 @@ export default Vue.extend({
       }
 
       return [
-        [ 'No ' + this.formatKind + ' ' + commonMetrics.winRate.name, this.$klicker.format(commonMetrics.winRate, this.withoutWinRate) ],
-        [ this.formatName + ' ' + commonMetrics.winRate.name, this.$klicker.format(commonMetrics.winRate, this.winRate) ],
+        [ 'No ' + this.formatKind + ' ' + winRateMetric.name, this.$klicker.format(winRateMetric, this.withoutWinRate) ],
+        [ this.formatName + ' ' + winRateMetric.name, this.$klicker.format(winRateMetric, this.winRate) ],
       ]
     },
     gameFileDescription(): string {
