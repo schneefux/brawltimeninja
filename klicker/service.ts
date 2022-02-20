@@ -1,4 +1,4 @@
-import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService } from "./types"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService, CubeQueryConfiguration } from "./types"
 import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -34,6 +34,8 @@ function generateQueryParams(o: Record<string, (string|number|undefined)[]>, pre
       .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
   )
 }
+
+class CubeDoesNotMatchQueryError extends Error {}
 
 export default class Klicker implements KlickerService {
   private cubejsApi: CubejsApi
@@ -101,87 +103,146 @@ export default class Klicker implements KlickerService {
     return m.name || m.id
   }
 
+  // TODO on startup, validate that materializations are a subset of their parent
+  private validateCube(query: CubeQuery, cube: Cube): CubeQueryConfiguration {
+    // sort-id may either refer to a metric or a dimension
+    const sortSpecial = ['difference', 'pvalue'].includes(query.sortId)
+    const sortId = sortSpecial ? query.metricsIds[0] : query.sortId
+    const sortMetric = cube.metrics
+      .find(m => sortId == m.id)
+    const sortDimension = cube.dimensions
+      .find(d => sortId == d.id)
+    if (sortMetric == undefined && sortDimension == undefined) {
+      throw new CubeDoesNotMatchQueryError('Invalid sort id ' + query.sortId)
+    }
+    const dimensions = query.dimensionsIds.map(id => {
+      const dimension = cube.dimensions.find(d => id == d.id)
+      if (dimension == undefined) {
+        throw new CubeDoesNotMatchQueryError('Invalid dimension id ' + id)
+      }
+      return dimension
+    })
+
+    const metrics = query.metricsIds.map(id => {
+      const metric = cube.metrics.find(d => id == d.id)
+      if (metric == undefined) {
+        throw new CubeDoesNotMatchQueryError('Invalid metrics id ' + id)
+      }
+      return metric
+    })
+
+    const slices = Object.entries({
+      ...cube.defaultSliceValues,
+      ...query.slices,
+    }).filter(([id, values]) => {
+      if (!Array.isArray(values)) {
+        throw new Error('Slice ' + id + ' must be an array')
+      }
+      return values.filter(v => v != undefined).length > 0
+    }).map(([id, values]) => {
+      const slice = cube.slices.find(s => s.id == id)
+      if (slice == undefined) {
+        throw new CubeDoesNotMatchQueryError('Could not find slice ' + id + ' in cube ' + cube.id)
+      }
+      const config = slice.config
+      return <Filter>{
+        member: cube.id + '.' + config.member,
+        operator: config.operator,
+        values: (<string[]>values.filter(v => v != undefined)).map(v => {
+          // TODO fix typing - these are not always strings (templates are not type checked)
+          if (v.toString() == 'true') {
+            return '1'
+          }
+          if (v.toString() == 'false') {
+            return '0'
+          }
+          return v.toString()
+        }),
+      }
+    })
+
+    return {
+      cube,
+      sortMetric,
+      sortDimension,
+      dimensions,
+      metrics,
+      slices,
+    }
+  }
+
+  public findCubeQueryConfiguration(query: CubeQuery) {
+    const desiredConfig = this.validateCube(query, this.config[query.cubeId])
+
+    if (process.env.NODE_ENV == 'development') {
+      let bestConfig: CubeQueryConfiguration|undefined
+      let minCubeCardinality = Infinity
+      let matchedCubeIsAtRootLevel = true
+
+      let materializations = Object.values(this.config)
+      const errors: string[] = []
+
+      for (const materialization of materializations ?? []) {
+        try {
+          const config = this.validateCube(query, materialization)
+          const cubeCardinality = config.cube.dimensions.length
+          if (cubeCardinality < minCubeCardinality) {
+            bestConfig = config
+            minCubeCardinality = cubeCardinality
+            bestConfig.cube.materializations?.forEach(m => materializations.push(m))
+            matchedCubeIsAtRootLevel = false
+          }
+        } catch (err) {
+          if (!(err instanceof CubeDoesNotMatchQueryError)) {
+            throw err
+          } else {
+            errors.push('cube ' + materialization.id + ' did not match: ' + err.message)
+          }
+        }
+      }
+
+      if (bestConfig == undefined) {
+        throw new Error('No cube could match this query ' + JSON.stringify({ errors, query }, null, 2))
+      }
+
+      if (desiredConfig.cube.id != bestConfig.cube.id) {
+        if (bestConfig.dimensions.length == bestConfig.cube.dimensions.length) {
+          console.log('consider a different cubeId, found perfect materialization', bestConfig.cube.id, { query })
+        } else {
+          if (matchedCubeIsAtRootLevel) {
+            console.log('found a different cube but no materialization, is this the right cubeId?', bestConfig.cube.id, { query })
+          } else {
+            console.log('consider a different cubeId, found materialization', bestConfig.cube.id, { query })
+          }
+        }
+      }
+    }
+
+    return desiredConfig
+  }
+
   /**
    * @param query Query specification
    * @param filter Filter to apply after client-side joins and transformations
    */
   public async query(query: CubeQuery, filter?: CubeQueryFilter): Promise<CubeResponse> {
-    if (!(query.cubeId in this.config)) {
-      throw 'Invalid cubeId ' + query.cubeId
-    }
-
-    const cube = this.config[query.cubeId]
-    // sort-id may either refer to a metric or a dimension
-    const sortMetric = cube.metrics
-      .find(m => query.sortId == m.id)
-    const sortDimension = cube.dimensions
-      .find(d => query.sortId == d.id)
-    if (sortMetric == undefined && sortDimension == undefined) {
-      throw new Error('Invalid sort id ' + query.sortId)
-    }
-    const dimensions = query.dimensionsIds
-      .map(id => {
-        const dimension = cube.dimensions.find(d => id == d.id)
-        if (dimension == undefined) throw new Error('Invalid dimension id ' + id)
-        return dimension
-      })
-
-    const metrics = query.metricsIds
-      .map(id => {
-        const metric = cube.metrics.find(d => id == d.id)
-        if (metric == undefined) throw new Error('Invalid metrics id ' + id)
-        return metric
-      })
-
-    function mapSlices(slices: SliceValue) {
-      return Object.entries({
-          ...cube.defaultSliceValues,
-          ...slices,
-        })
-        .filter(([id, values]) => {
-          if (!Array.isArray(values)) {
-            throw new Error('Slice ' + id + ' must be an array')
-          }
-          return values.filter(v => v != undefined).length > 0
-        })
-        .map(([id, values]) => {
-          const slice = cube.slices.find(s => s.id == id)
-          if (slice == undefined) {
-            throw new Error('Could not find slice ' + id + ' in cube ' + cube.id)
-          }
-          const config = slice.config
-          return <Filter>{
-            member: cube.id + '.' + config.member,
-            operator: config.operator,
-            values: (<string[]>values.filter(v => v != undefined)).map(v => {
-              // TODO fix typing - these are not always strings (templates are not type checked)
-              if (v.toString() == 'true') {
-                return '1'
-              }
-              if (v.toString() == 'false') {
-                return '0'
-              }
-              return v.toString()
-            }),
-          }
-        })
-    }
+    const config = this.findCubeQueryConfiguration(query)
 
     const metricsIds = (<string[]>[]).concat(
-      metrics.map(m => m.id),
-      query.confidenceInterval ? metrics.flatMap(m => m.statistics?.ci?.requiresMetrics || []) : [],
-      dimensions.flatMap(d => d.additionalMetrics),
+      config.metrics.map(m => m.id),
+      query.confidenceInterval ? config.metrics.flatMap(m => m.statistics?.ci?.requiresMetrics ?? []) : [],
+      config.dimensions.flatMap(d => d.additionalMetrics),
     )
-    const queryMetrics = metricsIds.map(id => `${cube.id}.${id}_measure`)
-    const queryDimensions = dimensions.map(d => cube.id + '.' + d.id + '_dimension')
+    const queryMetrics = metricsIds.map(id => `${config.cube.id}.${id}_measure`)
+    const queryDimensions = config.dimensions.map(d => config.cube.id + '.' + d.id + '_dimension')
 
-    const queryOrder = sortMetric ? <TQueryOrderObject>{
-      [cube.id + '.' + sortMetric.id + '_measure']: sortMetric.sign == +1 ? 'asc' : 'desc',
+    const queryOrder = config.sortMetric ? <TQueryOrderObject>{
+      [config.cube.id + '.' + config.sortMetric.id + '_measure']: config.sortMetric.sign == +1 ? 'asc' : 'desc',
     } : <TQueryOrderObject>{
-      [cube.id + '.' + sortDimension!.id + '_dimension']: 'desc',
+      [config.cube.id + '.' + config.sortDimension!.id + '_dimension']: 'desc',
     }
 
-    const querySlices = mapSlices(query.slices)
+    const querySlices = config.slices
 
     const rawData = await this.cubejsApi.load({
       measures: queryMetrics,
@@ -191,7 +252,7 @@ export default class Klicker implements KlickerService {
       limit: query.limit,
     })
 
-    let data = this.mapToMetaGridEntry(cube, dimensions, metrics, rawData)
+    let data = this.mapToMetaGridEntry(config.cube, config.dimensions, config.metrics, rawData)
 
     if (filter != undefined) {
       data = data.filter(filter)
@@ -209,42 +270,37 @@ export default class Klicker implements KlickerService {
    * @param filter Filter to apply after client-side joins and transformations
    */
   public async comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse> {
-    // validate cube
-    if (!(query.cubeId in this.config)) {
-      throw 'Invalid cubeId ' + query.cubeId
-    }
-    // TODO should comparisons across different cubeIds be allowed? if not -> push cubeId up
-    if (!(query.reference.cubeId in this.config)) {
-      throw 'Invalid reference cubeId ' + query.reference.cubeId
-    }
-
     // validate dimensions
     if (!query.reference.dimensionsIds.every(d => query.dimensionsIds.includes(d))) {
       throw new Error('Reference dataset must match or aggregate test dataset')
     }
 
-    const cube = this.config[query.cubeId]
-
     // validate metric
-    const comparingMetric = cube.metrics.find(m => m.id == query.metricsIds[0])
-    if (comparingMetric == undefined) {
-      throw new Error(`Invalid comparison, missing ${query.metricsIds[0]} in test cube`)
+    if (query.metricsIds.length != 1) {
+      throw new Error('Can only compare queries with a single metric, test query has too many metrics')
     }
-    const testCube = this.config[query.reference.cubeId]
-    if (!testCube.metrics.some(m => m.id == query.metricsIds[0])) {
-      throw new Error(`Invalid comparison, missing ${query.metricsIds[0]} in reference cube`)
+    if (query.reference.metricsIds.length != 1) {
+      throw new Error('Can only compare queries with a single metric, reference query has too many metrics')
+    }
+
+    const cube = this.findCubeQueryConfiguration(query)
+    const referenceCube = this.findCubeQueryConfiguration(query.reference)
+
+    const comparingMetricId = query.metricsIds[0]
+    const comparingMetric = cube.metrics.find(m => m.id == comparingMetricId)
+    if (comparingMetric == undefined) {
+      throw new Error(`Invalid comparison, missing ${comparingMetricId} in test cube`)
+    }
+    if (!referenceCube.metrics.some(m => m.id == comparingMetricId)) {
+      throw new Error(`Invalid comparison, missing ${comparingMetricId} in reference cube`)
     }
     if (comparingMetric.type != 'quantitative') {
       throw new Error(`Only quantitative metrics can be compared, ${comparingMetric.id} is ${comparingMetric.type}`)
     }
 
     // validate sortId
-    const sortMetric = cube.metrics
-      .find(m => query.sortId == m.id)
-    const sortDimension = cube.dimensions
-      .find(d => query.sortId == d.id)
     const sortSpecial = ['difference', 'pvalue'].includes(query.sortId)
-    if (sortMetric == undefined && sortDimension == undefined && !sortSpecial) {
+    if (cube.sortMetric == undefined && cube.sortDimension == undefined && !sortSpecial) {
       throw new Error('Invalid sort id ' + query.sortId)
     }
     if (query.sortId == 'pvalue' && comparingMetric.statistics?.test == undefined) {
@@ -252,10 +308,10 @@ export default class Klicker implements KlickerService {
     }
 
     // execute both queries
-    const metricsIds = [query.metricsIds[0], ...(comparingMetric.statistics?.test?.requiresMetrics || [])]
+    const metricsIds = [comparingMetricId, ...(comparingMetric.statistics?.test?.requiresMetrics || [])]
     const partialQuery = {
       metricsIds,
-      sortId: query.metricsIds[0],
+      sortId: comparingMetricId,
     }
 
     const referenceResponse = await this.query({

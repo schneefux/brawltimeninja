@@ -1,11 +1,9 @@
+import { Filter } from "@cubejs-client/core"
 import { Location, Route } from "vue-router"
 
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
-export const asDimensions = <T>(et: { [K in keyof T]: Dimension }) => et
-export const asNumberMetrics = <T>(et: { [K in keyof T]: Metric<number> }) => et
-export const asStringMetrics = <T>(et: { [K in keyof T]: Metric<string> }) => et
 export const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
 
 export type ValueTypeNumber = 'quantitative'|'ordinal'
@@ -17,21 +15,33 @@ export type OperatorType = 'equals'|'notEquals'|'contains'|'notContains'|'gt'|'g
 export type FormatType = 'duration'|'y/n'|'formatMode'|string // or date format or d3-format spec
 
 export interface Cube {
+  name: string
+  /**
+   * cube.js ID
+   */
   id: string
   table: string
-  name: string
-  hidden?: boolean
   dimensions: Dimension[]
-  defaultDimensionsIds: string[]
   metrics: Metric<any>[]
-  defaultMetricIds: string[]
   slices: Slice[]
-  defaultSliceValues: SliceValue
+  materializations?: Cube[]
   /**
-   * deprecate
+   * ids
+   * @deprecated
    */
-  // ids
   metaMetrics: string[]
+  /**
+   * @deprecated
+   */
+  defaultDimensionsIds: string[]
+  /**
+   * @deprecated
+   */
+  defaultMetricIds: string[]
+  /**
+   * @deprecated
+   */
+  defaultSliceValues: SliceValue
 }
 
 /**
@@ -39,6 +49,11 @@ export interface Cube {
  * with id `${id}_measure`.
  */
 export interface Metric<T=string|number> {
+  /**
+   * Globally unique metric identifier.
+   * Across all cubes, every metric with this ID must have the same meaning to the user.
+   * Used as cube.js ID.
+   */
   id: string
   type: T extends string ? ValueTypeString : ValueTypeNumber
   // TODO move all `name`s to en.json
@@ -81,6 +96,11 @@ export interface Metric<T=string|number> {
  * with id `${id}_dimension`.
  */
 export interface Dimension {
+  /**
+   * Globally unique dimension identifier.
+   * Across all cubes, every dimension with this ID must have the same meaning to the user.
+   * Used as cube.js ID.
+   */
   id: string
   // TODO move all `name`s to en.json
   name?: string
@@ -224,6 +244,9 @@ export interface CubeComparingResponse extends AbstractCubeResponse<CubeComparin
   kind: 'comparingResponse'
 }
 
+/**
+ * Serializable CubeQueryConfiguration
+ */
 export interface CubeQuery {
   cubeId: string
   slices: SliceValue
@@ -244,6 +267,15 @@ export interface CubeComparingQuery extends CubeQuery {
 }
 
 export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
+
+export interface CubeQueryConfiguration {
+  cube: Cube
+  sortMetric?: Metric<any>
+  sortDimension?: Dimension
+  dimensions: Dimension[]
+  metrics: Metric[]
+  slices: Filter[]
+}
 
 export interface Report {
   id: number|undefined
@@ -325,4 +357,10 @@ export interface KlickerService {
 
   convertSlicesToLocation(slices: SliceValue): Location
   convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue
+
+  /**
+   * Return the full query configuration for the cube
+   * with the smallest cardinality that can respond to the query.
+   */
+  findCubeQueryConfiguration(query: CubeQuery): CubeQueryConfiguration
 }

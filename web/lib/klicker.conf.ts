@@ -1,5 +1,4 @@
-import { asSlice, Cube, SliceValue, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
-// @ts-ignore
+import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
 import { ChiSquared } from 'sampson'
 
 /* c&p from util */
@@ -13,6 +12,7 @@ export function getSeasonEnd(timestamp: Date) {
 
 const monthAgo = new Date()
 monthAgo.setMonth(monthAgo.getMonth() - 1)
+const currentSeason = getSeasonEnd(monthAgo).toISOString().slice(0, 10)
 
 /**
  * Calculate $m.useRate / sum($m.useRate over all dimensions except brawler)
@@ -1585,10 +1585,6 @@ const brawlerBattleSlices = [
   commonSlices.notBrawler,
 ]
 
-const brawlerBattleDefaultSliceValues: SliceValue = {
-  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
-}
-
 const playerBrawlerDimensions = [
   seasonDimension,
   timestampDimension,
@@ -1650,288 +1646,239 @@ const playerBrawlerSlices = [
   commonSlices.powerLte,
 ]
 
-const playerBrawlerDefaultSliceValues = {
-  playerId: [],
-  playerName: [],
-  season: [getSeasonEnd(monthAgo).toISOString().slice(0, 10)],
-  trophies: [],
-  brawlerId: [],
-  brawlerName: [],
+const mapCube: Cube = {
+  id: 'map',
+  table: 'map_meta',
+  name: 'Map',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    modeDimension,
+    mapDimension,
+    powerplayDimension,
+  ],
+  defaultDimensionsIds: ['brawler'],
+  metrics: [
+    ...brawlerBattleMetrics,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.mode,
+    commonSlices.map,
+    commonSlices.id,
+    commonSlices.mapLike,
+    commonSlices.mapNotLike,
+    commonSlices.powerplay,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const starpowerCube: Cube = {
+  id: 'starpower',
+  table: 'starpower_meta',
+  name: 'Star Power',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    brawlerIdDimension,
+    starpowerDimension,
+  ],
+  defaultDimensionsIds: ['brawler', 'starpower'],
+  metrics: [
+    ...brawlerBattleMetrics,
+    starpowerNameMetric,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.starpowerIdEq,
+    commonSlices.starpowerIdNeq,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const gadgetCube: Cube = {
+  id: 'gadget',
+  table: 'gadget_meta',
+  name: 'Gadget',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    brawlerIdDimension,
+    gadgetDimension,
+  ],
+  defaultDimensionsIds: ['brawler', 'gadget'],
+  metrics: [
+    ...brawlerBattleMetrics,
+    gadgetNameMetric,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.gadgetIdEq,
+    commonSlices.gadgetIdNeq,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const brawlerAlliesCube: Cube = {
+  id: 'brawlerAllies',
+  table: 'brawler_allies_mv',
+  name: 'Synergies',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    brawlerIdDimension,
+    allyDimension,
+    allyIdDimension,
+    modeDimension,
+    mapDimension,
+  ],
+  defaultDimensionsIds: ['brawler'],
+  metrics: [
+    winRateSumMergedMetric,
+    picksMergedMetric,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.mode,
+    commonSlices.map,
+    commonSlices.brawlerId,
+    commonSlices.ally,
+    commonSlices.allyId,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const brawlerEnemiesCube: Cube = {
+  id: 'brawlerEnemies',
+  table: 'brawler_enemies_mv',
+  name: 'Weaknesses',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    brawlerIdDimension,
+    enemyDimension,
+    enemyIdDimension,
+    modeDimension,
+    mapDimension,
+  ],
+  defaultDimensionsIds: ['brawler'],
+  metrics: [
+    winRateSumMergedMetric,
+    picksMergedMetric,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.mode,
+    commonSlices.map,
+    commonSlices.brawlerId,
+    commonSlices.enemy,
+    commonSlices.enemyId,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const battleCube: Cube = {
+  id: 'battle',
+  table: 'battle',
+  name: 'Battles',
+  dimensions: [
+    ...playerBrawlerDimensions,
+    modeDimension,
+    mapDimension,
+    powerplayDimension,
+    teamDimension,
+    teamSizeDimension,
+    starpowerDimension,
+    gadgetDimension,
+    gearDimension,
+  ],
+  defaultDimensionsIds: ['player'],
+  metrics: [
+    ...playerBrawlerMetrics,
+    winsMetric,
+    durationMetric,
+    rankMetric,
+    rank1Metric,
+    trophyChangeMetric,
+    winRateMetric,
+    winRateAdjMetric,
+    starRateMetric,
+    starpowerNameMetric,
+    gadgetNameMetric,
+    gearNameMetric,
+    // TODO
+  ],
+  defaultMetricIds: ['picks'],
+  metaMetrics: ['timestamp', 'picks'],
+  slices: [
+    ...playerBrawlerSlices,
+    commonSlices.mode,
+    commonSlices.teamSizeGt,
+    commonSlices.teamContains,
+    commonSlices.map,
+    commonSlices.mapLike,
+    commonSlices.mapNotLike,
+    commonSlices.powerplay,
+    brawlerSlices.starpowerIdEq,
+    brawlerSlices.starpowerIdNeq,
+    brawlerSlices.starpowersLength,
+    brawlerSlices.gadgetIdEq,
+    brawlerSlices.gadgetIdNeq,
+    brawlerSlices.gadgetsLength,
+    brawlerSlices.gearIdEq,
+    brawlerSlices.gearIdNeq,
+    brawlerSlices.gearsLength,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
+}
+
+const brawlerCube: Cube = {
+  id: 'brawler',
+  table: 'brawler',
+  name: 'Raw Brawlers',
+  dimensions: [
+    ...playerBrawlerDimensions,
+  ],
+  defaultDimensionsIds: ['player'],
+  metrics: [
+    ...playerBrawlerMetrics,
+  ],
+  defaultMetricIds: ['picks'],
+  metaMetrics: ['timestamp'],
+  slices: [
+    ...playerBrawlerSlices,
+  ],
+  defaultSliceValues: {
+    season: [currentSeason],
+  },
 }
 
 const cubes: Record<string, Cube> = {
-  map: {
-    id: 'map',
-    table: 'map_meta',
-    name: 'Map',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      modeDimension,
-      mapDimension,
-      powerplayDimension,
-    ],
-    defaultDimensionsIds: ['brawler'],
-    metrics: [
-      ...brawlerBattleMetrics,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.mode,
-      commonSlices.map,
-      commonSlices.id,
-      commonSlices.mapLike,
-      commonSlices.mapNotLike,
-      commonSlices.powerplay,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-    },
-  },
-  starpower: {
-    id: 'starpower',
-    table: 'starpower_meta',
-    name: 'Star Power',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      brawlerIdDimension,
-      starpowerDimension,
-    ],
-    defaultDimensionsIds: ['brawler', 'starpower'],
-    metrics: [
-      ...brawlerBattleMetrics,
-      starpowerNameMetric,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.starpowerIdEq,
-      commonSlices.starpowerIdNeq,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-      starpowerIdNeq: ['0'],
-    },
-  },
-  gadget: {
-    id: 'gadget',
-    table: 'gadget_meta',
-    name: 'Gadget',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      brawlerIdDimension,
-      gadgetDimension,
-    ],
-    defaultDimensionsIds: ['brawler', 'gadget'],
-    metrics: [
-      ...brawlerBattleMetrics,
-      gadgetNameMetric,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.gadgetIdEq,
-      commonSlices.gadgetIdNeq,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-      gadgetIdNeq: ['0'],
-    },
-  },
-  gear: {
-    id: 'gear',
-    table: 'gear_meta',
-    name: 'Gear',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      gearDimension,
-    ],
-    defaultDimensionsIds: ['gear'],
-    metrics: [
-      ...brawlerBattleMetrics,
-      gearNameMetric,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.gearIdEq,
-      commonSlices.gearIdNeq,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-      gearIdNeq: ['0'],
-    },
-  },
-  brawlerAllies: {
-    id: 'brawlerAllies',
-    table: 'brawler_allies_mv',
-    name: 'Synergies',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      brawlerIdDimension,
-      allyDimension,
-      allyIdDimension,
-      modeDimension,
-      mapDimension,
-    ],
-    defaultDimensionsIds: ['brawler'],
-    metrics: [
-      winRateSumMergedMetric,
-      picksMergedMetric,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.mode,
-      commonSlices.map,
-      commonSlices.brawlerId,
-      commonSlices.ally,
-      commonSlices.allyId,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-    },
-  },
-  brawlerEnemies: {
-    id: 'brawlerEnemies',
-    table: 'brawler_enemies_mv',
-    name: 'Weaknesses',
-    dimensions: [
-      ...brawlerBattleDimensions,
-      brawlerIdDimension,
-      enemyDimension,
-      enemyIdDimension,
-      modeDimension,
-      mapDimension,
-    ],
-    defaultDimensionsIds: ['brawler'],
-    metrics: [
-      winRateSumMergedMetric,
-      picksMergedMetric,
-    ],
-    defaultMetricIds: ['winRateAdj'],
-    metaMetrics: ['picks', 'timestamp'],
-    slices: [
-      ...brawlerBattleSlices,
-      commonSlices.mode,
-      commonSlices.map,
-      commonSlices.brawlerId,
-      commonSlices.enemy,
-      commonSlices.enemyId,
-    ],
-    defaultSliceValues: {
-      ...brawlerBattleDefaultSliceValues,
-    },
-  },
-  player: {
-    id: 'leaderboard',
-    table: 'leaderboard',
-    name: 'Leaderboard',
-    hidden: true,
-    dimensions: [
-      playerDimension,
-    ],
-    defaultDimensionsIds: ['player'],
-    metrics: [
-      timestampMetric,
-      playerNameMetric,
-      playerIconMetric,
-      expPointsMetric,
-      victoriesMetric,
-      soloVictoriesMetric,
-      duoVictoriesMetric,
-    ],
-    defaultMetricIds: ['victories'],
-    metaMetrics: ['timestamp'],
-    slices: [
-      commonSlices.timestamp,
-    ],
-    defaultSliceValues: {
-    },
-  },
-  brawler: {
-    id: 'brawler',
-    table: 'brawler',
-    name: 'Raw Brawlers',
-    hidden: true,
-    dimensions: [
-      ...playerBrawlerDimensions,
-    ],
-    defaultDimensionsIds: ['player'],
-    metrics: [
-      ...playerBrawlerMetrics,
-    ],
-    defaultMetricIds: ['picks'],
-    metaMetrics: ['timestamp'],
-    slices: [
-      ...playerBrawlerSlices,
-    ],
-    defaultSliceValues: {
-      ...playerBrawlerDefaultSliceValues,
-    },
-  },
-  battle: {
-    id: 'battle',
-    table: 'battle',
-    name: 'Raw Battles',
-    hidden: true,
-    dimensions: [
-      ...playerBrawlerDimensions,
-      modeDimension,
-      mapDimension,
-      powerplayDimension,
-      teamDimension,
-      teamSizeDimension,
-      starpowerDimension,
-      gadgetDimension,
-      gearDimension,
-    ],
-    defaultDimensionsIds: ['player'],
-    metrics: [
-      ...playerBrawlerMetrics,
-      winsMetric,
-      durationMetric,
-      rankMetric,
-      rank1Metric,
-      trophyChangeMetric,
-      winRateMetric,
-      winRateAdjMetric,
-      starRateMetric,
-      starpowerNameMetric,
-      gadgetNameMetric,
-      gearNameMetric,
-      // TODO
-    ],
-    defaultMetricIds: ['picks'],
-    metaMetrics: ['timestamp', 'picks'],
-    slices: [
-      ...playerBrawlerSlices,
-      commonSlices.mode,
-      commonSlices.teamSizeGt,
-      commonSlices.teamContains,
-      commonSlices.map,
-      commonSlices.mapLike,
-      commonSlices.mapNotLike,
-      commonSlices.powerplay,
-      brawlerSlices.starpowerIdEq,
-      brawlerSlices.starpowerIdNeq,
-      brawlerSlices.starpowersLength,
-      brawlerSlices.gadgetIdEq,
-      brawlerSlices.gadgetIdNeq,
-      brawlerSlices.gadgetsLength,
-      brawlerSlices.gearIdEq,
-      brawlerSlices.gearIdNeq,
-      brawlerSlices.gearsLength,
-    ],
-    defaultSliceValues: {
-      ...playerBrawlerDefaultSliceValues,
-    },
-  },
+  brawler: brawlerCube,
+  battle: battleCube,
+  // the queries for these are slightly different from battle, so they are no materializations
+  map: mapCube, // takes allies into account for the statistics
+  gadget: gadgetCube, // excludes 0 gadgets
+  starpower: starpowerCube, // excludes 0 starpowers
+  brawlerAllies: brawlerAlliesCube, // joins allies
+  brawlerEnemies: brawlerEnemiesCube, // joins enemies
 }
 
 export default cubes

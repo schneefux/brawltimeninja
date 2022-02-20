@@ -7,44 +7,15 @@ export const useCubeResponse = (response: Ref<CubeResponse|CubeComparingResponse
 
   const comparing = computed(() => response.value.query.comparing == true)
 
-  const metrics = computed(() => {
-    const query = response.value.query
+  const config = computed(() => $klicker.findCubeQueryConfiguration(response.value.query))
 
-    return query.metricsIds.map(id => {
-      if (!(query.cubeId in $klicker.config)) {
-        throw 'Invalid cubeId ' + query.cubeId
-      }
+  const metrics = computed(() => config.value.metrics)
 
-      const cube = $klicker.config[query.cubeId]
-      const metric = cube.metrics.find(d => id == d.id)
-      if (metric == undefined) {
-        throw new Error('Invalid metric id ' + id)
-      }
-
-      return metric
-    })
-  })
-
-  const dimensions = computed(() => {
-    const query = response.value.query
-
-    return query.dimensionsIds
-      .map(id => {
-        if (!(query.cubeId in $klicker.config)) {
-          throw 'Invalid cubeId ' + query.cubeId
-        }
-
-        const cube = $klicker.config[query.cubeId]
-        const dimension = cube.dimensions.find(d => id == d.id)
-        if (dimension == undefined) {
-          throw new Error('Invalid dimension id ' + id)
-        }
-
-        return dimension
-      })
+  const dimensions = computed(() => config.value.dimensions
       // for nested dimensions, return only the lowest level
-      .filter(dimension => dimension.childIds == undefined || !query.dimensionsIds.some(id => dimension.childIds!.includes(id)))
-  })
+      // TODO I don't remember why
+      .filter(dimension => dimension.childIds == undefined || !response.value.query.dimensionsIds.some(id => dimension.childIds!.includes(id)))
+  )
 
   // helper method for typed case differentiation
   const switchResponse = <R1, R2>(
