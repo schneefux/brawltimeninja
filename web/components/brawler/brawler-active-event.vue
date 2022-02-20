@@ -44,7 +44,7 @@
 <script lang="ts">
 import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
-import { brawlerId as getBrawlerId, camelToKebab, slugify } from '@/lib/util'
+import { brawlerId as getBrawlerId } from '@/lib/util'
 import { useRateMetric } from '~/lib/klicker.conf'
 import { BCard } from '@schneefux/klicker/components'
 
@@ -77,7 +77,7 @@ export default defineComponent({
   setup(props) {
     const { $klicker, i18n } = useContext()
 
-    const data = useAsync(async () => {
+    const dataEntry = useAsync(async () => {
       const data = await $klicker.query({
         cubeId: 'map',
         slices: {
@@ -92,7 +92,7 @@ export default defineComponent({
       return data.data.filter(e => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())[0]
     })
 
-    const useRate = computed(() => data.value?.metricsRaw?.useRate as number || 0)
+    const useRate = computed(() => dataEntry.value?.metricsRaw?.useRate as number || 0)
     const timeTillEnd = computed(() => {
       if (props.end == undefined) {
         return ''
@@ -101,24 +101,21 @@ export default defineComponent({
     })
 
     const table = computed(() => {
-      if (data.value == undefined) {
+      if (dataEntry.value == undefined) {
         return []
       }
       return [
-        [ i18n.tc('metric.picks'), data.value.metrics.picks ],
+        [ i18n.tc('metric.picks'), dataEntry.value.metrics.picks ],
         [ i18n.tc('metric.useRate'), $klicker.format(useRateMetric, useRate.value) ],
-        [ i18n.tc('metric.winRate'), data.value.metrics.winRate ],
+        [ i18n.tc('metric.winRate'), dataEntry.value.metrics.winRate ],
       ]
     })
 
     const brawlerId = computed(() => getBrawlerId({ name: props.brawlerName }))
 
     return {
-      data,
       timeTillEnd,
       table,
-      camelToKebab,
-      slugify,
       brawlerId,
     }
   },
