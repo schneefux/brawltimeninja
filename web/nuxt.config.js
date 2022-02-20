@@ -229,7 +229,16 @@ export default {
       code: 'es',
       iso: 'es-ES',
       file: 'index.js',
-    }],
+    },
+    ...(process.env.TRADUORA_PROJECT_ID != '' ? [{
+      code: 'ru',
+      iso: 'ru-RU',
+      file: 'index.js',
+    }, {
+      code: 'uk',
+      iso: 'uk-UA',
+      file: 'index.js',
+    }] : [])],
     lazy: true,
     langDir: 'lang/',
     defaultLocale: 'en',
