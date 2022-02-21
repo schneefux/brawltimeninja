@@ -238,6 +238,10 @@ export default {
       code: 'uk',
       iso: 'uk-UA',
       file: 'index.js',
+    }, {
+      code: 'nl_NL',
+      iso: 'nl-NL',
+      file: 'index.js',
     }] : [])],
     lazy: true,
     langDir: 'lang/',
