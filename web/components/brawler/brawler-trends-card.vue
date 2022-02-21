@@ -1,5 +1,5 @@
 <template>
-  <scrolling-dashboard>
+  <b-scrolling-dashboard>
     <c-dashboard-cell :rows="2" :columns="4" hide-empty>
       <map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()] }"
@@ -27,7 +27,7 @@
         no-compare
       ></map-trend-chart>
     </c-dashboard-cell>
-  </scrolling-dashboard>
+  </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">

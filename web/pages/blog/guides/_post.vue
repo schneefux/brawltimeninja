@@ -1,9 +1,9 @@
 <template>
-  <page class="flex justify-center">
+  <b-page class="flex justify-center">
     <article-card
       :document="post"
     ></article-card>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

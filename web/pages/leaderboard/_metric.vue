@@ -1,5 +1,5 @@
 <template>
-  <page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
+  <b-page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
     <p>{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
 
     <client-only>
@@ -57,7 +57,7 @@
         ins-class="ad-section"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

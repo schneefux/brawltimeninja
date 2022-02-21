@@ -44,7 +44,7 @@
           >
             <map-best-brawlers-table
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'brawlers'),
+                callback: makeVisibilityCallback('brawlers'),
                 once: true,
               }"
               :id="id"
@@ -60,7 +60,7 @@
           >
             <map-best-teams-table
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'teams'),
+                callback: makeVisibilityCallback('teams'),
                 once: true,
               }"
               :id="id"
@@ -85,7 +85,7 @@
             :id="id"
             :slices="query.slices"
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'charts'),
+              callback: makeVisibilityCallback('charts'),
               once: true,
             }"
           ></map-balance-chart>
@@ -140,7 +140,7 @@
           >
             <map-best-players-table
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'leaderboard'),
+                callback: makeVisibilityCallback('leaderboard'),
                 once: true,
               }"
               :id="id"
@@ -176,7 +176,7 @@
             <map-best-accessory-table
               key="starpowers-table"
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'starpowers'),
+                callback: makeVisibilityCallback('starpowers'),
                 once: true,
               }"
               :id="id"
@@ -187,7 +187,7 @@
 
           <map-insights
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'insights'),
+              callback: makeVisibilityCallback('insights'),
               once: true,
             }"
             :id="id"
@@ -232,7 +232,7 @@
             <map-best-accessory-table
               key="gadgets-table"
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'gadgets'),
+                callback: makeVisibilityCallback('gadgets'),
                 once: true,
               }"
               :id="id"
@@ -243,7 +243,7 @@
 
           <map-insights
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'insights'),
+              callback: makeVisibilityCallback('insights'),
               once: true,
             }"
             :id="id"
@@ -287,7 +287,7 @@
           >
             <map-best-accessory-roll
               v-observe-visibility="{
-                callback: (v, e) => trackScroll(v, e, 'gears'),
+                callback: makeVisibilityCallback('gears'),
                 once: true,
               }"
               :id="id"
@@ -298,7 +298,7 @@
 
           <map-insights
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'insights'),
+              callback: makeVisibilityCallback('insights'),
               once: true,
             }"
             :id="id"
@@ -334,12 +334,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useStore, watch, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useStore, watch } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
+import { useTrackScroll } from '~/composables/gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     CDashboard,
@@ -393,15 +393,7 @@ export default defineComponent({
 
     const adjustedWinRate = computed(() => $klicker.config['battle'].metrics.find(m => m.id == 'winRateAdj')!)
 
-    const gtag = useGtag()
-    const trackScroll = (visible, element, section) => {
-      if (props.gaCategory != undefined && visible) {
-        gtag.event('scroll', {
-          'event_category': props.gaCategory,
-          'event_label': section,
-        })
-      }
-    }
+    const { makeVisibilityCallback } = props.gaCategory != undefined ? useTrackScroll(props.gaCategory) : { makeVisibilityCallback: () => undefined }
 
     const isApp = computed(() => store.state.isApp as boolean)
 
@@ -412,7 +404,7 @@ export default defineComponent({
       isApp,
       query,
       adjustedWinRate,
-      trackScroll,
+      makeVisibilityCallback,
     }
   },
 })

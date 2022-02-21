@@ -1,10 +1,10 @@
 <template>
-  <page
+  <b-page
     :title="$t('tier-list.gear.title')"
     class="container"
   >
     <accessory-tier-list kind="gears"></accessory-tier-list>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

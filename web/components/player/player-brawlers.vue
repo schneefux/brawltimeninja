@@ -1,5 +1,5 @@
 <template>
-  <scrolling-dashboard
+  <b-scrolling-dashboard
     :length="Object.values(player.brawlers).length"
     :page-size="4"
   >
@@ -22,7 +22,7 @@
         ></player-brawler-card>
       </c-dashboard-cell>
     </template>
-  </scrolling-dashboard>
+  </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">

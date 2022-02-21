@@ -3,7 +3,7 @@
     <p class="prose dark:prose-invert">
       {{ description }}
     </p>
-    <scrolling-dashboard
+    <b-scrolling-dashboard
       v-if="events != undefined"
       :length="events.length"
       :page-size="4"
@@ -32,7 +32,7 @@
           ></brawler-active-event>
         </c-dashboard-cell>
       </template>
-    </scrolling-dashboard>
+    </b-scrolling-dashboard>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
+  <b-page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
     <breadcrumbs
       :links="[{
         path: '/tier-list/map',
@@ -25,11 +25,13 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       v-if="events != undefined && events.length > 0"
       :title="$t('tier-list.maps.title')"
-      tracking-id="maps"
-      tracking-page-id="mode_meta"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('maps'),
+        once: true,
+      }"
     >
       <p
         slot="description"
@@ -39,7 +41,7 @@
       </p>
 
       <events-roll :events="events"></events-roll>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -52,12 +54,12 @@
       />
     </client-only>
 
-    <page-section>
+    <b-page-section>
       <map-views
         :mode="mode"
         ga-category="mode"
       ></map-views>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -69,13 +71,14 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">
 import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { defineComponent, useAsync, computed, useRoute, useStore, useContext, useMeta } from '@nuxtjs/composition-api'
+import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
@@ -113,11 +116,14 @@ export default defineComponent({
       }
     })
 
+    const { makeVisibilityCallback } = useTrackScroll('mode_meta')
+
     return {
       events,
       mode,
       modePath,
       isApp,
+      makeVisibilityCallback,
     }
   },
 })

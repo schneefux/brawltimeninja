@@ -19,7 +19,7 @@
       class="mt-4"
     ></gadget-starpower-disclaimer>
 
-    <page-section :title="$t(`tier-list.${singular}.${plural}`)">
+    <b-page-section :title="$t(`tier-list.${singular}.${plural}`)">
       <c-dashboard
         v-model="query"
         :slicer-components="['s-season', 's-mode-map', 's-trophies', 's-powerplay', 's-competition-maps']"
@@ -74,7 +74,7 @@
           </c-dashboard-cell>
         </template>
       </c-dashboard>
-    </page-section>
+    </b-page-section>
   </div>
 </template>
 

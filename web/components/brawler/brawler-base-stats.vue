@@ -63,7 +63,7 @@
 
       <brawler-starpower-stats
         v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'starpowers'),
+          callback: makeVisibilityCallback('starpowers'),
           once: true,
         }"
         :brawler-id="brawlerId"
@@ -73,7 +73,7 @@
 
       <brawler-starpower-stats
         v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'gadgets'),
+          callback: makeVisibilityCallback('gadgets'),
           once: true,
         }"
         :brawler-id="brawlerId"
@@ -85,14 +85,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapState } from 'vuex'
-import { MetaGridEntry } from '@schneefux/klicker/types'
+import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { scaleInto } from '~/lib/util'
 import { BrawlerData } from '~/model/Media'
 import { starRateMetric, useRateMetric, winRateMetric } from '~/lib/klicker.conf'
+import { useTrackScroll } from '~/composables/gtag'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     brawlerId: {
       type: String,
@@ -103,114 +102,108 @@ export default Vue.extend({
       required: true
     },
   },
-  data() {
-    return {
-      // game files
-      info: undefined as BrawlerData|undefined,
-      // klicker data
-      data: undefined as MetaGridEntry|undefined,
-      totals: undefined as MetaGridEntry|undefined,
-    }
-  },
-  watch: {
-    brawlerId: '$fetch',
-    brawlerName: '$fetch',
-    '$i18n.locale': '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    const info = await this.$http.$get<BrawlerData>(`${this.$config.mediaUrl}/brawlers/${this.brawlerId}/${this.$i18n.locale}.json`).catch(() => undefined)
-    this.info = info
+  setup(props) {
+    const { $http, $config, i18n, $klicker } = useContext()
 
-    const data = await this.$klicker.query({
-      cubeId: 'map',
-      slices: {
-        brawler: [this.brawlerName.toUpperCase()],
-      },
-      dimensionsIds: [],
-      metricsIds: ['winRate', 'starRate', 'useRate'],
-      sortId: 'winRate',
-    })
-
-    const totalData = await this.$klicker.query({
-      cubeId: 'map',
-      slices: {},
-      dimensionsIds: [],
-      metricsIds: ['useRate'],
-      sortId: 'winRate',
-    })
+    const info = useAsync(() => $http.$get<BrawlerData>(`${$config.mediaUrl}/brawlers/${props.brawlerId}/${i18n.locale}.json`).catch(() => undefined))
 
     // TODO use ID
-    this.data = data.data[0]
-    this.totals = totalData.data[0]
-  },
-  computed: {
-    gamefileDescription(): string {
-      return this.info?.description || ''
-    },
-    generatedDescription(): string {
-      if (this.info == undefined) {
-        return ''
-      }
-      return this.$i18n.t('brawler.description', {
-        brawler: this.brawlerName,
-        rarity: this.$i18n.t('rarity.' + this.info.rarity) as string,
-        class: this.$i18n.t('brawler.class.' + this.info.class) as string,
-        unlockCondition: this.info.unlock == undefined ? this.$i18n.t('brawler.unlock.boxes') as string :
-          this.info.unlock == 0 ? this.$i18n.t('brawler.unlock.start') as string :
-          this.$i18n.t('brawler.unlock.trophies', { trophies : this.info.unlock }) as string,
-      }) as string
-    },
-    statisticsDescription(): string {
-      if (this.data == undefined || this.totals == undefined) {
-        return ''
-      }
+    const data = useAsync(async () => {
+      const response = await $klicker.query({
+        cubeId: 'map',
+        slices: {
+          brawler: [props.brawlerName.toUpperCase()],
+        },
+        dimensionsIds: [],
+        metricsIds: ['winRate', 'starRate', 'useRate'],
+        sortId: 'winRate',
+      })
 
-      const useRate = (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)
-      const popularity = scaleInto(0.02, 0.03, 3, useRate)
-      const metaness = scaleInto(0.55, 0.60, 4, this.data.metricsRaw.winRate as number)
-
-      return this.$i18n.t('brawler.rating', {
-        brawler: this.brawlerName,
-        popularity: this.$i18n.t('rating.popularity.' + popularity),
-        relative: this.$i18n.t('rating.relative.' + metaness),
-      }) as string
-    },
-    infoTable(): string[][] {
-      if (this.info == undefined) {
-        return []
-      }
-
-      return [
-        [ 'Health at Level 1', this.info.health.toString() ],
-        [ 'Health at Level 10', Math.round(this.info.health * 1.4).toString() ],
-        [ 'Speed', Math.round(this.info.speed * 100) / 100 + 'Tiles/s' ],
-      ]
-    },
-    statsTable(): string[][] {
-      if (this.data == undefined || this.totals == undefined) {
-        return []
-      }
-
-      return [
-        [ useRateMetric.name!, this.$klicker.format(useRateMetric, (this.data.metricsRaw.useRate as number) / (this.totals.metricsRaw.useRate as number)) ],
-        [ starRateMetric.name!, this.data.metrics.starRate ],
-        [ winRateMetric.name!, this.data.metrics.winRate ],
-      ]
-    },
-    ...mapState({
-      totalBrawlers: (state: any) => state.totalBrawlers,
+      return response.data[0]
     })
-  },
-  methods: {
-    trackScroll(visible: boolean, element: any, section: string): void {
-      if (visible) {
-        this.$gtag.event('scroll', {
-          'event_category': 'brawler',
-          'event_label': section,
-        })
+
+    const totalData = useAsync(async () => {
+      const response = await $klicker.query({
+        cubeId: 'map',
+        slices: {},
+        dimensionsIds: [],
+        metricsIds: ['useRate'],
+        sortId: 'winRate',
+      })
+
+      return response.data[0]
+    })
+
+    const gamefileDescription = computed(() => info.value?.description || '')
+
+    const generatedDescription = computed(() => {
+      if (info.value == undefined) {
+        return ''
       }
-    },
+
+      return i18n.t('brawler.description', {
+        brawler: props.brawlerName,
+        rarity: i18n.t('rarity.' + info.value.rarity) as string,
+        class: i18n.t('brawler.class.' + info.value.class) as string,
+        unlockCondition: info.value.unlock == undefined ? i18n.t('brawler.unlock.boxes') as string :
+          info.value.unlock == 0 ? i18n.t('brawler.unlock.start') as string :
+          i18n.t('brawler.unlock.trophies', { trophies: info.value.unlock }) as string,
+      }) as string
+    })
+
+    const statisticsDescription = computed(() => {
+      if (data.value == undefined || totalData.value == undefined) {
+        return ''
+      }
+
+      const useRate = (data.value.metricsRaw.useRate as number) / (totalData.value.metricsRaw.useRate as number)
+      const popularity = scaleInto(0.02, 0.03, 3, useRate)
+      const metaness = scaleInto(0.55, 0.60, 4, data.value.metricsRaw.winRate as number)
+
+      return i18n.t('brawler.rating', {
+        brawler: props.brawlerName,
+        popularity: i18n.t('rating.popularity.' + popularity),
+        relative: i18n.t('rating.relative.' + metaness),
+      }) as string
+    })
+
+    const infoTable = computed(() => {
+      if (info.value == undefined) {
+        return []
+      }
+
+      return [
+        [ 'Health at Level 1', info.value.health.toString() ],
+        [ 'Health at Level 10', Math.round(info.value.health * 1.4).toString() ],
+        [ 'Speed', Math.round(info.value.speed * 100) / 100 + 'Tiles/s' ],
+      ]
+    })
+
+    const statsTable = computed(() => {
+      if (data.value == undefined || totalData.value == undefined) {
+        return []
+      }
+
+      return [
+        [ useRateMetric.name!, $klicker.format(useRateMetric, (data.value.metricsRaw.useRate as number) / (totalData.value.metricsRaw.useRate as number)) ],
+        [ starRateMetric.name!, data.value.metrics.starRate ],
+        [ winRateMetric.name!, data.value.metrics.winRate ],
+      ]
+    })
+
+    const { makeVisibilityCallback } = useTrackScroll('brawler')
+
+    return {
+      info,
+      data,
+      totalData,
+      gamefileDescription,
+      generatedDescription,
+      statisticsDescription,
+      infoTable,
+      statsTable,
+      makeVisibilityCallback,
+    }
   },
 })
 </script>

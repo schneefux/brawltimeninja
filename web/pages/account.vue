@@ -1,6 +1,6 @@
 <template>
-  <page title="Account">
-    <page-section v-if="user != undefined" title="Your Reports">
+  <b-page title="Account">
+    <b-page-section v-if="user != undefined" title="Your Reports">
       <b-button
         to="/report-designer"
         class="mt-4"
@@ -35,9 +35,9 @@
           </div>
         </b-card>
       </div>
-    </page-section>
+    </b-page-section>
 
-    <page-section v-if="user != undefined" title="Your Dashboards">
+    <b-page-section v-if="user != undefined" title="Your Dashboards">
       <b-button
         to="/dashboard-designer"
         class="mt-4"
@@ -72,12 +72,12 @@
           </div>
         </b-card>
       </div>
-    </page-section>
+    </b-page-section>
 
     <div v-if="user == undefined" class="mt-4">
       <login-button></login-button>
     </div>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

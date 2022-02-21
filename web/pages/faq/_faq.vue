@@ -1,11 +1,11 @@
 <template>
-  <page class="flex justify-center">
+  <b-page class="flex justify-center">
     <article-card
       :title="faq.title"
       :document="faq"
       author="schneefux"
     ></article-card>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

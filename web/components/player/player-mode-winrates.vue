@@ -1,5 +1,5 @@
 <template>
-  <scrolling-dashboard
+  <b-scrolling-dashboard
     v-if="modes != undefined && events != undefined"
     :length="modes.length"
   >
@@ -25,7 +25,7 @@
         ></player-mode-card>
       </c-dashboard-cell>
     </template>
-  </scrolling-dashboard>
+  </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">

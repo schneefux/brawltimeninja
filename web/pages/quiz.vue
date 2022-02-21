@@ -1,10 +1,10 @@
 <template>
-  <page :title="$t('oejts.title')">
+  <b-page :title="$t('oejts.title')">
     <p class="mb-4">{{ $t('oejts.description') }}</p>
     <quiz-card
       class="mx-auto"
     ></quiz-card>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

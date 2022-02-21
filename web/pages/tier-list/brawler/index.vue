@@ -1,5 +1,5 @@
 <template>
-  <page :title="$t('tier-list.brawler.title')">
+  <b-page :title="$t('tier-list.brawler.title')">
     <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.brawler.description') }}
     </p>
@@ -15,15 +15,17 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       :title="$t('tier-list.all.title')"
-      tracking-id="widget"
-      tracking-page-id="brawler_meta"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('widget'),
+        once: true,
+      }"
     >
       <map-views
         ga-category="brawler"
       ></map-views>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -35,11 +37,12 @@
         ins-class="ad-section"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
+import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   head: {},
@@ -60,8 +63,11 @@ export default defineComponent({
     const store = useStore<any>()
     const isApp = computed(() => store.state.isApp as boolean)
 
+    const { makeVisibilityCallback } = useTrackScroll('brawler_meta')
+
     return {
       isApp,
+      makeVisibilityCallback,
     }
   },
   meta: {

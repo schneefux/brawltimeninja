@@ -1,6 +1,6 @@
 <template>
-  <page :title="$t('install.title')">
-    <page-section>
+  <b-page :title="$t('install.title')">
+    <b-page-section>
       <ol class="flex flex-wrap justify-center gap-8">
         <li>
           <b-card :title="$t('install.ios.tap-share')">
@@ -30,8 +30,8 @@
           </b-card>
         </li>
       </ol>
-    </page-section>
-  </page>
+    </b-page-section>
+  </b-page>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <page class="flex flex-col justify-center">
+  <b-page class="flex flex-col justify-center">
     <div class="relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
@@ -13,24 +13,24 @@
       </span>
     </div>
 
-    <page-section class="text-center">
+    <b-page-section class="text-center">
       <h1 class="text-4xl font-bold">
         {{ $t('index.title') }}
       </h1>
       <p class="mt-3 text-center text-lg mx-2">
         {{ $t('index.subtitle') }}
       </p>
-    </page-section>
+    </b-page-section>
 
     <form
       v-observe-visibility="{
-        callback: (v, e) => trackScroll(v, e, 'search'),
+        callback: makeVisibilityCallback('section'),
         once: true,
       }"
-      class="mt-10 mx-4 flex flex-wrap justify-center"
       :action="`/profile/${cleanedTag}`"
       :target="isInIframe ? '_parent' : ''"
       :onSubmit="isInIframe ? '' : 'return false;'"
+      class="mt-10 mx-4 flex flex-wrap justify-center"
       @submit="search"
     >
       <div class="w-full flex justify-center">
@@ -67,7 +67,7 @@
       </p>
     </form>
 
-    <page-section class="text-center">
+    <b-page-section class="text-center">
       <div class="flex justify-center">
         <details
           ref="helpDropdown"
@@ -99,7 +99,7 @@
           </b-card>
         </details>
       </div>
-    </page-section>
+    </b-page-section>
 
     <div class="mt-6 mx-6 flex flex-wrap justify-center">
       <div class="mt-2">
@@ -136,11 +136,11 @@
       />
     </client-only>
 
-    <page-section class="mt-4">
+    <b-page-section class="mt-4">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <top-brawlers-card
           v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'best_brawlers'),
+            callback: makeVisibilityCallback('best_brawlers'),
             once: true,
           }"
           :limit="4"
@@ -149,12 +149,12 @@
 
         <top-players-card
           v-observe-visibility="{
-            callback: (v, e) => trackScroll(v, e, 'best_players'),
+            callback: makeVisibilityCallback('best_players'),
             once: true,
           }"
         ></top-players-card>
       </div>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -167,17 +167,19 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       v-if="events != undefined && events.length > 0"
       :title="$t('index.events.title')"
-      tracking-id="live_events"
-      tracking-page-id="maps"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('maps', 'live_events'),
+        once: true,
+      }"
     >
       <events-roll
         :events="events"
         with-data
       ></events-roll>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -189,13 +191,14 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore, wrapProperty } from '@nuxtjs/composition-api'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
+import { useTrackScroll } from '~/composables/gtag'
 
 interface PlayerLink {
   name: string
@@ -203,7 +206,6 @@ interface PlayerLink {
   link: any
 }
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   head: {},
   setup() {
@@ -243,6 +245,8 @@ export default defineComponent({
       }
     })
 
+    const { makeVisibilityCallback, gtag } = useTrackScroll('home')
+
     const store = useStore<any>()
     const cookiesAllowed = computed(() => store.state.cookiesAllowed as boolean)
     const player = computed(() => store.state.player as Player|undefined)
@@ -251,8 +255,6 @@ export default defineComponent({
     const isApp = computed(() => store.state.isApp)
 
     const helpDropdown = ref<HTMLElement>()
-
-    const gtag = useGtag()
 
     const addLastPlayer = (player: any) => store.commit('addLastPlayer', player)
 
@@ -341,22 +343,13 @@ export default defineComponent({
       }
     })
 
-    const trackScroll = (visible, element, section) => {
-      if (visible) {
-        gtag.event('scroll', {
-          'event_category': 'home',
-          'event_label': section,
-        })
-      }
-    }
-
     return {
       addLastPlayer,
       playerLinks,
       isInIframe,
       helpDropdown,
       isApp,
-      trackScroll,
+      makeVisibilityCallback,
       search,
       error,
       tag,

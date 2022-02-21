@@ -1,5 +1,5 @@
 <template>
-  <page
+  <b-page
     v-if="event != undefined"
     :title="$t('tier-list.map.title', { map: title })"
   >
@@ -17,50 +17,56 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <div class="mt-4 flex flex-wrap justify-center md:justify-between">
-      <div>
-        <p class="prose dark:prose-invert">
-          {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
-        </p>
-        <p v-if="event.map.startsWith('Competition ')">
-          {{ $t('tier-list.competition-info') }}
-          <b-button
-            to="/tier-list/competition-winners"
-            prefetch
-            primary
-            xs
-          >{{ $t('tier-list.compare-competition-winners') }}</b-button>
-        </p>
+    <div class="flex relative">
+      <div class="w-1/4">
+        <div class="sticky top-0">
+          <div>
+            <p class="prose dark:prose-invert">
+              {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
+            </p>
+            <p v-if="event.map.startsWith('Competition ')">
+              {{ $t('tier-list.competition-info') }}
+              <b-button
+                to="/tier-list/competition-winners"
+                prefetch
+                primary
+                xs
+              >{{ $t('tier-list.compare-competition-winners') }}</b-button>
+            </p>
+          </div>
+
+          <map-img
+            v-if="showImage"
+            :id="event.id"
+            :map="event.map"
+            clazz="h-64 mt-6 md:mt-0"
+          ></map-img>
+        </div>
       </div>
 
-      <map-img
-        v-if="showImage"
-        :id="event.id"
-        :map="event.map"
-        clazz="h-64 mt-6 md:mt-0"
-      ></map-img>
+      <div class="w-3/4">
+        <client-only>
+          <adsense
+            ins-class="ad-section"
+            id="ezoic-pub-ad-placeholder-112"
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="1665534416"
+            data-ad-format="auto"
+            data-full-width-responsive="yes"
+          />
+        </client-only>
+
+        <b-page-section>
+          <map-views
+            :mode="event.mode"
+            :map="event.map"
+            :id="event.id"
+            :timestamp="event.timestamp"
+            ga-category="map"
+          ></map-views>
+        </b-page-section>
+      </div>
     </div>
-
-    <client-only>
-      <adsense
-        ins-class="ad-section"
-        id="ezoic-pub-ad-placeholder-112"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1665534416"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
-
-    <page-section>
-      <map-views
-        :mode="event.mode"
-        :map="event.map"
-        :id="event.id"
-        :timestamp="event.timestamp"
-        ga-category="map"
-      ></map-views>
-    </page-section>
 
     <client-only>
       <adsense
@@ -72,7 +78,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

@@ -1,10 +1,10 @@
 <template>
-  <page
+  <b-page
     :title="$t('tier-list.starpower.title')"
     class="container"
   >
     <accessory-tier-list kind="starpowers"></accessory-tier-list>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

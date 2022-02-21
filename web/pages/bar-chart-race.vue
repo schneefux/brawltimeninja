@@ -1,5 +1,5 @@
 <template>
-  <page
+  <b-page
     :title="$t('bar-chart-race.title')"
     class="max-w-2xl mx-auto"
   >
@@ -72,7 +72,7 @@
         </c-dashboard>
       </div>
     </b-card>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <page :title="brawlerName">
+  <b-page :title="brawlerName">
     <breadcrumbs
       :links="[{
         path: '/tier-list/brawler',
@@ -11,7 +11,7 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <page-section>
+    <b-page-section>
       <brawler-base-stats
         :brawler-id="brawlerId"
         :brawler-name="brawlerName"
@@ -20,7 +20,7 @@
       <p class="mt-8 prose dark:prose-invert">
         {{ $t('starpower-gadget-comparison.info') }}
       </p>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -33,12 +33,14 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
-      tracking-id="synergies"
-      tracking-page-id="brawler"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('synergies'),
+        once: true,
+      }"
     >
-    <scrolling-dashboard>
+    <b-scrolling-dashboard>
       <c-dashboard-cell :rows="2" :columns="6" hide-empty>
         <brawler-synergies-card
           :brawler="brawlerName"
@@ -49,21 +51,25 @@
           :brawler="brawlerName"
         ></brawler-weaknesses-card>
       </c-dashboard-cell>
-    </scrolling-dashboard>
-    </page-section>
+    </b-scrolling-dashboard>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
-      tracking-id="current-maps"
-      tracking-page-id="brawler"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('current-maps'),
+        once: true,
+      }"
     >
       <brawler-active-events :brawler-name="brawlerName"></brawler-active-events>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       :title="brawlerName + ' Trends'"
-      tracking-id="trends"
-      tracking-page-id="brawler"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('trends'),
+        once: true,
+      }"
     >
       <p
         slot="description"
@@ -76,12 +82,14 @@
         :brawler-name="brawlerName"
         class="mt-4"
       ></brawler-trends-card>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       :title="$t('brawler.by-trophies', { brawler: brawlerName })"
-      tracking-id="trophy-graphs"
-      tracking-page-id="brawler"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('trophy-graphs'),
+        once: true,
+      }"
     >
       <brawler-trophy-graphs
         :brawler-name="brawlerName"
@@ -90,12 +98,14 @@
       <p class="mt-4 prose dark:prose-invert">
         {{ $t('brawler.disclaimer') }}
       </p>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       :title="$t('brawler.modes.title', { brawler: brawlerName })"
-      tracking-id="modes"
-      tracking-page-id="brawler"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('modes'),
+        once: true,
+      }"
     >
       <brawler-modes-stats
         :brawler-id="brawlerId"
@@ -105,7 +115,7 @@
       <p class="mt-4 prose dark:prose-invert">
         {{ $t('brawler.viable-info') }}
       </p>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -118,13 +128,14 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
 import { CDashboardCell } from '@schneefux/klicker/components'
+import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
@@ -154,10 +165,13 @@ export default defineComponent({
     const store = useStore<any>()
     const isApp = computed(() => store.state.isApp as boolean)
 
+    const { makeVisibilityCallback } = useTrackScroll('brawler')
+
     return {
       brawlerId,
       brawlerName,
       isApp,
+      makeVisibilityCallback,
     }
   },
   meta: {

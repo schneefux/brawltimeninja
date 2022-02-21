@@ -1,5 +1,5 @@
 <template>
-  <page>
+  <b-page>
     <client-only>
       <adsense
         data-ad-client="ca-pub-6856963757796636"
@@ -11,9 +11,11 @@
       <div style="height: 300px;" class="adswrapper ad-section w-full" slot="placeholder"></div>
     </client-only>
 
-    <page-section
-      tracking-id="hours"
-      tracking-page-id="profile"
+    <b-page-section
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('hours'),
+        once: true,
+      }"
     >
       <div class="w-full flex justify-between">
         <h1 class="text-3xl relative z-10">
@@ -31,22 +33,22 @@
           wrapper-class="flex-shrink-0"
         ></media-img>
       </div>
-    </page-section>
+    </b-page-section>
 
-    <page-section>
+    <b-page-section>
       <player-hype-stats
         :player="player"
         :player-totals="playerTotals"
         :enable-klicker-stats="enableKlickerStats"
       ></player-hype-stats>
-    </page-section>
+    </b-page-section>
 
-    <page-section>
+    <b-page-section>
       <div class="flex flex-wrap justify-center items-center">
         <experiment experiment-id="ieQ8BYYpS9Cwd7qcpBj8tQ">
           <player-quiz
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              callback: makeVisibilityCallback('quiz'),
               once: true,
             }"
             :player="player"
@@ -55,13 +57,13 @@
           <quiz-card
             slot="1"
             v-observe-visibility="{
-              callback: (v, e) => trackScroll(v, e, 'quiz'),
+              callback: makeVisibilityCallback('quiz'),
               once: true,
             }"
           ></quiz-card>
         </experiment>
       </div>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -74,14 +76,14 @@
       />
     </client-only>
 
-    <page-section :title="$t('player.records.title')">
+    <b-page-section :title="$t('player.records.title')">
       <p class="mt-4 prose dark:prose-invert w-full">
         {{ $t('player.records.description') }}
       </p>
 
       <player-lifetime
         v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'lifetime'),
+          callback: makeVisibilityCallback('lifetime'),
           once: true,
         }"
         :player="player"
@@ -92,15 +94,15 @@
         :player="player"
         class="mt-8"
       ></player-percentiles>
-    </page-section>
+    </b-page-section>
 
-    <page-section title="Info">
+    <b-page-section title="Info">
       <p class="prose dark:prose-invert max-w-none">
         {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
       </p>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       v-if="playerTotals != undefined && playerTotals.picks > 0"
       :title="$tc('battle-log', 1)"
     >
@@ -119,7 +121,7 @@
 
       <player-battles-squares
         v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'battles'),
+          callback: makeVisibilityCallback('battles'),
           once: true,
         }"
         :battles="player.battles"
@@ -135,13 +137,13 @@
         :player="player"
         class="mt-8"
       ></player-battles>
-    </page-section>
+    </b-page-section>
 
-    <page-section>
+    <b-page-section>
       <install-card
         class="mx-auto"
       ></install-card>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -154,14 +156,14 @@
       />
     </client-only>
 
-    <page-section :title="$tc('mode', 2)">
+    <b-page-section :title="$tc('mode', 2)">
       <p class="prose dark:prose-invert">
         {{ $t('player.modes.description') }}
       </p>
 
       <player-mode-winrates
         v-observe-visibility="{
-          callback: (v, e) => trackScroll(v, e, 'gamemodes'),
+          callback: makeVisibilityCallback('gamemodes'),
           once: true,
         }"
         :player="player"
@@ -169,7 +171,7 @@
         :enable-klicker-stats="enableKlickerStats"
         class="mt-4"
       ></player-mode-winrates>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -182,7 +184,7 @@
       />
     </client-only>
 
-    <page-section :title="$tc('brawler', 2)">
+    <b-page-section :title="$tc('brawler', 2)">
       <p class="prose dark:prose-invert">
         {{ $t('player.brawlers.description') }}
       </p>
@@ -192,24 +194,26 @@
         :enable-klicker-stats="enableKlickerStats"
         class="mt-4"
       ></player-brawlers>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       title="Guides from the Blog"
-      tracking-id="articles"
-      tracking-page-id="profile"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('articles'),
+        once: true,
+      }"
     >
       <blogroll topic="guides"></blogroll>
-    </page-section>
-  </page>
+    </b-page-section>
+  </b-page>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore, wrapProperty } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
+import { useTrackScroll } from '~/composables/gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   head: {},
   setup() {
@@ -250,16 +254,6 @@ export default defineComponent({
     const player = computed(() => store.state.player as Player)
     const playerTotals = computed(() => store.state.playerTotals as PlayerTotals|undefined)
 
-    const gtag = useGtag()
-    const trackScroll = (visible, entry, section) => {
-      if (visible) {
-        gtag.event('scroll', {
-          'event_category': 'profile',
-          'event_label': section,
-        })
-      }
-    }
-
     const isApp = computed(() => store.state.isApp as boolean)
 
     useMeta(() => {
@@ -281,14 +275,16 @@ export default defineComponent({
       }
     })
 
+    const { makeVisibilityCallback } = useTrackScroll('profile')
+
     return {
       refreshSecondsLeft,
       refresh,
       enableKlickerStats,
-      trackScroll,
       isApp,
       player,
       playerTotals,
+      makeVisibilityCallback,
     }
   },
   meta: {

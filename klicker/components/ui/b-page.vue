@@ -15,14 +15,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue-demi'
 
+/**
+ * Component which wraps the main content with some padding
+ */
 export default defineComponent({
   props: {
     title: {
       type: String,
       default: ''
     },
+    /**
+     * When set, render a full-width layout across the whole page
+     */
     noContainer: {
       type: Boolean,
       default: false

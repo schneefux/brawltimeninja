@@ -1,6 +1,6 @@
 <template>
-  <page title="Brawl Stars Guides">
-    <page-section
+  <b-page title="Brawl Stars Guides">
+    <b-page-section
       v-if="faqs.length > 0"
       title="Frequently asked Questions"
       tracking-id="faq"
@@ -42,9 +42,9 @@
           </b-button>
         </b-card>
       </div>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       title="Brawl Stars Guides"
       tracking-id="guides"
       page-tracking-id="guides"
@@ -106,8 +106,8 @@
           </b-card>
         </div>
       </div>
-    </page-section>
-  </page>
+    </b-page-section>
+  </b-page>
 </template>
 
 <script lang="ts">

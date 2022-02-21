@@ -1,5 +1,5 @@
 <template>
-  <page :title="$t('dashboard-designer.title')" no-container>
+  <b-page :title="$t('dashboard-designer.title')" no-container>
     <c-grid
       v-model="grid"
       :default-query="defaultQuery"
@@ -57,7 +57,7 @@
       <p>Log in to share this report.</p>
       <login-button></login-button>
     </div>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">

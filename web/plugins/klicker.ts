@@ -11,7 +11,7 @@ import visualisations from '~/lib/klicker.visualisations.conf'
 import slicers from '~/lib/klicker.slicers.conf'
 import staticWidgets from '~/lib/klicker.widgets.conf'
 import { defineNuxtPlugin } from '@nuxtjs/composition-api'
-import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio } from '@schneefux/klicker/components'
+import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BPage, BPageSection, BScrollingDashboard } from '@schneefux/klicker/components'
 
 export interface EventMetadata {
   id: number
@@ -207,6 +207,9 @@ export default defineNuxtPlugin((context, inject) => {
   Vue.component('b-lightbox', BLightbox)
   Vue.component('b-checkbox', BCheckbox)
   Vue.component('b-radio', BRadio)
+  Vue.component('b-page', BPage)
+  Vue.component('b-page-section', BPageSection)
+  Vue.component('b-scrolling-dashboard', BScrollingDashboard)
 
   const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, context)
 

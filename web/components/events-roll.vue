@@ -37,7 +37,7 @@
       ></b-textbox>
     </div>
 
-    <scrolling-dashboard
+    <b-scrolling-dashboard
       :length="filteredEvents.length"
       :page-size="4"
       class="mt-8"
@@ -85,7 +85,7 @@
           </slot>
         </c-dashboard-cell>
       </template>
-    </scrolling-dashboard>
+    </b-scrolling-dashboard>
   </div>
 </template>
 

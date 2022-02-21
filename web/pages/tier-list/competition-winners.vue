@@ -1,6 +1,6 @@
 <template>
-  <page :title="$t('tier-list.competition-winners.title')">
-    <scrolling-dashboard
+  <b-page :title="$t('tier-list.competition-winners.title')">
+    <b-scrolling-dashboard
       v-if="maps != undefined"
       :length="maps.length"
       class="mt-8"
@@ -26,8 +26,8 @@
           ></map-detail-card>
         </c-dashboard-cell>
       </template>
-    </scrolling-dashboard>
-  </page>
+    </b-scrolling-dashboard>
+  </b-page>
 </template>
 
 <script lang="ts">

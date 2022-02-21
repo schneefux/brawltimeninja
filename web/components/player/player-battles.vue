@@ -1,5 +1,5 @@
 <template>
-  <scrolling-dashboard
+  <b-scrolling-dashboard
     :length="player.battles.length"
   >
     <template v-slot="{ limit }">
@@ -20,7 +20,7 @@
         ></player-battle>
       </c-dashboard-cell>
     </template>
-  </scrolling-dashboard>
+  </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">

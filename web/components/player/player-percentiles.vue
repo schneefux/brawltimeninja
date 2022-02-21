@@ -1,5 +1,5 @@
 <template>
-  <scrolling-dashboard>
+  <b-scrolling-dashboard>
     <c-dashboard-cell
       v-for="achievement in achievements"
       :key="achievement.metric"
@@ -11,7 +11,7 @@
         full-height
       ></b-bigstat>
     </c-dashboard-cell>
-  </scrolling-dashboard>
+  </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">

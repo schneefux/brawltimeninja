@@ -1,5 +1,5 @@
 <template>
-  <page :title="$t('tier-list.maps.title')">
+  <b-page :title="$t('tier-list.maps.title')">
     <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.maps.description') }}
      </p>
@@ -15,29 +15,33 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       v-if="currentEvents.length > 0"
       :title="$t('events.active.title')"
-      tracking-id="current_events"
-      tracking-page-id="maps"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('current_events'),
+        once: true,
+      }"
     >
       <events-roll
         :events="currentEvents"
         with-data
       ></events-roll>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       v-if="powerleagueEvents != undefined"
       :title="$t('events.powerleague.title')"
-      tracking-id="powerleagu_events"
-      tracking-page-id="maps"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('powerleague_events'),
+        once: true,
+      }"
     >
       <events-roll
         :events="powerleagueEvents"
         with-data
       ></events-roll>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -50,26 +54,30 @@
       />
     </client-only>
 
-    <page-section
+    <b-page-section
       v-if="upcomingEvents.length > 0"
       :title="$t('events.upcoming.title')"
-      tracking-id="upcoming_events"
-      tracking-page-id="maps"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('upcoming_events'),
+        once: true,
+      }"
     >
       <events-roll
         :events="upcomingEvents"
         with-data
       ></events-roll>
-    </page-section>
+    </b-page-section>
 
-    <page-section
+    <b-page-section
       :title="$t('events.season.title')"
       v-if="allEvents != undefined && allEvents.length > 0"
-      tracking-id="maps"
-      tracking-page-id="maps"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('maps'),
+        once: true,
+      }"
     >
       <events-roll :events="allEvents"></events-roll>
-    </page-section>
+    </b-page-section>
 
     <client-only>
       <adsense
@@ -82,7 +90,7 @@
         data-full-width-responsive="yes"
       />
     </client-only>
-  </page>
+  </b-page>
 </template>
 
 <script lang="ts">
@@ -90,6 +98,7 @@ import { computed, defineComponent, useAsync, useContext, useMeta, useStore } fr
 import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { CDashboardCell } from '@schneefux/klicker/components'
+import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   head: {},
@@ -146,6 +155,8 @@ export default defineComponent({
     const store = useStore<any>()
     const isApp = computed(() => store.state.isApp)
 
+    const { makeVisibilityCallback } = useTrackScroll('maps')
+
     return {
       allEvents,
       currentEvents,
@@ -153,6 +164,7 @@ export default defineComponent({
       powerleagueEvents,
       unformatMode,
       isApp,
+      makeVisibilityCallback,
     }
   },
   meta: {
