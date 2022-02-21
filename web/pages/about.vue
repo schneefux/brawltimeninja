@@ -1,7 +1,7 @@
 <template>
-  <page
+  <b-page
     title="About"
-    class="bg-gray-100 prose dark:prose-invert prose-sm sm:prose lg:prose-lg"
+    class="bg-gray-100 prose prose-sm sm:prose lg:prose-lg"
   >
     <copyright light></copyright>
     <p>
@@ -50,7 +50,7 @@
     <p>We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately, after they are posted on this page.</p>
     <h2>Contact Us</h2>
     <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us.</p>
-  </page>
+  </b-page>
 </template>
 
 <script>
