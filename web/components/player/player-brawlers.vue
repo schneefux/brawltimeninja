@@ -1,27 +1,19 @@
 <template>
-  <b-scrolling-dashboard
-    :length="Object.values(player.brawlers).length"
-    :page-size="4"
-  >
-    <template v-slot="{ limit }">
-      <c-dashboard-cell
-        v-for="(brawler, id, index) in player.brawlers"
-        :key="id"
-        :rows="3"
-        :columns="3"
-        :lazy="index > 4"
-        :class="{
-          'lg:hidden': index >= limit,
-        }"
-        :ssr-key="`player-brawlers-${id}`"
-      >
-        <player-brawler-card
-          :brawler="brawler"
-          :player-tag="player.tag"
-          :enable-klicker-stats="enableKlickerStats"
-        ></player-brawler-card>
-      </c-dashboard-cell>
-    </template>
+  <b-scrolling-dashboard>
+    <c-dashboard-cell
+      v-for="(brawler, id, index) in player.brawlers"
+      :key="id"
+      :rows="3"
+      :columns="3"
+      :lazy="index > 4"
+      :ssr-key="`player-brawlers-${id}`"
+    >
+      <player-brawler-card
+        :brawler="brawler"
+        :player-tag="player.tag"
+        :enable-klicker-stats="enableKlickerStats"
+      ></player-brawler-card>
+    </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 

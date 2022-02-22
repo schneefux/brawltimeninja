@@ -118,9 +118,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss">
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-</style>

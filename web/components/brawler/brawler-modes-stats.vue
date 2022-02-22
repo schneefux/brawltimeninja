@@ -5,29 +5,23 @@
     </p>
     <b-scrolling-dashboard
       v-if="data != undefined"
-      :length="data.length"
       class="mt-8"
     >
-      <template v-slot="{ limit }">
-        <c-dashboard-cell
-          v-for="(row, index) in data"
-          :key="row.dimensionsRaw.mode.mode"
-          :class="{
-            'lg:hidden': index >= limit,
-          }"
-          :rows="2"
-          :columns="4"
-          :lazy="index > 2"
-          :ssr-key="`brawler-mode-${row.dimensionsRaw.mode.mode}`"
-        >
-          <brawler-mode-stats
-            :mode="row.dimensionsRaw.mode.mode"
-            :brawler-id="brawlerId"
-            :brawler-name="brawlerName"
-            class="w-full h-full"
-          ></brawler-mode-stats>
-        </c-dashboard-cell>
-      </template>
+      <c-dashboard-cell
+        v-for="(row, index) in data"
+        :key="row.dimensionsRaw.mode.mode"
+        :rows="2"
+        :columns="4"
+        :lazy="index > 2"
+        :ssr-key="`brawler-mode-${row.dimensionsRaw.mode.mode}`"
+      >
+        <brawler-mode-stats
+          :mode="row.dimensionsRaw.mode.mode"
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+          class="w-full h-full"
+        ></brawler-mode-stats>
+      </c-dashboard-cell>
     </b-scrolling-dashboard>
   </div>
 </template>

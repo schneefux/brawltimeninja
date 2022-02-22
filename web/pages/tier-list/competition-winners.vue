@@ -2,30 +2,24 @@
   <b-page :title="$t('tier-list.competition-winners.title')">
     <b-scrolling-dashboard
       v-if="maps != undefined"
-      :length="maps.length"
       class="mt-8"
     >
-      <template v-slot="{ limit }">
-        <c-dashboard-cell
-          v-for="(map, index) in maps"
-          :key="map.mode + '-' + map.map"
-          :rows="4"
-          :columns="4"
-          :class="{
-            'lg:hidden': index >= limit,
-          }"
-          :lazy="index > 3"
-          :ssr-key="`competition-winners-${map.mode}-${map.map}`"
-        >
-          <map-detail-card
-            :map="map.map"
-            :mode="map.mode"
-            :timestamp="map.timestamp"
-            id="0"
-            link
-          ></map-detail-card>
-        </c-dashboard-cell>
-      </template>
+      <c-dashboard-cell
+        v-for="(map, index) in maps"
+        :key="map.mode + '-' + map.map"
+        :rows="4"
+        :columns="4"
+        :lazy="index > 3"
+        :ssr-key="`competition-winners-${map.mode}-${map.map}`"
+      >
+        <map-detail-card
+          :map="map.map"
+          :mode="map.mode"
+          :timestamp="map.timestamp"
+          id="0"
+          link
+        ></map-detail-card>
+      </c-dashboard-cell>
     </b-scrolling-dashboard>
   </b-page>
 </template>

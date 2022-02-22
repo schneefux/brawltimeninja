@@ -37,44 +37,35 @@
       ></b-textbox>
     </div>
 
-    <b-scrolling-dashboard
-      :length="filteredEvents.length"
-      :page-size="4"
-      class="mt-8"
-    >
-      <template v-slot="{ limit }">
-        <c-dashboard-cell
-          v-for="(event, index) in filteredEvents"
-          :key="event.map + '-' + event.id + '-' + event.powerplay"
-          :rows="2"
-          :columns="withData ? 3 : 2"
-          :class="{
-            'lg:hidden': index >= limit,
-          }"
-          :lazy="index > 4"
-          :ssr-key="`active-event-${event.map}-${event.id}`"
-        >
-          <slot :event="event">
-            <map-best-brawlers-card
-              v-if="withData"
-              :slices="{
-                mode: [event.mode],
-                map: [event.map],
-              }"
-              :powerplay="event.powerplay"
-              :id="event.id"
-              :start-date="event.start"
-              :end-date="event.end"
-            ></map-best-brawlers-card>
-            <event-picture-card
-              v-else
-              :mode="event.mode"
-              :map="event.map"
-              :id="event.id"
-            ></event-picture-card>
-          </slot>
-        </c-dashboard-cell>
-      </template>
+    <b-scrolling-dashboard class="mt-8">
+      <c-dashboard-cell
+        v-for="(event, index) in filteredEvents"
+        :key="event.map + '-' + event.id + '-' + event.powerplay"
+        :rows="2"
+        :columns="withData ? 3 : 2"
+        :lazy="index > 4"
+        :ssr-key="`active-event-${event.map}-${event.id}`"
+      >
+        <slot :event="event">
+          <map-best-brawlers-card
+            v-if="withData"
+            :slices="{
+              mode: [event.mode],
+              map: [event.map],
+            }"
+            :powerplay="event.powerplay"
+            :id="event.id"
+            :start-date="event.start"
+            :end-date="event.end"
+          ></map-best-brawlers-card>
+          <event-picture-card
+            v-else
+            :mode="event.mode"
+            :map="event.map"
+            :id="event.id"
+          ></event-picture-card>
+        </slot>
+      </c-dashboard-cell>
     </b-scrolling-dashboard>
   </div>
 </template>

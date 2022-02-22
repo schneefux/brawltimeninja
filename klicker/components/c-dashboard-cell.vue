@@ -44,22 +44,20 @@ export default defineComponent({
     const cell = ref<HTMLElement|null>()
     const visible = ref(!props.lazy)
 
-    onMounted(() => {
-      if (!visible.value) {
-        const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
-          if (isIntersecting) {
-            visible.value = isIntersecting
-            stop()
-          }
-        }, {
-          rootMargin: `50% 50% 50% 50%`,
-        })
-
-        if (!isSupported) {
-          visible.value = true
+    if (!visible.value && !process.server) {
+      const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          visible.value = isIntersecting
+          stop()
         }
+      }, {
+        rootMargin: `50% 50% 50% 50%`,
+      })
+
+      if (!isSupported) {
+        visible.value = true
       }
-    })
+    }
 
     return {
       cell,

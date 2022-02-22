@@ -1,30 +1,24 @@
 <template>
   <b-scrolling-dashboard
     v-if="modes != undefined && events != undefined"
-    :length="modes.length"
   >
-    <template v-slot="{ limit }">
-      <c-dashboard-cell
-        v-for="(mode, index) in modes"
-        :key="mode"
-        :rows="2"
-        :columns="4"
-        :class="{
-          'lg:hidden': index >= limit,
-        }"
-        :lazy="index > 3"
-        :ssr-key="`player-mode-winrates-${mode}`"
-      >
-        <player-mode-card
-          :mode="mode"
-          :battles="battles"
-          :active-events="events"
-          :player-brawlers="Object.values(player.brawlers)"
-          :player-tag="player.tag"
-          :enable-klicker-stats="enableKlickerStats"
-        ></player-mode-card>
-      </c-dashboard-cell>
-    </template>
+    <c-dashboard-cell
+      v-for="(mode, index) in modes"
+      :key="mode"
+      :rows="2"
+      :columns="4"
+      :lazy="index > 3"
+      :ssr-key="`player-mode-winrates-${mode}`"
+    >
+      <player-mode-card
+        :mode="mode"
+        :battles="battles"
+        :active-events="events"
+        :player-brawlers="Object.values(player.brawlers)"
+        :player-tag="player.tag"
+        :enable-klicker-stats="enableKlickerStats"
+      ></player-mode-card>
+    </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 

@@ -5,33 +5,26 @@
     </p>
     <b-scrolling-dashboard
       v-if="events != undefined"
-      :length="events.length"
-      :page-size="4"
       class="mt-8"
     >
-      <template v-slot="{ limit }">
-        <c-dashboard-cell
-          v-for="(event, index) in events"
-          :key="event.mode + '-' + event.map"
-          :rows="2"
-          :columns="3"
-          :class="{
-            'lg:hidden': index >= limit,
-          }"
-          :lazy="index > 3"
-          :ssr-key="`brawler-active-event${event.mode}-${event.map}`"
-        >
-          <brawler-active-event
-            :mode="event.mode"
-            :map="event.map"
-            :id="event.id"
-            :end="event.end"
-            :brawler-name="brawlerName"
-            :data="event"
-            class="w-full h-full"
-          ></brawler-active-event>
-        </c-dashboard-cell>
-      </template>
+      <c-dashboard-cell
+        v-for="(event, index) in events"
+        :key="event.mode + '-' + event.map"
+        :rows="2"
+        :columns="3"
+        :lazy="index > 3"
+        :ssr-key="`brawler-active-event-${event.mode}-${event.map}`"
+      >
+        <brawler-active-event
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+          :end="event.end"
+          :brawler-name="brawlerName"
+          :data="event"
+          class="w-full h-full"
+        ></brawler-active-event>
+      </c-dashboard-cell>
     </b-scrolling-dashboard>
   </div>
 </template>

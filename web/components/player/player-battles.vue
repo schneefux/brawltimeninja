@@ -1,25 +1,18 @@
 <template>
-  <b-scrolling-dashboard
-    :length="player.battles.length"
-  >
-    <template v-slot="{ limit }">
-      <c-dashboard-cell
-        v-for="(battle, index) in player.battles"
-        :key="battle.timestamp"
-        :columns="4"
-        :rows="2"
-        :class="{
-          'lg:hidden': index >= limit,
-        }"
-        :lazy="index > 3"
-        :ssr-key="`player-battles-${battle.timestamp}`"
-      >
-        <player-battle
-          :battle="battle"
-          :player-tag="player.tag"
-        ></player-battle>
-      </c-dashboard-cell>
-    </template>
+  <b-scrolling-dashboard>
+    <c-dashboard-cell
+      v-for="(battle, index) in player.battles"
+      :key="battle.timestamp"
+      :columns="4"
+      :rows="2"
+      :lazy="index > 3"
+      :ssr-key="`player-battles-${battle.timestamp}`"
+    >
+      <player-battle
+        :battle="battle"
+        :player-tag="player.tag"
+      ></player-battle>
+    </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 

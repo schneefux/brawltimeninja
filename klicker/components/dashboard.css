@@ -1,4 +1,8 @@
 @layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .var--rows-1 {
     --rows: 1;
   }
