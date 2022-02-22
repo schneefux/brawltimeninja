@@ -69,7 +69,7 @@
           </c-dashboard-cell>
 
           <client-only>
-            <c-dashboard-cell :columns="5" :rows="3" hide-empty>
+            <c-dashboard-cell :columns="3" :rows="2" hide-empty>
               <adsense
                 v-if="!isApp"
                 data-ad-format="auto"
@@ -104,7 +104,7 @@
           </c-dashboard-cell>
 
           <c-dashboard-cell
-            :columns="8"
+            :columns="6"
             :rows="4"
             ssr-key="map-trend-chart"
             hide-empty

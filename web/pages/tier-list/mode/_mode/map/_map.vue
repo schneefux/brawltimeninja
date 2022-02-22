@@ -33,7 +33,7 @@
     </div>
 
     <b-page-section>
-      <div class="grid grid-cols-1 lg:grid-cols-[20rem,minmax(0,1fr)] gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[16rem,minmax(0,1fr)] gap-8">
         <div class="">
           <div class="sticky top-0">
             <event-picture-card
