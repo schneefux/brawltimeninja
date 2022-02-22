@@ -17,46 +17,46 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <div class="flex relative">
-      <div class="w-1/4">
-        <div class="sticky top-0">
-          <div>
-            <p class="prose dark:prose-invert">
-              {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
-            </p>
-            <p v-if="event.map.startsWith('Competition ')">
-              {{ $t('tier-list.competition-info') }}
-              <b-button
-                to="/tier-list/competition-winners"
-                prefetch
-                primary
-                xs
-              >{{ $t('tier-list.compare-competition-winners') }}</b-button>
-            </p>
+    <div>
+      <p class="prose dark:prose-invert">
+        {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
+      </p>
+      <p v-if="event.map.startsWith('Competition ')">
+        {{ $t('tier-list.competition-info') }}
+        <b-button
+          to="/tier-list/competition-winners"
+          prefetch
+          primary
+          xs
+        >{{ $t('tier-list.compare-competition-winners') }}</b-button>
+      </p>
+    </div>
+
+    <b-page-section>
+      <div class="grid grid-cols-1 lg:grid-cols-[20rem,minmax(0,1fr)] gap-8">
+        <div class="">
+          <div class="sticky top-0">
+            <event-picture-card
+              v-if="showImage"
+              :mode="event.mode"
+              :map="event.map"
+              :id="event.id"
+            ></event-picture-card>
           </div>
-
-          <map-img
-            v-if="showImage"
-            :id="event.id"
-            :map="event.map"
-            clazz="h-64 mt-6 md:mt-0"
-          ></map-img>
         </div>
-      </div>
 
-      <div class="w-3/4">
-        <client-only>
-          <adsense
-            ins-class="ad-section"
-            id="ezoic-pub-ad-placeholder-112"
-            data-ad-client="ca-pub-6856963757796636"
-            data-ad-slot="1665534416"
-            data-ad-format="auto"
-            data-full-width-responsive="yes"
-          />
-        </client-only>
+        <div class="">
+          <client-only>
+            <adsense
+              ins-class="ad-section"
+              id="ezoic-pub-ad-placeholder-112"
+              data-ad-client="ca-pub-6856963757796636"
+              data-ad-slot="1665534416"
+              data-ad-format="auto"
+              data-full-width-responsive="yes"
+            />
+          </client-only>
 
-        <b-page-section>
           <map-views
             :mode="event.mode"
             :map="event.map"
@@ -64,9 +64,9 @@
             :timestamp="event.timestamp"
             ga-category="map"
           ></map-views>
-        </b-page-section>
+        </div>
       </div>
-    </div>
+    </b-page-section>
 
     <client-only>
       <adsense

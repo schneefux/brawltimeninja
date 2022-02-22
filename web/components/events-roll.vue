@@ -66,22 +66,12 @@
               :start-date="event.start"
               :end-date="event.end"
             ></map-best-brawlers-card>
-            <event-card
+            <event-picture-card
               v-else
               :mode="event.mode"
               :map="event.map"
-              :link="mapPath(event)"
               :id="event.id"
-              nobackground
-            >
-              <template v-slot:preview></template>
-              <map-img
-                slot="content"
-                :id="event.id"
-                :map="event.map"
-                clazz="mx-auto h-64"
-              ></map-img>
-            </event-card>
+            ></event-picture-card>
           </slot>
         </c-dashboard-cell>
       </template>
@@ -125,10 +115,7 @@ export default defineComponent({
         .sort((e1, e2) => e1.mode.localeCompare(e2.mode))
     )
 
-    const mapPath = (entry: EventMetadata) =>  `/tier-list/mode/${camelToKebab(entry.mode)}/map/${slugify(entry.map)}`
-
     return {
-      mapPath,
       modes,
       modeFilter,
       nameFilter,

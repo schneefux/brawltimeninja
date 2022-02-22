@@ -31,7 +31,7 @@
       <b-tabs
         :tabs="tabs"
         class="!mt-12 -mx-4 md:mx-0 px-4 md:px-0"
-        nav-class="top-14 z-20"
+        nav-class="top-14 md:top-0 z-20"
       >
         <div
           slot="brawlers"
