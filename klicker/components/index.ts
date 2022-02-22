@@ -17,6 +17,7 @@ export { default as BTabs } from './ui/b-tabs.vue'
 export { default as BPage } from './ui/b-page.vue'
 export { default as BPageSection } from './ui/b-page-section.vue'
 export { default as BScrollingDashboard } from './ui/b-scrolling-dashboard.vue'
+export { default as BAccordeonButtons } from './ui/b-accordeon-buttons.vue'
 
 export { default as VBarplot } from './visualisations/v-barplot.vue'
 export { default as VCsv } from './visualisations/v-csv.vue'

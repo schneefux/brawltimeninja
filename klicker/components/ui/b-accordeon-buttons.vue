@@ -9,7 +9,7 @@
       sm
       @click="collapse"
     >
-      {{ $t('action.collapse') }}
+      {{ translate('action.collapse') }}
     </b-button>
     <b-button
       v-if="value < Math.ceil(pages) - 1"
@@ -17,15 +17,20 @@
       sm
       @click="expand"
     >
-      {{ $t('action.expand') }}
+      {{ translate('action.expand') }}
     </b-button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue-demi'
+import BButton from './b-button.vue'
+import { useKlicker } from '../../composables/klicker'
 
 export default defineComponent({
+  components: {
+    BButton,
+  },
   props: {
     value: {
       type: Number,
@@ -39,10 +44,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const expand = () => emit('input', props.value + 1)
     const collapse = () => emit('input', 0)
+    const { $klicker } = useKlicker()
+    const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     return {
       expand,
       collapse,
+      translate,
     }
   },
 })

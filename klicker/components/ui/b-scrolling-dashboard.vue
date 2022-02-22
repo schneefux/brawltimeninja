@@ -5,19 +5,23 @@
     </div>
     <div class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 lg:hidden"></div>
 
-    <accordeon-buttons
+    <b-accordeon-buttons
       v-if="length != undefined"
       v-model="page"
       :pages="length / pageSize"
       class="mt-4 hidden lg:flex"
-    ></accordeon-buttons>
+    ></b-accordeon-buttons>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue-demi'
+import BAccordeonButtons from './b-accordeon-buttons.vue'
 
 export default defineComponent({
+  components: {
+    BAccordeonButtons,
+  },
   props: {
     length: {
       type: Number,
