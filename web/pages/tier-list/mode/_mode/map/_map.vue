@@ -32,9 +32,20 @@
       </p>
     </div>
 
+    <client-only>
+      <adsense
+        ins-class="ad-section"
+        id="ezoic-pub-ad-placeholder-112"
+        data-ad-client="ca-pub-6856963757796636"
+        data-ad-slot="1665534416"
+        data-ad-format="auto"
+        data-full-width-responsive="yes"
+      />
+    </client-only>
+
     <b-page-section>
       <div class="grid grid-cols-1 lg:grid-cols-[16rem,minmax(0,1fr)] gap-8">
-        <div class="">
+        <div>
           <div class="sticky top-0">
             <event-picture-card
               v-if="showImage"
@@ -45,26 +56,13 @@
           </div>
         </div>
 
-        <div class="">
-          <client-only>
-            <adsense
-              ins-class="ad-section"
-              id="ezoic-pub-ad-placeholder-112"
-              data-ad-client="ca-pub-6856963757796636"
-              data-ad-slot="1665534416"
-              data-ad-format="auto"
-              data-full-width-responsive="yes"
-            />
-          </client-only>
-
-          <map-views
-            :mode="event.mode"
-            :map="event.map"
-            :id="event.id"
-            :timestamp="event.timestamp"
-            ga-category="map"
-          ></map-views>
-        </div>
+        <map-views
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+          :timestamp="event.timestamp"
+          ga-category="map"
+        ></map-views>
       </div>
     </b-page-section>
 
