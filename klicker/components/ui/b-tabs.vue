@@ -4,7 +4,7 @@
       :class="navClass"
       class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[0.10] dark:border-white/[0.10]"
     >
-      <ul class="flex mx-6 gap-x-8 overflow-x-auto">
+      <ul class="flex mx-6 gap-x-8 overflow-x-auto hide-scrollbar">
         <li
           v-for="tab in tabs"
           :key="tab.id"
@@ -12,8 +12,8 @@
           <button
             class="text-lg px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out"
             :class="{
-              'border-primary-400 border-b-2': tab.id == activeTab || tabVisibility[tab.id],
-              'hover:border-primary-200 hover:border-b-2 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(tab.id == activeTab || tabVisibility[tab.id]),
+              'border-primary-400 border-b-2': tabVisibility[tab.id],
+              'hover:border-primary-200 hover:border-b-2 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !tabVisibility[tab.id],
             }"
             @click="setActiveTab(tab)"
           >
@@ -94,6 +94,10 @@ export default defineComponent({
         })
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
+          tabVisibility.value = {
+            [activeTab.value]: true,
+          }
+
           if (isIntersecting) {
             activeTab.value = tab.id
 
