@@ -21,14 +21,6 @@ app.post('/clicker/track', asyncMiddleware(async (req, res) => {
   res.json({})
 }))
 
-/**
- * @deprecated remove in favor of cube
- */
-app.get('/clicker/top/:metric', asyncMiddleware(async (req, res) => {
-  res.header('Cache-Control', 'public, max-age=60')
-  res.json(await service.getTopByMetric(req.params.metric, parseInt(req.query.limit as string) || 100))
-}))
-
 const port = parseInt(process.env.PORT || '') || 3004
 app.listen(port, () => {
   console.log(`listening on port ${port}`)

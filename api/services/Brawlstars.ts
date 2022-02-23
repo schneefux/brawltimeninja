@@ -1,7 +1,6 @@
-import { parseApiTime, xpToHours, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
-import { Player as BrawlstarsPlayer, Event as BrawlstarsEvent, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../model/Brawlstars.js';
-import { Battle, Brawler, Player, ActiveEvent, Leaderboard, LeaderboardEntry } from '../model/Api.js';
-import { LeaderboardRow } from '../model/Clicker.js';
+import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
+import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../model/Brawlstars.js';
+import { Battle, Brawler, Player, ActiveEvent } from '../model/Api.js';
 import { request, post } from '../lib/request.js';
 import { StarlistEvent } from 'model/Starlist.js';
 
@@ -72,68 +71,6 @@ export default class BrawlstarsService {
   public async getBrawlerRanking(countryCode: string, brawlerId: string) {
     const response = await this.apiRequest<{ items: PlayerRanking[] }>(`rankings/${countryCode}/brawlers/${brawlerId}`, 'fetch_brawler_rankings')
     return response.items
-  }
-
-  public async getLeaderboard(metric: string): Promise<Leaderboard> {
-    let entries = [] as LeaderboardEntry[]
-
-    if (metric == 'trophies') {
-      const response = await request<any>('rankings/global/players',
-        this.apiOfficial,
-        'fetch_trophies_leaderboard',
-        { },
-        { 'Authorization': 'Bearer ' + tokenOfficial },
-        10000,
-      );
-
-      entries = response.items.map((d: any) => ({
-        tag: d.tag.replace(/^#/, ''),
-        name: d.name,
-        icon: d.icon.id,
-        metric: d.trophies,
-      }));
-    }
-
-    if (metric == 'hours' && clickerUrl != '') {
-      const response = await request<LeaderboardRow[]>(
-        '/top/expPoints',
-        clickerUrl,
-        'fetch_leaderboard',
-        {},
-        {},
-        60000,
-      );
-
-      entries = response.map(entry => ({
-        name: entry.name,
-        tag: entry.tag,
-        icon: entry.icon,
-        metric: xpToHours(entry.expPoints),
-      }));
-    }
-
-    if (entries.length == 0 && clickerUrl != '') {
-      const response = await request<LeaderboardRow[]>(
-        '/top/' + metric,
-        clickerUrl,
-        'fetch_leaderboard_' + metric,
-        {},
-        {},
-        60000,
-      );
-
-      entries = response.map(entry => ({
-        name: entry.name,
-        tag: entry.tag,
-        icon: entry.icon,
-        metric: entry[metric as keyof LeaderboardRow] as number,
-      }));
-    }
-
-    return {
-      metric,
-      entries,
-    };
   }
 
   public async getPlayerStatistics(tag: string, store: boolean) {

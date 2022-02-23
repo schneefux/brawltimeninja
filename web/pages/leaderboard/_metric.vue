@@ -31,12 +31,12 @@
 
     <div class="flex justify-center mt-8">
       <b-card
-        v-if="!cubeMetrics.includes(metric)"
+        v-if="metric == 'trophies'"
         :title="$t('leaderboard.by-metric', { metric: metricName })"
       >
         <template v-slot:content>
           <p>
-            {{ $t('leaderboard.player.description', { length: rows.length }) }}
+            {{ $t('leaderboard.player.description', { length: leaderboard.length }) }}
           </p>
           <div class="mt-2">
             <player-rank-table
@@ -92,10 +92,10 @@
 
 <script lang="ts">
 import { defineComponent, useMeta, useContext, useRoute, computed, useAsync, useStore } from '@nuxtjs/composition-api'
-import { Leaderboard } from '@/model/Api'
 import { camelToSnakeCase, capitalizeWords, getSeasonEnd } from '@/lib/util'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
 import { CQuery, VTable, BHorizontalScroller } from '@schneefux/klicker/components'
+import { PlayerRanking } from '~/model/Brawlstars'
 
 export default defineComponent({
   components: {
@@ -126,15 +126,13 @@ export default defineComponent({
 
     const cubeMetrics = ['hours', 'victories', 'soloVictories', 'duoVictories']
 
-    const fetchLeaderboard = async () => {
-      console.log('fetch', metric.value)
+    const fetchTrophiesLeaderboard = async () => {
       if (cubeMetrics.includes(metric.value)) {
         return []
       }
-      const data = await $http.$get<Leaderboard>($config.apiUrl + `/api/leaderboard/${metric.value}`)
-      return data.entries
+      return await $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
     }
-    const leaderboard = useAsync(fetchLeaderboard, 'leaderboard-' + metric.value)
+    const leaderboard = useAsync(fetchTrophiesLeaderboard, 'leaderboard-' + metric.value)
 
     const metrics = [
       'hours',
@@ -148,8 +146,8 @@ export default defineComponent({
       return leaderboard.value?.map(e => ({
         player_name: e.name,
         player_tag: e.tag,
-        player_icon_id: e.icon,
-        [metric.value]: Math.floor(e.metric),
+        player_icon_id: e.icon.id,
+        trophies: e.trophies,
       })) ?? []
     })
 

@@ -86,19 +86,6 @@ router.get('/events/active', async (ctx) => {
   }
 })
 
-/**
- * @deprecated use /rankings instead or cube
- */
-router.get('/leaderboard/:metric', async (ctx) => {
-  try {
-    ctx.body = await service.getLeaderboard(ctx.params['metric'])
-    ctx.set('Cache-Control', 'public, max-age=600')
-  } catch (error: any) {
-    console.log(error)
-    ctx.throw(error.status, error.reason)
-  }
-});
-
 const port = parseInt(process.env.PORT || '') || 3001
 
 app

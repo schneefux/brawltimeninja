@@ -3,8 +3,7 @@ import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '~/model/Brawlstars';
 import { performance } from 'perf_hooks';
-import { LeaderboardRow } from '~/model/Clicker';
-import { parseApiTime, idToTag, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
+import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, getCurrentSeasonEnd, formatClickhouseDate } from '../lib/util';
 import MapMetaCube from './cubes/MapMetaCube';
 import GadgetMetaCube from './cubes/GadgetMetaCube';
 import StarpowerMetaCube from './cubes/StarpowerMetaCube';
@@ -382,40 +381,5 @@ export default class ClickerService {
     }
 
     brawlerStream.end()
-  }
-
-  public async getTopByMetric(metric: string, limit: number) {
-    const metrics = {
-      'expPoints': 'player_exp_points',
-      'trophies': 'player_trophies',
-      'powerPlayPoints': 'player_power_play_points',
-      'victories': 'player_3vs3_victories',
-      'soloVictories': 'player_solo_victories',
-      'duoVictories': 'player_duo_victories',
-    }
-
-    const metricMeasure = ((<any>metrics)[metric] || metric) as any
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-
-    const rows = await this.leaderboardCube.query(
-      'leaderboard',
-      [metricMeasure, 'player_name', 'player_icon_id'],
-      ['player_id'],
-      {
-        'timestamp': [formatClickhouse(oneWeekAgo)],
-      },
-      { [metricMeasure]: 'desc' },
-      false,
-      limit,
-    )
-
-    return rows.data.map(r => (<Partial<LeaderboardRow>>{
-      name: r.player_name,
-      tag: idToTag(r.player_id as string).replace('#', ''),
-      id: r.player_id,
-      icon: r.player_icon_id,
-      [metric]: r[metricMeasure],
-    }))
   }
 }
