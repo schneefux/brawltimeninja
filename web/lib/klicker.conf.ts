@@ -584,6 +584,8 @@ const hoursMetric: Metric = {
   name: 'Hours',
   sign: -1,
   type: 'quantitative',
+  formatter: '.0f',
+  d3formatter: '.0f',
   config: {
     sql: 'player_exp_points / 220',
     type: 'max',

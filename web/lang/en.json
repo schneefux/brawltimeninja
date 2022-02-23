@@ -517,5 +517,6 @@
     "translators": "",
     "about-metric": "About {metric}",
     "state.no-outliers": "No outliers",
-    "events.season.title": "All Maps in this season"
+    "events.season.title": "All Maps in this season",
+    "leaderboard.by-metric": "Best Players by {metric}"
 }

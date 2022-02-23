@@ -30,10 +30,13 @@
     </b-horizontal-scroller>
 
     <div class="flex justify-center mt-8">
-      <b-card :title="`Best Players by ${metricName}`">
+      <b-card
+        v-if="!cubeMetrics.includes(metric)"
+        :title="$t('leaderboard.by-metric', { metric: metricName })"
+      >
         <template v-slot:content>
           <p>
-            {{ $t('leaderboard.player.description', { length: leaderboard.length }) }}
+            {{ $t('leaderboard.player.description', { length: rows.length }) }}
           </p>
           <div class="mt-2">
             <player-rank-table
@@ -44,6 +47,33 @@
           </div>
         </template>
       </b-card>
+      <c-query
+        v-else
+        :query="{
+          cubeId: 'battle',
+          dimensionsIds: ['player'],
+          metricsIds: [metric],
+          slices: {
+            season: [currentSeason],
+          },
+          sortId: metric,
+          limit: 100,
+        }"
+      >
+        <template v-slot="data">
+          <v-table
+            v-bind="data"
+            :page-size="100"
+            :card="{
+              title: $t('leaderboard.by-metric', { metric: metricName }),
+            }"
+          >
+            <template v-slot:dimensions="data">
+              <d-player v-bind="data"></d-player>
+            </template>
+          </v-table>
+        </template>
+      </c-query>
     </div>
 
     <client-only>
@@ -61,30 +91,80 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import { mapState } from 'vuex'
-import { Leaderboard, LeaderboardEntry } from '@/model/Api'
-import { camelToSnakeCase, capitalizeWords } from '@/lib/util'
+import { defineComponent, useMeta, useContext, useRoute, computed, useAsync, useStore } from '@nuxtjs/composition-api'
+import { Leaderboard } from '@/model/Api'
+import { camelToSnakeCase, capitalizeWords, getSeasonEnd } from '@/lib/util'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
-import { BHorizontalScroller } from '@schneefux/klicker/components'
+import { CQuery, VTable, BHorizontalScroller } from '@schneefux/klicker/components'
 
-function formatMetric(m: string) {
-  return capitalizeWords(camelToSnakeCase(m).replace(/_/g, ' '))
-}
-
-export default Vue.extend({
+export default defineComponent({
   components: {
+    CQuery,
+    VTable,
     BHorizontalScroller,
   },
-  head(): MetaInfo {
-    const description = this.$tc('leaderboard.meta.description', 1, { metric: this.metricName })
+  head: {},
+  setup() {
+    const { i18n, $http, $config } = useContext()
+
+    const route = useRoute()
+    const metric = computed(() => route.value.params.metric as string)
+    const metricName = computed(() => capitalizeWords(camelToSnakeCase(metric.value).replace(/_/g, ' ')))
+
+    useMeta(() => {
+      const description = i18n.tc('leaderboard.meta.description', 1, { metric: metricName.value })
+      return {
+        title: i18n.tc('leaderboard.meta.title', 1, { metric: metricName.value }),
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
+    })
+
+    const currentSeason = getSeasonEnd(new Date()).toISOString().slice(0, 10)
+
+    const cubeMetrics = ['hours', 'victories', 'soloVictories', 'duoVictories']
+
+    const fetchLeaderboard = async () => {
+      console.log('fetch', metric.value)
+      if (cubeMetrics.includes(metric.value)) {
+        return []
+      }
+      const data = await $http.$get<Leaderboard>($config.apiUrl + `/api/leaderboard/${metric.value}`)
+      return data.entries
+    }
+    const leaderboard = useAsync(fetchLeaderboard, 'leaderboard-' + metric.value)
+
+    const metrics = [
+      'hours',
+      'trophies',
+      'victories',
+      'soloVictories',
+      'duoVictories',
+    ]
+
+    const rows = computed<PlayerRankTableRow[]>(() => {
+      return leaderboard.value?.map(e => ({
+        player_name: e.name,
+        player_tag: e.tag,
+        player_icon_id: e.icon,
+        [metric.value]: Math.floor(e.metric),
+      })) ?? []
+    })
+
+    const store = useStore<any>()
+    const isApp = computed(() => store.state.isApp as boolean)
+
     return {
-      title: this.$tc('leaderboard.meta.title', 1, { metric: this.metricName }),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
+      currentSeason,
+      metric,
+      cubeMetrics,
+      metrics,
+      metricName,
+      leaderboard,
+      rows,
+      isApp,
     }
   },
   meta: {
@@ -92,44 +172,5 @@ export default Vue.extend({
     screen: 'profile',
   },
   middleware: ['cached'],
-  data() {
-    return {
-      formatMetric,
-      metric: '',
-      metricName: '',
-      metrics: [
-        'hours',
-        'trophies',
-        'powerPlayPoints',
-        'victories',
-        'soloVictories',
-        'duoVictories',
-      ],
-      leaderboard: [] as LeaderboardEntry[],
-    }
-  },
-  async asyncData({ $http, $config, params }) {
-    const metric = params.metric as string
-    const leaderboard = await $http.$get<Leaderboard>($config.apiUrl + `/api/leaderboard/${metric}`)
-
-    return {
-      metric,
-      metricName: formatMetric(metric),
-      leaderboard: leaderboard.entries,
-    }
-  },
-  computed: {
-    rows(): PlayerRankTableRow[] {
-      return this.leaderboard.map(e => ({
-        player_name: e.name,
-        player_tag: e.tag,
-        player_icon_id: e.icon,
-        [this.metric]: Math.floor(e.metric),
-      }))
-    },
-    ...mapState({
-      isApp: (state: any) => state.isApp as boolean,
-    }),
-  },
 })
 </script>
