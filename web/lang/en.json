@@ -518,5 +518,6 @@
     "about-metric": "About {metric}",
     "state.no-outliers": "No outliers",
     "events.season.title": "All Maps in this season",
-    "leaderboard.by-metric": "Best Players by {metric}"
+    "leaderboard.by-metric": "Best Players by {metric}",
+    "nav.Leaderboard": "Leaderboard"
 }

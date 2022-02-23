@@ -72,7 +72,6 @@
             <c-dashboard-cell :columns="3" :rows="2" hide-empty>
               <adsense
                 v-if="!isApp"
-                data-ad-format="auto"
                 data-ad-client="ca-pub-6856963757796636"
                 data-ad-slot="4623162753"
                 data-full-width-responsive="yes"
@@ -152,7 +151,6 @@
             <c-dashboard-cell :columns="8" :rows="3" hide-empty>
               <adsense
                 v-if="!isApp"
-                data-ad-format="auto"
                 data-ad-client="ca-pub-6856963757796636"
                 data-ad-slot="4623162753"
                 data-full-width-responsive="yes"
@@ -208,7 +206,6 @@
             <c-dashboard-cell :columns="5" :rows="3" hide-empty>
               <adsense
                 v-if="!isApp"
-                data-ad-format="auto"
                 data-ad-client="ca-pub-6856963757796636"
                 data-ad-slot="4623162753"
                 data-full-width-responsive="yes"
@@ -264,7 +261,6 @@
             <c-dashboard-cell :columns="5" :rows="3" hide-empty>
               <adsense
                 v-if="!isApp"
-                data-ad-format="auto"
                 data-ad-client="ca-pub-6856963757796636"
                 data-ad-slot="4623162753"
                 data-full-width-responsive="yes"
@@ -319,7 +315,6 @@
             <c-dashboard-cell :columns="5" :rows="3" hide-empty>
               <adsense
                 v-if="!isApp"
-                data-ad-format="auto"
                 data-ad-client="ca-pub-6856963757796636"
                 data-ad-slot="4623162753"
                 data-full-width-responsive="yes"
