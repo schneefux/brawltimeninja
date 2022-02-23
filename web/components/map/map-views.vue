@@ -68,17 +68,11 @@
             ></map-best-teams-table>
           </c-dashboard-cell>
 
-          <client-only>
-            <c-dashboard-cell :columns="3" :rows="2" hide-empty>
-              <adsense
-                v-if="!isApp"
-                data-ad-client="ca-pub-6856963757796636"
-                data-ad-slot="4623162753"
-                data-full-width-responsive="yes"
-                class="text-center self-center"
-              />
-            </c-dashboard-cell>
-          </client-only>
+          <ad-cell
+            :columns="3"
+            :rows="2"
+            ad-slot="4623162753"
+          ></ad-cell>
 
           <map-balance-chart
             :id="id"
@@ -147,17 +141,11 @@
             ></map-best-players-table>
           </c-dashboard-cell>
 
-          <client-only>
-            <c-dashboard-cell :columns="8" :rows="3" hide-empty>
-              <adsense
-                v-if="!isApp"
-                data-ad-client="ca-pub-6856963757796636"
-                data-ad-slot="4623162753"
-                data-full-width-responsive="yes"
-                class="text-center self-center"
-              />
-            </c-dashboard-cell>
-          </client-only>
+          <ad-cell
+            :columns="8"
+            :rows="3"
+            ad-slot="4623162753"
+          ></ad-cell>
         </div>
 
         <div
@@ -202,17 +190,11 @@
             ></gadget-starpower-disclaimer>
           </c-dashboard-cell>
 
-          <client-only>
-            <c-dashboard-cell :columns="5" :rows="3" hide-empty>
-              <adsense
-                v-if="!isApp"
-                data-ad-client="ca-pub-6856963757796636"
-                data-ad-slot="4623162753"
-                data-full-width-responsive="yes"
-                class="text-center self-center"
-              />
-            </c-dashboard-cell>
-          </client-only>
+          <ad-cell
+            :columns="5"
+            :rows="3"
+            ad-slot="4623162753"
+          ></ad-cell>
         </div>
 
         <div
@@ -257,17 +239,11 @@
             ></gadget-starpower-disclaimer>
           </c-dashboard-cell>
 
-          <client-only>
-            <c-dashboard-cell :columns="5" :rows="3" hide-empty>
-              <adsense
-                v-if="!isApp"
-                data-ad-client="ca-pub-6856963757796636"
-                data-ad-slot="4623162753"
-                data-full-width-responsive="yes"
-                class="text-center self-center"
-              />
-            </c-dashboard-cell>
-          </client-only>
+          <ad-cell
+            :columns="5"
+            :rows="3"
+            ad-slot="4623162753"
+          ></ad-cell>
         </div>
 
         <div
@@ -311,17 +287,11 @@
             ></gadget-starpower-disclaimer>
           </c-dashboard-cell>
 
-          <client-only>
-            <c-dashboard-cell :columns="5" :rows="3" hide-empty>
-              <adsense
-                v-if="!isApp"
-                data-ad-client="ca-pub-6856963757796636"
-                data-ad-slot="4623162753"
-                data-full-width-responsive="yes"
-                class="text-center self-center"
-              />
-            </c-dashboard-cell>
-          </client-only>
+          <ad-cell
+            :columns="5"
+            :rows="3"
+            ad-slot="4623162753"
+          ></ad-cell>
         </div>
       </b-tabs>
     </template>
