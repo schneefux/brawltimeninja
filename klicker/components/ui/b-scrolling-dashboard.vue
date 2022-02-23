@@ -80,6 +80,10 @@ export default defineComponent({
     }
     const scroll = useScroll(container, {
       onStop: updateArrivedStates,
+      offset: {
+        left: 50,
+        right: 50,
+      },
     })
     onMounted(() => updateArrivedStates())
 
