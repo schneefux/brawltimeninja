@@ -579,6 +579,17 @@ const expLevelMetric: Metric = {
   },
 }
 
+const hoursMetric: Metric = {
+  id: 'hours',
+  name: 'Hours',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'player_exp_points / 220',
+    type: 'max',
+  },
+}
+
 const expPointsMetric: Metric = {
   id: 'expPoints',
   name: 'EXP',
@@ -1630,6 +1641,7 @@ const playerBrawlerMetrics = [
   starpowersMetric,
   gadgetsMetric,
   gearsMetric,
+  hoursMetric,
 ]
 
 const playerBrawlerSlices = [
