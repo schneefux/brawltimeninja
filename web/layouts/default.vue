@@ -1,6 +1,9 @@
 <template>
   <div class="dark">
-    <div class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+    <div
+      ref="container"
+      class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+    >
       <web-nav class="hidden md:flex"></web-nav>
       <app-head-nav class="md:hidden"></app-head-nav>
 
@@ -38,33 +41,36 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref } from '@nuxtjs/composition-api'
+import { useMutationObserver } from '@vueuse/core'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   head: {},
   setup(props, { root }) {
+    const container = ref<HTMLElement|null>()
+
     const { localePath } = useContext()
 
     useMeta(() => {
-    // https://i18n.nuxtjs.org/seo/#improving-performance
-    // will also add rel=canonical without query params
+      // https://i18n.nuxtjs.org/seo/#improving-performance
+      // will also add rel=canonical without query params
       return root.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
     })
 
     const links = [ {
-        name: 'Leaderboards',
+      name: 'Leaderboards',
       target: localePath('/leaderboard/hours'),
-      }, {
-        name: 'Guides',
-        target: '/blog/guides',
-      }, {
-        name: 'Status',
+    }, {
+      name: 'Guides',
+      target: '/blog/guides',
+    }, {
+      name: 'Status',
       target: localePath('/status'),
-      }, {
-        name: 'Privacy',
-        target: '/about',
-      }]
+    }, {
+      name: 'Privacy',
+      target: '/about',
+    }]
 
     const store = useStore<any>()
     const version = computed(() => store.state.version as number)
@@ -171,12 +177,23 @@ export default defineComponent({
       }
     })
 
+    useMutationObserver(container, () => {
+      // workaround for AdSense overriding min-height: 0px
+      // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
+      // wtf Google
+      container.value!.style['min-height'] = ''
+    }, {
+      attributes: true,
+      attributeFilter: ['style'],
+    })
+
     return {
       links,
       disableCookies,
       enableCookies,
       enableCookiesAndAds,
       consentPopupVisible,
+      container,
     }
   },
 })
