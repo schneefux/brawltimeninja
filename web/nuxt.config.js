@@ -230,7 +230,7 @@ export default {
       iso: 'es-ES',
       file: 'index.js',
     },
-    ...(process.env.TRADUORA_PROJECT_ID != '' ? [{
+    ...(!!process.env.TRADUORA_PROJECT_ID ? [{
       code: 'ru',
       iso: 'ru-RU',
       file: 'index.js',
