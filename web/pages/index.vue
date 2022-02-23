@@ -1,6 +1,6 @@
 <template>
   <b-page class="flex flex-col justify-center">
-    <div class="relative">
+    <div class="mx-auto relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
         class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
