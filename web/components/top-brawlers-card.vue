@@ -4,7 +4,10 @@
     :elevation="elevation"
     full-height
   >
-    <div slot="actions" class="space-x-2">
+    <div
+      slot="actions"
+      class="flex flex-wrap justify-end gap-2"
+    >
       <b-button
         :to="localePath(`/team-builder`)"
         primary
