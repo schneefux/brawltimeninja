@@ -205,7 +205,7 @@ export function idToTag(idString: string) {
   while (id != 0) {
     const i = id % 14
     tag = '0289PYLQGRJCUV'[i] + tag
-    id /= 14
+    id = Math.floor(id / 14)
   }
 
   return '#' + tag
