@@ -94,12 +94,11 @@ export default defineComponent({
         })
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
-          tabVisibility.value = {
-            [activeTab.value]: true,
-          }
-
           if (isIntersecting) {
             activeTab.value = tab.id
+            tabVisibility.value = {
+              [activeTab.value]: true,
+            }
 
             if (container.value!.getBoundingClientRect().top < 0) {
               container.value!.scrollIntoView()
