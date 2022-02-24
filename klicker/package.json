@@ -57,6 +57,7 @@
     "@storybook/addon-storysource": "^6.4.14",
     "@storybook/builder-webpack5": "^6.4.14",
     "@storybook/manager-webpack5": "^6.4.14",
+    "@storybook/testing-library": "^0.0.9",
     "@storybook/vue": "^6.4.14",
     "@types/d3-format": "^3.0.1",
     "@types/node": "^17.0.10",

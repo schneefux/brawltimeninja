@@ -20,6 +20,7 @@
     >
       <b-button
         class="h-10"
+        aria-label="previous"
         primary
         round
         @click="scrollLeft()"
@@ -38,6 +39,7 @@
     >
       <b-button
         class="h-10"
+        aria-label="next"
         primary
         round
         @click="scrollRight()"
@@ -52,12 +54,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue-demi'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
 import { useScroll } from '@vueuse/core'
 
 export default defineComponent({
   components: {
+    FontAwesomeIcon,
     BButton,
   },
   setup() {
