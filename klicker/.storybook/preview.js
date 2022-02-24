@@ -10,14 +10,15 @@ export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   darkMode: {
     current: 'dark',
+    darkClass: 'dark',
+    lightClass: 'light',
+    stylePreview: true,
   },
   backgrounds: {
     default: 'dark',
-    values: [
-      {
-        name: 'dark',
-        value: '#18181b', // bg-gray-900
-      },
-    ],
+    values: [{
+      name: 'dark',
+      value: '#18181b', // bg-gray-900
+    }],
   },
 }
