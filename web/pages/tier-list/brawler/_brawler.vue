@@ -22,16 +22,10 @@
       </p>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        id="ezoic-pub-ad-placeholder-108"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="8533352178"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="8533352178"
+      first
+    ></ad>
 
     <b-page-section
       :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
@@ -117,22 +111,15 @@
       </p>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        id="ezoic-pub-ad-placeholder-109"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6837127123"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="6837127123"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
 import { CDashboardCell } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
@@ -162,15 +149,11 @@ export default defineComponent({
       }
     })
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
-
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
     return {
       brawlerId,
       brawlerName,
-      isApp,
       makeVisibilityCallback,
     }
   },

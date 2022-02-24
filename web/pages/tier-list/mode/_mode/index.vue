@@ -15,15 +15,10 @@
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
-    <client-only>
-      <adsense
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="2291234880"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="2291234880"
+      first
+    ></ad>
 
     <b-page-section
       v-if="events != undefined && events.length > 0"
@@ -43,16 +38,10 @@
       <events-roll :events="events"></events-roll>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="2263314723"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="2263314723"
+      lazy
+    ></ad>
 
     <b-page-section>
       <map-views
@@ -61,23 +50,17 @@
       ></map-views>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="8497550588"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="8497550588"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
 import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
-import { defineComponent, useAsync, computed, useRoute, useStore, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, useAsync, computed, useRoute, useContext, useMeta } from '@nuxtjs/composition-api'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
@@ -102,9 +85,6 @@ export default defineComponent({
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
-
     useMeta(() => {
       const description = i18n.tc('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
       return {
@@ -122,7 +102,6 @@ export default defineComponent({
       events,
       mode,
       modePath,
-      isApp,
       makeVisibilityCallback,
     }
   },

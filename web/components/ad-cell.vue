@@ -4,14 +4,15 @@
       :rows="rows"
       :columns="columns"
       hide-empty
+      lazy
     >
       <adsense
         v-if="!isApp"
-        data-ad-client="ca-pub-6856963757796636"
         :data-ad-slot="adSlot"
+        data-ad-client="ca-pub-6856963757796636"
         data-full-width-responsive="yes"
         class="text-center self-center"
-      />
+      ></adsense>
     </c-dashboard-cell>
   </client-only>
 </template>

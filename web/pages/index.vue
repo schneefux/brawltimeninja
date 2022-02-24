@@ -125,16 +125,10 @@
       </div>
     </div>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-format="auto"
-        data-full-width-responsive="no"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6067985913"
-      />
-    </client-only>
+    <ad
+      ad-slot="6067985913"
+      first
+    ></ad>
 
     <b-page-section class="mt-4">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -156,16 +150,10 @@
       </div>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-format="auto"
-        data-full-width-responsive="no"
-        ins-class="mt-10 text-center"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6709232983"
-      />
-    </client-only>
+    <ad
+      ad-slot="6709232983"
+      lazy
+    ></ad>
 
     <b-page-section
       v-if="events != undefined && events.length > 0"
@@ -181,21 +169,15 @@
       ></events-roll>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        class="mt-8 mb-6 flex justify-center"
-        ins-class="w-full"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6736366415"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="6736366415"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore } from '@nuxtjs/composition-api'
 import { formatAsJsonLd } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
@@ -252,7 +234,6 @@ export default defineComponent({
     const player = computed(() => store.state.player as Player|undefined)
     const lastPlayers = computed(() => store.state.lastPlayers)
     const featuredPlayers = computed(() => store.state.featuredPlayers)
-    const isApp = computed(() => store.state.isApp)
 
     const helpDropdown = ref<HTMLElement>()
 
@@ -348,7 +329,6 @@ export default defineComponent({
       playerLinks,
       isInIframe,
       helpDropdown,
-      isApp,
       makeVisibilityCallback,
       search,
       error,

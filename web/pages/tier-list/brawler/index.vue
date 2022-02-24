@@ -4,16 +4,10 @@
       {{ $t('tier-list.brawler.description') }}
     </p>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="6446102315"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-        ins-class="ad-section"
-      />
-    </client-only>
+    <ad
+      ad-slot="6446102315"
+      first
+    ></ad>
 
     <b-page-section
       :title="$t('tier-list.all.title')"
@@ -27,21 +21,15 @@
       ></map-views>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="7838173054"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-        ins-class="ad-section"
-      />
-    </client-only>
+    <ad
+      ad-slot="7838173054"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
@@ -60,13 +48,9 @@ export default defineComponent({
       }
     })
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
-
     const { makeVisibilityCallback } = useTrackScroll('brawler_meta')
 
     return {
-      isApp,
       makeVisibilityCallback,
     }
   },

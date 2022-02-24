@@ -5,7 +5,6 @@
   >
     <accessory-tier-list kind="gadgets"></accessory-tier-list>
   </b-page>
-  </b-page>
 </template>
 
 <script lang="ts">

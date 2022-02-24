@@ -1,15 +1,9 @@
 <template>
   <b-page>
-    <client-only>
-      <adsense
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="9429125351"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-        ins-class="ad-section"
-      />
-      <div style="height: 300px;" class="adswrapper ad-section w-full" slot="placeholder"></div>
-    </client-only>
+    <ad
+      ad-slot="9429125351"
+      first
+    ></ad>
 
     <b-page-section
       v-observe-visibility="{
@@ -65,16 +59,10 @@
       </div>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-format="auto"
-        data-full-width-responsive="no"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3933066188"
-      />
-    </client-only>
+    <ad
+      ad-slot="3933066188"
+      lazy
+    ></ad>
 
     <b-page-section :title="$t('player.records.title')">
       <p class="mt-4 prose dark:prose-invert w-full">
@@ -145,16 +133,10 @@
       ></install-card>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-format="auto"
-        data-full-width-responsive="no"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4129048243"
-      />
-    </client-only>
+    <ad
+      ad-slot="4129048243"
+      lazy
+    ></ad>
 
     <b-page-section :title="$tc('mode', 2)">
       <p class="prose dark:prose-invert">
@@ -173,16 +155,10 @@
       ></player-mode-winrates>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        data-ad-format="auto"
-        data-full-width-responsive="no"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1752268168"
-      />
-    </client-only>
+    <ad
+      ad-slot="1752268168"
+      lazy
+    ></ad>
 
     <b-page-section :title="$tc('brawler', 2)">
       <p class="prose dark:prose-invert">
@@ -209,7 +185,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
@@ -254,8 +230,6 @@ export default defineComponent({
     const player = computed(() => store.state.player as Player)
     const playerTotals = computed(() => store.state.playerTotals as PlayerTotals|undefined)
 
-    const isApp = computed(() => store.state.isApp as boolean)
-
     useMeta(() => {
       const description = i18n.t('player.meta.description', { name: player.value.name }) as string
       const name = player.value.name
@@ -281,7 +255,6 @@ export default defineComponent({
       refreshSecondsLeft,
       refresh,
       enableKlickerStats,
-      isApp,
       player,
       playerTotals,
       makeVisibilityCallback,

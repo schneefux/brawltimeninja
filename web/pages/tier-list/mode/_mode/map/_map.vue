@@ -32,16 +32,10 @@
       </p>
     </div>
 
-    <client-only>
-      <adsense
-        ins-class="ad-section"
-        id="ezoic-pub-ad-placeholder-112"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="1665534416"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="1665534416"
+      first
+    ></ad>
 
     <b-page-section>
       <div class="grid grid-cols-1 lg:grid-cols-[16rem,minmax(0,1fr)] gap-8">
@@ -66,21 +60,15 @@
       </div>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3536131238"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="3536131238"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useStore, useAsync, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useMeta, computed, useAsync, useRoute } from '@nuxtjs/composition-api'
 import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
 
 interface Map {
@@ -146,16 +134,12 @@ export default defineComponent({
     const modePath = computed(() => event.value == undefined ? '' : `/tier-list/mode/${camelToKebab(event.value.mode)}`)
     const mapPath = computed(() => event.value == undefined ? '' : `${modePath.value}/map/${slugify(event.value.map)}`)
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
-
     return {
       event,
       title,
       showImage,
       modePath,
       mapPath,
-      isApp,
     }
   },
   meta: {

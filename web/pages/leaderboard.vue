@@ -2,16 +2,10 @@
   <b-page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
     <p>{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
 
-    <client-only>
-      <adsense
-        id="ezoic-pub-ad-placeholder-105"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4579727583"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-        ins-class="ad-section"
-      ></adsense>
-    </client-only>
+    <ad
+      ad-slot="4579727583"
+      first
+    ></ad>
 
     <b-horizontal-scroller
       class="mt-3"
@@ -33,22 +27,15 @@
       <nuxt-child></nuxt-child>
     </div>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        id="ezoic-pub-ad-placeholder-106"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="5140154307"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-        ins-class="ad-section"
-      />
-    </client-only>
+    <ad
+      ad-slot="5140154307"
+      lazy
+    ></ad>
   </b-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useContext, useRoute, computed, useStore, watch } from '@nuxtjs/composition-api'
+import { defineComponent, useMeta, useContext, useRoute, computed } from '@nuxtjs/composition-api'
 import { getSeasonEnd } from '@/lib/util'
 import { BHorizontalScroller } from '@schneefux/klicker/components'
 
@@ -89,14 +76,10 @@ export default defineComponent({
       'duoVictories',
     ]
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
-
     return {
       currentSeason,
       metric,
       metrics,
-      isApp,
     }
   },
   meta: {

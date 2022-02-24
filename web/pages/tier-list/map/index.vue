@@ -4,16 +4,10 @@
       {{ $t('tier-list.maps.description') }}
      </p>
 
-    <client-only>
-      <adsense
-        id="ezoic-pub-ad-placeholder-110"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="8877810024"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="8877810024"
+      first
+    ></ad>
 
     <b-page-section
       v-if="currentEvents.length > 0"
@@ -43,16 +37,10 @@
       ></events-roll>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="4150756245"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="4150756245"
+      lazy
+    ></ad>
 
     <b-page-section
       v-if="upcomingEvents.length > 0"
@@ -79,22 +67,16 @@
       <events-roll :events="allEvents"></events-roll>
     </b-page-section>
 
-    <client-only>
-      <adsense
-        v-if="!isApp"
-        id="ezoic-pub-ad-placeholder-111"
-        ins-class="ad-section"
-        data-ad-client="ca-pub-6856963757796636"
-        data-ad-slot="3577381889"
-        data-ad-format="auto"
-        data-full-width-responsive="yes"
-      />
-    </client-only>
+    <ad
+      ad-slot="3577381889"
+      lazy
+    ></ad>
+
   </b-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync, useContext, useMeta, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
 import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { CDashboardCell } from '@schneefux/klicker/components'
@@ -152,9 +134,6 @@ export default defineComponent({
       }
     })
 
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp)
-
     const { makeVisibilityCallback } = useTrackScroll('maps')
 
     return {
@@ -163,7 +142,6 @@ export default defineComponent({
       upcomingEvents,
       powerleagueEvents,
       unformatMode,
-      isApp,
       makeVisibilityCallback,
     }
   },
