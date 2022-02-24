@@ -1,4 +1,4 @@
-import { asDimensions, asNumberMetrics, asSlice, asStringMetrics, Cube, MetaGridEntry } from "../types"
+import { asSlice, Cube, Dimension, MetaGridEntry, Metric } from "../types"
 import { ChiSquared } from 'sampson'
 
 function calculateGTestStatistic(expectations: number[], observations: number[]) {
@@ -64,119 +64,121 @@ function binomialCI(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d: 
   }
 }
 
-const battleDimensions = asDimensions({
-  season: {
-    id: 'season',
-    name: 'Bi-Week',
-    childIds: ['day', 'timestamp'],
-    naturalIdAttribute: 'season',
-    formatter: 'yyyy-MM-dd',
-    additionalMetrics: [],
-    type: 'temporal',
+const seasonDimension: Dimension = {
+  id: 'season',
+  name: 'Bi-Week',
+  childIds: ['day', 'timestamp'],
+  naturalIdAttribute: 'season',
+  formatter: 'yyyy-MM-dd',
+  additionalMetrics: [],
+  type: 'temporal',
+  scale: {
+    nice: 'week',
+  },
+  config: {
+    sql: 'trophy_season_end',
+    type: 'time',
+  },
+}
+
+const brawlerDimension: Dimension = {
+  id: 'brawler',
+  name: 'Brawler',
+  childIds: ['gadget', 'starpower', 'gear'],
+  naturalIdAttribute: 'brawler',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_name',
+    type: 'string',
+  },
+}
+
+const modeDimension: Dimension = {
+  id: 'mode',
+  name: 'Mode',
+  childIds: ['map'],
+  naturalIdAttribute: 'mode',
+  formatter: 'formatMode',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_mode',
+    type: 'string',
+  },
+}
+
+const mapDimension: Dimension = {
+  id: 'map',
+  name: 'Map',
+  naturalIdAttribute: 'map',
+  additionalMetrics: ['mode', 'eventId'],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_map',
+    type: 'string',
+  },
+}
+
+const powerplayDimension: Dimension = {
+  id: 'powerplay',
+  name: 'Power Play',
+  naturalIdAttribute: 'powerplay',
+  formatter: 'y/n',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'battle_event_powerplay',
+    type: 'boolean',
+  },
+}
+
+const timestampMergedMetric: Metric = {
+  id: 'timestamp',
+  name: 'Last Update',
+  formatter: 'yyyy-MM-ddTHH:mm',
+  sign: -1,
+  type: 'temporal',
+  config: {
+    sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
+    type: 'number',
+  },
+}
+
+const picksMergedMetric: Metric = {
+  id: 'picks',
+  name: 'Picks recorded',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: 'sum(picks)',
+    type: 'number',
+  },
+}
+
+const trophyChangeMergedMetric: Metric = {
+  id: 'trophyChange',
+  name: 'Trophy Change',
+  formatter: '+.2f',
+  d3formatter: '+.2f',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
     scale: {
-      nice: 'week',
-    },
-    config: {
-      sql: 'trophy_season_end',
-      type: 'time',
+      zero: false,
     },
   },
-  brawler: {
-    id: 'brawler',
-    name: 'Brawler',
-    childIds: ['gadget', 'starpower', 'gear'],
-    naturalIdAttribute: 'brawler',
-    formatter: 'capitalizeWords',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'brawler_name',
-      type: 'string',
-    },
+  config: {
+    sql: 'avgMerge(battle_trophy_change_state)',
+    type: 'number',
   },
-  mode: {
-    id: 'mode',
-    name: 'Mode',
-    childIds: ['map'],
-    naturalIdAttribute: 'mode',
-    formatter: 'formatMode',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_mode',
-      type: 'string',
-    },
-  },
-  map: {
-    id: 'map',
-    name: 'Map',
-    naturalIdAttribute: 'map',
-    additionalMetrics: ['mode', 'eventId'],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_map',
-      type: 'string',
-    },
-  },
-  powerplay: {
-    id: 'powerplay',
-    name: 'Power Play',
-    naturalIdAttribute: 'powerplay',
-    formatter: 'y/n',
-    additionalMetrics: [],
-    type: 'nominal',
-    config: {
-      sql: 'battle_event_powerplay',
-      type: 'boolean',
-    },
-  },
-})
+}
 
-const mergedbattleStringMetrics = asStringMetrics({
-  timestamp: {
-    id: 'timestamp',
-    name: 'Last Update',
-    formatter: 'yyyy-MM-ddTHH:mm',
-    sign: -1,
-    type: 'temporal',
-    config: {
-      sql: 'formatDateTime(argMaxMerge(timestamp_state), \'%FT%TZ\', \'UTC\')',
-      type: 'number',
-    },
-  },
-})
-
-const mergedbattleNumberMetrics = asNumberMetrics({
-  picks: {
-    id: 'picks',
-    name: 'Picks recorded',
-    formatter: '.2s',
-    d3formatter: '.2s',
-    sign: -1,
-    type: 'quantitative',
-    config: {
-      sql: '',
-      type: 'count',
-    },
-  },
-  trophyChange: {
-    id: 'trophyChange',
-    name: 'Trophy Change',
-    formatter: '+.2f',
-    d3formatter: '+.2f',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'battle_trophy_change',
-      type: 'avg',
-    },
-  },
-  winRate: {
+const makeWinRateMetric = (config: Metric['config']): Metric => {
+  return {
     id: 'winRate',
     name: 'Win Rate',
     description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
@@ -189,65 +191,69 @@ const mergedbattleNumberMetrics = asNumberMetrics({
         zero: false,
       },
     },
-    config: {
-      sql: 'avgMerge(battle_victory_state)',
-      type: 'number',
-    },
+    config,
     statistics: {
       test: {
         name: 'G-Test',
         test: binomialTest(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
         requiresMetrics: ['picks'],
-    },
+      },
       ci: {
         ci: binomialCI(m => (m['winRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
         requiresMetrics: ['picks'],
       },
     },
-  },
-  starRate: {
-    id: 'starRate',
-    name: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    formatter: '.1%',
-    d3formatter: '.1%',
-    sign: -1,
-    type: 'quantitative',
-    vega: {
-      scale: {
-        zero: false,
-      },
-    },
-    config: {
-      sql: 'avgMerge(battle_starplayer_state)',
-      type: 'number',
-    },
-    statistics: {
-      test: {
-        name: 'G-Test',
-        test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-    },
-      ci: {
-        ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
-        requiresMetrics: ['picks'],
-      },
-    },
-  },
-  duration: {
-    id: 'duration',
-    name: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    formatter: 'duration',
-    d3formatter: 'duration',
-    sign: +1,
-    type: 'quantitative',
-    config: {
-      sql: 'avgMerge(battle_duration_state)',
-      type: 'number',
-    },
-  },
+  }
+}
+
+const winRateMergedMetric = makeWinRateMetric({
+  sql: 'avgMerge(battle_victory_state)',
+  type: 'number',
 })
+
+const starRateMergedMetric: Metric = {
+  id: 'starRate',
+  name: 'Star Player',
+  description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+  formatter: '.1%',
+  d3formatter: '.1%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: 'avgMerge(battle_starplayer_state)',
+    type: 'number',
+  },
+  statistics: {
+    test: {
+      name: 'G-Test',
+      test: binomialTest(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+  },
+    ci: {
+      ci: binomialCI(m => (m['starRate'] as number) * (m['picks'] as number), m => m['picks'] as number),
+      requiresMetrics: ['picks'],
+    },
+  },
+}
+
+const durationMergedMetric: Metric = {
+  id: 'duration',
+  name: 'Duration',
+  description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+  formatter: 'duration',
+  d3formatter: 'duration',
+  sign: +1,
+  type: 'quantitative',
+  config: {
+    sql: 'avgMerge(battle_duration_state)',
+    type: 'number',
+  },
+}
 
 const battleSlices = asSlice({
   seasonBetween: {
@@ -279,20 +285,20 @@ const cubes: Record<string, Cube> = {
     table: 'map_meta',
     name: 'Map',
     dimensions: [
-      battleDimensions.season,
-      battleDimensions.brawler,
-      battleDimensions.mode,
-      battleDimensions.map,
-      battleDimensions.powerplay,
+      seasonDimension,
+      brawlerDimension,
+      modeDimension,
+      mapDimension,
+      powerplayDimension,
     ],
     defaultDimensionsIds: ['brawler'],
     metrics: [
-      mergedbattleStringMetrics.timestamp,
-      mergedbattleNumberMetrics.picks,
-      mergedbattleNumberMetrics.trophyChange,
-      mergedbattleNumberMetrics.winRate,
-      mergedbattleNumberMetrics.starRate,
-      mergedbattleNumberMetrics.duration,
+      timestampMergedMetric,
+      picksMergedMetric,
+      trophyChangeMergedMetric,
+      winRateMergedMetric,
+      starRateMergedMetric,
+      durationMergedMetric,
     ],
     defaultMetricIds: ['winRateAdj'],
     metaMetrics: ['picks', 'timestamp'],

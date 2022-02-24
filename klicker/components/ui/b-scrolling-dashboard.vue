@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue-demi'
+import { defineComponent, ref, onMounted } from 'vue-demi'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
 import { useScroll } from '@vueuse/core'
@@ -60,7 +60,7 @@ export default defineComponent({
   components: {
     BButton,
   },
-  setup(props) {
+  setup() {
     const container = ref<HTMLElement|null>()
 
     const scrollTo = (direction: number) => {
