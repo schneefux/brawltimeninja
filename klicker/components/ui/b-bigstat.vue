@@ -16,7 +16,7 @@
         </b-card>
       </b-lightbox>
       <button
-        v-if="tooltip != undefined || tooltipLink != undefined"
+        v-if="tooltip != undefined || tooltipLink != undefined || 'tooltip' in $scopedSlots"
         :to="tooltipLink"
         class="w-4 text-sm leading-none absolute top-1 right-0"
         @click="tooltipOpen = !tooltipOpen"
@@ -46,6 +46,9 @@ import BCard from './b-card.vue'
 import BLightbox from './b-lightbox.vue'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 
+/**
+ * Card which prominently displays a single number
+ */
 export default defineComponent({
   inheritAttrs: false,
   components: {

@@ -9,6 +9,7 @@
 
     <div
       v-show="!arrivedRight"
+      data-testid="scroll-hint"
       class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 lg:hidden"
     ></div>
 
@@ -57,7 +58,7 @@ import { defineComponent, ref, onMounted } from 'vue-demi'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
-import { useScroll } from '@vueuse/core'
+import { useScroll, useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
   components: {
@@ -90,6 +91,7 @@ export default defineComponent({
       },
     })
     onMounted(() => updateArrivedStates())
+    useResizeObserver(container, () => updateArrivedStates())
 
     return {
       container,

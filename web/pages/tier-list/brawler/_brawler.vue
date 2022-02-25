@@ -11,105 +11,117 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <b-page-section>
-      <brawler-base-stats
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-      ></brawler-base-stats>
-
-      <p class="mt-8 prose dark:prose-invert">
-        {{ $t('starpower-gadget-comparison.info') }}
-      </p>
-    </b-page-section>
-
     <ad
       ad-slot="8533352178"
       first
     ></ad>
 
-    <b-page-section
-      :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('synergies'),
-        once: true,
-      }"
+    <b-tabs
+      :tabs="tabs"
+      class="mt-12"
+      nav-class="top-14 md:top-0 z-20"
+      vertical
     >
-    <b-scrolling-dashboard>
-      <c-dashboard-cell :rows="2" :columns="6" hide-empty>
-        <brawler-synergies-card
-          :brawler="brawlerName"
-        ></brawler-synergies-card>
-      </c-dashboard-cell>
-      <c-dashboard-cell :rows="2" :columns="6" hide-empty>
-        <brawler-weaknesses-card
-          :brawler="brawlerName"
-        ></brawler-weaknesses-card>
-      </c-dashboard-cell>
-    </b-scrolling-dashboard>
-    </b-page-section>
+      <b-page-section slot="overview">
+        <brawler-base-stats
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+        ></brawler-base-stats>
 
-    <b-page-section
-      :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('current-maps'),
-        once: true,
-      }"
-    >
-      <brawler-active-events :brawler-name="brawlerName"></brawler-active-events>
-    </b-page-section>
+        <p class="mt-8 prose dark:prose-invert">
+          {{ $t('starpower-gadget-comparison.info') }}
+        </p>
+      </b-page-section>
 
-    <b-page-section
-      :title="brawlerName + ' Trends'"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('trends'),
-        once: true,
-      }"
-    >
-      <p
-        slot="description"
-        class="mt-4 prose dark:prose-invert"
+      <b-page-section
+        slot="synergies"
+        :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('synergies'),
+          once: true,
+        }"
       >
-        {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
-      </p>
+        <b-scrolling-dashboard>
+          <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+            <brawler-synergies-card
+              :brawler="brawlerName"
+            ></brawler-synergies-card>
+          </c-dashboard-cell>
+          <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+            <brawler-weaknesses-card
+              :brawler="brawlerName"
+            ></brawler-weaknesses-card>
+          </c-dashboard-cell>
+        </b-scrolling-dashboard>
+      </b-page-section>
 
-      <brawler-trends-card
-        :brawler-name="brawlerName"
-        class="mt-4"
-      ></brawler-trends-card>
-    </b-page-section>
+      <div slot="maps">
+        <b-page-section
+          :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('current-maps'),
+            once: true,
+          }"
+        >
+          <brawler-active-events :brawler-name="brawlerName"></brawler-active-events>
+        </b-page-section>
 
-    <b-page-section
-      :title="$t('brawler.by-trophies', { brawler: brawlerName })"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('trophy-graphs'),
-        once: true,
-      }"
-    >
-      <brawler-trophy-graphs
-        :brawler-name="brawlerName"
-      ></brawler-trophy-graphs>
+        <b-page-section
+          :title="$t('brawler.modes.title', { brawler: brawlerName })"
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('modes'),
+            once: true,
+          }"
+        >
+          <brawler-modes-stats
+            :brawler-id="brawlerId"
+            :brawler-name="brawlerName"
+          ></brawler-modes-stats>
 
-      <p class="mt-4 prose dark:prose-invert">
-        {{ $t('brawler.disclaimer') }}
-      </p>
-    </b-page-section>
+          <p class="mt-4 prose dark:prose-invert">
+            {{ $t('brawler.viable-info') }}
+          </p>
+        </b-page-section>
+      </div>
 
-    <b-page-section
-      :title="$t('brawler.modes.title', { brawler: brawlerName })"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('modes'),
-        once: true,
-      }"
-    >
-      <brawler-modes-stats
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-      ></brawler-modes-stats>
+      <div slot="trends">
+        <b-page-section
+          :title="$t('brawler.trends', { brawler: brawlerName })"
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('trends'),
+            once: true,
+          }"
+        >
+          <p
+            slot="description"
+            class="mt-4 prose dark:prose-invert"
+          >
+            {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
+          </p>
 
-      <p class="mt-4 prose dark:prose-invert">
-        {{ $t('brawler.viable-info') }}
-      </p>
-    </b-page-section>
+          <brawler-trends-card
+            :brawler-name="brawlerName"
+            class="mt-4"
+          ></brawler-trends-card>
+        </b-page-section>
+
+        <b-page-section
+          :title="$t('brawler.by-trophies', { brawler: brawlerName })"
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('trophy-graphs'),
+            once: true,
+          }"
+        >
+          <brawler-trophy-graphs
+            :brawler-name="brawlerName"
+          ></brawler-trophy-graphs>
+
+          <p class="mt-4 prose dark:prose-invert">
+            {{ $t('brawler.disclaimer') }}
+          </p>
+        </b-page-section>
+      </div>
+    </b-tabs>
 
     <ad
       ad-slot="6837127123"
@@ -121,12 +133,13 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { CDashboardCell, BTabs } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
     CDashboardCell,
+    BTabs,
   },
   head: {},
   setup() {
@@ -151,7 +164,22 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
+    const tabs = [{
+      slot: 'overview',
+      title: 'Overview',
+    }, {
+      slot: 'synergies',
+      title: 'Synergies',
+    }, {
+      slot: 'maps',
+      title: 'Maps',
+    }, {
+      slot: 'trends',
+      title: 'Trends',
+    }]
+
     return {
+      tabs,
       brawlerId,
       brawlerName,
       makeVisibilityCallback,

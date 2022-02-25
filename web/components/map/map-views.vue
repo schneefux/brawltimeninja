@@ -30,7 +30,7 @@
     <template v-slot="query">
       <b-tabs
         :tabs="tabs"
-        class="!mt-12 -mx-4 md:mx-0 px-4 md:px-0"
+        class="mt-12"
         nav-class="top-14 md:top-0 z-20"
       >
         <div
@@ -299,7 +299,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, watch } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
 import { getSeasonEnd } from '~/lib/util'
@@ -330,7 +330,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore<any>()
     const { $klicker } = useContext()
 
     const twoWeeksAgo = new Date()
@@ -360,13 +359,26 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = props.gaCategory != undefined ? useTrackScroll(props.gaCategory) : { makeVisibilityCallback: () => undefined }
 
-    const isApp = computed(() => store.state.isApp as boolean)
-
-    const tabs = [{ id: 'brawlers', title: 'Brawlers' }, { id: 'starpowers', title: 'Star Powers' }, { id: 'gadgets', title: 'Gadgets' }, { id: 'gears', title: 'Gears' }, { id: 'leaderboard', title: 'Leaderboard' }]
+    const { i18n } = useContext()
+    const tabs = [{
+      slot: 'brawlers',
+      title: i18n.t('tab.brawlers'),
+    }, {
+      slot: 'starpowers',
+      title: i18n.t('tab.starpowers'),
+    }, {
+      slot: 'gadgets',
+      title: i18n.t('tab.gadgets'),
+    }, {
+      slot: 'gears',
+      title: i18n.t('tab.gears'),
+    }, {
+      slot: 'leaderboard',
+      title: i18n.t('tab.leaderboard'),
+    }]
 
     return {
       tabs,
-      isApp,
       query,
       adjustedWinRate,
       makeVisibilityCallback,

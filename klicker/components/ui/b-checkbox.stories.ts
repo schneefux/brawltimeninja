@@ -6,7 +6,7 @@ export default {
   title: 'Checkbox',
 } as Meta
 
-export const Dark: Story = (args, { argTypes }) => ({
+export const Default: Story = (args, { argTypes }) => ({
   components: { BCheckbox },
   props: Object.keys(argTypes),
   template: `
@@ -16,7 +16,6 @@ export const Dark: Story = (args, { argTypes }) => ({
     </label>
   `,
 })
-Dark.args = {
-  dark: true,
+Default.args = {
   value: true,
 }

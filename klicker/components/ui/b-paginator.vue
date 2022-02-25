@@ -3,6 +3,7 @@
     <button
       v-show="page != 0"
       class="w-8 text-center"
+      aria-label="previous"
       @click="page--"
     >
       <font-awesome-icon
@@ -14,13 +15,14 @@
       class="whitespace-nowrap"
       :class="{
         'ml-8': page == 0,
-        'mr-8': page == pages,
+        'mr-8': page == pages - 1,
       }"
-    >{{ page + 1 }} / {{ pages + 1 }}</span>
+    >{{ page + 1 }} / {{ pages }}</span>
 
     <button
-      v-show="page != pages"
+      v-show="page != pages - 1"
       class="w-8 text-center"
+      aria-label="next"
       @click="page++"
     >
       <font-awesome-icon

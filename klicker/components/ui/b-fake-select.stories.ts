@@ -1,12 +1,14 @@
 import BFakeSelect from './b-fake-select.vue'
 import { Meta, Story } from '@storybook/vue'
+import { userEvent, within } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
 
 export default {
   component: BFakeSelect,
   title: 'Custom Select',
 } as Meta
 
-export const Dark: Story = (args, { argTypes }) => ({
+export const Default: Story = (args, { argTypes }) => ({
   components: { BFakeSelect },
   props: Object.keys(argTypes),
   template: `
@@ -23,6 +25,14 @@ export const Dark: Story = (args, { argTypes }) => ({
     </b-fake-select>
   `,
 })
-Dark.args = {
-  dark: true,
+Default.args = {}
+Default.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  const button = await canvas.findByRole('button')
+  await userEvent.click(button)
+  const content = await canvas.findByText(/Inner content/)
+  expect(content).toBeVisible()
+  await userEvent.click(button)
+  expect(content).not.toBeVisible()
 }

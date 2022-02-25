@@ -6,14 +6,13 @@ export default {
   title: 'Number Input',
 } as Meta
 
-export const Dark: Story = (args, { argTypes }) => ({
+export const Default: Story = (args, { argTypes }) => ({
   components: { BNumber },
   props: Object.keys(argTypes),
   template: `
     <b-number v-bind="$props"></b-number>
   `,
 })
-Dark.args = {
-  dark: true,
+Default.args = {
   value: 123,
 }

@@ -6,7 +6,7 @@ export default {
   title: 'Radio',
 } as Meta
 
-export const Dark: Story = (args, { argTypes }) => ({
+export const Default: Story = (args, { argTypes }) => ({
   components: { BRadio },
   props: Object.keys(argTypes),
   template: `
@@ -22,8 +22,7 @@ export const Dark: Story = (args, { argTypes }) => ({
     </div>
   `,
 })
-Dark.args = {
-  dark: true,
+Default.args = {
   value: '1',
 }
 

@@ -108,6 +108,7 @@
     "brawler.winrate-userate-chart.for.map": "Brawler Win Rates and Use Rates in {mode} - {map}",
     "brawler.winrate-userate-chart.for.mode": "Brawler Win Rates and Use Rates in {mode}",
     "brawler.winrate-userate-chart.long": "Brawler Win Rates and Use Rates",
+    "brawler.trends": "{brawler} Trends",
     "club": "Club",
     "club.meta.description": "{club} Brawl Stars Club.",
     "club.meta.title": "{club} Brawl Stars Club",
@@ -519,5 +520,10 @@
     "state.no-outliers": "No outliers",
     "events.season.title": "All Maps in this season",
     "leaderboard.by-metric": "Best Players by {metric}",
-    "nav.Leaderboard": "Leaderboard"
+    "nav.Leaderboard": "Leaderboard",
+    "tab.brawlers": "Brawlers",
+    "tab.starpowers": "Starpowers",
+    "tab.gadgets": "Gadgets",
+    "tab.gears": "Gears",
+    "tab.leaderboard": "Leaderboard"
 }

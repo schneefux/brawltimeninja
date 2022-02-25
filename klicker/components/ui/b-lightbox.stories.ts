@@ -1,6 +1,8 @@
 import BLightbox from './b-lightbox.vue'
 import BButton from './b-button.vue'
 import { Meta, Story } from '@storybook/vue'
+import { userEvent, within } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
 
 export default {
   component: BLightbox,
@@ -24,3 +26,17 @@ export const Default: Story = (args, { argTypes }) => ({
     }
   },
 })
+Default.args = {}
+Default.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  const button = await canvas.findByRole('button')
+  await userEvent.click(button)
+  const content = await canvas.findByText(/Content goes here/)
+  expect(content).toBeVisible()
+  const close = await canvas.findByLabelText('close')
+  expect(close).toBeVisible()
+  await userEvent.click(close)
+  expect(close).not.toBeVisible()
+  expect(content).not.toBeVisible()
+}

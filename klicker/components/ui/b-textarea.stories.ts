@@ -14,6 +14,5 @@ export const Default: Story = (args, { argTypes }) => ({
   `,
 })
 Default.args = {
-  dark: true,
   value: 'Enter some text here',
 }

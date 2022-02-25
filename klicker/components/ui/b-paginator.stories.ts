@@ -1,5 +1,8 @@
 import BPaginator from './b-paginator.vue'
 import { Meta, Story } from '@storybook/vue'
+import { userEvent, within } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
+import { ref } from 'vue-demi'
 
 export default {
   component: BPaginator,
@@ -10,10 +13,32 @@ export const Default: Story = (args, { argTypes }) => ({
   components: { BPaginator },
   props: Object.keys(argTypes),
   template: `
-    <b-paginator v-bind="$props"></b-paginator>
+    <b-paginator
+      v-model="v"
+      v-bind="$props"
+    ></b-paginator>
   `,
+  setup() {
+    const v = ref(0)
+
+    return {
+      v,
+    }
+  },
 })
 Default.args = {
-  value: 1,
-  pages: 5,
+  pages: 3,
+}
+Default.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  await canvas.findByText('1 / 3')
+  const previous = await canvas.findByLabelText('previous')
+  const next = await canvas.findByLabelText('next')
+  expect(previous).not.toBeVisible()
+  expect(next).toBeVisible()
+  await userEvent.click(next)
+  await canvas.findByText('2 / 3')
+  await userEvent.click(next)
+  expect(next).not.toBeVisible()
 }

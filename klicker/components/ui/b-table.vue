@@ -64,7 +64,7 @@
     <b-paginator
       v-if="!noPaginator && pageSize != undefined && rows.length > pageSize"
       v-model="page"
-      :pages="Math.ceil(rows.length / pageSize) - 1"
+      :pages="Math.ceil(rows.length / pageSize)"
       class="pt-4 mt-auto mx-auto"
     ></b-paginator>
   </div>

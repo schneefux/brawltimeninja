@@ -75,7 +75,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType } from 'vue-demi'
 import { useKlicker } from '../composables/klicker'
-import { useUniqueId } from '../composables/id'
 
 export default defineComponent({
   components: {
@@ -184,14 +183,11 @@ export default defineComponent({
 
     const translate = (key: string) => $klicker.$t(key)
 
-    const { id: prefix } = useUniqueId()
-
     return {
       cubes,
       canCompare,
       compareMode,
       onInputCubeId,
-      prefix,
       faPlus,
       faMinus,
       translate,

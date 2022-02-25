@@ -14,7 +14,8 @@
     "dev": "vite",
     "build": "vite build && tsc --emitDeclarationOnly",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "test-storybook": "test-storybook"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -52,11 +53,14 @@
     "@babel/core": "^7.16.12",
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-interactions": "^6.4.19",
     "@storybook/addon-links": "^6.4.19",
     "@storybook/addon-postcss": "^2.0.0",
     "@storybook/addon-storysource": "^6.4.19",
     "@storybook/builder-webpack5": "^6.4.19",
+    "@storybook/jest": "^0.0.9",
     "@storybook/manager-webpack5": "^6.4.19",
+    "@storybook/test-runner": "^0.0.4",
     "@storybook/testing-library": "^0.0.9",
     "@storybook/vue": "^6.4.19",
     "@types/d3-format": "^3.0.1",
@@ -65,6 +69,7 @@
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.3",
     "chromatic": "^6.4.1",
+    "jest": "^27.5.1",
     "postcss": "^8.4.5",
     "postcss-color-function": "^4.1.0",
     "postcss-import": "^14.0.2",

@@ -40,22 +40,6 @@ Loading.args = {
   loading: true,
 }
 
-export const Light: Story = (args, { argTypes }) => ({
-  components: { BCard },
-  props: Object.keys(argTypes),
-  template: `
-    <b-card v-bind="$props">
-      <p slot="content">${lipsum}</p>
-    </b-card>
-  `,
-})
-Light.args = {
-  title: 'Storybook Demo',
-  elevation: 1,
-  sm: true,
-  light: true,
-}
-
 export const Infobar: Story = (args, { argTypes }) => ({
   components: { BCard },
   props: Object.keys(argTypes),

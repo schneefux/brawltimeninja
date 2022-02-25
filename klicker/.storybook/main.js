@@ -1,8 +1,10 @@
 const path = require('path')
-const webpack = require('webpack')
 
 module.exports = {
   framework: '@storybook/vue',
+  features: {
+    interactionsDebugger: true,
+  },
   stories: [
     '../components/**/*.stories.mdx',
     '../components/**/*.stories.@(js|jsx|ts|tsx)'

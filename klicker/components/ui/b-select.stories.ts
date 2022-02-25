@@ -6,7 +6,7 @@ export default {
   title: 'Select',
 } as Meta
 
-export const Dark: Story = (args, { argTypes }) => ({
+export const Default: Story = (args, { argTypes }) => ({
   components: { BSelect },
   props: Object.keys(argTypes),
   template: `
@@ -17,8 +17,7 @@ export const Dark: Story = (args, { argTypes }) => ({
     </b-select>
   `,
 })
-Dark.args = {
-  dark: true,
+Default.args = {
   value: '1',
 }
 
@@ -34,7 +33,6 @@ export const Multiple: Story = (args, { argTypes }) => ({
   `,
 })
 Multiple.args = {
-  dark: true,
   value: '1',
   multiple: true,
 }
