@@ -38,17 +38,14 @@
     ></ad>
 
     <b-page-section>
-      <div class="grid grid-cols-1 lg:grid-cols-[16rem,minmax(0,1fr)] gap-8">
-        <div>
-          <div class="sticky top-0">
-            <event-picture-card
-              v-if="showImage"
-              :mode="event.mode"
-              :map="event.map"
-              :id="event.id"
-            ></event-picture-card>
-          </div>
-        </div>
+      <b-split-dashboard>
+        <event-picture-card
+          slot="aside"
+          v-if="showImage"
+          :mode="event.mode"
+          :map="event.map"
+          :id="event.id"
+        ></event-picture-card>
 
         <map-views
           :mode="event.mode"
@@ -57,7 +54,7 @@
           :timestamp="event.timestamp"
           ga-category="map"
         ></map-views>
-      </div>
+      </b-split-dashboard>
     </b-page-section>
 
     <ad
@@ -70,6 +67,7 @@
 <script lang="ts">
 import { defineComponent, useContext, useMeta, computed, useAsync, useRoute } from '@nuxtjs/composition-api'
 import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
+import { BSplitDashboard } from '@schneefux/klicker/components'
 
 interface Map {
   id: string
@@ -79,6 +77,9 @@ interface Map {
 }
 
 export default defineComponent({
+  components: {
+    BSplitDashboard,
+  },
   head: {},
   setup() {
     const { i18n, $config, $klicker } = useContext()

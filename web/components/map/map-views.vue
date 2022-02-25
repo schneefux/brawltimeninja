@@ -110,7 +110,7 @@
           </c-dashboard-cell>
 
           <c-dashboard-cell
-            :columns="2"
+            :columns="3"
             :rows="2"
           >
             <metric-info
