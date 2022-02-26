@@ -74,7 +74,6 @@
           }"
         >
           <brawler-modes-stats
-            :brawler-id="brawlerId"
             :brawler-name="brawlerName"
           ></brawler-modes-stats>
 

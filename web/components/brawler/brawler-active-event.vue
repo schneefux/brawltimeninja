@@ -3,41 +3,24 @@
     :mode="mode"
     :map="map"
     :id="id"
+    :loading="dataEntry == undefined"
     full-height
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
       {{ $t('time.ends-in', { time: timeTillEnd }) }}
     </p>
 
-    <b-card
+    <div
+      v-if="dataEntry != undefined"
       slot="content"
-      :elevation="0"
-      dense
+      class="h-full flex flex-col justify-center"
     >
-      <div
-        slot="content"
-        class="flex items-end"
-      >
-        <media-img
-          :path="`/brawlers/${brawlerId}/avatar`"
-          :alt="brawlerName"
-          size="128"
-          clazz="w-16 mr-2"
-        ></media-img>
-        <kv-table
-          v-if="table.length > 0"
-          class="w-48 px-3 py-2"
-          :data="table"
-        ></kv-table>
-        <div
-          v-else
-          class="w-48 flex"
-          style="height: 112px;"
-        >
-          <p class="m-auto">{{ $t('state.no-data') }}</p>
-        </div>
-      </div>
-    </b-card>
+      <brawler-kv-card
+        :table="table"
+        :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
+      ></brawler-kv-card>
+    </div>
   </event-card>
 </template>
 
@@ -90,7 +73,7 @@ export default defineComponent({
       })
 
       return data.data.filter(e => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())[0]
-    })
+    }, `brawler-active-event-${props.id}-${props.brawlerName}`)
 
     const useRate = computed(() => dataEntry.value?.metricsRaw?.useRate as number || 0)
     const timeTillEnd = computed(() => {
@@ -104,6 +87,7 @@ export default defineComponent({
       if (dataEntry.value == undefined) {
         return []
       }
+
       return [
         [ i18n.tc('metric.picks'), dataEntry.value.metrics.picks ],
         [ i18n.tc('metric.useRate'), $klicker.format(useRateMetric, useRate.value) ],
@@ -114,6 +98,7 @@ export default defineComponent({
     const brawlerId = computed(() => getBrawlerId({ name: props.brawlerName }))
 
     return {
+      dataEntry,
       timeTillEnd,
       table,
       brawlerId,

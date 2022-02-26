@@ -11,13 +11,12 @@
         v-for="(row, index) in data"
         :key="row.dimensionsRaw.mode.mode"
         :rows="2"
-        :columns="4"
-        :lazy="index > 2"
+        :columns="3"
+        :lazy="index > 3"
         :ssr-key="`brawler-mode-${row.dimensionsRaw.mode.mode}`"
       >
         <brawler-mode-stats
           :mode="row.dimensionsRaw.mode.mode"
-          :brawler-id="brawlerId"
           :brawler-name="brawlerName"
           class="w-full h-full"
         ></brawler-mode-stats>
@@ -37,10 +36,6 @@ export default defineComponent({
     CDashboardCell,
   },
   props: {
-    brawlerId: {
-      type: String,
-      required: true
-    },
     brawlerName: {
       type: String,
       required: true
