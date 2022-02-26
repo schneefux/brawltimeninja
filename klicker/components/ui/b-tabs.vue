@@ -5,6 +5,7 @@
   >
     <nav
       :class="navClass"
+      ref="navContainer"
       role="tablist"
       class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[0.10] dark:border-white/[0.10]"
     >
@@ -84,8 +85,9 @@ export default defineComponent({
   },
   // TODO replace refs by function ref when migrating to Vue 3
   setup(props, { refs }) {
-    const container = ref<HTMLElement|null>()
-    const tabContainer = ref<HTMLElement|null>()
+    const container = ref<HTMLElement>()
+    const tabContainer = ref<HTMLElement>()
+    const navContainer = ref<HTMLElement>()
     const activeTab = ref<string>(props.tabs[0].slot)
     const tabVisibility = ref<Record<string, boolean>>({
       [activeTab.value]: true,
@@ -97,8 +99,7 @@ export default defineComponent({
         const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
         tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
       } else {
-        const top = tabElement.getBoundingClientRect().top - tabContainer.value!.getBoundingClientRect().top
-        console.log({ top })
+        const top = tabElement.getBoundingClientRect().top + window.scrollY - navContainer.value!.clientHeight
         window.scrollTo({ top, behavior: 'smooth' })
       }
     }
@@ -140,6 +141,7 @@ export default defineComponent({
     return {
       container,
       tabContainer,
+      navContainer,
       setActiveTab,
       activeTab,
       tabVisibility,
