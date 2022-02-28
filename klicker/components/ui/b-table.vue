@@ -76,13 +76,23 @@ import { computed, defineComponent, PropType, ref, watch } from 'vue-demi'
 import BPaginator from './b-paginator.vue'
 
 export interface Column {
-  /** column title */
+  /**
+   * Column title
+   */
   title: string
-  /** dot-path to property rendered in cell per default */
+  /**
+   * Dot-path to the properties that are rendered in the cell by default
+   */
   keys: string[]
-  /** cell slot to use instead. the slot receives a "row" prop. */
+  /**
+   * Name of the slot that should render this cell
+   *
+   * The slot receives a "row" prop with the full data row.
+   */
   slot?: string
-  /** if true, set width to minimal content width */
+  /**
+   * If true, set width to minimal content width
+   */
   shrink?: boolean
 }
 
@@ -90,6 +100,9 @@ interface IndexedColumn extends Column {
   index: number
 }
 
+/**
+ * Render a table
+ */
 export default defineComponent({
   components: {
     BPaginator,
@@ -131,7 +144,7 @@ export default defineComponent({
         index: offset + index,
         row: r,
         fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
-      })) as object[]
+      }))
     })
 
     const renderedColumns = computed(() => props.columns

@@ -31,7 +31,6 @@
 import { computed, defineComponent } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
-import BBigstat from '../ui/b-bigstat.vue'
 import VCardWrapper from './v-card-wrapper.vue'
 
 /**
@@ -42,7 +41,6 @@ import VCardWrapper from './v-card-wrapper.vue'
 export default defineComponent({
   components: {
     VCardWrapper,
-    BBigstat,
   },
   name: 'VBigstats',
   props: {

@@ -1,14 +1,16 @@
 <template>
-  <dl>
-    <div
-      v-for="row in table"
-      :key="row.key"
-      class="flex justify-between"
-    >
-      <dt class="mr-2">
+  <dl class="grid grid-cols-[auto,auto] gap-x-2">
+    <template v-for="row in table">
+      <dt
+        class="text-gray-800/75 dark:text-gray-200/75"
+        :key="`${row.key}-title`"
+      >
         {{ row.title }}
       </dt>
-      <dd>
+      <dd
+        class="text-gray-800 dark:text-gray-200 text-right"
+        :key="`${row.key}-value`"
+      >
         <slot
           :name="row.slot"
           :row="data"
@@ -16,7 +18,7 @@
           {{ row.value }}
         </slot>
       </dd>
-    </div>
+    </template>
   </dl>
 </template>
 
@@ -66,7 +68,6 @@ export default defineComponent({
       key: `${props.data[props.idKey]}-${r.key}`,
       value: r.key.split('.').reduce((a, b) => a[b], props.data),
     })))
-    console.log(table.value)
 
     return {
       table,

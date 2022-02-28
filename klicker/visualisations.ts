@@ -96,6 +96,17 @@ const defaultVisualisations: VisualisationSpec[] = [{
     columns: 3,
   },
 }, {
+  name: 'Key-Value Table',
+  component: 'v-kv-table',
+  import: () => import('./components/visualisations/v-kv-table.vue'),
+  applicable(dimensions, metrics, size) {
+    return size == 1 && metrics.length > 0 && metrics.length < 5
+  },
+  initialDimensions: {
+    rows: 1,
+    columns: 3,
+  },
+}, {
   name: 'Pivot Table CSV Download Button',
   component: 'v-pivot-csv',
   import: () => import('./components/visualisations/v-pivot-csv.vue'),

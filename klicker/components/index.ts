@@ -36,6 +36,7 @@ export { default as VTestInfo } from './visualisations/v-test-info.vue'
 export { default as VCardWrapper } from './visualisations/v-card-wrapper.vue'
 export { default as VAuto } from './visualisations/v-auto.vue'
 export { default as VBigstats } from './visualisations/v-bigstats.vue'
+export { default as VKvTable } from './visualisations/v-kv-table.vue'
 
 export { default as CConfigurator } from './c-configurator.vue'
 export { default as CDashboard } from './c-dashboard.vue'
