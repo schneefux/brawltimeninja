@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { Battle } from '~/model/Api'
 import { camelToKebab } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     battles: {
       type: Array as PropType<Battle[]>,
@@ -40,10 +40,10 @@ export default Vue.extend({
       default: false
     },
   },
-  computed: {
-    camelToKebab() {
-      return camelToKebab
-    },
+  setup() {
+    return {
+      camelToKebab,
+    }
   },
 })
 </script>

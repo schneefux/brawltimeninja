@@ -7,13 +7,13 @@
       <button
         v-for="(mode, index) in modes"
         :key="mode"
-        class="border-r-2 border-t-2 border-b-2 border-white/[0.1] w-12 h-12 flex justify-center items-center"
-        :class="['', {
+        :class="[{
           'rounded-l border-l-2': index == 0,
           'rounded-r': index == modes.length - 1,
           'bg-primary-400 text-gray-800': mode == modeFilter,
           'bg-white/[0.1]': mode != modeFilter,
         }]"
+        class="border-r-2 border-t-2 border-b-2 border-white/[0.1] w-12 h-12 flex justify-center items-center"
         @click="modeFilter = mode"
       >
         <span v-if="mode == 'all'">{{ $t('option.all') }}</span>
@@ -21,7 +21,7 @@
           v-else
           :path="'/modes/' + camelToKebab(mode) + '/icon'"
           size="120"
-          clazz="w-8 mx-auto my-auto"
+          clazz="w-8 m-auto"
         ></media-img>
       </button>
     </div>
