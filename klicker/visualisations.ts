@@ -78,7 +78,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
   component: 'v-roll',
   import: () => import('./components/visualisations/v-roll.vue'),
   applicable(dimensions, metrics, size) {
-    return dimensions.length == 1 && metrics.length == 1 && size > 0 && size < 10
+    return dimensions.length == 1 && metrics.length > 0 && size > 0 && size < 10
   },
   initialDimensions: {
     rows: 2,
