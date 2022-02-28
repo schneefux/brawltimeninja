@@ -9,7 +9,10 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <template v-slot:content>
+    <div
+      slot="content"
+      class="h-full flex flex-col justify-between"
+    >
       <p>
         <q
           v-if="gameFileDescription != ''"
@@ -20,11 +23,25 @@
           {{ metaDescription }}
         </template>
       </p>
-      <kv-table
-        class="mt-3"
-        :data="statsTable"
-      ></kv-table>
-    </template>
+      <b-kv-table
+        v-if="statsTable.length > 0"
+        :rows="[{
+          // TODO refactor
+          title: statsTable[0][0],
+          key: 'without',
+        }, {
+          title: statsTable[1][0],
+          key: 'with',
+        }]"
+        :data="{
+          id: brawlerName,
+          without: statsTable[0][1],
+          with: statsTable[1][1],
+        }"
+        id-key="id"
+        class="mt-4"
+      ></b-kv-table>
+    </div>
   </b-card>
 </template>
 
@@ -32,8 +49,12 @@
 import Vue from 'vue'
 import { winRateMetric } from '~/lib/klicker.conf'
 import { capitalize, scaleInto } from '~/lib/util'
+import { BKvTable } from '@schneefux/klicker/components'
 
 export default Vue.extend({
+  components: {
+    BKvTable,
+  },
   props: {
     kind: {
       type: String,

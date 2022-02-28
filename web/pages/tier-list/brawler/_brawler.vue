@@ -16,13 +16,15 @@
       first
     ></ad>
 
-    <b-tabs
-      :tabs="tabs"
-      class="mt-12"
-      nav-class="top-14 md:top-0 z-20"
-      vertical
-    >
-      <b-page-section slot="overview">
+    <b-split-dashboard>
+      <brawler-aside
+        slot="aside"
+        :brawler-id="brawlerId"
+        :brawler-name="brawlerName"
+        class="mt-16"
+      ></brawler-aside>
+
+      <b-page-section>
         <brawler-base-stats
           :brawler-id="brawlerId"
           :brawler-name="brawlerName"
@@ -34,7 +36,6 @@
       </b-page-section>
 
       <b-page-section
-        slot="synergies"
         :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('synergies'),
@@ -55,7 +56,7 @@
         </b-scrolling-dashboard>
       </b-page-section>
 
-      <div slot="maps">
+      <div>
         <b-page-section
           :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
           v-observe-visibility="{
@@ -83,7 +84,7 @@
         </b-page-section>
       </div>
 
-      <div slot="trends">
+      <div>
         <b-page-section
           :title="$t('brawler.trends', { brawler: brawlerName })"
           v-observe-visibility="{
@@ -120,7 +121,7 @@
           </p>
         </b-page-section>
       </div>
-    </b-tabs>
+    </b-split-dashboard>
 
     <ad
       ad-slot="6837127123"
@@ -132,13 +133,13 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
-import { CDashboardCell, BTabs } from '@schneefux/klicker/components'
+import { CDashboardCell, BSplitDashboard } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
+    BSplitDashboard,
     CDashboardCell,
-    BTabs,
   },
   head: {},
   setup() {
@@ -163,22 +164,7 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
-    const tabs = [{
-      slot: 'overview',
-      title: 'Overview',
-    }, {
-      slot: 'synergies',
-      title: 'Synergies',
-    }, {
-      slot: 'maps',
-      title: 'Maps',
-    }, {
-      slot: 'trends',
-      title: 'Trends',
-    }]
-
     return {
-      tabs,
       brawlerId,
       brawlerName,
       makeVisibilityCallback,

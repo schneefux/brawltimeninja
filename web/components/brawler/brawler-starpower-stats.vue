@@ -1,17 +1,22 @@
 <template>
   <div class="contents">
-    <brawler-starpower-card
+    <c-dashboard-cell
       v-for="entry in data"
       :key="entry.id"
-      :id="entry.id"
-      :kind="kind"
-      :name="getStrings(entry).name || entry.dimensions.gadget || entry.dimensions.starpower"
-      :brawler-name="brawlerName"
-      :description="getStrings(entry).description"
-      :win-rate="entry.metricsRaw.winRate"
-      :without-win-rate="totals == undefined ? 0 : totals.metricsRaw.winRate"
-      class="w-full"
-    ></brawler-starpower-card>
+      :rows="3"
+      :columns="3"
+      hide-empty
+    >
+      <brawler-starpower-card
+        :id="entry.id"
+        :kind="kind"
+        :name="getStrings(entry).name || entry.dimensions.gadget || entry.dimensions.starpower"
+        :brawler-name="brawlerName"
+        :description="getStrings(entry).description"
+        :win-rate="entry.metricsRaw.winRate"
+        :without-win-rate="totals == undefined ? 0 : totals.metricsRaw.winRate"
+      ></brawler-starpower-card>
+    </c-dashboard-cell>
   </div>
 </template>
 
@@ -19,8 +24,12 @@
 import Vue from 'vue'
 import { BrawlerData } from '@/model/Media'
 import { MetaGridEntry } from '@schneefux/klicker/types'
+import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default Vue.extend({
+  components: {
+    CDashboardCell,
+  },
   props: {
     brawlerId: {
       type: String,
