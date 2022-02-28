@@ -1,5 +1,5 @@
 <template>
-  <dl class="grid grid-cols-[auto,auto] gap-x-2">
+  <dl class="grid grid-cols-[auto,auto] gap-x-2 gap-y-1">
     <template v-for="row in table">
       <dt
         class="text-gray-800/75 dark:text-gray-200/75"

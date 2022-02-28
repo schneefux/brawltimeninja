@@ -107,8 +107,6 @@ export default defineComponent({
       }])
     ))
 
-    console.log({ h: headings.value, b: body.value })
-
     return {
       headings,
       body,
