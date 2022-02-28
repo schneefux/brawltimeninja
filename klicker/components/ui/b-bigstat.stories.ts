@@ -5,7 +5,7 @@ import { expect } from '@storybook/jest'
 
 export default {
   component: BBigstat,
-  title: 'Big Statistic',
+  title: 'UI/Big Statistic',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

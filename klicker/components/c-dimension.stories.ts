@@ -4,7 +4,7 @@ import { CubeComparingQuery, CubeQuery } from '../types'
 
 export default {
   component: CDimension,
-  title: 'Dimension Configurator',
+  title: 'Editor/Dimension Configurator',
 } as Meta
 
 const query = <CubeQuery>{

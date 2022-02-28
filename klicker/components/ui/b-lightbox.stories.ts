@@ -6,7 +6,7 @@ import { expect } from '@storybook/jest'
 
 export default {
   component: BLightbox,
-  title: 'Lightbox',
+  title: 'UI/Lightbox',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

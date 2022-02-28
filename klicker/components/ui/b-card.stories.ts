@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BCard,
-  title: 'Card',
+  title: 'UI/Card',
 } as Meta
 
 const lipsum = `Brawl Stars has almost 200 distinct maps. With the daily Map Maker Competition Winner, there is a new map available to play every day. Unarguably, some maps must be better than others. How can we measure that?`

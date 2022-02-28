@@ -5,7 +5,7 @@ import { CubeQuery } from '../../types'
 
 export default {
   component: VScatterplot,
-  title: 'Scatter Plot',
+  title: 'Visualisations/Scatter Plot',
   args: {
     card: {
       title: 'Storybook Demo',

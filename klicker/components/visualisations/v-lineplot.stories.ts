@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VLineplot,
-  title: 'Line Plot',
+  title: 'Visualisations/Line Plot',
   args: {
     card: {
       title: 'Storybook Demo',

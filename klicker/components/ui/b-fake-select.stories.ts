@@ -5,7 +5,7 @@ import { expect } from '@storybook/jest'
 
 export default {
   component: BFakeSelect,
-  title: 'Custom Select',
+  title: 'UI/Custom Select',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

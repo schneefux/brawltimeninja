@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BMarkdown,
-  title: 'Markdown Input',
+  title: 'UI/Markdown Input',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

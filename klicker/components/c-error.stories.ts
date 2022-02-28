@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: CError,
-  title: 'Query Error',
+  title: 'Editor/Query Error',
 } as Meta
 
 const Template: Story = (args, { argTypes }) => ({

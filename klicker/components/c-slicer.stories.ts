@@ -6,7 +6,7 @@ import Vue from 'vue'
 
 export default {
   component: CSlicer,
-  title: 'Filter Configurator',
+  title: 'Editor/Filter Configurator',
 } as Meta
 
 const query = <CubeQuery>{

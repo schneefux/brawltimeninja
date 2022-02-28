@@ -4,7 +4,7 @@ import { CubeQuery } from '../types'
 
 export default {
   component: CMetric,
-  title: 'Metric Configurator',
+  title: 'Editor/Metric Configurator',
 } as Meta
 
 const query = <CubeQuery>{

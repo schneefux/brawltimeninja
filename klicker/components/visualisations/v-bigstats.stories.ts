@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VBigstats,
-  title: 'Big Statistics',
+  title: 'Visualisations/Big Statistics',
   args: {
     card: {
       title: 'Storybook Demo',

@@ -5,7 +5,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BTabs,
-  title: 'Tabs',
+  title: 'UI/Tabs',
 } as Meta
 
 export const Horizontal: Story = (args, { argTypes }) => ({

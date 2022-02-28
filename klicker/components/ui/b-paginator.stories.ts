@@ -6,7 +6,7 @@ import { ref } from 'vue-demi'
 
 export default {
   component: BPaginator,
-  title: 'Paginator',
+  title: 'UI/Paginator',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

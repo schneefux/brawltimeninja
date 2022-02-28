@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VKvTable,
-  title: 'Key-Value Table Visualisation',
+  title: 'Visualisations/Key-Value Table',
   args: {
     card: {
       title: 'Storybook Demo',

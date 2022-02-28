@@ -5,7 +5,7 @@ import { CubeComparingQuery } from '../../types'
 
 export default {
   component: VTestInfo,
-  title: 'Test Info',
+  title: 'Visualisations/Test Info',
 } as Meta
 
 const comparingQuery = JSON.stringify(<CubeComparingQuery>{

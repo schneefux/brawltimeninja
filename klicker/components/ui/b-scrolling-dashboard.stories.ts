@@ -6,7 +6,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BScrollingDashboard,
-  title: 'Horizontally Scrolling Dashboard',
+  title: 'UI/Horizontally Scrolling Dashboard',
 } as Meta
 
 export const Desktop: Story = (args, { argTypes }) => ({

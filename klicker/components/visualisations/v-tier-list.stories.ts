@@ -5,7 +5,7 @@ import { CubeQuery } from '../../types'
 
 export default {
   component: VTierList,
-  title: 'Tier List',
+  title: 'Visualisations/Tier List',
   args: {
     card: {
       title: 'Storybook Demo',

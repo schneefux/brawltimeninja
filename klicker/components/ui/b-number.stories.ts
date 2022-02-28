@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BNumber,
-  title: 'Number Input',
+  title: 'UI/Number Input',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

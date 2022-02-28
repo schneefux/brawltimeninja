@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VBarplot,
-  title: 'Bar Plot',
+  title: 'Visualisations/Bar Plot',
   args: {
     card: {
       title: 'Storybook Demo',

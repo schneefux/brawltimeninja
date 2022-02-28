@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BSplitDashboard,
-  title: 'Split Dashboard',
+  title: 'UI/Split Dashboard',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

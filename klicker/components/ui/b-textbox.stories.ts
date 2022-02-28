@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BTextbox,
-  title: 'Textbox',
+  title: 'UI/Textbox',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

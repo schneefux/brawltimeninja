@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BKvTable,
-  title: 'Key-Value Table',
+  title: 'UI/Key-Value Table',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

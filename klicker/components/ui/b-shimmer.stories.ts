@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BShimmer,
-  title: 'Shimmer',
+  title: 'UI/Shimmer',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

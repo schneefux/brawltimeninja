@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BSelect,
-  title: 'Select',
+  title: 'UI/Select',
 } as Meta
 
 export const Default: Story = (args, { argTypes }) => ({

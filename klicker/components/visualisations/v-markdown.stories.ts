@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: VMarkdown,
-  title: 'Markdown',
+  title: 'Visualisations/Markdown',
   args: {
     markdown: `
 # Hello World!

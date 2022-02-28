@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 
 export default {
   component: BButton,
-  title: 'Button',
+  title: 'UI/Button',
 } as Meta
 
 const Template: Story = (args, { argTypes }) => ({

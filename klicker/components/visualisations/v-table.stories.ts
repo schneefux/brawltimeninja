@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VTable,
-  title: 'Table',
+  title: 'Visualisations/Table',
   args: {
     card: {
       title: 'Storybook Demo',

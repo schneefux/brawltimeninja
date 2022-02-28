@@ -5,7 +5,7 @@ import { CubeComparingQuery, CubeQuery } from '../../types'
 
 export default {
   component: VRoll,
-  title: 'Roll',
+  title: 'Visualisations/Roll',
 } as Meta
 
 const query = JSON.stringify(<CubeQuery>{

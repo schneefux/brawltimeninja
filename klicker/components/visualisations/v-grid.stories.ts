@@ -5,7 +5,7 @@ import { CubeQuery } from '../../types'
 
 export default {
   component: VGrid,
-  title: 'Grid',
+  title: 'Visualisations/Grid',
   args: {
     card: {
       title: 'Storybook Demo',

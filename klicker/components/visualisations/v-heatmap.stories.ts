@@ -5,7 +5,7 @@ import { CubeQuery } from '../../types'
 
 export default {
   component: VHeatmap,
-  title: 'Heatmap',
+  title: 'Visualisations/Heatmap',
   args: {
     card: {
       title: 'Storybook Demo',
