@@ -16,7 +16,6 @@
         <slot
           :name="name"
           v-bind="data"
-          captioned
         ></slot>
       </template>
     </b-kv-table>
