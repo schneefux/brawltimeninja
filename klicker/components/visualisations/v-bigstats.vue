@@ -11,11 +11,16 @@
         v-for="row in rows"
         :key="row.id"
       >
-        <dt class="text-gray-200/75">
+        <dt class="text-gray-800/75 dark:text-gray-200/75">
           {{ row.title }}
         </dt>
-        <dd class="text-xl text-gray-200">
-          {{ row.value }}
+        <dd class="text-xl text-gray-800 dark:text-gray-200">
+          <slot
+            :name="`metrics.${row.metricId}`"
+            :row="row.entry"
+          >
+            {{ row.value }}
+          </slot>
         </dd>
       </dl>
     </div>
@@ -29,6 +34,11 @@ import { useCubeResponseProps } from '../../composables/response'
 import BBigstat from '../ui/b-bigstat.vue'
 import VCardWrapper from './v-card-wrapper.vue'
 
+/**
+ * Visualisation that prominently displays one or multiple numbers
+ *
+ * Visually similar to <b-bigstat /> but does not support a lightbox.
+ */
 export default defineComponent({
   components: {
     VCardWrapper,
@@ -46,11 +56,15 @@ export default defineComponent({
         id: m.id,
         title: $klicker.getName(m, 'short'),
         value: response.data[0].metrics[m.id],
-      })), response => metrics.value.map(m => ({
-        id: m.id,
-        title: $klicker.getName(m, 'short'),
+        metricId: m.id,
+        entry: response.data[0],
+      })), response => ([{
+        id: metrics.value[0].id,
+        title: $klicker.getName(metrics.value[0], 'short'),
         value: response.data[0].test.difference.difference,
-      }))
+        metricId: metrics.value[0].id,
+        entry: response.data[0],
+      }])
     ))
 
     return {
