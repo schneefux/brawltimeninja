@@ -13,38 +13,54 @@
         size="128"
         clazz="w-16 rounded-xl"
       ></media-img>
-      <kv-table
-        v-if="table.length > 0"
-        :data="table"
-        class="w-full"
-      ></kv-table>
-      <div
-        v-else
-        class="w-full h-full flex"
+      <c-query
+        :query="{
+          cubeId: 'map',
+          metricsIds: ['winRate', 'useRate', 'picks'],
+          dimensionsIds: ['brawler'],
+          sortId: 'winRate',
+          slices,
+        }"
+        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
       >
-        <p class="m-auto">{{ $t('state.no-data') }}</p>
-      </div>
+        <template v-slot="data">
+          <v-kv-table
+            v-bind="data"
+            class="w-full"
+          ></v-kv-table>
+        </template>
+      </c-query>
     </div>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { CQuery, VKvTable } from '@schneefux/klicker/components'
+import { SliceValue } from '@schneefux/klicker/types'
+import { brawlerId as getBrawlerId } from '@/lib/util'
 
 export default defineComponent({
+  components: {
+    VKvTable,
+    CQuery,
+  },
   props: {
-    brawlerId: {
-      type: String,
-      required: true
-    },
     brawlerName: {
       type: String,
       required: true
     },
-    table: {
-      type: Array as PropType<string[][]>,
-      required: true
+    slices: {
+      type: Object as PropType<SliceValue>,
+      default: () => ({})
     },
   },
+  setup(props) {
+    const brawlerId = computed(() => getBrawlerId({ name: props.brawlerName }))
+
+    return {
+      brawlerId,
+    }
+  }
 })
 </script>
