@@ -151,46 +151,57 @@ import { defineComponent, computed } from 'vue-demi'
 
 export default defineComponent({
   props: {
+    /** @deprecated */
     size: {
       type: String, // class
       default: ''
     },
+    /** @deprecated */
     xxxs: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xxs: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xs: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     sm: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     md: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     lg: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xl: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xxl: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xxxl: {
       type: Boolean,
       default: false
     },
+    /** @deprecated */
     xxxxl: {
       type: Boolean,
       default: false
