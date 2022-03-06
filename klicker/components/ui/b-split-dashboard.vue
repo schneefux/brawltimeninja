@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-[16rem,minmax(0,1fr)] gap-8">
     <div>
-      <div class="sticky top-0">
+      <div class="sticky top-0 max-w-md">
         <slot name="aside"></slot>
       </div>
     </div>

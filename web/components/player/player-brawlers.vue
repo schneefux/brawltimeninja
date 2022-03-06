@@ -17,7 +17,7 @@
       </li>
     </ul>
 
-    <b-scrolling-dashboard class="mt-2">
+    <b-scrolling-dashboard class="mt-4">
       <c-dashboard-cell
         v-for="(brawler, id, index) in player.brawlers"
         :key="id"

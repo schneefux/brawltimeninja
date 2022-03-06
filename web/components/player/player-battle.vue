@@ -88,11 +88,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
 import { hoursSinceDate } from '~/lib/util'
 import { Battle } from '~/model/Api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     battle: {
       type: Object as PropType<Battle>,
@@ -103,15 +103,18 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    isPowerplay(): boolean {
+  setup(props) {
+    const isPowerplay = computed(() => {
       // TODO receive this from backend
-      return this.battle.victory != undefined && this.battle.trophyChange != undefined
-        && (this.battle.victory && this.battle.trophyChange > 11 || !this.battle.victory && this.battle.trophyChange > 3)
-    },
-    hoursSinceBattle(): number {
-      return hoursSinceDate(this.battle.timestamp as string)
-    },
+      return props.battle.victory != undefined && props.battle.trophyChange != undefined
+        && (props.battle.victory && props.battle.trophyChange > 11 || !props.battle.victory && props.battle.trophyChange > 3)
+    })
+    const hoursSinceBattle = computed(() =>hoursSinceDate(props.battle.timestamp as string))
+
+    return {
+      isPowerplay,
+      hoursSinceBattle,
+    }
   },
 })
 </script>

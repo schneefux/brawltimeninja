@@ -5,7 +5,7 @@
       @input="onTrigger"
     ></quiz-cta-card>
 
-    <div v-else class="w-full flex justify-center">
+    <div v-else>
       <transition name="slide-fade" mode="out-in">
         <quiz-likert-card
           v-if="result == undefined"

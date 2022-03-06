@@ -218,7 +218,8 @@ export function idToTag(idString: string) {
     addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
 */
 /**
- * Round timestamp up to next trophy season interval.
+ * Round timestamp up to next legacy trophy season interval.
+ * Seasons used to be 2 weeks, this is what the database uses.
  * @param timestamp
  */
 export function getSeasonEnd(timestamp: Date) {
@@ -226,6 +227,19 @@ export function getSeasonEnd(timestamp: Date) {
   const diff = timestamp.getTime() - trophySeasonEnd.getTime()
   const seasonsSince = Math.ceil(diff/1000/60/60/24/7/2)
   trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*2)
+  return trophySeasonEnd
+}
+
+/**
+ * Round timestamp up to next new trophy season interval.
+ * Seasons are now 4 weeks.
+ * @param timestamp
+ */
+export function getSeasonEndNew(timestamp: Date) {
+  const trophySeasonEnd = new Date(Date.parse('2020-07-13T08:00:00Z'))
+  const diff = timestamp.getTime() - trophySeasonEnd.getTime()
+  const seasonsSince = Math.ceil(diff/1000/60/60/24/7/4)
+  trophySeasonEnd.setUTCDate(trophySeasonEnd.getUTCDate() + seasonsSince*7*4)
   return trophySeasonEnd
 }
 

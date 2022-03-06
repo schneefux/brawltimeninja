@@ -2,7 +2,7 @@
   <b-scrolling-dashboard>
     <c-dashboard-cell
       :rows="2"
-      :columns="3"
+      :columns="5"
     >
       <history-graph
         v-if="enableKlickerStats"
@@ -27,75 +27,87 @@
       </b-card>
     </c-dashboard-cell>
 
-    <b-bigstat
-      v-if="player != undefined && player.club.tag != undefined"
-      :title="$t('club')"
-      class="col-span-2"
+    <c-dashboard-cell
+      :columns="2"
+      hide-empty
     >
-      <nuxt-link
-        slot="content"
-        :to="localePath(`/club/${player.club.tag}`)"
-        class="underline"
+      <b-bigstat
+        v-if="brawlersUnlocked < totalBrawlers"
+        :title="$t('metric.potentialTrophies')"
+        :value="Math.floor(trophiesGoal).toLocaleString()"
+        :tooltip="$t('metric.potentialTrophies.subtext')"
+      ></b-bigstat>
+    </c-dashboard-cell>
+
+    <c-dashboard-cell
+      :columns="2"
+      hide-empty
+    >
+      <b-bigstat
+        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        :title="$t('metric.recentWinrate')"
+        :value="Math.floor(playerTotals.winRate * 100) + '%'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
+      ></b-bigstat>
+    </c-dashboard-cell>
+
+    <c-dashboard-cell
+      :columns="2"
+      hide-empty
+    >
+      <b-bigstat
+        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        :title="$t('metric.averageTrophies')"
+        :value="playerTotals.trophyChange.toFixed(2)"
+      ></b-bigstat>
+    </c-dashboard-cell>
+
+    <c-dashboard-cell :columns="2">
+      <b-bigstat
+        :title="$t('metric.accountRating')"
+        :value="accountRating"
+        tooltip
       >
-        [{{ player.club.name.replace(/ /g, '&nbsp;')}}]
-      </nuxt-link>
-    </b-bigstat>
+        <template v-slot:tooltip>
+          <p class="mt-2">{{ $t('metric.accountRating.description') }}</p>
+          <ul class="mt-1 mb-2">
+            <li
+              v-for="(info, rating) in ratingPercentiles"
+              :key="rating"
+            >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
+          </ul>
+        </template>
+      </b-bigstat>
+    </c-dashboard-cell>
 
-    <b-bigstat
-      :title="$t('metric.trophies')"
-      :value="player != undefined ? player.trophies.toLocaleString() : '?'"
-    ></b-bigstat>
+    <c-dashboard-cell :columns="2">
+      <b-bigstat
+        :title="$t('metric.wins')"
+        :value="Math.floor(playerTotals.winRate * playerTotals.picks)"
+      ></b-bigstat>
+    </c-dashboard-cell>
 
-    <b-bigstat
-      v-if="brawlersUnlocked < totalBrawlers"
-      :title="$t('metric.potentialTrophies')"
-      :value="Math.floor(trophiesGoal).toLocaleString()"
-      :tooltip="$t('metric.potentialTrophies.subtext')"
-    ></b-bigstat>
-
-    <b-bigstat
-      v-if="playerTotals != undefined && playerTotals.picks > 0"
-      :title="$t('metric.recentWinrate')"
-      :value="Math.floor(playerTotals.winRate * 100) + '%'"
-      :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
-    ></b-bigstat>
-
-    <b-bigstat
-      v-if="playerTotals != undefined && playerTotals.picks > 0"
-      :title="$t('metric.averageTrophies')"
-      :value="playerTotals.trophyChange.toFixed(2)"
-    ></b-bigstat>
-
-    <b-bigstat
-      :title="$t('metric.accountRating')"
-      :value="accountRating"
-      tooltip
-    >
-      <template v-slot:tooltip>
-        <p class="mt-2">{{ $t('metric.accountRating.description') }}</p>
-        <ul class="mt-1 mb-2">
-          <li
-            v-for="(info, rating) in ratingPercentiles"
-            :key="rating"
-          >{{ rating }}: {{ $t('rating.percentile', { percentile: info[0] * 100 + '%' }) }} (up to {{ info[1] }} Trophies)</li>
-        </ul>
-      </template>
-    </b-bigstat>
+    <c-dashboard-cell :columns="2">
+      <b-bigstat
+        :title="$t('metric.losses')"
+        :value="Math.floor((1 - playerTotals.winRate) * playerTotals.picks)"
+      ></b-bigstat>
+    </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { Player } from '@/model/Api'
-import { ratingPercentiles, xpToHours } from '~/lib/util'
+import { ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '~/store'
-import { BBigstat, BScrollingDashboard } from '@schneefux/klicker/components'
-import { computed, defineComponent, onMounted, PropType, useContext, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { BBigstat, BScrollingDashboard, CDashboardCell } from '@schneefux/klicker/components'
+import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     BBigstat,
     BScrollingDashboard,
+    CDashboardCell,
   },
   props: {
     player: {
@@ -111,10 +123,8 @@ export default defineComponent({
       default: false
     },
   },
-  // TODO replace refs by function ref when migrating to Vue 3
-  setup(props, { refs }) {
+  setup(props) {
     const store = useStore<any>()
-    const { localePath, i18n } = useContext()
 
     const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
     const trophiesGoal = computed(() => {

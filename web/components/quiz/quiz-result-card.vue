@@ -1,9 +1,12 @@
 <template>
   <b-card
     :title="$t('oejts.result.title')"
-    lg
+    class="max-w-lg"
   >
-    <div slot="content">
+    <div
+      slot="content"
+      class="flex flex-col gap-y-4"
+    >
       <b-card
         :elevation="2"
         dense
@@ -12,7 +15,7 @@
           slot="content"
           class="flex flex-col items-center"
         >
-          <span class="mt-1 font-semibold">{{ mostSimilarBrawler.name }}</span>
+          <span class="mt-1">{{ mostSimilarBrawler.name }}</span>
           <span class="whitespace-nowrap">{{ $t('oejts.result.percent-match', { percent: Math.round(mostSimilarBrawler.similarity * 100) }) }}</span>
           <media-img
             clazz="h-48 m-2"
@@ -39,13 +42,16 @@
         Brawler personalities have been voted by the community.
       </p>
     </div>
-    <div slot="actions" class="mx-auto">
+    <div
+      slot="actions"
+      class="mx-auto"
+    >
       <share-render-button
         :embed-url="sharepicEmbedUrl"
         :url="quizRootUrl"
         :title="$t('player.quiz.result.title', { brawler: mostSimilarBrawler.name })"
         :text="$t('player.quiz.result.description', { brawler: mostSimilarBrawler.name })"
-        class="inline-block"
+        class="inline-block mr-2"
         primary
         md
         @share="sharepicTriggered"

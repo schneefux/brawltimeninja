@@ -6,8 +6,7 @@
     <b-card
       :title="$t('oejts.questions.page', { page: page + 1, total: pages })"
       :subtitle="$t('oejts.intro')"
-      class="mt-2"
-      lg
+      class="mt-2 max-w-lg"
     >
       <div slot="content">
         <transition name="slide-fade" mode="out-in">

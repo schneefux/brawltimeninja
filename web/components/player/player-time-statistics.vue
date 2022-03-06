@@ -43,7 +43,7 @@
 <script lang="ts">
 import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
-import { BBigstat, BPageSection, CDashboardCell } from '@schneefux/klicker/components'
+import { BBigstat, CDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, onMounted, PropType, useContext } from '@nuxtjs/composition-api'
 import { faEquals, faClock } from '@fortawesome/free-solid-svg-icons'
 
@@ -55,7 +55,6 @@ interface FunStat {
 export default defineComponent({
   components: {
     BBigstat,
-    BPageSection,
     CDashboardCell,
   },
   props: {

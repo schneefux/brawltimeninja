@@ -528,5 +528,9 @@
     "tab.leaderboard": "Leaderboard",
     "brawler.viable-maps": "Viable Maps",
     "brawler.overview": "Overview",
-    "brawler.accessories": "Star Powers and Gadgets"
+    "brawler.accessories": "Star Powers and Gadgets",
+    "metric.tag": "Tag",
+    "player.time-statistics": "Time Statistics",
+    "player.trophy-statistics": "Trophy Statistics",
+    "mode.wipeout": "Wipeout"
 }

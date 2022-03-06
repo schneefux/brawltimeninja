@@ -1,11 +1,10 @@
 <template>
   <b-card
     v-if="result == undefined"
-    :title="$t('player.quiz.title')"
-    md
+    class="max-w-md"
   >
-    <div slot="content" class="relative mt-1">
-      <p class="font-semibold text-center">{{ $t('oejts.cta-question') }}</p>
+    <div slot="content" class="relative mt-4">
+      <p class="text-center">{{ $t('oejts.cta-question') }}</p>
       <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
       <quiz-likert
         slot="content"

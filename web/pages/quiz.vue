@@ -1,9 +1,10 @@
 <template>
-  <b-page :title="$t('oejts.title')">
-    <p class="mb-4">{{ $t('oejts.description') }}</p>
-    <quiz-card
-      class="mx-auto"
-    ></quiz-card>
+  <b-page
+    :title="$t('oejts.title')"
+    class="max-w-lg"
+  >
+    <p class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
+    <quiz-card></quiz-card>
   </b-page>
 </template>
 

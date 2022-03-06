@@ -1,5 +1,5 @@
 <template>
-  <b-page>
+  <b-page :title="$t('player.meta.title', { name: player.name })">
     <ad
       ad-slot="9429125351"
       first
@@ -11,166 +11,131 @@
         once: true,
       }"
     >
-      <div class="w-full flex justify-between">
-        <h1 class="text-3xl relative z-10">
-          {{ $t('player.statistics-for') }}
-          <span class="text-yellow-400">{{ player.name }}</span>
-          <span
-            v-if="player.tag == 'V8LLPPC'"
-            class="align-top text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
-          >DEV</span>
-        </h1>
+      <b-split-dashboard>
+        <player-aside
+          slot="aside"
+          :player="player"
+          class="mt-16"
+        ></player-aside>
 
-        <media-img
-          :path="`/avatars/${player.icon.id}`"
-          clazz="w-16 h-16 md:w-24 md:h-24"
-          wrapper-class="flex-shrink-0"
-        ></media-img>
-      </div>
-    </b-page-section>
+        <b-page-section :title="$t('player.time-statistics')">
+          <player-time-statistics
+            :player="player"
+          ></player-time-statistics>
+        </b-page-section>
 
-    <b-page-section>
-      <player-hype-stats
-        :player="player"
-        :player-totals="playerTotals"
-        :enable-klicker-stats="enableKlickerStats"
-      ></player-hype-stats>
-    </b-page-section>
+        <b-page-section :title="$t('player.trophy-statistics')">
+          <player-trophy-statistics
+            :player="player"
+            :player-totals="playerTotals"
+            :enable-klicker-stats="enableKlickerStats"
+          ></player-trophy-statistics>
+        </b-page-section>
 
-    <b-page-section>
-      <div class="flex flex-wrap justify-center items-center">
-        <experiment experiment-id="ieQ8BYYpS9Cwd7qcpBj8tQ">
-          <player-quiz
-            v-observe-visibility="{
+        <b-page-section>
+          <install-card></install-card>
+        </b-page-section>
+
+        <b-page-section
+          :title="$t('player.quiz.title')"
+          v-observe-visibility="{
               callback: makeVisibilityCallback('quiz'),
+              once: true,
+            }"
+        >
+          <quiz-card></quiz-card>
+        </b-page-section>
+
+        <ad
+          ad-slot="3933066188"
+          lazy
+        ></ad>
+
+        <b-page-section :title="$t('player.records.title')">
+          <p class="mt-4 prose dark:prose-invert w-full">
+            {{ $t('player.records.description') }}
+          </p>
+
+          <player-percentiles
+            :player="player"
+            class="mt-8"
+          ></player-percentiles>
+        </b-page-section>
+
+        <b-page-section title="Info">
+          <p class="prose dark:prose-invert max-w-none">
+            {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
+          </p>
+        </b-page-section>
+
+        <b-page-section
+          v-if="playerTotals != undefined && playerTotals.picks > 0"
+          :title="$tc('battle-log', 1)"
+        >
+          <p class="mt-4 prose dark:prose-invert w-full">
+            {{ $t('player.battle-log.description') }}
+            {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
+          </p>
+
+          <b-button
+            class="mt-2"
+            xs
+            primary
+            @click="refresh"
+          >
+            {{ $t('action.refresh') }}
+          </b-button>
+
+          <player-battles
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('battles'),
               once: true,
             }"
             :player="player"
-          ></player-quiz>
+            class="mt-8"
+          ></player-battles>
+        </b-page-section>
 
-          <quiz-card
-            slot="1"
+        <ad
+          ad-slot="4129048243"
+          lazy
+        ></ad>
+
+        <b-page-section :title="$tc('mode', 2)">
+          <p class="prose dark:prose-invert">
+            {{ $t('player.modes.description') }}
+          </p>
+
+          <player-mode-winrates
             v-observe-visibility="{
-              callback: makeVisibilityCallback('quiz'),
+              callback: makeVisibilityCallback('gamemodes'),
               once: true,
             }"
-          ></quiz-card>
-        </experiment>
-      </div>
-    </b-page-section>
+            :player="player"
+            :battles="player.battles"
+            :enable-klicker-stats="enableKlickerStats"
+            class="mt-4"
+          ></player-mode-winrates>
+        </b-page-section>
 
-    <ad
-      ad-slot="3933066188"
-      lazy
-    ></ad>
+        <b-page-section :title="$tc('brawler', 2)">
+          <p class="prose dark:prose-invert">
+            {{ $t('player.brawlers.description') }}
+          </p>
 
-    <b-page-section :title="$t('player.records.title')">
-      <p class="mt-4 prose dark:prose-invert w-full">
-        {{ $t('player.records.description') }}
-      </p>
-
-      <player-lifetime
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('lifetime'),
-          once: true,
-        }"
-        :player="player"
-        class="mt-8"
-      ></player-lifetime>
-
-      <player-percentiles
-        :player="player"
-        class="mt-8"
-      ></player-percentiles>
-    </b-page-section>
-
-    <b-page-section title="Info">
-      <p class="prose dark:prose-invert max-w-none">
-        {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
-      </p>
-    </b-page-section>
-
-    <b-page-section
-      v-if="playerTotals != undefined && playerTotals.picks > 0"
-      :title="$tc('battle-log', 1)"
-    >
-      <p class="mt-4 prose dark:prose-invert w-full">
-        {{ $t('player.battle-log.description') }}
-        {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
-      </p>
-      <b-button
-        class="mt-2"
-        sm
-        primary
-        @click="refresh"
-      >
-        {{ $t('action.refresh') }}
-      </b-button>
-
-      <player-battles-squares
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('battles'),
-          once: true,
-        }"
-        :battles="player.battles"
-        class="mt-8"
-      ></player-battles-squares>
-
-      <player-battles-stats
-        :player-totals="playerTotals"
-        class="mt-8"
-      ></player-battles-stats>
-
-      <player-battles
-        :player="player"
-        class="mt-8"
-      ></player-battles>
-    </b-page-section>
-
-    <b-page-section>
-      <install-card
-        class="mx-auto"
-      ></install-card>
-    </b-page-section>
-
-    <ad
-      ad-slot="4129048243"
-      lazy
-    ></ad>
-
-    <b-page-section :title="$tc('mode', 2)">
-      <p class="prose dark:prose-invert">
-        {{ $t('player.modes.description') }}
-      </p>
-
-      <player-mode-winrates
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('gamemodes'),
-          once: true,
-        }"
-        :player="player"
-        :battles="player.battles"
-        :enable-klicker-stats="enableKlickerStats"
-        class="mt-4"
-      ></player-mode-winrates>
+          <player-brawlers
+            :player="player"
+            :enable-klicker-stats="enableKlickerStats"
+            class="mt-4"
+          ></player-brawlers>
+        </b-page-section>
+      </b-split-dashboard>
     </b-page-section>
 
     <ad
       ad-slot="1752268168"
       lazy
     ></ad>
-
-    <b-page-section :title="$tc('brawler', 2)">
-      <p class="prose dark:prose-invert">
-        {{ $t('player.brawlers.description') }}
-      </p>
-
-      <player-brawlers
-        :player="player"
-        :enable-klicker-stats="enableKlickerStats"
-        class="mt-4"
-      ></player-brawlers>
-    </b-page-section>
 
     <b-page-section
       title="Guides from the Blog"
@@ -189,8 +154,12 @@ import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, use
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
+import { BSplitDashboard } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BSplitDashboard,
+  },
   head: {},
   setup() {
     const { i18n, $config, $sentry } = useContext()

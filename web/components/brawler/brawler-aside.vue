@@ -1,8 +1,5 @@
 <template>
-  <b-card
-    slot="aside"
-    :title="brawlerName"
-  >
+  <b-card :title="brawlerName">
     <div
       slot="content"
       class="flex flex-col items-center"
@@ -34,9 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync } from '@nuxtjs/composition-api'
-import { useKlicker } from '@schneefux/klicker/composables'
-import { starRateMetric, useRateMetric, winRateMetric } from '~/lib/klicker.conf'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
 
 export default defineComponent({
