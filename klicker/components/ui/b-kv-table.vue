@@ -1,16 +1,14 @@
 <template>
-  <dl class="grid grid-cols-[auto,auto] gap-x-2 gap-y-1">
-    <template v-for="row in table">
-      <dt
-        class="text-gray-800/75 dark:text-gray-200/75"
-        :key="`${row.key}-title`"
-      >
+  <dl class="flex flex-col gap-y-1">
+    <div
+      v-for="row in table"
+      :key="row.key"
+      class="flex justify-between gap-x-2"
+    >
+      <dt class="text-gray-800/75 dark:text-gray-200/75">
         {{ row.title }}
       </dt>
-      <dd
-        class="text-gray-800 dark:text-gray-200 text-right"
-        :key="`${row.key}-value`"
-      >
+      <dd class="whitespace-nowrap text-gray-800 dark:text-gray-200 text-right">
         <slot
           :name="row.slot"
           :row="data"
@@ -18,7 +16,7 @@
           {{ row.value }}
         </slot>
       </dd>
-    </template>
+    </div>
   </dl>
 </template>
 
