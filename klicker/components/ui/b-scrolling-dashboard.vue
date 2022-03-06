@@ -90,7 +90,10 @@ export default defineComponent({
         right: 50,
       },
     })
-    onMounted(() => updateArrivedStates())
+    onMounted(() => {
+      container.value!.scrollTo({ left: 0 })
+      updateArrivedStates()
+    })
     useResizeObserver(container, () => updateArrivedStates())
 
     return {
