@@ -25,6 +25,11 @@ export const Default: Story = (args, { argTypes }) => ({
 })
 Default.args = {
   value: query,
+  configureCube: true,
+  configureMetrics: true,
+  configureMultipleMetrics: true,
+  configureDimensions: true,
+  configureCompareMode: true,
 }
 
 const comparingQuery = <CubeComparingQuery>{
@@ -56,4 +61,9 @@ export const Comparing: Story = (args, { argTypes }) => ({
 })
 Comparing.args = {
   value: comparingQuery,
+  configureCube: true,
+  configureMetrics: true,
+  configureMultipleMetrics: true,
+  configureDimensions: true,
+  configureCompareMode: true,
 }
