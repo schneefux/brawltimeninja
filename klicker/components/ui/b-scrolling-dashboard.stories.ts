@@ -80,15 +80,19 @@ Mobile.play = async ({ canvasElement }) => {
 
   const nextButton = await canvas.findByLabelText('next')
   const previousButton = await canvas.findByLabelText('previous')
-  const scrollHint = await canvas.findByTestId('scroll-hint')
+  const scrollHintRight = await canvas.findByTestId('scroll-hint-right')
+  const scrollHintLeft = await canvas.findByTestId('scroll-hint-left')
 
   expect(nextButton).not.toBeVisible()
   expect(previousButton).not.toBeVisible()
-  await waitFor(() => expect(scrollHint).toBeVisible())
+  await waitFor(() => expect(scrollHintRight).toBeVisible())
+  expect(scrollHintLeft).not.toBeVisible()
 
   await userEvent.click(nextButton)
-  await waitFor(() => expect(scrollHint).not.toBeVisible())
+  await waitFor(() => expect(scrollHintRight).not.toBeVisible())
+  expect(scrollHintLeft).toBeVisible()
 
   await userEvent.click(previousButton)
-  await waitFor(() => expect(scrollHint).toBeVisible())
+  await waitFor(() => expect(scrollHintRight).toBeVisible())
+  expect(scrollHintLeft).not.toBeVisible()
 }
