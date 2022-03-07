@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       ref="container"
-      class="dashboard dashboard--horizontal dashboard--responsive dashboard--relaxed -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 hide-scrollbar"
+      class="dashboard dashboard--horizontal dashboard--responsive gap-x-8 -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 hide-scrollbar"
     >
       <slot></slot>
     </div>
