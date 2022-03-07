@@ -15,11 +15,8 @@
     </c-dashboard-cell>
 
     <c-dashboard-cell>
-      <div class="flex h-full justify-center items-center">
-        <font-awesome-icon
-          :icon="faEquals"
-          class="text-2xl"
-        ></font-awesome-icon>
+      <div class="flex justify-center items-center h-full">
+        <p class="text-center">{{ $t('player.equals') }}</p>
       </div>
     </c-dashboard-cell>
 
@@ -45,7 +42,7 @@ import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BBigstat, CDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, onMounted, PropType, useContext } from '@nuxtjs/composition-api'
-import { faEquals, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 interface FunStat {
   label: string
@@ -131,7 +128,6 @@ export default defineComponent({
 
     return {
       funStats,
-      faEquals,
       faClock,
     }
   },
