@@ -3,8 +3,10 @@
     class="inline-block relative"
     v-click-outside="() => dropdownOpen = false"
   >
-    <button
+    <div
       class="w-full flex justify-center font-normal"
+      role="button"
+      :aria-pressed="dropdownOpen ? 'true' : 'false'"
       :class="[
         'form-select transition duration-100 ease-in-out',
         'py-2 pl-4 pr-2 ring-2 ring-black/10 dark:ring-white/10 hover:ring-black/20 dark:hover:ring-white/20 rounded-2xl', {
@@ -26,7 +28,7 @@
           clip-rule="evenodd"
         ></path>
       </svg>
-    </button>
+    </div>
 
     <!-- rerender because slider is buggy -->
     <div

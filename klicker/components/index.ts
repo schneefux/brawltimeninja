@@ -20,6 +20,7 @@ export { default as BScrollingDashboard } from './ui/b-scrolling-dashboard.vue'
 export { default as BAccordeonButtons } from './ui/b-accordeon-buttons.vue'
 export { default as BSplitDashboard } from './ui/b-split-dashboard.vue'
 export { default as BKvTable } from './ui/b-kv-table.vue'
+export { default as BScrollingList } from './ui/b-scrolling-list.vue'
 
 export { default as VBarplot } from './visualisations/v-barplot.vue'
 export { default as VCsv } from './visualisations/v-csv.vue'

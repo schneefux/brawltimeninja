@@ -1,35 +1,44 @@
 <template>
-  <b-scrolling-dashboard
+  <b-scrolling-list
     v-if="modes != undefined && events != undefined"
+    :items="modes"
+    :cell-rows="2"
+    :cell-columns="4"
+    :eager-until="3"
+    key-id="id"
   >
-    <c-dashboard-cell
-      v-for="(mode, index) in modes"
-      :key="mode"
-      :rows="2"
-      :columns="4"
-      :lazy="index > 3"
-      :ssr-key="`player-mode-winrates-${mode}`"
-    >
+    <template v-slot:preview="mode">
+      <div class="w-10 h-10 p-2 flex justify-center items-center bg-white/[0.1]">
+        <media-img
+          :path="`/modes/${mode.slug}/icon`"
+          size="120"
+          clazz="max-w-8 max-h-8"
+        ></media-img>
+      </div>
+    </template>
+
+    <template v-slot:item="mode">
       <player-mode-card
-        :mode="mode"
+        :mode="mode.id"
         :battles="battles"
         :active-events="events"
         :player-brawlers="Object.values(player.brawlers)"
         :player-tag="player.tag"
         :enable-klicker-stats="enableKlickerStats"
       ></player-mode-card>
-    </c-dashboard-cell>
-  </b-scrolling-dashboard>
+    </template>
+  </b-scrolling-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useContext, useAsync } from '@nuxtjs/composition-api'
+import {defineComponent, PropType, useContext, useAsync, computed} from '@nuxtjs/composition-api'
 import { Player, Battle } from '~/model/Api'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { BScrollingList } from '@schneefux/klicker/components'
+import { camelToKebab } from '~/lib/util'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BScrollingList,
   },
   props: {
     player: {
@@ -47,8 +56,13 @@ export default defineComponent({
   },
   setup() {
     const { $klicker } = useContext()
-    const modes = useAsync(() => $klicker.queryAllModes())
     const events = useAsync(() => $klicker.queryActiveEvents())
+
+    const modesIds = useAsync(() => $klicker.queryAllModes())
+    const modes = computed(() => modesIds.value?.map(m => ({
+      id: m,
+      slug: camelToKebab(m),
+    })))
 
     return {
       modes,

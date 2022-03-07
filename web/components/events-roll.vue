@@ -19,9 +19,9 @@
         <span v-if="mode == 'all'">{{ $t('option.all') }}</span>
         <media-img
           v-else
-          :path="'/modes/' + camelToKebab(mode) + '/icon'"
+          :path="`/modes/${camelToKebab(mode)}/icon`"
           size="120"
-          clazz="w-8 m-auto"
+          clazz="w-8"
         ></media-img>
       </button>
     </div>

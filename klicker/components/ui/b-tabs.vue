@@ -7,7 +7,7 @@
       :class="navClass"
       ref="navContainer"
       role="tablist"
-      class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[0.10] dark:border-white/[0.10]"
+      class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[.1] dark:border-white/[.1]"
     >
       <ul class="flex px-4 gap-x-8 overflow-x-auto hide-scrollbar">
         <li

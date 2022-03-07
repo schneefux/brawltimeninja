@@ -66,6 +66,9 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import BButton from './b-button.vue'
 import { useScroll, useResizeObserver } from '@vueuse/core'
 
+/**
+ * Horizontally-scrolling dashboard that renders scroll hints
+ */
 export default defineComponent({
   components: {
     FontAwesomeIcon,
@@ -74,13 +77,26 @@ export default defineComponent({
   setup() {
     const container = ref<HTMLElement|null>()
 
-    const scrollTo = (direction: number) => {
+    /**
+     * External API used by <b-scrolling-list>
+     */
+    const scrollTo = (element: HTMLElement) => {
+      const offset = element.getBoundingClientRect().left - container.value!.getBoundingClientRect().left
+      // use smooth scroll when the distance is small
+      // as to not trigger lazy-load of elements in between the current and the target position
+      const behavior = Math.abs(offset) < 1.5 * window.innerWidth ? 'smooth' : undefined
+      const left = container.value!.scrollLeft + offset
+      container.value!.scrollTo({ left, behavior })
+    }
+
+    const scrollBy = (direction: number) => {
       const rect = container.value!.getBoundingClientRect()
       const left = container.value!.scrollLeft + rect.width * direction
       container.value!.scrollTo({ left, behavior: 'smooth' })
     }
-    const scrollLeft = () => scrollTo(-1)
-    const scrollRight = () => scrollTo(+1)
+
+    const scrollLeft = () => scrollBy(-1)
+    const scrollRight = () => scrollBy(+1)
 
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
@@ -103,6 +119,7 @@ export default defineComponent({
     useResizeObserver(container, () => updateArrivedStates())
 
     return {
+      scrollTo,
       container,
       scrollLeft,
       scrollRight,
