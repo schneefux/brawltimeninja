@@ -82,19 +82,15 @@ WithPreview.play = async ({ canvasElement }) => {
   const item1 = await canvas.findByText('1')
   const item3 = await canvas.findByText('3')
 
-  const expectItemToBeVisible = (item: HTMLElement) => expect(item.getBoundingClientRect().right).toBeGreaterThan(400)
-  const expectItemNotToBeVisible = (item: HTMLElement) => expect(item.getBoundingClientRect().right).not.toBeGreaterThan(400)
-
-  await waitFor(() => expectItemToBeVisible(item3))
-  expectItemNotToBeVisible(item1)
+  await waitFor(() => expect(item1.getBoundingClientRect().left).toBeLessThan(400))
+  expect(item3.getBoundingClientRect().left).toBeGreaterThan(400)
 
   await userEvent.click(goTo3Button)
-  await waitFor(() => expectItemNotToBeVisible(item1))
-  expectItemToBeVisible(item3)
+  await waitFor(() => expect(item3.getBoundingClientRect().left).toBeLessThan(400))
+  expect(item1.getBoundingClientRect().left).toBeLessThan(0)
 
   await userEvent.click(goTo1Button)
-  await waitFor(() => expectItemToBeVisible(item1))
-  expectItemNotToBeVisible(item3)
+  await waitFor(() => expect(item1.getBoundingClientRect().left).toBeLessThan(400))
 }
 
 export const Lazy: Story = (args, { argTypes }) => ({
