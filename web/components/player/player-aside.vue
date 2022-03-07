@@ -7,7 +7,7 @@
       <media-img
         :path="`/avatars/${player.icon.id}`"
         :alt="player.name"
-        clazz="max-h-32"
+        clazz="h-32"
       ></media-img>
 
       <b-kv-table
