@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    class="-mx-4 md:mx-0 px-4 md:px-0"
+    class="-mx-4 lg:mx-0"
   >
     <nav
       :class="navClass"
@@ -9,7 +9,7 @@
       role="tablist"
       class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[0.10] dark:border-white/[0.10]"
     >
-      <ul class="flex mx-6 gap-x-8 overflow-x-auto hide-scrollbar">
+      <ul class="flex px-4 gap-x-8 overflow-x-auto hide-scrollbar">
         <li
           v-for="tab in tabs"
           :key="tab.slot"
@@ -35,7 +35,7 @@
     <div
       ref="tabContainer"
       :class="{
-        'snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar': !vertical,
+        'px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar': !vertical,
       }"
     >
       <div
