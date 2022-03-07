@@ -120,7 +120,7 @@ export default defineComponent({
           }
         }, {
           root: container.value!.$el as HTMLElement,
-          threshold: 0.5,
+          threshold: 0.0,
         })
       }
     }))

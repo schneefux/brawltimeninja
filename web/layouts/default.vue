@@ -4,8 +4,8 @@
       ref="container"
       class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     >
-      <web-nav class="hidden md:flex"></web-nav>
-      <app-head-nav class="md:hidden"></app-head-nav>
+      <web-nav class="hidden lg:flex"></web-nav>
+      <app-head-nav class="lg:hidden"></app-head-nav>
 
       <nuxt />
 
@@ -17,10 +17,8 @@
         @enable-all="enableCookiesAndAds"
       ></cookie-consent-popup>
 
-      <app-bottom-nav class="md:hidden"></app-bottom-nav>
-      <footer
-        class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden md:block"
-      >
+      <app-bottom-nav class="lg:hidden"></app-bottom-nav>
+      <footer class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden lg:block">
         <div class="space-x-4 mt-2">
           <nuxt-link
             v-for="link in links"

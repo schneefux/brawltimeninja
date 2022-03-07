@@ -5,132 +5,181 @@
       first
     ></ad>
 
-    <b-page-section
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('hours'),
+    <b-split-dashboard class="mt-8 lg:mt-0">
+      <div
+        slot="aside"
+        class="lg:mt-16"
+      >
+        <player-aside :player="player"></player-aside>
+
+        <b-scroll-spy
+          :sections="[{
+            id: 'time',
+            title: $t('player.time-statistics'),
+            element: timeSection,
+           }, {
+            id: 'trophy',
+            title: $t('player.trophy-statistics'),
+            element: trophySection,
+           }, {
+            id: 'quiz',
+            title: $t('player.quiz.title'),
+            element: quizSection,
+           }, {
+            id: 'records',
+            title: $t('player.records.title'),
+            element: recordsSection,
+           }, {
+            id: 'battles',
+            title: $t('battle-log'),
+            element: battlesSection,
+           }, {
+            id: 'modes',
+            title: $tc('mode', 2),
+            element: modesSection,
+           }, {
+            id: 'brawlers',
+            title: $tc('brawler', 2),
+            element: brawlersSection,
+           }]"
+          nav-class="top-14 lg:top-0"
+          class="mt-8"
+        ></b-scroll-spy>
+      </div>
+
+      <b-page-section
+        ref="timeSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('hours'),
+          once: true,
+        }"
+        :title="$t('player.time-statistics')"
+      >
+        <player-time-statistics
+          :player="player"
+        ></player-time-statistics>
+      </b-page-section>
+
+      <b-page-section
+        ref="trophySection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('trophies'),
+          once: true,
+        }"
+        :title="$t('player.trophy-statistics')"
+      >
+        <player-trophy-statistics
+          :player="player"
+          :player-totals="playerTotals"
+          :enable-klicker-stats="enableKlickerStats"
+        ></player-trophy-statistics>
+      </b-page-section>
+
+      <b-page-section
+        :title="$t('player.quiz.title')"
+        ref="quizSection"
+        v-observe-visibility="{
+        callback: makeVisibilityCallback('quiz'),
         once: true,
       }"
-    >
-      <b-split-dashboard>
-        <player-aside
-          slot="aside"
+      >
+        <quiz-card></quiz-card>
+      </b-page-section>
+
+      <ad
+        ad-slot="3933066188"
+        lazy
+      ></ad>
+
+      <b-page-section
+        ref="recordsSection"
+        :title="$t('player.records.title')"
+      >
+        <p class="mt-4 prose dark:prose-invert w-full">
+          {{ $t('player.records.description') }}
+        </p>
+
+        <player-percentiles
           :player="player"
-          class="mt-16"
-        ></player-aside>
+          class="mt-8"
+        ></player-percentiles>
+      </b-page-section>
 
-        <b-page-section :title="$t('player.time-statistics')">
-          <player-time-statistics
-            :player="player"
-          ></player-time-statistics>
-        </b-page-section>
+      <b-page-section title="Info">
+        <p class="prose dark:prose-invert max-w-none">
+          {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
+        </p>
+      </b-page-section>
 
-        <b-page-section :title="$t('player.trophy-statistics')">
-          <player-trophy-statistics
-            :player="player"
-            :player-totals="playerTotals"
-            :enable-klicker-stats="enableKlickerStats"
-          ></player-trophy-statistics>
-        </b-page-section>
+      <b-page-section
+        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        ref="battlesSection"
+        :title="$tc('battle-log', 1)"
+      >
+        <p class="mt-4 prose dark:prose-invert w-full">
+          {{ $t('player.battle-log.description') }}
+          {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
+        </p>
 
-        <b-page-section>
-          <install-card></install-card>
-        </b-page-section>
+        <b-button
+          class="mt-2"
+          xs
+          primary
+          @click="refresh"
+        >
+          {{ $t('action.refresh') }}
+        </b-button>
 
-        <b-page-section
-          :title="$t('player.quiz.title')"
+        <player-battles
           v-observe-visibility="{
-              callback: makeVisibilityCallback('quiz'),
-              once: true,
-            }"
-        >
-          <quiz-card></quiz-card>
-        </b-page-section>
+            callback: makeVisibilityCallback('battles'),
+            once: true,
+          }"
+          :player="player"
+          class="mt-8"
+        ></player-battles>
+      </b-page-section>
 
-        <ad
-          ad-slot="3933066188"
-          lazy
-        ></ad>
+      <ad
+        ad-slot="4129048243"
+        lazy
+      ></ad>
 
-        <b-page-section :title="$t('player.records.title')">
-          <p class="mt-4 prose dark:prose-invert w-full">
-            {{ $t('player.records.description') }}
-          </p>
+      <b-page-section
+        ref="modesSection"
+        :title="$tc('mode', 2)"
+      >
+        <p class="prose dark:prose-invert">
+          {{ $t('player.modes.description') }}
+        </p>
 
-          <player-percentiles
-            :player="player"
-            class="mt-8"
-          ></player-percentiles>
-        </b-page-section>
+        <player-mode-winrates
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('gamemodes'),
+            once: true,
+          }"
+          :player="player"
+          :battles="player.battles"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+        ></player-mode-winrates>
+      </b-page-section>
 
-        <b-page-section title="Info">
-          <p class="prose dark:prose-invert max-w-none">
-            {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
-          </p>
-        </b-page-section>
+      <b-page-section
+        ref="brawlersSection"
+        :title="$tc('brawler', 2)"
+      >
+        <p class="prose dark:prose-invert">
+          {{ $t('player.brawlers.description') }}
+        </p>
 
-        <b-page-section
-          v-if="playerTotals != undefined && playerTotals.picks > 0"
-          :title="$tc('battle-log', 1)"
-        >
-          <p class="mt-4 prose dark:prose-invert w-full">
-            {{ $t('player.battle-log.description') }}
-            {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
-          </p>
-
-          <b-button
-            class="mt-2"
-            xs
-            primary
-            @click="refresh"
-          >
-            {{ $t('action.refresh') }}
-          </b-button>
-
-          <player-battles
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('battles'),
-              once: true,
-            }"
-            :player="player"
-            class="mt-8"
-          ></player-battles>
-        </b-page-section>
-
-        <ad
-          ad-slot="4129048243"
-          lazy
-        ></ad>
-
-        <b-page-section :title="$tc('mode', 2)">
-          <p class="prose dark:prose-invert">
-            {{ $t('player.modes.description') }}
-          </p>
-
-          <player-mode-winrates
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('gamemodes'),
-              once: true,
-            }"
-            :player="player"
-            :battles="player.battles"
-            :enable-klicker-stats="enableKlickerStats"
-            class="mt-4"
-          ></player-mode-winrates>
-        </b-page-section>
-
-        <b-page-section :title="$tc('brawler', 2)">
-          <p class="prose dark:prose-invert">
-            {{ $t('player.brawlers.description') }}
-          </p>
-
-          <player-brawlers
-            :player="player"
-            :enable-klicker-stats="enableKlickerStats"
-            class="mt-4"
-          ></player-brawlers>
-        </b-page-section>
-      </b-split-dashboard>
-    </b-page-section>
+        <player-brawlers
+          :player="player"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+        ></player-brawlers>
+      </b-page-section>
+    </b-split-dashboard>
 
     <ad
       ad-slot="1752268168"
@@ -154,11 +203,12 @@ import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, use
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
-import { BSplitDashboard } from '@schneefux/klicker/components'
+import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BSplitDashboard,
+    BScrollSpy,
   },
   head: {},
   setup() {
@@ -220,6 +270,16 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('profile')
 
+    const sectionRefs = {
+      timeSection: ref<HTMLElement>(),
+      trophySection: ref<HTMLElement>(),
+      quizSection: ref<HTMLElement>(),
+      recordsSection: ref<HTMLElement>(),
+      battlesSection: ref<HTMLElement>(),
+      modesSection: ref<HTMLElement>(),
+      brawlersSection: ref<HTMLElement>(),
+    }
+
     return {
       refreshSecondsLeft,
       refresh,
@@ -227,6 +287,7 @@ export default defineComponent({
       player,
       playerTotals,
       makeVisibilityCallback,
+      ...sectionRefs,
     }
   },
   meta: {

@@ -106,7 +106,8 @@ export default defineComponent({
       arrivedRight.value = scroll.arrivedState.right || !scrollable
     }
     const scroll = useScroll(container, {
-      onStop: updateArrivedStates,
+      onScroll: updateArrivedStates,
+      throttle: 300,
       offset: {
         left: 50,
         right: 50,

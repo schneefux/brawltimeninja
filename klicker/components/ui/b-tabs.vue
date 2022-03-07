@@ -7,23 +7,23 @@
       :class="navClass"
       ref="navContainer"
       role="tablist"
-      class="sticky bg-gray-100 dark:bg-gray-900 border-b-2 border-black/[.1] dark:border-white/[.1]"
+      class="sticky "
     >
-      <ul class="flex px-4 gap-x-8 overflow-x-auto hide-scrollbar">
+      <ul class="flex px-8 overflow-x-auto hide-scrollbar bg-gray-100 dark:bg-gray-900">
         <li
           v-for="tab in tabs"
           :key="tab.slot"
         >
           <button
             role="tab"
-            class="text-lg px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out"
             :id="`${prefix}-button-${tab.slot}`"
             :class="{
               'border-primary-400 border-b-2': tabVisibility[tab.slot],
-              'hover:border-primary-200 hover:border-b-2 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !tabVisibility[tab.slot],
+              'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !tabVisibility[tab.slot],
             }"
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
             :aria-controls="`${prefix}-tab-${tab.slot}`"
+            class="px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
             @click="setActiveTab(tab)"
           >
             {{ tab.title }}
@@ -34,20 +34,18 @@
 
     <div
       ref="tabContainer"
-      :class="{
-        'px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar': !vertical,
-      }"
+      class="px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar"
     >
       <div
         v-for="tab in tabs"
         :key="tab.slot"
         :ref="tab.slot"
         :class="{
-          'snap-center snap-always': !vertical,
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
-          'h-screen overflow-y-auto hide-scrollbar': !vertical && tab.slot != activeTab,
+          'h-screen overflow-y-auto hide-scrollbar': tab.slot != activeTab,
         }"
+        class="snap-center snap-always"
         role="tabpanel"
         :aria-labelledby="`${prefix}-button-${tab.slot}`"
         :id="`${prefix}-tab-${tab.slot}`"
@@ -78,10 +76,6 @@ export default defineComponent({
       type: String,
       default: 'top-0'
     },
-    vertical: {
-      type: Boolean,
-      default: false
-    },
   },
   // TODO replace refs by function ref when migrating to Vue 3
   setup(props, { refs }) {
@@ -102,12 +96,8 @@ export default defineComponent({
 
     const setActiveTab = (tab: Tab) => {
       const tabElement = refs[tab.slot][0] as HTMLElement
-      if (!props.vertical) {
-        const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
-        tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
-      } else {
-        scrollUpToTab(tabElement, true)
-      }
+      const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
+      tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
     }
 
     onMounted(() => {
@@ -120,7 +110,7 @@ export default defineComponent({
             [tab.slot]: isIntersecting,
           }
         }, {
-          root: !props.vertical ? tabContainer.value : undefined,
+          root: tabContainer.value,
           threshold: 0.25,
         })
 
@@ -131,12 +121,10 @@ export default defineComponent({
               [activeTab.value]: true,
             }
 
-            if (!props.vertical) {
-              scrollUpToTab(tabElement)
-            }
+            scrollUpToTab(tabElement)
           }
         }, {
-          root: !props.vertical ? tabContainer.value : undefined,
+          root: tabContainer.value,
           threshold: 1.0,
         })
       }
