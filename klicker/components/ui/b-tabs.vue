@@ -93,14 +93,20 @@ export default defineComponent({
       [activeTab.value]: true,
     })
 
+    const scrollUpToTab = (tabElement: HTMLElement, smooth: boolean = false) => {
+      const top = tabElement.getBoundingClientRect().top + window.scrollY - navContainer.value!.getBoundingClientRect().bottom
+      if (window.scrollY > top) {
+        window.scrollTo({ top, behavior: smooth ? 'smooth' : undefined })
+      }
+    }
+
     const setActiveTab = (tab: Tab) => {
       const tabElement = refs[tab.slot][0] as HTMLElement
       if (!props.vertical) {
         const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
         tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
       } else {
-        const top = tabElement.getBoundingClientRect().top + window.scrollY - navContainer.value!.clientHeight
-        window.scrollTo({ top, behavior: 'smooth' })
+        scrollUpToTab(tabElement, true)
       }
     }
 
@@ -114,7 +120,7 @@ export default defineComponent({
             [tab.slot]: isIntersecting,
           }
         }, {
-          root: !props.vertical ? container.value : undefined,
+          root: !props.vertical ? tabContainer.value : undefined,
           threshold: 0.25,
         })
 
@@ -125,12 +131,12 @@ export default defineComponent({
               [activeTab.value]: true,
             }
 
-            if (!props.vertical && container.value!.getBoundingClientRect().top < 0) {
-              container.value!.scrollIntoView()
+            if (!props.vertical) {
+              scrollUpToTab(tabElement)
             }
           }
         }, {
-          root: !props.vertical ? container.value : undefined,
+          root: !props.vertical ? tabContainer.value : undefined,
           threshold: 1.0,
         })
       }
