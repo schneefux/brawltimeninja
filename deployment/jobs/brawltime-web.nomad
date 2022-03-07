@@ -26,12 +26,12 @@ job "brawltime-web" {
   }
 
   group "web" {
-    count = 2
+    count = 4
 
     scaling {
       enabled = true
       min = 1
-      max = 4
+      max = 8
     }
 
     network {

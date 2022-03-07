@@ -145,6 +145,12 @@ variable "servers" {
       class = "database"
       leader_ip = "10.0.0.2"
     }
+    lou = {
+      server_type = "cpx11"
+      ip = "10.0.0.9"
+      class = "worker"
+      leader_ip = "10.0.0.2"
+    }
     # timeouts and DNS errors after change?
     # -> restart dnsmasq (TODO investigate why)
   }
