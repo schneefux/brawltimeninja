@@ -126,7 +126,7 @@ export default defineComponent({
       // TODO there might be a second one when Power Play or competition entry is online
       const map = props.activeEvents
         .filter(e => !e.map.startsWith('Competition '))
-        .find(e => e.map == props.mode)
+        .find(e => e.mode == props.mode)
 
       if (map != undefined) {
         return {
