@@ -84,7 +84,7 @@ export default defineComponent({
       const offset = element.getBoundingClientRect().left - container.value!.getBoundingClientRect().left
       // use smooth scroll when the distance is small
       // as to not trigger lazy-load of elements in between the current and the target position
-      const behavior = Math.abs(offset) < 1.5 * window.innerWidth ? 'smooth' : undefined
+      const behavior = Math.abs(offset) <= 2 * window.innerWidth ? 'smooth' : undefined
       const left = container.value!.scrollLeft + offset
       container.value!.scrollTo({ left, behavior })
     }
