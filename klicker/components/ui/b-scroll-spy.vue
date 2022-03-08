@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref, watch, Vue, nextTick } from 'vue-demi'
-import { useIntersectionObserver, breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {
   id: string
@@ -127,6 +127,8 @@ export default defineComponent({
         window.scrollTo({ top, behavior: 'smooth' })
       })
     }
+
+    onClickOutside(navContainer, () => dropdownOpen.value = false)
 
     const stopCallbacks = ref<(() => void)[]>([])
     const updateObservers = () => {

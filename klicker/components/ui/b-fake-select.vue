@@ -1,7 +1,7 @@
 <template>
   <div
+    ref="container"
     class="inline-block relative"
-    v-click-outside="() => dropdownOpen = false"
   >
     <div
       class="w-full flex justify-center font-normal"
@@ -44,15 +44,17 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue-demi'
 import vClickOutside from 'v-click-outside'
+import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
-  directives: {
-    clickOutside: vClickOutside.directive,
-  },
   setup() {
+    const container = ref<HTMLElement>()
     const dropdownOpen = ref(false)
 
+    onClickOutside(container, () => dropdownOpen.value = false)
+
     return {
+      container,
       dropdownOpen,
     }
   },
