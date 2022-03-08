@@ -19,7 +19,7 @@
         <template v-slot:name="{ row }">
           <span
             :style="{
-              color: '#' + row.nameColor.slice('0x'.length),
+              color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
             }"
             class="font-semibold"
           >{{ row.name }}</span>
