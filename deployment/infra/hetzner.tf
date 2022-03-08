@@ -113,14 +113,12 @@ variable "servers" {
       class = "worker"
       leader_ip = "10.0.0.2"
     }
-    /*
     dynamike = {
-      server_type = "cx21"
+      server_type = "cpx31"
       ip = "10.0.0.4"
       class = "database"
       leader_ip = "10.0.0.2"
     }
-    */
     edgar = {
       server_type = "cpx11"
       ip = "10.0.0.5"
@@ -139,12 +137,14 @@ variable "servers" {
       class = "worker"
       leader_ip = "10.0.0.2"
     }
+/*
     jessie = {
       server_type = "cx31"
       ip = "10.0.0.8"
       class = "database"
       leader_ip = "10.0.0.2"
     }
+*/
     lou = {
       server_type = "cpx11"
       ip = "10.0.0.9"

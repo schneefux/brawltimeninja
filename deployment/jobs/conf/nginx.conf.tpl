@@ -6,7 +6,7 @@ error_log  /var/log/nginx/error.log notice;
 pid        /var/run/nginx.pid;
 
 events {
-    worker_connections  2048;
+    worker_connections  8192;
 }
 
 http {

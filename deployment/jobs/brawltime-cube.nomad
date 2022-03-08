@@ -24,12 +24,12 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 2
+    count = 8
 
     scaling {
       enabled = true
       min = 1
-      max = 8
+      max = 16
     }
 
     affinity {
@@ -116,9 +116,9 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 64
-        memory = 128
-        memory_max = 256
+        cpu = 512
+        memory = 196
+        memory_max = 384
       }
     }
   }

@@ -95,9 +95,8 @@ job "clickhouse" {
       }
 
       resources {
-        cpu = 3072
-#        memory = 3072
-        memory = 5120
+        cpu = 6144
+        memory = 6144
         memory_max = 7168
       }
     }

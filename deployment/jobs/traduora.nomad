@@ -69,7 +69,7 @@ job "traduora" {
       }
 
       resources {
-        cpu = 64
+        cpu = 192
         memory = 128
       }
     }

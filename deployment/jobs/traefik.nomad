@@ -89,8 +89,8 @@ job "traefik" {
       resources {
         # average cpu: 96
         cpu = 256
-        memory = 64
-        memory_max = 384
+        memory = 256
+        memory_max = 512
       }
     }
   }
