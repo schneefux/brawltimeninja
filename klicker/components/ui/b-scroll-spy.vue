@@ -147,7 +147,8 @@ export default defineComponent({
         }, {
           // trigger when the element touches bottom of the nav container, independent of its size
           threshold: 0.0,
-          rootMargin: `${-topOffset}px 0px ${-(window.innerHeight - topOffset)}px 0px`,
+          // observer is 100px tall so an intersection gets triggered even when some frames are dropped during scrolling
+          rootMargin: `${-topOffset}px 0px ${-window.innerHeight + topOffset + 100}px 0px`,
         })
         newStopCallbacks.push(stop1)
 
