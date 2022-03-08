@@ -44,7 +44,7 @@
       hide-empty
     >
       <b-bigstat
-        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        v-if="hasPlayerTotals"
         :title="$t('metric.recentWinrate')"
         :value="Math.floor(playerTotals.winRate * 100) + '%'"
         :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
@@ -56,7 +56,7 @@
       hide-empty
     >
       <b-bigstat
-        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        v-if="hasPlayerTotals"
         :title="$t('metric.averageTrophies')"
         :value="playerTotals.trophyChange.toFixed(2)"
       ></b-bigstat>
@@ -80,15 +80,23 @@
       </b-bigstat>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :columns="2">
+    <c-dashboard-cell
+      :columns="2"
+      hide-empty
+    >
       <b-bigstat
+        v-if="hasPlayerTotals"
         :title="$t('metric.wins')"
         :value="Math.floor(playerTotals.winRate * playerTotals.picks)"
       ></b-bigstat>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :columns="2">
+    <c-dashboard-cell
+      :columns="2"
+      hide-empty
+    >
       <b-bigstat
+        v-if="hasPlayerTotals"
         :title="$t('metric.losses')"
         :value="Math.floor((1 - playerTotals.winRate) * playerTotals.picks)"
       ></b-bigstat>
@@ -148,12 +156,15 @@ export default defineComponent({
 
     const totalBrawlers = computed<number>(() => store.state.totalBrawlers)
 
+    const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
+
     return {
       trophiesGoal,
       totalBrawlers,
       accountRating,
       brawlersUnlocked,
       ratingPercentiles,
+      hasPlayerTotals,
     }
   },
 })
