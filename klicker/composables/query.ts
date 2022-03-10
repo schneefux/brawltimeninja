@@ -23,7 +23,7 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
 
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
   const { $klicker } = useKlicker()
-  const { $sentry } = useContext()
+  const { $sentry } = useContext() as any
 
   const loading = ref(false)
   const error = ref<string|undefined>()

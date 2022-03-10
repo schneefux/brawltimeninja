@@ -43,7 +43,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue-demi'
-import vClickOutside from 'v-click-outside'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
