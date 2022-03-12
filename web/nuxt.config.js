@@ -81,7 +81,6 @@ export default {
     { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/slider', mode: 'client' },
     { src: '~/plugins/custom-components' },
-    { src: '~/plugins/scrollto', mode: 'client' },
     // { src: '~/plugins/lazy-hydrate' },
     { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
