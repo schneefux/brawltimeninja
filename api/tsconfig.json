@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "es2020",
-    "target": "es2020",
-    "lib": ["es2020"],
+    "module": "es2022",
+    "target": "es2021",
+    "lib": ["es2021"],
     "baseUrl": ".",
     "outDir": "./dist",
     "strict": true,
