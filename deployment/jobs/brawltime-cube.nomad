@@ -24,12 +24,40 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 8
+    count = 3
 
     scaling {
       enabled = true
       min = 1
       max = 16
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated-cube"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            within_bounds_trigger = 1
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated-cube"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            within_bounds_trigger = 1
+            delta = -1
+          }
+        }
+      }
     }
 
     affinity {
@@ -80,7 +108,7 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 1024
+        cpu = 768
         memory = 384
         memory_max = 512
       }
@@ -88,10 +116,40 @@ job "brawltime-cube" {
   }
 
   group "cube_refresh" {
+    count = 2
+
     scaling {
       enabled = true
       min = 1
       max = 4
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated-refresh"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            within_bounds_trigger = 1
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated-refresh"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            within_bounds_trigger = 1
+            delta = -1
+          }
+        }
+      }
     }
 
     affinity {
@@ -116,9 +174,9 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 512
-        memory = 196
-        memory_max = 384
+        cpu = 64
+        memory = 128
+        memory_max = 256
       }
     }
   }

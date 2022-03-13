@@ -33,6 +33,34 @@ job "brawltime-manager" {
       enabled = true
       min = 1
       max = 8
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            within_bounds_trigger = 1
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            within_bounds_trigger = 1
+            delta = -1
+          }
+        }
+      }
     }
 
     network {
@@ -108,8 +136,8 @@ job "brawltime-manager" {
       }
 
       resources {
-        cpu = 128
-        memory = 128
+        cpu = 64
+        memory = 64
         memory_max = 256
       }
     }

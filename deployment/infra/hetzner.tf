@@ -102,60 +102,62 @@ variable "servers" {
   type = map
   default = {
     barley = {
-      server_type = "cx11"
-      ip = "10.0.0.2"
+      server_type = "cpx11"
       class = "ingress"
-      leader_ip = ""
     }
     colt = {
       server_type = "cpx11"
-      ip = "10.0.0.3"
       class = "worker"
-      leader_ip = "10.0.0.2"
     }
     dynamike = {
       server_type = "cpx31"
-      ip = "10.0.0.4"
       class = "database"
-      leader_ip = "10.0.0.2"
     }
     edgar = {
       server_type = "cpx11"
-      ip = "10.0.0.5"
       class = "worker"
-      leader_ip = "10.0.0.2"
     }
     frank = {
       server_type = "cpx11"
-      ip = "10.0.0.6"
       class = "worker"
-      leader_ip = "10.0.0.2"
     }
+    /*
     gene = {
       server_type = "cpx11"
-      ip = "10.0.0.7"
       class = "worker"
-      leader_ip = "10.0.0.2"
     }
-/*
+    */
+    /*
     jessie = {
-      server_type = "cx31"
-      ip = "10.0.0.8"
-      class = "database"
-      leader_ip = "10.0.0.2"
+      server_type = "cpx11"
+      class = "worker"
     }
-*/
+    */
+    /*
     lou = {
       server_type = "cpx11"
-      ip = "10.0.0.9"
       class = "worker"
-      leader_ip = "10.0.0.2"
     }
+*/
+/*
+    max = {
+      server_type = "cpx11"
+      class = "worker"
+    }
+*/
+/*
+    nani = {
+      server_type = "cpx11"
+      ip = "10.0.0.11"
+      class = "worker"
+    }
+*/
     # timeouts and DNS errors after change?
-    # -> restart dnsmasq (TODO investigate why)
+    # -> restart dnsmasq or nginx (TODO investigate why)
   }
 }
 
+# sync with autoscaler.nomad target
 resource "hcloud_server" "default" {
   for_each = var.servers
 
@@ -165,27 +167,27 @@ resource "hcloud_server" "default" {
   server_type = each.value.server_type
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
-  user_data = templatefile("${path.module}/conf/cloudinit.yml.tpl", {
-    ip = each.value.ip,
+  user_data = templatefile(each.value.class == "ingress" ? "${path.module}/conf/cloudinit-ingress.yml.tpl" : "${path.module}/conf/cloudinit-worker.yml.tpl", {
     class = each.value.class,
-    leader_ip = each.value.leader_ip,
     datadog_api_key = var.datadog_api_key,
   })
   network {
     network_id = hcloud_network.default.id
-    ip = each.value.ip
+    ip = each.value.class == "ingress" ? "10.0.0.2" : null
   }
   depends_on = [
     hcloud_network_subnet.default
   ]
   labels = {
-    "firewall" = ""
+    "firewall" = "true"
+    "nomad_class" = each.value.class
   }
 
   lifecycle {
     prevent_destroy = true
     ignore_changes = [
       user_data,
+      network,
     ]
   }
 }

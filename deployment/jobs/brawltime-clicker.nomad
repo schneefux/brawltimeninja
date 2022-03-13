@@ -24,10 +24,38 @@ job "brawltime-clicker" {
   }
 
   group "clicker" {
+    count = 1
+
     scaling {
       enabled = true
       min = 1
       max = 4
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            delta = -1
+          }
+        }
+      }
     }
 
     constraint {
@@ -73,7 +101,7 @@ job "brawltime-clicker" {
       }
 
       resources {
-        cpu = 96
+        cpu = 128
         memory = 64
         memory_max = 96
       }

@@ -59,6 +59,12 @@ job "traefik" {
         "traefik.http.routers.consul-dashboard.rule=Host(`consul.${var.domain}`)",
         "traefik.http.routers.consul-dashboard.service=consul-dashboard",
         "traefik.http.routers.consul-dashboard.middlewares=auth",
+
+        # default to 503
+        "traefik.http.services.unavailable.loadbalancer.server.port=0",
+        "traefik.http.routers.catchall.rule=PathPrefix(`/`)",
+        "traefik.http.routers.catchall.service=unavailable",
+        "traefik.http.routers.catchall.priority=1",
       ]
     }
 
@@ -87,8 +93,7 @@ job "traefik" {
       }
 
       resources {
-        # average cpu: 96
-        cpu = 256
+        cpu = 1024
         memory = 256
         memory_max = 512
       }

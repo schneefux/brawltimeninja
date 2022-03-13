@@ -62,7 +62,7 @@ job "brawltime-testing" {
 
       resources {
         cpu = 256
-        memory = 256
+        memory = 196
         memory_max = 512
       }
     }

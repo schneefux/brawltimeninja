@@ -31,7 +31,35 @@ job "brawltime-web" {
     scaling {
       enabled = true
       min = 1
-      max = 8
+      max = 16
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            within_bounds_trigger = 1
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            within_bounds_trigger = 1
+            delta = -1
+          }
+        }
+      }
     }
 
     network {
@@ -50,7 +78,7 @@ job "brawltime-web" {
 
       check {
         type = "http"
-        path = "/"
+        path = "/about"
         interval = "10s"
         timeout  = "5s"
 
@@ -81,7 +109,7 @@ job "brawltime-web" {
       }
 
       resources {
-        cpu = 2048
+        cpu = 1024
         memory = 512
         memory_max = 1024
       }

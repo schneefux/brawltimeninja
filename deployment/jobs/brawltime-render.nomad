@@ -24,12 +24,40 @@ job "brawltime-render" {
   }
 
   group "render" {
-    count = 2
+    count = 1
 
     scaling {
       enabled = true
       min = 1
-      max = 8
+      max = 16
+
+      policy {
+        check "high_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 100
+            lower_bound = 80
+            within_bounds_trigger = 1
+            delta = 1
+          }
+        }
+
+        check "low_cpu" {
+          source = "nomad-apm"
+          group = "cpu-allocated"
+          query = "avg_cpu-allocated"
+
+          strategy "threshold" {
+            upper_bound = 20
+            lower_bound = 0
+            within_bounds_trigger = 1
+            delta = -1
+          }
+        }
+      }
     }
 
     network {
@@ -76,7 +104,7 @@ job "brawltime-render" {
       }
 
       resources {
-        cpu = 384
+        cpu = 512
         memory = 384
         memory_max = 512
       }

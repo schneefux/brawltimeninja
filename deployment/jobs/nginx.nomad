@@ -104,8 +104,7 @@ job "nginx" {
       }
 
       resources {
-        # average cpu: 196
-        cpu = 512
+        cpu = 1536
         memory = 192
         memory_max = 512
       }
