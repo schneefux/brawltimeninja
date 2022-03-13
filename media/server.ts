@@ -41,7 +41,7 @@ app.use(async (ctx, next) => {
   let stats
   try {
     stats = await fsStat(filePath)
-  } catch (err) {
+  } catch (err: any) {
     const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
     if (notfound.includes(err.code)) {
       if (filePath.endsWith('.png')) {
