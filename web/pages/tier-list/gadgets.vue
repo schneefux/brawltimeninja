@@ -1,30 +1,32 @@
 <template>
-  <b-page
-    :title="$t('tier-list.gadget.title')"
-    class="container"
-  >
+  <b-page :title="$t('tier-list.gadget.title')">
     <accessory-tier-list kind="gadgets"></accessory-tier-list>
   </b-page>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, useMeta, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   middleware: ['cached'],
-  head() {
-    const description = this.$t('tier-list.gadget.meta.description') as string
-    return {
-      title: this.$t('tier-list.gadget.meta.title') as string,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
+  head: {},
   meta: {
     title: 'Gadgets',
     screen: 'brawlers',
+  },
+  setup() {
+    const { i18n } = useContext()
+
+    useMeta(() => {
+      const description = i18n.t('tier-list.gadget.meta.description') as string
+      return {
+        title: i18n.t('tier-list.gadget.meta.title') as string,
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
+    })
   },
 })
 </script>

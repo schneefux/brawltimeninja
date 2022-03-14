@@ -7,21 +7,17 @@
       first
     ></ad>
 
-    <b-horizontal-scroller
-      class="mt-3"
-      expand-on-desktop
-    >
+    <div class="mt-4 flex flex-wrap gap-x-2 gap-y-4 justify-center">
       <b-button
         v-for="metric in metrics"
         :key="metric"
         :to="localePath(`/leaderboard/${metric}`)"
-        class="mt-2 mr-2 whitespace-nowrap"
         primary
         sm
       >
         {{ $t('metric.' + metric) }}
       </b-button>
-    </b-horizontal-scroller>
+    </div>
 
     <div class="flex justify-center mt-8">
       <nuxt-child></nuxt-child>
@@ -37,12 +33,8 @@
 <script lang="ts">
 import { defineComponent, useMeta, useContext, useRoute, computed } from '@nuxtjs/composition-api'
 import { getSeasonEnd } from '@/lib/util'
-import { BHorizontalScroller } from '@schneefux/klicker/components'
 
 export default defineComponent({
-  components: {
-    BHorizontalScroller,
-  },
   head: {},
   setup() {
     const { i18n } = useContext()
