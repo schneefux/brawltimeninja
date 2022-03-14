@@ -4,7 +4,7 @@
       ref="toc"
       class="relative"
     >
-      <ul>
+      <ul :class="tocClass">
         <li
           v-for="section in sections"
           :key="section.title"
@@ -101,6 +101,10 @@ export default defineComponent({
     navClass: {
       type: String,
       default: 'top-0'
+    },
+    tocClass: {
+      type: String,
+      default: ''
     },
   },
   setup(props) {

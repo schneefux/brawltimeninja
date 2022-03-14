@@ -12,39 +12,21 @@
       >
         <player-aside :player="player"></player-aside>
 
-        <b-scroll-spy
-          :sections="[{
-            id: 'time',
-            title: $t('player.time-statistics'),
-            element: timeSection,
-           }, {
-            id: 'trophy',
-            title: $t('player.trophy-statistics'),
-            element: trophySection,
-           }, {
-            id: 'quiz',
-            title: $t('player.quiz.title'),
-            element: quizSection,
-           }, {
-            id: 'records',
-            title: $t('player.records.title'),
-            element: recordsSection,
-           }, {
-            id: 'battles',
-            title: $t('battle-log'),
-            element: battlesSection,
-           }, {
-            id: 'modes',
-            title: $tc('mode', 2),
-            element: modesSection,
-           }, {
-            id: 'brawlers',
-            title: $tc('brawler', 2),
-            element: brawlersSection,
-           }]"
-          nav-class="top-14 lg:top-0"
-          class="mt-8"
-        ></b-scroll-spy>
+        <experiment experiment-id="6NHgl6O9RR-vC9cakTG4xA">
+          <b-scroll-spy
+            :sections="sections"
+            nav-class="top-14 lg:top-0"
+            class="mt-8"
+          ></b-scroll-spy>
+
+          <b-scroll-spy
+            slot="1"
+            :sections="sections"
+            nav-class="top-14 lg:top-0"
+            toc-class="hidden lg:block"
+            class="mt-8"
+          ></b-scroll-spy>
+        </experiment>
       </div>
 
       <b-page-section
@@ -280,6 +262,36 @@ export default defineComponent({
       brawlersSection: ref<HTMLElement>(),
     }
 
+    const sections = computed(() => [{
+      id: 'time',
+      title: i18n.t('player.time-statistics'),
+      element: sectionRefs.timeSection.value,
+    }, {
+      id: 'trophy',
+      title: i18n.t('player.trophy-statistics'),
+      element: sectionRefs.trophySection.value,
+    }, {
+      id: 'quiz',
+      title: i18n.t('player.quiz.title'),
+      element: sectionRefs.quizSection.value,
+    }, {
+      id: 'records',
+      title: i18n.t('player.records.title'),
+      element: sectionRefs.recordsSection.value,
+    }, {
+      id: 'battles',
+      title: i18n.t('battle-log'),
+      element: sectionRefs.battlesSection.value,
+    }, {
+      id: 'modes',
+      title: i18n.tc('mode', 2),
+      element: sectionRefs.modesSection.value,
+    }, {
+      id: 'brawlers',
+      title: i18n.tc('brawler', 2),
+      element: sectionRefs.brawlersSection.value,
+    }])
+
     return {
       refreshSecondsLeft,
       refresh,
@@ -287,6 +299,7 @@ export default defineComponent({
       player,
       playerTotals,
       makeVisibilityCallback,
+      sections,
       ...sectionRefs,
     }
   },
