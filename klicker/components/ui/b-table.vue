@@ -48,6 +48,8 @@
             :key="c.keys.join('-')"
             :class="['text-left pt-2', {
               'pr-3': c.index != columns.length - 1,
+              'text-gray-800 dark:text-gray-200': c.lightText,
+              'text-gray-800/75 dark:text-gray-200/75': !c.lightText,
             }]"
           >
             <slot
@@ -94,6 +96,10 @@ export interface Column {
    * If true, set width to minimal content width
    */
   shrink?: boolean
+  /**
+   * If true, apply lighter font color
+   */
+  lightText?: boolean
 }
 
 interface IndexedColumn extends Column {

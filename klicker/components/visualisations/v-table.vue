@@ -84,6 +84,7 @@ export default defineComponent({
         keys: [`metrics.${m.id}`],
         slot: `metrics.${m.id}`,
         shrink: true,
+        lightText: true,
       }))
 
       if (props.response.kind == 'comparingResponse') {
@@ -92,6 +93,7 @@ export default defineComponent({
           keys: [`test.difference.annotatedDifference`],
           slot: 'difference',
           shrink: true,
+          lightText: true,
         })
       }
 

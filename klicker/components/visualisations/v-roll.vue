@@ -32,12 +32,12 @@
           >
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap"
+              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-gray-800/75 dark:text-gray-200/75"
             >{{ row.metricName }}</th>
             <td
               v-for="column in row.columns"
               :key="column.id"
-              class="text-left pt-1 pl-3"
+              class="text-left pt-1 pl-3 text-gray-800 dark:text-gray-200"
             >
               <slot
                 :name="`metrics.${row.metricId}`"
