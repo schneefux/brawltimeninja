@@ -8,29 +8,38 @@
       slot="content"
       class="flex flex-col"
     >
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-x-8">
         <media-img
-          :path="'/brawlers/' + brawlerId + '/avatar'"
+          :path="`/brawlers/${brawlerId}/avatar`"
           :alt="brawler.name"
           size="160"
-          clazz="h-20 rounded mr-4"
+          clazz="h-20 rounded"
+          wrapper-class="flex-shrink-0"
         ></media-img>
-        <media-img
-          v-for="starpower in brawler.starPowers"
-          :key="starpower.id"
-          :path="`/starpowers/${starpower.id}`"
-          :alt="capitalizeWords(starpower.name.toLowerCase())"
-          clazz="h-8"
-          size="80"
-        ></media-img>
-        <media-img
-          v-for="gadget in brawler.gadgets"
-          :key="gadget.id"
-          :path="`/gadgets/${gadget.id}`"
-          :alt="capitalizeWords(gadget.name.toLowerCase())"
-          clazz="h-8"
-          size="80"
-        ></media-img>
+
+        <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
+          <media-img
+            v-for="starpower in brawler.starPowers"
+            :key="starpower.id"
+            :path="`/starpowers/${starpower.id}`"
+            :alt="capitalizeWords(starpower.name.toLowerCase())"
+            size="80"
+          ></media-img>
+          <media-img
+            v-for="gadget in brawler.gadgets"
+            :key="gadget.id"
+            :path="`/gadgets/${gadget.id}`"
+            :alt="capitalizeWords(gadget.name.toLowerCase())"
+            size="80"
+          ></media-img>
+          <media-img
+            v-for="gear in brawler.gears"
+            :key="gear.id"
+            :path="`/gears/${gear.name.toLowerCase()}_${gear.level}`"
+            :alt="capitalizeWords(gear.name.toLowerCase())"
+            size="80"
+          ></media-img>
+        </div>
       </div>
 
       <history-graph

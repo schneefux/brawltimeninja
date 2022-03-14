@@ -1,7 +1,20 @@
 <template>
-  <span v-if="'gear' in row.dimensions">
-    {{ row.dimensions.gear }}
-  </span>
+  <div
+    v-if="'gear' in row.dimensions"
+    class="flex items-center"
+  >
+    <media-img
+      :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase()}_1`"
+      :alt="row.dimensions.gear"
+      size="80"
+      clazz="h-8"
+      wrapper-class="shrink-0"
+    ></media-img>
+    <span
+      v-if="captioned"
+      class="ml-2"
+    >{{ row.dimensions.gear }}</span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -13,6 +26,9 @@ export default defineComponent({
     row: {
       type: Object as PropType<MetaGridEntry>,
       required: true
+    },
+    captioned: {
+      type: Boolean
     },
   },
 })
