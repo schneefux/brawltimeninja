@@ -2,7 +2,7 @@
   <b-scrolling-list
     v-if="modes != undefined && events != undefined"
     :items="modes"
-    :cell-rows="2"
+    :cell-rows="3"
     :cell-columns="4"
     :eager-until="3"
     key-id="id"

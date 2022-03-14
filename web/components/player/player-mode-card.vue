@@ -8,19 +8,25 @@
         :elevation="0"
         dense
       >
-        <div slot="content">
-          <dl slot="content" class="flex">
-            <dd class="font-semibold">
-              {{ winRate }}
-            </dd>
-            <dt class="ml-1">
-              {{ $t('metric.winRate.mode', { mode: $t('mode.' + mode) }) }}
-            </dt>
-          </dl>
-          <p class="text-xs">
-            {{ stats.wins }} {{ $t('metric.wins' )}} / {{ stats.losses }} {{ $t('metric.losses') }}
-          </p>
-        </div>
+        <b-kv-table
+          slot="content"
+          :rows="[{
+            title: $t('metric.winRate'),
+            key: 'winRate',
+          }, {
+            title: $t('metric.wins'),
+            key: 'wins',
+          }, {
+            title: $t('metric.losses'),
+            key: 'losses',
+          }]"
+          :data="{
+            winRate,
+            wins: stats.wins,
+            losses: stats.losses,
+          }"
+          id-key="tag"
+        ></b-kv-table>
       </b-card>
 
       <b-card
@@ -63,6 +69,7 @@ import { Brawler, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
 import { winRateMetric } from '~/lib/klicker.conf'
+import { BKvTable } from '@schneefux/klicker/components'
 
 interface Stats {
   winRate: number
@@ -72,6 +79,9 @@ interface Stats {
 }
 
 export default defineComponent({
+  components: {
+    BKvTable,
+  },
   props: {
     playerTag: {
       type: String,
