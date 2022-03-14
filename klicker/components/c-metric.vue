@@ -133,17 +133,33 @@ export default defineComponent({
         metricsIds = metrics.value.map(m => m.id)
       }
 
-      emit('input', <CubeQuery>{
-        ...props.value,
-        metricsIds,
-        sortId: metricsIds[0],
-      })
+      const sortId = metricsIds[0]
+      if (props.value.comparing) {
+        emit('input', <CubeComparingQuery>{
+          ...props.value,
+          metricsIds,
+          sortId,
+          reference: {
+            ...props.value.reference,
+            metricsIds,
+            sortId,
+          },
+        })
+      } else {
+        emit('input', <CubeQuery>{
+          ...props.value,
+          metricsIds,
+          sortId,
+        })
+      }
+
       numMetrics.value = metricsIds.length
     }
 
     const onMetricRemove = () => {
       const metricsIds = props.value.metricsIds.slice()
       metricsIds.pop()
+
       emit('input', <CubeQuery>{
         ...props.value,
         metricsIds,

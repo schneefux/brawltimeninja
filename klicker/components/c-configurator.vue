@@ -48,8 +48,8 @@
         <c-dimension
           v-if="configureDimensions && compareMode"
           :value="value"
-          @input="s => $emit('input', s)"
           comparing
+          @input="s => $emit('input', s)"
         ></c-dimension>
 
         <label
