@@ -388,6 +388,19 @@ const powerplayDimension: Dimension = {
   },
 }
 
+const powerDimension: Dimension = {
+  id: 'power',
+  name: 'Power',
+  naturalIdAttribute: 'power',
+  formatter: '.2f',
+  additionalMetrics: [],
+  type: 'quantitative',
+  config: {
+    sql: 'brawler_power',
+    type: 'number',
+  },
+}
+
 const picks = 'SUM(picks)'
 const winRate = `toFloat64(AVG(battle_victory))`
 const zP = 'least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)'
@@ -1411,14 +1424,14 @@ const brawlerSlices = asSlice({
   powerGte: {
     id: 'powerGte',
     config: {
-      member: 'power_measure',
+      member: 'power_dimension',
       operator: 'gte',
     },
   },
   powerLte: {
     id: 'powerLte',
     config: {
-      member: 'power_measure',
+      member: 'power_dimension',
       operator: 'lte',
     },
   },
@@ -1606,6 +1619,7 @@ const playerBrawlerDimensions = [
   brawlerDimension,
   brawlerIdDimension,
   trophyRangeDimension,
+  powerDimension,
 ]
 
 const playerBrawlerMetrics = [
