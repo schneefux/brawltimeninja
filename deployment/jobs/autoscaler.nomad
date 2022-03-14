@@ -68,7 +68,7 @@ job "autoscaler" {
             }
           }
 
-          log_level = "INFO"
+          log_level = "DEBUG"
         EOF
 
         destination = "${NOMAD_TASK_DIR}/config.hcl"
@@ -112,10 +112,12 @@ job "autoscaler" {
 
               # sync with hetzner.tf
               target "hcloud-server" {
-                datacenter = "dc01"
+                # combined filters are only supported since Nov 2021 https://github.com/hashicorp/nomad-autoscaler/pull/535
+                # the plugin was built Feb 2021
+                #datacenter = "dc01"
                 node_class = "worker"
                 node_purge = "true"
-                dry-run = "false"
+                dry-run = "true"
                 hcloud_location = "nbg1"
                 hcloud_image = "docker-ce"
                 hcloud_user_data = <<-EOOF

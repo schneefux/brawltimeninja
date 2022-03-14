@@ -26,8 +26,8 @@ job "brawltime-media" {
   # workaround for limited support for scaling jobs with single writer nodes
   # https://github.com/hashicorp/nomad/issues/10157
   constraint {
-    attribute = "distinct_hosts"
-    value = "false"
+    attribute = "${attr.unique.hostname}"
+    value = "brawltime-colt"
   }
 
   update {

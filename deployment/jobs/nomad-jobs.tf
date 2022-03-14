@@ -1,5 +1,5 @@
-resource "nomad_job" "ingress" {
-  jobspec = file("${path.module}/ingress.nomad")
+resource "nomad_job" "nginx" {
+  jobspec = file("${path.module}/nginx.nomad")
 
   lifecycle {
     ignore_changes = [
@@ -10,6 +10,26 @@ resource "nomad_job" "ingress" {
   hcl2 {
     enabled = true
     allow_fs = true
+  }
+}
+
+variable "basic_auth" {}
+
+resource "nomad_job" "traefik" {
+  jobspec = file("${path.module}/traefik.nomad")
+
+  lifecycle {
+    ignore_changes = [
+      allocation_ids,
+    ]
+  }
+
+  hcl2 {
+    enabled = true
+    allow_fs = true
+    vars = {
+      "basic_auth" = var.basic_auth
+    }
   }
 }
 
@@ -164,28 +184,3 @@ resource "nomad_volume" "brawltime_assets" {
     attachment_mode = "file-system"
   }
 }
-
-/*
-resource "nomad_job" "brawltime" {
-  jobspec = file("${path.module}/brawltime.nomad")
-
-  lifecycle {
-    ignore_changes = [
-      allocation_ids,
-    ]
-  }
-
-  hcl2 {
-    enabled = true
-    allow_fs = true
-    vars = {
-      "brawlstars_email" = var.brawlstars_email
-      "brawlstars_password" = var.brawlstars_password
-      "brawlapi_token" = var.brawlapi_token
-      "brawltime_assets_pubkey" = var.brawltime_assets_pubkey
-      "brawltime_assets_hostkey_ed" = var.brawltime_assets_hostkey_ed
-      "brawltime_assets_hostkey_rsa" = var.brawltime_assets_hostkey_rsa
-    }
-  }
-}
-*/
