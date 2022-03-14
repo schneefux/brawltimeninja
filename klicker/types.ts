@@ -110,7 +110,7 @@ export interface Dimension {
   childIds?: string[]
   /**
    * Column which contains a human-readable identifier.
-   * May be the dimension or one of additionalMetrics.
+   * May be the dimension ID or one of additionalMetrics.
    */
   naturalIdAttribute: string
   /**

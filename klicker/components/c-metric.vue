@@ -135,19 +135,21 @@ export default defineComponent({
 
       const sortId = metricsIds[0]
       if (props.value.comparing) {
+        const query = props.value as CubeComparingQuery
         emit('input', <CubeComparingQuery>{
-          ...props.value,
+          ...query,
           metricsIds,
           sortId,
           reference: {
-            ...props.value.reference,
+            ...query.reference,
             metricsIds,
             sortId,
           },
         })
       } else {
+        const query = props.value as CubeQuery
         emit('input', <CubeQuery>{
-          ...props.value,
+          ...query,
           metricsIds,
           sortId,
         })
