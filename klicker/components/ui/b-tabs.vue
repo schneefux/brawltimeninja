@@ -1,17 +1,18 @@
 <template>
-  <div
-    ref="container"
-    class="-mx-4 lg:mx-0"
-  >
+  <div class="-mx-4 lg:mx-0">
     <nav
       :class="navClass"
       ref="navContainer"
       role="tablist"
-      class="sticky "
+      class="sticky"
     >
-      <ul class="flex px-8 overflow-x-auto hide-scrollbar bg-gray-100 dark:bg-gray-900">
+      <ul
+        ref="headerContainer"
+        class="flex overflow-x-auto hide-scrollbar bg-gray-100 dark:bg-gray-900"
+      >
         <li
           v-for="tab in tabs"
+          :ref="`${tab.slot}-header`"
           :key="tab.slot"
         >
           <button
@@ -34,12 +35,12 @@
 
     <div
       ref="tabContainer"
-      class="px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar"
+      class="mt-4 px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar"
     >
       <div
         v-for="tab in tabs"
         :key="tab.slot"
-        :ref="tab.slot"
+        :ref="`${tab.slot}-tab`"
         :class="{
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
@@ -79,30 +80,46 @@ export default defineComponent({
   },
   // TODO replace refs by function ref when migrating to Vue 3
   setup(props, { refs }) {
-    const container = ref<HTMLElement>()
     const tabContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
+    const headerContainer = ref<HTMLElement>()
     const activeTab = ref<string>(props.tabs[0].slot)
     const tabVisibility = ref<Record<string, boolean>>({
       [activeTab.value]: true,
     })
 
-    const scrollUpToTab = (tabElement: HTMLElement, smooth: boolean = false) => {
-      const top = tabElement.getBoundingClientRect().top + window.scrollY - navContainer.value!.getBoundingClientRect().bottom
-      if (window.scrollY > top) {
-        window.scrollTo({ top, behavior: smooth ? 'smooth' : undefined })
+    const scrollUpToTab = (id: string) => {
+      const offset = tabContainer.value!.getBoundingClientRect().top - navContainer.value!.getBoundingClientRect().bottom
+      if (offset < 0) {
+        const top = window.scrollY + offset
+        window.scrollTo({ top, behavior: 'smooth' })
       }
     }
 
+    const scrollTabHeaderIntoView = (id: string) => {
+      const headerElement = refs[`${id}-header`][0] as HTMLElement
+      const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
+      if (offset < 0 || offset > window.innerWidth) {
+        const left = headerContainer.value!.scrollLeft + offset
+        headerContainer.value!.scrollTo({ left, behavior: 'smooth' })
+      }
+    }
+
+    const scrollActiveTabIntoView = () => {
+      scrollTabHeaderIntoView(activeTab.value)
+      scrollUpToTab(activeTab.value)
+    }
+
     const setActiveTab = (tab: Tab) => {
-      const tabElement = refs[tab.slot][0] as HTMLElement
-      const left = tabContainer.value!.scrollLeft + tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
+      const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
+      const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
+      const left = tabContainer.value!.scrollLeft + offset
       tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
     }
 
     onMounted(() => {
       for (const tab of props.tabs) {
-        const tabElement = refs[tab.slot][0] as HTMLElement
+        const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           tabVisibility.value = {
@@ -121,7 +138,7 @@ export default defineComponent({
               [activeTab.value]: true,
             }
 
-            scrollUpToTab(tabElement)
+            scrollActiveTabIntoView()
           }
         }, {
           root: tabContainer.value,
@@ -133,9 +150,9 @@ export default defineComponent({
     const { id: prefix } = useUniqueId()
 
     return {
-      container,
       tabContainer,
       navContainer,
+      headerContainer,
       setActiveTab,
       activeTab,
       tabVisibility,
