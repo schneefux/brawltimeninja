@@ -146,6 +146,8 @@
             callback: makeVisibilityCallback('best_players'),
             once: true,
           }"
+          :limit="4"
+          :elevation="1"
         ></top-players-card>
       </div>
     </b-page-section>

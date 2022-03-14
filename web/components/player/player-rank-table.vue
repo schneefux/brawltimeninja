@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
 export interface PlayerRankTableRow {
   player_name: string
@@ -73,7 +73,7 @@ export interface PlayerRankTableRow {
   player_icon_id: number
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     columns: {
       type: Array as PropType<string[]>,

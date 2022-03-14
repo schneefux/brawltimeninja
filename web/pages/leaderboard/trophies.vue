@@ -24,9 +24,7 @@ export default defineComponent({
   setup() {
     const { $http, $config } = useContext()
 
-    const fetchTrophiesLeaderboard = async () => {
-      return await $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
-    }
+    const fetchTrophiesLeaderboard = () => $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
     const leaderboard = useAsync(fetchTrophiesLeaderboard, 'leaderboard-trophies')
 
     const rows = computed<PlayerRankTableRow[]>(() => {

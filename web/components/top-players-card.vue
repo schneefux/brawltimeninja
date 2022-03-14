@@ -1,47 +1,44 @@
 <template>
   <b-card
-    :loading="$fetchState.pending"
+    :loading="leaderboard == null"
     :title="$t('best.players.long')"
     full-height
   >
-    <b-horizontal-scroller
+    <b-scrolling-list
+      v-if="leaderboard != null"
       slot="content"
-      expand-on-desktop
-      class="gap-x-4"
+      :items="leaderboard"
+      :cell-columns="2"
+      key-id="tag"
     >
-      <div
-        v-if="$fetchState.pending"
-        class="w-full"
-        style="height: 68px;"
-      ></div>
-
-      <b-card
-        v-for="player in data"
-        :key="player.tag"
-        :title="player.name"
-        :link="localePath(`/profile/${player.tag}`)"
-        :icon="`/avatars/${player.icon}`"
-        :icon-alt="player.name"
-        :elevation="2"
-        size="w-40"
-        class="shrink-0 whitespace-nowrap"
-        itemscope
-        itemtype="http://schema.org/Person"
-        dense
-      >
-        <template v-slot:icon="data">
-          <media-img-icon v-bind="data"></media-img-icon>
-        </template>
-
-        <p
-          slot="content"
-          class="text-sm text-center"
+      <template v-slot:item="player">
+        <b-card
+          :title="player.name"
+          :link="localePath(`/profile/${player.tag}`)"
+          :icon="`/avatars/${player.icon}`"
+          :icon-alt="player.name"
+          :elevation="elevation"
+          class="whitespace-nowrap"
+          full-height
+          dense
         >
-          {{ player.metric }}
-          {{ $t('metric.trophies') }}
-        </p>
-      </b-card>
-    </b-horizontal-scroller>
+          <template v-slot:icon="data">
+            <media-img-icon v-bind="data"></media-img-icon>
+          </template>
+
+          <b-kv-table
+            slot="content"
+            :rows="[{
+              title: $t('metric.trophies'),
+              key: 'trophies',
+            }]"
+            :data="player"
+            id-key="tag"
+            class="mt-2"
+          ></b-kv-table>
+        </b-card>
+      </template>
+    </b-scrolling-list>
 
     <b-button
       slot="actions"
@@ -56,48 +53,43 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { trophiesMetric } from '~/lib/klicker.conf'
-import { Leaderboard } from '~/model/Api'
-import { BHorizontalScroller } from '@schneefux/klicker/components'
+import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { BScrollingList, BKvTable } from '@schneefux/klicker/components'
+import { PlayerRanking } from '~/model/Brawlstars'
 
-interface Row {
-  tag: string
-  name: string
-  icon: number
-  metric: string
-}
-
-export default Vue.extend({
+export default defineComponent({
   components: {
-    BHorizontalScroller,
+    BScrollingList,
+    BKvTable,
   },
   props: {
     limit: {
       type: Number,
-      default: 3
+      default: 5
+    },
+    elevation: {
+      type: Number,
+      default: 2
     },
   },
-  data() {
+  setup(props) {
+    const { $http, $config } = useContext()
+
+    const leaderboard = useAsync(async () => {
+      const data = await $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
+      return data
+        .slice(0, props.limit)
+        .map(e => ({
+          tag: e.tag,
+          name: e.name,
+          icon: e.icon.id,
+          trophies: e.trophies,
+        }))
+    }, 'top-players')
+
     return {
-      data: [] as Row[],
+      leaderboard,
     }
-  },
-  fetchDelay: 0,
-  watch: {
-    metric: '$fetch',
-    limit: '$fetch',
-  },
-  async fetch() {
-    const leaderboard = await this.$http.$get<Leaderboard>(this.$config.apiUrl + '/api/leaderboard/trophies')
-    this.data = leaderboard.entries
-      .slice(0, this.limit)
-      .map(e => (<Row>{
-        tag: e.tag,
-        name: e.name,
-        icon: e.icon,
-        metric: this.$klicker.format(trophiesMetric, e.metric),
-      }))
   },
 })
 </script>

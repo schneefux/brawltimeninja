@@ -34,10 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { BButton, CQuery } from '@schneefux/klicker/components'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BButton,
     CQuery,
