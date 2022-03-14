@@ -33,7 +33,7 @@ export default defineComponent({
     return () => {
       if (props.card != undefined) {
         return h(props.wrapper, {
-          attrs: { // attrs instead of props because b-card is functional
+          props: {
             ...props.card as any,
             loading: props.loading,
           },
