@@ -3,6 +3,7 @@
     <c-dashboard-cell
       :rows="2"
       :columns="5"
+      lazy
     >
       <history-graph
         v-if="enableKlickerStats"

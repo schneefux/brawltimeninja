@@ -37,9 +37,11 @@
         }"
         :title="$t('player.time-statistics')"
       >
-        <player-time-statistics
-          :player="player"
-        ></player-time-statistics>
+        <lazy-hydrate when-visible>
+          <player-time-statistics
+            :player="player"
+          ></player-time-statistics>
+        </lazy-hydrate>
       </b-page-section>
 
       <b-page-section
@@ -50,11 +52,13 @@
         }"
         :title="$t('player.trophy-statistics')"
       >
-        <player-trophy-statistics
-          :player="player"
-          :player-totals="playerTotals"
-          :enable-klicker-stats="enableKlickerStats"
-        ></player-trophy-statistics>
+        <lazy-hydrate when-visible>
+          <player-trophy-statistics
+            :player="player"
+            :player-totals="playerTotals"
+            :enable-klicker-stats="enableKlickerStats"
+          ></player-trophy-statistics>
+        </lazy-hydrate>
       </b-page-section>
 
       <b-page-section
@@ -65,7 +69,9 @@
         once: true,
       }"
       >
-        <quiz-card></quiz-card>
+        <lazy-hydrate when-visible>
+          <quiz-card></quiz-card>
+        </lazy-hydrate>
       </b-page-section>
 
       <ad
@@ -81,10 +87,12 @@
           {{ $t('player.records.description') }}
         </p>
 
-        <player-percentiles
-          :player="player"
-          class="mt-8"
-        ></player-percentiles>
+        <lazy-hydrate when-visible>
+          <player-percentiles
+            :player="player"
+            class="mt-8"
+          ></player-percentiles>
+        </lazy-hydrate>
       </b-page-section>
 
       <b-page-section title="Info">
@@ -112,14 +120,16 @@
           {{ $t('action.refresh') }}
         </b-button>
 
-        <player-battles
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('battles'),
-            once: true,
-          }"
-          :player="player"
-          class="mt-8"
-        ></player-battles>
+        <lazy-hydrate when-visible>
+          <player-battles
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('battles'),
+              once: true,
+            }"
+            :player="player"
+            class="mt-8"
+          ></player-battles>
+        </lazy-hydrate>
       </b-page-section>
 
       <ad
@@ -135,16 +145,18 @@
           {{ $t('player.modes.description') }}
         </p>
 
-        <player-mode-winrates
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('gamemodes'),
-            once: true,
-          }"
-          :player="player"
-          :battles="player.battles"
-          :enable-klicker-stats="enableKlickerStats"
-          class="mt-4"
-        ></player-mode-winrates>
+        <lazy-hydrate when-visible>
+          <player-mode-winrates
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('gamemodes'),
+              once: true,
+            }"
+            :player="player"
+            :battles="player.battles"
+            :enable-klicker-stats="enableKlickerStats"
+            class="mt-4"
+          ></player-mode-winrates>
+        </lazy-hydrate>
       </b-page-section>
 
       <b-page-section
@@ -155,11 +167,13 @@
           {{ $t('player.brawlers.description') }}
         </p>
 
-        <player-brawlers
-          :player="player"
-          :enable-klicker-stats="enableKlickerStats"
-          class="mt-4"
-        ></player-brawlers>
+        <lazy-hydrate when-visible>
+          <player-brawlers
+            :player="player"
+            :enable-klicker-stats="enableKlickerStats"
+            class="mt-4"
+          ></player-brawlers>
+        </lazy-hydrate>
       </b-page-section>
     </b-split-dashboard>
 

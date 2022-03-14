@@ -131,25 +131,27 @@
     ></ad>
 
     <b-page-section class="mt-4">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <top-brawlers-card
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('best_brawlers'),
-            once: true,
-          }"
-          :limit="4"
-          :elevation="1"
-        ></top-brawlers-card>
+      <lazy-hydrate when-visible>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <top-brawlers-card
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('best_brawlers'),
+              once: true,
+            }"
+            :limit="4"
+            :elevation="1"
+          ></top-brawlers-card>
 
-        <top-players-card
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('best_players'),
-            once: true,
-          }"
-          :limit="4"
-          :elevation="1"
-        ></top-players-card>
-      </div>
+          <top-players-card
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('best_players'),
+              once: true,
+            }"
+            :limit="4"
+            :elevation="1"
+          ></top-players-card>
+        </div>
+      </lazy-hydrate>
     </b-page-section>
 
     <ad
@@ -165,10 +167,12 @@
         once: true,
       }"
     >
-      <events-roll
-        :events="events"
-        with-data
-      ></events-roll>
+      <lazy-hydrate when-visible>
+        <events-roll
+          :events="events"
+          with-data
+        ></events-roll>
+      </lazy-hydrate>
     </b-page-section>
 
     <ad
