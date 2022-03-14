@@ -14,7 +14,7 @@
       <template v-slot:item="player">
         <b-card
           :title="player.name"
-          :link="localePath(`/profile/${player.tag}`)"
+          :link="localePath(`/profile/${player.tag.replace('#', '')}`)"
           :icon="`/avatars/${player.icon}`"
           :icon-alt="player.name"
           :elevation="elevation"
