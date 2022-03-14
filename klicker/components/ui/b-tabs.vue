@@ -99,8 +99,9 @@ export default defineComponent({
     const scrollTabHeaderIntoView = (id: string) => {
       const headerElement = refs[`${id}-header`][0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
-      if (offset < 0 || offset > window.innerWidth) {
-        const left = headerContainer.value!.scrollLeft + offset
+      const center = tabContainer.value!.clientWidth / 2
+      if (offset < center - center / 2 || offset > center + center / 2) {
+        const left = headerContainer.value!.scrollLeft + offset - center
         headerContainer.value!.scrollTo({ left, behavior: 'smooth' })
       }
     }

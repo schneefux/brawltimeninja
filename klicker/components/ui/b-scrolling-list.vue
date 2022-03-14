@@ -2,10 +2,12 @@
   <div>
     <ul
       v-if="'preview' in $scopedSlots"
+      ref="previewContainer"
       class="flex md:flex-wrap overflow-x-auto"
     >
       <li
         v-for="item in items"
+        :ref="`${item[keyId]}-preview`"
         :key="item[keyId]"
         :class="{
           'border-white/[.2]': !elementVisibility[item[keyId]],
@@ -33,7 +35,7 @@
       <c-dashboard-cell
         v-for="(item, index) in items"
         :key="item[keyId]"
-        :ref="item[keyId]"
+        :ref="`${item[keyId]}-item`"
         :columns="cellColumns"
         :rows="cellRows"
         :lazy="eagerUntil == undefined ? false : index > eagerUntil"
@@ -48,10 +50,10 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, PropType, ref} from 'vue-demi'
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue-demi'
 import BScrollingDashboard from './b-scrolling-dashboard.vue'
 import CDashboardCell from '../c-dashboard-cell.vue'
-import {useIntersectionObserver} from "@vueuse/core";
+import { useIntersectionObserver } from '@vueuse/core'
 
 /**
  * Horizontally-scrolling dashboard with fixed-size, lazy-loaded items
@@ -101,22 +103,41 @@ export default defineComponent({
   // TODO replace by function ref when migrating to Vue 3
   setup(props, { refs }) {
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
+    const previewContainer = ref<HTMLElement>()
     const elementVisibility = ref<Record<string, boolean>>({})
 
+    const scrollPreviewIntoView = (id: string) => {
+      const previewElement = refs[`${id}-preview`][0] as HTMLElement|undefined
+      if (previewElement == undefined) {
+        return
+      }
+
+      const offset = previewElement.getBoundingClientRect().left - previewContainer.value!.getBoundingClientRect().left
+      const center = previewContainer.value!.clientWidth / 2
+      if (offset < center - center / 2 || offset > center + center / 2) {
+        const left = previewContainer.value!.scrollLeft + offset - center
+        previewContainer.value!.scrollTo({ left, behavior: 'smooth' })
+      }
+    }
+
     const scrollTo = (id: string) => {
-      const element = refs[id][0].$el as HTMLElement
+      const element = refs[`${id}-item`][0].$el as HTMLElement
       container.value!.scrollTo(element)
     }
 
     onMounted((() => {
       for (const item of props.items) {
         const key = item[props.keyId]
-        const element = refs[key][0].$el as HTMLElement
+        const element = refs[`${key}-item`][0].$el as HTMLElement
 
         useIntersectionObserver(element, ([{ isIntersecting }]) => {
           elementVisibility.value = {
             ...elementVisibility.value,
             [key]: isIntersecting,
+          }
+
+          if (isIntersecting) {
+            scrollPreviewIntoView(key)
           }
         }, {
           root: container.value!.$el as HTMLElement,
@@ -134,6 +155,7 @@ export default defineComponent({
 
     return {
       scrollTo,
+      previewContainer,
       container,
       elementVisibility,
       firstVisibleId,
