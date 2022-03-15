@@ -105,7 +105,8 @@ export default class BrawlstarsService {
       player.club.tag = player.club.tag.replace(/^#/, '');
     }
 
-    const battles = battleLog.items.map((battle) => {
+    // FIXME API bug 2022-03-15, payload has no battle
+    const battles = battleLog.items.filter(battle => battle.battle != undefined).map((battle) => {
       const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
         if ('brawler' in player) {
           return [{
