@@ -107,10 +107,10 @@ export default defineComponent({
     const elementVisibility = ref<Record<string, boolean>>({})
 
     const scrollPreviewIntoView = (id: string) => {
-      const previewElement = refs[`${id}-preview`][0] as HTMLElement|undefined
-      if (previewElement == undefined) {
+      if (!(`${id}-preview` in refs)) {
         return
       }
+      const previewElement = refs[`${id}-preview`][0] as HTMLElement
 
       const offset = previewElement.getBoundingClientRect().left - previewContainer.value!.getBoundingClientRect().left
       const center = previewContainer.value!.clientWidth / 2
