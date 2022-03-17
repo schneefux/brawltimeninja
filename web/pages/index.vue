@@ -34,7 +34,7 @@
       @submit="search"
     >
       <div class="w-full flex justify-center">
-        <div class="py-2 border-4 rounded-full border-yellow-400 bg-gray-800">
+        <div class="py-2 border-4 rounded-full border-yellow-400 bg-gray-800 whitespace-nowrap">
           <input
             v-model="tag"
             :placeholder="$t('action.enter-tag')"
