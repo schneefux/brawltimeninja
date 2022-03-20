@@ -1,4 +1,5 @@
-/* generated on 2022-03-14T12:28:42.990Z */
+
+/* generated on 2022-03-20T10:10:54.984Z */
 
 cube('brawler', {
 refreshKey: {
@@ -259,7 +260,7 @@ dimensions: {
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.985Z */
 
 cube('battle', {
 refreshKey: {
@@ -637,9 +638,23 @@ dimensions: {
     shown: true,
   },
 
+  starpowersLength_dimension: {
+    title: 'Star Powers owned',
+    sql: "brawler_starpowers_length",
+    type: 'string',
+    shown: true,
+  },
+
   gadget_dimension: {
     title: 'Gadget',
     sql: "brawler_gadget_id",
+    type: 'string',
+    shown: true,
+  },
+
+  gadgetsLength_dimension: {
+    title: 'Gadgets owned',
+    sql: "brawler_gadgets_length",
     type: 'string',
     shown: true,
   },
@@ -649,11 +664,18 @@ dimensions: {
     sql: "brawler_gear_id",
     type: 'string',
     shown: true,
+  },
+
+  gearsLength_dimension: {
+    title: 'Gears owned',
+    sql: "brawler_gears_length",
+    type: 'string',
+    shown: true,
   }
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.986Z */
 
 cube('map', {
 refreshKey: {
@@ -830,7 +852,7 @@ dimensions: {
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.986Z */
 
 cube('gadget', {
 refreshKey: {
@@ -1007,7 +1029,7 @@ dimensions: {
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.986Z */
 
 cube('starpower', {
 refreshKey: {
@@ -1184,7 +1206,7 @@ dimensions: {
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.986Z */
 
 cube('brawlerAllies', {
 refreshKey: {
@@ -1270,7 +1292,7 @@ dimensions: {
 }
 })
 
-/* generated on 2022-03-14T12:28:42.991Z */
+/* generated on 2022-03-20T10:10:54.986Z */
 
 cube('brawlerEnemies', {
 refreshKey: {

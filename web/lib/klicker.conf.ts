@@ -294,6 +294,42 @@ const gearDimension: Dimension = {
   },
 }
 
+const starpowersLengthDimension: Dimension = {
+  id: 'starpowersLength',
+  name: 'Star Powers owned',
+  naturalIdAttribute: 'starpowerLength',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_starpowers_length',
+    type: 'string',
+  },
+}
+
+const gadgetsLengthDimension: Dimension = {
+  id: 'gadgetsLength',
+  name: 'Gadgets owned',
+  naturalIdAttribute: 'gadgetLength',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_gadgets_length',
+    type: 'string',
+  },
+}
+
+const gearsLengthDimension: Dimension = {
+  id: 'gearsLength',
+  name: 'Gears owned',
+  naturalIdAttribute: 'gearsLength',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_gears_length',
+    type: 'string',
+  },
+}
+
 const bigbrawlerDimension: Dimension = {
   id: 'bigbrawler',
   name: 'Big Brawler',
@@ -1452,7 +1488,7 @@ const brawlerSlices = asSlice({
   starpowersLength: {
     id: 'starpowersLength',
     config: {
-      member: 'brawler_starpowers_length',
+      member: 'starpowersLength_dimension',
       operator: 'equals',
     },
   },
@@ -1473,7 +1509,7 @@ const brawlerSlices = asSlice({
   gadgetsLength: {
     id: 'gadgetsLength',
     config: {
-      member: 'brawler_gadgets_length',
+      member: 'gadgetsLength_dimension',
       operator: 'equals',
     },
   },
@@ -1494,7 +1530,7 @@ const brawlerSlices = asSlice({
   gearsLength: {
     id: 'gearsLength',
     config: {
-      member: 'brawler_gears_length',
+      member: 'gearsLength_dimension',
       operator: 'equals',
     },
   },
@@ -1832,8 +1868,11 @@ const battleCube: Cube = {
     teamDimension,
     teamSizeDimension,
     starpowerDimension,
+    starpowersLengthDimension,
     gadgetDimension,
+    gadgetsLengthDimension,
     gearDimension,
+    gearsLengthDimension,
   ],
   defaultDimensionsIds: ['player'],
   metrics: [
