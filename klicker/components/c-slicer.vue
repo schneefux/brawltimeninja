@@ -2,13 +2,13 @@
   <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
     class="relative z-10"
-    v-bind="{ ...card, title }"
+    v-bind="{ ...card, title, titleLink: toggleFilters }"
   >
     <button
       slot="preview"
       :selected="showFilters"
       class="md:hidden w-10"
-      @click="showFilters = !showFilters"
+      @click="toggleFilters"
     >
       <font-awesome-icon
         :icon="faFilter"
@@ -229,6 +229,11 @@ export default defineComponent({
       faFilter,
       specs,
       translate,
+    }
+  },
+  methods: {
+    toggleFilters() {
+      this.showFilters = !this.showFilters;
     }
   }
 })

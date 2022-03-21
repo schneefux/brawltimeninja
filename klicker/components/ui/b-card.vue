@@ -74,7 +74,7 @@
             }"
           >
             <router-link
-              v-if="titleLink != undefined || link != undefined"
+              v-if="typeof titleLink === 'string' || typeof link === 'string'"
               v-slot="{ href, navigate }"
               :to="titleLink || link"
               class="contents"
@@ -82,6 +82,9 @@
             >
               <a :href="href" @click.stop="navigate">{{ title }}</a>
             </router-link>
+            <button v-else-if="typeof titleLink === 'function'" @click="titleLink">
+              {{ title }}
+            </button>
             <template v-else>
               {{ title }}
             </template>
@@ -217,7 +220,7 @@ export default defineComponent({
       type: String,
     },
     titleLink: {
-      type: String,
+      type: [String, Function]
     },
     subtitle: {
       type: String,
