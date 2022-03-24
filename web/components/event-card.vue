@@ -3,7 +3,7 @@
     :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
     :link="mapLink || modeLink"
     :title-link="modeLink"
-    :subtitle="id != undefined ? (id != 0 ? $t('map.' + id) : map) : undefined"
+    :subtitle="$te(`map.${id}`) && $t(`map.${id}`) || map || undefined"
     :subtitle-link="mapLink"
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"

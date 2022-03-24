@@ -156,7 +156,6 @@
     "leaderboard.player.description": "Top {length} players on Brawl Time Ninja, updated hourly",
     "leaderboard.player.metric.description": "The best Brawl Stars players world wide, ranked by {metric}.",
     "leaderboard.player.metric.title": "Brawl Stars {metric} Leaderboard",
-    "map": "Map | Maps",
     "map.Competition Entry": "Competition Entry",
     "metric.accountRating": "Account Rating",
     "metric.accountRating.description": "The rating is calculated by comparing your mean Brawler trophies to all player's mean Brawler trophies at season end.",
