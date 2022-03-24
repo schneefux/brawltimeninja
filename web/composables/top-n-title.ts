@@ -19,7 +19,7 @@ export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValu
     }
     return i18n.t(i18nPrefix + '.for.map', {
       mode: i18n.t('mode.' + mode) as string,
-      map: id?.value == '0' ? i18n.t('map.Competition Entry') : i18n.t('map.' + id?.value) as string,
+      map: (i18n.te(`map.${id?.value}`) && i18n.t(`map.${id?.value}`) || map) as string,
       ...args?.value,
     }) as string
   })

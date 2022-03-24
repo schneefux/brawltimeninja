@@ -117,7 +117,7 @@ export default defineComponent({
           type: 'application/ld+json',
           json: formatAsJsonLd({
             id: event.id,
-            map: i18n.t('map.' + event.id) as string,
+            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map) as string,
             mode: i18n.t('mode.' + event.mode) as string,
             start: event.start,
             end: event.end,
