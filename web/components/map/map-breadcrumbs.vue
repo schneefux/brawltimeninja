@@ -100,7 +100,7 @@
         xs
         dark
       >
-        <span itemprop="name">{{ id != 0 ? $t('map.' + id) : map }}</span>
+        <span itemprop="name">{{ $te(`map.${id}`) && $t(`map.${id}`) || map }}</span>
       </b-button>
       <meta itemprop="position" content="3" />
     </li>

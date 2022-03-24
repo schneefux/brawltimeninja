@@ -31,7 +31,7 @@
 
       <b-card
         v-if="activeMap != undefined"
-        :title="$t('player.tips-for.map', { map: $t('map.' + activeMap.id) })"
+        :title="$te(`map.${activeMap.id}`) && $t(`map.${activeMap.id}`) || activeMap.map"
         :elevation="0"
         class="mt-2"
         dense
