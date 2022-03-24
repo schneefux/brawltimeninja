@@ -142,7 +142,6 @@
     "leaderboard.player.description": "Top {length} Spieler auf Brawl Time Ninja, stündlich aktualisiert.",
     "leaderboard.player.metric.description": "Die besten Brawl Stars-Spieler weiltweit, gerankt nach {metric}.",
     "leaderboard.player.metric.title": "Brawl Stars {metric} Bestenliste",
-    "map": "Map | Maps",
     "map.Competition Entry": "Wettbewerbseintrag",
     "metric.accountRating": "Account-Bewertung",
     "metric.accountRating.description": "Die Bewertung wird berechnet, indem deine mittleren Brawler-Trophäen mit dem Durchschnitt aller Spieler zu Saisonende verglichen werden.",

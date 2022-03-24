@@ -182,7 +182,6 @@
     "leaderboard.player.description": "{length} jugadores con mayor número de horas jugadas, actualizado cada hora.",
     "leaderboard.player.metric.description": "Los mejores jugadores de Brawl Stars en todo el mundo, a nivel de {metric}.",
     "leaderboard.player.metric.title": "Tabla de posiciones de {metric} de Brawl Stars",
-    "map": "Mapa | Mapas",
     "map.Competition Entry": "Candidatos del día",
     "map.insights.compare-to.mode": "Comparado con {mode}",
     "map.insights.description": "Se usa un test estadístico para encontrar valores atípicos en los datos.",

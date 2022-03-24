@@ -2,7 +2,7 @@
   <media-img
     slot="preview"
     :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
-    :alt="$t('map.' + id)"
+    :alt="$te(`map.${id}`) ? $t(`map.${id}`): map"
     :clazz="clazz"
     size="512"
   ></media-img>
