@@ -1,7 +1,7 @@
 <template>
   <b-page
     v-if="event != undefined"
-    :title="$t('tier-list.map.title', { map: title })"
+    :title="$t('tier-list.map.title', { map: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map })"
   >
     <breadcrumbs
       :links="[{
@@ -12,14 +12,17 @@
         name: $t('mode.' + event.mode),
       }, {
         path: mapPath,
-        name: event.id != '0' ? $t('map.' + event.id) : event.map,
+        name: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map,
       }]"
       class="mt-4"
     ></breadcrumbs>
 
     <div>
       <p class="prose dark:prose-invert">
-        {{ $t('tier-list.map.description', { map: title, mode: $t('mode.' + event.mode) }) }}
+        {{ $t('tier-list.map.description', {
+          map: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map,
+          mode: $t('mode.' + event.mode)
+        }) }}
       </p>
       <p v-if="event.map.startsWith('Competition ')">
         {{ $t('tier-list.competition-info') }}
