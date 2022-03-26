@@ -7,6 +7,7 @@
       <media-img
         :path="'/brawlers/' + brawlerId + '/model'"
         :alt="brawlerName"
+        size="400"
       ></media-img>
 
       <c-query

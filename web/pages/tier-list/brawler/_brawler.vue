@@ -24,15 +24,19 @@
         class="mt-16"
       ></brawler-aside>
 
-      <b-page-section>
-        <brawler-base-stats
+      <b-page-section :title="$t('brawler.overview')">
+        <brawler-overview
           :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-        ></brawler-base-stats>
+          :scraped-data="scrapedData"
+        ></brawler-overview>
+      </b-page-section>
 
-        <p class="mt-8 prose dark:prose-invert">
-          {{ $t('starpower-gadget-comparison.info') }}
-        </p>
+      <b-page-section :title="$t('brawler.accessories')">
+        <lazy-hydrate when-visible>
+          <brawler-accessories
+            :scraped-data="scrapedData"
+          ></brawler-accessories>
+        </lazy-hydrate>
       </b-page-section>
 
       <b-page-section
@@ -42,18 +46,11 @@
           once: true,
         }"
       >
-        <b-scrolling-dashboard>
-          <c-dashboard-cell :rows="2" :columns="6" hide-empty>
-            <brawler-synergies-card
-              :brawler="brawlerName"
-            ></brawler-synergies-card>
-          </c-dashboard-cell>
-          <c-dashboard-cell :rows="2" :columns="6" hide-empty>
-            <brawler-weaknesses-card
-              :brawler="brawlerName"
-            ></brawler-weaknesses-card>
-          </c-dashboard-cell>
-        </b-scrolling-dashboard>
+        <lazy-hydrate when-visible>
+          <brawler-synergies
+            :brawler-name="brawlerName"
+          ></brawler-synergies>
+        </lazy-hydrate>
       </b-page-section>
 
       <div>
@@ -64,7 +61,11 @@
             once: true,
           }"
         >
-          <brawler-active-events :brawler-name="brawlerName"></brawler-active-events>
+          <lazy-hydrate when-visible>
+            <brawler-active-events
+              :brawler-name="brawlerName"
+            ></brawler-active-events>
+          </lazy-hydrate>
         </b-page-section>
 
         <b-page-section
@@ -74,11 +75,13 @@
             once: true,
           }"
         >
-          <brawler-modes-stats
-            :brawler-name="brawlerName"
-          ></brawler-modes-stats>
+          <lazy-hydrate when-visible>
+            <brawler-modes-stats
+              :brawler-name="brawlerName"
+            ></brawler-modes-stats>
+          </lazy-hydrate>
 
-          <p class="mt-4 prose dark:prose-invert">
+          <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
             {{ $t('brawler.viable-info') }}
           </p>
         </b-page-section>
@@ -94,15 +97,17 @@
         >
           <p
             slot="description"
-            class="mt-4 prose dark:prose-invert"
+            class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75"
           >
             {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
           </p>
 
-          <brawler-trends-card
-            :brawler-name="brawlerName"
-            class="mt-4"
-          ></brawler-trends-card>
+          <lazy-hydrate when-visible>
+            <lazy-brawler-trends-card
+              :brawler-name="brawlerName"
+              class="mt-4"
+            ></lazy-brawler-trends-card>
+          </lazy-hydrate>
         </b-page-section>
 
         <b-page-section
@@ -112,16 +117,56 @@
             once: true,
           }"
         >
-          <brawler-trophy-graphs
-            :brawler-name="brawlerName"
-          ></brawler-trophy-graphs>
+          <lazy-hydrate when-visible>
+            <lazy-brawler-trophy-graphs
+              :brawler-name="brawlerName"
+            ></lazy-brawler-trophy-graphs>
+          </lazy-hydrate>
 
-          <p class="mt-4 prose dark:prose-invert">
+          <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
             {{ $t('brawler.disclaimer') }}
           </p>
         </b-page-section>
       </div>
+
+      <b-page-section :title="$tc('skin', 2)">
+        <lazy-hydrate when-visible>
+          <brawler-skins
+            :scraped-data="scrapedData"
+          ></brawler-skins>
+        </lazy-hydrate>
+      </b-page-section>
+
+      <b-page-section :title="$tc('pin', 2)">
+        <lazy-hydrate when-visible>
+          <brawler-pins
+            :scraped-data="scrapedData"
+          ></brawler-pins>
+        </lazy-hydrate>
+      </b-page-section>
+
+      <b-page-section :title="$tc('voiceline', 2)">
+        <lazy-hydrate when-visible>
+          <brawler-voicelines
+            :scraped-data="scrapedData"
+          ></brawler-voicelines>
+        </lazy-hydrate>
+      </b-page-section>
+
+      <b-page-section :title="$t('balance-changes')">
+        <lazy-hydrate when-visible>
+          <brawler-history
+            :scraped-data="scrapedData"
+          ></brawler-history>
+        </lazy-hydrate>
+      </b-page-section>
     </b-split-dashboard>
+
+    <b-page-section>
+      <brawler-attribution
+        :scraped-data="scrapedData"
+      ></brawler-attribution>
+    </b-page-section>
 
     <ad
       ad-slot="6837127123"
@@ -131,7 +176,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
 import { CDashboardCell, BSplitDashboard } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
@@ -143,7 +188,7 @@ export default defineComponent({
   },
   head: {},
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $config, $http } = useContext()
 
     const route = useRoute()
     const brawlerId = computed(() => route.value.params.brawler)
@@ -164,10 +209,13 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
+    const scrapedData = useAsync(() => $http.$get(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`), `scraped-data-${brawlerId.value}`)
+
     return {
       brawlerId,
       brawlerName,
       makeVisibilityCallback,
+      scrapedData,
     }
   },
   meta: {

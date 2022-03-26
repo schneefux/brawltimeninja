@@ -60,7 +60,7 @@
 <script lang="ts">
 import { capitalize } from '@/lib/util'
 import { Club } from '@/model/Brawlstars'
-import { defineComponent, ref, useContext, useFetch, useMeta, useRoute, wrapProperty } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useFetch, useMeta, useRoute } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   head: {},

@@ -18,7 +18,7 @@
           'border-r-primary-200': item[keyId] == lastVisibleId,
           'border-x-white/[.2]': !elementVisibility[item[keyId]],
         }"
-        class="border-y-2 border-x first:border-l-2 last:border-r-2 cursor-pointer"
+        class="border-y-2 border-x first:border-l-2 last:border-r-2 cursor-pointer empty:hidden"
         @click="scrollTo(item[keyId])"
       >
         <slot

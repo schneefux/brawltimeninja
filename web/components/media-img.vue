@@ -1,25 +1,30 @@
 <template functional>
   <picture :class="props.wrapperClass">
-    <source :srcset="parent.$config.mediaUrl + props.path + '.webp' + props.query(props)" type="image/webp" />
+    <source
+      v-if="!props.animated"
+      :srcset="props.genUrl(parent, 'webp', props)"
+      type="image/webp"
+    >
     <img
-      :src="parent.$config.mediaUrl + props.path + (props.transparent ? '.png': '.jpg') + props.query(props)"
+      :src="props.genUrl(parent, props.animated ? 'gif' : (props.transparent ? 'png' : 'jpg'), props)"
       :class="props.clazz"
       :style="props.ztyle"
       v-bind="data.attrs"
-    />
+    >
   </picture>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { encodeQuery } from '~/lib/util'
 
-function query({ size }: { size: string|number|undefined }): string {
-  const opts = {}
-  if (size) {
-    opts['size'] = size
+function genUrl(parent: any, format: string, props: any, factor: number = 1.0): string {
+  let query = ''
+
+  if (props.size) {
+    query += `?size=${props.size * factor}`
   }
-  return '?' + encodeQuery(opts)
+
+  return `${parent.$config.mediaUrl}${props.path}.${format}${query}`
 }
 
 export default Vue.extend({
@@ -49,10 +54,14 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-    query: {
-      type: Function,
-      default: query,
+    animated: {
+      type: Boolean,
+      default: false
     },
+    genUrl: {
+      type: Function,
+      default: genUrl,
+    }
   },
 })
 </script>

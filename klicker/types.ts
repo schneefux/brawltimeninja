@@ -141,6 +141,8 @@ export interface Dimension {
 export interface Slice {
   id: string
   config: { // cube.js config
+    // TODO it almost never makes sense to refer to a measure
+    // because that only filters the results
     member: string // dimension/measure id
     operator: OperatorType
   }

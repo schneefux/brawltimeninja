@@ -1,5 +1,8 @@
 <template>
-  <dl class="flex flex-col gap-y-1">
+  <dl
+    v-if="table.length > 0"
+    class="flex flex-col gap-y-1"
+  >
     <div
       v-for="row in table"
       :key="row.key"
@@ -8,7 +11,7 @@
       <dt class="text-gray-800/75 dark:text-gray-200/75">
         {{ row.title }}
       </dt>
-      <dd class="whitespace-nowrap text-gray-800 dark:text-gray-200 text-right">
+      <dd class="whitespace-nowrap overflow-x-auto hide-scrollbar text-gray-800 dark:text-gray-200 text-right">
         <slot
           :name="row.slot"
           :row="data"
@@ -53,7 +56,7 @@ export default defineComponent({
     },
     idKey: {
       type: String,
-      required: true
+      required: false
     },
     data: {
       type: Object as PropType<object>,
@@ -61,11 +64,18 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const table = computed(() => props.rows.map(r => ({
-      ...r,
-      key: `${props.data[props.idKey]}-${r.key}`,
-      value: r.key.split('.').reduce((a, b) => a[b], props.data),
-    })))
+    const table = computed(() => props.rows.map((r, index) => {
+      const value = r.key.split('.').reduce((a, b) => a[b], props.data)
+      if (value == undefined) {
+        return undefined
+      }
+
+      return {
+        ...r,
+        key: `${props.idKey != undefined ? props.data[props.idKey] : index}-${r.key}`,
+        value,
+      }
+    }).filter(row => row != undefined))
 
     return {
       table,

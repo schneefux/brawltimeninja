@@ -16,3 +16,5 @@ export const useTrackScroll = (trackingPageId: string) => {
     makeVisibilityCallback,
   }
 }
+
+export const useGtag = wrapProperty('$gtag', false)

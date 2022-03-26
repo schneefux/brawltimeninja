@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="prose dark:prose-invert">
+    <p class="prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
       {{ description }}
     </p>
     <b-scrolling-dashboard

@@ -131,6 +131,7 @@ export default defineComponent({
         slices: {
           season: [currentSeason.toISOString().slice(0, 10)],
           [singular.value + 'IdEq']: ['0'],
+          // TODO slice for number of gadgets/gears/starpowers = 0
         },
         sortId: 'winRate',
       },

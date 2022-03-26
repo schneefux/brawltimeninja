@@ -42,24 +42,34 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, metrics } = useCubeResponseProps(props)
+    const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const rows = computed<Row[]>(() => {
       let rows: Row[] = []
 
-      metrics.value.forEach(m => rows.push({
-        title: $klicker.getName(m),
-        key: `metrics.${m.id}`,
-        slot: `metrics.${m.id}`,
-      }))
-
-      if (props.response.kind == 'comparingResponse') {
-        rows.push({
-          title: $klicker.$t('comparison.difference.to.dataset', { dataset: $klicker.$t('comparison.dataset.reference') as string }) as string,
-          key: 'test.difference.annotatedDifference',
-          slot: 'difference',
+      switchResponse(response => {
+        metrics.value.forEach(m => {
+          rows.push({
+            title: $klicker.getName(m),
+            key: `metrics.${m.id}`,
+            slot: `metrics.${m.id}`,
+          })
         })
-      }
+      }, response => {
+        metrics.value.forEach(m => {
+          rows.push({
+            title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(m),
+            key: `metrics.${m.id}`,
+            slot: `metrics.${m.id}`,
+          })
+
+          rows.push({
+            title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(m),
+            key: `test.reference.metrics.${m.id}`,
+            slot: `metrics.${m.id}`,
+          })
+        })
+      })
 
       return rows
     })

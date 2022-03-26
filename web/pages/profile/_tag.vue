@@ -12,12 +12,12 @@
       >
         <player-aside :player="player"></player-aside>
 
-          <b-scroll-spy
-            :sections="sections"
-            nav-class="top-14 lg:top-0"
-            toc-class="hidden lg:block"
-            class="mt-8"
-          ></b-scroll-spy>
+        <b-scroll-spy
+          :sections="sections"
+          nav-class="top-14 lg:top-0"
+          toc-class="hidden lg:block"
+          class="mt-8"
+        ></b-scroll-spy>
       </div>
 
       <b-page-section

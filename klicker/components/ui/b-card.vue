@@ -52,8 +52,8 @@
           'pt-2': !dense && 'infobar' in $scopedSlots,
           'px-3 gap-x-2 pt-2': dense,
           'rounded-t-2xl': !('infobar' in $scopedSlots),
-          'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots,
-          'grid-cols-[1fr,auto]': !('icon' in $scopedSlots),
+          'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots || icon != undefined,
+          'grid-cols-[1fr,auto]': !('icon' in $scopedSlots || icon != undefined),
         }]"
         class="shrink-0 grid items-center overflow-hidden text-gray-800 dark:text-gray-200"
       >
@@ -62,7 +62,11 @@
           v-if="icon != undefined"
           v-bind="{ icon: icon, alt: iconAlt }"
         >
-          <img :src="icon" :alt="iconAlt">
+          <img
+            :src="icon"
+            :alt="iconAlt"
+            class="h-8"
+          >
         </slot>
 
         <div v-if="title != undefined">

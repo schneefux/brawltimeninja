@@ -89,7 +89,7 @@ export default defineComponent({
 
       if (props.response.kind == 'comparingResponse') {
         columns.push({
-          title: $klicker.$t('comparison.difference.to.dataset', { dataset: $klicker.$t('comparison.dataset.reference') as string }) as string,
+          title: $klicker.$t('comparison.difference.to.dataset', { dataset: props.response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string }) as string,
           keys: [`test.difference.annotatedDifference`],
           slot: 'difference',
           shrink: true,

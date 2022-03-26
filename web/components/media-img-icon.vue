@@ -1,7 +1,7 @@
 <template>
   <div
     slot="icon"
-    class="w-10 h-10 flex items-center justify-center"
+    class="w-8 h-8 flex items-center justify-center"
   >
     <media-img
       :path="icon"
