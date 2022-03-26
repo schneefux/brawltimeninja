@@ -49,6 +49,10 @@
      * If the min-content is more than 96px, stretch that row.
      */
     grid-auto-rows: minmax(96px, min-content);
+    /**
+     * Tell the browser that children won't affect anything outside of the grid
+     */
+    contain: content;
   }
 
   .dashboard {
@@ -73,12 +77,11 @@
     grid-template-columns: none;
     grid-auto-columns: minmax(96px, min-content);
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    @apply snap-x snap-proximity lg:snap-none
   }
 
   .dashboard--horizontal .dashboard__cell {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    scroll-snap-align: center;
   }
 
   .dashboard--responsive {
