@@ -1,5 +1,6 @@
 import { computed, useContext, Ref } from '@nuxtjs/composition-api'
 import { SliceValue } from '@schneefux/klicker/types'
+import { getMapName } from './map'
 
 export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValue>, id: Ref<string|number|undefined>|undefined, args?: Ref<Record<string, any>>) {
   const { i18n } = useContext()
@@ -19,7 +20,7 @@ export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValu
     }
     return i18n.t(i18nPrefix + '.for.map', {
       mode: i18n.t('mode.' + mode) as string,
-      map: (i18n.te(`map.${id?.value}`) && i18n.t(`map.${id?.value}`) || map) as string,
+      map: getMapName(i18n, id?.value, map),
       ...args?.value,
     }) as string
   })

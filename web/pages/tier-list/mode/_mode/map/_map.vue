@@ -1,7 +1,7 @@
 <template>
   <b-page
     v-if="event != undefined"
-    :title="$t('tier-list.map.title', { map: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map })"
+    :title="$t('tier-list.map.title', { map: mapName })"
   >
     <breadcrumbs
       :links="[{
@@ -12,7 +12,7 @@
         name: $t('mode.' + event.mode),
       }, {
         path: mapPath,
-        name: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map,
+        name: mapName,
       }]"
       class="mt-4"
     ></breadcrumbs>
@@ -20,7 +20,7 @@
     <div>
       <p class="prose dark:prose-invert">
         {{ $t('tier-list.map.description', {
-          map: $te(`map.${event.id}`) && $t(`map.${event.id}`) || event.map,
+          map: mapName,
           mode: $t('mode.' + event.mode)
         }) }}
       </p>
@@ -68,9 +68,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, toRefs } from '@nuxtjs/composition-api'
 import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
 import { BSplitDashboard } from '@schneefux/klicker/components'
+import { getMapName } from '~/composables/map'
 
 interface Map {
   id: string
@@ -137,8 +138,15 @@ export default defineComponent({
     const modePath = computed(() => event.value == undefined ? '' : `/tier-list/mode/${camelToKebab(event.value.mode)}`)
     const mapPath = computed(() => event.value == undefined ? '' : `${modePath.value}/map/${slugify(event.value.map)}`)
 
+    const mapName = computed(() => {
+      if (event.value != undefined) {
+        return getMapName(i18n, event.value.id, event.value.map)
+      }
+    })
+
     return {
       event,
+      mapName,
       showImage,
       modePath,
       mapPath,

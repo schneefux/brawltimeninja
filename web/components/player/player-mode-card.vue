@@ -31,7 +31,7 @@
 
       <b-card
         v-if="activeMap != undefined"
-        :title="$t('player.tips-for.map', { map: $te(`map.${activeMap.id}`) && $t(`map.${activeMap.id}`) || activeMap.map })"
+        :title="$t('player.tips-for.map', { map: mapName })"
         :elevation="0"
         class="mt-2"
         dense
@@ -70,6 +70,7 @@ import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
 import { winRateMetric } from '~/lib/klicker.conf'
 import { BKvTable } from '@schneefux/klicker/components'
+import { getMapName } from '~/composables/map'
 
 interface Stats {
   winRate: number
@@ -175,7 +176,15 @@ export default defineComponent({
     const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
     const modeKebab = computed(() => camelToKebab(props.mode))
 
+    const { i18n } = useContext()
+    const mapName = computed(() => {
+      if (activeMap.value != undefined) {
+        getMapName(i18n, activeMap.value.id, activeMap.value.map)
+      }
+    })
+
     return {
+      mapName,
       activeMap,
       stats,
       modeKebab,

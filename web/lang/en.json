@@ -532,5 +532,6 @@
     "player.time-statistics": "Time Statistics",
     "player.trophy-statistics": "Trophy Statistics",
     "mode.wipeout": "Wipeout",
-    "mode.payload": "Payload"
+    "mode.payload": "Payload",
+    "map": "Map | Maps"
 }

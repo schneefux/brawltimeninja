@@ -26,7 +26,7 @@
         v-for="map in maps"
         :key="map.battle_event_map"
         :value="map.battle_event_map"
-      >{{ $te(`map.${map.battle_event_id}`) && $t(`map.${map.battle_event_id}`) || map.battle_event_map }}</option>
+      >{{ mapName(map.battle_event_id, map.battle_event_map) }}</option>
     </b-select>
   </div>
 </template>
@@ -34,6 +34,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
+import { getMapName } from '~/composables/map'
 
 export default defineComponent({
   props: {
@@ -82,7 +83,10 @@ export default defineComponent({
 
     watch(() => [props.value, i18n.locale], async () => maps.value = await getMaps())
 
+    const mapName = (id: string, map: string) => getMapName(i18n, id, map)
+
     return {
+      mapName,
       mode,
       map,
       modes,
