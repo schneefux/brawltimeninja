@@ -31,32 +31,32 @@
 
 /* purgecss start ignore */
 .bg-color-heist {
-  background-color: #c663cd;
+  background-color: #94379b;
 }
 
 .bg-color-siege {
-  background-color: #ef5132;
+  background-color: #b7361c;
 }
 
 .bg-color-soloshowdown,
 .bg-color-duoshowdown {
-  background-color: #81d621;
+  background-color: #5c9b15;
 }
 
 .bg-color-bounty {
-  background-color: #10b2b7;
+  background-color: #178185;
 }
 
 .bg-color-brawlball {
-  background-color: #8ca0e0;
+  background-color: #5475df;
 }
 
 .bg-color-gemgrab {
-  background-color: #9b3df3;
+  background-color: #7425bf;
 }
 
 .bg-color-biggame {
-  background-color: #dc2423;
+  background-color: #a51918;
 }
 
 .bg-color-roborumble {
@@ -68,7 +68,7 @@
 }
 
 .bg-color-hotzone {
-  background-color: #e33c50;
+  background-color: #890e1c;
 }
 
 .bg-color-supercityrampage {
@@ -80,7 +80,7 @@
 }
 
 .bg-color-knockout {
-  background-color: #fe712c;
+  background-color: #9b3401;
 }
 
 .bg-color-trophythieves {
@@ -100,10 +100,14 @@
 }
 
 .bg-color-payload {
-  background-color: #901fdc;
+  background-color: #8f34cd;
 }
 
 .bg-color-wipeout {
-  background-color: #d11ffe;
+  background-color: #8816a5;
+}
+
+.bg-color-basketbrawl {
+    background-color: #bf4d0a;
 }
 /* purgecss end ignore */
