@@ -18,7 +18,7 @@
         class="mt-4"
       ></map-img>
 
-      <div class="mt-4">
+      <div class="mt-4 flex flex-col gap-y-4">
         <b-card
           v-if="timestamp != undefined"
           :elevation="2"
@@ -27,20 +27,13 @@
             slot="content"
             class="flex justify-between"
           >
-            <dt class="text-left font-semibold mr-1">
+            <dt class="text-left mr-1">
               {{ $t('tier-list.map.last-online', { time: '' }) }}
             </dt>
             <dd class="text-right ml-1">
               {{ lastOnlineString }}
             </dd>
           </dl>
-        </b-card>
-
-        <b-card :elevation="2">
-          <map-balance-score
-            slot="content"
-            :slices="{ mode: [mode], map: [map], season: [season] }"
-          ></map-balance-score>
         </b-card>
 
         <b-card
@@ -60,13 +53,13 @@
 
 <script lang="ts">
 import { differenceInMinutes, formatDistanceToNow, parseISO } from 'date-fns'
-import Vue from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 
 import { enUS, de } from 'date-fns/locale'
 const locales = { en: enUS, de: de }
 
-export default Vue.extend({
+export default defineComponent({
   inheritAttrs: false,
   props: {
     mode: {
@@ -89,31 +82,39 @@ export default Vue.extend({
       default: false
     },
   },
-  computed: {
-    lastOnlineString(): string {
-      if (this.timestamp == undefined) {
+  setup(props) {
+    const { i18n } = useContext()
+
+    const lastOnlineString = computed(() => {
+      if (props.timestamp == undefined) {
         return ''
       }
-      const date = parseISO(this.timestamp)
+      const date = parseISO(props.timestamp)
       if (differenceInMinutes(new Date(), date) < 60) {
-        return this.$tc('state.event-active')
+        return i18n.tc('state.event-active')
       }
       return formatDistanceToNow(date, {
         addSuffix: true,
-        locale: locales[this.$i18n.locale],
+        locale: locales[i18n.locale],
       })
-    },
-    linkTarget(): string {
-      if (this.mode == undefined) {
+    })
+
+    const linkTarget = computed(() => {
+      if (props.mode == undefined) {
         return '/tier-list/brawler'
       }
 
-      if (this.map == undefined) {
-        return `/tier-list/mode/${camelToKebab(this.mode)}`
+      if (props.map == undefined) {
+        return `/tier-list/mode/${camelToKebab(props.mode)}`
       }
 
-      return `/tier-list/mode/${camelToKebab(this.mode)}/map/${slugify(this.map)}`
-    },
+      return `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`
+    })
+
+    return {
+      lastOnlineString,
+      linkTarget,
+    }
   },
 })
 </script>
