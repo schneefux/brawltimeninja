@@ -98,4 +98,12 @@
 .bg-color-duels {
   background-color: #468cd5;
 }
+
+.bg-color-payload {
+  background-color: #901fdc;
+}
+
+.bg-color-wipeout {
+  background-color: #d11ffe;
+}
 /* purgecss end ignore */
