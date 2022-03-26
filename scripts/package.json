@@ -9,6 +9,11 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "axios": "^0.26.1",
+    "jsdom": "^19.0.0",
+    "node-fetch": "^2.6.1",
+    "string-similarity": "^4.0.4",
+    "wtf-plugin-api": "^0.1.2",
+    "wtf_wikipedia": "^9.1.0"
   }
 }
