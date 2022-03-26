@@ -110,7 +110,7 @@ export default defineComponent({
         mode,
         timestamp: event.metricsRaw.timestamp,
       } as Map
-    }, 'map')
+    }, `map-${route.value.params.mode}-${route.value.params.map}`)
 
     useMeta(() => {
       if (event.value == undefined) {

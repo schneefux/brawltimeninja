@@ -81,7 +81,7 @@ export default defineComponent({
     const mode = computed(() => kebabToCamel(route.value.params.mode))
     const events = useAsync(() => $klicker.queryActiveEvents([], {
       mode: [mode.value],
-    }, null))
+    }, null), `mode-${route.value.params.mode}`)
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
