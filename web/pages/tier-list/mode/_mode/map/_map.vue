@@ -133,14 +133,12 @@ export default defineComponent({
       }
     })
 
-    const title = computed(() => event.value == undefined ? '' : (event.value.id == '0' ? i18n.tc('competition-winner', 1) as string : i18n.t('map.' + event.value.id) as string))
     const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
     const modePath = computed(() => event.value == undefined ? '' : `/tier-list/mode/${camelToKebab(event.value.mode)}`)
     const mapPath = computed(() => event.value == undefined ? '' : `${modePath.value}/map/${slugify(event.value.map)}`)
 
     return {
       event,
-      title,
       showImage,
       modePath,
       mapPath,
