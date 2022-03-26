@@ -339,7 +339,6 @@ export default class Klicker implements KlickerService {
 
     if (filter) {
       data = data.filter(filter)
-      data = data.filter(d => d.test.difference.pValueRaw <= 0.05)
     }
 
     if (query.limit) {
