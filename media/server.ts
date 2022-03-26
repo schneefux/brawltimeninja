@@ -33,7 +33,7 @@ app.use(async (ctx, next) => {
   const requestPath = ctx.path
 
   // images: always use png
-  const fullFilePath = ctx.path.replace(/\.(webp|jpg)/g, '.png')
+  const fullFilePath = decodeURIComponent(ctx.path.replace(/\.(webp|jpg)/g, '.png'))
   const filePath = resolvePath(assetDir, fullFilePath.substr(path.parse(fullFilePath).root.length))
 
   let stats
