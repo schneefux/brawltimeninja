@@ -33,6 +33,10 @@ export default defineComponent({
       type: Object as PropType<SliceValue>,
       default: () => ({})
     },
+    cubeId: {
+      type: String,
+      default: 'battle'
+    },
     metric: {
       type: String,
       default: 'winRate'
@@ -94,7 +98,7 @@ export default defineComponent({
 
       const query: CubeQuery = {
         name,
-        cubeId: 'battle',
+        cubeId: props.cubeId,
         dimensionsIds: props.dimensions,
         metricsIds: [props.metric],
         slices: {
@@ -115,7 +119,7 @@ export default defineComponent({
           comparing: true,
           reference: {
             name: referenceName,
-            cubeId: 'battle',
+            cubeId: props.cubeId,
             dimensionsIds: props.dimensions,
             metricsIds: [props.metric],
             slices: {

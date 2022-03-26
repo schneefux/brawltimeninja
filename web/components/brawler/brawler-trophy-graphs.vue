@@ -4,6 +4,7 @@
       <map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
         :dimensions="['trophyRange']"
+        cube-id="map"
         sort="trophyRange"
         metric="winRate"
       ></map-trend-chart>
@@ -13,6 +14,7 @@
       <map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
         :dimensions="['trophyRange']"
+        cube-id="map"
         sort="trophyRange"
         metric="starRate"
       ></map-trend-chart>
@@ -23,6 +25,7 @@
         :slices="{ powerplay: ['false'] }"
         :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
         :dimensions="['trophyRange', 'brawler']"
+        cube-id="map"
         sort="trophyRange"
         metric="useRate"
         no-compare
