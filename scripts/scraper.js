@@ -11,9 +11,10 @@ const stream = require('stream')
 const finished = promisify(stream.finished)
 
 const DOMAIN = 'brawlstars.fandom.com'
-const BRAWLERS_DIR = "out/brawlers/"
-const GADGETS_DIR = "out/gadgets/"
-const STARPOWERS_DIR = "out/starpowers/"
+const OUT_DIR = "./out"
+const BRAWLERS_DIR = "/brawlers/"
+const GADGETS_DIR = "/gadgets/"
+const STARPOWERS_DIR = "/starpowers/"
 
 let finishedBrawlers = []
 function printProgress(curPercentage, size, finishedBrawler) {
@@ -65,6 +66,8 @@ async function main() {
 
   async function downloadFileToLocation(link, path) {
     if (link) {
+      path = OUT_DIR + path
+
       let actualSize = 0
       try {
         const fileMetadata = await fs.promises.stat(path)
@@ -102,11 +105,11 @@ async function main() {
   // iterate over all brawlers and scrape information
   for (const brawlerName of brawlerNames) {
     let brawlerObj = await getBrawlerData(brawlerName)
-    await fs.promises.mkdir(brawlerObj.directory, { recursive: true });
+    await fs.promises.mkdir(OUT_DIR + brawlerObj.directory, { recursive: true });
     // download skins
     const skinCategories = brawlerObj.skins
     for (const skinCategory of skinCategories) {
-      await fs.promises.mkdir(skinCategory.directory, { recursive: true });
+      await fs.promises.mkdir(OUT_DIR + skinCategory.directory, { recursive: true });
       const skins = skinCategory.skins
       for (const skin of skins) {
         await downloadFileToLocation(skin.link, skin.path)
@@ -121,13 +124,13 @@ async function main() {
       await downloadFileToLocation(brawlerObj.avatar.link, brawlerObj.avatar.path)
     }
     // download voicelines
-    await fs.promises.mkdir(brawlerObj.voiceLineDirectory, { recursive: true });
+    await fs.promises.mkdir(OUT_DIR + brawlerObj.voiceLineDirectory, { recursive: true });
     const voiceLines = brawlerObj.voicelines
     for (const voiceLine of voiceLines) {
       await downloadFileToLocation(voiceLine.link, voiceLine.path)
     }
     // download pins
-    await fs.promises.mkdir(brawlerObj.pinDirectory, { recursive: true });
+    await fs.promises.mkdir(OUT_DIR + brawlerObj.pinDirectory, { recursive: true });
     const pins = brawlerObj.pins
     if (pins) {
       for (const pin of pins) {
@@ -135,7 +138,7 @@ async function main() {
       }
     }
 
-    await fs.promises.writeFile(brawlerObj.directory + "data.json", JSON.stringify(brawlerObj))
+    await fs.promises.writeFile(OUT_DIR + brawlerObj.directory + "data.json", JSON.stringify(brawlerObj))
     finishedBrawlers.push(brawlerName)
     printProgress(finishedBrawlers.length / brawlerNames.length, 20, brawlerName)
   }
@@ -211,6 +214,7 @@ async function main() {
     const brawlerPinDirectory = brawlerDirectory + "pins/"
 
     const brawler = {}
+    brawler["id"] = brawlerId
     brawler["url"] = brawlerUrl
     brawler["name"] = brawlerName
     brawler["directory"] = brawlerDirectory
@@ -459,4 +463,4 @@ async function main() {
   }
 }
 
-main()
+main().catch(console.error)
