@@ -12,21 +12,12 @@
       >
         <player-aside :player="player"></player-aside>
 
-        <experiment experiment-id="6NHgl6O9RR-vC9cakTG4xA">
           <b-scroll-spy
-            :sections="sections"
-            nav-class="top-14 lg:top-0"
-            class="mt-8"
-          ></b-scroll-spy>
-
-          <b-scroll-spy
-            slot="1"
             :sections="sections"
             nav-class="top-14 lg:top-0"
             toc-class="hidden lg:block"
             class="mt-8"
           ></b-scroll-spy>
-        </experiment>
       </div>
 
       <b-page-section
