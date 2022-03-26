@@ -195,7 +195,9 @@ job "brawltime-media" {
       }
 
       config {
-        image = "atmoz/sftp:alpine"
+        # TODO when upgrading, solve https://bbs.archlinux.org/viewtopic.php?id=270005
+        # key doesn't work with some clients
+        image = "atmoz/sftp:alpine-3.7"
         args = ["brawlbot::${local.asset_uid}"]
         ports = ["ssh"]
         volumes = [
@@ -213,16 +215,19 @@ job "brawltime-media" {
       template {
         data = "${var.brawltime_assets_hostkey_ed}"
         destination = "secrets/hostkey.ed"
+        perms = 0600
       }
 
       template {
         data = "${var.brawltime_assets_hostkey_rsa}"
         destination = "secrets/hostkey.rsa"
+        perms = 0600
       }
 
       resources {
         cpu = 32
         memory = 32
+        memory_max = 256
       }
     }
   }
