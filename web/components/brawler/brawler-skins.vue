@@ -1,63 +1,53 @@
 <template>
-  <b-scrolling-dashboard>
-    <template v-if="scrapedData != undefined">
-      <template v-for="skinList in scrapedData.skins">
-        <c-dashboard-cell
-          v-for="skin in skinList.skins"
-          :key="`${skinList.name}-${skin.name}`"
-          :rows="3"
-          :columns="2"
+  <b-scrolling-list
+    :items="skins"
+    :cell-columns="2"
+    :cell-rows="3"
+    :eager-until="5"
+    key-id="id"
+    render-placeholder
+  >
+    <template v-slot:item="skin">
+      <b-card
+        :title="skin.name"
+        full-height
+      >
+        <div
+          slot="content"
+          class="h-full flex flex-col items-center justify-between"
         >
-          <b-card
-            :title="skin.name"
-            full-height
-          >
-            <div
-              slot="content"
-              class="h-full flex flex-col items-center justify-between"
-            >
-              <media-img
-                :path="encodeURIComponent(skin.path).replaceAll('%2F', '/').replace(/\.(png|gif)/, '')"
-                :alt="skin.name"
-                clazz="max-h-48"
-                size="400"
-                loading="lazy"
-              ></media-img>
-              <b-kv-table
-                :rows="[{
-                  title: $t('brawler.skin.cost'),
-                  key: 'cost',
-                }, {
-                  title: $t('brawler.skin.campaign'),
-                  key: `campaign`,
-                }]"
-                :data="skin"
-                class="w-full mt-4"
-              ></b-kv-table>
-            </div>
-          </b-card>
-        </c-dashboard-cell>
-      </template>
+          <media-img
+            :path="encodeURIComponent(skin.path).replaceAll('%2F', '/').replace(/\.(png|gif)/, '')"
+            :alt="skin.name"
+            clazz="max-h-48"
+            size="400"
+            loading="lazy"
+          ></media-img>
+          <b-kv-table
+            :rows="[{
+              title: $t('brawler.skin.cost'),
+              key: 'cost',
+            }, {
+              title: $t('brawler.skin.campaign'),
+              key: 'campaign',
+            }]"
+            :data="skin"
+            class="w-full mt-4"
+          ></b-kv-table>
+        </div>
+      </b-card>
     </template>
-    <c-dashboard-cell
-      v-else
-      v-for="i in 2"
-      :key="i"
-      :rows="3"
-      :columns="2"
-    ></c-dashboard-cell>
-  </b-scrolling-dashboard>
+  </b-scrolling-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingDashboard, CDashboardCell, BCard, BKvTable } from '@schneefux/klicker/components'
+import { BScrollingList, BCard, BKvTable } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    BScrollingDashboard,
-    CDashboardCell,
+    BScrollingList,
     BKvTable,
     BCard,
   },
@@ -66,6 +56,16 @@ export default defineComponent({
       type: Object as PropType<ScrapedBrawler>,
       required: false
     },
+  },
+  setup(props) {
+    const skins = computed(() => props.scrapedData?.skins.flatMap(list => list.skins.map(skin => ({
+      ...skin,
+      id: `${list.name}-${skin.name}`,
+    }))) ?? [])
+
+    return {
+      skins,
+    }
   },
 })
 </script>

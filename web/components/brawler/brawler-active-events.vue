@@ -3,18 +3,16 @@
     <p class="prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
       {{ description }}
     </p>
-    <b-scrolling-dashboard
+    <b-scrolling-list
       v-if="events != undefined"
       class="mt-8"
+      :items="events"
+      :cell-rows="2"
+      :cell-columns="3"
+      :eager-until="3"
+      key-id="key"
     >
-      <c-dashboard-cell
-        v-for="(event, index) in events"
-        :key="event.mode + '-' + event.map"
-        :rows="2"
-        :columns="3"
-        :lazy="index > 3"
-        :ssr-key="`brawler-active-event-${event.mode}-${event.map}`"
-      >
+      <template v-slot:item="event">
         <brawler-active-event
           :mode="event.mode"
           :map="event.map"
@@ -24,8 +22,8 @@
           :data="event"
           class="w-full h-full"
         ></brawler-active-event>
-      </c-dashboard-cell>
-    </b-scrolling-dashboard>
+      </template>
+    </b-scrolling-list>
   </div>
 </template>
 
@@ -33,11 +31,11 @@
 import { defineComponent, computed, useContext, useAsync } from '@nuxtjs/composition-api'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { BScrollingList } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BScrollingList,
   },
   props: {
     brawlerName: {
@@ -50,9 +48,9 @@ export default defineComponent({
     const { $klicker, i18n } = useContext()
 
     const events = useAsync(() => $klicker.queryActiveEvents(
-        ['winRateAdj'], {
-        brawler: [props.brawlerName.toUpperCase()],
-      }))
+      ['winRateAdj'], {
+      brawler: [props.brawlerName.toUpperCase()],
+    }), `active-events-${props.brawlerName}`)
 
     const description = computed(() => {
       if (events.value == undefined) {
