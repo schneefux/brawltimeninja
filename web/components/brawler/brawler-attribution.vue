@@ -1,5 +1,5 @@
 <template>
-  <b-card>
+  <b-card :title="$t('attribution.title')">
     <i18n
       slot="content"
       path="fandom-attribution"

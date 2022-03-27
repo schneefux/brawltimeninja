@@ -14,6 +14,7 @@
       'w-full max-w-4xl': xxxxl,
       'h-full': fullHeight,
     }]"
+    :aria-labelledby="renderTitle ? `${prefix}-title` : undefined"
   >
     <div
       :class="{
@@ -72,6 +73,7 @@
         <div v-if="title != undefined">
           <h1
             v-if="title != undefined"
+            :id="`${prefix}-title`"
             :class="{
               'text-lg leading-snug': !dense,
               'text-sm leading-tight': dense,
@@ -155,6 +157,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue-demi'
+import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({
   props: {
@@ -260,9 +263,11 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
+    const { id: prefix } = useUniqueId()
 
     return {
       renderTitle,
+      prefix,
     }
   },
 })

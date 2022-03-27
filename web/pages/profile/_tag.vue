@@ -88,7 +88,9 @@
         </lazy-hydrate>
       </b-page-section>
 
-      <b-page-section title="Info">
+      <b-page-section
+        :title="$t('info')"
+      >
         <p class="prose dark:prose-invert max-w-none">
           {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
         </p>

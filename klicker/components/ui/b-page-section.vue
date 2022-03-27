@@ -1,10 +1,15 @@
 <template>
-  <section>
+  <section
+    :aria-labelledby="title != undefined ? id : undefined"
+  >
     <div
       v-if="title != undefined"
       class="mt-16"
     >
-      <h1 class="text-2xl">
+      <h1
+        class="text-2xl"
+        :id="id"
+      >
         {{ title }}
       </h1>
       <slot name="description"></slot>
@@ -23,12 +28,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi'
+import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({
   props: {
     title: {
       type: String
     },
+  },
+  setup() {
+    const { id } = useUniqueId()
+
+    return {
+      id,
+    }
   },
 })
 </script>

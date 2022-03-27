@@ -11,15 +11,21 @@
     <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-4">
       <install-button></install-button>
 
-      <nuxt-link
-        v-for="link in links"
-        :key="link.target"
-        :to="link.target"
-        class="text-lg hover:text-gray-800/75"
-        exact-active-class="text-red-800"
-      >
-        {{ $t('nav.' + link.name) }}
-      </nuxt-link>
+      <ul class="inline-block space-x-4">
+        <li
+          v-for="link in links"
+          :key="link.target"
+          class="inline"
+        >
+          <nuxt-link
+            :to="link.target"
+            class="text-lg hover:text-gray-800/75"
+            exact-active-class="text-red-800"
+          >
+            {{ $t('nav.' + link.name) }}
+          </nuxt-link>
+        </li>
+      </ul>
 
       <locale-switcher
         class="border-0 align-text-top !text-2xs pr-7"
