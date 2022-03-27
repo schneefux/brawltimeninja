@@ -174,7 +174,7 @@ export default defineComponent({
     }
 
     onMounted(updateObservers)
-    watch(() => props.sections, updateObservers)
+    watch(() => props.sections, () => nextTick(updateObservers))
 
     const toc = ref<HTMLElement>()
     const shouldStick = ref(false)
