@@ -130,28 +130,29 @@
       first
     ></ad>
 
-    <b-page-section class="mt-4">
-      <lazy-hydrate when-visible>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <top-brawlers-card
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('best_brawlers'),
-              once: true,
-            }"
-            :limit="4"
-            :elevation="1"
-          ></top-brawlers-card>
+    <b-page-section
+      class="mt-4"
+      lazy
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <top-brawlers-card
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('best_brawlers'),
+            once: true,
+          }"
+          :limit="4"
+          :elevation="1"
+        ></top-brawlers-card>
 
-          <top-players-card
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('best_players'),
-              once: true,
-            }"
-            :limit="4"
-            :elevation="1"
-          ></top-players-card>
-        </div>
-      </lazy-hydrate>
+        <top-players-card
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('best_players'),
+            once: true,
+          }"
+          :limit="4"
+          :elevation="1"
+        ></top-players-card>
+      </div>
     </b-page-section>
 
     <ad
@@ -166,13 +167,12 @@
         callback: makeVisibilityCallback('maps', 'live_events'),
         once: true,
       }"
+      lazy
     >
-      <lazy-hydrate when-visible>
-        <events-roll
-          :events="events"
-          with-data
-        ></events-roll>
-      </lazy-hydrate>
+      <events-roll
+        :events="events"
+        with-data
+      ></events-roll>
     </b-page-section>
 
     <ad

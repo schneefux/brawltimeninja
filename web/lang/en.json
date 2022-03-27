@@ -560,5 +560,6 @@
     "info": "Info",
     "metric.minion": "Minion",
     "metric.minionrange": "Minion Range",
-    "metric.duration": "Duration"
+    "metric.duration": "Duration",
+    "metric.trophyRange": "Trophy Bracket"
 }

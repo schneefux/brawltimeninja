@@ -1,31 +1,46 @@
 <template>
   <b-scrolling-dashboard>
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()] }"
         :dimensions="['day']"
         sort="day"
         metric="winRate"
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()] }"
         :dimensions="['day']"
         sort="day"
         metric="starRate"
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
         :dimensions="['day', 'brawler']"
         sort="day"
         metric="useRate"
         no-compare
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>

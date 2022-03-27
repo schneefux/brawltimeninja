@@ -3,25 +3,23 @@
     <p class="prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
       {{ description }}
     </p>
-    <b-scrolling-dashboard
-      v-if="data != undefined"
+    <b-scrolling-list
+      :items="data != undefined ? data : []"
+      :cell-rows="2"
+      :cell-columns="3"
+      :eager-until="-1"
+      key-id="id"
       class="mt-8"
+      render-placeholder
     >
-      <c-dashboard-cell
-        v-for="(row, index) in data"
-        :key="row.dimensionsRaw.mode.mode"
-        :rows="2"
-        :columns="3"
-        :lazy="index > 3"
-        :ssr-key="`brawler-mode-${row.dimensionsRaw.mode.mode}`"
-      >
+      <template v-slot:item="row">
         <brawler-mode-stats
           :mode="row.dimensionsRaw.mode.mode"
           :brawler-name="brawlerName"
           class="w-full h-full"
         ></brawler-mode-stats>
-      </c-dashboard-cell>
-    </b-scrolling-dashboard>
+      </template>
+    </b-scrolling-list>
   </div>
 </template>
 
@@ -29,11 +27,11 @@
 import { defineComponent, useContext, useAsync, computed } from '@nuxtjs/composition-api'
 import { scaleInto } from '~/lib/util'
 import { MetaGridEntry } from '@schneefux/klicker/types'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { BScrollingList } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BScrollingList,
   },
   props: {
     brawlerName: {
@@ -56,7 +54,7 @@ export default defineComponent({
       })).data as MetaGridEntry[]
     }
 
-    const data = useAsync(() => fetch())
+    const data = useAsync(() => fetch(), `brawler-modes-${props.brawlerName}`)
 
     const description = computed(() => {
       if (data.value == undefined) {

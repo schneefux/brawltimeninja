@@ -55,12 +55,11 @@
           callback: makeVisibilityCallback('accessories'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-accessories
-            :scraped-data="scrapedData"
-          ></brawler-accessories>
-        </lazy-hydrate>
+        <brawler-accessories
+          :scraped-data="scrapedData"
+        ></brawler-accessories>
       </b-page-section>
 
       <b-page-section
@@ -70,12 +69,11 @@
           callback: makeVisibilityCallback('synergies'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-synergies
-            :brawler-name="brawlerName"
-          ></brawler-synergies>
-        </lazy-hydrate>
+        <brawler-synergies
+          :brawler-name="brawlerName"
+        ></brawler-synergies>
       </b-page-section>
 
       <b-page-section
@@ -85,12 +83,11 @@
           callback: makeVisibilityCallback('current-maps'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-active-events
-            :brawler-name="brawlerName"
-          ></brawler-active-events>
-        </lazy-hydrate>
+        <brawler-active-events
+          :brawler-name="brawlerName"
+        ></brawler-active-events>
       </b-page-section>
 
       <b-page-section
@@ -100,12 +97,11 @@
           callback: makeVisibilityCallback('modes'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-modes-stats
-            :brawler-name="brawlerName"
-          ></brawler-modes-stats>
-        </lazy-hydrate>
+        <brawler-modes-stats
+          :brawler-name="brawlerName"
+        ></brawler-modes-stats>
 
         <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
           {{ $t('brawler.viable-info') }}
@@ -119,6 +115,7 @@
           callback: makeVisibilityCallback('trends'),
           once: true,
         }"
+        lazy
       >
         <p
           slot="description"
@@ -127,12 +124,10 @@
           {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
         </p>
 
-        <lazy-hydrate when-visible>
-          <lazy-brawler-trends-card
-            :brawler-name="brawlerName"
-            class="mt-4"
-          ></lazy-brawler-trends-card>
-        </lazy-hydrate>
+        <brawler-trends-card
+          :brawler-name="brawlerName"
+          class="mt-4"
+        ></brawler-trends-card>
       </b-page-section>
 
       <b-page-section
@@ -142,12 +137,11 @@
           callback: makeVisibilityCallback('trophy-graphs'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <lazy-brawler-trophy-graphs
-            :brawler-name="brawlerName"
-          ></lazy-brawler-trophy-graphs>
-        </lazy-hydrate>
+        <brawler-trophy-graphs
+          :brawler-name="brawlerName"
+        ></brawler-trophy-graphs>
 
         <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
           {{ $t('brawler.disclaimer') }}
@@ -159,67 +153,63 @@
         but until scrapedData is fetched, render the placeholders
       -->
       <b-page-section
-        v-if="scrapedData == undefined || scrapedData.skins.length > 0"
+        v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
         ref="skinsSection"
         :title="$tc('skin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('skins'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-skins
-            :scraped-data="scrapedData"
-          ></brawler-skins>
-        </lazy-hydrate>
+        <brawler-skins
+          :scraped-data="scrapedData"
+        ></brawler-skins>
       </b-page-section>
 
       <b-page-section
-        v-if="scrapedData == undefined || scrapedData.pins.length > 0"
+        v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
         ref="pinsSection"
         :title="$tc('pin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('pins'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-pins
-            :scraped-data="scrapedData"
-          ></brawler-pins>
-        </lazy-hydrate>
+        <brawler-pins
+          :scraped-data="scrapedData"
+        ></brawler-pins>
       </b-page-section>
 
       <b-page-section
-        v-if="scrapedData == undefined || scrapedData.voicelines.length > 0"
+        v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
         ref="voicelineSection"
         :title="$tc('voiceline', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('voicelines'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-voicelines
-            :scraped-data="scrapedData"
-          ></brawler-voicelines>
-        </lazy-hydrate>
+        <brawler-voicelines
+          :scraped-data="scrapedData"
+        ></brawler-voicelines>
       </b-page-section>
 
       <b-page-section
-        v-if="scrapedData == undefined || scrapedData.history.length > 0"
+        v-if="scrapedData == undefined || (scrapedData.history != undefined && scrapedData.history.length > 0)"
         :title="$t('balance-changes')"
         ref="balanceChangesSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('balance-changes'),
           once: true,
         }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <brawler-history
-            :scraped-data="scrapedData"
-          ></brawler-history>
-        </lazy-hydrate>
+        <brawler-history
+          :scraped-data="scrapedData"
+        ></brawler-history>
       </b-page-section>
     </b-split-dashboard>
 
@@ -228,6 +218,7 @@
         callback: makeVisibilityCallback('attribution'),
         once: true,
       }"
+      lazy
     >
       <brawler-attribution
         :scraped-data="scrapedData"

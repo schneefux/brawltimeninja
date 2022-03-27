@@ -1,11 +1,21 @@
 <template>
   <b-scrolling-dashboard>
-    <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+    <c-dashboard-cell
+      :rows="2"
+      :columns="6"
+      hide-empty
+      lazy
+    >
       <brawler-synergies-card
         :brawler="brawlerName"
       ></brawler-synergies-card>
     </c-dashboard-cell>
-    <c-dashboard-cell :rows="2" :columns="6" hide-empty>
+    <c-dashboard-cell
+      :rows="2"
+      :columns="6"
+      hide-empty
+      lazy
+    >
       <brawler-weaknesses-card
         :brawler="brawlerName"
       ></brawler-weaknesses-card>

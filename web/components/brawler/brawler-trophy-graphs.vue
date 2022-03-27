@@ -1,27 +1,42 @@
 <template>
   <b-scrolling-dashboard>
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
         :dimensions="['trophyRange']"
         cube-id="map"
         sort="trophyRange"
         metric="winRate"
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
         :dimensions="['trophyRange']"
         cube-id="map"
         sort="trophyRange"
         metric="starRate"
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
 
-    <c-dashboard-cell :rows="2" :columns="4" hide-empty>
-      <map-trend-chart
+    <c-dashboard-cell
+      :rows="2"
+      :columns="4"
+      hide-empty
+      lazy
+    >
+      <lazy-map-trend-chart
         :slices="{ powerplay: ['false'] }"
         :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
         :dimensions="['trophyRange', 'brawler']"
@@ -29,7 +44,7 @@
         sort="trophyRange"
         metric="useRate"
         no-compare
-      ></map-trend-chart>
+      ></lazy-map-trend-chart>
     </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>

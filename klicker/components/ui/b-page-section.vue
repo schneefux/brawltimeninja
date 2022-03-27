@@ -15,7 +15,21 @@
       <slot name="description"></slot>
     </div>
 
+    <lazy-hydrate
+      v-if="lazy"
+      when-visible
+    >
+      <div
+        :class="{
+          'mt-4': title != undefined,
+          'mt-8': title == undefined,
+        }"
+      >
+        <slot></slot>
+      </div>
+    </lazy-hydrate>
     <div
+      v-else
       :class="{
         'mt-4': title != undefined,
         'mt-8': title == undefined,
@@ -29,11 +43,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue-demi'
 import { useUniqueId } from '../../composables/id'
+import LazyHydrate from 'vue-lazy-hydration'
 
 export default defineComponent({
+  components: {
+    LazyHydrate,
+  },
   props: {
     title: {
-      type: String
+      type: String,
+      required: false
+    },
+    lazy: {
+      type: Boolean,
+      default: false
     },
   },
   setup() {

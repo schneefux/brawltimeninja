@@ -30,6 +30,7 @@
         callback: makeVisibilityCallback('powerleague_events'),
         once: true,
       }"
+      lazy
     >
       <events-roll
         :events="powerleagueEvents"
@@ -49,6 +50,7 @@
         callback: makeVisibilityCallback('upcoming_events'),
         once: true,
       }"
+      lazy
     >
       <events-roll
         :events="upcomingEvents"
@@ -63,6 +65,7 @@
         callback: makeVisibilityCallback('maps'),
         once: true,
       }"
+      lazy
     >
       <events-roll :events="allEvents"></events-roll>
     </b-page-section>
@@ -71,7 +74,6 @@
       ad-slot="3577381889"
       lazy
     ></ad>
-
   </b-page>
 </template>
 
@@ -81,8 +83,12 @@ import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
 import { EventMetadata } from '~/plugins/klicker'
+import { BPageSection } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BPageSection,
+  },
   head: {},
   setup() {
     const { $http, $config, i18n, $klicker } = useContext()

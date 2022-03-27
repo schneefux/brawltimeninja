@@ -29,12 +29,11 @@
           once: true,
         }"
         :title="$t('player.time-statistics')"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <player-time-statistics
-            :player="player"
-          ></player-time-statistics>
-        </lazy-hydrate>
+        <player-time-statistics
+          :player="player"
+        ></player-time-statistics>
       </b-page-section>
 
       <b-page-section
@@ -44,27 +43,25 @@
           once: true,
         }"
         :title="$t('player.trophy-statistics')"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <player-trophy-statistics
-            :player="player"
-            :player-totals="playerTotals"
-            :enable-klicker-stats="enableKlickerStats"
-          ></player-trophy-statistics>
-        </lazy-hydrate>
+        <player-trophy-statistics
+          :player="player"
+          :player-totals="playerTotals"
+          :enable-klicker-stats="enableKlickerStats"
+        ></player-trophy-statistics>
       </b-page-section>
 
       <b-page-section
         :title="$t('player.quiz.title')"
         ref="quizSection"
         v-observe-visibility="{
-        callback: makeVisibilityCallback('quiz'),
-        once: true,
-      }"
+          callback: makeVisibilityCallback('quiz'),
+          once: true,
+        }"
+        lazy
       >
-        <lazy-hydrate when-visible>
-          <quiz-card></quiz-card>
-        </lazy-hydrate>
+        <quiz-card></quiz-card>
       </b-page-section>
 
       <ad
@@ -75,22 +72,19 @@
       <b-page-section
         ref="recordsSection"
         :title="$t('player.records.title')"
+        lazy
       >
         <p class="mt-4 prose dark:prose-invert w-full">
           {{ $t('player.records.description') }}
         </p>
 
-        <lazy-hydrate when-visible>
-          <player-percentiles
-            :player="player"
-            class="mt-8"
-          ></player-percentiles>
-        </lazy-hydrate>
+        <player-percentiles
+          :player="player"
+          class="mt-8"
+        ></player-percentiles>
       </b-page-section>
 
-      <b-page-section
-        :title="$t('info')"
-      >
+      <b-page-section :title="$t('info')">
         <p class="prose dark:prose-invert max-w-none">
           {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
         </p>
@@ -100,6 +94,7 @@
         v-if="playerTotals != undefined && playerTotals.picks > 0"
         ref="battlesSection"
         :title="$tc('battle-log', 1)"
+        lazy
       >
         <p class="mt-4 prose dark:prose-invert w-full">
           {{ $t('player.battle-log.description') }}
@@ -115,16 +110,14 @@
           {{ $t('action.refresh') }}
         </b-button>
 
-        <lazy-hydrate when-visible>
-          <player-battles
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('battles'),
-              once: true,
-            }"
-            :player="player"
-            class="mt-8"
-          ></player-battles>
-        </lazy-hydrate>
+        <player-battles
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('battles'),
+            once: true,
+          }"
+          :player="player"
+          class="mt-8"
+        ></player-battles>
       </b-page-section>
 
       <ad
@@ -135,40 +128,38 @@
       <b-page-section
         ref="modesSection"
         :title="$tc('mode', 2)"
+        lazy
       >
         <p class="prose dark:prose-invert">
           {{ $t('player.modes.description') }}
         </p>
 
-        <lazy-hydrate when-visible>
-          <player-mode-winrates
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('gamemodes'),
-              once: true,
-            }"
-            :player="player"
-            :battles="player.battles"
-            :enable-klicker-stats="enableKlickerStats"
-            class="mt-4"
-          ></player-mode-winrates>
-        </lazy-hydrate>
+        <player-mode-winrates
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('gamemodes'),
+            once: true,
+          }"
+          :player="player"
+          :battles="player.battles"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+        ></player-mode-winrates>
       </b-page-section>
 
       <b-page-section
         ref="brawlersSection"
         :title="$tc('brawler', 2)"
+        lazy
       >
         <p class="prose dark:prose-invert">
           {{ $t('player.brawlers.description') }}
         </p>
 
-        <lazy-hydrate when-visible>
-          <player-brawlers
-            :player="player"
-            :enable-klicker-stats="enableKlickerStats"
-            class="mt-4"
-          ></player-brawlers>
-        </lazy-hydrate>
+        <player-brawlers
+          :player="player"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+        ></player-brawlers>
       </b-page-section>
     </b-split-dashboard>
 
@@ -183,6 +174,7 @@
         callback: makeVisibilityCallback('articles'),
         once: true,
       }"
+      lazy
     >
       <blogroll topic="guides"></blogroll>
     </b-page-section>
