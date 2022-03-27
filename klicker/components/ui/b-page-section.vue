@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <section>
     <div
       v-if="title != undefined"
       class="mt-16"
     >
-      <h2 class="text-2xl">
+      <h1 class="text-2xl">
         {{ title }}
-      </h2>
+      </h1>
       <slot name="description"></slot>
     </div>
 
@@ -18,7 +18,7 @@
     >
       <slot></slot>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">

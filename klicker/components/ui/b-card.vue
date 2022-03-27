@@ -215,7 +215,7 @@ export default defineComponent({
     },
     tag: {
       type: String,
-      default: 'section'
+      default: 'article'
     },
     link: {
       type: String,

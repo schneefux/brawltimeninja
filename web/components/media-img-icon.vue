@@ -5,7 +5,7 @@
   >
     <media-img
       :path="icon"
-      :alt="iconAlt"
+      :alt="alt"
       size="120"
     ></media-img>
   </div>
@@ -20,7 +20,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    iconAlt: {
+    alt: {
       type: String,
       required: false
     },
