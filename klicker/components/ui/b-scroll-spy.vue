@@ -168,6 +168,7 @@ export default defineComponent({
           if (isIntersecting) {
             activeSectionTitle.value = section.title
             activeSectionId.value = section.id
+            window.history.replaceState(null, '', '#' + section.id)
           }
         }, {
           // trigger when the element touches bottom of the nav container, independent of its size
@@ -185,8 +186,12 @@ export default defineComponent({
           if (isIntersecting && lgAndLarger.value) {
             scrollTocLinkIntoView(section.id)
           }
+          if (!isIntersecting && !Object.values(visibleSections.value).some(Boolean)) {
+            // no section visible: clear hash
+            window.history.replaceState(null, '', ' ')
+          }
         }, {
-          threshold: 1.0,
+          threshold: 0.0,
         })
         newStopCallbacks.push(stop2)
       }
@@ -197,6 +202,16 @@ export default defineComponent({
 
     onMounted(updateObservers)
     watch(validSections, () => nextTick(updateObservers))
+
+    onMounted(() => nextTick(() => {
+      if (window.location.hash.length > 0) {
+        const sectionId = window.location.hash.slice(1)
+        const section = validSections.value.find(s => s.id == sectionId)
+        if (section != undefined) {
+          scrollTo(section)
+        }
+      }
+    }))
 
     const toc = ref<HTMLElement>()
     const shouldStick = ref(false)
