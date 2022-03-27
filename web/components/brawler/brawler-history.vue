@@ -1,12 +1,12 @@
 <template>
   <b-card>
     <b-scrolling-list
-      v-if="scrapedData != undefined"
       slot="content"
       :items="changes"
       :cell-columns="2"
       :cell-rows="2"
       key-id="index"
+      render-placeholder
     >
       <template v-slot:item="change">
         <time class="text-sm font-normal leading-none text-gray-800/50 dark:text-gray-200/50">{{ change.date }}</time>
@@ -39,7 +39,7 @@ export default defineComponent({
       .map((change, index) => ({
         ...change,
         index,
-      }))
+      })) ?? []
     )
 
     return {

@@ -1,17 +1,18 @@
 <template>
   <b-card>
     <b-scrolling-list
-      v-if="scrapedData != undefined"
       slot="content"
-      :items="scrapedData.voicelines"
+      :items="scrapedData != undefined ? scrapedData.voicelines : []"
       :cell-columns="1"
+      :eager-until="5"
       key-id="name"
+      render-placeholder
     >
       <template v-slot:item="voiceline">
         <div class="h-full flex flex-col items-center justify-between gap-y-2">
           <b-button
-            @click="play(voiceline)"
             class="leading-none"
+            @click="play(voiceline)"
           >
             <font-awesome-icon
               class="text-3xl"

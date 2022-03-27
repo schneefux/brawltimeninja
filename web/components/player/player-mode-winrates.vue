@@ -1,11 +1,11 @@
 <template>
   <b-scrolling-list
-    v-if="modes != undefined && events != undefined"
-    :items="modes"
+    :items="modes != undefined && events != undefined ? modes : []"
     :cell-rows="3"
     :cell-columns="4"
     :eager-until="3"
     key-id="id"
+    render-placeholder
   >
     <template v-slot:preview="mode">
       <div class="w-10 h-10 p-2 flex justify-center items-center bg-white/[0.1]">
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType, useContext, useAsync, computed} from '@nuxtjs/composition-api'
+import { defineComponent, PropType, useContext, useAsync, computed } from '@nuxtjs/composition-api'
 import { Player, Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
@@ -54,11 +54,11 @@ export default defineComponent({
       required: true
     },
   },
-  setup() {
+  setup(props) {
     const { $klicker } = useContext()
-    const events = useAsync(() => $klicker.queryActiveEvents())
+    const events = useAsync(() => $klicker.queryActiveEvents(), `player-mode-winrates-events-${props.player.tag}`)
 
-    const modesIds = useAsync(() => $klicker.queryAllModes())
+    const modesIds = useAsync(() => $klicker.queryAllModes(), `player-mode-winrates-modes-${props.player.tag}`)
     const modes = computed(() => modesIds.value?.map(m => ({
       id: m,
       slug: camelToKebab(m),

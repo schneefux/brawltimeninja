@@ -4,13 +4,13 @@
       {{ description }}
     </p>
     <b-scrolling-list
-      v-if="events != undefined"
       class="mt-8"
-      :items="events"
+      :items="events != undefined ? events : []"
       :cell-rows="2"
       :cell-columns="3"
       :eager-until="3"
       key-id="key"
+      render-placeholder
     >
       <template v-slot:item="event">
         <brawler-active-event

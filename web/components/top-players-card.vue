@@ -5,11 +5,11 @@
     full-height
   >
     <b-scrolling-list
-      v-if="leaderboard != null"
       slot="content"
-      :items="leaderboard"
+      :items="leaderboard != undefined ? leaderboard : []"
       :cell-columns="2"
       key-id="tag"
+      render-placeholder
     >
       <template v-slot:item="player">
         <b-card
