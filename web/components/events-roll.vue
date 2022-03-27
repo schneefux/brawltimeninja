@@ -37,15 +37,16 @@
       ></b-textbox>
     </div>
 
-    <b-scrolling-dashboard class="mt-8">
-      <c-dashboard-cell
-        v-for="(event, index) in filteredEvents"
-        :key="event.map + '-' + event.id + '-' + event.powerplay"
-        :rows="2"
-        :columns="withData ? 3 : 2"
-        :lazy="index > 4"
-        :ssr-key="`active-event-${event.map}-${event.id}`"
-      >
+    <b-scrolling-list
+      :items="filteredEvents"
+      :cell-rows="withData ? 2 : 3"
+      :cell-columns="withData ? 3 : 2"
+      :eager-until="4"
+      key-id="key"
+      class="mt-8"
+      render-placeholder
+    >
+      <template v-slot:item="event">
         <slot :event="event">
           <map-best-brawlers-card
             v-if="withData"
@@ -65,20 +66,21 @@
             :id="event.id"
           ></event-picture-card>
         </slot>
-      </c-dashboard-cell>
-    </b-scrolling-dashboard>
+      </template>
+    </b-scrolling-list>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api'
-import { camelToKebab, slugify } from '~/lib/util'
-import { CDashboardCell, BTextbox } from '@schneefux/klicker/components'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
+import { camelToKebab } from '~/lib/util'
+import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker'
+import { getMapName } from '~/composables/map'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BScrollingList,
     BTextbox,
   },
   props: {
@@ -99,11 +101,21 @@ export default defineComponent({
 
     const nameFilter = ref('')
 
+    const { i18n } = useContext()
     const filteredEvents = computed(() =>
-      props.events
-        .filter(e => (modeFilter.value == 'all' || modeFilter.value == e.mode)
-                  && (nameFilter.value == '' || e.map.toLowerCase().includes(nameFilter.value.toLowerCase())))
-        .sort((e1, e2) => e1.mode.localeCompare(e2.mode))
+      props.events.filter(e => {
+        if (modeFilter.value != 'all' && modeFilter.value != e.mode) {
+          return false
+        }
+
+        if (nameFilter.value == '') {
+          return true
+        }
+
+        const mapName = getMapName(i18n, e.id, e.map) ?? ''
+        return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
+      })
+      .sort((e1, e2) => e1.mode.localeCompare(e2.mode))
     )
 
     return {
