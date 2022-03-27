@@ -33,6 +33,12 @@
       class="mt-4"
     >
       <c-dashboard-cell
+        v-if="items.length == 0 && renderPlaceholder"
+        :columns="cellColumns"
+        :rows="cellRows"
+      ></c-dashboard-cell>
+
+      <c-dashboard-cell
         v-for="(item, index) in items"
         :key="item[keyId]"
         :ref="`${item[keyId]}-item`"
@@ -50,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, onMounted, PropType, ref, watch, nextTick } from 'vue-demi'
 import BScrollingDashboard from './b-scrolling-dashboard.vue'
 import CDashboardCell from '../c-dashboard-cell.vue'
 import { useIntersectionObserver } from '@vueuse/core'
@@ -99,6 +105,13 @@ export default defineComponent({
       type: Number,
       required: false
     },
+    /**
+     * Render an empty cell to reserve the space and prevent CLS
+     */
+    renderPlaceholder: {
+      type: Boolean,
+      default: false
+    },
   },
   // TODO replace by function ref when migrating to Vue 3
   setup(props, { refs }) {
@@ -125,12 +138,15 @@ export default defineComponent({
       container.value!.scrollTo(element)
     }
 
-    onMounted((() => {
+    const stopCallbacks = ref<(() => void)[]>([])
+    const updateObservers = () => {
+      const newStopCallbacks: (() => void)[] = []
+
       for (const item of props.items) {
         const key = item[props.keyId]
         const element = refs[`${key}-item`][0].$el as HTMLElement
 
-        useIntersectionObserver(element, ([{ isIntersecting }]) => {
+        const { stop } = useIntersectionObserver(element, ([{ isIntersecting }]) => {
           elementVisibility.value = {
             ...elementVisibility.value,
             [key]: isIntersecting,
@@ -143,8 +159,16 @@ export default defineComponent({
           root: container.value!.$el as HTMLElement,
           threshold: 0.0,
         })
+
+        newStopCallbacks.push(stop)
       }
-    }))
+
+      stopCallbacks.value.forEach(stop => stop())
+      stopCallbacks.value = newStopCallbacks
+    }
+
+    onMounted(updateObservers)
+    watch(() => [props.items, props.keyId], () => nextTick(updateObservers))
 
     const visibleIds = computed(() => props.items
       .filter(item => elementVisibility.value[item[props.keyId]])
