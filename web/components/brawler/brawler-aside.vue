@@ -7,6 +7,7 @@
       <media-img
         :path="'/brawlers/' + brawlerId + '/model'"
         :alt="brawlerName"
+        clazz="max-h-48"
         size="400"
       ></media-img>
 

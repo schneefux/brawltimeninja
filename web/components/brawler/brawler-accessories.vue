@@ -76,7 +76,7 @@
       :columns="3"
     >
       <b-card
-        title="Info"
+        :title="$t('info')"
         full-height
       >
         <p slot="content">

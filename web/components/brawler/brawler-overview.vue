@@ -43,7 +43,7 @@
             <b-select
               slot="level"
               v-model="level"
-              class="!py-px !pr-8 leading-tight"
+              class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
             >
               <option
                 v-for="i in 11"

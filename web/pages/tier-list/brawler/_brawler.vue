@@ -129,7 +129,14 @@
         </b-page-section>
       </div>
 
-      <b-page-section :title="$tc('skin', 2)">
+      <!--
+        some Brawlers don't have skins, pins, voicelines etc.
+        but until scrapedData is fetched, render the placeholders
+      -->
+      <b-page-section
+        v-if="scrapedData == undefined || scrapedData.skins.length > 0"
+        :title="$tc('skin', 2)"
+      >
         <lazy-hydrate when-visible>
           <brawler-skins
             :scraped-data="scrapedData"
@@ -137,7 +144,10 @@
         </lazy-hydrate>
       </b-page-section>
 
-      <b-page-section :title="$tc('pin', 2)">
+      <b-page-section
+        v-if="scrapedData == undefined || scrapedData.pins.length > 0"
+        :title="$tc('pin', 2)"
+      >
         <lazy-hydrate when-visible>
           <brawler-pins
             :scraped-data="scrapedData"
@@ -145,7 +155,10 @@
         </lazy-hydrate>
       </b-page-section>
 
-      <b-page-section :title="$tc('voiceline', 2)">
+      <b-page-section
+        v-if="scrapedData == undefined || scrapedData.voicelines.length > 0"
+        :title="$tc('voiceline', 2)"
+      >
         <lazy-hydrate when-visible>
           <brawler-voicelines
             :scraped-data="scrapedData"
@@ -153,7 +166,10 @@
         </lazy-hydrate>
       </b-page-section>
 
-      <b-page-section :title="$t('balance-changes')">
+      <b-page-section
+        v-if="scrapedData == undefined || scrapedData.history.length > 0"
+        :title="$t('balance-changes')"
+      >
         <lazy-hydrate when-visible>
           <brawler-history
             :scraped-data="scrapedData"
