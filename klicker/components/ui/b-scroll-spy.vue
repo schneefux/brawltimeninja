@@ -137,6 +137,9 @@ export default defineComponent({
     }
 
     const scrollTo = (section: Section) => {
+      if (section.element == undefined) {
+        return
+      }
       const sectionElement = '$el' in section.element ? section.element.$el as HTMLElement : section.element
 
       dropdownOpen.value = false

@@ -17,21 +17,45 @@
     ></ad>
 
     <b-split-dashboard>
-      <brawler-aside
+      <div
         slot="aside"
-        :brawler-id="brawlerId"
-        :brawler-name="brawlerName"
-        class="mt-16"
-      ></brawler-aside>
+        class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8"
+      >
+        <brawler-aside
+          :brawler-id="brawlerId"
+          :brawler-name="brawlerName"
+        ></brawler-aside>
 
-      <b-page-section :title="$t('brawler.overview')">
+        <b-scroll-spy
+          :sections="sections"
+          nav-class="top-14 lg:top-0"
+          toc-class="hidden lg:block"
+          class="lg:mt-8 lg:overflow-y-auto"
+        ></b-scroll-spy>
+      </div>
+
+      <b-page-section
+        ref="overviewSection"
+        :title="$t('brawler.overview')"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('overview'),
+          once: true,
+        }"
+      >
         <brawler-overview
           :brawler-id="brawlerId"
           :scraped-data="scrapedData"
         ></brawler-overview>
       </b-page-section>
 
-      <b-page-section :title="$t('brawler.accessories')">
+      <b-page-section
+        ref="accessorySection"
+        :title="$t('brawler.accessories')"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('accessories'),
+          once: true,
+        }"
+      >
         <lazy-hydrate when-visible>
           <brawler-accessories
             :scraped-data="scrapedData"
@@ -40,6 +64,7 @@
       </b-page-section>
 
       <b-page-section
+        ref="synergySection"
         :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('synergies'),
@@ -53,81 +78,81 @@
         </lazy-hydrate>
       </b-page-section>
 
-      <div>
-        <b-page-section
-          :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('current-maps'),
-            once: true,
-          }"
+      <b-page-section
+        ref="mapsSection"
+        :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('current-maps'),
+          once: true,
+        }"
+      >
+        <lazy-hydrate when-visible>
+          <brawler-active-events
+            :brawler-name="brawlerName"
+          ></brawler-active-events>
+        </lazy-hydrate>
+      </b-page-section>
+
+      <b-page-section
+        ref="modesSection"
+        :title="$t('brawler.modes.title', { brawler: brawlerName })"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('modes'),
+          once: true,
+        }"
+      >
+        <lazy-hydrate when-visible>
+          <brawler-modes-stats
+            :brawler-name="brawlerName"
+          ></brawler-modes-stats>
+        </lazy-hydrate>
+
+        <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
+          {{ $t('brawler.viable-info') }}
+        </p>
+      </b-page-section>
+
+      <b-page-section
+        ref="trendsSection"
+        :title="$t('brawler.trends', { brawler: brawlerName })"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('trends'),
+          once: true,
+        }"
+      >
+        <p
+          slot="description"
+          class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75"
         >
-          <lazy-hydrate when-visible>
-            <brawler-active-events
-              :brawler-name="brawlerName"
-            ></brawler-active-events>
-          </lazy-hydrate>
-        </b-page-section>
+          {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
+        </p>
 
-        <b-page-section
-          :title="$t('brawler.modes.title', { brawler: brawlerName })"
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('modes'),
-            once: true,
-          }"
-        >
-          <lazy-hydrate when-visible>
-            <brawler-modes-stats
-              :brawler-name="brawlerName"
-            ></brawler-modes-stats>
-          </lazy-hydrate>
+        <lazy-hydrate when-visible>
+          <lazy-brawler-trends-card
+            :brawler-name="brawlerName"
+            class="mt-4"
+          ></lazy-brawler-trends-card>
+        </lazy-hydrate>
+      </b-page-section>
 
-          <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
-            {{ $t('brawler.viable-info') }}
-          </p>
-        </b-page-section>
-      </div>
+      <b-page-section
+        ref="trophiesSection"
+        :title="$t('brawler.by-trophies', { brawler: brawlerName })"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('trophy-graphs'),
+          once: true,
+        }"
+      >
+        <lazy-hydrate when-visible>
+          <lazy-brawler-trophy-graphs
+            :brawler-name="brawlerName"
+          ></lazy-brawler-trophy-graphs>
+        </lazy-hydrate>
 
-      <div>
-        <b-page-section
-          :title="$t('brawler.trends', { brawler: brawlerName })"
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('trends'),
-            once: true,
-          }"
-        >
-          <p
-            slot="description"
-            class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75"
-          >
-            {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
-          </p>
-
-          <lazy-hydrate when-visible>
-            <lazy-brawler-trends-card
-              :brawler-name="brawlerName"
-              class="mt-4"
-            ></lazy-brawler-trends-card>
-          </lazy-hydrate>
-        </b-page-section>
-
-        <b-page-section
-          :title="$t('brawler.by-trophies', { brawler: brawlerName })"
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('trophy-graphs'),
-            once: true,
-          }"
-        >
-          <lazy-hydrate when-visible>
-            <lazy-brawler-trophy-graphs
-              :brawler-name="brawlerName"
-            ></lazy-brawler-trophy-graphs>
-          </lazy-hydrate>
-
-          <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
-            {{ $t('brawler.disclaimer') }}
-          </p>
-        </b-page-section>
-      </div>
+        <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
+          {{ $t('brawler.disclaimer') }}
+        </p>
+      </b-page-section>
 
       <!--
         some Brawlers don't have skins, pins, voicelines etc.
@@ -135,7 +160,12 @@
       -->
       <b-page-section
         v-if="scrapedData == undefined || scrapedData.skins.length > 0"
+        ref="skinsSection"
         :title="$tc('skin', 2)"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('skins'),
+          once: true,
+        }"
       >
         <lazy-hydrate when-visible>
           <brawler-skins
@@ -146,7 +176,12 @@
 
       <b-page-section
         v-if="scrapedData == undefined || scrapedData.pins.length > 0"
+        ref="pinsSection"
         :title="$tc('pin', 2)"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('pins'),
+          once: true,
+        }"
       >
         <lazy-hydrate when-visible>
           <brawler-pins
@@ -157,7 +192,12 @@
 
       <b-page-section
         v-if="scrapedData == undefined || scrapedData.voicelines.length > 0"
+        ref="voicelineSection"
         :title="$tc('voiceline', 2)"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('voicelines'),
+          once: true,
+        }"
       >
         <lazy-hydrate when-visible>
           <brawler-voicelines
@@ -169,6 +209,11 @@
       <b-page-section
         v-if="scrapedData == undefined || scrapedData.history.length > 0"
         :title="$t('balance-changes')"
+        ref="balanceChangesSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('balance-changes'),
+          once: true,
+        }"
       >
         <lazy-hydrate when-visible>
           <brawler-history
@@ -178,7 +223,12 @@
       </b-page-section>
     </b-split-dashboard>
 
-    <b-page-section>
+    <b-page-section
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('attribution'),
+        once: true,
+      }"
+    >
       <brawler-attribution
         :scraped-data="scrapedData"
       ></brawler-attribution>
@@ -192,15 +242,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
-import { CDashboardCell, BSplitDashboard } from '@schneefux/klicker/components'
+import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
+    BScrollSpy,
     BSplitDashboard,
-    CDashboardCell,
   },
   head: {},
   setup() {
@@ -227,11 +277,73 @@ export default defineComponent({
 
     const scrapedData = useAsync(() => $http.$get(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`), `scraped-data-${brawlerId.value}`)
 
+    const sectionRefs = {
+      overviewSection: ref<HTMLElement>(),
+      accessorySection: ref<HTMLElement>(),
+      synergySection: ref<HTMLElement>(),
+      mapsSection: ref<HTMLElement>(),
+      modesSection: ref<HTMLElement>(),
+      trendsSection: ref<HTMLElement>(),
+      trophiesSection: ref<HTMLElement>(),
+      skinsSection: ref<HTMLElement>(),
+      pinsSection: ref<HTMLElement>(),
+      voicelineSection: ref<HTMLElement>(),
+      balanceChangesSection: ref<HTMLElement>(),
+    }
+
+    const sections = computed(() => [{
+      id: 'overview',
+      title: i18n.t('brawler.overview'),
+      element: sectionRefs.overviewSection.value,
+    }, {
+      id: 'accessory',
+      title: i18n.t('brawler.accessories'),
+      element: sectionRefs.accessorySection.value,
+    }, {
+      id: 'synergy',
+      title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName.value }),
+      element: sectionRefs.synergySection.value,
+    }, {
+      id: 'maps',
+      title: i18n.t('brawler.current-maps.title', { brawler: brawlerName.value }),
+      element: sectionRefs.mapsSection.value,
+    }, {
+      id: 'modes',
+      title: i18n.t('brawler.modes.title', { brawler: brawlerName.value }),
+      element: sectionRefs.modesSection.value,
+    }, {
+      id: 'trends',
+      title: i18n.t('brawler.trends', { brawler: brawlerName.value }),
+      element: sectionRefs.trendsSection.value,
+    }, {
+      id: 'trophies',
+      title: i18n.t('brawler.by-trophies', { brawler: brawlerName.value }),
+      element: sectionRefs.trophiesSection.value,
+    }, {
+      id: 'skins',
+      title: i18n.tc('skin', 2),
+      element: sectionRefs.skinsSection.value,
+    }, {
+      id: 'pins',
+      title: i18n.tc('pin', 2),
+      element: sectionRefs.pinsSection.value,
+    }, {
+      id: 'voicelines',
+      title: i18n.tc('voiceline', 2),
+      element: sectionRefs.voicelineSection.value,
+    }, {
+      id: 'balance',
+      title: i18n.t('balance-changes'),
+      element: sectionRefs.balanceChangesSection.value,
+    }])
+
     return {
       brawlerId,
       brawlerName,
       makeVisibilityCallback,
       scrapedData,
+      sections,
+      ...sectionRefs,
     }
   },
   meta: {
