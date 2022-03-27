@@ -79,24 +79,29 @@
 import { computed, defineComponent, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
 import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
-import { CDashboardCell } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
+import { EventMetadata } from '~/plugins/klicker'
 
 export default defineComponent({
   head: {},
-  components: {
-    CDashboardCell,
-  },
   setup() {
     const { $http, $config, i18n, $klicker } = useContext()
     const events = useAsync(() => $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active'))
-    const currentEvents = computed(() => (events.value?.current ?? []).map(e => ({
-      ...e,
-      mode: unformatMode(e.mode)
+    const currentEvents = computed<EventMetadata[]>(() => (events.value?.current ?? []).map(e => ({
+      id: parseInt(e.id),
+      map: e.map,
+      mode: unformatMode(e.mode),
+      key: `${e.id}-${e.mode}-${e.map}`,
+      metrics: {},
+      powerplay: false,
     })))
-    const upcomingEvents = computed(() => (events.value?.upcoming ?? []).map(e => ({
-      ...e,
-      mode: unformatMode(e.mode)
+    const upcomingEvents = computed<EventMetadata[]>(() => (events.value?.upcoming ?? []).map(e => ({
+      id: parseInt(e.id),
+      map: e.map,
+      mode: unformatMode(e.mode),
+      key: `${e.id}-${e.mode}-${e.map}`,
+      metrics: {},
+      powerplay: false,
     })))
 
     const twoWeeksAgo = new Date()

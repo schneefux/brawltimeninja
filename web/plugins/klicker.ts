@@ -14,6 +14,7 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BPage, BPageSection, BScrollingDashboard } from '@schneefux/klicker/components'
 
 export interface EventMetadata {
+  key: string
   id: number
   map: string
   mode: string
@@ -104,6 +105,7 @@ class CustomKlicker extends Klicker {
 
     const lastEvents = events.data
       .map(e => ({
+        key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}-${e.dimensionsRaw.powerplay.powerplay}`,
         id: parseInt(e.metricsRaw.eventId as string),
         map: e.dimensionsRaw.map.map as string,
         mode: e.dimensionsRaw.mode.mode as string,
