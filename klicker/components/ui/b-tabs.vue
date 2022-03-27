@@ -140,11 +140,27 @@ export default defineComponent({
             }
 
             scrollActiveTabIntoView()
+            if (tab.slot != props.tabs[0].slot) {
+              window.history.replaceState(null, '', '#' + tab.slot)
+            } else {
+              // do not write default tab into URL
+              window.history.replaceState(null, '', ' ')
+            }
           }
         }, {
           root: tabContainer.value,
           threshold: 1.0,
         })
+      }
+    })
+
+    onMounted(() => {
+      if (window.location.hash.length > 0) {
+        const tabId = window.location.hash.slice(1)
+        const tab = props.tabs.find(t => t.slot == tabId)
+        if (tab != undefined) {
+          setActiveTab(tab)
+        }
       }
     })
 

@@ -183,9 +183,11 @@ export default defineComponent({
             ...visibleSections.value,
             [section.id]: isIntersecting,
           }
+
           if (isIntersecting && lgAndLarger.value) {
             scrollTocLinkIntoView(section.id)
           }
+
           if (!isIntersecting && !Object.values(visibleSections.value).some(Boolean)) {
             // no section visible: clear hash
             window.history.replaceState(null, '', ' ')
