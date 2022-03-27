@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div ref="rootContainer">
     <nav
       ref="toc"
       class="relative"
     >
       <ul :class="tocClass">
         <li
-          v-for="section in sections"
+          v-for="section in validSections"
+          :ref="`${section.id}-link`"
           :key="section.title"
           :class="{
             'border-primary-400': visibleSections[section.id],
@@ -62,7 +63,7 @@
         class="bg-white/[.05]"
       >
         <li
-          v-for="section in sections"
+          v-for="section in validSections"
           :key="section.title"
           :class="{
             'bg-white/[.05]': section.id == activeSectionId,
@@ -83,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, Vue, nextTick } from 'vue-demi'
+import { defineComponent, onMounted, PropType, ref, watch, Vue, nextTick, computed } from 'vue-demi'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {
@@ -107,8 +108,10 @@ export default defineComponent({
       default: ''
     },
   },
-  setup(props) {
+  // TODO replace by function ref when migrating to Vue 3
+  setup(props, { refs }) {
     const dropdownOpen = ref(false)
+    const rootContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
     const visibleSections = ref<Record<string, boolean>>({})
     const activeSectionTitle = ref<string>()
@@ -117,10 +120,23 @@ export default defineComponent({
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const lgAndLarger = breakpoints.greater('lg')
 
-    const scrollTo = (section: Section) => {
-      if (section.element == undefined) {
+    const validSections = computed(() => props.sections.filter(s => s.element != undefined))
+
+    const scrollTocLinkIntoView = (id: string) => {
+      if (!(`${id}-link` in refs)) {
         return
       }
+      const linkElement = refs[`${id}-link`][0] as HTMLElement
+
+      const offset = linkElement.getBoundingClientRect().top - rootContainer.value!.getBoundingClientRect().top
+      const center = rootContainer.value!.clientHeight / 2
+      if (offset < center - center / 2 || offset > center + center / 2) {
+        const top = rootContainer.value!.scrollTop + offset - center
+        rootContainer.value!.scrollTo({ top, behavior: 'smooth' })
+      }
+    }
+
+    const scrollTo = (section: Section) => {
       const sectionElement = '$el' in section.element ? section.element.$el as HTMLElement : section.element
 
       dropdownOpen.value = false
@@ -139,7 +155,7 @@ export default defineComponent({
       const topOffset = lgAndLarger.value ? 0 : navContainer.value!.getBoundingClientRect().bottom
 
       const newStopCallbacks: (() => void)[] = []
-      for (const section of props.sections) {
+      for (const section of validSections.value) {
         if (section.element == undefined) {
           continue
         }
@@ -163,6 +179,9 @@ export default defineComponent({
             ...visibleSections.value,
             [section.id]: isIntersecting,
           }
+          if (isIntersecting && lgAndLarger.value) {
+            scrollTocLinkIntoView(section.id)
+          }
         }, {
           threshold: 1.0,
         })
@@ -174,7 +193,7 @@ export default defineComponent({
     }
 
     onMounted(updateObservers)
-    watch(() => props.sections, () => nextTick(updateObservers))
+    watch(validSections, () => nextTick(updateObservers))
 
     const toc = ref<HTMLElement>()
     const shouldStick = ref(false)
@@ -202,6 +221,8 @@ export default defineComponent({
       activeSectionTitle,
       activeSectionId,
       visibleSections,
+      validSections,
+      rootContainer,
     }
   },
 })
