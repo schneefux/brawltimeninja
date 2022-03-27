@@ -64,7 +64,7 @@ export default defineComponent({
       if (props.nobackground) {
         return undefined
       }
-      const path = '/modes/' + props.mode + '/background'
+      const path = '/modes/' + camelToKebab(props.mode!) + '/background'
       const query = '?size=800'
       const url = $config.mediaUrl + path + ($supportsWebp ? '.webp' : '.jpg') + query
       return url
