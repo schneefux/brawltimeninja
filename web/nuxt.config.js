@@ -233,7 +233,7 @@ export default {
       iso: 'ru-RU',
       file: 'index.js',
     }, {
-      code: 'uk',
+      code: 'uk_UA',
       iso: 'uk-UA',
       file: 'index.js',
     }, {
