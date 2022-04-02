@@ -83,6 +83,7 @@ import DSeason from '@/components/klicker/d-season.vue'
 import DPlayer from '@/components/klicker/d-player.vue'
 import MBrawler from '@/components/klicker/m-brawler.vue'
 import { getSeasonEnd } from '~/lib/util'
+import { useUniqueId } from '@schneefux/klicker/composables'
 
 export default defineComponent({
   components: {
@@ -153,7 +154,7 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
-    const prefix = Math.random().toString().slice(2)
+    const { id: prefix } = useUniqueId()
 
     return {
       prefix,
