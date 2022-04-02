@@ -1,17 +1,16 @@
 <template>
-  <div
+  <figure
     v-if="'team' in row.dimensions"
     class="flex items-center"
   >
     <brawler-team
       :brawlers="row.dimensionsRaw.team.team"
       class="shrink-0 w-20"
-      height="h-8"
-      width="w-8"
-      snug="-ml-3"
     ></brawler-team>
-    <span class="ml-1 leading-tight">{{ row.dimensions.team }}</span>
-  </div>
+    <figcaption
+      class="ml-1 leading-tight"
+    >{{ row.dimensions.team }}</figcaption>
+  </figure>
 </template>
 
 <script lang="ts">

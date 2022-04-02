@@ -77,6 +77,7 @@ export default defineComponent({
         keys: dimensions.value.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
+        header: true,
       })
       metrics.value.forEach(m => columns.push({
         // metrics are rendered 1:1

@@ -1,47 +1,32 @@
-<template functional>
-  <div
-    :style="data.staticStyle"
-    :class="['flex flex-row-reverse justify-center', data.class, data.staticClass]"
-  >
+<template>
+  <div class="flex flex-row-reverse justify-center">
     <router-link
-      v-for="(brawler, index) in props.brawlers"
+      v-for="(brawler, index) in brawlers"
       :key="brawler + '-' + index"
-      :to="parent.localePath(`/tier-list/brawler/${props.brawlerId({ name: brawler })}`)"
-      :class="[props.height, props.width, {
-        [props.snug]: index < props.brawlers.length - 1,
+      :to="localePath(`/tier-list/brawler/${brawlerId({ name: brawler })}`)"
+      :class="[height, width, {
+        [snug]: index < brawlers.length - 1,
       }]"
     >
       <media-img
-        :path="`/brawlers/${props.brawlerId({ name: brawler})}/avatar`"
-        :alt="props.capitalizeWords(brawler.toLowerCase())"
+        :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
+        :alt="capitalizeWords(brawler.toLowerCase())"
+        :clazz="'border-gray-800 border-2 rounded-full object-cover ' + height + ' ' + width"
         size="160"
-        :clazz="'bg-gray-800 border-transparent border-2 rounded-full object-cover ' + props.height + ' ' + props.width"
       ></media-img>
     </router-link>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     brawlers: {
       type: Array as PropType<string[]>,
       required: true
-    },
-    brawlerId: {
-      type: Function,
-      default: brawlerId
-    },
-    capitalizeWords: {
-      type: Function,
-      default: capitalizeWords
-    },
-    xs: {
-      type: Boolean
     },
     height: {
       type: String,
@@ -53,8 +38,14 @@ export default Vue.extend({
     },
     snug: {
       type: String,
-      default: '-ml-4'
+      default: '-ml-3'
     },
+  },
+  setup() {
+    return {
+      brawlerId,
+      capitalizeWords,
+    }
   },
 })
 </script>

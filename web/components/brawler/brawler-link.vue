@@ -2,45 +2,46 @@
   <router-link
     :to="link"
     :title="title"
-    class="flex items-center"
   >
-    <span
-      :class="['relative shrink-0', {
-        'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,
-      }]"
-    >
-      <media-img
-        :path="`/brawlers/${brawlerBrawlerId}/avatar`"
-        :alt="brawlerBrawlerName"
-        size="160"
-        clazz="h-8 w-8"
-      ></media-img>
-      <media-img
-        v-if="ally != undefined"
-        :path="`/brawlers/${brawlerAllyId}/avatar`"
-        :alt="brawlerAllyName"
-        size="80"
-        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
-      ></media-img>
-      <media-img
-        v-if="starpowerId != undefined"
-        :path="`/starpowers/${starpowerId}`"
-        :alt="starpowerName"
-        size="80"
-        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
-      ></media-img>
-      <media-img
-        v-if="gadgetId != undefined"
-        :path="`/gadgets/${gadgetId}`"
-        :alt="gadgetName"
-        size="80"
-        clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
-      ></media-img>
-    </span>
-    <span
-      v-if="captioned"
-      class="ml-2 leading-none"
-    >{{ brawlerAllyName || starpowerName || gadgetName || brawlerBrawlerName }}</span>
+    <figure class="flex items-center">
+      <span
+        :class="['relative shrink-0', {
+          'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,
+        }]"
+      >
+        <media-img
+          :path="`/brawlers/${brawlerBrawlerId}/avatar`"
+          :alt="brawlerBrawlerName"
+          size="160"
+          clazz="h-8 w-8"
+        ></media-img>
+        <media-img
+          v-if="ally != undefined"
+          :path="`/brawlers/${brawlerAllyId}/avatar`"
+          :alt="brawlerAllyName"
+          size="80"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        ></media-img>
+        <media-img
+          v-if="starpowerId != undefined"
+          :path="`/starpowers/${starpowerId}`"
+          :alt="starpowerName"
+          size="80"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        ></media-img>
+        <media-img
+          v-if="gadgetId != undefined"
+          :path="`/gadgets/${gadgetId}`"
+          :alt="gadgetName"
+          size="80"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+        ></media-img>
+      </span>
+      <figcaption
+        v-if="captioned"
+        class="ml-2 leading-none"
+      >{{ brawlerAllyName || starpowerName || gadgetName || brawlerBrawlerName }}</figcaption>
+    </figure>
   </router-link>
 </template>
 

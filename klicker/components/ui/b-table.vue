@@ -38,13 +38,14 @@
         >
           <td
             v-if="ranked"
-            scope="row"
             class="text-right pr-3 pt-2"
           >
             {{ r.index + 1 }}
           </td>
-          <td
+          <component
             v-for="c in renderedColumns"
+            :is="c.header ? 'th' : 'td'"
+            :scope="c.header ? 'row' : undefined"
             :key="c.keys.join('-')"
             :class="['text-left pt-2', {
               'pr-3': c.index != columns.length - 1,
@@ -58,7 +59,7 @@
             >
               {{ r.fields[c.index] }}
             </slot>
-          </td>
+          </component>
         </tr>
       </tbody>
     </table>
@@ -100,6 +101,10 @@ export interface Column {
    * If true, apply lighter font color
    */
   lightText?: boolean
+  /**
+   * If true, render as row-scoped th
+   */
+  header?: boolean
 }
 
 interface IndexedColumn extends Column {
