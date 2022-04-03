@@ -1,6 +1,5 @@
 <template functional>
   <span
-    v-if="'season' in props.row.dimensions"
     class="w-16 md:w-24"
     :class="['w-16 md:w-24', data.class, data.staticClass]"
     :style="data.staticStyle"

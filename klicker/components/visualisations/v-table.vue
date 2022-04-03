@@ -3,7 +3,10 @@
     v-bind="$props"
     component="v-table"
   >
-    <div slot="content" class="h-full relative">
+    <div
+      slot="content"
+      class="h-full relative"
+    >
       <b-table
         :columns="columns"
         :rows="rows"
@@ -14,14 +17,23 @@
         ranked
       >
         <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
+          v-for="m in metrics"
+          v-slot:[`metrics.${m.id}`]="{ row }"
         >
-          <slot
-            :name="name"
-            v-bind="data"
+          <m-auto
+            :key="m.id"
+            :response="response"
+            :metric-id="m.id"
+            :row="row"
+          ></m-auto>
+        </template>
+
+        <template v-slot:dimensions="{ row }">
+          <d-auto
+            :response="response"
+            :row="row"
             captioned
-          ></slot>
+          ></d-auto>
         </template>
       </b-table>
     </div>
@@ -42,6 +54,8 @@
 <script lang="ts">
 import { VisualisationProps } from '../../props'
 import BTable, { Column } from '../ui/b-table.vue'
+import DAuto from './d-auto.vue'
+import MAuto from './m-auto.vue'
 import { Location } from 'vue-router'
 import { computed, defineComponent } from 'vue-demi'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -53,6 +67,8 @@ export default defineComponent({
   components: {
     FontAwesomeIcon,
     BTable,
+    DAuto,
+    MAuto,
     VCardWrapper,
   },
   props: {
@@ -70,7 +86,7 @@ export default defineComponent({
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {
-      let columns: Column[] = []
+      const columns: Column[] = []
 
       columns.push({
         title: dimensions.value.map(d => $klicker.getName(d)).join(', '),
@@ -119,6 +135,7 @@ export default defineComponent({
       columns,
       linkWithParams,
       faExternalLinkAlt,
+      metrics,
     }
   },
 })

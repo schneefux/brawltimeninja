@@ -15,12 +15,11 @@
           {{ row.title }}
         </dt>
         <dd class="text-xl text-gray-800 dark:text-gray-200">
-          <slot
-            :name="`metrics.${row.metricId}`"
+          <m-auto
+            :response="response"
+            :metric-id="row.metricId"
             :row="row.entry"
-          >
-            {{ row.value }}
-          </slot>
+          ></m-auto>
         </dd>
       </dl>
     </div>
@@ -32,6 +31,7 @@ import { computed, defineComponent } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import MAuto from './m-auto.vue'
 
 /**
  * Visualisation that prominently displays one or multiple numbers
@@ -41,6 +41,7 @@ import VCardWrapper from './v-card-wrapper.vue'
 export default defineComponent({
   components: {
     VCardWrapper,
+    MAuto,
   },
   name: 'VBigstats',
   props: {
@@ -53,13 +54,11 @@ export default defineComponent({
       response => metrics.value.map(m => ({
         id: m.id,
         title: $klicker.getName(m, 'short'),
-        value: response.data[0].metrics[m.id],
         metricId: m.id,
         entry: response.data[0],
       })), response => ([{
         id: metrics.value[0].id,
         title: $klicker.getName(metrics.value[0], 'short'),
-        value: response.data[0].test.difference.difference,
         metricId: metrics.value[0].id,
         entry: response.data[0],
       }])

@@ -8,25 +8,19 @@
     v-else
     :loading="false"
     :response="response"
-  >
-    <template v-slot:dimensions="data">
-      <d-brawler v-bind="data"></d-brawler>
-    </template>
-  </v-roll>
+  ></v-roll>
 </template>
 
 <script lang="ts">
 import { MetaGridEntry, CubeResponse } from '@schneefux/klicker/types'
 import { Brawler } from '~/model/Brawlstars'
 import { VRoll, BShimmer } from '@schneefux/klicker/components'
-import DBrawler from '~/components/klicker/d-brawler.vue'
 import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
     VRoll,
     BShimmer,
-    DBrawler,
   },
   props: {
     mode: {

@@ -29,17 +29,7 @@
     <c-widget
       :widget="value"
       class="pointer-events-none"
-    >
-      <template
-        v-for="(_, name) in $scopedSlots"
-        v-slot:[name]="data"
-      >
-        <slot
-          :name="name"
-          v-bind="data"
-        ></slot>
-      </template>
-    </c-widget>
+    ></c-widget>
   </moveable>
 </template>
 

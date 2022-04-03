@@ -53,12 +53,7 @@
               v-bind="data"
               :card="{ fullHeight: true }"
               link-path="/dashboard"
-            >
-              <template v-slot:dimensions="data">
-                <d-brawler v-bind="data"></d-brawler>
-                <d-gear v-bind="data"></d-gear>
-              </template>
-            </v-table>
+            ></v-table>
           </c-dashboard-cell>
           <c-dashboard-cell :rows="5" :columns="9">
             <v-barplot

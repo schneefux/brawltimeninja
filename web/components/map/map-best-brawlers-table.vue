@@ -5,17 +5,12 @@
         v-bind="data"
         :card="{ title, fullHeight: true, ...$attrs }"
         link-path="/dashboard"
-      >
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-        </template>
-      </v-table>
+      ></v-table>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import DBrawler from '@/components/klicker/d-brawler.vue'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -24,7 +19,6 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VTable,
-    DBrawler,
     CQuery,
   },
   props: {

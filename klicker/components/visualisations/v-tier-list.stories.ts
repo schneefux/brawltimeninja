@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VTierList from './v-tier-list.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeQuery } from '../../types'
+import { BrawlerRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VTierList,
@@ -28,14 +29,11 @@ export const Default: Story = (args, { argTypes }) => ({
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-tier-list v-bind="{ ...data, ...$props }">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-tier-list>
+      <v-tier-list v-bind="{ ...data, ...$props }"></v-tier-list>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
 })
 
 export const NoCard: Story = (args, { argTypes }) => ({
@@ -44,12 +42,12 @@ export const NoCard: Story = (args, { argTypes }) => ({
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-tier-list v-bind="{ ...data, ...$props }" :card="undefined">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-tier-list>
+      <v-tier-list
+        v-bind="{ ...data, ...$props }"
+        :card="undefined"
+      ></v-tier-list>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
 })

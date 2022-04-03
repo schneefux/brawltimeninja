@@ -13,18 +13,13 @@
       <v-roll
         v-bind="data"
         :card="card"
-      >
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-        </template>
-      </v-roll>
+      ></v-roll>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import DBrawler from '~/components/klicker/d-brawler.vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
 
@@ -33,7 +28,6 @@ export default defineComponent({
     VRoll,
     BShimmer,
     CQuery,
-    DBrawler,
   },
   props: {
     slices: {

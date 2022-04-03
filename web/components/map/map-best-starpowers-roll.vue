@@ -11,12 +11,7 @@
       :filter="filter"
     >
       <template v-slot="data">
-        <v-roll v-bind="data">
-          <template v-slot:dimensions="data">
-            <d-brawler v-bind="data"></d-brawler>
-            <d-gear v-bind="data"></d-gear>
-          </template>
-        </v-roll>
+        <v-roll v-bind="data"></v-roll>
       </template>
     </c-query>
   </b-card>

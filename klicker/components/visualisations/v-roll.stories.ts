@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VRoll from './v-roll.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
+import { BrawlerRendererHooks, WinRateRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VRoll,
@@ -31,23 +32,31 @@ const Template: Story = (args, { argTypes }) => ({
 
 export const Default: Story = Template.bind({})
 
-const ImageTemplate: Story = (args, { argTypes }) => ({
+export const DimensionRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VRoll },
   props: Object.keys(argTypes),
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-roll v-bind="{ ...data, ...$props }">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-roll>
+      <v-roll v-bind="{ ...data, ...$props }"></v-roll>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
 })
 
-export const Image: Story = ImageTemplate.bind({})
+export const MetricRenderer: Story = (args, { argTypes }) => ({
+  components: { CQuery, VRoll },
+  props: Object.keys(argTypes),
+  template: `
+  <c-query :query='${query}'>
+    <template v-slot="data">
+      <v-roll v-bind="{ ...data, ...$props }"></v-roll>
+    </template>
+  </c-query>
+  `,
+  ...WinRateRendererHooks,
+})
 
 const queryMultiple = JSON.stringify(<CubeQuery>{
   cubeId: 'map',

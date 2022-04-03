@@ -17,17 +17,7 @@
         :card="card"
         :loading="loading"
         :response="response"
-      >
-        <template
-          v-for="(_, slot) of $scopedSlots"
-          v-slot:[slot]="slotProps"
-        >
-          <slot
-            v-bind="slotProps"
-            :name="slot"
-          ></slot>
-        </template>
-      </component>
+      ></component>
     </c-dashboard-cell>
   </div>
   <c-dashboard-cell
@@ -43,17 +33,7 @@
       :card="card"
       :loading="loading"
       :response="response"
-    >
-      <template
-        v-for="(_, slot) of $scopedSlots"
-        v-slot:[slot]="slotProps"
-      >
-        <slot
-          v-bind="slotProps"
-          :name="slot"
-        ></slot>
-      </template>
-    </component>
+    ></component>
   </c-dashboard-cell>
 </template>
 

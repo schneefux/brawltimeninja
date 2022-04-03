@@ -26,17 +26,7 @@
         :is="spec.import"
         :value="slices"
         :on-input="onInput"
-      >
-        <template
-          v-for="(_, slot) of $scopedSlots"
-          v-slot:[slot]="slotProps"
-        >
-          <slot
-            v-bind="slotProps"
-            :name="slot"
-          ></slot>
-        </template>
-      </component>
+      ></component>
     </div>
   </b-card>
 </template>

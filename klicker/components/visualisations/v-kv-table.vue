@@ -10,13 +10,22 @@
       :data="data"
     >
       <template
-        v-for="(_, name) in $scopedSlots"
-        v-slot:[name]="data"
+        v-for="m in metrics"
+        v-slot:[`metrics.${m.id}`]="{ row }"
       >
-        <slot
-          :name="name"
-          v-bind="data"
-        ></slot>
+        <m-auto
+          :key="m.id"
+          :response="response"
+          :metric-id="m.id"
+          :row="row"
+        ></m-auto>
+      </template>
+
+      <template v-slot:dimensions="{ row }">
+        <d-auto
+          :response="response"
+          :row="row"
+        ></d-auto>
       </template>
     </b-kv-table>
   </v-card-wrapper>
@@ -28,6 +37,8 @@ import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BKvTable, { Row } from '../ui/b-kv-table.vue'
 import VCardWrapper from './v-card-wrapper.vue'
+import DAuto from './d-auto.vue'
+import MAuto from './m-auto.vue'
 
 /**
  * Table visualisation with metrics on the Y axis and a single value on the X axis
@@ -36,6 +47,8 @@ export default defineComponent({
   components: {
     VCardWrapper,
     BKvTable,
+    DAuto,
+    MAuto,
   },
   name: 'VKvTable',
   props: {
@@ -77,6 +90,7 @@ export default defineComponent({
     const data = computed(() => props.response.data[0])
 
     return {
+      metrics,
       rows,
       data,
     }

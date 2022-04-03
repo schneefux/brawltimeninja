@@ -7,7 +7,7 @@ export const useKlicker = () => {
     return { $klicker: (<any>window).$klicker }
   }
 
-  const $klicker = new Klicker('https://cube.brawltime.ninja', config, [], [], [])
+  const $klicker = new Klicker('https://cube.brawltime.ninja', config, [], [], [], [], [])
   $klicker.$t = (key: string) => {
     if (key in en) {
       return en[key]

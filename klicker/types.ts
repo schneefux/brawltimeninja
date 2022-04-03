@@ -4,6 +4,7 @@ import { Location, Route } from "vue-router"
 export interface Config extends Record<string, Cube> {}
 
 // helper function which infers keys and restricts values to ElementType
+/** @deprecated */
 export const asSlice = <T>(et: { [K in keyof T]: Slice }) => et
 
 export type ValueTypeNumber = 'quantitative'|'ordinal'
@@ -189,13 +190,50 @@ export interface StaticWidgetSpec extends WidgetSpec {
   props?: Record<string, VisualisationProp>
 }
 
+/**
+ * Render a query result
+ */
 export interface VisualisationSpec extends StaticWidgetSpec {
   applicable(dimensions: Dimension[], metrics: Metric[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
   recommended?(dimensions: Dimension[], metrics: Metric[], size: number, comparing: boolean, data: MetaGridEntry[]|MetaGridEntryDiff[]): boolean
 }
 
+/**
+ * Modify a query's filter conditions
+ */
 export interface SlicerSpec extends WidgetSpec {
-  applicable(dimensions: Dimension[], metrics: Metric[], cubeId: string): boolean
+  applicable(dimensions: Dimension[], cubeId: string): boolean
+}
+
+/**
+ * Render the value of a metric
+ * 
+ * By default, many visualisations render values as numbers or text.
+ * With a renderer, they can be replaced by a rich representation such as an image.
+ */
+export interface MetricRendererSpec extends WidgetSpec {
+  /**
+   * id of the rendered metric
+   * 
+   * There should not be two applicable renderers that replace the same metric.
+   * Only one will be rendered.
+   */
+  replacesMetricId: string
+  applicable(metrics: Metric[]): boolean
+}
+
+/**
+ * Render the value of one or multiple dimensions
+ * 
+ * By default, many visualisations render values as numbers or text.
+ * With a renderer, they can be replaced by a rich representation such as an image.
+ */
+export interface DimensionRendererSpec extends WidgetSpec {
+  /**
+   * ids of the dimensions that should be hidden in favor of the renderer
+   */
+  replacesDimensionIds: string[]
+  applicable(dimensions: Dimension[]): boolean
 }
 
 export interface ConfidenceInterval {
@@ -333,6 +371,8 @@ export interface KlickerService {
   visualisations: VisualisationSpec[]
   staticWidgets: StaticWidgetSpec[]
   slicers: SlicerSpec[]
+  dimensionRenderers: DimensionRendererSpec[]
+  metricRenderers: MetricRendererSpec[]
 
   $t(key: string, args?: Record<string, string|number>): string
 

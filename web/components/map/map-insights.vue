@@ -17,12 +17,7 @@
           <v-roll
             v-bind="data"
             :card="{ title: t.title, elevation: elevation, titleLink: t.link, fullHeight: true }"
-          >
-            <template v-slot:dimensions="data">
-              <d-brawler v-bind="data"></d-brawler>
-              <d-gear v-bind="data"></d-gear>
-            </template>
-          </v-roll>
+          ></v-roll>
         </template>
       </c-query>
     </c-dashboard-cell>

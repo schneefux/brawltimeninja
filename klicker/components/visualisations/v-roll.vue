@@ -14,16 +14,14 @@
               scope="row"
               class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap"
             >{{ dimensionName }}</th>
-            <td
+            <d-auto
               v-for="title in headings"
               :key="title.id"
+              :response="response"
+              :row="title.entry"
+              tag="td"
               class="text-left pt-2 pb-1 pl-3"
-            >
-              <slot
-                name="dimensions"
-                :row="title.entry"
-              >{{ title.text }}</slot>
-            </td>
+            ></d-auto>
           </tr>
 
           <tr
@@ -39,10 +37,11 @@
               :key="column.id"
               class="text-left pt-1 pl-3 text-gray-800 dark:text-gray-200"
             >
-              <slot
-                :name="`metrics.${row.metricId}`"
+              <m-auto
+                :response="response"
                 :row="column.entry"
-              >{{ column.text }}</slot>
+                :metric-id="row.metricId"
+              ></m-auto>
             </td>
           </tr>
         </tbody>
@@ -57,6 +56,8 @@ import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BCard from '../ui/b-card.vue'
 import VCardWrapper from './v-card-wrapper.vue'
+import DAuto from './d-auto.vue'
+import MAuto from './m-auto.vue'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -66,6 +67,8 @@ export default defineComponent({
   components: {
     BCard,
     VCardWrapper,
+    DAuto,
+    MAuto,
   },
   props: {
     ...VisualisationProps,
@@ -79,11 +82,9 @@ export default defineComponent({
       switchResponse(response => response.data.map(e => ({
         id: e.id,
         entry: e,
-        text: e.dimensions[dimension.value.id],
       })), response => response.data.map(e => ({
         id: e.id,
         entry: e,
-        text: e.dimensions[dimension.value.id],
       }))
     ))
 
@@ -94,7 +95,6 @@ export default defineComponent({
         columns: response.data.map(e => ({
           id: `${metric.id}-${e.id}`,
           entry: e,
-          text: e.metrics[metric.id],
         }))
       })), response => ([{
         metricId: metrics.value[0].id,
@@ -102,7 +102,6 @@ export default defineComponent({
         columns: response.data.map(e => ({
           id: `${metrics.value[0].id}-${e.id}`,
           entry: e,
-          text: e.test.difference.difference,
         }))
       }])
     ))

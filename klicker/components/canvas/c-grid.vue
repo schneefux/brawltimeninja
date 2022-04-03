@@ -80,17 +80,10 @@
         @input="updateWidget"
         @delete="deleteSelectedWidget"
       >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
+        <c-dashboard-cell
+          :columns="2"
+          :rows="2"
         >
-          <slot
-            :name="name"
-            v-bind="data"
-          ></slot>
-        </template>
-
-        <c-dashboard-cell :columns="2" :rows="2">
           <b-card
             :elevation="2"
             title="Configure Widget Dimensions"
@@ -149,17 +142,7 @@
         class="pointer-events-none"
         for-grid
         @click.native="selectedWidgetId = w.id"
-      >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
-        >
-          <slot
-            :name="name"
-            v-bind="data"
-          ></slot>
-        </template>
-      </c-widget>
+      ></c-widget>
     </draggable>
   </div>
 </template>

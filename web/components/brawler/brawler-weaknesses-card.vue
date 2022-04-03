@@ -13,11 +13,7 @@
           title: $t('brawler.weakness.title', { brawler }),
           fullHeight: true,
         }"
-      >
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-        </template>
-      </v-roll>
+      ></v-roll>
     </template>
   </c-query>
 </template>

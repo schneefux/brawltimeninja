@@ -22,7 +22,7 @@ export const useCubeConfig = (cubeId: Ref<string>) => {
   })
 
   const checkSlicerApplicable = (spec: SlicerSpec) =>
-    spec.applicable(allDimensions.value, allMetrics.value, cubeId.value)
+    spec.applicable(allDimensions.value, cubeId.value)
 
   return {
     $klicker,

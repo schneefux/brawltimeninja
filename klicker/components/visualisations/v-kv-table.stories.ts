@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VKvTable from './v-kv-table.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
+import { WinRateRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VKvTable,
@@ -71,20 +72,17 @@ export const Comparing: Story = (args, { argTypes }) => ({
   `,
 })
 
-export const WithSlot: Story = (args, { argTypes }) => ({
+export const MetricRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VKvTable },
   props: Object.keys(argTypes),
   template: `
     <div style="width: 20rem;">
       <c-query :query='${query}'>
         <template v-slot="data">
-          <v-kv-table v-bind="{ ...data, ...$props }">
-            <template v-slot:[\`metrics.winRate\`]="{ row }">
-              <b>"{{ row.metrics.winRate }}"</b>
-            </template>
-          </v-kv-table>
+          <v-kv-table v-bind="{ ...data, ...$props }"></v-kv-table>
         </template>
       </c-query>
     </div>
   `,
+  ...WinRateRendererHooks,
 })

@@ -16,7 +16,7 @@
       :key="s.id"
       :value="s.id"
     >
-      {{ $t('option.at-season', { season: s.name }) }}
+      {{ $t('option.season-at', { season: s.name }) }}
     </option>
   </b-select>
 </template>

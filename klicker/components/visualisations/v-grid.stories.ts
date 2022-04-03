@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VGrid from './v-grid.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeQuery } from '../../types'
+import { BrawlerRendererHooks, WinRateRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VGrid,
@@ -28,14 +29,11 @@ export const Default: Story = (args, { argTypes }) => ({
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-grid v-bind="{ ...data, ...$props }">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-grid>
+      <v-grid v-bind="{ ...data, ...$props }"></v-grid>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
 })
 
 export const NoCard: Story = (args, { argTypes }) => ({
@@ -44,12 +42,25 @@ export const NoCard: Story = (args, { argTypes }) => ({
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-grid v-bind="{ ...data, ...$props }" :card="undefined">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-grid>
+      <v-grid
+        v-bind="{ ...data, ...$props }"
+        :card="undefined"
+      ></v-grid>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
+})
+
+export const MetricRenderer: Story = (args, { argTypes }) => ({
+  components: { CQuery, VGrid },
+  props: Object.keys(argTypes),
+  template: `
+  <c-query :query='${query}'>
+    <template v-slot="data">
+      <v-grid v-bind="{ ...data, ...$props }"></v-grid>
+    </template>
+  </c-query>
+  `,
+  ...WinRateRendererHooks,
 })

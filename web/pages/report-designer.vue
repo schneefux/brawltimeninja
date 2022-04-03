@@ -13,20 +13,6 @@
           <v-last-update v-bind="data"></v-last-update>
         </c-dashboard-cell>
       </template>
-
-      <template v-slot:dimensions="data">
-        <d-gear v-bind="data"></d-gear>
-        <d-brawler v-bind="data"></d-brawler>
-        <d-team v-bind="data"></d-team>
-        <d-mode v-bind="data"></d-mode>
-        <d-map v-bind="data"></d-map>
-        <d-season v-bind="data"></d-season>
-        <d-player v-bind="data"></d-player>
-      </template>
-
-      <template v-slot:[`metrics.brawler`]="data">
-        <m-brawler v-bind="data"></m-brawler>
-      </template>
     </c-canvas>
 
     <div
@@ -74,14 +60,6 @@ import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composit
 import { CCanvas, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
-import DBrawler from '@/components/klicker/d-brawler.vue'
-import DGear from '@/components/klicker/d-gear.vue'
-import DTeam from '@/components/klicker/d-team.vue'
-import DMode from '@/components/klicker/d-mode.vue'
-import DMap from '@/components/klicker/d-map.vue'
-import DSeason from '@/components/klicker/d-season.vue'
-import DPlayer from '@/components/klicker/d-player.vue'
-import MBrawler from '@/components/klicker/m-brawler.vue'
 import { getSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
 
@@ -90,14 +68,6 @@ export default defineComponent({
     CDashboardCell,
     BTextbox,
     CCanvas,
-    DBrawler,
-    DGear,
-    DTeam,
-    DMode,
-    DMap,
-    DSeason,
-    DPlayer,
-    MBrawler,
   },
   setup() {
     const { storage: report, update, canSave } = useStorage<Report>('reports', {

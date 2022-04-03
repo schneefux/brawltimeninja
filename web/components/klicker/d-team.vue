@@ -1,8 +1,5 @@
 <template>
-  <figure
-    v-if="'team' in row.dimensions"
-    class="flex items-center"
-  >
+  <figure class="flex items-center">
     <brawler-team
       :brawlers="row.dimensionsRaw.team.team"
       class="shrink-0 w-20"

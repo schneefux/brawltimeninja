@@ -8,17 +8,7 @@
       :key="w.id"
       :widget="w"
       for-canvas
-    >
-      <template
-        v-for="(_, name) in $scopedSlots"
-        v-slot:[name]="data"
-      >
-        <slot
-          :name="name"
-          v-bind="data"
-        ></slot>
-      </template>
-    </c-widget>
+    ></c-widget>
   </div>
 </template>
 

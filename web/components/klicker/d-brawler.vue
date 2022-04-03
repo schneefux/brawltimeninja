@@ -1,7 +1,6 @@
 <template>
   <!-- Swap brawler and ally/enemy so that the ally/enemy will be large -->
   <brawler-link
-    v-if="'brawler' in row.dimensions || 'starpower' in row.dimensions || 'gadget' in row.dimensions"
     :brawler="(row.dimensionsRaw.enemy || {}).enemy || (row.dimensionsRaw.ally || {}).ally || (row.dimensionsRaw.brawler || {}).brawler || (row.dimensionsRaw.starpower || {}).brawler || (row.dimensionsRaw.gadget || {}).brawler"
     :ally="row.dimensionsRaw.ally != undefined || row.dimensionsRaw.enemy != undefined ? (row.dimensionsRaw.brawler || {}).brawler : undefined"
     :starpower-name="row.dimensions.starpower"

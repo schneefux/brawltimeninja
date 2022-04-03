@@ -678,8 +678,6 @@ const brawlerMetric: Metric = {
 const highestTrophiesMetric: Metric = {
   id: 'highestTrophies',
   name: 'Highest Trophies',
-  formatter: '.2s',
-  d3formatter: '.2s',
   sign: -1,
   type: 'quantitative',
   config: {

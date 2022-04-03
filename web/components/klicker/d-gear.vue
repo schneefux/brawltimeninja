@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="'gear' in row.dimensions"
-    class="flex items-center"
-  >
+  <div class="flex items-center">
     <media-img
       :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase()}_1`"
       :alt="row.dimensions.gear"

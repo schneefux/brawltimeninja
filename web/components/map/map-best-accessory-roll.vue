@@ -4,19 +4,12 @@
       <v-roll
         v-bind="data"
         :card="{ title, fullHeight: true }"
-      >
-        <template v-slot:dimensions="data">
-          <d-brawler v-bind="data"></d-brawler>
-          <d-gear v-bind="data"></d-gear>
-        </template>
-      </v-roll>
+      ></v-roll>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import DBrawler from '@/components/klicker/d-brawler.vue'
-import DGear from '@/components/klicker/d-gear.vue'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -25,8 +18,6 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VRoll,
-    DBrawler,
-    DGear,
     CQuery,
   },
   props: {

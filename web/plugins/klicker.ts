@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import config from '~/lib/klicker.conf'
 import { Context } from "@nuxt/types"
-import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec } from "@schneefux/klicker/types"
+import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec, DimensionRendererSpec, MetricRendererSpec } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatMode, getCurrentSeasonEnd, idToTag } from "~/lib/util"
@@ -12,6 +12,7 @@ import slicers from '~/lib/klicker.slicers.conf'
 import staticWidgets from '~/lib/klicker.widgets.conf'
 import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BPage, BPageSection, BScrollingDashboard } from '@schneefux/klicker/components'
+import { dimensionRenderers, metricRenderers } from '~/lib/klicker.renderers'
 
 export interface EventMetadata {
   key: string
@@ -53,8 +54,10 @@ class CustomKlicker extends Klicker {
       visualisations: VisualisationSpec[],
       staticWidgets: StaticWidgetSpec[],
       slicers: SlicerSpec[],
+      dimensionRenderers: DimensionRendererSpec[],
+      metricRenderers: MetricRendererSpec[],
       private context: Context) {
-    super(cubeUrl, config, visualisations, staticWidgets, slicers)
+    super(cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
   }
 
   // override Klicker.$t
@@ -213,7 +216,7 @@ export default defineNuxtPlugin((context, inject) => {
   Vue.component('b-page-section', BPageSection)
   Vue.component('b-scrolling-dashboard', BScrollingDashboard)
 
-  const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, context)
+  const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers, context)
 
   // onGlobalSetup(() => {
   // })

@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VBigstats from './v-bigstats.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
+import { WinRateRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VBigstats,
@@ -67,18 +68,15 @@ export const Comparing: Story = (args, { argTypes }) => ({
   `,
 })
 
-export const WithSlot: Story = (args, { argTypes }) => ({
+export const MetricRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VBigstats },
   props: Object.keys(argTypes),
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-bigstats v-bind="{ ...data, ...$props }">
-        <template v-slot:['metrics.winRate']="{ row }">
-          <b>"{{ row.metrics.winRate }}"</b>
-        </template>
-      </v-bigstats>
+      <v-bigstats v-bind="{ ...data, ...$props }"></v-bigstats>
     </template>
   </c-query>
   `,
+  ...WinRateRendererHooks,
 })

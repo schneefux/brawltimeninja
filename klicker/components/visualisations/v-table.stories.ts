@@ -2,6 +2,7 @@ import CQuery from '../c-query'
 import VTable from './v-table.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
+import { WinRateRendererHooks, BrawlerRendererHooks } from '../../fixtures/renderers'
 
 export default {
   component: VTable,
@@ -34,20 +35,51 @@ export const Default: Story = (args, { argTypes }) => ({
   `,
 })
 
-export const Image: Story = (args, { argTypes }) => ({
+export const DimensionRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VTable },
   props: Object.keys(argTypes),
   template: `
   <c-query :query='${query}'>
     <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }">
-        <template v-slot:dimensions="row">
-          <img width="50" :src="'https://media.brawltime.ninja/brawlers/' + row.row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'">
-        </template>
-      </v-table>
+      <v-table v-bind="{ ...data, ...$props }"></v-table>
     </template>
   </c-query>
   `,
+  ...BrawlerRendererHooks,
+})
+
+const queryMultipleDimensions = JSON.stringify(<CubeQuery>{
+  cubeId: 'map',
+  dimensionsIds: ['brawler', 'mode'],
+  metricsIds: ['winRate'],
+  slices: {},
+  sortId: 'winRate',
+})
+
+export const MultipleDimensionOneRenderer: Story = (args, { argTypes }) => ({
+  components: { CQuery, VTable },
+  props: Object.keys(argTypes),
+  template: `
+  <c-query :query='${queryMultipleDimensions}'>
+    <template v-slot="data">
+      <v-table v-bind="{ ...data, ...$props }"></v-table>
+    </template>
+  </c-query>
+  `,
+  ...BrawlerRendererHooks,
+})
+
+export const MetricRenderer: Story = (args, { argTypes }) => ({
+  components: { CQuery, VTable },
+  props: Object.keys(argTypes),
+  template: `
+  <c-query :query='${query}'>
+    <template v-slot="data">
+      <v-table v-bind="{ ...data, ...$props }"></v-table>
+    </template>
+  </c-query>
+  `,
+  ...WinRateRendererHooks,
 })
 
 export const NoCard: Story = (args, { argTypes }) => ({

@@ -18,10 +18,10 @@
             :key="entry.id"
             class="my-px"
           >
-            <slot
-              name="dimensions"
+            <d-auto
+              :response="response"
               :row="entry"
-            ></slot>
+            ></d-auto>
           </li>
         </ul>
       </li>
@@ -38,6 +38,7 @@ import { computed } from 'vue-demi'
 import { defineComponent } from 'vue-demi'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import DAuto from './d-auto.vue'
 
 export interface TierList {
   [tier: string]: MetaGridEntry[]
@@ -60,6 +61,7 @@ export default defineComponent({
   components: {
     VCardWrapper,
     BCard,
+    DAuto,
   },
   props: {
     ...VisualisationProps,

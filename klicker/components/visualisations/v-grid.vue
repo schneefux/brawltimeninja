@@ -22,12 +22,11 @@
           slot="content"
           class="grid grid-cols-[auto,1fr] gap-x-4"
         >
-          <div>
-            <slot
-              name="dimensions"
-              :row="entry"
-            ></slot>
-          </div>
+          <d-auto
+            tag="div"
+            :response="response"
+            :row="entry"
+          ></d-auto>
 
           <b-kv-table
             id-key="id"
@@ -35,13 +34,15 @@
             :data="entry"
           >
             <template
-              v-for="(_, name) in $scopedSlots"
-              v-slot:[name]="data"
+              v-for="m in metrics"
+              v-slot:[`metrics.${m.id}`]="{ row }"
             >
-              <slot
-                :name="name"
-                v-bind="entry"
-              ></slot>
+              <m-auto
+                :key="m.id"
+                :response="response"
+                :metric-id="m.id"
+                :row="row"
+              ></m-auto>
             </template>
           </b-kv-table>
         </div>
@@ -66,6 +67,8 @@ import VCardWrapper from './v-card-wrapper.vue'
 import BCard from '../ui/b-card.vue'
 import BPaginator from '../ui/b-paginator.vue'
 import BKvTable, { Row } from '../ui/b-kv-table.vue'
+import DAuto from './d-auto.vue'
+import MAuto from './m-auto.vue'
 
 export default defineComponent({
   components: {
@@ -73,6 +76,8 @@ export default defineComponent({
     BKvTable,
     BCard,
     VCardWrapper,
+    DAuto,
+    MAuto,
   },
   props: {
     ...VisualisationProps,
@@ -111,6 +116,7 @@ export default defineComponent({
       page,
       rows,
       dimensions,
+      metrics,
     }
   },
 })

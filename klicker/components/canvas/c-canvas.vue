@@ -54,17 +54,7 @@
         :default-query="defaultQuery"
         @input="updateWidget"
         @delete="deleteSelectedWidget"
-      >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
-        >
-          <slot
-            :name="name"
-            v-bind="data"
-          ></slot>
-        </template>
-      </c-widget-editor>
+      ></c-widget-editor>
     </div>
 
     <div
@@ -104,17 +94,7 @@
           class="panzoom-exclude"
           @input="updateWidget"
           @click="selectedWidgetId = w.id"
-        >
-          <template
-            v-for="(_, name) in $scopedSlots"
-            v-slot:[name]="data"
-          >
-            <slot
-              :name="name"
-              v-bind="data"
-            ></slot>
-          </template>
-        </c-moveable-widget>
+        ></c-moveable-widget>
         <!--
           TODO:
             - Limit festlegen

@@ -5,17 +5,12 @@
         v-bind="data"
         :card="{ title, fullHeight: true, ...$attrs }"
         link-path="/dashboard"
-      >
-        <template v-slot:dimensions="data">
-          <d-team v-bind="data"></d-team>
-        </template>
-      </v-table>
+      ></v-table>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import DTeam from '@/components/klicker/d-team.vue'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
@@ -24,7 +19,6 @@ import useTopNTitle from '~/composables/top-n-title'
 export default defineComponent({
   components: {
     VTable,
-    DTeam,
     CQuery,
   },
   props: {

@@ -18,11 +18,7 @@
         :card="{
           title: $t('leaderboard.by-metric', { metric: $t('metric.' + metric) }),
         }"
-      >
-        <template v-slot:dimensions="data">
-          <d-player v-bind="data"></d-player>
-        </template>
-      </v-table>
+      ></v-table>
     </template>
   </c-query>
 </template>

@@ -12,17 +12,7 @@
         :rows="forGrid ? widget.frame.rows : undefined"
         :columns="forGrid ? widget.frame.columns : undefined"
         :card="forGrid ? { fullHeight: true } : undefined"
-      >
-        <template
-          v-for="(_, name) in $scopedSlots"
-          v-slot:[name]="data"
-        >
-          <slot
-            :name="name"
-            v-bind="data"
-          ></slot>
-        </template>
-      </v-auto>
+      ></v-auto>
     </template>
   </c-query>
   <v-auto
@@ -35,17 +25,7 @@
     :loading="false"
     :response="undefined"
     :card="forGrid ? { fullHeight: true } : undefined"
-  >
-    <template
-      v-for="(_, name) in $scopedSlots"
-      v-slot:[name]="data"
-    >
-      <slot
-        :name="name"
-        v-bind="data"
-      ></slot>
-    </template>
-  </v-auto>
+  ></v-auto>
 </template>
 
 <script lang="ts">

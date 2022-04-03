@@ -1,6 +1,5 @@
 <template functional>
   <router-link
-    v-if="'mode' in props.row.dimensions"
     :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.mode.mode)}`)"
     :class="['flex items-center', data.class, data.staticClass]"
     :style="data.staticStyle"
