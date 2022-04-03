@@ -3,30 +3,62 @@ import { Meta, Story } from '@storybook/vue'
 import {userEvent, waitFor, within} from "@storybook/testing-library";
 import {expect} from "@storybook/jest";
 import { getCanvasElementFixed } from '../../fix';
+import { ref, computed } from 'vue-demi'
 
 export default {
   component: BScrollSpy,
   title: 'UI/Scroll Spy',
 } as Meta
 
-const Template: Story = (args, { argTypes }) => ({
-    components: {
-      BScrollSpy,
-    },
-    props: Object.keys(argTypes),
-    template: `
-    <div>
-      <b-scroll-spy
-        :sections="[1, 2, 3].map(i => ({ id: i, element: ($refs['section-' + i] || [])[0], title: 'Section ' + i }))"
-      ></b-scroll-spy>
-      <div
-        v-for="i in 3"
-        :ref="'section-' + i"
-        :key="i"
-        :style="'border: dashed gray; height: ' + (i == 2 ? '200vh' : '100vh') + ';'"
-      >Content {{ i }}</div>
-    </div>
+const Template: Story = () => ({
+  components: {
+    BScrollSpy,
+  },
+  template: `
+  <div>
+    <b-scroll-spy
+      :sections="sections"
+    ></b-scroll-spy>
+    <div
+      ref="section1"
+      style="border: dashed gray; height: 100vh;"
+    >Content 1</div>
+    <div
+      ref="section2"
+      style="border: dashed gray; height: 200vh;"
+    >Content 2</div>
+    <div
+      ref="section3"
+      style="border: dashed gray; height: 100vh;"
+    >Content 3</div>
+  </div>
   `,
+  setup() {
+    const section1 = ref()
+    const section2 = ref()
+    const section3 = ref()
+
+    const sections = computed(() => [{
+      id: '1',
+      element: section1.value,
+      title: 'Section 1',
+    }, {
+      id: '2',
+      element: section2.value,
+      title: 'Section 2',
+    }, {
+      id: '3',
+      element: section3.value,
+      title: 'Section 3',
+    }])
+
+    return {
+      section1,
+      section2,
+      section3,
+      sections,
+    }
+  },
 })
 
 export const Mobile = Template.bind({})
@@ -39,12 +71,14 @@ Mobile.play = async ({ canvasElement }) => {
   canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
+  window.scrollTo(0, 200) // trigger dropdown
+
   const toggleButton = await canvas.findByTestId('dropdownToggle')
   const dropdown = within(await canvas.findByTestId('dropdown'))
   const section1Button = await dropdown.findByText('Section 1')
   const section3Button = await dropdown.findByText('Section 3')
 
-  expect(toggleButton).toBeVisible()
+  await waitFor(() => expect(toggleButton).toBeVisible())
   expect(section1Button).not.toBeVisible()
   expect(section3Button).not.toBeVisible()
 
@@ -69,6 +103,5 @@ Desktop.play = async ({ canvasElement }) => {
 
   const dropdown = within(await canvas.findByTestId('dropdown'))
   const section1Button = await dropdown.findByText('Section 1')
-  expect(section1Button).toBeVisible()
   await userEvent.click(section1Button)
 }

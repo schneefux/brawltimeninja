@@ -5,6 +5,8 @@ import { expect } from '@storybook/jest'
 import { Meta, Story } from '@storybook/vue'
 import { getCanvasElementFixed } from '../../fix'
 
+const sleep = (ms: number) => new Promise(res => setTimeout(res, ms))
+
 export default {
   component: BScrollingDashboard,
   title: 'UI/Horizontally Scrolling Dashboard',
@@ -90,6 +92,8 @@ Mobile.play = async ({ canvasElement }) => {
   expect(previousButton).not.toBeVisible()
   await waitFor(() => expect(scrollHintRight).toBeVisible())
   expect(scrollHintLeft).not.toBeVisible()
+
+  await sleep(500)
 
   await userEvent.click(nextButton)
   await waitFor(() => expect(scrollHintRight).not.toBeVisible())
