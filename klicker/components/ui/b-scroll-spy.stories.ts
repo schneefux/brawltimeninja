@@ -2,6 +2,7 @@ import BScrollSpy from './b-scroll-spy.vue'
 import { Meta, Story } from '@storybook/vue'
 import {userEvent, waitFor, within} from "@storybook/testing-library";
 import {expect} from "@storybook/jest";
+import { getCanvasElementFixed } from '../../fix';
 
 export default {
   component: BScrollSpy,
@@ -35,6 +36,7 @@ Mobile.parameters = {
   },
 }
 Mobile.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const toggleButton = await canvas.findByTestId('dropdownToggle')
@@ -59,6 +61,7 @@ Mobile.play = async ({ canvasElement }) => {
 
 export const Desktop = Template.bind({})
 Desktop.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const toggleButton = await canvas.findByTestId('dropdownToggle')

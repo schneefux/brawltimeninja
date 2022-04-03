@@ -2,6 +2,7 @@ import BScrollingList from './b-scrolling-list.vue'
 import { Meta, Story } from '@storybook/vue'
 import {userEvent, waitFor, within} from "@storybook/testing-library";
 import {expect} from "@storybook/jest";
+import {getCanvasElementFixed} from '../../fix'
 
 export default {
   component: BScrollingList,
@@ -75,6 +76,7 @@ WithPreview.args = {
   cellColumns: 3,
 }
 WithPreview.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const goTo1Button = await canvas.findByText('#1')
@@ -129,6 +131,7 @@ Lazy.args = {
   eagerUntil: 0,
 }
 Lazy.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const goTo3Button = await canvas.findByText('#3')

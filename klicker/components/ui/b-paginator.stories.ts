@@ -3,6 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { ref } from 'vue-demi'
+import { getCanvasElementFixed } from '../../fix'
 
 export default {
   component: BPaginator,
@@ -30,6 +31,7 @@ Default.args = {
   pages: 3,
 }
 Default.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   await canvas.findByText('1 / 3')

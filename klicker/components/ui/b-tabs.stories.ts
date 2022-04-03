@@ -2,6 +2,7 @@ import BTabs from './b-tabs.vue'
 import { within, userEvent, waitFor } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { Meta, Story } from '@storybook/vue'
+import { getCanvasElementFixed } from '../../fix'
 
 export default {
   component: BTabs,
@@ -28,6 +29,7 @@ export const Horizontal: Story = (args, { argTypes }) => ({
 })
 Horizontal.args = {}
 Horizontal.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const tab2Button = await canvas.findByText('Tab 2')

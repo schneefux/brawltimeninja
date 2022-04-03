@@ -3,6 +3,7 @@ import CDashboardCell from '../c-dashboard-cell.vue'
 import { within, userEvent, waitFor } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { Meta, Story } from '@storybook/vue'
+import { getCanvasElementFixed } from '../../fix'
 
 export default {
   component: BScrollingDashboard,
@@ -31,6 +32,7 @@ export const Desktop: Story = (args, { argTypes }) => ({
 })
 Desktop.args = {}
 Desktop.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const nextButton = await canvas.findByLabelText('next')
@@ -76,6 +78,7 @@ Mobile.parameters = {
   },
 }
 Mobile.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const nextButton = await canvas.findByLabelText('next')

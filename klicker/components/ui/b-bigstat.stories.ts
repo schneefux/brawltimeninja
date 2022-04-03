@@ -2,6 +2,7 @@ import BBigstat from './b-bigstat.vue'
 import { Meta, Story } from '@storybook/vue'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
+import { getCanvasElementFixed } from '../../fix'
 
 export default {
   component: BBigstat,
@@ -35,6 +36,7 @@ WithTooltip.args = {
   tooltip: lipsum,
 }
 WithTooltip.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const tooltipButton = await canvas.findByRole('button')
@@ -78,6 +80,7 @@ WithTooltipSlot.args = {
   value: 1234,
 }
 WithTooltipSlot.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const tooltipButton = await canvas.findByRole('button')

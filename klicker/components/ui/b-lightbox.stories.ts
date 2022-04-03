@@ -3,6 +3,7 @@ import BButton from './b-button.vue'
 import { Meta, Story } from '@storybook/vue'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
+import { getCanvasElementFixed } from '../../fix'
 
 export default {
   component: BLightbox,
@@ -28,6 +29,7 @@ export const Default: Story = (args, { argTypes }) => ({
 })
 Default.args = {}
 Default.play = async ({ canvasElement }) => {
+  canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
   const button = await canvas.findByRole('button')
