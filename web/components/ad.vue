@@ -40,12 +40,14 @@ export default defineComponent({
   setup(props) {
     const store = useStore<any>()
     const isApp = computed(() => store.state.isApp as boolean)
-    const ad = ref<HTMLElement|null>()
+    const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
     const allowed = computed(() => props.first || !isApp.value)
 
     if (process.client && allowed.value && !visible.value) {
-      const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting }]) => {
+      // TODO the fix for https://github.com/vueuse/vueuse/issues/685
+      // and/or importing vueuse as peer dependency breaks this ref type
+      const { isSupported, stop } = useIntersectionObserver(ad as any, ([{ isIntersecting }]) => {
         if (isIntersecting) {
           visible.value = isIntersecting
           stop()

@@ -46,7 +46,7 @@ const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   head: {},
   setup(props, { root }) {
-    const container = ref<HTMLElement|null>()
+    const container = ref<HTMLElement>()
 
     const { localePath } = useContext()
 
@@ -175,7 +175,9 @@ export default defineComponent({
       }
     })
 
-    useMutationObserver(container, () => {
+    // TODO the fix for https://github.com/vueuse/vueuse/issues/685
+    // and/or importing vueuse as peer dependency breaks this ref type
+    useMutationObserver(container as any, () => {
       // workaround for AdSense overriding min-height: 0px
       // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
       // wtf Google

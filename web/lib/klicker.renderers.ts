@@ -1,4 +1,4 @@
-import { DimensionRendererSpec, MetricRendererSpec } from "~/../klicker/types";
+import { DimensionRendererSpec, MetricRendererSpec } from '@schneefux/klicker/types'
 
 export const dimensionRenderers: DimensionRendererSpec[] = [{
   name: 'Map',

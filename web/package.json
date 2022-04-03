@@ -26,6 +26,7 @@
     "@schneefux/klicker": "link:../klicker",
     "@tailwindcss/forms": "^0.4.0-alpha.2",
     "@tailwindcss/typography": "^0.5.0",
+    "@vueuse/core": "^8.2.4",
     "date-fns": "^2.27.0",
     "express": "^4.17.3",
     "nuxt": "2.15.8",
