@@ -139,7 +139,6 @@
         v-for="w in widgets"
         :key="w.id"
         :widget="w"
-        class="pointer-events-none"
         for-grid
         @click.native="selectedWidgetId = w.id"
       ></c-widget>
