@@ -76,6 +76,7 @@ export const Mobile: Story = (args, { argTypes }) => ({
 })
 Mobile.parameters = {
   viewport: {
+    // 'Mobile' name triggers viewport resize in test-runner.js hook
     defaultViewport: 'mobile2',
   },
 }

@@ -64,6 +64,7 @@ const Template: Story = () => ({
 export const Mobile = Template.bind({})
 Mobile.parameters = {
   viewport: {
+    // 'Mobile' name triggers viewport resize in test-runner.js hook
     defaultViewport: 'mobile2',
   },
 }
@@ -71,7 +72,8 @@ Mobile.play = async ({ canvasElement }) => {
   canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
 
-  window.scrollTo(0, 200) // trigger dropdown
+  const section2 = await canvas.findByText('Content 2')
+  section2.scrollIntoView() // trigger dropdown
 
   const toggleButton = await canvas.findByTestId('dropdownToggle')
   const dropdown = within(await canvas.findByTestId('dropdown'))
