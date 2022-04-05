@@ -94,17 +94,21 @@ class CustomKlicker extends Klicker {
   }
 
   async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60): Promise<EventMetadata[]> {
-    const events = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['mode', 'map', 'powerplay'],
-      metricsIds: ['eventId', 'timestamp', ...metricsIds],
-      slices: {
-        season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
-        ...slices,
+    const APPROXIMATE_MODE_COUNT = 15;
+    const events = await this.query(
+      {
+        cubeId: 'map',
+        dimensionsIds: ['mode', 'map', 'powerplay'],
+        metricsIds: ['eventId', 'timestamp', ...metricsIds],
+        slices: {
+          season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
+          ...slices,
+        },
+        sortId: 'timestamp',
+        limit: APPROXIMATE_MODE_COUNT * 15,
       },
-      sortId: 'timestamp',
-      limit: 20,
-    })
+      ({ dimensions: { map } }) => map.includes('Competition') === false
+    )
 
     const lastEvents = events.data
       .map(e => ({
