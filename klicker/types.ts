@@ -151,7 +151,7 @@ export interface Slice {
   // formatter: string
 }
 
-export interface SliceValue extends Record<string, (string|undefined)[]> { }
+export interface SliceValue extends Record<string, string[]> { }
 
 export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 
@@ -207,14 +207,14 @@ export interface SlicerSpec extends WidgetSpec {
 
 /**
  * Render the value of a metric
- * 
+ *
  * By default, many visualisations render values as numbers or text.
  * With a renderer, they can be replaced by a rich representation such as an image.
  */
 export interface MetricRendererSpec extends WidgetSpec {
   /**
    * id of the rendered metric
-   * 
+   *
    * There should not be two applicable renderers that replace the same metric.
    * Only one will be rendered.
    */
@@ -224,7 +224,7 @@ export interface MetricRendererSpec extends WidgetSpec {
 
 /**
  * Render the value of one or multiple dimensions
- * 
+ *
  * By default, many visualisations render values as numbers or text.
  * With a renderer, they can be replaced by a rich representation such as an image.
  */
