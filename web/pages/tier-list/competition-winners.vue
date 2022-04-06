@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
-import { camelToKebab, getSeasonEnd, slugify } from '~/lib/util'
+import { camelToKebab, formatClickhouseDate, getSeasonEnd, slugify } from '~/lib/util'
 import { CDashboardCell } from '@schneefux/klicker/components'
 
 interface Event {
@@ -50,7 +50,7 @@ export default defineComponent({
 
     const twoMonthsAgo = new Date()
     twoMonthsAgo.setDate(twoMonthsAgo.getDate() - 8*7)
-    const season = getSeasonEnd(twoMonthsAgo).toISOString().slice(0, 10)
+    const season = formatClickhouseDate(getSeasonEnd(twoMonthsAgo))
 
     const maps = useAsync<Event[]>(async () => {
       const data = await $klicker.query({

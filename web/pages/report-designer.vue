@@ -60,7 +60,7 @@ import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composit
 import { CCanvas, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
 
 export default defineComponent({
@@ -107,15 +107,12 @@ export default defineComponent({
       }
     })
 
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
     const defaultQuery: CubeQuery = {
       cubeId: 'battle',
       dimensionsIds: ['brawler'],
       metricsIds: ['winRate'],
       slices: {
-        season: [currentSeason.toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
         mode: [],
         map: [],
         trophyRangeGte: ['0'],

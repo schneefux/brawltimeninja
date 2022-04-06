@@ -263,7 +263,19 @@ export function getCompetitionWinnerMode(timestamp: Date) {
   return order[daysSince % order.length]
 }
 
-export function getCurrentSeasonEnd() {
+/**
+ * Get the end date of the current and the last database-season
+ */
+export function getMonthSeasonEnd() {
+  const twoWeeksAgo = new Date()
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+  return getSeasonEnd(twoWeeksAgo)
+}
+
+/**
+ * Get the end date of the current database-season
+ */
+export function getTodaySeasonEnd() {
   return getSeasonEnd(new Date())
 }
 

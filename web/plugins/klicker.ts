@@ -4,7 +4,7 @@ import { Context } from "@nuxt/types"
 import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec, DimensionRendererSpec, MetricRendererSpec } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
 import { CurrentAndUpcomingEvents } from "~/model/Api"
-import { formatMode, getCurrentSeasonEnd, idToTag } from "~/lib/util"
+import { formatClickhouseDate, formatMode, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, idToTag } from "~/lib/util"
 import Klicker from '@schneefux/klicker/service'
 import { CQuery } from '@schneefux/klicker/components'
 import visualisations from '~/lib/klicker.visualisations.conf'
@@ -95,14 +95,14 @@ class CustomKlicker extends Klicker {
 
   async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60): Promise<EventMetadata[]> {
     const events = await this.query({
-        cubeId: 'map',
-        dimensionsIds: ['mode', 'map', 'powerplay'],
-        metricsIds: ['eventId', 'timestamp', ...metricsIds],
-        slices: {
+      cubeId: 'map',
+      dimensionsIds: ['mode', 'map', 'powerplay'],
+      metricsIds: ['eventId', 'timestamp', ...metricsIds],
+      slices: {
         season: [formatClickhouseDate(getTodaySeasonEnd())],
-          ...slices,
-        },
-        sortId: 'timestamp',
+        ...slices,
+      },
+      sortId: 'timestamp',
       limit: 20,
     })
 
@@ -164,7 +164,7 @@ class CustomKlicker extends Klicker {
       dimensionsIds: ['season'],
       metricsIds: [],
       slices: {
-        season: [limit.toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getSeasonEnd(limit))],
       },
       sortId: 'season',
     })
@@ -173,7 +173,7 @@ class CustomKlicker extends Klicker {
       .map(e => {
         const d = parseISO(e.dimensionsRaw.season.season)
         return {
-          id: d.toISOString().slice(0, 10),
+          id: formatClickhouseDate(d),
           name: formatDate(subWeeks(d, 2), 'PP') // seasons last 2 weeks
         }
       })
@@ -187,7 +187,7 @@ class CustomKlicker extends Klicker {
       dimensionsIds: ['mode'],
       metricsIds: [],
       slices: {
-        season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
       },
       sortId: 'picks',
     })
@@ -200,7 +200,7 @@ class CustomKlicker extends Klicker {
       dimensionsIds: ['map'],
       metricsIds: ['eventId'],
       slices: {
-        season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
         ...(mode != undefined ? {
           mode: [mode],
         } : {}),
@@ -219,7 +219,7 @@ class CustomKlicker extends Klicker {
       dimensionsIds: ['brawler'],
       metricsIds: [],
       slices: {
-        season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
       },
       sortId: 'picks',
     })

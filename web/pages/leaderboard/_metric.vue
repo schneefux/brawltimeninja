@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, useRoute, computed } from '@nuxtjs/composition-api'
-import { getSeasonEnd } from '@/lib/util'
+import { formatClickhouseDate, getTodaySeasonEnd } from '@/lib/util'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -37,7 +37,7 @@ export default defineComponent({
     const route = useRoute()
     const metric = computed(() => route.value.params.metric as string)
 
-    const currentSeason = getSeasonEnd(new Date()).toISOString().slice(0, 10)
+    const currentSeason = formatClickhouseDate(getTodaySeasonEnd())
 
     return {
       currentSeason,

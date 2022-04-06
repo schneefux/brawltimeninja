@@ -77,7 +77,7 @@
 import { CubeComparingQuery } from '@schneefux/klicker/types'
 import { defineComponent, computed, ref, PropType } from '@nuxtjs/composition-api'
 import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, CDashboardCell } from '@schneefux/klicker/components'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -96,10 +96,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
-
     const keys = {
       'gears': 'gear',
       'gadgets': 'gadget',
@@ -114,7 +110,7 @@ export default defineComponent({
       dimensionsIds: props.kind == 'gears' ? [singular.value] : ['brawler', singular.value],
       metricsIds: ['winRate'],
       slices: {
-        season: [currentSeason.toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
         [singular.value + 'IdNeq']: ['0'],
       },
       sortId: 'winRate',
@@ -124,7 +120,7 @@ export default defineComponent({
         dimensionsIds: props.kind == 'gears' ? [] : ['brawler'],
         metricsIds: ['winRate'],
         slices: {
-          season: [currentSeason.toISOString().slice(0, 10)],
+          season: [formatClickhouseDate(getMonthSeasonEnd())],
           [singular.value + 'IdEq']: ['0'],
           // TODO slice for number of gadgets/gears/starpowers = 0
         },

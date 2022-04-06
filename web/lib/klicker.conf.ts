@@ -1,5 +1,6 @@
 import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
 import { ChiSquared } from 'sampson'
+import { formatClickhouseDate } from "./util"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -12,7 +13,7 @@ export function getSeasonEnd(timestamp: Date) {
 
 const monthAgo = new Date()
 monthAgo.setMonth(monthAgo.getMonth() - 1)
-const currentSeason = getSeasonEnd(monthAgo).toISOString().slice(0, 10)
+const monthAgoSeason = formatClickhouseDate(getSeasonEnd(monthAgo))
 
 /**
  * Calculate $m.useRate / sum($m.useRate over all dimensions except brawler)
@@ -1734,7 +1735,7 @@ const mapCube: Cube = {
     commonSlices.powerplay,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1760,7 +1761,7 @@ const starpowerCube: Cube = {
     commonSlices.starpowerIdNeq,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1786,7 +1787,7 @@ const gadgetCube: Cube = {
     commonSlices.gadgetIdNeq,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1818,7 +1819,7 @@ const brawlerAlliesCube: Cube = {
     commonSlices.allyId,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1850,7 +1851,7 @@ const brawlerEnemiesCube: Cube = {
     commonSlices.enemyId,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1910,7 +1911,7 @@ const battleCube: Cube = {
     brawlerSlices.gearsLength,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 
@@ -1931,7 +1932,7 @@ const brawlerCube: Cube = {
     ...playerBrawlerSlices,
   ],
   defaultSliceValues: {
-    season: [currentSeason],
+    season: [monthAgoSeason],
   },
 }
 

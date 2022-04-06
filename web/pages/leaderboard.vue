@@ -58,8 +58,6 @@ export default defineComponent({
       }
     })
 
-    const currentSeason = getSeasonEnd(new Date()).toISOString().slice(0, 10)
-
     const metrics = [
       'hours',
       'trophies',
@@ -69,7 +67,6 @@ export default defineComponent({
     ]
 
     return {
-      currentSeason,
       metric,
       metrics,
     }

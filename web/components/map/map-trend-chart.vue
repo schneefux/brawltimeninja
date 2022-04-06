@@ -17,7 +17,7 @@ import { CQuery, VLineplot } from '@schneefux/klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
-import { capitalizeWords, getSeasonEnd } from '~/lib/util'
+import { capitalizeWords, formatClickhouseDate, getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -94,7 +94,7 @@ export default defineComponent({
 
       const oneMonthAgo = new Date()
       oneMonthAgo.setDate(oneMonthAgo.getDate() - 4*7)
-      const season = getSeasonEnd(oneMonthAgo).toISOString().slice(0, 10)
+      const season = formatClickhouseDate(getSeasonEnd(oneMonthAgo))
 
       const query: CubeQuery = {
         name,

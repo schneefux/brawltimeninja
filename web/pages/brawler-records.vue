@@ -44,7 +44,7 @@
 import { defineComponent, ref, useContext, useMeta } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BCard, CMetric, VTable, VCsv, BPageSection, CDashboardCell } from '@schneefux/klicker/components'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getTodaySeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -63,15 +63,13 @@ export default defineComponent({
   },
   middleware: ['cached'],
   setup() {
-    const currentSeason = getSeasonEnd(new Date())
-
     const query = ref<CubeQuery>({
       cubeId: 'brawler',
       dimensionsIds: ['player', 'brawler'],
       metricsIds: ['highestTrophies'],
       slices: {
         season: [],
-        seasonExact: [currentSeason.toISOString().slice(0, 10)],
+        seasonExact: [formatClickhouseDate(getTodaySeasonEnd())],
         brawler: [],
         powerGte: ['1'],
         powerLte: ['10'],

@@ -43,7 +43,7 @@
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CSlicer, CDashboardCell } from '@schneefux/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getSeasonEnd } from '~/lib/util'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
 import { useKlicker } from '@schneefux/klicker/composables/klicker'
 
@@ -74,7 +74,6 @@ export default defineComponent({
 
     const season = new Date()
     season.setDate(season.getDate() - 7*4)
-    const seasonSlice = getSeasonEnd(season).toISOString().slice(0, 10)
 
     const query = ref<CubeQuery>({
       cubeId: 'map',
@@ -82,7 +81,7 @@ export default defineComponent({
       metricsIds: ['picks'],
       sortId: 'picks',
       slices: $klicker.convertLocationToSlices(route.value, {
-        season: [seasonSlice],
+        season: [formatClickhouseDate(getSeasonEnd(season))],
         trophyRangeGte: ['0'],
         mode: [],
       }),

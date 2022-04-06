@@ -68,7 +68,7 @@
 import { defineComponent, ref, useContext, useMeta } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv, BPageSection, CDashboardCell } from '@schneefux/klicker/components'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -88,16 +88,12 @@ export default defineComponent({
   },
   middleware: ['cached'],
   setup() {
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
-
     const query = ref<CubeQuery>({
       cubeId: 'battle',
       dimensionsIds: ['brawler', 'day'],
       metricsIds: ['useRate'],
       slices: {
-        season: [currentSeason.toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
         mode: [],
         trophyRangeGte: ['0'],
         powerplay: [],

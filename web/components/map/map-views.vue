@@ -304,7 +304,7 @@
 import { computed, defineComponent, ref, useContext, watch } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
-import { getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
@@ -334,17 +334,13 @@ export default defineComponent({
   setup(props) {
     const { $klicker } = useContext()
 
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
-
     function defaultQuery(): CubeQuery {
       return {
         cubeId: 'battle',
         dimensionsIds: ['brawler'],
         metricsIds: [],
         slices: {
-          season: [currentSeason.toISOString().slice(0, 10)],
+          season: [formatClickhouseDate(getMonthSeasonEnd())],
           mode: props.mode != undefined ? [props.mode] : [],
           map: props.map != undefined ? [props.map] : [],
           trophyRangeGte: ['0'],
