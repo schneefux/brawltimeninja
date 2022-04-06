@@ -561,5 +561,7 @@
     "metric.minion": "Minion",
     "metric.minionrange": "Minion Range",
     "metric.duration": "Duration",
-    "metric.trophyRange": "Trophy Bracket"
+    "metric.trophyRange": "Trophy Bracket",
+    "nav.Gears": "Gears",
+    "nav.Brawler Records": "Brawler Records"
 }

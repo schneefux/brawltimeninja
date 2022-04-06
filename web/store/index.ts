@@ -44,7 +44,6 @@ export const state = () => ({
       tag: '2Y02L28',
       name: 'Keith ツ',
     } ],
-  tagPattern: '^[0289PYLQGRJCUV]{3,}$',
   lastPlayers: [] as string[],
   userTag: undefined as undefined|string, // personal tag (last searched)
   personalityTestResult: undefined,

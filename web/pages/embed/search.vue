@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { tagPattern } from '~/lib/util'
 
 export default {
   layout: 'empty',
@@ -44,9 +44,6 @@ export default {
     }
   },
   computed: {
-    tagRegex() {
-      return new RegExp(this.tagPattern)
-    },
     cleanedTag() {
       return (this.tag || '')
         .trim()
@@ -54,13 +51,10 @@ export default {
         .toUpperCase()
         .replace(/O/g, '0')
     },
-    ...mapState({
-      tagPattern: state => state.tagPattern,
-    }),
   },
   methods: {
     search(event) {
-      this.tagValid = this.tagRegex.test(this.cleanedTag)
+      this.tagValid = tagPattern.test(this.cleanedTag)
 
       if (this.tagValid) {
         this.$gtag.event('search', {

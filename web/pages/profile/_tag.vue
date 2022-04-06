@@ -187,6 +187,7 @@ import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { tagPattern } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -309,7 +310,7 @@ export default defineComponent({
     screen: 'profile',
   },
   middleware: ['cached'],
-  async validate({ store, params, redirect }) {
+  async validate({ params, redirect }) {
     const tag = params.tag.toUpperCase()
     if (tag != params.tag) {
       // fuck Bing for lowercasing all URLs
@@ -317,7 +318,7 @@ export default defineComponent({
       return false
     }
 
-    return RegExp(store.state.tagPattern).test(tag)
+    return tagPattern.test(tag)
   },
   async asyncData({ store, params, error, i18n }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {

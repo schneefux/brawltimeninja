@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { defineComponent, useMeta, useContext, useRoute, computed } from '@nuxtjs/composition-api'
-import { getSeasonEnd } from '@/lib/util'
 
 export default defineComponent({
   head: {},

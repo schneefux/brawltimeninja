@@ -8,6 +8,10 @@
       Brawl Time Ninja
     </nuxt-link>
 
+    <navigator
+      class="relative pl-8 mr-auto"
+    ></navigator>
+
     <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-4">
       <install-button></install-button>
 

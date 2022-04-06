@@ -184,7 +184,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore } from '@nuxtjs/composition-api'
-import { formatAsJsonLd } from '@/lib/util'
+import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
 
@@ -251,9 +251,7 @@ export default defineComponent({
     const search = async () => {
       error.value = undefined
 
-      const tagRegex = new RegExp(store.state.tagPattern)
-
-      if (!tagRegex.test(cleanedTag.value)) {
+      if (!tagPattern.test(cleanedTag.value)) {
         gtag.event('search', {
           'event_category': 'player',
           'event_label': 'error_invalid',

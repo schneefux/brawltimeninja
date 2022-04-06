@@ -164,7 +164,7 @@ export function sloppyParseFloat(number: string) {
  * Make sure tag starts with a hash.
  */
 export function validateTag(tag: string) {
-  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+  if (!tagPattern.test(tag)) {
     throw new Error('Invalid tag ' + tag)
   }
   if (!tag.startsWith('#')) {
@@ -183,7 +183,7 @@ arraySum((c, i) -> (position('0289PYLQGRJCUV', c)-1)*pow(14, length(player_club_
  * TODO: Use BigInt if tags are >2^53 at some point.
  */
 export function tagToId(tag: string) {
-  if (! /^#?[0289PYLQGRJCUV]{3,}$/.test(tag)) {
+  if (!tagPattern.test(tag)) {
     throw new Error('Cannot encode tag ' + tag)
   }
   if (tag.startsWith('#')) {
@@ -325,3 +325,5 @@ export const ratingPercentiles = {
   'S': [0.95, 730],
   'S+': [0.99, Infinity],
 }
+
+export const tagPattern = new RegExp('^#?[0289PYLQGRJCUV]{3,}$')

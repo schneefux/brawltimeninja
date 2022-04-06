@@ -12,7 +12,7 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
-import { ratingPercentiles, tagToId } from '~/lib/util'
+import { ratingPercentiles, tagPattern, tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
 
 export default Vue.extend({
@@ -55,14 +55,14 @@ export default Vue.extend({
       totalBrawlers: (state: any) => state.totalBrawlers as number,
     }),
   },
-  async validate({ store, params, redirect }) {
+  async validate({ params, redirect }) {
     const tag = params.tag.toUpperCase()
     if (tag != params.tag) {
       redirect(`/embed/profile/${tag}`)
       return false
     }
 
-    return RegExp(store.state.tagPattern).test(tag)
+    return tagPattern.test(tag)
   },
   async asyncData({ params, $http, $config, $klicker }) {
     const player = await $http.$get<Player>($config.apiUrl + `/api/player/${params.tag}`)

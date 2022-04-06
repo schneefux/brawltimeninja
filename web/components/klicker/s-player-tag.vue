@@ -10,7 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { idToTag, tagToId } from '~/lib/util'
+import { idToTag, tagPattern, tagToId } from '~/lib/util'
 
 export default defineComponent({
   props: {
@@ -32,7 +32,7 @@ export default defineComponent({
         if (v == '') {
           props.onInput({ playerId: [] })
         } else {
-          if (new RegExp('^#?[0289PYLQGRJCUV]{3,}$').test(v)) {
+          if (tagPattern.test(v)) {
             props.onInput({ playerId: [tagToId(v)] })
           }
         }
