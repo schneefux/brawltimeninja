@@ -94,21 +94,17 @@ class CustomKlicker extends Klicker {
   }
 
   async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60): Promise<EventMetadata[]> {
-    const APPROXIMATE_MODE_COUNT = 15;
-    const events = await this.query(
-      {
+    const events = await this.query({
         cubeId: 'map',
         dimensionsIds: ['mode', 'map', 'powerplay'],
         metricsIds: ['eventId', 'timestamp', ...metricsIds],
         slices: {
-          season: [getCurrentSeasonEnd().toISOString().slice(0, 10)],
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
           ...slices,
         },
         sortId: 'timestamp',
-        limit: APPROXIMATE_MODE_COUNT * 15,
-      },
-      ({ dimensions: { map } }) => map.includes('Competition') === false
-    )
+      limit: 20,
+    })
 
     const lastEvents = events.data
       .map(e => ({
@@ -134,6 +130,30 @@ class CustomKlicker extends Klicker {
     })
 
     return lastEvents
+  }
+
+  async queryAllEvents(slices: SliceValue = {}): Promise<EventMetadata[]> {
+    const events = await this.query({
+      cubeId: 'map',
+      dimensionsIds: ['mode', 'map'],
+      metricsIds: ['eventId'],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+        mapNotLike: ['Competition'],
+        ...slices,
+      },
+      sortId: 'map',
+    })
+
+    return events.data
+      .map(e => ({
+        key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}`,
+        id: parseInt(e.metricsRaw.eventId as string),
+        map: e.dimensionsRaw.map.map as string,
+        mode: e.dimensionsRaw.mode.mode as string,
+        powerplay: false,
+        metrics: {},
+      }))
   }
 
   async queryAllSeasons(limitWeeks: number = 8): Promise<{ id: string, name: string }[]> {

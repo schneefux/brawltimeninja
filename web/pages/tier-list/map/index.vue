@@ -24,7 +24,7 @@
     </b-page-section>
 
     <b-page-section
-      v-if="powerleagueEvents != undefined"
+      v-if="allPowerLeagueEvents != undefined"
       :title="$t('events.powerleague.title')"
       v-observe-visibility="{
         callback: makeVisibilityCallback('powerleague_events'),
@@ -33,7 +33,7 @@
       lazy
     >
       <events-roll
-        :events="powerleagueEvents"
+        :events="allPowerLeagueEvents"
         with-data
       ></events-roll>
     </b-page-section>
@@ -110,16 +110,11 @@ export default defineComponent({
       powerplay: false,
     })))
 
-    const twoWeeksAgo = new Date()
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const currentSeason = getSeasonEnd(twoWeeksAgo)
-    const allEvents = useAsync(() => $klicker.queryActiveEvents([], {
-      season: [currentSeason.toISOString().slice(0, 10)],
-    }, null))
+    const allEvents = useAsync(() => $klicker.queryAllEvents({}), 'all-events')
 
-    const powerleagueEvents = useAsync(() => $klicker.queryActiveEvents([], {
+    const allPowerLeagueEvents = useAsync(() => $klicker.queryAllEvents({
       powerplay: ['1'],
-    }))
+    }), 'powerleague-events')
 
     useMeta(() => {
       const description = i18n.tc('tier-list.maps.meta.description', 1)
@@ -151,7 +146,7 @@ export default defineComponent({
       allEvents,
       currentEvents,
       upcomingEvents,
-      powerleagueEvents,
+      allPowerLeagueEvents,
       unformatMode,
       makeVisibilityCallback,
     }
