@@ -141,30 +141,53 @@ export default defineComponent({
         id: 'events',
         name: i18n.t('nav.Events') as string,
         target: localePath('/tier-list/map'),
-        children: (modes.value ?? []).map(m => ({
-          id: m,
-          name: i18n.t('mode.' + m) as string,
-          target: localePath(`/tier-list/mode/${m}`),
-          children: (<Link[]> []).concat(
-            mapViewTabs.map(tab => ({
-              id: `${m}#${tab}`,
-              name: i18n.t('tab.' + tab) as string,
-              target: localePath(`/tier-list/mode/${camelToKebab(m)}/#${tab}`),
-            })),
-            (maps.value ?? [])
-              .filter(e => e.mode == m)
-              .map(e => ({
-                id: e.key,
-                name: getMapName(i18n, e.id, e.map) as string,
-                target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`),
-                children: mapViewTabs.map(tab => ({
-                  id: `${e.key}#${tab}`,
-                  name: i18n.t('tab.' + tab) as string,
-                  target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}#${tab}`),
-                })),
+        children: (<Link[]> []).concat(
+          [{
+            id: 'events-active',
+            name: i18n.t('events.active.title') as string,
+            target: localePath(`/tier-list/map#active`),
+          }, {
+            id: 'events-powerleague',
+            name: i18n.t('events.powerleague.title') as string,
+            target: localePath(`/tier-list/map#powerleague`),
+          }, {
+            id: 'events-upcoming',
+            name: i18n.t('events.upcoming.title') as string,
+            target: localePath(`/tier-list/map#upcoming`),
+          }, {
+            id: 'events-season',
+            name: i18n.t('events.season.title') as string,
+            target: localePath(`/tier-list/map#season`),
+          }, {
+            id: 'events-competition-winners',
+            name: i18n.t('tier-list.competition-winners.title') as string,
+            target: localePath(`/tier-list/map#competition-winners`),
+          }],
+          (modes.value ?? []).map(m => ({
+            id: m,
+            name: i18n.t('mode.' + m) as string,
+            target: localePath(`/tier-list/mode/${m}`),
+            children: (<Link[]> []).concat(
+              mapViewTabs.map(tab => ({
+                id: `${m}#${tab}`,
+                name: i18n.t('tab.' + tab) as string,
+                target: localePath(`/tier-list/mode/${camelToKebab(m)}/#${tab}`),
               })),
-          ),
-        })),
+              (maps.value ?? [])
+                .filter(e => e.mode == m)
+                .map(e => ({
+                  id: e.key,
+                  name: getMapName(i18n, e.id, e.map) as string,
+                  target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`),
+                  children: mapViewTabs.map(tab => ({
+                    id: `${e.key}#${tab}`,
+                    name: i18n.t('tab.' + tab) as string,
+                    target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}#${tab}`),
+                  })),
+                })),
+            ),
+          })),
+        )
       }, {
         id: 'leaderboards',
         name: i18n.t('nav.Leaderboards') as string,

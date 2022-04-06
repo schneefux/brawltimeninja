@@ -9,77 +9,92 @@
       first
     ></ad>
 
-    <b-page-section
-      v-if="currentEvents.length > 0"
-      :title="$t('events.active.title')"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('current_events'),
-        once: true,
-      }"
-    >
-      <events-roll
-        :events="currentEvents"
-        with-data
-      ></events-roll>
-    </b-page-section>
+    <b-split-dashboard>
+      <b-scroll-spy
+        slot="aside"
+        :sections="sections"
+        nav-class="top-14 lg:top-0"
+        toc-class="hidden lg:block"
+        class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
+      ></b-scroll-spy>
 
-    <b-page-section
-      v-if="allPowerLeagueEvents != undefined"
-      :title="$t('events.powerleague.title')"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('powerleague_events'),
-        once: true,
-      }"
-      lazy
-    >
-      <events-roll
-        :events="allPowerLeagueEvents"
-        with-data
-      ></events-roll>
-    </b-page-section>
+      <b-page-section
+        v-if="currentEvents.length > 0"
+        ref="activeSection"
+        :title="$t('events.active.title')"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('current_events'),
+          once: true,
+        }"
+      >
+        <events-roll
+          :events="currentEvents"
+          with-data
+        ></events-roll>
+      </b-page-section>
 
-    <ad
-      ad-slot="4150756245"
-      lazy
-    ></ad>
+      <b-page-section
+        v-if="allPowerLeagueEvents != undefined"
+        ref="powerleagueSection"
+        :title="$t('events.powerleague.title')"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('powerleague_events'),
+          once: true,
+        }"
+        lazy
+      >
+        <events-roll
+          :events="allPowerLeagueEvents"
+          with-data
+        ></events-roll>
+      </b-page-section>
 
-    <b-page-section
-      v-if="upcomingEvents.length > 0"
-      :title="$t('events.upcoming.title')"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('upcoming_events'),
-        once: true,
-      }"
-      lazy
-    >
-      <events-roll
-        :events="upcomingEvents"
-        with-data
-      ></events-roll>
-    </b-page-section>
+      <ad
+        ad-slot="4150756245"
+        lazy
+      ></ad>
 
-    <b-page-section
-      :title="$t('events.season.title')"
-      v-if="allEvents != undefined && allEvents.length > 0"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('maps'),
-        once: true,
-      }"
-      lazy
-    >
-      <events-roll :events="allEvents"></events-roll>
-    </b-page-section>
+      <b-page-section
+        v-if="upcomingEvents.length > 0"
+        ref="upcomingSection"
+        :title="$t('events.upcoming.title')"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('upcoming_events'),
+          once: true,
+        }"
+        lazy
+      >
+        <events-roll
+          :events="upcomingEvents"
+          with-data
+        ></events-roll>
+      </b-page-section>
 
-    <b-page-section
-      :title="$t('tier-list.competition-winners.title')"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('competition-winners'),
-        once: true,
-      }"
-      lazy
-    >
-      <competition-winner-roll></competition-winner-roll>
-    </b-page-section>
+      <b-page-section
+        :title="$t('events.season.title')"
+        ref="seasonSection"
+        v-if="allEvents != undefined && allEvents.length > 0"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('maps'),
+          once: true,
+        }"
+        lazy
+      >
+        <events-roll :events="allEvents"></events-roll>
+      </b-page-section>
+
+      <b-page-section
+        :title="$t('tier-list.competition-winners.title')"
+        ref="competitionWinnersSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('competition-winners'),
+          once: true,
+        }"
+        lazy
+      >
+        <competition-winner-roll></competition-winner-roll>
+      </b-page-section>
+    </b-split-dashboard>
 
     <ad
       ad-slot="3577381889"
@@ -89,16 +104,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
 import { EventMetadata } from '~/plugins/klicker'
-import { BPageSection } from '@schneefux/klicker/components'
+import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BPageSection,
+    BSplitDashboard,
+    BScrollSpy,
   },
   head: {},
   setup() {
@@ -153,7 +170,39 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('maps')
 
+    const sectionRefs = {
+      activeSection: ref(),
+      powerleagueSection: ref(),
+      upcomingSection: ref(),
+      seasonSection: ref(),
+      competitionWinnersSection: ref(),
+    }
+
+    const sections = computed(() => [{
+      id: 'active',
+      title: i18n.t('events.active.title'),
+      element: sectionRefs.activeSection.value,
+    }, {
+      id: 'powerleague',
+      title: i18n.t('events.powerleague.title'),
+      element: sectionRefs.powerleagueSection.value,
+    }, {
+      id: 'upcoming',
+      title: i18n.t('events.upcoming.title'),
+      element: sectionRefs.upcomingSection.value,
+    }, {
+      id: 'season',
+      title: i18n.t('events.season.title'),
+      element: sectionRefs.seasonSection.value,
+    }, {
+      id: 'competition-winners',
+      title: i18n.t('tier-list.competition-winners.title'),
+      element: sectionRefs.competitionWinnersSection.value,
+    }])
+
     return {
+      ...sectionRefs,
+      sections,
       allEvents,
       currentEvents,
       upcomingEvents,
