@@ -9,6 +9,7 @@ const Axios = require('axios')
 const { promisify } = require('util')
 const stream = require('stream')
 const finished = promisify(stream.finished)
+const { dirname } = require('path')
 
 const DOMAIN = 'brawlstars.fandom.com'
 const OUT_DIR = "./out"
@@ -16,12 +17,15 @@ const BRAWLERS_DIR = "/brawlers/"
 const GADGETS_DIR = "/gadgets/"
 const STARPOWERS_DIR = "/starpowers/"
 
-let finishedBrawlers = []
-function printProgress(curPercentage, size, finishedBrawler) {
+function printProgress(curPercentage, size, step) {
   const dots = ".".repeat(Math.round(curPercentage*size))
   const left = size - Math.round(curPercentage*size)
   const empty = " ".repeat(left)
-  console.log(`[${dots}${empty}] ${Math.round(curPercentage*100)}% - ` + finishedBrawler)
+  console.log(`[${dots}${empty}] ${Math.round(curPercentage*100)}% - ${step}`)
+}
+
+function encodePath(path) {
+  return encodeURIComponent(path).replaceAll('%2F', '/')
 }
 
 async function main() {
@@ -64,83 +68,69 @@ async function main() {
     return gadgetNameToIdDict[bestMatch]
   }
 
+  const downloadQueue = []
+
   async function downloadFileToLocation(link, path) {
-    if (link) {
-      path = OUT_DIR + path
+    path = OUT_DIR + path
 
-      let actualSize = 0
-      try {
-        const fileMetadata = await fs.promises.stat(path)
-        actualSize = fileMetadata.size
-      } catch (err) {}
+    const parentFolder = dirname(path)
+    await fs.promises.mkdir(parentFolder, { recursive: true })
 
-      if (actualSize > 0) {
-        const httpMetadata = await Axios({
-          method: 'head',
-          url: link,
-        })
-        const expectedSize = parseInt(httpMetadata.headers['content-length'])
+    let actualSize = 0
+    try {
+      const fileMetadata = await fs.promises.stat(path)
+      actualSize = fileMetadata.size
+    } catch (err) {}
 
-        if (actualSize == expectedSize) {
-          // already downloaded
-          console.log('skipping', path)
-          return
-        }
-      }
-      console.log('downloading', path)
-
-      const writer = fs.createWriteStream(path);
-      return Axios({
-        method: 'get',
+    if (actualSize > 0) {
+      const httpMetadata = await Axios({
+        method: 'head',
         url: link,
-        responseType: 'stream',
-      }).then(response => {
-        // https://stackoverflow.com/a/61269447
-        response.data.pipe(writer);
-        return finished(writer);
-      });
+      })
+      const expectedSize = parseInt(httpMetadata.headers['content-length'])
+
+      if (actualSize == expectedSize) {
+        // already downloaded
+        return
+      }
     }
+    console.log('downloading', path)
+
+    const writer = fs.createWriteStream(path);
+    return Axios({
+      method: 'get',
+      url: link,
+      responseType: 'stream',
+    }).then(response => {
+      // https://stackoverflow.com/a/61269447
+      response.data.pipe(writer);
+      return finished(writer);
+    });
   }
 
   // iterate over all brawlers and scrape information
+  let progress = 0
+  console.log('Downloading Brawler information')
   for (const brawlerName of brawlerNames) {
-    let brawlerObj = await getBrawlerData(brawlerName)
-    await fs.promises.mkdir(OUT_DIR + brawlerObj.directory, { recursive: true });
-    // download skins
-    const skinCategories = brawlerObj.skins
-    for (const skinCategory of skinCategories) {
-      await fs.promises.mkdir(OUT_DIR + skinCategory.directory, { recursive: true });
-      const skins = skinCategory.skins
-      for (const skin of skins) {
-        await downloadFileToLocation(skin.link, skin.path)
-      }
-    }
-    // put default skin in main folder as model.png
-    if (brawlerObj.model) {
-      await downloadFileToLocation(brawlerObj.model.link, brawlerObj.model.path)
-    }
-    // put portrait in main folder as portrait.png
-    if (brawlerObj.avatar) {
-      await downloadFileToLocation(brawlerObj.avatar.link, brawlerObj.avatar.path)
-    }
-    // download voicelines
-    await fs.promises.mkdir(OUT_DIR + brawlerObj.voiceLineDirectory, { recursive: true });
-    const voiceLines = brawlerObj.voicelines
-    for (const voiceLine of voiceLines) {
-      await downloadFileToLocation(voiceLine.link, voiceLine.path)
-    }
-    // download pins
-    await fs.promises.mkdir(OUT_DIR + brawlerObj.pinDirectory, { recursive: true });
-    const pins = brawlerObj.pins
-    if (pins) {
-      for (const pin of pins) {
-        await downloadFileToLocation(pin.link, pin.path)
-      }
+    const brawlerObj = await getBrawlerData(brawlerName)
+
+    await fs.promises.mkdir(OUT_DIR + brawlerObj.directory, { recursive: true })
+    await fs.promises.writeFile(OUT_DIR + brawlerObj.directory + "data.json", JSON.stringify(brawlerObj))
+
+    printProgress(++progress / brawlerNames.length, 20, brawlerName)
+  }
+
+  // download all assets
+  progress = 0
+  for (const { link, path } of downloadQueue) {
+    if (link == undefined) {
+      console.error('Invalid link for path ' + path)
+      continue
     }
 
-    await fs.promises.writeFile(OUT_DIR + brawlerObj.directory + "data.json", JSON.stringify(brawlerObj))
-    finishedBrawlers.push(brawlerName)
-    printProgress(finishedBrawlers.length / brawlerNames.length, 20, brawlerName)
+    await downloadFileToLocation(link, path)
+
+    printProgress(++progress / downloadQueue.length, 20, '')
   }
 
   function getFirstParagraphFromSectionJson(sectionJson) {
@@ -157,6 +147,11 @@ async function main() {
     const skinFileName = skinName.replaceAll(" ", "_")
     const brawlerFileName = skinType.replaceAll(" ", "_")
     return links.find(link => link.includes(brawlerFileName) && link.includes(skinFileName))
+  }
+
+  function getAccessoryURLFromIndex(links, kind, brawlerName, index) {
+    const short = kind == 'gadgets' ? 'gd' : 'sp'
+    return links.find(link => link.toLowerCase().includes(`${short}-${brawlerName.toLowerCase()}${index+1}`))
   }
 
   function getAllLinksFromDoc(brawlerDoc) {
@@ -179,13 +174,16 @@ async function main() {
     const voiceLineElements = voiceLineSectionJson["templates"]
     return voiceLineElements.map(voiceLineElement => {
       const voiceLineFileName = voiceLineElement['filename'].replaceAll(" ", "_")
-      const voicLineLink = getVoiceLineURLFromName(brawlerDocLinks, voiceLineFileName)
+      const voiceLineLink = getVoiceLineURLFromName(brawlerDocLinks, voiceLineFileName)
       const voiceLineName = voiceLineElement['filename']
+      const path = brawlerVoicelineDirectory + voiceLineName
+
+      downloadQueue.push({ link: voiceLineLink, path })
+
       return {
         name: voiceLineName,
         description: voiceLineElement["filedescription"],
-        link: voicLineLink,
-        path: brawlerVoicelineDirectory + voiceLineName
+        path: encodePath(path),
       };
     });
   }
@@ -212,22 +210,22 @@ async function main() {
     const brawlerDirectory = BRAWLERS_DIR + brawlerId + "/"
     const brawlerVoicelineDirectory = brawlerDirectory + "voice-lines/"
     const brawlerPinDirectory = brawlerDirectory + "pins/"
+    const brawlerDescription = getFirstParagraphFromSectionJson(wtfBrawler.sections()[0].json())
 
-    const brawler = {}
-    brawler["id"] = brawlerId
-    brawler["url"] = brawlerUrl
-    brawler["name"] = brawlerName
-    brawler["directory"] = brawlerDirectory
-    brawler["voiceLineDirectory"] = brawlerVoicelineDirectory
-    brawler["pinDirectory"] = brawlerPinDirectory
-    brawler["description"] = getFirstParagraphFromSectionJson(wtfBrawler.sections()[0].json())
-    brawler["stats"] = {}
-    brawler["gadgets"] = []
-    brawler["starpowers"] = []
-    brawler["tips"] = []
-    brawler["voicelines"] = []
-    brawler["history"] = []
-    brawler["skins"] = []
+    const brawler = {
+      id: brawlerId,
+      url: brawlerUrl,
+      name: brawlerName,
+      directory: brawlerDirectory,
+      description: brawlerDescription,
+      stats: {},
+      gadgets: [],
+      starpowers: [],
+      tips: [],
+      voicelines: [],
+      history: [],
+      skins: [],
+    }
 
     // assign section ids
     let attackSectionID, superSectionID, gadgetSectionID, starPowerSectionID, tipSectionID, voiceLineSectionID, historySectionID, skinSectionID, lastSectionID
@@ -322,27 +320,60 @@ async function main() {
     }
 
     // gadgets
-    for (let i = gadgetSectionID+1; i < starPowerSectionID; i++) {
+    let gadgetCounter = 0
+    for (let i = gadgetSectionID; i < starPowerSectionID; i++) {
       const gadgetSection = wtfBrawler.sections()[i].json()
-      const gadgetName = gadgetSection["title"]
-      const gadgetId = getIdFromGadgetName(gadgetName)
+      const name = gadgetSection["title"]
+
+      if (name == 'Gadgets') {
+        // pages with only 1 gadget have the gadget section at top level,
+        // pages with 2 have 1 section with 2 child sections
+        // if the section title is 'Gadgets', this is the parent section - skip it
+        continue
+      }
+
+      const id = getIdFromGadgetName(name)
+      const description = getFirstParagraphFromSectionJson(gadgetSection)
+      const link = getAccessoryURLFromIndex(brawlerDocLinks, 'gadgets', brawler.name, gadgetCounter)
+      const path = GADGETS_DIR + id + ".png"
       brawler["gadgets"].push({
-        name: gadgetName,
-        description: getFirstParagraphFromSectionJson(gadgetSection),
-        id: gadgetId
+        name,
+        description,
+        id,
+        path: encodePath(path),
       })
+
+      downloadQueue.push({ link, path })
+
+      gadgetCounter++
     }
 
     // star powers
-    for (let i = starPowerSectionID+1; i < tipSectionID; i++) {
+    let starpowerCounter = 0
+    for (let i = starPowerSectionID; i < tipSectionID; i++) {
       const starPowerSection = wtfBrawler.sections()[i].json()
-      const starpowerName = starPowerSection['title']
-      const starpowerId = getIdFromStarpowerName(starpowerName)
+      const name = starPowerSection['title']
+      if (name == 'Star Powers') {
+        // pages with only 1 star power have the star power section at top level,
+        // pages with 2 have 1 section with 2 child sections
+        // if the section title is 'Star Powers', this is the parent section - skip it
+        continue
+      }
+
+      const description = getFirstParagraphFromSectionJson(starPowerSection)
+      const id = getIdFromStarpowerName(name)
+      const link = getAccessoryURLFromIndex(brawlerDocLinks, 'starpowers', brawler.name, starpowerCounter)
+      const path = STARPOWERS_DIR + id + ".png"
       brawler["starpowers"].push({
-        name: starpowerName,
-        description: getFirstParagraphFromSectionJson(starPowerSection),
-        id: starpowerId
+        name,
+        description,
+        id,
+        path: encodePath(path),
       })
+
+      downloadQueue.push({ link, path })
+
+      starpowerCounter++
     }
 
     // tips
@@ -399,23 +430,32 @@ async function main() {
         if (skinElementKey.includes("name")) {
           const id = skinElementKey.replace("name", "")
           const skinName = skinsElements[skinElementKey]
+          const link = getSkinURLFromName(brawlerDocLinks, skinType, skinName)
+          const path = SKIN_CATEGORY_PATH + skinName + ".png"
+
+          downloadQueue.push({ link, path })
+
           return {
             name: skinName,
             cost: skinsElements['cost' + id],
             campaign: skinsElements['campaign' + id],
-            link: getSkinURLFromName(brawlerDocLinks, skinType, skinName),
-            path: SKIN_CATEGORY_PATH + skinName + ".png"
+            path: encodePath(path),
           }
         }
-      });
+      })
+
       // default skin
+      const defaultSkinLink = getSkinURLFromName(brawlerDocLinks, skinType, "Default")
+      const defaultSkinPath = SKIN_CATEGORY_PATH + "Default" + ".png"
       const defaultSkin = {
         name: "Default",
         cost: undefined,
         campaign: undefined,
-        link: getSkinURLFromName(brawlerDocLinks, skinType, "Default"),
-        path: SKIN_CATEGORY_PATH + "Default" + ".png"
+        path: encodePath(defaultSkinPath),
       }
+
+      downloadQueue.push({ link: defaultSkinLink, path: defaultSkinPath })
+
       skins.unshift(defaultSkin)
       // add skins to skinCategory
       return {
@@ -427,16 +467,18 @@ async function main() {
     brawler["skins"] = skinCategories
 
     // model / default skin
-    brawler["model"] = {
-      link: getSkinURLFromName(brawlerDocLinks, brawlerName, "Default"),
-      path: brawlerDirectory + "model.png"
-    }
+    const modelLink = getSkinURLFromName(brawlerDocLinks, brawlerName, "Default")
+    const modelPath = brawlerDirectory + "model.png"
+    downloadQueue.push({ link: modelLink, path: modelPath })
+
+    brawler["model"] = { path: encodePath(modelPath) }
 
     // portrait
-    brawler["avatar"] = {
-      link: getSkinURLFromName(brawlerDocLinks, brawlerName, "Portrait"),
-      path: brawlerDirectory + "avatar.png"
-    }
+    const portraitLink = getSkinURLFromName(brawlerDocLinks, brawlerName, "Portrait")
+    const portraitPath = brawlerDirectory + "avatar.png"
+    downloadQueue.push({ link: portraitLink, path: portraitPath })
+
+    brawler["avatar"] = { path: encodePath(portraitPath) }
 
     // pins (russian)
     if (brawlerUrlRU) {
@@ -448,10 +490,13 @@ async function main() {
         pinName = pinName.split("_")[pinName.split("_").length -1]
         if (!addedPins.includes(pinName)) {
           addedPins.push(pinName)
+          const path = brawlerPinDirectory + pinName
+
+          downloadQueue.push({ link: pinLink, path })
+
           return {
             name: pinName,
-            link: pinLink,
-            path: brawlerPinDirectory + pinName
+            path: encodePath(path),
           }
         }
       })
