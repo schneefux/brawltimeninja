@@ -205,15 +205,29 @@ export default defineComponent({
     onMounted(updateObservers)
     watch(validSections, () => nextTick(updateObservers))
 
-    onMounted(() => nextTick(() => {
-      if (window.location.hash.length > 0) {
-        const sectionId = window.location.hash.slice(1)
-        const section = validSections.value.find(s => s.id == sectionId)
-        if (section != undefined) {
-          scrollTo(section)
-        }
+    let attempts = 0
+    const scrollToSectionId = (id: string) => {
+      const section = validSections.value.find(s => s.id == id)
+      if (section != undefined) {
+        scrollTo(section)
       }
-    }))
+
+      // scrolling might trigger intersection observers, check again after a few ms
+      setTimeout(() => {
+        // if the section is still not visible, try again
+        if (activeSectionId.value != id && attempts++ < 4) {
+          scrollToSectionId(id)
+        }
+      }, 500) // 500ms because smooth scroll has a delay
+    }
+
+    onMounted(() => {
+      const hash = window.location.hash
+      if (hash.length > 0) {
+        const sectionId = hash.slice(1)
+        scrollToSectionId(sectionId)
+      }
+    })
 
     const toc = ref<HTMLElement>()
     const shouldStick = ref(false)
