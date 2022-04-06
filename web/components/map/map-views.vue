@@ -2,7 +2,7 @@
   <c-dashboard
     v-model="query"
     :elevation="1"
-    :slicer-components="['s-season', 's-trophies', 's-powerplay']"
+    :slicer-components="['s-mode-map', 's-season', 's-trophies', 's-powerplay']"
     class="lg:justify-center"
     slicer
   >

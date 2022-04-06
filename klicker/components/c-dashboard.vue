@@ -1,3 +1,4 @@
+
 <template>
   <div class="space-y-4">
     <div
@@ -27,6 +28,7 @@
         :class="{
           'lg:col-start-2': configurator,
         }"
+        v-on:input="onInput($event)"
       ></c-slicer>
 
       <c-slicer
@@ -82,7 +84,8 @@
 </template>
 
 <script lang="ts">
-import { CubeQuery } from '../types'
+import { slugify } from '../../web/lib/util'
+import { CubeQuery, SliceValueUpdateListener } from '../types'
 import CQuery from './c-query'
 import CConfigurator from './c-configurator.vue'
 import CSlicer from './c-slicer.vue'
@@ -137,6 +140,15 @@ export default defineComponent({
       type: String,
       default: 'dashboard--responsive'
     },
+  },
+  methods: {
+    onInput(q: CubeQuery) {
+      const [map] = q.slices.map
+      const [mode] = q.slices.mode
+      if (map && mode) {
+        this.$router.replace(`/tier-list/mode/${slugify(mode)}/map/${slugify(map)}`)
+      }
+    }
   },
   setup(props, { emit, slots }) {
     const { $klicker } = useKlicker()
