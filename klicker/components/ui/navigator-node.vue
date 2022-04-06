@@ -1,6 +1,6 @@
 <template>
   <ul
-    v-if="links.length > 0"
+    v-show="links.length > 0"
     class="grid gap-y-2 gap-x-2 grid-cols-[1.5rem,1fr]"
     role="group"
   >
@@ -39,9 +39,9 @@
         {{ link.name }}
       </span>
       <navigator-node
-        v-if="link.children != undefined && link.children.length > 0 && expandedLinks[link.id]"
+        v-if="link.children != undefined && link.children.length > 0"
         :id="`${prefix}-group`"
-        :links="link.children"
+        :links="expandedLinks[link.id] ? link.children : []"
         :expand-by-default="expandByDefault"
         class="ml-8 col-span-full"
       >

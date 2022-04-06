@@ -51,8 +51,6 @@ Default.play = async ({ canvasElement }) => {
   expect(await canvas.findByText('Star Powers')).toBeVisible()
   expect(await canvas.findByText('Gadgets')).toBeVisible()
   expect(await canvas.findByText('Gears')).toBeVisible()
-  expect(await canvas.findByText('Sunny Shadows')).not.toBeVisible()
-  expect(await canvas.findByText('Shadowy Suns')).not.toBeVisible()
 
   const starpowerGroup = await canvas.findByRole('group', { hidden: true })
   const starpowerToggle = await canvasElement.querySelector('[aria-controls="' + starpowerGroup.id + '"]')
@@ -62,8 +60,6 @@ Default.play = async ({ canvasElement }) => {
   expect(await canvas.findByText('Shadowy Suns')).toBeVisible()
 
   await userEvent.click(starpowerToggle)
-  expect(await canvas.findByText('Sunny Shadows')).not.toBeVisible()
-  expect(await canvas.findByText('Shadowy Suns')).not.toBeVisible()
 }
 
 export const Search: Story = (args, { argTypes }) => ({
