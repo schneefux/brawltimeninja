@@ -103,7 +103,7 @@ export default defineComponent({
   head: {},
   setup() {
     const { $http, $config, i18n, $klicker } = useContext()
-    const events = useAsync(() => $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active'))
+    const events = useAsync(() => $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active'), 'events')
     const currentEvents = computed<EventMetadata[]>(() => (events.value?.current ?? []).map(e => ({
       id: parseInt(e.id),
       map: e.map,
@@ -111,7 +111,7 @@ export default defineComponent({
       key: `${e.id}-${e.mode}-${e.map}`,
       metrics: {},
       powerplay: false,
-    })))
+    })).filter((event, index, all) => all.findIndex(e => e.key == event.key) == index))
     const upcomingEvents = computed<EventMetadata[]>(() => (events.value?.upcoming ?? []).map(e => ({
       id: parseInt(e.id),
       map: e.map,
@@ -119,7 +119,7 @@ export default defineComponent({
       key: `${e.id}-${e.mode}-${e.map}`,
       metrics: {},
       powerplay: false,
-    })))
+    })).filter((event, index, all) => all.findIndex(e => e.key == event.key) == index))
 
     const allEvents = useAsync(() => $klicker.queryAllEvents({}), 'all-events')
 
