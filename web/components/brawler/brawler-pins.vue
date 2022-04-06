@@ -10,7 +10,7 @@
         >
           <div class="h-full flex flex-col items-center justify-center relative">
             <media-img
-              :path="encodeURIComponent(pin.path).replaceAll('%2F', '/').replace(/\.(png|gif)/, '')"
+              :path="pin.path.replace(/\.(png|gif)/, '')"
               :alt="pin.name"
               :animated="pin.path.endsWith('.gif')"
               clazz="max-h-20"

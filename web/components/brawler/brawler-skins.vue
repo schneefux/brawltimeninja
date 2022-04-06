@@ -17,7 +17,7 @@
           class="h-full flex flex-col items-center justify-between"
         >
           <media-img
-            :path="encodeURIComponent(skin.path).replaceAll('%2F', '/').replace(/\.(png|gif)/, '')"
+            :path="skin.path.replace(/\.(png|gif)/, '')"
             :alt="skin.name"
             clazz="max-h-48"
             size="400"
