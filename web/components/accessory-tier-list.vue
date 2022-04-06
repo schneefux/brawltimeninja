@@ -77,7 +77,7 @@
 import { CubeComparingQuery } from '@schneefux/klicker/types'
 import { defineComponent, computed, ref, PropType } from '@nuxtjs/composition-api'
 import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, CDashboardCell } from '@schneefux/klicker/components'
-import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {

@@ -68,7 +68,7 @@
 import { defineComponent, ref, useContext, useMeta } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv, BPageSection, CDashboardCell } from '@schneefux/klicker/components'
-import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {

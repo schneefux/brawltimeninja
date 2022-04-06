@@ -51,7 +51,7 @@ import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composit
 import { CGrid, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
-import { formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd } from '~/lib/util'
+import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
 
 export default defineComponent({
