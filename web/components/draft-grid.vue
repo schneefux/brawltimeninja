@@ -29,12 +29,12 @@
           </button>
 
           <b-button
-            v-if="team.length > 0"
-            @click="clearTeam()"
+            v-show="team.length > 0"
             class="mb-auto"
             primary
             round
             xs
+            @click="clearTeam()"
           >
             <font-awesome-icon
               :icon="faTimes"

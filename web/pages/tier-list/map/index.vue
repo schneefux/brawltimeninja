@@ -70,6 +70,17 @@
       <events-roll :events="allEvents"></events-roll>
     </b-page-section>
 
+    <b-page-section
+      :title="$t('tier-list.competition-winners.title')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('competition-winners'),
+        once: true,
+      }"
+      lazy
+    >
+      <competition-winner-roll></competition-winner-roll>
+    </b-page-section>
+
     <ad
       ad-slot="3577381889"
       lazy
@@ -79,7 +90,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
-import { formatAsJsonLd, getSeasonEnd, unformatMode } from '@/lib/util'
+import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
 import { EventMetadata } from '~/plugins/klicker'
