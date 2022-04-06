@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { slugify } from '../../web/lib/util'
+import { deslugify, slugify } from '../../web/lib/util'
 import { CubeQuery, SliceValueUpdateListener } from '../types'
 import CQuery from './c-query'
 import CConfigurator from './c-configurator.vue'
@@ -143,10 +143,24 @@ export default defineComponent({
   },
   methods: {
     onInput(q: CubeQuery) {
-      const [map] = q.slices.map
-      const [mode] = q.slices.mode
-      if (map && mode) {
-        this.$router.replace(`/tier-list/mode/${slugify(mode)}/map/${slugify(map)}`)
+      const { params: currentParams, query: currentQuery } = this.$router.currentRoute;
+
+      const {
+        map: [newMap],
+        mode: [newMode],
+        trophyRangeGte: [newTrophyGte],
+        trophyRangeLt: [newTrophyLt],
+      } = { map: [], mode: [], trophyRangeGte: [], trophyRangeLt: [], ...q.slices}; // TODO: cleanup
+
+      const newTrophyRange = newTrophyGte ?
+        `${Number(newTrophyGte) * 100}-${Number(newTrophyLt) * 100}` :
+        undefined
+      const needUpdateTrophyQuery = newTrophyRange && (!currentQuery.trophies || currentQuery.trophies !== newTrophyRange)
+
+      if (newMode && newMap && newMap !== deslugify(currentParams.map)) {
+        this.$router.replace({ path: `/tier-list/mode/${slugify(newMode)}/map/${slugify(newMap)}`, query: currentQuery })
+      } else if (needUpdateTrophyQuery) {
+        this.$router.replace({ query: { trophies: newTrophyRange }})
       }
     }
   },

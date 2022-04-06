@@ -330,9 +330,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { $klicker, route } = useContext()
 
     function defaultQuery(): CubeQuery {
+      const [
+        trophyRangeGte = '0',
+        trophyRangeLt = '15'
+      ] = (route.value.query.trophies as string || '').split('-').map(t => `${Number(t) / 100}`)
       return {
         cubeId: 'battle',
         dimensionsIds: ['brawler'],
@@ -341,7 +345,8 @@ export default defineComponent({
           season: [formatClickhouseDate(getMonthSeasonEnd())],
           mode: props.mode != undefined ? [props.mode] : [],
           map: props.map != undefined ? [props.map] : [],
-          trophyRangeGte: ['0'],
+          trophyRangeGte: [trophyRangeGte],
+          trophyRangeLt: [trophyRangeLt],
           powerplay: [],
         },
         sortId: 'brawler',

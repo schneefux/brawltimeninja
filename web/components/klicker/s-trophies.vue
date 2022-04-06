@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useRoute } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
@@ -23,15 +23,12 @@ export default defineComponent({
   setup(props) {
     const model = computed({
       get() {
-        const gte = props.value.trophyRangeGte != undefined ? props.value.trophyRangeGte[0] : undefined
-        const lt = props.value.trophyRangeLt != undefined ? props.value.trophyRangeLt[0] : undefined
-
         return {
-          gte: gte != undefined ? parseInt(gte) : undefined,
-          lt: lt != undefined ? parseInt(lt) : undefined,
+          gte: parseInt(props.value.trophyRangeGte?.[0] as string) || undefined,
+          lt: parseInt(props.value.trophyRangeLt?.[0] as string) || undefined,
         }
       },
-      set(v: { gte: number|undefined, lt: number|undefined }) {
+      set(v: { gte?: number, lt?: number }) {
         props.onInput({
           trophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
           trophyRangeLt: v.lt != undefined ? [v.lt.toString()] : [],
