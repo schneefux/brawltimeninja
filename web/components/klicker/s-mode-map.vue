@@ -5,6 +5,7 @@
       v-model="mode"
       dark
       sm
+      @input="/*v => onInput({ map: [v], mode: [mode] })*/"
     >
       <option value="">{{ $t('option.all-modes') }}</option>
       <option
@@ -20,6 +21,7 @@
       :class="{ 'hidden': mode == undefined }"
       dark
       sm
+      @input="/*v => onInput({ map: [map], mode: [v] })*/"
     >
       <option value="">{{ $t('option.all-maps') }}</option>
       <option
