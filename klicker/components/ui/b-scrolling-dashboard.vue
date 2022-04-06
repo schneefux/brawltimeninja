@@ -64,7 +64,7 @@ import { defineComponent, ref, onMounted } from 'vue-demi'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
-import { useScroll, useResizeObserver } from '@vueuse/core'
+import { useScroll, useResizeObserver, useMutationObserver } from '@vueuse/core'
 
 /**
  * Horizontally-scrolling dashboard that renders scroll hints
@@ -118,6 +118,9 @@ export default defineComponent({
       updateArrivedStates()
     })
     useResizeObserver(container, () => updateArrivedStates())
+    useMutationObserver(container, () => updateArrivedStates(), {
+      childList: true,
+    })
 
     return {
       scrollTo,
