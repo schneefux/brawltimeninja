@@ -3,19 +3,11 @@
     v-if="event != undefined"
     :title="$t('tier-list.map.title', { map: mapName })"
   >
-    <breadcrumbs
-      :links="[{
-        path: '/tier-list/map',
-        name: $tc('map', 2),
-      }, {
-        path: modePath,
-        name: $t('mode.' + event.mode),
-      }, {
-        path: mapPath,
-        name: mapName,
-      }]"
-      class="mt-4"
-    ></breadcrumbs>
+    <mode-map-jumper
+      :mode="event.mode"
+      :map="event.map"
+      :id="event.id"
+    ></mode-map-jumper>
 
     <div>
       <p class="prose dark:prose-invert">
@@ -34,8 +26,8 @@
     <b-page-section>
       <b-split-dashboard>
         <event-picture-card
-          slot="aside"
           v-if="showImage"
+          slot="aside"
           :mode="event.mode"
           :map="event.map"
           :id="event.id"
@@ -59,10 +51,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, toRefs } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
-import { BSplitDashboard } from '@schneefux/klicker/components'
+import { BSplitDashboard, BCard } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
+import { SliceValue } from '~/../klicker/types'
 
 interface Map {
   id: string
@@ -74,6 +67,7 @@ interface Map {
 export default defineComponent({
   components: {
     BSplitDashboard,
+    BCard,
   },
   head: {},
   setup() {
@@ -126,8 +120,6 @@ export default defineComponent({
     })
 
     const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
-    const modePath = computed(() => event.value == undefined ? '' : `/tier-list/mode/${camelToKebab(event.value.mode)}`)
-    const mapPath = computed(() => event.value == undefined ? '' : `${modePath.value}/map/${slugify(event.value.map)}`)
 
     const mapName = computed(() => {
       if (event.value != undefined) {
@@ -139,8 +131,6 @@ export default defineComponent({
       event,
       mapName,
       showImage,
-      modePath,
-      mapPath,
     }
   },
   meta: {

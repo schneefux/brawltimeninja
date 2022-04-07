@@ -1,6 +1,9 @@
 <template>
-  <b-fake-select dark>
-    <span slot="preview" class="w-full text-left">
+  <b-fake-select>
+    <span
+      slot="preview"
+      class="w-full text-left"
+    >
       {{ format(value[0]) }}-{{ format(value[1]) }}
       {{ name }}
     </span>

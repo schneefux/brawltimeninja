@@ -1,5 +1,5 @@
 <template>
-  <b-fake-select dark>
+  <b-fake-select>
     <template v-slot:preview>
       {{ formattedValue }}
     </template>

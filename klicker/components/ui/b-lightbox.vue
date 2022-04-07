@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="value"
-    class="fixed inset-0 z-50 bg-gray-900 bg-opacity-75"
+    class="fixed inset-0 z-50 bg-gray-900/75 overscroll-contain"
   >
     <button
       class="absolute top-0 right-0 mr-10 mt-4 text-white text-5xl"

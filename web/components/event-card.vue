@@ -8,7 +8,9 @@
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
+    :icon-alt="$t('mode.' + mode)"
     v-bind="$attrs"
+    v-on="$listeners"
   >
     <template v-slot:icon="data">
       <media-img-icon v-bind="data"></media-img-icon>

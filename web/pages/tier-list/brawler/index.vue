@@ -1,5 +1,7 @@
 <template>
   <b-page :title="$t('tier-list.brawler.title')">
+    <mode-map-jumper></mode-map-jumper>
+
     <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.brawler.description') }}
     </p>

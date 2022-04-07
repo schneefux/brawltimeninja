@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="modes.length > 2"
-      class="flex flex-wrap"
+      class="flex overflow-x-auto"
     >
       <button
         v-for="(mode, index) in modes"
@@ -13,7 +13,7 @@
           'bg-primary-400 text-gray-800': mode == modeFilter,
           'bg-white/[0.1]': mode != modeFilter,
         }]"
-        class="border-r-2 border-t-2 border-b-2 border-white/[0.1] w-12 h-12 flex justify-center items-center"
+        class="border-r-2 border-t-2 border-b-2 border-white/[0.1] w-12 h-12 flex justify-center items-center flex-shrink-0"
         @click="modeFilter = mode"
       >
         <span v-if="mode == 'all'">{{ $t('option.all') }}</span>
@@ -26,16 +26,12 @@
       </button>
     </div>
 
-    <div
+    <b-textbox
       v-if="events.length >= 20"
-      class="mt-4 space-x-4"
-    >
-      <b-textbox
-        v-model="nameFilter"
-        :placeholder="$tc('map', 1)"
-        dark
-      ></b-textbox>
-    </div>
+      v-model="nameFilter"
+      :placeholder="$tc('map', 1)"
+      class="mt-8"
+    ></b-textbox>
 
     <b-scrolling-list
       :items="filteredEvents"
@@ -92,9 +88,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    modeFilterDefault: {
+      type: String,
+      default: 'all'
+    },
   },
   setup(props) {
-    const modeFilter = ref('all')
+    const modeFilter = ref(props.modeFilterDefault)
     const modes = computed(() =>
       [...new Set(['all', ...props.events.map(e => e.mode).sort()])]
     )

@@ -5,13 +5,13 @@
       'lg:grid-cols-[16rem,minmax(0,1fr)]': 'aside' in $scopedSlots,
     }"
   >
-    <div>
+    <div class="relative z-20">
       <div class="lg:sticky lg:top-0 max-w-md">
         <slot name="aside"></slot>
       </div>
     </div>
 
-    <div>
+    <div class="relative z-10">
       <slot></slot>
     </div>
   </div>

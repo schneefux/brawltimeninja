@@ -1,15 +1,8 @@
 <template>
   <b-page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
-    <breadcrumbs
-      :links="[{
-        path: '/tier-list/map',
-        name: $tc('map', 2),
-      }, {
-        path: modePath,
-        name: $t('mode.' + mode),
-      }]"
-      class="mt-4"
-    ></breadcrumbs>
+    <mode-map-jumper
+      :mode="mode"
+    ></mode-map-jumper>
 
     <p class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}

@@ -31,9 +31,10 @@
         'shadow-xl': elevation == 4,
         'relative loading': loading,
         'cursor-pointer': link != undefined,
+        'backdrop-blur': !noFilter,
       }"
-      class="flex flex-col rounded-2xl backdrop-blur"
-      @click="link != undefined ? $router.push(link) : undefined"
+      class="flex flex-col rounded-2xl"
+      @click="onClick"
     >
       <div
         v-if="'infobar' in $scopedSlots"
@@ -57,6 +58,7 @@
           'grid-cols-[1fr,auto]': !('icon' in $scopedSlots || icon != undefined),
         }]"
         class="shrink-0 grid items-center overflow-hidden text-gray-800 dark:text-gray-200"
+        @click.stop="onClickHeader"
       >
         <slot
           name="icon"
@@ -80,17 +82,17 @@
             }"
           >
             <router-link
-              v-if="typeof titleLink === 'string' || typeof link === 'string'"
+              v-if="titleLink != undefined || link != undefined"
               v-slot="{ href, navigate }"
               :to="titleLink || link"
               class="contents"
               custom
             >
-              <a :href="href" @click.stop="navigate">{{ title }}</a>
+              <a
+                :href="href"
+                @click.stop="e => onClickLink() || navigate(e)"
+              >{{ title }}</a>
             </router-link>
-            <button v-else-if="typeof titleLink === 'function'" @click="titleLink">
-              {{ title }}
-            </button>
             <template v-else>
               {{ title }}
             </template>
@@ -110,7 +112,10 @@
               class="contents"
               custom
             >
-              <a :href="href" @click.stop="navigate">{{ subtitle }}</a>
+              <a
+                :href="href"
+                @click.stop="e => onClickLink() || navigate(e)"
+              >{{ subtitle }}</a>
             </router-link>
             <template v-else>
               {{ subtitle }}
@@ -156,6 +161,7 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, computed } from 'vue-demi'
 import { useUniqueId } from '../../composables/id'
 
@@ -260,12 +266,62 @@ export default defineComponent({
     loading: {
       type: Boolean
     },
+    noFilter: {
+      // workaround for https://stackoverflow.com/a/52937920
+      type: Boolean,
+      default: false
+    },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, listeners }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
     const { id: prefix } = useUniqueId()
 
+    const router = useRouter()
+
+    /*
+     * click event priority:
+     *   1. @click header handler
+     *   2. @click handler
+     *   3. clicking on a link
+     *   4. default card link
+     */
+
+    const onClick = () => {
+      if (listeners.click != undefined) {
+        listeners.click()
+        return true
+      }
+
+      if (props.link != undefined) {
+        router.push(props.link)
+        return true
+      }
+
+      return false
+    }
+
+    const onClickLink = () => {
+      if (listeners.click != undefined) {
+        listeners.click()
+        return true
+      }
+
+      return false
+    }
+
+    const onClickHeader = () => {
+      if (listeners.clickHeader != undefined) {
+        listeners.clickHeader()
+        return true
+      }
+
+      return onClick()
+    }
+
     return {
+      onClick,
+      onClickLink,
+      onClickHeader,
       renderTitle,
       prefix,
     }

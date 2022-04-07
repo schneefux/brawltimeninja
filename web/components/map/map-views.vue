@@ -2,7 +2,7 @@
   <c-dashboard
     v-model="query"
     :elevation="1"
-    :slicer-components="['s-mode-map', 's-season', 's-trophies', 's-powerplay']"
+    :slicer-components="['s-season', 's-trophies', 's-powerplay']"
     class="lg:justify-center"
     slicer
   >
@@ -333,17 +333,17 @@ export default defineComponent({
   },
   setup(props) {
     const defaultQuery = computed<CubeQuery>(() => ({
-        cubeId: 'battle',
-        dimensionsIds: ['brawler'],
-        metricsIds: [],
-        slices: {
-          season: [formatClickhouseDate(getMonthSeasonEnd())],
-          mode: props.mode != undefined ? [props.mode] : [],
-          map: props.map != undefined ? [props.map] : [],
+      cubeId: 'battle',
+      dimensionsIds: ['brawler'],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+        mode: props.mode != undefined ? [props.mode] : [],
+        map: props.map != undefined ? [props.map] : [],
         trophyRangeGte: [],
-          powerplay: [],
-        },
-        sortId: 'brawler',
+        powerplay: [],
+      },
+      sortId: 'brawler',
     }))
 
     const query = useSyncSlicesAndRoute(defaultQuery)

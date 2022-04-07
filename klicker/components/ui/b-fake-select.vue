@@ -13,7 +13,7 @@
           'bg-gray-200 dark:bg-gray-800': dropdownOpen,
           'bg-black/5 dark:bg-white/5': !dropdownOpen,
         }]"
-      @click="dropdownOpen = !dropdownOpen"
+      @click="toggleDropdown"
     >
       <slot name="preview"></slot>
       <!-- Tailwind Heroicon name: chevron-down -->
@@ -33,6 +33,7 @@
 
     <!-- rerender because slider is buggy -->
     <div
+      v-if="'default' in $scopedSlots"
       v-show="dropdownOpen"
       :key="dropdownOpen"
       class="absolute ring-2 ring-black/10 dark:ring-white/10 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-gray-200 dark:bg-gray-800 z-10"
@@ -47,15 +48,24 @@ import { defineComponent, ref } from 'vue-demi'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
-  setup() {
+  setup(props, { emit }) {
     const container = ref<HTMLElement>()
     const dropdownOpen = ref(false)
 
     onClickOutside(container, () => dropdownOpen.value = false)
 
+    const toggleDropdown = () => {
+      dropdownOpen.value = !dropdownOpen.value
+
+      if (dropdownOpen.value) {
+        emit('open')
+      }
+    }
+
     return {
       container,
       dropdownOpen,
+      toggleDropdown,
     }
   },
 })

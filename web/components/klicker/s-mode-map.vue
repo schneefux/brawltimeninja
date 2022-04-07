@@ -1,42 +1,91 @@
 <template>
-  <div class="contents">
-    <b-select
-      v-if="modes != undefined"
-      v-model="mode"
-      dark
-      sm
-    >
-      <option value="">{{ $t('option.all-modes') }}</option>
-      <option
-        v-for="mode in modes"
-        :key="mode"
-        :value="mode"
-      >{{ $t('mode.' + mode) }}</option>
-    </b-select>
+  <div>
+    <b-fake-select @open="lightboxOpen = true">
+      <span
+        slot="preview"
+        class="w-full text-left"
+      >
+        {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
+      </span>
+    </b-fake-select>
 
-    <b-select
-      v-if="maps != undefined"
-      v-model="map"
-      :class="{ 'hidden': mode == undefined }"
-      dark
-      sm
+    <b-lightbox
+      v-model="lightboxOpen"
+      class="top-14 lg:top-20 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-5rem)] overscroll-contain"
     >
-      <option value="">{{ $t('option.all-maps') }}</option>
-      <option
-        v-for="map in maps"
-        :key="map.battle_event_map"
-        :value="map.battle_event_map"
-      >{{ mapName(map.battle_event_id, map.battle_event_map) }}</option>
-    </b-select>
+      <b-card
+        class="w-full"
+        :elevation="0"
+      >
+        <events-roll
+          slot="content"
+          v-if="allEvents != undefined"
+          :events="allEvents"
+          :mode-filter-default="mode"
+        >
+          <template v-slot="{ event }">
+            <event-picture-card
+              v-if="!event.key.startsWith('all')"
+              :mode="event.mode"
+              :map="event.map"
+              :id="event.id"
+              :class="{
+                'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
+              }"
+              @click="onSelectModeMap({ mode: event.mode, map: event.map })"
+            ></event-picture-card>
+            <event-card
+              v-else-if="event.key != 'all'"
+              :mode="event.mode"
+              :class="{
+                'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
+              }"
+              nobackground
+              full-height
+              @click="onSelectModeMap({ mode: event.mode })"
+            >
+              <template v-slot:preview></template>
+              <p
+                slot="content"
+                class="pt-4 h-full flex flex-col justify-center items-center"
+              >
+                {{ $t('option.all-maps') }}
+              </p>
+            </event-card>
+            <b-card
+              v-else
+              :class="{
+                'bg-primary-400 rounded-2xl': mode == 'all' && map == 'all',
+              }"
+              full-height
+              @click="onSelectModeMap({})"
+            >
+              <p
+                slot="content"
+                class="pt-4 h-full flex flex-col justify-center items-center"
+              >
+                {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
+              </p>
+            </b-card>
+          </template>
+        </events-roll>
+      </b-card>
+    </b-lightbox>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useAsync, useContext } from '@nuxtjs/composition-api'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
+import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
+import { EventMetadata } from '~/plugins/klicker'
 
 export default defineComponent({
+  components: {
+    BFakeSelect,
+    BLightbox,
+  },
   props: {
     value: {
       type: Object as PropType<SliceValue>,
@@ -50,47 +99,73 @@ export default defineComponent({
   setup(props) {
     const { $klicker, i18n } = useContext()
 
-    const mode = computed({
-      get(): string {
-        return (props.value.mode || {})[0] || ''
-      },
-      set(v: string) {
-        props.onInput({
-          mode: v != '' ? [v] : [],
-          map: [],
-        })
-      },
+    const mode = computed(() => (props.value.mode ?? [])[0])
+    const map = computed(() => (props.value.map ?? [])[0])
+
+    const allEvents = useAsync<EventMetadata[]>(async () => {
+      const events = await $klicker.queryAllEvents({})
+      const modes = [...new Set(events.map(e => e.mode))]
+      return (<EventMetadata[]>[]).concat(
+        [{
+          key: 'all',
+          id: 0,
+          map: i18n.t('option.all-modes') as string,
+          mode: 'all',
+          powerplay: false,
+          metrics: {},
+        }],
+        modes.map(m => ({
+          key: `all-${m}`,
+          id: 0,
+          map: i18n.t('option.all-maps') as string,
+          mode: m,
+          powerplay: false,
+          metrics: {},
+        })),
+        events,
+      )
+    }, 's-mode-map-all-events')
+
+    const mapName = computed(() => {
+      const map = (props.value.map ?? [])[0]
+      if (map == undefined) {
+        return ''
+      }
+
+      const mode = (props.value.mode ?? [])[0]
+      if (mode == undefined) {
+        return ''
+      }
+
+      if (allEvents.value == undefined) {
+        return map
+      }
+
+      const mapRecord = allEvents.value.find(e => e.map == map && e.mode == mode)
+      if (mapRecord == undefined) {
+        return map
+      }
+
+      return getMapName(i18n, mapRecord.id, map)
     })
 
-    const map = computed({
-      get(): string {
-        return (props.value.map || {})[0] || ''
-      },
-      set(v: string) {
-        props.onInput({
-          map: v != '' ? [v] : [],
-        })
-      },
-    })
-
-    async function getMaps(): Promise<{ battle_event_map: string, battle_event_id: number }[]> {
-      const maps = await $klicker.queryAllMaps(mode.value == '' ? undefined : mode.value)
-      return maps.sort((m1, m2) => (i18n.t('map.' + m1.battle_event_id) as string).localeCompare(i18n.t('map.' + m2.battle_event_id) as string))
+    const onSelectModeMap = (value: { mode?: string, map?: string }) => {
+      props.onInput({
+        mode: value.mode != undefined ? [value.mode] : [],
+        map: value.map != undefined ? [value.map] : [],
+      })
+      lightboxOpen.value = false
     }
 
-    const maps = useAsync(() => getMaps())
-    const modes = useAsync(() => $klicker.queryAllModes())
-
-    watch(() => [props.value, i18n.locale], async () => maps.value = await getMaps())
-
-    const mapName = (id: string, map: string) => getMapName(i18n, id, map)
+    const lightboxOpen = ref(false)
 
     return {
-      mapName,
       mode,
       map,
-      modes,
-      maps,
+      onSelectModeMap,
+      allEvents,
+      lightboxOpen,
+      mapName,
     }
   },
 })

@@ -2,13 +2,15 @@
   <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
     class="relative z-10"
-    v-bind="{ ...card, title, titleLink: toggleFilters }"
+    v-bind="{ ...card, title }"
+    no-filter
+    @clickHeader="toggleFilters"
   >
     <button
       slot="preview"
       :selected="showFilters"
       class="md:hidden w-10"
-      @click="toggleFilters"
+      @click.stop="toggleFilters"
     >
       <font-awesome-icon
         :icon="faFilter"
@@ -210,6 +212,8 @@ export default defineComponent({
 
     const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
+    const toggleFilters = () => showFilters.value = !showFilters.value
+
     return {
       breakpointMd,
       title,
@@ -219,12 +223,8 @@ export default defineComponent({
       faFilter,
       specs,
       translate,
+      toggleFilters,
     }
   },
-  methods: {
-    toggleFilters() {
-      this.showFilters = !this.showFilters;
-    }
-  }
 })
 </script>
