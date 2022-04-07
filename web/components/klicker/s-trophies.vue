@@ -21,26 +21,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let trophyRangeGte;
-    let trophyRangeLt;
-
-    const { trophies } = useRoute().value.query;
-    if (trophies && typeof trophies === 'string') {
-      // TODO: Move to dashboard?
-      [trophyRangeGte, trophyRangeLt] = trophies.split('-').map(t => Number(t) / 100);
-    }
-
     const model = computed({
       get() {
-        const gte = trophyRangeGte ?? props.value.trophyRangeGte?.[0] ?? undefined
-        const lt = trophyRangeLt ?? props.value.trophyRangeLt?.[0] ?? undefined
-
         return {
-          gte: gte != undefined ? parseInt(gte) : undefined,
-          lt: lt != undefined ? parseInt(lt) : undefined,
+          gte: parseInt(props.value.trophyRangeGte?.[0] as string) || undefined,
+          lt: parseInt(props.value.trophyRangeLt?.[0] as string) || undefined,
         }
       },
-      set(v: { gte: number|undefined, lt: number|undefined }) {
+      set(v: { gte?: number, lt?: number }) {
         props.onInput({
           trophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
           trophyRangeLt: v.lt != undefined ? [v.lt.toString()] : [],
