@@ -37,7 +37,6 @@
           :mode="event.mode"
           :map="event.map"
           :id="event.id"
-          :timestamp="event.timestamp"
           ga-category="map"
         ></map-views>
       </b-split-dashboard>
@@ -51,23 +50,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { camelToKebab, deslugify, kebabToCamel, slugify } from '~/lib/util'
+import { defineComponent, useContext, useMeta, computed, useAsync, useRoute } from '@nuxtjs/composition-api'
+import { deslugify, kebabToCamel } from '~/lib/util'
 import { BSplitDashboard, BCard } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
-import { SliceValue } from '~/../klicker/types'
+import MapViews from '~/components/map/map-views.vue'
 
 interface Map {
   id: string
   mode: string
   map: string
-  timestamp: string|undefined
 }
 
 export default defineComponent({
   components: {
     BSplitDashboard,
     BCard,
+    MapViews,
   },
   head: {},
   setup() {
@@ -84,8 +83,8 @@ export default defineComponent({
           map: [map],
         },
         dimensionsIds: [],
-        metricsIds: ['eventId', 'timestamp'],
-        sortId: 'timestamp',
+        metricsIds: ['eventId'],
+        sortId: 'eventId',
         limit: 1,
       })
       const event = events.data[0]
@@ -94,7 +93,6 @@ export default defineComponent({
         id: event.metricsRaw.eventId,
         map,
         mode,
-        timestamp: event.metricsRaw.timestamp,
       } as Map
     }, `map-${route.value.params.mode}-${route.value.params.map}`)
 

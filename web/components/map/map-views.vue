@@ -324,9 +324,6 @@ export default defineComponent({
     id: {
       type: String
     },
-    timestamp: {
-      type: String
-    },
     gaCategory: {
       type: String
     },
