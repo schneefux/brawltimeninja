@@ -11,6 +11,7 @@
         'form-select transition duration-100 ease-in-out',
         'py-2 pl-4 pr-2 ring-2 ring-black/10 dark:ring-white/10 hover:ring-black/20 dark:hover:ring-white/20 rounded-2xl', {
           'bg-gray-200 dark:bg-gray-800': dropdownOpen,
+          'bg-black/5 dark:bg-white/5': !dropdownOpen,
         }]"
       @click="dropdownOpen = !dropdownOpen"
     >
