@@ -1,6 +1,6 @@
 <template>
   <ol
-    class="flex flex-wrap space-x-2 my-1"
+    class="flex flex-wrap space-x-2 my-4"
     itemtype="https://schema.org/BreadcrumbList"
     itemscope
   >
@@ -12,18 +12,16 @@
       itemscope
     >
       {{ index > 0 ? '/' : '' }}
-      <b-button
+      <nuxt-link
         :to="localePath(l.path)"
         :itemid="l.path"
-        :dark="index == links.length - 1"
-        :primary="index < links.length - 1"
         itemtype="https://schema.org/WebPage"
         itemprop="item"
+        class="underline"
         itemscope
-        xs
       >
         <span itemprop="name">{{ l.name }}</span>
-      </b-button>
+      </nuxt-link>
       <meta itemprop="position" :content="index + 1" />
     </li>
   </ol>
