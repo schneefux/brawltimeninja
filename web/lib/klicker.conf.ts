@@ -783,7 +783,7 @@ const trophyChangeMetric: Metric = {
   },
 }
 
-const winRateAdjMetric: Metric = {
+export const winRateAdjMetric: Metric = {
   id: 'winRateAdj',
   name: 'Adjusted Win Rate',
   description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',

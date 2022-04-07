@@ -299,11 +299,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
+import { winRateAdjMetric } from '~/lib/klicker.conf'
 
 export default defineComponent({
   components: {
@@ -354,9 +355,9 @@ export default defineComponent({
     }
     const query = ref<CubeQuery>(defaultQuery())
 
-    watch(() => [props.mode, props.map], () => query.value = defaultQuery())
+    watchEffect(() => query.value = defaultQuery())
 
-    const adjustedWinRate = computed(() => $klicker.config['battle'].metrics.find(m => m.id == 'winRateAdj')!)
+    const adjustedWinRate = winRateAdjMetric
 
     const { makeVisibilityCallback } = props.gaCategory != undefined ? useTrackScroll(props.gaCategory) : { makeVisibilityCallback: () => undefined }
 
