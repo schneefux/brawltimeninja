@@ -67,7 +67,7 @@ export default defineComponent({
     const route = useRoute()
     watchEffect(() => {
       const langPrefix = localePath('/')
-      const path = route.value.path.slice(langPrefix.length)
+      const path = route.value.path.slice(langPrefix.length - 1)
 
       let longestMatch: Screen|undefined
       let longestMatchLength = 0
