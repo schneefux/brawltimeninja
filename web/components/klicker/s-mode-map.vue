@@ -79,7 +79,7 @@ export default defineComponent({
     }
 
     const maps = useAsync(() => getMaps())
-    const modes = useAsync(() => $klicker.queryAllModes().then(modes => modes.sort((a,b) => a.localeCompare(b))))
+    const modes = useAsync(() => $klicker.queryAllModes())
 
     watch(() => [props.value, i18n.locale], async () => maps.value = await getMaps())
 

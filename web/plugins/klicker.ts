@@ -154,6 +154,7 @@ class CustomKlicker extends Klicker {
         powerplay: false,
         metrics: {},
       }))
+      .sort((a, b) => this.$t('map.' + a.id).localeCompare(this.$t('map.' + b.id)))
   }
 
   async queryAllSeasons(limitWeeks: number = 8): Promise<{ id: string, name: string }[]> {
@@ -189,9 +190,11 @@ class CustomKlicker extends Klicker {
       slices: {
         season: [formatClickhouseDate(getMonthSeasonEnd())],
       },
-      sortId: 'picks',
+      sortId: 'mode',
     })
-    return modes.data.map(row => row.dimensionsRaw.mode.mode)
+    return modes.data
+      .map(row => row.dimensionsRaw.mode.mode)
+      .sort((a, b) => this.$t('mode.' + a).localeCompare(this.$t('mode.' + b)))
   }
 
   async queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]> {
