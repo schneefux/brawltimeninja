@@ -11,10 +11,7 @@
       itemtype="https://schema.org/ListItem"
       itemscope
     >
-      <font-awesome-icon
-        v-if="index > 0"
-        :icon="faCaretRight"
-      ></font-awesome-icon>
+      {{ index > 0 ? '/' : '' }}
       <b-button
         :to="localePath(l.path)"
         :itemid="l.path"
@@ -33,8 +30,8 @@
 </template>
 
 <script lang="ts">
-import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { BButton } from '@schneefux/klicker/components'
 
 export interface BreadcrumbLink {
   path: string
@@ -42,14 +39,12 @@ export interface BreadcrumbLink {
 }
 
 export default defineComponent({
+  components: {
+    BButton,
+  },
   props: {
     links: {
       type: Array as PropType<BreadcrumbLink[]>,
-    }
-  },
-  setup() {
-    return {
-      faCaretRight,
     }
   },
 })
