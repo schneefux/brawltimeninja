@@ -108,4 +108,3 @@ SearchDynamic.play = async ({ canvasElement }) => {
 
   await canvas.findByText('Profile #V8LLPPC')
 }
-

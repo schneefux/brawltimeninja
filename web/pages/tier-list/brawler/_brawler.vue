@@ -235,13 +235,14 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
 import { capitalizeWords } from '@/lib/util'
-import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
     BScrollSpy,
     BSplitDashboard,
+    BPageSection,
   },
   head: {},
   setup() {
@@ -269,17 +270,17 @@ export default defineComponent({
     const scrapedData = useAsync(() => $http.$get(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`), `scraped-data-${brawlerId.value}`)
 
     const sectionRefs = {
-      overviewSection: ref<HTMLElement>(),
-      accessorySection: ref<HTMLElement>(),
-      synergySection: ref<HTMLElement>(),
-      mapsSection: ref<HTMLElement>(),
-      modesSection: ref<HTMLElement>(),
-      trendsSection: ref<HTMLElement>(),
-      trophiesSection: ref<HTMLElement>(),
-      skinsSection: ref<HTMLElement>(),
-      pinsSection: ref<HTMLElement>(),
-      voicelineSection: ref<HTMLElement>(),
-      balanceChangesSection: ref<HTMLElement>(),
+      overviewSection: ref<InstanceType<typeof BPageSection>>(),
+      accessorySection: ref<InstanceType<typeof BPageSection>>(),
+      synergySection: ref<InstanceType<typeof BPageSection>>(),
+      mapsSection: ref<InstanceType<typeof BPageSection>>(),
+      modesSection: ref<InstanceType<typeof BPageSection>>(),
+      trendsSection: ref<InstanceType<typeof BPageSection>>(),
+      trophiesSection: ref<InstanceType<typeof BPageSection>>(),
+      skinsSection: ref<InstanceType<typeof BPageSection>>(),
+      pinsSection: ref<InstanceType<typeof BPageSection>>(),
+      voicelineSection: ref<InstanceType<typeof BPageSection>>(),
+      balanceChangesSection: ref<InstanceType<typeof BPageSection>>(),
     }
 
     const sections = computed(() => [{

@@ -8,10 +8,12 @@
       class="-mr-6"
     ></font-awesome-icon>
     <b-textbox
-      v-model="search"
+      v-model="filter"
+      ref="search"
       type="text"
       class="pl-8 h-6 w-full"
       @focus="showNavigator = true"
+      @keyup.native.enter="goToFirstResult"
     ></b-textbox>
 
     <b-card
@@ -24,9 +26,10 @@
     >
       <b-navigator
         slot="content"
+        ref="navigator"
         :links="linkTree" 
         :link-generator="linkGenerator"
-        :search="search"
+        :search="filter"
         class="h-full pb-14 overflow-y-auto overscroll-contain"
       >
         <template v-slot:link="{ to, title }">
@@ -51,13 +54,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useAsync, useContext, useRoute, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useAsync, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
 import { BTextbox, BCard, BNavigator } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import { brawlerId, camelToKebab, capitalizeWords, slugify, tagPattern } from '~/lib/util'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
 export default defineComponent({
   components: {
@@ -298,14 +301,14 @@ export default defineComponent({
       return []
     }
 
-    const search = ref('')
+    const filter = ref('')
     const showNavigator = ref(false)
 
     const route = useRoute()
 
     watch(route, () => {
       showNavigator.value = false
-      search.value = ''
+      filter.value = ''
     })
 
     const popup = ref<typeof BCard>()
@@ -314,15 +317,43 @@ export default defineComponent({
       ignore: [container as any],
     })
 
+    const search = ref<InstanceType<typeof BTextbox>>()
+    onKeyStroke(
+      (event) => (event.metaKey || event.ctrlKey) && event.key == 'k',
+      () => {
+        showNavigator.value = true;
+        (search.value!.$el as HTMLInputElement).focus()
+      },
+    )
+
+    const navigator = ref<InstanceType<typeof BNavigator>>()
+    const router = useRouter()
+    const goToFirstResult = () => {
+      if (navigator.value == undefined) {
+        return
+      }
+
+      const firstLink = navigator.value.searchResults
+        .concat(linkTree.value)
+        .find(l => l.target != undefined)
+
+      if (firstLink != undefined) {
+        router.push(firstLink.target!)
+      }
+    }
+
     return {
+      navigator,
       container,
       popup,
       search,
+      filter,
       showNavigator,
       linkTree,
       linkGenerator,
       faSearch,
       faTimes,
+      goToFirstResult,
     }
   },
 })

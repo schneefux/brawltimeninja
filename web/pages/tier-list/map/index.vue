@@ -171,11 +171,11 @@ export default defineComponent({
     const { makeVisibilityCallback } = useTrackScroll('maps')
 
     const sectionRefs = {
-      activeSection: ref(),
-      powerleagueSection: ref(),
-      upcomingSection: ref(),
-      seasonSection: ref(),
-      competitionWinnersSection: ref(),
+      activeSection: ref<InstanceType<typeof BPageSection>>(),
+      powerleagueSection: ref<InstanceType<typeof BPageSection>>(),
+      upcomingSection: ref<InstanceType<typeof BPageSection>>(),
+      seasonSection: ref<InstanceType<typeof BPageSection>>(),
+      competitionWinnersSection: ref<InstanceType<typeof BPageSection>>(),
     }
 
     const sections = computed(() => [{

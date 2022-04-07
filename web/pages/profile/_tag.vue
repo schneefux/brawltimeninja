@@ -186,7 +186,7 @@ import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, use
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
-import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { tagPattern } from '~/lib/util'
 
 export default defineComponent({
@@ -255,13 +255,13 @@ export default defineComponent({
     const { makeVisibilityCallback } = useTrackScroll('profile')
 
     const sectionRefs = {
-      timeSection: ref<HTMLElement>(),
-      trophySection: ref<HTMLElement>(),
-      quizSection: ref<HTMLElement>(),
-      recordsSection: ref<HTMLElement>(),
-      battlesSection: ref<HTMLElement>(),
-      modesSection: ref<HTMLElement>(),
-      brawlersSection: ref<HTMLElement>(),
+      timeSection: ref<InstanceType<typeof BPageSection>>(),
+      trophySection: ref<InstanceType<typeof BPageSection>>(),
+      quizSection: ref<InstanceType<typeof BPageSection>>(),
+      recordsSection: ref<InstanceType<typeof BPageSection>>(),
+      battlesSection: ref<InstanceType<typeof BPageSection>>(),
+      modesSection: ref<InstanceType<typeof BPageSection>>(),
+      brawlersSection: ref<InstanceType<typeof BPageSection>>(),
     }
 
     const sections = computed(() => [{
