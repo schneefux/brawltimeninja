@@ -13,28 +13,28 @@
           :path="`/brawlers/${brawlerBrawlerId}/avatar`"
           :alt="brawlerBrawlerName"
           size="160"
-          clazz="h-8 w-8"
+          clazz="h-8 w-8 object-contain object-left-bottom"
         ></media-img>
         <media-img
           v-if="ally != undefined"
           :path="`/brawlers/${brawlerAllyId}/avatar`"
           :alt="brawlerAllyName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
         ></media-img>
         <media-img
           v-if="starpowerId != undefined"
           :path="`/starpowers/${starpowerId}`"
           :alt="starpowerName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
         ></media-img>
         <media-img
           v-if="gadgetId != undefined"
           :path="`/gadgets/${gadgetId}`"
           :alt="gadgetName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
         ></media-img>
       </span>
       <figcaption
