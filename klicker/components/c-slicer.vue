@@ -18,7 +18,7 @@
     </button>
 
     <div
-      v-if="breakpointMd || showFilters"
+      v-show="breakpointMd || showFilters"
       slot="content"
       class="flex flex-col md:flex-row flex-wrap gap-4"
     >
