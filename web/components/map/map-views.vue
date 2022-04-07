@@ -299,12 +299,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { winRateAdjMetric } from '~/lib/klicker.conf'
+import { useSyncSlicesAndRoute } from '~/composables/link'
 
 export default defineComponent({
   components: {
@@ -331,14 +332,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, route } = useContext()
-
-    function defaultQuery(): CubeQuery {
-      const [
-        trophyRangeGte = '0',
-        trophyRangeLt = '15'
-      ] = (route.value.query.trophies as string || '').split('-').map(t => `${Number(t) / 100}`)
-      return {
+    const defaultQuery = computed<CubeQuery>(() => ({
         cubeId: 'battle',
         dimensionsIds: ['brawler'],
         metricsIds: [],
@@ -346,16 +340,13 @@ export default defineComponent({
           season: [formatClickhouseDate(getMonthSeasonEnd())],
           mode: props.mode != undefined ? [props.mode] : [],
           map: props.map != undefined ? [props.map] : [],
-          trophyRangeGte: [trophyRangeGte],
-          trophyRangeLt: [trophyRangeLt],
+        trophyRangeGte: [],
           powerplay: [],
         },
         sortId: 'brawler',
-      }
-    }
-    const query = ref<CubeQuery>(defaultQuery())
+    }))
 
-    watchEffect(() => query.value = defaultQuery())
+    const query = useSyncSlicesAndRoute(defaultQuery)
 
     const adjustedWinRate = winRateAdjMetric
 

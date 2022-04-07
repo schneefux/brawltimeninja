@@ -28,7 +28,6 @@
         :class="{
           'lg:col-start-2': configurator,
         }"
-        v-on:input="onInput($event)"
       ></c-slicer>
 
       <c-slicer
@@ -84,8 +83,7 @@
 </template>
 
 <script lang="ts">
-import { deslugify, slugify } from '../../web/lib/util'
-import { CubeQuery, SliceValueUpdateListener } from '../types'
+import { CubeQuery } from '../types'
 import CQuery from './c-query'
 import CConfigurator from './c-configurator.vue'
 import CSlicer from './c-slicer.vue'
@@ -140,29 +138,6 @@ export default defineComponent({
       type: String,
       default: 'dashboard--responsive'
     },
-  },
-  methods: {
-    onInput(q: CubeQuery) {
-      const { params: currentParams, query: currentQuery } = this.$router.currentRoute;
-
-      const {
-        map: [newMap],
-        mode: [newMode],
-        trophyRangeGte: [newTrophyGte],
-        trophyRangeLt: [newTrophyLt],
-      } = { map: [], mode: [], trophyRangeGte: [], trophyRangeLt: [], ...q.slices}; // TODO: cleanup
-
-      const newTrophyRange = newTrophyGte ?
-        `${Number(newTrophyGte) * 100}-${Number(newTrophyLt) * 100}` :
-        undefined
-      const needUpdateTrophyQuery = newTrophyRange && (!currentQuery.trophies || currentQuery.trophies !== newTrophyRange)
-
-      if (newMode && newMap && newMap !== deslugify(currentParams.map)) {
-        this.$router.replace({ path: `/tier-list/mode/${slugify(newMode)}/map/${slugify(newMap)}`, query: currentQuery })
-      } else if (needUpdateTrophyQuery) {
-        this.$router.replace({ query: { trophies: newTrophyRange }})
-      }
-    }
   },
   setup(props, { emit, slots }) {
     const { $klicker } = useKlicker()

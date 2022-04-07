@@ -598,7 +598,9 @@ export default class Klicker implements KlickerService {
   }
 
   convertSlicesToLocation(slices: SliceValue): Location {
-    return generateQueryParams(slices, 'filter')
+    return {
+      query: generateQueryParams(slices, 'filter'),
+    }
   }
 
   convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue {

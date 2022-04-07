@@ -151,7 +151,7 @@ export interface Slice {
   // formatter: string
 }
 
-export interface SliceValue extends Record<string, string[]> { }
+export interface SliceValue extends Record<string, (string|undefined)[]> { }
 
 export type SliceValueUpdateListener = (s: Partial<SliceValue>) => void
 
