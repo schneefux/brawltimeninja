@@ -70,10 +70,6 @@ export default defineComponent({
       metrics,
     }
   },
-  meta: {
-    title: 'Leaderboard',
-    screen: 'profile',
-  },
   middleware: ['cached'],
 })
 </script>

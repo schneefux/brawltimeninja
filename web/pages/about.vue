@@ -58,10 +58,6 @@ import { mapMutations } from 'vuex'
 
 export default {
   middleware: ['cached'],
-  meta: {
-    title: 'About',
-    screen: 'guides',
-  },
   nuxtI18n: {
     locales: ['en'],
   },

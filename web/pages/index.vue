@@ -342,10 +342,6 @@ export default defineComponent({
       loading,
     }
   },
-  meta: {
-    title: 'Profile',
-    screen: 'profile',
-  },
   middleware: ['cached'],
 })
 </script>

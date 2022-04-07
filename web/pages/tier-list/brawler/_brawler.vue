@@ -338,10 +338,6 @@ export default defineComponent({
       ...sectionRefs,
     }
   },
-  meta: {
-    title: 'Brawlers',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
   async validate({ params, $klicker }) {
     const brawlerName = capitalizeWords(params.brawler.replace(/__/g, '. ').replace(/_/g, ' '))

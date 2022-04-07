@@ -131,9 +131,6 @@ export default defineComponent({
       showImage,
     }
   },
-  meta: {
-    screen: 'events',
-  },
   middleware: ['cached'],
   async validate({ params, $klicker }) {
     const mode = kebabToCamel(params.mode)

@@ -82,10 +82,6 @@ export default defineComponent({
     VPivotCsv,
   },
   head: {},
-  meta: {
-    title: 'Bar Chart Race',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
   setup() {
     const query = ref<CubeQuery>({

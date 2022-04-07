@@ -64,10 +64,6 @@ import { defineComponent, ref, useContext, useFetch, useMeta, useRoute } from '@
 
 export default defineComponent({
   head: {},
-  meta: {
-    title: 'Club',
-    screen: 'profile',
-  },
   middleware: ['cached'],
   setup() {
     const { app: { i18n }, $http, $config, redirect } = useContext()

@@ -63,10 +63,6 @@ export default defineComponent({
       ]
     }
   },
-  meta: {
-    title: 'Team Builder',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
   setup() {
     const route = useRoute()

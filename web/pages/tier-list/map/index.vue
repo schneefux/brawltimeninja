@@ -211,10 +211,6 @@ export default defineComponent({
       makeVisibilityCallback,
     }
   },
-  meta: {
-    title: 'Events',
-    screen: 'events',
-  },
   middleware: ['cached'],
 })
 </script>

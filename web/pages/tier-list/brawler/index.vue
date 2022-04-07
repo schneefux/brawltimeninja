@@ -56,10 +56,6 @@ export default defineComponent({
       makeVisibilityCallback,
     }
   },
-  meta: {
-    title: 'Brawlers',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
 })
 </script>

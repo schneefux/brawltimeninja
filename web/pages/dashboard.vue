@@ -72,10 +72,6 @@ export default defineComponent({
       query,
     }
   },
-  meta: {
-    title: 'Dashboard',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
 })
 </script>

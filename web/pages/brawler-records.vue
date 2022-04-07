@@ -57,10 +57,6 @@ export default defineComponent({
     VCsv,
   },
   head: {},
-  meta: {
-    title: 'Bar Chart Race',
-    screen: 'brawlers',
-  },
   middleware: ['cached'],
   setup() {
     const query = ref<CubeQuery>({

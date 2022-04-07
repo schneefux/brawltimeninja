@@ -39,9 +39,5 @@ import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   middleware: ['cached'],
-  meta: {
-    title: 'Install',
-    screen: 'guides',
-  },
 })
 </script>

@@ -27,10 +27,6 @@ export default Vue.extend({
       ]
     }
   },
-  meta: {
-    title: 'FAQ',
-    screen: 'guides',
-  },
   middleware: ['cached'],
   nuxtI18n: {
     locales: ['en'],

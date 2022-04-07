@@ -44,9 +44,6 @@ export default Vue.extend({
   components: {
     Timeline,
   },
-  meta: {
-    screen: 'guides',
-  },
   data() {
     return {
       status: undefined as undefined|string,

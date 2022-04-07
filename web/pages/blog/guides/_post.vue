@@ -25,10 +25,6 @@ export default Vue.extend({
       ]
     }
   },
-  meta: {
-    title: 'Guides',
-    screen: 'guides',
-  },
   nuxtI18n: {
     locales: ['en'],
   },

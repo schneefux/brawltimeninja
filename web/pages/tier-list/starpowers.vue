@@ -10,10 +10,6 @@ import { defineComponent, useMeta, useContext } from '@nuxtjs/composition-api'
 export default defineComponent({
   middleware: ['cached'],
   head: {},
-  meta: {
-    title: 'Star Powers',
-    screen: 'brawlers',
-  },
   setup() {
     const { i18n } = useContext()
 

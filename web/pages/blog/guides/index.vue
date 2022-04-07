@@ -122,10 +122,6 @@ export default Vue.extend({
       title: 'Guides',
     }
   },
-  meta: {
-    title: 'Guides',
-    screen: 'guides',
-  },
   nuxtI18n: {
     locales: ['en'],
   },

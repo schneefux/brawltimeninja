@@ -305,10 +305,6 @@ export default defineComponent({
       ...sectionRefs,
     }
   },
-  meta: {
-    title: 'Profile',
-    screen: 'profile',
-  },
   middleware: ['cached'],
   async validate({ params, redirect }) {
     const tag = params.tag.toUpperCase()

@@ -13,10 +13,6 @@ import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   head: {},
-  meta: {
-    title: 'Quiz',
-    screen: 'profile',
-  },
   middleware: ['cached'],
   setup() {
     const { i18n } = useContext()

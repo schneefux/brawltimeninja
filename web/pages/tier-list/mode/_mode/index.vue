@@ -62,9 +62,6 @@ export default defineComponent({
     CDashboardCell,
   },
   head: {},
-  meta: {
-    screen: 'events',
-  },
   middleware: ['cached'],
   setup() {
     const { i18n, $klicker } = useContext()
