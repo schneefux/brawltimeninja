@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useContext, useRoute, watch, computed } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useRoute, computed, watchEffect } from '@nuxtjs/composition-api'
 import { faCalendarDay, faSearch, faMask, faNewspaper, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 interface Screen {
@@ -30,10 +30,11 @@ interface Screen {
   icon: IconDefinition
   name: string
   target: string
+  prefix: string
 }
 
 export default defineComponent({
-  setup(props, { root }) {
+  setup() {
     const active = ref('profile')
 
     const { localePath } = useContext()
@@ -42,43 +43,47 @@ export default defineComponent({
       icon: faSearch,
       name: 'Profile',
       target: localePath('/'),
+      prefix: '',
     }, {
       id: 'events',
       icon: faCalendarDay,
       name: 'Events',
       target: localePath('/tier-list/map'),
+      prefix: '/tier-list',
     }, {
       id: 'brawlers',
       icon: faMask,
       name: 'Brawlers',
       target: localePath('/tier-list/brawler'),
+      prefix: '/tier-list/brawler',
     }, {
       id: 'guides',
       icon: faNewspaper,
       name: 'Guides',
       target: '/blog/guides',
+      prefix: '/blog',
     } ])
 
-    const update = () => {
-      // TODO: update with Nuxt 3
-      // $route.meta is merged into $nuxt.$options.context.route.meta
-      // and not reactive
-      // https://github.com/nuxt/nuxt.js/issues/5885#issuecomment-507670640
+    const route = useRoute()
+    watchEffect(() => {
+      const langPrefix = localePath('/')
+      const path = route.value.path.slice(langPrefix.length)
 
-      const newScreen = root.$nuxt.$options.context.route.meta[0]?.screen
-      if (newScreen != undefined) {
-        if (screens.value.some(s => s.id == newScreen)) {
-          active.value = newScreen
-        } else {
-          console.error('Screen does not exist: ' + newScreen)
+      let longestMatch: Screen|undefined
+      let longestMatchLength = 0
+
+      for (const screen of screens.value) {
+        const screenUrlLength = screen.prefix.split('/').length
+        if (screenUrlLength > longestMatchLength && path.startsWith(screen.prefix)) {
+          longestMatch = screen
+          longestMatchLength = screenUrlLength
         }
       }
-    }
 
-    update()
-
-    const route = useRoute()
-    watch(route, update)
+      if (longestMatch != undefined) {
+        active.value = longestMatch.id
+      }
+    })
 
     return {
       active,
