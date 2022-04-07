@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    class="ml-2 inline-flex items-center"
+    class="ml-4 inline-flex items-center"
   >
     <font-awesome-icon
       :icon="faSearch"
