@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, toRefs, useContext, useRouter } from '@nuxtjs/composition-api'
-import { SliceValue } from '~/../klicker/types'
+import { SliceValue } from '@schneefux/klicker/types'
 import { useMapName } from '~/composables/map'
 import { camelToKebab, slugify } from '~/lib/util'
 
