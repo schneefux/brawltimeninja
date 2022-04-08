@@ -3,6 +3,9 @@
     <div
       ref="wrapper"
       class="dashboard dashboard--horizontal dashboard--responsive gap-x-8 -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 hide-scrollbar"
+      :style="{
+        'scroll-snap-type': disableScrollSnap ? 'none' : undefined,
+      }"
     >
       <slot></slot>
     </div>
@@ -74,6 +77,12 @@ export default defineComponent({
     FontAwesomeIcon,
     BButton,
   },
+  props: {
+    disableScrollSnap: {
+      type: Boolean,
+      default: false
+    },
+  },
   setup(props, { emit }) {
     const wrapper = ref<HTMLElement|null>()
 
@@ -99,6 +108,7 @@ export default defineComponent({
       arrivedLeft.value = scroll.arrivedState.left || !scrollable
       arrivedRight.value = scroll.arrivedState.right || !scrollable
     }
+
     const scroll = useScroll(wrapper, {
       onScroll,
       offset: {
@@ -106,12 +116,11 @@ export default defineComponent({
         right: 50,
       },
     })
-    onMounted(() => {
-      wrapper.value!.scrollTo({ left: 0 })
-      useResizeObserver(wrapper, () => onScroll())
-      useMutationObserver(wrapper, () => onScroll(), {
-        childList: true,
-      })
+
+    onMounted(onScroll)
+    useResizeObserver(wrapper, () => onScroll())
+    useMutationObserver(wrapper, () => onScroll(), {
+      childList: true,
     })
 
     return {
