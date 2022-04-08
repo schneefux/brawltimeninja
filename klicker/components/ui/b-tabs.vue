@@ -26,7 +26,7 @@
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
             :aria-controls="`${prefix}-tab-${tab.slot}`"
             class="block px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
-            @click="setActiveTab(tab)"
+            @click="scrollToTab(tab)"
           >
             {{ tab.title }}
           </a>
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref } from 'vue-demi'
-import { useIntersectionObserver } from '@vueuse/core'
+import { useDebounceFn, useIntersectionObserver, useThrottleFn } from '@vueuse/core'
 import { useUniqueId } from '../../composables/id'
 
 interface Tab {
@@ -89,7 +89,7 @@ export default defineComponent({
       [activeTab.value]: true,
     })
 
-    const scrollUpToTab = (id: string) => {
+    const scrollUpToTab = () => {
       const offset = tabContainer.value!.getBoundingClientRect().top - navContainer.value!.getBoundingClientRect().bottom
       if (offset < 0) {
         const top = window.scrollY + offset
@@ -109,15 +109,33 @@ export default defineComponent({
 
     const scrollActiveTabIntoView = () => {
       scrollTabHeaderIntoView(activeTab.value)
-      scrollUpToTab(activeTab.value)
+      scrollUpToTab()
     }
 
-    const setActiveTab = (tab: Tab) => {
+    const scrollToTab = (tab: Tab) => {
       const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
       const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
       const left = tabContainer.value!.scrollLeft + offset
       tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
     }
+    
+    const setActiveTab = (tab: Tab) => {
+      activeTab.value = tab.slot
+      tabVisibility.value = {
+        [activeTab.value]: true,
+      }
+
+      scrollActiveTabIntoView()
+      if (tab.slot != props.tabs[0].slot) {
+        window.history.replaceState(null, '', '#' + tab.slot)
+      } else {
+        // do not write default tab into URL
+        window.history.replaceState(null, '', ' ')
+      }
+    }
+
+    // FIXME workaround for flickering issue when switching tabs
+    const throttledSetActiveTab = useThrottleFn(setActiveTab, 300)
 
     onMounted(() => {
       for (const tab of props.tabs) {
@@ -135,18 +153,7 @@ export default defineComponent({
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           if (isIntersecting) {
-            activeTab.value = tab.slot
-            tabVisibility.value = {
-              [activeTab.value]: true,
-            }
-
-            scrollActiveTabIntoView()
-            if (tab.slot != props.tabs[0].slot) {
-              window.history.replaceState(null, '', '#' + tab.slot)
-            } else {
-              // do not write default tab into URL
-              window.history.replaceState(null, '', ' ')
-            }
+            throttledSetActiveTab(tab)
           }
         }, {
           root: tabContainer.value,
@@ -160,7 +167,7 @@ export default defineComponent({
         const tabId = window.location.hash.slice(1)
         const tab = props.tabs.find(t => t.slot == tabId)
         if (tab != undefined) {
-          setActiveTab(tab)
+          scrollToTab(tab)
         }
       }
     })
@@ -171,7 +178,7 @@ export default defineComponent({
       tabContainer,
       navContainer,
       headerContainer,
-      setActiveTab,
+      scrollToTab,
       activeTab,
       tabVisibility,
       prefix,
