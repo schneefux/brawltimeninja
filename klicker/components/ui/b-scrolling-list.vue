@@ -4,24 +4,20 @@
       v-if="'preview' in $scopedSlots"
       class="flex md:flex-wrap overflow-x-auto"
     >
+      <!-- same layout as b-tabs -->
       <li
-        v-for="(item, index) in items"
-        :key="`${index}-${item[keyId]}`"
+        v-for="entry in previewItems"
+        :key="`${entry.from}-${entry.item[keyId]}`"
         :class="{
-          'border-white/[.2]': index < state.start || index > state.end - 1,
-          'border-y-primary-200': index >= state.start && index <= state.end - 1,
-          'border-l-white/[.2]': index > state.start && index <= state.end - 1,
-          'border-r-white/[.2]': index >= state.start && index < state.end - 1,
-          'border-l-primary-200': index == state.start,
-          'border-r-primary-200': index == state.end - 1,
-          'border-x-white/[.2]': index < state.start || index > state.end - 1,
+          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from <= state.end - 1 && entry.to >= state.start,
+          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from <= state.end - 1 && entry.to >= state.start),
         }"
-        class="border-y-2 border-x first:border-l-2 last:border-r-2 cursor-pointer empty:hidden"
-        @click="scrollTo(index)"
+        class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden"
+        @click="scrollTo(entry.from)"
       >
         <slot
           name="preview"
-          v-bind="item"
+          v-bind="entry.item"
         ></slot>
       </li>
     </ul>
@@ -142,6 +138,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    /**
+     * Indices which should render a preview
+     */
+    previewIndices: {
+      type: Array as PropType<number[]>,
+      required: false
+    },
   },
   // TODO replace by function ref when migrating to Vue 3
   setup(props, { refs }) {
@@ -241,6 +244,22 @@ export default defineComponent({
       }
     }
 
+    const previewItems = computed(() => {
+      if (props.previewIndices != undefined) {
+        return props.previewIndices
+          .map((itemIndex, index, all) => ({
+            from: itemIndex,
+            to: index + 1 < all.length - 1 ? all[index + 1] - 1 : Infinity,
+            item: props.items[itemIndex],
+          }))
+      }
+      return props.items.map((item, index) => ({
+        from: index,
+        to: index,
+        item,
+      }))
+    })
+
     return {
       onScroll,
       scrollTo,
@@ -249,6 +268,7 @@ export default defineComponent({
       state,
       scrollSnap,
       columnWidths,
+      previewItems,
     }
   },
 })

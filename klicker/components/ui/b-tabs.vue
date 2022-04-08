@@ -15,21 +15,20 @@
           :ref="`${tab.slot}-header`"
           :key="tab.slot"
         >
+          <!-- same layout as b-scrolling-list preview -->
           <a
             role="tab"
             :id="`${prefix}-button-${tab.slot}`"
             :href="`#${tab.slot}`"
             :class="{
-              'border-primary-400 border-b-2': tabVisibility[tab.slot],
+              'border-primary-400 text-gray-200 dark:text-gray-200': tabVisibility[tab.slot],
               'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !tabVisibility[tab.slot],
             }"
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
             :aria-controls="`${prefix}-tab-${tab.slot}`"
             class="block px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
             @click="scrollToTab(tab)"
-          >
-            {{ tab.title }}
-          </a>
+          >{{ tab.title }}</a>
         </li>
       </ul>
     </nav>
