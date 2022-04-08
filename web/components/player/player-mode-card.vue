@@ -47,7 +47,7 @@
           :map="activeMap.map"
           :mode="mode"
           :player-brawlers="playerBrawlers"
-          :limit="4"
+          :limit="3"
           class="mx-auto"
         ></player-map-tip-roll>
       </b-card>
@@ -179,7 +179,7 @@ export default defineComponent({
     const { i18n } = useContext()
     const mapName = computed(() => {
       if (activeMap.value != undefined) {
-        getMapName(i18n, activeMap.value.id, activeMap.value.map)
+        return getMapName(i18n, activeMap.value.id, activeMap.value.map)
       }
     })
 

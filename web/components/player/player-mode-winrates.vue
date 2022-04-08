@@ -2,7 +2,7 @@
   <b-scrolling-list
     :items="modes != undefined && events != undefined ? modes : []"
     :cell-rows="3"
-    :cell-columns="4"
+    :cell-columns="3"
     key-id="id"
     render-placeholder
   >
