@@ -17,3 +17,9 @@ export const useAsync = <T>(
 export const useContext = () => ({
   $sentry: undefined,
 })
+
+export const useRouter = () => {
+  return {
+    push: () => {},
+  }
+}
