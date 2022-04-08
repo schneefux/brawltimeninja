@@ -134,7 +134,7 @@ export default defineComponent({
     }
 
     // FIXME workaround for flickering issue when switching tabs
-    const throttledSetActiveTab = useThrottleFn(setActiveTab, 300)
+    const throttledSetActiveTab = useThrottleFn(setActiveTab, 500)
 
     onMounted(() => {
       for (const tab of props.tabs) {

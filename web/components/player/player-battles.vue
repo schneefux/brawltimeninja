@@ -7,19 +7,15 @@
     render-placeholder
   >
     <template v-slot:preview="battle">
-      <div
-        class="w-10 h-10 p-2 flex justify-center items-center"
-        :class="{
-          'bg-red-500': battle.victory === false,
-          'bg-green-500': battle.victory === true,
-          'bg-gray-400': battle.victory == undefined,
-        }"
-      >
-        <media-img
-          :path="`/modes/${camelToKebab(battle.event.mode)}/icon`"
-          size="120"
-        ></media-img>
-      </div>
+      <media-img
+        :path="`/modes/${camelToKebab(battle.event.mode)}/icon`"
+        :clazz="'w-8 h-8 object-contain p-1 rounded-full ' +
+          (battle.victory === false ? 'bg-red-500/75' : '') +
+          (battle.victory === true ? 'bg-green-500/75' : '') +
+          (battle.victory == undefined ? 'bg-gray-400' : '')
+        "
+        size="120"
+      ></media-img>
     </template>
 
     <template v-slot:item="battle">

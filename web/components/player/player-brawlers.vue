@@ -7,12 +7,11 @@
     render-placeholder
   >
     <template v-slot:preview="brawler">
-      <div class="w-8 h-8 flex justify-center items-center">
-        <media-img
-          :path="`/brawlers/${brawler.brawlerId}/avatar`"
-          size="160"
-        ></media-img>
-      </div>
+      <media-img
+        :path="`/brawlers/${brawler.brawlerId}/avatar`"
+        size="160"
+        clazz="h-8 w-8 object-contain"
+      ></media-img>
     </template>
 
     <template v-slot:item="brawler">

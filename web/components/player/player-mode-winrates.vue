@@ -7,13 +7,11 @@
     render-placeholder
   >
     <template v-slot:preview="mode">
-      <div class="w-10 h-10 p-2 flex justify-center items-center bg-white/[0.1]">
-        <media-img
-          :path="`/modes/${mode.slug}/icon`"
-          size="120"
-          clazz="max-w-8 max-h-8"
-        ></media-img>
-      </div>
+      <media-img
+        :path="`/modes/${mode.slug}/icon`"
+        size="120"
+        clazz="w-8 h-8 object-contain"
+      ></media-img>
     </template>
 
     <template v-slot:item="mode">

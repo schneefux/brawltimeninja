@@ -1,14 +1,10 @@
 <template>
-  <div
-    slot="icon"
-    class="w-8 h-8 flex items-center justify-center"
-  >
-    <media-img
-      :path="icon"
-      :alt="alt"
-      size="120"
-    ></media-img>
-  </div>
+  <media-img
+    :path="icon"
+    :alt="alt"
+    size="120"
+    clazz="w-8 h-8 object-contain"
+  ></media-img>
 </template>
 
 <script lang="ts">
