@@ -16,7 +16,7 @@
       <map-img
         :id="id"
         :map="map"
-        clazz="mx-auto max-h-64 h-full"
+        clazz="w-full h-48 object-contain"
       ></map-img>
     </div>
   </event-card>

@@ -1,31 +1,5 @@
 <template>
   <div>
-    <div
-      v-if="modes.length > 2"
-      class="flex overflow-x-auto"
-    >
-      <button
-        v-for="(mode, index) in modes"
-        :key="mode"
-        :class="[{
-          'rounded-l border-l-2': index == 0,
-          'rounded-r': index == modes.length - 1,
-          'bg-primary-400 text-gray-800': mode == modeFilter,
-          'bg-white/[0.1]': mode != modeFilter,
-        }]"
-        class="border-r-2 border-t-2 border-b-2 border-white/[0.1] w-12 h-12 flex justify-center items-center flex-shrink-0"
-        @click="modeFilter = mode"
-      >
-        <span v-if="mode == 'all'">{{ $t('option.all') }}</span>
-        <media-img
-          v-else
-          :path="`/modes/${camelToKebab(mode)}/icon`"
-          size="120"
-          clazz="w-8"
-        ></media-img>
-      </button>
-    </div>
-
     <b-textbox
       v-if="events.length >= 20"
       v-model="nameFilter"
@@ -38,10 +12,26 @@
       :cell-rows="withData ? 2 : 3"
       :cell-columns="withData ? 3 : 2"
       :render-at-least="withData ? 3 : 5"
+      :preview-indices="firstForModeIndices"
       key-id="key"
       class="mt-8"
       render-placeholder
     >
+      <template
+        v-if="firstForModeIndices.length > 2"
+        v-slot:preview="event"
+      >
+        <button
+          v-if="event.mode == 'all'"
+          class="min-w-8 h-8"
+        >{{ $t('option.all') }}</button>
+        <media-img
+          v-else
+          :path="`/modes/${camelToKebab(event.mode)}/icon`"
+          size="120"
+          clazz="w-8 h-8 object-contain"
+        ></media-img>
+      </template>
       <template v-slot:item="event">
         <slot :event="event">
           <map-best-brawlers-card
@@ -94,20 +84,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const modeFilter = ref(props.modeFilterDefault)
-    const modes = computed(() =>
-      [...new Set(['all', ...props.events.map(e => e.mode).sort()])]
-    )
-
     const nameFilter = ref('')
 
     const { i18n } = useContext()
     const filteredEvents = computed(() =>
       props.events.filter(e => {
-        if (modeFilter.value != 'all' && modeFilter.value != e.mode) {
-          return false
-        }
-
         if (nameFilter.value == '') {
           return true
         }
@@ -115,15 +96,26 @@ export default defineComponent({
         const mapName = getMapName(i18n, e.id, e.map) ?? ''
         return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
       })
-      .sort((e1, e2) => e1.mode.localeCompare(e2.mode))
+      .sort((e1, e2) => (i18n.t('mode.' + e1.mode) as string).localeCompare(i18n.t('mode.' + e2.mode) as string))
     )
 
+    const firstForModeIndices = computed(() => {
+      return filteredEvents.value
+        .map((event, index, all) => ({
+          first: index == all.findIndex(e2 => event.mode == e2.mode),
+          index,
+        }))
+        .filter(({ first }) => first)
+        .map(({ index }) => index)
+    })
+
+console.log(firstForModeIndices.value)
+
     return {
-      modes,
-      modeFilter,
       nameFilter,
       camelToKebab,
       filteredEvents,
+      firstForModeIndices,
     }
   },
 })
