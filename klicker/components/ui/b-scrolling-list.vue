@@ -219,13 +219,13 @@ export default defineComponent({
     let timeout: NodeJS.Timeout
 
     const onScroll = (event: { x: number, arrivedLeft: boolean, arrivedRight: boolean }) => {
-      if (columnWidths.value == undefined) {
+      if (columnWidths.value == undefined || container.value?.wrapper == undefined) {
         return
       }
 
       const { pxPerItem, pxGap } = columnWidths.value
 
-      const pxWholeWidth = container.value!.wrapper!.clientWidth
+      const pxWholeWidth = container.value.wrapper.clientWidth
 
       const startIndex = (event.x + pxGap) / (pxPerItem + pxGap)
       const endIndex = (event.x + pxWholeWidth + pxGap) / (pxPerItem + pxGap)
