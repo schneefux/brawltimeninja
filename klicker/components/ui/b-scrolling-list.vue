@@ -10,8 +10,8 @@
         v-for="entry in previewItems"
         :key="`${entry.from}-${entry.item[keyId]}`"
         :class="{
-          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from < state.end - 1 && entry.to >= state.start,
-          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from < state.end - 1 && entry.to >= state.start),
+          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from <= state.end && entry.to >= state.start,
+          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from <= state.end && entry.to >= state.start),
         }"
         class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden flex-shrink-0 cursor-pointer"
         @click="scrollTo(entry.from)"
@@ -68,10 +68,10 @@
       </c-dashboard-cell>
 
       <b-shimmer
-        v-if="list.length > 0 && state.end <= items.length - 1"
+        v-if="list.length > 0 && state.end < items.length - 1"
         :style="{
-          'grid-column-start': state.end * columnWidths.actualColumnsPerItem + 1,
-          'grid-column-end': items.length * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-start': (state.end + 1) * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-end': (items.length - 1) * columnWidths.actualColumnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -171,7 +171,7 @@ export default defineComponent({
     })
 
     const list = computed(() => props.items
-      .slice(state.value.start, state.value.end)
+      .slice(state.value.start, state.value.end + 1)
       .map((item, index) => ({
         item,
         index: state.value.start + index,
@@ -233,7 +233,7 @@ export default defineComponent({
       const pxWholeWidth = container.value.wrapper.clientWidth
 
       const startIndex = (event.x + pxGap) / (pxPerItem + pxGap)
-      const endIndex = (event.x + pxWholeWidth + pxGap) / (pxPerItem + pxGap)
+      const endIndex = (event.x + pxWholeWidth) / (pxPerItem + pxGap)
 
       // FIXME workaround for scroll flicker on mobile devices
       scrollSnap.value = false
@@ -242,7 +242,7 @@ export default defineComponent({
 
       state.value = {
         start: Math.max(Math.floor(startIndex), 0),
-        end: Math.min(Math.ceil(endIndex), props.items.length),
+        end: Math.min(Math.floor(endIndex), props.items.length - 1),
       }
 
       if (preview.value != undefined) {
@@ -263,7 +263,7 @@ export default defineComponent({
         return props.previewIndices
           .map((itemIndex, index, all) => ({
             from: itemIndex,
-            to: index + 1 < all.length - 1 ? all[index + 1] - 1 : Infinity,
+            to: index + 1 <= all.length - 1 ? all[index + 1] - 1 : props.items.length - 1,
             item: props.items[itemIndex],
           }))
       }

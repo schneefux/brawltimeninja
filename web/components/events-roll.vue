@@ -109,8 +109,6 @@ export default defineComponent({
         .map(({ index }) => index)
     })
 
-console.log(firstForModeIndices.value)
-
     return {
       nameFilter,
       camelToKebab,
