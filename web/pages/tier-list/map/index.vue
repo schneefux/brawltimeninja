@@ -19,7 +19,6 @@
       ></b-scroll-spy>
 
       <b-page-section
-        v-if="currentEvents.length > 0"
         ref="activeSection"
         :title="$t('events.active.title')"
         v-observe-visibility="{
@@ -34,7 +33,6 @@
       </b-page-section>
 
       <b-page-section
-        v-if="allPowerLeagueEvents != undefined"
         ref="powerleagueSection"
         :title="$t('events.powerleague.title')"
         v-observe-visibility="{
@@ -44,7 +42,7 @@
         lazy
       >
         <events-roll
-          :events="allPowerLeagueEvents"
+          :events="allPowerLeagueEvents || []"
           with-data
         ></events-roll>
       </b-page-section>
@@ -55,7 +53,6 @@
       ></ad>
 
       <b-page-section
-        v-if="upcomingEvents.length > 0"
         ref="upcomingSection"
         :title="$t('events.upcoming.title')"
         v-observe-visibility="{
@@ -73,14 +70,15 @@
       <b-page-section
         :title="$t('events.season.title')"
         ref="seasonSection"
-        v-if="allEvents != undefined && allEvents.length > 0"
         v-observe-visibility="{
           callback: makeVisibilityCallback('maps'),
           once: true,
         }"
         lazy
       >
-        <events-roll :events="allEvents"></events-roll>
+        <events-roll
+          :events="allEvents || []"
+        ></events-roll>
       </b-page-section>
 
       <b-page-section
