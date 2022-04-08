@@ -2,17 +2,18 @@
   <div>
     <ul
       v-if="'preview' in $scopedSlots"
-      class="flex md:flex-wrap overflow-x-auto"
+      ref="preview"
+      class="flex md:flex-wrap overflow-x-auto hide-scrollbar"
     >
       <!-- same layout as b-tabs -->
       <li
         v-for="entry in previewItems"
         :key="`${entry.from}-${entry.item[keyId]}`"
         :class="{
-          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from <= state.end - 1 && entry.to >= state.start,
-          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from <= state.end - 1 && entry.to >= state.start),
+          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from < state.end - 1 && entry.to >= state.start,
+          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from < state.end - 1 && entry.to >= state.start),
         }"
-        class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden"
+        class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden flex-shrink-0 cursor-pointer"
         @click="scrollTo(entry.from)"
       >
         <slot
@@ -149,6 +150,7 @@ export default defineComponent({
   // TODO replace by function ref when migrating to Vue 3
   setup(props, { refs }) {
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
+    const preview = ref<HTMLElement>()
 
     const scrollTo = (index: number) => {
       if (container.value?.wrapper == undefined) {
@@ -242,6 +244,18 @@ export default defineComponent({
         start: Math.max(Math.floor(startIndex), 0),
         end: Math.min(Math.ceil(endIndex), props.items.length),
       }
+
+      if (preview.value != undefined) {
+        // scroll preview into view
+        const pxPerPreview = preview.value.scrollWidth / props.items.length
+        const pxProgress = state.value.start * pxPerPreview
+        const centerWidth = preview.value.clientWidth / 2
+        const center = preview.value.scrollLeft + centerWidth - pxPerPreview / 2
+        const offset = pxProgress - center
+        if (Math.abs(offset) > centerWidth / 2) {
+          preview.value.scrollLeft += offset
+        }
+      }
     }
 
     const previewItems = computed(() => {
@@ -261,6 +275,7 @@ export default defineComponent({
     })
 
     return {
+      preview,
       onScroll,
       scrollTo,
       container,

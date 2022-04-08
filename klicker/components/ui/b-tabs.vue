@@ -100,7 +100,7 @@ export default defineComponent({
       const headerElement = refs[`${id}-header`][0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
       const center = tabContainer.value!.clientWidth / 2
-      if (offset < center - center / 2 || offset > center + center / 2) {
+      if (Math.abs(offset) > center / 2) {
         const left = headerContainer.value!.scrollLeft + offset - center
         headerContainer.value!.scrollTo({ left, behavior: 'smooth' })
       }
