@@ -7,7 +7,6 @@
       :items="events != undefined ? events : []"
       :cell-rows="2"
       :cell-columns="3"
-      :eager-until="-1"
       class="mt-8"
       key-id="key"
       render-placeholder

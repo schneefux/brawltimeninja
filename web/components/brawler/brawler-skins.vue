@@ -3,7 +3,7 @@
     :items="skins"
     :cell-columns="2"
     :cell-rows="3"
-    :eager-until="5"
+    :render-at-least="5"
     key-id="id"
     render-placeholder
   >

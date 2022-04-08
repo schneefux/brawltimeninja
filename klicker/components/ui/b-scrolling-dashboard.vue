@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <div
-      ref="container"
+      ref="wrapper"
       class="dashboard dashboard--horizontal dashboard--responsive gap-x-8 -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 hide-scrollbar"
     >
       <slot></slot>
@@ -74,25 +74,13 @@ export default defineComponent({
     FontAwesomeIcon,
     BButton,
   },
-  setup() {
-    const container = ref<HTMLElement|null>()
-
-    /**
-     * External API used by <b-scrolling-list>
-     */
-    const scrollTo = (element: HTMLElement) => {
-      const offset = element.getBoundingClientRect().left - container.value!.getBoundingClientRect().left
-      // use smooth scroll when the distance is small
-      // as to not trigger lazy-load of elements in between the current and the target position
-      const behavior = Math.abs(offset) <= 2 * window.innerWidth ? 'smooth' : undefined
-      const left = container.value!.scrollLeft + offset
-      container.value!.scrollTo({ left, behavior })
-    }
+  setup(props, { emit }) {
+    const wrapper = ref<HTMLElement|null>()
 
     const scrollBy = (direction: number) => {
-      const rect = container.value!.getBoundingClientRect()
-      const left = container.value!.scrollLeft + rect.width * direction
-      container.value!.scrollTo({ left, behavior: 'smooth' })
+      const rect = wrapper.value!.getBoundingClientRect()
+      const left = wrapper.value!.scrollLeft + rect.width * direction
+      wrapper.value!.scrollTo({ left, behavior: 'smooth' })
     }
 
     const scrollLeft = () => scrollBy(-1)
@@ -100,31 +88,34 @@ export default defineComponent({
 
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
-    const updateArrivedStates = () => {
-      const scrollable = container.value!.scrollWidth > container.value!.clientWidth
+    const onScroll = () => {
+      emit('scroll', {
+        x: scroll.x.value,
+        arrivedLeft: scroll.arrivedState.left,
+        arrivedRight: scroll.arrivedState.right,
+      })
+
+      const scrollable = wrapper.value!.scrollWidth > wrapper.value!.clientWidth
       arrivedLeft.value = scroll.arrivedState.left || !scrollable
       arrivedRight.value = scroll.arrivedState.right || !scrollable
     }
-    const scroll = useScroll(container, {
-      onScroll: updateArrivedStates,
-      throttle: 300,
+    const scroll = useScroll(wrapper, {
+      onScroll,
       offset: {
         left: 50,
         right: 50,
       },
     })
     onMounted(() => {
-      container.value!.scrollTo({ left: 0 })
-      updateArrivedStates()
-    })
-    useResizeObserver(container, () => updateArrivedStates())
-    useMutationObserver(container, () => updateArrivedStates(), {
-      childList: true,
+      wrapper.value!.scrollTo({ left: 0 })
+      useResizeObserver(wrapper, () => onScroll())
+      useMutationObserver(wrapper, () => onScroll(), {
+        childList: true,
+      })
     })
 
     return {
-      scrollTo,
-      container,
+      wrapper,
       scrollLeft,
       scrollRight,
       arrivedLeft,

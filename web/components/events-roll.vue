@@ -37,7 +37,7 @@
       :items="filteredEvents"
       :cell-rows="withData ? 2 : 3"
       :cell-columns="withData ? 3 : 2"
-      :eager-until="4"
+      :render-at-least="withData ? 3 : 5"
       key-id="key"
       class="mt-8"
       render-placeholder

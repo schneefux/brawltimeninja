@@ -7,7 +7,6 @@
       :items="data != undefined ? data : []"
       :cell-rows="2"
       :cell-columns="3"
-      :eager-until="-1"
       key-id="id"
       class="mt-8"
       render-placeholder

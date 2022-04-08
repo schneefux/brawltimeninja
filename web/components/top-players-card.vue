@@ -8,6 +8,7 @@
       slot="content"
       :items="leaderboard != undefined ? leaderboard : []"
       :cell-columns="2"
+      :render-at-least="5"
       key-id="tag"
       render-placeholder
     >

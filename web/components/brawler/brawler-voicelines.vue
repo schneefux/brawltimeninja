@@ -4,7 +4,7 @@
       slot="content"
       :items="scrapedData != undefined ? scrapedData.voicelines : []"
       :cell-columns="1"
-      :eager-until="5"
+      :render-at-least="5"
       key-id="name"
       render-placeholder
     >

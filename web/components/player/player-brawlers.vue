@@ -3,8 +3,8 @@
     :items="brawlers"
     :cell-rows="3"
     :cell-columns="3"
-    :eager-until="3"
     key-id="brawlerId"
+    render-placeholder
   >
     <template v-slot:preview="brawler">
       <div class="w-8 h-8 flex justify-center items-center">

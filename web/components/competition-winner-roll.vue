@@ -22,7 +22,7 @@
       :items="datesShown"
       :cell-rows="3"
       :cell-columns="2"
-      :eager-until="4"
+      :render-at-least="5"
       key-id="date"
       render-placeholder
     >

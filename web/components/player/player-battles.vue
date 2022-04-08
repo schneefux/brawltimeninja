@@ -3,8 +3,8 @@
     :items="player.battles"
     :cell-rows="2"
     :cell-columns="4"
-    :eager-until="3"
     key-id="timestamp"
+    render-placeholder
   >
     <template v-slot:preview="battle">
       <div

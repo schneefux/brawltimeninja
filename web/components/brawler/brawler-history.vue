@@ -5,6 +5,7 @@
       :items="changes"
       :cell-columns="2"
       :cell-rows="2"
+      :render-at-least="5"
       key-id="index"
       render-placeholder
     >
