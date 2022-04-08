@@ -597,14 +597,19 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertSlicesToLocation(slices: SliceValue): Location {
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location {
+    const slicesDiff = Object.fromEntries(
+      Object.entries(slices)
+        .filter(([key, value]) => JSON.stringify(defaults[key]) != JSON.stringify(value)))
+
     return {
-      query: generateQueryParams(slices, 'filter'),
+      query: generateQueryParams(slicesDiff, 'filter'),
     }
   }
 
   convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue {
     const slices = parseQueryParams(route.query, 'filter') as SliceValue
+
     return {
       ...defaults,
       ...slices,

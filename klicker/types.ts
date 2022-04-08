@@ -397,7 +397,7 @@ export interface KlickerService {
   convertQueryToLocation(query: CubeQuery|CubeComparingQuery): Location
   convertLocationToQuery(config: Config, defaultCubeId: string, route: Route): CubeQuery|CubeComparingQuery
 
-  convertSlicesToLocation(slices: SliceValue): Location
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location
   convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue
 
   /**

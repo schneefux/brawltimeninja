@@ -30,7 +30,7 @@ export const useSyncSlicesAndRoute = (defaults: Ref<CubeQuery|CubeComparingQuery
       }
     },
     set(q: CubeQuery|CubeComparingQuery) {
-      router.replace($klicker.convertSlicesToLocation(q.slices))
+      router.replace($klicker.convertSlicesToLocation(q.slices, defaults.value.slices))
     }
   })
 }
