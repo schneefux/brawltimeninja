@@ -230,10 +230,14 @@ export default defineComponent({
 
       const { pxPerItem, pxGap } = columnWidths.value
 
-      const pxWholeWidth = container.value.wrapper.clientWidth
+      const wrapperComputedStyle = window.getComputedStyle(container.value.wrapper)
+      const wrapperPaddingLeft = parseInt(wrapperComputedStyle.paddingLeft)
+      const wrapperPadding = wrapperPaddingLeft + parseInt(wrapperComputedStyle.paddingRight)
+      const pxWholeWidth = container.value.wrapper.clientWidth - wrapperPadding
 
-      const startIndex = (event.x + pxGap) / (pxPerItem + pxGap)
-      const endIndex = (event.x + pxWholeWidth) / (pxPerItem + pxGap)
+      const offsetX = event.x - wrapperPaddingLeft
+      const startIndex = (offsetX + pxGap) / (pxPerItem + pxGap)
+      const endIndex = (offsetX + pxWholeWidth + pxGap) / (pxPerItem + pxGap)
 
       // FIXME workaround for scroll flicker on mobile devices
       scrollSnap.value = false
