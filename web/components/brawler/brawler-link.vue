@@ -13,7 +13,7 @@
           :path="`/brawlers/${brawlerBrawlerId}/avatar`"
           :alt="brawlerBrawlerName"
           size="160"
-          clazz="h-8 w-8 object-contain object-left-bottom"
+          clazz="h-8 w-8 object-contain object-left"
         ></media-img>
         <media-img
           v-if="ally != undefined"
