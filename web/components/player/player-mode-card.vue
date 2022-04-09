@@ -47,7 +47,6 @@
           :map="activeMap.map"
           :mode="mode"
           :player-brawlers="playerBrawlers"
-          :limit="3"
           class="mx-auto"
         ></player-map-tip-roll>
       </b-card>
@@ -65,7 +64,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
-import { Brawler, Battle } from '~/model/Api'
+import { Player, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
 import { winRateMetric } from '~/lib/klicker.conf'
@@ -97,7 +96,7 @@ export default defineComponent({
       default: []
     },
     playerBrawlers: {
-      type: Array as PropType<Brawler[]>,
+      type: Object as PropType<Player['brawlers']>,
       required: true,
     },
     activeEvents: {

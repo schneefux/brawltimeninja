@@ -13,9 +13,9 @@
 
 <script lang="ts">
 import { MetaGridEntry, CubeResponse } from '@schneefux/klicker/types'
-import { Brawler } from '~/model/Brawlstars'
+import { Player } from '~/model/Api'
 import { VRoll, BShimmer } from '@schneefux/klicker/components'
-import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
@@ -32,12 +32,12 @@ export default defineComponent({
       required: true
     },
     playerBrawlers: {
-      type: Array as PropType<Brawler[]>,
+      type: Object as PropType<Player['brawlers']>,
       required: true
     },
     limit: {
       type: Number,
-      default: 3
+      default: 5
     },
   },
   setup(props) {
@@ -52,7 +52,7 @@ export default defineComponent({
       dimensionsIds: ['brawler'],
       metricsIds: ['winRate'],
       sortId: 'winRate',
-    }))
+    }), `player-map-tips-${props.mode}-${props.map}`)
 
     const transformedResponse = computed<CubeResponse|null>(() => {
       if (response.value == null) {
@@ -65,7 +65,7 @@ export default defineComponent({
       //   index [ brawlers owned by player, worst first ]
       //     *
       //   index [ brawler in map meta, best first ]
-      const worstBrawlers = props.playerBrawlers.slice()
+      const worstBrawlers = Object.values(props.playerBrawlers).slice()
         .sort((b1, b2) => b1.trophies - b2.trophies)
       const bestBrawlers = response.value.data
 
@@ -84,8 +84,8 @@ export default defineComponent({
         .slice(0, props.limit)
 
       return {
-        ...response.value,
-        loading: false,
+        kind: response.value.kind,
+        query: response.value.query,
         data,
       }
     })

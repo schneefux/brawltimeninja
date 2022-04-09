@@ -19,7 +19,7 @@
         :mode="mode.id"
         :battles="battles"
         :active-events="events"
-        :player-brawlers="Object.values(player.brawlers)"
+        :player-brawlers="player.brawlers"
         :player-tag="player.tag"
         :enable-klicker-stats="enableKlickerStats"
       ></player-mode-card>
