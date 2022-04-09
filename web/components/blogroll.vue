@@ -1,28 +1,33 @@
 <template>
   <div class="dashboard dashboard--responsive dashboard--responsive-stretch">
     <c-dashboard-cell
-      v-for="post in articles"
-      :key="post.id"
+      v-for="index in limit"
+      :key="index"
       :rows="1"
       :columns="3"
     >
       <b-card
-        :title="post.title"
-        :link="`/blog/${topic}/${post.slug}`"
-        :icon="post.mode != undefined ? `/modes/${post.mode}/icon` : undefined"
+        v-if="articles != undefined && articles[index - 1] != undefined"
+        :title="articles[index - 1].title"
+        :link="`/blog/${topic}/${articles[index - 1].slug}`"
+        :icon="articles[index - 1].mode != undefined ? `/modes/${articles[index - 1].modeKebab}/icon` : undefined"
+        :icon-alt="articles[index - 1].mode != undefined ? $t('mode.' + articles[index - 1].mode) : undefined"
         full-height
       >
-        <template v-slot:icon="data">
+        <template
+          v-if="articles[index - 1].mode != undefined"
+          v-slot:icon="data"
+        >
           <media-img-icon v-bind="data"></media-img-icon>
         </template>
 
         <p slot="content">
-          {{ post.description }}
+          {{ articles[index - 1].description }}
         </p>
 
         <b-button
           slot="actions"
-          :to="`/blog/${topic}/${post.slug}`"
+          :to="`/blog/${topic}/${articles[index - 1].slug}`"
           primary
           sm
         >{{ $t('action.read') }}</b-button>
@@ -32,8 +37,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { BCard, CDashboardCell, BButton, } from '@schneefux/klicker/components'
+import { camelToKebab } from '~/lib/util'
 
 interface Article {
   id: string
@@ -43,8 +49,10 @@ interface Article {
   description: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
+    BCard,
+    BButton,
     CDashboardCell,
   },
   props: {
@@ -57,29 +65,27 @@ export default Vue.extend({
       default: 3
     },
   },
-  data() {
+  setup(props) {
+    const { $content } = useContext()
+    const articles = useAsync<Article[]>(async () => {
+      const articles = await $content(props.topic)
+        .sortBy('createdAt', 'desc')
+        .limit(props.limit)
+        .fetch()
+      return articles
+        .map((a) => ({
+          id: a.id,
+          title: a.title,
+          slug: a.slug,
+          mode: a.mode,
+          modeKebab: a.mode != undefined ? camelToKebab(a.mode) : undefined,
+          description: a.description,
+        }))
+    }, `blogroll-${props.topic}-${props.limit}`)
+
     return {
-      articles: [] as Article[],
+      articles,
     }
-  },
-  watch: {
-    topic: '$fetch',
-    limit: '$fetch',
-  },
-  fetchDelay: 0,
-  async fetch() {
-    const articles = await this.$content(this.topic)
-      .sortBy('createdAt', 'desc')
-      .limit(this.limit)
-      .fetch()
-    this.articles = articles
-      .map((a) => ({
-        id: a.id,
-        title: a.title,
-        slug: a.slug,
-        mode: a.mode,
-        description: a.description,
-      }))
   },
 })
 </script>
