@@ -11,6 +11,7 @@
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">
         <vue-range-slider
+          v-if="isClient"
           :min="min"
           :max="max"
           :step="1"
@@ -36,9 +37,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { BFakeSelect } from '@schneefux/klicker/components'
+import 'vue-range-component/dist/vue-range-slider.min.css'
 
 export default defineComponent({
   components: {
+    // does not support SSR
+    VueRangeSlider: () => import('vue-range-component'),
     BFakeSelect,
   },
   props: {
@@ -81,10 +85,13 @@ export default defineComponent({
       backgroundColor: 'rgb(251, 191, 36)', // yellow-400
     }
 
+    const isClient = process.client
+
     return {
       onInput,
       bgStyle,
       processStyle,
+      isClient,
     }
   },
 })

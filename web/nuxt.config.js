@@ -79,7 +79,6 @@ export default {
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/gtag', mode: 'client' },
     { src: '~/plugins/visibility', mode: 'client' },
-    { src: '~/plugins/slider', mode: 'client' },
     { src: '~/plugins/custom-components' },
     { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
