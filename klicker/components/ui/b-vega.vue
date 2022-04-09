@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="container"
     :class="['inject-colors relative', {
       'w-full': fullWidth,
       'h-full': fullHeight,
@@ -33,11 +34,6 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue-demi'
 import { useResizeObserver } from '@vueuse/core'
-
-const textColor = 'var(--text-color)'
-const gridColor = 'var(--grid-color)'
-const backgroundColor = 'var(--background-color)'
-const primaryColor = 'var(--primary-color)'
 
 export default defineComponent({
   components: {
@@ -83,6 +79,11 @@ export default defineComponent({
 
       loading.value = true
       cleanup()
+
+      const computedStyle = window.getComputedStyle(container.value)
+      const textColor = computedStyle.getPropertyValue('--text-color')
+      const gridColor = computedStyle.getPropertyValue('--grid-color')
+      const primaryColor = computedStyle.getPropertyValue('--primary-color')
 
       const defaults: VisualizationSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -145,7 +146,7 @@ export default defineComponent({
     }
 
     const download = async (ext: 'svg'|'png' = 'png', scaleFactor: number = 1.5, opts = {
-      background: backgroundColor,
+      background: undefined as undefined|string,
       // 1.91:1
       width: 600*1.25,
       height: 315*1.25,
@@ -154,7 +155,10 @@ export default defineComponent({
         return
       }
 
-      result.value.view.background(opts.background)
+      const backgroundColor = window.getComputedStyle(container.value)
+        .getPropertyValue('--background-color')
+
+      result.value.view.background(opts.background ?? backgroundColor)
       result.value.view.width(opts.width)
       result.value.view.height(opts.height)
 
@@ -173,7 +177,10 @@ export default defineComponent({
 
     useResizeObserver(graph, () => refresh())
 
+    const container = ref<HTMLElement>()
+
     return {
+      container,
       graph,
       loading,
       result,
@@ -187,17 +194,17 @@ export default defineComponent({
 <style scoped lang="postcss">
 .inject-colors {
   /* gray-800 */
-  --text-color: rgb(39 39 42 / 0.75);
-  --grid-color: rgb(39 39 42 / 0.25);
-  --background-color: theme('colors.gray.100');
-  --primary-color: theme('colors.primary.400');
+  --text-color:rgb(39 39 42 / 0.75);
+  --grid-color:rgb(39 39 42 / 0.25);
+  --background-color:theme('colors.gray.100');
+  --primary-color:theme('colors.primary.400');
 }
 
 .dark .inject-colors {
   /* gray-200 */
-  --text-color: rgb(228 228 231 / 0.75);
-  --grid-color: rgb(228 228 231 / 0.25);
-  --background-color: theme('colors.gray.900');
-  --primary-color: theme('colors.primary.400');
+  --text-color:rgb(228 228 231 / 0.75);
+  --grid-color:rgb(228 228 231 / 0.25);
+  --background-color:theme('colors.gray.900');
+  --primary-color:theme('colors.primary.400');
 }
 </style>
