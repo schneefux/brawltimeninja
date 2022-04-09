@@ -73,6 +73,11 @@ export default defineComponent({
         },
         layer: [{
           mark: 'point',
+          params: [{
+            name: 'grid',
+            select: 'interval',
+            bind: 'scales',
+          }],
         }, {
           mark: {
             type: 'text',
