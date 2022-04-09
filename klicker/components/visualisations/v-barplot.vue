@@ -3,13 +3,25 @@
     v-bind="$props"
     component="v-barplot"
   >
-    <b-vega
+    <div
       slot="content"
-      :spec="spec"
-      :show-download="card != undefined"
-      full-width
-      full-height
-    ></b-vega>
+      ref="wrapper"
+      class="h-full w-full flex flex-col"
+    >
+      <b-vega
+        :spec="spec"
+        :show-download="card != undefined"
+        full-width
+        full-height
+      ></b-vega>
+
+      <b-paginator
+        v-if="pageSize != undefined && values.length > pageSize"
+        v-model="page"
+        :pages="Math.ceil(values.length / pageSize)"
+        class="pt-4 mt-auto mx-auto"
+      ></b-paginator>
+    </div>
   </v-card-wrapper>
 </template>
 
@@ -17,13 +29,16 @@
 import { VisualisationProps } from '../../props'
 import { VisualizationSpec } from 'vega-embed'
 import BVega from '../ui/b-vega.vue'
-import { computed, defineComponent } from 'vue-demi'
+import BPaginator from '../ui/b-paginator.vue'
+import { computed, defineComponent, ref } from 'vue-demi'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
   components: {
     BVega,
+    BPaginator,
     VCardWrapper,
   },
   props: {
@@ -32,32 +47,32 @@ export default defineComponent({
   setup(props) {
     const { $klicker, comparing, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
+    const values = computed(() => switchResponse(response => response.data, response => response.data.flatMap(e => [{
+      dimensions: e.dimensions,
+      metrics: e.metrics,
+      metricsRaw: e.metricsRaw,
+      metricsCI: e.test.reference.metricsCI,
+      source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
+      stars: e.test.difference.pValueStars,
+    }, {
+      id: e.id,
+      dimensions: e.dimensions,
+      metrics: e.test.reference.metrics,
+      metricsRaw: e.test.reference.metricsRaw,
+      metricsCI: e.test.reference.metricsCI,
+      source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
+      stars: '',
+    }])))
+
     const spec = computed<VisualizationSpec>(() => {
       const dimension0 = dimensions.value[0]
       const metric0 = metrics.value[0]
 
-      const values = switchResponse(response => response.data, response => response.data.flatMap(e => [{
-        dimensions: e.dimensions,
-        metrics: e.metrics,
-        metricsRaw: e.metricsRaw,
-        metricsCI: e.test.reference.metricsCI,
-        source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
-        stars: e.test.difference.pValueStars,
-      }, {
-        id: e.id,
-        dimensions: e.dimensions,
-        metrics: e.test.reference.metrics,
-        metricsRaw: e.test.reference.metricsRaw,
-        metricsCI: e.test.reference.metricsCI,
-        source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
-        stars: '',
-      }]))
-
-      const withCI = values[0].metricsCI[metric0.id] != undefined
+      const withCI = values.value[0].metricsCI[metric0.id] != undefined
 
       return {
         data: {
-          values,
+          values: values.value.slice(page.value * pageSize.value, (page.value + 1) * pageSize.value),
         },
         encoding: {
           x: {
@@ -160,8 +175,26 @@ export default defineComponent({
       }
     })
 
+    const page = ref(0)
+    const pageSize = ref(values.value.length)
+    const wrapper = ref<HTMLElement>()
+
+    useResizeObserver(wrapper, () => {
+      if (wrapper.value == undefined) {
+        return
+      }
+
+      const pxAvailableWidth = wrapper.value.getBoundingClientRect().width - 100
+      const pxPerBar = 12
+      pageSize.value = Math.min(Math.max(Math.floor(pxAvailableWidth / pxPerBar), 1), values.value.length)
+    })
+
     return {
+      wrapper,
+      values,
       spec,
+      page,
+      pageSize,
     }
   },
 })
