@@ -1,5 +1,5 @@
 import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
-import { ChiSquared } from 'sampson'
+import { ChiSquared } from 'sampson' // TODO does not treeshake - unfortunately, sampson is written in Flow
 import { formatClickhouseDate } from "./util"
 
 /* c&p from util */
