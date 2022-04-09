@@ -24,7 +24,6 @@
           slot="actions"
           :to="`/blog/${topic}/${post.slug}`"
           primary
-          prefetch
           sm
         >{{ $t('action.read') }}</b-button>
       </b-card>

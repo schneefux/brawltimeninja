@@ -19,7 +19,6 @@
       <b-button
         :to="localePath(`/tier-list/brawler`)"
         primary
-        prefetch
         sm
       >
         {{ $t('action.open.tier-list.brawler') }}

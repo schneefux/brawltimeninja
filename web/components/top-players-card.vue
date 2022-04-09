@@ -45,7 +45,6 @@
       slot="actions"
       :to="localePath(`/leaderboard/trophies`)"
       primary
-      prefetch
       sm
     >
       {{ $t('action.open.leaderboard.metric', { metric: $t('metric.trophies') }) }}

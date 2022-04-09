@@ -3,7 +3,6 @@
     <nuxt-link
       :to="localePath('/')"
       class="font-semibold text-xl tracking-tight leading-tight"
-      prefetch
     >
       Brawl Time Ninja
     </nuxt-link>

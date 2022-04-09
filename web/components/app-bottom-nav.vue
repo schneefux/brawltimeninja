@@ -8,7 +8,6 @@
         'text-gray-800': screen.id == active,
         'text-yellow-700': screen.id != active,
       }]"
-      prefetch
     >
       <font-awesome-icon
         :icon="screen.icon"

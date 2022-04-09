@@ -35,7 +35,6 @@
             :to="`/faq/${faq.slug}`"
             itemprop="url"
             primary
-            prefetch
             md
           >
             Read
@@ -98,7 +97,6 @@
               :to="`/blog/guides/${post.slug}`"
               itemprop="url"
               primary
-              prefetch
               md
             >
               Read
