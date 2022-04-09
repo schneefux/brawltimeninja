@@ -41,10 +41,10 @@
       ></b-shimmer>
 
       <b-shimmer
-        v-if="list.length > 0 && state.start > 0"
+        v-if="list.length > 0 && renderBounds.start > 0"
         :style="{
           'grid-column-start': 1,
-          'grid-column-end': state.start * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-end': renderBounds.start * columnWidths.actualColumnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -68,10 +68,10 @@
       </c-dashboard-cell>
 
       <b-shimmer
-        v-if="list.length > 0 && state.end < items.length - 1"
+        v-if="list.length > 0 && renderBounds.end < items.length - 1"
         :style="{
-          'grid-column-start': (state.end + 1) * columnWidths.actualColumnsPerItem + 1,
-          'grid-column-end': (items.length - 1) * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-start': (renderBounds.end + 1) * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-end': items.length * columnWidths.actualColumnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -170,11 +170,16 @@ export default defineComponent({
       end: props.renderAtLeast, // by default, 1 element is visible
     })
 
+    const renderBounds = ref({
+      start: 0,
+      end: props.renderAtLeast,
+    })
+
     const list = computed(() => props.items
-      .slice(state.value.start, state.value.end + 1)
+      .slice(renderBounds.value.start, renderBounds.value.end + 1)
       .map((item, index) => ({
         item,
-        index: state.value.start + index,
+        index: renderBounds.value.start + index,
       }))
     )
 
@@ -200,8 +205,14 @@ export default defineComponent({
           .replace(/(^.*)(\d+)(.*$)/i, '$2'))
       }
 
+      const wrapperComputedStyle = window.getComputedStyle(container.value!.wrapper!)
+      const wrapperPaddingLeft = parseInt(wrapperComputedStyle.paddingLeft)
+      const wrapperPadding = wrapperPaddingLeft + parseInt(wrapperComputedStyle.paddingRight)
+
       return {
         actualColumnsPerItem,
+        wrapperPaddingLeft,
+        wrapperPadding,
         pxPerItem,
         pxGap,
       }
@@ -209,6 +220,8 @@ export default defineComponent({
     
     const columnWidths = ref({
       actualColumnsPerItem: props.cellColumns,
+      wrapperPaddingLeft: 0,
+      wrapperPadding: 0,
       pxPerItem: 1,
       pxGap: 1,
     })
@@ -228,11 +241,8 @@ export default defineComponent({
         return
       }
 
-      const { pxPerItem, pxGap } = columnWidths.value
+      const { pxPerItem, pxGap, wrapperPadding, wrapperPaddingLeft } = columnWidths.value
 
-      const wrapperComputedStyle = window.getComputedStyle(container.value.wrapper)
-      const wrapperPaddingLeft = parseInt(wrapperComputedStyle.paddingLeft)
-      const wrapperPadding = wrapperPaddingLeft + parseInt(wrapperComputedStyle.paddingRight)
       const pxWholeWidth = container.value.wrapper.clientWidth - wrapperPadding
 
       const offsetX = event.x - wrapperPaddingLeft
@@ -244,9 +254,26 @@ export default defineComponent({
       clearTimeout(timeout)
       timeout = setTimeout(() => scrollSnap.value = true, 100)
 
+      // assuming constant scroll speed
+      // predict which elements will be relevant in the next scroll event call
+      // render them using overscan
+      const distance = Math.round(startIndex - state.value.start)
+      let overscanLeft = 0
+      let overscanRight = 0
+      if (distance > 0) {
+        overscanRight = distance
+      }
+      if (distance < 0) {
+        overscanLeft = -distance
+      }
+
       state.value = {
         start: Math.max(Math.floor(startIndex), 0),
         end: Math.min(Math.floor(endIndex), props.items.length - 1),
+      }
+      renderBounds.value = {
+        start: Math.max(Math.floor(startIndex - overscanLeft), 0),
+        end: Math.min(Math.floor(endIndex + overscanRight), props.items.length - 1),
       }
 
       if (preview.value != undefined) {
@@ -285,6 +312,7 @@ export default defineComponent({
       container,
       list,
       state,
+      renderBounds,
       scrollSnap,
       columnWidths,
       previewItems,
