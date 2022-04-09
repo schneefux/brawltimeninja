@@ -3,7 +3,7 @@
     :to="link"
     :title="title"
   >
-    <figure class="flex items-center">
+    <figure class="inline-flex items-center">
       <span
         :class="['relative shrink-0', {
           'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,

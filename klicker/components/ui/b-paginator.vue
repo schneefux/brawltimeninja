@@ -4,7 +4,7 @@
       v-show="page != 0"
       class="w-8 text-center"
       aria-label="previous"
-      @click="page--"
+      @click.stop="page--"
     >
       <font-awesome-icon
         :icon="faCaretLeft"
@@ -23,7 +23,7 @@
       v-show="page != pages - 1"
       class="w-8 text-center"
       aria-label="next"
-      @click="page++"
+      @click.stop="page++"
     >
       <font-awesome-icon
         :icon="faCaretRight"

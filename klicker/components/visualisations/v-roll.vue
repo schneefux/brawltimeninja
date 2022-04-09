@@ -5,22 +5,25 @@
   >
     <div
       slot="content"
-      class="h-full w-full overflow-x-auto"
+      ref="wrapper"
+      class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
     >
       <table class="h-full w-full border-separate border-spacing-0">
         <tbody>
           <tr>
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap"
+              ref="heading"
+              class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
             >{{ dimensionName }}</th>
             <d-auto
-              v-for="title in headings"
+              v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
               :key="title.id"
+              :ref="`item-${title.id}`"
               :response="response"
               :row="title.entry"
               tag="td"
-              class="text-left pt-2 pb-1 pl-3"
+              class="text-center pt-2 pb-1 pl-3"
             ></d-auto>
           </tr>
 
@@ -33,9 +36,9 @@
               class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-gray-800/75 dark:text-gray-200/75"
             >{{ row.metricName }}</th>
             <td
-              v-for="column in row.columns"
+              v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
               :key="column.id"
-              class="text-left pt-1 pl-3 text-gray-800 dark:text-gray-200"
+              class="text-center pt-1 pl-3 text-gray-800 dark:text-gray-200"
             >
               <m-auto
                 :response="response"
@@ -46,18 +49,27 @@
           </tr>
         </tbody>
       </table>
+
+      <b-paginator
+        v-if="pageSize != undefined && headings.length > pageSize"
+        v-model="page"
+        :pages="Math.ceil(headings.length / pageSize)"
+        class="pt-4 mt-auto mx-auto"
+      ></b-paginator>
     </div>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue-demi'
+import { computed, defineComponent, ref, watch } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
-import BCard from '../ui/b-card.vue'
+import BPaginator from '../ui/b-paginator.vue'
 import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
+import { useResizeObserver } from '@vueuse/core'
+import { nextTick } from 'process'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -65,7 +77,7 @@ import MAuto from './m-auto.vue'
 export default defineComponent({
   name: 'VRoll',
   components: {
-    BCard,
+    BPaginator,
     VCardWrapper,
     DAuto,
     MAuto,
@@ -73,7 +85,7 @@ export default defineComponent({
   props: {
     ...VisualisationProps,
   },
-  setup(props) {
+  setup(props, { refs }) {
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const dimension = computed(() => dimensions.value[0])
@@ -106,7 +118,75 @@ export default defineComponent({
       }])
     ))
 
+    const wrapper = ref<HTMLElement>()
+    const heading = ref<HTMLElement>()
+    const page = ref(0)
+    const pageSize = ref(headings.value.length)
+
+    const calculatePageSize = () => {
+      if (wrapper.value == undefined || heading.value == undefined) {
+        return pageSize.value
+      }
+
+      const firstItem = Object.entries(refs)
+        .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
+
+      if (firstItem == undefined) {
+        return pageSize.value
+      }
+
+      const firstItemElement = firstItem[1][0].$el as HTMLElement
+      const pxPerItem = firstItemElement.getBoundingClientRect().width
+
+      const pxForHeader = heading.value.getBoundingClientRect().width
+
+      const pxWholeWidth = wrapper.value.getBoundingClientRect().width
+      const pxAvailableForItems = pxWholeWidth - pxForHeader
+
+      return Math.min(Math.max(Math.floor(pxAvailableForItems / pxPerItem), 1), headings.value.length)
+    }
+
+    const pxPreviousWidth = ref(0)
+    const updatePageSize = () => {
+      // td fills the remaining space
+      // in order to grow, re-render the full list and determine the size in the next tick
+      pageSize.value = headings.value.length
+      nextTick(() => pageSize.value = calculatePageSize())
+    }
+
+    useResizeObserver(wrapper, () => {
+      if (wrapper.value == undefined) {
+        return
+      }
+
+      const pxWholeWidth = wrapper.value.getBoundingClientRect().width
+      if (pxWholeWidth == pxPreviousWidth.value) {
+        // wrapper width is same, skip update
+        return
+      }
+
+      pxPreviousWidth.value = pxWholeWidth
+
+      updatePageSize()
+    })
+
+    const previousItemsLength = ref(body.value.length)
+    watch(() => body.value, () => {
+      if (body.value.length == previousItemsLength.value) {
+        return
+      }
+
+      previousItemsLength.value = body.value.length
+      updatePageSize()
+    })
+
+    // TODO assumes d-auto / m-auto do not change - might want to add a mutation observer
+
     return {
+      wrapper,
+      heading,
+      page,
+      pageSize,
       headings,
       body,
       dimensionName,

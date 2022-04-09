@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center">
+  <div class="inline-flex items-center">
     <media-img
       :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase()}_1`"
       :alt="row.dimensions.gear"
