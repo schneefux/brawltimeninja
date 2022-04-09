@@ -265,4 +265,10 @@ export default {
   serverMiddleware: [
     { path: '/klicker', handler: '~/server-middleware/klicker.ts' },
   ],
+
+  alias: {
+    // https://github.com/vueuse/vueuse/issues/1239
+    '@vueuse/core': path.resolve(__dirname, 'node_modules/@vueuse/core/index.mjs'),
+    '@vueuse/shared': path.resolve(__dirname, 'node_modules/@vueuse/shared/index.mjs'),
+  }
 }
