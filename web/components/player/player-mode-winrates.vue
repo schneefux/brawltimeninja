@@ -9,7 +9,8 @@
     <template v-slot:preview="mode">
       <media-img
         :path="`/modes/${mode.slug}/icon`"
-        size="120"
+        :alt="$t('mode.' + mode.id)"
+        size="160"
         clazz="w-8 h-8 object-contain"
       ></media-img>
     </template>

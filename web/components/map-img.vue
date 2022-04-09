@@ -5,6 +5,7 @@
     :alt="mapName"
     :clazz="clazz"
     size="512"
+    loading="lazy"
   ></media-img>
 </template>
 

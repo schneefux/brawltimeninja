@@ -9,12 +9,13 @@
     <template v-slot:preview="battle">
       <media-img
         :path="`/modes/${camelToKebab(battle.event.mode)}/icon`"
+        :alt="$t('mode.' + battle.event.mode)"
         :clazz="'w-8 h-8 object-contain p-1 rounded-full ' +
           (battle.victory === false ? 'bg-red-500/75' : '') +
           (battle.victory === true ? 'bg-green-500/75' : '') +
           (battle.victory == undefined ? 'bg-gray-400' : '')
         "
-        size="120"
+        size="160"
       ></media-img>
     </template>
 

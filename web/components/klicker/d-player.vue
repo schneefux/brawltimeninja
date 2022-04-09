@@ -7,8 +7,9 @@
     <media-img
       v-if="icon != undefined"
       :path="icon"
-      clazz="h-8"
-      wrapper-class="shrink-0"
+      :alt="row.dimensions.player"
+      size="200"
+      clazz="h-8 w-8 object-contain"
     ></media-img>
     <span class="ml-2">
       {{ row.dimensions.player }}

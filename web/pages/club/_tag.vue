@@ -38,7 +38,8 @@
                 >
                   <media-img
                     :path="`/avatars/${member.icon.id}`"
-                    clazz="h-8 mr-1 inline"
+                    size="200"
+                    clazz="h-8 w-8 mr-1 inline object-contain"
                   ></media-img>
                   <span>{{ member.name }}</span>
                 </router-link>

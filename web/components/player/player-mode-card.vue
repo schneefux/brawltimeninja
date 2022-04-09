@@ -38,14 +38,6 @@
         ></player-map-tip-roll>
       </b-card>
     </div>
-    <div class="absolute top-0 right-0 mr-6 my-4">
-      <media-img
-        :path="'/modes/' + modeKebab + '/icon'"
-        :alt="mode"
-        size="120"
-        clazz="w-12 mr-1"
-      ></media-img>
-    </div>
   </event-card>
 </template>
 
@@ -160,7 +152,6 @@ export default defineComponent({
     })
 
     const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
-    const modeKebab = computed(() => camelToKebab(props.mode))
 
     const { i18n } = useContext()
     const mapName = computed(() => {
@@ -190,7 +181,6 @@ export default defineComponent({
       mapName,
       activeMap,
       stats,
-      modeKebab,
       winRate,
       kvTableRows,
       kvTableData,

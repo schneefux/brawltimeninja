@@ -49,6 +49,7 @@
         >
           <media-img
             :path="'/brawlers/' + mate.brawler + '/avatar'"
+            :alt="mate.brawler"
             size="160"
             clazz="h-8 w-8 object-contain"
           ></media-img>

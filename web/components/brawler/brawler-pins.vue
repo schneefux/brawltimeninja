@@ -14,7 +14,7 @@
               :alt="pin.name"
               :animated="pin.path.endsWith('.gif')"
               clazz="max-h-20"
-              size="150"
+              size="160"
               loading="lazy"
             ></media-img>
           </div>

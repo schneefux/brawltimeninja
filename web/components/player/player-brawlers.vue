@@ -9,6 +9,7 @@
     <template v-slot:preview="brawler">
       <media-img
         :path="`/brawlers/${brawler.brawlerId}/avatar`"
+        :alt="brawler.name"
         size="160"
         clazz="h-8 w-8 object-contain"
       ></media-img>

@@ -7,7 +7,8 @@
       <media-img
         :path="`/avatars/${player.icon.id}`"
         :alt="player.name"
-        clazz="h-32"
+        size="200"
+        clazz="w-32 h-32"
       ></media-img>
 
       <b-kv-table
@@ -84,8 +85,9 @@
 
         <template v-slot:soloVictories="{ row }">
           <media-img
-            path="/modes/soloShowdown/icon"
+            path="/modes/solo-showdown/icon"
             alt="Solo Victories"
+            size="160"
             clazz="inline h-4 mr-1"
           ></media-img>
           {{ row.soloVictories }}
@@ -93,8 +95,9 @@
 
         <template v-slot:duoVictories="{ row }">
           <media-img
-            path="/modes/duoShowdown/icon"
-            alt="Solo Victories"
+            path="/modes/duo-showdown/icon"
+            alt="Duo Victories"
+            size="160"
             clazz="inline h-4 mr-1"
           ></media-img>
           {{ row.duoVictories }}

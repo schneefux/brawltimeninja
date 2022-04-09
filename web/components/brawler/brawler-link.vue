@@ -14,6 +14,7 @@
           :alt="brawlerBrawlerName"
           size="160"
           clazz="h-8 w-8 object-contain object-left"
+          loading="lazy"
         ></media-img>
         <media-img
           v-if="ally != undefined"
@@ -21,6 +22,7 @@
           :alt="brawlerAllyName"
           size="80"
           clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          loading="lazy"
         ></media-img>
         <media-img
           v-if="starpowerId != undefined"
@@ -28,6 +30,7 @@
           :alt="starpowerName"
           size="80"
           clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          loading="lazy"
         ></media-img>
         <media-img
           v-if="gadgetId != undefined"
@@ -35,6 +38,7 @@
           :alt="gadgetName"
           size="80"
           clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          loading="lazy"
         ></media-img>
       </span>
       <figcaption

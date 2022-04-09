@@ -1,10 +1,10 @@
 <template>
   <div class="bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center gap-x-2">
-    <nuxt-link
-      to="/"
-      class="h-6 w-6 flex-shrink-0"
-    >
-      <img src="~/assets/images/logo_with_crown_min.svg">
+    <nuxt-link to="/">
+      <img
+        src="~/assets/images/logo_with_crown_min.svg"
+        class="h-6 w-6 object-contain"
+      >
     </nuxt-link>
 
     <navigator

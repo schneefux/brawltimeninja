@@ -10,8 +10,8 @@
       <media-img
         :path="`/brawlers/${brawlerId}/avatar`"
         :alt="brawlerName"
-        size="128"
-        clazz="w-16 rounded-xl"
+        size="160"
+        clazz="h-16 w-16 rounded-xl object-contain"
       ></media-img>
       <c-query
         :query="query"

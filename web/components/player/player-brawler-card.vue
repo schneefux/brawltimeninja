@@ -13,8 +13,7 @@
           :path="`/brawlers/${brawlerId}/avatar`"
           :alt="brawler.name"
           size="160"
-          clazz="h-20 rounded"
-          wrapper-class="flex-shrink-0"
+          clazz="w-20 h-20 rounded object-contain"
         ></media-img>
 
         <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">

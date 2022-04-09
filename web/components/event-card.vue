@@ -21,7 +21,7 @@
       slot="preview"
       :id="id"
       :map="map"
-      clazz="h-12"
+      clazz="h-12 w-12 object-contain"
     ></map-img>
 
     <template
