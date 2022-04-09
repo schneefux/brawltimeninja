@@ -3,7 +3,7 @@ import { MetaGridEntry, VisualisationSpec } from "@schneefux/klicker/types"
 const visualisations: VisualisationSpec[] = [{
   name: 'Margin of Error',
   component: 'v-moe',
-  import: () => import('~/components/klicker/v-moe.vue'),
+  import: () => import(/* webpackChunkName: "v-custom" */ '~/components/klicker/v-moe.vue'),
   applicable(dimensions, metrics, size, comparing) {
     return dimensions.length == 1 && dimensions[0].id == 'brawler' && size > 0
       && metrics.some(m => m.id == 'picks') && !comparing
@@ -15,7 +15,7 @@ const visualisations: VisualisationSpec[] = [{
 }, {
   name: 'Gini Coefficient',
   component: 'v-gini',
-  import: () => import('~/components/klicker/v-gini.vue'),
+  import: () => import(/* webpackChunkName: "v-custom" */ '~/components/klicker/v-gini.vue'),
   applicable(dimensions, metrics, size, comparing) {
     return dimensions.length == 1 && dimensions[0].id == 'brawler' && size > 0
       && metrics.some(m => m.id == 'useRate') && !comparing
@@ -27,7 +27,7 @@ const visualisations: VisualisationSpec[] = [{
 }, {
   name: 'Sample Size',
   component: 'v-sample-size',
-  import: () => import('~/components/klicker/v-sample-size.vue'),
+  import: () => import(/* webpackChunkName: "v-custom" */ '~/components/klicker/v-sample-size.vue'),
   applicable(dimensions, metrics, size, comparing, data) {
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.picks != undefined
   },
@@ -38,7 +38,7 @@ const visualisations: VisualisationSpec[] = [{
 }, {
   name: 'Last Update',
   component: 'v-last-update',
-  import: () => import('~/components/klicker/v-last-update.vue'),
+  import: () => import(/* webpackChunkName: "v-custom" */ '~/components/klicker/v-last-update.vue'),
   applicable(dimensions, metrics, size, comparing, data) {
     return !comparing && size > 0 && (<MetaGridEntry>data[0]).metricsRaw.timestamp != undefined
   },
