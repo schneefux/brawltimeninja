@@ -154,7 +154,13 @@ class CustomKlicker extends Klicker {
         powerplay: false,
         metrics: {},
       }))
-      .sort((a, b) => this.$t('map.' + a.id).localeCompare(this.$t('map.' + b.id)))
+      .sort((a, b) => {
+        const sortMode = this.$t('mode.' + a.mode).localeCompare(this.$t('mode.' + b.mode))
+        if (sortMode != 0) {
+          return sortMode
+        }
+        return this.$t('map.' + a.id).localeCompare(this.$t('map.' + b.id))
+      })
   }
 
   async queryAllSeasons(limitWeeks: number = 8): Promise<{ id: string, name: string }[]> {

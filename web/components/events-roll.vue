@@ -96,7 +96,32 @@ export default defineComponent({
         const mapName = getMapName(i18n, e.id, e.map) ?? ''
         return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
       })
-      .sort((e1, e2) => (i18n.t('mode.' + e1.mode) as string).localeCompare(i18n.t('mode.' + e2.mode) as string))
+      .sort((a, b) => {
+        // 'all-all' first
+        if (a.key == 'all') {
+          return -1
+        }
+        if (b.key == 'all') {
+          return +1
+        }
+
+        // 'all' first for mode
+        if (a.mode == b.mode) {
+          if (a.key.startsWith('all-')) {
+            return -1
+          }
+          if (b.key.startsWith('all-')) {
+            return +1
+          }
+          if (a.mode == b.mode) {
+            // same mode: sort by map name
+            return getMapName(i18n, a.id, a.map)!.localeCompare(getMapName(i18n, b.id, b.map)!)
+          }
+        }
+
+        // sort by mode name
+        return (i18n.t('mode.' + a.mode) as string).localeCompare(i18n.t('mode.' + b.mode) as string)
+      })
     )
 
     const firstForModeIndices = computed(() => {
