@@ -18,6 +18,7 @@
       <button
         v-if="tooltip != undefined || tooltipLink != undefined || 'tooltip' in $scopedSlots"
         :to="tooltipLink"
+        label="Tooltip"
         class="w-4 text-sm leading-none absolute top-1 right-0"
         @click="tooltipOpen = !tooltipOpen"
       >

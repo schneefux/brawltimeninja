@@ -3,6 +3,7 @@
     <nuxt-link to="/">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
+        alt="Logo"
         class="h-6 w-6 object-contain"
       >
     </nuxt-link>
@@ -17,6 +18,7 @@
 
     <b-button
       to="/about"
+      :label="$t('nav.About')"
       class="w-6 text-center h-6"
       primary
     >

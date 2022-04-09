@@ -3,7 +3,7 @@
     <div class="mx-auto relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
-        class="mx-auto mt-16 h-32 md:h-48 lg:h-64"
+        class="mx-auto mt-16 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
       >
       <span
         v-if="$i18n.locale != 'en'"
