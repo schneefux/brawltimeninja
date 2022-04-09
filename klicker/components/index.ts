@@ -1,5 +1,3 @@
-import './index.css'
-
 export { default as BButton } from './ui/b-button.vue'
 export { default as BCard } from './ui/b-card.vue'
 export { default as BCheckbox } from './ui/b-checkbox.vue'
