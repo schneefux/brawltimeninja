@@ -11,7 +11,7 @@
       <media-img
         :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
         :alt="capitalizeWords(brawler.toLowerCase())"
-        :clazz="'border-gray-800 border-2 rounded-full object-cover ' + height + ' ' + width"
+        :clazz="'bg-gray-800 border-gray-800 border-2 rounded-full object-cover ' + height + ' ' + width"
         size="160"
       ></media-img>
     </router-link>
