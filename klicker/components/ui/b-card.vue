@@ -69,7 +69,7 @@
           <img
             :src="icon"
             :alt="iconAlt"
-            class="h-8"
+            class="h-8 w-8 object-contain"
           >
         </slot>
 
