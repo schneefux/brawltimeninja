@@ -73,7 +73,7 @@ export default defineComponent({
     const graph = ref<ComponentPublicInstance>()
 
     const refresh = async () => {
-      if (graph.value == undefined) {
+      if (graph.value == undefined || container.value == undefined) {
         return
       }
 
@@ -152,7 +152,7 @@ export default defineComponent({
       width: 600*1.25,
       height: 315*1.25,
     }) => {
-      if (result.value == undefined) {
+      if (result.value == undefined || container.value == undefined) {
         return
       }
 
