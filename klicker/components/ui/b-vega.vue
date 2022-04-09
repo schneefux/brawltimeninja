@@ -138,8 +138,9 @@ export default defineComponent({
 
       result.value = await embed(graph.value.$el as HTMLElement, spec, {
         actions: false,
-        // canvas: better performance, svg: easily zoomable
-        renderer: 'svg',
+        // canvas: better performance
+        // svg: easily zoomable and support for CSS variable colors
+        renderer: 'canvas',
       })
 
       loading.value = false
