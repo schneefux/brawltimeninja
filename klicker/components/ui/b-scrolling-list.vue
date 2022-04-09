@@ -3,7 +3,7 @@
     <ul
       v-if="'preview' in $scopedSlots"
       ref="preview"
-      class="flex md:flex-wrap overflow-x-auto hide-scrollbar"
+      class="flex overflow-x-auto hide-scrollbar"
     >
       <!-- same layout as b-tabs -->
       <li
