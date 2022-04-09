@@ -3,7 +3,6 @@
     :mode="battle.event.mode"
     :map="battle.event.map"
     :id="battle.event.id"
-    :elevation="2"
     full-height
   >
     <div
@@ -11,9 +10,7 @@
       class="flex justify-between"
     >
       <div>
-        <span class="mr-2">
-          {{ battle.result }}
-        </span>
+        <span class="mr-2">{{ battle.result }}</span>
         <span
           v-if="battle.trophyChange != undefined"
           class="font-semibold"
@@ -25,9 +22,7 @@
           />
         </span>
       </div>
-      <span>
-        {{ hoursSinceBattle == 0 ? 'just now' : (hoursSinceBattle + 'h ago') }}
-      </span>
+      <span>{{ hoursSinceBattle == 0 ? 'just now' : (hoursSinceBattle + 'h ago') }}</span>
     </div>
 
     <div
@@ -55,16 +50,14 @@
           <media-img
             :path="'/brawlers/' + mate.brawler + '/avatar'"
             size="160"
-            clazz="h-8"
+            clazz="h-8 w-8 object-contain"
           ></media-img>
           <div class="absolute top-0 right-0 w-12 text-right m-px">
             <template v-if="mate.brawlerTrophies != undefined">
               <div class="w-full flex">
                 <span
                   class="w-8 text-xs font-semibold text-shadow text-white"
-                >
-                  {{ mate.brawlerTrophies }}
-                </span>
+                >{{ mate.brawlerTrophies }}</span>
                 <img
                   :src="isPowerplay ? require('~/assets/images/icon/power_play_optimized.png') : require('~/assets/images/icon/trophy_optimized.png')"
                   class="w-4 h-4 ml-px"
@@ -78,9 +71,7 @@
           <span
             :class="['text-xs whitespace-nowrap m-px', {
               'text-yellow-400': mate.tag != playerTag,
-            }]">
-              {{ mate.name }}
-            </span>
+            }]">{{ mate.name }}</span>
           </router-link>
       </div>
     </div>
@@ -109,7 +100,7 @@ export default defineComponent({
       return props.battle.victory != undefined && props.battle.trophyChange != undefined
         && (props.battle.victory && props.battle.trophyChange > 11 || !props.battle.victory && props.battle.trophyChange > 3)
     })
-    const hoursSinceBattle = computed(() =>hoursSinceDate(props.battle.timestamp as string))
+    const hoursSinceBattle = computed(() => hoursSinceDate(props.battle.timestamp as string))
 
     return {
       isPowerplay,
