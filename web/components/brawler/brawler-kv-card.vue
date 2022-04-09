@@ -14,13 +14,7 @@
         clazz="w-16 rounded-xl"
       ></media-img>
       <c-query
-        :query="{
-          cubeId: 'map',
-          metricsIds: ['winRate', 'useRate', 'picks'],
-          dimensionsIds: ['brawler'],
-          sortId: 'winRate',
-          slices,
-        }"
+        :query="query"
         :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
       >
         <template v-slot="data">
@@ -58,8 +52,17 @@ export default defineComponent({
   setup(props) {
     const brawlerId = computed(() => getBrawlerId({ name: props.brawlerName }))
 
+    const query = computed(() => ({
+      cubeId: 'map',
+      metricsIds: ['winRate', 'useRate', 'picks'],
+      dimensionsIds: ['brawler'],
+      sortId: 'winRate',
+      slices: props.slices,
+    }))
+
     return {
       brawlerId,
+      query,
     }
   }
 })

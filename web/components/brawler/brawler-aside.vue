@@ -12,13 +12,7 @@
       ></media-img>
 
       <c-query
-        :query="{
-          cubeId: 'map',
-          metricsIds: ['winRate', 'useRate', 'picks'],
-          dimensionsIds: ['brawler'],
-          sortId: 'winRate',
-          slices: {},
-        }"
+        :query="query"
         :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
       >
         <template v-slot="data">
@@ -33,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -50,6 +44,19 @@ export default defineComponent({
       type: String,
       required: true
     },
+  },
+  setup() {
+    const query = computed(() => ({
+      cubeId: 'map',
+      metricsIds: ['winRate', 'useRate', 'picks'],
+      dimensionsIds: ['brawler'],
+      sortId: 'winRate',
+      slices: {},
+    }))
+
+    return {
+      query,
+    }
   },
 })
 </script>

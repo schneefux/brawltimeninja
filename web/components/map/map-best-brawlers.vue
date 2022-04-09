@@ -1,14 +1,5 @@
 <template>
-  <c-query
-    :query="{
-      cubeId: 'map',
-      dimensionsIds: ['brawler'],
-      metricsIds: ['winRateAdj'],
-      sortId: 'winRateAdj',
-      slices,
-      limit,
-    }"
-  >
+  <c-query :query="query">
     <template v-slot="data">
       <v-roll
         v-bind="data"
@@ -19,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
 
@@ -43,5 +34,19 @@ export default defineComponent({
       required: false
     },
   },
+  setup(props) {
+    const query = computed(() => ({
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      metricsIds: ['winRateAdj'],
+      sortId: 'winRateAdj',
+      slices: props.slices,
+      limit: props.limit,
+    }))
+
+    return {
+      query,
+    }
+  }
 })
 </script>

@@ -1,15 +1,6 @@
 <template>
   <c-query
-    :query="{
-      cubeId: 'battle',
-      dimensionsIds: ['player'],
-      metricsIds: [metric],
-      slices: {
-        season: [currentSeason],
-      },
-      sortId: metric,
-      limit: 100,
-    }"
+    :query="query"
   >
     <template v-slot="data">
       <v-table
@@ -38,9 +29,19 @@ export default defineComponent({
     const metric = computed(() => route.value.params.metric as string)
 
     const currentSeason = formatClickhouseDate(getTodaySeasonEnd())
+    const query = computed(() => ({
+      cubeId: 'battle',
+      dimensionsIds: ['player'],
+      metricsIds: [metric.value],
+      slices: {
+        season: [currentSeason],
+      },
+      sortId: metric,
+      limit: 100,
+    }))
 
     return {
-      currentSeason,
+      query,
       metric,
     }
   },

@@ -32,7 +32,7 @@ export interface BrawlerContent {
   }[]
 }
 
-interface ScrapedAccessory {
+export interface ScrapedAccessory {
   name: string
   description: string
   id: string

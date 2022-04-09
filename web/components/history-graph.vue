@@ -1,17 +1,5 @@
 <template>
-  <c-query
-    :query="{
-      cubeId: 'brawler',
-      dimensionsIds: ['day'],
-      metricsIds: brawler != undefined ? ['trophies'] : ['playerTrophies'],
-      slices: {
-        season: [season],
-        playerId: [playerId],
-        brawler: brawler != undefined ? [brawler.toUpperCase()] : [],
-      },
-      sortId: 'day',
-    }"
-  >
+  <c-query :query="query">
     <template v-slot="data">
       <v-lineplot
         v-bind="data"
@@ -70,9 +58,20 @@ export default defineComponent({
 
     const playerId = computed(() => tagToId(props.playerTag))
 
+    const query = computed(() => ({
+      cubeId: 'brawler',
+      dimensionsIds: ['day'],
+      metricsIds: props.brawler != undefined ? ['trophies'] : ['playerTrophies'],
+      slices: {
+        season: [season],
+        playerId: [playerId.value],
+        brawler: props.brawler != undefined ? [props.brawler.toUpperCase()] : [],
+      },
+      sortId: 'day',
+    }))
+
     return {
-      season,
-      playerId,
+      query,
     }
   },
 })
