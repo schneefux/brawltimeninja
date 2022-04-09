@@ -9,16 +9,14 @@
     >
       <brawler-kv-card
         :brawler-name="brawlerName"
-        :slices="{
-          mode: [mode],
-        }"
+        :slices="slices"
       ></brawler-kv-card>
     </div>
   </event-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
@@ -32,5 +30,14 @@ export default defineComponent({
       required: true
     },
   },
+  setup(props) {
+    const slices = computed(() => ({
+      mode: [props.mode],
+    }))
+
+    return {
+      slices,
+    }
+  }
 })
 </script>

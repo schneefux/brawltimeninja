@@ -23,22 +23,8 @@
             <q class="italic">{{ scrapedData.description }}</q>
           </p>
           <b-kv-table
-            :rows="[{
-              title: $t('metric.level'),
-              key: 'level',
-              slot: 'level',
-            }, {
-              title: $t('metric.health'),
-              key: `healthByLevel.${level - 1}`,
-            }, ...Object.keys(scrapedData.stats).map((key) => ({
-              title: $t('metric.' + key),
-              key,
-            }))]"
-            :data="{
-              ...scrapedData.stats,
-              level,
-              healthByLevel: scrapedData.healthByLevel,
-            }"
+            :rows="overviewKvRows"
+            :data="overviewKvData"
           >
             <b-select
               slot="level"
@@ -62,44 +48,18 @@
       :rows="3"
       :columns="4"
     >
-      <b-card
+      <brawler-attack-card
         v-if="scrapedData != undefined"
-        :icon="require(`~/assets/images/${prop}-icon.png`)"
-        :icon-alt="`${prop} Icon`"
-        :title="scrapedData[prop].name"
-        full-height
-      >
-        <div
-          slot="content"
-          class="h-full flex flex-col justify-between gap-y-4"
-        >
-          <p>
-            <q class="italic">{{ scrapedData[prop].description }}</q>
-          </p>
-          <b-kv-table
-            :rows="[
-              ...scrapedData[prop].statsByLevel.map((attack, index) => ({
-                title: attack.name,
-                key: `statsByLevel.${index}.list.${level - 1}`,
-              })),
-              ...Object.keys(scrapedData[prop].stats).map((key) => ({
-                title: $t('metric.' + key.replace(prop, '')),
-                key,
-              })),
-            ]"
-            :data="{
-              ...scrapedData[prop].stats,
-              statsByLevel: scrapedData[prop].statsByLevel,
-            }"
-          ></b-kv-table>
-        </div>
-      </b-card>
+        :scraped-data="scrapedData"
+        :prop="prop"
+        :level="level"
+      ></brawler-attack-card>
     </c-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, CDashboardCell, BCard, BKvTable, BSelect } from '@schneefux/klicker/components'
 
@@ -121,11 +81,32 @@ export default defineComponent({
       required: false
     },
   },
-  setup() {
-    const level = ref(1)
+  setup(props) {
+    const level = ref('1')
+
+    const { i18n } = useContext()
+    const overviewKvRows = computed(() => props.scrapedData == undefined ? [] : [{
+      title: i18n.t('metric.level'),
+      key: 'level',
+      slot: 'level',
+    }, {
+      title: i18n.t('metric.health'),
+      key: `healthByLevel.${parseInt(level.value) - 1}`,
+    }, ...Object.keys(props.scrapedData.stats).map((key) => ({
+      title: i18n.t('metric.' + key),
+      key,
+    }))])
+
+    const overviewKvData = computed(() => (props.scrapedData == undefined ? {} : {
+      ...props.scrapedData.stats,
+      level,
+      healthByLevel: props.scrapedData.healthByLevel,
+    }))
 
     return {
       level,
+      overviewKvRows,
+      overviewKvData,
     }
   },
 })

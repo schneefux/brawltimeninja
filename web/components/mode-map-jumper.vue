@@ -2,29 +2,13 @@
   <div>
     <!-- included only for SEO -->
     <breadcrumbs
-      :links="[
-        {
-          path: '/tier-list/map',
-          name: $tc('map', 2),
-        },
-        ...(mode != undefined ? [{
-          path: modePath,
-          name: $t('mode.' + mode),
-        }] : []),
-        ...(map != undefined ? [{
-          path: mapPath,
-          name: mapName,
-        }] : []),
-      ]"
+      :links="links"
       class="hidden"
     ></breadcrumbs>
 
     <div class="flex items-center gap-x-4">
       <s-mode-map
-        :value="{
-          mode: mode != undefined ? [mode] : [],
-          map: map != undefined ? [map] : [],
-        }"
+        :value="slices"
         :on-input="jumpToModeMap"
         class="my-4"
       ></s-mode-map>
@@ -79,11 +63,31 @@ export default defineComponent({
       router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
     }
 
+    const { i18n } = useContext()
+    const links = computed(() => ([
+      {
+        path: '/tier-list/map',
+        name: i18n.tc('map', 2),
+      },
+      ...(props.mode != undefined ? [{
+        path: modePath.value,
+        name: i18n.t('mode.' + props.mode),
+      }] : []),
+      ...(map != undefined ? [{
+        path: mapPath.value,
+        name: mapName.value,
+      }] : []),
+    ]))
+
+    const slices = computed(() => ({
+      mode: props.mode != undefined ? [props.mode] : [],
+      map: props.map != undefined ? [props.map] : [],
+    }))
+
     return {
-      mapPath,
-      mapName,
-      modePath,
       jumpToModeMap,
+      links,
+      slices,
     }
   },
 })

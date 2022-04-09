@@ -10,21 +10,8 @@
       >
         <b-kv-table
           slot="content"
-          :rows="[{
-            title: $t('metric.winRate'),
-            key: 'winRate',
-          }, {
-            title: $t('metric.wins'),
-            key: 'wins',
-          }, {
-            title: $t('metric.losses'),
-            key: 'losses',
-          }]"
-          :data="{
-            winRate,
-            wins: stats.wins,
-            losses: stats.losses,
-          }"
+          :rows="kvTableRows"
+          :data="kvTableData"
           id-key="tag"
         ></b-kv-table>
       </b-card>
@@ -182,12 +169,31 @@ export default defineComponent({
       }
     })
 
+    const kvTableRows = computed(() => ([{
+      title: i18n.t('metric.winRate'),
+      key: 'winRate',
+    }, {
+      title: i18n.t('metric.wins'),
+      key: 'wins',
+    }, {
+      title: i18n.t('metric.losses'),
+      key: 'losses',
+    }]))
+
+    const kvTableData = computed(() => ({
+      winRate: winRate.value,
+      wins: stats.value.wins,
+      losses: stats.value.losses,
+    }))
+
     return {
       mapName,
       activeMap,
       stats,
       modeKebab,
       winRate,
+      kvTableRows,
+      kvTableData,
     }
   },
 })

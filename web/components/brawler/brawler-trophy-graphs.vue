@@ -7,7 +7,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
+        :slices="brawlerSlices"
         :dimensions="['trophyRange']"
         cube-id="map"
         sort="trophyRange"
@@ -22,7 +22,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :slices="{ brawler: [brawlerName.toUpperCase()], powerplay: ['false'] }"
+        :slices="brawlerSlices"
         :dimensions="['trophyRange']"
         cube-id="map"
         sort="trophyRange"
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@nuxtjs/composition-api";
+import { computed, defineComponent } from "@nuxtjs/composition-api";
 import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -63,5 +63,15 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props) {
+    const brawlerSlices = computed(() => ({
+      brawler: [props.brawlerName.toUpperCase()],
+      powerplay: ['false'],
+    }))
+
+    return {
+      brawlerSlices,
+    }
+  }
 })
 </script>

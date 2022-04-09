@@ -49,45 +49,8 @@
       ></history-graph>
 
       <b-kv-table
-        :rows="[{
-          title: $t('metric.rank'),
-          key: 'rank',
-          slot: 'rank',
-        }, {
-          title: $t('metric.power-level'),
-          key: 'power',
-          slot: 'power',
-        }, {
-          title: $t('metric.trophies'),
-          key: 'trophies',
-          slot: 'trophies',
-        }, {
-          title: $t('metric.highest-trophies'),
-          key: 'highestTrophies',
-          slot: 'trophies',
-        },
-        ...(data != undefined && data.picks > 0 ? [{
-          title: $t('metric.winRate'),
-          key: 'winRate',
-        }, {
-          title: $t('metric.wins'),
-          key: 'wins',
-          slot: 'wins',
-        }, {
-          title: $t('metric.losses'),
-          key: 'losses',
-          slot: 'losses',
-        }] : [])]"
-        :data="{
-          id: brawler.name,
-          rank: brawler.rank,
-          trophies: brawler.trophies,
-          power: brawler.power,
-          highestTrophies: brawler.highestTrophies,
-          winRate: data == undefined ? 0 : Math.floor(data.winrate * 100) + '%',
-          wins: data == undefined ? 0 : Math.floor(data.winrate * data.picks),
-          losses: data == undefined ? 0 : Math.floor((1 - data.winrate) * data.picks),
-        }"
+        :rows="kvTableRows"
+        :data="kvTableData"
         id-key="id"
         class="mt-4"
       >
@@ -128,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
 import { Brawler } from '~/model/Api'
 import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subWeeks } from 'date-fns'
@@ -196,11 +159,57 @@ export default defineComponent({
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
 
+    const { i18n } = useContext()
+    const kvTableRows = computed(() => ([{
+      title: i18n.t('metric.rank'),
+      key: 'rank',
+      slot: 'rank',
+    }, {
+      title: i18n.t('metric.power-level'),
+      key: 'power',
+      slot: 'power',
+    }, {
+      title: i18n.t('metric.trophies'),
+      key: 'trophies',
+      slot: 'trophies',
+    }, {
+      title: i18n.t('metric.highest-trophies'),
+      key: 'highestTrophies',
+      slot: 'trophies',
+    },
+    ...(data.value != undefined && data.value.picks > 0 ? [{
+      title: i18n.t('metric.winRate'),
+      key: 'winRate',
+    }, {
+      title: i18n.t('metric.wins'),
+      key: 'wins',
+      slot: 'wins',
+    }, {
+      title: i18n.t('metric.losses'),
+      key: 'losses',
+      slot: 'losses',
+    }] : [])]))
+
+    const kvTableData = computed(() => ({
+      id: props.brawler.name,
+      rank: props.brawler.rank,
+      trophies: props.brawler.trophies,
+      power: props.brawler.power,
+      highestTrophies: props.brawler.highestTrophies,
+      ...(data.value != undefined ? {
+        winRate: data == undefined ? 0 : Math.floor(data.value.winrate * 100) + '%',
+        wins: data == undefined ? 0 : Math.floor(data.value.winrate * data.value.picks),
+        losses: data == undefined ? 0 : Math.floor((1 - data.value.winrate) * data.value.picks),
+      } : {}),
+    }))
+
     return {
       data,
       brawlerId,
       title,
       capitalizeWords,
+      kvTableRows,
+      kvTableData,
     }
   },
 })

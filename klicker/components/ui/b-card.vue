@@ -63,7 +63,8 @@
         <slot
           name="icon"
           v-if="icon != undefined"
-          v-bind="{ icon: icon, alt: iconAlt }"
+          :icon="icon"
+          :icon-alt="iconAlt"
         >
           <img
             :src="icon"

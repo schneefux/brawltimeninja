@@ -42,17 +42,15 @@
 
     <c-query
       v-if="renderTotals"
-      :query="{
-        ...query,
-        dimensionsIds: [],
-        metricsIds: metaMetrics,
-        sortId: metaMetrics[0],
-        comparing: false,
-      }"
+      :query="totalsQuery"
     >
       <template v-slot="totals">
         <div class="dashboard dashboard--responsive">
-          <slot name="totals" v-bind="{ ...totals, card: { elevation } }"></slot>
+          <slot
+            name="totals"
+            v-bind="totals"
+            :card="{ elevation }"
+          ></slot>
         </div>
       </template>
     </c-query>
@@ -64,7 +62,8 @@
       <template v-slot:error="data">
         <c-error
           slot="error"
-          v-bind="{ ...data, elevation }"
+          v-bind="data"
+          :elevation="{ elevation }"
         ></c-error>
       </template>
       <template v-slot="data">
@@ -72,7 +71,11 @@
           class="dashboard"
           :class="dashboardClass"
         >
-          <slot name="data" v-bind="{ ...data, card: { elevation } }"></slot>
+          <slot
+            name="data"
+            v-bind="data"
+            :card="{ elevation }"
+          ></slot>
         </div>
       </template>
     </c-query>
@@ -151,6 +154,14 @@ export default defineComponent({
       }
     })
 
+    const totalsQuery = computed(() => ({
+      ...query.value,
+      dimensionsIds: [],
+      metricsIds: metaMetrics,
+      sortId: metaMetrics[0],
+      comparing: false,
+    }))
+
     const renderComparingSlicer = computed(() => props.slicer && query.value.comparing && !props.syncSlices)
     const renderTotals = computed(() => 'totals' in slots && metaMetrics.length > 0)
     const renderData = computed(() => 'data' in slots)
@@ -161,6 +172,7 @@ export default defineComponent({
       renderData,
       metaMetrics,
       query,
+      totalsQuery,
     }
   },
 })

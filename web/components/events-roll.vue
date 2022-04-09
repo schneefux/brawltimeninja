@@ -27,7 +27,7 @@
         >{{ $t('option.all') }}</button>
         <media-img
           v-else
-          :path="`/modes/${camelToKebab(event.mode)}/icon`"
+          :path="event.icon"
           size="120"
           clazz="w-8 h-8 object-contain"
         ></media-img>
@@ -36,10 +36,7 @@
         <slot :event="event">
           <map-best-brawlers-card
             v-if="withData"
-            :slices="{
-              mode: [event.mode],
-              map: [event.map],
-            }"
+            :slices="event.slices"
             :powerplay="event.powerplay"
             :id="event.id"
             :start-date="event.start"
@@ -96,6 +93,14 @@ export default defineComponent({
         const mapName = getMapName(i18n, e.id, e.map) ?? ''
         return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
       })
+      .map(e => ({
+        ...e,
+        slices: {
+          mode: [e.mode],
+          map: [e.map],
+        },
+        icon: `/modes/${camelToKebab(e.mode)}/icon`,
+      }))
       .sort((a, b) => {
         // 'all-all' first
         if (a.key == 'all') {

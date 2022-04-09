@@ -2,7 +2,8 @@
   <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
     class="relative z-10"
-    v-bind="{ ...card, title }"
+    v-bind="card"
+    :title="title"
     no-filter
     @clickHeader="toggleFilters"
   >

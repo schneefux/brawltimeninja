@@ -15,10 +15,7 @@
     >
       <brawler-kv-card
         :brawler-name="brawlerName"
-        :slices="{
-          map: [map],
-          mode: [mode],
-        }"
+        :slices="slices"
       ></brawler-kv-card>
     </div>
   </event-card>
@@ -59,8 +56,14 @@ export default defineComponent({
       return formatDistanceToNow(parseISO(props.end))
     })
 
+    const slices = computed(() => ({
+      map: [props.map],
+      mode: [props.mode],
+    }))
+
     return {
       timeTillEnd,
+      slices,
     }
   },
 })

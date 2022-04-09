@@ -1,5 +1,5 @@
 <template>
-  <b-card v-bind="{ fullHeight: true, ...$attrs }">
+  <b-card full-height>
     <div slot="content" class="relative">
       <b-lightbox v-model="tooltipOpen">
         <b-card

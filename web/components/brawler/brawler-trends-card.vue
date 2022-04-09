@@ -7,7 +7,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :slices="{ brawler: [brawlerName.toUpperCase()] }"
+        :slices="slices"
         :dimensions="['day']"
         sort="day"
         metric="winRate"
@@ -21,7 +21,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :slices="{ brawler: [brawlerName.toUpperCase()] }"
+        :slices="slices"
         :dimensions="['day']"
         sort="day"
         metric="starRate"
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@nuxtjs/composition-api"
+import { computed, defineComponent } from "@nuxtjs/composition-api"
 import { CDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -59,5 +59,14 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props) {
+    const slices = computed(() => ({
+      brawler: [props.brawlerName.toUpperCase()],
+    }))
+
+    return {
+      slices,
+    }
+  }
 })
 </script>
