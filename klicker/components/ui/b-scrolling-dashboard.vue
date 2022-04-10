@@ -69,6 +69,12 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import BButton from './b-button.vue'
 import { useScroll, useResizeObserver, useMutationObserver } from '@vueuse/core'
 
+export interface ScrollEvent {
+  x: number
+  arrivedLeft: boolean
+  arrivedRight: boolean
+}
+
 /**
  * Horizontally-scrolling dashboard that renders scroll hints
  */
@@ -97,8 +103,8 @@ export default defineComponent({
 
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
-    const onScroll = () => {
-      emit('scroll', {
+    const onUpdate = (cause: 'scroll'|'rerender') => {
+      emit(cause, <ScrollEvent>{
         x: scroll.x.value,
         arrivedLeft: scroll.arrivedState.left,
         arrivedRight: scroll.arrivedState.right,
@@ -110,16 +116,16 @@ export default defineComponent({
     }
 
     const scroll = useScroll(wrapper, {
-      onScroll,
+      onScroll: () => onUpdate('scroll'),
       offset: {
         left: 50,
         right: 50,
       },
     })
 
-    onMounted(onScroll)
-    useResizeObserver(wrapper, () => onScroll())
-    useMutationObserver(wrapper, () => onScroll(), {
+    onMounted(() => onUpdate('rerender'))
+    useResizeObserver(wrapper, () => onUpdate('rerender'))
+    useMutationObserver(wrapper, () => onUpdate('rerender'), {
       childList: true,
     })
 

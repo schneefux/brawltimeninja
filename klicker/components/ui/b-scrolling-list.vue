@@ -28,6 +28,7 @@
       :disable-scroll-snap="!scrollSnap"
       class="mt-4"
       @scroll="onScroll"
+      @rerender="onRerender"
     >
       <b-shimmer
         v-if="items.length == 0 && renderPlaceholder"
@@ -83,7 +84,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, ref } from 'vue-demi'
-import BScrollingDashboard from './b-scrolling-dashboard.vue'
+import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import CDashboardCell from '../c-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
 import { useMutationObserver } from '@vueuse/core'
@@ -148,7 +149,7 @@ export default defineComponent({
     },
   },
   // TODO replace by function ref when migrating to Vue 3
-  setup(props, { refs }) {
+  setup(props, { emit, refs }) {
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
     const preview = ref<HTMLElement>()
 
@@ -236,7 +237,7 @@ export default defineComponent({
     const scrollSnap = ref(true)
     let timeout: NodeJS.Timeout
 
-    const onScroll = (event: { x: number, arrivedLeft: boolean, arrivedRight: boolean }) => {
+    const onUpdate = (event: ScrollEvent) => {
       if (columnWidths.value == undefined || container.value?.wrapper == undefined) {
         return
       }
@@ -289,6 +290,13 @@ export default defineComponent({
       }
     }
 
+    const onScroll = (event: ScrollEvent) => {
+      onUpdate(event)
+      emit('scroll', state.value)
+    }
+
+    const onRerender = (event: ScrollEvent) => onUpdate(event)
+
     const previewItems = computed(() => {
       if (props.previewIndices != undefined) {
         return props.previewIndices
@@ -308,6 +316,7 @@ export default defineComponent({
     return {
       preview,
       onScroll,
+      onRerender,
       scrollTo,
       container,
       list,
