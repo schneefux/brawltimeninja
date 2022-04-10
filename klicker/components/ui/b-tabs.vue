@@ -97,6 +97,10 @@ export default defineComponent({
     }
 
     const scrollTabHeaderIntoView = (id: string) => {
+      if (!(`${id}-header` in refs)) {
+        return
+      }
+
       const headerElement = refs[`${id}-header`][0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
       const center = tabContainer.value!.clientWidth / 2
@@ -112,6 +116,10 @@ export default defineComponent({
     }
 
     const scrollToTab = (tab: Tab) => {
+      if (!(`${tab.slot}-tab` in refs)) {
+        return
+      }
+
       const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
       const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
       const left = tabContainer.value!.scrollLeft + offset
