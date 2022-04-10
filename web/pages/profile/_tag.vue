@@ -18,12 +18,29 @@
           }"
         ></player-aside>
 
-        <b-scroll-spy
-          :sections="sections"
-          nav-class="top-14 lg:top-0"
-          toc-class="hidden lg:block"
-          class="lg:mt-8 lg:overflow-y-auto"
-        ></b-scroll-spy>
+        <client-only>
+          <experiment experiment-id="zulMDk__TJOVjaIncFv21Q">
+            <b-scroll-spy
+              slot="1"
+              :sections="sections"
+              nav-class="top-14 lg:top-0"
+              toc-class="hidden lg:block"
+              class="lg:mt-8 lg:overflow-y-auto"
+            ></b-scroll-spy>
+          </experiment>
+        </client-only>
+
+        <client-only>
+          <experiment experiment-id="EUmH79tbQPiC1AJeB0PbIA">
+            <b-scroll-spy
+              slot="1"
+              :sections="sections"
+              nav-class="top-14 lg:top-0"
+              toc-class="hidden lg:block"
+              class="lg:mt-8 lg:overflow-y-auto"
+            ></b-scroll-spy>
+          </experiment>
+        </client-only>
       </div>
 
       <b-page-section
