@@ -1,7 +1,5 @@
 <template>
-  <c-query
-    :query="query"
-  >
+  <c-query :query="query">
     <template v-slot="data">
       <v-table
         v-bind="data"
@@ -36,7 +34,7 @@ export default defineComponent({
       slices: {
         season: [currentSeason],
       },
-      sortId: metric,
+      sortId: metric.value,
       limit: 100,
     }))
 
