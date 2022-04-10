@@ -78,6 +78,11 @@ job "brawltime-cube" {
         "traefik.enable=true",
         "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
       ]
+      # TODO unfortunately, this also caches error pages and continue-wait
+        /*
+        "traefik.http.routers.brawltime-cube.middlewares=brawltime-cube-cache@consulcatalog",
+        "traefik.http.middlewares.brawltime-cube-cache.headers.customresponseheaders.Cache-Control=public, max-age=300",
+        */
 
       check {
         type = "http"

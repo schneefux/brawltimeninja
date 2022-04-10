@@ -24,6 +24,7 @@ module.exports = {
       maxAge: 86400, // 24h max, capped by Firefox
     },
   },
+/*
   orchestratorOptions: {
     queryCacheOptions: {
       queueOptions: {
@@ -36,4 +37,5 @@ module.exports = {
       },
     },
   },
+*/
 };
