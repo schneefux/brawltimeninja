@@ -1,5 +1,7 @@
 <template>
-  <b-scrolling-dashboard>
+  <b-scrolling-dashboard
+    @scroll.once="$emit('interact')"
+  >
     <c-dashboard-cell
       :rows="2"
       :columns="5"

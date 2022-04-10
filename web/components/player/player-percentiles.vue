@@ -1,5 +1,7 @@
 <template>
-  <b-scrolling-dashboard>
+  <b-scrolling-dashboard
+    @scroll.once="$emit('interact')"
+  >
     <c-dashboard-cell
       v-for="achievement in achievements"
       :key="achievement.metric"

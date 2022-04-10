@@ -29,7 +29,7 @@ import { OEJTSEntry } from '~/lib/oejts'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
-  setup() {
+  setup(props, { emit }) {
     const triggered = ref(false)
     const answers = ref<Record<string, number>>()
     const result = ref<OEJTSEntry>()
@@ -37,6 +37,7 @@ export default defineComponent({
     const gtag = useGtag()
 
     const onTrigger = (a: Record<string, number>) => {
+      emit('interact')
       answers.value = a
       triggered.value = true
     }

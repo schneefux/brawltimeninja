@@ -10,9 +10,16 @@ export const useTrackScroll = (trackingPageId: string) => {
       })
     }
   }
+  const trackInteraction = (trackingId: string) => {
+    gtag.event('interact', {
+      'event_category': trackingPageId,
+      'event_label': trackingId,
+    })
+  }
 
   return {
     gtag,
+    trackInteraction,
     makeVisibilityCallback,
   }
 }

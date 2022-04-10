@@ -5,6 +5,7 @@
     :cell-columns="4"
     key-id="timestamp"
     render-placeholder
+    @scroll.once="$emit('interact')"
   >
     <template v-slot:preview="battle">
       <media-img

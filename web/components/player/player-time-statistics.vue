@@ -1,5 +1,7 @@
 <template>
-  <b-scrolling-dashboard>
+  <b-scrolling-dashboard
+    @scroll.once="$emit('interact')"
+  >
     <c-dashboard-cell :columns="2">
       <b-bigstat :title="$t('metric.hours-spent')">
         <p slot="content">

@@ -5,6 +5,7 @@
     :cell-columns="3"
     key-id="brawlerId"
     render-placeholder
+    @scroll.once="$emit('interact')"
   >
     <template v-slot:preview="brawler">
       <media-img
