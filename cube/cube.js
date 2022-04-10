@@ -24,4 +24,18 @@ module.exports = {
       maxAge: 86400, // 24h max, capped by Firefox
     },
   },
+/*
+  orchestratorOptions: {
+    queryCacheOptions: {
+      queueOptions: {
+        // disable long polling retry so no "200 - Continue Wait" responses will be sent
+        // then, responses can be http-cached
+        // cloudlfare has a request timeout of 100s
+        continueWaitTimeout: 90,
+        executionTimeout: 90,
+        orphanedTimeout: 90, // disable because long polling is disabled
+      },
+    },
+  },
+*/
 };
