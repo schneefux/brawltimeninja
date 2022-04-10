@@ -8,9 +8,15 @@
       >
     </nuxt-link>
 
-    <navigator
-      class="flex items-center mr-auto">
-    ></navigator>
+    <client-only>
+      <experiment experiment-id="2pLDh86PSc2t4Ijqoo86dw">
+        <div class="mr-auto"></div>
+        <navigator
+          slot="1"
+          class="flex items-center mr-auto">
+        ></navigator>
+      </experiment>
+    </client-only>
 
     <install-button
       class="h-6"
