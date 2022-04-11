@@ -1,0 +1,21 @@
+--- node_modules/@cubejs-backend/api-gateway/dist/src/gateway.js	2022-04-11 20:40:49.000000000 +0200
++++ node_modules/@cubejs-backend/api-gateway/dist/src/gateway.js	2022-04-11 20:44:19.000000000 +0200
+@@ -773,7 +773,17 @@
+         }
+     }
+     resToResultFn(res) {
+-        return (message, { status } = {}) => (status ? res.status(status).json(message) : res.json(message));
++        return (message, { status } = {}) => {
++            if (res?.req?.method == 'GET' && res.req?.route?.path?.startsWith('/cubejs-api/v1/load') && message?.error == undefined) {
++                res.set('Cache-Control', 'public, max-age=300')
++            }
++
++            if (status) {
++                return res.status(status).json(message);
++            } else {
++                return res.json(message);
++            }
++        }
+     }
+     parseQueryParam(query) {
+         if (!query || query === 'undefined') {
