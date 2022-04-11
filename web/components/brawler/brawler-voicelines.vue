@@ -15,11 +15,12 @@
             @click="play(voiceline)"
           >
             <font-awesome-icon
-              class="text-3xl"
               :icon="faPlayCircle"
+              class="text-3xl"
             ></font-awesome-icon>
           </b-button>
           <q
+            v-if="voiceline.description != undefined"
             class="text-center"
             :class="{
               'italic [quotes:none]': !voiceline.description.startsWith('&quot;'),
