@@ -124,6 +124,10 @@
         <p class="prose dark:prose-invert max-w-none">
           {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
         </p>
+
+        <install-card
+          class="mt-8 max-w-md"
+        ></install-card>
       </b-page-section>
 
       <b-page-section
