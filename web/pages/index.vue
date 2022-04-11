@@ -77,7 +77,7 @@
             {{ $t('tag-help.title') }}
           </summary>
           <b-card
-            title="How to find your tag"
+            :title="$t('tag-help.title')"
             class="mt-6 text-left"
             md
           >
@@ -103,10 +103,10 @@
 
     <div class="mt-6 mx-6 flex flex-wrap justify-center">
       <div class="mt-2">
-        <template v-if="playerLinks.length === 0">
+        <template v-if="lastPlayers.length === 0">
           {{ $t('index.recommended') }}
         </template>
-        <template v-if="playerLinks.length > 0">
+        <template v-else-if="playerLinks.length > 0">
           {{ $t('index.recents') }}
         </template>
       </div>
@@ -236,7 +236,6 @@ export default defineComponent({
     const { makeVisibilityCallback, gtag } = useTrackScroll('home')
 
     const store = useStore<any>()
-    const cookiesAllowed = computed(() => store.state.cookiesAllowed as boolean)
     const player = computed(() => store.state.player as Player|undefined)
     const lastPlayers = computed(() => store.state.lastPlayers)
     const featuredPlayers = computed(() => store.state.featuredPlayers)
@@ -328,6 +327,7 @@ export default defineComponent({
     })
 
     return {
+      lastPlayers,
       addLastPlayer,
       playerLinks,
       isInIframe,

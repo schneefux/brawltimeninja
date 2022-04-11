@@ -32,17 +32,17 @@ export const state = () => ({
       tag: 'V8LLPPC',
       name: 'xXcuzMePlisThXx',
     }, {
-      tag: '8PJRRG2C',
-      name: 'TQ|GuilleVGX',
+      tag: 'VLQPVPY',
+      name: 'Hyra',
     }, {
-      tag: 'V9QGJY9',
-      name: 'Landi',
+      tag: '2YC9RVYQC',
+      name: 'NaVi | Cubick',
     }, {
-      tag: '2L892GP',
-      name: 'YAPIMARU_YT',
+      tag: '8LQ9JR82',
+      name: 'BGT | Eqwaak',
     }, {
-      tag: '2Y02L28',
-      name: 'Keith ツ',
+      tag: 'QRUQQLV0',
+      name: 'CG |Nukleo',
     } ],
   lastPlayers: [] as string[],
   userTag: undefined as undefined|string, // personal tag (last searched)
