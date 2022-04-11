@@ -297,9 +297,8 @@ export default defineComponent({
         'event_category': 'player',
         'event_label': 'success',
       })
-      if (cookiesAllowed.value) {
-        document.cookie = `usertag=${cleanedTag.value}; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-      }
+
+      store.commit('setUserTag', cleanedTag.value)
 
       router.push(localePath(`/profile/${cleanedTag.value}`))
     }

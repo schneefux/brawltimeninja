@@ -11,6 +11,7 @@ const plugin: Plugin = ({ store }) => {
       adsAllowed: state.adsAllowed,
       installBannerDismissed: state.installBannerDismissed,
       personalityTestResult: state.personalityTestResult,
+      userTag: state.userTag,
     }),
     restoreState: (key: string, storage: any) => {
       // pass through (https://github.com/championswimmer/vuex-persist/blob/master/src/index.ts#L189)
@@ -34,14 +35,23 @@ const plugin: Plugin = ({ store }) => {
 
       // 6 -> 7: store ads and cookie settings in a cookie
       if (value.adsAllowed) {
-        document.cookie = `ads=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+        document.cookie = `ads=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
 
       if (value.cookiesAllowed) {
-        document.cookie = `cookies=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+        document.cookie = `cookies=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
       }
 
-      value.version = 7
+      // 7 -> 8: store user tag in localStorage instead of cookie
+      // (keep number of cookies to a minimum to take advantage of `cached` middleware)
+      if (document.cookie.includes('usertag=')) {
+        const cookie = RegExp('usertag=[^;]+').exec(document.cookie)
+        const userTag = decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./, '') : '')
+        document.cookie = 'usertag=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+        setTimeout(() => store.commit('setUserTag', userTag), 0) // force persist in next tick
+      }
+
+      value.version = 8
 
       return value
     }

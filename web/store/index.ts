@@ -122,6 +122,9 @@ export const mutations: MutationTree<RootState> = {
   setPlayerTotals(state, totals) {
     state.playerTotals = totals
   },
+  setUserTag(state, tag) {
+    state.userTag = tag
+  },
 }
 
 export const actions: ActionTree<RootState, RootState> = {

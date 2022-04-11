@@ -100,16 +100,16 @@ export default defineComponent({
     }
 
     const setCookieCookie = () => {
-      document.cookie = `cookies=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      document.cookie = `cookies=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
     }
     const clearCookieCookie = () => {
-      document.cookie = `cookies=; expires=${new Date(0)}`
+      document.cookie = `cookies=; path=/; expires=${new Date(0)}`
     }
     const setAdsCookie = () => {
-      document.cookie = `ads=true; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
+      document.cookie = `ads=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
     }
     const clearAdsCookie = () => {
-      document.cookie = `ads=; expires=${new Date(0)}`
+      document.cookie = `ads=; path=/; expires=${new Date(0)}`
     }
 
     const gtag = useGtag()
