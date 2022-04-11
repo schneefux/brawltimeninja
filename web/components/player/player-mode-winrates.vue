@@ -54,14 +54,28 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { $klicker, i18n } = useContext()
     const events = useAsync(() => $klicker.queryActiveEvents(), `player-mode-winrates-events-${props.player.tag}`)
 
     const modesIds = useAsync(() => $klicker.queryAllModes(), `player-mode-winrates-modes-${props.player.tag}`)
-    const modes = computed(() => modesIds.value?.map(m => ({
-      id: m,
-      slug: camelToKebab(m),
-    })))
+    const modes = computed(() => {
+      return modesIds.value?.map(m => ({
+        id: m,
+        slug: camelToKebab(m),
+      })).sort((a, b) => {
+        const aHasEvent = events.value?.some(e => e.mode == a.id)
+        const bHasEvent = events.value?.some(e => e.mode == b.id)
+
+        if (aHasEvent && !bHasEvent) {
+          return -1
+        }
+        if (bHasEvent && !aHasEvent) {
+          return +1
+        }
+
+        return (i18n.t('mode.' + a) as string).localeCompare(i18n.t('mode.' + b) as string)
+      })
+    })
 
     return {
       modes,
