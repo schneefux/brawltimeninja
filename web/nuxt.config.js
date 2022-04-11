@@ -13,12 +13,19 @@ export default {
 
   head: {
     titleTemplate: '%s - Brawl Time Ninja',
+    bodyAttrs: {
+      class: ['dark'],
+    },
     script: [
       { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6856963757796636', async: true, crossorigin: 'anonymous' },
       {
         innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
         async: false,
       },
+    ],
+    link: [
+      { rel: 'icon', href: '/icons/favicon.ico', sizes: 'any' },
+      { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
     ],
     __dangerouslyDisableSanitizers: ['script'],
   },
@@ -33,11 +40,98 @@ export default {
 
   pwa: {
     manifest: {
+      id: '/?standalone=true',
       name: 'Brawl Time Ninja',
       short_name: 'Brawl Time',
       description: 'Track Brawl Stars stats, hours played and view Tier Lists.',
       theme_color: '#facc15', // yellow-400
+      icons: [
+      // opaque background, centered
+      {
+        'src': '/icons/maskable_icon_x48.png',
+        'sizes': '48x48',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      }, {
+        'src': '/icons/maskable_icon_x72.png',
+        'sizes': '72x72',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      {
+        'src': '/icons/maskable_icon_x96.png',
+        'sizes': '96x96',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      {
+        'src': '/icons/maskable_icon_x128.png',
+        'sizes': '128x128',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      {
+        'src': '/icons/maskable_icon_x192.png',
+        'sizes': '192x192',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      {
+        'src': '/icons/maskable_icon_x384.png',
+        'sizes': '384x384',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      {
+        'src': '/icons/maskable_icon_x512.png',
+        'sizes': '512x512',
+        'type': 'image/png',
+        'purpose': 'maskable'
+      },
+      // transparent background
+      {
+        'src': '/icons/icon_x48.png',
+        'sizes': '48x48',
+        'type': 'image/png',
+        'purpose': 'any'
+      }, {
+        'src': '/icons/icon_x72.png',
+        'sizes': '72x72',
+        'type': 'image/png',
+        'purpose': 'any'
+      },
+      {
+        'src': '/icons/icon_x96.png',
+        'sizes': '96x96',
+        'type': 'image/png',
+        'purpose': 'any'
+      },
+      {
+        'src': '/icons/icon_x128.png',
+        'sizes': '128x128',
+        'type': 'image/png',
+        'purpose': 'any'
+      },
+      {
+        'src': '/icons/icon_x192.png',
+        'sizes': '192x192',
+        'type': 'image/png',
+        'purpose': 'any'
+      },
+      {
+        'src': '/icons/icon_x384.png',
+        'sizes': '384x384',
+        'type': 'image/png',
+        'purpose': 'any'
+      },
+      {
+        'src': '/icons/icon_x512.png',
+        'sizes': '512x512',
+        'type': 'image/png',
+        'purpose': 'any'
+      }],
     },
+    icon: false,
     workbox: {
       // FIXME depends on env variables being available at build time
       // - use *.brawltime.ninja as urlPattern instead
