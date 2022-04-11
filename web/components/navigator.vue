@@ -107,19 +107,19 @@ export default defineComponent({
               target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#synergy`), 
             }, {
               id: `${b}#maps`,
-              name: i18n.t('brawler.current-maps.title', { brawler: b }) as string,
+              name: i18n.t('brawler.current-maps.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
               target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#maps`), 
             }, {
               id: `${b}#modes`,
-              name: i18n.t('brawler.modes.title', { brawler: b }) as string,
+              name: i18n.t('brawler.modes.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
               target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#modes`), 
             }, {
               id: `${b}#trends`,
-              name: i18n.t('brawler.trends', { brawler: b }) as string,
+              name: i18n.t('brawler.trends', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
               target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trends`), 
             }, {
               id: `${b}#trophies`,
-              name: i18n.t('brawler.by-trophies', { brawler: b }) as string,
+              name: i18n.t('brawler.by-trophies', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
               target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trophies`), 
             }, {
               id: `${b}#skins`,
