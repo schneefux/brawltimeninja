@@ -94,25 +94,29 @@
         lazy
       ></ad>
 
-      <b-page-section
-        ref="recordsSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('records'),
-          once: true,
-        }"
-        :title="$t('player.records.title')"
-        lazy
-      >
-        <p class="mt-4 prose dark:prose-invert w-full">
-          {{ $t('player.records.description') }}
-        </p>
+      <client-only>
+        <experiment experiment-id="lN1PeiU0S2K5Y7zf8I7VdA">
+          <b-page-section
+            ref="recordsSection"
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('records'),
+              once: true,
+            }"
+            :title="$t('player.records.title')"
+            lazy
+          >
+            <p class="mt-4 prose dark:prose-invert w-full">
+              {{ $t('player.records.description') }}
+            </p>
 
-        <player-percentiles
-          :player="player"
-          class="mt-8"
-          @interact="trackInteraction('records')"
-        ></player-percentiles>
-      </b-page-section>
+            <player-percentiles
+              :player="player"
+              class="mt-8"
+              @interact="trackInteraction('records')"
+            ></player-percentiles>
+          </b-page-section>
+        </experiment>
+      </client-only>
 
       <b-page-section
         v-observe-visibility="{
@@ -187,6 +191,31 @@
           @interact="trackInteraction('gamemodes')"
         ></player-mode-winrates>
       </b-page-section>
+
+      <client-only>
+        <experiment experiment-id="lN1PeiU0S2K5Y7zf8I7VdA">
+          <b-page-section
+            slot="1"
+            ref="recordsSection"
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('records'),
+              once: true,
+            }"
+            :title="$t('player.records.title')"
+            lazy
+          >
+            <p class="mt-4 prose dark:prose-invert w-full">
+              {{ $t('player.records.description') }}
+            </p>
+
+            <player-percentiles
+              :player="player"
+              class="mt-8"
+              @interact="trackInteraction('records')"
+            ></player-percentiles>
+          </b-page-section>
+        </experiment>
+      </client-only>
 
       <b-page-section
         ref="brawlersSection"
