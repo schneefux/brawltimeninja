@@ -4,12 +4,13 @@
     tag="article"
     itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
+    no-filter
     xxl
   >
     <div
       v-if="document.image"
       slot="infobar"
-      :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${image}')`"
+      :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${document.image}')`"
       class="h-48 bg-cover bg-center"
       itemprop="thumbnailUrl"
     ></div>
@@ -59,36 +60,39 @@
 <script lang="ts">
 import { IContentDocument } from '@nuxt/content/types/content'
 import { format, parseISO } from 'date-fns'
-import Vue, { PropType } from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     document: {
       type: Object as PropType<IContentDocument>,
       required: true
     },
   },
-  data() {
-    return {
-      lightboxOpen: false,
-      lightboxImage: '',
-    }
-  },
-  mounted() {
-    const contentElement = this.$refs.content as HTMLElement
-    if (contentElement != undefined) {
-      contentElement.querySelectorAll('img.lightbox').forEach((img) => {
-        img.addEventListener('click', () => {
-          this.lightboxImage = (<HTMLImageElement> img).src
-          this.lightboxOpen = true
+  setup(props) {
+    const content = ref<HTMLElement>()
+    const lightboxOpen = ref(false)
+    const lightboxImage = ref('')
+
+    const date = computed(() => format(parseISO(props.document.createdAt as unknown as string), 'PP'))
+
+    onMounted(() => {
+      if (content.value != undefined) {
+        content.value.querySelectorAll('img.lightbox').forEach((img) => {
+          img.addEventListener('click', () => {
+            lightboxImage.value = (<HTMLImageElement> img).src
+            lightboxOpen.value = true
+          })
         })
-      })
+      }
+    })
+
+    return {
+      content,
+      date,
+      lightboxOpen,
+      lightboxImage,
     }
-  },
-  computed: {
-    date(): string {
-      return format(parseISO(this.document.createdAt as unknown as string), 'PP')
-    },
   },
 })
 </script>

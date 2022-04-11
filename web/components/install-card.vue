@@ -4,7 +4,6 @@
       'hidden': !isInstallable || installBannerDismissed,
     }]"
     :title="$t('banner.install.title')"
-    md
   >
     <div slot="content">
       <button
@@ -36,47 +35,41 @@
 
 <script lang="ts">
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
-import Vue from 'vue'
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { useGtag } from '~/composables/gtag'
 
-export default Vue.extend({
-  computed: {
-    faTimes() {
-      return faTimes
-    },
-    faDownload() {
-      return faDownload
-    },
-    ...mapState({
-      installBannerDismissed: (state: any) => state.installBannerDismissed as boolean,
-    }),
-    ...mapGetters({
-      isInstallable: 'isInstallable',
-    }),
+export default defineComponent({
+  setup() {
+    const store = useStore<any>()
+
+    const installBannerDismissed = computed(() => store.state.installBannerDismissed)
+    const isInstallable = computed(() => store.getters['isInstallable'])
+
+    const gtag = useGtag()
+    const dismissInstall = () => {
+      gtag.event('dismiss', {
+        'event_category': 'app',
+        'event_label': 'install_banner',
+      })
+      store.commit('dismissInstallBanner')
+      store.commit('clearInstallPrompt')
+    }
+    const clickInstall = async () => {
+      gtag.event('click', {
+        'event_category': 'app',
+        'event_label': 'install_banner',
+      })
+      await store.dispatch('install')
+    }
+
+    return {
+      faTimes,
+      faDownload,
+      isInstallable,
+      installBannerDismissed,
+      dismissInstall,
+      clickInstall,
+    }
   },
-  methods: {
-    dismissInstall() {
-      this.$gtag.event('dismiss', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      this.clearInstallPrompt()
-      this.dismissInstallBanner()
-    },
-    async clickInstall() {
-      this.$gtag.event('click', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      await this.install()
-    },
-    ...mapMutations({
-      dismissInstallBanner: 'dismissInstallBanner',
-      clearInstallPrompt: 'clearInstallPrompt',
-    }),
-    ...mapActions({
-      install: 'install',
-    })
-  }
 })
 </script>

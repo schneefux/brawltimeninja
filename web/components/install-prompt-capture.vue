@@ -1,30 +1,26 @@
 <script lang="ts">
-import Vue from 'vue'
-import { mapMutations } from 'vuex'
+import { defineComponent, h, useStore } from '@nuxtjs/composition-api'
+import { useGtag } from '~/composables/gtag'
 
-export default Vue.extend({
-  created() {
+export default defineComponent({
+  setup() {
+    const store = useStore()
+    const gtag = useGtag()
+
     if (process.client) {
-      window.addEventListener('appinstalled', this.installed)
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault()
-        this.setInstallPrompt(e)
-      })
-    }
-  },
-  render(h) {
-    return h()
-  },
-  methods: {
-    installed() {
-      this.$gtag.event('install', {
+      const installed = () => gtag.event('install', {
         'event_category': 'app',
         'event_label': 'install',
       })
-    },
-    ...mapMutations({
-      setInstallPrompt: 'setInstallPrompt',
-    })
-  }
+
+      window.addEventListener('appinstalled', installed)
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        store.commit('setInstallPrompt', e)
+      })
+    }
+
+    return () => h()
+  },
 })
 </script>

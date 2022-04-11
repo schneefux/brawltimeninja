@@ -17,30 +17,30 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapActions, mapGetters } from 'vuex'
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { useGtag } from '~/composables/gtag'
 
-export default Vue.extend({
-  methods: {
-    async clickInstall() {
-      this.$gtag.event('click', {
+export default defineComponent({
+  setup() {
+    const gtag = useGtag()
+
+    const store = useStore()
+    const isInstallable = computed(() => store.getters['isInstallable'])
+
+    const clickInstall = async() => {
+      gtag.event('click', {
         'event_category': 'app',
         'event_label': 'install_header',
       })
-      await this.install()
-    },
-    ...mapActions({
-      install: 'install',
-    })
-  },
-  computed: {
-    faDownload() {
-      return faDownload
-    },
-    ...mapGetters({
-      isInstallable: 'isInstallable',
-    }),
+      await store.dispatch('install')
+    }
+
+    return {
+      isInstallable,
+      clickInstall,
+      faDownload,
+    }
   },
 })
 </script>
