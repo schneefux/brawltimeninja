@@ -14,10 +14,6 @@ export default defineComponent({
       type: Function as PropType<CubeComparingQueryFilter|CubeQueryFilter>,
       required: false
     },
-    disappearWhenEmpty: {
-      type: Boolean,
-      default: false
-    },
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)

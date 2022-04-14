@@ -6,28 +6,30 @@
     class="lg:justify-center"
     slicer
   >
-    <template v-slot:totals="data">
-      <c-dashboard-cell :columns="2">
-        <v-sample-size
-          v-bind="data"
-          :card="{ fullHeight: true }"
-        ></v-sample-size>
-      </c-dashboard-cell>
-      <c-dashboard-cell :columns="2">
-        <v-last-update
-          v-bind="data"
-          :card="{ fullHeight: true }"
-        ></v-last-update>
-      </c-dashboard-cell>
-      <c-dashboard-cell :columns="2">
-        <v-moe
-          v-bind="data"
-          :card="{ fullHeight: true }"
-        ></v-moe>
-      </c-dashboard-cell>
+    <template v-slot:totalsQuery="totalsQuery">
+      <b-scrolling-list
+        :items="[{ component: 'v-sample-size' }, { component: 'v-last-update' }, { component: 'v-moe' }]"
+        :cell-rows="1"
+        :cell-columns="2"
+        :render-at-least="3"
+        key-id="component"
+        render-placeholder
+      >
+        <template v-slot:item="component">
+          <c-query :query="totalsQuery">
+            <template v-slot="data">
+              <component
+                :is="component.component"
+                v-bind="data"
+                :card="{ fullHeight: true }"
+              ></component>
+            </template>
+          </c-query>
+        </template>
+      </b-scrolling-list>
     </template>
 
-    <template v-slot="query">
+    <template v-slot:query="query">
       <b-tabs
         :tabs="tabs"
         nav-class="top-14 lg:top-0 z-20"
@@ -48,7 +50,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
             ></map-best-brawlers-table>
           </c-dashboard-cell>
 
@@ -64,7 +66,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
             ></map-best-teams-table>
           </c-dashboard-cell>
 
@@ -76,7 +78,7 @@
 
           <map-balance-chart
             :id="id"
-            :slices="query.slices"
+            :slices="slices"
             v-observe-visibility="{
               callback: makeVisibilityCallback('charts'),
               once: true,
@@ -92,7 +94,7 @@
           >
             <map-winrate-userate-chart
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
             ></map-winrate-userate-chart>
           </c-dashboard-cell>
 
@@ -105,7 +107,7 @@
           >
             <map-trend-chart
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
             ></map-trend-chart>
           </c-dashboard-cell>
 
@@ -137,7 +139,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
             ></map-best-players-table>
           </c-dashboard-cell>
 
@@ -166,7 +168,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
               kind="starpowers"
             ></map-best-accessory-table>
           </c-dashboard-cell>
@@ -177,7 +179,7 @@
               once: true,
             }"
             :id="id"
-            :slices="query.slices"
+            :slices="slices"
             tab="starpowers"
           ></map-insights>
 
@@ -215,7 +217,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
               kind="gadgets"
             ></map-best-accessory-table>
           </c-dashboard-cell>
@@ -226,7 +228,7 @@
               once: true,
             }"
             :id="id"
-            :slices="query.slices"
+            :slices="slices"
             tab="gadgets"
           ></map-insights>
 
@@ -263,7 +265,7 @@
                 once: true,
               }"
               :id="id"
-              :slices="query.slices"
+              :slices="slices"
               kind="gears"
             ></map-best-accessory-roll>
           </c-dashboard-cell>
@@ -274,7 +276,7 @@
               once: true,
             }"
             :id="id"
-            :slices="query.slices"
+            :slices="slices"
             tab="gears"
           ></map-insights>
 
@@ -301,7 +303,7 @@
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CDashboard, CDashboardCell, VTestInfo, BTabs } from '@schneefux/klicker/components'
+import { CDashboard, CDashboardCell, VTestInfo, BTabs, BScrollingList } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { winRateAdjMetric } from '~/lib/klicker.conf'
@@ -309,6 +311,7 @@ import { useSyncSlicesAndRoute } from '~/composables/link'
 
 export default defineComponent({
   components: {
+    BScrollingList,
     CDashboard,
     CDashboardCell,
     VTestInfo,
@@ -332,7 +335,7 @@ export default defineComponent({
     const defaultQuery = computed<CubeQuery>(() => ({
       cubeId: 'battle',
       dimensionsIds: ['brawler'],
-      metricsIds: [],
+      metricsIds: ['picks', 'timestamp'],
       slices: {
         season: [formatClickhouseDate(getMonthSeasonEnd())],
         mode: props.mode != undefined ? [props.mode] : [],
@@ -344,6 +347,7 @@ export default defineComponent({
     }))
 
     const query = useSyncSlicesAndRoute(defaultQuery)
+    const slices = computed(() => query.value.slices)
 
     const adjustedWinRate = winRateAdjMetric
 
@@ -372,6 +376,7 @@ export default defineComponent({
       query,
       adjustedWinRate,
       makeVisibilityCallback,
+      slices,
     }
   },
 })

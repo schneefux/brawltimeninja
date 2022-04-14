@@ -55,6 +55,11 @@
       </template>
     </c-query>
 
+    <slot
+      name="totalsQuery"
+      v-bind="totalsQuery"
+    ></slot>
+
     <c-query
       v-if="renderData"
       :query="query"
@@ -80,7 +85,10 @@
       </template>
     </c-query>
 
-    <slot v-bind="query"></slot>
+    <slot
+      name="query"
+      v-bind="query"
+    ></slot>
   </div>
 </template>
 
