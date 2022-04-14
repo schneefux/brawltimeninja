@@ -1,5 +1,5 @@
 import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec } from "./types"
-import cubejs, { CubejsApi, Filter, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
+import cubejs, { CubejsApi, Filter, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations"
@@ -44,6 +44,8 @@ export default class Klicker implements KlickerService {
   public slicers: SlicerSpec[] = []
   public dimensionRenderers: DimensionRendererSpec[] = []
   public metricRenderers: MetricRendererSpec[] = []
+
+  private runningQueries = new Map<string, Promise<ResultSet>>()
 
   constructor(cubeUrl: string,
       public config: Config,
@@ -251,7 +253,7 @@ export default class Klicker implements KlickerService {
 
     const querySlices = config.slices
 
-    const rawData = await this.cubejsApi.load({
+    const rawData = await this.load({
       measures: queryMetrics,
       dimensions: queryDimensions,
       filters: querySlices,
@@ -269,6 +271,27 @@ export default class Klicker implements KlickerService {
       kind: 'response',
       query,
       data,
+    }
+  }
+
+  /**
+   * Send a query to cube.js
+   *
+   * If there are multiple concurrent identical queries,
+   * return the same response for all of them.
+   */
+  private async load(query: Query) {
+    const queryKey = JSON.stringify(query)
+    let request = this.runningQueries.get(queryKey)
+    if (request == undefined) {
+      request = this.cubejsApi.load(query)
+      this.runningQueries.set(queryKey, request)
+    }
+
+    try {
+      return await request
+    } finally {
+      this.runningQueries.delete(queryKey)
     }
   }
 
