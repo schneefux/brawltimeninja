@@ -55,12 +55,6 @@ export default defineComponent({
       name: 'Brawlers',
       target: localePath('/tier-list/brawler'),
       prefix: '/tier-list/brawler',
-    }, {
-      id: 'guides',
-      icon: faNewspaper,
-      name: 'Guides',
-      target: '/blog/guides',
-      prefix: '/blog',
     } ])
 
     const route = useRoute()

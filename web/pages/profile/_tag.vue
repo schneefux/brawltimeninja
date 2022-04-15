@@ -243,17 +243,6 @@
       ad-slot="1752268168"
       lazy
     ></ad>
-
-    <b-page-section
-      title="Guides from the Blog"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('articles'),
-        once: true,
-      }"
-      lazy
-    >
-      <blogroll topic="guides"></blogroll>
-    </b-page-section>
   </b-page>
 </template>
 
