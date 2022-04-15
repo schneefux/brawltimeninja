@@ -563,5 +563,7 @@
     "metric.duration": "Duration",
     "metric.trophyRange": "Trophy Bracket",
     "nav.Gears": "Gears",
-    "nav.Brawler Records": "Brawler Records"
+    "nav.Brawler Records": "Brawler Records",
+    "query.error": "Could not load data",
+    "action.retry": "Retry"
 }

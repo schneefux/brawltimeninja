@@ -57,5 +57,6 @@ export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: 
     error,
     response,
     loading,
+    fetch,
   }
 }

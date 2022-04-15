@@ -2,6 +2,7 @@ import { VNode, defineComponent, PropType, h, toRefs } from 'vue-demi'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'
+import BButton from './ui/b-button.vue'
 
 export default defineComponent({
   name: 'c-query',
@@ -17,7 +18,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
-    const { response, error, loading } = useCubeQuery(query, filter)
+    const { $klicker, response, error, loading, fetch } = useCubeQuery(query, filter)
 
     return () => {
       let nodes: VNode[] | undefined
@@ -27,6 +28,24 @@ export default defineComponent({
           nodes = slots.error!({
             error: error.value,
           })
+        } else {
+          nodes = [h('div', {
+            class: 'h-full w-full flex flex-col justify-center items-center space-y-2 space-x-2',
+          }, [
+            h('span', {}, [$klicker.$t('query.error')]),
+            h(BButton as any, {
+              props: {
+                dark: true,
+                xs: true,
+              },
+              on: {
+                click: (event) => {
+                  event.stopPropagation()
+                  fetch()
+                },
+              },
+            }, [$klicker.$t('action.retry')]),
+          ])]
         }
       } else {
         const loaded = response.value != undefined
