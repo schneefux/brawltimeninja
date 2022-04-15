@@ -34,7 +34,7 @@
         v-if="items.length == 0 && renderPlaceholder"
         :style="{
           'grid-column-start': 1,
-          'grid-column-end': columnWidths.actualColumnsPerItem + 1,
+          'grid-column-end': columnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -45,7 +45,7 @@
         v-if="list.length > 0 && renderBounds.start > 0"
         :style="{
           'grid-column-start': 1,
-          'grid-column-end': renderBounds.start * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-end': renderBounds.start * columnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -59,7 +59,7 @@
         :columns="cellColumns"
         :rows="cellRows"
         :style="{
-          'grid-column-start': entry.index * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-start': entry.index * columnsPerItem + 1,
         }"
       >
         <slot
@@ -71,8 +71,8 @@
       <b-shimmer
         v-if="list.length > 0 && renderBounds.end < items.length - 1"
         :style="{
-          'grid-column-start': (renderBounds.end + 1) * columnWidths.actualColumnsPerItem + 1,
-          'grid-column-end': items.length * columnWidths.actualColumnsPerItem + 1,
+          'grid-column-start': (renderBounds.end + 1) * columnsPerItem + 1,
+          'grid-column-end': items.length * columnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -154,11 +154,11 @@ export default defineComponent({
     const preview = ref<HTMLElement>()
 
     const scrollTo = (index: number) => {
-      if (container.value?.wrapper == undefined) {
+      if (columnStyle.value == undefined || container.value?.wrapper == undefined) {
         return
       }
 
-      const { pxPerItem, pxGap } = getColumnWidths()
+      const { pxPerItem, pxGap } = columnStyle.value
       const x = index * pxPerItem + index * pxGap
       container.value.wrapper.scrollLeft = x
     }
@@ -184,13 +184,13 @@ export default defineComponent({
       }))
     )
 
-    function getColumnWidths() {
+    const getColumnStyle = () => {
       const pxColumnWidth = parseInt(window.getComputedStyle(container.value!.wrapper!)
         .getPropertyValue('grid-auto-columns')
         .replace(/(^.*)(\d+)(.*$)/i, '$2')) // find first number
       const pxGap = parseInt(window.getComputedStyle(container.value!.wrapper!).getPropertyValue('column-gap'))
       let pxPerItem = props.cellColumns * pxColumnWidth + (props.cellColumns - 1) * pxGap
-      let actualColumnsPerItem = props.cellColumns
+      let columnsPerItem = props.cellColumns
 
       const firstItem = Object.entries(refs)
         .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
@@ -201,7 +201,7 @@ export default defineComponent({
         pxPerItem = firstItemElement.getBoundingClientRect().width
 
         // items may be squashed to take up fewer columns on smaller screens
-        actualColumnsPerItem = parseInt(window.getComputedStyle(firstItemElement)
+        columnsPerItem = parseInt(window.getComputedStyle(firstItemElement)
           .getPropertyValue('grid-column-end')
           .replace(/(^.*)(\d+)(.*$)/i, '$2'))
       }
@@ -211,38 +211,37 @@ export default defineComponent({
       const wrapperPadding = wrapperPaddingLeft + parseInt(wrapperComputedStyle.paddingRight)
 
       return {
-        actualColumnsPerItem,
+        columnsPerItem,
         wrapperPaddingLeft,
         wrapperPadding,
         pxPerItem,
         pxGap,
       }
     }
-    
-    const columnWidths = ref({
-      actualColumnsPerItem: props.cellColumns,
-      wrapperPaddingLeft: 0,
-      wrapperPadding: 0,
-      pxPerItem: 1,
-      pxGap: 1,
-    })
-    const updateColumnWidths = () => columnWidths.value = getColumnWidths()
-    onMounted(() => {
-      updateColumnWidths()
-      useMutationObserver(container.value?.wrapper, () => updateColumnWidths(), {
-        childList: true,
-      })
+
+    const columnStyle = ref<{
+      columnsPerItem: number,
+      wrapperPaddingLeft: number,
+      wrapperPadding: number,
+      pxPerItem: number,
+      pxGap: number,
+    }>()
+    const columnsPerItem = computed(() => columnStyle.value?.columnsPerItem ?? props.cellColumns)
+    const updateColumnWidths = () => columnStyle.value = getColumnStyle()
+    onMounted(() => updateColumnWidths())
+    useMutationObserver(container.value?.wrapper, () => updateColumnWidths(), {
+      childList: true,
     })
 
     const scrollSnap = ref(true)
     let timeout: NodeJS.Timeout
 
     const onUpdate = (event: ScrollEvent) => {
-      if (columnWidths.value == undefined || container.value?.wrapper == undefined) {
+      if (columnStyle.value == undefined || container.value?.wrapper == undefined) {
         return
       }
 
-      const { pxPerItem, pxGap, wrapperPadding, wrapperPaddingLeft } = columnWidths.value
+      const { pxPerItem, pxGap, wrapperPadding, wrapperPaddingLeft } = columnStyle.value
 
       const pxWholeWidth = container.value.wrapper.clientWidth - wrapperPadding
 
@@ -323,8 +322,8 @@ export default defineComponent({
       state,
       renderBounds,
       scrollSnap,
-      columnWidths,
       previewItems,
+      columnsPerItem,
     }
   },
 })
