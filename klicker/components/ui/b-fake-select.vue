@@ -31,11 +31,8 @@
       </svg>
     </div>
 
-    <!-- rerender because slider is buggy -->
     <div
-      v-if="'default' in $scopedSlots"
-      v-show="dropdownOpen"
-      :key="dropdownOpen"
+      v-if="'default' in $scopedSlots && dropdownOpen"
       class="absolute ring-2 ring-black/10 dark:ring-white/10 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-gray-200 dark:bg-gray-800 z-10"
     >
       <slot></slot>
