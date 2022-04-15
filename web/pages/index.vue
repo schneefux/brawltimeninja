@@ -40,7 +40,7 @@
             :placeholder="$t('action.enter-tag')"
             type="text"
             autocomplete="off"
-            class="transition duration-100 ease-in-out form-input w-36 sm:w-40 md:w-48 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
+            class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
           >
           <b-button
             tag="input"
