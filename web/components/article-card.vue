@@ -2,10 +2,10 @@
   <b-card
     :title="document.title"
     tag="article"
-    itemscope
     itemtype="http://schema.org/AnalysisNewsArticle"
+    class="w-full max-w-2xl"
+    itemscope
     no-filter
-    xxl
   >
     <div
       v-if="document.image"

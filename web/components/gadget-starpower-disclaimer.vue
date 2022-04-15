@@ -2,7 +2,6 @@
    <component
     :is="card ? 'b-card' : 'div'"
     :title="$t('starpower-gadget-data.disclaimer.title')"
-    full-height
   >
     <p slot="content">
       {{ $t('starpower-gadget-data.disclaimer.description') }}

@@ -1,5 +1,5 @@
 <template>
-  <b-card full-height>
+  <b-card>
     <div slot="content" class="relative">
       <b-lightbox v-model="tooltipOpen">
         <b-card

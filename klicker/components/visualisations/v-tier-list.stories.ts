@@ -10,7 +10,6 @@ export default {
   args: {
     card: {
       title: 'Storybook Demo',
-      fullHeight: true,
     },
   },
 } as Meta

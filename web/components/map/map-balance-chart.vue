@@ -11,7 +11,7 @@
         >
           <v-barplot
             v-bind="data"
-            :card="{ title, fullHeight: true }"
+            :card="{ title }"
           ></v-barplot>
         </c-dashboard-cell>
         <c-dashboard-cell
@@ -21,10 +21,7 @@
           hide-empty
           lazy
         >
-          <b-card
-            :title="$t('metric.gini-coefficient')"
-            full-height
-          >
+          <b-card :title="$t('metric.gini-coefficient')">
             <div slot="content">
               <v-gini
                 v-bind="data"

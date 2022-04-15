@@ -3,7 +3,6 @@
     :title="accessory.name"
     :icon="icon"
     :icon-alt="accessory.name"
-    full-height
   >
     <template v-slot:icon="data">
       <media-img-icon v-bind="data"></media-img-icon>

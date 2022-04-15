@@ -9,7 +9,6 @@
         :icon="`/brawlers/${brawlerId}/avatar`"
         :icon-alt="$t('brawler.avatar', { brawler: scrapedData.name })"
         :title="$t('brawler.statistics', { brawler: '' })"
-        full-height
       >
         <template v-slot:icon="data">
           <media-img-icon v-bind="data"></media-img-icon>

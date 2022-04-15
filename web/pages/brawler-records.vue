@@ -16,7 +16,7 @@
           <c-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-last-update>
           </c-dashboard-cell>
         </template>
@@ -25,13 +25,13 @@
           <c-dashboard-cell :rows="8" :columns="3">
             <v-table
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-table>
           </c-dashboard-cell>
           <c-dashboard-cell :rows="2" :columns="3">
             <v-csv
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-csv>
           </c-dashboard-cell>
         </template>

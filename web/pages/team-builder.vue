@@ -31,7 +31,7 @@
         <c-dashboard-cell>
           <v-sample-size
             v-bind="totals"
-            :card="{ fullHeight: true }"
+            card
           ></v-sample-size>
         </c-dashboard-cell>
       </template>

@@ -36,13 +36,13 @@
           <c-dashboard-cell :columns="2">
             <v-sample-size
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-sample-size>
           </c-dashboard-cell>
           <c-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-last-update>
           </c-dashboard-cell>
         </template>
@@ -51,20 +51,20 @@
           <c-dashboard-cell :rows="5" :columns="4">
             <v-table
               v-bind="data"
-              :card="{ fullHeight: true }"
               link-path="/dashboard"
+              card
             ></v-table>
           </c-dashboard-cell>
           <c-dashboard-cell :rows="5" :columns="9">
             <v-barplot
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-barplot>
           </c-dashboard-cell>
           <c-dashboard-cell :rows="3" :columns="3">
             <v-test-info
               v-bind="data"
-              :card="{ fullHeight: true }"
+              card
             ></v-test-info>
           </c-dashboard-cell>
         </template>

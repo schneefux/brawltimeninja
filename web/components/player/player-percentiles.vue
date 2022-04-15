@@ -10,7 +10,6 @@
       <b-bigstat
         :title="achievement.metric"
         :value="achievement.text"
-        full-height
       ></b-bigstat>
     </c-dashboard-cell>
   </b-scrolling-dashboard>

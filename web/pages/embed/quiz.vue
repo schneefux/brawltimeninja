@@ -2,7 +2,6 @@
   <quiz-result-sharepic
     :result="testResult"
     class="sharepic"
-    full-height
   ></quiz-result-sharepic>
 </template>
 

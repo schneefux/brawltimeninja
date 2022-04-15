@@ -16,13 +16,13 @@
         <c-dashboard-cell :columns="2">
           <v-sample-size
             v-bind="data"
-            :card="{ fullHeight: true }"
+            card
           ></v-sample-size>
         </c-dashboard-cell>
         <c-dashboard-cell :columns="2">
           <v-last-update
             v-bind="data"
-            :card="{ fullHeight: true }"
+            card
           ></v-last-update>
         </c-dashboard-cell>
       </template>
@@ -30,7 +30,7 @@
       <template v-slot:data="data">
         <v-auto
           v-bind="data"
-          :card="{ fullHeight: true }"
+          card
           for-grid
           all
         ></v-auto>

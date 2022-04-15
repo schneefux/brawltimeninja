@@ -3,7 +3,7 @@
     <template v-slot="data">
       <v-table
         v-bind="data"
-        :card="{ title, fullHeight: true, ...$attrs }"
+        :card="{ title }"
         link-path="/dashboard"
       ></v-table>
     </template>

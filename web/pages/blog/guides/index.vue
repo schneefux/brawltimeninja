@@ -12,11 +12,10 @@
           :key="faq.id"
           :title="faq.title"
           :link="`/faq/${faq.slug}`"
-          class="mx-4 my-4"
+          class="mx-4 my-4 w-full max-w-md"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
           light
-          sm
         >
           <span
             slot="preview"
@@ -67,11 +66,10 @@
           <b-card
             :title="post.title"
             :link="`/blog/guides/${post.slug}`"
-            class="mx-4 my-4"
+            class="mx-4 my-4 w-full max-w-md"
             itemscope
             itemtype="http://schema.org/AnalysisNewsArticle"
             light
-            sm
           >
             <span
               slot="preview"

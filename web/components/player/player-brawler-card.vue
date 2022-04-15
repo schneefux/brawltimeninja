@@ -2,7 +2,6 @@
   <b-card
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
-    full-height
   >
     <div
       slot="content"

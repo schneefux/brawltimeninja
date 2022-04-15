@@ -3,7 +3,6 @@
     :icon="require(`~/assets/images/${prop}-icon.png`)"
     :icon-alt="`${prop} Icon`"
     :title="scrapedDataProp.name"
-    full-height
   >
     <div
       slot="content"

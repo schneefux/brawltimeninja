@@ -28,10 +28,7 @@
       :rows="2"
       :columns="3"
     >
-      <b-card
-        :title="$t('info')"
-        full-height
-      >
+      <b-card :title="$t('info')">
         <p slot="content">
           {{ $t('starpower-gadget-comparison.info') }}
         </p>

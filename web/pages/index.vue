@@ -79,7 +79,6 @@
           <b-card
             :title="$t('tag-help.title')"
             class="mt-6 text-left"
-            md
           >
             <div slot="content">
               <p>{{ $t('tag-help.step.1') }}</p>

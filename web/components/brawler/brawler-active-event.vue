@@ -3,7 +3,6 @@
     :mode="mode"
     :map="map"
     :id="id"
-    full-height
   >
     <p v-if="end != undefined" slot="infobar" class="text-right">
       {{ $t('time.ends-in', { time: timeTillEnd }) }}

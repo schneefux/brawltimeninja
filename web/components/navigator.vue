@@ -22,12 +22,11 @@
       :elevation="0"
       :title="$t('nav.Menu')"
       class="top-14 bottom-14 lg:bottom-0 absolute h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-3.5rem)] inset-x-0 w-screen z-10 lg:max-w-md"
-      full-height
     >
       <b-navigator
         slot="content"
         ref="navigator"
-        :links="linkTree" 
+        :links="linkTree"
         :link-generator="linkGenerator"
         :search="filter"
         class="h-full pb-14 overflow-y-auto overscroll-contain"
@@ -96,47 +95,47 @@ export default defineComponent({
             children: [{
               id: `${b}#overview`,
               name: i18n.t('brawler.overview') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#overview`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#overview`),
             }, {
               id: `${b}#accessory`,
               name: i18n.t('brawler.accessories') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#accessory`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#accessory`),
             }, {
               id: `${b}#synergy`,
               name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#synergy`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#synergy`),
             }, {
               id: `${b}#maps`,
               name: i18n.t('brawler.current-maps.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#maps`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#maps`),
             }, {
               id: `${b}#modes`,
               name: i18n.t('brawler.modes.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#modes`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#modes`),
             }, {
               id: `${b}#trends`,
               name: i18n.t('brawler.trends', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trends`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trends`),
             }, {
               id: `${b}#trophies`,
               name: i18n.t('brawler.by-trophies', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trophies`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trophies`),
             }, {
               id: `${b}#skins`,
               name: i18n.tc('skin', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#skins`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#skins`),
             }, {
               id: `${b}#pins`,
               name: i18n.tc('pin', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#pins`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#pins`),
             }, {
               id: `${b}#voicelines`,
               name: i18n.tc('voiceline', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#voicelines`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#voicelines`),
             }, {
               id: `${b}#balance`,
               name: i18n.t('balance-changes') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#balance`), 
+              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#balance`),
             }],
           })),
         ),

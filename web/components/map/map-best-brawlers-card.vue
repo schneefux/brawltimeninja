@@ -3,7 +3,6 @@
     :mode="mode"
     :map="map"
     :id="id"
-    full-height
   >
     <div
       v-if="powerplay || endDate != undefined || startDate != undefined"
@@ -24,7 +23,7 @@
     <map-best-brawlers
       slot="content"
       :slices="slices"
-      :card="{ elevation: 0, dense: true, fullHeight: true }"
+      :card="{ elevation: 0, dense: true }"
     ></map-best-brawlers>
   </event-card>
 </template>

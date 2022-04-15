@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.margin-of-error') }"
+    :card="card != undefined && { ...card, title: $t('metric.margin-of-error') }"
     component="v-moe"
     wrapper="b-bigstat"
   >

@@ -8,10 +8,7 @@
     render-placeholder
   >
     <template v-slot:item="skin">
-      <b-card
-        :title="skin.name"
-        full-height
-      >
+      <b-card :title="skin.name">
         <div
           slot="content"
           class="h-full flex flex-col items-center justify-between"

@@ -21,7 +21,7 @@
               <component
                 :is="component.component"
                 v-bind="data"
-                :card="{ fullHeight: true }"
+                card
               ></component>
             </template>
           </c-query>
@@ -115,10 +115,7 @@
             :columns="3"
             :rows="2"
           >
-            <metric-info
-              :metric="adjustedWinRate"
-              full-height
-            ></metric-info>
+            <metric-info :metric="adjustedWinRate"></metric-info>
           </c-dashboard-cell>
         </div>
 

@@ -87,7 +87,6 @@
           <b-card
             :elevation="2"
             title="Configure Widget Dimensions"
-            full-height
           >
             <div
               slot="content"

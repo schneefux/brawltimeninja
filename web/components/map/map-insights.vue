@@ -16,7 +16,7 @@
         <template v-slot="data">
           <v-roll
             v-bind="data"
-            :card="{ title: t.title, elevation: elevation, titleLink: t.link, fullHeight: true }"
+            :card="{ title: t.title, elevation: elevation, titleLink: t.link }"
           ></v-roll>
         </template>
       </c-query>

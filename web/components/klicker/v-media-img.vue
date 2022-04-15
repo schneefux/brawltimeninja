@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title }"
+    :card="card != undefined && { ...card, title }"
     component="v-media-img"
   >
     <media-img

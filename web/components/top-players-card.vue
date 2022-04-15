@@ -2,7 +2,6 @@
   <b-card
     :loading="leaderboard == null"
     :title="$t('best.players.long')"
-    full-height
   >
     <b-scrolling-list
       slot="content"
@@ -20,7 +19,6 @@
           :icon-alt="player.name"
           :elevation="elevation"
           class="whitespace-nowrap"
-          full-height
           dense
         >
           <template v-slot:icon="data">

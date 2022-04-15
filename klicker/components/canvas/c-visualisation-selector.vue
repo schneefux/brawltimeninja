@@ -3,7 +3,6 @@
     <b-card
       title="Configure Widget"
       :elevation="elevation"
-      full-height
     >
       <div slot="content">
         <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">

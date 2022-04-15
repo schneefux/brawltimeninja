@@ -5,7 +5,6 @@
     :link="mapPath"
     :id="id"
     nobackground
-    full-height
     v-on="$listeners"
   >
     <template v-slot:preview></template>

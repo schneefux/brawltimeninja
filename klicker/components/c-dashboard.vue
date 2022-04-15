@@ -10,7 +10,7 @@
         v-if="configurator"
         v-model="query"
         v-bind="configurator"
-        :card="{ fullHeight: true, elevation }"
+        :card="{ elevation }"
         :class="{
           'row-span-2': renderComparingSlicer,
         }"
@@ -20,7 +20,7 @@
       <c-slicer
         v-if="slicer"
         v-model="query"
-        :card="{ fullHeight: true, elevation }"
+        :card="{ elevation }"
         :both="syncSlices"
         :components="slicerComponents"
         :exclude-components="slicerExcludeComponents"
@@ -32,7 +32,7 @@
       <c-slicer
         v-if="renderComparingSlicer"
         v-model="query"
-        :card="{ fullHeight: true, elevation }"
+        :card="{ elevation }"
         :components="slicerComponents"
         :exclude-components="slicerExcludeComponents"
         class="lg:col-start-2"

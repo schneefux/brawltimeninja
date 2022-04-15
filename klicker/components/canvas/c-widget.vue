@@ -11,7 +11,7 @@
         :ztyle="style"
         :rows="forGrid ? widget.frame.rows : undefined"
         :columns="forGrid ? widget.frame.columns : undefined"
-        :card="forGrid ? { fullHeight: true } : undefined"
+        :card="forGrid ? true : undefined"
       ></v-auto>
     </template>
   </c-query>
@@ -24,7 +24,7 @@
     :columns="forGrid ? widget.frame.columns : undefined"
     :loading="false"
     :response="undefined"
-    :card="forGrid ? { fullHeight: true } : undefined"
+    :card="forGrid ? true : undefined"
   ></v-auto>
 </template>
 

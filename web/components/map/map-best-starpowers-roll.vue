@@ -3,7 +3,6 @@
     :title="$tc('best.' + kind, 1)"
     :elevation="elevation"
     :link="localePath(`/tier-list/${kind}`)"
-    full-height
   >
     <c-query
       slot="content"

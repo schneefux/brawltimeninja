@@ -41,7 +41,6 @@
                 'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
               }"
               nobackground
-              full-height
               @click="onSelectModeMap({ mode: event.mode })"
             >
               <template v-slot:preview></template>
@@ -57,7 +56,6 @@
               :class="{
                 'bg-primary-400 rounded-2xl': mode == 'all' && map == 'all',
               }"
-              full-height
               @click="onSelectModeMap({})"
             >
               <p

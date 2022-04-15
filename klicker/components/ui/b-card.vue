@@ -1,24 +1,11 @@
 <template>
   <component
     :is="tag"
-    :class="[size, {
-      'w-48': xxxs,
-      'w-64': xxs,
-      'w-full max-w-xs': xs,
-      'w-full max-w-sm': sm,
-      'w-full max-w-md': md,
-      'w-full max-w-lg': lg,
-      'w-full max-w-xl': xl,
-      'w-full max-w-2xl': xxl,
-      'w-full max-w-3xl': xxxl,
-      'w-full max-w-4xl': xxxxl,
-      'h-full': fullHeight,
-    }]"
     :aria-labelledby="renderTitle ? `${prefix}-title` : undefined"
+    class="h-full"
   >
     <div
       :class="{
-        'h-full': fullHeight,
         'bg-gray-100/75 dark:bg-gray-900/75': elevation == 0,
         'bg-black/[0.08] dark:bg-white/[.05]': elevation == 1,
         'bg-white/[.02]': elevation == 2,
@@ -33,7 +20,7 @@
         'cursor-pointer': link != undefined,
         'backdrop-blur': !noFilter,
       }"
-      class="flex flex-col rounded-2xl"
+      class="h-full flex flex-col rounded-2xl"
       @click="onClick"
     >
       <div
@@ -138,12 +125,11 @@
           'px-3 py-1': dense,
           'rounded-t-2xl bg-filter-rounded-t-2xl': !renderTitle,
           'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $scopedSlots),
-          'h-full': fullHeight,
         }]"
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
-        class="text-gray-800/75 dark:text-gray-200/75"
+        class="h-full text-gray-800/75 dark:text-gray-200/75"
       >
         <slot name="content"></slot>
       </div>
@@ -168,61 +154,6 @@ import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({
   props: {
-    /** @deprecated */
-    size: {
-      type: String, // class
-      default: ''
-    },
-    /** @deprecated */
-    xxxs: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xxs: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xs: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    sm: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    md: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    lg: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xl: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xxl: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xxxl: {
-      type: Boolean,
-      default: false
-    },
-    /** @deprecated */
-    xxxxl: {
-      type: Boolean,
-      default: false
-    },
     tag: {
       type: String,
       default: 'article'
@@ -260,9 +191,6 @@ export default defineComponent({
     elevation: {
       type: Number,
       default: 1,
-    },
-    fullHeight: {
-      type: Boolean
     },
     loading: {
       type: Boolean

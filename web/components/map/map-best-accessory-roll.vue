@@ -3,7 +3,7 @@
     <template v-slot="data">
       <v-roll
         v-bind="data"
-        :card="{ title, fullHeight: true }"
+        :card="{ title }"
       ></v-roll>
     </template>
   </c-query>

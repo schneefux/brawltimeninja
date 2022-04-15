@@ -11,7 +11,6 @@
         v-bind="data"
         :card="{
           title: $t('brawler.synergy.title', { brawler }),
-          fullHeight: true,
         }"
       ></v-roll>
     </template>

@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card && { ...card, title: $t('metric.sample-size') }"
+    :card="card != undefined && { ...card, title: $t('metric.sample-size') }"
     component="v-sample-size"
     wrapper="b-bigstat"
   >

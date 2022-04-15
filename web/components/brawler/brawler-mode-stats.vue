@@ -1,8 +1,5 @@
 <template>
-  <event-card
-    :mode="mode"
-    full-height
-  >
+  <event-card :mode="mode">
     <div
       slot="content"
       class="h-full flex flex-col justify-center"

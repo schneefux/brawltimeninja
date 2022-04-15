@@ -2,7 +2,6 @@
   <b-card
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
-    full-height
   >
     <div
       slot="actions"

@@ -12,7 +12,7 @@
           v-for="report in user.reports"
           :key="report.id"
           :title="report.title"
-          xs
+          class="w-full max-w-xs"
         >
           <img
             slot="content"
@@ -49,7 +49,7 @@
           v-for="grid in user.grids"
           :key="grid.id"
           :title="grid.title"
-          xs
+          class="w-full max-w-xs"
         >
           <img
             slot="content"

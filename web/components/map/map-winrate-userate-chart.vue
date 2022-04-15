@@ -3,7 +3,7 @@
     <template v-slot="data">
       <v-scatterplot
         v-bind="data"
-        :card="{ title, fullHeight: true }"
+        :card="{ title }"
       ></v-scatterplot>
     </template>
   </c-query>

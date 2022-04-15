@@ -1,10 +1,8 @@
 <template>
-  <b-page>
+  <b-page class="max-w-md">
     <b-card
       v-if="club != undefined"
       :title="club.name"
-      class="mx-auto"
-      lg
     >
       <template v-slot:content>
         <blockquote class="mt-2 italic">

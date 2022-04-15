@@ -9,13 +9,10 @@
     >
       <history-graph
         v-if="enableKlickerStats"
-        :card="{ fullHeight: true }"
         :player-tag="player.tag"
+        card
       ></history-graph>
-      <b-card
-        v-else
-        full-height
-      >
+      <b-card v-else>
         <div
           slot="content"
           class="flex flex-col justify-center h-full"

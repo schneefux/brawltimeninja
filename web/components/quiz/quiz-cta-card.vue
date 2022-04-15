@@ -21,7 +21,7 @@
     v-else
     :title="$t('player.quiz.title')"
     :subtitle="$t('oejts.result.short', { brawler: resultName })"
-    md
+    class="max-w-md"
   >
     <media-img
       slot="preview"

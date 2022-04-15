@@ -3,7 +3,6 @@
     :mode="battle.event.mode"
     :map="battle.event.map"
     :id="battle.event.id"
-    full-height
   >
     <div
       slot="infobar"

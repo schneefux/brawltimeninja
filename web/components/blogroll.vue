@@ -12,7 +12,6 @@
         :link="`/blog/${topic}/${articles[index - 1].slug}`"
         :icon="articles[index - 1].mode != undefined ? `/modes/${articles[index - 1].modeKebab}/icon` : undefined"
         :icon-alt="articles[index - 1].mode != undefined ? $t('mode.' + articles[index - 1].mode) : undefined"
-        full-height
       >
         <template
           v-if="articles[index - 1].mode != undefined"

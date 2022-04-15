@@ -6,7 +6,7 @@
     <template v-slot="data">
       <v-lineplot
         v-bind="data"
-        :card="{ title, fullHeight: true, ...$attrs }"
+        :card="{ title }"
       ></v-lineplot>
     </template>
   </c-query>
