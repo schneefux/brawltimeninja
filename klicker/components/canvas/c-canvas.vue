@@ -83,7 +83,7 @@
       <div
         :style="{ width: width + 'px', height: height + 'px' }"
         ref="container"
-        class="relative bg-gray-800"
+        class="relative bg-background"
       >
         <c-moveable-widget
           v-for="(w, id) in widgets"

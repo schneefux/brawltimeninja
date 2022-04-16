@@ -10,8 +10,8 @@
       render-placeholder
     >
       <template v-slot:item="change">
-        <time class="text-sm font-normal leading-none text-gray-800/50 dark:text-gray-200/50">{{ change.date }}</time>
-        <p class="mt-2 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">{{ change.description }}</p>
+        <time class="text-sm font-normal leading-none text-text/50">{{ change.date }}</time>
+        <p class="mt-2 prose dark:prose-invert text-text/75">{{ change.description }}</p>
       </template>
     </b-scrolling-list>
   </b-card>

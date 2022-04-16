@@ -1,7 +1,7 @@
 <template>
   <div
     :style="{ width: `${report.width}px`, height: `${report.height}px` }"
-    class="overflow-hidden relative bg-gray-800"
+    class="overflow-hidden relative bg-background"
   >
     <c-widget
       v-for="w in report.widgets"

@@ -8,7 +8,7 @@
     >
       <ul
         ref="headerContainer"
-        class="flex overflow-x-auto hide-scrollbar bg-gray-100 dark:bg-gray-900"
+        class="flex overflow-x-auto hide-scrollbar bg-background"
       >
         <li
           v-for="tab in tabs"
@@ -21,8 +21,8 @@
             :id="`${prefix}-button-${tab.slot}`"
             :href="`#${tab.slot}`"
             :class="{
-              'border-primary-400 text-gray-200 dark:text-gray-200': tabVisibility[tab.slot],
-              'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !tabVisibility[tab.slot],
+              'border-primary-400 text-text': tabVisibility[tab.slot],
+              'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !tabVisibility[tab.slot],
             }"
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
             :aria-controls="`${prefix}-tab-${tab.slot}`"
@@ -125,7 +125,7 @@ export default defineComponent({
       const left = tabContainer.value!.scrollLeft + offset
       tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
     }
-    
+
     const setActiveTab = (tab: Tab) => {
       activeTab.value = tab.slot
       tabVisibility.value = {

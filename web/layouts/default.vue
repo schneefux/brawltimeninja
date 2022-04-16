@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+    class="flex flex-col justify-between min-h-screen bg-background text-text"
   >
     <web-nav class="hidden lg:flex"></web-nav>
     <app-head-nav class="lg:hidden"></app-head-nav>

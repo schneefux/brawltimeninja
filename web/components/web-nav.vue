@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-yellow-400 text-gray-800 p-6 flex justify-between items-center flex-wrap gap-y-3 z-40 sticky top-0 lg:static">
+  <nav class="light bg-yellow-400 text-gray-800 p-6 flex justify-between items-center flex-wrap gap-y-3 z-40 sticky top-0 lg:static">
     <nuxt-link
       :to="localePath('/')"
       class="font-semibold text-xl tracking-tight leading-tight"
@@ -8,10 +8,11 @@
     </nuxt-link>
 
     <client-only>
-      <experiment experiment-id="EO_dL217SdKM-khiZwuCJw">
+      <experiment experiment-id="gxZccS92SoCV6dgnT9v3Cw">
         <navigator
           slot="1"
-          class="relative pl-8 mr-auto"
+          class="relative dark pl-8 mr-auto"
+          input-class="light"
         ></navigator>
       </experiment>
     </client-only>

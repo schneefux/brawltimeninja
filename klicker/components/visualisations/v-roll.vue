@@ -33,12 +33,12 @@
           >
             <th
               scope="row"
-              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-gray-800/75 dark:text-gray-200/75"
+              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
             >{{ row.metricName }}</th>
             <td
               v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
               :key="column.id"
-              class="text-center pt-1 pl-3 text-gray-800 dark:text-gray-200"
+              class="text-center pt-1 pl-3 text-text"
             >
               <m-auto
                 :response="response"

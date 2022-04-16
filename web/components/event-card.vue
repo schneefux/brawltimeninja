@@ -7,6 +7,7 @@
     :subtitle-link="mapLink"
     :background="background"
     :color="mode != undefined ? 'bg-color-' + mode.toLowerCase() : undefined"
+    :text-color="mode != undefined ? 'text-gray-200' : undefined"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     :icon-alt="$t('mode.' + mode)"
     v-bind="$attrs"

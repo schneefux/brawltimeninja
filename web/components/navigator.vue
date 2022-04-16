@@ -10,6 +10,7 @@
     <b-textbox
       v-model="filter"
       ref="search"
+      :class="inputClass"
       type="text"
       class="pl-8 h-6 w-full"
       @focus="showNavigator = true"
@@ -62,6 +63,12 @@ import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
 export default defineComponent({
+  props: {
+    inputClass: {
+      type: String,
+      default: '',
+    },
+  },
   components: {
     BTextbox,
     BCard,

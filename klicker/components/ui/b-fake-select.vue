@@ -9,9 +9,9 @@
       :aria-pressed="dropdownOpen ? 'true' : 'false'"
       :class="[
         'form-select transition duration-100 ease-in-out',
-        'py-2 pl-4 pr-2 ring-2 ring-black/10 dark:ring-white/10 hover:ring-black/20 dark:hover:ring-white/20 rounded-2xl', {
-          'bg-gray-200 dark:bg-gray-800': dropdownOpen,
-          'bg-black/5 dark:bg-white/5': !dropdownOpen,
+        'py-2 pl-4 pr-2 ring-2 hover:ring-contrast/20 bg-contrast/5 rounded-2xl', {
+          'ring-contrast/20': dropdownOpen,
+          'ring-contrast/10': !dropdownOpen,
         }]"
       @click="toggleDropdown"
     >
@@ -33,7 +33,7 @@
 
     <div
       v-if="'default' in $scopedSlots && dropdownOpen"
-      class="absolute ring-2 ring-black/10 dark:ring-white/10 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-gray-200 dark:bg-gray-800 z-10"
+      class="absolute ring-2 ring-contrast/20 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-background z-10"
     >
       <slot></slot>
     </div>

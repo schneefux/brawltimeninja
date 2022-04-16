@@ -1,6 +1,15 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`
+  }
+}
+
 module.exports = {
   darkMode: 'class',
   content: [
@@ -25,6 +34,10 @@ module.exports = {
       white: colors.white,
       black: colors.black,
       red: colors.red,
+
+      background: withOpacityValue('--color-background'),
+      contrast: withOpacityValue('--color-contrast'),
+      text: withOpacityValue('--color-text'),
     },
     extend: {
       fontFamily: {

@@ -13,13 +13,13 @@
     <div
       v-show="!arrivedRight"
       data-testid="scroll-hint-right"
-      class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-gray-700 z-10 lg:hidden"
+      class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-text/20 z-10 lg:hidden"
     ></div>
 
     <div
       v-show="!arrivedLeft"
       data-testid="scroll-hint-left"
-      class="absolute inset-y-0 -left-4 pointer-events-none w-4 bg-gradient-to-l from-transparent to-gray-700 z-10 lg:hidden"
+      class="absolute inset-y-0 -left-4 pointer-events-none w-4 bg-gradient-to-l from-transparent to-text/20 z-10 lg:hidden"
     ></div>
 
     <div
@@ -141,9 +141,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.scroll-shadow {
-  background-image: linear-gradient(to right, theme('colors.gray.900') 0%, theme('colors.gray.700') 100%);
-}
-</style>

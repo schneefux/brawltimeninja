@@ -6,11 +6,10 @@
   >
     <div
       :class="{
-        'bg-gray-100/75 dark:bg-gray-900/75': elevation == 0,
-        'bg-black/[0.08] dark:bg-white/[.05]': elevation == 1,
+        'bg-background/75': elevation == 0,
+        'bg-contrast/[0.08]': elevation == 1,
         'bg-white/[.02]': elevation == 2,
         'bg-white/[.01]': elevation > 2,
-        'border border-black/[.07]': elevation > 0,
         'shadow-sm': elevation == 0,
         'shadow': elevation == 1,
         'shadow-md': elevation == 2,
@@ -32,7 +31,7 @@
 
       <header
         v-if="renderTitle"
-        :class="[(color !== undefined ? color : ''), {
+        :class="[color, textColor, {
           'px-6 gap-x-3': !dense,
           'pb-4': !dense && ('content' in $scopedSlots) && !('infobar' in $scopedSlots),
           'pb-2': !dense && ('content' in $scopedSlots) && ('infobar' in $scopedSlots),
@@ -44,7 +43,7 @@
           'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots || icon != undefined,
           'grid-cols-[1fr,auto]': !('icon' in $scopedSlots || icon != undefined),
         }]"
-        class="shrink-0 grid items-center overflow-hidden text-gray-800 dark:text-gray-200"
+        class="shrink-0 grid items-center overflow-hidden"
         @click.stop="onClickHeader"
       >
         <slot
@@ -129,14 +128,14 @@
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
-        class="h-full text-gray-800/75 dark:text-gray-200/75"
+        class="h-full text-text/75"
       >
         <slot name="content"></slot>
       </div>
 
       <footer
         v-if="'actions' in $scopedSlots"
-        :class="['rounded-b-2xl text-gray-800 flex justify-end mt-auto', {
+        :class="['rounded-b-2xl text-text flex justify-end mt-auto', {
           'px-6 gap-x-3 pt-4 pb-6': !dense,
           'px-3 gap-x-2 py-1': dense,
         }]"
@@ -184,6 +183,10 @@ export default defineComponent({
     },
     color: {
       type: String,
+    },
+    textColor: {
+      type: String,
+      default: 'text-text',
     },
     dense: {
       type: Boolean,

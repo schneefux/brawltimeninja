@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="value"
-    class="fixed z-50 inset-0 bg-gray-900/75 overflow-y-auto overscroll-contain"
+    class="fixed z-50 inset-0 bg-background/75 overflow-y-auto overscroll-contain"
   >
     <div
       class="h-full flex justify-center items-center pt-20 pb-8 px-4"

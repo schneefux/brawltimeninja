@@ -3,7 +3,7 @@
     type="radio"
     :class="{
       'bg-gray-300 hover:bg-primary-300 border-gray-400 hover:border-primary-400 focus:ring-primary-400 text-primary-400 checked:border-primary-500': primary,
-      'bg-black/5 hover:bg-black/10 focus:bg-black/20 text-black/30 checked:text-black/40 dark:bg-white/5 dark:hover:bg-white/10 dark:focus:bg-white/20 dark:text-white/30 dark:checked:text-white/40': !primary,
+      'bg-contrast/5 hover:bg-contrast/10 focus:bg-contrast/20 text-contrast/30 checked:text-contrast/40': !primary,
     }"
     :checked="value == modelValue"
     :value="value"

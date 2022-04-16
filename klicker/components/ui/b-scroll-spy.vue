@@ -11,7 +11,7 @@
           :key="section.title"
           :class="{
             'border-primary-400': visibleSections[section.id],
-            'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !visibleSections[section.id],
+            'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !visibleSections[section.id],
           }"
           class="border-l-2 transition duration-100 ease-in-out px-3 py-2"
         >
@@ -29,7 +29,7 @@
     <nav
       ref="navContainer"
       :class="navClass"
-      class="lg:hidden bg-gray-100 dark:bg-gray-900 z-20 fixed inset-x-0"
+      class="lg:hidden bg-background z-20 fixed inset-x-0"
     >
       <div
         :aria-pressed="dropdownOpen ? 'true' : 'false'"
@@ -67,7 +67,7 @@
           :key="section.title"
           :class="{
             'bg-white/[.05]': section.id == activeSectionId,
-            'text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': section.id != activeSectionId,
+            'text-text/75 hover:text-text': section.id != activeSectionId,
           }"
           class="transition duration-100 ease-in-out px-4 py-2"
         >

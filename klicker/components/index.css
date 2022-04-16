@@ -4,3 +4,15 @@
 
 @import "./dashboard.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+.dark {
+  --color-background: 24 24 27; /* gray-900 */
+  --color-contrast: 255 255 255;
+  --color-text: 228 228 231; /* gray-200 */
+}
+
+.light {
+  --color-background: 244 244 245; /* gray-100 */
+  --color-contrast: 0 0 0;
+  --color-text: 39 39 42; /* gray-800 */
+}

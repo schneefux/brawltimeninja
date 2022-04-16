@@ -3,7 +3,7 @@
     <input
       v-model="dateFilter"
       type="date"
-      class="form-input transition duration-100 ease-in-out rounded-2xl py-2 px-4 border-none bg-inherit ring-2 focus:ring-2 ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
+      class="form-input transition duration-100 ease-in-out rounded-2xl py-2 px-4 border-none bg-contrast/5 ring-2 focus:ring-2 ring-contrast/10 hover:ring-contrast/20"
     >
     <b-button
       v-show="dateFilter != undefined"

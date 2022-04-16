@@ -10,8 +10,8 @@
         v-for="entry in previewItems"
         :key="`${entry.from}-${entry.item[keyId]}`"
         :class="{
-          'border-primary-400 text-gray-200 dark:text-gray-200': entry.from <= state.end && entry.to >= state.start,
-          'border-black/[.1] dark:border-white/[.1] hover:border-primary-200 text-gray-800/75 dark:text-gray-200/75 hover:text-gray-200 dark:hover:text-gray-200': !(entry.from <= state.end && entry.to >= state.start),
+          'border-primary-400 text-text': entry.from <= state.end && entry.to >= state.start,
+          'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from <= state.end && entry.to >= state.start),
         }"
         class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden flex-shrink-0 cursor-pointer"
         @click="scrollTo(entry.from)"

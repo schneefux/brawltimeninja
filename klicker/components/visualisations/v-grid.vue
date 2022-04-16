@@ -15,7 +15,7 @@
       >
         <span
           slot="preview"
-          class="text-right text-lg text-gray-800/75 dark:text-gray-200/75"
+          class="text-right text-lg text-text/75"
         >#{{ index + page*pageSize + 1 }}</span>
 
         <div

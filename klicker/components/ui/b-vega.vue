@@ -194,18 +194,9 @@ export default defineComponent({
 
 <style scoped lang="postcss">
 .inject-colors {
-  /* gray-800 */
-  --text-color:rgb(39 39 42 / 0.75);
-  --grid-color:rgb(39 39 42 / 0.25);
-  --background-color:theme('colors.gray.100');
-  --primary-color:theme('colors.primary.400');
-}
-
-.dark .inject-colors {
-  /* gray-200 */
-  --text-color:rgb(228 228 231 / 0.75);
-  --grid-color:rgb(228 228 231 / 0.25);
-  --background-color:theme('colors.gray.900');
+  --text-color:rgb(var(--color-text) / 0.75);
+  --grid-color:rgb(var(--color-text) / 0.25);
+  --background-color:var(--color-background);
   --primary-color:theme('colors.primary.400');
 }
 </style>

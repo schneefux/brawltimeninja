@@ -8,10 +8,10 @@
       :key="row.key"
       class="flex justify-between gap-x-2"
     >
-      <dt class="text-gray-800/75 dark:text-gray-200/75">
+      <dt class="text-text/75">
         {{ row.title }}
       </dt>
-      <dd class="whitespace-nowrap overflow-x-auto hide-scrollbar text-gray-800 dark:text-gray-200 text-right">
+      <dd class="whitespace-nowrap overflow-x-auto hide-scrollbar text-text text-right">
         <slot
           :name="row.slot"
           :row="data"

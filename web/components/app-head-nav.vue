@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center gap-x-2">
+  <div class="light bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center gap-x-2">
     <nuxt-link to="/">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
@@ -9,11 +9,12 @@
     </nuxt-link>
 
     <client-only>
-      <experiment experiment-id="2pLDh86PSc2t4Ijqoo86dw">
+      <experiment experiment-id="ZmTBiYr8THKe7U4so2vPdg" debug="1">
         <div class="mr-auto"></div>
         <navigator
           slot="1"
-          class="flex items-center mr-auto">
+          class="mr-auto dark"
+          input-class="light"
         ></navigator>
       </experiment>
     </client-only>

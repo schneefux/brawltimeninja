@@ -11,10 +11,10 @@
         v-for="row in rows"
         :key="row.id"
       >
-        <dt class="text-gray-800/75 dark:text-gray-200/75">
+        <dt class="text-text/75">
           {{ row.title }}
         </dt>
-        <dd class="text-xl text-gray-800 dark:text-gray-200">
+        <dd class="text-xl text-text">
           <m-auto
             :response="response"
             :metric-id="row.metricId"

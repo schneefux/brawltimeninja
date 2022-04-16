@@ -103,7 +103,7 @@
           :brawler-name="brawlerName"
         ></brawler-modes-stats>
 
-        <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
+        <p class="mt-4 prose dark:prose-invert text-text/75">
           {{ $t('brawler.viable-info') }}
         </p>
       </b-page-section>
@@ -119,7 +119,7 @@
       >
         <p
           slot="description"
-          class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75"
+          class="mt-4 prose dark:prose-invert text-text/75"
         >
           {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
         </p>
@@ -143,7 +143,7 @@
           :brawler-name="brawlerName"
         ></brawler-trophy-graphs>
 
-        <p class="mt-4 prose dark:prose-invert text-gray-800/75 dark:text-gray-200/75">
+        <p class="mt-4 prose dark:prose-invert text-text/75">
           {{ $t('brawler.disclaimer') }}
         </p>
       </b-page-section>
