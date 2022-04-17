@@ -187,7 +187,7 @@ export default defineComponent({
     const getColumnStyle = () => {
       const pxColumnWidth = parseInt(window.getComputedStyle(container.value!.wrapper!)
         .getPropertyValue('grid-auto-columns')
-        .replace(/(^.*)(\d+)(.*$)/i, '$2')) // find first number
+        .replace(/^.*?(\d+)px.*$/i, '$1'))
       const pxGap = parseInt(window.getComputedStyle(container.value!.wrapper!).getPropertyValue('column-gap'))
       let pxPerItem = props.cellColumns * pxColumnWidth + (props.cellColumns - 1) * pxGap
       let columnsPerItem = props.cellColumns
@@ -203,7 +203,7 @@ export default defineComponent({
         // items may be squashed to take up fewer columns on smaller screens
         columnsPerItem = parseInt(window.getComputedStyle(firstItemElement)
           .getPropertyValue('grid-column-end')
-          .replace(/(^.*)(\d+)(.*$)/i, '$2'))
+          .replace(/(^.*?)(\d+)(.*$)/i, '$2'))
       }
 
       const wrapperComputedStyle = window.getComputedStyle(container.value!.wrapper!)
