@@ -4,10 +4,13 @@ import Vue from "vue"
 const BrawlerImage = Vue.component('brawler-image', {
   props: ['row', 'captioned'],
   template: `
-    <img
-      width="50"
-      :src="'https://media.brawltime.ninja/brawlers/' + row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'"
-    >
+    <div>
+      <img
+        :src="'https://media.brawltime.ninja/brawlers/' + row.dimensions.brawler.toLowerCase() + '/avatar.png?size=160'"
+        width="50"
+      >
+      <span v-if="captioned">{{ row.dimensions.brawler }}</span>
+    </div>
   `,
 })
 

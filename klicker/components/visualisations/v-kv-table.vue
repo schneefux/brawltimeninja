@@ -21,6 +21,18 @@
         ></m-auto>
       </template>
 
+      <template
+        v-for="m in metrics"
+        v-slot:[`test.reference.metrics.${m.id}`]="{ row }"
+      >
+        <m-auto
+          :key="`${m.id}-reference`"
+          :response="response"
+          :metric-id="m.id"
+          :row="row.test.reference"
+        ></m-auto>
+      </template>
+
       <template v-slot:dimensions="{ row }">
         <d-auto
           :response="response"
@@ -79,7 +91,7 @@ export default defineComponent({
           rows.push({
             title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(m),
             key: `test.reference.metrics.${m.id}`,
-            slot: `metrics.${m.id}`,
+            slot: `test.reference.metrics.${m.id}`,
           })
         })
       })
