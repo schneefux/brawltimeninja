@@ -16,6 +16,7 @@
             callback: makeVisibilityCallback('aside'),
             once: true,
           }"
+          class="!h-auto"
         ></player-aside>
 
         <client-only>

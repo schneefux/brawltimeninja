@@ -24,6 +24,7 @@
         <brawler-aside
           :brawler-id="brawlerId"
           :brawler-name="brawlerName"
+          class="!h-auto"
         ></brawler-aside>
 
         <b-scroll-spy
