@@ -302,10 +302,10 @@ const brawlerScores = <Record<string, OEJTSEntry>>{
     jp: -0.79,
   },
   BELLE: {
-    ie: +0.70,
-    sn: +0.70,
-    ft: +0.90,
-    jp: -0.80,
+    ie: +0.92,
+    sn: -0.78,
+    ft: +0.94,
+    jp: +0.61,
   },
   BIBI: {
     ie: +0.76,
@@ -380,10 +380,10 @@ const brawlerScores = <Record<string, OEJTSEntry>>{
     jp: +0.88,
   },
   'EL PRIMO': {
-    ie: +1.00,
-    sn: -1.00,
+    ie: +0.96,
+    sn: -0.96,
     ft: -1.00,
-    jp: +0.90,
+    jp: +0.93,
   },
   EMZ: {
     ie: +1.00,
@@ -524,31 +524,70 @@ const brawlerScores = <Record<string, OEJTSEntry>>{
     jp: -0.62,
   },
   SQUEAK: {
-    // TODO
-    ie: -0.75,
-    sn: +0.75,
+    ie: -0.63,
+    sn: +0.74,
     ft: -1.00,
-    jp: +1.00,
+    jp: +0.93,
   },
   STU: {
-    // TODO
-    ie: +0.80,
-    sn: +0.80,
-    ft: -0.80,
-    jp: +1.00,
+    ie: +0.89,
+    sn: -0.89,
+    ft: -0.89,
+    jp: +0.89,
   },
   SURGE: {
-    // TODO
-    ie: +1.00,
-    sn: -1.00,
-    ft: +1.00,
-    jp: +1.00,
+    ie: +0.95,
+    sn: -0.95,
+    ft: +0.95,
+    jp: +0.95,
   },
   TARA: {
     ie: -1.00,
     sn: +0.94,
     ft: +0.94,
     jp: -0.81,
+  },
+  BUZZ: {
+    ie: +1.00,
+    sn: -1.00,
+    ft: +1.00,
+    jp: +0.56,
+  },
+  GRIFF: {
+    ie: +1.00,
+    sn: -0.85,
+    ft: +1.00,
+    jp: -0.92,
+  },
+  ASH: {
+    ie: -0.61,
+    sn: -1.00,
+    ft: +1.00,
+    jp: -0.96,
+  },
+  MEG: {
+    ie: +0.79,
+    sn: +1.00,
+    ft: -0.74,
+    jp: +1.00,
+  },
+  LOLA: {
+    ie: +0.99,
+    sn: -0.51,
+    ft: -0.52,
+    jp: +0.49,
+  },
+  GROM: {
+    ie: +0.95,
+    sn: -1.00,
+    ft: +0.57,
+    jp: -1.00,
+  },
+  FANG: {
+    ie: +0.91,
+    sn: +0.97,
+    ft: -0.91,
+    jp: +1.00,
   },
 }
 

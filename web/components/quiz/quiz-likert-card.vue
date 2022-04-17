@@ -82,16 +82,5 @@ export default defineComponent({
       oejtsQuestions,
     }
   },
-  /*
-  created() {
-    for (const [brawler1, score1] of Object.entries(brawlerScores)) {
-      for (const [brawler2, score2] of Object.entries(brawlerScores)) {
-        if (brawler1 != brawler2 && similarity(score1, score2) > 0.95) {
-          console.log(`${brawler1} and ${brawler2} are too similar (${similarity(score1, score2)})`)
-        }
-      }
-    }
-  },
-  */
 })
 </script>
