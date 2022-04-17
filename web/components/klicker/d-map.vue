@@ -3,6 +3,7 @@
     :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.map.mode || '')}/map/${props.row.dimensionsRaw.map.map}`)"
     :class="['flex items-center', data.class, data.staticClass]"
     :style="data.staticStyle"
+    @click.native.stop
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">
       <map-img

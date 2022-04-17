@@ -45,6 +45,7 @@
             + (mate.tag == playerTag ? 'border-2 border-gray-300 ' : '')
             + (team.length != 2 ? 'mx-1 rounded-sm ' : '')
           "
+          @click.native.stop
         >
           <media-img
             :path="'/brawlers/' + mate.brawler + '/avatar'"
