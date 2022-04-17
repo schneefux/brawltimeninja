@@ -11,7 +11,7 @@
       <slot name="empty"></slot>
     </template>
     <template
-      v-if="card"
+      v-if="card != undefined"
       v-slot:placeholder
     >
       <b-card
