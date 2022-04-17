@@ -5,7 +5,7 @@
   >
     <div
       slot="content"
-      class="flex items-center gap-x-4"
+      class="h-full flex items-center gap-x-4"
     >
       <media-img
         :path="`/brawlers/${brawlerId}/avatar`"

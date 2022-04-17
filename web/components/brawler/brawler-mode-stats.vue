@@ -1,14 +1,10 @@
 <template>
   <event-card :mode="mode">
-    <div
+    <brawler-kv-card
       slot="content"
-      class="h-full flex flex-col justify-center"
-    >
-      <brawler-kv-card
-        :brawler-name="brawlerName"
-        :slices="slices"
-      ></brawler-kv-card>
-    </div>
+      :brawler-name="brawlerName"
+      :slices="slices"
+    ></brawler-kv-card>
   </event-card>
 </template>
 
