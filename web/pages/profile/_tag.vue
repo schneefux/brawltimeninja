@@ -80,25 +80,6 @@
       </b-page-section>
 
       <b-page-section
-        ref="quizSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('quiz'),
-          once: true,
-        }"
-        :title="$t('player.quiz.title')"
-        lazy
-      >
-        <quiz-card
-          @interact="trackInteraction('quiz')"
-        ></quiz-card>
-      </b-page-section>
-
-      <ad
-        ad-slot="3933066188"
-        lazy
-      ></ad>
-
-      <b-page-section
         v-observe-visibility="{
           callback: makeVisibilityCallback('info'),
           once: true,
@@ -113,6 +94,51 @@
           class="mt-8 max-w-md"
         ></install-card>
       </b-page-section>
+
+      <ad
+        ad-slot="3933066188"
+        lazy
+      ></ad>
+
+      <b-page-section
+        ref="brawlersSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('brawlers'),
+          once: true,
+        }"
+        :title="$tc('brawler', 2)"
+        lazy
+      >
+        <p class="prose dark:prose-invert">
+          {{ $t('player.brawlers.description') }}
+        </p>
+
+        <player-brawlers
+          :player="player"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+          @interact="trackInteraction('brawlers')"
+        ></player-brawlers>
+      </b-page-section>
+
+      <b-page-section
+        ref="quizSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('quiz'),
+          once: true,
+        }"
+        :title="$t('player.quiz.title')"
+        lazy
+      >
+        <quiz-card
+          @interact="trackInteraction('quiz')"
+        ></quiz-card>
+      </b-page-section>
+
+      <ad
+        ad-slot="4129048243"
+        lazy
+      ></ad>
 
       <b-page-section
         v-if="playerTotals != undefined && playerTotals.picks > 0"
@@ -143,32 +169,6 @@
           class="mt-8"
           @interact="trackInteraction('battles')"
         ></player-battles>
-      </b-page-section>
-
-      <ad
-        ad-slot="4129048243"
-        lazy
-      ></ad>
-
-      <b-page-section
-        ref="brawlersSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('brawlers'),
-          once: true,
-        }"
-        :title="$tc('brawler', 2)"
-        lazy
-      >
-        <p class="prose dark:prose-invert">
-          {{ $t('player.brawlers.description') }}
-        </p>
-
-        <player-brawlers
-          :player="player"
-          :enable-klicker-stats="enableKlickerStats"
-          class="mt-4"
-          @interact="trackInteraction('brawlers')"
-        ></player-brawlers>
       </b-page-section>
 
       <b-page-section
@@ -313,13 +313,13 @@ export default defineComponent({
       title: i18n.t('player.trophy-statistics'),
       element: sectionRefs.trophySection.value,
     }, {
+      id: 'brawlers',
+      title: i18n.tc('brawler', 2),
+      element: sectionRefs.brawlersSection.value,
+    }, {
       id: 'quiz',
       title: i18n.t('player.quiz.title'),
       element: sectionRefs.quizSection.value,
-    }, {
-      id: 'records',
-      title: i18n.t('player.records.title'),
-      element: sectionRefs.recordsSection.value,
     }, {
       id: 'battles',
       title: i18n.t('battle-log'),
@@ -329,9 +329,9 @@ export default defineComponent({
       title: i18n.tc('mode', 2),
       element: sectionRefs.modesSection.value,
     }, {
-      id: 'brawlers',
-      title: i18n.tc('brawler', 2),
-      element: sectionRefs.brawlersSection.value,
+      id: 'records',
+      title: i18n.t('player.records.title'),
+      element: sectionRefs.recordsSection.value,
     }])
 
     return {
