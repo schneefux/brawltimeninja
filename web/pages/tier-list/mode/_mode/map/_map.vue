@@ -18,10 +18,20 @@
       </p>
     </div>
 
-    <ad
-      ad-slot="1665534416"
-      first
-    ></ad>
+    <client-only>
+      <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
+        <ad
+          ad-slot="1665534416"
+          first
+        ></ad>
+
+        <ad
+          slot="1"
+          ad-slot="7179355510"
+          banner
+        ></ad>
+      </experiment>
+    </client-only>
 
     <b-page-section>
       <b-split-dashboard>
@@ -32,6 +42,16 @@
           :map="event.map"
           :id="event.id"
         ></event-picture-card>
+
+        <client-only>
+          <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
+            <ad
+              slot="1"
+              ad-slot="1665534416"
+              first
+            ></ad>
+          </experiment>
+        </client-only>
 
         <map-views
           :mode="event.mode"

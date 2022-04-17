@@ -1,5 +1,16 @@
 <template>
   <b-page class="flex flex-col justify-center">
+    <client-only>
+      <experiment experiment-id="V68jRTI-QSWUpqLYIUCDhw">
+        <ad
+          slot="1"
+          class="-mt-6 mb-6 mx-auto"
+          ad-slot="6067985913"
+          banner
+        ></ad>
+      </experiment>
+    </client-only>
+
     <div class="mx-auto relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
@@ -126,7 +137,6 @@
 
     <ad
       ad-slot="6067985913"
-      first
     ></ad>
 
     <b-page-section
@@ -186,6 +196,7 @@ import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMet
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
+import ad from '~/components/ad.vue'
 
 interface PlayerLink {
   name: string
@@ -194,6 +205,7 @@ interface PlayerLink {
 }
 
 export default defineComponent({
+  components: { ad },
   head: {},
   setup() {
     const { i18n, $config, $klicker, $sentry, localePath } = useContext()

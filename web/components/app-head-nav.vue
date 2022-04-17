@@ -9,7 +9,7 @@
     </nuxt-link>
 
     <client-only>
-      <experiment experiment-id="ZmTBiYr8THKe7U4so2vPdg" debug="1">
+      <experiment experiment-id="ZmTBiYr8THKe7U4so2vPdg">
         <div class="mr-auto"></div>
         <navigator
           slot="1"
