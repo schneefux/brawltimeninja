@@ -6,6 +6,19 @@
     <web-nav class="hidden lg:flex"></web-nav>
     <app-head-nav class="lg:hidden"></app-head-nav>
 
+    <ad
+      :ad-region="$route.fullPath"
+      ad-slot="6848221017"
+      class="fixed left-4 inset-y-0 flex flex-col justify-center"
+      scraper
+    ></ad>
+    <ad
+      :ad-region="$route.fullPath"
+      ad-slot="8127026559"
+      class="fixed right-4 inset-y-0 flex flex-col justify-center"
+      scraper
+    ></ad>
+
     <nuxt />
 
     <install-prompt-capture></install-prompt-capture>

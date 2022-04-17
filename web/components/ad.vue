@@ -1,8 +1,44 @@
 <template>
-  <b-page-section ref="ad">
+  <div v-if="banner">
+    <client-only v-if="allowed">
+      <adsense
+        :data-ad-slot="adSlot"
+        :data-ad-region="adRegion"
+        data-ad-client="ca-pub-6856963757796636"
+        ins-class="banner-ad"
+        class="text-center -mx-4"
+      ></adsense>
+
+      <div
+        slot="placeholder"
+        class="adswrapper ad-section banner-ad"
+      ></div>
+    </client-only>
+  </div>
+  <div v-else-if="scraper">
+    <client-only v-if="allowed">
+      <adsense
+        :data-ad-slot="adSlot"
+        :data-ad-region="adRegion"
+        data-ad-client="ca-pub-6856963757796636"
+        ins-class="scraper-ad"
+        class="text-center"
+      ></adsense>
+
+      <div
+        slot="placeholder"
+        class="adswrapper ad-section scraper-ad"
+      ></div>
+    </client-only>
+  </div>
+  <b-page-section
+    v-else
+    ref="ad"
+  >
     <client-only v-if="allowed && visible">
       <adsense
         :data-ad-slot="adSlot"
+        :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
         data-full-width-responsive="yes"
@@ -28,11 +64,23 @@ export default defineComponent({
       type: String,
       required: true
     },
+    adRegion: {
+      type: String,
+      required: false
+    },
     first: {
       type: Boolean,
       default: false
     },
     lazy: {
+      type: Boolean,
+      default: false
+    },
+    banner: {
+      type: Boolean,
+      default: false
+    },
+    scraper: {
       type: Boolean,
       default: false
     },
@@ -70,3 +118,48 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="postcss">
+.banner-ad {
+  width: 320px;
+  height: 100px;
+}
+
+@media(min-width: 468px) {
+  .banner-ad {
+    width: 468px;
+  }
+}
+
+@media(min-width: 750px) {
+  .banner-ad {
+    width: 750px;
+  }
+}
+
+@media(min-width: 980px) {
+  .banner-ad {
+    width: 980px;
+    height: 180px;
+  }
+}
+
+.scraper-ad {
+  display: none;
+  height: 600px;
+}
+
+/* fill container margins */
+@media(min-width: 1600px) {
+  .scraper-ad {
+    display: block;
+    width: 160px;
+  }
+}
+
+@media(min-width: 2200px) {
+  .scraper-ad {
+    width: 300px;
+  }
+}
+</style>
