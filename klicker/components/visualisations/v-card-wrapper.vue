@@ -31,7 +31,7 @@ export default defineComponent({
   setup(props, { slots }) {
     // TODO add 'open in dashboard' button
     return () => {
-      if (props.card != undefined) {
+      if (props.card != undefined && props.card != false) {
         return h(props.wrapper, {
           props: {
             ...props.card as any,
