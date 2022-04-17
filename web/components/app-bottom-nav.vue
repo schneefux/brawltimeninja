@@ -17,12 +17,33 @@
         {{ $t('nav.' + screen.name) }}
       </span>
     </nuxt-link>
+
+    <client-only>
+      <experiment experiment-id="uBBEkay4Tau1LUn04psLIw">
+        <nuxt-link
+          slot="1"
+          :to="quiz.target"
+          :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
+            'text-gray-800': quiz.id == active,
+            'text-yellow-700': quiz.id != active,
+          }]"
+        >
+          <font-awesome-icon
+            :icon="quiz.icon"
+            class="w-6 h-6"
+          ></font-awesome-icon>
+          <span class="text-xs leading-none">
+            {{ $t('nav.' + quiz.name) }}
+          </span>
+        </nuxt-link>
+      </experiment>
+    </client-only>
   </nav>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, useContext, useRoute, computed, watchEffect } from '@nuxtjs/composition-api'
-import { faCalendarDay, faSearch, faMask, faNewspaper, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDay, faSearch, faMask, faBrain, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 interface Screen {
   id: string
@@ -57,6 +78,14 @@ export default defineComponent({
       prefix: '/tier-list/brawler',
     } ])
 
+    const quiz = computed<Screen>(() => ({
+      id: 'quiz',
+      icon: faBrain,
+      name: 'Quiz',
+      target: localePath('/quiz'),
+      prefix: '/quiz',
+    }))
+
     const route = useRoute()
     watchEffect(() => {
       const langPrefix = localePath('/')
@@ -81,6 +110,7 @@ export default defineComponent({
     return {
       active,
       screens,
+      quiz,
     }
   },
 })
