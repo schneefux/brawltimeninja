@@ -3,7 +3,7 @@
     <div class="mx-auto relative">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
-        class="mx-auto mt-16 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
+        class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
       >
       <span
         v-if="$i18n.locale != 'en'"
@@ -30,7 +30,7 @@
       :action="`/profile/${cleanedTag}`"
       :target="isInIframe ? '_parent' : ''"
       :onSubmit="isInIframe ? '' : 'return false;'"
-      class="mt-10 mx-4 flex flex-wrap justify-center"
+      class="mt-4 mx-4 flex flex-wrap justify-center"
       @submit="search"
     >
       <div class="w-full flex justify-center">
@@ -67,7 +67,7 @@
       </p>
     </form>
 
-    <b-page-section class="text-center">
+    <div class="mt-4 mx-6 text-center">
       <div class="flex justify-center">
         <details
           ref="helpDropdown"
@@ -98,9 +98,9 @@
           </b-card>
         </details>
       </div>
-    </b-page-section>
+    </div>
 
-    <div class="mt-6 mx-6 flex flex-wrap justify-center">
+    <div class="mt-2 mx-6 flex flex-wrap justify-center">
       <div class="mt-2">
         <template v-if="lastPlayers.length === 0">
           {{ $t('index.recommended') }}
