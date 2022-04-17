@@ -229,7 +229,8 @@ export default defineComponent({
     const columnsPerItem = computed(() => columnStyle.value?.columnsPerItem ?? props.cellColumns)
     const updateColumnWidths = () => columnStyle.value = getColumnStyle()
     onMounted(() => updateColumnWidths())
-    useMutationObserver(container.value?.wrapper, () => updateColumnWidths(), {
+    const containerWrapper = computed(() => container.value?.wrapper)
+    useMutationObserver(containerWrapper, () => updateColumnWidths(), {
       childList: true,
     })
 
