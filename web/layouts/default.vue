@@ -77,9 +77,6 @@ export default defineComponent({
       name: 'Status',
       target: localePath('/status'),
     }, {
-      name: 'Guides',
-      target: '/blog/guides',
-    }, {
       name: 'Privacy',
       target: '/about',
     }]
