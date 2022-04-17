@@ -98,30 +98,6 @@
         lazy
       ></ad>
 
-      <client-only>
-        <experiment experiment-id="lN1PeiU0S2K5Y7zf8I7VdA">
-          <b-page-section
-            ref="recordsSection"
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('records'),
-              once: true,
-            }"
-            :title="$t('player.records.title')"
-            lazy
-          >
-            <p class="mt-4 prose dark:prose-invert w-full">
-              {{ $t('player.records.description') }}
-            </p>
-
-            <player-percentiles
-              :player="player"
-              class="mt-8"
-              @interact="trackInteraction('records')"
-            ></player-percentiles>
-          </b-page-section>
-        </experiment>
-      </client-only>
-
       <b-page-section
         v-observe-visibility="{
           callback: makeVisibilityCallback('info'),
@@ -175,6 +151,27 @@
       ></ad>
 
       <b-page-section
+        ref="brawlersSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('brawlers'),
+          once: true,
+        }"
+        :title="$tc('brawler', 2)"
+        lazy
+      >
+        <p class="prose dark:prose-invert">
+          {{ $t('player.brawlers.description') }}
+        </p>
+
+        <player-brawlers
+          :player="player"
+          :enable-klicker-stats="enableKlickerStats"
+          class="mt-4"
+          @interact="trackInteraction('brawlers')"
+        ></player-brawlers>
+      </b-page-section>
+
+      <b-page-section
         ref="modesSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('gamemodes'),
@@ -196,50 +193,24 @@
         ></player-mode-winrates>
       </b-page-section>
 
-      <client-only>
-        <experiment experiment-id="lN1PeiU0S2K5Y7zf8I7VdA">
-          <b-page-section
-            slot="1"
-            ref="recordsSection"
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('records'),
-              once: true,
-            }"
-            :title="$t('player.records.title')"
-            lazy
-          >
-            <p class="mt-4 prose dark:prose-invert w-full">
-              {{ $t('player.records.description') }}
-            </p>
-
-            <player-percentiles
-              :player="player"
-              class="mt-8"
-              @interact="trackInteraction('records')"
-            ></player-percentiles>
-          </b-page-section>
-        </experiment>
-      </client-only>
-
       <b-page-section
-        ref="brawlersSection"
+        ref="recordsSection"
         v-observe-visibility="{
-          callback: makeVisibilityCallback('brawlers'),
+          callback: makeVisibilityCallback('records'),
           once: true,
         }"
-        :title="$tc('brawler', 2)"
+        :title="$t('player.records.title')"
         lazy
       >
-        <p class="prose dark:prose-invert">
-          {{ $t('player.brawlers.description') }}
+        <p class="mt-4 prose dark:prose-invert w-full">
+          {{ $t('player.records.description') }}
         </p>
 
-        <player-brawlers
+        <player-percentiles
           :player="player"
-          :enable-klicker-stats="enableKlickerStats"
-          class="mt-4"
-          @interact="trackInteraction('brawlers')"
-        ></player-brawlers>
+          class="mt-8"
+          @interact="trackInteraction('records')"
+        ></player-percentiles>
       </b-page-section>
     </b-split-dashboard>
 
