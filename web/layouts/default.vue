@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
 import { useMutationObserver } from '@vueuse/core'
 
 const useGtag = wrapProperty('$gtag', false)
@@ -196,6 +196,13 @@ export default defineComponent({
     }, {
       attributes: true,
       attributeFilter: ['style'],
+    })
+
+    const route = useRoute()
+    onMounted(() => {
+      if ('light' in route.value.query) {
+        document.getElementById('__nuxt')!.classList.add('light')
+      }
     })
 
     return {
