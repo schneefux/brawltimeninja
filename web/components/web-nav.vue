@@ -59,9 +59,6 @@ export default defineComponent({
     }, {
       name: 'Map Tier Lists',
       target: localePath('/tier-list/map'),
-    }, {
-      name: 'Guides',
-      target: '/blog/guides',
     } ])
 
     return {
