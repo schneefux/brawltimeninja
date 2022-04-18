@@ -6,7 +6,7 @@
         :data-ad-region="adRegion"
         data-ad-client="ca-pub-6856963757796636"
         ins-class="banner-ad"
-        class="text-center -mx-4"
+        class="flex justify-center -mx-4"
       ></adsense>
 
       <div
@@ -22,7 +22,6 @@
         :data-ad-region="adRegion"
         data-ad-client="ca-pub-6856963757796636"
         ins-class="scraper-ad"
-        class="text-center"
       ></adsense>
 
       <div
