@@ -1,27 +1,37 @@
 <template>
   <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
-    class="relative z-10"
     v-bind="card"
     :title="title"
+    :class="{
+      '-mb-2 md:mb-0': !showFilters,
+    }"
+    class="relative z-10"
     no-filter
     @clickHeader="toggleFilters"
   >
     <button
       slot="preview"
       :selected="showFilters"
+      :aria-label="showFilters ? $t('action.collapse') : $t('action.expand')"
+      :aria-controls="`${prefix}-filters`"
       class="md:hidden w-10"
       @click.stop="toggleFilters"
     >
       <font-awesome-icon
-        :icon="faFilter"
+        :icon="showFilters ? faChevronUp : faChevronDown"
       ></font-awesome-icon>
     </button>
 
     <div
-      v-show="breakpointMd || showFilters"
+      :class="{
+        'hidden md:flex': !showFilters,
+        'flex': showFilters,
+      }"
+      :id="`${prefix}-filters`"
+      :aria-expanded="showFilters"
       slot="content"
-      class="flex flex-col md:flex-row flex-wrap gap-4"
+      class="flex-col md:flex-row flex-wrap gap-4"
     >
       <component
         v-for="spec in specs"
@@ -36,13 +46,13 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue-demi'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCubeConfig } from '../composables/config'
 import { useKlicker } from '../composables/klicker'
+import { useUniqueId } from '../composables/id'
 
 export default defineComponent({
   components: {
@@ -161,8 +171,6 @@ export default defineComponent({
         return $klicker.$t('comparison.filter.reference')
       }
     })
-    const breakpoints = useBreakpoints(breakpointsTailwind)
-    const breakpointMd = breakpoints.greater('md')
 
     const cubeId = computed(() => {
       if (compareMode.value) {
@@ -215,16 +223,19 @@ export default defineComponent({
 
     const toggleFilters = () => showFilters.value = !showFilters.value
 
+    const { id: prefix } = useUniqueId()
+
     return {
-      breakpointMd,
       title,
       onInput,
       showFilters,
       slices,
-      faFilter,
+      faChevronUp,
+      faChevronDown,
       specs,
       translate,
       toggleFilters,
+      prefix,
     }
   },
 })
