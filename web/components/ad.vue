@@ -7,6 +7,7 @@
       <adsense
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
+        data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
         ins-class="banner-ad"
         class="flex justify-center -mx-4"
@@ -23,6 +24,7 @@
       <adsense
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
+        data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
         ins-class="scraper-ad"
       ></adsense>
