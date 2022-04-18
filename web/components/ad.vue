@@ -1,5 +1,8 @@
 <template>
-  <div v-if="banner">
+  <div
+    v-if="banner"
+    class="mt-4"
+  >
     <client-only v-if="allowed">
       <adsense
         :data-ad-slot="adSlot"

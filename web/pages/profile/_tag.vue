@@ -10,6 +10,7 @@
         <ad
           slot="1"
           ad-slot="1108771186"
+          class="lg:hidden"
           banner
         ></ad>
       </experiment>
