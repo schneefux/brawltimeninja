@@ -565,5 +565,9 @@
     "nav.Gears": "Gears",
     "nav.Brawler Records": "Brawler Records",
     "query.error": "Could not load data",
-    "action.retry": "Retry"
+    "action.retry": "Retry",
+    "brawlers.title": "Brawlers",
+    "brawlers.description": "List of all Brawlers in Brawl Stars. Learn more about a Brawler and view their ranking in the Tier List.",
+    "brawlers.meta.description": "View statistics and rankings for all Brawlers in Brawl Stars.",
+    "brawlers.meta.title": "Brawl Stars Brawlers"
 }

@@ -232,7 +232,9 @@ class CustomKlicker extends Klicker {
       },
       sortId: 'picks',
     })
-    return brawlers.data.map(b => b.dimensionsRaw.brawler.brawler)
+    return brawlers.data
+      .map(b => b.dimensionsRaw.brawler.brawler)
+      .sort((a, b) => a.localeCompare(b))
   }
 }
 
