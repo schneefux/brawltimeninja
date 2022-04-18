@@ -154,7 +154,7 @@ export default defineComponent({
 }
 
 /* fill container margins */
-@media(min-width: 1600px) {
+@media(min-width: 1900px) {
   .scraper-ad {
     display: block;
     width: 160px;
