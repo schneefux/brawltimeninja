@@ -9,14 +9,12 @@
       :id="event.id"
     ></mode-map-jumper>
 
-    <div>
-      <p class="prose dark:prose-invert">
-        {{ $t('tier-list.map.description', {
-          map: mapName,
-          mode: $t('mode.' + event.mode)
-        }) }}
-      </p>
-    </div>
+    <p class="prose dark:prose-invert">
+      {{ $t('tier-list.map.description', {
+        map: mapName,
+        mode: $t('mode.' + event.mode)
+      }) }}
+    </p>
 
     <client-only>
       <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
@@ -33,6 +31,16 @@
       </experiment>
     </client-only>
 
+    <b-lightbox v-model="lightboxOpen">
+      <map-img
+        :id="event.id"
+        :map="event.map"
+        clazz="h-full object-contain"
+        class="contents"
+        size=""
+      ></map-img>
+    </b-lightbox>
+
     <b-page-section>
       <b-split-dashboard>
         <event-picture-card
@@ -41,7 +49,14 @@
           :mode="event.mode"
           :map="event.map"
           :id="event.id"
-        ></event-picture-card>
+          class="relative"
+          @click="lightboxOpen = true"
+        >
+          <font-awesome-icon
+            :icon="faExpand"
+            class="absolute bottom-4 right-6"
+          ></font-awesome-icon>
+        </event-picture-card>
 
         <client-only>
           <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
@@ -70,11 +85,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, ref } from '@nuxtjs/composition-api'
 import { deslugify, kebabToCamel } from '~/lib/util'
-import { BSplitDashboard, BCard } from '@schneefux/klicker/components'
+import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
+import { faExpand } from '@fortawesome/free-solid-svg-icons'
 
 interface Map {
   id: string
@@ -85,6 +101,7 @@ interface Map {
 export default defineComponent({
   components: {
     BSplitDashboard,
+    BLightbox,
     BCard,
     MapViews,
   },
@@ -145,10 +162,14 @@ export default defineComponent({
       }
     })
 
+    const lightboxOpen = ref(false)
+
     return {
       event,
       mapName,
+      faExpand,
       showImage,
+      lightboxOpen,
     }
   },
   middleware: ['cached'],

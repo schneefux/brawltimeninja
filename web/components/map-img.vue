@@ -1,16 +1,16 @@
 <template>
   <media-img
     slot="preview"
-    :path="id != 0 ? `/maps/${id}` : `/maps/competition-winners/${map.replace('Competition Winner ', '')}`"
+    :path="path"
     :alt="mapName"
     :clazz="clazz"
-    size="512"
+    :size="size"
     loading="lazy"
   ></media-img>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, toRefs } from '@nuxtjs/composition-api'
 import { useMapName } from '~/composables/map'
 
 export default defineComponent({
@@ -27,13 +27,20 @@ export default defineComponent({
       type: String,
       required: false
     },
+    size: {
+      type: String,
+      required: false,
+      default: '512'
+    },
   },
   setup(props) {
     const { id, map } = toRefs(props)
     const mapName = useMapName(id, map)
+    const path = computed(() => props.id != 0 ? `/maps/${props.id}` : `/maps/competition-winners/${props.map.replace('Competition Winner ', '')}`)
 
     return {
       mapName,
+      path,
     }
   }
 })

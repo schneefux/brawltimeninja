@@ -17,6 +17,7 @@
         :map="map"
         clazz="w-full h-48 object-contain"
       ></map-img>
+      <slot></slot>
     </div>
   </event-card>
 </template>
