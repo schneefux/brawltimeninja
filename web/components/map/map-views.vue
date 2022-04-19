@@ -76,6 +76,16 @@
             ad-slot="4623162753"
           ></ad-cell>
 
+          <map-insights
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('insights'),
+              once: true,
+            }"
+            :id="id"
+            :slices="slices"
+            tab="brawlers"
+          ></map-insights>
+
           <map-balance-chart
             :id="id"
             :slices="slices"

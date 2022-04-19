@@ -30,6 +30,7 @@ import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery, BButton, CDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
+import { getMapName } from '~/composables/map'
 
 interface Template {
   tab: string
@@ -50,7 +51,7 @@ export default defineComponent({
   },
   props: {
     slices: {
-      type: Object as PropType<SliceValue>,
+      type: Object as PropType<SliceValue>,
       default: () => ({})
     },
     id: {
@@ -77,41 +78,50 @@ export default defineComponent({
     const templates = computed<Template[]>(() => {
       const templates: Template[] = []
 
-      if (props.slices.map != undefined && props.slices.map[0] != undefined) {
-        const mode = props.slices.mode[0] as string
-        templates.push({
-          tab: 'brawlers',
-          title: i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string,
-          link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
-          linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
-          query: <CubeComparingQuery>{
-            comparing: true,
+      if (props.slices.map == undefined || props.slices.map[0] == undefined) {
+        return []
+      }
+
+      const mode = props.slices.mode[0] as string
+      const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string
+      const testName = getMapName(i18n, props.id, props.slices.map[0])
+      const referenceName = i18n.t('mode.' + mode) as string
+
+      templates.push({
+        tab: 'brawlers',
+        title,
+        link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
+        linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
+        query: <CubeComparingQuery>{
+          name: testName,
+          comparing: true,
+          cubeId: 'map',
+          sortId: 'pvalue',
+          dimensionsIds: ['brawler'],
+          metricsIds: ['winRate'],
+          slices: props.slices,
+          reference: {
+            name: referenceName,
             cubeId: 'map',
-            sortId: 'pvalue',
             dimensionsIds: ['brawler'],
             metricsIds: ['winRate'],
-            slices: props.slices,
-            reference: {
-              cubeId: 'map',
-              dimensionsIds: ['brawler'],
-              metricsIds: ['winRate'],
-              slices: {
-                ...props.slices,
-                map: [],
-              },
-              sortId: 'pvalue',
+            slices: {
+              ...props.slices,
+              map: [],
             },
-            limit,
+            sortId: 'pvalue',
           },
-        })
-      }
+          limit,
+        },
+      })
 
       templates.push({
         tab: 'gadgets',
-        title: i18n.t('map.insights.outstanding.gadgets') as string,
+        title,
         link: localePath(`/tier-list/gadgets`),
         linkText: i18n.t('action.open.tier-list.gadget') as string,
         query: <CubeComparingQuery>{
+          name: testName,
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -122,12 +132,14 @@ export default defineComponent({
             gadgetIdNeq: ['0'],
           },
           reference: {
+            name: referenceName,
             cubeId: 'battle',
             dimensionsIds: ['brawler'],
             metricsIds: ['winRate'],
             slices: {
               ...props.slices,
-              gadgetIdEq: ['0'],
+              gadgetIdNeq: ['0'],
+              map: [],
             },
             sortId: 'pvalue',
           },
@@ -137,10 +149,11 @@ export default defineComponent({
 
       templates.push({
         tab: 'starpowers',
-        title: i18n.t('map.insights.outstanding.starpowers') as string,
+        title,
         link: localePath(`/tier-list/starpowers`),
         linkText: i18n.t('action.open.tier-list.starpower') as string,
         query: <CubeComparingQuery>{
+          name: testName,
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -151,12 +164,14 @@ export default defineComponent({
             starpowerIdNeq: ['0'],
           },
           reference: {
+            name: referenceName,
             cubeId: 'battle',
-            dimensionsIds: ['brawler'],
+            dimensionsIds: ['brawler', 'starpower'],
             metricsIds: ['winRate'],
             slices: {
               ...props.slices,
-              starpowerIdEq: ['0'],
+              starpowerIdNeq: ['0'],
+              map: [],
             },
             sortId: 'pvalue',
           },
@@ -166,11 +181,12 @@ export default defineComponent({
 
       templates.push({
         tab: 'gears',
-        title: i18n.t('map.insights.outstanding.gears') as string,
+        title,
         link: localePath(`/tier-list/gears`),
         linkText: i18n.t('action.open.tier-list.gear') as string,
         long: true,
         query: <CubeComparingQuery>{
+          name: testName,
           comparing: true,
           cubeId: 'battle',
           sortId: 'pvalue',
@@ -181,16 +197,18 @@ export default defineComponent({
             gearIdNeq: ['0'],
           },
           reference: {
+            name: referenceName,
             cubeId: 'battle',
-            dimensionsIds: [],
+            dimensionsIds: ['gear'],
             metricsIds: ['winRate'],
             slices: {
               ...props.slices,
-              gearIdEq: ['0'],
+              gearIdNeq: ['0'],
+              map: [],
             },
             sortId: 'pvalue',
           },
-          limit: 3,
+          limit,
         },
       })
 
