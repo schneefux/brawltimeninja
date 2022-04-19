@@ -45,8 +45,8 @@
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
           'h-screen overflow-y-auto hide-scrollbar': tab.slot != activeTab,
+          'snap-center snap-always': scrollSnap,
         }"
-        class="snap-center snap-always"
         role="tabpanel"
         :aria-labelledby="`${prefix}-button-${tab.slot}`"
         :id="`${prefix}-tab-${tab.slot}`"
@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref } from 'vue-demi'
-import { useDebounceFn, useIntersectionObserver, useThrottleFn } from '@vueuse/core'
+import { useIntersectionObserver } from '@vueuse/core'
 import { useUniqueId } from '../../composables/id'
 
 interface Tab {
@@ -103,7 +103,7 @@ export default defineComponent({
 
       const headerElement = refs[`${id}-header`][0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
-      const center = tabContainer.value!.clientWidth / 2
+      const center = tabContainer.value!.getBoundingClientRect().width / 2
       if (Math.abs(offset) > center / 2) {
         const left = headerContainer.value!.scrollLeft + offset - center
         headerContainer.value!.scrollTo({ left, behavior: 'smooth' })
@@ -123,10 +123,21 @@ export default defineComponent({
       const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
       const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
       const left = tabContainer.value!.scrollLeft + offset
-      tabContainer.value!.scrollTo({ left, behavior: 'smooth' })
+      // smooth if it's next to the current tab
+      // otherwise auto so no intersection observers get triggered
+      const behavior = Math.abs(offset) <= 1.5 * tabElement.getBoundingClientRect().width ? 'smooth' : undefined
+      tabContainer.value!.scrollTo({ left, behavior })
     }
 
+    const scrollSnap = ref(true)
+    let timeout: NodeJS.Timeout
+
     const setActiveTab = (tab: Tab) => {
+      // FIXME workaround for scroll flicker on mobile devices
+      scrollSnap.value = false
+      clearTimeout(timeout)
+      timeout = setTimeout(() => scrollSnap.value = true, 100)
+
       activeTab.value = tab.slot
       tabVisibility.value = {
         [activeTab.value]: true,
@@ -140,9 +151,6 @@ export default defineComponent({
         window.history.replaceState(null, '', ' ')
       }
     }
-
-    // FIXME workaround for flickering issue when switching tabs
-    const throttledSetActiveTab = useThrottleFn(setActiveTab, 500)
 
     onMounted(() => {
       for (const tab of props.tabs) {
@@ -160,7 +168,7 @@ export default defineComponent({
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           if (isIntersecting) {
-            throttledSetActiveTab(tab)
+            setActiveTab(tab)
           }
         }, {
           root: tabContainer.value,
@@ -189,6 +197,7 @@ export default defineComponent({
       activeTab,
       tabVisibility,
       prefix,
+      scrollSnap,
     }
   },
 })
