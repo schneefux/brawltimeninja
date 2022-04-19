@@ -256,7 +256,7 @@ async function main() {
     const brawlerSuperKey = "super"
 
     for (const key in stats) {
-      stats[key] = stats[key]["text"].replace(/\s(\d)/g, '\n$1')
+      stats[key] = stats[key]["text"].replace(/\s(\d)/g, ', $1')
     }
     const brawlerStats = {}
     brawlerStatKeys.forEach(key => {
