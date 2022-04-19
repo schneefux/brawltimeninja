@@ -29,12 +29,12 @@
 
           <tr
             v-for="row in body"
-            :key="row.metricId"
+            :key="row.id"
           >
             <th
               scope="row"
               class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
-            >{{ row.metricName }}</th>
+            >{{ row.title }}</th>
             <td
               v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
               :key="column.id"
@@ -91,32 +91,48 @@ export default defineComponent({
     const dimension = computed(() => dimensions.value[0])
     const dimensionName = computed(() => $klicker.getName(dimension.value, 'short'))
     const headings = computed(() =>
-      switchResponse(response => response.data.map(e => ({
-        id: e.id,
-        entry: e,
-      })), response => response.data.map(e => ({
-        id: e.id,
-        entry: e,
-      }))
-    ))
+      switchResponse(
+        response => response.data.map(e => ({
+          id: e.id,
+          entry: e,
+        })),
+        response => response.data.map(e => ({
+          id: e.id,
+          entry: e,
+        }))
+      )
+    )
 
     const body = computed(() =>
-      switchResponse(response => metrics.value.map((metric) => ({
-        metricId: metric.id,
-        metricName: $klicker.getName(metric, 'short'),
-        columns: response.data.map(e => ({
-          id: `${metric.id}-${e.id}`,
-          entry: e,
-        }))
-      })), response => ([{
-        metricId: metrics.value[0].id,
-        metricName: $klicker.getName(metrics.value[0], 'short'),
-        columns: response.data.map(e => ({
-          id: `${metrics.value[0].id}-${e.id}`,
-          entry: e,
-        }))
-      }])
-    ))
+      switchResponse(
+        response => metrics.value.map((metric) => ({
+          id: metric.id,
+          metricId: metric.id,
+          title: $klicker.getName(metric, 'short'),
+          columns: response.data.map(e => ({
+            id: `${metric.id}-${e.id}`,
+            entry: e,
+          }))
+        })),
+        response => metrics.value.flatMap(metric => [{
+          id: metric.id,
+          metricId: metric.id,
+          title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(metric),
+          columns: response.data.map(e => ({
+            id: `${metric.id}-${e.id}`,
+            entry: e,
+          })),
+        }, {
+          id: `${metric.id}-reference`,
+          metricId: metric.id,
+          title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(metric),
+          columns: response.data.map(e => ({
+            id: `${metric.id}-${e.id}-reference`,
+            entry: e.test.reference,
+          })),
+        }])
+      )
+    )
 
     const wrapper = ref<HTMLElement>()
     const heading = ref<HTMLElement>()

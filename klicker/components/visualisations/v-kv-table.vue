@@ -69,35 +69,24 @@ export default defineComponent({
   setup(props) {
     const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
-    const rows = computed<Row[]>(() => {
-      let rows: Row[] = []
-
-      switchResponse(response => {
-        metrics.value.forEach(m => {
-          rows.push({
-            title: $klicker.getName(m),
-            key: `metrics.${m.id}`,
-            slot: `metrics.${m.id}`,
-          })
-        })
-      }, response => {
-        metrics.value.forEach(m => {
-          rows.push({
-            title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(m),
-            key: `metrics.${m.id}`,
-            slot: `metrics.${m.id}`,
-          })
-
-          rows.push({
-            title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(m),
-            key: `test.reference.metrics.${m.id}`,
-            slot: `test.reference.metrics.${m.id}`,
-          })
-        })
-      })
-
-      return rows
-    })
+    const rows = computed<Row[]>(() =>
+      switchResponse(
+        response => metrics.value.map(m => ({
+          title: $klicker.getName(m),
+          key: `metrics.${m.id}`,
+          slot: `metrics.${m.id}`,
+        })),
+        response => metrics.value.flatMap(m => [{
+          title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(m),
+          key: `metrics.${m.id}`,
+          slot: `metrics.${m.id}`,
+        }, {
+          title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(m),
+          key: `test.reference.metrics.${m.id}`,
+          slot: `test.reference.metrics.${m.id}`,
+        }])
+      )
+    )
 
     const data = computed(() => props.response.data[0])
 
