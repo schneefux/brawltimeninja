@@ -18,7 +18,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
-    const { $klicker, response, error, loading, fetch } = useCubeQuery(query, filter)
+    const { $klicker, response, error, loading, update } = useCubeQuery(query, filter)
 
     return () => {
       let nodes: VNode[] | undefined
@@ -41,7 +41,7 @@ export default defineComponent({
               on: {
                 click: (event) => {
                   event.stopPropagation()
-                  fetch()
+                  update()
                 },
               },
             }, [$klicker.$t('action.retry')]),

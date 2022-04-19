@@ -50,13 +50,14 @@ export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: 
   }
 
   const response = useAsync(() => fetch(), `c-query-${hash(query.value)}`)
-  watch(query, async () => response.value = await fetch())
+  const update = async () => response.value = await fetch()
+  watch(query, update)
 
   return {
     $klicker,
     error,
     response,
     loading,
-    fetch,
+    update,
   }
 }
