@@ -68,7 +68,11 @@ job "autoscaler" {
             }
           }
 
-          log_level = "DEBUG"
+          policy {
+            default_cooldown = "5m"
+            # reduce load on Nomad and slow down scaling
+            default_evaluation_interval = "1m"
+          }
         EOF
 
         destination = "${NOMAD_TASK_DIR}/config.hcl"
@@ -91,7 +95,7 @@ job "autoscaler" {
               # it will keep creating new ones
               evaluation_interval = "10m"
 
-              # TODO checks als takes database/ingress allocations into account
+              # TODO checks also takes database/ingress allocations into account
               check "node-cpu" {
                 source = "nomad-apm"
                 query = "percentage-allocated_cpu"

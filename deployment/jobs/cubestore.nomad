@@ -6,9 +6,11 @@ job "cubestore" {
     value = "database"
   }
 
+  // TODO is cubestore needed at all? there are no pre-aggregations
   group "cubestore" {
     network {
       port "http" {
+        // TODO route cubestore via traefik
         static = 3030
       }
 
@@ -58,11 +60,11 @@ job "cubestore" {
 
       resources {
         cpu = 64
-        memory = 256
-        memory_max = 512
+        memory = 512
+        memory_max = 1024
       }
     }
 
-    // TODO add workers as tasks, see https://cube.dev/docs/caching/running-in-production
+    // no workers because there are no pre-aggregations
   }
 }
