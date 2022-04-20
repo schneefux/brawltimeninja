@@ -8,7 +8,7 @@
       role="button"
       :aria-pressed="dropdownOpen ? 'true' : 'false'"
       :class="[
-        'form-select transition duration-100 ease-in-out',
+        'transition duration-100 ease-in-out',
         'py-2 pl-4 pr-2 ring-2 hover:ring-contrast/20 bg-contrast/5 rounded-2xl', {
           'ring-contrast/20': dropdownOpen,
           'ring-contrast/10': !dropdownOpen,
