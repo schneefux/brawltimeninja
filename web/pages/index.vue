@@ -5,7 +5,7 @@
         <ad
           slot="1"
           class="-mt-6 mb-6 mx-auto"
-          ad-slot="6067985913"
+          ad-slot="2812773083"
           banner
         ></ad>
       </experiment>
@@ -137,6 +137,7 @@
 
     <ad
       ad-slot="6067985913"
+      first
     ></ad>
 
     <b-page-section
