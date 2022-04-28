@@ -20,7 +20,6 @@
     "@nuxtjs/composition-api": "^0.31.0",
     "@nuxtjs/i18n": "^7.2.0",
     "@nuxtjs/pwa": "^3.3.5",
-    "@nuxtjs/redirect-module": "^0.3.1",
     "@nuxtjs/sentry": "^5.1.6",
     "@nuxtjs/sitemap": "^2.4.0",
     "@schneefux/klicker": "link:../klicker",

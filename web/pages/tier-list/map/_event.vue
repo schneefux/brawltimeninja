@@ -1,8 +1,8 @@
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { camelToKebab, slugify } from '~/lib/util'
 
-export default Vue.extend({
+export default defineComponent({
   async validate({ params, error, redirect, $klicker }) {
     const events = await $klicker.query({
       cubeId: 'map',

@@ -184,7 +184,6 @@ export default {
     '@nuxt/http',
     '@nuxt/content',
     '@nuxtjs/pwa',
-    '@nuxtjs/redirect-module',
     '@nuxtjs/sentry',
     '@nuxtjs/sitemap',
   ],
@@ -207,16 +206,6 @@ export default {
   router: {
     prefetchLinks: false,
   },
-
-  redirect: [
-    { from: '^/meta$', to: '/tier-list/brawler', statusCode: 301 },
-    { from: '^/meta/(.*)$', to: '/tier-list/$1', statusCode: 301 },
-    { from: '^/leaderboard$', to: '/leaderboard/hours', statusCode: 301 },
-    { from: '^/leaderboard/$', to: '/leaderboard/hours', statusCode: 301 },
-    { from: '^/tier-list/mode/(.*)/map/(.*)/teams$', to: '/tier-list/mode/$1/map/$2', statusCode: 301 },
-    { from: '^(.*)/profile/8QQ8YYRYP$', statusCode: 404 }, // threatened to sue me by mail
-    { from: '^/player/(.*)$', to: '/profile/$1', statusCode: 301 },
-  ],
 
   sentry: {
     // set $SENTRY_DSN, $SENTRY_AUTH_TOKEN, $SENTRY_ORG and $SENTRY_PROJECT
