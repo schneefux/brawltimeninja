@@ -131,9 +131,11 @@
         :title="$t('player.quiz.title')"
         lazy
       >
-        <quiz-card
-          @interact="trackInteraction('quiz')"
-        ></quiz-card>
+        <client-only>
+          <quiz-card
+            @interact="trackInteraction('quiz')"
+          ></quiz-card>
+        </client-only>
       </b-page-section>
 
       <ad
