@@ -43,7 +43,8 @@ export default defineComponent({
       if (route.value.fullPath.endsWith('/trophies')) {
         return 'trophies'
       }
-      return route.value.params.metric as string
+      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
+      return route.value.params.metric ?? ''
     })
 
     useMeta(() => {

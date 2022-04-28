@@ -276,6 +276,7 @@ export default {
         'autoprefixer': {},
       },
     },
+    coerjs: '3',
     // https://github.com/nuxt/nuxt.js/issues/9221
     transpile: ['vega-lite', 'd3-format', '@schneefux/klicker'],
   },

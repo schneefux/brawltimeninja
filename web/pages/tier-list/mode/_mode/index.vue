@@ -68,7 +68,10 @@ export default defineComponent({
 
     const route = useRoute()
 
-    const mode = computed(() => kebabToCamel(route.value.params.mode))
+    const mode = computed(() => {
+      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
+      return kebabToCamel(route.value.params.mode ?? '')
+    })
     const events = useAsync(() => $klicker.queryActiveEvents([], {
       mode: [mode.value],
     }, null), `mode-${route.value.params.mode}`)
