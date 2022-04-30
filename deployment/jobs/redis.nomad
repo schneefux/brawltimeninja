@@ -1,7 +1,7 @@
 job "redis" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
     value = "database"
   }
@@ -65,7 +65,7 @@ job "redis" {
       }
 
       resources {
-        cpu = 1024
+        cpu = 256
         memory = 512
         memory_max = 1536
       }

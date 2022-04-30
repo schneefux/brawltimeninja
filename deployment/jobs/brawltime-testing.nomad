@@ -9,9 +9,8 @@ variable "web_traduora_project_id" {}
 job "brawltime-testing" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
-    operator = "regexp"
     value = "worker"
   }
 
@@ -61,7 +60,7 @@ job "brawltime-testing" {
       }
 
       resources {
-        cpu = 256
+        cpu = 128
         memory = 196
         memory_max = 512
       }

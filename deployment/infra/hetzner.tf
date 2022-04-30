@@ -106,21 +106,25 @@ variable "servers" {
       class = "ingress"
     }
     colt = {
-      server_type = "cpx11"
-      class = "worker"
+      server_type = "cx21"
+      class = "database"
     }
     dynamike = {
       server_type = "cpx31"
       class = "database"
     }
+    /*
     edgar = {
       server_type = "cpx11"
       class = "worker"
     }
+    */
+    /*
     frank = {
       server_type = "cpx11"
       class = "worker"
     }
+    */
     /*
     gene = {
       server_type = "cpx11"
@@ -167,7 +171,7 @@ resource "hcloud_server" "default" {
   server_type = each.value.server_type
   keep_disk = true
   ssh_keys = [hcloud_ssh_key.default.id]
-  user_data = templatefile(each.value.class == "ingress" ? "${path.module}/conf/cloudinit-ingress.yml.tpl" : "${path.module}/conf/cloudinit-worker.yml.tpl", {
+  user_data = templatefile("${path.module}/conf/cloudinit-${each.value.class}.yml.tpl", {
     class = each.value.class,
     datadog_api_key = var.datadog_api_key,
   })

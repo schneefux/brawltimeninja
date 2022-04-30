@@ -10,9 +10,8 @@ variable "domain" {
 job "brawltime-web" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
-    operator = "regexp"
     value = "worker"
   }
 
@@ -38,6 +37,7 @@ job "brawltime-web" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -51,6 +51,7 @@ job "brawltime-web" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20

@@ -1,5 +1,5 @@
 #cloud-config
-# sync with cloudinit-ingress.yml.tpl
+# sync with cloudinit-*.yml.tpl
 runcmd:
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
   - mkdir -p /opt/nomad/volumes/certs
@@ -43,11 +43,6 @@ write_files:
       client {
         enabled = true
         network_interface = "{{ GetPrivateInterfaces | include \"address\" \"10.0.0.*\" | attr \"name\" }}"
-
-        host_volume "certs" {
-          path = "/opt/nomad/volumes/certs"
-          read_only = false
-        }
 
         reserved {
           reserved_ports = "22"

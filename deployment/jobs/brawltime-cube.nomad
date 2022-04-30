@@ -8,9 +8,8 @@ variable "domain" {
 job "brawltime-cube" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
-    operator = "regexp"
     value = "worker"
   }
 
@@ -36,6 +35,7 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-cube"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -49,6 +49,7 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-cube"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
@@ -121,7 +122,7 @@ job "brawltime-cube" {
   }
 
   group "cube_refresh" {
-    count = 2
+    count = 1
 
     scaling {
       enabled = true
@@ -133,6 +134,7 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-refresh"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -146,6 +148,7 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-refresh"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
@@ -179,7 +182,7 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 64
+        cpu = 32
         memory = 128
         memory_max = 256
       }

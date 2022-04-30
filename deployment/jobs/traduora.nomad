@@ -7,7 +7,7 @@ job "traduora" {
 
   affinity {
     attribute = "${node.class}"
-    value = "worker"
+    value = "database"
   }
 
   group "traduora" {
@@ -69,8 +69,9 @@ job "traduora" {
       }
 
       resources {
-        cpu = 192
-        memory = 128
+        cpu = 128
+        memory = 96
+        memory_max = 256
       }
     }
   }

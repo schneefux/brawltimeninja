@@ -36,6 +36,7 @@ job "brawltime-clicker" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -48,6 +49,7 @@ job "brawltime-clicker" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
@@ -101,9 +103,9 @@ job "brawltime-clicker" {
       }
 
       resources {
-        cpu = 128
+        cpu = 32
         memory = 64
-        memory_max = 96
+        memory_max = 128
       }
     }
   }

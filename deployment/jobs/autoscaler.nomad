@@ -1,6 +1,7 @@
 variable "hcloud_token" {}
 variable "ssh_public_key_name" {}
 variable "datadog_api_key" {}
+variable "brawltime_net_id" {}
 
 job "autoscaler" {
   datacenters = ["dc1"]
@@ -29,12 +30,12 @@ job "autoscaler" {
 
         args = [
           "-c",
-          "mkdir -p ${NOMAD_TASK_DIR}/plugins && cp ${NOMAD_TASK_DIR}/nomad-hcloud-autoscaler ${NOMAD_TASK_DIR}/plugins/hcloud-server && chmod +x ${NOMAD_TASK_DIR}/plugins/hcloud-server && nomad-autoscaler agent -config ${NOMAD_TASK_DIR}/config.hcl -plugin-dir ${NOMAD_TASK_DIR}/plugins -policy-dir ${NOMAD_TASK_DIR}/policies -http-bind-address 0.0.0.0 -http-bind-port ${NOMAD_PORT_http}",
+          "mkdir -p ${NOMAD_TASK_DIR}/plugins && cp ${NOMAD_TASK_DIR}/hcloud-server ${NOMAD_TASK_DIR}/plugins/hcloud-server && chmod +x ${NOMAD_TASK_DIR}/plugins/hcloud-server && nomad-autoscaler agent -config ${NOMAD_TASK_DIR}/config.hcl -plugin-dir ${NOMAD_TASK_DIR}/plugins -policy-dir ${NOMAD_TASK_DIR}/policies -http-bind-address 0.0.0.0 -http-bind-port ${NOMAD_PORT_http}",
         ]
       }
 
       artifact {
-        source = "https://github.com/AndrewChubatiuk/nomad-hcloud-autoscaler/releases/download/v0.0.2/nomad-hcloud-autoscaler"
+        source = "https://github.com/AndrewChubatiuk/nomad-hcloud-autoscaler/releases/download/v0.1.1/hcloud-server"
       }
 
       template {
@@ -73,6 +74,8 @@ job "autoscaler" {
             # reduce load on Nomad and slow down scaling
             default_evaluation_interval = "1m"
           }
+
+          log_level = "INFO"
         EOF
 
         destination = "${NOMAD_TASK_DIR}/config.hcl"
@@ -96,12 +99,13 @@ job "autoscaler" {
               evaluation_interval = "10m"
 
               # TODO checks also takes database/ingress allocations into account
+              # TODO target-value assumes constant CPU/RAM per unit
               check "node-cpu" {
                 source = "nomad-apm"
                 query = "percentage-allocated_cpu"
 
                 strategy "target-value" {
-                  target = 80
+                  target = 90
                 }
               }
 
@@ -110,20 +114,19 @@ job "autoscaler" {
                 query = "percentage-allocated_memory"
 
                 strategy "target-value" {
-                  target = 80
+                  target = 90
                 }
               }
 
               # sync with hetzner.tf
               target "hcloud-server" {
-                # combined filters are only supported since Nov 2021 https://github.com/hashicorp/nomad-autoscaler/pull/535
-                # the plugin was built Feb 2021
-                #datacenter = "dc01"
+                datacenter = "dc01"
                 node_class = "worker"
                 node_purge = "true"
-                dry-run = "true"
+                #dry-run = "true"
                 hcloud_location = "nbg1"
                 hcloud_image = "docker-ce"
+                hcloud_group_id = "autoscale"
                 hcloud_user_data = <<-EOOF
                   ${
                     regex_replace(
@@ -134,10 +137,11 @@ job "autoscaler" {
                   }
                 EOOF
                 hcloud_ssh_keys = "${var.ssh_public_key_name}"
+                # scaling-intensive services (web, cube, render) have a 1:2 RAM:CPU ratio, so pick cpx11 over cx21
                 hcloud_server_type = "cpx11"
-                hcloud_name_prefix = "brawltime"
                 hcloud_labels = "firewall=true,nomad_class=worker"
-                hcloud_networks = "brawltime-net"
+                # id of hetzner network brawltime-net
+                hcloud_networks = "${var.brawltime_net_id}"
               }
             }
           }
@@ -150,8 +154,9 @@ job "autoscaler" {
       }
 
       resources {
-        cpu = 50
-        memory = 128
+        cpu = 64
+        memory = 64
+        memory_max = 128
       }
 
       service {

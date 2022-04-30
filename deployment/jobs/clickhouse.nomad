@@ -1,7 +1,7 @@
 job "clickhouse" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
     value = "database"
   }
@@ -58,7 +58,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "yandex/clickhouse-server:21.12-alpine"
+        image = "clickhouse/clickhouse-server:22.4-alpine"
         network_mode = "host"
 
         volumes = [

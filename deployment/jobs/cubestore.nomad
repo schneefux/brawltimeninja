@@ -1,7 +1,7 @@
 job "cubestore" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
     value = "database"
   }
@@ -60,8 +60,8 @@ job "cubestore" {
 
       resources {
         cpu = 64
-        memory = 512
-        memory_max = 1024
+        memory = 384
+        memory_max = 512
       }
     }
 

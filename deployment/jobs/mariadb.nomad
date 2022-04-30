@@ -1,7 +1,7 @@
 job "mariadb" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
     value = "database"
   }
@@ -54,7 +54,7 @@ job "mariadb" {
       }
 
       resources {
-        cpu = 256
+        cpu = 128
         memory = 256
         memory_max = 512
       }

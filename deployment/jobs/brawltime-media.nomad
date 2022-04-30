@@ -17,11 +17,12 @@ locals {
 job "brawltime-media" {
   datacenters = ["dc1"]
 
+/*
   affinity {
     attribute = "${node.class}"
-    operator = "regexp"
     value = "worker"
   }
+*/
 
   # workaround for limited support for scaling jobs with single writer nodes
   # https://github.com/hashicorp/nomad/issues/10157
@@ -52,6 +53,7 @@ job "brawltime-media" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -65,6 +67,7 @@ job "brawltime-media" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
@@ -132,9 +135,9 @@ job "brawltime-media" {
       }
 
       resources {
-        cpu = 96
-        memory = 196
-        memory_max = 512
+        cpu = 64
+        memory = 384
+        memory_max = 1024
       }
     }
 
@@ -195,9 +198,7 @@ job "brawltime-media" {
       }
 
       config {
-        # TODO when upgrading, solve https://bbs.archlinux.org/viewtopic.php?id=270005
-        # key doesn't work with some clients
-        image = "atmoz/sftp:alpine-3.7"
+        image = "atmoz/sftp:alpine"
         args = ["brawlbot::${local.asset_uid}"]
         ports = ["ssh"]
         volumes = [

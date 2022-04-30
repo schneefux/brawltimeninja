@@ -53,8 +53,8 @@ write_files:
         enabled = true
         network_interface = "{{ GetPrivateInterfaces | include \"address\" \"10.0.0.*\" | attr \"name\" }}"
 
-        host_volume "certs" {
-          path = "/opt/nomad/volumes/certs"
+        host_volume "database" {
+          path = "/opt/nomad/volumes/database"
           read_only = false
         }
 
@@ -91,3 +91,4 @@ write_files:
 
       server = true
       bootstrap_expect = 3
+      retry_join = ["10.0.0.2"]

@@ -36,6 +36,7 @@ job "brawltime-render" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -49,6 +50,7 @@ job "brawltime-render" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
