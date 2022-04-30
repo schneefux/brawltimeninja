@@ -9,27 +9,13 @@ do
     p)
       PASSWORD=$OPTARG
       ;;
-    n)
-      NAME=$OPTARG
-      ;;
-    d)
-      DESCRIPTION=$OPTARG
-      ;;
-    i)
-      IPS=$OPTARG
-      ;;
   esac
 done
 
 [ -z $EMAIL ] && echo "-e is required"
 [ -z $PASSWORD ] && echo "-p is required"
-[ -z $NAME ] && NAME="Nomad $(hostname)"
-[ -z $DESCRIPTION ] && DESCRIPTION="Key automatically registered by Nomad job"
-if [ -z $IPS ]
-then
-  MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
-  IPS="[\"$MY_IP\"]"
-fi
+NAME="Nomad $NOMAD_ALLOC_ID"
+DESCRIPTION="Key automatically registered by Nomad job for allocation $NOMAD_ALLOC_ID on host $(hostname)"
 
 COOKIE_JAR=$(mktemp)
 
@@ -50,27 +36,19 @@ KEYS=$(curl 'https://developer.brawlstars.com/api/apikey/list' \
   --data-raw '{}' \
   -b $COOKIE_JAR)
 
-TOKEN=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\" and .cidrRanges == $IPS).key")
+TOKEN=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\").key")
+
+if [ $TOKEN = "null" ]
+then
+  echo "Error: Token is null - did you register too many tokens?"
+  exit 1
+fi
 
 if [ -z $TOKEN ]
 then
-  echo "Could not find existing token"
-
-  KEY_ID=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\").id")
-
-  if [ ! -z "$KEY_ID" ]
-  then
-    echo "Revoking token with same name"
-    curl 'https://developer.brawlstars.com/api/apikey/revoke' \
-      -s \
-      -o /dev/null \
-      -H 'authority: developer.brawlstars.com' \
-      -H 'content-type: application/json' \
-      --data-raw "{\"id\":\"$KEY_ID\"}" \
-      -b $COOKIE_JAR
-  fi
-
   echo "Creating a new token"
+  MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
+  IPS="[\"$MY_IP\"]"
   TOKEN=$(curl 'https://developer.brawlstars.com/api/apikey/create' \
     -s \
     -H 'authority: developer.brawlstars.com' \
@@ -78,6 +56,8 @@ then
     --data-raw "{\"name\":\"$NAME\",\"description\":\"$DESCRIPTION\",\"cidrRanges\":$IPS,\"scopes\":null}" \
     -b $COOKIE_JAR \
     | jq -r ".key.key")
+else
+  echo "Token already exists"
 fi
 
 consul kv put "brawlstars-token/alloc-${NOMAD_ALLOC_ID}" "$TOKEN"

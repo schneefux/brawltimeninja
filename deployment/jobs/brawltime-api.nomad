@@ -12,9 +12,8 @@ variable "domain" {
 job "brawltime-api" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
-    operator = "regexp"
     value = "worker"
   }
 
@@ -33,6 +32,7 @@ job "brawltime-api" {
     scaling {
       enabled = true
       min = 1
+      # max number of API keys: 8
       max = 8
 
       policy {
@@ -40,6 +40,7 @@ job "brawltime-api" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 100
@@ -52,6 +53,7 @@ job "brawltime-api" {
           source = "nomad-apm"
           group = "cpu-allocated"
           query = "avg_cpu-allocated"
+          query_window = "10m"
 
           strategy "threshold" {
             upper_bound = 20
@@ -87,17 +89,17 @@ job "brawltime-api" {
       }
     }
 
-    task "get-api-token" {
+    task "create-api-token" {
       lifecycle {
         hook = "prestart"
       }
 
       driver = "exec"
 
-      # dynamically register token for current public IP address
+      # dynamically register token for current allocation and public IP address
       config {
         command = "/bin/bash"
-        args = ["-e", "${NOMAD_TASK_DIR}/update_apikey.sh"]
+        args = ["-e", "${NOMAD_TASK_DIR}/create_apikey.sh"]
       }
 
       template {
@@ -110,8 +112,8 @@ job "brawltime-api" {
       }
 
       template {
-        data = file("./bin/update_apikey.sh")
-        destination = "local/update_apikey.sh"
+        data = file("./bin/create_apikey.sh")
+        destination = "local/create_apikey.sh"
       }
 
       resources {
@@ -127,9 +129,24 @@ job "brawltime-api" {
 
       driver = "exec"
 
+      # revoke token
       config {
-        command = "consul"
-        args = ["kv", "delete", "brawlstars-token/alloc-${NOMAD_ALLOC_ID}"]
+        command = "/bin/bash"
+        args = ["-e", "${NOMAD_TASK_DIR}/delete_apikey.sh"]
+      }
+
+      template {
+        data = <<-EOF
+          EMAIL="${var.brawlstars_email}"
+          PASSWORD="${var.brawlstars_password}"
+        EOF
+        destination = "secrets/credentials.env"
+        env = true
+      }
+
+      template {
+        data = file("./bin/delete_apikey.sh")
+        destination = "local/delete_apikey.sh"
       }
 
       resources {
@@ -163,7 +180,7 @@ job "brawltime-api" {
       }
 
       resources {
-        cpu = 256
+        cpu = 128
         memory = 384
         memory_max = 512
       }
