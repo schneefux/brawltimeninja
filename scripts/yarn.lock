@@ -90,12 +90,13 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-axios@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
-  integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
+axios@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
   dependencies:
-    follow-redirects "^1.14.8"
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
 
 browser-process-hrtime@^1.0.0:
   version "1.0.0"
@@ -270,7 +271,7 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-follow-redirects@^1.14.8:
+follow-redirects@^1.14.9:
   version "1.14.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
@@ -513,7 +514,7 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-node-fetch@^2.6.1:
+node-fetch@2.6.7, node-fetch@^2.6.1:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
@@ -838,17 +839,17 @@ ws@^8.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.5.0.tgz#bfb4be96600757fe5382de12c670dab984a1ed4f"
   integrity sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==
 
-wtf-plugin-api@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/wtf-plugin-api/-/wtf-plugin-api-0.1.2.tgz#45c8e93a54343c8bf8a95b67808f2de278fc16b5"
-  integrity sha512-xRUzSxdBRDCWFfdl4Xl2yBuc+urv9cWkZ6Q5p/B7ZajAsun319SL8CRzGprr4lz9ZCe7oT0+t9Fj8sTL8voPBA==
+wtf-plugin-api@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/wtf-plugin-api/-/wtf-plugin-api-1.0.0.tgz#6b58636cf8fa92e1887f3cacaf5f867350dc8467"
+  integrity sha512-bfPi9KNQQgcFEG1V0f4AxII0+D5znhwq3BZnZwMQkwR6d+vr2i2tMNp/EEs31sL1prPkc1cB54IZCFVGxfpDkw==
   dependencies:
     slow "^1.1.0"
 
-wtf_wikipedia@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/wtf_wikipedia/-/wtf_wikipedia-9.1.0.tgz#5b0b8810583982c6164d03470f1c562296165320"
-  integrity sha512-VpGZVNJA8LICmEZB8r5cO/4jyosIrn9qB6NN5QiIw07mjjUeDB4tbQLq4TH6CrE4jfhQI2ng2awDnDUqioV1kg==
+wtf_wikipedia@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/wtf_wikipedia/-/wtf_wikipedia-10.0.0.tgz#753e0b12d393914fb42955cd0fb65a5f3e2a995a"
+  integrity sha512-CVLak9eVDf2jVt5AZTlNe5b4bqHnb8H9h9xfKwUZhLGtb9TbphXhkL0jLaTVYCXPM946wcJg6B+9d9EPKZhAwQ==
   dependencies:
     isomorphic-unfetch "^3.1.0"
     path-exists-cli "2.0.0"

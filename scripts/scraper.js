@@ -30,12 +30,7 @@ function encodePath(path) {
 
 async function main() {
   const brawlerPages = await wtf.getCategoryPages("Category:Brawlers", {domain: DOMAIN, path:"api.php"})
-  let brawlerNames = brawlerPages.map(brawlerPage => brawlerPage.title);
-
-  // TODO remove after release of https://github.com/spencermountain/wtf_wikipedia/pull/473
-  if (brawlerNames.length == 0) {
-    brawlerNames = ['8-Bit', 'Amber', 'Ash', 'Barley', 'Bea', 'Belle', 'Bibi', 'Bo', 'Brock', 'Bull', 'Buzz', 'Byron', 'Carl', 'Colette', 'Colonel Ruffs', 'Colt', 'Crow', 'Darryl', 'Dynamike', 'Edgar', 'El Primo', 'Emz', 'Eve', 'Fang', 'Frank', 'Gale', 'Gene', 'Griff', 'Grom', 'Jacky', 'Jessie', 'Leon', 'Lola', 'Lou', 'Max', 'Meg', 'Mortis', 'Mr. P', 'Nani', 'Nita', 'Pam', 'Penny', 'Piper', 'Poco', 'Rico', 'Rosa', 'Sandy', 'Shelly', 'Spike', 'Sprout', 'Squeak', 'Stu', 'Surge', 'Tara', 'Tick']
-  }
+  const brawlerNames = brawlerPages.map(brawlerPage => brawlerPage.title);
 
   // get ids of starpowers and gadgets
   const brawltimeNinjaStarpowerJSONFull = await fetch("https://cube.brawltime.ninja/cubejs-api/v1/load?query=%7B%22measures%22%3A%5B%22battle.starpowerName_measure%22%5D%2C%22dimensions%22%3A%5B%22battle.brawler_dimension%22%2C%22battle.starpower_dimension%22%5D%2C%22filters%22%3A%5B%7B%22member%22%3A%22battle.season_dimension%22%2C%22operator%22%3A%22afterDate%22%2C%22values%22%3A%5B%222022-03-07%22%5D%7D%2C%7B%22member%22%3A%22battle.starpower_dimension%22%2C%22operator%22%3A%22notEquals%22%2C%22values%22%3A%5B%220%22%5D%7D%5D%7D&queryType=multi").then(response => response.json())
@@ -113,6 +108,9 @@ async function main() {
   console.log('Downloading Brawler information')
   for (const brawlerName of brawlerNames) {
     const brawlerObj = await getBrawlerData(brawlerName)
+    if (brawlerObj == undefined) {
+      continue
+    }
 
     await fs.promises.mkdir(OUT_DIR + brawlerObj.directory, { recursive: true })
     await fs.promises.writeFile(OUT_DIR + brawlerObj.directory + "data.json", JSON.stringify(brawlerObj))
@@ -243,6 +241,10 @@ async function main() {
       if (title.includes("Skins")) { skinSectionID = i }
     }
     lastSectionID = wtfBrawler.sections().length - 1
+
+    if (wtfBrawler.sections()[0].json()['infoboxes'] == undefined) {
+      return
+    }
 
     // stats
     const stats = wtfBrawler.sections()[0].json()['infoboxes'][0]
@@ -378,7 +380,7 @@ async function main() {
 
     // tips
     const tipsSection = wtfBrawler.sections()[tipSectionID].json()
-    const tipsElements = tipsSection["lists"][0]
+    const tipsElements = tipsSection["lists"] != undefined ? tipsSection["lists"][0] : []
     brawler["tips"] = tipsElements.map(tipElement => tipElement["text"])
 
     // voice lines
@@ -391,6 +393,7 @@ async function main() {
     const historySection = wtfBrawler.sections()[historySectionID].json()
     let historyEntryDescriptionCount = 0
     let date = -1
+    if (historySection["lists"] != undefined) {
     for (const historyEntryElement of historySection["lists"][0]) {
       if (historyEntryElement['text'].search("[0-9]+/[0-9]+/[0-9]+") != -1) {
         date = historyEntryElement['text']
@@ -407,6 +410,7 @@ async function main() {
         });
         historyEntryDescriptionCount += 1
       }
+    }
     }
 
     // skins
