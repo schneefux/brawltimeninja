@@ -310,14 +310,14 @@ export default {
       code: 'es',
       iso: 'es-ES',
       file: 'index.js',
+    }, {
+      code: 'ukr',
+      iso: 'uk-UA',
+      file: 'index.js',
     },
     ...(!!process.env.TRADUORA_PROJECT_ID ? [{
       code: 'ru',
       iso: 'ru-RU',
-      file: 'index.js',
-    }, {
-      code: 'uk_UA',
-      iso: 'uk-UA',
       file: 'index.js',
     }, {
       code: 'nl_NL',
