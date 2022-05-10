@@ -570,5 +570,6 @@
     "brawlers.title": "Brawlers",
     "brawlers.description": "List of all Brawlers in Brawl Stars. Learn more about a Brawler and view their ranking in the Tier List.",
     "brawlers.meta.description": "View statistics and rankings for all Brawlers in Brawl Stars.",
-    "brawlers.meta.title": "Brawl Stars Brawlers"
+    "brawlers.meta.title": "Brawl Stars Brawlers",
+    "mode.invasion": "Bot Drop"
 }

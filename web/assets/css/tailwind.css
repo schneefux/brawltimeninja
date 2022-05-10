@@ -120,6 +120,10 @@
 }
 
 .bg-color-basketbrawl {
-    background-color: #bf4d0a;
+  background-color: #bf4d0a;
+}
+
+.bg-color-invasion {
+  background-color: #5294eb;
 }
 /* purgecss end ignore */
