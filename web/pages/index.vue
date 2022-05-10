@@ -1,15 +1,10 @@
 <template>
   <b-page class="flex flex-col justify-center">
-    <client-only>
-      <experiment experiment-id="V68jRTI-QSWUpqLYIUCDhw">
-        <ad
-          slot="1"
-          class="-mt-6 mb-6 mx-auto"
-          ad-slot="2812773083"
-          banner
-        ></ad>
-      </experiment>
-    </client-only>
+    <ad
+      class="-mt-6 mb-6 mx-auto"
+      ad-slot="2812773083"
+      banner
+    ></ad>
 
     <div class="mx-auto relative">
       <img

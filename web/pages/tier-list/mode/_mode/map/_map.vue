@@ -16,20 +16,10 @@
       }) }}
     </p>
 
-    <client-only>
-      <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
-        <ad
-          ad-slot="1665534416"
-          first
-        ></ad>
-
-        <ad
-          slot="1"
-          ad-slot="7179355510"
-          banner
-        ></ad>
-      </experiment>
-    </client-only>
+    <ad
+      ad-slot="1665534416"
+      first
+    ></ad>
 
     <b-lightbox v-model="lightboxOpen">
       <map-img
@@ -57,16 +47,6 @@
             class="absolute bottom-4 right-6"
           ></font-awesome-icon>
         </event-picture-card>
-
-        <client-only>
-          <experiment experiment-id="IyplgI02Rq-oMqvhQxoGfQ">
-            <ad
-              slot="1"
-              ad-slot="1665534416"
-              first
-            ></ad>
-          </experiment>
-        </client-only>
 
         <map-views
           :mode="event.mode"

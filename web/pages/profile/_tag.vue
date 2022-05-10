@@ -1,20 +1,9 @@
 <template>
   <b-page :title="$t('player.meta.title', { name: player.name })">
-    <client-only>
-      <experiment experiment-id="VS-usf7HTauJKv4BLLC7lg">
-        <ad
-          ad-slot="9429125351"
-          first
-        ></ad>
-
-        <ad
-          slot="1"
-          ad-slot="1108771186"
-          class="lg:hidden"
-          banner
-        ></ad>
-      </experiment>
-    </client-only>
+    <ad
+      ad-slot="9429125351"
+      first
+    ></ad>
 
     <b-split-dashboard class="mt-8 lg:mt-0">
       <div
@@ -37,16 +26,6 @@
           class="lg:mt-8 lg:overflow-y-auto"
         ></b-scroll-spy>
       </div>
-
-      <client-only>
-        <experiment experiment-id="VS-usf7HTauJKv4BLLC7lg">
-          <ad
-            slot="1"
-            ad-slot="9429125351"
-            first
-          ></ad>
-        </experiment>
-      </client-only>
 
       <b-page-section
         ref="timeSection"

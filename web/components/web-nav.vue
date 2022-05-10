@@ -7,15 +7,10 @@
       Brawl Time Ninja
     </nuxt-link>
 
-    <client-only>
-      <experiment experiment-id="gxZccS92SoCV6dgnT9v3Cw">
-        <navigator
-          slot="1"
-          class="relative dark pl-8 mr-auto"
-          input-class="light"
-        ></navigator>
-      </experiment>
-    </client-only>
+    <navigator
+      class="relative dark pl-8 mr-auto"
+      input-class="light"
+    ></navigator>
 
     <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-4">
       <install-button></install-button>

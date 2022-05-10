@@ -9,6 +9,7 @@
         :data-ad-region="adRegion"
         data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
+        data-full-width-responsive="true"
         ins-class="banner-ad"
         class="flex justify-center -mx-4"
       ></adsense>

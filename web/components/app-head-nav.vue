@@ -8,16 +8,10 @@
       >
     </nuxt-link>
 
-    <client-only>
-      <experiment experiment-id="ZmTBiYr8THKe7U4so2vPdg">
-        <div class="mr-auto"></div>
-        <navigator
-          slot="1"
-          class="mr-auto dark"
-          input-class="light"
-        ></navigator>
-      </experiment>
-    </client-only>
+    <navigator
+      class="mr-auto dark"
+      input-class="light"
+    ></navigator>
 
     <install-button
       class="h-6"
