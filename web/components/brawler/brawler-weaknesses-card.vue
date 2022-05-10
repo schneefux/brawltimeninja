@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
 
@@ -34,7 +34,10 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { i18n } = useContext()
+
     const query: CubeComparingQuery = {
+      name: i18n.t('metric.team') as string,
       comparing: true,
       cubeId: 'brawlerEnemies',
       slices: {
@@ -45,6 +48,7 @@ export default defineComponent({
       sortId: 'pvalue',
       limit: 8,
       reference: {
+        name: props.brawler,
         cubeId: 'map',
         slices: {},
         dimensionsIds: ['brawler'],
