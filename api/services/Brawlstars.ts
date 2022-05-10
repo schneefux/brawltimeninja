@@ -149,7 +149,8 @@ export default class BrawlstarsService {
       battle.event.id = battle.event.id || 0
       battle.event.map = battle.event.map || ''
       // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
-      battle.event.mode = battle.event.mode || battle.battle.mode
+      // FIXME since 2022-01, battle.event.mode may be "unknown"
+      battle.event.mode = battle.event.mode != undefined && battle.event.mode != 'unknown' ? battle.event.mode : battle.battle.mode
 
       // FIXME API bug 2020-07-26
       if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
