@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, computed, useAsync, useContext } from '@nuxtjs/composition-api'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
 
@@ -51,13 +51,17 @@ export default defineComponent({
   setup() {
     const { $klicker } = useContext()
 
-    const brawlers = useAsync(async () => {
-      const brawlers = await $klicker.queryAllBrawlers()
-      return brawlers.map(b => ({
+    const allBrawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
+    const brawlers = computed(() => {
+      if (allBrawlers.value == undefined) {
+        return undefined
+      }
+
+      return allBrawlers.value.map(b => ({
         id: brawlerId({ name: b }),
         name: capitalizeWords(b.toLowerCase()),
       }))
-    }, 'all-brawlers')
+    })
 
     return {
       brawlers,
