@@ -169,6 +169,7 @@ export default {
   ],
 
   plugins: [
+    { src: '~/plugins/fontawesome' },
     { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/gtag', mode: 'client' },
@@ -184,14 +185,11 @@ export default {
     '@nuxt/http',
     '@nuxtjs/pwa',
     '@nuxtjs/sentry',
-    '@nuxtjs/sitemap',
   ],
 
   buildModules: [
     '@nuxt/typescript-build',
     '@nuxt/postcss8',
-    '@nuxtjs/fontawesome',
-    '@nuxtjs/google-fonts',
     '@nuxtjs/composition-api/module',
   ],
 
@@ -269,26 +267,6 @@ export default {
     transpile: ['vega-lite', 'd3-format', '@schneefux/klicker'],
   },
 
-  sitemap: {
-    // generated during run time
-    gzip: true,
-    exclude: ['/embed/**'],
-    async routes() {
-      const routes = []
-
-      // TODO
-
-      return routes
-    },
-  },
-
-  fontawesome: {
-    // reduce size
-    useLayers: false,
-    useLayersText: false,
-    addCss: true,
-  },
-
   i18n: {
     locales: [{
       code: 'en',
@@ -327,15 +305,6 @@ export default {
     vueI18n: {
       fallbackLocale: 'en',
     },
-  },
-
-  googleFonts: {
-    families: {
-      Roboto: true,
-    },
-    display: 'swap',
-    download: true,
-    subsets: 'latin',
   },
 
   serverMiddleware: [

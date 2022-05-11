@@ -29,7 +29,6 @@
       "@types/node",
       "@nuxt/types",
       "@nuxt/http",
-      "@nuxt/content",
       "@nuxtjs/sentry",
       "@nuxtjs/i18n"
     ]
