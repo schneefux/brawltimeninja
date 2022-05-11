@@ -205,6 +205,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
@@ -212,6 +213,9 @@ import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/co
 import { tagPattern } from '~/lib/util'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   components: {
     BSplitDashboard,
     BScrollSpy,

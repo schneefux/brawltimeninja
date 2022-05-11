@@ -41,9 +41,13 @@
 
 <script lang="ts">
 import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   head: {},
   setup() {
     const { i18n } = useContext()

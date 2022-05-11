@@ -53,10 +53,14 @@
 <script lang="ts">
 import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, CDashboardCell } from '@schneefux/klicker/components'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, useAsync, computed, useRoute, useContext, useMeta } from '@nuxtjs/composition-api'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   components: {
     BTextbox,
     CDashboardCell,

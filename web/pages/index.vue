@@ -189,10 +189,10 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore } from '@nuxtjs/composition-api'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
-import ad from '~/components/ad.vue'
 
 interface PlayerLink {
   name: string
@@ -201,7 +201,9 @@ interface PlayerLink {
 }
 
 export default defineComponent({
-  components: { ad },
+  directives: {
+    ObserveVisibility,
+  },
   head: {},
   setup() {
     const { i18n, $config, $klicker, $sentry, localePath } = useContext()

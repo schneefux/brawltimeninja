@@ -311,12 +311,16 @@
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, CDashboardCell, VTestInfo, BTabs, BScrollingList } from '@schneefux/klicker/components'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { winRateAdjMetric } from '~/lib/klicker.conf'
 import { useSyncSlicesAndRoute } from '~/composables/link'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   components: {
     BScrollingList,
     CDashboard,

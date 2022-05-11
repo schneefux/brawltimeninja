@@ -103,6 +103,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { CurrentAndUpcomingEvents, ActiveEvent } from '@/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
@@ -110,6 +111,9 @@ import { EventMetadata } from '~/plugins/klicker'
 import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   components: {
     BPageSection,
     BSplitDashboard,

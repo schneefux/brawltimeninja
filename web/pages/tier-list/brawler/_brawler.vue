@@ -235,11 +235,15 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
   components: {
     BScrollSpy,
     BSplitDashboard,

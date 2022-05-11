@@ -173,7 +173,6 @@ export default {
     { src: '~/plugins/persist', mode: 'client' },
     { src: '~/plugins/adsense', mode: 'client' },
     { src: '~/plugins/gtag', mode: 'client' },
-    { src: '~/plugins/visibility', mode: 'client' },
     { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
     { src: '~/plugins/http', mode: 'client' },
