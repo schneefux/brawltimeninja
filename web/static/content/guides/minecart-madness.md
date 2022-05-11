@@ -14,19 +14,19 @@ Recommended Comp
 
 ### Piper
 
-<media-img path="/brawlers/piper/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/piper/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player whose long range can easily make her come out on top in fights. Her super allows her to make clutch plays coupled with minecarts.
 
 ### Carl
 
-<media-img path="/brawlers/carl/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player whose attack can cut off rotations. He also can take some damage while applying pressure.
 
 ### Barley
 
-<media-img path="/brawlers/barley/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/barley/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player who offers a lot of control because of how the minecarts will funnel enemy movement.
 
@@ -35,24 +35,24 @@ Alternate Comps
 
 ### Alternative to Piper
 
-<media-img path="/brawlers/bo/avatar" size="60" clazz="h-12 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/bo/avatar.png?size=96" class="h-12 float-right p-1">
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-12 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-12 float-right p-1">
 
 Bo's mines make it harder for the enemy to safely push up. It synergizes well with minecarts.
 Gene can fully utilize the minecarts to easily pull and punish enemies who are forced to move in an odd way.
 
 ### Alternative to Carl
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-12 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-12 float-right p-1">
 
 Gene can fully utilize the minecarts to easily pull and punish enemies who are forced to move in an odd way.
 
 ### Alternative to Barley
 
-<media-img path="/brawlers/dynamike/avatar" size="60" clazz="h-12 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/dynamike/avatar.png?size=96" class="h-12 float-right p-1">
 
-<media-img path="/brawlers/mortis/avatar" size="60" clazz="h-12 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/mortis/avatar.png?size=96" class="h-12 float-right p-1">
 
 Dynamike offers more map destruction than Barley and can also deal more damage when utilizing minecarts.
 Mortis can counter throwers while being able to harass the enemy from behind.

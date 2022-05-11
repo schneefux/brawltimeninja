@@ -14,19 +14,19 @@ Recommended Comp
 
 ### Gene
 
-<media-img path="/brawlers/gene/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-16 float-right p-2">
 
 Gene offers amazing poking abilities, and his super can make the enemy feel uneasy with their movement. His Star Power can assist his teammates when they are grouped up.
 
 ### Shelly
 
-<media-img path="/brawlers/shelly/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/shelly/avatar.png?size=96" class="h-16 float-right p-2">
 
 Lane player who can full utilize launch pads to displace enemy movement. Her super with Star Power can make it easy for Gene to hit his attack.
 
 ### Carl
 
-<media-img path="/brawlers/carl/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-16 float-right p-2">
 
 Lane player who's long attack can act as a tripwire at mid. His attack can force enemies to move in certain directions, synergizing with Gene's super.
 
@@ -35,27 +35,27 @@ Alternate Comps
 
 ### Alternative to Gene
 
-<media-img path="/brawlers/bo/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/bo/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/poco/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/poco/avatar.png?size=96" class="h-10 float-right p-1">
 
 Bo's mine can completely cover entryway into the gem mine. His attack also offers control and burst potential.
 Poco's super can make it easy for his teammates to push, and his wide attack can poke at the enemy mid.
 
 ### Alternative to Shelly
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/tara/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/tara/avatar.png?size=96" class="h-10 float-right p-1">
 
 Nita's bear can push enemies back and her attack lets her clip enemies through walls.
 Tara can burst enemies down at close ranges while poke at enemies afar. Her super can make it hard for the enemy to push up to mid.
 
 ### Alternative to Carl
 
-<media-img path="/brawlers/leon/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/leon/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-10 float-right p-1">
 
 Leon can poke at enemies and burst enemies down at close ranges. His super can easilyy change the game as there are so many bushes to utilize.
 Nita can poke at mid while keeping control of her lane easily. Her bear pushes back enemies as well.

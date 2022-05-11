@@ -14,19 +14,14 @@
       class="h-48 bg-cover bg-center"
       itemprop="thumbnailUrl"
     ></div>
-    <span
-      slot="preview"
-      class="text-sm"
-    >
-      {{ date }}
-    </span>
+    <span slot="preview">{{ date }}</span>
     <div slot="content">
-      <nuxt-content
-        :document="document"
+      <div
+        v-html="document.body"
         ref="content"
         itemprop="articleBody"
-        class="prose dark:prose-invert lg:prose-lg"
-      ></nuxt-content>
+        class="prose dark:prose-invert"
+      ></div>
 
       <b-lightbox v-model="lightboxOpen">
         <img
@@ -58,14 +53,13 @@
 </template>
 
 <script lang="ts">
-import { IContentDocument } from '@nuxt/content/types/content'
 import { format, parseISO } from 'date-fns'
-import { computed, defineComponent, onMounted, PropType, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
     document: {
-      type: Object as PropType<IContentDocument>,
+      type: Object,
       required: true
     },
   },
@@ -74,7 +68,7 @@ export default defineComponent({
     const lightboxOpen = ref(false)
     const lightboxImage = ref('')
 
-    const date = computed(() => format(parseISO(props.document.createdAt as unknown as string), 'PP'))
+    const date = computed(() => format(parseISO(props.document.createdAt), 'PP'))
 
     onMounted(() => {
       if (content.value != undefined) {

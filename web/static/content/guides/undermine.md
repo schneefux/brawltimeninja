@@ -18,19 +18,19 @@ Note: Deathcap Cave has a lot of diverse comps and this one is just a suggestion
 
 ### Pam
 
-<media-img path="/brawlers/pam/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/pam/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player who offers a lot of area control. She has a good healing spot and can also assist her lane players with it.
 
 ### Nita
 
-<media-img path="/brawlers/nita/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-16 float-right p-2">
 
 Left lane player that can utilize the walls to poke enemies. Her overall tankiness allows her to poke and fall back, while her bear can annoy mid.
 
 ### Leon
 
-<media-img path="/brawlers/leon/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/leon/avatar.png?size=96" class="h-16 float-right p-2">
 
 Right lane player that can poke and burst down enemies. There are many bushes which makes it easy for him to assasinate enemies.
 
@@ -39,27 +39,27 @@ Alternate Comps
 
 ### Alternative to Pam
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-10 float-right p-2">
 
-<media-img path="/brawlers/jessie/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/jessie/avatar.png?size=96" class="h-10 float-right p-2">
 
 Gene can poke at the enemy's mid while his super can easily turn the game around. If he pushes up he can also dish out alot of damage.
 Jessie's tankiness and medium-long range attack makes her a great mid playre. She also has good turret spots.
 
 ### Alternative to Nita
 
-<media-img path="/brawlers/frank/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/frank/avatar.png?size=96" class="h-10 float-right p-2">
 
-<media-img path="/brawlers/spike/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/spike/avatar.png?size=96" class="h-10 float-right p-2">
 
 Frank's presence and powerful attack can keep enemies back. He effectively controls an entire area by simply "being there".
 Spike can clear his lane pretty effetcively and pressure mid from there. His super also denies chokepoints well.
 
 ### Alternative to Leon
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-10 float-right p-2">
 
-<media-img path="/brawlers/carl/avatar" size="60" clazz="h-10 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-10 float-right p-2">
 
 Gene also can work as a lane player. His spread attack makes it hard for the enemy's lane to push up. He can also poke at mid when he is pushed up.
 Carl can deny mid entryway if he manages to win his lane.

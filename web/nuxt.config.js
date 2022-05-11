@@ -182,7 +182,6 @@ export default {
   modules: [
     '@nuxtjs/i18n',
     '@nuxt/http',
-    '@nuxt/content',
     '@nuxtjs/pwa',
     '@nuxtjs/sentry',
     '@nuxtjs/sitemap',
@@ -281,13 +280,6 @@ export default {
 
       return routes
     },
-  },
-
-  content: {
-    useCache: true, // rebuild to update content
-    // breaks media-img component registration
-    // https://github.com/nuxt/content/issues/261
-    liveEdit: false,
   },
 
   fontawesome: {

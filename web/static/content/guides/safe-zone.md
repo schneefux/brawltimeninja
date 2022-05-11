@@ -17,17 +17,17 @@ Control, control, control the map! Poking the enemy team is more important than 
 ### Thrower
 
 Control and poke the enemy safe from a safe place.
-<media-img path="/brawlers/barley/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/barley/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Range
 
 Control and poke the enemy safe from the distance.
-<media-img path="/brawlers/brock/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/brock/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Support
 
 Control the map as main job and hold mid.
-<media-img path="/brawlers/spike/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/spike/avatar.png?size=96" class="h-16 float-right p-2">
 
 Aggrocontrol Comp
 ---
@@ -37,17 +37,17 @@ Zoning and poking are both equally important. Try not to lose too much area when
 ### Support
 
 Control the map as main job.
-<media-img path="/brawlers/barley/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/barley/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Healer
 
 A bit of sustain for keeping the pressure.
-<media-img path="/brawlers/pam/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/pam/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Diver
 
 Jump in with your super to apply most of your team damage.
-<media-img path="/brawlers/darryl/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/darryl/avatar.png?size=96" class="h-16 float-right p-2">
 
 Fullaggro Comp
 ---
@@ -57,17 +57,17 @@ Dive the objective as a team if possible. Attacking is more important than defen
 ### Diver
 
 Dive when possible, team up for a bigger push.
-<media-img path="/brawlers/darryl/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/darryl/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Diver
 
 Dive when possible, team up for a bigger push.
-<media-img path="/brawlers/bull/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/bull/avatar.png?size=96" class="h-16 float-right p-2">
 
 ### Diver
 
 Dive when possible, team up for a bigger push.
-<media-img path="/brawlers/el-primo/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/el-primo/avatar.png?size=96" class="h-16 float-right p-2">
 
 Graphic
 ---

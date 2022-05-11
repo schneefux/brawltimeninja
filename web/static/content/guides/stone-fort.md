@@ -14,19 +14,19 @@ Recommended Comp
 
 ### Frank
 
-<media-img path="/brawlers/frank/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/frank/avatar.png?size=96" class="h-16 float-right p-2">
 
 Frank's presence and powerful attack can keep enemies back. He effectively controls an entire area by simply "being there".
 
 ### Carl
 
-<media-img path="/brawlers/carl/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-16 float-right p-2">
 
 Lane player who's long attack can control the bush from afar. His unique returning attack also is able to clip enemies behind walls.
 
 ### Rico
 
-<media-img path="/brawlers/rico/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/rico/avatar.png?size=96" class="h-16 float-right p-2">
 
 Lane player who's long attack can control the bush from afar. His bouncy bullets lets him poke at enemies hiding behind walls.
 
@@ -35,27 +35,27 @@ Alternate Comps
 
 ### Alternative to Frank
 
-<media-img path="/brawlers/jessie/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/jessie/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/pam/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/pam/avatar.png?size=96" class="h-10 float-right p-1">
 
 Jessie's tankiness and chained attack makes her a great mid player. She also has good turret spots.
 Pam can be played mid well if lane is held by her two teammates. Her survivability is excellent which allows her to stay in the center longer.
 
 ### Alternative to Carl
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/el-primo/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/el-primo/avatar.png?size=96" class="h-10 float-right p-1">
 
 Nita's bear can push enemies back and her attack lets her clip enemies through walls.
 Primo is tanky enough where he can take some damage and still be a threat, pushing enemies back.
 
 ### Alternative to Rico
 
-<media-img path="/brawlers/crow/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/crow/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-10 float-right p-1">
 
 Crow's ability to poke enemies makes it easy for him to clear bushes. It also makes it hard for enemies to regenerate, forcing them to fall back.
 Nita's bear can push enemies back and her attack lets her clip enemies through walls.

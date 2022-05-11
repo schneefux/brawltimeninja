@@ -14,19 +14,19 @@ Recommended Comp
 
 ### Piper
 
-<media-img path="/brawlers/piper/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/piper/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player who can easily hold control of the gem mine. Her long range enables her to support lanes and take shots at the enemy's mid.
 
 ### Nita
 
-<media-img path="/brawlers/nita/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-16 float-right p-2">
 
 Left lane player who can fully utilize her walls to push the enemy back with her attack. The mushrooms also work well for this purpose.
 
 ### Rico
 
-<media-img path="/brawlers/rico/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/rico/avatar.png?size=96" class="h-16 float-right p-2">
 
 Right lane player who uses the right wall of the map to keep the enemy lane back. He also can poke at mid.
 
@@ -35,27 +35,27 @@ Alternate Comps
 
 ### Alternative to Piper
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/penny/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/penny/avatar.png?size=96" class="h-10 float-right p-1">
 
 The open area allows Gene to yoink enemies and poke at them. He also will be playing by one of the lanes, helping them with his Star Power.
 Penny's mortar has a lot of range and can cover most of mid.
 
 ### Alternative to Nita
 
-<media-img path="/brawlers/carl/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/barley/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/barley/avatar.png?size=96" class="h-10 float-right p-1">
 
 Carl can make it hard for the enemy lane to push up while also being able to tripwire off mid pushes.
 Barley makes it even harder for the enemy lane to push up and can control the left portion of mid once he wins his lane.
 
 ### Alternative to Rico
 
-<media-img path="/brawlers/tara/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/tara/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/carl/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/carl/avatar.png?size=96" class="h-10 float-right p-1">
 
 Tara can burst down the enemy laner and chip from afar. The open area in the middle makes it pretty easy for her to hit her super.
 Carl can control the right lane pretty easily and also pressure mid at the same time.

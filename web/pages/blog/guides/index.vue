@@ -1,17 +1,27 @@
 <template>
   <b-page title="Brawl Stars Guides">
-    <b-page-section
-      v-if="faqs.length > 0"
-      title="Frequently asked Questions"
-      tracking-id="faq"
-      page-tracking-id="guides"
+    <div
+      v-if="posts != undefined"
+      class="flex flex-wrap justify-center"
     >
-      <div class="flex flex-wrap justify-center">
+      <div
+        v-for="(post, index) in posts"
+        :key="post.title"
+        class="contents"
+      >
+        <client-only>
+          <in-feed-adsense
+            v-if="index == 3"
+            data-ad-layout-key="-6f+dk+1s-h+2d"
+            data-ad-client="ca-pub-6856963757796636"
+            data-ad-slot="6887845661"
+            class="w-full"
+          ></in-feed-adsense>
+        </client-only>
+
         <b-card
-          v-for="faq in faqs"
-          :key="faq.id"
-          :title="faq.title"
-          :link="`/faq/${faq.slug}`"
+          :title="post.title"
+          :link="`/blog/guides/${post.slug}`"
           class="mx-4 my-4 w-full max-w-md"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
@@ -20,18 +30,25 @@
           <span
             slot="preview"
             class="text-gray-400 text-sm"
-          >{{ faq.createdAt }}</span>
+          >{{ post.createdAt }}</span>
+          <div
+            slot="infobar"
+            v-if="'image' in post"
+            :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
+            class="h-48 bg-cover bg-center"
+            itemprop="thumbnailUrl"
+          ></div>
 
           <p
             slot="content"
             itemprop="abstract"
           >
-            {{ faq.question }}
+            {{ post.description }}
           </p>
 
           <b-button
             slot="actions"
-            :to="`/faq/${faq.slug}`"
+            :to="`/blog/guides/${post.slug}`"
             itemprop="url"
             primary
             md
@@ -40,110 +57,37 @@
           </b-button>
         </b-card>
       </div>
-    </b-page-section>
-
-    <b-page-section
-      title="Brawl Stars Guides"
-      tracking-id="guides"
-      page-tracking-id="guides"
-    >
-      <div class="flex flex-wrap justify-center">
-        <div
-          v-for="(post, index) in posts"
-          :key="post.title"
-          class="contents"
-        >
-          <client-only>
-            <in-feed-adsense
-              v-if="index == 3"
-              data-ad-layout-key="-6f+dk+1s-h+2d"
-              data-ad-client="ca-pub-6856963757796636"
-              data-ad-slot="6887845661"
-              class="w-full"
-            ></in-feed-adsense>
-          </client-only>
-
-          <b-card
-            :title="post.title"
-            :link="`/blog/guides/${post.slug}`"
-            class="mx-4 my-4 w-full max-w-md"
-            itemscope
-            itemtype="http://schema.org/AnalysisNewsArticle"
-            light
-          >
-            <span
-              slot="preview"
-              class="text-gray-400 text-sm"
-            >{{ post.createdAt }}</span>
-            <div
-              slot="infobar"
-              v-if="'image' in post"
-              :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
-              class="h-48 bg-cover bg-center"
-              itemprop="thumbnailUrl"
-            ></div>
-
-            <p
-              slot="content"
-              itemprop="abstract"
-            >
-              {{ post.description }}
-            </p>
-
-            <b-button
-              slot="actions"
-              :to="`/blog/guides/${post.slug}`"
-              itemprop="url"
-              primary
-              md
-            >
-              Read
-            </b-button>
-          </b-card>
-        </div>
-      </div>
-    </b-page-section>
+    </div>
   </b-page>
 </template>
 
 <script lang="ts">
-import { IContentDocument } from '@nuxt/content/types/content'
+import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { format, parseISO } from 'date-fns'
-import Vue from 'vue'
-import { Post } from '../../../model/Web'
+import { TocEntry } from '../../../model/Web'
 
-export default Vue.extend({
-  head() {
-    return {
-      title: 'Guides',
-    }
-  },
+export default defineComponent({
   nuxtI18n: {
     locales: ['en'],
   },
   middleware: ['cached'],
-  data() {
-    return {
-      posts: [] as Post[],
-      faqs: [] as IContentDocument[],
-    }
-  },
-  async asyncData({ $content }: any) {
-    const posts = await $content('guides')
-      .sortBy('createdAt', 'desc')
-      .fetch() as Post[]
-    const faqs = await $content('faq')
-      .sortBy('createdAt', 'desc')
-      .fetch()
-    return {
-      posts: posts.map(p => ({
+  setup() {
+    const { $http } = useContext()
+    const toc = useAsync(() => $http.$get<TocEntry[]>('/content/guides/toc.json'), 'guides-toc')
+
+    const posts = computed(() => {
+      if (toc.value == undefined) {
+        return undefined
+      }
+
+      return toc.value.map(p => ({
         ...p,
         createdAt: format(parseISO(p.createdAt), 'PP'),
-      })),
-      faqs: faqs.map(f => ({
-        ...f,
-        createdAt: format(parseISO(f.createdAt), 'PP'),
-      })),
+      }))
+    })
+
+    return {
+      posts,
     }
   },
 })

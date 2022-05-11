@@ -61,6 +61,7 @@ import { getMapName } from '~/composables/map'
 import { brawlerId, camelToKebab, capitalizeWords, slugify, tagPattern } from '~/lib/util'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { TocEntry } from '~/model/Web'
 
 export default defineComponent({
   props: {
@@ -75,12 +76,11 @@ export default defineComponent({
     BNavigator,
   },
   setup() {
-    const { $klicker, $content, i18n, localePath } = useContext()
+    const { $klicker, $http, i18n, localePath } = useContext()
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
-    const posts = useAsync(() => $content('guides').sortBy('createdAt', 'desc').fetch(), 'posts')
-    const faqs = useAsync(() => $content('faq').sortBy('createdAt', 'desc').fetch(), 'faqs')
+    const toc = useAsync(() => $http.$get<TocEntry[]>('/content/guides/toc.json'), 'guides-toc')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 
@@ -209,19 +209,11 @@ export default defineComponent({
         id: 'guides',
         name: i18n.t('nav.Guides') as string,
         target: localePath('/blog/guides'),
-        children: (posts.value ?? []).map(post => ({
+        children: (toc.value ?? []).map(post => ({
           id: post.slug,
           name: post.title,
           target: `/blog/guides/${post.slug}`,
         })),
-      }, {
-        id: 'faqs',
-        name: i18n.t('nav.FAQ') as string,
-        children: (faqs.value ?? []).map(post => ({
-          id: post.slug,
-          name: post.title,
-          target: `/faq/${post.slug}`,
-        }))
       }, {
         id: 'starpowers',
         name: i18n.t('nav.Star Powers') as string,

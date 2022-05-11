@@ -14,19 +14,19 @@ Recommended Comp
 
 ### Spike
 
-<media-img path="/brawlers/spike/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img path="/brawlers/spike/avatar" clazz="h-16 float-right p-2">
 
 Mid player who offers a lot of area control. Can burst down tanks and once the map is opened up, becomes even deadlier.
 
 ### Mortis
 
-<media-img path="/brawlers/mortis/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img path="/brawlers/mortis/avatar" clazz="h-16 float-right p-2">
 
 Left lane player that harasses the enemy thrower by flanking from behind. Utilize walls as cover and dash-in, dash-out.
 
 ### Dynamike
 
-<media-img path="/brawlers/dynamike/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img path="/brawlers/dynamike/avatar" clazz="h-16 float-right p-2">
 
 Mid player who controls right lane and offers area control for the middle area. Should use super to destroy middle cover.
 
@@ -35,15 +35,15 @@ Alternate Comps
 
 ### Alternative to Spike
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img path="/brawlers/nita/avatar" clazz="h-10 float-right p-1">
 
-<media-img path="/brawlers/barley/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img path="/brawlers/barley/avatar" clazz="h-10 float-right p-1">
 
 Nita can be played as a more aggro Spike. She can push up and use the walls to harass at mid. Barley paired with Dyna offers so much area denial and is viable because of how many walls there are.
 
 ### Alternative to Mortis
 
-<media-img path="/brawlers/nita/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img path="/brawlers/nita/avatar" clazz="h-10 float-right p-1">
 
 Mortis is necessary to deal with throwers that are commonly used on this map. Nita can use walls to harass while acting as a tank that can push the enemy team back.
 

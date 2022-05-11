@@ -5,15 +5,13 @@ export interface PlayerModeStats {
   losses: number
 }
 
-// TODO enable @nuxt/content in tsconfig.json (currently buggy)
-export interface Post {
+export interface TocEntry {
   title: string
-  author: string
+  createdAt: string
   description: string
-  order: number
   slug: string
   image?: string
-  createdAt: string
+  author: string
 }
 
 export interface BrawlerContent {

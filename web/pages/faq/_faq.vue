@@ -9,42 +9,35 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { IContentDocument } from '@nuxt/content/types/content'
-import { MetaInfo } from 'vue-meta'
+import { defineComponent, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { useContent } from '~/composables/content'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    if (this.faq == undefined) {
-      return {}
-    }
-    const description = `${this.faq.question}`
-    return {
-      title: this.faq.title,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
+export default defineComponent({
+  head: {},
   middleware: ['cached'],
   nuxtI18n: {
     locales: ['en'],
   },
-  data() {
-    return {
-      faq: undefined as undefined|IContentDocument,
-    }
-  },
-  async asyncData({ params, $content, error }: any) {
-    const faq = await $content(`faq/${params.faq}`).fetch()
+  setup() {
+    const route = useRoute()
+    const { post } = useContent('/content/faq/' + route.value.params.faq)
 
-    if (faq == undefined) {
-      return error({ statusCode: 404, message: 'FAQ entry not found' })
-    }
+    useMeta(() => {
+      if (post.value == undefined) {
+        return {}
+      }
+      const description = `${post.value.question}`
+      return {
+        title: post.value.title,
+        meta: [
+          { hid: 'description', name: 'description', content: description },
+          { hid: 'og:description', property: 'og:description', content: description },
+        ]
+      }
+    })
 
     return {
-      faq,
+      post,
     }
   },
 })

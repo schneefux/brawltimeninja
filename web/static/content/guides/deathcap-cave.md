@@ -18,19 +18,19 @@ Note: Deathcap Cave has a lot of diverse comps and this one is just a suggestion
 
 ### Pam
 
-<media-img path="/brawlers/pam/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/pam/avatar.png?size=96" class="h-16 float-right p-2">
 
 Mid player who offers a lot of area control. She has a lot of great healing turret spots that can benefit either herself, or either lane.
 
 ### Nita
 
-<media-img path="/brawlers/nita/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/nita/avatar.png?size=96" class="h-16 float-right p-2">
 
 Left lane player that can utilize the walls to poke enemies. Her bear can push enemies back and she can be a huge threat if pushed up.
 
 ### Barley
 
-<media-img path="/brawlers/barley/avatar" size="96" clazz="h-16 float-right p-2"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/barley/avatar.png?size=96" class="h-16 float-right p-2">
 
 Right lane player that offers a lot of area denial. He is also a great counter to turrets, which will be found in this map's meta. His Star Power allows him to stay alive.
 
@@ -39,27 +39,27 @@ Alternate Comps
 
 ### Alternative to Pam
 
-<media-img path="/brawlers/jessie/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/jessie/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/bo/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/bo/avatar.png?size=96" class="h-10 float-right p-1">
 
 Jessie's tankiness and medium-long range attack makes her a great mid player. She also has good turret spots. Bo can mine off a choke point and use his arrows to cut off another. There are two main choke points on this map.
 
 ### Alternative to Nita
 
-<media-img path="/brawlers/frank/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/frank/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/shelly/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/shelly/avatar.png?size=96" class="h-10 float-right p-1">
 
 Frank's presence and powerful attack can keep enemies back. He effectively controls an entire area by simply "being there". Shelly pushed up can hold enemies away because of her powerful super.
 
 ### Alternative to Barley
 
-<media-img path="/brawlers/dynamike/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/dynamike/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/mortis/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/mortis/avatar.png?size=96" class="h-10 float-right p-1">
 
-<media-img path="/brawlers/gene/avatar" size="60" clazz="h-10 float-right p-1"></media-img>
+<img src="https://media.brawltime.ninja/brawlers/gene/avatar.png?size=96" class="h-10 float-right p-1">
 
 Dynamike offers more destruction and damage over Barley's sustained control of the map. Mortis has a lot of cover he can utilize, and can counter throwers and punish weak, grouped up enemies. Gene can help mid with his Star Power and wide attack. His super can also turn the game around.
 
