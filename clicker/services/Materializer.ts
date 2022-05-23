@@ -1,7 +1,7 @@
 import { ClickHouse as ClickHouse2 } from 'clickhouse';
 import { stripIndent } from 'common-tags';
 
-const sleep = (ms: number) => new Promise((res, rej) => setTimeout(res, ms))
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export default class Materializer {
   constructor(

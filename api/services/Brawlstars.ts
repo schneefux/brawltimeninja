@@ -1,13 +1,13 @@
-import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js';
-import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../model/Brawlstars.js';
-import { Battle, Brawler, Player, ActiveEvent } from '../model/Api.js';
-import { request, post } from '../lib/request.js';
-import { StarlistEvent } from 'model/Starlist.js';
+import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../lib/util.js'
+import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../model/Brawlstars.js'
+import { Battle, Brawler, Player, ActiveEvent } from '../model/Api.js'
+import { request } from '../lib/request.js'
+import { StarlistEvent } from '../model/Starlist.js'
+import ClickerService from './Clicker.js'
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
-const clickerUrl = process.env.CLICKER_URL || '';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
@@ -28,6 +28,8 @@ function getApiUrl(tag: string) {
 export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
   private readonly apiOfficial = apiOfficialUrl;
+
+  private readonly clicker = new ClickerService();
 
   private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
     return request<T>(path, this.apiOfficial, metricName,
@@ -199,16 +201,11 @@ export default class BrawlstarsService {
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
-    if (clickerUrl != '' && store) {
-      console.time('post battles to clicker ' + tag)
+    if (store) {
+      console.log('store battles for ' + tag)
       // do not await - process in background and resolve early
-      post<null>(
-        clickerUrl + '/track',
-        { player, battleLog },
-        'upload_battlelog_clicker',
-        5000)
-        .catch(error => console.error(error, tag))
-        .finally(() => console.timeEnd('post battles to clicker ' + tag));
+      this.clicker.store({ player, battleLog })
+        .catch(err => console.error('error inserting battles for ' + tag, err))
     }
 
     const brawlers: Record<string, Brawler> = Object.fromEntries(player.brawlers.map(b => [brawlerId(b), b]))

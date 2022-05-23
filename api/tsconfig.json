@@ -5,6 +5,10 @@
     "lib": ["es2021"],
     "baseUrl": ".",
     "outDir": "./dist",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

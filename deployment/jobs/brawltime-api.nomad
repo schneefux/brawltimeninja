@@ -159,7 +159,7 @@ job "brawltime-api" {
       driver = "docker"
 
       env {
-        CLICKER_URL = "https://clicker.${var.domain}/clicker"
+        CLICKHOUSE_HOST = "clickhouse.service.consul"
         PORT = "${NOMAD_PORT_http}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
       }
