@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue-demi'
+import { computed, defineComponent, ref, watch, nextTick } from 'vue-demi'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BPaginator from '../ui/b-paginator.vue'
@@ -69,7 +69,6 @@ import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useResizeObserver } from '@vueuse/core'
-import { nextTick } from 'process'
 
 /**
  * Table visualisation that renders rows on the X axis
