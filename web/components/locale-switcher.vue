@@ -27,7 +27,7 @@ export default defineComponent({
       'en': '🇬🇧',
       'de': '🇩🇪',
       'es': '🇪🇸',
-      'ukr': '🇺🇦',
+      'ua': '🇺🇦',
     }
     const locales = i18n.locales?.map((l: any) => ({
       code: l.code,
