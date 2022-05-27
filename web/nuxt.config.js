@@ -278,7 +278,7 @@ export default {
       iso: 'es-ES',
       file: 'index.js',
     }, {
-      code: 'ukr',
+      code: 'ua',
       iso: 'uk-UA',
       file: 'index.js',
     },
