@@ -8,12 +8,10 @@
       >
     </nuxt-link>
 
-    <!--
     <navigator
       class="mr-auto dark"
       input-class="light"
     ></navigator>
-    -->
 
     <install-button
       class="h-6"
