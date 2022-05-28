@@ -100,6 +100,12 @@ interface AllyData {
   selectable: boolean
 }
 
+interface SelectedBrawler {
+  id: string
+  brawler: string
+  brawlerName: string
+}
+
 export default defineComponent({
   components: {
     BCard,
@@ -113,7 +119,7 @@ export default defineComponent({
   setup(props) {
     const { $klicker } = useContext()
 
-    const team = ref<AllyData[]>([])
+    const team = ref<SelectedBrawler[]>([])
     const loading = ref(0)
 
     async function getBrawlerData() {
@@ -237,10 +243,14 @@ export default defineComponent({
         return
       }
 
-      team.value.push(entry)
+      team.value.push({
+        id: entry.id,
+        brawlerName: entry.brawlerName,
+        brawler: entry.brawler,
+      })
     }
 
-    const removeFromTeam = (entry: AllyData) => team.value = team.value.filter(e => e != entry)
+    const removeFromTeam = (entry: SelectedBrawler) => team.value = team.value.filter(e => e != entry)
     const clearTeam = () => team.value = []
 
     const teamWinRate = computed(() => {
