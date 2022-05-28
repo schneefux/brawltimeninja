@@ -10,10 +10,6 @@ jobs:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: api
-  build-clicker:
-    uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
-    with:
-      service: clicker
   build-cube:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
