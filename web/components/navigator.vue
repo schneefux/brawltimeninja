@@ -61,6 +61,7 @@ import { getMapName } from '~/composables/map'
 import { brawlerId, camelToKebab, capitalizeWords, slugify, tagPattern } from '~/lib/util'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
 
 export default defineComponent({
@@ -76,15 +77,11 @@ export default defineComponent({
     BNavigator,
   },
   setup() {
-    const { $klicker, $http, i18n, localePath } = useContext()
+    const { $klicker, i18n, localePath } = useContext()
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
-    const toc = ref<TocEntry[]>()
-    if (process.client) {
-      // Nuxt can't access its own content during SSR
-      $http.$get<TocEntry[]>('/content/guides/toc.json').then(r => toc.value = r)
-    }
+    const toc = useAsync<TocEntry[]>(() => requestStatic('content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 

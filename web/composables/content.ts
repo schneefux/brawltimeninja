@@ -2,14 +2,22 @@ import MarkdownIt from 'markdown-it'
 import yaml from 'js-yaml'
 import { useAsync, useContext } from '@nuxtjs/composition-api'
 
+export function requestStatic(file: string) {
+  if (process.server) {
+    const fs = require('fs/promises')
+    const path = require('path')
+    const safeSuffix = path.normalize(file).replace(/^(\.\.(\/|\\|$))+/, '')
+    return fs.readFile(path.join('./static/', safeSuffix), 'utf8')
+  } else {
+    return fetch(window.origin + '/' + file).then(r => r.text())
+  }
+}
+
 export const useContent = (url: string) => {
-    const { $http, error, env } = useContext()
+    const { error } = useContext()
     const post = useAsync(async () => {
       try {
-        const localhost = process.server ? `http://${env.HOST ?? 'localhost'}:${env.PORT ?? 3000}` : '/'
-        const data = await $http.get(url + '.md', {
-          prefixUrl: localhost,
-        }).then(r => r.text())
+        const data = await requestStatic(url + '.md')
         const md = new MarkdownIt({
           html: true,
         })
