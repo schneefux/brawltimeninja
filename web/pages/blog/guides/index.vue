@@ -62,9 +62,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useAsync } from '@nuxtjs/composition-api'
 import { format, parseISO } from 'date-fns'
-import { TocEntry } from '../../../model/Web'
+import { requestStatic } from '~/composables/content'
+import { TocEntry } from '~/model/Web'
 
 export default defineComponent({
   nuxtI18n: {
@@ -72,8 +73,7 @@ export default defineComponent({
   },
   middleware: ['cached'],
   setup() {
-    const { $http } = useContext()
-    const toc = useAsync(() => $http.$get<TocEntry[]>('/content/guides/toc.json'), 'guides-toc')
+    const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
 
     const posts = computed(() => {
       if (toc.value == undefined) {

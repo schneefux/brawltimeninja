@@ -81,7 +81,7 @@ export default defineComponent({
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
-    const toc = useAsync<TocEntry[]>(() => requestStatic('content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
+    const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 
