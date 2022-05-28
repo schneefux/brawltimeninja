@@ -80,7 +80,11 @@ export default defineComponent({
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
-    const toc = useAsync(() => $http.$get<TocEntry[]>('/content/guides/toc.json'), 'guides-toc')
+    const toc = ref<TocEntry[]>()
+    if (process.client) {
+      // Nuxt can't access its own content during SSR
+      $http.$get<TocEntry[]>('/content/guides/toc.json').then(r => toc.value = r)
+    }
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 
