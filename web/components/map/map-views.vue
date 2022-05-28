@@ -310,7 +310,7 @@
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CDashboard, CDashboardCell, VTestInfo, BTabs, BScrollingList } from '@schneefux/klicker/components'
+import { CDashboard, CDashboardCell, BTabs, BScrollingList } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
@@ -325,7 +325,6 @@ export default defineComponent({
     BScrollingList,
     CDashboard,
     CDashboardCell,
-    VTestInfo,
     BTabs,
   },
   props: {
