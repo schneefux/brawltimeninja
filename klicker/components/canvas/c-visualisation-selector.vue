@@ -1,5 +1,5 @@
 <template>
-  <c-dashboard-cell :columns="4" :rows="3">
+  <b-dashboard-cell :columns="4" :rows="3">
     <b-card
       title="Configure Widget"
       :elevation="elevation"
@@ -53,7 +53,7 @@
         >Delete Widget</b-button>
       </div>
     </b-card>
-  </c-dashboard-cell>
+  </b-dashboard-cell>
 </template>
 
 <script lang="ts">
@@ -64,7 +64,7 @@ import BSelect from '../ui/b-select.vue'
 import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from '../ui/b-dashboard-cell.vue'
 import { useUniqueId } from '../../composables/id'
 
 /**
@@ -74,7 +74,7 @@ export default defineComponent({
   components: {
     BCard,
     BSelect,
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     ...StaticProps,

@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="rows"
       :columns="columns"
       hide-empty
@@ -13,17 +13,17 @@
         data-full-width-responsive="yes"
         class="text-center self-center"
       ></adsense>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </client-only>
 </template>
 
 <script lang="ts">
 import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { BDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     rows: {

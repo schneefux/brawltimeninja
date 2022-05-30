@@ -13,18 +13,18 @@
       slicer
     >
       <template v-slot:totals="data">
-        <c-dashboard-cell :columns="2">
+        <b-dashboard-cell :columns="2">
           <v-sample-size
             v-bind="data"
             card
           ></v-sample-size>
-        </c-dashboard-cell>
-        <c-dashboard-cell :columns="2">
+        </b-dashboard-cell>
+        <b-dashboard-cell :columns="2">
           <v-last-update
             v-bind="data"
             card
           ></v-last-update>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </template>
 
       <template v-slot:data="data">
@@ -43,14 +43,14 @@
 
 <script lang="ts">
 import { CubeQuery, CubeComparingQuery } from '@schneefux/klicker/types'
-import { CDashboard, VAuto, CDashboardCell } from '@schneefux/klicker/components'
+import { CDashboard, VAuto, BDashboardCell } from '@schneefux/klicker/components'
 import { useSyncQueryAndRoute } from '~/composables/link'
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
     CDashboard,
-    CDashboardCell,
+    BDashboardCell,
     VAuto,
   },
   setup() {

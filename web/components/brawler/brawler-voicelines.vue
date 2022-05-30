@@ -35,13 +35,13 @@
 <script lang="ts">
 import { defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingList, CDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
+import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
   components: {
     BScrollingList,
-    CDashboardCell,
+    BDashboardCell,
     BButton,
     BCard,
   },

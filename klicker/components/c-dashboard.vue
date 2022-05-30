@@ -45,13 +45,14 @@
       :query="totalsQuery"
     >
       <template v-slot="totals">
-        <div class="dashboard dashboard--responsive">
+        <!-- TODO remove dashboard -->
+        <b-dashboard responsive>
           <slot
             name="totals"
             v-bind="totals"
             :card="{ elevation }"
           ></slot>
-        </div>
+        </b-dashboard>
       </template>
     </c-query>
 
@@ -72,16 +73,15 @@
         ></c-error>
       </template>
       <template v-slot="data">
-        <div
-          class="dashboard"
-          :class="dashboardClass"
+        <b-dashboard
+          v-bind="dashboard"
         >
           <slot
             name="data"
             v-bind="data"
             :card="{ elevation }"
           ></slot>
-        </div>
+        </b-dashboard>
       </template>
     </c-query>
 
@@ -98,6 +98,7 @@ import CQuery from './c-query'
 import CConfigurator from './c-configurator.vue'
 import CSlicer from './c-slicer.vue'
 import CError from './c-error.vue'
+import BDashboard from './ui/b-dashboard.vue'
 import { defineComponent, PropType, computed } from 'vue-demi'
 import { useKlicker } from '../composables/klicker'
 
@@ -107,6 +108,7 @@ export default defineComponent({
     CConfigurator,
     CQuery,
     CError,
+    BDashboard,
   },
   props: {
     value: {
@@ -144,9 +146,14 @@ export default defineComponent({
       type: Array as PropType<string[]>,
       required: false
     },
-    dashboardClass: {
-      type: String,
-      default: 'dashboard--responsive'
+    dashboard: {
+      type: Object as PropType<{
+        responsive: boolean,
+        stretch: boolean,
+      }>,
+      default: () => ({
+        responsive: true,
+      })
     },
   },
   setup(props, { emit, slots }) {

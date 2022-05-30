@@ -6,12 +6,12 @@
       class="mt-8"
     >
       <template v-slot:totals="data">
-        <c-dashboard-cell :columns="2">
+        <b-dashboard-cell :columns="2">
           <v-sample-size v-bind="data"></v-sample-size>
-        </c-dashboard-cell>
-        <c-dashboard-cell :columns="2">
+        </b-dashboard-cell>
+        <b-dashboard-cell :columns="2">
           <v-last-update v-bind="data"></v-last-update>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </template>
     </c-grid>
 
@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
-import { CGrid, BTextbox, CDashboardCell } from '@schneefux/klicker/components'
+import { CGrid, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
@@ -56,7 +56,7 @@ import { useUniqueId } from '@schneefux/klicker/composables'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
     BTextbox,
     CGrid,
   },

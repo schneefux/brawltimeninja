@@ -132,7 +132,7 @@ export default defineComponent({
 
     const style = computed(() => ({
       // c-moveable-widget does not set forCanvas because the parent applies all styles
-      // grow the <c-dashboard-cell> container by default so that the visualisations fill it by default
+      // grow the <b-dashboard-cell> container by default so that the visualisations fill it by default
       height: '100%',
       width: '100%',
       ...(props.forCanvas && valid.value ? render((<ReportWidget> props.widget).frame, spec.value!) : {})

@@ -80,7 +80,7 @@
         @input="updateWidget"
         @delete="deleteSelectedWidget"
       >
-        <c-dashboard-cell
+        <b-dashboard-cell
           :columns="2"
           :rows="2"
         >
@@ -119,7 +119,7 @@
               ></b-number>
             </div>
           </b-card>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </c-widget-editor>
     </div>
 
@@ -153,7 +153,7 @@ import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from '../ui/b-dashboard-cell.vue'
 import { useUniqueId } from '../../composables/id'
 
 /**
@@ -161,7 +161,7 @@ import { useUniqueId } from '../../composables/id'
  */
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
     BNumber,
     BTextbox,
     CWidget,

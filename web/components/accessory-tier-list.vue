@@ -27,46 +27,45 @@
           configureMetrics: true,
           configureMetricsOptions: ['picks', 'wins', 'winRate', 'winRateAdj', 'starRate', 'rank'],
         }"
-        dashboard-class="dashboard--responsive dashboard--responsive-stretch"
         class="mt-4"
         sync-slices
         slicer
       >
         <template v-slot:totals="data">
-          <c-dashboard-cell :columns="2">
+          <b-dashboard-cell :columns="2">
             <v-sample-size
               v-bind="data"
               card
             ></v-sample-size>
-          </c-dashboard-cell>
-          <c-dashboard-cell :columns="2">
+          </b-dashboard-cell>
+          <b-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
               card
             ></v-last-update>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
         </template>
 
         <template v-slot:data="data">
-          <c-dashboard-cell :rows="5" :columns="4">
+          <b-dashboard-cell :rows="5" :columns="4">
             <v-table
               v-bind="data"
               link-path="/dashboard"
               card
             ></v-table>
-          </c-dashboard-cell>
-          <c-dashboard-cell :rows="5" :columns="9">
+          </b-dashboard-cell>
+          <b-dashboard-cell :rows="5" :columns="9">
             <v-barplot
               v-bind="data"
               card
             ></v-barplot>
-          </c-dashboard-cell>
-          <c-dashboard-cell :rows="3" :columns="3">
+          </b-dashboard-cell>
+          <b-dashboard-cell :rows="3" :columns="3">
             <v-test-info
               v-bind="data"
               card
             ></v-test-info>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
         </template>
       </c-dashboard>
     </b-page-section>
@@ -76,14 +75,14 @@
 <script lang="ts">
 import { CubeComparingQuery } from '@schneefux/klicker/types'
 import { defineComponent, computed, ref, PropType } from '@nuxtjs/composition-api'
-import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, CDashboardCell } from '@schneefux/klicker/components'
+import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, BDashboardCell } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
     BCard,
     CDashboard,
-    CDashboardCell,
+    BDashboardCell,
     CMetric,
     VTable,
     VBarplot,

@@ -25,39 +25,39 @@
         slicer
       >
         <template v-slot:totals="data">
-          <c-dashboard-cell :columns="2">
+          <b-dashboard-cell :columns="2">
             <v-sample-size
               v-bind="data"
               card
             ></v-sample-size>
-          </c-dashboard-cell>
-          <c-dashboard-cell :columns="2">
+          </b-dashboard-cell>
+          <b-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
               card
             ></v-last-update>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
         </template>
 
         <template v-slot:data="data">
-          <c-dashboard-cell :rows="6" :columns="3">
+          <b-dashboard-cell :rows="6" :columns="3">
             <v-table
               v-bind="data"
               card
             ></v-table>
-          </c-dashboard-cell>
-          <c-dashboard-cell :rows="2" :columns="3">
+          </b-dashboard-cell>
+          <b-dashboard-cell :rows="2" :columns="3">
             <v-csv
               v-bind="data"
               card
             ></v-csv>
-          </c-dashboard-cell>
-          <c-dashboard-cell :rows="2" :columns="3">
+          </b-dashboard-cell>
+          <b-dashboard-cell :rows="2" :columns="3">
             <v-pivot-csv
               v-bind="data"
               card
             ></v-pivot-csv>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
         </template>
       </c-dashboard>
     </b-page-section>
@@ -67,14 +67,14 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useMeta } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv, BPageSection, CDashboardCell } from '@schneefux/klicker/components'
+import { CDashboard, BCard, CMetric, VTable, VCsv, VPivotCsv, BPageSection, BDashboardCell } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 
 export default defineComponent({
   components: {
     BPageSection,
     CDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BCard,
     CMetric,
     VTable,

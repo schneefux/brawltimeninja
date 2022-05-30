@@ -4,7 +4,7 @@
     v-if="specs.length > 1"
     class="contents"
   >
-    <c-dashboard-cell
+    <b-dashboard-cell
       v-for="spec in specs"
       :key="spec.name"
       :style="spec.style"
@@ -18,9 +18,9 @@
         :loading="loading"
         :response="response"
       ></component>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </div>
-  <c-dashboard-cell
+  <b-dashboard-cell
     v-else-if="specs.length == 1"
     :key="specs[0].name"
     :style="specs[0].style"
@@ -34,7 +34,7 @@
       :loading="loading"
       :response="response"
     ></component>
-  </c-dashboard-cell>
+  </b-dashboard-cell>
 </template>
 
 <script lang="ts">
@@ -43,14 +43,14 @@ import { CubeComparingResponse, CubeResponse, StaticWidgetSpec } from '../../typ
 import { StaticProps } from '../../props'
 import { useCubeResponse } from '../../composables/response'
 import { useKlicker } from '../../composables/klicker'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from '../ui/b-dashboard-cell.vue'
 
 /**
  * Visualisation component that renders the given component, if applicable.
  */
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     ...StaticProps,

@@ -2,7 +2,7 @@
   <b-scrolling-dashboard
     @scroll.once="$emit('interact')"
   >
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="2"
       :columns="5"
       lazy
@@ -25,9 +25,9 @@
           </p>
         </div>
       </b-card>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :columns="2"
       hide-empty
     >
@@ -37,9 +37,9 @@
         :value="Math.floor(trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
       ></b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :columns="2"
       hide-empty
     >
@@ -49,9 +49,9 @@
         :value="Math.floor(playerTotals.winRate * 100) + '%'"
         :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
       ></b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :columns="2"
       hide-empty
     >
@@ -60,9 +60,9 @@
         :title="$t('metric.averageTrophies')"
         :value="playerTotals.trophyChange.toFixed(2)"
       ></b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell :columns="2">
+    <b-dashboard-cell :columns="2">
       <b-bigstat
         :title="$t('metric.accountRating')"
         :value="accountRating"
@@ -78,9 +78,9 @@
           </ul>
         </template>
       </b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :columns="2"
       hide-empty
     >
@@ -89,9 +89,9 @@
         :title="$t('metric.wins')"
         :value="Math.floor(playerTotals.winRate * playerTotals.picks)"
       ></b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :columns="2"
       hide-empty
     >
@@ -100,7 +100,7 @@
         :title="$t('metric.losses')"
         :value="Math.floor((1 - playerTotals.winRate) * playerTotals.picks)"
       ></b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
@@ -108,14 +108,14 @@
 import { Player } from '@/model/Api'
 import { ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '~/store'
-import { BBigstat, BScrollingDashboard, CDashboardCell } from '@schneefux/klicker/components'
+import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   components: {
     BBigstat,
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     player: {

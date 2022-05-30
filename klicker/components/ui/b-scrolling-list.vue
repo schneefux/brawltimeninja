@@ -52,7 +52,7 @@
         loading
       ></b-shimmer>
 
-      <c-dashboard-cell
+      <b-dashboard-cell
         v-for="entry in list"
         :key="`${entry.index}-${entry.item[keyId]}`"
         :ref="`item-${entry.index}`"
@@ -66,7 +66,7 @@
           name="item"
           v-bind="entry.item"
         ></slot>
-      </c-dashboard-cell>
+      </b-dashboard-cell>
 
       <b-shimmer
         v-if="list.length > 0 && renderBounds.end < items.length - 1"
@@ -85,7 +85,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, ref } from 'vue-demi'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
 import { useMutationObserver } from '@vueuse/core'
 
@@ -96,7 +96,7 @@ import { useMutationObserver } from '@vueuse/core'
 export default defineComponent({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BShimmer,
   },
   props: {

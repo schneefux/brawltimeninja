@@ -2,7 +2,7 @@
   <b-card>
     <b-scrolling-dashboard slot="content">
       <template v-if="scrapedData != undefined">
-        <c-dashboard-cell
+        <b-dashboard-cell
           v-for="pin in scrapedData.pins"
           :key="pin.name"
           :rows="1"
@@ -18,15 +18,15 @@
               loading="lazy"
             ></media-img>
           </div>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </template>
-      <c-dashboard-cell
+      <b-dashboard-cell
         v-else
         v-for="i in 8"
         :key="i"
         :rows="1"
         :columns="1"
-      ></c-dashboard-cell>
+      ></b-dashboard-cell>
     </b-scrolling-dashboard>
   </b-card>
 </template>
@@ -34,12 +34,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingDashboard, CDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
+import { BScrollingDashboard, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BButton,
     BCard,
   },

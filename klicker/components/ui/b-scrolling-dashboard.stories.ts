@@ -1,5 +1,5 @@
 import BScrollingDashboard from './b-scrolling-dashboard.vue'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from './b-dashboard-cell.vue'
 import { within, userEvent, waitFor } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { Meta, Story } from '@storybook/vue'
@@ -15,19 +15,19 @@ export default {
 export const Desktop: Story = (args, { argTypes }) => ({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
   },
   props: Object.keys(argTypes),
   template: `
     <div style="width: 400px;">
       <b-scrolling-dashboard v-bind="$props">
-        <c-dashboard-cell
+        <b-dashboard-cell
           v-for="i in 5"
           :key="i"
           :rows="2"
           :columns="2"
           style="border: dashed gray;"
-        >{{ i }}</c-dashboard-cell>
+        >{{ i }}</b-dashboard-cell>
       </b-scrolling-dashboard>
     </div>
   `,
@@ -56,7 +56,7 @@ Desktop.play = async ({ canvasElement }) => {
 export const Mobile: Story = (args, { argTypes }) => ({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
   },
   props: Object.keys(argTypes),
   template: `
@@ -64,13 +64,13 @@ export const Mobile: Story = (args, { argTypes }) => ({
       v-bind="$props"
       data-testid="container"
     >
-      <c-dashboard-cell
+      <b-dashboard-cell
         v-for="i in 2"
         :key="i"
         :rows="2"
         :columns="2"
         style="border: dashed gray;"
-      >{{ i }}</c-dashboard-cell>
+      >{{ i }}</b-dashboard-cell>
     </b-scrolling-dashboard>
   `,
 })

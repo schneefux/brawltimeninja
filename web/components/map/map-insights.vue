@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <c-dashboard-cell
+    <b-dashboard-cell
       v-for="t in templates"
       :key="t.title"
       :columns="4"
@@ -20,7 +20,7 @@
           ></v-roll>
         </template>
       </c-query>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </div>
 </template>
 
@@ -28,7 +28,7 @@
 import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
-import { VRoll, BShimmer, CQuery, BButton, CDashboardCell } from '@schneefux/klicker/components'
+import { VRoll, BShimmer, CQuery, BButton, BDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 import { getMapName } from '~/composables/map'
 
@@ -43,7 +43,7 @@ interface Template {
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
     VRoll,
     BShimmer,
     CQuery,

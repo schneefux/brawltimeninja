@@ -2,7 +2,7 @@
   <b-scrolling-dashboard>
     <template v-for="prop in ['gadgets', 'starpowers']">
       <template v-if="scrapedData != undefined">
-        <c-dashboard-cell
+        <b-dashboard-cell
           v-for="accessory in scrapedData[prop]"
           :key="prop + '-' + accessory.name"
           :rows="2"
@@ -12,19 +12,19 @@
             :prop="prop"
             :accessory="accessory"
           ></brawler-accessory-card>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </template>
 
-      <c-dashboard-cell
+      <b-dashboard-cell
         v-else
         v-for="i in 2"
         :key="prop + '-' + i"
         :rows="2"
         :columns="3"
-      ></c-dashboard-cell>
+      ></b-dashboard-cell>
     </template>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="2"
       :columns="3"
     >
@@ -33,19 +33,19 @@
           {{ $t('starpower-gadget-comparison.info') }}
         </p>
       </b-card>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingDashboard, CDashboardCell, BCard } from '@schneefux/klicker/components'
+import { BScrollingDashboard, BDashboardCell, BCard } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BCard,
   },
   props: {
