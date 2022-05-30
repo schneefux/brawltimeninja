@@ -135,7 +135,8 @@
     "cookie-consent.transfer": "To collect this information, some data will be shared with Cloudflare, Google Analytics, Google AdSense and Sentry. Your information will never be sold.",
     "cookie-consent.usage-title": "How the data is used:",
     "cookie-consent.visibility": "Content visibility",
-    "error.api-unavailable": "Could not communicate with the Brawl Stars API! Try again later.",
+    "error.api-unavailable": "Could not communicate with the Brawl Stars API!",
+    "error.misc": "An error occured. Try again later.",
     "error.oops": "Oops!",
     "error.tag.invalid": "This is not a tag.",
     "error.tag.not-found": "This tag does not exist.",
@@ -571,5 +572,6 @@
     "brawlers.description": "List of all Brawlers in Brawl Stars. Learn more about a Brawler and view their ranking in the Tier List.",
     "brawlers.meta.description": "View statistics and rankings for all Brawlers in Brawl Stars.",
     "brawlers.meta.title": "Brawl Stars Brawlers",
-    "mode.invasion": "Bot Drop"
+    "mode.invasion": "Bot Drop",
+    "mode.unknown": "Unknown Mode"
 }

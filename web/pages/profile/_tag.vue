@@ -343,18 +343,22 @@ export default defineComponent({
 
     return tagPattern.test(tag)
   },
-  async asyncData({ store, params, error, i18n }) {
+  async asyncData({ store, params, error, i18n, $sentry }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {
       try {
         await store.dispatch('loadPlayer', params.tag)
       } catch (err: any) {
         if (err.response?.status == 404) {
           error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
-        } else {
-          console.error(err)
-          this.$sentry.captureException(err)
-          error({ statusCode: err.response.status, message: i18n.tc('error.api-unavailable') })
+          return
         }
+        console.error(err)
+        $sentry.captureException(err)
+        if (err.response != undefined) {
+          error({ statusCode: err.response?.status ?? 500, message: i18n.tc('error.api-unavailable') })
+          return
+        }
+        error({ statusCode: 500, message: ' ' })
         return
       }
     }
