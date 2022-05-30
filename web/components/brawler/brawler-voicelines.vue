@@ -25,7 +25,7 @@
             :class="{
               'italic [quotes:none]': !voiceline.description.startsWith('&quot;'),
             }"
-          >{{ voiceline.description.replaceAll('&quot;', '') }}</q>
+          >{{ voiceline.description.replace(/&quot;/g, '') }}</q>
         </div>
       </template>
     </b-scrolling-list>
