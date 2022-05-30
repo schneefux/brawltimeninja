@@ -5,7 +5,7 @@ import { ComparingMetaGridEntry, CubeComparingResponse, CubeResponse, MetaGridEn
 
 /**
  * Metric renderer
- * 
+ *
  * Using the provided data and the globally configured metric renderers,
  * render the given metric.
  */
@@ -32,7 +32,10 @@ export default defineComponent({
 
     const metricRenderers = computed(() => {
       const applicableRenderers = $klicker.metricRenderers.filter(r => r.applicable(metrics.value))
-      return Object.fromEntries(applicableRenderers.map(r => [r.replacesMetricId, r]))
+      return applicableRenderers.reduce((rr, r) => ({
+        ...rr,
+        [r.replacesMetricId]: r,
+      }), {})
     })
 
     return () => {

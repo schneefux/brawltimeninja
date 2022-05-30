@@ -226,10 +226,11 @@ export default defineComponent({
       const min = newAllyData.reduce((min, brawler) => Math.min(min, brawler.contributingWinRate), Infinity)
       const max = newAllyData.reduce((max, brawler) => Math.max(max, brawler.contributingWinRate), 0)
       newAllyData.forEach(brawler => brawler.normContributingWinRate = (brawler.contributingWinRate - min) / (max - min))
-      return Object.fromEntries(newAllyData
-        .sort((b1, b2) => b1.id < b2.id ? -1 : 1)
-        .map(b => [b.id, b])
-      )
+      newAllyData.sort((b1, b2) => b1.id < b2.id ? -1 : 1)
+
+      const map: Record<string, AllyData> = {}
+      newAllyData.forEach(b => map[b.id] = b)
+      return map
     })
 
     const addToTeam = (entry: AllyData) => {
