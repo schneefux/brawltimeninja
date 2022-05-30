@@ -128,6 +128,10 @@ export default defineComponent({
       }
 
       const linkElement = refs[`${id}-link`][0] as HTMLElement
+      if (linkElement == undefined) {
+        return
+      }
+
       const offset = linkElement.getBoundingClientRect().top - rootContainer.value!.getBoundingClientRect().top
       const center = rootContainer.value!.clientHeight / 2
       if (offset < center - center / 2 || offset > center + center / 2) {
