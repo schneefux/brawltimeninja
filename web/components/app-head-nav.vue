@@ -1,5 +1,5 @@
 <template>
-  <div class="light bg-yellow-400 text-gray-800 h-14 p-4 z-40 sticky top-0 flex items-center gap-x-2">
+  <b-app-head-nav>
     <nuxt-link to="/">
       <img
         src="~/assets/images/logo_with_crown_min.svg"
@@ -31,14 +31,18 @@
     <locale-switcher
       class="h-6 !text-2xs pr-7"
     ></locale-switcher>
-  </div>
+  </b-app-head-nav>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
+import { BAppHeadNav } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BAppHeadNav,
+  },
   setup() {
     return {
       faInfo,

@@ -1,85 +1,45 @@
 <template>
-  <nav class="sticky bottom-0 z-40 h-14 bg-yellow-400 flex justify-around">
-    <nuxt-link
-      v-for="screen in screens"
-      :key="screen.target"
-      :to="screen.target"
-      :class="['flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3', {
-        'text-gray-800': screen.id == active,
-        'text-yellow-700': screen.id != active,
-      }]"
-    >
-      <font-awesome-icon
-        :icon="screen.icon"
-        class="w-6 h-6"
-      ></font-awesome-icon>
-      <span class="text-xs leading-none">
-        {{ $t('nav.' + screen.name) }}
-      </span>
-    </nuxt-link>
-  </nav>
+  <b-app-bottom-nav
+    tag="nuxt-link"
+    :screens="screens"
+    :active-route="$route.path"
+    :ignore-route-prefix="localePath('/')"
+  ></b-app-bottom-nav>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useContext, useRoute, computed, watchEffect } from '@nuxtjs/composition-api'
-import { faCalendarDay, faSearch, faMask, IconDefinition } from '@fortawesome/free-solid-svg-icons'
-
-interface Screen {
-  id: string
-  icon: IconDefinition
-  name: string
-  target: string
-  prefix: string
-}
+import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
+import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
+import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
+import { BAppBottomNav } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BAppBottomNav,
+  },
   setup() {
-    const active = ref('profile')
-
-    const { localePath } = useContext()
+    const { localePath, i18n } = useContext()
     const screens = computed<Screen[]>(() => [ {
       id: 'profile',
       icon: faSearch,
-      name: 'Profile',
+      name: i18n.t('nav.Profile') as string,
       target: localePath('/'),
       prefix: '',
     }, {
       id: 'events',
       icon: faCalendarDay,
-      name: 'Events',
+      name: i18n.t('nav.Events') as string,
       target: localePath('/tier-list/map'),
       prefix: '/tier-list',
     }, {
       id: 'brawlers',
       icon: faMask,
-      name: 'Brawlers',
+      name: i18n.t('nav.Brawlers') as string,
       target: localePath('/tier-list/brawler'),
       prefix: '/tier-list/brawler',
     } ])
 
-    const route = useRoute()
-    watchEffect(() => {
-      const langPrefix = localePath('/')
-      const path = route.value.path.slice(langPrefix.length - 1)
-
-      let longestMatch: Screen|undefined
-      let longestMatchLength = 0
-
-      for (const screen of screens.value) {
-        const screenUrlLength = screen.prefix.split('/').length
-        if (screenUrlLength > longestMatchLength && path.startsWith(screen.prefix)) {
-          longestMatch = screen
-          longestMatchLength = screenUrlLength
-        }
-      }
-
-      if (longestMatch != undefined) {
-        active.value = longestMatch.id
-      }
-    })
-
     return {
-      active,
       screens,
     }
   },

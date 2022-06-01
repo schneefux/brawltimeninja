@@ -30,20 +30,15 @@
     ></cookie-consent-popup>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
-    <footer class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden lg:block">
-      <div class="space-x-4 mt-2">
-        <nuxt-link
-          v-for="link in links"
-          :key="link.target"
-          :to="link.target"
-          class="inline-block lg:border-0 hover:text-gray-800/75"
-          exact-active-class="text-red-800"
-        >
-          {{ $t('nav.' + link.name) }}
-        </nuxt-link>
-      </div>
-      <copyright class="mt-4 text-sm"></copyright>
-    </footer>
+    <b-web-footer
+      :links="links"
+      tag="nuxt-link"
+    >
+      <copyright
+        slot="below"
+        class="mt-4 text-sm"
+      ></copyright>
+    </b-web-footer>
 
     <adblock-bait></adblock-bait>
   </div>
@@ -52,14 +47,18 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
 import { useMutationObserver } from '@vueuse/core'
+import { BWebFooter } from '@schneefux/klicker/components'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
+  components: {
+    BWebFooter,
+  },
   head: {},
   setup(props, { root }) {
     const container = ref<HTMLElement>()
 
-    const { localePath } = useContext()
+    const { localePath, i18n } = useContext()
 
     useMeta(() => {
       // https://i18n.nuxtjs.org/seo/#improving-performance
@@ -68,16 +67,16 @@ export default defineComponent({
     })
 
     const links = [ {
-      name: 'Leaderboards',
+      name: i18n.t('nav.Leaderboards'),
       target: localePath('/leaderboard/hours'),
     }, {
-      name: 'Guides',
+      name: i18n.t('nav.Guides'),
       target: '/blog/guides',
     }, {
-      name: 'Status',
+      name: i18n.t('nav.Status'),
       target: localePath('/status'),
     }, {
-      name: 'Privacy',
+      name: i18n.t('nav.Privacy'),
       target: '/about',
     }]
 
