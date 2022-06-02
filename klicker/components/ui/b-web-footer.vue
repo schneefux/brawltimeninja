@@ -1,5 +1,5 @@
 <template>
-  <footer class="light bg-primary-400 text-text py-4 text-center leading-normal hidden lg:block">
+  <footer class="light bg-primary-400 text-text py-4 text-center leading-normal">
     <div class="space-x-4 mt-2">
       <component
         :is="tag"
@@ -17,22 +17,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue-demi'
 
 export interface Link {
-  target: string
   name: string
+  target: string
 }
 
 export default defineComponent({
   props: {
-    links: {
-      type: Array as PropType<Link[]>,
-      required: true
-    },
     tag: {
       type: String,
       default: 'router-link'
+    },
+    links: {
+      type: Array as PropType<Link[]>,
+      required: true
     },
   },
 })

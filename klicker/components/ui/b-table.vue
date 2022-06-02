@@ -173,8 +173,7 @@ export default defineComponent({
       () => page.value = 0
     )
 
-    const { $klicker } = useKlicker()
-    const translate = (key: string, args?: any) => $klicker.$t(key, args)
+    const { translate } = useKlicker()
 
     return {
       translate,

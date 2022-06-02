@@ -51,6 +51,7 @@ import BKvTable, { Row } from '../ui/b-kv-table.vue'
 import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
+import { useKlicker } from '../../composables'
 
 /**
  * Table visualisation with metrics on the Y axis and a single value on the X axis
@@ -67,6 +68,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const rows = computed<Row[]>(() =>
@@ -77,11 +79,11 @@ export default defineComponent({
           slot: `metrics.${m.id}`,
         })),
         response => metrics.value.flatMap(m => [{
-          title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(m),
+          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(m),
           key: `metrics.${m.id}`,
           slot: `metrics.${m.id}`,
         }, {
-          title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(m),
+          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(m),
           key: `test.reference.metrics.${m.id}`,
           slot: `test.reference.metrics.${m.id}`,
         }])

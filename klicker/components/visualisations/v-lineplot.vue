@@ -20,6 +20,7 @@ import { VisualisationProps } from '../../props'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -30,6 +31,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, dimensions, metrics, switchResponse, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
@@ -41,7 +43,7 @@ export default defineComponent({
         metrics: e.metrics,
         metricsRaw: e.metricsRaw,
         metricsCI: e.metricsCI,
-        source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
+        source: response.query.name ?? translate('comparison.dataset.test'),
         sourceRaw: 'test',
       }, {
         id: e.id,
@@ -49,7 +51,7 @@ export default defineComponent({
         metrics: e.test.reference.metrics,
         metricsRaw: e.test.reference.metricsRaw,
         metricsCI: e.test.reference.metricsCI,
-        source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
+        source: response.query.reference.name ?? translate('comparison.dataset.reference'),
         sourceRaw: 'reference',
       }]))
 
@@ -96,11 +98,11 @@ export default defineComponent({
           ...(withCI ? [{
             field: 'upper',
             type: 'quantitative',
-            title: $klicker.$t('confidence-interval.lower', { percent: 95 }),
+            title: translate('confidence-interval.lower', { percent: 95 }),
           }, {
             field: 'lower',
             type: 'quantitative',
-            title: $klicker.$t('confidence-interval.upper', { percent: 95 }),
+            title: translate('confidence-interval.upper', { percent: 95 }),
           } ] : []),
           ],
         },

@@ -5,9 +5,9 @@
       primary
       sm
       @click="trigger"
-    >{{ $t('action.share') }}</b-button>
+    >{{ translate('action.share') }}</b-button>
     <div v-if="loading">
-      <span class="italic text-sm">{{ $t('state.generating-sharepic') }}...</span>
+      <span class="italic text-sm">{{ translate('state.generating-sharepic') }}...</span>
     </div>
     <lazy-sharepic-content
       v-if="loading"
@@ -20,7 +20,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
+import { useKlicker } from '../../composables'
+import { defineComponent, ref } from 'vue-demi'
 
 export default defineComponent({
   props: {
@@ -29,19 +30,22 @@ export default defineComponent({
       default: false
     },
   },
-  data() {
-    return {
-      loading: false,
+  setup(props, { emit }) {
+    const { translate } = useKlicker()
+    const loading = ref(false)
+
+    const trigger = () => loading.value = true
+    const done = () => {
+      loading.value = false
+      emit('done')
     }
-  },
-  methods: {
-    trigger() {
-      this.loading = true
-    },
-    done() {
-      this.loading = false
-      this.$emit('done')
-    },
+
+    return {
+      translate,
+      loading,
+      trigger,
+      done,
+    }
   },
 })
 </script>

@@ -120,7 +120,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
 
     const onInputCubeId = (c: string) => {
       const newQuery: CubeQuery = {
@@ -180,8 +180,6 @@ export default defineComponent({
       const selectedMetrics = metrics.filter(m => query.metricsIds.includes(m.id))
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
-
-    const translate = (key: string) => $klicker.$t(key)
 
     return {
       cubes,

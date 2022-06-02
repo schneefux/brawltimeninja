@@ -8,15 +8,17 @@ export const useKlicker = () => {
   }
 
   const $klicker = new Klicker('https://cube.brawltime.ninja', config, [], [], [], [], [])
-  $klicker.$t = (key: string) => {
+
+  const translate = (key: string) => {
     if (key in en) {
       return en[key]
     }
     console.log('Missing translation for ' + key)
     return key
   }
+  $klicker.$t = translate
   $klicker.$te = (key: string) => key in en;
   (<any>window).$klicker = $klicker
 
-  return { $klicker }
+  return { $klicker, translate }
 }

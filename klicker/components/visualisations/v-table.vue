@@ -62,6 +62,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -83,6 +84,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {
@@ -106,7 +108,7 @@ export default defineComponent({
 
       if (props.response.kind == 'comparingResponse') {
         columns.push({
-          title: $klicker.$t('comparison.difference.to.dataset', { dataset: props.response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string }) as string,
+          title: translate('comparison.difference.to.dataset', { dataset: props.response.query.reference.name ?? translate('comparison.dataset.reference') }),
           keys: [`test.difference.annotatedDifference`],
           slot: 'difference',
           shrink: true,

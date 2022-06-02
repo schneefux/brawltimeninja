@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watchEffect, PropType } from 'vue-demi'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 export interface Screen {
@@ -33,6 +34,9 @@ export interface Screen {
 }
 
 export default defineComponent({
+  components: {
+    FontAwesomeIcon,
+  },
   props: {
     tag: {
       type: String,

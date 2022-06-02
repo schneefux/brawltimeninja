@@ -34,6 +34,8 @@ module.exports = {
       white: colors.white,
       black: colors.black,
       red: colors.red,
+      yellow: colors.yellow,
+      green: colors.green,
 
       background: withOpacityValue('--color-background'),
       contrast: withOpacityValue('--color-contrast'),

@@ -69,6 +69,7 @@ import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useResizeObserver } from '@vueuse/core'
+import { useKlicker } from '../../composables'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -85,6 +86,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props, { refs }) {
+    const { translate } = useKlicker()
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const dimension = computed(() => dimensions.value[0])
@@ -116,7 +118,7 @@ export default defineComponent({
         response => metrics.value.flatMap(metric => [{
           id: metric.id,
           metricId: metric.id,
-          title: (response.query.name ?? $klicker.$t('comparison.dataset.test') as string) + ' ' + $klicker.getName(metric),
+          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}`,
             entry: e,
@@ -124,7 +126,7 @@ export default defineComponent({
         }, {
           id: `${metric.id}-reference`,
           metricId: metric.id,
-          title: (response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string) + ' ' + $klicker.getName(metric),
+          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}-reference`,
             entry: e.test.reference,

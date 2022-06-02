@@ -22,17 +22,24 @@
     <nuxt />
 
     <install-prompt-capture></install-prompt-capture>
-    <cookie-consent-popup
+    <b-cookie-consent
       v-if="consentPopupVisible"
       @enable-none="disableCookies"
       @enable-cookies="enableCookies"
       @enable-all="enableCookiesAndAds"
-    ></cookie-consent-popup>
+    >
+      <nuxt-link
+        slot="link"
+        class="underline"
+        to="/about"
+      >link</nuxt-link>
+    </b-cookie-consent>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
     <b-web-footer
       :links="links"
       tag="nuxt-link"
+      class="hidden lg:block"
     >
       <copyright
         slot="below"
@@ -47,12 +54,13 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
 import { useMutationObserver } from '@vueuse/core'
-import { BWebFooter } from '@schneefux/klicker/components'
+import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     BWebFooter,
+    BCookieConsent,
   },
   head: {},
   setup(props, { root }) {

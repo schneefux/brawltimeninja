@@ -108,7 +108,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
     const numMetrics = ref(props.value.metricsIds.length)
 
     const metrics = computed(() => $klicker.config[props.value.cubeId].metrics
@@ -168,8 +168,6 @@ export default defineComponent({
       })
       numMetrics.value--
     }
-
-    const translate = (key: string) => $klicker.$t(key)
 
     const tooltipOpen = ref(false)
 

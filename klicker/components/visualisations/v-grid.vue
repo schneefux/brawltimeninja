@@ -69,6 +69,7 @@ import BPaginator from '../ui/b-paginator.vue'
 import BKvTable, { Row } from '../ui/b-kv-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -87,6 +88,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const page = ref(0)
@@ -103,7 +105,7 @@ export default defineComponent({
 
       if (props.response.kind == 'comparingResponse') {
         rows.push({
-          title: $klicker.$t('comparison.difference.to.dataset', { dataset: $klicker.$t('comparison.dataset.reference') as string }) as string,
+          title: translate('comparison.difference.to.dataset', { dataset: translate('comparison.dataset.reference') }),
           key: 'test.difference.annotatedDifference',
           slot: 'difference',
         })

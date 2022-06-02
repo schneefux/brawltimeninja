@@ -44,8 +44,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const expand = () => emit('input', props.value + 1)
     const collapse = () => emit('input', 0)
-    const { $klicker } = useKlicker()
-    const translate = (key: string, args?: any) => $klicker.$t(key, args)
+    const { translate } = useKlicker()
 
     return {
       expand,

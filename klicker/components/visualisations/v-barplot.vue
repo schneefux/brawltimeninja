@@ -34,6 +34,7 @@ import { computed, defineComponent, ref } from 'vue-demi'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import { useResizeObserver } from '@vueuse/core'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -45,6 +46,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, comparing, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const values = computed(() => switchResponse(response => response.data, response => response.data.flatMap(e => [{
@@ -52,7 +54,7 @@ export default defineComponent({
       metrics: e.metrics,
       metricsRaw: e.metricsRaw,
       metricsCI: e.test.reference.metricsCI,
-      source: response.query.name ?? $klicker.$t('comparison.dataset.test') as string,
+      source: response.query.name ?? translate('comparison.dataset.test'),
       stars: e.test.difference.pValueStars,
     }, {
       id: e.id,
@@ -60,7 +62,7 @@ export default defineComponent({
       metrics: e.test.reference.metrics,
       metricsRaw: e.test.reference.metricsRaw,
       metricsCI: e.test.reference.metricsCI,
-      source: response.query.reference.name ?? $klicker.$t('comparison.dataset.reference') as string,
+      source: response.query.reference.name ?? translate('comparison.dataset.reference'),
       stars: '',
     }])))
 
@@ -105,11 +107,11 @@ export default defineComponent({
           ...(withCI ? [{
             field: 'upper',
             type: 'quantitative',
-            title: $klicker.$t('confidence-interval.lower', { percent: 95 }),
+            title: translate('confidence-interval.lower', { percent: 95 }),
           }, {
             field: 'lower',
             type: 'quantitative',
-            title: $klicker.$t('confidence-interval.upper', { percent: 95 }),
+            title: translate('confidence-interval.upper', { percent: 95 }),
           }] : []),
           ],
         },
