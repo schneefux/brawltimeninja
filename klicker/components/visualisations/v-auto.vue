@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from 'vue-demi'
+import { defineComponent, computed, PropType, ref } from '@vue/composition-api'
 import { CubeComparingResponse, CubeResponse, StaticWidgetSpec } from '../../types'
 import { StaticProps } from '../../props'
 import { useCubeResponse } from '../../composables/response'

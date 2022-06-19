@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue-demi'
+import { defineComponent, PropType } from '@vue/composition-api'
 import { Report } from '../../types'
 import CWidget from './c-widget.vue'
 

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue-demi'
+import { computed, defineComponent, PropType } from '@vue/composition-api'
 
 export interface Row {
   /**

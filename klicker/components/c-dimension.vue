@@ -50,7 +50,7 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref, watch } from 'vue-demi'
+import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'

@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/vue'
 import {userEvent, waitFor, within} from "@storybook/testing-library";
 import {expect} from "@storybook/jest";
 import { getCanvasElementFixed } from '../../fix';
-import { ref, computed } from 'vue-demi'
+import { ref, computed } from '@vue/composition-api'
 
 export default {
   component: BScrollSpy,

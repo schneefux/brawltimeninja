@@ -1,4 +1,4 @@
-import { computed, Ref } from 'vue-demi'
+import { computed, Ref } from '@vue/composition-api'
 import { useKlicker } from './klicker'
 import { SlicerSpec } from '../types'
 

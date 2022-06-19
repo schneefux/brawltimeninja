@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
+import { defineComponent } from '@vue/composition-api'
 import html2canvas from 'html2canvas'
 
 export default defineComponent({

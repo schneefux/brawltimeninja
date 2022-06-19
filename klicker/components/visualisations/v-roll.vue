@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, nextTick } from 'vue-demi'
+import { computed, defineComponent, ref, watch, nextTick } from '@vue/composition-api'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BPaginator from '../ui/b-paginator.vue'

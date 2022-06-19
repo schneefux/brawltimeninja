@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from 'vue-demi'
+import { defineComponent, onMounted, PropType, ref } from '@vue/composition-api'
 import { useIntersectionObserver } from '@vueuse/core'
 import { useUniqueId } from '../../composables/id'
 

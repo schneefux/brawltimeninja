@@ -13,7 +13,7 @@ export default defineConfig({
     visualizer(),
   ],
   optimizeDeps: {
-    exclude: ['vue-demi'],
+    exclude: ['@vue/composition-api'],
   },
   build: {
     sourcemap: true,
@@ -24,11 +24,11 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['vue', 'vue-demi', /\@nuxtjs\/composition-api/, 'vue-router'],
+      external: ['vue', '@vue/composition-api', /\@nuxtjs\/composition-api/, 'vue-router'],
       output: {
         globals: {
           'vue': 'Vue',
-          'vue-demi': 'VueDemi',
+          '@vue/composition-api': 'VueCompositionApi',
           '@nuxtjs/composition-api': 'NuxtJSCompositionApi',
           'vue-router': 'VueRouter',
         },

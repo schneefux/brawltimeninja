@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed } from 'vue-demi'
+import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed } from '@vue/composition-api'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {

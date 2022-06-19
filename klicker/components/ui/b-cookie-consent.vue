@@ -76,7 +76,7 @@ t<template>
 
 <script lang="ts">
 import { useKlicker } from '../../composables'
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, ref } from '@vue/composition-api'
 import BButton from './b-button.vue'
 
 export default defineComponent({

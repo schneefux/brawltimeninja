@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, ref } from '@vue/composition-api'
 import { useIntersectionObserver } from '@vueuse/core'
 
 // :style object syntax does not work for some reason - Nuxt silently swallows the variables

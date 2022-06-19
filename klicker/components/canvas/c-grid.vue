@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, PropType, ref } from '@vue/composition-api'
 import CWidgetEditor from './c-widget-editor.vue'
 import CWidget from './c-widget.vue'
 import BNumber from '../ui/b-number.vue'

@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue-demi'
+import { Ref, ref, watch } from '@vue/composition-api'
 import { useAsync, useContext } from '@nuxtjs/composition-api' // uses vue-ssr's onServerPrefetch
 import { useKlicker } from './klicker'
 import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '../types'

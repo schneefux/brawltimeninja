@@ -16,7 +16,7 @@
 <script lang="ts">
 import { VisualisationProps } from '../../props'
 import { VisualizationSpec } from 'vega-embed'
-import { computed, defineComponent } from 'vue-demi'
+import { computed, defineComponent } from '@vue/composition-api'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'

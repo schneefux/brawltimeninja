@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, ref } from '@vue/composition-api'
 import BCard from './b-card.vue'
 import BLightbox from './b-lightbox.vue'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'

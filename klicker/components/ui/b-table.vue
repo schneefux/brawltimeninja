@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { useKlicker } from '../../composables/klicker'
-import { computed, defineComponent, PropType, ref, watch } from 'vue-demi'
+import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api'
 import BPaginator from './b-paginator.vue'
 
 export interface Column {

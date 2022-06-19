@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
+import { defineComponent } from '@vue/composition-api'
 import BButton from './b-button.vue'
 import { useKlicker } from '../../composables/klicker'
 

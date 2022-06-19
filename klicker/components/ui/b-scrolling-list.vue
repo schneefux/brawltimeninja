@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'vue-demi'
+import { computed, defineComponent, onMounted, PropType, ref, nextTick } from '@vue/composition-api'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'

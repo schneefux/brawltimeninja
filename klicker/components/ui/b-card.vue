@@ -148,7 +148,7 @@
 
 <script lang="ts">
 import { useRouter } from '@nuxtjs/composition-api'
-import { defineComponent, computed } from 'vue-demi'
+import { defineComponent, computed } from '@vue/composition-api'
 import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({

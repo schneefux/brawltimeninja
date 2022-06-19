@@ -99,7 +99,7 @@ import CConfigurator from './c-configurator.vue'
 import CSlicer from './c-slicer.vue'
 import CError from './c-error.vue'
 import BDashboard from './ui/b-dashboard.vue'
-import { defineComponent, PropType, computed } from 'vue-demi'
+import { defineComponent, PropType, computed } from '@vue/composition-api'
 import { useKlicker } from '../composables/klicker'
 
 export default defineComponent({

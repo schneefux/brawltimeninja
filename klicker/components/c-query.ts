@@ -1,4 +1,5 @@
-import { VNode, defineComponent, PropType, h, toRefs } from 'vue-demi'
+import { VNode } from 'vue'
+import { defineComponent, PropType, h, toRefs } from '@vue/composition-api'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'
@@ -20,7 +21,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
     const { translate } = useKlicker()
-    const { $klicker, response, error, loading, update } = useCubeQuery(query, filter)
+    const { response, error, loading, update } = useCubeQuery(query, filter)
 
     return () => {
       let nodes: VNode[] | undefined

@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch' // ponyfill
-import { ref, onMounted } from 'vue-demi'
+import { ref, onMounted } from '@vue/composition-api'
 import { feathers } from '@feathersjs/feathers'
 import rest from '@feathersjs/rest-client'
 import auth from '@feathersjs/authentication-client'

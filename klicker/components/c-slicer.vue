@@ -47,7 +47,7 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, PropType, ref } from '@vue/composition-api'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCubeConfig } from '../composables/config'
