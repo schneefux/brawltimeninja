@@ -124,7 +124,7 @@ export default defineComponent({
     })
 
     onMounted(() => onUpdate('rerender'))
-    useResizeObserver(wrapper, () => onUpdate('rerender'))
+    useResizeObserver(wrapper, () => window.requestAnimationFrame(() => onUpdate('rerender')))
     useMutationObserver(wrapper, () => onUpdate('rerender'), {
       childList: true,
     })

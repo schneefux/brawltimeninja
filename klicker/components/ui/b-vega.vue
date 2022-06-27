@@ -176,7 +176,7 @@ export default defineComponent({
 
     watch(() => props.spec, () => refresh())
 
-    useResizeObserver(graph, () => refresh())
+    useResizeObserver(graph, () => window.requestAnimationFrame(() => refresh()))
 
     const container = ref<HTMLElement>()
 
