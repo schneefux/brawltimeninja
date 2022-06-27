@@ -15,6 +15,7 @@
         <slot
           :name="row.slot"
           :row="data"
+          :value="row.value"
         >
           {{ row.value }}
         </slot>

@@ -26,10 +26,10 @@
           >{{ row.name }}</span>
         </template>
 
-        <template v-slot:tag="{ row }">
-          <span>#{{ row.tag }}</span>
+        <template v-slot:tag="{ value }">
+          <span>#{{ value }}</span>
           <span
-            v-if="row.tag == 'V8LLPPC'"
+            v-if="value == 'V8LLPPC'"
             class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
           >
             DEV
@@ -47,60 +47,51 @@
           </nuxt-link>
         </template>
 
-        <template v-slot:trophies="{ row }">
+        <template v-slot:trophies="{ value }">
           <img
             src="~/assets/images/icon/trophy_optimized.png"
             alt="Trophies"
             class="inline h-4 mr-1"
           >
-          {{ row.trophies }}
+          {{ value }}
         </template>
 
-        <template v-slot:highestTrophies="{ row }">
-          <img
-            src="~/assets/images/icon/trophy_optimized.png"
-            alt="Highest Trophies"
-            class="inline h-4 mr-1"
-          >
-          {{ row.highestTrophies }}
-        </template>
-
-        <template v-slot:victories="{ row }">
+        <template v-slot:victories="{ value }">
           <img
             src="~/assets/images/icon/victories.png"
             alt="3v3 Victories"
             class="inline h-4 mr-1"
           >
-          {{ row['3vs3Victories'] }}
+          {{ value }}
         </template>
 
-        <template v-slot:expLevel="{ row }">
+        <template v-slot:expLevel="{ value }">
           <img
             src="~/assets/images/icon/level.png"
             alt="EXP Level"
             class="inline h-4 mr-1"
           >
-          {{ row.expLevel }}
+          {{ value }}
         </template>
 
-        <template v-slot:soloVictories="{ row }">
+        <template v-slot:soloVictories="{ value }">
           <media-img
             path="/modes/solo-showdown/icon"
             alt="Solo Victories"
             size="160"
             clazz="inline h-4 mr-1"
           ></media-img>
-          {{ row.soloVictories }}
+          {{ value }}
         </template>
 
-        <template v-slot:duoVictories="{ row }">
+        <template v-slot:duoVictories="{ value }">
           <media-img
             path="/modes/duo-showdown/icon"
             alt="Duo Victories"
             size="160"
             clazz="inline h-4 mr-1"
           ></media-img>
-          {{ row.duoVictories }}
+          {{ value }}
         </template>
       </b-kv-table>
     </div>
@@ -164,7 +155,7 @@ export default defineComponent({
     })
 
     rows.push({
-      slot: 'highestTrophies',
+      slot: 'trophies',
       key: 'highestTrophies',
       title: i18n.t('metric.highestTrophies') as string,
     })

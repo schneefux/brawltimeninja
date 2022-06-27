@@ -52,35 +52,35 @@
         id-key="id"
         class="mt-4"
       >
-        <template v-slot:rank="{ row }">
+        <template v-slot:rank="{ value }">
           <img
             src="~/assets/images/icon/leaderboards_optimized.png"
             class="inline h-4 mr-1"
           >
-          {{ row.rank }}
+          {{ value }}
         </template>
-        <template v-slot:trophies="{ row }">
+        <template v-slot:trophies="{ value }">
           <img
             src="~/assets/images/icon/trophy_optimized.png"
             class="inline h-4 mr-1"
           >
-          {{ row.trophies }}
+          {{ value }}
         </template>
-        <template v-slot:power="{ row }">
+        <template v-slot:power="{ value }">
           <img
-            :src="row.power < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
+            :src="value < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
             class="inline h-4 mr-1"
           >
-          {{ row.power }}
+          {{ value }}
         </template>
-        <template v-slot:wins="{ row }">
+        <template v-slot:wins="{ value }">
           <span class="text-green-400">
-            {{ row.wins }}
+            {{ value }}
           </span>
         </template>
-        <template v-slot:losses="{ row }">
+        <template v-slot:losses="{ value }">
           <span class="text-red-400">
-            {{ row.losses }}
+            {{ value }}
           </span>
         </template>
       </b-kv-table>
