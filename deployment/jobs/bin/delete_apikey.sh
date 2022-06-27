@@ -12,8 +12,8 @@ do
   esac
 done
 
-[ -z $EMAIL ] && echo "-e is required"
-[ -z $PASSWORD ] && echo "-p is required"
+[ -z "$EMAIL" ] && echo "-e is required"
+[ -z "$PASSWORD" ] && echo "-p is required"
 NAME="Nomad $NOMAD_ALLOC_ID"
 
 COOKIE_JAR=$(mktemp)

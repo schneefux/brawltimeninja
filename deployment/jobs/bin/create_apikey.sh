@@ -12,8 +12,8 @@ do
   esac
 done
 
-[ -z $EMAIL ] && echo "-e is required"
-[ -z $PASSWORD ] && echo "-p is required"
+[ -z "$EMAIL" ] && echo "-e is required"
+[ -z "$PASSWORD" ] && echo "-p is required"
 NAME="Nomad $NOMAD_ALLOC_ID"
 DESCRIPTION="Key automatically registered by Nomad job for allocation $NOMAD_ALLOC_ID on host $(hostname)"
 
@@ -38,13 +38,13 @@ KEYS=$(curl 'https://developer.brawlstars.com/api/apikey/list' \
 
 TOKEN=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\").key")
 
-if [ $TOKEN = "null" ]
+if [ "$TOKEN" = "null" ]
 then
   echo "Error: Token is null - did you register too many tokens?"
   exit 1
 fi
 
-if [ -z $TOKEN ]
+if [ -z "$TOKEN" ]
 then
   echo "Creating a new token"
   MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
