@@ -19,25 +19,27 @@ export default defineComponent({
   },
   setup() {
     const { localePath, i18n } = useContext()
-    const screens = computed<Screen[]>(() => [ {
-      id: 'profile',
-      icon: faSearch,
-      name: i18n.t('nav.Profile') as string,
-      target: localePath('/'),
-      prefix: '',
-    }, {
-      id: 'events',
-      icon: faCalendarDay,
-      name: i18n.t('nav.Events') as string,
-      target: localePath('/tier-list/map'),
-      prefix: '/tier-list',
-    }, {
-      id: 'brawlers',
-      icon: faMask,
-      name: i18n.t('nav.Brawlers') as string,
-      target: localePath('/tier-list/brawler'),
-      prefix: '/tier-list/brawler',
-    } ])
+    const screens = computed<Screen[]>(() => {
+      return [ {
+        id: 'profile',
+        icon: faSearch,
+        name: i18n.t('nav.Profile') as string,
+        target: localePath('/'),
+        prefix: '',
+      }, {
+        id: 'events',
+        icon: faCalendarDay,
+        name: i18n.t('nav.Events') as string,
+        target: localePath('/tier-list/map'),
+        prefix: '/tier-list',
+      }, {
+        id: 'brawlers',
+        icon: faMask,
+        name: i18n.t('nav.Brawlers') as string,
+        target: localePath('/tier-list/brawler'),
+        prefix: '/tier-list/brawler',
+      } ]
+  })
 
     return {
       screens,
