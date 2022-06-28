@@ -86,9 +86,9 @@ export default function buildTeamWinratePredictor(data: CubeResponse) {
   })
 
   return new AODEClassifier({
-    featureIds: ['brawler', 'brawler', 'brawler', 'result'],
+    featureIds,
     classes: ['victory', 'defeat'],
     cpts,
     mpds,
-  }, 3)
+  }, featureIds.length - 1)
 }
