@@ -87,7 +87,7 @@ import { CubeQuery } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import buildTeamWinratePredictor from '~/lib/ml/klicker'
+import buildTeamWinratePredictor from '~/lib/klicker.ml'
 
 interface AllyData {
   id: string

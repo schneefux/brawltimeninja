@@ -1,7 +1,7 @@
 import { CubeResponse } from '@schneefux/klicker/types'
-import AODEClassifier from './aode'
-import { ProbabilityTable } from './types'
-import { encodeFeatureIds, encodeFeatureValues, getAtIndices, jpdToCpt, jpdToMpd } from './util'
+import { AODEClassifier } from '@schneefux/klicker/ml'
+import { ProbabilityTable } from '@schneefux/klicker/ml/types'
+import { encodeFeatureIds, encodeFeatureValues, getAtIndices, jpdToCpt, jpdToMpd } from '@schneefux/klicker/ml/util'
 
 /**
  * Retrieve synergies and construct MPDs and CPTs
