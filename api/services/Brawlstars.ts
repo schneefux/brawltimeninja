@@ -107,13 +107,16 @@ export default class BrawlstarsService {
       player.club.tag = player.club.tag.replace(/^#/, '');
     }
 
-    // API bug 2022-07-11, brawler trophies may be -1
     battleLog.items.forEach(b => {
       b.battle.teams?.forEach(t => {
         t.forEach(p => {
+          // FIXME API bug 2022-07-11, brawler trophies may be -1
           if (p.brawler.trophies == -1) {
             p.brawler.trophies = undefined
           }
+
+          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+          p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
         })
       })
     })
