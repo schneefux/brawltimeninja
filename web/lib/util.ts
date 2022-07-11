@@ -38,7 +38,7 @@ export function hoursSinceDate(date: string) {
 }
 
 export const brawlerId = (entry: { name: string }) =>
-  entry.name.replace(/\.| /g, '_').toLowerCase()
+  entry.name.replace(/\.|\s/g, '_').toLowerCase()
 
 export function formatMode(mode: string) {
   return camelToSnakeCase(mode)
