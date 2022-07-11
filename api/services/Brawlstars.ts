@@ -107,6 +107,17 @@ export default class BrawlstarsService {
       player.club.tag = player.club.tag.replace(/^#/, '');
     }
 
+    // API bug 2022-07-11, brawler trophies may be -1
+    battleLog.items.forEach(b => {
+      b.battle.teams?.forEach(t => {
+        t.forEach(p => {
+          if (p.brawler.trophies == -1) {
+            p.brawler.trophies = undefined
+          }
+        })
+      })
+    })
+
     // FIXME API bug 2022-03-15, payload has no battle
     const battles = battleLog.items.filter(battle => battle.battle != undefined).map((battle) => {
       const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
