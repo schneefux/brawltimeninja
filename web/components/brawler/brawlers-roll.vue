@@ -1,5 +1,6 @@
 <template>
   <b-scrolling-list
+    v-if="brawlers == undefined || brawlers.length > 0"
     :items="brawlers || []"
     :cell-columns="2"
     :cell-rows="2"
