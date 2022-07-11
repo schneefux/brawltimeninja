@@ -573,5 +573,7 @@
     "brawlers.meta.description": "View statistics and rankings for all Brawlers in Brawl Stars.",
     "brawlers.meta.title": "Brawl Stars Brawlers",
     "mode.invasion": "Bot Drop",
-    "mode.unknown": "Unknown Mode"
+    "mode.unknown": "Unknown Mode",
+    "mode.botDrop": "Bot Drop",
+    "mode.hunters": "Hunters"
 }
