@@ -6,10 +6,6 @@ on:
       - master
 
 jobs:
-  build-api:
-    uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
-    with:
-      service: api
   build-cube:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
