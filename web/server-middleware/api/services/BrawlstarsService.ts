@@ -121,6 +121,11 @@ export default class BrawlstarsService {
       })
     })
 
+    player.brawlers.forEach(b => {
+      // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+      b.name = b.name.replace(/\s/g, ' ')
+    })
+
     // FIXME API bug 2022-03-15, payload has no battle
     const battles = battleLog.items.filter(battle => battle.battle != undefined).map((battle) => {
       const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
