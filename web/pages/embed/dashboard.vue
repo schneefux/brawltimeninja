@@ -18,7 +18,7 @@ export default defineComponent({
   },
   head(): MetaInfo {
     // block all requests except to subdomains (including ads/analytics)
-    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl, this.$config.apiUrl]
+    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl]
     return {
       meta: [ <any>{
         // FIXME remove any after https://github.com/nuxt/vue-meta/issues/575

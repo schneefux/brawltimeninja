@@ -51,7 +51,7 @@ export default Vue.extend({
   },
   async created() {
     try {
-      await this.$http.$get(this.$config.apiUrl + '/api/player/V8LLPPC')
+      await this.$api.query('player.byTag', 'V8LLPPC')
       this.status = 'up'
     } catch {
       this.status = 'down'

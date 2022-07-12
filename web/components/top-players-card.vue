@@ -71,10 +71,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $http, $config } = useContext()
+    const { $api } = useContext()
 
     const leaderboard = useAsync(async () => {
-      const data = await $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
+      const data = await $api.query('rankings.playersByCountry', { country: 'global' })
       return data
         .slice(0, props.limit)
         .map(e => ({

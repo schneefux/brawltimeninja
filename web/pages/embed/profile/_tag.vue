@@ -18,7 +18,7 @@ import { Player } from '~/model/Api'
 export default Vue.extend({
   head(): MetaInfo {
     // block all requests except to subdomains (including ads/analytics)
-    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl, this.$config.apiUrl]
+    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl]
     return {
       meta: [ <any>{
         // FIXME remove any after https://github.com/nuxt/vue-meta/issues/575
@@ -64,8 +64,8 @@ export default Vue.extend({
 
     return tagPattern.test(tag)
   },
-  async asyncData({ params, $http, $config, $klicker }) {
-    const player = await $http.$get<Player>($config.apiUrl + `/api/player/${params.tag}`)
+  async asyncData({ params, $api, $klicker }) {
+    const player = await $api.query('player.byTag', params.tag)
 
     const battleData = await $klicker.query({
       cubeId: 'battle',

@@ -1,4 +1,4 @@
-FROM node:16 AS builder
+FROM node:18 AS builder
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
@@ -26,4 +26,4 @@ RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
-CMD [ "node", "./node_modules/.bin/nuxt", "start" ]
+CMD [ "node", "--experimental-fetch", "./node_modules/.bin/nuxt", "start" ]

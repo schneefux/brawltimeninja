@@ -1,4 +1,7 @@
 variable "sentry_dsn" {}
+variable "brawlstars_email" {}
+variable "brawlstars_password" {}
+variable "brawlapi_token" {}
 
 # git hash or "latest"
 variable "tag" {}
@@ -89,18 +92,93 @@ job "brawltime-web" {
       }
     }
 
+    task "create-api-token" {
+      lifecycle {
+        hook = "prestart"
+      }
+
+      driver = "exec"
+
+      # dynamically register token for current allocation and public IP address
+      config {
+        command = "/bin/bash"
+        args = ["-e", "${NOMAD_TASK_DIR}/create_apikey.sh"]
+      }
+
+      template {
+        data = <<-EOF
+          EMAIL="${var.brawlstars_email}"
+          PASSWORD="${var.brawlstars_password}"
+        EOF
+        destination = "secrets/credentials.env"
+        env = true
+      }
+
+      template {
+        data = file("./bin/create_apikey.sh")
+        destination = "local/create_apikey.sh"
+      }
+
+      resources {
+        cpu = 16
+        memory = 32
+      }
+    }
+
+    task "delete-api-token" {
+      lifecycle {
+        hook = "poststop"
+      }
+
+      driver = "exec"
+
+      # revoke token
+      config {
+        command = "/bin/bash"
+        args = ["-e", "${NOMAD_TASK_DIR}/delete_apikey.sh"]
+      }
+
+      template {
+        data = <<-EOF
+          EMAIL="${var.brawlstars_email}"
+          PASSWORD="${var.brawlstars_password}"
+        EOF
+        destination = "secrets/credentials.env"
+        env = true
+      }
+
+      template {
+        data = file("./bin/delete_apikey.sh")
+        destination = "local/delete_apikey.sh"
+      }
+
+      resources {
+        cpu = 16
+        memory = 32
+      }
+    }
+
     task "web" {
       driver = "docker"
 
       env {
         HOST = "0.0.0.0"
         PORT = "${NOMAD_PORT_http}"
-        API_URL = "https://api.${var.domain}"
-        CLICKER_URL = "https://clicker.${var.domain}"
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
         SENTRY_DSN = "${var.sentry_dsn}"
+        CLICKHOUSE_HOST = "clickhouse.service.consul"
+        DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+      }
+
+      template {
+        data = <<-EOF
+          BRAWLSTARS_TOKEN="{{ key (printf "brawlstars-token/alloc-%s" (env "NOMAD_ALLOC_ID")) }}"
+          BRAWLAPI_TOKEN="${var.brawlapi_token}"
+        EOF
+        destination = "secrets/brawlstars.env"
+        env = true
       }
 
       config {

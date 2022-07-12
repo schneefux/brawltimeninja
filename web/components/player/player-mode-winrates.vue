@@ -1,5 +1,6 @@
 <template>
   <b-scrolling-list
+    v-if="modes == undefined || modes.length > 0"
     :items="modes != undefined && events != undefined ? modes : []"
     :cell-rows="3"
     :cell-columns="3"

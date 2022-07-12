@@ -121,8 +121,8 @@ export default defineComponent({
   },
   head: {},
   setup() {
-    const { $http, $config, i18n, $klicker } = useContext()
-    const events = useAsync(() => $http.$get<CurrentAndUpcomingEvents>($config.apiUrl + '/api/events/active'), 'events')
+    const { $config, i18n, $klicker, $api } = useContext()
+    const events = useAsync(() => $api.query('events.active'), 'events')
     const currentEvents = computed<EventMetadata[]>(() => (events.value?.current ?? []).map(e => ({
       id: parseInt(e.id),
       map: e.map,

@@ -160,8 +160,8 @@ export const actions: ActionTree<RootState, RootState> = {
       return
     }
   },
-  async loadPlayer({ state, commit }, tag) {
-    const player = await this.$http.$get<Player>((<any>this).$config.apiUrl + `/api/player/${tag}`)
+  async loadPlayer({ commit }, tag) {
+    const player = await this.$api.query('player.byTag', tag)
     commit('setPlayer', player)
 
     const battleData = await this.$klicker.query({
@@ -172,7 +172,13 @@ export const actions: ActionTree<RootState, RootState> = {
         playerId: [tagToId(tag)],
       },
       sortId: 'picks',
-    })
+    }).catch(() => ({
+      data: [{
+        metricsRaw: {
+          picks: 0,
+        },
+      }],
+    }))
 
     if (battleData.data[0].metricsRaw.picks > 0) {
       const totals = battleData.data[0].metricsRaw as any as PlayerTotals
