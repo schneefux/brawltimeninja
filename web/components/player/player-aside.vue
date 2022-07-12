@@ -27,7 +27,7 @@
         </template>
 
         <template v-slot:tag="{ value }">
-          <span>#{{ value }}</span>
+          <span>{{ value }}</span>
           <span
             v-if="value == 'V8LLPPC'"
             class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
@@ -98,7 +98,7 @@
 
     <share-render-button
       slot="actions"
-      :embed-url="`/embed/profile/${player.tag}`"
+      :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
       :url="playerUrl"
       secondary
       sm
