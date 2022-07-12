@@ -11,6 +11,8 @@ ARG GIT_REV=''
 ENV GIT_REV=$GIT_REV
 ARG BRANCH=''
 ENV BRANCH=$BRANCH
+# Node 17+ workaround
+ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /app
 COPY ./.npmrc ./package.json ./yarn.lock .
 RUN yarn add @schneefux/klicker
@@ -18,8 +20,10 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
-FROM node:16
+FROM node:18
 ENV NODE_ENV=production
+# Node 17+ workaround
+ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /app
 COPY --from=builder /app ./
 RUN rm ./.npmrc
