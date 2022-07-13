@@ -96,7 +96,7 @@ function routingExtensions(workbox, options) {
 // this handler must run after the initialization of workbox
 // which is why it is not an importScript.
 self.addEventListener('activate', (event) => {
-  const release = '<%= options.cacheNames.prefix %>'
+  const release = options.cacheNames.prefix
   console.log('running on release', release)
   caches.keys().then((keys) => Promise.all(
     keys
