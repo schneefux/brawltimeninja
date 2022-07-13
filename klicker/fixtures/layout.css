@@ -2,7 +2,7 @@
   padding: 2rem;
 }
 
-#root > .dark {
+.dark #root {
   background-color: #18181b; /* bg-gray-900 */
   color: #e4e4e7; /* text-gray-200 */
 }

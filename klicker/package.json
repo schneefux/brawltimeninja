@@ -34,6 +34,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/vue-fontawesome": "^2.0.8",
     "@kangc/v-md-editor": "^1.7.11",
+    "@linusborg/vue-simple-portal": "^0.1.5",
     "@panzoom/panzoom": "^4.5.0",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.2",
@@ -83,7 +84,7 @@
     "typescript": "^4.7.4",
     "vite": "^2.9.12",
     "vite-plugin-vue2": "^2.0.1",
-    "vue-loader": "^17.0.0",
+    "vue-loader": "^15",
     "vue-router": "^3",
     "vue-template-compiler": "^2.6.14",
     "webpack": "5.73.0"

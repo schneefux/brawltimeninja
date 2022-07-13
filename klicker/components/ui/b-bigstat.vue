@@ -4,7 +4,7 @@
       <b-lightbox v-model="tooltipOpen">
         <b-card
           :elevation="0"
-          class="w-full max-w-md"
+          class="w-full max-w-md h-auto"
         >
           <template v-slot:content>
             <slot name="tooltip">
