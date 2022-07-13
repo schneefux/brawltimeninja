@@ -65,8 +65,8 @@
                 />
               </div>
             </template>
-            <div class="w-full">
-              <span v-if="mate.isBigbrawler" class="text-sm">💀</span>
+            <div v-if="mate.isBigbrawler" class="w-full">
+              <span class="text-sm">💀</span>
             </div>
           </div>
           <span
