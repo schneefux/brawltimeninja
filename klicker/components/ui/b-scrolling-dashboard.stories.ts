@@ -44,12 +44,21 @@ Desktop.play = async ({ canvasElement }) => {
   await waitFor(() => expect(previousButton).not.toBeVisible())
   await userEvent.click(nextButton)
   await waitFor(() => expect(previousButton).toBeVisible())
-  await userEvent.click(nextButton)
-  await waitFor(() => expect(nextButton).not.toBeVisible())
 
+  await sleep(500)
+  await userEvent.click(nextButton)
+  await sleep(500)
+  await userEvent.click(nextButton)
+
+  await waitFor(() => expect(nextButton).not.toBeVisible())
   await userEvent.click(previousButton)
   await waitFor(() => expect(nextButton).toBeVisible())
+
+  await sleep(500)
   await userEvent.click(previousButton)
+  await sleep(500)
+  await userEvent.click(previousButton)
+
   await waitFor(() => expect(previousButton).not.toBeVisible())
 }
 
@@ -102,5 +111,7 @@ Mobile.play = async ({ canvasElement }) => {
 
   await userEvent.click(previousButton)
   await waitFor(() => expect(scrollHintRight).toBeVisible())
+
+  await sleep(500)
   expect(scrollHintLeft).not.toBeVisible()
 }
