@@ -13,7 +13,7 @@ export const parameters = {
   },
   themes: {
     default: 'dark',
-    target: 'html',
+    target: 'body',
     list: [{
       name: 'dark',
       class: ['dark'],
