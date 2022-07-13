@@ -19,7 +19,7 @@ export interface Brawler {
 }
 
 export interface Battle {
-  timestamp: Date|string;
+  timestamp: Date;
   event: {
     id: number;
     mode: string;
