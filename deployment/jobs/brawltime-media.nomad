@@ -1,3 +1,5 @@
+variable "github_user" {}
+variable "github_token" {}
 variable "brawltime_assets_pubkey" {}
 variable "brawltime_assets_hostkey_ed" {}
 variable "brawltime_assets_hostkey_rsa" {}
@@ -132,6 +134,11 @@ job "brawltime-media" {
         image = "ghcr.io/schneefux/brawltime-media:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {

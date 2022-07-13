@@ -1,3 +1,6 @@
+variable "github_user" {}
+variable "github_token" {}
+
 # git hash or "latest"
 variable "tag" {}
 
@@ -111,6 +114,11 @@ job "brawltime-cube" {
         image = "ghcr.io/schneefux/brawltime-cube:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {
@@ -179,6 +187,11 @@ job "brawltime-cube" {
       config {
         image = "ghcr.io/schneefux/brawltime-cube:${var.tag}"
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {

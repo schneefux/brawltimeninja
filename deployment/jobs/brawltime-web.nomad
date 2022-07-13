@@ -1,4 +1,6 @@
 variable "sentry_dsn" {}
+variable "github_user" {}
+variable "github_token" {}
 variable "brawlstars_email" {}
 variable "brawlstars_password" {}
 variable "brawlapi_token" {}
@@ -185,6 +187,11 @@ job "brawltime-web" {
         image = "ghcr.io/schneefux/brawltime-web:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {

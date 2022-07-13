@@ -1,3 +1,6 @@
+variable "github_user" {}
+variable "github_token" {}
+
 # git hash or "latest"
 variable "tag" {}
 
@@ -103,6 +106,11 @@ job "brawltime-render" {
         ipc_mode = "host"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {
