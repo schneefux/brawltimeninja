@@ -21,7 +21,7 @@
           />
         </span>
       </div>
-      <span>{{ hoursSinceBattle == 0 ? 'just now' : (hoursSinceBattle + 'h ago') }}</span>
+      <span>{{ relativeTime }}</span>
     </div>
 
     <div
@@ -78,9 +78,10 @@
 </template>
 
 <script lang="ts">
-import { hoursSinceDate } from '~/lib/util'
 import { Battle } from '~/model/Api'
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { formatDistanceToNow } from 'date-fns'
+import { useDateFnLocale } from '~/composables/date-fns'
 
 export default defineComponent({
   props: {
@@ -99,11 +100,16 @@ export default defineComponent({
       return props.battle.victory != undefined && props.battle.trophyChange != undefined
         && (props.battle.victory && props.battle.trophyChange > 11 || !props.battle.victory && props.battle.trophyChange > 3)
     })
-    const hoursSinceBattle = computed(() => hoursSinceDate(props.battle.timestamp as string))
+
+    const { locale } = useDateFnLocale()
+    const relativeTime = computed(() => formatDistanceToNow(props.battle.timestamp, {
+      addSuffix: true,
+      locale: locale.value,
+    }))
 
     return {
       isPowerplay,
-      hoursSinceBattle,
+      relativeTime,
     }
   },
 })

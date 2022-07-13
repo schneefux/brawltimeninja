@@ -31,12 +31,6 @@ export function zip<T>(arr1: T[], arr2: T[]) {
   return arr1.map((value, index) => [value, arr2[index]])
 }
 
-export function hoursSinceDate(date: string) {
-  const then = Date.parse(date)
-  const now = (new Date()).getTime()
-  return Math.floor((now - then) / 1000 / 3600)
-}
-
 export const brawlerId = (entry: { name: string }) =>
   entry.name.replace(/\.|\s/g, '_').toLowerCase()
 

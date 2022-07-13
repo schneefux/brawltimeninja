@@ -359,7 +359,7 @@ export default defineComponent({
             return
           }
           if (err.data.httpStatus >= 400) {
-            error({ statusCode: err.data.httpStatus, message: i18n.tc('error.tag.api-unavailable') })
+            error({ statusCode: err.data.httpStatus, message: i18n.tc('error.api-unavailable') })
             return
           }
         }

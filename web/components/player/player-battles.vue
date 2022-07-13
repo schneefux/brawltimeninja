@@ -1,5 +1,6 @@
 <template>
   <b-scrolling-list
+    v-if="player.battles.length > 0"
     :items="player.battles"
     :cell-rows="2"
     :cell-columns="4"

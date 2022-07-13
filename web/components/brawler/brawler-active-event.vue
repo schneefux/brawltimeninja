@@ -23,6 +23,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { formatDistanceToNow, parseISO } from 'date-fns'
+import { useDateFnLocale } from '~/composables/date-fns'
 
 export default defineComponent({
   props: {
@@ -48,11 +49,14 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { locale } = useDateFnLocale()
     const timeTillEnd = computed(() => {
       if (props.end == undefined) {
         return ''
       }
-      return formatDistanceToNow(parseISO(props.end))
+      return formatDistanceToNow(parseISO(props.end), {
+        locale: locale.value,
+      })
     })
 
     const slices = computed(() => ({
