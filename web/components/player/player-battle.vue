@@ -31,48 +31,46 @@
       <div
         v-for="(team, index) in battle.teams"
         :key="index"
-        :class="'flex flex-wrap justify-center z-10 my-1 '
-          + (battle.teams.length == 3 ? 'mt-8 ' : '')
-          + (team.length == 2 ? 'mx-1 rounded-sm flex-col ' : '')
-        "
+        :class="{
+          'mt-8': battle.teams.length == 3,
+          'mx-1 rounded-sm flex-col': team.length == 2,
+        }"
+        class="flex flex-wrap justify-center z-10 my-1"
       >
         <router-link
           v-for="mate in team"
           :key="mate.tag"
           :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 400 ? 'nofollow' : ''"
           :to="localePath(`/profile/${mate.tag}`)"
-          :class="'w-14 h-14 bg-gray-800 py-px relative overflow-hidden '
-            + (mate.tag == playerTag ? 'border-2 border-gray-300 ' : '')
-            + (team.length != 2 ? 'mx-1 rounded-sm ' : '')
-          "
+          :class="{
+            'border-2 border-gray-300 ': mate.tag == playerTag,
+            'mx-1 rounded-sm ': team.length != 2,
+          }"
+          class="w-14 h-16 bg-background/75 p-px relative overflow-hidden text-xs flex flex-col gap-y-px"
           @click.native.stop
         >
+          <span
+            v-if="mate.brawlerTrophies != undefined"
+            class="h-4 flex"
+          >
+            <img
+              class="mr-1 h-4 py-px object-contain"
+              :src="isPowerplay ? require('~/assets/images/icon/power_play_optimized.png') : require('~/assets/images/icon/trophy_optimized.png')"
+            >
+            {{ mate.brawlerTrophies }}
+            {{ mate.isBigbrawler ? '💀' : '' }}
+          </span>
           <media-img
-            :path="'/brawlers/' + mate.brawler + '/avatar'"
+            :path="`/brawlers/${mate.brawler}/avatar`"
             :alt="mate.brawler"
             size="160"
-            clazz="h-8 w-8 object-contain"
+            clazz="h-7 -ml-px object-contain"
           ></media-img>
-          <div class="absolute top-0 right-0 w-12 text-right m-px">
-            <template v-if="mate.brawlerTrophies != undefined">
-              <div class="w-full flex">
-                <span
-                  class="w-8 text-xs font-semibold text-shadow text-white"
-                >{{ mate.brawlerTrophies }}</span>
-                <img
-                  :src="isPowerplay ? require('~/assets/images/icon/power_play_optimized.png') : require('~/assets/images/icon/trophy_optimized.png')"
-                  class="w-4 h-4 ml-px"
-                />
-              </div>
-            </template>
-            <div v-if="mate.isBigbrawler" class="w-full">
-              <span class="text-sm">💀</span>
-            </div>
-          </div>
           <span
-            :class="['text-xs whitespace-nowrap m-px', {
-              'text-yellow-400': mate.tag != playerTag,
-            }]">{{ mate.name }}</span>
+            class="h-4 whitespace-nowrap overflow-hidden text-ellipsis"
+            :class="{
+              'text-primary-400': mate.tag != playerTag,
+            }">{{ mate.name }}</span>
           </router-link>
       </div>
     </div>
