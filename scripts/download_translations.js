@@ -16,7 +16,7 @@ function getStarlistTranslations() {
 
 async function main() {
   const translations = (await getStarlistTranslations()).strings
-  await fs.mkdir('./out/maps', { recursive: true })
+  await fs.mkdir('./out/translations', { recursive: true })
   for (const [lang, strings] of Object.entries(translations)) {
     const relevant = Object.fromEntries(Object.entries(strings)
       .filter(([key, value]) => key.startsWith('map_name_'))
