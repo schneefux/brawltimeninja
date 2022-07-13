@@ -74,7 +74,10 @@ export default defineComponent({
     const { $api } = useContext()
 
     const leaderboard = useAsync(async () => {
-      const data = await $api.query('rankings.playersByCountry', { country: 'global' })
+      const data = await $api.query('rankings.playersByCountry', {
+        country: 'global',
+      }).catch(() => [])
+
       return data
         .slice(0, props.limit)
         .map(e => ({

@@ -23,8 +23,9 @@ export default defineComponent({
   setup() {
     const { $api } = useContext()
 
-    const fetchTrophiesLeaderboard = () => $api.query('rankings.playersByCountry', { country: 'global' })
-    const leaderboard = useAsync(fetchTrophiesLeaderboard, 'leaderboard-trophies')
+    const leaderboard = useAsync(() => $api.query('rankings.playersByCountry', {
+      country: 'global',
+    }).catch(() => []), 'leaderboard-trophies')
 
     const rows = computed<PlayerRankTableRow[]>(() => {
       return leaderboard.value?.map(e => ({
