@@ -8,7 +8,7 @@ import { encodeFeatureIds, encodeFeatureValues, getAtIndices, jpdToCpt, jpdToMpd
  *
  * @param data P(y | x_i, x_j) where all x_i share the same distribution
  */
-export default function buildTeamWinratePredictor(data: CubeResponse) {
+export default function buildTeamWinratePredictor(data: CubeResponse, numberOfBrawlersGiven: number) {
   const synergies = data.data
 
   // calculate P(x_i, x_j)
@@ -59,7 +59,7 @@ export default function buildTeamWinratePredictor(data: CubeResponse) {
   }
 
   // since they share the same distribution, give all brawlers identical IDs
-  const featureIds = ['brawler', 'brawler', 'brawler', 'result']
+  const featureIds = [...Array(numberOfBrawlersGiven).fill('brawler'), 'result']
   const classAttributeIndex = featureIds.indexOf('result')
 
   // calculate P(y, x_i) from P(y, x_i, x_j)
@@ -90,5 +90,5 @@ export default function buildTeamWinratePredictor(data: CubeResponse) {
     classes: ['victory', 'defeat'],
     cpts,
     mpds,
-  }, featureIds.length - 1)
+  }, numberOfBrawlersGiven)
 }

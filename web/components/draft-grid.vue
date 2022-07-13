@@ -156,56 +156,30 @@ export default defineComponent({
       synergyData.value = await getSynergyData()
     })
 
-    const winrateModel = computed(() => synergyData.value != undefined ? buildTeamWinratePredictor(synergyData.value) : undefined)
+    const winrateModel = computed(() => {
+      if (synergyData.value == undefined) {
+        return undefined
+      }
+
+      return buildTeamWinratePredictor(synergyData.value, team.value.length + 1)
+    })
 
     const picksThreshold = 30
     const allyData = computed(() => {
       const contributingWinRatesByBrawler: Record<string, number> = {}
       const picksByBrawler: Record<string, number> = {}
 
-      if (brawlerData.value == undefined) {
+      if (brawlerData.value == undefined || winrateModel.value == undefined) {
         return {}
       }
 
-      if ((team.value.length == 0 || team.value.length == 3)) {
-        brawlerData.value.data.forEach(row => {
-          const name = row.dimensionsRaw.brawler.brawler
-          const winRate = row.metricsRaw.winRate as number
-          const picks = row.metricsRaw.picks as number
-          contributingWinRatesByBrawler[name] = winRate
-          picksByBrawler[name] = picks
-        })
-      }
-
-      if (team.value.length == 1 && synergyData.value != undefined) {
-        brawlerData.value.data.forEach(row => {
-          const name = row.dimensionsRaw.brawler.brawler
-          const synergy = synergyData.value!.data.find(s =>
-            s.dimensionsRaw.ally.ally == team.value[0].brawler &&
-            s.dimensionsRaw.brawler.brawler == row.dimensionsRaw.brawler.brawler &&
-            s.dimensionsRaw.ally.ally != s.dimensionsRaw.brawler.brawler
-          )
-          if (synergy == undefined) {
-            picksByBrawler[name] = 0
-            contributingWinRatesByBrawler[name] = 0.5
-          } else {
-            const picks = synergy.metricsRaw.picks as number
-            const winRate = synergy.metricsRaw.winRate as number
-            picksByBrawler[name] = picks
-            contributingWinRatesByBrawler[name] = winRate
-          }
-        })
-      }
-
-      if (team.value.length == 2 && winrateModel.value != undefined) {
-        brawlerData.value?.data?.forEach(row => {
-          const name = row.dimensionsRaw.brawler.brawler
-          const winRate = winrateModel.value!.predict('victory', [...team.value.map(e => e.brawler), name])
-          const picks = row.metricsRaw.picks as number
-          contributingWinRatesByBrawler[name] = winRate
-          picksByBrawler[name] = picks
-        })
-      }
+      brawlerData.value.data.forEach(row => {
+        const name = row.dimensionsRaw.brawler.brawler
+        const winRate = winrateModel.value!.predict('victory', [...team.value.map(e => e.brawler), name])
+        const picks = row.metricsRaw.picks as number
+        contributingWinRatesByBrawler[name] = winRate
+        picksByBrawler[name] = picks
+      })
 
       const newAllyData: AllyData[] = []
       for (const [brawler, contributingWinRate] of Object.entries(contributingWinRatesByBrawler)) {
