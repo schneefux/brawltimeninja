@@ -74,7 +74,7 @@ export default defineComponent({
       return root.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
     })
 
-    const links = [ {
+    const links = computed(() => [ {
       name: i18n.t('nav.Leaderboards'),
       target: localePath('/leaderboard/hours'),
     }, {
@@ -86,7 +86,7 @@ export default defineComponent({
     }, {
       name: i18n.t('nav.Privacy'),
       target: '/about',
-    }]
+    }])
 
     const store = useStore<any>()
     const version = computed(() => store.state.version as number)
