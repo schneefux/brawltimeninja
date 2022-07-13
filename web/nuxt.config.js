@@ -161,6 +161,7 @@ export default {
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/transitions.css',
+    '~/assets/css/fonts.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
 
