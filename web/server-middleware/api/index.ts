@@ -1,5 +1,4 @@
 import { ServerMiddleware } from '@nuxt/types'
-import * as trpc from '@trpc/server'
 import express from 'express'
 import * as trpcExpress from '@trpc/server/adapters/express'
 import superjson from 'superjson'

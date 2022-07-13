@@ -17,6 +17,16 @@ const httpsAgent = new HttpsAgent({
   keepAliveMsecs: 90*60,
 })
 
+export class RequestError extends Error {
+  constructor(public response: {
+    url: string,
+    status: number,
+    reason: string,
+  }) {
+    super(response.reason)
+  }
+}
+
 export function request<T>(
     path: string,
     base: string,
@@ -49,11 +59,11 @@ export function request<T>(
           stats.increment(metricName + '.servererror')
         }
 
-        throw {
+        throw new RequestError({
           url: url.toString(),
           status: response.status,
           reason: response.statusText,
-        }
+        })
       }
 
       return response.json() as Promise<T>
@@ -61,62 +71,12 @@ export function request<T>(
     .catch(error => {
       if (error.type == 'aborted') {
         stats.increment(metricName + '.timeout')
-        throw {
+
+        throw new RequestError({
           url: url.toString(),
           status: 429,
           reason: 'API took too long to respond',
-        }
-      }
-      stats.increment(metricName + '.error')
-      throw error
-    })
-    .finally(() => clearTimeout(timeout))
-
-  return stats.asyncTimer<[], T>(fun, metricName + '.timer')()
-}
-
-export function post<T>(
-    url: string,
-    data: any,
-    metricName: string,
-    timeoutMs: number = 500): Promise<T> {
-  const agent = url.startsWith('https') ? httpsAgent : httpAgent
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, timeoutMs)
-
-  stats.increment(metricName + '.run')
-  const fun = () => fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      agent,
-      compress: true,
-      signal: controller.signal,
-    })
-    .then(response => {
-      if (!response.ok) {
-        if (response.status >= 500) {
-          stats.increment(metricName + '.servererror')
-        }
-        throw {
-          url: url.toString(),
-          status: response.status,
-          reason: response.statusText,
-        }
-      }
-
-      return response.json() as Promise<T>
-    })
-    .catch(error => {
-      if (error.type == 'aborted') {
-        stats.increment(metricName + '.timeout')
-        throw {
-          url: url.toString(),
-          status: 429,
-          reason: 'API took too long to respond',
-        }
+        })
       }
       stats.increment(metricName + '.error')
       throw error

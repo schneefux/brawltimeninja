@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts">
+import { TRPCClientError } from '@trpc/client'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
@@ -64,8 +65,33 @@ export default Vue.extend({
 
     return tagPattern.test(tag)
   },
-  async asyncData({ params, $api, $klicker }) {
-    const player = await $api.query('player.byTag', params.tag)
+  async asyncData({ params, $api, $klicker, error, i18n }) {
+    let player: Player
+    try {
+      player = await $api.query('player.byTag', params.tag)
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        if (err.data.httpStatus == 404) {
+          error({
+            statusCode: err.data.httpStatus,
+            message: i18n.tc('error.tag.not-found'),
+          })
+          return
+        }
+        if (err.data.httpStatus >= 400) {
+          error({
+            statusCode: err.data.httpStatus,
+            message: i18n.tc('error.api-unavailable'),
+          })
+          return
+        }
+      }
+      error({
+        statusCode: 500,
+        message: i18n.tc('error.api-unavailable'),
+      })
+      return
+    }
 
     const battleData = await $klicker.query({
       cubeId: 'battle',

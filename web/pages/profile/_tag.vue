@@ -211,6 +211,7 @@ import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { tagPattern } from '~/lib/util'
+import { TRPCClientError } from '@trpc/client'
 
 export default defineComponent({
   directives: {
@@ -349,15 +350,22 @@ export default defineComponent({
         await store.dispatch('loadPlayer', params.tag)
       } catch (err: any) {
         if (err.response?.status == 404) {
-          error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
           return
         }
+
+        if (err instanceof TRPCClientError) {
+          if (err.data.httpStatus == 404) {
+            error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
+            return
+          }
+          if (err.data.httpStatus >= 400) {
+            error({ statusCode: err.data.httpStatus, message: i18n.tc('error.tag.api-unavailable') })
+            return
+          }
+        }
+
         console.error(err)
         $sentry.captureException(err)
-        if (err.response != undefined) {
-          error({ statusCode: err.response?.status ?? 500, message: i18n.tc('error.api-unavailable') })
-          return
-        }
         error({ statusCode: 500, message: ' ' })
         return
       }
