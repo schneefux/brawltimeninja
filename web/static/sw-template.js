@@ -93,11 +93,10 @@ function routingExtensions(workbox, options) {
 // above is https://github.com/nuxt-community/pwa-module/blob/dev/lib/workbox/templates/sw.js
 //
 // on update, bust all caches for older versions
-// this handler must run
-// after the initialization of workbox
+// this handler must run after the initialization of workbox
 // which is why it is not an importScript.
 self.addEventListener('activate', (event) => {
-  const release = '<%= options.release %>'
+  const release = '<%= options.cacheNames.prefix %>'
   console.log('running on release', release)
   caches.keys().then((keys) => Promise.all(
     keys

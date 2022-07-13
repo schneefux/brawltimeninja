@@ -150,7 +150,6 @@ export default {
       cacheNames: {
         prefix: 'brawltimeninja@' + process.env.GIT_REV,
       },
-      release: 'brawltimeninja@' + process.env.GIT_REV,
       // custom service worker with cache busting on release
       swTemplate: process.env.NODE_ENV == 'development' ? undefined : path.resolve(__dirname, 'static/sw-template.js'),
     },
