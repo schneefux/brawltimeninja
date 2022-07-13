@@ -3,10 +3,10 @@ import * as trpcNext from '@trpc/server/adapters/next'
 import isbot from 'isbot'
 
 export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
-  const bot = isbot(opts?.req.headers['user-agent'] || '')
+  const isBot = isbot(opts?.req.headers['user-agent'] || '')
 
   return {
-    isBot: bot,
+    isBot,
     res: opts?.res,
   }
 }

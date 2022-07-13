@@ -9,6 +9,9 @@ const plugin: Plugin = (context, inject) => {
   const client = trpc.createTRPCClient<AppRouter>({
     url: `${baseUrl}/api`,
     transformer: superjson,
+    headers: process.server ? {
+      'user-agent': context.req.headers['user-agent']
+    } : undefined,
   })
 
   inject('api', client)
