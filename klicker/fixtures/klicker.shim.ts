@@ -2,23 +2,36 @@ import Klicker from '../service'
 import config from './klicker.conf'
 import en from './en.json'
 
-export const useKlicker = () => {
-  if ('$klicker' in window) {
-    return { $klicker: (<any>window).$klicker }
+export function translate(key: string) {
+  if (key in en) {
+    return en[key]
+  }
+  console.log('Missing translation for ' + key)
+  return key
+}
+
+export class MockedKlicker extends Klicker {
+  constructor() {
+    super('https://cube.brawltime.ninja', config, [], [], [], [], [])
   }
 
-  const $klicker = new Klicker('https://cube.brawltime.ninja', config, [], [], [], [], [])
-
-  const translate = (key: string) => {
-    if (key in en) {
-      return en[key]
-    }
-    console.log('Missing translation for ' + key)
-    return key
+  $t(key: string, args?: any) {
+    return translate(key)
   }
-  $klicker.$t = translate
-  $klicker.$te = (key: string) => key in en;
-  (<any>window).$klicker = $klicker
 
-  return { $klicker, translate }
+  $te(key: string)  {
+    return key in en
+  }
+}
+
+let $klicker = new MockedKlicker()
+
+export const useKlicker = () => ({ $klicker, translate })
+
+export function decorator(story, { parameters }) {
+  if (parameters && parameters.$klicker) {
+    $klicker = parameters.$klicker
+  }
+
+  return story()
 }
