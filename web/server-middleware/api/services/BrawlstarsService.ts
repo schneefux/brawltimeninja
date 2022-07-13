@@ -119,6 +119,11 @@ export default class BrawlstarsService {
           p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
         })
       })
+
+      b.battle.players?.forEach(p => {
+        // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+        p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
+      })
     })
 
     player.brawlers.forEach(b => {
