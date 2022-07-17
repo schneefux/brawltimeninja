@@ -354,11 +354,11 @@ export default defineComponent({
         }
 
         if (err instanceof TRPCClientError) {
-          if (err.data.httpStatus == 404) {
+          if (err.data?.httpStatus == 404) {
             error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
             return
           }
-          if (err.data.httpStatus >= 400) {
+          if (err.data?.httpStatus >= 400) {
             error({ statusCode: err.data.httpStatus, message: i18n.tc('error.api-unavailable') })
             return
           }

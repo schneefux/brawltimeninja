@@ -278,7 +278,7 @@ export default defineComponent({
         store.commit('addLastPlayer', player.value)
       } catch (err) {
         if (err instanceof TRPCClientError) {
-          if (err.data.httpStatus == 404) {
+          if (err.data?.httpStatus == 404) {
             error.value = i18n.tc('error.tag.not-found')
             gtag.event('search', {
               'event_category': 'player',
@@ -286,7 +286,7 @@ export default defineComponent({
             })
             return
           }
-          if (err.data.httpStatus >= 400) {
+          if (err.data?.httpStatus >= 400) {
             error.value = i18n.tc('error.api-unavailable')
             gtag.event('search', {
               'event_category': 'player',

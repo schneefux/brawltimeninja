@@ -71,14 +71,14 @@ export default Vue.extend({
       player = await $api.query('player.byTag', params.tag)
     } catch (err) {
       if (err instanceof TRPCClientError) {
-        if (err.data.httpStatus == 404) {
+        if (err.data?.httpStatus == 404) {
           error({
-            statusCode: err.data.httpStatus,
+            statusCode: err.data?.httpStatus,
             message: i18n.tc('error.tag.not-found'),
           })
           return
         }
-        if (err.data.httpStatus >= 400) {
+        if (err.data?.httpStatus >= 400) {
           error({
             statusCode: err.data.httpStatus,
             message: i18n.tc('error.api-unavailable'),
