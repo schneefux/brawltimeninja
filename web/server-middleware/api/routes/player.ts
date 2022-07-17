@@ -21,13 +21,16 @@ export const playerRouter = createRouter()
         stats.increment('player.human')
       }
 
-      ctx.res?.set('Cache-Control', 'public, max-age=180')
 
       try {
-        return await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+        const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+        ctx.res?.set('Cache-Control', 'public, max-age=180')
+        return stats
       } catch (err: any) {
         if (err instanceof RequestError) {
           if (err.response.status >= 500) {
+            console.error(err, err.response)
+
             throw new trpc.TRPCError({
               code: 'PRECONDITION_FAILED',
               message: err.response.reason,
@@ -51,12 +54,15 @@ export const playerRouter = createRouter()
             })
           }
 
+          console.error(err, err.response)
+
           throw new trpc.TRPCError({
             code: 'BAD_REQUEST',
             message: err.response.reason,
             cause: err,
           })
         } else {
+          console.error(err)
           throw err
         }
       }

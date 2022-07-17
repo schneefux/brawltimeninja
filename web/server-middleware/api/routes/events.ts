@@ -11,6 +11,7 @@ export const eventsRouter = createRouter()
         ctx.res?.set('Cache-Control', 'public, max-age=300')
         return events
       } catch (err) {
+        console.error(err)
         return {
           current: [],
           upcoming: [],
