@@ -120,9 +120,15 @@ export default class BrawlstarsService {
         })
       })
 
-      b.battle.players?.forEach(p => {
+      b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
+        if ('brawler' in p) {
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
+        }
+        if ('brawlers' in p) {
+          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+          p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
+        }
       })
     })
 
