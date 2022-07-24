@@ -98,43 +98,24 @@ export default defineComponent({
       store.commit('hideConsentPopup')
       store.commit('disallowCookies')
       store.commit('disallowAds')
-      clearAdsCookie()
-      clearCookieCookie()
       hideAds()
     }
     const enableCookies = () => {
       store.commit('hideConsentPopup')
       store.commit('allowCookies')
       store.commit('disallowAds')
-      clearAdsCookie()
-      setCookieCookie()
       hideAds()
     }
     const enableCookiesAndAds = () => {
       store.commit('hideConsentPopup')
       store.commit('allowCookies')
       store.commit('allowAds')
-      setAdsCookie()
-      setCookieCookie()
       enableAds()
-    }
-
-    const setCookieCookie = () => {
-      document.cookie = `cookies=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-    }
-    const clearCookieCookie = () => {
-      document.cookie = `cookies=; path=/; expires=${new Date(0)}`
-    }
-    const setAdsCookie = () => {
-      document.cookie = `ads=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-    }
-    const clearAdsCookie = () => {
-      document.cookie = `ads=; path=/; expires=${new Date(0)}`
     }
 
     const gtag = useGtag()
     const enableAds = () => {
-      if (adsAllowed.value && (<any>process).client) {
+      if (adsAllowed.value && process.client) {
         // update consent preferences
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
@@ -165,7 +146,7 @@ export default defineComponent({
       }
     }
     const hideAds = () => {
-      if ((<any>process).client) {
+      if (process.client) {
         (<any>window).adsbygoogle.pauseAdRequests = 1
         const sheet = document.createElement('style')
         sheet.type = 'text/css'
@@ -179,14 +160,8 @@ export default defineComponent({
       if (!cookiesAllowed.value) {
         store.commit('showConsentPopup')
       } else {
-        // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
-        // based on cookies
-        // 2020-12-06: Disabled because caching the HTML with the `cached`
-        // middleware will serve random settings to users
-        setCookieCookie() // refresh
         if (adsAllowed.value) {
           enableAds()
-          setAdsCookie() // refresh
         } else {
           hideAds()
         }
