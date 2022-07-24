@@ -8,7 +8,7 @@ import ProfileUpdaterService from '../services/ProfileUpdaterService'
 import Knex from 'knex'
 import knexfile from '../knexfile'
 
-const environment = process.env.ENVIRONMENT || 'development'
+const environment = process.env.NODE_ENV || 'development'
 const knex = Knex(knexfile[environment])
 
 const brawlstarsService = new BrawlstarsService()

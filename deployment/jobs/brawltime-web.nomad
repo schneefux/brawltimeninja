@@ -172,6 +172,11 @@ job "brawltime-web" {
         SENTRY_DSN = "${var.sentry_dsn}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+        NODE_ENVIRONMENT = "production"
+        MYSQL_HOST = "mariadb.service.consul"
+        MYSQL_DATABASE = "brawltime"
+        MYSQL_USER = "brawltime"
+        MYSQL_PASSWORD = "brawltime"
         TRACKING_EXPIRE_AFTER_DAYS = "14"
         TRACKING_REFRESH_MINUTES = "1440"
       }
