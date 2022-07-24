@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useStore, computed, ref } from '@nuxtjs/composition-api'
+import { defineComponent, useStore, computed, ref, watch } from '@nuxtjs/composition-api'
 import { useIntersectionObserver } from '@vueuse/core'
 
 export default defineComponent({
@@ -92,17 +92,21 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
-    const allowed = computed(() => props.first || !isApp.value)
 
-    if (process.client && allowed.value && !visible.value) {
+    const isApp = computed(() => store.state.isApp)
+    // default to "allow" on SSR to render placeholders
+    const userAllowed = computed(() => store.state.adsAllowed == undefined || store.state.adsAllowed == true)
+    const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
+    const allowed = computed(() => policyAllowed.value && userAllowed.value)
+
+    if (process.client) {
       // TODO the fix for https://github.com/vueuse/vueuse/issues/685
       // and/or importing vueuse as peer dependency breaks this ref type
       const { isSupported, stop } = useIntersectionObserver(ad as any, ([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          visible.value = isIntersecting
+        if (isIntersecting && allowed.value) {
+          visible.value = true
           stop()
         }
       }, {

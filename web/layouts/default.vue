@@ -90,26 +90,26 @@ export default defineComponent({
 
     const store = useStore<any>()
     const version = computed(() => store.state.version as number)
-    const adsAllowed = computed(() => store.state.adsAllowed as boolean)
-    const cookiesAllowed = computed(() => store.state.cookiesAllowed as boolean)
+    const adsAllowed = computed(() => store.state.adsAllowed as undefined|boolean)
+    const cookiesAllowed = computed(() => store.state.cookiesAllowed as undefined|boolean)
     const consentPopupVisible = computed(() => store.state.consentPopupVisible as boolean)
 
     const disableCookies = () => {
       store.commit('hideConsentPopup')
-      store.commit('disallowCookies')
-      store.commit('disallowAds')
+      store.commit('setCookiesAllowed', false)
+      store.commit('setAdsAllowed', false)
       hideAds()
     }
     const enableCookies = () => {
       store.commit('hideConsentPopup')
-      store.commit('allowCookies')
-      store.commit('disallowAds')
+      store.commit('setCookiesAllowed', true)
+      store.commit('setAdsAllowed', false)
       hideAds()
     }
     const enableCookiesAndAds = () => {
       store.commit('hideConsentPopup')
-      store.commit('allowCookies')
-      store.commit('allowAds')
+      store.commit('setCookiesAllowed', true)
+      store.commit('setAdsAllowed', true)
       enableAds()
     }
 
@@ -127,9 +127,7 @@ export default defineComponent({
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
         const isTwa = document.referrer.startsWith('android-app')
 
-        if (isPwa || isTwa) {
-          store.commit('setIsApp')
-        }
+        store.commit('setIsApp', isPwa || isTwa)
 
         gtag.event('branch_dimension', {
           'branch': process.env.branch || '',
@@ -157,7 +155,7 @@ export default defineComponent({
 
     // called after vuex-persist has loaded
     watch(version, () => {
-      if (!cookiesAllowed.value) {
+      if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
         store.commit('showConsentPopup')
       } else {
         if (adsAllowed.value) {

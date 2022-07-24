@@ -50,7 +50,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as boolean)
+    const isApp = computed(() => store.state.isApp as undefined|boolean)
 
     return {
       isApp,

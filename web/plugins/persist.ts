@@ -50,13 +50,7 @@ const plugin: Plugin = ({ store }) => {
         const adsAllowed = document.cookie.includes('ads=true')
         value.adsAllowed = adsAllowed
         // force persist in next tick
-        setTimeout(() => {
-          if (adsAllowed) {
-            store.commit('allowAds')
-          } else {
-            store.commit('disallowAds')
-          }
-        }, 0)
+        setTimeout(() => store.commit('setAdsAllowed', adsAllowed), 0)
         document.cookie = 'ads=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
       }
 
@@ -64,13 +58,7 @@ const plugin: Plugin = ({ store }) => {
         const cookiesAllowed = document.cookie.includes('cookies=true')
         value.cookiesAllowed = cookiesAllowed
         // force persist in next tick
-        setTimeout(() => {
-          if (cookiesAllowed) {
-            store.commit('allowCookies')
-          } else {
-            store.commit('disallowCookies')
-          }
-        }, 0)
+        setTimeout(() => store.commit('setCookiesAllowed', cookiesAllowed), 0)
         document.cookie = 'cookies=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
       }
 
