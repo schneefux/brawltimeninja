@@ -575,5 +575,10 @@
     "mode.invasion": "Bot Drop",
     "mode.unknown": "Unknown Mode",
     "mode.botDrop": "Bot Drop",
-    "mode.hunters": "Hunters"
+    "mode.hunters": "Hunters",
+    "profile.tracking.label": "Profile Tracking",
+    "profile.tracking.status.active": "Active",
+    "profile.tracking.status.inactive": "Inactive",
+    "profile.tracking.status.expired": "Expired",
+    "profile.tracking.enable": "Enable Tracking"
 }

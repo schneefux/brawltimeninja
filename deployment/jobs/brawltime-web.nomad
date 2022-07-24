@@ -172,6 +172,8 @@ job "brawltime-web" {
         SENTRY_DSN = "${var.sentry_dsn}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+        TRACKING_EXPIRE_AFTER_DAYS = "14"
+        TRACKING_REFRESH_MINUTES = "1440"
       }
 
       template {

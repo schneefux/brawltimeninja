@@ -4,6 +4,7 @@ import { Battle, Brawler, Player, ActiveEvent } from '../../../model/Api'
 import { request } from '../lib/request'
 import { StarlistEvent } from '../../../model/Starlist'
 import ClickerService from './ClickerService'
+import { ProfileTrackingStatus } from './ProfileUpdaterService'
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -75,7 +76,7 @@ export default class BrawlstarsService {
     return response.items
   }
 
-  public async getPlayerStatistics(tag: string, store: boolean) {
+  public async getPlayerStatistics(tag: string, store: boolean, trackingStatus: ProfileTrackingStatus|undefined) {
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       getApiUrl(tag),
@@ -245,6 +246,7 @@ export default class BrawlstarsService {
       // overwrite brawlers
       brawlers,
       battles,
+      tracking: trackingStatus,
     } as Player;
   }
 

@@ -2,7 +2,7 @@ import { ServerMiddleware } from '@nuxt/types'
 import express from 'express'
 import * as trpcExpress from '@trpc/server/adapters/express'
 import superjson from 'superjson'
-import { playerRouter } from './routes/player'
+import { playerRouter, updateAllProfiles } from './routes/player'
 import { clubRouter } from './routes/club'
 import { createContext, createRouter } from './context'
 import { rankingsRouter } from './routes/rankings'
@@ -22,6 +22,15 @@ const appRouter = createRouter()
 export type AppRouter = typeof appRouter
 
 const app = express()
+
+// TODO restrict to localhost
+app.post('/cron', async (req, res) => {
+  console.time('running cron jobs')
+  const profileUpdater = await updateAllProfiles()
+  console.timeEnd('running cron jobs')
+
+  res.json({ profileUpdater })
+})
 
 app.use(
   '/',

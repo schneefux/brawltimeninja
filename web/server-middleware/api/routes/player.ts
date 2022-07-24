@@ -4,10 +4,27 @@ import { createRouter } from '../context'
 import { RequestError } from '../lib/request'
 import { tagWithoutHashType } from '../schema/types'
 import BrawlstarsService from '../services/BrawlstarsService'
-import TrackerService from '../services/ProfileUpdateService'
+import ProfileUpdaterService from '../services/ProfileUpdaterService'
+import Knex from 'knex'
+import knexfile from '../knexfile'
+
+const environment = process.env.ENVIRONMENT || 'development'
+const knex = Knex(knexfile[environment])
 
 const brawlstarsService = new BrawlstarsService()
-const trackerService = new TrackerService()
+const profileUpdaterService = new ProfileUpdaterService(async (tag) => {
+  const player = await updatePlayer(tag, true)
+  return player.battles.length > 0 ? player.battles[0].timestamp : undefined
+}, knex)
+
+async function updatePlayer(tag: string, store: boolean) {
+  const trackingStatus = await profileUpdaterService.getProfileTrackingStatus(tag)
+  return await brawlstarsService.getPlayerStatistics(tag, store, trackingStatus)
+}
+
+export async function updateAllProfiles() {
+  return await profileUpdaterService.updateAll()
+}
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
@@ -21,9 +38,8 @@ export const playerRouter = createRouter()
         stats.increment('player.human')
       }
 
-
       try {
-        const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+        const stats = await updatePlayer(input, !ctx.isBot)
         ctx.res?.set('Cache-Control', 'public, max-age=180')
         return stats
       } catch (err: any) {
@@ -71,17 +87,6 @@ export const playerRouter = createRouter()
   .mutation('trackTag', {
     input: tagWithoutHashType,
     async resolve({ input }) {
-      return await trackerService.updatePlayerTrackingStatus(input);
+      return await profileUpdaterService.updateProfileTrackingStatus(input)
     },
   })
-
-  /*
-router.post('/tracker/update', async (ctx) => {
-  try {
-    ctx.body = await trackerService.updateAll();
-  } catch (error: any) {
-    console.log(error)
-    ctx.throw(error.status, error.reason)
-  }
-})
-*/

@@ -17,6 +17,7 @@
             once: true,
           }"
           class="!h-auto"
+          @refresh="refresh()"
         ></player-aside>
 
         <b-scroll-spy

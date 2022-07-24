@@ -9,7 +9,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "api:knex": "cd ./server-middleware/api/ && node --loader ts-node/esm ../../node_modules/.bin/knex",
+    "api:knex": "cd ./server-middleware/api/ && TS_NODE_PROJECT=tsconfig-esm.json node --loader ts-node/esm ../../node_modules/.bin/knex",
     "api:jest": "cd ./server-middleware/api/ && node --experimental-vm-modules ../../node_modules/.bin/jest"
   },
   "dependencies": {

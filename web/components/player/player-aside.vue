@@ -1,5 +1,8 @@
 <template>
-  <b-card :title="player.name">
+  <b-card
+    :title="player.name"
+    :loading="loading"
+  >
     <div
       slot="content"
       class="flex flex-col items-center"
@@ -93,22 +96,34 @@
           ></media-img>
           {{ value }}
         </template>
+
+        <template v-slot:tracking="{ row }">
+          {{ $t('profile.tracking.status.' + row.tracking) }}
+        </template>
       </b-kv-table>
     </div>
 
-    <share-render-button
-      slot="actions"
-      :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
-      :url="playerUrl"
-      secondary
-      sm
-      @share="sharepicTriggered"
-    ></share-render-button>
+    <div slot="actions" class="flex flex-wrap gap-2">
+      <b-button
+        v-if="player == undefined || player.tracking == 'inactive' || player.tracking == 'expired'"
+        primary
+        sm
+        @click="enableTracking()"
+      >{{ $t('profile.tracking.enable') }}</b-button>
+
+      <share-render-button
+        :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
+        :url="playerUrl"
+        primary
+        sm
+        @share="sharepicTriggered"
+      ></share-render-button>
+    </div>
   </b-card>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, PropType, useContext, wrapProperty} from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext, wrapProperty } from '@nuxtjs/composition-api'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
@@ -124,7 +139,7 @@ export default defineComponent({
       required: true
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const rows: Row[] = []
     const { localePath, i18n } = useContext()
 
@@ -184,6 +199,12 @@ export default defineComponent({
       title: i18n.t('metric.duoVictories') as string,
     })
 
+    rows.push({
+      slot: 'tracking',
+      key: 'tracking',
+      title: i18n.t('profile.tracking.label') as string,
+    })
+
     const playerUrl = computed(() => `${process.client ? window.location.origin : ''}${localePath('/player/' + props.player.tag)}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
     const gtag = useGtag()
     const sharepicTriggered = () => gtag.event('click', {
@@ -191,9 +212,23 @@ export default defineComponent({
       'event_label': 'share',
     })
 
+    const { $api } = useContext()
+    const loading = ref(false)
+    const enableTracking = async () => {
+      if (props.player == undefined) {
+        return
+      }
+      loading.value = true
+      await $api.mutation('player.trackTag', props.player.tag.substring(1))
+      emit('refresh')
+      loading.value = false
+    }
+
     return {
       rows,
       playerUrl,
+      loading,
+      enableTracking,
       sharepicTriggered,
     }
   },

@@ -13,12 +13,14 @@ const config: Record<string, Knex.Config> = {
   production: {
     client: 'mysql2',
     connection: {
-      database: 'brawltime',
-      user: 'brawltime',
-      password: 'brawltime',
+      host: process.env.MYSQL_HOST ?? 'localhost',
+      port: parseInt(process.env.MYSQL_PORT ?? '3306'),
+      database: process.env.MYSQL_DATABASE,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
     },
     pool: {
-      min: 2,
+      min: 1,
       max: 10
     },
   },
