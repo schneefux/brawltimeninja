@@ -230,7 +230,7 @@ export default defineComponent({
         .map(p => (<PlayerLink>{
           tag: p.tag,
           name: p.name,
-          link: `/profile/${p.tag}`,
+          link: `/profile/${p.tag.replace(/^#/, '')}`,
         }))
     })
 
