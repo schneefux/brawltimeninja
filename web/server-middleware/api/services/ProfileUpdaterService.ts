@@ -38,6 +38,8 @@ export default class ProfileUpdaterService {
       })
       .onConflict('tag')
       .merge(['confirmed_at', 'last_updated_at', 'last_active_at'])
+
+    return await this.getProfileTrackingStatus(tag)
   }
 
   private getExpirationDate() {

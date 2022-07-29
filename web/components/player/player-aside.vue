@@ -97,15 +97,15 @@
           {{ value }}
         </template>
 
-        <template v-slot:tracking="{ row }">
-          {{ $t('profile.tracking.status.' + row.tracking) }}
+        <template v-slot:tracking>
+          {{ $t('profile.tracking.status.' + trackingStatus) }}
         </template>
       </b-kv-table>
     </div>
 
     <div slot="actions" class="flex flex-wrap gap-2">
       <b-button
-        v-if="player == undefined || player.tracking == 'inactive' || player.tracking == 'expired'"
+        v-if="player == undefined || trackingStatus == 'inactive' || trackingStatus == 'expired'"
         primary
         sm
         @click="enableTracking()"
@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useAsync, useContext, wrapProperty } from '@nuxtjs/composition-api'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
@@ -139,70 +139,90 @@ export default defineComponent({
       required: true
     },
   },
-  setup(props, { emit }) {
-    const rows: Row[] = []
+  setup(props) {
     const { localePath, i18n } = useContext()
 
-    rows.push({
-      slot: 'name',
-      key: 'name',
-      title: i18n.t('metric.name') as string,
-    })
-
-    rows.push({
-      slot: 'tag',
-      key: 'tag',
-      title: i18n.t('metric.tag') as string,
-    })
-
-    if (props.player.club?.tag != undefined) {
-      rows.push({
-        slot: 'club',
-        key: 'club.name',
-        title: i18n.t('club') as string,
-      })
+    const { $api } = useContext()
+    const loading = ref(false)
+    const trackingStatus = useAsync(
+      () => $api.query('player.getTrackingStatus', props.player.tag.substring(1)),
+      `player-tracking-status-${props.player.tag.substring(1)}`)
+    const enableTracking = async () => {
+      if (props.player == undefined) {
+        return
+      }
+      loading.value = true
+      trackingStatus.value = await $api.mutation('player.trackTag', props.player.tag.substring(1))
+      loading.value = false
     }
 
-    rows.push({
-      slot: 'trophies',
-      key: 'trophies',
-      title: i18n.t('metric.trophies') as string,
-    })
+    const rows = computed<Row[]>(() => {
+      const rows: Row[] = []
+      rows.push({
+        slot: 'name',
+        key: 'name',
+        title: i18n.t('metric.name') as string,
+      })
 
-    rows.push({
-      slot: 'trophies',
-      key: 'highestTrophies',
-      title: i18n.t('metric.highestTrophies') as string,
-    })
+      rows.push({
+        slot: 'tag',
+        key: 'tag',
+        title: i18n.t('metric.tag') as string,
+      })
 
-    rows.push({
-      slot: 'expLevel',
-      key: 'expLevel',
-      title: i18n.t('metric.expLevel') as string,
-    })
+      if (props.player.club?.tag != undefined) {
+        rows.push({
+          slot: 'club',
+          key: 'club.name',
+          title: i18n.t('club') as string,
+        })
+      }
 
-    rows.push({
-      slot: 'victories',
-      key: '3vs3Victories',
-      title: i18n.t('metric.victories') as string,
-    })
+      rows.push({
+        slot: 'trophies',
+        key: 'trophies',
+        title: i18n.t('metric.trophies') as string,
+      })
 
-    rows.push({
-      slot: 'soloVictories',
-      key: 'soloVictories',
-      title: i18n.t('metric.soloVictories') as string,
-    })
+      rows.push({
+        slot: 'trophies',
+        key: 'highestTrophies',
+        title: i18n.t('metric.highestTrophies') as string,
+      })
 
-    rows.push({
-      slot: 'duoVictories',
-      key: 'duoVictories',
-      title: i18n.t('metric.duoVictories') as string,
-    })
+      rows.push({
+        slot: 'expLevel',
+        key: 'expLevel',
+        title: i18n.t('metric.expLevel') as string,
+      })
 
-    rows.push({
-      slot: 'tracking',
-      key: 'tracking',
-      title: i18n.t('profile.tracking.label') as string,
+      rows.push({
+        slot: 'victories',
+        key: '3vs3Victories',
+        title: i18n.t('metric.victories') as string,
+      })
+
+      rows.push({
+        slot: 'soloVictories',
+        key: 'soloVictories',
+        title: i18n.t('metric.soloVictories') as string,
+      })
+
+      rows.push({
+        slot: 'duoVictories',
+        key: 'duoVictories',
+        title: i18n.t('metric.duoVictories') as string,
+      })
+
+      if (trackingStatus.value != undefined) {
+        rows.push({
+          slot: 'tracking',
+          key: 'tag', // TODO quick hack
+          title: i18n.t('profile.tracking.label') as string,
+        })
+      }
+
+      return rows
     })
 
     const playerUrl = computed(() => `${process.client ? window.location.origin : ''}${localePath('/player/' + props.player.tag)}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
@@ -212,23 +232,12 @@ export default defineComponent({
       'event_label': 'share',
     })
 
-    const { $api } = useContext()
-    const loading = ref(false)
-    const enableTracking = async () => {
-      if (props.player == undefined) {
-        return
-      }
-      loading.value = true
-      await $api.mutation('player.trackTag', props.player.tag.substring(1))
-      emit('refresh')
-      loading.value = false
-    }
-
     return {
       rows,
       playerUrl,
       loading,
       enableTracking,
+      trackingStatus,
       sharepicTriggered,
     }
   },

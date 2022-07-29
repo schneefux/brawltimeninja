@@ -76,7 +76,7 @@ export default class BrawlstarsService {
     return response.items
   }
 
-  public async getPlayerStatistics(tag: string, store: boolean, trackingStatus: ProfileTrackingStatus|undefined) {
+  public async getPlayerStatistics(tag: string, store: boolean) {
     const battleLog = await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       getApiUrl(tag),
@@ -246,7 +246,6 @@ export default class BrawlstarsService {
       // overwrite brawlers
       brawlers,
       battles,
-      tracking: trackingStatus,
     } as Player;
   }
 

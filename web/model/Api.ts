@@ -41,7 +41,6 @@ export interface Battle {
 export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
   brawlers: Record<string, Brawler>
   battles: Battle[]
-  tracking?: ProfileTrackingStatus
 }
 
 export interface ActiveEvent {

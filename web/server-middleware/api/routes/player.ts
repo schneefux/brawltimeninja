@@ -13,14 +13,9 @@ const knex = Knex(knexfile[environment])
 
 const brawlstarsService = new BrawlstarsService()
 const profileUpdaterService = new ProfileUpdaterService(async (tag) => {
-  const player = await updatePlayer(tag, true)
+  const player = await brawlstarsService.getPlayerStatistics(tag, true)
   return player.battles.length > 0 ? player.battles[0].timestamp : undefined
 }, knex)
-
-async function updatePlayer(tag: string, store: boolean) {
-  const trackingStatus = await profileUpdaterService.getProfileTrackingStatus(tag)
-  return await brawlstarsService.getPlayerStatistics(tag, store, trackingStatus)
-}
 
 export async function updateAllProfiles() {
   return await profileUpdaterService.updateAll()
@@ -39,7 +34,7 @@ export const playerRouter = createRouter()
       }
 
       try {
-        const stats = await updatePlayer(input, !ctx.isBot)
+        const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
         ctx.res?.set('Cache-Control', 'public, max-age=180')
         return stats
       } catch (err: any) {
@@ -81,6 +76,17 @@ export const playerRouter = createRouter()
           console.error(err)
           throw err
         }
+      }
+    },
+  })
+  .query('getTrackingStatus', {
+    input: tagWithoutHashType,
+    async resolve({ input }) {
+      try {
+        return await profileUpdaterService.getProfileTrackingStatus(input)
+      } catch (err: any) {
+        console.error(err)
+        throw err
       }
     },
   })
