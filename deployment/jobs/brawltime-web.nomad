@@ -127,39 +127,6 @@ job "brawltime-web" {
       }
     }
 
-    task "delete-api-token" {
-      lifecycle {
-        hook = "poststop"
-      }
-
-      driver = "exec"
-
-      # revoke token
-      config {
-        command = "/bin/bash"
-        args = ["-e", "${NOMAD_TASK_DIR}/delete_apikey.sh"]
-      }
-
-      template {
-        data = <<-EOF
-          EMAIL="${var.brawlstars_email}"
-          PASSWORD="${var.brawlstars_password}"
-        EOF
-        destination = "secrets/credentials.env"
-        env = true
-      }
-
-      template {
-        data = file("./bin/delete_apikey.sh")
-        destination = "local/delete_apikey.sh"
-      }
-
-      resources {
-        cpu = 16
-        memory = 32
-      }
-    }
-
     task "web" {
       driver = "docker"
 
