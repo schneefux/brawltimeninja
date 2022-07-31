@@ -82,14 +82,13 @@ WithPreview.play = async ({ canvasElement }) => {
   const goTo1Button = await canvas.findByText('#1')
   const goTo3Button = await canvas.findByText('#3')
   const item1 = await canvas.findByText('1')
-  const item3 = await canvas.findByText('3')
 
   await waitFor(() => expect(item1.getBoundingClientRect().left).toBeLessThan(400))
-  expect(item3.getBoundingClientRect().left).toBeGreaterThan(400)
 
   await userEvent.click(goTo3Button)
+  const item3 = await canvas.findByText('3')
   await waitFor(() => expect(item3.getBoundingClientRect().left).toBeLessThan(400))
-  expect(item1.getBoundingClientRect().left).toBeLessThan(0)
+  expect(item1.getBoundingClientRect().left).not.toBeGreaterThan(0)
 
   await userEvent.click(goTo1Button)
   await waitFor(() => expect(item1.getBoundingClientRect().left).toBeLessThan(400))

@@ -104,7 +104,9 @@ class CustomKlicker extends Klicker {
       },
       sortId: 'timestamp',
       limit: 20,
-    })
+    }).catch(() => ({
+      data: [],
+    }))
 
     const lastEvents = events.data
       .map(e => ({
@@ -119,8 +121,7 @@ class CustomKlicker extends Klicker {
       }))
       .filter(e => maxage == null || differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
 
-    const starlistData = await this.context.$http.$get(this.context.$config.apiUrl + '/api/events/active')
-      .catch(() => ({ current: [], upcoming: [] })) as CurrentAndUpcomingEvents
+    const starlistData = await this.context.$api.query('events.active')
     starlistData.current.forEach(s => {
       const match = lastEvents.find(e => e.id.toString() == s.id)
       if (match) {
@@ -143,7 +144,9 @@ class CustomKlicker extends Klicker {
         ...slices,
       },
       sortId: 'map',
-    })
+    }).catch(() => ({
+      data: [],
+    }))
 
     return events.data
       .map(e => ({
@@ -174,7 +177,9 @@ class CustomKlicker extends Klicker {
         season: [formatClickhouseDate(getSeasonEnd(limit))],
       },
       sortId: 'season',
-    })
+    }).catch(() => ({
+      data: [],
+    }))
 
     return data.data
       .map(e => {
@@ -197,7 +202,9 @@ class CustomKlicker extends Klicker {
         season: [formatClickhouseDate(getMonthSeasonEnd())],
       },
       sortId: 'mode',
-    })
+    }).catch(() => ({
+      data: [],
+    }))
     return modes.data
       .map(row => row.dimensionsRaw.mode.mode)
       .sort((a, b) => this.$t('mode.' + a).localeCompare(this.$t('mode.' + b)))
@@ -215,7 +222,9 @@ class CustomKlicker extends Klicker {
         } : {}),
       },
       sortId: 'picks',
-    })
+    }).catch(() => ({
+      data: [],
+    }))
     return maps.data.map(e => ({
       battle_event_id: e.metricsRaw.eventId as number,
       battle_event_map: e.dimensionsRaw.map.map as string,
@@ -231,7 +240,9 @@ class CustomKlicker extends Klicker {
         season: [formatClickhouseDate(getTodaySeasonEnd())],
       },
       sortId: 'picks',
-    })
+    }).catch(() => ({
+      data: [],
+    }))
     return brawlers.data
       .map(b => b.dimensionsRaw.brawler.brawler)
       .sort((a, b) => a.localeCompare(b))

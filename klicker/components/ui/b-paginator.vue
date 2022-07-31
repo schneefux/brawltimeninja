@@ -35,7 +35,7 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent } from 'vue-demi'
+import { computed, defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
   components: {

@@ -1,86 +1,75 @@
 <template>
-  <div
-    ref="container"
-    class="ml-4 inline-flex items-center"
+  <b-search
+    ref="search"
+    v-model="popupOpen"
+    :input-class="inputClass"
+    container-class=""
+    popup-class="top-14 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-3.5rem)] w-screen lg:max-w-md"
+    @enter="goToFirstResult"
   >
-    <font-awesome-icon
-      :icon="faSearch"
-      class="-mr-6"
-    ></font-awesome-icon>
-    <b-textbox
-      v-model="filter"
-      ref="search"
-      :class="inputClass"
-      type="text"
-      class="pl-8 h-6 w-full"
-      @focus="showNavigator = true"
-      @keyup.native.enter="goToFirstResult"
-    ></b-textbox>
-
-    <b-card
-      v-if="showNavigator"
-      ref="popup"
-      :elevation="0"
-      :title="$t('nav.Menu')"
-      class="top-14 bottom-14 lg:bottom-0 absolute h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-3.5rem)] inset-x-0 w-screen z-10 lg:max-w-md"
-    >
-      <b-navigator
-        slot="content"
-        ref="navigator"
-        :links="linkTree"
-        :link-generator="linkGenerator"
-        :search="filter"
-        class="h-full pb-14 overflow-y-auto overscroll-contain"
+    <template v-slot="{ query }">
+      <b-card
+        :elevation="0"
+        :title="$t('nav.Menu')"
       >
-        <template v-slot:link="{ to, title }">
-          <nuxt-link
-            :to="to"
-            class="underline col-start-2"
-          >{{ title }}</nuxt-link>
-        </template>
-      </b-navigator>
-      <button
-        slot="preview"
-        class="text-xl h-6 w-6"
-        aria-label="close"
-        @click="showNavigator = false"
-      >
-        <font-awesome-icon
-          :icon="faTimes"
-        ></font-awesome-icon>
-      </button>
-    </b-card>
-  </div>
+        <b-navigator
+          slot="content"
+          ref="navigator"
+          :links="linkTree"
+          :link-generator="linkGenerator"
+          :search="query"
+          class="h-full pb-14 overflow-y-auto overscroll-contain"
+        >
+          <template v-slot:link="{ to, title }">
+            <nuxt-link
+              :to="to"
+              class="underline col-start-2"
+            >{{ title }}</nuxt-link>
+          </template>
+        </b-navigator>
+        <button
+          slot="preview"
+          class="text-xl h-6 w-6"
+          aria-label="close"
+          @click="popupOpen = false"
+        >
+          <font-awesome-icon
+            :icon="faTimes"
+          ></font-awesome-icon>
+        </button>
+      </b-card>
+    </template>
+  </b-search>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, useAsync, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
-import { BTextbox, BCard, BNavigator } from '@schneefux/klicker/components'
+import { BCard, BNavigator, BSearch } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import { brawlerId, camelToKebab, capitalizeWords, slugify, tagPattern } from '~/lib/util'
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
 
 export default defineComponent({
+  components: {
+    BSearch,
+    BCard,
+    BNavigator,
+  },
   props: {
     inputClass: {
       type: String,
       default: '',
     },
   },
-  components: {
-    BTextbox,
-    BCard,
-    BNavigator,
-  },
   setup() {
-    const { $klicker, $http, i18n, localePath } = useContext()
+    const { $klicker, i18n, localePath } = useContext()
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
-    const toc = useAsync(() => $http.$get<TocEntry[]>('/content/guides/toc.json'), 'guides-toc')
+    const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 
@@ -299,30 +288,17 @@ export default defineComponent({
       return []
     }
 
-    const filter = ref('')
-    const showNavigator = ref(false)
+    const popupOpen = ref(false)
 
     const route = useRoute()
-
+    const search = ref<InstanceType<typeof BSearch>>()
     watch(route, () => {
-      showNavigator.value = false
-      filter.value = ''
+      popupOpen.value = false
+      search.value?.reset()
     })
 
     const popup = ref<typeof BCard>()
-    const container = ref<HTMLElement>()
-    onClickOutside(popup as any, () => showNavigator.value = false, {
-      ignore: [container as any],
-    })
 
-    const search = ref<InstanceType<typeof BTextbox>>()
-    onKeyStroke(
-      (event) => (event.metaKey || event.ctrlKey) && event.key == 'k',
-      () => {
-        showNavigator.value = true;
-        (search.value!.$el as HTMLInputElement).focus()
-      },
-    )
 
     const navigator = ref<InstanceType<typeof BNavigator>>()
     const router = useRouter()
@@ -342,16 +318,13 @@ export default defineComponent({
 
     return {
       navigator,
-      container,
       popup,
-      search,
-      filter,
-      showNavigator,
       linkTree,
       linkGenerator,
-      faSearch,
       faTimes,
       goToFirstResult,
+      popupOpen,
+      search,
     }
   },
 })

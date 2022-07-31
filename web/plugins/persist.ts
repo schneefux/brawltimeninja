@@ -34,13 +34,7 @@ const plugin: Plugin = ({ store }) => {
       }
 
       // 6 -> 7: store ads and cookie settings in a cookie
-      if (value.adsAllowed) {
-        document.cookie = `ads=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-      }
-
-      if (value.cookiesAllowed) {
-        document.cookie = `cookies=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-      }
+      // (deleted)
 
       // 7 -> 8: store user tag in localStorage instead of cookie
       // (keep number of cookies to a minimum to take advantage of `cached` middleware)
@@ -51,7 +45,24 @@ const plugin: Plugin = ({ store }) => {
         setTimeout(() => store.commit('setUserTag', userTag), 0) // force persist in next tick
       }
 
-      value.version = 8
+      // 8 -> 9: store ads and cookie settings in localStorage again (Analytics Cookies mess up caching)
+      if (document.cookie.includes('ads=true') || document.cookie.includes('ads=false')) {
+        const adsAllowed = document.cookie.includes('ads=true')
+        value.adsAllowed = adsAllowed
+        // force persist in next tick
+        setTimeout(() => store.commit('setAdsAllowed', adsAllowed), 0)
+        document.cookie = 'ads=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      }
+
+      if (document.cookie.includes('cookies=true') || document.cookie.includes('cookies=false')) {
+        const cookiesAllowed = document.cookie.includes('cookies=true')
+        value.cookiesAllowed = cookiesAllowed
+        // force persist in next tick
+        setTimeout(() => store.commit('setCookiesAllowed', cookiesAllowed), 0)
+        document.cookie = 'cookies=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      }
+
+      value.version = 9
 
       return value
     }

@@ -13,7 +13,7 @@
     <button
       slot="preview"
       :selected="showFilters"
-      :aria-label="showFilters ? $t('action.collapse') : $t('action.expand')"
+      :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
       :aria-controls="`${prefix}-filters`"
       class="md:hidden w-10"
       @click.stop="toggleFilters"
@@ -47,7 +47,7 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, PropType, ref } from '@vue/composition-api'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCubeConfig } from '../composables/config'
@@ -89,7 +89,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
     const showFilters = ref(false)
 
     const compareMode = computed(() => props.value.comparing)
@@ -162,13 +162,13 @@ export default defineComponent({
 
     const title = computed(() => {
       if (props.both || !compareMode.value) {
-        return $klicker.$t('filter.title')
+        return translate('filter.title')
       }
 
       if (props.comparing) {
-        return $klicker.$t('comparison.filter.test')
+        return translate('comparison.filter.test')
       } else {
-        return $klicker.$t('comparison.filter.reference')
+        return translate('comparison.filter.reference')
       }
     })
 
@@ -218,8 +218,6 @@ export default defineComponent({
           import: spec.import,
         }))
     })
-
-    const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     const toggleFilters = () => showFilters.value = !showFilters.value
 

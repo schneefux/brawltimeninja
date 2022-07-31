@@ -55,6 +55,7 @@
 <script lang="ts">
 import { format, parseISO } from 'date-fns'
 import { computed, defineComponent, onMounted, ref } from '@nuxtjs/composition-api'
+import { useDateFnLocale } from '~/composables/date-fns'
 
 export default defineComponent({
   props: {
@@ -68,7 +69,10 @@ export default defineComponent({
     const lightboxOpen = ref(false)
     const lightboxImage = ref('')
 
-    const date = computed(() => format(parseISO(props.document.createdAt), 'PP'))
+    const { locale } = useDateFnLocale()
+    const date = computed(() => format(parseISO(props.document.createdAt), 'PP', {
+      locale: locale.value,
+    }))
 
     onMounted(() => {
       if (content.value != undefined) {

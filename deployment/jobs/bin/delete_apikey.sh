@@ -12,9 +12,12 @@ do
   esac
 done
 
-[ -z $EMAIL ] && echo "-e is required"
-[ -z $PASSWORD ] && echo "-p is required"
-NAME="Nomad $NOMAD_ALLOC_ID"
+[ -z "$EMAIL" ] && echo "-e is required"
+[ -z "$PASSWORD" ] && echo "-p is required"
+
+MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
+
+NAME="Nomad $NOMAD_ALLOC_NAME $MY_IP"
 
 COOKIE_JAR=$(mktemp)
 

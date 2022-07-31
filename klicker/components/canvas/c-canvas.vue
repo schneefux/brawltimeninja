@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from '@vue/composition-api'
 import CMoveableWidget from './c-moveable-widget.vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import BNumber from '../ui/b-number.vue'

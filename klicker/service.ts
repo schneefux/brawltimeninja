@@ -181,6 +181,9 @@ export default class Klicker implements KlickerService {
   }
 
   public findCubeQueryConfiguration(query: CubeQuery) {
+    if (!(query.cubeId in this.config)) {
+      throw new Error('Cube does not exist in config: ' + query.cubeId)
+    }
     const desiredConfig = this.validateCube(query, this.config[query.cubeId])
 
     if (process.env.NODE_ENV == 'development') {

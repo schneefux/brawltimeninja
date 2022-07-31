@@ -1,6 +1,5 @@
 import path from 'path'
 
-const apiUrl = (process.env.API_URL || 'https://api.brawltime.ninja').replace(/\/$/, ''); // replace trailing slash
 const mediaUrl = (process.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, '');
 const renderUrl = (process.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, '');
 const cubeUrl = (process.env.CUBE_URL || 'https://cube.brawltime.ninja').replace(/\/$/, '');
@@ -139,9 +138,6 @@ export default {
         urlPattern: mediaUrl + '/.*',
         handler: 'staleWhileRevalidate',
       }, {
-        urlPattern: apiUrl + '/.*',
-        handler: 'networkFirst',
-      }, {
         urlPattern: cubeUrl + '/.*',
         handler: 'networkFirst',
       }, {
@@ -154,7 +150,6 @@ export default {
       cacheNames: {
         prefix: 'brawltimeninja@' + process.env.GIT_REV,
       },
-      release: 'brawltimeninja@' + process.env.GIT_REV,
       // custom service worker with cache busting on release
       swTemplate: process.env.NODE_ENV == 'development' ? undefined : path.resolve(__dirname, 'static/sw-template.js'),
     },
@@ -165,6 +160,7 @@ export default {
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/transitions.css',
+    '~/assets/css/fonts.css',
     ...(process.env.NODE_ENV == 'development' ? ['~/assets/css/development.css'] : []),
   ],
 
@@ -176,6 +172,7 @@ export default {
     { src: '~/plugins/klicker' },
     { src: '~/plugins/modern' },
     { src: '~/plugins/http', mode: 'client' },
+    { src: '~/plugins/api' },
   ],
 
   modules: [
@@ -232,7 +229,6 @@ export default {
     release: (process.env.GIT_REV || 'dev').slice(0, 6),
   },
   publicRuntimeConfig: {
-    apiUrl,
     cubeUrl,
     mediaUrl,
     renderUrl,
@@ -306,6 +302,7 @@ export default {
 
   serverMiddleware: [
     { path: '/klicker', handler: '~/server-middleware/klicker.ts' },
+    { path: '/api', handler: '~/server-middleware/api/index.ts' },
   ],
 
   alias: {

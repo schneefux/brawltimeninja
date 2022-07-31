@@ -1,60 +1,51 @@
 <template>
-  <nav class="light bg-yellow-400 text-gray-800 p-6 flex justify-between items-center flex-wrap gap-y-3 z-40 sticky top-0 lg:static">
-    <nuxt-link
-      :to="localePath('/')"
-      class="font-semibold text-xl tracking-tight leading-tight"
-    >
-      Brawl Time Ninja
-    </nuxt-link>
+  <b-web-nav
+    :links="links"
+    tag="nuxt-link"
+  >
+    <template slot="logo">
+      <nuxt-link
+        :to="localePath('/')"
+        class="font-semibold text-xl tracking-tight leading-tight"
+      >Brawl Time Ninja</nuxt-link>
 
-<!--
-    <navigator
-      class="relative dark pl-8 mr-auto"
-      input-class="light"
-    ></navigator>
-    -->
+      <navigator
+        class="relative dark pl-8 mr-auto"
+        input-class="light"
+      ></navigator>
+    </template>
 
-    <div class="overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-4">
+    <template slot="before">
       <install-button></install-button>
+    </template>
 
-      <ul class="inline-block space-x-4">
-        <li
-          v-for="link in links"
-          :key="link.target"
-          class="inline"
-        >
-          <nuxt-link
-            :to="link.target"
-            class="text-lg hover:text-gray-800/75"
-            exact-active-class="text-red-800"
-          >
-            {{ $t('nav.' + link.name) }}
-          </nuxt-link>
-        </li>
-      </ul>
-
+    <template slot="after">
       <locale-switcher
         class="border-0 align-text-top !text-2xs pr-7"
       ></locale-switcher>
-    </div>
-  </nav>
+    </template>
+  </b-web-nav>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { BWebNav } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BWebNav,
+  },
   setup() {
-    const { localePath } = useContext()
+    const { localePath, i18n } = useContext()
 
     const links = computed(() => [ {
-      name: 'Profile Search',
+      name: i18n.t('nav.Profile Search'),
       target: localePath('/'),
     }, {
-      name: 'Brawler Tier List',
+      name: i18n.t('nav.Brawler Tier List'),
       target: localePath('/tier-list/brawler'),
     }, {
-      name: 'Map Tier Lists',
+      name: i18n.t('nav.Map Tier Lists'),
       target: localePath('/tier-list/map'),
     } ])
 

@@ -5,6 +5,7 @@
     v-bind="$attrs"
   >
     <p slot="content">
+      {{ $t('brawler.disclaimer') }}
       {{ metric.description }}
     </p>
   </b-card>

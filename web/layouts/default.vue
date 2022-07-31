@@ -22,28 +22,30 @@
     <nuxt />
 
     <install-prompt-capture></install-prompt-capture>
-    <cookie-consent-popup
+    <b-cookie-consent
       v-if="consentPopupVisible"
       @enable-none="disableCookies"
       @enable-cookies="enableCookies"
       @enable-all="enableCookiesAndAds"
-    ></cookie-consent-popup>
+    >
+      <nuxt-link
+        slot="link"
+        class="underline"
+        to="/about"
+      >link</nuxt-link>
+    </b-cookie-consent>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
-    <footer class="bg-yellow-400 text-gray-800 py-4 text-center leading-normal hidden lg:block">
-      <div class="space-x-4 mt-2">
-        <nuxt-link
-          v-for="link in links"
-          :key="link.target"
-          :to="link.target"
-          class="inline-block lg:border-0 hover:text-gray-800/75"
-          exact-active-class="text-red-800"
-        >
-          {{ $t('nav.' + link.name) }}
-        </nuxt-link>
-      </div>
-      <copyright class="mt-4 text-sm"></copyright>
-    </footer>
+    <b-web-footer
+      :links="links"
+      tag="nuxt-link"
+      class="hidden lg:block"
+    >
+      <copyright
+        slot="below"
+        class="mt-4 text-sm"
+      ></copyright>
+    </b-web-footer>
 
     <adblock-bait></adblock-bait>
   </div>
@@ -52,14 +54,19 @@
 <script lang="ts">
 import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
 import { useMutationObserver } from '@vueuse/core'
+import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
+  components: {
+    BWebFooter,
+    BCookieConsent,
+  },
   head: {},
   setup(props, { root }) {
     const container = ref<HTMLElement>()
 
-    const { localePath } = useContext()
+    const { localePath, i18n } = useContext()
 
     useMeta(() => {
       // https://i18n.nuxtjs.org/seo/#improving-performance
@@ -67,67 +74,48 @@ export default defineComponent({
       return root.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
     })
 
-    const links = [ {
-      name: 'Leaderboards',
+    const links = computed(() => [ {
+      name: i18n.t('nav.Leaderboards'),
       target: localePath('/leaderboard/hours'),
     }, {
-      name: 'Guides',
+      name: i18n.t('nav.Guides'),
       target: '/blog/guides',
     }, {
-      name: 'Status',
+      name: i18n.t('nav.Status'),
       target: localePath('/status'),
     }, {
-      name: 'Privacy',
+      name: i18n.t('nav.Privacy'),
       target: '/about',
-    }]
+    }])
 
     const store = useStore<any>()
     const version = computed(() => store.state.version as number)
-    const adsAllowed = computed(() => store.state.adsAllowed as boolean)
-    const cookiesAllowed = computed(() => store.state.cookiesAllowed as boolean)
+    const adsAllowed = computed(() => store.state.adsAllowed as undefined|boolean)
+    const cookiesAllowed = computed(() => store.state.cookiesAllowed as undefined|boolean)
     const consentPopupVisible = computed(() => store.state.consentPopupVisible as boolean)
 
     const disableCookies = () => {
       store.commit('hideConsentPopup')
-      store.commit('disallowCookies')
-      store.commit('disallowAds')
-      clearAdsCookie()
-      clearCookieCookie()
+      store.commit('setCookiesAllowed', false)
+      store.commit('setAdsAllowed', false)
       hideAds()
     }
     const enableCookies = () => {
       store.commit('hideConsentPopup')
-      store.commit('allowCookies')
-      store.commit('disallowAds')
-      clearAdsCookie()
-      setCookieCookie()
+      store.commit('setCookiesAllowed', true)
+      store.commit('setAdsAllowed', false)
       hideAds()
     }
     const enableCookiesAndAds = () => {
       store.commit('hideConsentPopup')
-      store.commit('allowCookies')
-      store.commit('allowAds')
-      setAdsCookie()
-      setCookieCookie()
+      store.commit('setCookiesAllowed', true)
+      store.commit('setAdsAllowed', true)
       enableAds()
-    }
-
-    const setCookieCookie = () => {
-      document.cookie = `cookies=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-    }
-    const clearCookieCookie = () => {
-      document.cookie = `cookies=; path=/; expires=${new Date(0)}`
-    }
-    const setAdsCookie = () => {
-      document.cookie = `ads=true; path=/; expires=${new Date(Date.now() + 365*24*60*60*1000)}`
-    }
-    const clearAdsCookie = () => {
-      document.cookie = `ads=; path=/; expires=${new Date(0)}`
     }
 
     const gtag = useGtag()
     const enableAds = () => {
-      if (adsAllowed.value && (<any>process).client) {
+      if (adsAllowed.value && process.client) {
         // update consent preferences
         if ('adsbygoogle' in window) {
           (<any>window).adsbygoogle.pauseAdRequests = 0
@@ -139,9 +127,7 @@ export default defineComponent({
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
         const isTwa = document.referrer.startsWith('android-app')
 
-        if (isPwa || isTwa) {
-          store.commit('setIsApp')
-        }
+        store.commit('setIsApp', isPwa || isTwa)
 
         gtag.event('branch_dimension', {
           'branch': process.env.branch || '',
@@ -158,7 +144,7 @@ export default defineComponent({
       }
     }
     const hideAds = () => {
-      if ((<any>process).client) {
+      if (process.client) {
         (<any>window).adsbygoogle.pauseAdRequests = 1
         const sheet = document.createElement('style')
         sheet.type = 'text/css'
@@ -169,17 +155,11 @@ export default defineComponent({
 
     // called after vuex-persist has loaded
     watch(version, () => {
-      if (!cookiesAllowed.value) {
+      if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
         store.commit('showConsentPopup')
       } else {
-        // 'unpack-store' middleware sets cookiesAllowed and adsAllowed
-        // based on cookies
-        // 2020-12-06: Disabled because caching the HTML with the `cached`
-        // middleware will serve random settings to users
-        setCookieCookie() // refresh
         if (adsAllowed.value) {
           enableAds()
-          setAdsCookie() // refresh
         } else {
           hideAds()
         }

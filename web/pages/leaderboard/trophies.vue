@@ -18,14 +18,14 @@
 <script lang="ts">
 import { defineComponent, useContext, useAsync, computed } from '@nuxtjs/composition-api'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
-import { PlayerRanking } from '~/model/Brawlstars'
 
 export default defineComponent({
   setup() {
-    const { $http, $config } = useContext()
+    const { $api } = useContext()
 
-    const fetchTrophiesLeaderboard = () => $http.$get<PlayerRanking[]>($config.apiUrl + `/api/rankings/global/players`)
-    const leaderboard = useAsync(fetchTrophiesLeaderboard, 'leaderboard-trophies')
+    const leaderboard = useAsync(() => $api.query('rankings.playersByCountry', {
+      country: 'global',
+    }).catch(() => []), 'leaderboard-trophies')
 
     const rows = computed<PlayerRankTableRow[]>(() => {
       return leaderboard.value?.map(e => ({

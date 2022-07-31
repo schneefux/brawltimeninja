@@ -43,26 +43,29 @@
 
 @layer components {
   .dashboard {
+    --cell-size: 96px;
+    --cell-gap: 16px;
+
     display: grid;
     /*
      * Add as many rows as necessary, at least 96px.
      * If the min-content is more than 96px, stretch that row.
      */
-    grid-auto-rows: minmax(96px, min-content);
+    grid-auto-rows: minmax(var(--cell-size), min-content);
+    /*
+     * Fit as many columns as possible, each at least 96px wide.
+     * If the min-content is more than 96px, stretch the columns up to 150%.
+     */
+    grid-template-columns: repeat(auto-fill, minmax(var(--cell-size), auto));
     /**
      * Tell the browser that children won't affect anything outside of the grid
      */
     contain: content;
-  }
-
-  .dashboard {
     /*
-     * Apply defaults: normal gaps, responsive and vertical.
+     * Add a gap so the desktop layout looks less cramped.
+     * Cells spanning multiple rows/columns can use this space.
      */
-    @apply dashboard--normal dashboard--responsive dashboard--vertical;
-  }
-
-  .dashboard--vertical {
+    gap: var(--cell-gap);
     /*
      * Densely pack rows, filling remaining space.
      */
@@ -75,7 +78,7 @@
      */
     grid-auto-flow: column dense;
     grid-template-columns: none;
-    grid-auto-columns: minmax(96px, min-content);
+    grid-auto-columns: minmax(var(--cell-size), min-content);
     overflow-x: auto;
     @apply snap-x snap-proximity lg:snap-none
   }
@@ -84,37 +87,13 @@
     scroll-snap-align: center;
   }
 
-  .dashboard--responsive {
-    /*
-     * Fit as many columns as possible, each at least 96px wide.
-     * If the min-content is more than 96px, stretch the columns.
-     */
-    grid-template-columns: repeat(auto-fill, minmax(96px, auto));
-  }
-
-  .dashboard--responsive-stretch {
-    /*
-     * Same as .dashboard--responsive, but instead of creating empty columns,
-     * existing columns will be stretched.
-     */
-    grid-template-columns: repeat(auto-fit, minmax(96px, auto));
-  }
-
   .dashboard--fixed {
     /*
      * Set a fixed width and scroll horizontally.
      */
     --columns: 12;
-    grid-template-columns: repeat(var(--columns), minmax(96px, min-content));
+    grid-template-columns: repeat(var(--columns), minmax(var(--cell-size), min-content));
     overflow-x: auto;
-  }
-
-  .dashboard--normal {
-    /*
-     * Add a gap so the desktop layout looks less cramped.
-     * Cells spanning multiple rows/columns can use this space.
-     */
-    @apply gap-4;
   }
 
   .dashboard .dashboard__cell {
@@ -123,46 +102,62 @@
   }
 
   .dashboard--responsive .dashboard__cell {
-    grid-column: span min(1, var(--columns)) / span min(1, var(--columns));
+    grid-column: span min(max(1, calc(var(--columns-max) - var(--columns-margin))), var(--columns)) / span min(max(1, calc(var(--columns-max) - var(--columns-margin))), var(--columns));
+  }
+
+  /* TODO does not support var so these are hardcoded */
+  .dashboard--responsive {
+    --columns-max: 1;
+    --columns-margin: 0;
   }
   @media (min-width: 224px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(2, var(--columns)) / span min(2, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 2;
     }
   }
   @media (min-width: 352px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(3, var(--columns)) / span min(3, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 3;
     }
   }
   @media (min-width: 480px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(4, var(--columns)) / span min(4, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 4;
     }
   }
   @media (min-width: 768px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(5, var(--columns)) / span min(5, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 5;
     }
   }
   @media (min-width: 864px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(6, var(--columns)) / span min(6, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 6;
     }
   }
   @media (min-width: 992px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(7, var(--columns)) / span min(7, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 7;
     }
   }
   @media (min-width: 1120px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(8, var(--columns)) / span min(8, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 8;
     }
   }
   @media (min-width: 1248px) {
-    .dashboard--responsive .dashboard__cell {
-      grid-column: span min(9, var(--columns)) / span min(9, var(--columns));
+    .dashboard--responsive {
+      --columns-max: 9;
     }
+  }
+
+  .dashboard--margin-1 {
+    --columns-margin: 1;
+  }
+  .dashboard--margin-2 {
+    --columns-margin: 2;
+  }
+  .dashboard--margin-3 {
+    --columns-margin: 3;
   }
 }

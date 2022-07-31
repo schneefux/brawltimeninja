@@ -2,7 +2,7 @@
   <b-scrolling-dashboard
     @scroll.once="$emit('interact')"
   >
-    <c-dashboard-cell :columns="2">
+    <b-dashboard-cell :columns="2">
       <b-bigstat :title="$t('metric.hours-spent')">
         <p slot="content">
           <font-awesome-icon
@@ -14,15 +14,15 @@
           </span>
         </p>
       </b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell>
+    <b-dashboard-cell>
       <div class="flex justify-center items-center h-full">
         <p class="text-center">{{ $t('player.equals') }}</p>
       </div>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       v-for="(stat, statName) in funStats"
       :key="statName"
       :columns="2"
@@ -35,14 +35,14 @@
           ...
         </p>
       </b-bigstat>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
-import { BBigstat, CDashboardCell } from '@schneefux/klicker/components'
+import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, onMounted, PropType, useContext } from '@nuxtjs/composition-api'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
@@ -54,7 +54,7 @@ interface FunStat {
 export default defineComponent({
   components: {
     BBigstat,
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     player: {

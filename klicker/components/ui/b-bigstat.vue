@@ -4,7 +4,7 @@
       <b-lightbox v-model="tooltipOpen">
         <b-card
           :elevation="0"
-          class="w-full max-w-md"
+          class="w-full max-w-md h-auto"
         >
           <template v-slot:content>
             <slot name="tooltip">
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, ref } from '@vue/composition-api'
 import BCard from './b-card.vue'
 import BLightbox from './b-lightbox.vue'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'

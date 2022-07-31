@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue-demi'
+import { defineComponent, ref, onMounted } from '@vue/composition-api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
@@ -124,7 +124,7 @@ export default defineComponent({
     })
 
     onMounted(() => onUpdate('rerender'))
-    useResizeObserver(wrapper, () => onUpdate('rerender'))
+    useResizeObserver(wrapper, () => window.requestAnimationFrame(() => onUpdate('rerender')))
     useMutationObserver(wrapper, () => onUpdate('rerender'), {
       childList: true,
     })

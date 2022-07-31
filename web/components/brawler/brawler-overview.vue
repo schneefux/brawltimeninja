@@ -1,6 +1,6 @@
 <template>
   <b-scrolling-dashboard>
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="3"
       :columns="4"
     >
@@ -39,9 +39,9 @@
           </b-kv-table>
         </div>
       </b-card>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       v-for="prop in ['attack', 'super']"
       :key="prop"
       :rows="3"
@@ -53,19 +53,19 @@
         :prop="prop"
         :level="level"
       ></brawler-attack-card>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingDashboard, CDashboardCell, BCard, BKvTable, BSelect } from '@schneefux/klicker/components'
+import { BScrollingDashboard, BDashboardCell, BCard, BKvTable, BSelect } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BKvTable,
     BSelect,
     BCard,

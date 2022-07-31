@@ -16,11 +16,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
+import { defineComponent } from '@vue/composition-api'
 import { VisualisationProps } from '../../props'
 import BButton from '../ui/b-button.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -31,6 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlicker()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {
@@ -51,8 +53,6 @@ export default defineComponent({
       downloader.download = 'export.csv'
       downloader.click()
     }
-
-    const translate = (key: string, args?: any) => $klicker.$t(key, args)
 
     return {
       translate,

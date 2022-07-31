@@ -38,13 +38,14 @@ WithTooltip.args = {
 WithTooltip.play = async ({ canvasElement }) => {
   canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
+  const body = within(document.body)
 
   const tooltipButton = await canvas.findByRole('button')
   expect(tooltipButton).toBeVisible()
   await userEvent.click(tooltipButton)
-  const content = await canvas.findByText(lipsum)
+  const content = await body.findByText(lipsum)
   expect(content).toBeVisible()
-  const closeButton = await canvas.findByLabelText('close')
+  const closeButton = await body.findByLabelText('close')
   expect(closeButton).toBeVisible()
   await userEvent.click(closeButton)
 }
@@ -82,13 +83,14 @@ WithTooltipSlot.args = {
 WithTooltipSlot.play = async ({ canvasElement }) => {
   canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
+  const body = within(document.body)
 
   const tooltipButton = await canvas.findByRole('button')
   expect(tooltipButton).toBeVisible()
   await userEvent.click(tooltipButton)
-  const content = await canvas.findByText(lipsum)
+  const content = await body.findByText(lipsum)
   expect(content).toBeVisible()
-  const closeButton = await canvas.findByLabelText('close')
+  const closeButton = await body.findByLabelText('close')
   expect(closeButton).toBeVisible()
   await userEvent.click(closeButton)
 }

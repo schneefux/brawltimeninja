@@ -47,12 +47,12 @@ export const state = () => ({
   lastPlayers: [] as string[],
   userTag: undefined as undefined|string, // personal tag (last searched)
   personalityTestResult: undefined,
-  cookiesAllowed: false,
-  adsAllowed: false,
+  cookiesAllowed: undefined as undefined|boolean,
+  adsAllowed: undefined as undefined|boolean,
   consentPopupVisible: false,
   installBannerDismissed: false,
-  totalBrawlers: 49,
-  isApp: false,
+  totalBrawlers: 56,
+  isApp: undefined as undefined|boolean,
   installPrompt: undefined as any,
   player: undefined as undefined|Player,
   playerTotals: undefined as undefined|PlayerTotals,
@@ -83,17 +83,11 @@ export const mutations: MutationTree<RootState> = {
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
     state.lastPlayers = lastPlayers.slice(0, 4)
   },
-  allowAds(state) {
-    state.adsAllowed = true
+  setAdsAllowed(state, adsAllowed) {
+    state.adsAllowed = adsAllowed
   },
-  disallowAds(state) {
-    state.adsAllowed = false
-  },
-  allowCookies(state) {
-    state.cookiesAllowed = true
-  },
-  disallowCookies(state) {
-    state.cookiesAllowed = false
+  setCookiesAllowed(state, cookiesAllowed) {
+    state.cookiesAllowed = cookiesAllowed
   },
   showConsentPopup(state) {
     state.consentPopupVisible = true
@@ -104,8 +98,8 @@ export const mutations: MutationTree<RootState> = {
   dismissInstallBanner(state) {
     state.installBannerDismissed = true
   },
-  setIsApp(state) {
-    state.isApp = true
+  setIsApp(state, isApp) {
+    state.isApp = isApp
   },
   setInstallPrompt(state, prompt) {
     state.installPrompt = prompt
@@ -160,8 +154,8 @@ export const actions: ActionTree<RootState, RootState> = {
       return
     }
   },
-  async loadPlayer({ state, commit }, tag) {
-    const player = await this.$http.$get<Player>((<any>this).$config.apiUrl + `/api/player/${tag}`)
+  async loadPlayer({ commit }, tag) {
+    const player = await this.$api.query('player.byTag', tag)
     commit('setPlayer', player)
 
     const battleData = await this.$klicker.query({
@@ -172,7 +166,13 @@ export const actions: ActionTree<RootState, RootState> = {
         playerId: [tagToId(tag)],
       },
       sortId: 'picks',
-    })
+    }).catch(() => ({
+      data: [{
+        metricsRaw: {
+          picks: 0,
+        },
+      }],
+    }))
 
     if (battleData.data[0].metricsRaw.picks > 0) {
       const totals = battleData.data[0].metricsRaw as any as PlayerTotals

@@ -77,7 +77,7 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, PropType, ref } from '@vue/composition-api'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'
@@ -108,7 +108,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
     const numMetrics = ref(props.value.metricsIds.length)
 
     const metrics = computed(() => $klicker.config[props.value.cubeId].metrics
@@ -168,8 +168,6 @@ export default defineComponent({
       })
       numMetrics.value--
     }
-
-    const translate = (key: string) => $klicker.$t(key)
 
     const tooltipOpen = ref(false)
 

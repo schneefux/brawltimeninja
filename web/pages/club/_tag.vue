@@ -66,7 +66,7 @@ export default defineComponent({
   head: {},
   middleware: ['cached'],
   setup() {
-    const { app: { i18n }, $http, $config, redirect } = useContext()
+    const { app: { i18n }, $api, redirect } = useContext()
     const route = useRoute()
 
     const club = ref<Club>()
@@ -75,7 +75,7 @@ export default defineComponent({
       if (tag != route.value.params.tag) {
         redirect(`/club/${tag}`)
       } else {
-        club.value = await $http.$get<Club>($config.apiUrl + `/api/club/${tag}`)
+        club.value = await $api.query('club.byTag', tag)
       }
     })
 

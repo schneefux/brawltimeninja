@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue-demi'
+import { defineComponent, computed, PropType } from '@vue/composition-api'
 import NavigatorNode from './navigator-node.vue'
 
 export interface Link {

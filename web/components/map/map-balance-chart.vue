@@ -2,7 +2,7 @@
   <c-query :query="query">
     <template v-slot="data">
       <div class="contents">
-        <c-dashboard-cell
+        <b-dashboard-cell
           :columns="8"
           :rows="4"
           ssr-key="map-balance-chart-barplot"
@@ -13,8 +13,8 @@
             v-bind="data"
             :card="{ title }"
           ></v-barplot>
-        </c-dashboard-cell>
-        <c-dashboard-cell
+        </b-dashboard-cell>
+        <b-dashboard-cell
           :columns="3"
           :rows="2"
           ssr-key="map-balance-chart-gini"
@@ -34,21 +34,21 @@
               </p>
             </div>
           </b-card>
-        </c-dashboard-cell>
+        </b-dashboard-cell>
       </div>
     </template>
   </c-query>
 </template>
 
 <script lang="ts">
-import { CQuery, VBarplot, CDashboardCell } from '@schneefux/klicker/components'
+import { CQuery, VBarplot, BDashboardCell } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
     VBarplot,
     CQuery,
   },

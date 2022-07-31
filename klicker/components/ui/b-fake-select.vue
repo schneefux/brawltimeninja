@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue-demi'
+import { defineComponent, ref } from '@vue/composition-api'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({

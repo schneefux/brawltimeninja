@@ -35,11 +35,12 @@
         nav-class="top-14 lg:top-0 z-20"
         class="mt-8"
       >
-        <div
+        <b-dashboard
           slot="brawlers"
-          class="dashboard dashboard--responsive"
+          class="lg:dashboard--margin-2"
+          responsive
         >
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="4"
             :rows="5"
             hide-empty
@@ -52,9 +53,9 @@
               :id="id"
               :slices="slices"
             ></map-best-brawlers-table>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             v-if="mode != 'soloShowdown' && mode != 'duels'"
             :columns="4"
             :rows="5"
@@ -68,7 +69,7 @@
               :id="id"
               :slices="slices"
             ></map-best-teams-table>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <ad-cell
             :columns="3"
@@ -95,7 +96,7 @@
             }"
           ></map-balance-chart>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="5"
             :rows="4"
             ssr-key="map-winrate-userate-chart"
@@ -106,9 +107,9 @@
               :id="id"
               :slices="slices"
             ></map-winrate-userate-chart>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="6"
             :rows="4"
             ssr-key="map-trend-chart"
@@ -119,21 +120,21 @@
               :id="id"
               :slices="slices"
             ></map-trend-chart>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="3"
             :rows="2"
           >
             <metric-info :metric="adjustedWinRate"></metric-info>
-          </c-dashboard-cell>
-        </div>
+          </b-dashboard-cell>
+        </b-dashboard>
 
-        <div
+        <b-dashboard
           slot="leaderboard"
-          class="dashboard dashboard--responsive"
+          responsive
         >
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="4"
             :rows="5"
             ssr-key="map-best-players-table"
@@ -148,20 +149,20 @@
               :id="id"
               :slices="slices"
             ></map-best-players-table>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <ad-cell
             :columns="8"
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </div>
+        </b-dashboard>
 
-        <div
+        <b-dashboard
           slot="starpowers"
-          class="dashboard dashboard--responsive"
+          responsive
         >
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="4"
             :rows="5"
             ssr-key="map-best-starpowers-table"
@@ -178,7 +179,7 @@
               :slices="slices"
               kind="starpowers"
             ></map-best-accessory-table>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <map-insights
             v-observe-visibility="{
@@ -190,27 +191,27 @@
             tab="starpowers"
           ></map-insights>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="3"
             :rows="2"
           >
             <gadget-starpower-disclaimer
               card
             ></gadget-starpower-disclaimer>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <ad-cell
             :columns="5"
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </div>
+        </b-dashboard>
 
-        <div
+        <b-dashboard
           slot="gadgets"
-          class="dashboard dashboard--responsive"
+          responsive
         >
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="4"
             :rows="5"
             ssr-key="map-best-gadgets-table"
@@ -227,7 +228,7 @@
               :slices="slices"
               kind="gadgets"
             ></map-best-accessory-table>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <map-insights
             v-observe-visibility="{
@@ -239,27 +240,27 @@
             tab="gadgets"
           ></map-insights>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="3"
             :rows="2"
           >
             <gadget-starpower-disclaimer
               card
             ></gadget-starpower-disclaimer>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <ad-cell
             :columns="5"
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </div>
+        </b-dashboard>
 
-        <div
+        <b-dashboard
           slot="gears"
-          class="dashboard dashboard--responsive"
+          responsive
         >
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="5"
             :rows="2"
             ssr-key="map-best-gears-table"
@@ -275,7 +276,7 @@
               :slices="slices"
               kind="gears"
             ></map-best-accessory-roll>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <map-insights
             v-observe-visibility="{
@@ -287,21 +288,21 @@
             tab="gears"
           ></map-insights>
 
-          <c-dashboard-cell
+          <b-dashboard-cell
             :columns="3"
             :rows="2"
           >
             <gadget-starpower-disclaimer
               card
             ></gadget-starpower-disclaimer>
-          </c-dashboard-cell>
+          </b-dashboard-cell>
 
           <ad-cell
             :columns="5"
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </div>
+        </b-dashboard>
       </b-tabs>
     </template>
   </c-dashboard>
@@ -310,7 +311,7 @@
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CDashboard, CDashboardCell, VTestInfo, BTabs, BScrollingList } from '@schneefux/klicker/components'
+import { CDashboard, BDashboardCell, BTabs, BScrollingList, BDashboard } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
@@ -324,9 +325,9 @@ export default defineComponent({
   components: {
     BScrollingList,
     CDashboard,
-    CDashboardCell,
-    VTestInfo,
+    BDashboardCell,
     BTabs,
+    BDashboard,
   },
   props: {
     mode: {

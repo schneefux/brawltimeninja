@@ -3,7 +3,12 @@ import { KlickerService } from '../types'
 
 // TODO turn the service into a composable, do not depend on Nuxt context
 export const useKlicker = () => {
-  const { $klicker } = useContext()
+  const $klicker = useContext().$klicker as KlickerService
 
-  return { $klicker } as { $klicker: KlickerService }
+  const translate = (key: string, args?: any) => $klicker.$t(key, args)
+
+  return {
+    $klicker,
+    translate,
+  }
 }

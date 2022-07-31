@@ -52,7 +52,7 @@
         loading
       ></b-shimmer>
 
-      <c-dashboard-cell
+      <b-dashboard-cell
         v-for="entry in list"
         :key="`${entry.index}-${entry.item[keyId]}`"
         :ref="`item-${entry.index}`"
@@ -66,7 +66,7 @@
           name="item"
           v-bind="entry.item"
         ></slot>
-      </c-dashboard-cell>
+      </b-dashboard-cell>
 
       <b-shimmer
         v-if="list.length > 0 && renderBounds.end < items.length - 1"
@@ -83,9 +83,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue-demi'
+import { computed, defineComponent, onMounted, PropType, ref, nextTick } from '@vue/composition-api'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
-import CDashboardCell from '../c-dashboard-cell.vue'
+import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
 import { useMutationObserver } from '@vueuse/core'
 
@@ -96,7 +96,7 @@ import { useMutationObserver } from '@vueuse/core'
 export default defineComponent({
   components: {
     BScrollingDashboard,
-    CDashboardCell,
+    BDashboardCell,
     BShimmer,
   },
   props: {
@@ -184,11 +184,11 @@ export default defineComponent({
       }))
     )
 
-    const getColumnStyle = () => {
-      const pxColumnWidth = parseInt(window.getComputedStyle(container.value!.wrapper!)
+    const getColumnStyle = (wrapper: HTMLElement) => {
+      const pxColumnWidth = parseInt(window.getComputedStyle(wrapper)
         .getPropertyValue('grid-auto-columns')
         .replace(/^.*?(\d+)px.*$/i, '$1'))
-      const pxGap = parseInt(window.getComputedStyle(container.value!.wrapper!).getPropertyValue('column-gap'))
+      const pxGap = parseInt(window.getComputedStyle(wrapper).getPropertyValue('column-gap'))
       let pxPerItem = props.cellColumns * pxColumnWidth + (props.cellColumns - 1) * pxGap
       let columnsPerItem = props.cellColumns
 
@@ -206,7 +206,7 @@ export default defineComponent({
           .replace(/(^.*?)(\d+)(.*$)/i, '$2'))
       }
 
-      const wrapperComputedStyle = window.getComputedStyle(container.value!.wrapper!)
+      const wrapperComputedStyle = window.getComputedStyle(wrapper)
       const wrapperPaddingLeft = parseInt(wrapperComputedStyle.paddingLeft)
       const wrapperPadding = wrapperPaddingLeft + parseInt(wrapperComputedStyle.paddingRight)
 
@@ -227,7 +227,14 @@ export default defineComponent({
       pxGap: number,
     }>()
     const columnsPerItem = computed(() => columnStyle.value?.columnsPerItem ?? props.cellColumns)
-    const updateColumnWidths = () => columnStyle.value = getColumnStyle()
+    const updateColumnWidths = () => {
+      if (container.value?.wrapper == undefined) {
+        nextTick(() => updateColumnWidths())
+        return
+      }
+
+      columnStyle.value = getColumnStyle(container.value.wrapper)
+    }
     onMounted(() => updateColumnWidths())
     const containerWrapper = computed(() => container.value?.wrapper)
     useMutationObserver(containerWrapper, () => updateColumnWidths(), {

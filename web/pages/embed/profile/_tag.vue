@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts">
+import { TRPCClientError } from '@trpc/client'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapState } from 'vuex'
@@ -18,7 +19,7 @@ import { Player } from '~/model/Api'
 export default Vue.extend({
   head(): MetaInfo {
     // block all requests except to subdomains (including ads/analytics)
-    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl, this.$config.apiUrl]
+    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl]
     return {
       meta: [ <any>{
         // FIXME remove any after https://github.com/nuxt/vue-meta/issues/575
@@ -64,8 +65,33 @@ export default Vue.extend({
 
     return tagPattern.test(tag)
   },
-  async asyncData({ params, $http, $config, $klicker }) {
-    const player = await $http.$get<Player>($config.apiUrl + `/api/player/${params.tag}`)
+  async asyncData({ params, $api, $klicker, error, i18n }) {
+    let player: Player
+    try {
+      player = await $api.query('player.byTag', params.tag)
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        if (err.data?.httpStatus == 404) {
+          error({
+            statusCode: err.data?.httpStatus,
+            message: i18n.tc('error.tag.not-found'),
+          })
+          return
+        }
+        if (err.data?.httpStatus >= 400) {
+          error({
+            statusCode: err.data.httpStatus,
+            message: i18n.tc('error.api-unavailable'),
+          })
+          return
+        }
+      }
+      error({
+        statusCode: 500,
+        message: i18n.tc('error.api-unavailable'),
+      })
+      return
+    }
 
     const battleData = await $klicker.query({
       cubeId: 'battle',

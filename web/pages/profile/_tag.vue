@@ -17,6 +17,7 @@
             once: true,
           }"
           class="!h-auto"
+          @refresh="refresh()"
         ></player-aside>
 
         <b-scroll-spy
@@ -211,6 +212,7 @@ import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { tagPattern } from '~/lib/util'
+import { TRPCClientError } from '@trpc/client'
 
 export default defineComponent({
   directives: {
@@ -343,18 +345,29 @@ export default defineComponent({
 
     return tagPattern.test(tag)
   },
-  async asyncData({ store, params, error, i18n }) {
+  async asyncData({ store, params, error, i18n, $sentry }) {
     if (store.state.player == undefined || store.state.player.tag != params.tag) {
       try {
         await store.dispatch('loadPlayer', params.tag)
       } catch (err: any) {
         if (err.response?.status == 404) {
-          error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
-        } else {
-          console.error(err)
-          this.$sentry.captureException(err)
-          error({ statusCode: err.response.status, message: i18n.tc('error.api-unavailable') })
+          return
         }
+
+        if (err instanceof TRPCClientError) {
+          if (err.data?.httpStatus == 404) {
+            error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
+            return
+          }
+          if (err.data?.httpStatus >= 400) {
+            error({ statusCode: err.data.httpStatus, message: i18n.tc('error.api-unavailable') })
+            return
+          }
+        }
+
+        console.error(err)
+        $sentry.captureException(err)
+        error({ statusCode: 500, message: ' ' })
         return
       }
     }

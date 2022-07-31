@@ -1,3 +1,5 @@
+variable "github_user" {}
+variable "github_token" {}
 variable "manager_secret" {}
 variable "manager_google_oauth" {}
 
@@ -134,6 +136,11 @@ job "brawltime-manager" {
         image = "ghcr.io/schneefux/brawltime-manager:${var.tag}"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
+
+        auth {
+          username = "${var.github_user}"
+          password = "${var.github_token}"
+        }
       }
 
       resources {

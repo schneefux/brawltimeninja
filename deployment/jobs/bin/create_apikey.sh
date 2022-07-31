@@ -12,10 +12,13 @@ do
   esac
 done
 
-[ -z $EMAIL ] && echo "-e is required"
-[ -z $PASSWORD ] && echo "-p is required"
-NAME="Nomad $NOMAD_ALLOC_ID"
-DESCRIPTION="Key automatically registered by Nomad job for allocation $NOMAD_ALLOC_ID on host $(hostname)"
+[ -z "$EMAIL" ] && echo "-e is required"
+[ -z "$PASSWORD" ] && echo "-p is required"
+
+MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
+
+NAME="Nomad client $MY_IP"
+DESCRIPTION="Key automatically registered by Nomad allocation $NOMAD_ALLOC_ID for $NOMAD_ALLOC_NAME on $(hostname)"
 
 COOKIE_JAR=$(mktemp)
 
@@ -36,18 +39,17 @@ KEYS=$(curl 'https://developer.brawlstars.com/api/apikey/list' \
   --data-raw '{}' \
   -b $COOKIE_JAR)
 
-TOKEN=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\").key")
-
-if [ $TOKEN = "null" ]
+if [ "$KEYS" = "null" ]
 then
-  echo "Error: Token is null - did you register too many tokens?"
+  echo "Error: KEYS is null - did you register too many tokens?"
   exit 1
 fi
 
-if [ -z $TOKEN ]
+TOKEN=$(echo $KEYS | jq -r ".keys[] | select(.name == \"$NAME\").key")
+
+if [ -z "$TOKEN" ]
 then
-  echo "Creating a new token"
-  MY_IP=$(dig @resolver4.opendns.com myip.opendns.com +short)
+  echo "Creating a new token $NAME"
   IPS="[\"$MY_IP\"]"
   TOKEN=$(curl 'https://developer.brawlstars.com/api/apikey/create' \
     -s \
@@ -57,7 +59,7 @@ then
     -b $COOKIE_JAR \
     | jq -r ".key.key")
 else
-  echo "Token already exists"
+  echo "Token $NAME already exists"
 fi
 
 consul kv put "brawlstars-token/alloc-${NOMAD_ALLOC_ID}" "$TOKEN"

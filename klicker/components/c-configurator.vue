@@ -73,7 +73,7 @@ import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType } from 'vue-demi'
+import { computed, defineComponent, PropType } from '@vue/composition-api'
 import { useKlicker } from '../composables/klicker'
 
 export default defineComponent({
@@ -120,7 +120,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
 
     const onInputCubeId = (c: string) => {
       const newQuery: CubeQuery = {
@@ -180,8 +180,6 @@ export default defineComponent({
       const selectedMetrics = metrics.filter(m => query.metricsIds.includes(m.id))
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
-
-    const translate = (key: string) => $klicker.$t(key)
 
     return {
       cubes,

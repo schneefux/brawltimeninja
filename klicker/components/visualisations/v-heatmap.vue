@@ -16,10 +16,11 @@
 <script lang="ts">
 import { VisualisationProps } from '../../props'
 import { VisualizationSpec } from 'vega-embed'
-import { computed, defineComponent } from 'vue-demi'
+import { computed, defineComponent } from '@vue/composition-api'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlicker } from '../../composables'
 
 export default defineComponent({
   components: {
@@ -30,7 +31,8 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { $klicker, dimensions, metrics, comparing } = useCubeResponseProps(props)
+    const { translate } = useKlicker()
+    const { dimensions, metrics, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
       const dimension0 = dimensions.value[0]
@@ -70,7 +72,7 @@ export default defineComponent({
               ...metric0.vega,
               field: 'test.difference.differenceRaw',
               type: metric0.type,
-              title: $klicker.$t('comparison.difference.to.dataset', { dataset: $klicker.$t('comparison.dataset.reference') as string }) as string,
+              title: translate('comparison.difference.to.dataset', { dataset: translate('comparison.dataset.reference') }),
               legend: {
                 offset: 8,
                 orient: 'top',

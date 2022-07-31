@@ -1,5 +1,5 @@
 import { ssrRef } from '@nuxtjs/composition-api'
-import { ref } from 'vue-demi'
+import { ref } from '@vue/composition-api'
 
 export const useUniqueId = () => {
   const randomId = Math.random().toString().slice(2)

@@ -1,6 +1,6 @@
 <template>
   <b-scrolling-dashboard>
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="2"
       :columns="4"
       hide-empty
@@ -13,9 +13,9 @@
         sort="trophyRange"
         metric="winRate"
       ></lazy-map-trend-chart>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="2"
       :columns="4"
       hide-empty
@@ -28,9 +28,9 @@
         sort="trophyRange"
         metric="starRate"
       ></lazy-map-trend-chart>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
 
-    <c-dashboard-cell
+    <b-dashboard-cell
       :rows="2"
       :columns="4"
       hide-empty
@@ -45,17 +45,17 @@
         metric="useRate"
         no-compare
       ></lazy-map-trend-chart>
-    </c-dashboard-cell>
+    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "@nuxtjs/composition-api";
-import { CDashboardCell } from '@schneefux/klicker/components'
+import { BDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
   },
   props: {
     brawlerName: {

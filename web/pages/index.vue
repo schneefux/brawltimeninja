@@ -193,6 +193,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
+import { TRPCClientError } from '@trpc/client'
 
 interface PlayerLink {
   name: string
@@ -229,7 +230,7 @@ export default defineComponent({
         .map(p => (<PlayerLink>{
           tag: p.tag,
           name: p.name,
-          link: `/profile/${p.tag}`,
+          link: `/profile/${p.tag.replace(/^#/, '')}`,
         }))
     })
 
@@ -275,27 +276,32 @@ export default defineComponent({
         loading.value = true
         await store.dispatch('loadPlayer', cleanedTag.value)
         store.commit('addLastPlayer', player.value)
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          error.value = i18n.tc('error.tag.not-found')
-          gtag.event('search', {
-            'event_category': 'player',
-            'event_label': 'error_notfound',
-          })
-        } else if (err.response?.status === 429) {
-          error.value = i18n.tc('error.api-unavailable')
-          gtag.event('search', {
-            'event_category': 'player',
-            'event_label': 'error_timeout',
-          })
-        } else {
-          error.value = i18n.tc('error.api-unavailable')
-          $sentry.captureException(err)
-          gtag.event('search', {
-            'event_category': 'player',
-            'event_label': 'error_api',
-          })
+      } catch (err) {
+        if (err instanceof TRPCClientError) {
+          if (err.data?.httpStatus == 404) {
+            error.value = i18n.tc('error.tag.not-found')
+            gtag.event('search', {
+              'event_category': 'player',
+              'event_label': 'error_notfound',
+            })
+            return
+          }
+          if (err.data?.httpStatus >= 400) {
+            error.value = i18n.tc('error.api-unavailable')
+            gtag.event('search', {
+              'event_category': 'player',
+              'event_label': 'error_timeout',
+            })
+            return
+          }
         }
+
+        error.value = i18n.tc('error.api-unavailable')
+        $sentry.captureException(err)
+        gtag.event('search', {
+          'event_category': 'player',
+          'event_label': 'error_api',
+        })
         return
       } finally {
         loading.value = false

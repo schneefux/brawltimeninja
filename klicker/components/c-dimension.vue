@@ -50,7 +50,7 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref, watch } from 'vue-demi'
+import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
@@ -73,7 +73,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const { $klicker, translate } = useKlicker()
 
     const compareMode = computed(() => props.value.comparing)
 
@@ -147,7 +147,7 @@ export default defineComponent({
     }
 
     const dimensions = computed(() => $klicker.config[props.value.cubeId].dimensions)
-    const title = computed(() => compareMode.value ? (props.comparing ? $klicker.$t('comparison.group.test') : $klicker.$t('comparison.group.reference')) : $klicker.$t('group.by'))
+    const title = computed(() => compareMode.value ? (props.comparing ? translate('comparison.group.test') : translate('comparison.group.reference')) : translate('group.by'))
 
     const validDimensions = computed(() =>
       (index: number) => dimensions.value.filter(d => d.id == selectedDimensions.value[index - 1] || !selectedDimensions.value.includes(d.id)))

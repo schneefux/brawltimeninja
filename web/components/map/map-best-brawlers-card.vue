@@ -32,9 +32,7 @@
 import { defineComponent, PropType, computed, useContext } from '@nuxtjs/composition-api'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
-
-import { enUS, de, es } from 'date-fns/locale'
-const locales = { en: enUS, de, es }
+import { useDateFnLocale } from '~/composables/date-fns'
 
 export default defineComponent({
   props: {
@@ -61,6 +59,7 @@ export default defineComponent({
   },
   setup(props) {
     const { i18n } = useContext()
+    const { locale } = useDateFnLocale()
 
     const mode = computed(() => props.slices.mode?.[0])
     const map = computed(() => props.slices.map?.[0])
@@ -71,7 +70,7 @@ export default defineComponent({
 
       const date = parseISO(props.endDate)
       const dist = formatDistanceToNow(date, {
-        locale: locales[i18n.locale],
+        locale: locale.value,
       })
 
       return i18n.t('time.ends-in', { time: dist }) as string

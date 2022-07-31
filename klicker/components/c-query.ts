@@ -1,8 +1,10 @@
-import { VNode, defineComponent, PropType, h, toRefs } from 'vue-demi'
+import { VNode } from 'vue'
+import { defineComponent, PropType, h, toRefs } from '@vue/composition-api'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'
 import BButton from './ui/b-button.vue'
+import { useKlicker } from '../composables'
 
 export default defineComponent({
   name: 'c-query',
@@ -18,7 +20,8 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
-    const { $klicker, response, error, loading, update } = useCubeQuery(query, filter)
+    const { translate } = useKlicker()
+    const { response, error, loading, update } = useCubeQuery(query, filter)
 
     return () => {
       let nodes: VNode[] | undefined
@@ -32,7 +35,7 @@ export default defineComponent({
           nodes = [h('div', {
             class: 'h-full w-full flex flex-col justify-center items-center space-y-2 space-x-2',
           }, [
-            h('span', {}, [$klicker.$t('query.error')]),
+            h('span', {}, [translate('query.error')]),
             h(BButton as any, {
               props: {
                 dark: true,
@@ -44,7 +47,7 @@ export default defineComponent({
                   update()
                 },
               },
-            }, [$klicker.$t('action.retry')]),
+            }, [translate('action.retry')]),
           ])]
         }
       } else {

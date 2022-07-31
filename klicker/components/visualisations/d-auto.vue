@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue-demi'
+import { computed, defineComponent, PropType } from '@vue/composition-api'
 import { useCubeResponseProps } from '../../composables'
 import { MetaGridEntry, ComparingMetaGridEntry, CubeResponse, CubeComparingResponse } from '../../types'
 
 /**
  * Dimension renderer
- * 
+ *
  * Using the provided data and the globally configured dimension renderers,
  * render all dimension values into a wrapper.
  */
@@ -29,9 +29,9 @@ export default defineComponent({
   props: {
     /**
      * Wrapper tag, defaults to div
-     * 
+     *
      * Defaults to a div with display: contents
-     * 
+     *
      * TODO it would be nice to remove the wrapper
      * and return a text node only but Vue 2 does not support that
      */

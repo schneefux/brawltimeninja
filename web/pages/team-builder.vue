@@ -28,12 +28,28 @@
       class="mt-8"
     >
       <template v-slot="totals">
-        <c-dashboard-cell>
-          <v-sample-size
-            v-bind="totals"
-            card
-          ></v-sample-size>
-        </c-dashboard-cell>
+        <b-dashboard
+          slot="brawlers"
+          responsive
+        >
+          <b-dashboard-cell
+            :rows="2"
+            :columns="3"
+          >
+            <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
+              <p slot="content">{{ $t('brawler.disclaimer') }}</p>
+            </b-card>
+          </b-dashboard-cell>
+          <b-dashboard-cell
+            :rows="1"
+            :columns="2"
+          >
+            <v-sample-size
+              v-bind="totals"
+              card
+            ></v-sample-size>
+          </b-dashboard-cell>
+        </b-dashboard>
       </template>
     </c-query>
   </b-page>
@@ -41,7 +57,7 @@
 
 <script lang="ts">
 import { CubeQuery } from '@schneefux/klicker/types'
-import { CSlicer, CDashboardCell } from '@schneefux/klicker/components'
+import { BCard, BDashboard, CSlicer, BDashboardCell } from '@schneefux/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { formatClickhouseDate, getSeasonEnd } from '~/lib/util'
 import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
@@ -49,8 +65,10 @@ import { useKlicker } from '@schneefux/klicker/composables/klicker'
 
 export default defineComponent({
   components: {
-    CDashboardCell,
+    BDashboardCell,
+    BDashboard,
     DraftGrid,
+    BCard,
     CSlicer,
   },
   head() {

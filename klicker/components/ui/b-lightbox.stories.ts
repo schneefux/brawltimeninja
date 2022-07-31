@@ -31,12 +31,13 @@ Default.args = {}
 Default.play = async ({ canvasElement }) => {
   canvasElement = getCanvasElementFixed(canvasElement)
   const canvas = within(canvasElement)
+  const body = within(document.body)
 
   const button = await canvas.findByRole('button')
   await userEvent.click(button)
-  const content = await canvas.findByText(/Content goes here/)
+  const content = await body.findByText(/Content goes here/)
   expect(content).toBeVisible()
-  const close = await canvas.findByLabelText('close')
+  const close = await body.findByLabelText('close')
   expect(close).toBeVisible()
   await userEvent.click(close)
   expect(close).not.toBeVisible()
