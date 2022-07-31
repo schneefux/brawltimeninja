@@ -3,23 +3,6 @@ import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
 
-function detectAndroid() {
-  return /android/i.test(navigator.userAgent)
-}
-
-function detectIOS() {
-  return [
-    'iPad Simulator',
-    'iPhone Simulator',
-    'iPod Simulator',
-    'iPad',
-    'iPhone',
-    'iPod'
-  ].includes(navigator.platform)
-  // iPad on iOS 13 detection
-  || (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
-}
-
 export interface PlayerTotals {
   picks: number
   winRate: number
@@ -52,28 +35,11 @@ export const state = () => ({
   consentPopupVisible: false,
   installBannerDismissed: false,
   totalBrawlers: 56,
-  isApp: undefined as undefined|boolean,
-  installPrompt: undefined as any,
   player: undefined as undefined|Player,
   playerTotals: undefined as undefined|PlayerTotals,
 })
 
 export type RootState = ReturnType<typeof state>
-
-export const getters: GetterTree<RootState, RootState> = {
-  isInstallable(state) {
-    if (state.isApp) {
-      return false
-    }
-    if (!process.client) {
-      return false
-    }
-    if (state.installPrompt !== undefined) {
-      return true
-    }
-    return detectAndroid() || detectIOS()
-  },
-}
 
 export const mutations: MutationTree<RootState> = {
   addLastPlayer(state, player) {
@@ -98,15 +64,6 @@ export const mutations: MutationTree<RootState> = {
   dismissInstallBanner(state) {
     state.installBannerDismissed = true
   },
-  setIsApp(state, isApp) {
-    state.isApp = isApp
-  },
-  setInstallPrompt(state, prompt) {
-    state.installPrompt = prompt
-  },
-  clearInstallPrompt(state) {
-    state.installPrompt = undefined
-  },
   setPersonalityTestResult(state, result) {
     state.personalityTestResult = result
   },
@@ -122,38 +79,6 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  async install({ state, commit }) {
-    const pwaSupported = state.installPrompt !== undefined
-    if (pwaSupported) {
-      state.installPrompt.prompt()
-      const choice = await state.installPrompt.userChoice
-      event('prompt', {
-        'event_category': 'app',
-        'event_label': choice.outcome,
-      })
-      commit('clearInstallPrompt')
-      return
-    }
-
-    if (detectAndroid()) {
-      const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      event('redirect_store', {
-        'event_category': 'app',
-        'event_label': 'fallback',
-      })
-      window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
-      return
-    }
-
-    if (detectIOS()) {
-      event('redirect_guide', {
-        'event_category': 'app',
-        'event_label': 'ios',
-      })
-      this.$router.push('/install/ios')
-      return
-    }
-  },
   async loadPlayer({ commit }, tag) {
     const player = await this.$api.query('player.byTag', tag)
     commit('setPlayer', player)

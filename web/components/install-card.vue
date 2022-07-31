@@ -37,6 +37,7 @@
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { useGtag } from '~/composables/gtag'
+import { clearInstallPrompt, install } from '~/composables/app'
 
 export default defineComponent({
   setup() {
@@ -52,14 +53,14 @@ export default defineComponent({
         'event_label': 'install_banner',
       })
       store.commit('dismissInstallBanner')
-      store.commit('clearInstallPrompt')
+      clearInstallPrompt()
     }
     const clickInstall = async () => {
       gtag.event('click', {
         'event_category': 'app',
         'event_label': 'install_banner',
       })
-      await store.dispatch('install')
+      await install()
     }
 
     return {

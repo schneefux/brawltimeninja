@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent, h, useStore } from '@nuxtjs/composition-api'
+import { defineComponent, h } from '@nuxtjs/composition-api'
 import { useGtag } from '~/composables/gtag'
+import { setInstallPrompt } from '~/composables/app'
 
 export default defineComponent({
   setup() {
-    const store = useStore()
     const gtag = useGtag()
 
     if (process.client) {
@@ -16,7 +16,7 @@ export default defineComponent({
       window.addEventListener('appinstalled', installed)
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault()
-        store.commit('setInstallPrompt', e)
+        setInstallPrompt(e)
       })
     }
 

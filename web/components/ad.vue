@@ -62,6 +62,7 @@
 <script lang="ts">
 import { defineComponent, useStore, computed, ref } from '@nuxtjs/composition-api'
 import { useIntersectionObserver } from '@vueuse/core'
+import { isApp } from '~/composables/app'
 
 export default defineComponent({
   props: {
@@ -95,7 +96,6 @@ export default defineComponent({
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
 
-    const isApp = computed(() => store.state.isApp as boolean|undefined)
     // default to "allow" on SSR to render placeholders
     const userAllowed = computed(() => store.state.adsAllowed == undefined || store.state.adsAllowed == true)
     const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
@@ -120,7 +120,6 @@ export default defineComponent({
 
     return {
       ad,
-      isApp,
       visible,
       allowed,
     }
