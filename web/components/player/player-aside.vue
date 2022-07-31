@@ -16,7 +16,7 @@
 
       <b-kv-table
         :rows="rows"
-        :data="player"
+        :data="playerWithTrackingStatus"
         id-key="tag"
         class="mt-8 w-full"
       >
@@ -97,15 +97,15 @@
           {{ value }}
         </template>
 
-        <template v-slot:tracking>
-          {{ $t('profile.tracking.status.' + trackingStatus) }}
+        <template v-slot:tracking="{ value }">
+          {{ $t('profile.tracking.status.' + value) }}
         </template>
       </b-kv-table>
     </div>
 
     <div slot="actions" class="flex flex-wrap gap-2">
       <b-button
-        v-if="player == undefined || trackingStatus == 'inactive' || trackingStatus == 'expired'"
+        v-if="trackingStatus == 'inactive' || trackingStatus == 'expired'"
         primary
         sm
         @click="enableTracking()"
@@ -217,7 +217,7 @@ export default defineComponent({
       if (trackingStatus.value != undefined) {
         rows.push({
           slot: 'tracking',
-          key: 'tag', // TODO quick hack
+          key: 'tracking',
           title: i18n.t('profile.tracking.label') as string,
         })
       }
@@ -232,6 +232,11 @@ export default defineComponent({
       'event_label': 'share',
     })
 
+    const playerWithTrackingStatus = computed(() => ({
+      ...props.player,
+      tracking: trackingStatus.value,
+    }))
+
     return {
       rows,
       playerUrl,
@@ -239,6 +244,7 @@ export default defineComponent({
       enableTracking,
       trackingStatus,
       sharepicTriggered,
+      playerWithTrackingStatus,
     }
   },
 })
