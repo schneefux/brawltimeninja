@@ -105,7 +105,7 @@
 
     <div slot="actions" class="flex flex-wrap gap-2">
       <b-button
-        v-if="trackingStatus == 'inactive' || trackingStatus == 'expired'"
+        v-if="canEnableTracking"
         primary
         sm
         @click="enableTracking()"
@@ -155,6 +155,9 @@ export default defineComponent({
       trackingStatus.value = await $api.mutation('player.trackTag', props.player.tag.substring(1))
       loading.value = false
     }
+
+    const canEnableTracking = computed(() => props.player.battles.length > 0
+      && (trackingStatus.value == 'inactive' || trackingStatus.value == 'expired'))
 
     const rows = computed<Row[]>(() => {
       const rows: Row[] = []
@@ -244,6 +247,7 @@ export default defineComponent({
       enableTracking,
       trackingStatus,
       sharepicTriggered,
+      canEnableTracking,
       playerWithTrackingStatus,
     }
   },
