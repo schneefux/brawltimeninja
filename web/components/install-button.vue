@@ -1,7 +1,7 @@
 <template>
   <b-button
     :class="{
-      'hidden': !isInstallable,
+      'hidden': !installable,
     }"
     class="!py-1 !px-2 -my-1 !text-xs md:text-sm whitespace-nowrap"
     secondary
@@ -17,27 +17,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useGtag } from '~/composables/gtag'
+import { install, installable } from '~/composables/app'
 
 export default defineComponent({
   setup() {
     const gtag = useGtag()
-
-    const store = useStore()
-    const isInstallable = computed(() => store.getters['isInstallable'])
 
     const clickInstall = async() => {
       gtag.event('click', {
         'event_category': 'app',
         'event_label': 'install_header',
       })
-      await store.dispatch('install')
+      await install()
     }
 
     return {
-      isInstallable,
+      installable,
       clickInstall,
       faDownload,
     }

@@ -1,7 +1,7 @@
 <template>
   <b-card
     :class="['relative', {
-      'hidden': !isInstallable || installBannerDismissed,
+      'hidden': !installable || installBannerDismissed,
     }]"
     :title="$t('banner.install.title')"
   >
@@ -37,14 +37,12 @@
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { useGtag } from '~/composables/gtag'
-import { clearInstallPrompt, install } from '~/composables/app'
+import { clearInstallPrompt, install, installable } from '~/composables/app'
 
 export default defineComponent({
   setup() {
     const store = useStore<any>()
-
     const installBannerDismissed = computed(() => store.state.installBannerDismissed)
-    const isInstallable = computed(() => store.getters['isInstallable'])
 
     const gtag = useGtag()
     const dismissInstall = () => {
@@ -66,7 +64,7 @@ export default defineComponent({
     return {
       faTimes,
       faDownload,
-      isInstallable,
+      installable,
       installBannerDismissed,
       dismissInstall,
       clickInstall,
