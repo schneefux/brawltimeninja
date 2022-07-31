@@ -40,7 +40,11 @@ export const playerRouter = createRouter()
         const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
         if (!ctx.isBot && stats.battles.length > 0) {
           // organic pageview: update confirmation status
-          await profileUpdaterService.updateProfileTrackingStatus(input, stats.battles[0].timestamp)
+          try {
+            await profileUpdaterService.updateProfileTrackingStatus(input, stats.battles[0].timestamp)
+          } catch (err) {
+            console.error('Error updating profile tracking status', err)
+          }
         }
         ctx.res?.set('Cache-Control', 'public, max-age=180')
         return stats
