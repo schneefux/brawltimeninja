@@ -11,7 +11,7 @@
       <dt class="text-text/75">
         {{ row.title }}
       </dt>
-      <dd class="whitespace-nowrap overflow-x-auto hide-scrollbar text-text text-right">
+      <dd class="flex-shrink-0 whitespace-nowrap overflow-x-auto hide-scrollbar text-text text-right">
         <slot
           :name="row.slot"
           :row="data"
