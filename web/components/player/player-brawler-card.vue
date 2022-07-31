@@ -113,20 +113,12 @@ export default defineComponent({
       type: Object as PropType<BrawlerWithId>,
       required: true,
     },
-    enableKlickerStats: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup(props) {
     const { $klicker } = useKlicker()
     const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
 
     const fetchData = async () => {
-      if (!props.enableKlickerStats) {
-        return
-      }
-
       const response = await $klicker.query({
         cubeId: 'battle',
         slices: {
@@ -149,10 +141,6 @@ export default defineComponent({
     }
 
     const data = useAsync(() => fetchData(), `player-brawler-${props.playerTag}-${props.brawler.name}`)
-
-    watch(() => props.enableKlickerStats, async () => {
-      data.value = await fetchData()
-    })
 
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))

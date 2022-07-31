@@ -55,7 +55,6 @@
         <player-trophy-statistics
           :player="player"
           :player-totals="playerTotals"
-          :enable-klicker-stats="enableKlickerStats"
           @interact="trackInteraction('trophies')"
         ></player-trophy-statistics>
       </b-page-section>
@@ -96,7 +95,6 @@
 
         <player-brawlers
           :player="player"
-          :enable-klicker-stats="enableKlickerStats"
           class="mt-4"
           @interact="trackInteraction('brawlers')"
         ></player-brawlers>
@@ -170,7 +168,6 @@
         <player-mode-winrates
           :player="player"
           :battles="player.battles"
-          :enable-klicker-stats="enableKlickerStats"
           class="mt-4"
           @interact="trackInteraction('gamemodes')"
         ></player-mode-winrates>
@@ -205,7 +202,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { Player } from '~/model/Brawlstars'
 import { PlayerTotals } from '~/store'
@@ -227,11 +224,6 @@ export default defineComponent({
     const { i18n, $config, $sentry } = useContext()
 
     const route = useRoute()
-
-    const enableKlickerStats = computed(() =>
-      // do not send queries to backend if user has no battle history in database
-      (playerTotals.value?.picks || 0) > 25
-    )
 
     const timer = ref<undefined|number>()
     const refreshSecondsLeft = ref(180)
@@ -325,7 +317,6 @@ export default defineComponent({
     return {
       refreshSecondsLeft,
       refresh,
-      enableKlickerStats,
       player,
       playerTotals,
       makeVisibilityCallback,

@@ -79,19 +79,11 @@ export default defineComponent({
       type: Array as PropType<EventMetadata[]>,
       required: true,
     },
-    enableKlickerStats: {
-      type: Boolean,
-      required: true
-    },
   },
   setup(props) {
     const { $klicker } = useContext()
 
     const updateData = async () => {
-      if (!props.enableKlickerStats) {
-        return undefined
-      }
-
       const data = await $klicker.query({
         cubeId: 'battle',
         dimensionsIds: [],
