@@ -14,7 +14,10 @@ const knex = Knex(knexfile[environment])
 const brawlstarsService = new BrawlstarsService()
 const profileUpdaterService = new ProfileUpdaterService(async (tag) => {
   const player = await brawlstarsService.getPlayerStatistics(tag, true)
-  return player.battles.length > 0 ? player.battles[0].timestamp : undefined
+  if (player.battles.length == 0) {
+    return undefined
+  }
+  return player.battles[0].timestamp
 }, knex)
 
 export async function updateAllProfiles() {
@@ -35,6 +38,10 @@ export const playerRouter = createRouter()
 
       try {
         const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+        if (!ctx.isBot && stats.battles.length > 0) {
+          // organic pageview: update confirmation status
+          await profileUpdaterService.updateProfileTrackingStatus(input, stats.battles[0].timestamp)
+        }
         ctx.res?.set('Cache-Control', 'public, max-age=180')
         return stats
       } catch (err: any) {
@@ -93,6 +100,13 @@ export const playerRouter = createRouter()
   .mutation('trackTag', {
     input: tagWithoutHashType,
     async resolve({ input }) {
-      return await profileUpdaterService.updateProfileTrackingStatus(input)
+      const stats = await brawlstarsService.getPlayerStatistics(input, true)
+      if (stats.battles.length == 0) {
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Player did not play any battles recently'
+        })
+      }
+      return await profileUpdaterService.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
     },
   })

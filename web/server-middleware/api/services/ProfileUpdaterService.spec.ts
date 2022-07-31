@@ -15,27 +15,13 @@ beforeEach(async () => {
 })
 
 test('should track new profile', async () => {
-  let called = 0
-  const profileUpdaterService = new ProfileUpdaterService(async () => { called++; return new Date(); }, knex)
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
 
-  await profileUpdaterService.updateProfileTrackingStatus('V8LLPPC')
+  await profileUpdaterService.upsertProfileTrackingStatus('V8LLPPC', new Date())
   const count = await knex('tracked_profile')
     .count('tag as count')
     .first()
-  expect(called).toBe(1)
   expect(count!.count).toBe(1)
-})
-
-test('should not track profile that does not exist', async () => {
-  const profileUpdaterService = new ProfileUpdaterService(async () => undefined, knex)
-
-  expect(profileUpdaterService.updateProfileTrackingStatus('V8LLPPC'))
-    .rejects.not.toBeNull()
-
-  const count = await knex('tracked_profile')
-    .count('tag as count')
-    .first()
-  expect(count!.count).toBe(0)
 })
 
 test('should return unknown profile status to inactive', async () => {
@@ -126,4 +112,37 @@ test('should handle error in update', async () => {
 
   await profileUpdaterService.updateAll()
   spy.mockRestore()
+})
+
+test('should update profile conditionally if tracked', async () => {
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
+
+  const then = new Date()
+  then.setMinutes(then.getMinutes() - 10)
+  await knex('tracked_profile').insert({
+    tag: 'V8LLPPC',
+    created_at: then,
+    confirmed_at: then,
+    last_updated_at: then,
+    last_active_at: then,
+  })
+
+  await profileUpdaterService.updateProfileTrackingStatus('V8LLPPC', new Date())
+
+  const count = await knex('tracked_profile')
+    .count('tag as count')
+    .where('last_updated_at', '>', then)
+    .first()
+  expect(count!.count).toBe(1)
+})
+
+test('should not update profile conditionally if not tracked', async () => {
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
+
+  await profileUpdaterService.updateProfileTrackingStatus('V8LLPPC', new Date())
+
+  const count = await knex('tracked_profile')
+    .count('tag as count')
+    .first()
+  expect(count!.count).toBe(0)
 })

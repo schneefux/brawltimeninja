@@ -14,17 +14,11 @@ export default class ProfileUpdaterService {
     private knex: Knex,
   ) { }
 
-  public async updateProfileTrackingStatus(tag: string) {
-    const date = await this.updateProfileCallback(tag)
-
-    if (date == undefined) {
-      throw {
-        status: 400,
-        reason: 'Cannot track profile with empty battle log, tag: ' + tag,
-      }
-    }
-
-    console.log('updating tracker status for ' + tag)
+  /**
+   * Insert or update tracking status - triggered by explicit interaction (button click)
+   */
+  public async upsertProfileTrackingStatus(tag: string, lastActiveDate: Date) {
+    console.log('upserting tracker status for ' + tag)
 
     const now = new Date()
 
@@ -34,12 +28,29 @@ export default class ProfileUpdaterService {
         created_at: now,
         confirmed_at: now,
         last_updated_at: now,
-        last_active_at: date,
+        last_active_at: lastActiveDate,
       })
       .onConflict('tag')
       .merge(['confirmed_at', 'last_updated_at', 'last_active_at'])
 
     return await this.getProfileTrackingStatus(tag)
+  }
+
+  /**
+   * Update tracking status if exists - triggered by implicit interaction (organic pageview)
+   */
+  public async updateProfileTrackingStatus(tag: string, lastActiveDate: Date) {
+    console.log('updating tracker status for ' + tag)
+
+    const now = new Date()
+
+    await this.knex('tracked_profile')
+      .update({
+        confirmed_at: now,
+        last_updated_at: now,
+        last_active_at: lastActiveDate,
+      })
+      .where('tag', tag)
   }
 
   private getExpirationDate() {
@@ -73,6 +84,9 @@ export default class ProfileUpdaterService {
     return 'active'
   }
 
+  /**
+   * Cron task
+   */
   public async updateAll() {
     const summary = {
       total: 0,

@@ -580,5 +580,5 @@
     "profile.tracking.status.active": "Active",
     "profile.tracking.status.inactive": "Inactive",
     "profile.tracking.status.expired": "Expired",
-    "profile.tracking.enable": "Enable Tracking"
+    "profile.tracking.enable": "Activate Tracking"
 }
