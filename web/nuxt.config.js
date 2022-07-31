@@ -260,15 +260,19 @@ export default {
       file: 'index.js',
     }, {
       code: 'de',
-      iso: 'de-DE',
+      iso: 'de',
       file: 'index.js',
     }, {
       code: 'es',
-      iso: 'es-ES',
+      iso: 'es',
       file: 'index.js',
     }, {
       code: 'ua',
-      iso: 'uk-UA',
+      iso: 'uk',
+      file: 'index.js',
+    }, {
+      code: 'it',
+      iso: 'it',
       file: 'index.js',
     },
     ...(!!process.env.TRADUORA_PROJECT_ID ? [{
