@@ -19,20 +19,11 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
-import { useGtag } from '~/composables/gtag'
-import { install, installable } from '~/composables/app'
+import { useInstall } from '~/composables/app'
 
 export default defineComponent({
   setup() {
-    const gtag = useGtag()
-
-    const clickInstall = async() => {
-      gtag.event('click', {
-        'event_category': 'app',
-        'event_label': 'install_header',
-      })
-      await install()
-    }
+    const { installable, clickInstall } = useInstall('header')
 
     return {
       installable,
