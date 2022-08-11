@@ -7,13 +7,13 @@
     <app-head-nav class="lg:hidden"></app-head-nav>
 
     <ad
-      :ad-region="$route.fullPath"
+      :ad-region="$route != undefined ? $route.fullPath : undefined"
       ad-slot="6848221017"
       class="fixed left-4 inset-y-0 flex flex-col justify-center"
       scraper
     ></ad>
     <ad
-      :ad-region="$route.fullPath"
+      :ad-region="$route != undefined ? $route.fullPath : undefined"
       ad-slot="8127026559"
       class="fixed right-4 inset-y-0 flex flex-col justify-center"
       scraper
@@ -55,6 +55,7 @@
 import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
+import { setIsPwa, setIsTwa } from '~/composables/app'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
@@ -127,7 +128,8 @@ export default defineComponent({
         const isPwa = window.matchMedia('(display-mode: standalone)').matches
         const isTwa = document.referrer.startsWith('android-app')
 
-        store.commit('setIsApp', isPwa || isTwa)
+        setIsPwa(isPwa)
+        setIsTwa(isTwa)
 
         gtag.event('branch_dimension', {
           'branch': process.env.branch || '',

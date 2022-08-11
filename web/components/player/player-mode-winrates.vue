@@ -24,7 +24,6 @@
         :active-events="events"
         :player-brawlers="player.brawlers"
         :player-tag="player.tag"
-        :enable-klicker-stats="enableKlickerStats"
       ></player-mode-card>
     </template>
   </b-scrolling-list>
@@ -48,10 +47,6 @@ export default defineComponent({
     battles: {
       type: Array as PropType<Battle[]>,
       default: []
-    },
-    enableKlickerStats: {
-      type: Boolean,
-      required: true
     },
   },
   setup(props) {

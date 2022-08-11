@@ -10,19 +10,6 @@
     <template v-slot:empty>
       <slot name="empty"></slot>
     </template>
-    <template
-      v-if="card != undefined"
-      v-slot:placeholder
-    >
-      <b-card
-        v-bind="card"
-        loading
-      >
-        <template v-slot:content>
-          <slot name="placeholder"></slot>
-        </template>
-      </b-card>
-    </template>
   </c-query>
 </template>
 

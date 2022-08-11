@@ -18,8 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 import { BDashboardCell } from '@schneefux/klicker/components'
+import { isApp } from '~/composables/app'
 
 export default defineComponent({
   components: {
@@ -40,9 +41,6 @@ export default defineComponent({
     },
   },
   setup() {
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as undefined|boolean)
-
     return {
       isApp,
     }

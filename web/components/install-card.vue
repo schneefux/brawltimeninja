@@ -1,7 +1,7 @@
 <template>
   <b-card
     :class="['relative', {
-      'hidden': !isInstallable || installBannerDismissed,
+      'hidden': !installable || installDismissed,
     }]"
     :title="$t('banner.install.title')"
   >
@@ -35,38 +35,18 @@
 
 <script lang="ts">
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
-import { useGtag } from '~/composables/gtag'
+import { defineComponent } from '@nuxtjs/composition-api'
+import { useInstall } from '~/composables/app'
 
 export default defineComponent({
   setup() {
-    const store = useStore<any>()
-
-    const installBannerDismissed = computed(() => store.state.installBannerDismissed)
-    const isInstallable = computed(() => store.getters['isInstallable'])
-
-    const gtag = useGtag()
-    const dismissInstall = () => {
-      gtag.event('dismiss', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      store.commit('dismissInstallBanner')
-      store.commit('clearInstallPrompt')
-    }
-    const clickInstall = async () => {
-      gtag.event('click', {
-        'event_category': 'app',
-        'event_label': 'install_banner',
-      })
-      await store.dispatch('install')
-    }
+    const { installable, clickInstall, dismissInstall, installDismissed } = useInstall('banner')
 
     return {
       faTimes,
       faDownload,
-      isInstallable,
-      installBannerDismissed,
+      installable,
+      installDismissed,
       dismissInstall,
       clickInstall,
     }

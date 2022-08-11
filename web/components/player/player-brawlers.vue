@@ -20,7 +20,6 @@
       <player-brawler-card
         :brawler="brawler"
         :player-tag="player.tag"
-        :enable-klicker-stats="enableKlickerStats"
       ></player-brawler-card>
     </template>
   </b-scrolling-list>
@@ -39,10 +38,6 @@ export default defineComponent({
     player: {
       type: Object as PropType<Player>,
       required: true,
-    },
-    enableKlickerStats: {
-      type: Boolean,
-      required: true
     },
   },
   setup(props) {

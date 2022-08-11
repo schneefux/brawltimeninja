@@ -39,7 +39,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
+import { isApp } from '~/composables/app'
 
 export default defineComponent({
   props: {
@@ -49,9 +50,6 @@ export default defineComponent({
     },
   },
   setup() {
-    const store = useStore<any>()
-    const isApp = computed(() => store.state.isApp as undefined|boolean)
-
     return {
       isApp,
       releaseVersion: process.env.release!,

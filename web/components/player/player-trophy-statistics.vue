@@ -8,23 +8,20 @@
       lazy
     >
       <history-graph
-        v-if="enableKlickerStats"
         :player-tag="player.tag"
         card
-      ></history-graph>
-      <b-card v-else>
-        <div
-          slot="content"
-          class="flex flex-col justify-center h-full"
-        >
-          <p
+      >
+        <b-card slot="empty">
+          <div
             slot="content"
-            class="italic text-center"
+            class="flex flex-col justify-center h-full"
           >
-            {{ $t('player.no-history') }}
-          </p>
-        </div>
-      </b-card>
+            <p class="italic text-center">
+              {{ $t('player.no-history') }}
+            </p>
+          </div>
+        </b-card>
+      </history-graph>
     </b-dashboard-cell>
 
     <b-dashboard-cell
@@ -125,10 +122,6 @@ export default defineComponent({
     playerTotals: {
       type: Object as PropType<PlayerTotals>,
       required: false
-    },
-    enableKlickerStats: {
-      type: Boolean,
-      default: false
     },
   },
   setup(props) {
