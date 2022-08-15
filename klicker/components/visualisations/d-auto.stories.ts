@@ -1,7 +1,7 @@
 import CQuery from '../c-query'
 import DAuto from './d-auto.vue'
 import { Meta, Story } from '@storybook/vue'
-import { BrawlerRendererHooks } from '../../fixtures/renderers'
+import { BrawlerRendererParameters } from '../../fixtures/renderers'
 import { CubeQuery } from '../../types'
 
 export default {
@@ -48,8 +48,10 @@ export const CustomRenderer: Story = (args, { argTypes }) => ({
       </template>
     </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+CustomRenderer.parameters = {
+  ...BrawlerRendererParameters,
+}
 
 export const CustomRendererCaptioned: Story = CustomRenderer.bind({})
 CustomRendererCaptioned.args = {
@@ -79,5 +81,7 @@ export const MixedWithAndWithoutCustomRenderer: Story = (args, { argTypes }) => 
       </template>
     </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+CustomRenderer.parameters = {
+  ...BrawlerRendererParameters,
+}

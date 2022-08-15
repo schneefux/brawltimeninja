@@ -2,6 +2,7 @@ import CSlicer from './c-slicer.vue'
 import BSelect from './ui/b-select.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery, SlicerSpec } from '../types'
+import MockedKlicker from '../fixtures/klicker.shim'
 import Vue from 'vue'
 
 export default {
@@ -51,13 +52,12 @@ export const Default: Story = (args, { argTypes }) => ({
   template: `
     <c-slicer v-bind="$props"></c-slicer>
   `,
-  mounted() {
-    (<any>window).$klicker.slicers.push(slicer)
-  },
-  destroyed() {
-    (<any>window).$klicker.slicers.pop()
-  },
 })
+Default.parameters = {
+  $klicker: Object.assign(new MockedKlicker(), {
+    slicers: [slicer],
+  }),
+}
 Default.args = {
   value: query,
 }
@@ -91,13 +91,12 @@ export const Comparing: Story = (args, { argTypes }) => ({
       <c-slicer v-bind="$props" comparing></c-slicer>
     </div>
   `,
-  mounted() {
-    (<any>window).$klicker.slicers.push(slicer)
-  },
-  destroyed() {
-    (<any>window).$klicker.slicers.pop()
-  },
 })
+Comparing.parameters = {
+  $klicker: Object.assign(new MockedKlicker(), {
+    slicers: [slicer],
+  }),
+}
 Comparing.args = {
   value: comparingQuery,
 }
