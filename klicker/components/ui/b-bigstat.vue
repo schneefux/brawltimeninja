@@ -15,9 +15,18 @@
           </template>
         </b-card>
       </b-lightbox>
-      <button
-        v-if="tooltip != undefined || tooltipLink != undefined || 'tooltip' in $scopedSlots"
+      <router-link
+        v-if="tooltipLink != undefined"
         :to="tooltipLink"
+        label="Tooltip"
+        class="w-4 text-sm leading-none absolute top-1 right-0"
+      >
+        <font-awesome-icon
+          :icon="faQuestion"
+        ></font-awesome-icon>
+      </router-link>
+      <button
+        v-else-if="tooltip != undefined || 'tooltip' in $scopedSlots"
         label="Tooltip"
         class="w-4 text-sm leading-none absolute top-1 right-0"
         @click="tooltipOpen = !tooltipOpen"
