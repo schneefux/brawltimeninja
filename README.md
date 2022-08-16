@@ -13,6 +13,12 @@ https://brawltime.ninja
   * Register a BrawlApi token and set `BRAWLAPI_TOKEN`
   * By default, the frontend will use meta statistics and assets from the production services
 
+### Storybook
+
+  * klicker is a package of generic UI components, they can be developed and tested without the frontend
+  * Enter `klicker/` and install dependencies: `yarn install`
+  * Start storybook: `yarn run storybook` (https://storybook.js.org/)
+
 ### Full stack
 
 In addition to the above:
