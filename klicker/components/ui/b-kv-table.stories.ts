@@ -10,7 +10,7 @@ export const Default: Story = (args, { argTypes }) => ({
   components: { BKvTable },
   props: Object.keys(argTypes),
   template: `
-    <div style="width: 10rem;">
+    <div style="width: 16rem;">
       <b-kv-table v-bind="$props">
       </b-kv-table>
     </div>
@@ -23,6 +23,9 @@ Default.args = {
   }, {
     title: 'Star Rate',
     key: 'stats.starRate',
+  }, {
+    title: 'Description',
+    key: 'description',
   }],
   idKey: 'id',
   data: {
@@ -33,6 +36,7 @@ Default.args = {
       starRate: '11.70%',
       blub: 'asdf',
     },
+    description: 'This is a very long, overflowing text',
   },
 }
 
