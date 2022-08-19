@@ -24,8 +24,8 @@ export default defineComponent({
     const model = computed({
       get() {
         return {
-          gte: parseInt(props.value.trophyRangeGte?.[0] as string) || undefined,
-          lt: parseInt(props.value.trophyRangeLt?.[0] as string) || undefined,
+          gte: parseInt(props.value.trophyRangeGte?.[0] as string) || 5,
+          lt: parseInt(props.value.trophyRangeLt?.[0] as string) || 10,
         }
       },
       set(v: { gte?: number, lt?: number }) {
