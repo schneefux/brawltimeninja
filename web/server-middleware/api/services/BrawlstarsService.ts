@@ -1,10 +1,9 @@
-import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart, getCompetitionWinnerMode } from '../../../lib/util'
+import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart } from '../../../lib/util'
 import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../../model/Brawlstars'
 import { Battle, Brawler, Player, ActiveEvent } from '../../../model/Api'
 import { request } from '../lib/request'
 import { StarlistEvent } from '../../../model/Starlist'
 import ClickerService from './ClickerService'
-import { ProfileTrackingStatus } from './ProfileUpdaterService'
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -170,13 +169,8 @@ export default class BrawlstarsService {
 
       // 2020-10-22, competition maps: event={id: 0, map: null}
       if (battle.event.id == 0 && battle.event.map == null) {
-        const battleTime = parseApiTime(battle.battleTime)
-        const competitionWinnerMode = getCompetitionWinnerMode(battleTime)
-        if (battle.battle.mode == competitionWinnerMode) {
-          battle.event.map = `Competition Winner ${getCompetitionMapDayStart(parseApiTime(battle.battleTime)).toISOString().slice(0, 10)}`
-        } else {
-          battle.event.map = 'Competition Entry'
-        }
+        // TODO detect competition winner based on mode rotation
+        battle.event.map = 'Competition Entry'
       }
 
       battle.event.id = battle.event.id || 0
