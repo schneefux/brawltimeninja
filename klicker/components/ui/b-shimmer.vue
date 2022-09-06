@@ -45,7 +45,7 @@ export default defineComponent({
   @apply block absolute h-full top-0;
   left: -200px;
   width: 200px;
-  background: linear-gradient(to right, transparent 0%, theme('colors.gray.800') 50%, transparent 100%);
+  background: linear-gradient(to right, transparent 0%, theme(colors.background / 75%) 50%, transparent 100%);
   animation: load 1s ease;
   animation-iteration-count: infinite;
 }

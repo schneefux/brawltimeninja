@@ -26,7 +26,7 @@
     <b-scrolling-dashboard
       ref="container"
       :disable-scroll-snap="!scrollSnap"
-      class="mt-4"
+      :class="{ 'mt-4': 'preview' in $scopedSlots }"
       @scroll="onScroll"
       @rerender="onRerender"
     >
