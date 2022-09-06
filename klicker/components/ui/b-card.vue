@@ -48,7 +48,7 @@
       >
         <slot
           name="icon"
-          v-if="icon != undefined"
+          v-if="icon != undefined || 'icon' in $scopedSlots"
           :icon="icon"
           :icon-alt="iconAlt"
         >
@@ -68,18 +68,27 @@
               'text-sm leading-tight': dense,
             }"
           >
-            <router-link
-              v-if="titleLink != undefined || link != undefined"
-              v-slot="{ href, navigate }"
-              :to="titleLink || link"
-              class="contents"
-              custom
-            >
-              <a
-                :href="href"
-                @click.stop="e => onClickLink() || navigate(e)"
-              >{{ title }}</a>
-            </router-link>
+            <template v-if="titleLink != undefined || link != undefined">
+              <component
+                v-if="linkComponent != undefined"
+                :is="linkComponent"
+                :to="titleLink || link"
+              >
+                {{ title }}
+              </component>
+              <router-link
+                v-else
+                v-slot="{ href, navigate }"
+                :to="titleLink || link"
+                class="contents"
+                custom
+              >
+                <a
+                  :href="href"
+                  @click.stop="e => onClickLink() || navigate(e)"
+                >{{ title }}</a>
+              </router-link>
+            </template>
             <template v-else>
               {{ title }}
             </template>
@@ -92,18 +101,27 @@
               'leading-tight': dense,
             }]"
           >
-            <router-link
-              v-if="subtitleLink != undefined"
-              v-slot="{ href, navigate }"
-              :to="subtitleLink"
-              class="contents"
-              custom
-            >
-              <a
-                :href="href"
-                @click.stop="e => onClickLink() || navigate(e)"
-              >{{ subtitle }}</a>
-            </router-link>
+            <template v-if="subtitleLink != undefined">
+              <component
+                v-if="linkComponent != undefined"
+                :is="linkComponent"
+                :to="subtitleLink"
+              >
+                {{ title }}
+              </component>
+              <router-link
+                v-else
+                v-slot="{ href, navigate }"
+                :to="subtitleLink"
+                class="contents"
+                custom
+              >
+                <a
+                  :href="href"
+                  @click.stop="e => onClickLink() || navigate(e)"
+                >{{ subtitle }}</a>
+              </router-link>
+            </template>
             <template v-else>
               {{ subtitle }}
             </template>
@@ -148,7 +166,7 @@
 
 <script lang="ts">
 import { useRouter } from '@nuxtjs/composition-api'
-import { defineComponent, computed } from '@vue/composition-api'
+import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({
@@ -159,30 +177,39 @@ export default defineComponent({
     },
     link: {
       type: String,
+      required: false
     },
     title: {
       type: String,
+      required: false
     },
     titleLink: {
-      type: [String, Function]
+      type: [String, Function],
+      required: false
     },
     subtitle: {
       type: String,
+      required: false
     },
     subtitleLink: {
       type: String,
+      required: false
     },
     background: {
       type: String,
+      required: false
     },
     icon: {
       type: String,
+      required: false
     },
     iconAlt: {
       type: String,
+      required: false
     },
     color: {
       type: String,
+      required: false
     },
     textColor: {
       type: String,
@@ -190,18 +217,24 @@ export default defineComponent({
     },
     dense: {
       type: Boolean,
+      required: false
     },
     elevation: {
       type: Number,
       default: 1,
     },
     loading: {
-      type: Boolean
+      type: Boolean,
+      required: false
     },
     noFilter: {
       // workaround for https://stackoverflow.com/a/52937920
       type: Boolean,
       default: false
+    },
+    linkComponent: {
+      type: undefined,
+      required: false
     },
   },
   setup(props, { slots, listeners }) {
@@ -225,7 +258,12 @@ export default defineComponent({
       }
 
       if (props.link != undefined) {
-        router.push(props.link)
+        if (!props.link.startsWith('http')) {
+          router.push(props.link)
+        } else {
+          window.open(props.link, '_blank')
+        }
+
         return true
       }
 
@@ -274,7 +312,7 @@ export default defineComponent({
 }
 
 .loading:before {
-  @apply absolute bottom-0 left-0 bg-red-600 h-1;
+  @apply absolute bottom-0 left-0 bg-primary h-1;
 
   content: '';
   animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
