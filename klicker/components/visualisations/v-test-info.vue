@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { VisualisationProps } from '../../props'
-import { computed, defineComponent } from '@vue/composition-api'
+import { computed, defineComponent } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import { useKlicker } from '../../composables'

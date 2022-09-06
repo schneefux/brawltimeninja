@@ -56,6 +56,7 @@ import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapPr
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { setIsPwa, setIsTwa } from '~/composables/app'
+import { getCurrentInstance } from 'vue'
 
 const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
@@ -64,7 +65,8 @@ export default defineComponent({
     BCookieConsent,
   },
   head: {},
-  setup(props, { root }) {
+  setup(props) {
+    const root = getCurrentInstance()!.proxy.$root
     const container = ref<HTMLElement>()
 
     const { localePath, i18n } = useContext()

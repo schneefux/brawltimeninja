@@ -10,10 +10,10 @@ export default defineConfig({
     createVuePlugin({
       jsx: true,
     }),
-    visualizer(),
+    visualizer() as any, // TODO https://github.com/btd/rollup-plugin-visualizer/issues/124
   ],
   optimizeDeps: {
-    exclude: ['@vue/composition-api'],
+    exclude: ['vue'],
   },
   build: {
     sourcemap: true,
@@ -24,11 +24,10 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['vue', '@vue/composition-api', /\@nuxtjs\/composition-api/, 'vue-router'],
+      external: ['vue', /\@nuxtjs\/composition-api/, 'vue-router'],
       output: {
         globals: {
           'vue': 'Vue',
-          '@vue/composition-api': 'VueCompositionApi',
           '@nuxtjs/composition-api': 'NuxtJSCompositionApi',
           'vue-router': 'VueRouter',
         },

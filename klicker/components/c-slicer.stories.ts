@@ -2,7 +2,7 @@ import CSlicer from './c-slicer.vue'
 import BSelect from './ui/b-select.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery, SlicerSpec } from '../types'
-import MockedKlicker from '../fixtures/klicker.shim'
+import { MockedKlicker } from '../fixtures/klicker.shim'
 import Vue from 'vue'
 
 export default {

@@ -1,20 +1,11 @@
-import fetch from 'node-fetch-2'
-import AbortController from 'abort-controller'
+import { fetch, Agent, Request } from 'undici'
 import { URLSearchParams, URL } from 'url'
-import { Agent as HttpAgent } from 'http'
-import { Agent as HttpsAgent } from 'https'
 import StatsD from 'hot-shots'
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
-const httpAgent = new HttpAgent({
-  keepAlive: true,
-  keepAliveMsecs: 90*60,
-})
-
-const httpsAgent = new HttpsAgent({
-  keepAlive: true,
-  keepAliveMsecs: 90*60,
+const agent = new Agent({
+  keepAliveTimeout: 90*60,
 })
 
 export class RequestError extends Error {
@@ -38,7 +29,6 @@ export function request<T>(
   const urlParams = new URLSearchParams(params)
   url.search = urlParams.toString()
   const urlStr = url.toString()
-  const agent = urlStr.startsWith('https') ? httpsAgent : httpAgent
   const controller = new AbortController()
   const timeout = setTimeout(() => {
     controller.abort()
@@ -46,12 +36,15 @@ export function request<T>(
 
   stats.increment(metricName + '.run')
   const fun = () => fetch(urlStr, {
-      headers,
-      agent,
-      compress: true,
+      headers: {
+        'Accept-Encoding': 'gzip, deflate, br',
+        ...headers,
+      },
+      dispatcher: agent,
       signal: controller.signal,
     })
     .then(response => {
+      console.log(response)
       if (!response.ok) {
         if (response.status == 429) {
           stats.increment(metricName + '.ratelimited')

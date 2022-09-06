@@ -2,10 +2,11 @@ import { ref, nextTick, onMounted, getCurrentInstance } from 'vue'
 
 export const useUniqueId = () => {
   const id = ref()
-  const instance = getCurrentInstance()
+  const instance = getCurrentInstance() as any
   onMounted(() => nextTick(() => {
     if (instance != null) {
-      id.value = `__KLICKERID__${(<any>instance).uid}`
+      const uid = instance?.uid ?? instance?.proxy?._uid
+      id.value = `__KLICKERID__${uid}`
     }
   }))
 

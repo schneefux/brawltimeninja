@@ -169,7 +169,7 @@ async function main() {
   }
 
   function getVoiceLinesFromSection(voiceLineSectionJson, brawlerDocLinks, brawlerVoicelineDirectory) {
-    const voiceLineElements = voiceLineSectionJson["templates"]
+    const voiceLineElements = voiceLineSectionJson["templates"] ?? []
     return voiceLineElements.map(voiceLineElement => {
       const voiceLineFileName = voiceLineElement['filename'].replaceAll(" ", "_")
       const voiceLineLink = getVoiceLineURLFromName(brawlerDocLinks, voiceLineFileName)

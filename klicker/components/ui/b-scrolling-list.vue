@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, nextTick } from '@vue/composition-api'
+import { computed, defineComponent, onMounted, PropType, ref, nextTick, getCurrentInstance } from 'vue'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
@@ -148,8 +148,8 @@ export default defineComponent({
       required: false
     },
   },
-  // TODO replace by function ref when migrating to Vue 3
-  setup(props, { emit, refs }) {
+  setup(props, { emit }) {
+    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
     const preview = ref<HTMLElement>()
 
@@ -195,7 +195,7 @@ export default defineComponent({
       const firstItem = Object.entries(refs)
         .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
       if (firstItem != undefined) {
-        const firstItemElement = firstItem[1][0].$el as HTMLElement
+        const firstItemElement = firstItem[1]![0].$el as HTMLElement
 
         // items may stretch their columns so prefer the actual width over the default values
         pxPerItem = firstItemElement.getBoundingClientRect().width

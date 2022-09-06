@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api'
+import { computed, defineComponent } from 'vue'
 import VCardWrapper from './v-card-wrapper.vue'
 import { StaticProps } from '../../props'
 import '@kangc/v-md-editor/lib/style/preview-html.css'

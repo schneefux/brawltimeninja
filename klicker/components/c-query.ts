@@ -1,5 +1,5 @@
 import { VNode } from 'vue'
-import { defineComponent, PropType, h, toRefs } from '@vue/composition-api'
+import { defineComponent, PropType, h, toRefs } from 'vue'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'

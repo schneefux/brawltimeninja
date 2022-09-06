@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { useKlicker } from '../../composables'
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   props: {

@@ -77,7 +77,7 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from '@vue/composition-api'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'

@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch' // ponyfill
-import { ref, onMounted } from '@vue/composition-api'
+import { ref, onMounted } from 'vue'
 import { feathers } from '@feathersjs/feathers'
 import rest from '@feathersjs/rest-client'
 import auth from '@feathersjs/authentication-client'
@@ -8,7 +8,7 @@ import { useContext } from '@nuxtjs/composition-api'
 export default function useFeathers() {
   const { $managerUrl }: any = useContext()
 
-  const client = feathers()
+  const client = feathers() as any // TODO
 
   client.configure(rest($managerUrl as string).fetch(fetch))
   client.configure(auth())

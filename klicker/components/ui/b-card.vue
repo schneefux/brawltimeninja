@@ -251,9 +251,17 @@ export default defineComponent({
      *   4. default card link
      */
 
+    const triggerClick = () => {
+      if (Array.isArray(listeners.click)) {
+        (<Function[]> listeners.click).forEach((listener) => listener())
+      } else {
+        listeners.click()
+      }
+    }
+
     const onClick = () => {
       if (listeners.click != undefined) {
-        listeners.click()
+        triggerClick()
         return true
       }
 
@@ -272,7 +280,7 @@ export default defineComponent({
 
     const onClickLink = () => {
       if (listeners.click != undefined) {
-        listeners.click()
+        triggerClick()
         return true
       }
 
@@ -281,7 +289,11 @@ export default defineComponent({
 
     const onClickHeader = () => {
       if (listeners.clickHeader != undefined) {
-        listeners.clickHeader()
+        if (Array.isArray(listeners.clickHeader)) {
+          (<Function[]> listeners.clickHeader).forEach((listener) => listener())
+        } else {
+          listeners.clickHeader()
+        }
         return true
       }
 
@@ -312,7 +324,7 @@ export default defineComponent({
 }
 
 .loading:before {
-  @apply absolute bottom-0 left-0 bg-primary h-1;
+  @apply absolute bottom-0 left-0 bg-primary-500 h-1;
 
   content: '';
   animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;

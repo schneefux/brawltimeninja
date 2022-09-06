@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent } from 'vue'
 import { useUniqueId } from '../../composables/id'
 import LazyHydrate from 'vue-lazy-hydration'
 

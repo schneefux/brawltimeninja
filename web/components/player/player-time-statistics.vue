@@ -44,6 +44,7 @@ import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, onMounted, PropType, useContext } from '@nuxtjs/composition-api'
+import { getCurrentInstance } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 interface FunStat {
@@ -63,7 +64,8 @@ export default defineComponent({
     },
   },
   // TODO replace refs by function ref when migrating to Vue 3
-  setup(props, { refs }) {
+  setup(props) {
+    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const { i18n } = useContext()
 
     const startCounter = () => {

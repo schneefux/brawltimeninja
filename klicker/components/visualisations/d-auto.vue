@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { useCubeResponseProps } from '../../composables'
 import { MetaGridEntry, ComparingMetaGridEntry, CubeResponse, CubeComparingResponse } from '../../types'
 

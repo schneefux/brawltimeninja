@@ -1,4 +1,4 @@
-import { parseApiTime, brawlerId, capitalize, getCompetitionMapDayStart } from '../../../lib/util'
+import { brawlerId, capitalize } from '../../../lib/util'
 import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../../model/Brawlstars'
 import { Battle, Brawler, Player, ActiveEvent } from '../../../model/Api'
 import { request } from '../lib/request'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from '@vue/composition-api'
+import { defineComponent, h } from 'vue'
 import { StaticProps } from '../../props'
 import BCard from '../ui/b-card.vue'
 import BBigstat from '../ui/b-bigstat.vue'

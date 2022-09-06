@@ -1,4 +1,4 @@
-import { isRef, ref, Ref } from "@vue/composition-api"
+import { isRef, ref, Ref } from "vue"
 
 export const useAsync = <T>(
   cb: () => T | Promise<T>,

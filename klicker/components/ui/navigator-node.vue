@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect } from '@vue/composition-api'
+import { defineComponent, PropType, ref, watchEffect } from 'vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from './b-navigator.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
