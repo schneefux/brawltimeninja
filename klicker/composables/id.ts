@@ -1,10 +1,13 @@
-import { ssrRef } from '@nuxtjs/composition-api'
-import { ref } from '@vue/composition-api'
+import { ref, nextTick, onMounted, getCurrentInstance } from 'vue'
 
 export const useUniqueId = () => {
-  const randomId = Math.random().toString().slice(2)
-  // TODO does not work because ssrRef uses dumb keys
-  const id = ssrRef != undefined ? ssrRef(randomId) : ref(randomId)
+  const id = ref()
+  const instance = getCurrentInstance()
+  onMounted(() => nextTick(() => {
+    if (instance != null) {
+      id.value = `__KLICKERID__${(<any>instance).uid}`
+    }
+  }))
 
   return {
     id,
