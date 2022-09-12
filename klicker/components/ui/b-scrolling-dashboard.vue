@@ -30,6 +30,7 @@
     >
       <b-button
         class="h-10"
+        type="button"
         aria-label="previous"
         primary
         round
@@ -50,6 +51,7 @@
       <b-button
         class="h-10"
         aria-label="next"
+        type="button"
         primary
         round
         @click="scrollRight()"
