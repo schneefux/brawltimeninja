@@ -44,7 +44,6 @@ export function request<T>(
       signal: controller.signal,
     })
     .then(response => {
-      console.log(response)
       if (!response.ok) {
         if (response.status == 429) {
           stats.increment(metricName + '.ratelimited')
