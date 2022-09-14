@@ -1,4 +1,4 @@
-import { fetch, Agent, Request } from 'undici'
+import { fetch, Agent } from 'undici'
 import { URLSearchParams, URL } from 'url'
 import StatsD from 'hot-shots'
 
@@ -61,7 +61,7 @@ export function request<T>(
       return response.json() as Promise<T>
     })
     .catch(error => {
-      if (error.type == 'aborted') {
+      if (error instanceof DOMException && error.name == 'AbortError') {
         stats.increment(metricName + '.timeout')
 
         throw new RequestError({
