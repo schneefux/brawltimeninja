@@ -1,5 +1,5 @@
 <template>
-  <footer class="light bg-primary-400 text-text py-4 text-center leading-normal">
+  <footer class="bg-primary-400 text-on-primary py-4 text-center leading-normal">
     <div class="space-x-4 mt-2">
       <component
         :is="tag"
