@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-primary-400 text-on-primary py-4 text-center leading-normal">
-    <div class="space-x-4 mt-2">
+    <div v-if="links.length > 0" class="space-x-4 mt-2">
       <component
         :is="tag"
         v-for="link in links"
@@ -32,7 +32,7 @@ export default defineComponent({
     },
     links: {
       type: Array as PropType<Link[]>,
-      required: true
+      default: () => []
     },
   },
 })
