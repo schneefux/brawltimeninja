@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from '@vue/composition-api'
+import { defineComponent, onMounted, PropType, ref, getCurrentInstance } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { useUniqueId } from '../../composables/id'
 
@@ -78,8 +78,8 @@ export default defineComponent({
       default: 'top-0'
     },
   },
-  // TODO replace refs by function ref when migrating to Vue 3
-  setup(props, { refs }) {
+  setup(props) {
+    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const tabContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
     const headerContainer = ref<HTMLElement>()
@@ -101,7 +101,7 @@ export default defineComponent({
         return
       }
 
-      const headerElement = refs[`${id}-header`][0] as HTMLElement
+      const headerElement = refs[`${id}-header`]![0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
       const center = tabContainer.value!.getBoundingClientRect().width / 2
       if (Math.abs(offset) > center / 2) {
@@ -120,7 +120,7 @@ export default defineComponent({
         return
       }
 
-      const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
+      const tabElement = refs[`${tab.slot}-tab`]![0] as HTMLElement
       const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
       const left = tabContainer.value!.scrollLeft + offset
       // smooth if it's next to the current tab
@@ -154,7 +154,7 @@ export default defineComponent({
 
     onMounted(() => {
       for (const tab of props.tabs) {
-        const tabElement = refs[`${tab.slot}-tab`][0] as HTMLElement
+        const tabElement = refs[`${tab.slot}-tab`]![0] as HTMLElement
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           tabVisibility.value = {

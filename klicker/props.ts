@@ -1,4 +1,4 @@
-import { PropType } from '@vue/composition-api'
+import { PropType } from 'vue'
 import { CubeComparingResponse, CubeResponse } from './types'
 
 /**

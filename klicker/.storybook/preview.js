@@ -1,10 +1,7 @@
 import '../components/index.css'
 import '../fixtures/layout.css'
+import './theme.css'
 import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport'
-
-import Vue from 'vue'
-import VueCompositionApi from '@vue/composition-api'
-Vue.use(VueCompositionApi)
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -13,14 +10,13 @@ export const parameters = {
   },
   themes: {
     default: 'dark',
-    target: 'body',
     list: [{
       name: 'dark',
-      class: ['dark'],
+      class: ['dark', 'bg-background', 'text-text'],
       color: '#000000',
     }, {
       name: 'light',
-      class: [],
+      class: ['light', 'bg-background', 'text-text'],
       color: '#ffffff',
     }]
   }

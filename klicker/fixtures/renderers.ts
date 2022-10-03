@@ -1,5 +1,6 @@
 import { DimensionRendererSpec, MetricRendererSpec } from "../types"
 import Vue from "vue"
+import { MockedKlicker } from "./klicker.shim"
 
 const BrawlerImage = Vue.component('brawler-image', {
   props: ['row', 'captioned'],
@@ -24,13 +25,10 @@ const brawlerRenderer: DimensionRendererSpec = {
   replacesDimensionIds: ['brawler'],
 }
 
-export const BrawlerRendererHooks = {
-  mounted() {
-    (<any>window).$klicker.dimensionRenderers.push(brawlerRenderer)
-  },
-  destroyed() {
-    (<any>window).$klicker.dimensionRenderers.pop()
-  },
+export const BrawlerRendererParameters = {
+  $klicker: Object.assign(new MockedKlicker(), {
+    slicers: [brawlerRenderer],
+  }),
 }
 
 const WinRateColors = Vue.component('win-rate', {
@@ -54,11 +52,8 @@ const winRateRenderer: MetricRendererSpec = {
   replacesMetricId: 'winRate',
 }
 
-export const WinRateRendererHooks = {
-  mounted() {
-    (<any>window).$klicker.metricRenderers.push(winRateRenderer)
-  },
-  destroyed() {
-    (<any>window).$klicker.metricRenderers.pop()
-  },
+export const WinRateRendererParameters = {
+  $klicker: Object.assign(new MockedKlicker(), {
+    metricRenderers: [winRateRenderer],
+  }),
 }

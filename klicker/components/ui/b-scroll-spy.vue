@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed } from '@vue/composition-api'
+import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed, getCurrentInstance } from 'vue'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {
@@ -108,8 +108,8 @@ export default defineComponent({
       default: ''
     },
   },
-  // TODO replace by function ref when migrating to Vue 3
-  setup(props, { refs }) {
+  setup(props) {
+    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const dropdownOpen = ref(false)
     const rootContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
@@ -127,7 +127,7 @@ export default defineComponent({
         return
       }
 
-      const linkElement = refs[`${id}-link`][0] as HTMLElement
+      const linkElement = refs[`${id}-link`]![0] as HTMLElement
       if (linkElement == undefined) {
         return
       }

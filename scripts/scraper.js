@@ -105,7 +105,7 @@ async function main() {
 
   // iterate over all brawlers and scrape information
   let progress = 0
-  console.log('Downloading Brawler information')
+  console.log('Downloading Brawler information for ' + brawlerNames.length + ' brawlers')
   for (const brawlerName of brawlerNames) {
     const brawlerObj = await getBrawlerData(brawlerName)
     if (brawlerObj == undefined) {
@@ -169,8 +169,8 @@ async function main() {
   }
 
   function getVoiceLinesFromSection(voiceLineSectionJson, brawlerDocLinks, brawlerVoicelineDirectory) {
-    const voiceLineElements = voiceLineSectionJson["templates"]
-    return voiceLineElements.map(voiceLineElement => {
+    const voiceLineElements = voiceLineSectionJson["templates"] ?? []
+    return voiceLineElements.filter(ve => ve['filename'] != undefined).map(voiceLineElement => {
       const voiceLineFileName = voiceLineElement['filename'].replaceAll(" ", "_")
       const voiceLineLink = getVoiceLineURLFromName(brawlerDocLinks, voiceLineFileName)
       const voiceLineName = voiceLineElement['filename']
@@ -390,6 +390,7 @@ async function main() {
     }
 
     // history (little refactoring required :])
+    if (wtfBrawler.sections()[historySectionID] != undefined) {
     const historySection = wtfBrawler.sections()[historySectionID].json()
     let historyEntryDescriptionCount = 0
     let date = -1
@@ -410,6 +411,7 @@ async function main() {
         });
         historyEntryDescriptionCount += 1
       }
+    }
     }
     }
 

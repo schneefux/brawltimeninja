@@ -2,7 +2,7 @@ import CQuery from '../c-query'
 import VRoll from './v-roll.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
-import { BrawlerRendererHooks, WinRateRendererHooks } from '../../fixtures/renderers'
+import { BrawlerRendererParameters, WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: VRoll,
@@ -42,8 +42,10 @@ export const DimensionRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+DimensionRenderer.parameters = {
+  ...BrawlerRendererParameters,
+}
 
 export const MetricRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VRoll },
@@ -55,8 +57,10 @@ export const MetricRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...WinRateRendererHooks,
 })
+MetricRenderer.parameters = {
+  ...WinRateRendererParameters,
+}
 
 const queryMultiple = JSON.stringify(<CubeQuery>{
   cubeId: 'map',

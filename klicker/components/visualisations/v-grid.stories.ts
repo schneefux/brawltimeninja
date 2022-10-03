@@ -2,7 +2,7 @@ import CQuery from '../c-query'
 import VGrid from './v-grid.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeQuery } from '../../types'
-import { BrawlerRendererHooks, WinRateRendererHooks } from '../../fixtures/renderers'
+import { BrawlerRendererParameters, WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: VGrid,
@@ -32,8 +32,10 @@ export const Default: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+Default.parameters = {
+  ...BrawlerRendererParameters,
+}
 
 export const NoCard: Story = (args, { argTypes }) => ({
   components: { CQuery, VGrid },
@@ -48,8 +50,10 @@ export const NoCard: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+NoCard.parameters = {
+  ...BrawlerRendererParameters,
+}
 
 export const MetricRenderer: Story = (args, { argTypes }) => ({
   components: { CQuery, VGrid },
@@ -61,5 +65,7 @@ export const MetricRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...WinRateRendererHooks,
 })
+MetricRenderer.parameters = {
+  ...WinRateRendererParameters,
+}

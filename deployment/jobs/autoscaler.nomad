@@ -16,7 +16,6 @@ job "autoscaler" {
       port "http" {}
     }
 
-
     task "autoscaler" {
       driver = "docker"
 
@@ -24,12 +23,14 @@ job "autoscaler" {
         # artifacts are owned by nobody and nomad-hcloud-autoscaler misses the x flag
         # copy the artifact, chmod it, then start the agent
         # workaround for https://github.com/hashicorp/nomad/issues/2625
-        image = "hashicorp/nomad-autoscaler:0.3.6"
+        image = "hashicorp/nomad-autoscaler:0.3.7"
+        entrypoint = []
         command = "/bin/sh"
         ports = ["http"]
 
         args = [
           "-c",
+          "-x",
           "mkdir -p ${NOMAD_TASK_DIR}/plugins && cp ${NOMAD_TASK_DIR}/hcloud-server ${NOMAD_TASK_DIR}/plugins/hcloud-server && chmod +x ${NOMAD_TASK_DIR}/plugins/hcloud-server && nomad-autoscaler agent -config ${NOMAD_TASK_DIR}/config.hcl -plugin-dir ${NOMAD_TASK_DIR}/plugins -policy-dir ${NOMAD_TASK_DIR}/policies -http-bind-address 0.0.0.0 -http-bind-port ${NOMAD_PORT_http}",
         ]
       }

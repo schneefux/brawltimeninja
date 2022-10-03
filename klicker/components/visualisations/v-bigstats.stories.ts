@@ -2,7 +2,7 @@ import CQuery from '../c-query'
 import VBigstats from './v-bigstats.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
-import { WinRateRendererHooks } from '../../fixtures/renderers'
+import { WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: VBigstats,
@@ -77,5 +77,7 @@ export const MetricRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...WinRateRendererHooks,
 })
+MetricRenderer.parameters = {
+  ...WinRateRendererParameters,
+}

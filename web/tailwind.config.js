@@ -29,8 +29,10 @@ module.exports = {
       gray: colors.zinc,
       yellow: colors.amber,
       primary: colors.amber,
+      'on-primary': colors.gray['800'],
       red: colors.red,
       secondary: colors.red,
+      'on-secondary': colors.gray['200'],
 
       white: colors.white,
       black: colors.black,

@@ -1,4 +1,4 @@
-import { computed, Ref, toRef } from '@vue/composition-api'
+import { computed, Ref, toRef } from 'vue'
 import { useKlicker } from '../composables/klicker'
 import { CubeComparingResponse, CubeResponse, VisualisationSpec } from '../types'
 

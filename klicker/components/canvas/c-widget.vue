@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import CQuery from '../c-query'
 import { GridWidget, ReportWidget, StaticWidgetSpec } from '../../types'
 import VAuto from '../visualisations/v-auto.vue'

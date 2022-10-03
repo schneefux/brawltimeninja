@@ -2,7 +2,7 @@ import BPaginator from './b-paginator.vue'
 import { Meta, Story } from '@storybook/vue'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { getCanvasElementFixed } from '../../fix'
 
 export default {

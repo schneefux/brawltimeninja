@@ -1,4 +1,4 @@
-import { ref, computed, Ref } from '@vue/composition-api'
+import { ref, computed, Ref } from 'vue'
 import { throttledWatch } from '@vueuse/core'
 import useFeathers from './feathers'
 

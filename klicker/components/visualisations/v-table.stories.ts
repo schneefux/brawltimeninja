@@ -2,7 +2,7 @@ import CQuery from '../c-query'
 import VTable from './v-table.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
-import { WinRateRendererHooks, BrawlerRendererHooks } from '../../fixtures/renderers'
+import { BrawlerRendererParameters, WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: VTable,
@@ -44,8 +44,10 @@ export const DimensionRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...BrawlerRendererHooks,
 })
+DimensionRenderer.parameters = {
+  ...BrawlerRendererParameters,
+}
 
 const queryMultipleDimensions = JSON.stringify(<CubeQuery>{
   cubeId: 'map',
@@ -78,8 +80,10 @@ export const MetricRenderer: Story = (args, { argTypes }) => ({
     </template>
   </c-query>
   `,
-  ...WinRateRendererHooks,
 })
+MetricRenderer.parameters = {
+  ...WinRateRendererParameters,
+}
 
 export const NoCard: Story = (args, { argTypes }) => ({
   components: { CQuery, VTable },

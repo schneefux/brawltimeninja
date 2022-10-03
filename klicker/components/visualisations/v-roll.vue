@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, nextTick } from '@vue/composition-api'
+import { computed, defineComponent, ref, watch, nextTick, getCurrentInstance } from 'vue'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BPaginator from '../ui/b-paginator.vue'
@@ -85,7 +85,9 @@ export default defineComponent({
   props: {
     ...VisualisationProps,
   },
-  setup(props, { refs }) {
+  setup(props) {
+    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
+
     const { translate } = useKlicker()
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
@@ -152,7 +154,7 @@ export default defineComponent({
         return pageSize.value
       }
 
-      const firstItemElement = firstItem[1][0].$el as HTMLElement
+      const firstItemElement = firstItem[1]![0].$el as HTMLElement
       const pxPerItem = firstItemElement.getBoundingClientRect().width
 
       const pxForHeader = heading.value.getBoundingClientRect().width

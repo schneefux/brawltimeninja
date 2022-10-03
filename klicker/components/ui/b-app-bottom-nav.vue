@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, PropType } from '@vue/composition-api'
+import { defineComponent, ref, watchEffect, PropType } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 

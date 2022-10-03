@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted } from "@vue/composition-api";
+import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted } from "vue";
 import { ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'

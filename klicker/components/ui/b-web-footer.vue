@@ -1,6 +1,6 @@
 <template>
-  <footer class="light bg-primary-400 text-text py-4 text-center leading-normal">
-    <div class="space-x-4 mt-2">
+  <footer class="bg-primary-400 text-on-primary py-4 text-center leading-normal">
+    <div v-if="links.length > 0" class="space-x-4 mt-2">
       <component
         :is="tag"
         v-for="link in links"
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api'
+import { defineComponent, PropType } from 'vue'
 
 export interface Link {
   name: string
@@ -32,7 +32,7 @@ export default defineComponent({
     },
     links: {
       type: Array as PropType<Link[]>,
-      required: true
+      default: () => []
     },
   },
 })

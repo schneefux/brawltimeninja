@@ -249,14 +249,6 @@ export function getCompetitionMapDayStart(timestamp: Date) {
   return dayStart
 }
 
-export function getCompetitionWinnerMode(timestamp: Date) {
-  const order = ['duoShowdown', 'siege', 'hotZone', 'soloShowdown', 'brawlBall', 'bounty', 'heist', 'gemGrab']
-  const dayStart = new Date(Date.parse('2021-04-24T09:30:00Z'))
-  const diff = timestamp.getTime() - dayStart.getTime()
-  const daysSince = Math.floor(diff/1000/60/60/24)
-  return order[daysSince % order.length]
-}
-
 /**
  * Get the end date of the current and the last database-season
  */

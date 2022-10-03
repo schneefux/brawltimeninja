@@ -82,7 +82,7 @@
 
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
-import { computed, PropType, ref, watch } from '@vue/composition-api'
+import { computed, PropType, ref, watch } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '@schneefux/klicker/components'

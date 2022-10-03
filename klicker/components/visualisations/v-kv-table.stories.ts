@@ -2,7 +2,7 @@ import CQuery from '../c-query'
 import VKvTable from './v-kv-table.vue'
 import { Meta, Story } from '@storybook/vue'
 import { CubeComparingQuery, CubeQuery } from '../../types'
-import { WinRateRendererHooks } from '../../fixtures/renderers'
+import { WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: VKvTable,
@@ -83,5 +83,7 @@ export const MetricRenderer: Story = (args, { argTypes }) => ({
       </c-query>
     </div>
   `,
-  ...WinRateRendererHooks,
 })
+MetricRenderer.parameters = {
+  ...WinRateRendererParameters,
+}

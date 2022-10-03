@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref } from 'vue'
 import BTextbox from './b-textbox.vue'
 import BCard from './b-card.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

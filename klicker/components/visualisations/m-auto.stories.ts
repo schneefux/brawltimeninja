@@ -1,8 +1,8 @@
 import CQuery from '../c-query'
 import MAuto from './m-auto.vue'
 import { Meta, Story } from '@storybook/vue'
-import { WinRateRendererHooks } from '../../fixtures/renderers'
-import { CubeComparingQuery, CubeQuery } from '../../types'
+import { CubeQuery } from '../../types'
+import { WinRateRendererParameters } from '../../fixtures/renderers'
 
 export default {
   component: MAuto,
@@ -51,5 +51,7 @@ export const CustomRenderer: Story = (args, { argTypes }) => ({
       </template>
     </c-query>
   `,
-  ...WinRateRendererHooks,
 })
+CustomRenderer.parameters = {
+  ...WinRateRendererParameters,
+}

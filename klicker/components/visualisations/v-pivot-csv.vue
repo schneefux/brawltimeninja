@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent } from 'vue'
 import { VisualisationProps } from '../../props'
 import BButton from '../ui/b-button.vue'
 import { useCubeResponseProps } from '../../composables/response'

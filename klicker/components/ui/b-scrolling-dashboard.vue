@@ -30,6 +30,7 @@
     >
       <b-button
         class="h-10"
+        type="button"
         aria-label="previous"
         primary
         round
@@ -50,6 +51,7 @@
       <b-button
         class="h-10"
         aria-label="next"
+        type="button"
         primary
         round
         @click="scrollRight()"
@@ -63,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from '@vue/composition-api'
+import { defineComponent, ref, onMounted } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'

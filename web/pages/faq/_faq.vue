@@ -1,8 +1,9 @@
 <template>
   <b-page class="flex justify-center">
     <article-card
-      :title="faq.title"
-      :document="faq"
+      v-if="post != undefined"
+      :title="post.title"
+      :document="post"
       author="schneefux"
     ></article-card>
   </b-page>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, h, computed } from '@vue/composition-api'
+import { defineComponent, PropType, h, computed } from 'vue'
 import { useCubeResponseProps } from '../../composables'
 import { ComparingMetaGridEntry, CubeComparingResponse, CubeResponse, MetaGridEntry } from '../../types'
 
