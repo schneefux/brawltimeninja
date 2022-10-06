@@ -196,6 +196,7 @@ resource "hcloud_server" "default" {
   }
 }
 
+# brawltime
 resource "cloudflare_record" "translate4" {
   zone_id = var.cloudflare_zone_id
   name = "translate"
@@ -308,6 +309,22 @@ resource "cloudflare_record" "cube" {
   value = "brawltime.ninja"
 }
 
+resource "cloudflare_record" "deckroyale" {
+  zone_id = var.cloudflare_zone_id
+  name = "deckroyale"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
+
+resource "cloudflare_record" "cube-deckroyale" {
+  zone_id = var.cloudflare_zone_id
+  name = "cube-deckroyale"
+  proxied = true
+  type = "CNAME"
+  value = "brawltime.ninja"
+}
+
 resource "cloudflare_record" "testing" {
   zone_id = var.cloudflare_zone_id
   name = "testing"
@@ -339,3 +356,4 @@ resource "cloudflare_record" "traefik" {
   type = "CNAME"
   value = "brawltime.ninja"
 }
+
