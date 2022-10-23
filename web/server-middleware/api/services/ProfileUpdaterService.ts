@@ -93,16 +93,17 @@ export default class ProfileUpdaterService {
       success: 0,
     }
 
+    const isSqlite = this.knex.client.config.client == 'better-sqlite3'
     while (true) {
       const job = await this.knex('tracked_profile')
         .where('confirmed_at', '>=', this.getExpirationDate())
         .andWhere(
-          this.knex.client.config.client != 'better-sqlite3' ? this.knex.raw('TIMESTAMPDIFF(MINUTE, last_updated_at, NOW())') : this.knex.raw('(JulianDay(datetime(\'now\')) - JulianDay(datetime(last_updated_at / 1000, \'unixepoch\'))) * 24 * 60'),
+          !isSqlite ? this.knex.raw('TIMESTAMPDIFF(MINUTE, last_updated_at, NOW())') : this.knex.raw('(JulianDay(datetime(\'now\')) - JulianDay(datetime(last_updated_at / 1000, \'unixepoch\'))) * 24 * 60'),
           '>',
           TRACKING_REFRESH_MINUTES,
         )
         .select('tag')
-        .orderBy('last_updated_at', 'asc')
+        .orderByRaw(!isSqlite ? 'RAND()' : 'RANDOM()')
         .first()
 
       if (job == undefined) {
