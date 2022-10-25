@@ -34,7 +34,6 @@ ${c.dimensions.map((d) => `
     title: '${d.name}',
     sql: ${JSON.stringify(d.config.sql)},
     type: '${d.config.type}',
-    shown: ${!d.hidden},
   }`).join(',\n')}
 }
 })`
