@@ -112,7 +112,7 @@ export default defineComponent({
         arrivedRight: scroll.arrivedState.right,
       })
 
-      const scrollable = wrapper.value!.scrollWidth > wrapper.value!.clientWidth
+      const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
       arrivedLeft.value = scroll.arrivedState.left || !scrollable
       arrivedRight.value = scroll.arrivedState.right || !scrollable
     }
