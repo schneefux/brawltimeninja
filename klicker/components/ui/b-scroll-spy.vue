@@ -149,7 +149,7 @@ export default defineComponent({
       dropdownOpen.value = false
       // dropdown needs to close first
       nextTick(() => {
-        const offset = lgAndLarger.value ? 0 : navContainer.value!.getBoundingClientRect().bottom
+        const offset = lgAndLarger.value || navContainer.value == undefined ? 0 : navContainer.value.getBoundingClientRect().bottom
         const top = sectionElement.getBoundingClientRect().top + window.scrollY - offset
         window.scrollTo({ top, behavior: 'smooth' })
       })
