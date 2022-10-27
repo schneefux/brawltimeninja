@@ -4,7 +4,7 @@ const fs = require('fs').promises
 const { promisify } = require('util')
 const streamPipeline = promisify(require('stream').pipeline)
 
-const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
+const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const token = process.env.BRAWLAPI_TOKEN || '';
 
 function getStarlistTranslations() {
