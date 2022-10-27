@@ -76,7 +76,7 @@ job "autoscaler" {
             default_evaluation_interval = "1m"
           }
 
-          log_level = "INFO"
+          log_level = "DEBUG"
         EOF
 
         destination = "${NOMAD_TASK_DIR}/config.hcl"
@@ -106,7 +106,7 @@ job "autoscaler" {
                 query = "percentage-allocated_cpu"
 
                 strategy "target-value" {
-                  target = 90
+                  target = 80
                 }
               }
 
@@ -115,13 +115,16 @@ job "autoscaler" {
                 query = "percentage-allocated_memory"
 
                 strategy "target-value" {
-                  target = 90
+                  target = 75
                 }
               }
 
               # sync with hetzner.tf
               target "hcloud-server" {
-                datacenter = "dc01"
+                # combined filters are only supported since Nov 2021 https://github.com/hashicorp/nomad-autoscaler/pull/535
+                # the plugin was built Feb 2021
+                # scale-in will not work with this line uncommented
+                #datacenter = "dc01"
                 node_class = "worker"
                 node_purge = "true"
                 #dry-run = "true"
