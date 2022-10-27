@@ -84,7 +84,7 @@ job "brawltime-web" {
 
       check {
         type = "http"
-        path = "/about"
+        path = "/health"
         interval = "10s"
         timeout  = "5s"
 
