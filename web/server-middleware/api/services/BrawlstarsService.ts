@@ -5,7 +5,7 @@ import { request } from '../lib/request'
 import { StarlistEvent } from '../../../model/Starlist'
 import ClickerService from './ClickerService'
 
-const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlify.com/';
+const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
