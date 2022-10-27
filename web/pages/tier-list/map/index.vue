@@ -122,7 +122,7 @@ export default defineComponent({
   head: {},
   setup() {
     const { $config, i18n, $klicker, $api } = useContext()
-    const events = useAsync(() => $api.query('events.active'), 'events')
+    const events = useAsync(() => $api.query('events.active').catch(() => null), 'events')
     const currentEvents = computed<EventMetadata[]>(() => (events.value?.current ?? []).map(e => ({
       id: parseInt(e.id),
       map: e.map,

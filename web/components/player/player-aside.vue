@@ -145,7 +145,7 @@ export default defineComponent({
     const { $api } = useContext()
     const loading = ref(false)
     const trackingStatus = useAsync(
-      () => $api.query('player.getTrackingStatus', props.player.tag.substring(1)),
+      () => $api.query('player.getTrackingStatus', props.player.tag.substring(1)).catch(() => 'inactive'),
       `player-tracking-status-${props.player.tag.substring(1)}`)
     const enableTracking = async () => {
       if (props.player == undefined) {

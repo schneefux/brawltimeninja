@@ -121,8 +121,8 @@ class CustomKlicker extends Klicker {
       }))
       .filter(e => maxage == null || differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
 
-    const starlistData = await this.context.$api.query('events.active')
-    starlistData.current.forEach(s => {
+    const starlistData = await this.context.$api.query('events.active').catch(() => null)
+    starlistData?.current.forEach(s => {
       const match = lastEvents.find(e => e.id.toString() == s.id)
       if (match) {
         match.start = s.start

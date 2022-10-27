@@ -4,6 +4,7 @@
     :title="$t('best.players.long')"
   >
     <b-scrolling-list
+      v-if="leaderboard != undefined && leaderboard.length > 0"
       slot="content"
       :items="leaderboard != undefined ? leaderboard : []"
       :cell-columns="2"
@@ -53,7 +54,6 @@
 <script lang="ts">
 import { defineComponent, useAsync, useContext } from '@nuxtjs/composition-api'
 import { BScrollingList, BKvTable } from '@schneefux/klicker/components'
-import { PlayerRanking } from '~/model/Brawlstars'
 
 export default defineComponent({
   components: {

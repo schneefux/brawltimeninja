@@ -36,69 +36,23 @@ export const playerRouter = createRouter()
         stats.increment('player.human')
       }
 
-      try {
-        const stats = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
-        if (!ctx.isBot && stats.battles.length > 0) {
-          // organic pageview: update confirmation status
-          try {
-            await profileUpdaterService.updateProfileTrackingStatus(input, stats.battles[0].timestamp)
-          } catch (err) {
-            console.error('Error updating profile tracking status', err)
-          }
-        }
-        ctx.res?.set('Cache-Control', 'public, max-age=180')
-        return stats
-      } catch (err: any) {
-        if (err instanceof RequestError) {
-          if (err.response.status >= 500) {
-            console.error(err, err.response)
-
-            throw new trpc.TRPCError({
-              code: 'PRECONDITION_FAILED',
-              message: err.response.reason,
-              cause: err,
-            })
-          }
-
-          if (err.response.status == 404) {
-            throw new trpc.TRPCError({
-              code: 'NOT_FOUND',
-              message: err.response.reason,
-              cause: err,
-            })
-          }
-
-          if (err.response.status == 429) {
-            throw new trpc.TRPCError({
-              code: 'TIMEOUT', // TODO tRPC does not support 429
-              message: err.response.reason,
-              cause: err,
-            })
-          }
-
-          console.error(err, err.response)
-
-          throw new trpc.TRPCError({
-            code: 'BAD_REQUEST',
-            message: err.response.reason,
-            cause: err,
-          })
-        } else {
-          console.error(err)
-          throw err
+      const player = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+      if (!ctx.isBot && player.battles.length > 0) {
+        // organic pageview: update confirmation status
+        try {
+          await profileUpdaterService.updateProfileTrackingStatus(input, player.battles[0].timestamp)
+        } catch (err) {
+          console.error('Error updating profile tracking status', err)
         }
       }
+      ctx.res?.set('Cache-Control', 'public, max-age=180')
+      return player
     },
   })
   .query('getTrackingStatus', {
     input: tagWithoutHashType,
     async resolve({ input }) {
-      try {
-        return await profileUpdaterService.getProfileTrackingStatus(input)
-      } catch (err: any) {
-        console.error(err)
-        throw err
-      }
+      return await profileUpdaterService.getProfileTrackingStatus(input)
     },
   })
   .mutation('trackTag', {

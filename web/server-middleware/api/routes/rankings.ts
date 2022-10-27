@@ -11,14 +11,9 @@ export const rankingsRouter = createRouter()
       country: z.string(), // TODO use enum?
     }),
     async resolve({ input, ctx }) {
-      try {
-        const rankings = await brawlstarsService.getClubRanking(input.country)
-        ctx.res?.set('Cache-Control', 'public, max-age=300')
-        return rankings
-      } catch (err) {
-        console.error(err)
-        return []
-      }
+      const rankings = await brawlstarsService.getClubRanking(input.country)
+      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      return rankings
     },
   })
   .query('playersByCountryAndBrawler', {
@@ -27,14 +22,9 @@ export const rankingsRouter = createRouter()
       brawlerId: idType,
     }), // TODO use enum?
     async resolve({ input, ctx }) {
-      try {
-        const rankings = await brawlstarsService.getBrawlerRanking(input.country, input.brawlerId)
-        ctx.res?.set('Cache-Control', 'public, max-age=300')
-        return rankings
-      } catch (err) {
-        console.error(err)
-        return []
-      }
+      const rankings = await brawlstarsService.getBrawlerRanking(input.country, input.brawlerId)
+      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      return rankings
     },
   })
   .query('playersByCountry', {
@@ -42,13 +32,8 @@ export const rankingsRouter = createRouter()
       country: z.string(),
     }),
     async resolve({ input, ctx }) {
-      try {
-        const rankings = await brawlstarsService.getPlayerRanking(input.country)
-        ctx.res?.set('Cache-Control', 'public, max-age=300')
-        return rankings
-      } catch (err) {
-        console.error(err)
-        return []
-      }
+      const rankings = await brawlstarsService.getPlayerRanking(input.country)
+      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      return rankings
     },
   })
