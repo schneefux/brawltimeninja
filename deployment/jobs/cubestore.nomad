@@ -51,7 +51,7 @@ job "cubestore" {
       }
 
       config {
-        image = "cubejs/cubestore:v0.28"
+        image = "cubejs/cubestore:v0.31"
         ports = ["http", "router", "status"]
         volumes = [
           "cubestore:/cube/data",
