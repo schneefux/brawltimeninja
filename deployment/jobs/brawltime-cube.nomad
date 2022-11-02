@@ -30,7 +30,7 @@ job "brawltime-cube" {
 
     scaling {
       enabled = true
-      min = 1
+      min = 2
       max = 16
 
       policy {
@@ -124,7 +124,7 @@ job "brawltime-cube" {
       resources {
         cpu = 768
         memory = 384
-        memory_max = 512
+        memory_max = 768
       }
     }
   }
@@ -196,7 +196,7 @@ job "brawltime-cube" {
 
       resources {
         cpu = 32
-        memory = 128
+        memory = 196
         memory_max = 256
       }
     }

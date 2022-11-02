@@ -33,6 +33,8 @@ job "brawltime-media" {
     value = "brawltime-colt"
   }
 
+  # disabled, scaling is currently not working with volume
+  /*
   update {
     max_parallel = 1
     canary = 1
@@ -41,10 +43,12 @@ job "brawltime-media" {
     auto_revert = true
     auto_promote = true
   }
+  */
 
   group "media" {
-    count = 2
+    count = 1
 
+    /*
     scaling {
       enabled = true
       min = 1
@@ -80,6 +84,7 @@ job "brawltime-media" {
         }
       }
     }
+    */
 
     network {
       port "http" {}
@@ -143,8 +148,8 @@ job "brawltime-media" {
 
       resources {
         cpu = 64
-        memory = 384
-        memory_max = 1024
+        memory = 768
+        memory_max = 1536
       }
     }
 
