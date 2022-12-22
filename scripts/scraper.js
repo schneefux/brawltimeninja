@@ -107,7 +107,12 @@ async function main() {
   let progress = 0
   console.log('Downloading Brawler information for ' + brawlerNames.length + ' brawlers')
   for (const brawlerName of brawlerNames) {
-    const brawlerObj = await getBrawlerData(brawlerName)
+    let brawlerObj
+    try {
+      brawlerObj = await getBrawlerData(brawlerName)
+    } catch (err) {
+      console.error('Cannot scrape ' + brawlerName, err)
+    }
     if (brawlerObj == undefined) {
       continue
     }

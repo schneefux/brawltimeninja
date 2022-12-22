@@ -115,6 +115,11 @@ export default class BrawlstarsService {
             p.brawler.trophies = undefined
           }
 
+          // FIXME API bug 2022-12-20, brawler power may be -1
+          if (p.brawler.power == -1) {
+            p.brawler.power = 0 // probably not correct
+          }
+
           // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
           p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
         })

@@ -62,6 +62,14 @@ else
   echo "Token $NAME already exists"
 fi
 
+echo "Testing token"
+TOKEN_CHECK_STATUS=$(curl https://api.brawlstars.com/v1/ -H "Authorization: Bearer $TOKEN" --write-out %{http_code} --silent --output /dev/null)
+if [ "$TOKEN_CHECK_STATUS" != "200" ]
+then
+  echo "Invalid token, received status $TOKEN_CHECK_STATUS"
+  exit 1
+fi
+
 consul kv put "brawlstars-token/alloc-${NOMAD_ALLOC_ID}" "$TOKEN"
 
 rm $COOKIE_JAR
