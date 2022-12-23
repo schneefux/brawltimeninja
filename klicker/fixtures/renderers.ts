@@ -1,8 +1,7 @@
 import { DimensionRendererSpec, MetricRendererSpec } from "../types"
-import Vue from "vue"
 import { MockedKlicker } from "./klicker.shim"
 
-const BrawlerImage = Vue.component('brawler-image', {
+const BrawlerImage = {
   props: ['row', 'captioned'],
   template: `
     <div>
@@ -13,7 +12,7 @@ const BrawlerImage = Vue.component('brawler-image', {
       <span v-if="captioned">{{ row.dimensions.brawler }}</span>
     </div>
   `,
-})
+}
 
 const brawlerRenderer: DimensionRendererSpec = {
   name: 'Brawler',
@@ -31,7 +30,7 @@ export const BrawlerRendererParameters = {
   }),
 }
 
-const WinRateColors = Vue.component('win-rate', {
+const WinRateColors = {
   props: ['row', 'captioned'],
   template: `
     <span
@@ -40,7 +39,7 @@ const WinRateColors = Vue.component('win-rate', {
       }"
     >{{ row.metrics.winRate }}</span>
   `,
-})
+}
 
 const winRateRenderer: MetricRendererSpec = {
   name: 'Win Rate',

@@ -1,7 +1,8 @@
-const path = require('path')
+const { loadConfigFromFile, mergeConfig } = require("vite")
+const path = require("path")
 
 module.exports = {
-  framework: '@storybook/vue',
+  framework: '@storybook/vue3',
   features: {
     interactionsDebugger: true,
   },
@@ -23,36 +24,14 @@ module.exports = {
     },
   ],
   core: {
-    builder: 'webpack5',
+    builder: '@storybook/builder-vite',
   },
-  webpackFinal: (config) => {
-    config.module.rules.push({
-      test: /\.postcss$/, // for lang="postcss"
-      sideEffects: true,
-      use: [
-        'vue-style-loader', {
-          loader: 'css-loader',
-          options: {
-            importLoaders: 1,
-          },
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            implementation: require('postcss'),
-          },
-        },
-      ],
+  async viteFinal(previousConfig) {
+    const { config } = await loadConfigFromFile(
+      path.resolve(__dirname, "../vite.config.ts")
+    )
+    return mergeConfig(previousConfig, {
+      ...config,
     })
-
-    config.module.rules.push({
-      test: /\.mjs$/,
-      include: /node_modules/,
-      type: 'javascript/auto',
-    })
-
-    config.resolve.alias[path.resolve(__dirname, '../composables/klicker.ts')] = path.resolve(__dirname, '../fixtures/klicker.shim.ts')
-    config.resolve.alias['@nuxtjs/composition-api'] = path.resolve(__dirname, '../fixtures/nuxtjs-composition-api.shim.ts')
-
-    return config
   },
 }

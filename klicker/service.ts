@@ -4,7 +4,7 @@ import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations"
 import defaultStaticWidgets from "./static-widgets"
-import { Route, Location } from "vue-router"
+import { RouteLocation } from "vue-router"
 
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 
@@ -535,7 +535,7 @@ export default class Klicker implements KlickerService {
       // slices are swapped for compatibility with old dashboard links
       const slices = q.slices ? generateQueryParams(q.slices, 'compareFilter') : {}
       const testSlices = q.slices ? generateQueryParams(q.reference.slices, 'filter') : {}
-      return <Location>{
+      return <Partial<RouteLocation>>{
         query: {
           ...slices,
           ...testSlices,
@@ -549,10 +549,10 @@ export default class Klicker implements KlickerService {
     } else {
       const q = query as CubeQuery
       const slices = q.slices ? generateQueryParams(q.slices, 'filter') : {}
-      return <Location>{
+      return <Partial<RouteLocation>>{
         query: {
           ...slices,
-          compare: undefined,
+          compare: [],
           cube: q.cubeId,
           dimension: q.dimensionsIds,
           metric: q.metricsIds,
@@ -562,7 +562,7 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: Route): CubeQuery|CubeComparingQuery {
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteLocation): CubeQuery|CubeComparingQuery {
     const query = route.query || {}
 
     const cubeId = query.cube as string || defaultCubeId
@@ -623,7 +623,7 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location {
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Partial<RouteLocation> {
     const slicesDiff = Object.fromEntries(
       Object.entries(slices)
         .filter(([key, value]) => JSON.stringify(defaults[key]) != JSON.stringify(value)))
@@ -633,7 +633,7 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue {
+  convertLocationToSlices(route: RouteLocation, defaults: SliceValue): SliceValue {
     const slices = parseQueryParams(route.query, 'filter') as SliceValue
 
     return {

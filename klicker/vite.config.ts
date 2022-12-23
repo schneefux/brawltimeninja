@@ -1,16 +1,10 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import { createVuePlugin } from 'vite-plugin-vue2'
-import { visualizer } from 'rollup-plugin-visualizer'
-
-// TODO: Create a Vue 3 build
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [
-    createVuePlugin({
-      jsx: true,
-    }),
-    visualizer() as any, // TODO https://github.com/btd/rollup-plugin-visualizer/issues/124
+    vue(),
   ],
   optimizeDeps: {
     exclude: ['vue'],

@@ -1,5 +1,5 @@
 import { Filter } from "@cubejs-client/core"
-import { Location, Route } from "vue-router"
+import { RouteLocation } from "vue-router"
 
 export interface Config extends Record<string, Cube> {}
 
@@ -394,11 +394,11 @@ export interface KlickerService {
    */
   comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse>
 
-  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): Location
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: Route): CubeQuery|CubeComparingQuery
+  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): Partial<RouteLocation>
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteLocation): CubeQuery|CubeComparingQuery
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location
-  convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Partial<RouteLocation>
+  convertLocationToSlices(route: RouteLocation, defaults: SliceValue): SliceValue
 
   /**
    * Return the full query configuration for the cube
