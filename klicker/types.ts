@@ -1,4 +1,5 @@
 import { Filter } from "@cubejs-client/core"
+import { AsyncComponentLoader, Component } from "vue"
 import { RouteLocation } from "vue-router"
 
 export interface Config extends Record<string, Cube> {}
@@ -164,7 +165,7 @@ export interface VisualisationProp {
   /**
    * Component import (optional, for non-global components)
    */
-  import?: () => Promise<any>
+  import?: Component
   /**
    * HTML attributes or props to apply to the validator
    */
@@ -174,7 +175,7 @@ export interface VisualisationProp {
 export interface WidgetSpec {
   name: string
   component: string
-  import: () => Promise<any>
+  import: Component
 }
 
 export interface StaticWidgetSpec extends WidgetSpec {

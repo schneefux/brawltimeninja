@@ -30,6 +30,7 @@ export default defineComponent({
       default: false
     },
   },
+  emits: ['done'],
   setup(props, { emit }) {
     const { translate } = useKlicker()
     const loading = ref(false)

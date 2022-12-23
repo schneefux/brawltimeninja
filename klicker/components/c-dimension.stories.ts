@@ -1,13 +1,16 @@
 import CDimension from './c-dimension.vue'
-import { Meta, Story } from '@storybook/vue'
+import type { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery } from '../types'
 
-export default {
+const meta: Meta<typeof CDimension> = {
   component: CDimension,
   title: 'Editor/Dimension Configurator',
-} as Meta
+}
 
-const query = <CubeQuery>{
+export default meta
+type Story = StoryObj<typeof CDimension>
+
+const query: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -18,18 +21,22 @@ const query = <CubeQuery>{
   limit: 5,
 }
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CDimension },
-  props: Object.keys(argTypes),
-  template: `
-    <c-dimension v-bind="$props"></c-dimension>
-  `,
-})
-Default.args = {
-  value: query,
+export const Default: Story = {
+  render: (args) => ({
+    components: { CDimension },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-dimension v-bind="args"></c-dimension>
+    `,
+  }),
+  args: {
+    modelValue: query,
+  },
 }
 
-const comparingQuery = <CubeComparingQuery>{
+const comparingQuery: CubeComparingQuery = {
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -49,16 +56,20 @@ const comparingQuery = <CubeComparingQuery>{
   },
 }
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CDimension },
-  props: Object.keys(argTypes),
-  template: `
-    <div>
-      <c-dimension v-bind="$props" comparing></c-dimension>
-      <c-dimension v-bind="$props"></c-dimension>
-    </div>
-  `,
-})
-Comparing.args = {
-  value: comparingQuery,
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CDimension },
+    setup() {
+      return { args }
+    },
+    template: `
+      <div>
+        <c-dimension v-bind="args" comparing></c-dimension>
+        <c-dimension v-bind="args"></c-dimension>
+      </div>
+    `,
+  }),
+  args: {
+    modelValue: comparingQuery,
+  },
 }

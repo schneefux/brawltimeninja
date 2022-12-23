@@ -19,7 +19,7 @@
           name="withQuery"
           required
           primary
-          @input="v => withQuery = v"
+          @update:modelValue="v => withQuery = v"
         ></b-radio>
         <label
           :for="`${prefix}-static`"
@@ -34,7 +34,7 @@
           name="withQuery"
           required
           primary
-          @input="v => withQuery = v"
+          @update:modelValue="v => withQuery = v"
         ></b-radio>
         <label
           :for="`${prefix}-data`"
@@ -66,10 +66,10 @@
         <template v-slot:data="data">
           <c-visualisation-selector
             v-bind="data"
-            :value="value"
+            :model-value="modelValue"
             :elevation="elevation + 1"
             for-canvas
-            @input="v => $emit('input', v)"
+            @update:modelValue="v => $emit('update:modelValue', v)"
             @delete="$emit('delete')"
           ></c-visualisation-selector>
           <slot></slot>
@@ -81,10 +81,10 @@
         class="flex flex-wrap gap-8"
       >
         <c-visualisation-selector
-          :value="value"
+          :model-value="modelValue"
           :elevation="elevation + 1"
           for-canvas
-          @input="v => $emit('input', v)"
+          @update:modelValue="v => $emit('update:modelValue', v)"
           @delete="$emit('delete')"
         ></c-visualisation-selector>
 
@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
@@ -112,7 +112,7 @@ export default defineComponent({
     CVisualisationSelector,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Widget>,
       required: true
     },
@@ -125,22 +125,25 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeResponse|CubeComparingResponse) { return true },
+  },
   setup(props, { emit }) {
     const withQuery = computed({
       get() {
-        return props.value.query == undefined ? 'false' : 'true'
+        return props.modelValue.query == undefined ? 'false' : 'true'
       },
       set(withQuery: string) {
         if (withQuery == 'true') {
-          emit('input', {
-            ...props.value,
+          emit('update:modelValue', {
+            ...props.modelValue,
             query: props.defaultQuery,
             component: 'v-table',
             props: {},
           })
         } else {
-          emit('input', {
-            ...props.value,
+          emit('update:modelValue', {
+            ...props.modelValue,
             query: undefined,
             component: 'v-markdown',
             props: {
@@ -153,11 +156,11 @@ export default defineComponent({
 
     const query = computed({
       get() {
-        return props.value.query
+        return props.modelValue.query
       },
       set(query: CubeQuery|CubeComparingQuery|undefined) {
-        emit('input', {
-          ...props.value,
+        emit('update:modelValue', {
+          ...props.modelValue,
           query,
         })
       }

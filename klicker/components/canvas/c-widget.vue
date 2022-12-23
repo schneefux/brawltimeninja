@@ -109,6 +109,7 @@ export default defineComponent({
       default: false
     },
   },
+  emits: [],
   setup(props) {
     const { $klicker } = useKlicker()
     const spec = computed(() => (

@@ -27,14 +27,14 @@
     @click="$emit('click')"
   >
     <c-widget
-      :widget="value"
+      :widget="modelValue"
       class="pointer-events-none"
     ></c-widget>
   </moveable>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted } from "vue";
+import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted, defineAsyncComponent } from "vue";
 import { ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
@@ -48,7 +48,7 @@ export default defineComponent({
   components: {
     CWidget,
     // does not support SSR
-    Moveable: () => import('vue-moveable'),
+    Moveable: defineAsyncComponent(() => import('vue-moveable')),
   },
   props: {
     container: {
@@ -59,26 +59,30 @@ export default defineComponent({
       type: Object,
       required: true
     },
-    value: {
+    modelValue: {
       type: Object as PropType<ReportWidget>,
       required: true
     },
+  },
+  emits: {
+    ['click']() { return true },
+    ['update:modelValue'](value: ReportWidget) { return true },
   },
   setup(props, { emit }) {
     const { $klicker } = useKlicker()
     const moveable = ref<MoveableInterface>()
 
     const spec = computed<StaticWidgetSpec>(() => (
-      $klicker.visualisations.find(v => v.component == props.value.component) ??
-      $klicker.staticWidgets.find(v => v.component == props.value.component)
+      $klicker.visualisations.find(v => v.component == props.modelValue.component) ??
+      $klicker.staticWidgets.find(v => v.component == props.modelValue.component)
     )!)
 
     // Keep a local copy of the frame and lazy-sync it on *end to prevent event spam
     const clone = (o: any) => JSON.parse(JSON.stringify(o))
-    let frame: ReportWidget['frame'] = clone(props.value.frame)
-    watch(() => props.value, (after, before) => {
+    let frame: ReportWidget['frame'] = clone(props.modelValue.frame)
+    watch(() => props.modelValue, (after, before) => {
       if (JSON.stringify(after) != JSON.stringify(before)) {
-        frame = clone(props.value.frame)
+        frame = clone(props.modelValue.frame)
         Object.assign((<any>moveable.value).$el.style, render(frame, spec.value))
         nextTick(() => moveable.value!.updateRect())
       }
@@ -86,10 +90,10 @@ export default defineComponent({
 
     const sync = () => {
       const widget: ReportWidget = {
-        ...props.value,
+        ...props.modelValue,
         frame: clone(frame),
       }
-      emit('input', widget)
+      emit('update:modelValue', widget)
     }
 
     // Style DOM directly for better performance

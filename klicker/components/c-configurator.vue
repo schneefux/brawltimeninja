@@ -17,9 +17,9 @@
 
         <div v-if="configureCube">
           <b-select
-            :value="value.cubeId"
+            :model-value="modelValue.cubeId"
             sm
-            @input="onInputCubeId"
+            @update:modelValue="onInputCubeId"
           >
             <option
               v-for="c in cubes"
@@ -34,22 +34,22 @@
         <c-metric
           v-if="configureMetrics"
           :options="configureMetricsOptions"
-          :value="value"
+          :model-value="modelValue"
           :multiple="configureMultipleMetrics && !compareMode"
-          @input="s => $emit('input', s)"
+          @update:modelValue="s => $emit('update:modelValue', s)"
         ></c-metric>
 
         <c-dimension
           v-if="configureDimensions"
-          :value="value"
-          @input="s => $emit('input', s)"
+          :model-value="modelValue"
+          @update:modelValue="s => $emit('update:modelValue', s)"
         ></c-dimension>
 
         <c-dimension
           v-if="configureDimensions && compareMode"
-          :value="value"
+          :model-value="modelValue"
           comparing
-          @input="s => $emit('input', s)"
+          @update:modelValue="s => $emit('update:modelValue', s)"
         ></c-dimension>
 
         <label
@@ -86,7 +86,7 @@ export default defineComponent({
     BCard,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
@@ -119,6 +119,9 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
+  },
   setup(props, { emit }) {
     const { $klicker, translate } = useKlicker()
 
@@ -130,18 +133,18 @@ export default defineComponent({
         metricsIds: $klicker.config[c].defaultMetricIds,
         sortId: $klicker.config[c].defaultMetricIds[0],
       }
-      emit('input', newQuery)
+      emit('update:modelValue', newQuery)
     }
 
     const compareMode = computed({
       get(): boolean {
-        return props.value.comparing ? true : false
+        return props.modelValue.comparing ? true : false
       },
       set(wantComparing: boolean) {
-        const isComparing = props.value.comparing ? true : false
+        const isComparing = props.modelValue.comparing ? true : false
 
         if (!isComparing && wantComparing) {
-          const current = props.value as CubeQuery
+          const current = props.modelValue as CubeQuery
           const newQuery: CubeQuery = {
             cubeId: current.cubeId,
             slices: current.slices,
@@ -149,21 +152,21 @@ export default defineComponent({
             metricsIds: [current.metricsIds[0]],
             sortId: current.metricsIds[0],
           }
-          emit('input', <CubeComparingQuery>{
+          emit('update:modelValue', {
             ...newQuery,
             reference: newQuery,
             comparing: true,
-          })
+          } as CubeComparingQuery)
         }
         if (isComparing && !wantComparing) {
-          const current = props.value as CubeComparingQuery
+          const current = props.modelValue as CubeComparingQuery
           const newQuery: CubeQuery = {
             ...current,
             sortId: current.metricsIds[0],
           }
           delete (<any>newQuery).reference
           delete (<any>newQuery).comparing
-          emit('input', newQuery)
+          emit('update:modelValue', newQuery)
         }
       }
     })
@@ -171,12 +174,12 @@ export default defineComponent({
     const cubes = computed<Cube[]>(() => Object.values($klicker.config))
 
     const canCompare = computed(() => {
-      if (props.value.comparing) {
+      if (props.modelValue.comparing) {
         return true
       }
 
-      const metrics = $klicker.config[props.value.cubeId].metrics
-      const query = props.value as CubeQuery
+      const metrics = $klicker.config[props.modelValue.cubeId].metrics
+      const query = props.modelValue as CubeQuery
       const selectedMetrics = metrics.filter(m => query.metricsIds.includes(m.id))
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })

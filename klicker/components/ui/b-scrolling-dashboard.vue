@@ -91,6 +91,7 @@ export default defineComponent({
       default: false
     },
   },
+  emits: ['scroll', 'rerender'],
   setup(props, { emit }) {
     const wrapper = ref<HTMLElement|null>()
 
@@ -106,11 +107,11 @@ export default defineComponent({
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
     const onUpdate = (cause: 'scroll'|'rerender') => {
-      emit(cause, <ScrollEvent>{
+      emit(cause, {
         x: scroll.x.value,
         arrivedLeft: scroll.arrivedState.left,
         arrivedRight: scroll.arrivedState.right,
-      })
+      } as ScrollEvent)
 
       const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
       arrivedLeft.value = scroll.arrivedState.left || !scrollable

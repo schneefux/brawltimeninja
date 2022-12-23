@@ -11,9 +11,9 @@
           >Widget</label>
           <b-select
             :id="`${prefix}-widget`"
-            :value="component"
+            :model-value="component"
             sm
-            @input="c => component = c"
+            @update:modelValue="c => component = c"
           >
             <option
               v-for="v in visualisations"
@@ -26,20 +26,17 @@
 
           <template
             v-for="(propSpec, prop) in (spec.props || {})"
+            :key="prop"
           >
-            <label
-              :for="`${prefix}-${prop}`"
-              :key="`${prop}-label`"
-            >
+            <label :for="`${prefix}-${prop}`">
               {{ propSpec.name }}
             </label>
             <component
               v-bind="propSpec.props"
-              :key="`${prop}-component`"
               :id="`${prefix}-${prop}`"
-              :value="value.props[prop]"
+              :model-value="value.props[prop]"
               :is="propSpec.import || propSpec.component"
-              @input="v => setWidgetProp(prop, v)"
+              @update:modelValue="v => setWidgetProp(prop, v)"
             ></component>
           </template>
         </div>
@@ -82,7 +79,7 @@ export default defineComponent({
       type: Object as PropType<CubeResponse|CubeComparingResponse>,
       required: false
     },
-    value: {
+    modelValue: {
       type: Object as PropType<Widget>,
       required: true
     },
@@ -99,6 +96,10 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['delete']() { return true },
+    ['update:modelValue'](value: CubeResponse|CubeComparingResponse) { return true },
+  },
   setup(props, { emit }) {
     const { $klicker } = useKlicker()
 
@@ -112,18 +113,18 @@ export default defineComponent({
     })
 
     const spec = computed(() => (
-      $klicker.visualisations.find(v => v.component == props.value.component) ??
-      $klicker.staticWidgets.find(w => w.component == props.value.component)
+      $klicker.visualisations.find(v => v.component == props.modelValue.component) ??
+      $klicker.staticWidgets.find(w => w.component == props.modelValue.component)
     )!)
 
     const component = computed({
       get() {
-        return props.value.component
+        return props.modelValue.component
       },
       set(component: Widget['component']) {
         if (props.forCanvas) {
           const widget: ReportWidget = {
-            ...props.value as ReportWidget,
+            ...props.modelValue as ReportWidget,
             props: {},
             component,
             frame: {
@@ -135,13 +136,13 @@ export default defineComponent({
             },
           }
 
-          emit('input', widget)
+          emit('update:modelValue', widget)
         }
 
         if (props.forGrid) {
           const s: VisualisationSpec = spec.value as VisualisationSpec
           const widget: GridWidget = {
-            ...props.value as GridWidget,
+            ...props.modelValue as GridWidget,
             props: {},
             component,
             frame: {
@@ -150,21 +151,21 @@ export default defineComponent({
             },
           }
 
-          emit('input', widget)
+          emit('update:modelValue', widget)
         }
       }
     })
 
     const setWidgetProp = (prop: string, value: any) => {
       const widget: Widget = {
-        ...props.value,
+        ...props.modelValue,
         props: {
-          ...props.value.props,
+          ...props.modelValue.props,
           [prop]: value,
         }
       }
 
-      emit('input', widget)
+      emit('update:modelValue', widget)
     }
 
     const { id: prefix } = useUniqueId()

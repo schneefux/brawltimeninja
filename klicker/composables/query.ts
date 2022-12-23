@@ -1,5 +1,5 @@
-import { Ref, ref, watch } from 'vue'
-import { useAsync, useContext } from '@nuxtjs/composition-api' // uses vue-ssr's onServerPrefetch
+import { computed, Ref, watch } from 'vue'
+import { useLazyAsyncData, useNuxtApp } from '#imports' // uses vue-ssr's onServerPrefetch
 import { useKlicker } from './klicker'
 import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 
@@ -23,14 +23,9 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
 
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
   const { $klicker } = useKlicker()
-  const { $sentry } = useContext() as any
-
-  const loading = ref(false)
-  const error = ref<string|undefined>()
+  const { $sentry } = useNuxtApp() as any
 
   async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
-    error.value = undefined
-    loading.value = true
     try {
       if (!query.value.comparing) {
         return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
@@ -42,15 +37,16 @@ export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: 
       if ($sentry != undefined) {
         (<any> $sentry).captureException(err)
       }
-      error.value = err as string
-      return undefined
-    } finally {
-      loading.value = false
+      throw err
     }
   }
 
-  const response = useAsync(() => fetch(), `c-query-${hash(query.value)}`)
-  const update = async () => response.value = await fetch()
+  const asyncResponse = useLazyAsyncData(`c-query-${hash(query.value)}`, () => fetch())
+  const error = computed(() => asyncResponse.error.value)
+  const response = computed(() => asyncResponse.data.value)
+  const loading = computed(() => asyncResponse.pending.value)
+
+  const update = () => asyncResponse.refresh()
   watch(query, update)
 
   return {

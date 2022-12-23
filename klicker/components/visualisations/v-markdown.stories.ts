@@ -1,8 +1,8 @@
 import CQuery from '../c-query'
 import VMarkdown from './v-markdown.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<VMarkdown> = {
   component: VMarkdown,
   title: 'Visualisations/Markdown',
   args: {
@@ -11,20 +11,31 @@ export default {
 This is the *markdown demo*.
     `,
   },
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CQuery, VMarkdown },
-  props: Object.keys(argTypes),
-  template: `
-    <v-markdown v-bind="$props" :card="{}"></v-markdown>
-  `,
-})
+type Story = StoryObj<VMarkdown>
 
-export const NoCard: Story = (args, { argTypes }) => ({
-  components: { CQuery, VMarkdown },
-  props: Object.keys(argTypes),
-  template: `
-    <v-markdown v-bind="$props"></v-markdown>
-  `,
-})
+export const Default: Story = {
+  render: (args) => ({
+    components: { CQuery, VMarkdown },
+    setup() {
+      return { args }
+    },
+    template: `
+      <v-markdown v-bind="args" :card="{}"></v-markdown>
+    `,
+  }),
+}
+
+export const NoCard: Story = {
+  render: (args) => ({
+    components: { CQuery, VMarkdown },
+    setup() {
+      return { args }
+    },
+    template: `
+      <v-markdown v-bind="args"></v-markdown>
+    `,
+  }),
+}

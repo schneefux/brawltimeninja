@@ -15,12 +15,12 @@
       type="text"
       aria-label="search"
       class="pl-8 h-6 w-full"
-      @focus="$emit('input', true)"
-      @keyup.native.enter="$emit('enter')"
+      @focus="$emit('update:modelValue', true)"
+      @keyup.enter="$emit('enter')"
     ></b-textbox>
 
     <div
-      v-if="value"
+      v-if="modelValue"
       ref="popup"
       class="absolute inset-x-0 z-10"
       :class="popupClass"
@@ -44,7 +44,7 @@ export default defineComponent({
     BTextbox,
   },
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true
     },
@@ -61,12 +61,16 @@ export default defineComponent({
       default: 'top-6'
     },
   },
+  emits: {
+    ['enter']() { return true },
+    ['update:modelValue'](value: Boolean) { return true },
+  },
   setup(props, { emit }) {
     const filter = ref('')
 
     const popup = ref<typeof BCard>()
     const container = ref<HTMLElement>()
-    onClickOutside(popup as any, () => emit('input', false), {
+    onClickOutside(popup as any, () => emit('update:modelValue', false), {
       ignore: [container as any],
     })
 
@@ -74,7 +78,7 @@ export default defineComponent({
     onKeyStroke(
       (event) => (event.metaKey || event.ctrlKey) && event.key == 'k',
       () => {
-        emit('input', true);
+        emit('update:modelValue', true);
         (search.value!.$el as HTMLInputElement).focus()
       },
     )

@@ -45,10 +45,11 @@ job "mariadb" {
 
       env {
         MYSQL_ALLOW_EMPTY_PASSWORD = 1
+        #MARIADB_AUTO_UPGRADE = 1
       }
 
       config {
-        image = "mariadb:10.5"
+        image = "mariadb:10.10"
         args = ["--datadir", "/srv/mariadb"]
         ports = ["db"]
       }

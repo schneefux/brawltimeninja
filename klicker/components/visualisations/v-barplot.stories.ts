@@ -1,9 +1,9 @@
 import CQuery from '../c-query'
 import VBarplot from './v-barplot.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery } from '../../types'
 
-export default {
+const meta: Meta<VBarplot> = {
   component: VBarplot,
   title: 'Visualisations/Bar Plot',
   args: {
@@ -11,62 +11,77 @@ export default {
       title: 'Storybook Demo',
     },
   },
-} as Meta
+}
+export default meta
 
-const query = JSON.stringify(<CubeQuery>{
+type Story = StoryObj<VBarplot>
+
+const query = JSON.stringify({
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-})
+} as CubeQuery)
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CQuery, VBarplot },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }"></v-barplot>
-    </template>
-  </c-query>
-  `,
-})
+export const Default: Story = {
+  render: (args) => ({
+    components: { CQuery, VBarplot },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }"></v-barplot>
+      </template>
+    </c-query>
+    `,
+  }),
+}
 
-const ciQuery = JSON.stringify(<CubeQuery>{
+const ciQuery = JSON.stringify({
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
   confidenceInterval: true,
-})
+} as CubeQuery)
 
-export const WithConfidenceInterval: Story = (args, { argTypes }) => ({
-  components: { CQuery, VBarplot },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${ciQuery}'>
-    <template v-slot="data">
-      <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }"></v-barplot>
-    </template>
-  </c-query>
-  `,
-})
+export const WithConfidenceInterval: Story = {
+  render: (args) => ({
+    components: { CQuery, VBarplot },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${ciQuery}'>
+      <template v-slot="data">
+        <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }"></v-barplot>
+      </template>
+    </c-query>
+    `,
+  }),
+}
 
-export const NoCard: Story = (args, { argTypes }) => ({
-  components: { CQuery, VBarplot },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }" :card="undefined"></v-barplot>
-    </template>
-  </c-query>
-  `,
-})
+export const NoCard: Story = {
+  render: (args) => ({
+    components: { CQuery, VBarplot },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }" :card="undefined"></v-barplot>
+      </template>
+    </c-query>
+    `,
+  }),
+}
 
-const comparingQuery = JSON.stringify(<CubeComparingQuery>{
+const comparingQuery = JSON.stringify({
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -84,16 +99,20 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     },
     sortId: 'winRate',
   },
-})
+} as CubeComparingQuery)
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CQuery, VBarplot },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${comparingQuery}'>
-    <template v-slot="data">
-      <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }"></v-barplot>
-    </template>
-  </c-query>
-  `,
-})
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CQuery, VBarplot },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${comparingQuery}'>
+      <template v-slot="data">
+        <v-barplot style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }"></v-barplot>
+      </template>
+    </c-query>
+    `,
+  }),
+}

@@ -32,7 +32,7 @@
     </div>
 
     <div
-      v-if="'default' in $scopedSlots && dropdownOpen"
+      v-if="'default' in $slots && dropdownOpen"
       class="absolute ring-2 ring-contrast/20 left-0 px-2 mt-2 py-1 rounded-2xl shadow-lg bg-background z-10"
     >
       <slot></slot>
@@ -65,5 +65,6 @@ export default defineComponent({
       toggleDropdown,
     }
   },
+  emits: ['open'],
 })
 </script>

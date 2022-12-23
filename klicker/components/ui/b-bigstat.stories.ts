@@ -1,96 +1,115 @@
 import BBigstat from './b-bigstat.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { getCanvasElementFixed } from '../../fix'
 
-export default {
+const meta: Meta<BBigstat> = {
   component: BBigstat,
   title: 'UI/Big Statistic',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BBigstat },
-  props: Object.keys(argTypes),
-  template: `
-    <b-bigstat v-bind="$props"></b-bigstat>
-  `,
-})
-Default.args = {
-  title: 'Wins',
-  value: 1234,
+type Story = StoryObj<BBigstat>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BBigstat },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-bigstat v-bind="args"></b-bigstat>
+    `,
+  }),
+  args: {
+    title: 'Wins',
+    value: 1234,
+  },
 }
 
 const lipsum = `Brawl Stars has almost 200 distinct maps.`
 
-export const WithTooltip: Story = (args, { argTypes }) => ({
-  components: { BBigstat },
-  props: Object.keys(argTypes),
-  template: `
-    <b-bigstat v-bind="$props"></b-bigstat>
-  `,
-})
-WithTooltip.args = {
-  title: 'Wins',
-  value: 1234,
-  tooltip: lipsum,
-}
-WithTooltip.play = async ({ canvasElement }) => {
-  canvasElement = getCanvasElementFixed(canvasElement)
-  const canvas = within(canvasElement)
-  const body = within(document.body)
+export const WithTooltip: Story = {
+  render: (args) => ({
+    components: { BBigstat },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-bigstat v-bind="args"></b-bigstat>
+    `,
+  }),
+  args: {
+    title: 'Wins',
+    value: 1234,
+    tooltip: lipsum,
+  },
+  play: async ({ canvasElement }) => {
+    canvasElement = getCanvasElementFixed(canvasElement)
+    const canvas = within(canvasElement)
+    const body = within(document.body)
 
-  const tooltipButton = await canvas.findByRole('button')
-  expect(tooltipButton).toBeVisible()
-  await userEvent.click(tooltipButton)
-  const content = await body.findByText(lipsum)
-  expect(content).toBeVisible()
-  const closeButton = await body.findByLabelText('close')
-  expect(closeButton).toBeVisible()
-  await userEvent.click(closeButton)
-}
-
-export const WithTooltipLink: Story = (args, { argTypes }) => ({
-  components: { BBigstat },
-  props: Object.keys(argTypes),
-  template: `
-    <b-bigstat v-bind="$props"></b-bigstat>
-  `,
-})
-WithTooltipLink.args = {
-  title: 'Wins',
-  value: 1234,
-  tooltip: lipsum,
-  tooltipLink: '#',
+    const tooltipButton = await canvas.findByRole('button')
+    expect(tooltipButton).toBeVisible()
+    await userEvent.click(tooltipButton)
+    const content = await body.findByText(lipsum)
+    expect(content).toBeVisible()
+    const closeButton = await body.findByLabelText('close')
+    expect(closeButton).toBeVisible()
+    await userEvent.click(closeButton)
+  },
 }
 
-export const WithTooltipSlot: Story = (args, { argTypes }) => ({
-  components: { BBigstat },
-  props: Object.keys(argTypes),
-  template: `
-    <b-bigstat v-bind="$props">
-      <p
-        slot="tooltip"
-        style="border: dashed gray;"
-      >${lipsum}</p>
-    </b-bigstat>
-  `,
-})
-WithTooltipSlot.args = {
-  title: 'Wins',
-  value: 1234,
+export const WithTooltipLink: Story = {
+  render: (args) => ({
+    components: { BBigstat },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-bigstat v-bind="args"></b-bigstat>
+    `,
+  }),
+  args: {
+    title: 'Wins',
+    value: 1234,
+    tooltip: lipsum,
+    tooltipLink: '#',
+  },
 }
-WithTooltipSlot.play = async ({ canvasElement }) => {
-  canvasElement = getCanvasElementFixed(canvasElement)
-  const canvas = within(canvasElement)
-  const body = within(document.body)
 
-  const tooltipButton = await canvas.findByRole('button')
-  expect(tooltipButton).toBeVisible()
-  await userEvent.click(tooltipButton)
-  const content = await body.findByText(lipsum)
-  expect(content).toBeVisible()
-  const closeButton = await body.findByLabelText('close')
-  expect(closeButton).toBeVisible()
-  await userEvent.click(closeButton)
+export const WithTooltipSlot: Story = {
+  render: (args) => ({
+    components: { BBigstat },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-bigstat v-bind="args">
+        <p
+          slot="tooltip"
+          style="border: dashed gray;"
+        >${lipsum}</p>
+      </b-bigstat>
+    `,
+  }),
+  args: {
+    title: 'Wins',
+    value: 1234,
+  },
+  play: async ({ canvasElement }) => {
+    canvasElement = getCanvasElementFixed(canvasElement)
+    const canvas = within(canvasElement)
+    const body = within(document.body)
+
+    const tooltipButton = await canvas.findByRole('button')
+    expect(tooltipButton).toBeVisible()
+    await userEvent.click(tooltipButton)
+    const content = await body.findByText(lipsum)
+    expect(content).toBeVisible()
+    const closeButton = await body.findByLabelText('close')
+    expect(closeButton).toBeVisible()
+    await userEvent.click(closeButton)
+  },
 }

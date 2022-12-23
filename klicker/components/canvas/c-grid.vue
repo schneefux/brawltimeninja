@@ -20,7 +20,7 @@
             name="responsive"
             required
             primary
-            @input="v => columns = undefined"
+            @update:modelValue="v => columns = undefined"
           ></b-radio>
           <label
             :for="`${prefix}-responsive`"
@@ -37,7 +37,7 @@
             name="responsive"
             required
             primary
-            @input="v => columns = columns || 12"
+            @update:modelValue="v => columns = columns || 12"
           ></b-radio>
           <label
             :for="`${prefix}-fixed`"
@@ -77,7 +77,7 @@
       <c-widget-editor
         :value="widgetsKeyed[selectedWidgetId]"
         :default-query="defaultQuery"
-        @input="updateWidget"
+        @update:modelValue="updateWidget"
         @delete="deleteSelectedWidget"
       >
         <b-dashboard-cell
@@ -98,11 +98,11 @@
                 Columns
               </label>
               <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.columns"
+                :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
                 :id="`${prefix}-width`"
                 min="1"
                 max="8"
-                @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
+                @update:modelValue="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
               ></b-number>
 
               <label
@@ -111,11 +111,11 @@
                 Rows
               </label>
               <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.rows"
+                :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
                 :id="`${prefix}-rows`"
                 min="1"
                 max="8"
-                @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
+                @update:modelValue="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
               ></b-number>
             </div>
           </b-card>
@@ -139,7 +139,7 @@
         :key="w.id"
         :widget="w"
         for-grid
-        @click.native="selectedWidgetId = w.id"
+        @click="selectedWidgetId = w.id"
       ></c-widget>
     </draggable>
   </div>
@@ -169,7 +169,7 @@ export default defineComponent({
     Draggable,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Grid>,
       required: true
     },
@@ -178,16 +178,19 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: Grid) { return true },
+  },
   setup(props, { emit }) {
     const selectedWidgetId = ref<string>()
 
     const widgets = computed({
       get() {
-        return props.value.widgets
+        return props.modelValue.widgets
       },
       set(widgets: GridWidget[]) {
-        emit('input', {
-          ...props.value,
+        emit('update:modelValue', {
+          ...props.modelValue,
           widgets,
         })
       }
@@ -195,10 +198,10 @@ export default defineComponent({
 
     const widgetsKeyed = computed({
       get(): Record<string, GridWidget> {
-        return Object.fromEntries(props.value.widgets.map(w => [w.id, w]))
+        return Object.fromEntries(props.modelValue.widgets.map(w => [w.id, w]))
       },
       set(widgets: Record<string, GridWidget>) {
-        emit('input', { ...props.value, widgets: Object.values(widgets) })
+        emit('update:modelValue', { ...props.modelValue, widgets: Object.values(widgets) })
       }
     })
 
@@ -244,19 +247,19 @@ export default defineComponent({
 
     const title = computed({
       get() {
-        return props.value.title
+        return props.modelValue.title
       },
       set(title: string) {
-        emit('input', { ...props.value, title })
+        emit('update:modelValue', { ...props.modelValue, title })
       }
     })
 
     const columns = computed({
       get() {
-        return props.value.columns
+        return props.modelValue.columns
       },
       set(columns: number|undefined) {
-        emit('input', { ...props.value, columns })
+        emit('update:modelValue', { ...props.modelValue, columns })
       }
     })
 

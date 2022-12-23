@@ -18,11 +18,11 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['vue', /\@nuxtjs\/composition-api/, 'vue-router'],
+      external: ['vue', '#imports', 'vue-router'],
       output: {
         globals: {
           'vue': 'Vue',
-          '@nuxtjs/composition-api': 'NuxtJSCompositionApi',
+          '#imports': 'Nuxt',
           'vue-router': 'VueRouter',
         },
       },

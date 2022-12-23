@@ -1,5 +1,5 @@
 import BScrollSpy from './b-scroll-spy.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, Story } from '@storybook/vue3'
 import {userEvent, waitFor, within} from "@storybook/testing-library";
 import {expect} from "@storybook/jest";
 import { getCanvasElementFixed } from '../../fix';

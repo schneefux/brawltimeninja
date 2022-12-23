@@ -26,7 +26,7 @@
         ></font-awesome-icon>
       </router-link>
       <button
-        v-else-if="tooltip != undefined || 'tooltip' in $scopedSlots"
+        v-else-if="tooltip != undefined || 'tooltip' in $slots"
         label="Tooltip"
         class="w-4 text-sm leading-none absolute top-1 right-0"
         @click="tooltipOpen = !tooltipOpen"

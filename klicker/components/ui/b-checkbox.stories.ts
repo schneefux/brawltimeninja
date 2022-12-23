@@ -1,21 +1,28 @@
 import BCheckbox from './b-checkbox.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BCheckbox> = {
   component: BCheckbox,
   title: 'UI/Checkbox',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BCheckbox },
-  props: Object.keys(argTypes),
-  template: `
-    <label>
-      <b-checkbox v-bind="$props"></b-checkbox>
-      Check me
-    </label>
-  `,
-})
-Default.args = {
-  value: true,
+type Story = StoryObj<BCheckbox>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BCheckbox },
+    setup() {
+      return { args }
+    },
+    template: `
+      <label>
+        <b-checkbox v-bind="args"></b-checkbox>
+        Check me
+      </label>
+    `,
+  }),
+  args: {
+    value: true,
+  },
 }

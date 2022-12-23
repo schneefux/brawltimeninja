@@ -1,7 +1,6 @@
 <template>
   <component
     :is="tag || (to == undefined ? 'button' : 'nuxt-link')"
-    v-on="$listeners"
     :class="{
       'rounded-2xl': !round,
       'rounded-full': round,

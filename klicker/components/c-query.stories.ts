@@ -1,13 +1,16 @@
 import CQuery from './c-query'
-import { Meta, Story } from '@storybook/vue'
+import type { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery } from '../types'
 
-export default {
+const meta: Meta<typeof CQuery> = {
   component: CQuery,
   title: 'Editor/Renderless Query',
-} as Meta
+}
 
-const query = <CubeQuery>{
+export default meta
+type Story = StoryObj<typeof CQuery>
+
+const query: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -18,24 +21,26 @@ const query = <CubeQuery>{
   limit: 5,
 }
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CQuery },
-  props: Object.keys(argTypes),
-  template: `
-    <c-query
-      v-bind="$props"
-    >
-      <template v-slot="data">
-        <pre>{{ data }}</pre>
-      </template>
-    </c-query>
-  `,
-})
-Default.args = {
-  query,
+export const Default: StoryObj = {
+  render: (args) => ({
+    components: { CQuery },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-query v-bind="args">
+        <template v-slot="data">
+          <pre>{{ data }}</pre>
+        </template>
+      </c-query>
+    `,
+  }),
+  args: {
+    query,
+  },
 }
 
-const emptyQuery = <CubeQuery>{
+const emptyQuery: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -46,22 +51,24 @@ const emptyQuery = <CubeQuery>{
   limit: 5,
 }
 
-export const EmptySlot: Story = (args, { argTypes }) => ({
-  components: { CQuery },
-  props: Object.keys(argTypes),
-  template: `
-    <c-query
-      v-bind="$props"
-    >
-      <span slot="empty">Empty</span>
-    </c-query>
-  `,
-})
-EmptySlot.args = {
-  query: emptyQuery,
+export const EmptySlot: Story = {
+  render: (args) => ({
+    components: { CQuery },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-query v-bind="args">
+        <span slot="empty">Empty</span>
+      </c-query>
+    `,
+  }),
+  args: {
+    query: emptyQuery,
+  },
 }
 
-const comparingQuery = <CubeComparingQuery>{
+const comparingQuery: CubeComparingQuery = {
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -81,24 +88,26 @@ const comparingQuery = <CubeComparingQuery>{
   },
 }
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CQuery },
-  props: Object.keys(argTypes),
-  template: `
-    <c-query
-      v-bind="$props"
-    >
-      <template v-slot="data">
-        <pre>{{ data }}</pre>
-      </template>
-    </c-query>
-  `,
-})
-Comparing.args = {
-  query: comparingQuery,
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CQuery },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-query v-bind="args">
+        <template v-slot="data">
+          <pre>{{ data }}</pre>
+        </template>
+      </c-query>
+    `,
+  }),
+  args: {
+    query: comparingQuery,
+  },
 }
 
-const errorQuery = <CubeQuery>{
+const errorQuery: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['does not exist'],
@@ -107,19 +116,21 @@ const errorQuery = <CubeQuery>{
   limit: 5,
 }
 
-export const Error: Story = (args, { argTypes }) => ({
-  components: { CQuery },
-  props: Object.keys(argTypes),
-  template: `
-    <c-query
-      v-bind="$props"
-    >
-      <template v-slot:error="{ error }">
-        <pre>{{ error }}</pre>
-      </template>
-    </c-query>
-  `,
-})
-Error.args = {
-  query: errorQuery,
+export const Error: Story = {
+  render: (args) => ({
+    components: { CQuery },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-query v-bind="args">
+        <template v-slot:error="{ error }">
+          <pre>{{ error }}</pre>
+        </template>
+      </c-query>
+    `,
+  }),
+  args: {
+    query: errorQuery,
+  },
 }

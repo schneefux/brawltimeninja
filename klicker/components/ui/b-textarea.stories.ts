@@ -1,18 +1,25 @@
 import BTextarea from './b-textarea.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BTextarea> = {
   component: BTextarea,
   title: 'UI/Textarea',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BTextarea },
-  props: Object.keys(argTypes),
-  template: `
-    <b-textarea v-bind="$props"></b-textarea>
-  `,
-})
-Default.args = {
-  value: 'Enter some text here',
+type Story = StoryObj<BTextarea>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BTextarea },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-textarea v-bind="args"></b-textarea>
+    `,
+  }),
+  args: {
+    value: 'Enter some text here',
+  },
 }

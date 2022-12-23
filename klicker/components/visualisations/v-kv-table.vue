@@ -12,9 +12,9 @@
       <template
         v-for="m in metrics"
         v-slot:[`metrics.${m.id}`]="{ row }"
+        :key="m.id"
       >
         <m-auto
-          :key="m.id"
           :response="response"
           :metric-id="m.id"
           :row="row"
@@ -24,9 +24,9 @@
       <template
         v-for="m in metrics"
         v-slot:[`test.reference.metrics.${m.id}`]="{ row }"
+        :key="`${m.id}-reference`"
       >
         <m-auto
-          :key="`${m.id}-reference`"
           :response="response"
           :metric-id="m.id"
           :row="row.test.reference"

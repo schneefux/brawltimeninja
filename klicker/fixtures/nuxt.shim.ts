@@ -1,8 +1,8 @@
 import { isRef, ref, Ref } from "vue"
 
-export const useAsync = <T>(
+export const useLazyAsyncData = <T>(
+  key: string | Ref<null>,
   cb: () => T | Promise<T>,
-  key?: string | Ref<null>
 ): Ref<null | T> => {
   const _ref = isRef(key) ? key : ref<T | null>(null)
 
@@ -14,12 +14,6 @@ export const useAsync = <T>(
   return _ref as Ref<null | T>
 }
 
-export const useContext = () => ({
+export const useNuxtApp = () => ({
   $sentry: undefined,
 })
-
-export const useRouter = () => {
-  return {
-    push: () => {},
-  }
-}

@@ -111,7 +111,7 @@ export default defineComponent({
     BDashboard,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery>,
       required: true
     },
@@ -156,16 +156,19 @@ export default defineComponent({
       })
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery) { return true },
+  },
   setup(props, { emit, slots }) {
     const { $klicker } = useKlicker()
 
-    const metaMetrics = $klicker.config[props.value.cubeId].metaMetrics
+    const metaMetrics = $klicker.config[props.modelValue.cubeId].metaMetrics
     const query = computed({
       get(): CubeQuery {
-        return props.value
+        return props.modelValue
       },
       set(q: CubeQuery) {
-        emit('input', q)
+        emit('update:modelValue', q)
       }
     })
 

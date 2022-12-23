@@ -2,7 +2,7 @@
   <div
     class="grid grid-cols-1 gap-8"
     :class="{
-      'lg:grid-cols-[16rem,minmax(0,1fr)]': 'aside' in $scopedSlots,
+      'lg:grid-cols-[16rem,minmax(0,1fr)]': 'aside' in $slots,
     }"
   >
     <aside class="relative z-20">

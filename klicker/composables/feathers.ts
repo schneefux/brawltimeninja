@@ -3,10 +3,10 @@ import { ref, onMounted } from 'vue'
 import { feathers } from '@feathersjs/feathers'
 import rest from '@feathersjs/rest-client'
 import auth from '@feathersjs/authentication-client'
-import { useContext } from '@nuxtjs/composition-api'
+import { useNuxtApp } from '#imports'
 
 export default function useFeathers() {
-  const { $managerUrl }: any = useContext()
+  const { $managerUrl }: any = useNuxtApp()
 
   const client = feathers() as any // TODO
 

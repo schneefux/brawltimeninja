@@ -83,6 +83,7 @@ export default defineComponent({
   components: {
     BButton,
   },
+  emits: ['enable-all', 'enable-cookies', 'enable-none'],
   setup() {
     const { translate } = useKlicker()
     const showCookieOptions = ref(false)

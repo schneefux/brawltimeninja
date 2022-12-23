@@ -8,7 +8,7 @@
     :checked="value == modelValue"
     :value="value"
     class="form-radio transition duration-100 ease-in-out focus:ring-0"
-    @input="$listeners.input && $listeners.input($event.target.value)"
+    @input="$attrs.onInput && $attrs.onInput($event.target.value)"
   >
 </template>
 

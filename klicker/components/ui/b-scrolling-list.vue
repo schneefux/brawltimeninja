@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul
-      v-if="'preview' in $scopedSlots"
+      v-if="'preview' in $slots"
       ref="preview"
       class="flex overflow-x-auto hide-scrollbar"
     >
@@ -26,7 +26,7 @@
     <b-scrolling-dashboard
       ref="container"
       :disable-scroll-snap="!scrollSnap"
-      :class="{ 'mt-4': 'preview' in $scopedSlots }"
+      :class="{ 'mt-4': 'preview' in $slots }"
       @scroll="onScroll"
       @rerender="onRerender"
     >
@@ -148,6 +148,7 @@ export default defineComponent({
       required: false
     },
   },
+  emits: ['scroll'],
   setup(props, { emit }) {
     const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const container = ref<InstanceType<typeof BScrollingDashboard>>()

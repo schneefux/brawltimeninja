@@ -1,5 +1,5 @@
 import { asSlice, Cube, Dimension, MetaGridEntry, Metric } from "../types"
-import { ChiSquared } from 'sampson'
+import { ChiSquared } from 'sampson/dist/lib.es6'
 
 function calculateGTestStatistic(expectations: number[], observations: number[]) {
   if (expectations.length != observations.length) {
