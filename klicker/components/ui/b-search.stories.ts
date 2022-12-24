@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/vue3'
 import { getCanvasElementFixed } from '../../fix'
 import { expect } from '@storybook/jest'
 import { userEvent, within } from '@storybook/testing-library'
+import { ref } from 'vue'
 
 const meta: Meta<BSearch> = {
   component: BSearch,
@@ -13,28 +14,20 @@ export default meta
 type Story = StoryObj<BSearch>
 
 export const Default: Story = {
-  render: (args) => ({
+  render: () => ({
     components: { BSearch },
     setup() {
-      return { args }
+      const open = ref(false)
+      return { open }
     },
     template: `
-      <b-search
-        v-bind="args"
-        v-model="open"
-      >
+      <b-search v-model="open">
         <template v-slot="{ query }">
           <p class="bg-black text-white">Results for {{ query }} will be shown here</p>
         </template>
       </b-search>
     `,
-    data() {
-      return {
-        open: false,
-      }
-    },
   }),
-  args: {},
   play: async ({ canvasElement }) => {
     canvasElement = getCanvasElementFixed(canvasElement)
     const canvas = within(canvasElement)

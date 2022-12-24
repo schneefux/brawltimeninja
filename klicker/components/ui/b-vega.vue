@@ -32,7 +32,7 @@ import embed, { Result, VisualizationSpec } from 'vega-embed'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
@@ -70,10 +70,10 @@ export default defineComponent({
     onMounted(() => refresh())
     onUnmounted(() => cleanup())
 
-    const graph = ref<ComponentPublicInstance>()
+    const graph = ref<InstanceType<typeof BShimmer>>()
 
     const refresh = async () => {
-      if (graph.value == undefined || container.value == undefined) {
+      if (graph.value?.$el == undefined || container.value == undefined) {
         return
       }
 

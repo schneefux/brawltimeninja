@@ -31,24 +31,21 @@ export default defineComponent({
   setup(props, { slots }) {
     // TODO add 'open in dashboard' button
     return () => {
+      const wrappers = {
+        'b-card': BCard,
+        'b-bigstat': BBigstat,
+      }
+      const wrapperComponent = wrappers[props.wrapper]
       if (props.card != undefined && props.card !== false) {
-        return h(props.wrapper, {
+        return h(wrapperComponent, {
           props: {
             ...props.card as any,
             loading: props.loading,
           },
-          scopedSlots: slots,
-        })
+        }, slots)
       } else {
-        const nodes = slots['content'] != undefined ? slots['content']() : undefined
-        if (nodes == undefined) {
-          return h()
-        }
-        if (nodes.length > 1) {
-          // workaround because Vue does not allow returning multiple nodes from root
-          return h('div', nodes)
-        }
-        return nodes[0]
+        const nodes = slots['content'] != undefined ? slots['content']() : []
+        return nodes
       }
     }
   },

@@ -4,6 +4,7 @@ import { Meta, StoryObj } from '@storybook/vue3'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { getCanvasElementFixed } from '../../fix'
+import { ref } from 'vue'
 
 const meta: Meta<BLightbox> = {
   component: BLightbox,
@@ -16,6 +17,10 @@ type Story = StoryObj<BLightbox>
 export const Default: Story = {
   render: () => ({
     components: { BLightbox, BButton },
+    render() {
+      const triggered = ref(false)
+      return { triggered }
+    },
     template: `
       <div>
         <b-button primary md @click="triggered = true">Open Lightbox</b-button>
@@ -24,13 +29,7 @@ export const Default: Story = {
         </b-lightbox>
       </div>
     `,
-    data() {
-      return {
-        triggered: false,
-      }
-    },
   }),
-  args: {},
   play: async ({ canvasElement }) => {
     canvasElement = getCanvasElementFixed(canvasElement)
     const canvas = within(canvasElement)
