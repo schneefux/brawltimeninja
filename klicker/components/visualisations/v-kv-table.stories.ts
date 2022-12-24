@@ -24,7 +24,7 @@ const query = JSON.stringify({
   slices: {},
   sortId: 'winRate',
   limit: 1,
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const Default: Story = {
   render: (args) => ({
@@ -62,7 +62,7 @@ const comparingQuery = JSON.stringify({
     },
     sortId: 'winRate',
   },
-} as CubeComparingQuery)
+} satisfies CubeComparingQuery)
 
 export const Comparing: Story = {
   render: (args) => ({

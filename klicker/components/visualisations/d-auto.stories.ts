@@ -19,7 +19,7 @@ const query = JSON.stringify({
   slices: {},
   sortId: 'winRate',
   limit: 1,
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const Default: Story = {
   render: (args) => ({
@@ -78,7 +78,7 @@ const queryMultiple = JSON.stringify({
   slices: {},
   sortId: 'winRate',
   limit: 1,
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const MixedWithAndWithoutCustomRenderer: Story = {
   render: (args) => ({

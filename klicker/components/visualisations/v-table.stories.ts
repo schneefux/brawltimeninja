@@ -23,7 +23,7 @@ const query = JSON.stringify({
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const Default: Story = {
   render: (args) => ({
@@ -66,7 +66,7 @@ const queryMultipleDimensions = JSON.stringify({
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const MultipleDimensionOneRenderer: Story = {
   render: (args) => ({
@@ -140,7 +140,7 @@ const comparingQuery = JSON.stringify({
     },
     sortId: 'winRate',
   },
-} as CubeComparingQuery)
+} satisfies CubeComparingQuery)
 
 export const Comparing: Story = {
   render: (args) => ({

@@ -139,7 +139,7 @@ export default defineComponent({
       const sortId = metricsIds[0]
       if (props.modelValue.comparing) {
         const query = props.modelValue as CubeComparingQuery
-        emit('update:modelValue', <CubeComparingQuery>{
+        emit('update:modelValue', {
           ...query,
           metricsIds,
           sortId,
@@ -151,7 +151,7 @@ export default defineComponent({
         })
       } else {
         const query = props.modelValue as CubeQuery
-        emit('update:modelValue', <CubeQuery>{
+        emit('update:modelValue', {
           ...query,
           metricsIds,
           sortId,

@@ -19,7 +19,7 @@ const query = JSON.stringify({
   slices: {},
   sortId: 'winRate',
   limit: 5,
-} as CubeQuery)
+} satisfies CubeQuery)
 
 const Template: Story = {
   render: (args) => ({
@@ -86,7 +86,7 @@ const queryMultiple = JSON.stringify({
   slices: {},
   sortId: 'winRate',
   limit: 5,
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const MultipleMetrics: Story = {
   render: (args) => ({
@@ -122,7 +122,7 @@ const comparingQuery = JSON.stringify({
     },
     sortId: 'winRate',
   },
-} as CubeComparingQuery)
+} satisfies CubeComparingQuery)
 
 export const Comparing: Story = {
   render: (args) => ({

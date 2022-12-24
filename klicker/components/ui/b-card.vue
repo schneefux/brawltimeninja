@@ -253,7 +253,7 @@ export default defineComponent({
 
     const triggerClick = () => {
       if (Array.isArray(attrs.onClick)) {
-        (<Function[]> attrs.onClick).forEach((listener) => listener())
+        attrs.onClick.forEach((listener) => listener())
       } else {
         attrs.onClick()
       }
@@ -290,7 +290,7 @@ export default defineComponent({
     const onClickHeader = () => {
       if (attrs.onClickHeader != undefined) {
         if (Array.isArray(attrs.onClickHeader)) {
-          (<Function[]> attrs.onClickHeader).forEach((listener) => listener())
+          attrs.onClickHeader.forEach((listener) => listener())
         } else {
           attrs.onClickHeader()
         }

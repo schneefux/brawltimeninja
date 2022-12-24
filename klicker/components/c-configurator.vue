@@ -156,7 +156,7 @@ export default defineComponent({
             ...newQuery,
             reference: newQuery,
             comparing: true,
-          } as CubeComparingQuery)
+          })
         }
         if (isComparing && !wantComparing) {
           const current = props.modelValue as CubeComparingQuery

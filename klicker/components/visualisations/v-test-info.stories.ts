@@ -29,7 +29,7 @@ const comparingQuery = JSON.stringify({
     },
     sortId: 'winRate',
   },
-} as CubeComparingQuery)
+} satisfies CubeComparingQuery)
 
 export const Comparing: Story = {
   render: (args) => ({

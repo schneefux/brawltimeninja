@@ -23,7 +23,7 @@ const query = JSON.stringify({
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-} as CubeQuery)
+} satisfies CubeQuery)
 
 export const Default: Story = {
   render: (args) => ({
