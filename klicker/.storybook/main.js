@@ -1,7 +1,6 @@
 import {
   mergeConfig
 } from "vite";
-import alias from "@rollup/plugin-alias";
 import path from "path";
 import { vueDocgen } from "./vue-docgen";
 
@@ -21,17 +20,15 @@ module.exports = {
   }],
   async viteFinal(config) {
     const c = mergeConfig(config, {
-      plugins: [
-        alias({
-          entries: [{
-            find: path.resolve(__dirname, '../composables/klicker.ts'),
-            replacement: path.resolve(__dirname, '../fixtures/klicker.shim.ts')
-          }, {
-            find: '#imports',
-            replacement: path.resolve(__dirname, '../fixtures/nuxt.shim.ts')
-          }]
-        }),
-      ],
+      resolve: {
+        alias: [ {
+          find: '#imports',
+          replacement: path.resolve(__dirname, '../fixtures/nuxt.shim.ts')
+        }, {
+          find: /.*?\/klicker.ts$/,
+          replacement: path.resolve(__dirname, '../fixtures/klicker.shim.ts')
+        }],
+      },
     })
 
     c.plugins = c.plugins.filter(p => p.name != 'storybook:vue-docgen-plugin')

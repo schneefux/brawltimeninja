@@ -26,7 +26,7 @@ export function vueDocgen(): PluginOption {
           map: s.generateMap({ hires: true, source: id }),
         };
       } catch (e) {
-        console.warn('vue-docgen-api error', src, e);
+        console.warn('vue-docgen-api error', id, e);
         return undefined;
       }
     },
