@@ -17,9 +17,15 @@ export const Default: Story = {
     },
     template: `
       <b-web-nav v-bind="args">
-        <i slot="logo">Logo</i>
-        <i slot="before">slot before</i>
-        <i slot="after">slot after</i>
+        <template v-slot:logo>
+          <i>Logo</i>
+        </template>
+        <template v-slot:before>
+          <i>slot before</i>
+        </template>
+        <template v-slot:after>
+          <i>slot after</i>
+        </template>
       </b-web-nav>
     `,
   }),

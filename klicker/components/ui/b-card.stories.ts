@@ -20,7 +20,9 @@ export const Default: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="content">${lipsum}</p>
+        <template v-slot:content>
+          <p>${lipsum}</p>
+        </template>
       </b-card>
     `,
   }),
@@ -39,7 +41,9 @@ export const Loading: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="content">${lipsum}</p>
+        <template v-slot:content>
+          <p>${lipsum}</p>
+        </template>
       </b-card>
     `,
   }),
@@ -59,8 +63,12 @@ export const Infobar: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="infobar" style="text-align: right;">Some meta information</p>
-        <p slot="content">${lipsum}</p>
+        <template v-slot:infobar>
+        <p style="text-align: right;">Some meta information</p>
+        </template>
+        <template v-slot:content>
+          <p>${lipsum}</p>
+        </template>
       </b-card>
     `,
   }),
@@ -79,7 +87,9 @@ export const SubtitleAndIcon: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="content">${lipsum}</p>
+        <template v-slot:content>
+          <p>${lipsum}</p>
+        </template>
       </b-card>
     `,
   }),
@@ -100,7 +110,9 @@ export const Dense: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="content">A card with smaller padding</p>
+        <template v-slot:content>
+          <p>A card with smaller padding</p>
+        </template>
       </b-card>
     `,
   }),
@@ -125,7 +137,9 @@ export const BackgroundColor: Story = {
     template: `
       <div>
         <b-card v-bind="args">
-          <p slot="content">${lipsum}</p>
+          <template v-slot:content>
+            <p>${lipsum}</p>
+          </template>
         </b-card>
       </div>
     `,
@@ -146,22 +160,26 @@ export const BackgroundImage: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <div slot="content">
-          <p>A background image works well with nested dense cards, for example a roll.</p>
-          <div style="display: flex; margin-top: 0.5rem;">
-            <b-card
-              v-for="i in 3"
-              :elevation="2"
-              :key="i"
-              :title="'Inner ' + i"
-              dense
-            >
-              <p slot="content">
-                Content {{ i }}
-              </p>
-            </b-card>
+        <template v-slot:content>
+          <div>
+            <p>A background image works well with nested dense cards, for example a roll.</p>
+            <div style="display: flex; margin-top: 0.5rem;">
+              <b-card
+                v-for="i in 3"
+                :elevation="2"
+                :key="i"
+                :title="'Inner ' + i"
+                dense
+              >
+                <template v-slot:content>
+                  <p>
+                    Content {{ i }}
+                  </p>
+                </template>
+              </b-card>
+            </div>
           </div>
-        </div>
+        </template>
       </b-card>
     `,
   }),
@@ -181,10 +199,14 @@ export const Actions: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <p slot="content">${lipsum}</p>
-        <div slot="actions">
-          <b-button primary sm>Open</b-button>
-        </div>
+        <template v-slot:content>
+          <p>${lipsum}</p>
+        </template>
+        <template v-slot:actions>
+          <div>
+            <b-button primary sm>Open</b-button>
+          </div>
+        </template>
       </b-card>
     `,
   }),
@@ -203,18 +225,22 @@ export const Nested: Story = {
     },
     template: `
       <b-card v-bind="args">
-        <div slot="content" style="display: flex;">
-          <b-card
-            v-for="i in 3"
-            :elevation="2"
-            :key="i"
-            :title="'Inner Card ' + i"
-          >
-            <p slot="content">
-              Inner Content {{ i }}
-            </p>
-          </b-card>
-        </div>
+        <template v-slot:content>
+          <div style="display: flex;">
+            <b-card
+              v-for="i in 3"
+              :elevation="2"
+              :key="i"
+              :title="'Inner Card ' + i"
+            >
+              <template v-slot:content>
+                <p>
+                  Inner Content {{ i }}
+                </p>
+              </template>
+            </b-card>
+          </div>
+        </template>
       </b-card>
     `,
   }),

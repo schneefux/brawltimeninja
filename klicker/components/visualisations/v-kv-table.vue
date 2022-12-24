@@ -3,43 +3,44 @@
     v-bind="$props"
     component="v-bigstats"
   >
-    <b-kv-table
-      slot="content"
-      id-key="id"
-      :rows="rows"
-      :data="data"
-    >
-      <template
-        v-for="m in metrics"
-        v-slot:[`metrics.${m.id}`]="{ row }"
-        :key="m.id"
+    <template v-slot:content>
+      <b-kv-table
+        id-key="id"
+        :rows="rows"
+        :data="data"
       >
-        <m-auto
-          :response="response"
-          :metric-id="m.id"
-          :row="row"
-        ></m-auto>
-      </template>
+        <template
+          v-for="m in metrics"
+          v-slot:[`metrics.${m.id}`]="{ row }"
+          :key="m.id"
+        >
+          <m-auto
+            :response="response"
+            :metric-id="m.id"
+            :row="row"
+          ></m-auto>
+        </template>
 
-      <template
-        v-for="m in metrics"
-        v-slot:[`test.reference.metrics.${m.id}`]="{ row }"
-        :key="`${m.id}-reference`"
-      >
-        <m-auto
-          :response="response"
-          :metric-id="m.id"
-          :row="row.test.reference"
-        ></m-auto>
-      </template>
+        <template
+          v-for="m in metrics"
+          v-slot:[`test.reference.metrics.${m.id}`]="{ row }"
+          :key="`${m.id}-reference`"
+        >
+          <m-auto
+            :response="response"
+            :metric-id="m.id"
+            :row="row.test.reference"
+          ></m-auto>
+        </template>
 
-      <template v-slot:dimensions="{ row }">
-        <d-auto
-          :response="response"
-          :row="row"
-        ></d-auto>
-      </template>
-    </b-kv-table>
+        <template v-slot:dimensions="{ row }">
+          <d-auto
+            :response="response"
+            :row="row"
+          ></d-auto>
+        </template>
+      </b-kv-table>
+    </template>
   </v-card-wrapper>
 </template>
 

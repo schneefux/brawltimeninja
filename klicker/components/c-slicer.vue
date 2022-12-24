@@ -10,37 +10,39 @@
     no-filter
     @clickHeader="toggleFilters"
   >
-    <button
-      slot="preview"
-      :selected="showFilters"
-      :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
-      :aria-controls="`${prefix}-filters`"
-      class="md:hidden w-10"
-      @click.stop="toggleFilters"
-    >
-      <font-awesome-icon
-        :icon="showFilters ? faChevronUp : faChevronDown"
-      ></font-awesome-icon>
-    </button>
+    <template v-slot:preview>
+      <button
+        :selected="showFilters"
+        :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
+        :aria-controls="`${prefix}-filters`"
+        class="md:hidden w-10"
+        @click.stop="toggleFilters"
+      >
+        <font-awesome-icon
+          :icon="showFilters ? faChevronUp : faChevronDown"
+        ></font-awesome-icon>
+      </button>
+    </template>
 
-    <div
-      :class="{
-        'hidden md:flex': !showFilters,
-        'flex': showFilters,
-      }"
-      :id="`${prefix}-filters`"
-      :aria-expanded="showFilters"
-      slot="content"
-      class="flex-col md:flex-row flex-wrap gap-4"
-    >
-      <component
-        v-for="spec in specs"
-        :key="spec.name"
-        :is="spec.import"
-        :model-value="slices"
-        :on-input="onInput"
-      ></component>
-    </div>
+    <template v-slot:content>
+      <div
+        :class="{
+          'hidden md:flex': !showFilters,
+          'flex': showFilters,
+        }"
+        :id="`${prefix}-filters`"
+        :aria-expanded="showFilters"
+        class="flex-col md:flex-row flex-wrap gap-4"
+      >
+        <component
+          v-for="spec in specs"
+          :key="spec.name"
+          :is="spec.import"
+          :model-value="slices"
+          :on-input="onInput"
+        ></component>
+      </div>
+    </template>
   </b-card>
 </template>
 

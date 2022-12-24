@@ -3,60 +3,61 @@
     v-bind="$props"
     component="v-roll"
   >
-    <div
-      slot="content"
-      ref="wrapper"
-      class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
-    >
-      <table class="h-full w-full border-separate border-spacing-0">
-        <tbody>
-          <tr>
-            <th
-              scope="row"
-              ref="heading"
-              class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
-            >{{ dimensionName }}</th>
-            <d-auto
-              v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
-              :key="title.id"
-              :ref="`item-${title.id}`"
-              :response="response"
-              :row="title.entry"
-              tag="td"
-              class="text-center pt-2 pb-1 pl-3"
-            ></d-auto>
-          </tr>
-
-          <tr
-            v-for="row in body"
-            :key="row.id"
-          >
-            <th
-              scope="row"
-              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
-            >{{ row.title }}</th>
-            <td
-              v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
-              :key="column.id"
-              class="text-center pt-1 pl-3 text-text"
-            >
-              <m-auto
+    <template v-slot:content>
+      <div
+        ref="wrapper"
+        class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
+      >
+        <table class="h-full w-full border-separate border-spacing-0">
+          <tbody>
+            <tr>
+              <th
+                scope="row"
+                ref="heading"
+                class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
+              >{{ dimensionName }}</th>
+              <d-auto
+                v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
+                :key="title.id"
+                :ref="`item-${title.id}`"
                 :response="response"
-                :row="column.entry"
-                :metric-id="row.metricId"
-              ></m-auto>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                :row="title.entry"
+                tag="td"
+                class="text-center pt-2 pb-1 pl-3"
+              ></d-auto>
+            </tr>
 
-      <b-paginator
-        v-if="pageSize != undefined && headings.length > pageSize"
-        v-model="page"
-        :pages="Math.ceil(headings.length / pageSize)"
-        class="pt-4 mt-auto mx-auto"
-      ></b-paginator>
-    </div>
+            <tr
+              v-for="row in body"
+              :key="row.id"
+            >
+              <th
+                scope="row"
+                class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
+              >{{ row.title }}</th>
+              <td
+                v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
+                :key="column.id"
+                class="text-center pt-1 pl-3 text-text"
+              >
+                <m-auto
+                  :response="response"
+                  :row="column.entry"
+                  :metric-id="row.metricId"
+                ></m-auto>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <b-paginator
+          v-if="pageSize != undefined && headings.length > pageSize"
+          v-model="page"
+          :pages="Math.ceil(headings.length / pageSize)"
+          class="pt-4 mt-auto mx-auto"
+        ></b-paginator>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 

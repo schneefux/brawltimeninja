@@ -59,7 +59,9 @@ export const EmptySlot: Story = {
     },
     template: `
       <c-query v-bind="args">
-        <span slot="empty">Empty</span>
+        <template v-slot:empty>
+          <span>Empty</span>
+        </template>
       </c-query>
     `,
   }),

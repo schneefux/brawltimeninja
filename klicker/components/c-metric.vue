@@ -65,9 +65,11 @@
         :elevation="0"
         class="w-full max-w-md"
       >
-        <p slot="content" class="my-2">
-          {{ description }}
-        </p>
+        <template v-slot:content>
+          <p class="my-2">
+            {{ description }}
+          </p>
+        </template>
       </b-card>
     </b-lightbox>
   </div>

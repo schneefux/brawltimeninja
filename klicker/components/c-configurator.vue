@@ -3,64 +3,63 @@
     v-bind="card"
     :title="translate('configurator.title')"
   >
-    <div
-      slot="content"
-      class="flex flex-wrap items-center"
-    >
-      <div class="grid grid-cols-[auto,auto] gap-6 items-center">
-        <h1
-          v-if="configureCube"
-          class="inline"
-        >
-          {{ translate('configurator.source') }}
-        </h1>
-
-        <div v-if="configureCube">
-          <b-select
-            :model-value="modelValue.cubeId"
-            sm
-            @update:modelValue="onInputCubeId"
+    <template v-slot:content>
+      <div class="flex flex-wrap items-center">
+        <div class="grid grid-cols-[auto,auto] gap-6 items-center">
+          <h1
+            v-if="configureCube"
+            class="inline"
           >
-            <option
-              v-for="c in cubes"
-              :key="c.id"
-              :value="c.id"
+            {{ translate('configurator.source') }}
+          </h1>
+
+          <div v-if="configureCube">
+            <b-select
+              :model-value="modelValue.cubeId"
+              sm
+              @update:modelValue="onInputCubeId"
             >
-              {{ c.name }}
-            </option>
-          </b-select>
+              <option
+                v-for="c in cubes"
+                :key="c.id"
+                :value="c.id"
+              >
+                {{ c.name }}
+              </option>
+            </b-select>
+          </div>
+
+          <c-metric
+            v-if="configureMetrics"
+            :options="configureMetricsOptions"
+            :model-value="modelValue"
+            :multiple="configureMultipleMetrics && !compareMode"
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-metric>
+
+          <c-dimension
+            v-if="configureDimensions"
+            :model-value="modelValue"
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-dimension>
+
+          <c-dimension
+            v-if="configureDimensions && compareMode"
+            :model-value="modelValue"
+            comparing
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-dimension>
+
+          <label
+            v-if="configureCompareMode && canCompare"
+            class="col-span-2 flex items-center"
+          >
+            <b-checkbox v-model="compareMode"></b-checkbox>
+            <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
+          </label>
         </div>
-
-        <c-metric
-          v-if="configureMetrics"
-          :options="configureMetricsOptions"
-          :model-value="modelValue"
-          :multiple="configureMultipleMetrics && !compareMode"
-          @update:modelValue="s => $emit('update:modelValue', s)"
-        ></c-metric>
-
-        <c-dimension
-          v-if="configureDimensions"
-          :model-value="modelValue"
-          @update:modelValue="s => $emit('update:modelValue', s)"
-        ></c-dimension>
-
-        <c-dimension
-          v-if="configureDimensions && compareMode"
-          :model-value="modelValue"
-          comparing
-          @update:modelValue="s => $emit('update:modelValue', s)"
-        ></c-dimension>
-
-        <label
-          v-if="configureCompareMode && canCompare"
-          class="col-span-2 flex items-center"
-        >
-          <b-checkbox v-model="compareMode"></b-checkbox>
-          <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
-        </label>
       </div>
-    </div>
+    </template>
   </b-card>
 </template>
 

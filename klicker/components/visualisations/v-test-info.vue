@@ -4,33 +4,35 @@
     :card="card && { ...card, title: translate('comparison.test.info.title') }"
     component="v-test-info"
   >
-    <div slot="content">
-      <p>{{ translate('comparison.test.info.description', { testName, metricName }) }}</p>
-      <table class="mx-auto mt-2">
-        <tbody>
-          <tr>
-            <td class="pr-1">⋆⋆⋆</td>
-            <td>{{ translate('comparison.test.very-significant') }}</td>
-          </tr>
-          <tr>
-            <td>⋆⋆</td>
-            <td>{{ translate('comparison.test.very-significant') }}</td>
-          </tr>
-          <tr>
-            <td>⋆</td>
-            <td>{{ translate('comparison.test.significant') }}</td>
-          </tr>
-          <tr>
-            <td>+</td>
-            <td>{{ translate('comparison.test.not-significant') }}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>{{ translate('comparison.test.not-significant') }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <template v-slot:content>
+      <div>
+        <p>{{ translate('comparison.test.info.description', { testName, metricName }) }}</p>
+        <table class="mx-auto mt-2">
+          <tbody>
+            <tr>
+              <td class="pr-1">⋆⋆⋆</td>
+              <td>{{ translate('comparison.test.very-significant') }}</td>
+            </tr>
+            <tr>
+              <td>⋆⋆</td>
+              <td>{{ translate('comparison.test.very-significant') }}</td>
+            </tr>
+            <tr>
+              <td>⋆</td>
+              <td>{{ translate('comparison.test.significant') }}</td>
+            </tr>
+            <tr>
+              <td>+</td>
+              <td>{{ translate('comparison.test.not-significant') }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>{{ translate('comparison.test.not-significant') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 

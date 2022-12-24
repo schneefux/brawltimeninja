@@ -165,11 +165,14 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
 
 export default defineComponent({
+  components: {
+    RouterLink,
+  },
   props: {
     tag: {
       type: String,

@@ -67,15 +67,12 @@
     >
       <template v-slot:error="data">
         <c-error
-          slot="error"
           v-bind="data"
           :elevation="{ elevation }"
         ></c-error>
       </template>
       <template v-slot="data">
-        <b-dashboard
-          v-bind="dashboard"
-        >
+        <b-dashboard v-bind="dashboard">
           <slot
             name="data"
             v-bind="data"

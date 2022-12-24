@@ -17,7 +17,9 @@ export const Default: Story = {
     },
     template: `
       <b-web-footer v-bind="args">
-        <i slot="below">slot below</i>
+        <template v-slot:below>
+          <i>slot below</i>
+        </template>
       </b-web-footer>
     `,
   }),

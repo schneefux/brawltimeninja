@@ -3,13 +3,14 @@
     v-bind="$props"
     component="v-scatterplot"
   >
-    <b-vega
-      slot="content"
-      :spec="spec"
-      :show-download="card != undefined"
-      full-width
-      full-height
-    ></b-vega>
+    <template v-slot:content>
+      <b-vega
+        :spec="spec"
+        :show-download="card != undefined"
+        full-width
+        full-height
+      ></b-vega>
+    </template>
   </v-card-wrapper>
 </template>
 

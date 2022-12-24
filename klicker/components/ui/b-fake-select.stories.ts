@@ -20,7 +20,9 @@ export const Default: Story = {
     },
     template: `
       <b-fake-select v-bind="args">
-        <span slot="preview">Preview</span>
+        <template v-slot:preview>
+          <span>Preview</span>
+        </template>
         <div style="width: 200px">
           <p>Inner content can be anything</p>
           <div style="display: flex;">

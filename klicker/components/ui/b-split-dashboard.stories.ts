@@ -19,7 +19,9 @@ export const Default: Story = {
       <b-split-dashboard
         v-bind="args"
       >
-        <p slot="aside">Sticky on the left side</p>
+        <template v-slot:aside>
+          <p>Sticky on the left side</p>
+        </template>
         <div style="height: 200vh;">Main content</div>
       </b-split-dashboard>
     `,

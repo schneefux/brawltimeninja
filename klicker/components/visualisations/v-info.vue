@@ -5,12 +5,11 @@
     :card="card && { ...card, title }"
     component="v-info"
   >
-    <p
-      slot="content"
-      class="md:h-16"
-    >
-      {{ description }}
-    </p>
+    <template v-slot:content>
+      <p class="md:h-16">
+        {{ description }}
+      </p>
+    </template>
   </v-card-wrapper>
 </template>
 

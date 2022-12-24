@@ -3,26 +3,25 @@
     v-bind="$props"
     component="v-bigstats"
   >
-    <div
-      slot="content"
-      class="flex flex-wrap gap-8 my-2"
-    >
-      <dl
-        v-for="row in rows"
-        :key="row.id"
-      >
-        <dt class="text-text/75">
-          {{ row.title }}
-        </dt>
-        <dd class="text-xl text-text">
-          <m-auto
-            :response="response"
-            :metric-id="row.metricId"
-            :row="row.entry"
-          ></m-auto>
-        </dd>
-      </dl>
-    </div>
+    <template v-slot:content>
+      <div class="flex flex-wrap gap-8 my-2">
+        <dl
+          v-for="row in rows"
+          :key="row.id"
+        >
+          <dt class="text-text/75">
+            {{ row.title }}
+          </dt>
+          <dd class="text-xl text-text">
+            <m-auto
+              :response="response"
+              :metric-id="row.metricId"
+              :row="row.entry"
+            ></m-auto>
+          </dd>
+        </dl>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 

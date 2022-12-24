@@ -88,36 +88,35 @@
             :elevation="2"
             title="Configure Widget Dimensions"
           >
-            <div
-              slot="content"
-              class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
-            >
-              <label
-                :for="`${prefix}-columns`"
-              >
-                Columns
-              </label>
-              <b-number
-                :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
-                :id="`${prefix}-width`"
-                min="1"
-                max="8"
-                @update:modelValue="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
-              ></b-number>
+            <template v-slot:content>
+              <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
+                <label
+                  :for="`${prefix}-columns`"
+                >
+                  Columns
+                </label>
+                <b-number
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
+                  :id="`${prefix}-width`"
+                  min="1"
+                  max="8"
+                  @update:modelValue="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
+                ></b-number>
 
-              <label
-                :for="`${prefix}-rows`"
-              >
-                Rows
-              </label>
-              <b-number
-                :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
-                :id="`${prefix}-rows`"
-                min="1"
-                max="8"
-                @update:modelValue="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
-              ></b-number>
-            </div>
+                <label
+                  :for="`${prefix}-rows`"
+                >
+                  Rows
+                </label>
+                <b-number
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
+                  :id="`${prefix}-rows`"
+                  min="1"
+                  max="8"
+                  @update:modelValue="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
+                ></b-number>
+              </div>
+            </template>
           </b-card>
         </b-dashboard-cell>
       </c-widget-editor>

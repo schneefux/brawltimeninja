@@ -18,7 +18,9 @@ export const Default: Story = {
     },
     template: `
       <b-card title="Storybook Demo" sm>
-        <b-shimmer slot="content" v-bind="args"></b-shimmer>
+        <template v-slot:content>
+          <b-shimmer v-bind="args"></b-shimmer>
+        </template>
       </b-card>
     `,
   }),

@@ -1,51 +1,53 @@
 <template>
   <b-card>
-    <div slot="content" class="relative">
-      <b-lightbox v-model="tooltipOpen">
-        <b-card
-          :elevation="0"
-          class="w-full max-w-md h-auto"
+    <template v-slot:content>
+      <div class="relative">
+        <b-lightbox v-model="tooltipOpen">
+          <b-card
+            :elevation="0"
+            class="w-full max-w-md h-auto"
+          >
+            <template v-slot:content>
+              <slot name="tooltip">
+                <p class="my-2">
+                  {{ tooltip }}
+                </p>
+              </slot>
+            </template>
+          </b-card>
+        </b-lightbox>
+        <router-link
+          v-if="tooltipLink != undefined"
+          :to="tooltipLink"
+          label="Tooltip"
+          class="w-4 text-sm leading-none absolute top-1 right-0"
         >
-          <template v-slot:content>
-            <slot name="tooltip">
-              <p class="my-2">
-                {{ tooltip }}
-              </p>
+          <font-awesome-icon
+            :icon="faQuestion"
+          ></font-awesome-icon>
+        </router-link>
+        <button
+          v-else-if="tooltip != undefined || 'tooltip' in $slots"
+          label="Tooltip"
+          class="w-4 text-sm leading-none absolute top-1 right-0"
+          @click="tooltipOpen = !tooltipOpen"
+        >
+          <font-awesome-icon
+            :icon="faQuestion"
+          ></font-awesome-icon>
+        </button>
+        <dl>
+          <dt class="text-text/75">
+            {{ title }}
+          </dt>
+          <dd class="text-xl text-text">
+            <slot name="content">
+              {{ value }}
             </slot>
-          </template>
-        </b-card>
-      </b-lightbox>
-      <router-link
-        v-if="tooltipLink != undefined"
-        :to="tooltipLink"
-        label="Tooltip"
-        class="w-4 text-sm leading-none absolute top-1 right-0"
-      >
-        <font-awesome-icon
-          :icon="faQuestion"
-        ></font-awesome-icon>
-      </router-link>
-      <button
-        v-else-if="tooltip != undefined || 'tooltip' in $slots"
-        label="Tooltip"
-        class="w-4 text-sm leading-none absolute top-1 right-0"
-        @click="tooltipOpen = !tooltipOpen"
-      >
-        <font-awesome-icon
-          :icon="faQuestion"
-        ></font-awesome-icon>
-      </button>
-      <dl>
-        <dt class="text-text/75">
-          {{ title }}
-        </dt>
-        <dd class="text-xl text-text">
-          <slot name="content">
-            {{ value }}
-          </slot>
-        </dd>
-      </dl>
-    </div>
+          </dd>
+        </dl>
+      </div>
+    </template>
   </b-card>
 </template>
 

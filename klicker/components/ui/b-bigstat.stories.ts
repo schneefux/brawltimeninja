@@ -87,10 +87,9 @@ export const WithTooltipSlot: Story = {
     },
     template: `
       <b-bigstat v-bind="args">
-        <p
-          slot="tooltip"
-          style="border: dashed gray;"
-        >${lipsum}</p>
+        <template v-slot:tooltip>
+          <p style="border: dashed gray;">${lipsum}</p>
+        </template>
       </b-bigstat>
     `,
   }),

@@ -4,11 +4,12 @@
     :card="card && { ...card, title }"
     component="v-markdown"
   >
-    <div
-      slot="content"
-      class="prose prose-invert"
-      v-html="html"
-    ></div>
+    <template v-slot:content>
+      <div
+        class="prose prose-invert"
+        v-html="html"
+      ></div>
+    </template>
   </v-card-wrapper>
 </template>
 

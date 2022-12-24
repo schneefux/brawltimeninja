@@ -4,14 +4,15 @@
     :card="card && { ...card, title: translate('dashboard.export-data') }"
     component="v-csv"
   >
-    <b-button
-      slot="actions"
-      primary
-      sm
-      @click="download()"
-    >
-      {{ translate('action.export-csv') }}
-    </b-button>
+    <template v-slot:actions>
+      <b-button
+        primary
+        sm
+        @click="download()"
+      >
+        {{ translate('action.export-csv') }}
+      </b-button>
+    </template>
   </v-card-wrapper>
 </template>
 

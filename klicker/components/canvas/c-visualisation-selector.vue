@@ -4,51 +4,55 @@
       title="Configure Widget"
       :elevation="elevation"
     >
-      <div slot="content">
-        <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-          <label
-            for="`${prefix}-widget`"
-          >Widget</label>
-          <b-select
-            :id="`${prefix}-widget`"
-            :model-value="component"
-            sm
-            @update:modelValue="c => component = c"
-          >
-            <option
-              v-for="v in visualisations"
-              :key="v.component"
-              :value="v.component"
+      <template v-slot:content>
+        <div>
+          <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
+            <label
+              for="`${prefix}-widget`"
+            >Widget</label>
+            <b-select
+              :id="`${prefix}-widget`"
+              :model-value="component"
+              sm
+              @update:modelValue="c => component = c"
             >
-              {{ v.name }}
-            </option>
-          </b-select>
+              <option
+                v-for="v in visualisations"
+                :key="v.component"
+                :value="v.component"
+              >
+                {{ v.name }}
+              </option>
+            </b-select>
 
-          <template
-            v-for="(propSpec, prop) in (spec.props || {})"
-            :key="prop"
-          >
-            <label :for="`${prefix}-${prop}`">
-              {{ propSpec.name }}
-            </label>
-            <component
-              v-bind="propSpec.props"
-              :id="`${prefix}-${prop}`"
-              :model-value="value.props[prop]"
-              :is="propSpec.import || propSpec.component"
-              @update:modelValue="v => setWidgetProp(prop, v)"
-            ></component>
-          </template>
+            <template
+              v-for="(propSpec, prop) in (spec.props || {})"
+              :key="prop"
+            >
+              <label :for="`${prefix}-${prop}`">
+                {{ propSpec.name }}
+              </label>
+              <component
+                v-bind="propSpec.props"
+                :id="`${prefix}-${prop}`"
+                :model-value="value.props[prop]"
+                :is="propSpec.import || propSpec.component"
+                @update:modelValue="v => setWidgetProp(prop, v)"
+              ></component>
+            </template>
+          </div>
         </div>
-      </div>
+      </template>
 
-      <div slot="actions">
-        <b-button
-          md
-          primary
-          @click="$emit('delete')"
-        >Delete Widget</b-button>
-      </div>
+      <template v-slot:actions>
+        <div>
+          <b-button
+            md
+            primary
+            @click="$emit('delete')"
+          >Delete Widget</b-button>
+        </div>
+      </template>
     </b-card>
   </b-dashboard-cell>
 </template>

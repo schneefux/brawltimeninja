@@ -25,7 +25,9 @@ export const Default: Story = {
           :key="i"
           :title="'Sample Section ' + i"
         >
-          <p slot="description">${lipsum}</p>
+          <template v-slot:description>
+            <p>${lipsum}</p>
+          </template>
           <div style="border: dashed gray;">{{ i }}</div>
         </b-page-section>
       </div>

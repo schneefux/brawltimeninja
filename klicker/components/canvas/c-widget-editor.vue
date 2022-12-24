@@ -3,94 +3,93 @@
     title="Edit Widget"
     :elevation="elevation"
   >
-    <div
-      slot="content"
-      class="mt-4 flex flex-col gap-y-8"
-    >
-      <div class="w-full flex gap-4 items-center">
-        <h1 class="inline mr-4">
-          Widget Kind
-        </h1>
+    <template v-slot:content>
+      <div class="mt-4 flex flex-col gap-y-8">
+        <div class="w-full flex gap-4 items-center">
+          <h1 class="inline mr-4">
+            Widget Kind
+          </h1>
 
-        <b-radio
-          :model-value="withQuery"
-          :id="`${prefix}-static`"
-          value="false"
-          name="withQuery"
-          required
-          primary
-          @update:modelValue="v => withQuery = v"
-        ></b-radio>
-        <label
-          :for="`${prefix}-static`"
+          <b-radio
+            :model-value="withQuery"
+            :id="`${prefix}-static`"
+            value="false"
+            name="withQuery"
+            required
+            primary
+            @update:modelValue="v => withQuery = v"
+          ></b-radio>
+          <label
+            :for="`${prefix}-static`"
+          >
+            Static Widget
+          </label>
+
+          <b-radio
+            :model-value="withQuery"
+            :id="`${prefix}-data`"
+            value="true"
+            name="withQuery"
+            required
+            primary
+            @update:modelValue="v => withQuery = v"
+          ></b-radio>
+          <label
+            :for="`${prefix}-data`"
+          >
+            Widget with Data
+          </label>
+        </div>
+
+        <c-dashboard
+          v-if="query != undefined"
+          v-model="query"
+          :elevation="elevation + 1"
+          :configurator="{
+            configureCube: true,
+            configureMetrics: true,
+            configureMultipleMetrics: true,
+            configureDimensions: true,
+            configureCompareMode: true,
+          }"
+          slicer
         >
-          Static Widget
-        </label>
+          <template v-slot:totals="data">
+            <slot
+              name="totals"
+              v-bind="data"
+              :card="{ ...data.card, elevation: data.card && (data.card.elevation + 1) }"
+            ></slot>
+          </template>
+          <template v-slot:data="data">
+            <c-visualisation-selector
+              v-bind="data"
+              :model-value="modelValue"
+              :elevation="elevation + 1"
+              for-canvas
+              @update:modelValue="v => $emit('update:modelValue', v)"
+              @delete="$emit('delete')"
+            ></c-visualisation-selector>
+            <slot></slot>
+          </template>
+        </c-dashboard>
 
-        <b-radio
-          :model-value="withQuery"
-          :id="`${prefix}-data`"
-          value="true"
-          name="withQuery"
-          required
-          primary
-          @update:modelValue="v => withQuery = v"
-        ></b-radio>
-        <label
-          :for="`${prefix}-data`"
+        <div
+          v-else
+          class="flex flex-wrap gap-8"
         >
-          Widget with Data
-        </label>
-      </div>
-
-      <c-dashboard
-        v-if="query != undefined"
-        v-model="query"
-        :elevation="elevation + 1"
-        :configurator="{
-          configureCube: true,
-          configureMetrics: true,
-          configureMultipleMetrics: true,
-          configureDimensions: true,
-          configureCompareMode: true,
-        }"
-        slicer
-      >
-        <template v-slot:totals="data">
-          <slot
-            name="totals"
-            v-bind="data"
-            :card="{ ...data.card, elevation: data.card && (data.card.elevation + 1) }"
-          ></slot>
-        </template>
-        <template v-slot:data="data">
           <c-visualisation-selector
-            v-bind="data"
             :model-value="modelValue"
             :elevation="elevation + 1"
             for-canvas
             @update:modelValue="v => $emit('update:modelValue', v)"
             @delete="$emit('delete')"
           ></c-visualisation-selector>
+
           <slot></slot>
-        </template>
-      </c-dashboard>
-
-      <div
-        v-else
-        class="flex flex-wrap gap-8"
-      >
-        <c-visualisation-selector
-          :model-value="modelValue"
-          :elevation="elevation + 1"
-          for-canvas
-          @update:modelValue="v => $emit('update:modelValue', v)"
-          @delete="$emit('delete')"
-        ></c-visualisation-selector>
-
-        <slot></slot>
+        </div>
       </div>
-    </div>
+    </template>
   </b-card>
 </template>
 

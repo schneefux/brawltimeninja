@@ -3,25 +3,26 @@
     v-bind="$props"
     component="v-barplot"
   >
-    <div
-      slot="content"
-      ref="wrapper"
-      class="h-full w-full flex flex-col"
-    >
-      <b-vega
-        :spec="spec"
-        :show-download="card != undefined"
-        full-width
-        full-height
-      ></b-vega>
+    <template v-slot:content>
+      <div
+        ref="wrapper"
+        class="h-full w-full flex flex-col"
+      >
+        <b-vega
+          :spec="spec"
+          :show-download="card != undefined"
+          full-width
+          full-height
+        ></b-vega>
 
-      <b-paginator
-        v-if="pageSize != undefined && values.length > pageSize"
-        v-model="page"
-        :pages="Math.ceil(values.length / pageSize)"
-        class="pt-4 mt-auto mx-auto"
-      ></b-paginator>
-    </div>
+        <b-paginator
+          v-if="pageSize != undefined && values.length > pageSize"
+          v-model="page"
+          :pages="Math.ceil(values.length / pageSize)"
+          class="pt-4 mt-auto mx-auto"
+        ></b-paginator>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 
