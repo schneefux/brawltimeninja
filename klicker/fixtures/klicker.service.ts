@@ -1,7 +1,7 @@
 import KlickerService from '../service'
 import config from './klicker.cubes'
 import en from './en.json'
-import { provide } from 'vue'
+import { provide, shallowRef } from 'vue'
 import { KlickerConfigInjectionKey } from '../composables/klicker'
 
 export function translate(key: string) {
@@ -40,7 +40,30 @@ export function decorator(story, { parameters }) {
       provide(KlickerConfigInjectionKey, {
         klicker,
         translate,
-        exceptionLogger: () => {},
+        useQuery: function<T, E>(key: string, handler: () => Promise<T>) {
+          const data = shallowRef<T|null>(null) // https://github.com/vuejs/core/issues/1324#issuecomment-859766527
+          const error = shallowRef<E|null>(null)
+          const loading = shallowRef(false)
+
+          function refresh() {
+            return handler().then((result) => {
+              data.value = result
+            }).catch((err) => {
+              error.value = err
+            }).finally(() => {
+              loading.value = false
+            })
+          }
+
+          refresh()
+
+          return {
+            loading,
+            data,
+            error,
+            refresh,
+          }
+        },
       })
     },
   }

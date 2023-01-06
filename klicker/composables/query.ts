@@ -1,5 +1,4 @@
 import { computed, Ref, watch } from 'vue'
-import { useLazyAsyncData, useNuxtApp } from '#imports' // uses vue-ssr's onServerPrefetch
 import { useKlicker } from './klicker'
 import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 
@@ -25,29 +24,20 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
  * Run a query
  */
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
-  const { $klicker } = useKlicker()
-  const { $sentry } = useNuxtApp() as any
+  const { $klicker, useQuery } = useKlicker()
 
   async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
-    try {
-      if (!query.value.comparing) {
-        return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
-      } else {
-        return await $klicker.comparingQuery(<CubeComparingQuery>query.value, <CubeComparingQueryFilter>filter?.value)
-      }
-    } catch (err) {
-      console.error(err)
-      if ($sentry != undefined) {
-        (<any> $sentry).captureException(err)
-      }
-      throw err
+    if (!query.value.comparing) {
+      return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
+    } else {
+      return await $klicker.comparingQuery(<CubeComparingQuery>query.value, <CubeComparingQueryFilter>filter?.value)
     }
   }
 
-  const asyncResponse = useLazyAsyncData(`c-query-${hash(query.value)}`, () => fetch())
+  const asyncResponse = useQuery(`klicker-query-${hash(query.value)}`, () => fetch())
   const error = computed(() => asyncResponse.error.value)
   const response = computed(() => asyncResponse.data.value)
-  const loading = computed(() => asyncResponse.pending.value)
+  const loading = computed(() => asyncResponse.loading.value)
 
   const update = () => asyncResponse.refresh()
   watch(query, update)

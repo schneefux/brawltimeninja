@@ -45,8 +45,6 @@ export default class KlickerService implements IKlickerService {
   public dimensionRenderers: DimensionRendererSpec[] = []
   public metricRenderers: MetricRendererSpec[] = []
 
-  private runningQueries = new Map<string, Promise<ResultSet>>()
-
   constructor(cubeUrl: string,
       public config: Config,
       visualisations: VisualisationSpec[],
@@ -279,23 +277,9 @@ export default class KlickerService implements IKlickerService {
 
   /**
    * Send a query to cube.js
-   *
-   * If there are multiple concurrent identical queries,
-   * return the same response for all of them.
    */
   private async load(query: Query) {
-    const queryKey = JSON.stringify(query)
-    let request = this.runningQueries.get(queryKey)
-    if (request == undefined) {
-      request = this.cubejsApi.load(query)
-      this.runningQueries.set(queryKey, request)
-    }
-
-    try {
-      return await request
-    } finally {
-      this.runningQueries.delete(queryKey)
-    }
+    return await this.cubejsApi.load(query)
   }
 
   /**
