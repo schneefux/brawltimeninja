@@ -17,7 +17,7 @@ type Story = StoryObj<BLightbox>
 export const Default: Story = {
   render: () => ({
     components: { BLightbox, BButton },
-    render() {
+    setup() {
       const triggered = ref(false)
       return { triggered }
     },

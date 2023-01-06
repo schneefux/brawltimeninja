@@ -26,7 +26,7 @@ export const Default: Story = {
       const v = ref(0)
 
       return {
-        ...args,
+        args,
         v,
       }
     },

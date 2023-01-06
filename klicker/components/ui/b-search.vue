@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="container"
     :class="containerClass"
     class="ml-4 inline-flex items-center"
   >
@@ -16,12 +15,12 @@
       aria-label="search"
       class="pl-8 h-6 w-full"
       @focus="$emit('update:modelValue', true)"
+      @focusout="$emit('update:modelValue', false)"
       @keyup.enter="$emit('enter')"
     ></b-textbox>
 
     <div
       v-if="modelValue"
-      ref="popup"
       class="absolute inset-x-0 z-10"
       :class="popupClass"
     >
@@ -33,10 +32,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import BTextbox from './b-textbox.vue'
-import BCard from './b-card.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { onKeyStroke } from '@vueuse/core'
 
 export default defineComponent({
   components: {
@@ -65,34 +63,20 @@ export default defineComponent({
     ['enter']() { return true },
     ['update:modelValue'](value: Boolean) { return true },
   },
-  setup(props, { emit }) {
+  setup() {
     const filter = ref('')
-
-    const popup = ref<typeof BCard>()
-    const container = ref<HTMLElement>()
-    onClickOutside(popup as any, () => emit('update:modelValue', false), {
-      ignore: [container as any],
-    })
 
     const search = ref<InstanceType<typeof BTextbox>>()
     onKeyStroke(
       (event) => (event.metaKey || event.ctrlKey) && event.key == 'k',
-      () => {
-        emit('update:modelValue', true);
-        (search.value!.$el as HTMLInputElement).focus()
-      },
+      () => (search.value!.$el as HTMLInputElement).focus(),
     )
 
-    const reset = () => filter.value = ''
-
     return {
-      container,
-      popup,
       search,
       filter,
       faSearch,
       faTimes,
-      reset,
     }
   },
 })

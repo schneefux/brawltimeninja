@@ -84,7 +84,7 @@ export const Mobile: Story = {
         data-testid="container"
       >
         <b-dashboard-cell
-          v-for="i in 2"
+          v-for="i in 3"
           :key="i"
           :rows="2"
           :columns="2"
