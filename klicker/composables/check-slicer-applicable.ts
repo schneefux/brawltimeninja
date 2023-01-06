@@ -2,7 +2,7 @@ import { computed, Ref } from 'vue'
 import { useKlicker } from './klicker'
 import { SlicerSpec } from '../types'
 
-export const useCubeConfig = (cubeId: Ref<string>) => {
+export const useCheckSlicerApplicable = (cubeId: Ref<string>) => {
   const { $klicker } = useKlicker()
 
   const allMetrics = computed(() => {
@@ -25,9 +25,6 @@ export const useCubeConfig = (cubeId: Ref<string>) => {
     spec.applicable(allDimensions.value, cubeId.value)
 
   return {
-    $klicker,
-    allMetrics,
-    allDimensions,
     checkSlicerApplicable,
   }
 }

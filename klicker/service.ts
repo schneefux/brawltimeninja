@@ -1,4 +1,4 @@
-import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec } from "./types"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec } from "./types"
 import cubejs, { CubejsApi, Filter, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -37,7 +37,7 @@ function generateQueryParams(o: Record<string, (string|number|undefined)[]>, pre
 
 class CubeDoesNotMatchQueryError extends Error {}
 
-export default class Klicker implements KlickerService {
+export default class KlickerService implements IKlickerService {
   private cubejsApi: CubejsApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets

@@ -24,9 +24,6 @@ module.exports = {
         alias: [ {
           find: '#imports',
           replacement: path.resolve(__dirname, '../fixtures/nuxt.shim.ts')
-        }, {
-          find: /.*?\/klicker.ts$/,
-          replacement: path.resolve(__dirname, '../fixtures/klicker.shim.ts')
         }],
       },
     })

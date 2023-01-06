@@ -83,12 +83,14 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlicker } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'
+import BCard from './ui/b-card.vue'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
     BSelect,
     BLightbox,
+    BCard,
   },
   inheritAttrs: false,
   props: {

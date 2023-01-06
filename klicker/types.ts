@@ -1,5 +1,5 @@
 import { Filter } from "@cubejs-client/core"
-import { AsyncComponentLoader, Component } from "vue"
+import { Component } from "vue"
 import { RouteLocation } from "vue-router"
 
 export interface Config extends Record<string, Cube> {}
@@ -367,7 +367,7 @@ export interface User {
   grids: Grid[]
 }
 
-export interface KlickerService {
+export interface IKlickerService {
   config: Config
   visualisations: VisualisationSpec[]
   staticWidgets: StaticWidgetSpec[]

@@ -315,7 +315,7 @@ import { CDashboard, BDashboardCell, BTabs, BScrollingList, BDashboard } from '@
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
-import { winRateAdjMetric } from '~/lib/klicker.conf'
+import { winRateAdjMetric } from '~/lib/klicker.cubes'
 import { useSyncSlicesAndRoute } from '~/composables/link'
 
 export default defineComponent({

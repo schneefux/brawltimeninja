@@ -1,8 +1,9 @@
+import { defineAsyncComponent } from 'vue'
 import CSlicer from './c-slicer.vue'
 import BSelect from './ui/b-select.vue'
 import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery, SlicerSpec } from '../types'
-import { MockedKlicker } from '../fixtures/klicker.shim'
+import { KlickerServiceMock } from '../fixtures/klicker.service'
 
 const meta: Meta<CSlicer> = {
   component: CSlicer,
@@ -26,7 +27,7 @@ const query: CubeQuery = {
 const slicer: SlicerSpec = {
   name: 'Brawler',
   component: 'brawler-select',
-  import: () => Promise.resolve(BrawlerSelect),
+  import: defineAsyncComponent(() => Promise.resolve(BrawlerSelect)),
   applicable() {
     return true
   },
@@ -34,10 +35,10 @@ const slicer: SlicerSpec = {
 
 const BrawlerSelect = {
   components: { BSelect },
-  props: ['value', 'onInput'],
+  props: ['modelValue', 'onInput'],
   template: `
     <b-select
-      :value="value.brawler"
+      :value="modelValue.brawler"
       sm
       @input="v => onInput({ brawler: v == '' ? [] : [v] })"
     >
@@ -59,7 +60,7 @@ export const Default: Story = {
     `,
   }),
   parameters: {
-    $klicker: Object.assign(new MockedKlicker(), {
+    $klicker: Object.assign(new KlickerServiceMock(), {
       slicers: [slicer],
     }),
   },
@@ -102,7 +103,7 @@ export const Comparing: Story = {
     `,
   }),
   parameters: {
-    $klicker: Object.assign(new MockedKlicker(), {
+    $klicker: Object.assign(new KlickerServiceMock(), {
       slicers: [slicer],
     }),
   },

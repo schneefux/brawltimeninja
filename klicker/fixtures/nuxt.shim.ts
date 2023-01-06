@@ -5,14 +5,16 @@ export const useLazyAsyncData = <T>(
   cb: () => T | Promise<T>,
 ) => {
   const _ref = isRef(key) ? key : ref<T | null>(null)
+  const _err = isRef(key) ? key : ref<T | null>(null)
 
   if (!_ref.value) {
     const p = Promise.resolve(cb())
     p.then(res => (_ref.value = res as any))
+    p.catch(res => (_err.value = res as any))
   }
 
   return {
-    error: ref(),
+    error: _err,
     data: _ref as Ref<null | T>,
     pending: ref(false),
   }

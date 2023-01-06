@@ -1,5 +1,6 @@
+import { defineAsyncComponent } from "vue"
 import { DimensionRendererSpec, MetricRendererSpec } from "../types"
-import { MockedKlicker } from "./klicker.shim"
+import { KlickerServiceMock } from "./klicker.service"
 
 const BrawlerImage = {
   props: ['row', 'captioned'],
@@ -17,7 +18,7 @@ const BrawlerImage = {
 const brawlerRenderer: DimensionRendererSpec = {
   name: 'Brawler',
   component: 'brawler-image',
-  import: () => Promise.resolve(BrawlerImage),
+  import: defineAsyncComponent(() => Promise.resolve(BrawlerImage)),
   applicable() {
     return true
   },
@@ -25,7 +26,7 @@ const brawlerRenderer: DimensionRendererSpec = {
 }
 
 export const BrawlerRendererParameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
+  $klicker: Object.assign(new KlickerServiceMock(), {
     slicers: [brawlerRenderer],
   }),
 }
@@ -44,7 +45,7 @@ const WinRateColors = {
 const winRateRenderer: MetricRendererSpec = {
   name: 'Win Rate',
   component: 'win-rate',
-  import: () => Promise.resolve(WinRateColors),
+  import: defineAsyncComponent(() => Promise.resolve(WinRateColors)),
   applicable() {
     return true
   },
@@ -52,7 +53,7 @@ const winRateRenderer: MetricRendererSpec = {
 }
 
 export const WinRateRendererParameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
+  $klicker: Object.assign(new KlickerServiceMock(), {
     metricRenderers: [winRateRenderer],
   }),
 }

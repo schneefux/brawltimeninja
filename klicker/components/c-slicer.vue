@@ -52,7 +52,7 @@ import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
-import { useCubeConfig } from '../composables/config'
+import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
 import { useKlicker } from '../composables/klicker'
 import { useUniqueId } from '../composables/id'
 
@@ -185,7 +185,7 @@ export default defineComponent({
       }
     })
 
-    const { checkSlicerApplicable } = useCubeConfig(cubeId)
+    const { checkSlicerApplicable } = useCheckSlicerApplicable(cubeId)
     const specs = computed(() => {
       let applicableSpecs: SlicerSpec[] = []
 

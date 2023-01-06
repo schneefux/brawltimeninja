@@ -1,14 +1,25 @@
-import { useNuxtApp } from '#imports'
-import { KlickerService } from '../types'
+import { IKlickerService } from "types";
+import { inject, InjectionKey } from "vue";
 
-// TODO turn the service into a composable, do not depend on Nuxt context
+export interface PluginConfig {
+  klicker: IKlickerService
+  translate: (key: string, args?: any) => string
+  exceptionLogger: (error: Error) => void
+}
+
+export const KlickerConfigInjectionKey = Symbol('klicker') as InjectionKey<PluginConfig>
+
 export const useKlicker = () => {
-  const $klicker = (<any>useNuxtApp()).$klicker as KlickerService
+  const pluginConfig = inject(KlickerConfigInjectionKey)!
 
-  const translate = (key: string, args?: any) => $klicker.$t(key, args)
+  const $klicker = pluginConfig.klicker
+  const translate = pluginConfig.translate
+  const exceptionLogger = pluginConfig.exceptionLogger
 
   return {
     $klicker,
     translate,
+    exceptionLogger,
   }
 }
+

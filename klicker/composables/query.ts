@@ -21,6 +21,9 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
   return hashCode(JSON.stringify(query)).toString()
 }
 
+/**
+ * Run a query
+ */
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
   const { $klicker } = useKlicker()
   const { $sentry } = useNuxtApp() as any

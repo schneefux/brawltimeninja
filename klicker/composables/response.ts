@@ -2,6 +2,9 @@ import { computed, Ref, toRef } from 'vue'
 import { useKlicker } from '../composables/klicker'
 import { CubeComparingResponse, CubeResponse, VisualisationSpec } from '../types'
 
+/**
+ * Provide metadata for a query result
+ */
 export const useCubeResponse = (response: Ref<CubeResponse|CubeComparingResponse>) => {
   const { $klicker } = useKlicker()
 
