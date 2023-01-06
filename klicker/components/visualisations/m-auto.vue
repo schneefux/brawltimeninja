@@ -1,3 +1,14 @@
+<template>
+  <component
+    v-if="metricRenderer"
+    :is="metricRenderer"
+    :row="row"
+  ></component>
+  <template v-else>
+    {{ text }}
+  </template>
+</template>
+
 <script lang="ts">
 import { defineComponent, PropType, h, computed } from 'vue'
 import { useCubeResponseProps } from '../../composables'
@@ -38,19 +49,12 @@ export default defineComponent({
       }), {})
     })
 
-    return () => {
-      if (props.metricId in metricRenderers.value) {
-        return [h(metricRenderers.value[props.metricId].import, {
-          props: {
-            row: props.row,
-          },
-        })]
-      } else {
-        // workaround to construct a text VNode
-        const text = props.row.metrics[props.metricId]
-        const textNode = h('p', text).children![0]
-        return textNode
-      }
+    const metricRenderer = metricRenderers.value[props.metricId]?.import
+    const text = props.row.metrics[props.metricId]
+
+    return {
+      metricRenderer,
+      text,
     }
   },
 })

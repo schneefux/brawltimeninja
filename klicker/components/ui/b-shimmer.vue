@@ -8,9 +8,7 @@
       width: widthPx != undefined ? widthPx + 'px' : undefined,
       height: heightPx != undefined ? heightPx + 'px' : undefined,
     }"
-  >
-    <slot v-if="!loading"></slot>
-  </component>
+  ></component>
 </template>
 
 <script lang="ts">

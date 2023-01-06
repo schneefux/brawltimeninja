@@ -65,7 +65,7 @@ export const WithConfidenceInterval: Story = {
   }),
 }
 
-export const NoCard: Story = {
+export const NoWrapper: Story = {
   render: (args) => ({
     components: { CQuery, VBarplot },
     setup() {

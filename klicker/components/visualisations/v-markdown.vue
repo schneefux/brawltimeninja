@@ -19,11 +19,13 @@ import VCardWrapper from './v-card-wrapper.vue'
 import { StaticProps } from '../../props'
 import '@kangc/v-md-editor/lib/style/preview-html.css'
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
+import '@kangc/v-md-editor/lib/theme/style/github.css'
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index'
-import VueMarkdownEditor, { xss } from '@kangc/v-md-editor'
+import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css'
+import VMdEditor, { xss } from '@kangc/v-md-editor'
 
-VueMarkdownEditor.use(githubTheme)
-VueMarkdownEditor.use(createEmojiPlugin())
+VMdEditor.use(githubTheme)
+VMdEditor.use(createEmojiPlugin())
 
 export default defineComponent({
   components: {
@@ -41,7 +43,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const html = computed(() => xss.process(VueMarkdownEditor.themeConfig.markdownParser.render(props.markdown)))
+    console.log(VMdEditor)
+    const html = computed(() => xss.process(VMdEditor.vMdParser.themeConfig.markdownParser.render(props.markdown)))
 
     return {
       html,

@@ -47,8 +47,8 @@
           :icon="faExternalLinkAlt"
         ></font-awesome-icon>
       </router-link>
-    </v-card-wrapper>
-  </template>
+    </template>
+  </v-card-wrapper>
 </template>
 
 <script lang="ts">

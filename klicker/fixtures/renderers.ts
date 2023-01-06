@@ -27,7 +27,7 @@ const brawlerRenderer: DimensionRendererSpec = {
 
 export const BrawlerRendererParameters = {
   $klicker: Object.assign(new KlickerServiceMock(), {
-    slicers: [brawlerRenderer],
+    dimensionRenderers: [brawlerRenderer],
   }),
 }
 

@@ -106,7 +106,7 @@ export const MetricRenderer: Story = {
   },
 }
 
-export const NoCard: Story = {
+export const NoWrapper: Story = {
   render: (args) => ({
     components: { CQuery, VTable },
     setup() {

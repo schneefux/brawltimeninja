@@ -44,7 +44,7 @@ export const Default: Story = {
   },
 }
 
-export const NoCard: Story = {
+export const NoWrapper: Story = {
   render: (args) => ({
     components: { CQuery, VGrid },
     setup() {

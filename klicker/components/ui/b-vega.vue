@@ -13,7 +13,8 @@
         'w-full': fullWidth,
         'h-full': fullHeight,
       }"
-    ></b-shimmer>
+    >
+    </b-shimmer>
 
     <button
       v-if="showDownload"
@@ -70,6 +71,8 @@ export default defineComponent({
     onMounted(() => refresh())
     onUnmounted(() => cleanup())
 
+    // be careful about https://github.com/vuejs/core/issues/7207#issuecomment-1326599127
+    // only works because the <b-shimmer> wrapper is empty
     const graph = ref<InstanceType<typeof BShimmer>>()
 
     const refresh = async () => {
@@ -136,7 +139,7 @@ export default defineComponent({
 
       const spec = Object.assign(<VisualizationSpec>{}, props.spec, defaults)
 
-      result.value = await embed(graph.value.$el as HTMLElement, spec, {
+      result.value = await embed(graph.value.$el, spec, {
         actions: false,
         // canvas: better performance
         // svg: easily zoomable and support for CSS variable colors
