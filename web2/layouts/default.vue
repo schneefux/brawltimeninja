@@ -1,0 +1,189 @@
+<template>
+  <div
+    ref="container"
+    class="flex flex-col justify-between min-h-screen bg-background text-text"
+  >
+    <web-nav class="hidden lg:flex"></web-nav>
+    <app-head-nav class="lg:hidden"></app-head-nav>
+
+    <ad
+      :ad-region="$route != undefined ? $route.fullPath : undefined"
+      ad-slot="6848221017"
+      class="fixed left-4 inset-y-0 flex flex-col justify-center"
+      scraper
+    ></ad>
+    <ad
+      :ad-region="$route != undefined ? $route.fullPath : undefined"
+      ad-slot="8127026559"
+      class="fixed right-4 inset-y-0 flex flex-col justify-center"
+      scraper
+    ></ad>
+
+    <nuxt />
+
+    <install-prompt-capture></install-prompt-capture>
+    <b-cookie-consent
+      v-if="consentPopupVisible"
+      @enable-none="disableCookies"
+      @enable-cookies="enableCookies"
+      @enable-all="enableCookiesAndAds"
+    >
+      <nuxt-link
+        slot="link"
+        class="underline"
+        to="/about"
+      >link</nuxt-link>
+    </b-cookie-consent>
+
+    <app-bottom-nav class="lg:hidden"></app-bottom-nav>
+    <b-web-footer
+      :links="links"
+      tag="nuxt-link"
+      class="hidden lg:block"
+    >
+      <copyright
+        slot="below"
+        class="mt-4 text-sm"
+      ></copyright>
+    </b-web-footer>
+
+    <adblock-bait></adblock-bait>
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, watch, ref } from 'vue'
+import { useMutationObserver } from '@vueuse/core'
+import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
+import { setIsPwa, setIsTwa } from '~/composables/app'
+import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
+import { event, optIn } from 'vue-gtag'
+import { localePath } from '~/composables/locale-path'
+import { useI18n } from 'vue-i18n'
+
+export default defineComponent({
+  components: {
+    BWebFooter,
+    BCookieConsent,
+  },
+  head: {},
+  setup(props) {
+    const container = ref<HTMLElement>()
+
+    const i18n = useI18n()
+
+    const links = computed(() => [ {
+      name: i18n.t('nav.Leaderboards'),
+      target: localePath('/leaderboard/hours'),
+    }, {
+      name: i18n.t('nav.Guides'),
+      target: '/blog/guides',
+    }, {
+      name: i18n.t('nav.Status'),
+      target: localePath('/status'),
+    }, {
+      name: i18n.t('nav.Privacy'),
+      target: '/about',
+    }])
+
+    const store = useBrawlstarsNinjaStore()
+    const version = computed(() => store.version)
+    const adsAllowed = computed(() => store.adsAllowed)
+    const cookiesAllowed = computed(() => store.cookiesAllowed)
+    const consentPopupVisible = computed(() => store.consentPopupVisible)
+
+    const disableCookies = () => {
+      store.commit('hideConsentPopup')
+      store.commit('setCookiesAllowed', false)
+      store.commit('setAdsAllowed', false)
+      hideAds()
+    }
+    const enableCookies = () => {
+      store.hideConsentPopup()
+      store.setCookiesAllowed(true)
+      store.setAdsAllowed(false)
+      hideAds()
+    }
+    const enableCookiesAndAds = () => {
+      store.hideConsentPopup()
+      store.setCookiesAllowed(true)
+      store.setAdsAllowed(true)
+      enableAds()
+    }
+
+    const enableAds = () => {
+      if (adsAllowed.value && !import.meta.env.SSR) {
+        // update consent preferences
+        if ('adsbygoogle' in window) {
+          (<any>window).adsbygoogle.pauseAdRequests = 0
+        }
+        optIn()
+
+        // track some meta data
+        // play store allows only 1 ad/page - TWA is detected via referrer
+        const isPwa = window.matchMedia('(display-mode: standalone)').matches
+        const isTwa = document.referrer.startsWith('android-app')
+
+        setIsPwa(isPwa)
+        setIsTwa(isTwa)
+
+        event('branch_dimension', {
+          'branch': process.env.branch || '',
+          'non_interaction': true,
+        })
+        event('is_pwa_dimension', {
+          'is_pwa': isPwa,
+          'non_interaction': true,
+        })
+        event('is_twa_dimension', {
+          'is_twa': isTwa,
+          'non_interaction': true,
+        })
+      }
+    }
+    const hideAds = () => {
+      if (!import.meta.env.SSR) {
+        (<any>window).adsbygoogle.pauseAdRequests = 1
+        const sheet = document.createElement('style')
+        sheet.type = 'text/css'
+        sheet.innerText = '.adswrapper { display: none; }'
+        document.head.appendChild(sheet)
+      }
+    }
+
+    // called after vuex-persist has loaded
+    watch(version, () => {
+      if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
+        store.showConsentPopup()
+      } else {
+        if (adsAllowed.value) {
+          enableAds()
+        } else {
+          hideAds()
+        }
+      }
+    })
+
+    // TODO the fix for https://github.com/vueuse/vueuse/issues/685
+    // and/or importing vueuse as peer dependency breaks this ref type
+    useMutationObserver(container as any, () => {
+      // workaround for AdSense overriding min-height: 0px
+      // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
+      // wtf Google
+      container.value!.style['min-height'] = ''
+    }, {
+      attributes: true,
+      attributeFilter: ['style'],
+    })
+
+    return {
+      links,
+      disableCookies,
+      enableCookies,
+      enableCookiesAndAds,
+      consentPopupVisible,
+      container,
+    }
+  },
+})
+</script>

@@ -184,7 +184,7 @@ export default class KlickerService implements IKlickerService {
     }
     const desiredConfig = this.validateCube(query, this.config[query.cubeId])
 
-    if (process.env.NODE_ENV == 'development') {
+    if (import.meta.env.KLICKER_DEBUG != undefined) {
       let bestConfig: CubeQueryConfiguration|undefined
       let minCubeCardinality = Infinity
       let matchedCubeIsAtRootLevel = true

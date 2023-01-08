@@ -72,11 +72,14 @@ export default defineComponent({
       () => (search.value!.$el as HTMLInputElement).focus(),
     )
 
+    const reset = () => filter.value = ''
+
     return {
       search,
       filter,
       faSearch,
       faTimes,
+      reset,
     }
   },
 })

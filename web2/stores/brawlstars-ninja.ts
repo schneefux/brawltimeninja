@@ -1,0 +1,145 @@
+import { inject } from 'vue'
+import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
+import { defineStore } from 'pinia'
+import { tagToId } from '~/lib/util'
+import { Player } from '~/model/Api'
+import { TrpcInjectionKey } from '../plugins/trpc'
+
+interface StoredPlayer {
+    tag: string
+    name: string
+  }
+
+interface State {
+  version: string|undefined
+  featuredPlayers: StoredPlayer[]
+  lastPlayers: string[]
+  userTag: string|undefined
+  personalityTestResult: string|undefined
+  cookiesAllowed: boolean|undefined
+  adsAllowed: boolean|undefined
+  consentPopupVisible: boolean
+  installBannerDismissed: boolean
+  totalBrawlers: number
+  player: Player|undefined
+  playerTotals: PlayerTotals|undefined
+}
+
+export interface PlayerTotals {
+  picks: number
+  winRate: number
+  trophyChange: number
+}
+
+export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
+  state: (): State => ({
+    version: undefined,
+    featuredPlayers: [ {
+        tag: 'V8LLPPC',
+        name: 'xXcuzMePlisThXx',
+      }, {
+        tag: 'VLQPVPY',
+        name: 'Hyra',
+      }, {
+        tag: '2YC9RVYQC',
+        name: 'NaVi | Cubick',
+      }, {
+        tag: '8LQ9JR82',
+        name: 'BGT | Eqwaak',
+      }, {
+        tag: 'QRUQQLV0',
+        name: 'CG |Nukleo',
+      } ],
+    lastPlayers: [] as string[],
+    userTag: undefined as undefined|string, // personal tag (last searched)
+    personalityTestResult: undefined,
+    cookiesAllowed: undefined as undefined|boolean,
+    adsAllowed: undefined as undefined|boolean,
+    consentPopupVisible: false,
+    installBannerDismissed: false,
+    totalBrawlers: 56,
+    player: undefined as undefined|Player,
+    playerTotals: undefined as undefined|PlayerTotals,
+  }),
+  actions: {
+
+    async loadPlayer(tag: string) {
+      const api = inject(TrpcInjectionKey)!
+      const player = await api.query('player.byTag', tag)
+      this.setPlayer(player)
+
+      const { klicker } = inject(KlickerConfigInjectionKey)!
+      const battleData = await klicker.query({
+        cubeId: 'battle',
+        dimensionsIds: [],
+        metricsIds: ['picks', 'winRate', 'trophyChange'],
+        slices: {
+          playerId: [tagToId(tag)],
+        },
+        sortId: 'picks',
+      }).catch(() => ({
+        data: [{
+          metricsRaw: {
+            picks: 0,
+          },
+        }],
+      }))
+
+      if (battleData.data[0].metricsRaw.picks > 0) {
+        const totals = battleData.data[0].metricsRaw as any as PlayerTotals
+        this.setPlayerTotals(totals)
+      } else {
+        // calculate player totals from battle log
+        const picks = player.battles.length
+        const trophyChanges = player.battles
+          .map((battle) => battle.trophyChange!)
+          .filter((trophyChange) => trophyChange != undefined)
+        const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+        const winRate = player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length
+
+        const totals = {
+          picks,
+          trophyChange,
+          winRate,
+        } as PlayerTotals
+        this.setPlayerTotals(totals)
+      }
+    },
+
+    addLastPlayer(player: StoredPlayer) {
+      const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
+
+      const lastPlayers = [clone(player), ...this.lastPlayers]
+        .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
+      this.lastPlayers = lastPlayers.slice(0, 4)
+    },
+    setAdsAllowed(adsAllowed: boolean) {
+      this.adsAllowed = adsAllowed
+    },
+    setCookiesAllowed(cookiesAllowed: boolean) {
+      this.cookiesAllowed = cookiesAllowed
+    },
+    showConsentPopup() {
+      this.consentPopupVisible = true
+    },
+    hideConsentPopup() {
+      this.consentPopupVisible = false
+    },
+    dismissInstallBanner() {
+      this.installBannerDismissed = true
+    },
+    setPersonalityTestResult(result: string) {
+      this.personalityTestResult = result
+    },
+    setPlayer(player: Player) {
+      this.player = player
+    },
+    setPlayerTotals(totals: PlayerTotals) {
+      this.playerTotals = totals
+    },
+    setUserTag(tag: string) {
+      this.userTag = tag
+    },
+  },
+})
+

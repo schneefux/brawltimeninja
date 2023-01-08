@@ -1,5 +1,4 @@
-import { event } from 'vue-gtag'
-import { GetterTree, ActionTree, MutationTree } from 'vuex'
+import { ActionTree, MutationTree } from 'vuex'
 import { tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
 
