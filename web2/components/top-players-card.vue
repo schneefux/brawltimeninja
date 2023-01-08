@@ -3,9 +3,9 @@
     :loading="leaderboard == null"
     :title="$t('best.players.long')"
   >
-    <b-scrolling-list
+    <template v-slot:content><b-scrolling-list
       v-if="leaderboard != undefined && leaderboard.length > 0"
-      slot="content"
+      
       :items="leaderboard != undefined ? leaderboard : []"
       :cell-columns="2"
       :render-at-least="5"
@@ -26,8 +26,8 @@
             <media-img-icon v-bind="data"></media-img-icon>
           </template>
 
-          <b-kv-table
-            slot="content"
+          <template v-slot:content><b-kv-table
+            
             :rows="[{
               title: $t('metric.trophies'),
               key: 'trophies',
@@ -35,19 +35,19 @@
             :data="player"
             id-key="tag"
             class="mt-2"
-          ></b-kv-table>
+          ></b-kv-table></template>
         </b-card>
       </template>
-    </b-scrolling-list>
+    </b-scrolling-list></template>
 
-    <b-button
-      slot="actions"
+    <template v-slot:actions><b-button
+      
       :to="localePath(`/leaderboard/trophies`)"
       primary
       sm
     >
       {{ $t('action.open.leaderboard.metric', { metric: $t('metric.trophies') }) }}
-    </b-button>
+    </b-button></template>
   </b-card>
 </template>
 

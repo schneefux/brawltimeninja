@@ -8,8 +8,8 @@
     v-on="$listeners"
   >
     <template v-slot:preview></template>
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="pt-4 h-full flex flex-col justify-center"
     >
       <map-img
@@ -18,7 +18,7 @@
         clazz="w-full h-48 object-contain"
       ></map-img>
       <slot></slot>
-    </div>
+    </div></template>
   </event-card>
 </template>
 

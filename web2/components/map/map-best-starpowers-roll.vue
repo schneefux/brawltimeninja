@@ -4,15 +4,15 @@
     :elevation="elevation"
     :link="localePath(`/tier-list/${kind}`)"
   >
-    <c-query
-      slot="content"
+    <template v-slot:content><c-query
+      
       :query="query"
       :filter="filter"
     >
       <template v-slot="data">
         <v-roll v-bind="data"></v-roll>
       </template>
-    </c-query>
+    </c-query></template>
   </b-card>
 </template>
 

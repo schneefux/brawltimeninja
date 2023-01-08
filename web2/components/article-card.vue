@@ -7,15 +7,15 @@
     itemscope
     no-filter
   >
-    <div
+    <template v-slot:infobar><div
       v-if="document.image"
-      slot="infobar"
+      
       :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${document.image}')`"
       class="h-48 bg-cover bg-center"
       itemprop="thumbnailUrl"
-    ></div>
-    <span slot="preview">{{ date }}</span>
-    <div slot="content">
+    ></div></template>
+    <template v-slot:preview><span >{{ date }}</span></template>
+    <template v-slot:content><div >
       <div
         v-html="document.body"
         ref="content"
@@ -29,9 +29,9 @@
           :src="lightboxImage"
         >
       </b-lightbox>
-    </div>
-    <p
-      slot="actions"
+    </div></template>
+    <template v-slot:actions><p
+      
       v-if="document.author != undefined"
       class="prose dark:prose-invert"
     >
@@ -48,7 +48,7 @@
           ({{ document.attribution }})
         </span>
       </template>.
-    </p>
+    </p></template>
   </b-card>
 </template>
 

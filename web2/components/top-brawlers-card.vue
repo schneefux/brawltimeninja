@@ -3,8 +3,8 @@
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
   >
-    <div
-      slot="actions"
+    <template v-slot:actions><div
+      
       class="flex flex-wrap justify-end gap-2"
     >
       <b-button
@@ -22,12 +22,12 @@
       >
         {{ $t('action.open.tier-list.brawler') }}
       </b-button>
-    </div>
+    </div></template>
 
-    <map-best-brawlers
-      slot="content"
+    <template v-slot:content><map-best-brawlers
+      
       :limit="limit"
-    ></map-best-brawlers>
+    ></map-best-brawlers></template>
   </b-card>
 </template>
 

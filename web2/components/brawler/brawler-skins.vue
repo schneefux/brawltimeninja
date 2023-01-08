@@ -9,8 +9,8 @@
   >
     <template v-slot:item="skin">
       <b-card :title="skin.name">
-        <div
-          slot="content"
+        <template v-slot:content><div
+          
           class="h-full flex flex-col items-center justify-between"
         >
           <media-img
@@ -31,7 +31,7 @@
             :data="skin"
             class="w-full mt-4"
           ></b-kv-table>
-        </div>
+        </div></template>
       </b-card>
     </template>
   </b-scrolling-list>

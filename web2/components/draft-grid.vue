@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card :title="$t('draft-tool.selected-team')">
-      <div slot="content">
+      <template v-slot:content><div >
         <p>
           <template v-if="team.length == 0">
             {{ $t('draft-tool.none-selected') }}
@@ -41,7 +41,7 @@
             ></font-awesome-icon>
           </b-button>
         </div>
-      </div>
+      </div></template>
     </b-card>
 
     <b-card
@@ -49,7 +49,7 @@
       :loading="loading > 0"
       class="mt-8"
     >
-      <div slot="content" class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
+      <template v-slot:content><div  class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
         <button
           v-for="brawler in allyData"
           :key="brawler.id"
@@ -75,7 +75,7 @@
             {{ brawler.contributingWinRateFormatted }}
           </span>
         </button>
-      </div>
+      </div></template>
     </b-card>
   </div>
 </template>

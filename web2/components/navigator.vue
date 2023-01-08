@@ -12,8 +12,8 @@
         :elevation="0"
         :title="$t('nav.Menu')"
       >
-        <b-navigator
-          slot="content"
+        <template v-slot:content><b-navigator
+          
           ref="navigator"
           :links="linkTree"
           :link-generator="linkGenerator"
@@ -26,9 +26,9 @@
               class="underline col-start-2"
             >{{ title }}</nuxt-link>
           </template>
-        </b-navigator>
-        <button
-          slot="preview"
+        </b-navigator></template>
+        <template v-slot:preview><button
+          
           class="text-xl h-6 w-6"
           aria-label="close"
           @click="popupOpen = false"
@@ -36,7 +36,7 @@
           <font-awesome-icon
             :icon="faTimes"
           ></font-awesome-icon>
-        </button>
+        </button></template>
       </b-card>
     </template>
   </b-search>

@@ -8,13 +8,13 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="h-full flex flex-col justify-between gap-y-4"
     >
-      <p slot="content">
+      <template v-slot:content><p >
         <q class="italic">{{ accessory.description }}</q>
-      </p>
+      </p></template>
 
       <c-query :query="query">
         <template v-slot="data">
@@ -24,7 +24,7 @@
           ></v-kv-table>
         </template>
       </c-query>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

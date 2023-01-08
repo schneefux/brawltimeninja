@@ -3,9 +3,9 @@
     :is="card ? 'b-card' : 'div'"
     :title="$t('starpower-gadget-data.disclaimer.title')"
   >
-    <p slot="content">
+    <template v-slot:content><p >
       {{ $t('starpower-gadget-data.disclaimer.description') }}
-    </p>
+    </p></template>
    </component>
 </template>
 

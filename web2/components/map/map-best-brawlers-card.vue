@@ -4,9 +4,9 @@
     :map="map"
     :id="id"
   >
-    <div
+    <template v-slot:infobar><div
       v-if="powerplay || endDate != undefined || startDate != undefined"
-      slot="infobar"
+      
       class="flex justify-end"
     >
       <span v-if="powerplay">
@@ -18,13 +18,13 @@
       <span v-else-if="startDate != undefined">
         {{ startDateString }}
       </span>
-    </div>
+    </div></template>
 
-    <map-best-brawlers
-      slot="content"
+    <template v-slot:content><map-best-brawlers
+      
       :slices="slices"
       :card="{ elevation: 0, dense: true }"
-    ></map-best-brawlers>
+    ></map-best-brawlers></template>
   </event-card>
 </template>
 

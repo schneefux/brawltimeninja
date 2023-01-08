@@ -5,19 +5,19 @@
     component="v-sample-size"
     wrapper="b-bigstat"
   >
-    <p
+    <template v-slot:content><p
       v-if="sample == 0"
-      slot="content"
+      
       class="text-red-400"
     >
       {{ $t('no-data.please-change-filter') }}
-    </p>
-    <p
+    </p></template>
+    <template v-slot:content><p
       v-else
-      slot="content"
+      
     >
       {{ $t('sample-size', { count: sampleFormatted }) }}
-    </p>
+    </p></template>
   </v-card-wrapper>
 </template>
 

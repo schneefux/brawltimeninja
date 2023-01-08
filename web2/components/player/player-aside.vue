@@ -3,8 +3,8 @@
     :title="player.name"
     :loading="loading"
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="flex flex-col items-center"
     >
       <media-img
@@ -101,9 +101,9 @@
           {{ $t('profile.tracking.status.' + value) }}
         </template>
       </b-kv-table>
-    </div>
+    </div></template>
 
-    <div slot="actions" class="flex flex-wrap gap-2">
+    <template v-slot:actions><div  class="flex flex-wrap gap-2">
       <b-button
         v-if="canEnableTracking"
         primary
@@ -118,7 +118,7 @@
         sm
         @share="sharepicTriggered"
       ></share-render-button>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

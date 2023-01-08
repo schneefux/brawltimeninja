@@ -1,16 +1,16 @@
 <template>
   <event-card :mode="mode">
-    <div slot="content">
+    <template v-slot:content><div >
       <b-card
         :elevation="0"
         dense
       >
-        <b-kv-table
-          slot="content"
+        <template v-slot:content><b-kv-table
+          
           :rows="kvTableRows"
           :data="kvTableData"
           id-key="tag"
-        ></b-kv-table>
+        ></b-kv-table></template>
       </b-card>
 
       <b-card
@@ -20,21 +20,21 @@
         class="mt-2"
         dense
       >
-        <map-img
-          slot="preview"
+        <template v-slot:preview><map-img
+          
           :id="activeMap.id"
           :map="activeMap.map"
           clazz="h-10"
-        ></map-img>
-        <player-map-tip-roll
-          slot="content"
+        ></map-img></template>
+        <template v-slot:content><player-map-tip-roll
+          
           :map="activeMap.map"
           :mode="mode"
           :player-brawlers="playerBrawlers"
           class="mx-auto"
-        ></player-map-tip-roll>
+        ></player-map-tip-roll></template>
       </b-card>
-    </div>
+    </div></template>
   </event-card>
 </template>
 

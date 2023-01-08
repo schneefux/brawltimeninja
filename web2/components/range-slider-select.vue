@@ -1,12 +1,12 @@
 <template>
   <b-fake-select>
-    <span
-      slot="preview"
+    <template v-slot:preview><span
+      
       class="w-full text-left"
     >
       {{ format(value[0]) }}-{{ format(value[1]) }}
       {{ name }}
-    </span>
+    </span></template>
 
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">

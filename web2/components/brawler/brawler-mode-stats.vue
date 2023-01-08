@@ -1,10 +1,10 @@
 <template>
   <event-card :mode="mode">
-    <brawler-kv-card
-      slot="content"
+    <template v-slot:content><brawler-kv-card
+      
       :brawler-name="brawlerName"
       :slices="slices"
-    ></brawler-kv-card>
+    ></brawler-kv-card></template>
   </event-card>
 </template>
 

@@ -5,7 +5,7 @@
     component="v-gini"
     wrapper="b-bigstat"
   >
-    <p slot="content">
+    <template v-slot:content><p >
       <span
         class="text-xl"
         :class="{
@@ -17,7 +17,7 @@
       <span>
         ({{ giniScore == undefined ? '?' : giniScore.toFixed(2) }})
       </span>
-    </p>
+    </p></template>
   </v-card-wrapper>
 </template>
 

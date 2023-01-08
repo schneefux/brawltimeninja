@@ -22,17 +22,17 @@
           lazy
         >
           <b-card :title="$t('metric.gini-coefficient')">
-            <div slot="content">
+            <template v-slot:content><div >
               <v-gini
                 v-bind="data"
               ></v-gini>
-              <p
-                slot="content"
+              <template v-slot:content><p
+                
                 class="mt-4"
               >
                 {{ $t('brawler.balance-chart.description') }}
-              </p>
-            </div>
+              </p></template>
+            </div></template>
           </b-card>
         </b-dashboard-cell>
       </div>

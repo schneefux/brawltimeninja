@@ -1,7 +1,7 @@
 <template>
   <b-card :title="$t('attribution.title')">
-    <i18n
-      slot="content"
+    <template v-slot:content><i18n
+      
       path="fandom-attribution"
       tag="p"
     >
@@ -22,7 +22,7 @@
           class="underline cursor-pointer"
         >Creative Commons Attribution-Share Alike License</a>
       </template>
-    </i18n>
+    </i18n></template>
   </b-card>
 </template>
 

@@ -4,10 +4,10 @@
     :card="card != undefined && { ...card, title }"
     component="v-media-img"
   >
-    <media-img
-      slot="content"
+    <template v-slot:content><media-img
+      
       :path="path"
-    ></media-img>
+    ></media-img></template>
   </v-card-wrapper>
 </template>
 

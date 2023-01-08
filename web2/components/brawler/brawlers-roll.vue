@@ -22,8 +22,8 @@
         :title="brawler.name"
         :link="localePath(`/tier-list/brawler/${brawler.id}`)"
       >
-        <div
-          slot="content"
+        <template v-slot:content><div
+          
           class="h-full flex flex-col items-center justify-between"
         >
           <media-img
@@ -33,7 +33,7 @@
             size="400"
             loading="lazy"
           ></media-img>
-        </div>
+        </div></template>
       </b-card>
     </template>
   </b-scrolling-list>

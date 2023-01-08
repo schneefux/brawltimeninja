@@ -14,8 +14,8 @@
           <media-img-icon v-bind="data"></media-img-icon>
         </template>
 
-        <div
-          slot="content"
+        <template v-slot:content><div
+          
           class="h-full flex flex-col justify-between gap-y-4"
         >
           <p>
@@ -25,8 +25,8 @@
             :rows="overviewKvRows"
             :data="overviewKvData"
           >
-            <b-select
-              slot="level"
+            <template v-slot:level><b-select
+              
               v-model="level"
               class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
             >
@@ -35,9 +35,9 @@
                 :key="i"
                 :value="i"
               >{{ i }}</option>
-            </b-select>
+            </b-select></template>
           </b-kv-table>
-        </div>
+        </div></template>
       </b-card>
     </b-dashboard-cell>
 

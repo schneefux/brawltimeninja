@@ -8,7 +8,7 @@
       :subtitle="$t('oejts.intro')"
       class="mt-2 max-w-lg"
     >
-      <div slot="content">
+      <template v-slot:content><div >
         <transition name="slide-fade" mode="out-in">
           <quiz-likert
             :key="page"
@@ -17,14 +17,14 @@
             :end="(page + 1) * pageSize"
           ></quiz-likert>
         </transition>
-      </div>
+      </div></template>
 
-      <b-button
-        slot="actions"
+      <template v-slot:actions><b-button
+        
         type="submit"
         primary
         md
-      >{{ $t('action.next') }}</b-button>
+      >{{ $t('action.next') }}</b-button></template>
     </b-card>
 </form>
 </template>

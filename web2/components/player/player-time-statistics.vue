@@ -4,7 +4,7 @@
   >
     <b-dashboard-cell :columns="2">
       <b-bigstat :title="$t('metric.hours-spent')">
-        <p slot="content">
+        <template v-slot:content><p >
           <font-awesome-icon
             :icon="faClock"
             class="mr-1"
@@ -12,7 +12,7 @@
           <span ref="counter-hours">
             ...
           </span>
-        </p>
+        </p></template>
       </b-bigstat>
     </b-dashboard-cell>
 
@@ -28,12 +28,12 @@
       :columns="2"
     >
       <b-bigstat :title="stat.label">
-        <p
-          slot="content"
+        <template v-slot:content><p
+          
           ref="counter-funstats"
         >
           ...
-        </p>
+        </p></template>
       </b-bigstat>
     </b-dashboard-cell>
   </b-scrolling-dashboard>

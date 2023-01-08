@@ -5,7 +5,7 @@
     }]"
     :title="$t('banner.install.title')"
   >
-    <div slot="content">
+    <template v-slot:content><div >
       <button
         class="absolute top-0 right-0 mr-3 mt-2"
         @click="dismissInstall"
@@ -15,10 +15,10 @@
       <p>
         {{ $t('banner.install.catchphrase') }}
       </p>
-    </div>
+    </div></template>
 
-    <b-button
-      slot="actions"
+    <template v-slot:actions><b-button
+      
       class="mx-auto"
       md
       primary
@@ -29,7 +29,7 @@
         class="mr-1"
       ></font-awesome-icon>
       {{ $t('action.install') }}
-    </b-button>
+    </b-button></template>
   </b-card>
 </template>
 

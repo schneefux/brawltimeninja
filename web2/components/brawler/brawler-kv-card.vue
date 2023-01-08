@@ -3,8 +3,8 @@
     :elevation="0"
     dense
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="h-full flex items-center gap-x-4"
     >
       <media-img
@@ -24,7 +24,7 @@
           ></v-kv-table>
         </template>
       </c-query>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

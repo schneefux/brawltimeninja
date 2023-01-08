@@ -11,16 +11,16 @@
         :player-tag="player.tag"
         card
       >
-        <b-card slot="empty">
-          <div
-            slot="content"
+        <template v-slot:empty><b-card >
+          <template v-slot:content><div
+            
             class="flex flex-col justify-center h-full"
           >
             <p class="italic text-center">
               {{ $t('player.no-history') }}
             </p>
-          </div>
-        </b-card>
+          </div></template>
+        </b-card></template>
       </history-graph>
     </b-dashboard-cell>
 

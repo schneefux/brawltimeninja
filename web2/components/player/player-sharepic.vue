@@ -61,12 +61,12 @@
         }"
       >
         <history-graph :player-tag="player.tag">
-          <p
-            slot="empty"
+          <template v-slot:empty><p
+            
             class="px-20 pt-12 text-center"
           >
             {{ $t('player.no-history') }}
-          </p>
+          </p></template>
         </history-graph>
       </div>
     </div>

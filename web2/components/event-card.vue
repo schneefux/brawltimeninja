@@ -17,13 +17,13 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <map-img
+    <template v-slot:preview><map-img
       v-if="id != undefined"
-      slot="preview"
+      
       :id="id"
       :map="map"
       clazz="h-12 w-12 object-contain"
-    ></map-img>
+    ></map-img></template>
 
     <template
       v-for="(_, slot) of $scopedSlots"

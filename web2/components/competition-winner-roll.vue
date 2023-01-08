@@ -28,12 +28,12 @@
     >
       <template v-slot:item="date">
         <b-card :title="date.date">
-          <media-img
-            slot="content"
+          <template v-slot:content><media-img
+            
             :path="`/maps/competition-winners/${date.date}`"
             :alt="date"
             size="512"
-          ></media-img>
+          ></media-img></template>
         </b-card>
       </template>
     </b-scrolling-list>

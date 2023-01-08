@@ -29,9 +29,9 @@
       :columns="3"
     >
       <b-card :title="$t('info')">
-        <p slot="content">
+        <template v-slot:content><p >
           {{ $t('starpower-gadget-comparison.info') }}
-        </p>
+        </p></template>
       </b-card>
     </b-dashboard-cell>
   </b-scrolling-dashboard>

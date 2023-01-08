@@ -4,8 +4,8 @@
     :map="battle.event.map"
     :id="battle.event.id"
   >
-    <div
-      slot="infobar"
+    <template v-slot:infobar><div
+      
       class="flex justify-between"
     >
       <div>
@@ -22,10 +22,10 @@
         </span>
       </div>
       <span>{{ relativeTime }}</span>
-    </div>
+    </div></template>
 
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="flex flex-wrap justify-center -mx-4 h-full items-center"
     >
       <div
@@ -73,7 +73,7 @@
             }">{{ mate.name }}</span>
           </router-link>
       </div>
-    </div>
+    </div></template>
   </event-card>
 </template>
 

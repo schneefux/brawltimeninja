@@ -3,7 +3,7 @@
     :links="links"
     tag="nuxt-link"
   >
-    <template slot="logo">
+    <template v-slot:logo>
       <nuxt-link
         :to="localePath('/')"
         class="font-semibold text-xl tracking-tight leading-tight"
@@ -15,11 +15,11 @@
       ></navigator>
     </template>
 
-    <template slot="before">
+    <template v-slot:before>
       <install-button></install-button>
     </template>
 
-    <template slot="after">
+    <template v-slot:after>
       <locale-switcher
         class="border-0 align-text-top !text-2xs pr-7"
       ></locale-switcher>

@@ -3,16 +3,16 @@
     :title="$t('oejts.result.title')"
     class="max-w-lg"
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="flex flex-col gap-y-4"
     >
       <b-card
         :elevation="2"
         dense
       >
-        <div
-          slot="content"
+        <template v-slot:content><div
+          
           class="flex flex-col items-center"
         >
           <span class="mt-1">{{ mostSimilarBrawler.name }}</span>
@@ -21,17 +21,17 @@
             clazz="h-48 m-2"
             :path="`/brawlers/${mostSimilarBrawler.id}/model`"
           ></media-img>
-        </div>
+        </div></template>
       </b-card>
 
       <b-card
         :elevation="2"
         dense
       >
-        <oejts-table
-          slot="content"
+        <template v-slot:content><oejts-table
+          
           :oejts="mostSimilarBrawler.score"
-        ></oejts-table>
+        ></oejts-table></template>
       </b-card>
 
       <p class="mt-2 text-left text-sm">
@@ -41,9 +41,9 @@
         Read more about the theory <b-button tag="a" xs dark href="https://simple.wikipedia.org/wiki/Myers-Briggs_Type_Indicator" target="_blank">on Wikipedia</b-button> and more about the OEJTS <b-button tag="a" xs dark href="https://openpsychometrics.org/tests/OJTS/development/" target="_blank">here</b-button>.
         Brawler personalities have been voted by the community.
       </p>
-    </div>
-    <div
-      slot="actions"
+    </div></template>
+    <template v-slot:actions><div
+      
       class="mx-auto"
     >
       <share-render-button
@@ -56,13 +56,13 @@
         md
         @share="sharepicTriggered"
       ></share-render-button>
-      <b-button
-        slot="actions"
+      <template v-slot:actions><b-button
+        
         primary
         md
         @click="$emit('restart')"
-      >{{ $t('action.restart') }}</b-button>
-    </div>
+      >{{ $t('action.restart') }}</b-button></template>
+    </div></template>
   </b-card>
 </template>
 

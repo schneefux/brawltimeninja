@@ -14,10 +14,10 @@
         class="flex justify-center -mx-4"
       ></adsense>
 
-      <div
-        slot="placeholder"
+      <template v-slot:placeholder><div
+        
         class="adswrapper ad-section banner-ad"
-      ></div>
+      ></div></template>
     </client-only>
   </div>
   <div v-else-if="scraper">
@@ -30,10 +30,10 @@
         ins-class="scraper-ad"
       ></adsense>
 
-      <div
-        slot="placeholder"
+      <template v-slot:placeholder><div
+        
         class="adswrapper ad-section scraper-ad"
-      ></div>
+      ></div></template>
     </client-only>
   </div>
   <b-page-section
@@ -50,11 +50,11 @@
         class="text-center"
       ></adsense>
 
-      <div
-        slot="placeholder"
+      <template v-slot:placeholder><div
+        
         class="adswrapper ad-section w-full"
         style="height: 300px;"
-      ></div>
+      ></div></template>
     </client-only>
   </b-page-section>
 </template>

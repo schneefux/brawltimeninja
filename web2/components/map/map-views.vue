@@ -35,8 +35,8 @@
         nav-class="top-14 lg:top-0 z-20"
         class="mt-8"
       >
-        <b-dashboard
-          slot="brawlers"
+        <template v-slot:brawlers><b-dashboard
+          
           class="lg:dashboard--margin-2"
           responsive
         >
@@ -128,10 +128,10 @@
           >
             <metric-info :metric="adjustedWinRate"></metric-info>
           </b-dashboard-cell>
-        </b-dashboard>
+        </b-dashboard></template>
 
-        <b-dashboard
-          slot="leaderboard"
+        <template v-slot:leaderboard><b-dashboard
+          
           responsive
         >
           <b-dashboard-cell
@@ -156,10 +156,10 @@
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </b-dashboard>
+        </b-dashboard></template>
 
-        <b-dashboard
-          slot="starpowers"
+        <template v-slot:starpowers><b-dashboard
+          
           responsive
         >
           <b-dashboard-cell
@@ -205,10 +205,10 @@
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </b-dashboard>
+        </b-dashboard></template>
 
-        <b-dashboard
-          slot="gadgets"
+        <template v-slot:gadgets><b-dashboard
+          
           responsive
         >
           <b-dashboard-cell
@@ -254,10 +254,10 @@
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </b-dashboard>
+        </b-dashboard></template>
 
-        <b-dashboard
-          slot="gears"
+        <template v-slot:gears><b-dashboard
+          
           responsive
         >
           <b-dashboard-cell
@@ -302,7 +302,7 @@
             :rows="3"
             ad-slot="4623162753"
           ></ad-cell>
-        </b-dashboard>
+        </b-dashboard></template>
       </b-tabs>
     </template>
   </c-dashboard>

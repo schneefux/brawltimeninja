@@ -5,7 +5,7 @@
     component="v-moe"
     wrapper="b-bigstat"
   >
-    <p slot="content" class="flex items-center">
+    <template v-slot:content><p  class="flex items-center">
       <span
         class="text-xl"
         :class="{
@@ -28,7 +28,7 @@
           {{ $t('moe.poor') }}
         </template>
       </span>
-    </p>
+    </p></template>
   </v-card-wrapper>
 </template>
 

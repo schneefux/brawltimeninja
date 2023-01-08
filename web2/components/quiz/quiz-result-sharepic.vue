@@ -9,11 +9,11 @@
       ></media-img>
     </div>
 
-    <oejts-table
-      slot="content"
+    <template v-slot:content><oejts-table
+      
       :oejts="result.score"
       class="w-80"
-    ></oejts-table>
+    ></oejts-table></template>
   </div>
 </template>
 

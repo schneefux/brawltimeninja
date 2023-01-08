@@ -1,7 +1,7 @@
 <template>
   <b-card>
-    <b-scrolling-list
-      slot="content"
+    <template v-slot:content><b-scrolling-list
+      
       :items="scrapedData != undefined ? scrapedData.voicelines : []"
       :cell-columns="1"
       :render-at-least="5"
@@ -28,7 +28,7 @@
           >{{ voiceline.description.replace(/&quot;/g, '') }}</q>
         </div>
       </template>
-    </b-scrolling-list>
+    </b-scrolling-list></template>
   </b-card>
 </template>
 

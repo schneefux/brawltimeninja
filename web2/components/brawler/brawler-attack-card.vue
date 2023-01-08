@@ -4,8 +4,8 @@
     :icon-alt="`${prop} Icon`"
     :title="scrapedDataProp.name"
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="h-full flex flex-col justify-between gap-y-4"
     >
       <p>
@@ -15,7 +15,7 @@
         :rows="kvTableRows"
         :data="kvTableData"
       ></b-kv-table>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

@@ -3,8 +3,8 @@
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="flex flex-col"
     >
       <div class="flex items-center gap-x-8">
@@ -84,7 +84,7 @@
           </span>
         </template>
       </b-kv-table>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <b-card :title="brawlerName">
-    <div
-      slot="content"
+    <template v-slot:content><div
+      
       class="flex flex-col items-center"
     >
       <media-img
@@ -22,7 +22,7 @@
           ></v-kv-table>
         </template>
       </c-query>
-    </div>
+    </div></template>
   </b-card>
 </template>
 

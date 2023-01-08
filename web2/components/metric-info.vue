@@ -4,10 +4,10 @@
     :title="$t('about-metric', { metric: $t('metric.' + metric.id) })"
     v-bind="$attrs"
   >
-    <p slot="content">
+    <template v-slot:content><p >
       {{ $t('brawler.disclaimer') }}
       {{ metric.description }}
-    </p>
+    </p></template>
   </b-card>
 </template>
 

@@ -1,12 +1,12 @@
 <template>
   <div>
     <b-fake-select @open="lightboxOpen = true">
-      <span
-        slot="preview"
+      <template v-slot:preview><span
+        
         class="w-full text-left"
       >
         {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
-      </span>
+      </span></template>
     </b-fake-select>
 
     <b-lightbox
@@ -17,8 +17,8 @@
         class="w-full"
         :elevation="0"
       >
-        <events-roll
-          slot="content"
+        <template v-slot:content><events-roll
+          
           v-if="allEvents != undefined"
           :events="allEvents"
           :mode-filter-default="mode"
@@ -44,12 +44,12 @@
               @click="onSelectModeMap({ mode: event.mode })"
             >
               <template v-slot:preview></template>
-              <p
-                slot="content"
+              <template v-slot:content><p
+                
                 class="pt-4 h-full flex flex-col justify-center items-center"
               >
                 {{ $t('option.all-maps') }}
-              </p>
+              </p></template>
             </event-card>
             <b-card
               v-else
@@ -58,15 +58,15 @@
               }"
               @click="onSelectModeMap({})"
             >
-              <p
-                slot="content"
+              <template v-slot:content><p
+                
                 class="pt-4 h-full flex flex-col justify-center items-center"
               >
                 {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
-              </p>
+              </p></template>
             </b-card>
           </template>
-        </events-roll>
+        </events-roll></template>
       </b-card>
     </b-lightbox>
   </div>
