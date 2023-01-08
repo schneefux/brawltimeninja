@@ -52,7 +52,7 @@ export default defineComponent({
   setup() {
     return {
       isApp,
-      releaseVersion: process.env.release!,
+      releaseVersion: import.meta.env.GIT_REV,
     }
   },
 })

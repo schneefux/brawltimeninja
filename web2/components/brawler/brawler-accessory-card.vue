@@ -9,7 +9,7 @@
     </template>
 
     <template v-slot:content><div
-      
+
       class="h-full flex flex-col justify-between gap-y-4"
     >
       <template v-slot:content><p >
@@ -29,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedAccessory } from '~/model/Web'
 import { BCard, CQuery, VKvTable } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

@@ -15,7 +15,7 @@
       ></adsense>
 
       <template v-slot:placeholder><div
-        
+
         class="adswrapper ad-section banner-ad"
       ></div></template>
     </client-only>
@@ -31,7 +31,7 @@
       ></adsense>
 
       <template v-slot:placeholder><div
-        
+
         class="adswrapper ad-section scraper-ad"
       ></div></template>
     </client-only>
@@ -51,7 +51,7 @@
       ></adsense>
 
       <template v-slot:placeholder><div
-        
+
         class="adswrapper ad-section w-full"
         style="height: 300px;"
       ></div></template>
@@ -60,9 +60,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useStore, computed, ref } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { isApp } from '~/composables/app'
+import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 
 export default defineComponent({
   props: {
@@ -92,12 +93,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore<any>()
+    const store = useBrawlstarsNinjaStore()
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
 
     // default to "allow" on SSR to render placeholders
-    const userAllowed = computed(() => store.state.adsAllowed == undefined || store.state.adsAllowed == true)
+    const userAllowed = computed(() => store.adsAllowed == undefined || store.adsAllowed == true)
     const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
     const allowed = computed(() => policyAllowed.value && userAllowed.value)
 

@@ -15,7 +15,8 @@
 <script lang="ts">
 import { CQuery, VLineplot } from '@schneefux/klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
-import { computed, defineComponent, PropType, toRefs, useContext } from 'vue'
+import { computed, defineComponent, PropType, toRefs } from 'vue'
+import { useContext } from '~/composables/compat'
 import useTopNTitle from '~/composables/top-n-title'
 import { capitalizeWords, formatClickhouseDate, getSeasonEnd } from '~/lib/util'
 

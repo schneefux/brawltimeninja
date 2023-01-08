@@ -4,7 +4,7 @@
     class="max-w-lg"
   >
     <template v-slot:content><div
-      
+
       class="flex flex-col gap-y-4"
     >
       <b-card
@@ -12,7 +12,7 @@
         dense
       >
         <template v-slot:content><div
-          
+
           class="flex flex-col items-center"
         >
           <span class="mt-1">{{ mostSimilarBrawler.name }}</span>
@@ -29,7 +29,7 @@
         dense
       >
         <template v-slot:content><oejts-table
-          
+
           :oejts="mostSimilarBrawler.score"
         ></oejts-table></template>
       </b-card>
@@ -43,7 +43,7 @@
       </p>
     </div></template>
     <template v-slot:actions><div
-      
+
       class="mx-auto"
     >
       <share-render-button
@@ -57,7 +57,7 @@
         @share="sharepicTriggered"
       ></share-render-button>
       <template v-slot:actions><b-button
-        
+
         primary
         md
         @click="$emit('restart')"
@@ -67,10 +67,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, onMounted, useStore, useContext, wrapProperty } from 'vue'
+import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
+import { useContext } from '~/composables/compat'
+import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 
 export interface QuizResult {
   score: OEJTSEntry
@@ -93,7 +95,7 @@ export default defineComponent({
   },
   setup(props) {
     const { localePath } = useContext()
-    const store = useStore()
+    const store = useBrawlstarsNinjaStore()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
       const scores = Object.entries(brawlerScores)
@@ -110,7 +112,7 @@ export default defineComponent({
         score: props.result,
       }
     })
-    onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
+    onMounted(() => store.setPersonalityTestResult(mostSimilarBrawler.value?.name))
 
     const quizRootUrl = computed(() => (!import.meta.env.SSR ? window.location.origin : '')
       + localePath('/quiz')

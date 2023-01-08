@@ -19,32 +19,33 @@
       scraper
     ></ad>
 
-    <nuxt />
+    <slot></slot>
 
-    <install-prompt-capture></install-prompt-capture>
     <b-cookie-consent
       v-if="consentPopupVisible"
       @enable-none="disableCookies"
       @enable-cookies="enableCookies"
       @enable-all="enableCookiesAndAds"
     >
-      <nuxt-link
-        slot="link"
-        class="underline"
-        to="/about"
-      >link</nuxt-link>
+      <template v-slot:link>
+        <router-link
+          class="underline"
+          to="/about"
+        >link</router-link>
+      </template>
     </b-cookie-consent>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
     <b-web-footer
       :links="links"
-      tag="nuxt-link"
+      tag="router-link"
       class="hidden lg:block"
     >
-      <copyright
-        slot="below"
-        class="mt-4 text-sm"
-      ></copyright>
+      <template v-slot:below>
+        <copyright
+          class="mt-4 text-sm"
+        ></copyright>
+      </template>
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
@@ -55,7 +56,7 @@
 import { computed, defineComponent, watch, ref } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
-import { setIsPwa, setIsTwa } from '~/composables/app'
+import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { event, optIn } from 'vue-gtag'
 import { localePath } from '~/composables/locale-path'
@@ -128,7 +129,7 @@ export default defineComponent({
         setIsTwa(isTwa)
 
         event('branch_dimension', {
-          'branch': process.env.branch || '',
+          'branch': import.meta.env.BRANCH || '',
           'non_interaction': true,
         })
         event('is_pwa_dimension', {
@@ -175,6 +176,8 @@ export default defineComponent({
       attributes: true,
       attributeFilter: ['style'],
     })
+
+    useInstallPromptListeners()
 
     return {
       links,

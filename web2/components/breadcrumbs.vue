@@ -12,7 +12,7 @@
       itemscope
     >
       {{ index > 0 ? '/' : '' }}
-      <nuxt-link
+      <router-link
         :to="localePath(l.path)"
         :itemid="l.path"
         itemtype="https://schema.org/WebPage"
@@ -21,7 +21,7 @@
         itemscope
       >
         <span itemprop="name">{{ l.name }}</span>
-      </nuxt-link>
+      </router-link>
       <meta itemprop="position" :content="index + 1" />
     </li>
   </ol>

@@ -6,7 +6,7 @@
         dense
       >
         <template v-slot:content><b-kv-table
-          
+
           :rows="kvTableRows"
           :data="kvTableData"
           id-key="tag"
@@ -21,13 +21,13 @@
         dense
       >
         <template v-slot:preview><map-img
-          
+
           :id="activeMap.id"
           :map="activeMap.map"
           clazz="h-10"
         ></map-img></template>
         <template v-slot:content><player-map-tip-roll
-          
+
           :map="activeMap.map"
           :mode="mode"
           :player-brawlers="playerBrawlers"
@@ -39,13 +39,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
+import { useContext, useAsync } from '~/composables/compat'
 
 interface Stats {
   winRate: number

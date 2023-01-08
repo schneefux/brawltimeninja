@@ -81,13 +81,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext } from 'vue'
+import { defineComponent } from 'vue'
 import { computed, PropType, ref, watch } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import buildTeamWinratePredictor from '~/lib/klicker.ml'
+import { useKlicker } from '@/../klicker/composables'
+import { useAsync } from '@/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 interface AllyData {
   id: string
@@ -109,6 +112,7 @@ interface SelectedBrawler {
 export default defineComponent({
   components: {
     BCard,
+    FontAwesomeIcon,
   },
   props: {
     query: {
@@ -117,7 +121,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const { $klicker } = useKlicker()
 
     const team = ref<SelectedBrawler[]>([])
     const loading = ref(0)

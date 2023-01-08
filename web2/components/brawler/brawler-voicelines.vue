@@ -1,7 +1,7 @@
 <template>
   <b-card>
     <template v-slot:content><b-scrolling-list
-      
+
       :items="scrapedData != undefined ? scrapedData.voicelines : []"
       :cell-columns="1"
       :render-at-least="5"
@@ -33,10 +33,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useContext } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
+import { useContext } from '@nuxtjs/composition-api'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
@@ -44,6 +46,7 @@ export default defineComponent({
     BDashboardCell,
     BButton,
     BCard,
+    FontAwesomeIcon,
   },
   props: {
     scrapedData: {

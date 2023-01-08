@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from 'vue'
+import { useContext } from '@/composables/compat'
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   inheritAttrs: false,

@@ -12,31 +12,33 @@
         :elevation="0"
         :title="$t('nav.Menu')"
       >
-        <template v-slot:content><b-navigator
-          
-          ref="navigator"
-          :links="linkTree"
-          :link-generator="linkGenerator"
-          :search="query"
-          class="h-full pb-14 overflow-y-auto overscroll-contain"
-        >
-          <template v-slot:link="{ to, title }">
-            <nuxt-link
-              :to="to"
-              class="underline col-start-2"
-            >{{ title }}</nuxt-link>
-          </template>
-        </b-navigator></template>
-        <template v-slot:preview><button
-          
-          class="text-xl h-6 w-6"
-          aria-label="close"
-          @click="popupOpen = false"
-        >
-          <font-awesome-icon
-            :icon="faTimes"
-          ></font-awesome-icon>
-        </button></template>
+        <template v-slot:content>
+          <b-navigator
+            ref="navigator"
+            :links="linkTree"
+            :link-generator="linkGenerator"
+            :search="query"
+            class="h-full pb-14 overflow-y-auto overscroll-contain"
+          >
+            <template v-slot:link="{ to, title }">
+              <router-link
+                :to="to"
+                class="underline col-start-2"
+              >{{ title }}</router-link>
+            </template>
+          </b-navigator>
+        </template>
+        <template v-slot:preview>
+          <button
+            class="text-xl h-6 w-6"
+            aria-label="close"
+            @click="popupOpen = false"
+          >
+            <font-awesome-icon
+              :icon="faTimes"
+            ></font-awesome-icon>
+          </button>
+        </template>
       </b-card>
     </template>
   </b-search>
@@ -52,12 +54,14 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useContext, useRoute, useRouter } from '@/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
     BSearch,
     BCard,
     BNavigator,
+    FontAwesomeIcon,
   },
   props: {
     inputClass: {

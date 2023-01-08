@@ -13,7 +13,7 @@
       >
         <template v-slot:empty><b-card >
           <template v-slot:content><div
-            
+
             class="flex flex-col justify-center h-full"
           >
             <p class="italic text-center">
@@ -106,7 +106,8 @@ import { Player } from '@/model/Api'
 import { ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '~/store'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
-import { computed, defineComponent, PropType, useStore } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
+import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 
 export default defineComponent({
   components: {
@@ -125,7 +126,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore<any>()
+    const store = useBrawlstarsNinjaStore()
 
     const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
     const trophiesGoal = computed(() => {
@@ -133,10 +134,10 @@ export default defineComponent({
         .map(({ trophies }) => trophies)
       brawlerTrophies.sort()
       const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-      return medBrawlerTrophies * store.state.totalBrawlers
+      return medBrawlerTrophies * store.totalBrawlers
     })
     const accountRating = computed(() => {
-      const medTrophies = trophiesGoal.value as number / store.state.totalBrawlers
+      const medTrophies = trophiesGoal.value as number / store.totalBrawlers
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
       for (const key in ratingPercentiles) {
@@ -147,7 +148,7 @@ export default defineComponent({
       return '?'
     })
 
-    const totalBrawlers = computed<number>(() => store.state.totalBrawlers)
+    const totalBrawlers = computed<number>(() => store.totalBrawlers)
 
     const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
 

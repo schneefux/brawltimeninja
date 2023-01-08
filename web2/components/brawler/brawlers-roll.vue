@@ -23,7 +23,7 @@
         :link="localePath(`/tier-list/brawler/${brawler.id}`)"
       >
         <template v-slot:content><div
-          
+
           class="h-full flex flex-col items-center justify-between"
         >
           <media-img
@@ -40,9 +40,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useAsync, useContext } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
+import { useContext, useAsync } from '~/lib/async'
 
 export default defineComponent({
   components: {

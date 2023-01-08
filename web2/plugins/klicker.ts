@@ -4,6 +4,11 @@ import { App, Ref, onServerPrefetch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import config from '~/lib/klicker.conf'
 import { BrawltimeKlickerService } from './klicker.service'
+import { navigate } from 'vite-plugin-ssr/client/router'
+import visualisations from '@/lib/klicker.visualisations.conf'
+import staticWidgets from '@/lib/klicker.widgets.conf'
+import slicers from '@/lib/klicker.slicers.conf'
+import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
 
 export default { install }
 
@@ -20,14 +25,14 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
   app.component('b-page-section', BPageSection)
   app.component('b-scrolling-dashboard', BScrollingDashboard)
 
-  const service = new BrawltimeKlickerService(options.cubeUrl, config, [],[],[],[],[] /*visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers */)
+  const service = new BrawltimeKlickerService(options.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
 
   app.provide(KlickerConfigInjectionKey, {
     klicker: service,
     translate: (key: string) => key,
     useQuery: function<T, E>(key: string, handler: () => Promise<T>) {
       const query = useQuery<T, E>([key], handler)
-      onServerPrefetch(() => query.suspense())
+      onServerPrefetch(query.suspense)
 
       return {
         loading: query.isLoading,
@@ -61,5 +66,6 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
       }
       */
     },
+    navigate: navigate,
   })
 }

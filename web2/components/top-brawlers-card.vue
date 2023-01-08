@@ -3,31 +3,29 @@
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
   >
-    <template v-slot:actions><div
-      
-      class="flex flex-wrap justify-end gap-2"
-    >
-      <b-button
-        :to="localePath(`/team-builder`)"
-        primary
-        sm
-      >
-        {{ $t('action.open.draft-tool') }}
-      </b-button>
+    <template v-slot:actions>
+      <div class="flex flex-wrap justify-end gap-2">
+        <b-button
+          :to="localePath(`/team-builder`)"
+          primary
+          sm
+        >
+          {{ $t('action.open.draft-tool') }}
+        </b-button>
 
-      <b-button
-        :to="localePath(`/tier-list/brawler`)"
-        primary
-        sm
-      >
-        {{ $t('action.open.tier-list.brawler') }}
-      </b-button>
-    </div></template>
+        <b-button
+          :to="localePath(`/tier-list/brawler`)"
+          primary
+          sm
+        >
+          {{ $t('action.open.tier-list.brawler') }}
+        </b-button>
+      </div>
+    </template>
 
-    <template v-slot:content><map-best-brawlers
-      
-      :limit="limit"
-    ></map-best-brawlers></template>
+    <template v-slot:content>
+      <map-best-brawlers :limit="limit"></map-best-brawlers>
+    </template>
   </b-card>
 </template>
 

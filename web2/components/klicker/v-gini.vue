@@ -22,10 +22,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
+import { useContext } from '~/composables/compat'
 
 export default defineComponent({
   components: {

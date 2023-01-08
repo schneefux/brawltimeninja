@@ -18,9 +18,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext } from 'vue'
+import { defineComponent } from 'vue'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

@@ -20,8 +20,12 @@
 import { defineComponent } from 'vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useInstall } from '~/composables/app'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
+  components: {
+    FontAwesomeIcon,
+  },
   setup() {
     const { installable, clickInstall } = useInstall('header')
 

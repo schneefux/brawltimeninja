@@ -1,5 +1,6 @@
-import { computed, useContext } from '@nuxtjs/composition-api'
 import { enUS, de, es, uk, it } from 'date-fns/locale'
+import { computed } from 'vue'
+import { useContext } from './compat'
 
 export const useDateFnLocale = () => {
   const { i18n } = useContext()

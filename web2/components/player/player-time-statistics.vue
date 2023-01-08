@@ -29,7 +29,7 @@
     >
       <b-bigstat :title="stat.label">
         <template v-slot:content><p
-          
+
           ref="counter-funstats"
         >
           ...
@@ -43,9 +43,11 @@
 import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
-import { computed, defineComponent, onMounted, PropType, useContext } from 'vue'
+import { computed, defineComponent, onMounted, PropType } from 'vue'
 import { getCurrentInstance } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { useContext } from '~/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 interface FunStat {
   label: string
@@ -56,6 +58,7 @@ export default defineComponent({
   components: {
     BBigstat,
     BDashboardCell,
+    FontAwesomeIcon,
   },
   props: {
     player: {

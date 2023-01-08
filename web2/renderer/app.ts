@@ -10,6 +10,10 @@ import { createPinia } from 'pinia'
 import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
 import localeEn from '~/locales/en.json'
+import { injectGlobalProperties } from '@/composables/compat'
+import RouterLink from '~/components/router-link.vue'
+import ClientOnly from '~/components/client-only'
+import Adsense from '~/components/adsense.vue'
 
 export { createApp }
 
@@ -30,11 +34,7 @@ function createApp(pageContext: PageContext) {
       return h(
         PageShell,
         {},
-        {
-          default: () => {
-            return h(Layout, [ h(this.Page, this.pageProps) ])
-          },
-        },
+        () => h(Layout, () => [ h(this.Page, this.pageProps) ]),
       )
     },
   })
@@ -60,7 +60,13 @@ function createApp(pageContext: PageContext) {
   app.use(KlickerPlugin, { cubeUrl: 'https://cube.brawltime.ninja', managerUrl: 'https://manager.brawltime.ninja' })
 
   // TODO share cache between requests to the same URL?
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+      },
+    },
+  })
   app.use(VueQueryPlugin, { queryClient })
 
   // ! not SSRed, no need so far
@@ -102,6 +108,13 @@ function createApp(pageContext: PageContext) {
   app.use(i18n)
 
   app.use(TRPCPlugin)
+
+  // backwards compatibility
+  injectGlobalProperties(app, pageContext)
+
+  app.component('RouterLink', RouterLink)
+  app.component('ClientOnly', ClientOnly)
+  app.component('Adsense', Adsense)
 
   return {
     app,

@@ -1,12 +1,12 @@
 <template>
   <b-app-head-nav>
-    <nuxt-link to="/">
+    <router-link to="/">
       <img
-        src="~/assets/images/logo_with_crown_min.svg"
+        :src="crownUrl"
         alt="Logo"
         class="h-6 w-6 object-contain"
       >
-    </nuxt-link>
+    </router-link>
 
     <navigator
       class="mr-auto dark"
@@ -38,14 +38,18 @@
 import { defineComponent } from 'vue'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { BAppHeadNav } from '@schneefux/klicker/components'
+import crownUrl from '~/assets/images/logo_with_crown_min.svg'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
     BAppHeadNav,
+    FontAwesomeIcon,
   },
   setup() {
     return {
       faInfo,
+      crownUrl,
     }
   },
 })

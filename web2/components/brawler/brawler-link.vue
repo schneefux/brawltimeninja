@@ -51,8 +51,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   props: {

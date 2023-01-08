@@ -21,5 +21,5 @@ function install(app: App) {
     */
   })
 
-  app.provide('api', client)
+  app.provide(TrpcInjectionKey, client)
 }

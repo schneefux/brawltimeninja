@@ -14268,11 +14268,6 @@ vue-inbrowser-compiler-independent-utils@^4.56.2:
   resolved "https://registry.yarnpkg.com/vue-inbrowser-compiler-independent-utils/-/vue-inbrowser-compiler-independent-utils-4.56.2.tgz#2ca2866b205eb1ef02c04b7a87b6a9f21000c3c7"
   integrity sha512-szE2vZDSkZlItq+K4MevgvCGKt5IzM6OkIjyCuj/09ty2akixeQGNFRXyDELMdmVVzmN+9nJn02YKnoPkhXHwA==
 
-vue-lazy-hydration@^2.0.0-beta.4:
-  version "2.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/vue-lazy-hydration/-/vue-lazy-hydration-2.0.0-beta.4.tgz#11e7021a9bac003ea6ed74f132dcd0d025fafc1f"
-  integrity sha512-bhr7AxzrSEPed4cOawIeCxJmR8pglberR78x1zs0886xR+47/EXE9s0Ezss90CPINo8ApzUfA/r+SbNffn+t9w==
-
 vue-moveable@^1.8.11:
   version "1.8.11"
   resolved "https://registry.yarnpkg.com/vue-moveable/-/vue-moveable-1.8.11.tgz#427df904e08e5b9537ce7a94ba124de5f72d165b"
@@ -14286,6 +14281,11 @@ vue-router@^4.1.6:
   integrity sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==
   dependencies:
     "@vue/devtools-api" "^6.4.5"
+
+vue3-lazy-hydration@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/vue3-lazy-hydration/-/vue3-lazy-hydration-1.2.1.tgz#a1c179f2049c6d0fe796f84ff1d5a56e8c3f1fda"
+  integrity sha512-0KEU+t1ZcOFomf2xhpKPMU2XBdZDVyVjvkxcXAJRpZ818Om4MMhKxbrmIK6hZ+NZOyoRAgMHl/N1zFZJuQoSJA==
 
 vue@^3.2.45:
   version "3.2.45"

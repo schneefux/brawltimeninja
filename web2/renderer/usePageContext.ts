@@ -1,4 +1,4 @@
-import { computed, inject, InjectionKey } from 'vue'
+import { inject, InjectionKey } from 'vue'
 import type { App } from 'vue'
 import { PageContext } from './types'
 
@@ -13,10 +13,4 @@ function usePageContext() {
 
 function setPageContext(app: App, pageContext: PageContext) {
   app.provide(key, pageContext)
-
-  // vue-router backwards compatibility
-  const $route = computed(() => ({
-    fullPath: pageContext.urlPathname,
-  }))
-  app.config.globalProperties.$route = $route as any
 }

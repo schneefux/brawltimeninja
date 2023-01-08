@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "xyz.schneefux.brawltimeninja",
+    "sha256_cert_fingerprints":
+    ["74:A9:E1:5B:F8:DD:1F:BC:34:8C:D5:45:4E:87:83:7E:F5:5A:B7:DB:6B:D4:81:9A:FD:4A:B2:81:B7:C9:0B:02"]
+  }
+}]

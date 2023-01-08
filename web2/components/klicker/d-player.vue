@@ -19,8 +19,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useContext } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { idToTag } from '~/lib/util'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   props: {

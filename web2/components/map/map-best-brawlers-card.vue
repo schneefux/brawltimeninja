@@ -4,35 +4,38 @@
     :map="map"
     :id="id"
   >
-    <template v-slot:infobar><div
-      v-if="powerplay || endDate != undefined || startDate != undefined"
-      
-      class="flex justify-end"
-    >
-      <span v-if="powerplay">
-        {{ $tc('power-play', 1) }}
-      </span>
-      <span v-else-if="endDate != undefined">
-        {{ endDateString }}
-      </span>
-      <span v-else-if="startDate != undefined">
-        {{ startDateString }}
-      </span>
-    </div></template>
+    <template v-slot:infobar>
+      <div
+        v-if="powerplay || endDate != undefined || startDate != undefined"
+        class="flex justify-end"
+      >
+        <span v-if="powerplay">
+          {{ $tc('power-play', 1) }}
+        </span>
+        <span v-else-if="endDate != undefined">
+          {{ endDateString }}
+        </span>
+        <span v-else-if="startDate != undefined">
+          {{ startDateString }}
+        </span>
+      </div>
+    </template>
 
-    <template v-slot:content><map-best-brawlers
-      
-      :slices="slices"
-      :card="{ elevation: 0, dense: true }"
-    ></map-best-brawlers></template>
+    <template v-slot:content>
+      <map-best-brawlers
+        :slices="slices"
+        :card="{ elevation: 0, dense: true }"
+      ></map-best-brawlers>
+    </template>
   </event-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, useContext } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useDateFnLocale } from '~/composables/date-fns'
+import { useContext } from '~/composables/compat'
 
 export default defineComponent({
   props: {

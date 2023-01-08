@@ -76,18 +76,12 @@
               >
                 {{ title }}
               </component>
-              <router-link
+              <a
                 v-else
-                v-slot="{ href, navigate }"
-                :to="titleLink || link"
+                :href="titleLink || link"
                 class="contents"
-                custom
-              >
-                <a
-                  :href="href"
-                  @click.stop="e => onClickLink() || navigate(e)"
-                >{{ title }}</a>
-              </router-link>
+                @click.stop="e => onClickLink() || navigate(e)"
+              >{{ title }}</a>
             </template>
             <template v-else>
               {{ title }}
@@ -109,18 +103,12 @@
               >
                 {{ title }}
               </component>
-              <router-link
+              <a
                 v-else
-                v-slot="{ href, navigate }"
-                :to="subtitleLink"
+                :href="subtitleLink"
                 class="contents"
-                custom
-              >
-                <a
-                  :href="href"
-                  @click.stop="e => onClickLink() || navigate(e)"
-                >{{ subtitle }}</a>
-              </router-link>
+                @click.stop="e => onClickLink() || navigate(e)"
+              >{{ subtitle }}</a>
             </template>
             <template v-else>
               {{ subtitle }}
@@ -165,14 +153,11 @@
 </template>
 
 <script lang="ts">
-import { useRouter, RouterLink } from 'vue-router'
 import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
+import { useKlicker } from '../../composables/klicker'
 
 export default defineComponent({
-  components: {
-    RouterLink,
-  },
   props: {
     tag: {
       type: String,
@@ -187,7 +172,7 @@ export default defineComponent({
       required: false
     },
     titleLink: {
-      type: [String, Function],
+      type: String,
       required: false
     },
     subtitle: {
@@ -244,7 +229,7 @@ export default defineComponent({
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
     const { id: prefix } = useUniqueId()
 
-    const router = useRouter()
+    const { navigate } = useKlicker()
 
     /*
      * click event priority:
@@ -270,7 +255,7 @@ export default defineComponent({
 
       if (props.link != undefined) {
         if (!props.link.startsWith('http')) {
-          router.push(props.link)
+          navigate(props.link)
         } else {
           window.open(props.link, '_blank')
         }
@@ -309,6 +294,7 @@ export default defineComponent({
       onClickHeader,
       renderTitle,
       prefix,
+      navigate,
     }
   },
 })

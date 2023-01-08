@@ -5,7 +5,7 @@
   >
     <template v-slot:content><b-scrolling-list
       v-if="leaderboard != undefined && leaderboard.length > 0"
-      
+
       :items="leaderboard != undefined ? leaderboard : []"
       :cell-columns="2"
       :render-at-least="5"
@@ -27,7 +27,7 @@
           </template>
 
           <template v-slot:content><b-kv-table
-            
+
             :rows="[{
               title: $t('metric.trophies'),
               key: 'trophies',
@@ -41,7 +41,7 @@
     </b-scrolling-list></template>
 
     <template v-slot:actions><b-button
-      
+
       :to="localePath(`/leaderboard/trophies`)"
       primary
       sm
@@ -52,8 +52,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext } from 'vue'
+import { defineComponent } from 'vue'
 import { BScrollingList, BKvTable } from '@schneefux/klicker/components'
+import { useAsync, useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

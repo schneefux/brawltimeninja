@@ -25,12 +25,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from 'vue'
+import { computed, defineComponent, PropType, toRefs } from 'vue'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery, BButton, BDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 import { getMapName } from '~/composables/map'
+import { useContext } from '~/composables/compat'
 
 interface Template {
   tab: string
@@ -84,7 +85,7 @@ export default defineComponent({
 
       const mode = props.slices.mode[0] as string
       const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string
-      const testName = getMapName(i18n, props.id, props.slices.map[0])
+      const testName = getMapName(props.id, props.slices.map[0])
       const referenceName = i18n.t('mode.' + mode) as string
 
       templates.push({

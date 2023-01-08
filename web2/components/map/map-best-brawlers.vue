@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, watch } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
 
@@ -35,8 +35,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    watch(() => props.slices, () => console.log('slice change'))
-    watch(() => props.limit, () => console.log('limit change'))
     const query = computed(() => ({
       cubeId: 'map',
       dimensionsIds: ['brawler'],
@@ -45,7 +43,6 @@ export default defineComponent({
       slices: props.slices,
       limit: props.limit,
     }))
-    watch(query, () => console.log('query change'))
 
     return {
       query,

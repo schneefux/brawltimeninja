@@ -35,10 +35,11 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${stream}</div>
+        <div id="app" class="dark">${stream}</div>
       </body>
     </html>`
 

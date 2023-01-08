@@ -16,7 +16,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useRouter } from 'vue'
+import { useContext, useRouter } from '@/composables/compat'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {

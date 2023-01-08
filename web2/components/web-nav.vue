@@ -1,13 +1,13 @@
 <template>
   <b-web-nav
     :links="links"
-    tag="nuxt-link"
+    tag="router-link"
   >
     <template v-slot:logo>
-      <nuxt-link
+      <router-link
         :to="localePath('/')"
         class="font-semibold text-xl tracking-tight leading-tight"
-      >Brawl Time Ninja</nuxt-link>
+      >Brawl Time Ninja</router-link>
 
       <navigator
         class="relative dark pl-8 mr-auto"
@@ -28,8 +28,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { BWebNav } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

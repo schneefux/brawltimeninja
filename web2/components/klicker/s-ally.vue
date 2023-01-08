@@ -18,9 +18,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useAsync, useContext } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { capitalize } from '~/lib/util'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   props: {

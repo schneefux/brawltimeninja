@@ -4,7 +4,7 @@
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
   >
     <template v-slot:content><div
-      
+
       class="flex flex-col"
     >
       <div class="flex items-center gap-x-8">
@@ -89,12 +89,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext, watch } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { Brawler } from '~/model/Api'
 import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
 import { useKlicker } from '@schneefux/klicker/composables'
+import { useContext, useAsync } from '~/composables/compat'
 
 interface BrawlerWithId extends Brawler {
   id: string

@@ -47,8 +47,8 @@
     "vega-embed": "^6.21.0",
     "vega-lite": "^5.6.0",
     "vue": "^3.2.45",
-    "vue-lazy-hydration": "^2.0.0-beta.4",
     "vue-moveable": "^1.8.11",
+    "vue3-lazy-hydration": "^1.2.1",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
@@ -80,7 +80,6 @@
     "storybook-addon-themes": "^6.0.0-alpha.2",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4",
-    "vite": "^4.0.3",
-    "vue-router": "^4.1.6"
+    "vite": "^4.0.3"
   }
 }

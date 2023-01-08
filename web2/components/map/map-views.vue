@@ -36,7 +36,7 @@
         class="mt-8"
       >
         <template v-slot:brawlers><b-dashboard
-          
+
           class="lg:dashboard--margin-2"
           responsive
         >
@@ -131,7 +131,7 @@
         </b-dashboard></template>
 
         <template v-slot:leaderboard><b-dashboard
-          
+
           responsive
         >
           <b-dashboard-cell
@@ -159,7 +159,7 @@
         </b-dashboard></template>
 
         <template v-slot:starpowers><b-dashboard
-          
+
           responsive
         >
           <b-dashboard-cell
@@ -208,7 +208,7 @@
         </b-dashboard></template>
 
         <template v-slot:gadgets><b-dashboard
-          
+
           responsive
         >
           <b-dashboard-cell
@@ -257,7 +257,7 @@
         </b-dashboard></template>
 
         <template v-slot:gears><b-dashboard
-          
+
           responsive
         >
           <b-dashboard-cell
@@ -309,7 +309,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useContext } from '~/composables/compat'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BDashboardCell, BTabs, BScrollingList, BDashboard } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'

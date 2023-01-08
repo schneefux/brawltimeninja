@@ -1,7 +1,7 @@
 <template>
   <b-fake-select>
     <template v-slot:preview><span
-      
+
       class="w-full text-left"
     >
       {{ format(value[0]) }}-{{ format(value[1]) }}
@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineAsyncComponent, defineComponent, PropType } from 'vue'
 import { BFakeSelect } from '@schneefux/klicker/components'
 import 'vue-range-component/dist/vue-range-slider.min.css'
 
 export default defineComponent({
   components: {
     // does not support SSR
-    VueRangeSlider: () => import('vue-range-component'),
+    VueRangeSlider: defineAsyncComponent(() => import('vue-range-component')),
     BFakeSelect,
   },
   props: {

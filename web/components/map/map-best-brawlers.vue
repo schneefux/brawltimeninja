@@ -35,8 +35,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    watch(() => props.slices, () => console.log('slice change'))
-    watch(() => props.limit, () => console.log('limit change'))
     const query = computed(() => ({
       cubeId: 'map',
       dimensionsIds: ['brawler'],
@@ -45,7 +43,6 @@ export default defineComponent({
       slices: props.slices,
       limit: props.limit,
     }))
-    watch(query, () => console.log('query change'))
 
     return {
       query,

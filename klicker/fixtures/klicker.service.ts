@@ -64,6 +64,9 @@ export function decorator(story, { parameters }) {
             refresh,
           }
         },
+        navigate: (path: string) => {
+          alert('Navigating to ' + path)
+        },
       })
     },
   }

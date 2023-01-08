@@ -13,7 +13,7 @@ interface StoredPlayer {
 interface State {
   version: string|undefined
   featuredPlayers: StoredPlayer[]
-  lastPlayers: string[]
+  lastPlayers: StoredPlayer[]
   userTag: string|undefined
   personalityTestResult: string|undefined
   cookiesAllowed: boolean|undefined
@@ -50,19 +50,18 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
         tag: 'QRUQQLV0',
         name: 'CG |Nukleo',
       } ],
-    lastPlayers: [] as string[],
-    userTag: undefined as undefined|string, // personal tag (last searched)
+    lastPlayers: [],
+    userTag: undefined, // personal tag (last searched)
     personalityTestResult: undefined,
-    cookiesAllowed: undefined as undefined|boolean,
-    adsAllowed: undefined as undefined|boolean,
+    cookiesAllowed: undefined,
+    adsAllowed: undefined,
     consentPopupVisible: false,
     installBannerDismissed: false,
     totalBrawlers: 56,
-    player: undefined as undefined|Player,
-    playerTotals: undefined as undefined|PlayerTotals,
+    player: undefined,
+    playerTotals: undefined,
   }),
   actions: {
-
     async loadPlayer(tag: string) {
       const api = inject(TrpcInjectionKey)!
       const player = await api.query('player.byTag', tag)

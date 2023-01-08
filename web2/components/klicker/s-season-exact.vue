@@ -22,8 +22,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useAsync, useContext, watch } from 'vue'
+import { defineComponent, PropType, watch } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   props: {

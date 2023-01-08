@@ -2,7 +2,7 @@
   <div>
     <b-fake-select @open="lightboxOpen = true">
       <template v-slot:preview><span
-        
+
         class="w-full text-left"
       >
         {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
@@ -18,7 +18,7 @@
         :elevation="0"
       >
         <template v-slot:content><events-roll
-          
+
           v-if="allEvents != undefined"
           :events="allEvents"
           :mode-filter-default="mode"
@@ -45,7 +45,7 @@
             >
               <template v-slot:preview></template>
               <template v-slot:content><p
-                
+
                 class="pt-4 h-full flex flex-col justify-center items-center"
               >
                 {{ $t('option.all-maps') }}
@@ -59,7 +59,7 @@
               @click="onSelectModeMap({})"
             >
               <template v-slot:content><p
-                
+
                 class="pt-4 h-full flex flex-col justify-center items-center"
               >
                 {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
@@ -73,11 +73,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useAsync, useContext } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   components: {

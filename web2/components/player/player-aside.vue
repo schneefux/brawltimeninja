@@ -4,7 +4,7 @@
     :loading="loading"
   >
     <template v-slot:content><div
-      
+
       class="flex flex-col items-center"
     >
       <media-img
@@ -40,14 +40,14 @@
         </template>
 
         <template v-slot:club="{ row }">
-          <nuxt-link :to="localePath(`/club/${row.club.tag}`)">
+          <router-link :to="localePath(`/club/${row.club.tag}`)">
             <img
               src="~/assets/images/icon/club.png"
               alt="Club"
               class="inline h-4 mr-1"
             >
             <span class="underline">{{ row.club.name }}</span>
-          </nuxt-link>
+          </router-link>
         </template>
 
         <template v-slot:trophies="{ value }">
@@ -123,11 +123,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useAsync, useContext } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
 import { event } from 'vue-gtag'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   components: {

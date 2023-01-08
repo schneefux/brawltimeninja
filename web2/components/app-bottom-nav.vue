@@ -1,6 +1,6 @@
 <template>
   <b-app-bottom-nav
-    tag="nuxt-link"
+    tag="router-link"
     :screens="screens"
     :active-route="$route.path"
     :ignore-route-prefix="localePath('/')"
@@ -8,10 +8,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
 import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
 import { BAppBottomNav } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

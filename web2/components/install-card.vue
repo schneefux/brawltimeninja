@@ -18,7 +18,7 @@
     </div></template>
 
     <template v-slot:actions><b-button
-      
+
       class="mx-auto"
       md
       primary
@@ -37,8 +37,12 @@
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { defineComponent } from 'vue'
 import { useInstall } from '~/composables/app'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
+  components: {
+    FontAwesomeIcon,
+  },
   setup() {
     const { installable, clickInstall, dismissInstall, installDismissed } = useInstall('banner')
 

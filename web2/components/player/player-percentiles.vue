@@ -16,10 +16,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, useContext } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { Player } from '~/model/Api'
 import ztable from 'ztable'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
+import { useContext } from '~/composables/compat'
 
 interface Achievement {
   metric: string

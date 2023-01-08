@@ -10,23 +10,29 @@
     :text-color="mode != undefined ? 'text-gray-200' : undefined"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     :icon-alt="$t('mode.' + mode)"
-    v-bind="$attrs"
-    v-on="$listeners"
   >
     <template v-slot:icon="data">
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <template v-slot:preview><map-img
-      v-if="id != undefined"
-      
-      :id="id"
-      :map="map"
-      clazz="h-12 w-12 object-contain"
-    ></map-img></template>
+    <template v-slot:preview>
+      <map-img
+        v-if="id != undefined"
+        :id="id"
+        :map="map"
+        clazz="h-12 w-12 object-contain"
+      ></map-img>
+    </template>
 
+    <template v-if="'infobar' in $slots" v-slot:infobar>
+      <slot name="infobar"></slot>
+    </template>
+    <template v-if="'content' in $slots" v-slot:content>
+      <slot name="content"></slot>
+    </template>
+    <!-- TODO: causes hydration error
     <template
-      v-for="(_, slot) of $scopedSlots"
+      v-for="(_, slot) of $slots"
       v-slot:[slot]="slotProps"
     >
       <slot
@@ -34,16 +40,17 @@
         :name="slot"
       ></slot>
     </template>
+    -->
   </b-card>
 </template>
 
 <script lang="ts">
 import { camelToKebab, slugify } from '@/lib/util'
-import { defineComponent, computed, useContext, toRefs } from 'vue'
+import { defineComponent, computed, toRefs } from 'vue'
 import { useMapName } from '~/composables/map'
+import { useContext } from '~/composables/compat'
 
 export default defineComponent({
-  inheritAttrs: false,
   props: {
     mode: {
       // camel case

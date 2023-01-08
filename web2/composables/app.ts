@@ -116,6 +116,21 @@ export function setInstallPrompt(prompt: any) {
   installPrompt.value = prompt
 }
 
+export function useInstallPromptListeners() {
+  if (!import.meta.env.SSR) {
+    const installed = () => event('install', {
+      'event_category': 'app',
+      'event_label': 'install',
+    })
+
+    window.addEventListener('appinstalled', installed)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      setInstallPrompt(e)
+    })
+  }
+}
+
 export function clearInstallPrompt() {
   installPrompt.value = undefined
 }

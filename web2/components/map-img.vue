@@ -1,12 +1,11 @@
 <template>
-  <template v-slot:preview><media-img
-    
+  <media-img
     :path="path"
     :alt="mapName"
     :clazz="clazz"
     :size="size"
     loading="lazy"
-  ></media-img></template>
+  ></media-img>
 </template>
 
 <script lang="ts">

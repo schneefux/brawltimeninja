@@ -1,4 +1,4 @@
-import { computed, onServerPrefetch, Ref } from "vue";
+import { App, computed, inject, onServerPrefetch, Ref } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
@@ -6,6 +6,8 @@ import { localePath } from './locale-path'
 import { usePageContext } from '~/renderer/usePageContext'
 import { navigate } from "vite-plugin-ssr/client/router";
 import { BrawltimeKlickerService } from "@/plugins/klicker.service";
+import { TrpcInjectionKey } from "@/plugins/trpc";
+import { PageContext } from "@/renderer/types";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -19,16 +21,43 @@ export function useAsync<T>(fun: () => Promise<T>, key: string): Ref<T|undefined
 
 export function useContext() {
   const { $klicker } = useKlicker()
+  const $api = inject(TrpcInjectionKey)!
   const i18n = useI18n()
 
   return {
     $klicker: $klicker as BrawltimeKlickerService,
+    $api,
+    $config: {
+      mediaUrl: (import.meta.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, ''),
+      managerUrl: (import.meta.env.MANAGER_URL || 'https://manager.brawltime.ninja').replace(/\/$/, ''),
+    }, // TODO
+    $http: {} as any, // TODO
     i18n: {
       ...i18n,
       tc: i18n.t,
     },
     localePath,
+    switchLocalePath: () => {}, // TODO
+    error: (e: { statusCode: number, message: string }) => {}, // TODO
+    $sentry: {
+      captureException: (e: any) => {}, // TODO
+    },
   }
+}
+
+export function injectGlobalProperties(app: App, pageContext: PageContext) {
+  app.config.globalProperties.localePath = localePath
+
+  const $route = computed(() => ({
+    path: pageContext.urlPathname,
+    fullPath: pageContext.urlPathname,
+  }))
+  //app.config.globalProperties.$route = $route as any
+  // TODO is not reactive
+  app.config.globalProperties.$route = {
+    path: pageContext.urlPathname,
+    fullPath: pageContext.urlPathname,
+  } as any
 }
 
 export function useRoute() {
@@ -43,4 +72,8 @@ export function useRouter() {
   return {
     push: (path: string) => navigate(path),
   }
+}
+
+export function useMeta(fun: () => any) {
+  // TODO
 }

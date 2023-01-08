@@ -34,18 +34,14 @@ export default defineComponent({
         } else {
           nodes = [h('div', {
             class: 'h-full w-full flex flex-col justify-center items-center space-y-2 space-x-2',
-          }, [
-            h('span', {}, [translate('query.error')]),
+          }, () => [
+            h('span', [translate('query.error')]),
             h(BButton as any, {
-              props: {
-                dark: true,
-                xs: true,
-              },
-              on: {
-                click: (event) => {
-                  event.stopPropagation()
-                  update()
-                },
+              dark: true,
+              xs: true,
+              onClick: (event) => {
+                event.stopPropagation()
+                update()
               },
             }, [translate('action.retry')]),
           ])]
@@ -71,7 +67,7 @@ export default defineComponent({
             nodes = slots.placeholder!({})
           } else {
             nodes = [h(BShimmer as any, {
-              props: { loading: true },
+              loading: true,
               class: 'h-full',
             })]
           }

@@ -15,7 +15,7 @@
         </template>
 
         <template v-slot:content><div
-          
+
           class="h-full flex flex-col justify-between gap-y-4"
         >
           <p>
@@ -26,7 +26,7 @@
             :data="overviewKvData"
           >
             <template v-slot:level><b-select
-              
+
               v-model="level"
               class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
             >
@@ -58,9 +58,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, BDashboardCell, BCard, BKvTable, BSelect } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

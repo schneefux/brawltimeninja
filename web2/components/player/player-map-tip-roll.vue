@@ -15,7 +15,8 @@
 import { MetaGridEntry, CubeResponse } from '@schneefux/klicker/types'
 import { Player } from '~/model/Api'
 import { VRoll, BShimmer } from '@schneefux/klicker/components'
-import { computed, defineComponent, PropType, useAsync, useContext, watch } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   components: {

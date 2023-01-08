@@ -30,10 +30,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useContext, useAsync, computed } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   components: {

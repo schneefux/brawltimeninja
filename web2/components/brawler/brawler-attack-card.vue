@@ -5,7 +5,7 @@
     :title="scrapedDataProp.name"
   >
     <template v-slot:content><div
-      
+
       class="h-full flex flex-col justify-between gap-y-4"
     >
       <p>
@@ -20,9 +20,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   components: {

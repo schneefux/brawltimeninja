@@ -18,10 +18,10 @@ function guardEvent(e: any) {
 }
 
 /**
- * Minimal, functional nuxt-link without styling or prefetching.
+ * Minimal, functional router-link without styling or prefetching.
  *
  * Performance test, patching 4 links
- *  * nuxt-link: 12ms
+ *  * router-link: 12ms
  *  * router-link: 8ms
  *  * fast-link: 4ms
  */

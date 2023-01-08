@@ -17,10 +17,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs, useContext, useRouter } from 'vue'
+import { computed, defineComponent, toRefs } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useMapName } from '~/composables/map'
 import { camelToKebab, slugify } from '~/lib/util'
+import { useContext, useRouter } from '@/composables/compat'
 
 export default defineComponent({
   props: {

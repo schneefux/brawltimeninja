@@ -29,7 +29,7 @@
       <template v-slot:item="date">
         <b-card :title="date.date">
           <template v-slot:content><media-img
-            
+
             :path="`/maps/competition-winners/${date.date}`"
             :alt="date"
             size="512"
@@ -41,14 +41,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
     BScrollingList,
     BTextbox,
+    FontAwesomeIcon,
   },
   setup() {
     const dateFilter = ref<string>(new Date().toISOString().slice(0, 10))
