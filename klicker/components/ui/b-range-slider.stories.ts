@@ -18,13 +18,38 @@ export const Default: Story = {
       return { value, args }
     },
     template: `
-      <div style="height: 2rem; width: 24rem;">
+      <div style="margin-top: 1rem; height: 2rem; width: 24rem;">
+        <b-range-slider
+          v-bind="args"
+          v-model="value"
+        ></b-range-slider>
+      </div>
+    `,
+  }),
+  args: {
+    min: 1,
+    max: 100,
+    step: 1,
+    minRange: 1,
+    lazy: true,
+  },
+}
+
+export const TooltipSlot: Story = {
+  render: (args) => ({
+    components: { BRangeSlider },
+    setup() {
+      const value = ref([30, 70])
+      return { value, args }
+    },
+    template: `
+      <div style="margin-top: 1rem; height: 2rem; width: 24rem;">
         <b-range-slider
           v-bind="args"
           v-model="value"
         >
           <template v-slot:tooltip="{ value }">
-            <b>{{ value }}</b>
+            <i>{{ value }}</i>
           </template>
         </b-range-slider>
       </div>

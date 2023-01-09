@@ -1,4 +1,6 @@
 <script>
+// adapted and ported to Vue 3 from https://github.com/xwpongithub/vue-range-slider (MIT license)
+
 import { defineComponent, h } from 'vue'
 import {roundToDPR, isMobile, isArray, isDiff, addEvent, removeEvent} from './b-range-slider-utils'
 
@@ -16,18 +18,11 @@ const EVENT_MOUSE_MOVE = 'mousemove'
 const EVENT_MOUSE_UP = 'mouseup'
 const EVENT_MOUSE_LEAVE = 'mouseleave'
 
-const EVENT_KEY_DOWN = 'keydown'
-const EVENT_KEY_UP = 'keyup'
 const EVENT_RESIZE = 'resize'
 
 export default defineComponent({
   name: 'vue-range-slider',
   props: {
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: true
-    },
     // 值
     modelValue: {
       type: [String, Number, Array, Object],
@@ -75,16 +70,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    // 事件类型
-    eventType: {
-      type: String,
-      default: 'auto'
-    },
-    // 是否实时计算组件布局
-    realTime: {
-      type: Boolean,
-      default: false
-    },
     // 是否显示工具提示
     tooltip: {
       type: [String, Boolean],
@@ -93,37 +78,9 @@ export default defineComponent({
         return ['hover', 'always', false].indexOf(val) > -1
       }
     },
-    // 组件方向
-    direction: {
-      type: String,
-      default: 'horizontal',
-      validator(val) {
-        return ['horizontal', 'vertical'].indexOf(val) > -1
-      }
-    },
-    // 是否反向组件
-    reverse: {
-      type: Boolean,
-      default: false
-    },
     // 是否不可用
     disabled: {
       type: [Boolean, Array],
-      default: false
-    },
-    // 进度条是否可拖拽（只限范围模式）
-    processDraggable: {
-      type: Boolean,
-      default: false
-    },
-    // 是否可点击的
-    clickable: {
-      type: Boolean,
-      default: true
-    },
-    // 是否固定距离
-    fixed: {
-      type: Boolean,
       default: false
     },
     // 是否为开发环境（打印错误）
@@ -143,11 +100,6 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    // 是否开启初始动画
-    startAnimation: {
-      type: Boolean,
-      default: false
-    },
     // 是否在拖拽结束后同步值
     lazy: {
       type: Boolean,
@@ -163,17 +115,6 @@ export default defineComponent({
       type: Number,
       default: 0.5
     },
-    useKeyboard: {
-      type: Boolean,
-      default: false
-    },
-    actionsKeyboard: {
-      type: Array,
-      default() {
-        return [(i) => i - 1, (i) => i + 1]
-      }
-    },
-    data: Array,
     formatter: [String, Function],
     mergeFormatter: [String, Function],
     // 工具提示方向
@@ -182,8 +123,6 @@ export default defineComponent({
     tooltipStyle: [Array, Object, Function],
     // 滑块样式
     sliderStyle: [Array, Object, Function],
-    // 键盘控制时，算滑块获得焦点时样式
-    focusStyle: [Array, Object, Function],
     // 组件禁用状态下样式
     disabledStyle: Object,
     // 进度条样式
@@ -199,190 +138,123 @@ export default defineComponent({
       currentValue: 0,
       size: 0,
       fixedValue: 0,
-      focusSlider: 0,
       currentSlider: 0,
       flag: false,
-      processFlag: false,
-      processSign: false,
-      keydownFlag: false,
-      focusFlag: false,
       dragFlag: false,
       crossFlag: false,
-      isComponentExists: true,
-      isMounted: false
     }
   },
   render() {
     const sliderConBlocks = []
 
     // dot
-    if (this.isRange) {
-      const dot0 = h('div', {
-        ref: 'dot0',
-        class: ['slider-dot', this.tooltipStatus, {
-          'slider-dot-focus': this.focusFlag && this.focusSlider === 0,
-          'slider-dot-dragging': this.flag && this.currentSlider === 0,
-          'slider-dot-disabled': !this.boolDisabled && this.disabledArray[0]
-        }],
-        style: this.dotStyles
-      }, [
-        this.$slots.dot ? this.$slots.dot({
-          index: 0,
-          value: this.val[0],
-          disabled: this.disabledArray[0]
-        }) : ([
-          h('div', {
-            class: 'slider-dot-handle',
-            style: [
-              (!this.boolDisabled && this.disabledArray[0]) ? this.disabledDotStyles[0] : null,
-              this.sliderStyles[0],
-              this.focusFlag && this.focusSlider === 0 ? this.focusStyles[0]: null
-            ]
-          })
-        ]),
+    const dot0 = h('div', {
+      ref: 'dot0',
+      class: ['slider-dot', this.tooltipStatus, {
+        'slider-dot-dragging': this.flag && this.currentSlider === 0,
+        'slider-dot-disabled': !this.isDisabled && this.disabledArray[0]
+      }],
+      style: this.dotStyles
+    }, [
+      this.$slots.dot ? this.$slots.dot({
+        index: 0,
+        value: this.currentValue[0],
+        disabled: this.disabledArray[0]
+      }) : ([
         h('div', {
-          ref: 'tooltip0',
-          class: ['slider-tootlip-wrap', `slider-tooltip-${this.tooltipDirection[0]}`]
-        }, this.$slots.tooltip ? this.$slots.tooltip({
-          value: this.val[0],
-          index: 0,
-          disabled: !this.boolDisabled && this.disabledArray[0]
+          class: 'slider-dot-handle',
+          style: [
+            (!this.isDisabled && this.disabledArray[0]) ? this.disabledDotStyles[0] : null,
+            this.sliderStyles[0],
+          ]
+        })
+      ]),
+      h('div', {
+        ref: 'tooltip0',
+        class: ['slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[0]}`]
+      }, this.$slots.tooltip ? this.$slots.tooltip({
+        value: this.currentValue[0],
+        index: 0,
+        disabled: !this.isDisabled && this.disabledArray[0]
+      }) : ([
+        h('span', {
+          class: 'slider-tooltip',
+          style: this.tooltipStyles[0]
+        }, this.formatter ? this.formatting(this.currentValue[0]) : this.currentValue[0])
+      ]))
+    ])
+    sliderConBlocks.push(dot0)
+
+    const dot1 = h('div', {
+      ref: 'dot1',
+      class: ['slider-dot', this.tooltipStatus, {
+        'slider-dot-dragging': this.flag && this.currentSlider === 1,
+        'slider-dot-disabled': !this.isDisabled && this.disabledArray[1]
+      }],
+      style: this.dotStyles
+    }, [
+      this.$slots.dot ? this.$slots.dot({
+        index: 1,
+        value: this.currentValue[1],
+        disabled: this.disabledArray[1]
+      }) : ([
+        h('div', {
+          class: 'slider-dot-handle',
+          style: [
+            (!this.isDisabled && this.disabledArray[1]) ? this.disabledDotStyles[1] : null,
+            this.sliderStyles[1],
+          ]
+        })
+      ]),
+      h('div', {
+        ref: 'tooltip1',
+        class: ['slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[1]}`]
+      }, [
+        this.$slots.tooltip ? this.$slots.tooltip({
+          value: this.currentValue[1],
+          index: 1,
+          disabled: !this.isDisabled && this.disabledArray[1]
         }) : ([
           h('span', {
             class: 'slider-tooltip',
-            style: this.tooltipStyles[0]
-          }, this.formatter ? this.formatting(this.val[0]) : this.val[0])
-        ]))
-      ])
-      sliderConBlocks.push(dot0)
-
-      const dot1 = h('div', {
-        ref: 'dot1',
-        class: ['slider-dot', this.tooltipStatus, {
-          'slider-dot-focus': this.focusFlag && this.focusSlider === 1,
-          'slider-dot-dragging': this.flag && this.currentSlider === 1,
-          'slider-dot-disabled': !this.boolDisabled && this.disabledArray[1]
-        }],
-        style: this.dotStyles
-      }, [
-        this.$slots.dot ? this.$slots.dot({
-          index: 1,
-          value: this.val[1],
-          disabled: this.disabledArray[1]
-        }) : ([
-          h('div', {
-            class: 'slider-dot-handle',
-            style: [
-              (!this.boolDisabled && this.disabledArray[1]) ? this.disabledDotStyles[1] : null,
-              this.sliderStyles[1],
-              this.focusFlag && this.focusSlider === 1 ? this.focusStyles[1]: null
-            ]
-          })
-        ]),
-        h('div', {
-          ref: 'tooltip1',
-          class: ['slider-tootlip-wrap', `slider-tooltip-${this.tooltipDirection[1]}`]
-        }, [
-          this.$slots.tooltip ? this.$slots.tooltip({
-            value: this.val[1],
-            index: 1,
-            disabled: !this.boolDisabled && this.disabledArray[1]
-          }) : ([
-            h('span', {
-              class: 'slider-tooltip',
-              style: this.tooltipStyles[1]
-            }, this.formatter ? this.formatting(this.val[1]) : this.val[1])
-          ])
+            style: this.tooltipStyles[1]
+          }, this.formatter ? this.formatting(this.currentValue[1]) : this.currentValue[1])
         ])
       ])
-      sliderConBlocks.push(dot1)
-    } else {
-      const dot = h('div', {
-        ref: 'dot',
-        class: [
-          'slider-dot',
-          this.tooltipStatus,
-          {
-            'slider-dot-focus': this.focusFlag && this.focusSlider === 0,
-            'slider-dot-dragging': this.flag && this.currentSlider === 0
-          }
-        ],
-        style: this.dotStyles
-      }, [
-        this.$slots.dot ? this.$slots.dot({
-          value: this.val,
-          disabled: this.boolDisabled
-        }) : ([
-          h('div', {
-            class: 'slider-dot-handle',
-            style: [
-              this.sliderStyles,
-              this.focusFlag && this.focusSlider === 0 ? this.focusStyles : null
-            ]
-          })
-        ]),
-        h('div', {
-          class: ['slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection}`]
-        }, [
-          this.$slots.tooltip ? this.$slots.tooltip({
-            value: this.val
-          }) : ([
-            h('span', {
-                class: 'slider-tooltip',
-                style: this.tooltipStyles
-              },
-              this.formatter ? this.formatting(this.val) : this.val
-            )
-          ])
-        ])
-      ])
-      sliderConBlocks.push(dot)
-    }
+    ])
+    sliderConBlocks.push(dot1)
 
     // process
     const processBlock = h('div', {
       ref: 'process',
-      class: ['slider-process', {
-        'slider-process-draggable': this.isRange && this.processDraggable
-      }],
+      class: 'slider-process',
       style: this.processStyle,
-      onClick: e => this.processClick(e)
     }, [
       h('div', {
         ref: 'mergedTooltip',
-        class: ['merged-tooltip slider-tooltip-wrap', `slider-tooltip-${this.isRange ? this.tooltipDirection[0] : this.tooltipDirection}`],
+        class: ['merged-tooltip slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[0]}`],
         style: this.tooltipMergedPosition
       }, [
         this.$slots.tooltip ? this.$slots.tooltip({
-          value: this.val,
+          value: this.currentValue,
           merge: true
         }) : ([
           h('span', {
               class: 'slider-tooltip',
               style: this.tooltipStyles
-            }, this.mergeFormatter ? this.mergeFormatting(this.val[0], this.val[1]) : (this.formatter ? (this.val[0] === this.val[1] ? this.formatting(this.val[0]) : `${this.formatting(this.val[0])} - ${this.formatting(this.val[1])}`) : (this.val[0] === this.val[1] ? this.val[0] : `${this.val[0]} - ${this.val[1]}`))
+            }, this.mergeFormatter ? this.mergeFormatting(this.currentValue[0], this.currentValue[1]) : (this.formatter ? (this.currentValue[0] === this.currentValue[1] ? this.formatting(this.currentValue[0]) : `${this.formatting(this.currentValue[0])} - ${this.formatting(this.currentValue[1])}`) : (this.currentValue[0] === this.currentValue[1] ? this.currentValue[0] : `${this.currentValue[0]} - ${this.currentValue[1]}`))
           )
         ])
       ])
     ])
     sliderConBlocks.push(processBlock)
 
-    // <input type="range">
-    if (!this.isRange && !this.data) {
-      sliderConBlocks.push(h('input', {
-        class: 'slider-input',
-        type: 'range',
-        min: this.min,
-        max: this.max,
-        value: this.val,
-        onInput: e => this.val = e.target.value
-      }))
-    }
-
     return h('div', {
       ref: 'wrap',
-      class: ['vue-range-slider slider-component', this.flowDirection, this.disabledClass, this.stateClass],
-      style: [this.wrapStyles, this.boolDisabled ? this.disabledStyle : null, this.show ? '' : { 'display': 'none' }],
+      class: ['vue-range-slider slider-component slider-horizontal', {
+        'slider-disabled': this.isDisabled,
+      }, this.stateClass],
+      style: [this.wrapStyles, this.isDisabled ? this.disabledStyle : null],
       onClick: e => this.wrapClick(e),
     }, [
       h('div', {
@@ -394,73 +266,36 @@ export default defineComponent({
     ])
   },
   computed: {
-    val: {
-      get() {
-        return this.data ? (this.isRange ? [this.data[this.currentValue[0]], this.data[this.currentValue[1]]] : this.data[this.currentValue]) : this.currentValue
-      },
-      set(val) {
-        if (this.data) {
-          if (this.isRange) {
-            const index0 = this.data.indexOf(val[0])
-            const index1 = this.data.indexOf(val[1])
-            if (index0 > -1 && index1 > -1) {
-              this.currentValue = [index0, index1]
-            }
-          } else {
-            const index = this.data.indexOf(val)
-            if (index > -1) {
-              this.currentValue = index
-            }
-          }
-        } else {
-          this.currentValue = val
-        }
-      }
-    },
     currentIndex() {
-      if (this.isRange) {
-        return this.data ? this.currentValue : [this.getIndexByValue(this.currentValue[0]), this.getIndexByValue(this.currentValue[1])]
-      } else {
-        return this.getIndexByValue(this.currentValue)
-      }
+      return [this.getIndexByValue(this.currentValue[0]), this.getIndexByValue(this.currentValue[1])]
     },
     tooltipMergedPosition() {
-      if (!this.isMounted) return {}
       const tooltipDirection = this.tooltipDirection[0]
       const dot0 = this.$refs.dot0
       if (dot0) {
         let style = {}
-        if (this.direction === 'vertical') {
-          style[tooltipDirection] = `-${(this.dotHeightVal / 2) - (this.width / 2) + 9}px`
-        } else {
-          style[tooltipDirection] = `-${(this.dotWidthVal / 2) - (this.height / 2) + 9}px`
-          style['left'] = `50%`
-        }
+        style[tooltipDirection] = `-${(this.dotWidthVal / 2) - (this.height / 2) + 9}px`
+        style.left = `50%`
         return style
       }
+      return {}
     },
     tooltipDirection() {
-      const dir = this.tooltipDir || (this.direction === 'vertical' ? 'left' : 'top')
+      const dir = this.tooltipDir || 'top'
       if (isArray(dir)) {
-        return this.isRange ? dir : dir[1]
+        return dir
       } else {
-        return this.isRange ? [dir, dir] : dir
+        return [dir, dir]
       }
     },
     total() {
-      if (this.data) {
-        return this.data.length - 1
-      } else if (Math.floor((this.maximum - this.minimum) * this.multiple) % (this.step * this.multiple) !== 0) {
+      if (Math.floor((this.max - this.min) * this.multiple) % (this.step * this.multiple) !== 0) {
         this.printError('Prop[step] is illegal, Please make sure that the step can be divisible')
       }
-      return (this.maximum - this.minimum) / this.step
+      return (this.max - this.min) / this.step
     },
     dotStyles() {
-      return this.direction === 'vertical' ? {
-        width: `${this.dotWidthVal}px`,
-        height: `${this.dotHeightVal}px`,
-        left: `${(-(this.dotWidthVal - this.width) / 2)}px`
-      } : {
+      return {
         width: `${this.dotWidthVal}px`,
         height: `${this.dotHeightVal}px`,
         top: `${(-(this.dotHeightVal - this.height) / 2)}px`
@@ -468,29 +303,20 @@ export default defineComponent({
     },
     sliderStyles() {
       if (isArray(this.sliderStyle)) {
-        return this.isRange ? this.sliderStyle : this.sliderStyle[1]
+        return this.sliderStyle
       } else if (typeof this.sliderStyle === 'function') {
-        return this.sliderStyle(this.val, this.currentIndex)
+        return this.sliderStyle(this.currentValue, this.currentIndex)
       } else {
-        return this.isRange ? [this.sliderStyle, this.sliderStyle] : this.sliderStyle
+        return [this.sliderStyle, this.sliderStyle]
       }
     },
     tooltipStyles() {
       if (isArray(this.tooltipStyle)) {
-        return this.isRange ? this.tooltipStyle : this.tooltipStyle[1]
+        return this.tooltipStyle
       } else if (typeof this.tooltipStyle === 'function') {
-        return this.tooltipStyle(this.val, this.currentIndex)
+        return this.tooltipStyle(this.currentValue, this.currentIndex)
       } else {
-        return this.isRange ? [this.tooltipStyle, this.tooltipStyle] : this.tooltipStyle
-      }
-    },
-    focusStyles() {
-      if (isArray(this.focusStyle)) {
-        return this.isRange ? this.focusStyle : this.focusStyle[1]
-      } else if (typeof this.focusStyle === 'function') {
-        return this.focusStyle(this.val, this.currentIndex)
-      } else {
-        return this.isRange ? [this.focusStyle, this.focusStyle] : this.focusStyle
+        return [this.tooltipStyle, this.tooltipStyle]
       }
     },
     disabledDotStyles() {
@@ -498,7 +324,7 @@ export default defineComponent({
       if (isArray(disabledStyle)) {
         return disabledStyle
       } else if (typeof disabledStyle === 'function') {
-        const style = disabledStyle(this.val, this.currentIndex)
+        const style = disabledStyle(this.currentValue, this.currentIndex)
         return isArray(style) ? style : [style, style]
       } else if (disabledStyle) {
         return [disabledStyle, disabledStyle]
@@ -511,50 +337,29 @@ export default defineComponent({
       }
     },
     elemStyles() {
-      return this.direction === 'vertical' ? {
-        width: `${this.width}px`,
-        height: '100%'
-      } : {
+      return {
         height: `${this.height}px`
       }
     },
     wrapStyles() {
-      return this.direction === 'vertical' ? {
-        height: typeof this.height === 'number' ? `${this.height}px` : this.height,
-        padding: `${this.dotHeightVal / 2}px ${this.dotWidthVal / 2}px`
-      } : {
-        width: typeof this.width === 'number' ? `${this.width}px` : this.width,
+      return {
         padding: `${this.dotHeightVal / 2}px ${this.dotWidthVal / 2}px`
       }
     },
     stateClass() {
       return {
-        'slider-state-process-drag': this.processFlag,
-        'slider-state-drag': this.flag && !this.processFlag && !this.keydownFlag,
-        'slider-state-focus': this.focusFlag
+        'slider-state-drag': this.flag,
       }
     },
     tooltipStatus() {
       return this.tooltip === 'hover' && this.flag ? 'slider-always' : this.tooltip ? `slider-${this.tooltip}` : ''
     },
-    tooltipClass() {
-      return [`slider-tooltip-${this.tooltipDirection}`, 'slider-tooltip']
-    },
-    minimum() {
-      return this.data ? 0 : this.min
-    },
-    maximum() {
-      return this.data ? (this.data.length - 1) : this.max
-    },
     multiple() {
       const decimals = `${this.step}`.split('.')[1]
       return decimals ? Math.pow(10, decimals.length) : 1
     },
-    indexRange() {
-      return this.isRange ? this.currentIndex : [0, this.currentIndex]
-    },
     spacing() {
-      return this.data ? 1 : this.step
+      return this.step
     },
     gap() {
       return this.size / this.total
@@ -568,112 +373,86 @@ export default defineComponent({
     disabledArray() {
       return isArray(this.disabled) ? this.disabled : [this.disabled, this.disabled]
     },
-    boolDisabled() {
+    isDisabled() {
       return this.disabledArray.every(b => b === true)
     },
-    disabledClass() {
-      return this.boolDisabled ? 'slider-disabled' : ''
-    },
-    flowDirection() {
-      return `slider-${this.direction + (this.reverse ? '-reverse' : '')}`
-    },
-    isRange() {
-      return isArray(this.modelValue)
-    },
-    isDisabled() {
-      return this.eventType === 'none' ? true : this.boolDisabled
-    },
     isFixed() {
-      return this.fixed || this.minRange
+      return this.minRange
     },
     position() {
-      return this.isRange ? [(this.currentValue[0] - this.minimum) / this.spacing * this.gap, (this.currentValue[1] - this.minimum) / this.spacing * this.gap] : ((this.currentValue - this.minimum) / this.spacing * this.gap)
+      return [(this.currentValue[0] - this.min) / this.spacing * this.gap, (this.currentValue[1] - this.min) / this.spacing * this.gap]
     },
     limit() {
-      return this.isRange ? this.isFixed ? [[0, (this.total - this.fixedValue) * this.gap], [this.fixedValue * this.gap, this.size]] : [[0, this.position[1]], [this.position[0], this.size]] : [0, this.size]
+      return this.isFixed ? [[0, (this.total - this.fixedValue) * this.gap], [this.fixedValue * this.gap, this.size]] : [[0, this.position[1]], [this.position[0], this.size]]
     },
     valueLimit() {
-      return this.isRange ? this.isFixed ? [[this.minimum, this.maximum - (this.fixedValue * (this.spacing * this.multiple)) / this.multiple], [this.minimum + (this.fixedValue * (this.spacing * this.multiple)) / this.multiple, this.maximum]] : [[this.minimum, this.currentValue[1]], [this.currentValue[0], this.maximum]] : [this.minimum, this.maximum]
+      return this.isFixed ? [[this.min, this.max - (this.fixedValue * (this.spacing * this.multiple)) / this.multiple], [this.min + (this.fixedValue * (this.spacing * this.multiple)) / this.multiple, this.max]] : [[this.min, this.currentValue[1]], [this.currentValue[0], this.max]]
     },
     idleSlider() {
       return this.currentSlider === 0 ? 1 : 0
     },
     slider() {
-      return this.isRange ? [this.$refs.dot0, this.$refs.dot1] : this.$refs.dot
+      return [this.$refs.dot0, this.$refs.dot1]
     }
   },
   methods: {
-    setValue(val, noCb, speed) {
-      if (isDiff(this.val, val)) {
+    setValue(val, noCb) {
+      if (isDiff(this.currentValue, val)) {
         const resetVal = this.limitValue(val)
-        this.val = this.isRange ? resetVal.concat() : resetVal
+        this.currentValue = resetVal.concat()
         this.computedFixedValue()
         this.syncValue(noCb)
       }
-      this.$nextTick(() => this.setPosition(speed))
+      this.$nextTick(() => this.setPosition())
     },
     setIndex(val) {
-      if (isArray(val) && this.isRange) {
-        let value
-        if (this.data) {
-          value = [this.data[val[0]], this.data[val[1]]]
-        } else {
-          value = [this.getValueByIndex(val[0]), this.getValueByIndex(val[1])]
-        }
+      if (isArray(val)) {
+        const value = [this.getValueByIndex(val[0]), this.getValueByIndex(val[1])]
         this.setValue(value)
       } else {
-        val = this.getValueByIndex(val)
-        if (this.isRange) {
-          this.currentSlider = val > ((this.currentValue[1] - this.currentValue[0]) / 2 + this.currentValue[0]) ? 1 : 0
-        }
-        this.setCurrentValue(val)
+        const value = this.getValueByIndex(val)
+        this.currentSlider = value > ((this.currentValue[1] - this.currentValue[0]) / 2 + this.currentValue[0]) ? 1 : 0
+        this.setCurrentValue(value)
       }
     },
     wrapClick(e) {
-      if (this.isDisabled || !this.clickable || this.processFlag || this.dragFlag) return false
+      if (this.isDisabled || this.dragFlag) return false
       const pos = this.getPos(e)
-      if (this.isRange) {
-        if (this.disabledArray.every(b => b === false)) {
-          this.currentSlider = pos > ((this.position[1] - this.position[0]) / 2 + this.position[0]) ? 1 : 0
-        } else if (this.disabledArray[0]) {
-          if (pos < this.position[0]) return false
-          this.currentSlider = 1
-        } else if (this.disabledArray[1]) {
-          if (pos > this.position[1]) return false
-          this.currentSlider = 0
-        }
+      if (this.disabledArray.every(b => b === false)) {
+        this.currentSlider = pos > ((this.position[1] - this.position[0]) / 2 + this.position[0]) ? 1 : 0
+      } else if (this.disabledArray[0]) {
+        if (pos < this.position[0]) return false
+        this.currentSlider = 1
+      } else if (this.disabledArray[1]) {
+        if (pos > this.position[1]) return false
+        this.currentSlider = 0
       }
       if (this.disabledArray[this.currentSlider]) {
         return false
       }
       this.setValueOnPos(pos)
-      if (this.isRange && this.tooltipMerge) {
+      if (this.tooltipMerge) {
         const timer = setInterval(this.handleOverlapTooltip, 16.7)
         setTimeout(() => window.clearInterval(timer), this.speed * 1000)
       }
     },
-    processClick(e) {
-      if (this.fixed) e.stopPropagation()
-    },
     syncValue(noCb) {
-      let val = this.isRange ? this.val.concat() : this.val
+      const val = this.currentValue.concat()
       this.$emit('update:modelValue', val)
-      this.keydownFlag && this.$emit('on-keypress', val)
       noCb || this.$emit('slide-end', val)
     },
     getPos(e) {
-      this.realTime && this.getStaticData()
-      return this.direction === 'vertical' ? (this.reverse ? (e.pageY - this.offset) : (this.size - (e.pageY - this.offset))) : (this.reverse ? (this.size - (e.pageX - this.offset)) : (e.pageX - this.offset))
+      return e.pageX - this.offset
     },
     setValueOnPos(pos, isDrag) {
-      const range = this.isRange ? this.limit[this.currentSlider] : this.limit
-      const valueRange = this.isRange ? this.valueLimit[this.currentSlider] : this.valueLimit
+      const range = this.limit[this.currentSlider]
+      const valueRange = this.valueLimit[this.currentSlider]
       const index = Math.round(pos / this.gap)
       if (pos >= range[0] && pos <= range[1]) {
         const v = this.getValueByIndex(index)
         this.setTransform(pos)
         this.setCurrentValue(v, isDrag)
-        if (this.isRange && (this.fixed || this.isLessRange(pos, index))) {
+        if (this.isLessRange(index)) {
           this.setTransform(pos + ((this.fixedValue * this.gap) * (this.currentSlider === 0 ? 1 : -1)), true)
           this.setCurrentValue((v * this.multiple + (this.fixedValue * this.spacing * this.multiple * (this.currentSlider === 0 ? 1 : -1))) / this.multiple, isDrag, true)
         }
@@ -682,11 +461,10 @@ export default defineComponent({
         const currentSlider = anotherSlider === 0 ? 1 : 0
         this.setTransform(range[anotherSlider])
         this.setCurrentValue(valueRange[anotherSlider])
-        if (this.isRange && (this.fixed || this.isLessRange(pos, index))) {
+        if (this.isLessRange(index)) {
           this.setTransform(this.limit[this.idleSlider][anotherSlider], true)
           this.setCurrentValue(this.valueLimit[this.idleSlider][anotherSlider], isDrag, true)
-        } else if (this.isRange && (this.enableCross || this.crossFlag) && !this.isFixed && !this.disabledArray[anotherSlider] && this.currentSlider === currentSlider) {
-          this.focusSlider = anotherSlider
+        } else if ((this.enableCross || this.crossFlag) && !this.isFixed && !this.disabledArray[anotherSlider] && this.currentSlider === currentSlider) {
           this.currentSlider = anotherSlider
         }
       }
@@ -694,71 +472,39 @@ export default defineComponent({
     },
     setCurrentValue(val, isDrag, isIdleSlider) {
       const slider = isIdleSlider ? this.idleSlider : this.currentSlider
-      if (val < this.minimum || val > this.maximum) return false
-      if (this.isRange) {
+      if (val < this.min || val > this.max) return false
         if (isDiff(this.currentValue[slider], val)) {
           this.currentValue.splice(slider, 1, val)
           if (!this.lazy || !this.flag) {
             this.syncValue()
-          }
-        }
-      } else if (isDiff(this.currentValue, val)) {
-        this.currentValue = val
-        if (!this.lazy || !this.flag) {
-          this.syncValue()
         }
       }
       isDrag || this.setPosition()
     },
-    setPosition(speed) {
-      this.flag || this.setTransitionTime(speed === undefined ? this.speed : speed)
-      if (this.isRange) {
-        this.setTransform(this.position[0], this.currentSlider === 1)
-        this.setTransform(this.position[1], this.currentSlider === 0)
-      } else {
-        this.setTransform(this.position)
-      }
+    setPosition() {
+      this.flag || this.setTransitionTime(this.speed)
+      this.setTransform(this.position[0], this.currentSlider === 1)
+      this.setTransform(this.position[1], this.currentSlider === 0)
       this.flag || this.setTransitionTime(0)
     },
     setTransform(val, isIdleSlider) {
       const slider = isIdleSlider ? this.idleSlider : this.currentSlider
-      const value = roundToDPR((this.direction === 'vertical' ? ((this.dotHeightVal / 2) - val) : (val - (this.dotWidthVal / 2))) * (this.reverse ? -1 : 1))
-      const translateValue = this.direction === 'vertical' ? `translateY(${value}px)` : `translateX(${value}px)`
-      const processSize = this.fixed ? `${this.fixedValue * this.gap}px` : `${slider === 0 ? this.position[1] - val : val - this.position[0]}px`
-      const processPos = this.fixed ? `${slider === 0 ? val : (val - this.fixedValue * this.gap)}px` : `${slider === 0 ? val : this.position[0]}px`
-      if (this.isRange) {
-        this.slider[slider].style[transform] = translateValue
-        if (this.direction === 'vertical') {
-          this.$refs.process.style.height = processSize
-          this.$refs.process.style[this.reverse ? 'top' : 'bottom'] = processPos
-        } else {
-          this.$refs.process.style.width = processSize
-          this.$refs.process.style[this.reverse ? 'right' : 'left'] = processPos
-        }
-      } else {
-        this.slider.style[transform] = translateValue
-        if (this.direction === 'vertical') {
-          this.$refs.process.style.height = `${val}px`
-          this.$refs.process.style[this.reverse ? 'top' : 'bottom'] = 0
-        } else {
-          this.$refs.process.style.width = `${val}px`
-          this.$refs.process.style[this.reverse ? 'right' : 'left'] = 0
-        }
-      }
+      const value = roundToDPR(val - (this.dotWidthVal / 2))
+      const translateValue = `translateX(${value}px)`
+      const processSize = `${slider === 0 ? this.position[1] - val : val - this.position[0]}px`
+      const processPos = `${slider === 0 ? val : this.position[0]}px`
+      this.slider[slider].style[transform] = translateValue
+      this.$refs.process.style.width = processSize
+      this.$refs.process.style.left = processPos
     },
     setTransitionTime(time) {
       // In order to avoid browser merge style and modify together
       time || this.$refs.process.offsetWidth
-      if (this.isRange) {
-        const sliderLen = this.slider.length
-        for (let i = 0; i < sliderLen; i++) {
-          this.slider[i].style[transitionDuration] = `${time}s`
-        }
-        this.$refs.process.style[transitionDuration] = `${time}s`
-      } else {
-        this.slider.style[transitionDuration] = `${time}s`
-        this.$refs.process.style[transitionDuration] = `${time}s`
+      const sliderLen = this.slider.length
+      for (let i = 0; i < sliderLen; i++) {
+        this.slider[i].style[transitionDuration] = `${time}s`
       }
+      this.$refs.process.style[transitionDuration] = `${time}s`
     },
     computedFixedValue() {
       if (!this.isFixed) {
@@ -766,12 +512,9 @@ export default defineComponent({
         return false
       }
       this.fixedValue = this.currentIndex[1] - this.currentIndex[0]
-      this.fixedValue = Math.max(this.fixed ? this.currentIndex[1] - this.currentIndex[0] : 0, this.minRange || 0)
+      this.fixedValue = Math.max(0, this.minRange || 0)
     },
     limitValue(val) {
-      if (this.data) {
-        return val
-      }
       const inRange = v => {
         if (v < this.min) {
           this.printError(`The value of the slider is ${val}, the minimum value is ${this.min}, the value of this slider can not be less than the minimum value`)
@@ -782,36 +525,28 @@ export default defineComponent({
         }
         return v
       }
-      if (this.isRange) {
-        return val.map(v => inRange(v))
-      } else {
-        return inRange(val)
-      }
+      return val.map(v => inRange(v))
     },
     getStaticData() {
       if (this.$refs.elem) {
-        this.size = this.direction === 'vertical' ? this.$refs.elem.offsetHeight : this.$refs.elem.offsetWidth
-        this.offset = this.direction === 'vertical' ? (this.$refs.elem.getBoundingClientRect().top + window.pageYOffset || document.documentElement.scrollTop) : this.$refs.elem.getBoundingClientRect().left
+        this.size = this.$refs.elem.offsetWidth
+        this.offset = this.$refs.elem.getBoundingClientRect().left
       }
     },
-    handleOverlapTooltip () {
+    handleOverlapTooltip() {
       const isDirectionSame = this.tooltipDirection[0] === this.tooltipDirection[1]
-      if (this.isRange && isDirectionSame) {
-        const tooltip0 = this.reverse ? this.$refs.tooltip1 : this.$refs.tooltip0
-        const tooltip1 = this.reverse ? this.$refs.tooltip0 : this.$refs.tooltip1
+      if (isDirectionSame) {
+        const tooltip0 = this.$refs.tooltip0
+        const tooltip1 = this.$refs.tooltip1
         const tooltip0Rect = tooltip0.getBoundingClientRect()
         const tooltip1Rect = tooltip1.getBoundingClientRect()
 
         const tooltip0Right = tooltip0Rect.right
         const tooltip1Left = tooltip1Rect.left
 
-        const tooltip0Y = tooltip0Rect.top
-        const tooltip1Y = tooltip1Rect.top + tooltip1Rect.height
+        const horizontalOverlap = tooltip0Right > tooltip1Left
 
-        const horizontalOverlap = this.direction === 'horizontal' && tooltip0Right > tooltip1Left
-        const verticalOverlap = this.direction === 'vertical' && tooltip1Y > tooltip0Y
-
-        if (horizontalOverlap || verticalOverlap) {
+        if (horizontalOverlap) {
           this.handleDisplayMergedTooltip(true)
         } else {
           this.handleDisplayMergedTooltip(false)
@@ -832,8 +567,8 @@ export default defineComponent({
         mergedTooltip.style.visibility = 'hidden'
       }
     },
-    isLessRange(pos, index) {
-      if (!this.isRange || (!this.minRange && !this.maxRange)) {
+    isLessRange(index) {
+      if (!this.minRange && !this.maxRange) {
         return false
       }
       const diff = this.currentSlider === 0 ? this.currentIndex[1] - index : index - this.currentIndex[0]
@@ -849,10 +584,10 @@ export default defineComponent({
       return false
     },
     getValueByIndex(index) {
-      return ((this.spacing * this.multiple) * index + (this.minimum * this.multiple)) / this.multiple
+      return ((this.spacing * this.multiple) * index + (this.min * this.multiple)) / this.multiple
     },
     getIndexByValue(value) {
-      return Math.round((value - this.minimum) * this.multiple) / (this.spacing * this.multiple)
+      return Math.round((value - this.min) * this.multiple) / (this.spacing * this.multiple)
     },
     formatting(value) {
       return typeof this.formatter === 'string' ? this.formatter.replace(/{value}/, value) : this.formatter(value)
@@ -867,25 +602,12 @@ export default defineComponent({
       if (this.stopPropagation) {
         e.stopPropagation()
       }
-      if (this.isRange) {
-        this.currentSlider = index
-        if (isProcess) {
-          if (!this.processDraggable) {
-            return false
-          }
-          this.processFlag = true
-          this.processSign = {
-            pos: this.position,
-            start: this.getPos((e.targetTouches && e.targetTouches[0]) ? e.targetTouches[0] : e)
-          }
-        }
-        if (!this.enableCross && this.val[0] === this.val[1]) {
-          this.crossFlag = true
-        }
+      this.currentSlider = index
+      if (isProcess) {
+        return false
       }
-      if (!isProcess && this.useKeyboard) {
-        this.focusFlag = true
-        this.focusSlider = index
+      if (!this.enableCross && this.currentValue[0] === this.currentValue[1]) {
+        this.crossFlag = true
       }
       this.flag = true
       this.$emit('drag-start', this)
@@ -897,16 +619,9 @@ export default defineComponent({
       }
       if (!this.flag) return false
       if (e.targetTouches && e.targetTouches[0]) e = e.targetTouches[0]
-      if (this.processFlag) {
-        this.currentSlider = 0
-        this.setValueOnPos(this.processSign.pos[0] + this.getPos(e) - this.processSign.start, true)
-        this.currentSlider = 1
-        this.setValueOnPos(this.processSign.pos[1] + this.getPos(e) - this.processSign.start, true)
-      } else {
-        this.dragFlag = true
-        this.setValueOnPos(this.getPos(e), true)
-      }
-      if (this.isRange && this.tooltipMerge) {
+      this.dragFlag = true
+      this.setValueOnPos(this.getPos(e), true)
+      if (this.tooltipMerge) {
         this.handleOverlapTooltip()
       }
     },
@@ -916,7 +631,7 @@ export default defineComponent({
       }
       if (this.flag) {
         this.$emit('drag-end', this)
-        if (this.lazy && isDiff(this.val, this.modelValue)) {
+        if (this.lazy && isDiff(this.currentValue, this.modelValue)) {
           this.syncValue()
         }
       } else {
@@ -926,81 +641,14 @@ export default defineComponent({
       this.$nextTick(() => {
         this.crossFlag = false
         this.dragFlag = false
-        this.processFlag = false
       })
       this.setPosition()
     },
-    blurSlider(e) {
-      const dot = this.isRange ? this.$refs[`dot${this.focusSlider}`] : this.$refs.dot
-      if (!dot || dot === e.target || dot.contains(e.target)) {
-        return false
-      }
-      this.focusFlag = false
-    },
-    handleKeydown(e) {
-      if (!this.useKeyboard) {
-        return false
-      }
-      const keyCode = e.which || e.keyCode
-      switch (keyCode) {
-        case 37:
-        case 40:
-          e.preventDefault()
-          // e.stopPropagation()
-          this.keydownFlag = true
-          this.flag = true
-          this.changeFocusSlider(this.actionsKeyboard[0])
-          break
-        case 38:
-        case 39:
-          e.preventDefault()
-          // e.stopPropagation()
-          this.keydownFlag = true
-          this.flag = true
-          this.changeFocusSlider(this.actionsKeyboard[1])
-          break
-        default:
-          break
-      }
-    },
-    handleKeyup() {
-      if (this.keydownFlag) {
-        this.keydownFlag = false
-        this.flag = false
-      }
-    },
-    changeFocusSlider(fn) {
-      if (this.isRange) {
-        let arr = this.currentIndex.map((index, i) => {
-          if (i === this.focusSlider || this.fixed) {
-            const val = fn(index)
-            const range = this.fixed ? this.valueLimit[i] : [0, this.total]
-            if (val <= range[1] && val >= range[0]) {
-              return val
-            }
-          }
-          return index
-        })
-        if (arr[0] > arr[1]) {
-          this.focusSlider = this.focusSlider === 0 ? 1 : 0
-          arr = arr.reverse()
-        }
-        this.setIndex(arr)
-      } else {
-        this.setIndex(fn(this.currentIndex))
-      }
-    },
     bindEvents() {
-      const me = this
-      this.processStartFn = function(e) {
-        me._start(e, 0, true)
-      }
-      this.dot0StartFn = function(e) {
-        me._start(e, 0)
-      }
-      this.dot1StartFn = function(e) {
-        me._start(e, 1)
-      }
+      this.processStartFn = (e) => this._start(e, 0, true)
+      this.dot0StartFn = (e) => this._start(e, 0)
+      this.dot1StartFn = (e) => this._start(e, 1)
+
       if (isMobile) {
         addEvent(this.$refs.process, EVENT_TOUCH_START, this.processStartFn)
 
@@ -1008,31 +656,20 @@ export default defineComponent({
         addEvent(document, EVENT_TOUCH_END, this._end)
         addEvent(document, EVENT_TOUCH_CANCEL, this._end)
 
-        if (this.isRange) {
-          addEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
-          addEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
-        } else {
-          addEvent(this.$refs.dot, EVENT_TOUCH_START, this._start)
-        }
+        addEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
+        addEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
       } else {
         addEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
 
-        addEvent(document, EVENT_MOUSE_DOWN, this.blurSlider)
         addEvent(document, EVENT_MOUSE_MOVE, this._move)
         addEvent(document, EVENT_MOUSE_UP, this._end)
         addEvent(document, EVENT_MOUSE_LEAVE, this._end)
 
-        if (this.isRange) {
-          addEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
-          addEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
-        } else {
-          addEvent(this.$refs.dot, EVENT_MOUSE_DOWN, this._start)
-        }
+        addEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
+        addEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
       }
-      addEvent(document, EVENT_KEY_DOWN, this.handleKeydown)
-      addEvent(document, EVENT_KEY_UP, this.handleKeyup)
       addEvent(window, EVENT_RESIZE, this.refresh)
-      if (this.isRange && this.tooltipMerge) {
+      if (this.tooltipMerge) {
         addEvent(this.$refs.dot0, transitionEnd, this.handleOverlapTooltip)
         addEvent(this.$refs.dot1, transitionEnd, this.handleOverlapTooltip)
       }
@@ -1044,30 +681,19 @@ export default defineComponent({
         removeEvent(document, EVENT_TOUCH_END, this._end)
         removeEvent(document, EVENT_TOUCH_CANCEL, this._end)
 
-        if (this.isRange) {
-          removeEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
-          removeEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
-        } else {
-          removeEvent(this.$refs.dot, EVENT_TOUCH_START, this._start)
-        }
+        removeEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
+        removeEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
       } else {
         removeEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
-        removeEvent(document, EVENT_MOUSE_DOWN, this.blurSlider)
         removeEvent(document, EVENT_MOUSE_MOVE, this._move)
         removeEvent(document, EVENT_MOUSE_UP, this._end)
         removeEvent(document, EVENT_MOUSE_LEAVE, this._end)
 
-        if (this.isRange) {
-          removeEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
-          removeEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
-        } else {
-          removeEvent(this.$refs.dot, EVENT_MOUSE_DOWN, this._start)
-        }
+        removeEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
+        removeEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
       }
-      removeEvent(document, EVENT_KEY_DOWN, this.handleKeydown)
-      removeEvent(document, EVENT_KEY_UP, this.handleKeyup)
       removeEvent(window, EVENT_RESIZE, this.refresh)
-      if (this.isRange && this.tooltipMerge) {
+      if (this.tooltipMerge) {
         removeEvent(this.$refs.dot0, transitionEnd, this.handleOverlapTooltip)
         removeEvent(this.$refs.dot1, transitionEnd, this.handleOverlapTooltip)
       }
@@ -1088,16 +714,14 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.isComponentExists = true
     this.$nextTick(() => {
       this.getStaticData()
-      this.setValue(this.limitValue(this.modelValue), true, this.startAnimation ? this.speed : 0)
+      this.setValue(this.limitValue(this.modelValue), true, 0)
       this.bindEvents()
-      if (this.isRange && this.tooltipMerge && !this.startAnimation) {
+      if (this.tooltipMerge) {
         this.handleOverlapTooltip()
       }
     })
-    this.isMounted = true
   },
   watch: {
     value(val) {
@@ -1112,7 +736,7 @@ export default defineComponent({
       if (val < this.min) {
         return this.printError('The maximum value can not be less than the minimum value.')
       }
-      const resetVal = this.limitValue(this.val)
+      const resetVal = this.limitValue(this.currentValue)
       this.setValue(resetVal)
       this.refresh()
     },
@@ -1120,7 +744,7 @@ export default defineComponent({
       if (val > this.max) {
         return this.printError('The minimum value can not be greater than the maximum value.')
       }
-      const resetVal = this.limitValue(this.val)
+      const resetVal = this.limitValue(this.currentValue)
       this.setValue(resetVal)
       this.refresh()
     },
@@ -1132,19 +756,17 @@ export default defineComponent({
     }
   },
   beforeDestroy() {
-    this.isComponentExists = false
     this.unbindEvents()
     this.refresh()
   },
   deactivated() {
-    this.isComponentExists = false
     this.unbindEvents()
     this.refresh()
   }
 })
 </script>
 
-<style lang="css">
+<style lang="postcss">
 /**
  * vue-range-slider v1.0.3
  * (c) 2016-2019 xwpongithub
@@ -1163,7 +785,7 @@ export default defineComponent({
   position: relative;
   display: block;
   border-radius: 15px;
-  background-color: #ccc;
+  @apply ring-2 focus:ring-2 focus:ring-contrast/20 ring-contrast/10 hover:ring-contrast/20 bg-contrast/5;
 }
 .vue-range-slider.slider-component .slider::after {
   content: '';
@@ -1187,12 +809,9 @@ export default defineComponent({
   height: 100%;
   border-radius: 50%;
   background-color: #fff;
+  @apply bg-primary-500;
   -webkit-box-shadow: 0.5px 0.5px 2px 1px rgba(0,0,0,0.32);
           box-shadow: 0.5px 0.5px 2px 1px rgba(0,0,0,0.32);
-}
-.vue-range-slider.slider-component .slider .slider-dot.slider-dot-focus .slider-dot-handle {
-  -webkit-box-shadow: 0 0 2px 1px #3498db;
-          box-shadow: 0 0 2px 1px #3498db;
 }
 .vue-range-slider.slider-component .slider .slider-dot.slider-dot-dragging {
   z-index: 5;
@@ -1209,12 +828,8 @@ export default defineComponent({
 .vue-range-slider.slider-component .slider .slider-process {
   position: absolute;
   border-radius: 15px;
-  background-color: #3498db;
   z-index: 1;
-}
-.vue-range-slider.slider-component .slider .slider-process.slider-process-draggable {
-  cursor: pointer;
-  z-index: 3;
+  @apply bg-primary-300;
 }
 .vue-range-slider.slider-component .slider .slider-input {
   position: absolute;
@@ -1232,34 +847,6 @@ export default defineComponent({
   top: 0;
   left: 0;
   will-change: width;
-}
-.vue-range-slider.slider-component.slider-vertical .slider-dot {
-  bottom: 0;
-}
-.vue-range-slider.slider-component.slider-vertical .slider-process {
-  width: 100%;
-  height: 0;
-  bottom: 0;
-  left: 0;
-  will-change: height;
-}
-.vue-range-slider.slider-component.slider-horizontal-reverse .slider-dot {
-  right: 0;
-}
-.vue-range-slider.slider-component.slider-horizontal-reverse .slider-process {
-  width: 0;
-  height: 100%;
-  top: 0;
-  right: 0;
-}
-.vue-range-slider.slider-component.slider-vertical-reverse .slider-dot {
-  top: 0;
-}
-.vue-range-slider.slider-component.slider-vertical-reverse .slider-process {
-  width: 100%;
-  height: 0;
-  top: 0;
-  left: 0;
 }
 .vue-range-slider.slider-component .slider-tooltip-wrap {
   display: none;
@@ -1354,9 +941,7 @@ export default defineComponent({
   min-width: 20px;
   text-align: center;
   color: #fff;
-  border-radius: 5px;
-  border: 1px solid #3498db;
-  background-color: #3498db;
+  @apply bg-contrast/[0.08] shadow rounded-2xl;
 }
 .vue-range-slider.slider-component.slider-disabled {
   opacity: 0.5;
