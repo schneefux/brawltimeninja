@@ -10,8 +10,7 @@
 
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">
-        <vue-range-slider
-          v-if="isClient"
+        <b-range-slider
           :min="min"
           :max="max"
           :step="1"
@@ -28,21 +27,19 @@
               {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
             </span>
           </template>
-        </vue-range-slider>
+        </b-range-slider>
       </div>
     </client-only>
   </b-fake-select>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, PropType } from 'vue'
-import { BFakeSelect } from '@schneefux/klicker/components'
-import 'vue-range-component/dist/vue-range-slider.min.css'
+import { defineComponent, PropType } from 'vue'
+import { BFakeSelect, BRangeSlider } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    // does not support SSR
-    VueRangeSlider: defineAsyncComponent(() => import('vue-range-component')),
+    BRangeSlider,
     BFakeSelect,
   },
   props: {

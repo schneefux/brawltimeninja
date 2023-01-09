@@ -2,15 +2,12 @@
 // adapted and ported to Vue 3 from https://github.com/xwpongithub/vue-range-slider (MIT license)
 
 import { defineComponent, h } from 'vue'
-import {roundToDPR, isMobile, isArray, isDiff, addEvent, removeEvent} from './b-range-slider-utils'
+import {roundToDPR, isArray, isDiff, addEvent, removeEvent} from './b-range-slider-utils'
 
 const transform = 'transform'
 const transitionDuration = 'transitionDuration'
 const transitionEnd = 'transitionEnd'
 
-const EVENT_TOUCH_START = 'touchstart'
-const EVENT_TOUCH_MOVE = 'touchmove'
-const EVENT_TOUCH_END = 'touchend'
 const EVENT_TOUCH_CANCEL = 'touchcancel'
 
 const EVENT_MOUSE_DOWN = 'mousedown'
@@ -649,50 +646,34 @@ export default defineComponent({
       this.dot0StartFn = (e) => this._start(e, 0)
       this.dot1StartFn = (e) => this._start(e, 1)
 
-      if (isMobile) {
-        addEvent(this.$refs.process, EVENT_TOUCH_START, this.processStartFn)
+      addEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
+      addEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
+      addEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
 
-        addEvent(document, EVENT_TOUCH_MOVE, this._move)
-        addEvent(document, EVENT_TOUCH_END, this._end)
-        addEvent(document, EVENT_TOUCH_CANCEL, this._end)
+      addEvent(document, EVENT_MOUSE_MOVE, this._move)
+      addEvent(document, EVENT_MOUSE_UP, this._end)
+      addEvent(document, EVENT_MOUSE_LEAVE, this._end)
+      addEvent(document, EVENT_TOUCH_CANCEL, this._end)
 
-        addEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
-        addEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
-      } else {
-        addEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
-
-        addEvent(document, EVENT_MOUSE_MOVE, this._move)
-        addEvent(document, EVENT_MOUSE_UP, this._end)
-        addEvent(document, EVENT_MOUSE_LEAVE, this._end)
-
-        addEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
-        addEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
-      }
       addEvent(window, EVENT_RESIZE, this.refresh)
+
       if (this.tooltipMerge) {
         addEvent(this.$refs.dot0, transitionEnd, this.handleOverlapTooltip)
         addEvent(this.$refs.dot1, transitionEnd, this.handleOverlapTooltip)
       }
     },
     unbindEvents() {
-      if (isMobile) {
-        removeEvent(this.$refs.process, EVENT_TOUCH_START, this.processStartFn)
-        removeEvent(document, EVENT_TOUCH_MOVE, this._move)
-        removeEvent(document, EVENT_TOUCH_END, this._end)
-        removeEvent(document, EVENT_TOUCH_CANCEL, this._end)
+      removeEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
+      removeEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
+      removeEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
 
-        removeEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
-        removeEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
-      } else {
-        removeEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
-        removeEvent(document, EVENT_MOUSE_MOVE, this._move)
-        removeEvent(document, EVENT_MOUSE_UP, this._end)
-        removeEvent(document, EVENT_MOUSE_LEAVE, this._end)
+      removeEvent(document, EVENT_MOUSE_MOVE, this._move)
+      removeEvent(document, EVENT_MOUSE_UP, this._end)
+      removeEvent(document, EVENT_MOUSE_LEAVE, this._end)
+      removeEvent(document, EVENT_TOUCH_CANCEL, this._end)
 
-        removeEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
-        removeEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
-      }
       removeEvent(window, EVENT_RESIZE, this.refresh)
+
       if (this.tooltipMerge) {
         removeEvent(this.$refs.dot0, transitionEnd, this.handleOverlapTooltip)
         removeEvent(this.$refs.dot1, transitionEnd, this.handleOverlapTooltip)

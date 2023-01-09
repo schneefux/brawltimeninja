@@ -1,23 +1,5 @@
 // Unsharp text [#166](https://github.com/NightCatSama/vue-slider-component/issues/166)
-export const roundToDPR = (function () {
-  const r = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
-  return value => Math.round(value * r) / r
-})()
-
-export const isMobile = (() => {
-  const userAgentInfo = navigator.userAgent.toLowerCase()
-  const agents = ["Android", "iPhone",
-    "SymbianOS", "Windows Phone",
-    "iPad", "iPod"]
-  let flag = false
-  for (let v = 0; v < agents.length; v++) {
-    if (userAgentInfo.indexOf(agents[v].toLowerCase()) > 0) {
-      flag = true
-      break
-    }
-  }
-  return flag
-})()
+export const roundToDPR = value => Math.round(value * (window.devicePixelRatio || 1)) / r
 
 export function isArray(input) {
   if (Array.prototype.isArray) {
