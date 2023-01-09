@@ -19,13 +19,12 @@ export { createApp }
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
-  const Layout = Page.Layout || DefaultLayout
 
-  let rootComponent: any
   const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {}),
+      Layout: markRaw(pageContext.exports.Layout || DefaultLayout),
     }),
     created() {
       rootComponent = this
@@ -34,10 +33,11 @@ function createApp(pageContext: PageContext) {
       return h(
         PageShell,
         {},
-        () => h(Layout, () => [ h(this.Page, this.pageProps) ]),
+        () => h(this.Layout, () => h(this.Page, this.pageProps)),
       )
     },
   })
+  let rootComponent: InstanceType<typeof PageWithWrapper>
 
   const app = createSSRApp(PageWithWrapper)
 
@@ -47,6 +47,7 @@ function createApp(pageContext: PageContext) {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)
       rootComponent.pageProps = markRaw(pageContext.pageProps || {})
+      rootComponent.Layout = markRaw(pageContext.exports.Layout || DefaultLayout)
     }
   })
 

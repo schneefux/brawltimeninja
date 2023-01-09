@@ -46,7 +46,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true,
+      //enableEagerStreaming: true,
       pageProps: {
         vueQueryState,
       },
