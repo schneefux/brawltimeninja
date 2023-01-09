@@ -1,6 +1,7 @@
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
+import apiMiddleware from '../api/index'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -25,6 +26,8 @@ async function startServer() {
     ).middlewares
     app.use(viteDevMiddleware)
   }
+
+  app.use('/api', apiMiddleware)
 
   app.get('*', async (req, res, next) => {
     const pageContextInit = {

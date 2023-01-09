@@ -12,7 +12,6 @@ export function useLazyHydration(lazy: boolean, intersectionObserverOptions: Use
   if (!hydrated.value && !import.meta.env.SSR) {
     const { isSupported, stop } = useIntersectionObserver(wrapper, ([{ isIntersecting }]) => {
       if (isIntersecting) {
-        console.log('isct', wrapper.value)
         hydrated.value = true
         stop()
       }

@@ -1,39 +1,37 @@
 import z from 'zod'
-import { createRouter } from '../context'
 import { idType } from '../schema/types'
 import BrawlstarsService from '../services/BrawlstarsService'
+import { publicProcedure, router } from '../trpc'
 
 const brawlstarsService = new BrawlstarsService()
 
-export const rankingsRouter = createRouter()
-  .query('clubsByCountry', {
-    input: z.object({
+export const rankingsRouter = router({
+  clubsByCountry: publicProcedure
+    .input(z.object({
       country: z.string(), // TODO use enum?
-    }),
-    async resolve({ input, ctx }) {
+    }))
+    .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getClubRanking(input.country)
-      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300')
       return rankings
-    },
-  })
-  .query('playersByCountryAndBrawler', {
-    input: z.object({
+    }),
+  playersByCountryAndBrawler: publicProcedure
+    .input(z.object({
       country: z.string(),
       brawlerId: idType,
-    }), // TODO use enum?
-    async resolve({ input, ctx }) {
+    })) // TODO use enum?
+    .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getBrawlerRanking(input.country, input.brawlerId)
-      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300')
       return rankings
-    },
-  })
-  .query('playersByCountry', {
-    input: z.object({
-      country: z.string(),
     }),
-    async resolve({ input, ctx }) {
+  playersByCountry: publicProcedure
+    .input(z.object({
+      country: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getPlayerRanking(input.country)
-      ctx.res?.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300')
       return rankings
-    },
-  })
+    }),
+})

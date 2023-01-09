@@ -1,9 +1,9 @@
-import * as trpc from '@trpc/server'
-import * as trpcNext from '@trpc/server/adapters/next'
+import { inferAsyncReturnType } from '@trpc/server'
+import { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import isbot from 'isbot'
 
-export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
-  const isBot = isbot(opts?.req.headers['user-agent'] || '')
+export async function createContext(opts: CreateNextContextOptions) {
+  const isBot = isbot(opts.req.headers['user-agent'] || '')
 
   return {
     isBot,
@@ -11,8 +11,4 @@ export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
   }
 }
 
-type Context = trpc.inferAsyncReturnType<typeof createContext>
-
-export function createRouter() {
-  return trpc.router<Context>()
-}
+export type Context = inferAsyncReturnType<typeof createContext>

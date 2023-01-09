@@ -1,3 +1,4 @@
+import { ProfileTrackingStatus } from "~/server-middleware/api/services/ProfileUpdaterService";
 import { Player as BrawlstarsPlayer } from "./Brawlstars"
 
 export interface StarPower {
@@ -19,7 +20,7 @@ export interface Brawler {
 }
 
 export interface Battle {
-  timestamp: Date|string;
+  timestamp: Date;
   event: {
     id: number;
     mode: string;
@@ -39,7 +40,7 @@ export interface Battle {
 
 export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
   brawlers: Record<string, Brawler>
-  battles: Battle[];
+  battles: Battle[]
 }
 
 export interface ActiveEvent {

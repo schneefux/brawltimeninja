@@ -64,7 +64,7 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
   actions: {
     async loadPlayer(tag: string) {
       const api = inject(TrpcInjectionKey)!
-      const player = await api.query('player.byTag', tag)
+      const player = await api.player.byTag.query(tag)
       this.setPlayer(player)
 
       const { klicker } = inject(KlickerConfigInjectionKey)!

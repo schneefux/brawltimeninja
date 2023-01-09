@@ -1,4 +1,4 @@
-<template functional>
+<template>
   <span
     class="w-16 md:w-24"
   >{{ dateFormatted }}</span>
@@ -9,7 +9,6 @@ import { format, parseISO } from 'date-fns'
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-  functional: true,
   props: {
     row: {
       type: Object,

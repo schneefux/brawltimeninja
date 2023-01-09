@@ -1,10 +1,8 @@
 {
   "scripts": {
-    "dev": "npm run server",
-    "prod": "npm run build && npm run server:prod",
+    "dev": "nodemon -e ts -x node --loader ts-node/esm ./server/index.ts",
     "build": "vite build",
-    "server": "ts-node ./server/index.ts",
-    "server:prod": "cross-env NODE_ENV=production ts-node ./server/index.ts"
+    "start": "cross-env NODE_ENV=production ts-node ./server/index.ts"
   },
   "dependencies": {
     "@apla/clickhouse": "^1.6.4",
@@ -13,9 +11,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
     "@schneefux/klicker": "link:../klicker",
-    "@tanstack/vue-query": "^4.20.9",
-    "@trpc/client": "^9",
-    "@trpc/server": "^9",
+    "@tanstack/vue-query": "^4.22.0",
+    "@trpc/client": "^10.8.1",
+    "@trpc/server": "^10.8.1",
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "clickhouse": "^2.6.0",
@@ -53,6 +51,7 @@
     "autoprefixer": "^10.4.13",
     "better-sqlite3": "^8.0.1",
     "jest": "^29.3.1",
+    "nodemon": "^2.0.20",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.3",

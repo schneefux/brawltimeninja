@@ -1,22 +1,18 @@
 import express from 'express'
-import * as trpcExpress from '@trpc/server/adapters/express'
-import superjson from 'superjson'
+import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import { playerRouter, updateAllProfiles } from './routes/player'
 import { clubRouter } from './routes/club'
-import { createContext, createRouter } from './context'
+import { createContext } from './context'
 import { rankingsRouter } from './routes/rankings'
 import { eventsRouter } from './routes/events'
+import { router } from './trpc'
 
-const appRouter = createRouter()
-  .transformer(superjson)
-  .merge('player.', playerRouter)
-  .merge('club.', clubRouter)
-  .merge('rankings.', rankingsRouter)
-  .merge('events.', eventsRouter)
-  .formatError(({ shape, error }) => {
-    // TODO log to sentry
-    return shape
-  })
+const appRouter = router({
+  player: playerRouter,
+  club: clubRouter,
+  rankings: rankingsRouter,
+  events: eventsRouter,
+})
 
 export type AppRouter = typeof appRouter
 
@@ -33,7 +29,7 @@ app.post('/cron', async (req, res) => {
 
 app.use(
   '/',
-  trpcExpress.createExpressMiddleware({
+  createExpressMiddleware({
     router: appRouter,
     createContext,
   })

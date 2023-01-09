@@ -1,11 +1,11 @@
-import * as trpc from '@trpc/server'
+import { TRPCError } from '@trpc/server'
 import { StatsD } from 'hot-shots'
-import { createRouter } from '../context'
 import { tagWithoutHashType } from '../schema/types'
 import BrawlstarsService from '../services/BrawlstarsService'
 import ProfileUpdaterService from '../services/ProfileUpdaterService'
 import Knex from 'knex'
 import knexfile from '../knexfile'
+import { publicProcedure, router } from '../trpc'
 
 const environment = process.env.NODE_ENV || 'development'
 const knex = Knex(knexfile[environment])
@@ -25,10 +25,10 @@ export async function updateAllProfiles() {
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
-export const playerRouter = createRouter()
-  .query('byTag', {
-    input: tagWithoutHashType,
-    async resolve({ input, ctx }) {
+export const playerRouter = router({
+  byTag: publicProcedure
+    .input(tagWithoutHashType)
+    .query(async ({ input, ctx }) => {
       if (ctx.isBot) {
         stats.increment('player.bot')
       } else {
@@ -44,26 +44,24 @@ export const playerRouter = createRouter()
           console.error('Error updating profile tracking status', err)
         }
       }
-      ctx.res?.set('Cache-Control', 'public, max-age=180')
+      ctx.res.set('Cache-Control', 'public, max-age=180')
       return player
-    },
-  })
-  .query('getTrackingStatus', {
-    input: tagWithoutHashType,
-    async resolve({ input }) {
+    }),
+  getTrackingStatus: publicProcedure
+    .input(tagWithoutHashType)
+    .query(async ({ input }) => {
       return await profileUpdaterService.getProfileTrackingStatus(input)
-    },
-  })
-  .mutation('trackTag', {
-    input: tagWithoutHashType,
-    async resolve({ input }) {
+    }),
+  trackTag: publicProcedure
+    .input(tagWithoutHashType)
+    .mutation(async ({ input }) => {
       const stats = await brawlstarsService.getPlayerStatistics(input, true)
       if (stats.battles.length == 0) {
-        throw new trpc.TRPCError({
+        throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Player did not play any battles recently'
         })
       }
       return await profileUpdaterService.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
-    },
-  })
+    }),
+})

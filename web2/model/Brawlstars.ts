@@ -88,7 +88,7 @@ export interface BattleLog {
     }
     battle: {
       mode: string;
-      type?: string;
+      type?: string; // ranked: regular, soloRanked: power league, tournament: ? club league?
       result?: string;
       duration?: number;
       rank?: number;

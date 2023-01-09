@@ -1,8 +1,8 @@
-import { brawlerId, capitalize } from '../../../lib/util'
-import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../../model/Brawlstars'
-import { Battle, Brawler, Player, ActiveEvent } from '../../../model/Api'
+import { brawlerId, capitalize } from '../../lib/util'
+import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../model/Brawlstars'
+import { Battle, Brawler, Player, ActiveEvent } from '../../model/Api'
 import { request } from '../lib/request'
-import { StarlistEvent } from '../../../model/Starlist'
+import { StarlistEvent } from '../../model/Starlist'
 import ClickerService from './ClickerService'
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
