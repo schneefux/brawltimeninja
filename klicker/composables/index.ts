@@ -1,5 +1,6 @@
 export { useCubeResponseProps } from './response'
-//export { useStorage } from './storage'
+export { useStorage } from './storage'
 export { useKlicker } from './klicker'
 export { useCubeQuery } from './query'
 export { useUniqueId } from './id'
+export { useLazyHydration } from './lazy-hydration'

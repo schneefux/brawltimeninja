@@ -14282,11 +14282,6 @@ vue-router@^4.1.6:
   dependencies:
     "@vue/devtools-api" "^6.4.5"
 
-vue3-lazy-hydration@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/vue3-lazy-hydration/-/vue3-lazy-hydration-1.2.1.tgz#a1c179f2049c6d0fe796f84ff1d5a56e8c3f1fda"
-  integrity sha512-0KEU+t1ZcOFomf2xhpKPMU2XBdZDVyVjvkxcXAJRpZ818Om4MMhKxbrmIK6hZ+NZOyoRAgMHl/N1zFZJuQoSJA==
-
 vue@^3.2.45:
   version "3.2.45"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.45.tgz#94a116784447eb7dbd892167784619fef379b3c8"

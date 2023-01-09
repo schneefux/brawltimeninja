@@ -15,27 +15,14 @@
       <slot name="description"></slot>
     </div>
 
-    <lazy-hydration-wrapper
-      v-if="lazy"
-      when-visible
-    >
-      <div
-        :class="{
-          'mt-4': title != undefined,
-          'mt-8': title == undefined,
-        }"
-      >
-        <slot></slot>
-      </div>
-    </lazy-hydration-wrapper>
     <div
-      v-else
+      ref="wrapper"
       :class="{
         'mt-4': title != undefined,
         'mt-8': title == undefined,
       }"
     >
-      <slot></slot>
+      <slot v-if="hydrated"></slot>
     </div>
   </section>
 </template>
@@ -43,12 +30,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useUniqueId } from '../../composables/id'
-import { LazyHydrationWrapper } from 'vue3-lazy-hydration'
+import { useLazyHydration } from '../../composables/lazy-hydration'
 
 export default defineComponent({
-  components: {
-    LazyHydrationWrapper,
-  },
   props: {
     title: {
       type: String,
@@ -59,11 +43,14 @@ export default defineComponent({
       default: false
     },
   },
-  setup() {
+  setup(props) {
     const { id } = useUniqueId()
+    const { wrapper, hydrated } = useLazyHydration(props.lazy)
 
     return {
       id,
+      wrapper,
+      hydrated,
     }
   },
 })

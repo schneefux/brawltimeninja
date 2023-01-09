@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useIntersectionObserver } from '@vueuse/core'
+import { defineComponent } from 'vue'
+import { useLazyHydration } from '../../composables/lazy-hydration'
 
 // :style object syntax does not work for some reason - Nuxt silently swallows the variables
 
@@ -41,23 +41,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const cell = ref<HTMLElement|null>()
-    const visible = ref(!props.lazy)
-
-    if (!visible.value && !process.server) {
-      const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          visible.value = isIntersecting
-          stop()
-        }
-      }, {
-        rootMargin: `50% 50% 50% 50%`,
-      })
-
-      if (!isSupported) {
-        visible.value = true
-      }
-    }
+    const { wrapper: cell, hydrated: visible } = useLazyHydration(props.lazy, {
+      rootMargin: `50% 50% 50% 50%`
+    })
 
     return {
       cell,
