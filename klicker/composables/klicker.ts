@@ -1,5 +1,5 @@
 import { IKlickerService } from "types";
-import { Component, inject, InjectionKey, Ref } from "vue";
+import { inject, InjectionKey, Ref } from "vue";
 
 export interface PluginConfig {
   klicker: IKlickerService
@@ -18,6 +18,7 @@ export interface PluginConfig {
     refresh: () => Promise<void>,
   }
   navigate: (path: string) => void
+  managerUrl: string
 }
 
 export const KlickerConfigInjectionKey = Symbol('klicker') as InjectionKey<PluginConfig>
@@ -29,12 +30,14 @@ export const useKlicker = () => {
   const translate = pluginConfig.translate
   const useQuery = pluginConfig.useQuery
   const navigate = pluginConfig.navigate
+  const managerUrl = pluginConfig.managerUrl
 
   return {
     $klicker,
     translate,
     useQuery,
     navigate,
+    managerUrl,
   }
 }
 
