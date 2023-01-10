@@ -5,20 +5,18 @@
     :link="mapPath"
     :id="id"
     nobackground
-    v-on="$listeners"
   >
     <template v-slot:preview></template>
-    <template v-slot:content><div
-      
-      class="pt-4 h-full flex flex-col justify-center"
-    >
-      <map-img
-        :id="id"
-        :map="map"
-        clazz="w-full h-48 object-contain"
-      ></map-img>
-      <slot></slot>
-    </div></template>
+    <template v-slot:content>
+      <div class="pt-4 h-full flex flex-col justify-center">
+        <map-img
+          :id="id"
+          :map="map"
+          clazz="w-full h-48 object-contain"
+        ></map-img>
+        <slot></slot>
+      </div>
+    </template>
   </event-card>
 </template>
 
@@ -42,7 +40,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const mapPath = computed(() =>  `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`)
+    const mapPath = computed(() => `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`)
 
     return {
       mapPath,

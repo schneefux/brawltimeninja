@@ -19,5 +19,8 @@
     "compilerOptions": {
       "module": "commonjs"
     }
-  }
+  },
+  "exclude": [
+    "../klicker"
+  ]
 }

@@ -8,7 +8,7 @@
 
     <div class="flex items-center gap-x-4">
       <s-mode-map
-        :value="slices"
+        :model-value="slices"
         :on-input="jumpToModeMap"
         class="my-4"
       ></s-mode-map>
@@ -47,7 +47,7 @@ export default defineComponent({
 
     const router = useRouter()
     const { localePath } = useContext()
-    const jumpToModeMap = (slices: SliceValue) => {
+    const jumpToModeMap = (slices: Partial<SliceValue>) => {
       const mode = (slices.mode ?? [])[0]
       const map = (slices.map ?? [])[0]
 

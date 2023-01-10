@@ -43,7 +43,7 @@
 import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
-import { useContext, useAsync } from '~/lib/async'
+import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   components: {

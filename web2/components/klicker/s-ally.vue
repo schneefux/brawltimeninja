@@ -45,7 +45,7 @@ export default defineComponent({
           id: b,
           name: capitalize(b.toLowerCase()),
         }))
-    })
+    }, 's-ally-brawlers')
 
     return {
       brawlers,

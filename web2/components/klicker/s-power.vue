@@ -1,6 +1,6 @@
 <template>
   <range-slider-select
-    :value="[(value.powerGte || [])[0] || 0, (value.powerLte || [])[0] || 11]"
+    :value="[parseInt((value.powerGte || [])[0] ?? '0'), parseInt((value.powerLte || [])[0] || '11')]"
     :min="0"
     :max="11"
     :min-range="0"

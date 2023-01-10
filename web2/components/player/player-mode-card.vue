@@ -42,7 +42,7 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
@@ -146,7 +146,7 @@ export default defineComponent({
     const { i18n } = useContext()
     const mapName = computed(() => {
       if (activeMap.value != undefined) {
-        return getMapName(i18n, activeMap.value.id, activeMap.value.map)
+        return getMapName(activeMap.value.id, activeMap.value.map)
       }
     })
 

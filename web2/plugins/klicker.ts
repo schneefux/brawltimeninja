@@ -2,7 +2,7 @@ import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScr
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { App, Ref, onServerPrefetch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import config from '~/lib/klicker.conf'
+import config from '@/lib/klicker.cubes'
 import { BrawltimeKlickerService } from './klicker.service'
 import { navigate } from 'vite-plugin-ssr/client/router'
 import visualisations from '@/lib/klicker.visualisations.conf'
@@ -29,6 +29,7 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
 
   app.provide(KlickerConfigInjectionKey, {
     klicker: service,
+    managerUrl: options.managerUrl,
     translate: (key: string) => key,
     useQuery: function<T, E>(key: string, handler: () => Promise<T>) {
       const query = useQuery<T, E>([key], handler)

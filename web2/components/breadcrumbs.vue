@@ -22,7 +22,7 @@
       >
         <span itemprop="name">{{ l.name }}</span>
       </router-link>
-      <meta itemprop="position" :content="index + 1" />
+      <meta itemprop="position" :content="`${index + 1}`" />
     </li>
   </ol>
 </template>
@@ -33,7 +33,7 @@ import { BButton } from '@schneefux/klicker/components'
 
 export interface BreadcrumbLink {
   path: string
-  name: string
+  name?: string
 }
 
 export default defineComponent({
@@ -43,6 +43,7 @@ export default defineComponent({
   props: {
     links: {
       type: Array as PropType<BreadcrumbLink[]>,
+      required: true
     }
   },
 })

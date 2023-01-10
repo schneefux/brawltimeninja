@@ -1,12 +1,11 @@
 <template>
   <div>
     <b-fake-select @open="lightboxOpen = true">
-      <template v-slot:preview><span
-
-        class="w-full text-left"
-      >
-        {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
-      </span></template>
+      <template v-slot:preview>
+        <span class="w-full text-left">
+          {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
+        </span>
+      </template>
     </b-fake-select>
 
     <b-lightbox
@@ -17,56 +16,55 @@
         class="w-full"
         :elevation="0"
       >
-        <template v-slot:content><events-roll
-
-          v-if="allEvents != undefined"
-          :events="allEvents"
-          :mode-filter-default="mode"
-        >
-          <template v-slot="{ event }">
-            <event-picture-card
-              v-if="!event.key.startsWith('all')"
-              :mode="event.mode"
-              :map="event.map"
-              :id="event.id"
-              :class="{
-                'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
-              }"
-              @click="onSelectModeMap({ mode: event.mode, map: event.map })"
-            ></event-picture-card>
-            <event-card
-              v-else-if="event.key != 'all'"
-              :mode="event.mode"
-              :class="{
-                'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
-              }"
-              nobackground
-              @click="onSelectModeMap({ mode: event.mode })"
-            >
-              <template v-slot:preview></template>
-              <template v-slot:content><p
-
-                class="pt-4 h-full flex flex-col justify-center items-center"
+        <template v-slot:content>
+          <events-roll
+            v-if="allEvents != undefined"
+            :events="allEvents"
+            :mode-filter-default="mode"
+          >
+            <template v-slot="{ event }">
+              <event-picture-card
+                v-if="!event.key.startsWith('all')"
+                :mode="event.mode"
+                :map="event.map"
+                :id="event.id"
+                :class="{
+                  'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
+                }"
+                @click="onSelectModeMap({ mode: event.mode, map: event.map })"
+              ></event-picture-card>
+              <event-card
+                v-else-if="event.key != 'all'"
+                :mode="event.mode"
+                :class="{
+                  'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
+                }"
+                nobackground
+                @click="onSelectModeMap({ mode: event.mode })"
               >
-                {{ $t('option.all-maps') }}
-              </p></template>
-            </event-card>
-            <b-card
-              v-else
-              :class="{
-                'bg-primary-400 rounded-2xl': mode == 'all' && map == 'all',
-              }"
-              @click="onSelectModeMap({})"
-            >
-              <template v-slot:content><p
-
-                class="pt-4 h-full flex flex-col justify-center items-center"
+                <template v-slot:preview></template>
+                <template v-slot:content>
+                  <p class="pt-4 h-full flex flex-col justify-center items-center">
+                    {{ $t('option.all-maps') }}
+                  </p>
+                </template>
+              </event-card>
+              <b-card
+                v-else
+                :class="{
+                  'bg-primary-400 rounded-2xl': mode == 'all' && map == 'all',
+                }"
+                @click="onSelectModeMap({})"
               >
-                {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
-              </p></template>
-            </b-card>
-          </template>
-        </events-roll></template>
+                <template v-slot:content>
+                  <p class="pt-4 h-full flex flex-col justify-center items-center">
+                    {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
+                  </p>
+                </template>
+              </b-card>
+            </template>
+          </events-roll>
+        </template>
       </b-card>
     </b-lightbox>
   </div>
@@ -77,7 +75,7 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
@@ -86,7 +84,7 @@ export default defineComponent({
     BLightbox,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -98,8 +96,8 @@ export default defineComponent({
   setup(props) {
     const { $klicker, i18n } = useContext()
 
-    const mode = computed(() => (props.value.mode ?? [])[0])
-    const map = computed(() => (props.value.map ?? [])[0])
+    const mode = computed(() => (props.modelValue.mode ?? [])[0])
+    const map = computed(() => (props.modelValue.map ?? [])[0])
 
     const allEvents = useAsync<EventMetadata[]>(async () => {
       const events = await $klicker.queryAllEvents({})
@@ -126,12 +124,12 @@ export default defineComponent({
     }, 's-mode-map-all-events')
 
     const mapName = computed(() => {
-      const map = (props.value.map ?? [])[0]
+      const map = (props.modelValue.map ?? [])[0]
       if (map == undefined) {
         return ''
       }
 
-      const mode = (props.value.mode ?? [])[0]
+      const mode = (props.modelValue.mode ?? [])[0]
       if (mode == undefined) {
         return ''
       }
@@ -145,7 +143,7 @@ export default defineComponent({
         return map
       }
 
-      return getMapName(i18n, mapRecord.id, map)
+      return getMapName(mapRecord.id, map)
     })
 
     const onSelectModeMap = (value: { mode?: string, map?: string }) => {

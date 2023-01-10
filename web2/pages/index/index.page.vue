@@ -167,7 +167,7 @@
       v-if="events != undefined && events.length > 0"
       :title="$t('index.events.title')"
       v-observe-visibility="{
-        callback: makeVisibilityCallback('maps', 'live_events'),
+        callback: makeVisibilityCallback('live_events'),
         once: true,
       }"
       lazy

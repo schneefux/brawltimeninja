@@ -22,7 +22,7 @@
           >
             <media-img
               :path="`/brawlers/${brawler.id}/avatar`"
-              :alt="brawler.name"
+              :alt="brawler.brawlerName"
               size="160"
               clazz="rounded-md w-12 md:w-16"
             ></media-img>

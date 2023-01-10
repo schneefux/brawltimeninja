@@ -20,7 +20,7 @@
             name="responsive"
             required
             primary
-            @update:modelValue="v => columns = undefined"
+            @update:modelValue="() => columns = undefined"
           ></b-radio>
           <label
             :for="`${prefix}-responsive`"

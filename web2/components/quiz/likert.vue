@@ -22,7 +22,7 @@
           }"
           required
           primary
-          @input="v => $emit('input', { ...value, [id]: parseInt(v) })"
+          @update:modelValue="(v: any) => $emit('update:modelValue', { ...value, [id]: v })"
         ></b-radio>
         <span class="!ml-2 flex-1 text-left">
           <slot name="high" :id="id"></slot>

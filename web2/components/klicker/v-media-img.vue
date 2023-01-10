@@ -1,13 +1,15 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
+    :loading="false"
     :card="card != undefined && { ...card, title }"
     component="v-media-img"
   >
-    <template v-slot:content><media-img
-      
-      :path="path"
-    ></media-img></template>
+    <template v-slot:content>
+      <media-img
+        :path="path"
+      ></media-img>
+    </template>
   </v-card-wrapper>
 </template>
 

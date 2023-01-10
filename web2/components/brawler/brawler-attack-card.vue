@@ -36,7 +36,7 @@ export default defineComponent({
       required: true
     },
     prop: {
-      type: String,
+      type: String as PropType<'attack'|'super'>,
       required: true
     },
     level: {

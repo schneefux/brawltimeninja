@@ -27,9 +27,11 @@ export function useContext() {
   return {
     $klicker: $klicker as BrawltimeKlickerService,
     $api,
+    $supportsWebp: false, // TODO
     $config: {
       mediaUrl: (import.meta.env.MEDIA_URL || 'https://media.brawltime.ninja').replace(/\/$/, ''),
       managerUrl: (import.meta.env.MANAGER_URL || 'https://manager.brawltime.ninja').replace(/\/$/, ''),
+      renderUrl: (import.meta.env.RENDER_URL || 'https://render.brawltime.ninja').replace(/\/$/, ''),
     }, // TODO
     $http: {} as any, // TODO
     i18n: {

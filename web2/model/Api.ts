@@ -1,4 +1,3 @@
-import { ProfileTrackingStatus } from "~/server-middleware/api/services/ProfileUpdaterService";
 import { Player as BrawlstarsPlayer } from "./Brawlstars"
 
 export interface StarPower {

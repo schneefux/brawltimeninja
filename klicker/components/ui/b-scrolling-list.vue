@@ -8,7 +8,7 @@
       <!-- same layout as b-tabs -->
       <li
         v-for="entry in previewItems"
-        :key="`${entry.from}-${entry.item[keyId]}`"
+        :key="`${entry.from}-${entry.item[keyId as any]}`"
         :class="{
           'border-primary-400 text-text': entry.from <= state.end && entry.to >= state.start,
           'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from <= state.end && entry.to >= state.start),

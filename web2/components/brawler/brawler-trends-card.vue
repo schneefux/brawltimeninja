@@ -35,7 +35,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :filter="(e: any) => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
         :dimensions="['day', 'brawler']"
         sort="day"
         metric="useRate"

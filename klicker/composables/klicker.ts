@@ -1,4 +1,4 @@
-import { IKlickerService } from "types";
+import { IKlickerService } from "../types";
 import { inject, InjectionKey, Ref } from "vue";
 
 export interface PluginConfig {

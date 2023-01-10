@@ -58,7 +58,7 @@
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { camelToKebab } from '~/lib/util'
 import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { getMapName } from '~/composables/map'
 import { useI18n } from 'vue-i18n'
 

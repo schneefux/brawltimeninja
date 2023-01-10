@@ -37,7 +37,7 @@ import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
-import { useContext } from '@nuxtjs/composition-api'
+import { useContext } from '~/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({

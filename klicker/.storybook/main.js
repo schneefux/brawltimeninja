@@ -18,16 +18,7 @@ module.exports = {
       }
     }
   }],
-  async viteFinal(config) {
-    const c = mergeConfig(config, {
-      resolve: {
-        alias: [ {
-          find: '#imports',
-          replacement: path.resolve(__dirname, '../fixtures/nuxt.shim.ts')
-        }],
-      },
-    })
-
+  async viteFinal(c) {
     c.plugins = c.plugins.filter(p => p.name != 'storybook:vue-docgen-plugin')
     c.plugins.push(vueDocgen()) // patched so that it does not crash when docgen cannot parse a SFC
 

@@ -4,12 +4,6 @@ import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatClickhouseDate, formatMode, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, idToTag } from "~/lib/util"
 import KlickerService from '@schneefux/klicker/service'
 import { CQuery } from '@schneefux/klicker/components'
-/*
-import visualisations from '~/lib/klicker.visualisations.conf'
-import slicers from '~/lib/klicker.slicers.conf'
-import staticWidgets from '~/lib/klicker.widgets.conf'
-import { dimensionRenderers, metricRenderers } from '~/lib/klicker.renderers'
-*/
 
 export interface EventMetadata {
   key: string

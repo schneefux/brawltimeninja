@@ -5,7 +5,7 @@
       left-toolbar="undo redo clear | h bold italic strikethrough | ul ol hr"
       right-toolbar=""
       mode="edit"
-      @update:modelValue="text => $emit('update:modelValue', text)"
+      @update:modelValue="(text: string) => $emit('update:modelValue', text)"
     ></v-md-editor>
   </div>
 </template>

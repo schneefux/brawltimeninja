@@ -117,14 +117,14 @@ export default defineComponent({
       required: false
     },
     configurator: {
-      type: Object as PropType<{
+      type: Object as PropType<Partial<{
         configureCube: boolean,
         configureMetrics: boolean,
         configureMetricsOptions: string[],
         configureMultipleMetrics: boolean,
         configureDimensions: boolean,
         configureCompareMode: boolean,
-      }>,
+      }>>,
       required: false
     },
     slicer: {

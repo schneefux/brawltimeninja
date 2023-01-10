@@ -17,7 +17,7 @@
 
     <template v-slot:preview>
       <map-img
-        v-if="id != undefined"
+        v-if="id != undefined && map != undefined"
         :id="id"
         :map="map"
         clazz="h-12 w-12 object-contain"

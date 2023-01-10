@@ -9,7 +9,7 @@ export const prefetchStaticAssets = { when: 'VIEWPORT' }
 export { render }
 export { onHydrationEnd }
 
-let app: ReturnType<typeof createApp>
+let app: ReturnType<typeof createApp>['app']
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   if (!app) {
     const params = createApp(pageContext)

@@ -19,7 +19,7 @@ import { oejtsScores } from '~/lib/oejts'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Record<string, number>>,
       required: true
     },
@@ -32,14 +32,17 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: Record<string, number>) { return true },
+  },
   setup(props, { emit }) {
     const questions = Object.keys(oejtsScores).slice(props.start, props.end)
     const model = computed({
       get() {
-        return props.value
+        return props.modelValue
       },
       set(m: Record<string, number>) {
-        emit('input', m)
+        emit('update:modelValue', m)
       }
     })
 

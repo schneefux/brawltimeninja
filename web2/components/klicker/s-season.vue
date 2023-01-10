@@ -4,7 +4,7 @@
     :value="(value.season || [])[0]"
     dark
     sm
-    @input="v => onInput({ season: [v] })"
+    @input="(v: any) => onInput({ season: [v] })"
   >
     <option
       v-for="s in seasons"
@@ -43,7 +43,7 @@ export default defineComponent({
       return await $klicker.queryAllSeasons(props.limit)
     }
 
-    const seasons = useAsync(() => getSeasons())
+    const seasons = useAsync(() => getSeasons(), 's-season-seasons')
 
     watch(() => props.limit, async () => seasons.value = await getSeasons())
 

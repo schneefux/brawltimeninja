@@ -48,7 +48,7 @@ export default defineComponent({
       return await $klicker.queryAllSeasons(props.limit)
     }
 
-    const seasons = useAsync(() => getSeasons())
+    const seasons = useAsync(() => getSeasons(), 'season-exact-seasons')
 
     watch(() => props.limit, async () => seasons.value = await getSeasons())
 

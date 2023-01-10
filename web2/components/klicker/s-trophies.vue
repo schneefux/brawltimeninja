@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useRoute } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({

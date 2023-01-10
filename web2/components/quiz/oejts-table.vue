@@ -1,12 +1,12 @@
 <template>
   <div class="grid grid-cols-[6rem,1fr,6rem] items-center text-center gap-x-1">
     <span class="mt-1 col-span-3 font-semibold">{{ oejtsAbbreviation }}</span>
-    <template v-for="(value, attr) in oejts">
-      <span :key="'l-' + attr" class="text-left">{{ oejtsMap[attr[0]] }}</span>
-      <div
-        :key="'c-' + attr"
-        class="h-2 bg-gray-100 rounded relative"
-      >
+    <template
+      v-for="(value, attr) in oejts"
+      :key="attr"
+    >
+      <span class="text-left">{{ oejtsMap[attr[0]] }}</span>
+      <div class="h-2 bg-gray-100 rounded relative">
         <div
           :style="{ 'width': Math.min(Math.abs(value)/2 * 50, 50) + '%' }"
           :class="['h-full bg-yellow-500 absolute', {
@@ -15,7 +15,7 @@
           }]"
         ></div>
       </div>
-      <span :key="'r-' + attr" class="text-right">{{ oejtsMap[attr[1]] }}</span>
+      <span class="text-right">{{ oejtsMap[attr[1]] }}</span>
     </template>
     <span class="mt-1 col-span-3">{{ $t('oejts.result.oejts') }}</span>
   </div>

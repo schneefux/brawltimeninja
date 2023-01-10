@@ -1,5 +1,6 @@
 <template>
   <brawler-link
+    v-if="brawler != undefined"
     :brawler="brawler"
     :ally="ally"
     :starpower-name="row.dimensions.starpower"

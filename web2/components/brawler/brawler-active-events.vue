@@ -27,10 +27,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useContext, useAsync } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { BScrollingList } from '@schneefux/klicker/components'
+import { useAsync, useContext } from '~/composables/compat'
 
 export default defineComponent({
   components: {

@@ -21,7 +21,7 @@
       <player-mode-card
         :mode="mode.id"
         :battles="battles"
-        :active-events="events"
+        :active-events="events!"
         :player-brawlers="player.brawlers"
         :player-tag="player.tag"
       ></player-mode-card>

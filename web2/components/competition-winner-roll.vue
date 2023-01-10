@@ -53,14 +53,14 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   setup() {
-    const dateFilter = ref<string>(new Date().toISOString().slice(0, 10))
+    const dateFilter = ref<string|undefined>(new Date().toISOString().slice(0, 10))
 
     const datesShown = computed(() => {
       const dates: {
         date: string,
       }[] = []
 
-      const start = new Date(dateFilter.value) ?? new Date()
+      const start = dateFilter.value ? new Date(dateFilter.value) : new Date()
       const end = new Date(start.valueOf())
       end.setDate(end.getDate() - 3*31)
 

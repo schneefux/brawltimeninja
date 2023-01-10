@@ -56,12 +56,13 @@
         md
         @share="sharepicTriggered"
       ></share-render-button>
-      <template v-slot:actions><b-button
-
-        primary
-        md
-        @click="$emit('restart')"
-      >{{ $t('action.restart') }}</b-button></template>
+      <template v-slot:actions>
+        <b-button
+          primary
+          md
+          @click="$emit('restart')"
+        >{{ $t('action.restart') }}</b-button>
+      </template>
     </div></template>
   </b-card>
 </template>

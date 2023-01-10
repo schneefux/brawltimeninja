@@ -48,7 +48,7 @@ export default defineComponent({
   components: {
     CWidget,
     // does not support SSR
-    Moveable: defineAsyncComponent(() => import('vue-moveable')),
+    Moveable: defineAsyncComponent(() => import('vue3-moveable')),
   },
   props: {
     container: {
@@ -102,46 +102,46 @@ export default defineComponent({
     onMounted(() => setTimeout(() => moveable.value!.updateRect(), 1000))
 
     const handlers = {
-      onDragStart(e) {
+      onDragStart(e: any) {
         e.set(frame.translate)
       },
-      onDrag(e) {
+      onDrag(e: any) {
         frame.translate = e.beforeTranslate
       },
-      onDragEnd(e) {
+      onDragEnd(e: any) {
         sync()
       },
-      onRotateStart(e) {
+      onRotateStart(e: any) {
         e.set(frame.rotate)
       },
-      onRotate(e) {
+      onRotate(e: any) {
         frame.rotate = e.beforeRotate
       },
-      onRotateEnd(e) {
+      onRotateEnd(e: any) {
         sync()
       },
-      onScaleStart(e) {
+      onScaleStart(e: any) {
         e.set(frame.scale)
       },
-      onScale(e) {
+      onScale(e: any) {
         frame.scale = e.scale
       },
-      onScaleEnd(e) {
+      onScaleEnd(e: any) {
         sync()
       },
-      onResizeStart(e) {
+      onResizeStart(e: any) {
       },
-      onResize(e) {
+      onResize(e: any) {
         const beforeTranslate = e.drag.beforeTranslate
         frame.translate = beforeTranslate
 
         frame.width = e.width
         frame.height = e.height
       },
-      onResizeEnd(e) {
+      onResizeEnd(e: any) {
         sync()
       },
-      onRender(e) {
+      onRender(e: any) {
         Object.assign(e.target.style, render(frame, spec.value))
       },
     }

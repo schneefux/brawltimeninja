@@ -8,7 +8,7 @@
     :checked="value == modelValue"
     :value="value"
     class="form-radio transition duration-100 ease-in-out focus:ring-0"
-    @input="(e: any) => $emit('update:modelValue', e.target.value)"
+    @input="(e) => $emit('update:modelValue', value as any)"
   >
 </template>
 

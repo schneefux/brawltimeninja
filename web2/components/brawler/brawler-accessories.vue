@@ -1,15 +1,18 @@
 <template>
   <b-scrolling-dashboard>
-    <template v-for="prop in ['gadgets', 'starpowers']">
+    <template
+      v-for="prop in ['gadgets', 'starpowers']"
+      :key="prop"
+    >
       <template v-if="scrapedData != undefined">
         <b-dashboard-cell
-          v-for="accessory in scrapedData[prop]"
-          :key="prop + '-' + accessory.name"
+          v-for="accessory in scrapedData[prop as 'gadgets'|'starpowers']"
+          :key="accessory.name"
           :rows="2"
           :columns="3"
         >
           <brawler-accessory-card
-            :prop="prop"
+            :prop="prop as 'gadgets'|'starpowers'"
             :accessory="accessory"
           ></brawler-accessory-card>
         </b-dashboard-cell>
@@ -29,9 +32,11 @@
       :columns="3"
     >
       <b-card :title="$t('info')">
-        <template v-slot:content><p >
-          {{ $t('starpower-gadget-comparison.info') }}
-        </p></template>
+        <template v-slot:content>
+          <p>
+            {{ $t('starpower-gadget-comparison.info') }}
+          </p>
+        </template>
       </b-card>
     </b-dashboard-cell>
   </b-scrolling-dashboard>

@@ -94,9 +94,9 @@ export default defineComponent({
     const consentPopupVisible = computed(() => store.consentPopupVisible)
 
     const disableCookies = () => {
-      store.commit('hideConsentPopup')
-      store.commit('setCookiesAllowed', false)
-      store.commit('setAdsAllowed', false)
+      store.hideConsentPopup()
+      store.setCookiesAllowed(false)
+      store.setAdsAllowed(false)
       hideAds()
     }
     const enableCookies = () => {

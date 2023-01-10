@@ -73,7 +73,7 @@ export default defineComponent({
 
       return [{
         ...r,
-        key: `${props.idKey != undefined ? props.data[props.idKey] : index}-${r.key}`,
+        key: `${props.idKey != undefined ? props.data[props.idKey as any] : index}-${r.key}`,
         value,
       }]
     }))

@@ -26,13 +26,13 @@
     <div class="w-1/2 pr-1">
       <div class="grid grid-cols-2 gap-x-2 items-center">
         <span
-          v-if="player.club.tag != undefined"
+          v-if="player.club?.tag != undefined"
           class="text-right text-2xl"
         >
           {{ $t('club') }}
         </span>
         <span
-          v-if="player.club.tag != undefined"
+          v-if="player.club?.tag != undefined"
           class="text-red-500 text-2xl font-semibold"
         >
           {{ player.club.name }}
@@ -56,13 +56,13 @@
       <div
         class="mt-2 -ml-3 pr-3 w-80"
         :class="{
-          'h-28': player.club.tag != undefined,
-          'h-36': player.club.tag == undefined,
+          'h-28': player.club?.tag != undefined,
+          'h-36': player.club?.tag == undefined,
         }"
       >
         <history-graph :player-tag="player.tag">
           <template v-slot:empty><p
-            
+
             class="px-20 pt-12 text-center"
           >
             {{ $t('player.no-history') }}
@@ -128,6 +128,7 @@
 import { Player } from '@/model/Brawlstars'
 import { xpToHours } from '~/lib/util'
 import { computed, defineComponent, PropType } from 'vue'
+import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   props: {
@@ -157,9 +158,12 @@ export default defineComponent({
       }))
       .sort((b1, b2) => b2.trophies - b1.trophies))
 
+    const { $config } = useContext()
+
     return {
       hours,
       bestBrawlers,
+      $config,
     }
   },
 })

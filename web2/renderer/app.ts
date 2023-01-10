@@ -39,10 +39,10 @@ function createApp(pageContext: PageContext) {
   })
   let rootComponent: InstanceType<typeof PageWithWrapper>
 
-  const app = createSSRApp(PageWithWrapper)
+  const ssrApp = createSSRApp(PageWithWrapper)
 
   // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
-  Object.assign(app, {
+  const app = Object.assign(ssrApp, {
     changePage: (pageContext: PageContext) => {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)

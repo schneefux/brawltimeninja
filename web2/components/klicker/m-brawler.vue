@@ -1,6 +1,6 @@
 <template>
   <brawler-link
-    :brawler="row.metricsRaw.brawler"
+    :brawler="`${row.metricsRaw.brawler}`"
   ></brawler-link>
 </template>
 
