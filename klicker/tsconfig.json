@@ -21,7 +21,8 @@
     "declarationMap": true,
     "outDir": "dist",
     "types": [
-      "@types/node"
+      "@types/node",
+      "vite/client"
     ],
   },
   "exclude": [

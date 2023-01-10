@@ -9,7 +9,7 @@
           v-for="(entry, index) in response.data.slice(page*pageSize, (page+1)*pageSize)"
           :key="entry.id"
           :title="dimensions.map(d => entry.dimensions[d.id]).join(', ')"
-          :elevation="(card != undefined ? card.elevation : 1) + 1"
+          :elevation="(card && card.elevation || 1) + 1"
         >
           <template v-slot:preview>
             <span class="text-right text-lg text-text/75">#{{ index + page*pageSize + 1 }}</span>

@@ -1,12 +1,31 @@
 import { PropType } from 'vue'
 import { CubeComparingResponse, CubeResponse } from './types'
 
+type CardProps = Partial<{
+  // TODO infer these
+  tag: string
+  link: string
+  title: string
+  titleLink: string
+  subtitle: string
+  subtitleLink: string
+  background: string
+  icon: string
+  iconAlt: string
+  color: string
+  textColor: string
+  dense: boolean
+  elevation: number
+  loading: boolean
+  noFilter: boolean
+}>
+
 /**
  * Props definition for static components
  */
 export const StaticProps = {
   card: {
-    type: undefined,
+    type: Object as PropType<CardProps|false>,
     required: false as false
   },
 }

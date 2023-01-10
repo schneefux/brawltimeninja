@@ -56,7 +56,6 @@ import { VisualisationProps } from '../../props'
 import BTable, { Column } from '../ui/b-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
-import { Location } from 'vue-router'
 import { computed, defineComponent } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
@@ -121,7 +120,7 @@ export default defineComponent({
 
     const rows = computed(() => props.response.data)
 
-    const linkWithParams = computed<Location|undefined>(() => {
+    const linkWithParams = computed(() => {
       if (props.card != undefined && props.linkPath != undefined) {
         return {
           path: props.linkPath,

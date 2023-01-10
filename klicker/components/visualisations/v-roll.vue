@@ -19,7 +19,7 @@
               <d-auto
                 v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
                 :key="title.id"
-                :ref="`item-${title.id}`"
+                :ref="el => setItemRef(title.id, el)"
                 :response="response"
                 :row="title.entry"
                 tag="td"
@@ -87,8 +87,6 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
-
     const { translate } = useKlicker()
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
@@ -140,6 +138,8 @@ export default defineComponent({
 
     const wrapper = ref<HTMLElement>()
     const heading = ref<HTMLElement>()
+    const itemRefs = ref<Record<string, InstanceType<typeof DAuto>|null>>({})
+    const setItemRef = (id: string, el: unknown|null) => itemRefs.value[id] = el as InstanceType<typeof DAuto>|null
     const page = ref(0)
     const pageSize = ref(headings.value.length)
 
@@ -148,14 +148,14 @@ export default defineComponent({
         return pageSize.value
       }
 
-      const firstItem = Object.entries(refs)
-        .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
+      const firstItem = Object.values(itemRefs.value)
+        .find(v => v != undefined)
 
       if (firstItem == undefined) {
         return pageSize.value
       }
 
-      const firstItemElement = firstItem[1]![0].$el as HTMLElement
+      const firstItemElement = firstItem.$el
       const pxPerItem = firstItemElement.getBoundingClientRect().width
 
       const pxForHeader = heading.value.getBoundingClientRect().width
@@ -210,6 +210,7 @@ export default defineComponent({
       headings,
       body,
       dimensionName,
+      setItemRef,
     }
   },
 })

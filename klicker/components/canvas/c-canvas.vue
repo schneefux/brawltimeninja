@@ -50,9 +50,8 @@
       class="mt-8"
     >
       <c-widget-editor
-        :model-value="widgets[selectedWidgetId]"
+        v-model="widgets[selectedWidgetId]"
         :default-query="defaultQuery"
-        @update:modelValue="updateWidget"
         @delete="deleteSelectedWidget"
       ></c-widget-editor>
     </div>
@@ -88,11 +87,10 @@
         <c-moveable-widget
           v-for="(w, id) in widgets"
           :key="w.id"
-          :model-value="widgets[id]"
-          :container="container"
+          v-model="widgets[id]"
+          :container="container!"
           :bounds="bounds"
           class="panzoom-exclude"
-          @update:modelValue="updateWidget"
           @click="selectedWidgetId = w.id"
         ></c-moveable-widget>
         <!--
@@ -225,14 +223,12 @@ export default defineComponent({
           height: 0,
         },
       }
-      updateWidget(newWidget)
+      widgets.value[id] = newWidget
       selectedWidgetId.value = id
     }
 
-    const updateWidget = (widget: ReportWidget) => widgets.value = { ...widgets.value, [widget.id]: widget }
-    const deleteSelectedWidget = (widgetId: string) => {
-      widgets.value = Object.fromEntries(Object.entries(widgets.value)
-        .filter(([id, widget]) => id != selectedWidgetId.value))
+    const deleteSelectedWidget = () => {
+      delete widgets.value[selectedWidgetId.value!]
       selectedWidgetId.value = undefined
     }
 
@@ -255,7 +251,6 @@ export default defineComponent({
       height,
       widgets,
       addWidget,
-      updateWidget,
       deleteSelectedWidget,
       selectedWidgetId,
       faSearchMinus,

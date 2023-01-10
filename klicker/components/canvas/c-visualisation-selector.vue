@@ -11,10 +11,9 @@
               for="`${prefix}-widget`"
             >Widget</label>
             <b-select
+              v-model="component"
               :id="`${prefix}-widget`"
-              :model-value="component"
               sm
-              @update:modelValue="c => component = c"
             >
               <option
                 v-for="v in visualisations"
@@ -35,7 +34,7 @@
               <component
                 v-bind="propSpec.props"
                 :id="`${prefix}-${prop}`"
-                :model-value="value.props[prop]"
+                :model-value="modelValue.props[prop]"
                 :is="propSpec.import || propSpec.component"
                 @update:modelValue="v => setWidgetProp(prop, v)"
               ></component>
@@ -102,7 +101,7 @@ export default defineComponent({
   },
   emits: {
     ['delete']() { return true },
-    ['update:modelValue'](value: CubeResponse|CubeComparingResponse) { return true },
+    ['update:modelValue'](value: Widget) { return true },
   },
   setup(props, { emit }) {
     const { $klicker } = useKlicker()

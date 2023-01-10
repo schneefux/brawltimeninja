@@ -1,10 +1,9 @@
 <template>
   <input
-    v-bind="$attrs"
     type="checkbox"
     :checked="value"
     class="form-input rounded transition duration-100 ease-in-out focus:ring-0 bg-contrast/5 hover:bg-contrast/10 focus:bg-contrast/20 text-contrast/30 checked:text-contrast/40"
-    @input="$attrs.onInput && $attrs.onInput($event.target.checked)"
+    @input="(e: any) => $emit('update:modelValue', e.target.checked)"
   >
 </template>
 
@@ -16,6 +15,9 @@ export default defineComponent({
     value: {
       type: Boolean
     },
+  },
+  emits: {
+    ['update:modelValue'](value: boolean) { return true },
   },
 })
 </script>

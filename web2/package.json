@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "dev": "nodemon -e ts -x node --loader ts-node/esm ./server/index.ts",
+    "dev": "nodemon -e ts -x ts-node ./server/index.ts",
+    "typecheck": "vue-tsc --noEmit",
     "build": "vite build",
-    "start": "cross-env NODE_ENV=production ts-node ./server/index.ts"
+    "start": "cross-env NODE_ENV=production ts-node --swc ./server/index.ts"
   },
   "dependencies": {
     "@apla/clickhouse": "^1.6.4",
@@ -55,6 +56,7 @@
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.3",
-    "unplugin-vue-components": "^0.22.12"
+    "unplugin-vue-components": "^0.22.12",
+    "vue-tsc": "^1.0.24"
   }
 }

@@ -75,9 +75,8 @@
       class="mt-4"
     >
       <c-widget-editor
-        :value="widgetsKeyed[selectedWidgetId]"
+        v-model="widgetsKeyed[selectedWidgetId]"
         :default-query="defaultQuery"
-        @update:modelValue="updateWidget"
         @delete="deleteSelectedWidget"
       >
         <b-dashboard-cell
@@ -96,11 +95,10 @@
                   Columns
                 </label>
                 <b-number
-                  :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
+                  v-model="widgetsKeyed[selectedWidgetId].frame.columns"
                   :id="`${prefix}-width`"
                   min="1"
                   max="8"
-                  @update:modelValue="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
                 ></b-number>
 
                 <label
@@ -109,11 +107,10 @@
                   Rows
                 </label>
                 <b-number
-                  :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
+                  v-model="widgetsKeyed[selectedWidgetId].frame.rows"
                   :id="`${prefix}-rows`"
                   min="1"
                   max="8"
-                  @update:modelValue="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
                 ></b-number>
               </div>
             </template>
@@ -179,6 +176,7 @@ export default defineComponent({
   },
   emits: {
     ['update:modelValue'](value: Grid) { return true },
+    ['delete']() { return true },
   },
   setup(props, { emit }) {
     const selectedWidgetId = ref<string>()
@@ -218,30 +216,13 @@ export default defineComponent({
           columns: 2,
         },
       }
-      updateWidget(newWidget)
+      widgetsKeyed.value[id] = newWidget
       selectedWidgetId.value = id
     }
 
-    const updateWidget = (widget: GridWidget) => widgetsKeyed.value = {
-      ...widgetsKeyed.value,
-      [widget.id]: widget,
-    }
     const deleteSelectedWidget = () => {
       widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
       selectedWidgetId.value = undefined
-    }
-
-    const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => {
-      widgetsKeyed.value = {
-        ...widgetsKeyed.value,
-        [widgetId]: {
-          ...widgetsKeyed.value[widgetId],
-          frame: {
-            ...widgetsKeyed.value[widgetId].frame,
-            ...framePartial,
-          },
-        },
-      }
     }
 
     const title = computed({
@@ -271,8 +252,6 @@ export default defineComponent({
       widgets,
       widgetsKeyed,
       addWidget,
-      updateWidget,
-      updateWidgetFrame,
       deleteSelectedWidget,
       selectedWidgetId,
     }

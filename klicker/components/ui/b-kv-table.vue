@@ -65,18 +65,18 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const table = computed(() => props.rows.map((r, index) => {
+    const table = computed(() => props.rows.flatMap((r, index) => {
       const value = r.key.split('.').reduce((a, b) => a[b], props.data)
       if (value == undefined) {
-        return undefined
+        return []
       }
 
-      return {
+      return [{
         ...r,
         key: `${props.idKey != undefined ? props.data[props.idKey] : index}-${r.key}`,
         value,
-      }
-    }).filter(row => row != undefined))
+      }]
+    }))
 
     return {
       table,

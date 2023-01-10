@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, resolveComponent } from 'vue'
+import { defineComponent, h, resolveComponent, Component } from 'vue'
 import { StaticProps } from '../../props'
 import BCard from '../ui/b-card.vue'
 import BBigstat from '../ui/b-bigstat.vue'
@@ -29,13 +29,12 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    const wrapperComponent = resolveComponent(props.wrapper)
-
     // TODO add 'open in dashboard' button
     return () => {
       if (props.card != undefined && props.card !== false) {
+        const wrapperComponent = resolveComponent(props.wrapper) as Component
         return h(wrapperComponent, {
-          ...props.card as any,
+          ...props.card,
           loading: props.loading,
         }, slots)
       } else {

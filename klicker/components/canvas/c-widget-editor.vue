@@ -48,6 +48,7 @@
           :configurator="{
             configureCube: true,
             configureMetrics: true,
+            configureMetricsOptions: [],
             configureMultipleMetrics: true,
             configureDimensions: true,
             configureCompareMode: true,
@@ -125,7 +126,8 @@ export default defineComponent({
     },
   },
   emits: {
-    ['update:modelValue'](value: CubeResponse|CubeComparingResponse) { return true },
+    ['update:modelValue'](value: Widget) { return true },
+    ['delete']() { return true },
   },
   setup(props, { emit }) {
     const withQuery = computed({

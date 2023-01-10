@@ -80,7 +80,7 @@
                 v-else
                 :href="titleLink || link"
                 class="contents"
-                @click.stop="e => onClickLink() || navigate(e)"
+                @click.stop="e => onClickLink() || navigate(titleLink || link!)"
               >{{ title }}</a>
             </template>
             <template v-else>
@@ -107,7 +107,7 @@
                 v-else
                 :href="subtitleLink"
                 class="contents"
-                @click.stop="e => onClickLink() || navigate(e)"
+                @click.stop="e => onClickLink() || navigate(subtitleLink!)"
               >{{ subtitle }}</a>
             </template>
             <template v-else>
@@ -239,17 +239,9 @@ export default defineComponent({
      *   4. default card link
      */
 
-    const triggerClick = () => {
-      if (Array.isArray(attrs.onClick)) {
-        attrs.onClick.forEach((listener) => listener())
-      } else {
-        attrs.onClick()
-      }
-    }
-
     const onClick = () => {
       if (attrs.onClick != undefined) {
-        triggerClick()
+        (<any> attrs).onClick()
         return true
       }
 
@@ -268,7 +260,7 @@ export default defineComponent({
 
     const onClickLink = () => {
       if (attrs.onClick != undefined) {
-        triggerClick()
+        (<any> attrs).onClick()
         return true
       }
 
@@ -277,11 +269,7 @@ export default defineComponent({
 
     const onClickHeader = () => {
       if (attrs.onClickHeader != undefined) {
-        if (Array.isArray(attrs.onClickHeader)) {
-          attrs.onClickHeader.forEach((listener) => listener())
-        } else {
-          attrs.onClickHeader()
-        }
+        (<any>attrs).onClickHeader()
         return true
       }
 

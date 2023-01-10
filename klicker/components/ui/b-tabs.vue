@@ -79,10 +79,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const headerRefs = {} as Record<string, HTMLElement|null>
-    const setHeaderRef = (id: string, el: HTMLElement|null) => headerRefs[id] = el
-    const tabRefs = {} as Record<string, HTMLElement|null>
-    const setTabRef = (id: string, el: HTMLElement|null) => tabRefs[id] = el
+    const headerRefs = ref<Record<string, HTMLElement|null>>({})
+    const setHeaderRef = (id: string, el: unknown|null) => headerRefs.value[id] = el as HTMLElement|null
+    const tabRefs = ref<Record<string, HTMLElement|null>>({})
+    const setTabRef = (id: string, el: unknown|null) => tabRefs.value[id] = el as HTMLElement|null
     const tabContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
     const headerContainer = ref<HTMLElement>()
@@ -100,7 +100,7 @@ export default defineComponent({
     }
 
     const scrollTabHeaderIntoView = (id: string) => {
-      const headerElement = headerRefs[id]
+      const headerElement = headerRefs.value[id]
       if (headerElement == undefined) {
         return
       }
@@ -119,7 +119,7 @@ export default defineComponent({
     }
 
     const scrollToTab = (tab: Tab) => {
-      const tabElement = tabRefs[tab.slot]
+      const tabElement = tabRefs.value[tab.slot]
       if (tabElement == undefined) {
         return
       }
@@ -157,7 +157,7 @@ export default defineComponent({
 
     onMounted(() => {
       for (const tab of props.tabs) {
-        const tabElement = tabRefs[tab.slot]
+        const tabElement = tabRefs.value[tab.slot]
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           tabVisibility.value = {
