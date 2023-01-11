@@ -21,7 +21,7 @@
               <component
                 :is="component.component"
                 v-bind="data"
-                card
+                :card="{}"
               ></component>
             </template>
           </c-query>
@@ -35,274 +35,271 @@
         nav-class="top-14 lg:top-0 z-20"
         class="mt-8"
       >
-        <template v-slot:brawlers><b-dashboard
-
-          class="lg:dashboard--margin-2"
-          responsive
-        >
-          <b-dashboard-cell
-            :columns="4"
-            :rows="5"
-            hide-empty
+        <template v-slot:brawlers>
+          <b-dashboard
+            class="lg:dashboard--margin-2"
+            responsive
           >
-            <map-best-brawlers-table
+            <b-dashboard-cell
+              :columns="4"
+              :rows="5"
+              hide-empty
+            >
+              <map-best-brawlers-table
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('brawlers'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+              ></map-best-brawlers-table>
+            </b-dashboard-cell>
+
+            <b-dashboard-cell
+              v-if="mode != 'soloShowdown' && mode != 'duels'"
+              :columns="4"
+              :rows="5"
+              hide-empty
+            >
+              <map-best-teams-table
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('teams'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+              ></map-best-teams-table>
+            </b-dashboard-cell>
+
+            <ad-cell
+              :columns="3"
+              :rows="2"
+              ad-slot="4623162753"
+            ></ad-cell>
+
+            <map-insights
               v-observe-visibility="{
-                callback: makeVisibilityCallback('brawlers'),
+                callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
               :id="id"
               :slices="slices"
-            ></map-best-brawlers-table>
-          </b-dashboard-cell>
+              tab="brawlers"
+            ></map-insights>
 
-          <b-dashboard-cell
-            v-if="mode != 'soloShowdown' && mode != 'duels'"
-            :columns="4"
-            :rows="5"
-            hide-empty
-          >
-            <map-best-teams-table
+            <map-balance-chart
+              :id="id"
+              :slices="slices"
               v-observe-visibility="{
-                callback: makeVisibilityCallback('teams'),
+                callback: makeVisibilityCallback('charts'),
+                once: true,
+              }"
+            ></map-balance-chart>
+
+            <b-dashboard-cell
+              :columns="5"
+              :rows="4"
+              ssr-key="map-winrate-userate-chart"
+              hide-empty
+              lazy
+            >
+              <map-winrate-userate-chart
+                :id="id"
+                :slices="slices"
+              ></map-winrate-userate-chart>
+            </b-dashboard-cell>
+
+            <b-dashboard-cell
+              :columns="6"
+              :rows="4"
+              ssr-key="map-trend-chart"
+              hide-empty
+              lazy
+            >
+              <map-trend-chart
+                :id="id"
+                :slices="slices"
+              ></map-trend-chart>
+            </b-dashboard-cell>
+
+            <b-dashboard-cell
+              :columns="3"
+              :rows="2"
+            >
+              <metric-info :metric="adjustedWinRate"></metric-info>
+            </b-dashboard-cell>
+          </b-dashboard>
+        </template>
+
+        <template v-slot:leaderboard>
+          <b-dashboard responsive>
+            <b-dashboard-cell
+              :columns="4"
+              :rows="5"
+              ssr-key="map-best-players-table"
+              hide-empty
+              lazy
+            >
+              <map-best-players-table
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('leaderboard'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+              ></map-best-players-table>
+            </b-dashboard-cell>
+
+            <ad-cell
+              :columns="8"
+              :rows="3"
+              ad-slot="4623162753"
+            ></ad-cell>
+          </b-dashboard>
+        </template>
+
+        <template v-slot:starpowers>
+          <b-dashboard responsive>
+            <b-dashboard-cell
+              :columns="4"
+              :rows="5"
+              ssr-key="map-best-starpowers-table"
+              hide-empty
+              lazy
+            >
+              <map-best-accessory-table
+                key="starpowers-table"
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('starpowers'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+                kind="starpowers"
+              ></map-best-accessory-table>
+            </b-dashboard-cell>
+
+            <map-insights
+              v-observe-visibility="{
+                callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
               :id="id"
               :slices="slices"
-            ></map-best-teams-table>
-          </b-dashboard-cell>
+              tab="starpowers"
+            ></map-insights>
 
-          <ad-cell
-            :columns="3"
-            :rows="2"
-            ad-slot="4623162753"
-          ></ad-cell>
+            <b-dashboard-cell
+              :columns="3"
+              :rows="2"
+            >
+              <gadget-starpower-disclaimer
+                card
+              ></gadget-starpower-disclaimer>
+            </b-dashboard-cell>
 
-          <map-insights
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('insights'),
-              once: true,
-            }"
-            :id="id"
-            :slices="slices"
-            tab="brawlers"
-          ></map-insights>
+            <ad-cell
+              :columns="5"
+              :rows="3"
+              ad-slot="4623162753"
+            ></ad-cell>
+          </b-dashboard>
+        </template>
 
-          <map-balance-chart
-            :id="id"
-            :slices="slices"
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('charts'),
-              once: true,
-            }"
-          ></map-balance-chart>
+        <template v-slot:gadgets>
+          <b-dashboard responsive>
+            <b-dashboard-cell
+              :columns="4"
+              :rows="5"
+              ssr-key="map-best-gadgets-table"
+              hide-empty
+              lazy
+            >
+              <map-best-accessory-table
+                key="gadgets-table"
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('gadgets'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+                kind="gadgets"
+              ></map-best-accessory-table>
+            </b-dashboard-cell>
 
-          <b-dashboard-cell
-            :columns="5"
-            :rows="4"
-            ssr-key="map-winrate-userate-chart"
-            hide-empty
-            lazy
-          >
-            <map-winrate-userate-chart
-              :id="id"
-              :slices="slices"
-            ></map-winrate-userate-chart>
-          </b-dashboard-cell>
-
-          <b-dashboard-cell
-            :columns="6"
-            :rows="4"
-            ssr-key="map-trend-chart"
-            hide-empty
-            lazy
-          >
-            <map-trend-chart
-              :id="id"
-              :slices="slices"
-            ></map-trend-chart>
-          </b-dashboard-cell>
-
-          <b-dashboard-cell
-            :columns="3"
-            :rows="2"
-          >
-            <metric-info :metric="adjustedWinRate"></metric-info>
-          </b-dashboard-cell>
-        </b-dashboard></template>
-
-        <template v-slot:leaderboard><b-dashboard
-
-          responsive
-        >
-          <b-dashboard-cell
-            :columns="4"
-            :rows="5"
-            ssr-key="map-best-players-table"
-            hide-empty
-            lazy
-          >
-            <map-best-players-table
+            <map-insights
               v-observe-visibility="{
-                callback: makeVisibilityCallback('leaderboard'),
+                callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
               :id="id"
               :slices="slices"
-            ></map-best-players-table>
-          </b-dashboard-cell>
+              tab="gadgets"
+            ></map-insights>
 
-          <ad-cell
-            :columns="8"
-            :rows="3"
-            ad-slot="4623162753"
-          ></ad-cell>
-        </b-dashboard></template>
+            <b-dashboard-cell
+              :columns="3"
+              :rows="2"
+            >
+              <gadget-starpower-disclaimer
+                card
+              ></gadget-starpower-disclaimer>
+            </b-dashboard-cell>
 
-        <template v-slot:starpowers><b-dashboard
+            <ad-cell
+              :columns="5"
+              :rows="3"
+              ad-slot="4623162753"
+            ></ad-cell>
+          </b-dashboard>
+        </template>
 
-          responsive
-        >
-          <b-dashboard-cell
-            :columns="4"
-            :rows="5"
-            ssr-key="map-best-starpowers-table"
-            hide-empty
-            lazy
-          >
-            <map-best-accessory-table
-              key="starpowers-table"
+        <template v-slot:gears>
+          <b-dashboard responsive>
+            <b-dashboard-cell
+              :columns="5"
+              :rows="2"
+              ssr-key="map-best-gears-table"
+              hide-empty
+              lazy
+            >
+              <map-best-accessory-roll
+                v-observe-visibility="{
+                  callback: makeVisibilityCallback('gears'),
+                  once: true,
+                }"
+                :id="id"
+                :slices="slices"
+                kind="gears"
+              ></map-best-accessory-roll>
+            </b-dashboard-cell>
+
+            <map-insights
               v-observe-visibility="{
-                callback: makeVisibilityCallback('starpowers'),
+                callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
               :id="id"
               :slices="slices"
-              kind="starpowers"
-            ></map-best-accessory-table>
-          </b-dashboard-cell>
+              tab="gears"
+            ></map-insights>
 
-          <map-insights
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('insights'),
-              once: true,
-            }"
-            :id="id"
-            :slices="slices"
-            tab="starpowers"
-          ></map-insights>
+            <b-dashboard-cell
+              :columns="3"
+              :rows="2"
+            >
+              <gadget-starpower-disclaimer
+                card
+              ></gadget-starpower-disclaimer>
+            </b-dashboard-cell>
 
-          <b-dashboard-cell
-            :columns="3"
-            :rows="2"
-          >
-            <gadget-starpower-disclaimer
-              card
-            ></gadget-starpower-disclaimer>
-          </b-dashboard-cell>
-
-          <ad-cell
-            :columns="5"
-            :rows="3"
-            ad-slot="4623162753"
-          ></ad-cell>
-        </b-dashboard></template>
-
-        <template v-slot:gadgets><b-dashboard
-
-          responsive
-        >
-          <b-dashboard-cell
-            :columns="4"
-            :rows="5"
-            ssr-key="map-best-gadgets-table"
-            hide-empty
-            lazy
-          >
-            <map-best-accessory-table
-              key="gadgets-table"
-              v-observe-visibility="{
-                callback: makeVisibilityCallback('gadgets'),
-                once: true,
-              }"
-              :id="id"
-              :slices="slices"
-              kind="gadgets"
-            ></map-best-accessory-table>
-          </b-dashboard-cell>
-
-          <map-insights
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('insights'),
-              once: true,
-            }"
-            :id="id"
-            :slices="slices"
-            tab="gadgets"
-          ></map-insights>
-
-          <b-dashboard-cell
-            :columns="3"
-            :rows="2"
-          >
-            <gadget-starpower-disclaimer
-              card
-            ></gadget-starpower-disclaimer>
-          </b-dashboard-cell>
-
-          <ad-cell
-            :columns="5"
-            :rows="3"
-            ad-slot="4623162753"
-          ></ad-cell>
-        </b-dashboard></template>
-
-        <template v-slot:gears><b-dashboard
-
-          responsive
-        >
-          <b-dashboard-cell
-            :columns="5"
-            :rows="2"
-            ssr-key="map-best-gears-table"
-            hide-empty
-            lazy
-          >
-            <map-best-accessory-roll
-              v-observe-visibility="{
-                callback: makeVisibilityCallback('gears'),
-                once: true,
-              }"
-              :id="id"
-              :slices="slices"
-              kind="gears"
-            ></map-best-accessory-roll>
-          </b-dashboard-cell>
-
-          <map-insights
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('insights'),
-              once: true,
-            }"
-            :id="id"
-            :slices="slices"
-            tab="gears"
-          ></map-insights>
-
-          <b-dashboard-cell
-            :columns="3"
-            :rows="2"
-          >
-            <gadget-starpower-disclaimer
-              card
-            ></gadget-starpower-disclaimer>
-          </b-dashboard-cell>
-
-          <ad-cell
-            :columns="5"
-            :rows="3"
-            ad-slot="4623162753"
-          ></ad-cell>
-        </b-dashboard></template>
+            <ad-cell
+              :columns="5"
+              :rows="3"
+              ad-slot="4623162753"
+            ></ad-cell>
+          </b-dashboard>
+        </template>
       </b-tabs>
     </template>
   </c-dashboard>
@@ -318,6 +315,9 @@ import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { winRateAdjMetric } from '~/lib/klicker.cubes'
 import { useSyncSlicesAndRoute } from '~/composables/link'
+import VLastUpdate from '~/components/klicker/v-last-update.vue'
+import VSampleSize from '~/components/klicker/v-sample-size.vue'
+import VMoe from '~/components/klicker/v-moe.vue'
 
 export default defineComponent({
   directives: {
@@ -329,6 +329,9 @@ export default defineComponent({
     BDashboardCell,
     BTabs,
     BDashboard,
+    VLastUpdate,
+    VSampleSize,
+    VMoe,
   },
   props: {
     mode: {

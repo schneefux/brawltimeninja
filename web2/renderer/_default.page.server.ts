@@ -1,10 +1,10 @@
 import { renderToNodeStream } from '@vue/server-renderer'
-import { escapeInject } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
 import { createApp } from './app'
-import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import { dehydrate } from '@tanstack/vue-query'
+import { renderSSRHead } from '@unhead/ssr'
 
 export { passToClient }
 export { render }
@@ -12,7 +12,7 @@ export { render }
 const passToClient = ['pageProps', 'documentProps']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const { app, queryClient } = createApp(pageContext)
+  const { app, head, queryClient } = createApp(pageContext)
 
   const stream = await renderToNodeStream(app)
   const waitUntilNotFetching = () => new Promise(resolve => {
@@ -29,17 +29,17 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   }
   const vueQueryState = dehydrate(queryClient)
 
-  const title = getPageTitle(pageContext)
+  const payload = await renderSSRHead(head)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang="en">
+    <html${payload.htmlAttrs}>
       <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>${title}</title>
+        ${dangerouslySkipEscape(payload.headTags)}
       </head>
-      <body>
+      <body${payload.bodyAttrs}>
+        ${payload.bodyTagsOpen}
         <div id="app" class="dark">${stream}</div>
+        ${payload.bodyTags}
       </body>
     </html>`
 

@@ -1,13 +1,14 @@
-import { App, computed, inject, onServerPrefetch, Ref } from "vue";
+import { App, computed, inject, onServerPrefetch, Ref } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { localePath } from './locale-path'
 import { usePageContext } from '~/renderer/usePageContext'
-import { navigate } from "vite-plugin-ssr/client/router";
-import { BrawltimeKlickerService } from "@/plugins/klicker.service";
-import { TrpcInjectionKey } from "@/plugins/trpc";
-import { PageContext } from "@/renderer/types";
+import { navigate } from "vite-plugin-ssr/client/router"
+import { BrawltimeKlickerService } from "@/plugins/klicker.service"
+import { TrpcInjectionKey } from "@/plugins/trpc"
+import { PageContext } from "@/renderer/types"
+import { useHead, ReactiveHead } from "@unhead/vue"
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -67,15 +68,24 @@ export function useRoute() {
 
   return computed(() => ({
     fullPath: pageContext.urlPathname,
+    query: pageContext.urlParsed.searchAll,
   }))
 }
 
 export function useRouter() {
   return {
     push: (path: string) => navigate(path),
+    replace: (route: { query: Record<string, string[]> }) => {
+      const searchParams = Object.entries(route.query).flatMap(([key, values]) => values.map(value => [key, value]))
+      navigate(`${window.location.pathname}?${new URLSearchParams(searchParams).toString()}`, {
+        keepScrollPosition: true,
+        overwriteLastHistoryEntry: true,
+      })
+    },
   }
 }
 
-export function useMeta(fun: () => any) {
-  // TODO
+export function useMeta(fun: () => ReactiveHead) {
+  const meta = computed(fun)
+  useHead(meta)
 }

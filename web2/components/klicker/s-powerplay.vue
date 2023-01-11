@@ -1,9 +1,9 @@
 <template>
   <b-select
-    :value="(value.powerplay || [])[0]"
+    :modelValue="(modelValue.powerplay || [])[0]"
     dark
     sm
-    @input="v => onInput({ powerplay: v != '' ? [v] : [] })"
+    @update:modelValue="(v: any) => onInput({ powerplay: v != '' ? [v] : [] })"
   >
     <option value="">{{ $t('option.powerplay.all') }}</option>
     <option value="false">{{ $t('option.powerplay.regular') }}</option>
@@ -17,7 +17,7 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },

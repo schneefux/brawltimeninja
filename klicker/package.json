@@ -48,6 +48,7 @@
     "vega-embed": "^6.21.0",
     "vega-lite": "^5.6.0",
     "vue": "^3.2.45",
+    "vue3-moveable": "^0.17.1",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {

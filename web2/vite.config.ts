@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import ssr from 'vite-plugin-ssr/plugin'
 import Components from 'unplugin-vue-components/vite'
+import UnheadVite from '@unhead/addons/vite'
 import { UserConfig } from 'vite'
 import path from 'path'
 
@@ -12,6 +13,7 @@ const config: UserConfig = {
     }),
     vue(),
     ssr(),
+    UnheadVite(),
   ],
   optimizeDeps: {
     //include: ['sampson'],

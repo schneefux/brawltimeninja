@@ -1,6 +1,7 @@
 import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { App, Ref, onServerPrefetch } from 'vue'
+import { useCached } from '@vueuse/core'
 import { useQuery } from '@tanstack/vue-query'
 import config from '@/lib/klicker.cubes'
 import { BrawltimeKlickerService } from './klicker.service'
@@ -31,7 +32,7 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
     klicker: service,
     managerUrl: options.managerUrl,
     translate: (key: string) => key,
-    useQuery: function<T, E>(key: string, handler: () => Promise<T>) {
+    useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
       const query = useQuery<T, E>([key], handler)
       onServerPrefetch(query.suspense)
 
@@ -41,31 +42,6 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
         error: query.error as Ref<E|null>,
         refresh: async () => { await query.refetch() },
       }
-      /*
-      // TODO replace by vue-query
-      const data = shallowRef<T|null>(null) // https://github.com/vuejs/core/issues/1324#issuecomment-859766527
-      const error = shallowRef<E|null>(null)
-      const loading = shallowRef(false)
-
-      function refresh() {
-        return handler().then((result) => {
-          data.value = result
-        }).catch((err) => {
-          error.value = err
-        }).finally(() => {
-          loading.value = false
-        })
-      }
-
-      refresh()
-
-      return {
-        loading,
-        data,
-        error,
-        refresh,
-      }
-      */
     },
     navigate: navigate,
   })

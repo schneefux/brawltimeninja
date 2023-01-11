@@ -1,5 +1,5 @@
 // Unsharp text [#166](https://github.com/NightCatSama/vue-slider-component/issues/166)
-export const roundToDPR = value => Math.round(value * (window.devicePixelRatio || 1)) / r
+export const roundToDPR = value => Math.round(value * (window.devicePixelRatio || 1)) / (window.devicePixelRatio || 1)
 
 export function isArray(input) {
   if (Array.prototype.isArray) {

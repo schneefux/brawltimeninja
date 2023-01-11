@@ -1,10 +1,10 @@
 <template>
   <range-slider-select
-    :value="values"
+    :modelValue="values"
     :name="name == 'playerTrophies' ? $t('metric.playerTrophies') : ''"
     :max="max"
     :format="format"
-    @input="onInput"
+    @update:modelValue="onInput"
   ></range-slider-select>
 </template>
 

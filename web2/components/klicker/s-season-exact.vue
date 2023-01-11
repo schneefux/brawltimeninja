@@ -1,14 +1,12 @@
 <template>
   <b-select
     v-if="seasons != undefined"
-    :value="(value.seasonExact || [])[0]"
+    :model-alue="(modelValue.seasonExact || [])[0]"
     dark
     sm
-    @input="v => onInput({ seasonExact: [v] })"
+    @update:modelValue="(v: any) => onInput({ seasonExact: [v] })"
   >
-    <option
-      value=""
-    >
+    <option value="">
       {{ $t('option.any-season') }}
     </option>
     <option
@@ -28,7 +26,7 @@ import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },

@@ -1,6 +1,5 @@
 import { Filter } from "@cubejs-client/core"
 import { Component } from "vue"
-import { RouteLocation } from "vue-router"
 
 export interface Config extends Record<string, Cube> {}
 
@@ -367,6 +366,10 @@ export interface User {
   grids: Grid[]
 }
 
+export interface RouteQuery {
+  query: Record<string, string[]>
+}
+
 export interface IKlickerService {
   config: Config
   visualisations: VisualisationSpec[]
@@ -395,11 +398,11 @@ export interface IKlickerService {
    */
   comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse>
 
-  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): Partial<RouteLocation>
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteLocation): CubeQuery|CubeComparingQuery
+  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): RouteQuery
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteQuery): CubeQuery|CubeComparingQuery
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Partial<RouteLocation>
-  convertLocationToSlices(route: RouteLocation, defaults: SliceValue): SliceValue
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): RouteQuery
+  convertLocationToSlices(route: RouteQuery, defaults: SliceValue): SliceValue
 
   /**
    * Return the full query configuration for the cube

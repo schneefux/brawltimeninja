@@ -1,5 +1,4 @@
 import { createApp } from './app'
-import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import { hydrate } from '@tanstack/vue-query'
@@ -22,7 +21,6 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   } else {
     app.changePage(pageContext)
   }
-  document.title = getPageTitle(pageContext)
 }
 
 function onHydrationEnd() {

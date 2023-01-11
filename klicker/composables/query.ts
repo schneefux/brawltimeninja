@@ -1,6 +1,6 @@
-import { computed, Ref, watch } from 'vue'
+import { computed, Ref, shallowRef, watchEffect } from 'vue'
 import { useKlicker } from './klicker'
-import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
+import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 
 function hash(query: CubeQuery|CubeComparingQuery): string {
   const hashCode = (s: string) => {
@@ -26,7 +26,7 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
   const { $klicker, useQuery } = useKlicker()
 
-  async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
+  async function fetch() {
     if (!query.value.comparing) {
       return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
     } else {
@@ -34,19 +34,19 @@ export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: 
     }
   }
 
-  const asyncResponse = useQuery(`klicker-query-${hash(query.value)}`, () => fetch())
+  const key = computed(() => `klicker-query-${hash(query.value)}`)
+  const asyncResponse = useQuery(key, fetch)
   const error = computed(() => asyncResponse.error.value)
   const response = computed(() => asyncResponse.data.value)
   const loading = computed(() => asyncResponse.loading.value)
 
-  const update = () => asyncResponse.refresh()
-  watch(query, update)
+  // TODO should deliver stale data while query reruns
 
   return {
     $klicker,
     error,
     response,
     loading,
-    update,
+    update: () => asyncResponse.refresh(),
   }
 }

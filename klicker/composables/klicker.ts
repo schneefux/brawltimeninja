@@ -1,22 +1,25 @@
 import { IKlickerService } from "../types";
 import { inject, InjectionKey, Ref } from "vue";
 
+export interface AsyncQuery<T, E> {
+  loading: Ref<boolean>,
+  data: Ref<T|null>,
+  error: Ref<E|null>,
+  refresh: () => Promise<void>,
+}
+
 export interface PluginConfig {
   klicker: IKlickerService
   translate: (key: string, args?: any) => string
   /**
    * Inject a data fetcher like Nuxt asyncData or vue-query
    * Requirements:
+   * - It should refetch when the key ref changes
    * - It should cache results by key (state management)
    * - It should deduplicate queries
    * - It should log errors to Sentry
    */
-  useQuery: <T, E>(key: string, handler: () => Promise<T>) => {
-    loading: Ref<boolean>,
-    data: Ref<T|null>,
-    error: Ref<E|null>,
-    refresh: () => Promise<void>,
-  }
+  useQuery: <T, E>(key: Ref<string>, handler: () => Promise<T>) => AsyncQuery<T, E>
   navigate: (path: string) => void
   managerUrl: string
 }

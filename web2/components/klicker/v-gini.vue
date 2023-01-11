@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
-    :card="card != undefined && { ...card, title: $t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' }"
+    :card="card != undefined ? { ...card, title: $t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' } : undefined"
     component="v-gini"
     wrapper="b-bigstat"
   >
@@ -51,7 +51,7 @@ export default defineComponent({
       return absoluteDifference / (2 * Math.pow(props.response.data.length, 2) * arithmeticMean)
     })
 
-    const { app: { i18n } } = useContext()
+    const { i18n } = useContext()
     // results from a hand-drawn sample of different maps and modes:
     // 25%ile 0.225
     // 50%ile 0.32

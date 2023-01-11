@@ -137,7 +137,9 @@ export default defineComponent({
         },
       } as object
 
-      const spec = Object.assign(<VisualizationSpec>{}, props.spec, defaults)
+      // vega tries to modify the spec, create a deep copy
+      const userSpec = JSON.parse(JSON.stringify(props.spec))
+      const spec = Object.assign(<VisualizationSpec>{}, userSpec, defaults)
 
       result.value = await embed(graph.value.$el, spec, {
         actions: false,

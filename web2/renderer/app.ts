@@ -14,6 +14,7 @@ import { injectGlobalProperties } from '@/composables/compat'
 import RouterLink from '~/components/router-link.vue'
 import ClientOnly from '~/components/client-only'
 import Adsense from '~/components/adsense.vue'
+import { createHead } from '@unhead/vue'
 
 export { createApp }
 
@@ -110,6 +111,34 @@ function createApp(pageContext: PageContext) {
 
   app.use(TRPCPlugin)
 
+  const head = createHead()
+  head.push({
+    titleTemplate: '%s - Brawl Time Ninja',
+    bodyAttrs: {
+      class: ['dark'],
+    },
+    script: [
+      {
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6856963757796636',
+        async: true,
+        crossorigin: 'anonymous',
+      },
+      {
+        innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
+        async: false,
+      },
+    ],
+    link: [
+      { rel: 'icon', href: '/icons/favicon.ico', sizes: 'any' },
+      { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
+    ],
+    meta: [
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width' },
+    ],
+  })
+  app.use(head)
+
   // backwards compatibility
   injectGlobalProperties(app, pageContext)
 
@@ -119,6 +148,7 @@ function createApp(pageContext: PageContext) {
 
   return {
     app,
+    head,
     queryClient,
   }
 }

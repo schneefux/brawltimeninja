@@ -2,7 +2,7 @@
   <b-fake-select>
     <template v-slot:preview>
       <span class="w-full text-left">
-        {{ format(value[0]) }}-{{ format(value[1]) }}
+        {{ format(modelValue[0]) }}-{{ format(modelValue[1]) }}
         {{ name }}
       </span>
     </template>
@@ -10,16 +10,16 @@
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">
         <b-range-slider
+          :modelValue="modelValue"
           :min="min"
           :max="max"
           :step="1"
           :min-range="minRange"
-          :value="value"
           :bg-style="bgStyle"
           :process-style="processStyle"
           tooltip-dir="top"
           lazy
-          @input="e => onInput(e)"
+          @update:modelValue="e => onInput(e)"
         >
           <template v-slot:tooltip="{ value }">
             <span class="slider-tooltip !bg-gray-600 !border-gray-600">
@@ -42,7 +42,7 @@ export default defineComponent({
     BFakeSelect,
   },
   props: {
-    value: {
+    modelValue: {
       type: Array as PropType<number[]>,
       required: true,
     },
@@ -69,8 +69,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const onInput = (e: number[]) => {
-      if (JSON.stringify(e) != JSON.stringify(props.value)) {
-        emit('input', e)
+      if (JSON.stringify(e) != JSON.stringify(props.modelValue)) {
+        emit('update:modelValue', e)
       }
     }
 

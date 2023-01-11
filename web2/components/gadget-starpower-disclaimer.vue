@@ -3,9 +3,11 @@
     :is="card ? 'b-card' : 'div'"
     :title="$t('starpower-gadget-data.disclaimer.title')"
   >
-    <template v-slot:content><p >
-      {{ $t('starpower-gadget-data.disclaimer.description') }}
-    </p></template>
+    <template v-slot:content>
+      <p>
+        {{ $t('starpower-gadget-data.disclaimer.description') }}
+      </p>
+    </template>
    </component>
 </template>
 

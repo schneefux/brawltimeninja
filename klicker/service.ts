@@ -1,37 +1,34 @@
-import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec } from "./types"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery } from "./types"
 import cubejs, { CubejsApi, Filter, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations"
 import defaultStaticWidgets from "./static-widgets"
-import { RouteLocation } from "vue-router"
 
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 
-// workaround for https://github.com/vuejs/vue-router/issues/2725
-// FIXME remove when upgrading to vue-router 3
-function safeEncode(arr: (string|number|boolean|undefined)[]) {
-  return arr
-    .filter(s => s != undefined)
-    .map(s => typeof s == 'string' ? s.replace(/%/g, '%23') : s!.toString())
+function safeEncode(s: string) {
+  return s.replace(/%/g, '%23')
 }
-function safeDecode(arr: (string|null|undefined)[]) {
-  return arr?.map(s => s?.replace(/%23/g, '%'))
+function safeDecode(s: string) {
+  return s.replace(/%23/g, '%')
 }
 
-function parseQueryParams(query: Record<string, string | (string | null)[] | null | undefined>, prefix: string): object {
+function parseQueryParams(query: RouteQuery['query'], prefix: string): SliceValue {
   return Object.fromEntries(
     Object.entries(query)
       .filter(([key, value]) => key.startsWith(prefix + '[') && key.endsWith(']'))
-      .map(([key, value]) => [key.substring((prefix + '[').length, key.length - ']'.length), safeDecode(Array.isArray(value) ? value : [value])])
+      .map(([key, values]) => [key.substring((prefix + '[').length, key.length - ']'.length), values.map(v => safeDecode(v))])
   )
 }
 
-function generateQueryParams(o: Record<string, (string|number|undefined)[]>, prefix: string): Record<string, string[]> {
+function generateQueryParams(o: SliceValue, prefix: string): RouteQuery['query'] {
   return Object.fromEntries(
     Object.entries(o)
-      .filter(([key, value]) => value != undefined)
-      .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
+      .map(([key, value]) => {
+        const values = value.filter((v): v is string => v != undefined)
+        return [prefix + '[' + key + ']', values.map(v => safeEncode(v!))]
+      })
   )
 }
 
@@ -519,12 +516,12 @@ export default class KlickerService implements IKlickerService {
       // slices are swapped for compatibility with old dashboard links
       const slices = q.slices ? generateQueryParams(q.slices, 'compareFilter') : {}
       const testSlices = q.slices ? generateQueryParams(q.reference.slices, 'filter') : {}
-      return <Partial<RouteLocation>>{
+      return {
         query: {
           ...slices,
           ...testSlices,
-          compare: 'true',
-          cube: q.cubeId,
+          compare: ['true'],
+          cube: [q.cubeId],
           compareDimension: q.dimensionsIds,
           dimension: q.reference.dimensionsIds,
           metric: q.metricsIds,
@@ -533,23 +530,23 @@ export default class KlickerService implements IKlickerService {
     } else {
       const q = query as CubeQuery
       const slices = q.slices ? generateQueryParams(q.slices, 'filter') : {}
-      return <Partial<RouteLocation>>{
+      return {
         query: {
           ...slices,
           compare: [],
-          cube: q.cubeId,
+          cube: [q.cubeId],
           dimension: q.dimensionsIds,
           metric: q.metricsIds,
-          sort: q.sortId,
+          sort: [q.sortId],
         },
       }
     }
   }
 
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteLocation): CubeQuery|CubeComparingQuery {
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteQuery): CubeQuery|CubeComparingQuery {
     const query = route.query || {}
 
-    const cubeId = query.cube as string || defaultCubeId
+    const cubeId = (query.cube ?? [])[0] || defaultCubeId
     let slices = parseQueryParams(query, 'filter') as SliceValue
     slices = Object.assign({}, config[cubeId].defaultSliceValues, slices)
 
@@ -575,7 +572,7 @@ export default class KlickerService implements IKlickerService {
       metricsIds = [metricsIds]
     }
 
-    const sortId = query.sort as string || metricsIds[0]
+    const sortId = (query.sort ?? [])[0] || metricsIds[0]
     const limit = typeof query.limit == 'string' ? parseInt(query.limit) : undefined
 
     if (comparing) {
@@ -607,7 +604,7 @@ export default class KlickerService implements IKlickerService {
     }
   }
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Partial<RouteLocation> {
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): RouteQuery {
     const slicesDiff = Object.fromEntries(
       Object.entries(slices)
         .filter(([key, value]) => JSON.stringify(defaults[key]) != JSON.stringify(value)))
@@ -617,7 +614,7 @@ export default class KlickerService implements IKlickerService {
     }
   }
 
-  convertLocationToSlices(route: RouteLocation, defaults: SliceValue): SliceValue {
+  convertLocationToSlices(route: RouteQuery, defaults: SliceValue): SliceValue {
     const slices = parseQueryParams(route.query, 'filter') as SliceValue
 
     return {

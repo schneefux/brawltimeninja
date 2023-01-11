@@ -22,8 +22,8 @@ export default defineComponent({
   props: {
     // 值
     modelValue: {
-      type: [String, Number, Array, Object],
-      default: 0
+      type: Array,
+      required: true
     },
     // 最小值
     min: {
@@ -535,6 +535,7 @@ export default defineComponent({
       if (isDirectionSame) {
         const tooltip0 = this.$refs.tooltip0
         const tooltip1 = this.$refs.tooltip1
+        if (tooltip0 == null || tooltip1 == null) return
         const tooltip0Rect = tooltip0.getBoundingClientRect()
         const tooltip1Rect = tooltip1.getBoundingClientRect()
 

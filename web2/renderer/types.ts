@@ -20,6 +20,7 @@ export type PageContextCustom = {
   exports: {
     documentProps?: {
       title: string
+      description: string
     }
     Layout?: ComponentPublicInstance
   }
