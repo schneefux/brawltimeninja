@@ -14,7 +14,7 @@ import { idToTag, tagPattern, tagToId } from '~/lib/util'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -26,7 +26,7 @@ export default defineComponent({
   setup(props) {
     const tagFilter = computed({
       get(): string {
-        return idToTag((props.value.playerId || [])[0] || '')
+        return idToTag((props.modelValue.playerId ?? [])[0] ?? '')
       },
       set(v: string) {
         if (v == '') {

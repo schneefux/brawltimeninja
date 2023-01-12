@@ -10,7 +10,7 @@
         class="flex justify-end"
       >
         <span v-if="powerplay">
-          {{ $tc('power-play', 1) }}
+          {{ $t('power-play', 1) }}
         </span>
         <span v-else-if="endDate != undefined">
           {{ endDateString }}

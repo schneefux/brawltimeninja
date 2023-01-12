@@ -1,14 +1,11 @@
 <template>
   <b-select
     v-if="brawlers != undefined"
-    :value="value.brawler || ''"
+    v-model="brawler"
     dark
     sm
-    @input="v => onInput({ brawler: v == '' ? [] : [v] })"
   >
-    <option
-      value=""
-    >{{ $t('option.any-brawler') }}</option>
+    <option value="">{{ $t('option.any-brawler') }}</option>
     <option
       v-for="b in brawlers"
       :key="b.id"
@@ -18,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { capitalize } from '~/lib/util'
 import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -34,7 +31,7 @@ export default defineComponent({
       required: true
     },
   },
-  setup() {
+  setup(props) {
     const { $klicker } = useContext()
 
     const brawlers = useAsync(async () => {
@@ -45,9 +42,19 @@ export default defineComponent({
           id: b,
           name: capitalize(b.toLowerCase()),
         }))
+    }, 's-brawler-brawlers')
+
+    const brawler = computed({
+      get() {
+        return (props.modelValue.brawler ?? [])[0] ?? ''
+      },
+      set(v: string) {
+        props.onInput({ brawler: v == '' ? [] : [v] })
+      }
     })
 
     return {
+      brawler,
       brawlers,
     }
   },

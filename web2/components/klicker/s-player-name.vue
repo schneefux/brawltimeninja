@@ -13,7 +13,7 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -25,7 +25,7 @@ export default defineComponent({
   setup(props) {
     const nameFilter = computed({
       get(): string {
-        return (props.value.playerName || [])[0] || ''
+        return (props.modelValue.playerName ?? [])[0] ?? ''
       },
       set(v: string) {
         if (v == '') {

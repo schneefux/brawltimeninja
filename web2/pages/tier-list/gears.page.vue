@@ -5,7 +5,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useContext } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
+import { useMeta, useContext } from '@/composables/compat'
 
 export default defineComponent({
   middleware: ['cached'],

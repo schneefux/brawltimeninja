@@ -1,9 +1,8 @@
 <template>
   <b-select
-    :value="(value.gadgetIdNeq || [])[0] == '0' ? '1' : '0'"
+    v-model="value"
     dark
     sm
-    @input="v => onInput({ gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })"
   >
     <option value="0">{{ $t('filter.gadgets.0') }}</option>
     <option value="1">{{ $t('filter.gadgets.1') }}</option>
@@ -11,12 +10,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -24,6 +23,20 @@ export default defineComponent({
       type: Function as PropType<SliceValueUpdateListener>,
       required: true
     },
+  },
+  setup(props) {
+    const value = computed({
+      get() {
+        return (props.modelValue.gadgetIdNeq || [])[0] == '0' ? '1' : '0'
+      },
+      set(v: string) {
+        props.onInput({ gadgetIdNeq: v == '0' ? [] : ['0'], gadgetIdEq: v == '0' ? ['0'] : [] })
+      }
+    })
+
+    return {
+      value,
+    }
   },
 })
 </script>

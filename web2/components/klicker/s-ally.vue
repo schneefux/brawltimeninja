@@ -1,14 +1,11 @@
 <template>
   <b-select
     v-if="brawlers != undefined"
-    :value="value.ally || ''"
+    v-model="ally"
     dark
     sm
-    @input="v => onInput({ ally: v == '' ? [] : [v] })"
   >
-    <option
-      value=""
-    >with any</option>
+    <option value="">with any</option>
     <option
       v-for="b in brawlers"
       :key="b.id"
@@ -18,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { capitalize } from '~/lib/util'
 import { useContext, useAsync } from '~/composables/compat'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -34,7 +31,7 @@ export default defineComponent({
       required: true
     },
   },
-  setup() {
+  setup(props) {
     const { $klicker } = useContext()
 
     const brawlers = useAsync(async () => {
@@ -47,8 +44,18 @@ export default defineComponent({
         }))
     }, 's-ally-brawlers')
 
+    const ally = computed({
+      get() {
+        return (props.modelValue.ally ?? [])[0] ?? ''
+      },
+      set(v: string) {
+        props.onInput({ ally: v == '' ? [] : [v] })
+      }
+    })
+
     return {
       brawlers,
+      ally,
     }
   },
 })

@@ -11,7 +11,7 @@
         </span>
         <b-radio
           v-for="i in 5"
-          :model-value="value[id]"
+          :model-value="modelValue[id]"
           :key="i"
           :value="i"
           :name="id"
@@ -22,7 +22,7 @@
           }"
           required
           primary
-          @update:modelValue="(v: any) => $emit('update:modelValue', { ...value, [id]: v })"
+          @update:modelValue="(v: any) => $emit('update:modelValue', { ...modelValue, [id]: v })"
         ></b-radio>
         <span class="!ml-2 flex-1 text-left">
           <slot name="high" :id="id"></slot>
@@ -37,7 +37,7 @@ import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Record<string, number>>,
       required: true
     },

@@ -1,10 +1,9 @@
 <template>
   <range-slider-select
-    :modelValue="values"
+    v-model="value"
     :name="name == 'playerTrophies' ? $t('metric.playerTrophies') : ''"
     :max="max"
     :format="format"
-    @update:modelValue="onInput"
   ></range-slider-select>
 </template>
 
@@ -36,27 +35,28 @@ export default defineComponent({
     })
 
     const max = computed(() => props.name == 'playerTrophies' ? 15 : 18)
-    const values = computed(() => {
-      const gte = props.modelValue.gte || 0
-      const lt = props.modelValue.lt || max.value
-      return [gte, lt]
+
+    const value = computed({
+      get() {
+        const gte = props.modelValue.gte || 0
+        const lt = props.modelValue.lt || max.value
+        return [gte, lt]
+      },
+      set(e: number[]) {
+        const gte = e[0] > 0 ? { gte: e[0] } : {}
+        const lt = e[1] < max.value ? { lt: e[1] } : {}
+
+        emit('update:modelValue', {
+          ...gte,
+          ...lt,
+        })
+      }
     })
-
-    const onInput = (e: number[]) => {
-      const gte = e[0] > 0 ? { gte: e[0] } : {}
-      const lt = e[1] < max.value ? { lt: e[1] } : {}
-
-      emit('update:modelValue', {
-        ...gte,
-        ...lt,
-      })
-    }
 
     return {
       max,
       format,
-      values,
-      onInput,
+      value,
     }
   },
 })

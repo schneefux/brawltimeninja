@@ -54,8 +54,9 @@
 import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { defineComponent, useAsync, computed, useRoute, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
+import { useAsync, useRoute, useContext, useMeta } from '~/composables/compat'
 
 export default defineComponent({
   directives: {
@@ -83,9 +84,9 @@ export default defineComponent({
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
     useMeta(() => {
-      const description = i18n.tc('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
+      const description = i18n.t('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
       return {
-        title: i18n.tc('tier-list.mode.meta.title', 1, { mode: i18n.t('mode.' + mode.value) as string }),
+        title: i18n.t('tier-list.mode.meta.title', 1, { mode: i18n.t('mode.' + mode.value) as string }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

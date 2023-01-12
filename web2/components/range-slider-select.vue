@@ -10,7 +10,7 @@
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">
         <b-range-slider
-          :modelValue="modelValue"
+          v-model="value"
           :min="min"
           :max="max"
           :step="1"
@@ -19,7 +19,6 @@
           :process-style="processStyle"
           tooltip-dir="top"
           lazy
-          @update:modelValue="e => onInput(e)"
         >
           <template v-slot:tooltip="{ value }">
             <span class="slider-tooltip !bg-gray-600 !border-gray-600">
@@ -33,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { BFakeSelect, BRangeSlider } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -68,11 +67,16 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const onInput = (e: number[]) => {
-      if (JSON.stringify(e) != JSON.stringify(props.modelValue)) {
-        emit('update:modelValue', e)
+    const value = computed({
+      get() {
+        return props.modelValue
+      },
+      set(e: number[]) {
+        if (JSON.stringify(e) != JSON.stringify(props.modelValue)) {
+          emit('update:modelValue', e)
+        }
       }
-    }
+    })
 
     const bgStyle = {
       backgroundColor: 'rgb(253, 230, 138)', // yellow-200
@@ -84,7 +88,7 @@ export default defineComponent({
     const isClient = !import.meta.env.SSR
 
     return {
-      onInput,
+      value,
       bgStyle,
       processStyle,
       isClient,

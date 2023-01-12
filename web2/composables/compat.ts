@@ -87,6 +87,7 @@ export function useRoute() {
   return computed(() => ({
     fullPath: pageContext.urlPathname,
     query: pageContext.urlParsed.searchAll,
+    params: pageContext.routeParams ?? {},
   }))
 }
 

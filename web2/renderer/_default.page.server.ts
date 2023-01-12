@@ -9,7 +9,7 @@ import { renderSSRHead } from '@unhead/ssr'
 export { passToClient }
 export { render }
 
-const passToClient = ['vueQueryState', 'documentProps', 'locale']
+const passToClient = ['vueQueryState', 'documentProps', 'locale', 'routeParams']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { app, head, queryClient } = await createApp(pageContext)

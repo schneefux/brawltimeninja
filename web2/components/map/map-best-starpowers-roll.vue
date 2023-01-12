@@ -1,6 +1,6 @@
 <template>
   <b-card
-    :title="$tc('best.' + kind, 1)"
+    :title="$t('best.' + kind, 1)"
     :elevation="elevation"
     :link="`/tier-list/${kind}`"
   >

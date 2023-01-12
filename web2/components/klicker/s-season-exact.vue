@@ -1,10 +1,9 @@
 <template>
   <b-select
     v-if="seasons != undefined"
-    :model-alue="(modelValue.seasonExact || [])[0]"
+    v-model="value"
     dark
     sm
-    @update:modelValue="(v: any) => onInput({ seasonExact: [v] })"
   >
     <option value="">
       {{ $t('option.any-season') }}
@@ -20,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch } from 'vue'
+import { defineComponent, PropType, watch, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { useContext, useAsync } from '~/composables/compat'
 
@@ -46,11 +45,21 @@ export default defineComponent({
       return await $klicker.queryAllSeasons(props.limit)
     }
 
-    const seasons = useAsync(() => getSeasons(), 'season-exact-seasons')
+    const seasons = useAsync(() => getSeasons(), 's-season-exact-seasons')
 
     watch(() => props.limit, async () => seasons.value = await getSeasons())
 
+    const value = computed({
+      get() {
+        return (props.modelValue.seasonExact || [])[0] ?? ''
+      },
+      set(v: string) {
+        props.onInput({ seasonExact: [v] })
+      }
+    })
+
     return {
+      value,
       seasons,
     }
   },

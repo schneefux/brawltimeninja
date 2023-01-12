@@ -16,7 +16,7 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -28,10 +28,10 @@ export default defineComponent({
   setup(props) {
     const choice = computed({
       get(): string {
-        if (props.value.mapLike?.length == 1 && props.value.mapLike[0] == 'Competition') {
+        if (props.modelValue.mapLike?.length == 1 && props.modelValue.mapLike[0] == 'Competition') {
           return 'include'
         }
-        if (props.value.mapNotLike?.length == 1 && props.value.mapNotLike[0] == 'Competition') {
+        if (props.modelValue.mapNotLike?.length == 1 && props.modelValue.mapNotLike[0] == 'Competition') {
           return 'exclude'
         }
         return 'all'

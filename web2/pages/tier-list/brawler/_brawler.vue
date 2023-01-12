@@ -3,7 +3,7 @@
     <breadcrumbs
       :links="[{
         path: '/tier-list/brawler',
-        name: $tc('brawler', 2),
+        name: $t('brawler', 2),
       }, {
         path: `/tier-list/brawler/${brawlerId}`,
         name: brawlerName,
@@ -156,7 +156,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
         ref="skinsSection"
-        :title="$tc('skin', 2)"
+        :title="$t('skin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('skins'),
           once: true,
@@ -171,7 +171,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
         ref="pinsSection"
-        :title="$tc('pin', 2)"
+        :title="$t('pin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('pins'),
           once: true,
@@ -186,7 +186,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
         ref="voicelineSection"
-        :title="$tc('voiceline', 2)"
+        :title="$t('voiceline', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('voicelines'),
           once: true,

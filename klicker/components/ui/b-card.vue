@@ -100,7 +100,7 @@
                 :is="linkComponent"
                 :to="subtitleLink"
               >
-                {{ title }}
+                {{ subtitle }}
               </component>
               <a
                 v-else

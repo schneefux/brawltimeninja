@@ -31,7 +31,7 @@
                 :class="{
                   'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
                 }"
-                @click.capture.prevent="onSelectModeMap({ mode: event.mode, map: event.map })"
+                @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode, map: event.map })"
               ></event-picture-card>
               <event-card
                 v-else-if="event.key != 'all'"
@@ -40,7 +40,7 @@
                   'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
                 }"
                 nobackground
-                @click.capture.prevent="onSelectModeMap({ mode: event.mode })"
+                @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode })"
               >
                 <template v-slot:preview></template>
                 <template v-slot:content>

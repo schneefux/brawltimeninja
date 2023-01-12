@@ -3,10 +3,10 @@
     <breadcrumbs
       :links="[{
         path: '/tier-list/brawler',
-        name: $tc('brawler', 2),
+        name: $t('brawler', 2),
       }, {
         path: `/tier-list/${plural}`,
-        name: $tc(singular, 2),
+        name: $t(singular, 2),
       }]"
       class="mt-4"
     ></breadcrumbs>
