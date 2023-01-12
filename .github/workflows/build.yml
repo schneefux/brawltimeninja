@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - vue3
 
 jobs:
   build-cube:
