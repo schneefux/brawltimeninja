@@ -8,11 +8,11 @@
   >
     <template v-slot:totalsQuery="totalsQuery">
       <b-scrolling-list
-        :items="[{ component: 'v-sample-size' }, { component: 'v-last-update' }, { component: 'v-moe' }]"
+        :items="totalsComponents"
         :cell-rows="1"
         :cell-columns="2"
         :render-at-least="3"
-        key-id="component"
+        key-id="id"
         render-placeholder
       >
         <template v-slot:item="component">
@@ -329,9 +329,6 @@ export default defineComponent({
     BDashboardCell,
     BTabs,
     BDashboard,
-    VLastUpdate,
-    VSampleSize,
-    VMoe,
   },
   props: {
     mode: {
@@ -387,12 +384,19 @@ export default defineComponent({
       title: i18n.t('tab.leaderboard'),
     }]
 
+    const totalsComponents = [
+      { id: 'sample-size', component: VSampleSize },
+      { id: 'last-update', component: VLastUpdate },
+      { id: 'moe', component: VMoe },
+    ]
+
     return {
       tabs,
       query,
       adjustedWinRate,
       makeVisibilityCallback,
       slices,
+      totalsComponents,
     }
   },
 })

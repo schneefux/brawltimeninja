@@ -128,7 +128,7 @@ export default defineComponent({
         mode: i18n.t('mode.' + event.value.mode),
       })
       return {
-        title: i18n.tc('tier-list.map.meta.title', 1, {
+        title: i18n.t('tier-list.map.meta.title', {
           map: i18n.t('map.' + event.value.id),
         }),
         meta: [
