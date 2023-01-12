@@ -6,9 +6,11 @@
     component="v-last-update"
     wrapper="b-bigstat"
   >
-    <template v-slot:content><p >
-      {{ lastUpdate }}
-    </p></template>
+    <template v-slot:content>
+      <p>
+        {{ lastUpdate }}
+      </p>
+    </template>
   </v-card-wrapper>
 </template>
 

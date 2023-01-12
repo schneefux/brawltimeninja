@@ -62,7 +62,6 @@ import { faQuestion } from '@fortawesome/free-solid-svg-icons'
  * Card which prominently displays a single number
  */
 export default defineComponent({
-  inheritAttrs: false,
   components: {
     BCard,
     BLightbox,

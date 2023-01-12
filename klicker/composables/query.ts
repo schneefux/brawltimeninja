@@ -40,8 +40,6 @@ export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: 
   const response = computed(() => asyncResponse.data.value)
   const loading = computed(() => asyncResponse.loading.value)
 
-  // TODO should deliver stale data while query reruns
-
   return {
     $klicker,
     error,

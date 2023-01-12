@@ -1,7 +1,6 @@
 import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { App, Ref, onServerPrefetch } from 'vue'
-import { useCached } from '@vueuse/core'
 import { useQuery } from '@tanstack/vue-query'
 import config from '@/lib/klicker.cubes'
 import { BrawltimeKlickerService } from './klicker.service'
@@ -33,11 +32,13 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string, trans
     managerUrl: options.managerUrl,
     translate: options.translate,
     useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
-      const query = useQuery<T, E>([key], handler)
+      const query = useQuery<T, E>([key], handler, {
+        keepPreviousData: true,
+      })
       onServerPrefetch(query.suspense)
 
       return {
-        loading: query.isLoading,
+        loading: query.isFetching,
         data: query.data as Ref<T|null>,
         error: query.error as Ref<E|null>,
         refresh: async () => { await query.refetch() },

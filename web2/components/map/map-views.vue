@@ -20,8 +20,8 @@
             <template v-slot="data">
               <component
                 :is="component.component"
-                v-bind="data"
                 :card="{}"
+                v-bind="data"
               ></component>
             </template>
           </c-query>
