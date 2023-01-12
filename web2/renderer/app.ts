@@ -10,7 +10,6 @@ import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
-import { injectGlobalProperties } from '@/composables/compat'
 import RouterLink from '~/components/router-link.vue'
 import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
@@ -165,9 +164,6 @@ async function createApp(pageContext: PageContext) {
     ],
   })
   app.use(head)
-
-  // backwards compatibility
-  injectGlobalProperties(app, pageContext)
 
   app.component('RouterLink', RouterLink)
   app.component('ClientOnly', ClientOnly)

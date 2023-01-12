@@ -4,20 +4,20 @@
     class="mt-4"
   >
     <client-only v-if="allowed">
-      <adsense
-        :data-ad-slot="adSlot"
-        :data-ad-region="adRegion"
-        data-ad-format=""
-        data-ad-client="ca-pub-6856963757796636"
-        data-full-width-responsive="true"
-        ins-class="banner-ad"
-        class="flex justify-center -mx-4"
-      ></adsense>
+      <div class="flex justify-center -mx-4">
+        <adsense
+          :data-ad-slot="adSlot"
+          :data-ad-region="adRegion"
+          data-ad-format=""
+          data-ad-client="ca-pub-6856963757796636"
+          class="banner-ad"
+          data-full-width-responsive
+        ></adsense>
+      </div>
 
-      <template v-slot:placeholder><div
-
-        class="adswrapper ad-section banner-ad"
-      ></div></template>
+      <template v-slot:placeholder>
+        <div class="adswrapper ad-section banner-ad"></div>
+      </template>
     </client-only>
   </div>
   <div v-else-if="scraper">
@@ -27,13 +27,12 @@
         :data-ad-region="adRegion"
         data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
-        ins-class="scraper-ad"
+        class="scraper-ad"
       ></adsense>
 
-      <template v-slot:placeholder><div
-
-        class="adswrapper ad-section scraper-ad"
-      ></div></template>
+      <template v-slot:placeholder>
+        <div class="adswrapper ad-section scraper-ad"></div>
+      </template>
     </client-only>
   </div>
   <b-page-section
@@ -46,15 +45,16 @@
         :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
-        data-full-width-responsive="yes"
         class="text-center"
+        data-full-width-responsive
       ></adsense>
 
-      <template v-slot:placeholder><div
-
-        class="adswrapper ad-section w-full"
-        style="height: 300px;"
-      ></div></template>
+      <template v-slot:placeholder>
+        <div
+          class="adswrapper ad-section w-full"
+          style="height: 300px;"
+        ></div>
+      </template>
     </client-only>
   </b-page-section>
 </template>
@@ -103,9 +103,7 @@ export default defineComponent({
     const allowed = computed(() => policyAllowed.value && userAllowed.value)
 
     if (!import.meta.env.SSR) {
-      // TODO the fix for https://github.com/vueuse/vueuse/issues/685
-      // and/or importing vueuse as peer dependency breaks this ref type
-      const { isSupported, stop } = useIntersectionObserver(ad as any, ([{ isIntersecting }]) => {
+      const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting }]) => {
         if (isIntersecting && allowed.value) {
           visible.value = true
           stop()
