@@ -58,16 +58,16 @@ export default defineComponent({
     // 75%ile 0.425
     // words chosen from http://www.mcdonald.me.uk/storytelling/lichert_article.htm
     const giniScoreWords = [
-      i18n.tc('rating.excellence.9'),
-      i18n.tc('rating.excellence.8'),
-      i18n.tc('rating.excellence.7'),
-      i18n.tc('rating.excellence.6'),
-      i18n.tc('rating.excellence.5'),
-      i18n.tc('rating.excellence.4'),
-      i18n.tc('rating.excellence.3'),
-      i18n.tc('rating.excellence.2'),
-      i18n.tc('rating.excellence.1'),
-      i18n.tc('rating.excellence.0'),
+      i18n.t('rating.excellence.9'),
+      i18n.t('rating.excellence.8'),
+      i18n.t('rating.excellence.7'),
+      i18n.t('rating.excellence.6'),
+      i18n.t('rating.excellence.5'),
+      i18n.t('rating.excellence.4'),
+      i18n.t('rating.excellence.3'),
+      i18n.t('rating.excellence.2'),
+      i18n.t('rating.excellence.1'),
+      i18n.t('rating.excellence.0'),
     ]
 
     return {

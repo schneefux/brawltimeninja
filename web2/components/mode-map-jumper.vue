@@ -67,7 +67,7 @@ export default defineComponent({
     const links = computed(() => ([
       {
         path: '/tier-list/map',
-        name: i18n.tc('map', 2),
+        name: i18n.t('map', 2),
       },
       ...(props.mode != undefined ? [{
         path: modePath.value,

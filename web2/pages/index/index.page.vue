@@ -259,7 +259,7 @@ export default defineComponent({
           'event_category': 'player',
           'event_label': 'error_invalid',
         })
-        error.value = i18n.tc('error.tag.invalid')
+        error.value = i18n.t('error.tag.invalid')
         const dropdown = helpDropdown.value!
         dropdown.setAttribute('open', '')
         dropdown.scrollIntoView({ behavior: 'smooth' })
@@ -273,7 +273,7 @@ export default defineComponent({
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
-            error.value = i18n.tc('error.tag.not-found')
+            error.value = i18n.t('error.tag.not-found')
             event('search', {
               'event_category': 'player',
               'event_label': 'error_notfound',
@@ -281,7 +281,7 @@ export default defineComponent({
             return
           }
           if (err.data?.httpStatus >= 400) {
-            error.value = i18n.tc('error.api-unavailable')
+            error.value = i18n.t('error.api-unavailable')
             event('search', {
               'event_category': 'player',
               'event_label': 'error_timeout',
@@ -290,7 +290,7 @@ export default defineComponent({
           }
         }
 
-        error.value = i18n.tc('error.api-unavailable')
+        error.value = i18n.t('error.api-unavailable')
         $sentry.captureException(err)
         event('search', {
           'event_category': 'player',
@@ -312,7 +312,7 @@ export default defineComponent({
     }
 
     useMeta(() => {
-      const description = i18n.tc('index.meta.description')
+      const description = i18n.t('index.meta.description')
       const structuredData = (events.value || [])
         .map((event) => ({
           type: 'application/ld+json',
@@ -326,7 +326,7 @@ export default defineComponent({
         }))
 
       return {
-        title: i18n.tc('index.meta.title'),
+        title: i18n.t('index.meta.title'),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

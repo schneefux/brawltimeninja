@@ -326,15 +326,15 @@ export default defineComponent({
       element: sectionRefs.trophiesSection.value,
     }, {
       id: 'skins',
-      title: i18n.tc('skin', 2),
+      title: i18n.t('skin', 2),
       element: sectionRefs.skinsSection.value,
     }, {
       id: 'pins',
-      title: i18n.tc('pin', 2),
+      title: i18n.t('pin', 2),
       element: sectionRefs.pinsSection.value,
     }, {
       id: 'voicelines',
-      title: i18n.tc('voiceline', 2),
+      title: i18n.t('voiceline', 2),
       element: sectionRefs.voicelineSection.value,
     }, {
       id: 'balance',

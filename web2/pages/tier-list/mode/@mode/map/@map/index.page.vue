@@ -123,7 +123,7 @@ export default defineComponent({
         return {}
       }
 
-      const description = i18n.tc('tier-list.map.meta.description', 1, {
+      const description = i18n.t('tier-list.map.meta.description', {
         map: i18n.t('map.' + event.value.id),
         mode: i18n.t('mode.' + event.value.mode),
       })
@@ -143,7 +143,7 @@ export default defineComponent({
 
     const mapName = computed(() => {
       if (event.value != undefined) {
-        return getMapName(i18n, event.value.id, event.value.map)
+        return getMapName(event.value.id, event.value.map)
       }
     })
 

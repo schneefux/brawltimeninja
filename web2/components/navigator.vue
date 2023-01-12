@@ -124,15 +124,15 @@ export default defineComponent({
               target: `/tier-list/brawler/${brawlerId({ name: b.id })}#trophies`,
             }, {
               id: `${b.id}#skins`,
-              name: i18n.tc('skin', 2),
+              name: i18n.t('skin', 2),
               target: `/tier-list/brawler/${brawlerId({ name: b.id })}#skins`,
             }, {
               id: `${b.id}#pins`,
-              name: i18n.tc('pin', 2),
+              name: i18n.t('pin', 2),
               target: `/tier-list/brawler/${brawlerId({ name: b.id })}#pins`,
             }, {
               id: `${b.id}#voicelines`,
-              name: i18n.tc('voiceline', 2),
+              name: i18n.t('voiceline', 2),
               target: `/tier-list/brawler/${brawlerId({ name: b.id })}#voicelines`,
             }, {
               id: `${b.id}#balance`,
@@ -277,11 +277,11 @@ export default defineComponent({
             target: `/profile/${tagCandidate}#battles`,
           }, {
             id: `profile-${tagCandidate}-modes`,
-            name: i18n.tc('mode', 2),
+            name: i18n.t('mode', 2),
             target: `/profile/${tagCandidate}#modes`,
           }, {
             id: `profile-${tagCandidate}-brawlers`,
-            name: i18n.tc('brawler', 2),
+            name: i18n.t('brawler', 2),
             target: `/profile/${tagCandidate}#brawlers`,
           }]
         }, {

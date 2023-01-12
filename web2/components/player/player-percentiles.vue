@@ -72,22 +72,22 @@ export default defineComponent({
 
       // TODO create an endpoint?
       const allAchievements = [{
-        metric: i18n.tc('metric.highestTrophies'),
+        metric: i18n.t('metric.highestTrophies'),
         percentile: ztable(trophiesZ),
       }, {
-        metric: i18n.tc('metric.highestBrawlerTrophies'),
+        metric: i18n.t('metric.highestBrawlerTrophies'),
         percentile: ztable(brawlerZ),
       }, {
-        metric: i18n.tc('metric.isQualifiedFromChampionshipChallenge'),
+        metric: i18n.t('metric.isQualifiedFromChampionshipChallenge'),
         percentile: ccPercentile,
       }, {
-        metric: i18n.tc('metric.victories'),
+        metric: i18n.t('metric.victories'),
         percentile: ztable(victoryZ),
       }, {
-        metric: i18n.tc('metric.soloVictories'),
+        metric: i18n.t('metric.soloVictories'),
         percentile: ztable(soloZ),
       }, {
-        metric: i18n.tc('metric.duoVictories'),
+        metric: i18n.t('metric.duoVictories'),
         percentile: ztable(duoZ),
       }].sort((a1, a2) => a2.percentile - a1.percentile)
 
