@@ -3,10 +3,10 @@ dotenv.config()
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
-import apiMiddleware from '../api/index'
+import apiMiddleware from '../api/index.js'
+import { root } from './root.js'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
 
 startServer()
 
@@ -40,7 +40,13 @@ async function startServer() {
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
     const { statusCode, contentType, earlyHints } = httpResponse
-    if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+    if (res.writeEarlyHints) {
+      const hints = earlyHints
+        .map((e) => e.earlyHintLink.replace('; crossorigin', '')) // FIXME crashes node
+      res.writeEarlyHints({
+        link: hints,
+      })
+    }
     res.status(statusCode).type(contentType)
     httpResponse.pipe(res)
   })

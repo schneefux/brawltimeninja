@@ -4,6 +4,7 @@ import Components from 'unplugin-vue-components/vite'
 import UnheadVite from '@unhead/addons/vite'
 import { UserConfig } from 'vite'
 import path from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const config: UserConfig = {
   plugins: [
@@ -14,14 +15,15 @@ const config: UserConfig = {
     vue(),
     ssr(),
     UnheadVite(),
+    visualizer(),
   ],
   optimizeDeps: {
-    //include: ['sampson'],
+    include: ['@schneefux/klicker'],
     exclude: [],
   },
   build: {
     commonjsOptions: {
-      //include: [/sampson/, /node_modules/],
+      include: [/@schneefux\/klicker/, /node_modules/],
     },
   },
   resolve: {
@@ -29,7 +31,7 @@ const config: UserConfig = {
     alias: {
       '~': path.resolve(__dirname),
       '@': path.resolve(__dirname),
-      //'sampson': path.resolve('node_modules/sampson/dist/lib.js'),
+      'sampson': path.resolve('node_modules/sampson/dist/lib.es6.js'),
     },
   },
 }

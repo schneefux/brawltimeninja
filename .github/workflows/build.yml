@@ -30,6 +30,14 @@ jobs:
     secrets:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  build-web-2:
+    uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
+    with:
+      service: web2
+    needs: build-klicker
+    secrets:
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
   build-klicker:
     runs-on: ubuntu-latest
     defaults:

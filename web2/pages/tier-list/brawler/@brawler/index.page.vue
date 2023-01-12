@@ -240,7 +240,6 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
-import fetch from 'cross-fetch'
 import { ScrapedBrawler } from '@/model/Web'
 
 export default defineComponent({

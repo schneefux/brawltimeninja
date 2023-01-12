@@ -1,11 +1,11 @@
 import express from 'express'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { playerRouter, updateAllProfiles } from './routes/player'
-import { clubRouter } from './routes/club'
-import { createContext } from './context'
-import { rankingsRouter } from './routes/rankings'
-import { eventsRouter } from './routes/events'
-import { router } from './trpc'
+import { playerRouter, updateAllProfiles } from './routes/player.js'
+import { clubRouter } from './routes/club.js'
+import { createContext } from './context.js'
+import { rankingsRouter } from './routes/rankings.js'
+import { eventsRouter } from './routes/events.js'
+import { router } from './trpc.js'
 
 const appRouter = router({
   player: playerRouter,

@@ -51,7 +51,12 @@ export default class KlickerService implements IKlickerService {
       dimensionRenderers: DimensionRendererSpec[],
       metricRenderers: MetricRendererSpec[],
   ) {
-    this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
+    // FIXME ???
+    if (import.meta.env.PROD) {
+      this.cubejsApi = new CubejsApi('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
+    } else {
+      this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
+    }
     this.visualisations = defaultVisualisations.concat(visualisations)
     this.staticWidgets = defaultStaticWidgets.concat(staticWidgets)
     this.slicers = slicers

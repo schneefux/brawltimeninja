@@ -1,9 +1,9 @@
 import ClickHouse from '@apla/clickhouse'
 import { ClickHouse as ClickHouse2 } from 'clickhouse'
 import StatsD from 'hot-shots'
-import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '../../model/Brawlstars'
+import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '../../model/Brawlstars.js'
 import { performance } from 'perf_hooks'
-import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, formatClickhouseDate } from '../../lib/util'
+import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, formatClickhouseDate } from '../../lib/util.js'
 
 const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })

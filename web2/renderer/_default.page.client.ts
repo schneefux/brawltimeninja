@@ -6,7 +6,6 @@ import { hydrate } from '@tanstack/vue-query'
 export const clientRouting = true
 export const prefetchStaticAssets = { when: 'VIEWPORT' }
 export { render }
-export { onHydrationEnd }
 
 let app: Awaited<ReturnType<typeof createApp>>['app']
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
@@ -19,8 +18,4 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   } else {
     app.changePage(pageContext)
   }
-}
-
-function onHydrationEnd() {
-  console.log('Hydration finished; page is now interactive.')
 }

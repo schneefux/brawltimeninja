@@ -117,7 +117,10 @@ export function useRouter() {
     localePath,
     routeToPath,
     push: (route: Route) => navigate(routeToPath(route)),
-    replace: (route: Route) => navigate(routeToPath(route), { overwriteLastHistoryEntry: true }),
+    replace: (route: Route) => navigate(routeToPath(route), {
+      overwriteLastHistoryEntry: true,
+      keepScrollPosition: true,
+    }),
   }
 }
 

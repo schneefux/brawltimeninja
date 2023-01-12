@@ -1,6 +1,7 @@
 {
   "name": "@schneefux/klicker",
   "version": "0.0.1",
+  "type": "module",
   "author": "schneefux",
   "description": "",
   "//": "sideEffects: https://github.com/vuejs/vuepress/issues/718#issuecomment-412345448",
@@ -42,7 +43,6 @@
     "d3-format": "^3.1.0",
     "date-fns": "^2.29.3",
     "html2canvas": "^1.4.1",
-    "nuxt": "^3.0.0",
     "sampson": "^0.2.8",
     "vega": "^5.22.1",
     "vega-embed": "^6.21.0",

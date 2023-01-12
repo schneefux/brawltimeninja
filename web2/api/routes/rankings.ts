@@ -1,7 +1,7 @@
 import z from 'zod'
-import { idType } from '../schema/types'
-import BrawlstarsService from '../services/BrawlstarsService'
-import { publicProcedure, router } from '../trpc'
+import { idType } from '../schema/types.js'
+import BrawlstarsService from '../services/BrawlstarsService.js'
+import { publicProcedure, router } from '../trpc.js'
 
 const brawlstarsService = new BrawlstarsService()
 

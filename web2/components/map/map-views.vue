@@ -329,6 +329,9 @@ export default defineComponent({
     BDashboardCell,
     BTabs,
     BDashboard,
+    VLastUpdate,
+    VSampleSize,
+    VMoe,
   },
   props: {
     mode: {
@@ -385,9 +388,9 @@ export default defineComponent({
     }]
 
     const totalsComponents = [
-      { id: 'sample-size', component: VSampleSize },
-      { id: 'last-update', component: VLastUpdate },
-      { id: 'moe', component: VMoe },
+      { id: 'sample-size', component: 'v-sample-size' },
+      { id: 'last-update', component: 'v-last-update' },
+      { id: 'moe', component: 'v-moe' },
     ]
 
     return {

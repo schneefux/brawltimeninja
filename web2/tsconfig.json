@@ -16,8 +16,9 @@
   },
   "ts-node": {
     "transpileOnly": true,
+    "esm": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "moduleResolution": "node16"
     }
   },
   "exclude": [

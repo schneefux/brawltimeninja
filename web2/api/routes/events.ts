@@ -1,5 +1,5 @@
-import BrawlstarsService from '../services/BrawlstarsService'
-import { publicProcedure, router } from '../trpc'
+import BrawlstarsService from '../services/BrawlstarsService.js'
+import { publicProcedure, router } from '../trpc.js'
 
 const brawlstarsService = new BrawlstarsService()
 
