@@ -20,12 +20,19 @@ type CardProps = Partial<{
   noFilter: boolean
 }>
 
+type BigstatProps = Partial<{
+  title: string
+  value: number|string
+  tooltip: string
+  tooltipLink: string
+}>
+
 /**
  * Props definition for static components
  */
 export const StaticProps = {
   card: {
-    type: Object as PropType<CardProps|false>,
+    type: Object as PropType<CardProps|BigstatProps|false>,
     required: false as false
   },
 }

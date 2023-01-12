@@ -70,7 +70,7 @@ export default defineComponent({
         brawler: props.brawlerName,
         amount: i18n.t('rating.amount.' + viability),
         bestMode,
-      }) as string
+      })
     })
 
     return {

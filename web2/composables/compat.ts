@@ -10,19 +10,20 @@ import { PageContext } from "@/renderer/types"
 import { useHead, ReactiveHead } from "@unhead/vue"
 import { locales, loadLocale } from "@/locales";
 import { extractLocale } from "@/locales/extractLocale";
+import { MaybeRef } from "@vueuse/shared";
 
 /*
  * Nuxt 2 backwards compatibility composables
  */
 
-export function useAsync<T>(fun: () => Promise<T>, key: string): Ref<T|undefined> {
+export function useAsync<T>(fun: () => Promise<T>, key: MaybeRef<string>): Ref<T|undefined> {
   const { suspense, data } = useQuery([key], fun)
   onServerPrefetch(suspense)
   return data
 }
 
 export function useContext() {
-  const { $klicker } = useKlicker()
+  const $klicker = useKlicker()
   const $api = inject(TrpcInjectionKey)!
   const i18n = useI18n()
 

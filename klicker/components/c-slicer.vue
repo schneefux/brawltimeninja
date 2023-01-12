@@ -53,7 +53,7 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 import { useUniqueId } from '../composables/id'
 
 export default defineComponent({
@@ -94,7 +94,7 @@ export default defineComponent({
     ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
   },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
     const showFilters = ref(false)
 
     const compareMode = computed(() => props.modelValue.comparing)

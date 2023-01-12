@@ -38,7 +38,7 @@ export default defineComponent({
     const { i18n } = useContext()
 
     const query: CubeComparingQuery = {
-      name: i18n.t('metric.team') as string,
+      name: i18n.t('metric.team'),
       comparing: true,
       cubeId: 'brawlerEnemies',
       slices: {

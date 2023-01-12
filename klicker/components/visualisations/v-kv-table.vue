@@ -52,7 +52,7 @@ import BKvTable, { Row } from '../ui/b-kv-table.vue'
 import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 /**
  * Table visualisation with metrics on the Y axis and a single value on the X axis
@@ -69,7 +69,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const rows = computed<Row[]>(() =>

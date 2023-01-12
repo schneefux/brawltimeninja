@@ -15,9 +15,9 @@ export default defineComponent({
     const { i18n } = useContext()
 
     useMeta(() => {
-      const description = i18n.t('tier-list.gear.meta.description') as string
+      const description = i18n.t('tier-list.gear.meta.description')
       return {
-        title: i18n.t('tier-list.gear.meta.title') as string,
+        title: i18n.t('tier-list.gear.meta.title'),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

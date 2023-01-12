@@ -55,6 +55,7 @@ import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useContext, useRoute, useRouter } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useAllBrawlers, useAllEvents, useAllModes } from '@/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -70,10 +71,10 @@ export default defineComponent({
     },
   },
   setup() {
-    const { $klicker, i18n } = useContext()
-    const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
-    const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
-    const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
+    const { i18n } = useContext()
+    const brawlers = useAllBrawlers()
+    const modes = useAllModes()
+    const maps = useAllEvents()
     const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
@@ -81,102 +82,102 @@ export default defineComponent({
     const linkTree = computed<Link[]>(() => {
       return [{
         id: 'brawlers',
-        name: i18n.t('nav.Brawlers') as string,
+        name: i18n.t('nav.Brawlers'),
         target: `/tier-list/brawler`,
         children: (<Link[]> []).concat(
           mapViewTabs.map(tab => ({
             id: `brawlers#${tab}`,
-            name: i18n.t('tab.' + tab) as string,
+            name: i18n.t('tab.' + tab),
             target: `/tier-list/brawler#${tab}`,
           })),
           (brawlers.value ?? []).map(b => ({
-            id: b,
-            name: capitalizeWords(b.toLowerCase()),
-            target: `/tier-list/brawler/${brawlerId({ name: b })}`,
+            id: b.id,
+            name: b.name,
+            target: `/tier-list/brawler/${brawlerId({ name: b.id })}`,
             children: [{
-              id: `${b}#overview`,
-              name: i18n.t('brawler.overview') as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#overview`,
+              id: `${b.id}#overview`,
+              name: i18n.t('brawler.overview'),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#overview`,
             }, {
-              id: `${b}#accessory`,
-              name: i18n.t('brawler.accessories') as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#accessory`,
+              id: `${b.id}#accessory`,
+              name: i18n.t('brawler.accessories'),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#accessory`,
             }, {
-              id: `${b}#synergy`,
-              name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b }) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#synergy`,
+              id: `${b.id}#synergy`,
+              name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b }),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#synergy`,
             }, {
-              id: `${b}#maps`,
-              name: i18n.t('brawler.current-maps.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#maps`,
+              id: `${b.id}#maps`,
+              name: i18n.t('brawler.current-maps.title', { brawler: b.name }),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#maps`,
             }, {
-              id: `${b}#modes`,
-              name: i18n.t('brawler.modes.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#modes`,
+              id: `${b.id}#modes`,
+              name: i18n.t('brawler.modes.title', { brawler: b.name }),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#modes`,
             }, {
-              id: `${b}#trends`,
-              name: i18n.t('brawler.trends', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#trends`,
+              id: `${b.id}#trends`,
+              name: i18n.t('brawler.trends', { brawler: b.name }),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#trends`,
             }, {
-              id: `${b}#trophies`,
-              name: i18n.t('brawler.by-trophies', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#trophies`,
+              id: `${b.id}#trophies`,
+              name: i18n.t('brawler.by-trophies', { brawler: b.name }),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#trophies`,
             }, {
-              id: `${b}#skins`,
-              name: i18n.tc('skin', 2) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#skins`,
+              id: `${b.id}#skins`,
+              name: i18n.tc('skin', 2),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#skins`,
             }, {
-              id: `${b}#pins`,
-              name: i18n.tc('pin', 2) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#pins`,
+              id: `${b.id}#pins`,
+              name: i18n.tc('pin', 2),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#pins`,
             }, {
-              id: `${b}#voicelines`,
-              name: i18n.tc('voiceline', 2) as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#voicelines`,
+              id: `${b.id}#voicelines`,
+              name: i18n.tc('voiceline', 2),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#voicelines`,
             }, {
-              id: `${b}#balance`,
-              name: i18n.t('balance-changes') as string,
-              target: `/tier-list/brawler/${brawlerId({ name: b })}#balance`,
+              id: `${b.id}#balance`,
+              name: i18n.t('balance-changes'),
+              target: `/tier-list/brawler/${brawlerId({ name: b.id })}#balance`,
             }],
           })),
         ),
       }, {
         id: 'events',
-        name: i18n.t('nav.Events') as string,
+        name: i18n.t('nav.Events'),
         target: '/tier-list/map',
         children: (<Link[]> []).concat(
           [{
             id: 'events-active',
-            name: i18n.t('events.active.title') as string,
+            name: i18n.t('events.active.title'),
             target: `/tier-list/map#active`,
           }, {
             id: 'events-powerleague',
-            name: i18n.t('events.powerleague.title') as string,
+            name: i18n.t('events.powerleague.title'),
             target: `/tier-list/map#powerleague`,
           }, {
             id: 'events-upcoming',
-            name: i18n.t('events.upcoming.title') as string,
+            name: i18n.t('events.upcoming.title'),
             target: `/tier-list/map#upcoming`,
           }, {
             id: 'events-season',
-            name: i18n.t('events.season.title') as string,
+            name: i18n.t('events.season.title'),
             target: `/tier-list/map#season`,
           }, {
             id: 'events-competition-winners',
-            name: i18n.t('tier-list.competition-winners.title') as string,
+            name: i18n.t('tier-list.competition-winners.title'),
             target: `/tier-list/map#competition-winners`,
           }],
-          (modes.value ?? []).map(m => ({
+          modes.value.map(m => ({
             id: m,
-            name: i18n.t('mode.' + m) as string,
+            name: i18n.t('mode.' + m),
             target: `/tier-list/mode/${m}`,
             children: (<Link[]> []).concat(
               mapViewTabs.map(tab => ({
                 id: `${m}#${tab}`,
-                name: i18n.t('tab.' + tab) as string,
+                name: i18n.t('tab.' + tab),
                 target: `/tier-list/mode/${camelToKebab(m)}/#${tab}`,
               })),
-              (maps.value ?? [])
+              maps.value
                 .filter(e => e.mode == m)
                 .map(e => ({
                   id: e.key,
@@ -193,15 +194,15 @@ export default defineComponent({
         )
       }, {
         id: 'leaderboards',
-        name: i18n.t('nav.Leaderboards') as string,
+        name: i18n.t('nav.Leaderboards'),
         children: ['hours', 'trophies', 'victories', 'soloVictories', 'duoVictories'].map(metric => ({
           id: metric,
-          name: i18n.t('metric.' + metric) as string,
+          name: i18n.t('metric.' + metric),
           target: `/leaderboard/${metric}`,
         }))
       }, {
         id: 'guides',
-        name: i18n.t('nav.Guides') as string,
+        name: i18n.t('nav.Guides'),
         target: '/blog/guides',
         children: (toc.value ?? []).map(post => ({
           id: post.slug,
@@ -210,43 +211,43 @@ export default defineComponent({
         })),
       }, {
         id: 'starpowers',
-        name: i18n.t('nav.Star Powers') as string,
+        name: i18n.t('nav.Star Powers'),
         target: '/tier-list/starpowers',
       }, {
         id: 'gadgets',
-        name: i18n.t('nav.Gadgets') as string,
+        name: i18n.t('nav.Gadgets'),
         target: '/tier-list/gadgets',
       }, {
         id: 'gears',
-        name: i18n.t('nav.Gears') as string,
+        name: i18n.t('nav.Gears'),
         target: '/tier-list/gears',
       }, {
         id: 'dashboard',
-        name: i18n.t('nav.Dashboard') as string,
+        name: i18n.t('nav.Dashboard'),
         target: '/dashboard',
       }, {
         id: 'teambuilder',
-        name: i18n.t('nav.Team Builder') as string,
+        name: i18n.t('nav.Team Builder'),
         target: '/team-builder',
       }, {
         id: 'quiz',
-        name: i18n.t('nav.Quiz') as string,
+        name: i18n.t('nav.Quiz'),
         target: '/quiz',
       }, {
         id: 'brawlerrecords',
-        name: i18n.t('nav.Brawler Records') as string,
+        name: i18n.t('nav.Brawler Records'),
         target: '/brawler-records',
       }, {
         id: 'barchartrace',
-        name: i18n.t('nav.Bar Chart Race') as string,
+        name: i18n.t('nav.Bar Chart Race'),
         target: '/bar-chart-race',
       }, {
         id: 'about',
-        name: i18n.t('nav.About') as string,
+        name: i18n.t('nav.About'),
         target: '/about',
       }, {
         id: 'status',
-        name: i18n.t('nav.Status') as string,
+        name: i18n.t('nav.Status'),
         target: '/status',
       }]
     })
@@ -256,36 +257,36 @@ export default defineComponent({
       if (tagPattern.test(tagCandidate)) {
         return [{
           id: `profile-${tagCandidate}`,
-          name: `${i18n.t('nav.Profile') as string} #${tagCandidate}`,
+          name: `${i18n.t('nav.Profile')} #${tagCandidate}`,
           target: `/profile/${tagCandidate}`,
           children: [{
             id: `profile-${tagCandidate}-time`,
-            name: i18n.t('player.time-statistics') as string,
+            name: i18n.t('player.time-statistics'),
             target: `/profile/${tagCandidate}#time`,
           }, {
             id: `profile-${tagCandidate}-trophy`,
-            name: i18n.t('player.trophy-statistics') as string,
+            name: i18n.t('player.trophy-statistics'),
             target: `/profile/${tagCandidate}#trophy`,
           }, {
             id: `profile-${tagCandidate}-records`,
-            name: i18n.t('player.records.title') as string,
+            name: i18n.t('player.records.title'),
             target: `/profile/${tagCandidate}#records`,
           }, {
             id: `profile-${tagCandidate}-battles`,
-            name: i18n.t('battle-log') as string,
+            name: i18n.t('battle-log'),
             target: `/profile/${tagCandidate}#battles`,
           }, {
             id: `profile-${tagCandidate}-modes`,
-            name: i18n.tc('mode', 2) as string,
+            name: i18n.tc('mode', 2),
             target: `/profile/${tagCandidate}#modes`,
           }, {
             id: `profile-${tagCandidate}-brawlers`,
-            name: i18n.tc('brawler', 2) as string,
+            name: i18n.tc('brawler', 2),
             target: `/profile/${tagCandidate}#brawlers`,
           }]
         }, {
           id: `club-${tagCandidate}`,
-          name: `${i18n.t('nav.Club') as string} #${tagCandidate}`,
+          name: `${i18n.t('nav.Club')} #${tagCandidate}`,
           target: `/club/${tagCandidate}`,
         }]
       }

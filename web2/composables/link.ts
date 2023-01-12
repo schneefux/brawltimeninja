@@ -4,7 +4,7 @@ import { useKlicker } from '@schneefux/klicker/composables/klicker'
 import { useRoute, useRouter } from '~/composables/compat'
 
 export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
-  const { $klicker } = useKlicker()
+  const $klicker = useKlicker()
   const route = useRoute()
   const router = useRouter()
 
@@ -19,7 +19,7 @@ export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
 }
 
 export const useSyncSlicesAndRoute = (defaults: Ref<CubeQuery|CubeComparingQuery>) => {
-  const { $klicker } = useKlicker()
+  const $klicker = useKlicker()
   const route = useRoute()
   const router = useRouter()
 

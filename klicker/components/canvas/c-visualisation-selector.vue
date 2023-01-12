@@ -104,7 +104,7 @@ export default defineComponent({
     ['update:modelValue'](value: Widget) { return true },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const visualisations = computed<StaticWidgetSpec[]>(() => {
       if (props.response != undefined) {

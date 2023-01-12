@@ -69,16 +69,16 @@ export default defineComponent({
 
       // TODO refactor: write a function that returns a query that compares to parent dimension
       if (comparingSlices == undefined && props.slices.map?.length > 0) {
-        name = i18n.t('mode.' + props.slices.mode[0]!) as string + ' - ' + i18n.t('map.' + props.id) as string
-        referenceName = i18n.t('mode.' + props.slices.mode[0]!) as string
+        name = i18n.t('mode.' + props.slices.mode[0]!) + ' - ' + i18n.t('map.' + props.id)
+        referenceName = i18n.t('mode.' + props.slices.mode[0]!)
         comparingSlices = {
           ...props.slices,
           map: [],
         }
       }
       if (comparingSlices == undefined && props.slices.mode?.length > 0) {
-        name = i18n.t('mode.' + props.slices.mode[0]) as string
-        referenceName = i18n.t('option.all-modes') as string
+        name = i18n.t('mode.' + props.slices.mode[0])
+        referenceName = i18n.t('option.all-modes')
         comparingSlices = {
           ...props.slices,
           mode: [],
@@ -86,7 +86,7 @@ export default defineComponent({
       }
       if (comparingSlices == undefined && props.slices.brawler?.length > 0) {
         name = capitalizeWords(props.slices.brawler[0]!.toLowerCase())
-        referenceName = i18n.t('option.all-brawlers') as string
+        referenceName = i18n.t('option.all-brawlers')
         comparingSlices = {
           ...props.slices,
           brawler: [],

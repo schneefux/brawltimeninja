@@ -165,64 +165,64 @@ export default defineComponent({
       rows.push({
         slot: 'name',
         key: 'name',
-        title: i18n.t('metric.name') as string,
+        title: i18n.t('metric.name'),
       })
 
       rows.push({
         slot: 'tag',
         key: 'tag',
-        title: i18n.t('metric.tag') as string,
+        title: i18n.t('metric.tag'),
       })
 
       if (props.player.club?.tag != undefined) {
         rows.push({
           slot: 'club',
           key: 'club.name',
-          title: i18n.t('club') as string,
+          title: i18n.t('club'),
         })
       }
 
       rows.push({
         slot: 'trophies',
         key: 'trophies',
-        title: i18n.t('metric.trophies') as string,
+        title: i18n.t('metric.trophies'),
       })
 
       rows.push({
         slot: 'trophies',
         key: 'highestTrophies',
-        title: i18n.t('metric.highestTrophies') as string,
+        title: i18n.t('metric.highestTrophies'),
       })
 
       rows.push({
         slot: 'expLevel',
         key: 'expLevel',
-        title: i18n.t('metric.expLevel') as string,
+        title: i18n.t('metric.expLevel'),
       })
 
       rows.push({
         slot: 'victories',
         key: '3vs3Victories',
-        title: i18n.t('metric.victories') as string,
+        title: i18n.t('metric.victories'),
       })
 
       rows.push({
         slot: 'soloVictories',
         key: 'soloVictories',
-        title: i18n.t('metric.soloVictories') as string,
+        title: i18n.t('metric.soloVictories'),
       })
 
       rows.push({
         slot: 'duoVictories',
         key: 'duoVictories',
-        title: i18n.t('metric.duoVictories') as string,
+        title: i18n.t('metric.duoVictories'),
       })
 
       if (trackingStatus.value != undefined) {
         rows.push({
           slot: 'tracking',
           key: 'tracking',
-          title: i18n.t('profile.tracking.label') as string,
+          title: i18n.t('profile.tracking.label'),
         })
       }
 

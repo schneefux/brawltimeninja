@@ -22,7 +22,7 @@ import { VisualisationProps } from '../../props'
 import BButton from '../ui/b-button.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -33,7 +33,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {

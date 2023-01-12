@@ -153,7 +153,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
-import { useKlicker } from '../../composables/klicker'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   props: {
@@ -227,7 +227,7 @@ export default defineComponent({
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
     const { id: prefix } = useUniqueId()
 
-    const { navigate, linkComponent } = useKlicker()
+    const { navigate, linkComponent } = useKlickerConfig()
 
     const onClick = (e: Event) => {
       if (attrs.onClick != undefined) {

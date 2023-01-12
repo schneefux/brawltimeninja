@@ -11,13 +11,12 @@
           </h1>
 
           <b-radio
-            :model-value="withQuery"
+            v-model="withQuery"
             :id="`${prefix}-static`"
             value="false"
             name="withQuery"
             required
             primary
-            @update:modelValue="v => withQuery = v"
           ></b-radio>
           <label
             :for="`${prefix}-static`"

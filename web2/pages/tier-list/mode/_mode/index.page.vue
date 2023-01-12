@@ -56,7 +56,8 @@ import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
-import { useAsync, useRoute, useContext, useMeta } from '~/composables/compat'
+import { useRoute, useContext, useMeta } from '~/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values'
 
 export default defineComponent({
   directives: {
@@ -69,7 +70,7 @@ export default defineComponent({
   head: {},
   middleware: ['cached'],
   setup() {
-    const { i18n, $klicker } = useContext()
+    const { i18n } = useContext()
 
     const route = useRoute()
 
@@ -77,16 +78,16 @@ export default defineComponent({
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
       return kebabToCamel(route.value.params.mode ?? '')
     })
-    const events = useAsync(() => $klicker.queryActiveEvents([], {
+    const events = useActiveEvents([], {
       mode: [mode.value],
-    }, null), `mode-${route.value.params.mode}`)
+    }, null)
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
     useMeta(() => {
-      const description = i18n.t('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
+      const description = i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) })
       return {
-        title: i18n.t('tier-list.mode.meta.title', 1, { mode: i18n.t('mode.' + mode.value) as string }),
+        title: i18n.t('tier-list.mode.meta.title', { mode: i18n.t('mode.' + mode.value) }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

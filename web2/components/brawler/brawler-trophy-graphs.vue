@@ -38,7 +38,7 @@
     >
       <lazy-map-trend-chart
         :slices="{ powerplay: ['false'] }"
-        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :filter="filter"
         :dimensions="['trophyRange', 'brawler']"
         cube-id="map"
         sort="trophyRange"
@@ -52,6 +52,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { BDashboardCell } from '@schneefux/klicker/components'
+import { MetaGridEntry } from "@schneefux/klicker/types";
 
 export default defineComponent({
   components: {
@@ -69,7 +70,10 @@ export default defineComponent({
       powerplay: ['false'],
     }))
 
+    const filter = computed(() => (e: MetaGridEntry) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+
     return {
+      filter,
       brawlerSlices,
     }
   }

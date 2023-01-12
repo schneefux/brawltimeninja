@@ -111,7 +111,7 @@ export default defineComponent({
   },
   emits: [],
   setup(props) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
     const spec = computed(() => (
       $klicker.visualisations.find(v => v.component == props.widget.component) ??
       $klicker.staticWidgets.find(w => w.component == props.widget.component)

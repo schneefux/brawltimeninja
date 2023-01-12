@@ -116,7 +116,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
     const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
 
     const fetchData = async () => {

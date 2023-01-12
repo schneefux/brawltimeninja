@@ -191,7 +191,8 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useContext, useAsync, useRouter, useMeta } from '@/composables/compat'
+import { useContext, useRouter, useMeta } from '@/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values'
 import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 import { event } from 'vue-gtag'
 import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
@@ -210,12 +211,12 @@ export default defineComponent({
   },
   head: {},
   setup() {
-    const { i18n, $config, $klicker, $sentry } = useContext()
+    const { i18n, $config, $sentry } = useContext()
 
     const tag = ref<string|undefined>()
-    const events = useAsync(() => $klicker.queryActiveEvents([], {
+    const events = useActiveEvents([], {
       powerplay: ['0'],
-    }), 'home-active-events')
+    })
 
     const cleanedTag = computed(() =>
       (tag.value || '')
@@ -245,7 +246,7 @@ export default defineComponent({
 
     const helpDropdown = ref<HTMLElement>()
 
-    const addLastPlayer = (player: any) => store.addLastPlayer(player)
+    const addLastPlayer = (player: PlayerLink) => store.addLastPlayer(player)
 
     const router = useRouter()
     const loading = ref(false)
@@ -268,7 +269,7 @@ export default defineComponent({
       try {
         loading.value = true
         await store.loadPlayer(cleanedTag.value)
-        store.addLastPlayer(player.value)
+        store.addLastPlayer(store.player!)
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
@@ -317,8 +318,8 @@ export default defineComponent({
           type: 'application/ld+json',
           json: formatAsJsonLd({
             id: event.id.toString(),
-            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map) as string,
-            mode: i18n.t('mode.' + event.mode) as string,
+            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
+            mode: i18n.t('mode.' + event.mode),
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),

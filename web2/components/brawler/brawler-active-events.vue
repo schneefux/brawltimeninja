@@ -31,7 +31,8 @@ import { defineComponent, computed } from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { BScrollingList } from '@schneefux/klicker/components'
-import { useAsync, useContext } from '~/composables/compat'
+import { useContext } from '~/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -45,12 +46,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
+    const { i18n } = useContext()
 
-    const events = useAsync(() => $klicker.queryActiveEvents(
+    const events = useActiveEvents(
       ['winRateAdj'], {
       brawler: [props.brawlerName.toUpperCase()],
-    }), `active-events-${props.brawlerName}`)
+    })
 
     const description = computed(() => {
       if (events.value == undefined) {
@@ -58,7 +59,7 @@ export default defineComponent({
       }
       const bestEvents = events.value.slice().sort((e1, e2) => (e2.metrics.winRateAdj as number) - (e1.metrics.winRateAdj as number))
 
-      const formatEvent = (r: EventMetadata) => `${i18n.t('mode.' + r.mode) as string} - ${i18n.t('map.' + r.id) as string}`
+      const formatEvent = (r: EventMetadata) => `${i18n.t('mode.' + r.mode)} - ${i18n.t('map.' + r.id)}`
 
       const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => (<any>e).winRateAdj > 0.55).length
@@ -66,9 +67,9 @@ export default defineComponent({
 
       return i18n.t('brawler.current-maps.description', {
         brawler: props.brawlerName,
-        amount: i18n.t('rating.amount.' + viableAmount) as string,
+        amount: i18n.t('rating.amount.' + viableAmount),
         maps: bestMaps,
-      }) as string
+      })
     })
 
     return {

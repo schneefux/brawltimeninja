@@ -1,5 +1,5 @@
-import { computed, Ref, shallowRef, watchEffect } from 'vue'
-import { useKlicker } from './klicker'
+import { computed, Ref } from 'vue'
+import { useKlickerConfig } from './klicker'
 import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 
 function hash(query: CubeQuery|CubeComparingQuery): string {
@@ -24,7 +24,7 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
  * Run a query
  */
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
-  const { $klicker, useQuery } = useKlicker()
+  const { $klicker, useQuery } = useKlickerConfig()
 
   async function fetch() {
     if (!query.value.comparing) {

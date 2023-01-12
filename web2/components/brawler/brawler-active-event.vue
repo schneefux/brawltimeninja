@@ -4,19 +4,23 @@
     :map="map"
     :id="id"
   >
-    <template v-slot:infobar><p v-if="end != undefined"  class="text-right">
-      {{ $t('time.ends-in', { time: timeTillEnd }) }}
-    </p></template>
-
-    <template v-slot:content><div
-      
-      class="h-full flex flex-col justify-center"
+    <template
+      v-if="end != undefined"
+      v-slot:infobar
     >
-      <brawler-kv-card
-        :brawler-name="brawlerName"
-        :slices="slices"
-      ></brawler-kv-card>
-    </div></template>
+      <p class="text-right">
+        {{ $t('time.ends-in', { time: timeTillEnd }) }}
+      </p>
+    </template>
+
+    <template v-slot:content>
+      <div class="h-full flex flex-col justify-center">
+        <brawler-kv-card
+          :brawler-name="brawlerName"
+          :slices="slices"
+        ></brawler-kv-card>
+      </div>
+    </template>
   </event-card>
 </template>
 

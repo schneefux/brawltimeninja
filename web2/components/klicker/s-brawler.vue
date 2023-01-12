@@ -17,8 +17,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { capitalize } from '~/lib/util'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAllBrawlers } from '@/composables/dimension-values'
 
 export default defineComponent({
   props: {
@@ -32,18 +31,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    const brawlers = useAsync(async () => {
-      const brawlers = await $klicker.queryAllBrawlers()
-      return brawlers
-        .sort((b1, b2) => b1.localeCompare(b2))
-        .map(b => ({
-          id: b,
-          name: capitalize(b.toLowerCase()),
-        }))
-    }, 's-brawler-brawlers')
-
+    const brawlers = useAllBrawlers()
     const brawler = computed({
       get() {
         return (props.modelValue.brawler ?? [])[0] ?? ''

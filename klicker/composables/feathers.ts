@@ -3,10 +3,10 @@ import { ref, onMounted } from 'vue'
 import { feathers } from '@feathersjs/feathers'
 import rest from '@feathersjs/rest-client'
 import auth from '@feathersjs/authentication-client'
-import { useKlicker } from './klicker'
+import { useKlickerConfig } from './klicker'
 
 export default function useFeathers() {
-  const { managerUrl } = useKlicker()
+  const { managerUrl } = useKlickerConfig()
 
   const client = feathers() as any // TODO
 

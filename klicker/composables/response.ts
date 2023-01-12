@@ -6,7 +6,7 @@ import { CubeComparingResponse, CubeResponse, VisualisationSpec } from '../types
  * Provide metadata for a query result
  */
 export const useCubeResponse = (response: Ref<CubeResponse|CubeComparingResponse>) => {
-  const { $klicker } = useKlicker()
+  const $klicker = useKlicker()
 
   const comparing = computed(() => response.value.query.comparing == true)
 

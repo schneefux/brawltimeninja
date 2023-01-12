@@ -121,7 +121,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const team = ref<SelectedBrawler[]>([])
     const loading = ref(0)

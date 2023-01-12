@@ -1,9 +1,9 @@
 import { computed, Ref } from 'vue'
-import { useKlicker } from './klicker'
+import { useKlickerConfig } from './klicker'
 import { SlicerSpec } from '../types'
 
 export const useCheckSlicerApplicable = (cubeId: Ref<string>) => {
-  const { $klicker } = useKlicker()
+  const { $klicker } = useKlickerConfig()
 
   const allMetrics = computed(() => {
     if (!(cubeId.value in $klicker.config)) {

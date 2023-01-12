@@ -21,7 +21,7 @@ import { VisualisationProps } from '../../props'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -32,7 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics, switchResponse, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {

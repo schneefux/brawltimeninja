@@ -4,11 +4,11 @@
     :map="map"
     :id="id"
   >
-    <template v-slot:infobar>
-      <div
-        v-if="powerplay || endDate != undefined || startDate != undefined"
-        class="flex justify-end"
-      >
+    <template
+      v-if="powerplay || endDate != undefined || startDate != undefined"
+      v-slot:infobar
+    >
+      <div class="flex justify-end">
         <span v-if="powerplay">
           {{ $t('power-play', 1) }}
         </span>
@@ -76,7 +76,7 @@ export default defineComponent({
         locale: locale.value,
       })
 
-      return i18n.t('time.ends-in', { time: dist }) as string
+      return i18n.t('time.ends-in', { time: dist })
     })
     const startDateString = computed(() => {
       if (props.startDate == undefined) {

@@ -42,7 +42,7 @@
 import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAllBrawlers } from '@/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -50,17 +50,15 @@ export default defineComponent({
     BCard,
   },
   setup() {
-    const { $klicker } = useContext()
-
-    const allBrawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
+    const allBrawlers = useAllBrawlers()
     const brawlers = computed(() => {
       if (allBrawlers.value == undefined) {
         return undefined
       }
 
       return allBrawlers.value.map(b => ({
-        id: brawlerId({ name: b }),
-        name: capitalizeWords(b.toLowerCase()),
+        id: brawlerId({ name: b.id }),
+        name: b.name,
       }))
     })
 

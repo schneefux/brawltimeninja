@@ -18,8 +18,8 @@
       >
         <template v-slot:content>
           <events-roll
-            v-if="allEvents != undefined"
-            :events="allEvents"
+            v-if="allEventsAndSummaries != undefined"
+            :events="allEventsAndSummaries"
             :mode-filter-default="mode"
           >
             <template v-slot="{ event }">
@@ -76,7 +76,8 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
-import { useContext, useAsync } from '~/composables/compat'
+import { useContext } from '~/composables/compat'
+import { useAllEvents } from '@/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -94,34 +95,34 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
+    const { i18n } = useContext()
 
     const mode = computed(() => (props.modelValue.mode ?? [])[0])
     const map = computed(() => (props.modelValue.map ?? [])[0])
 
-    const allEvents = useAsync<EventMetadata[]>(async () => {
-      const events = await $klicker.queryAllEvents({})
-      const modes = [...new Set(events.map(e => e.mode))]
+    const allEvents = useAllEvents()
+    const allEventsAndSummaries = computed<EventMetadata[]>(() => {
+      const modes = [...new Set(allEvents.value.map(e => e.mode))]
       return (<EventMetadata[]>[]).concat(
         [{
           key: 'all',
-          id: 0,
-          map: i18n.t('option.all-modes') as string,
+          id: '0',
+          map: i18n.t('option.all-modes'),
           mode: 'all',
           powerplay: false,
           metrics: {},
         }],
         modes.map(m => ({
           key: `all-${m}`,
-          id: 0,
-          map: i18n.t('option.all-maps') as string,
+          id: '0',
+          map: i18n.t('option.all-maps'),
           mode: m,
           powerplay: false,
           metrics: {},
         })),
-        events,
+        allEvents.value,
       )
-    }, 's-mode-map-all-events')
+    })
 
     const mapName = computed(() => {
       const map = (props.modelValue.map ?? [])[0]
@@ -134,7 +135,7 @@ export default defineComponent({
         return ''
       }
 
-      if (allEvents.value == undefined) {
+      if (allEvents.value.length == 0) {
         return map
       }
 
@@ -160,7 +161,7 @@ export default defineComponent({
       mode,
       map,
       onSelectModeMap,
-      allEvents,
+      allEventsAndSummaries,
       lightboxOpen,
       mapName,
     }

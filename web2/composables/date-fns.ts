@@ -1,11 +1,14 @@
+import { Locale } from 'date-fns'
 import { enUS, de, es, uk, it } from 'date-fns/locale'
 import { computed } from 'vue'
-import { useContext } from './compat'
+import { useI18n } from 'vue-i18n'
 
 export const useDateFnLocale = () => {
-  const { i18n } = useContext()
-  const locales = { en: enUS, de, es, ua: uk, it }
-  const locale = computed(() => locales[i18n.locale])
+  const i18n = useI18n()
+  const locale = computed(() => {
+    const locales: Record<string, Locale> = { en: enUS, de, es, ua: uk, it }
+    return locales[i18n.locale.value]
+  })
 
   return {
     locale,

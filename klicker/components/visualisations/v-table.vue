@@ -61,7 +61,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -83,7 +83,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {

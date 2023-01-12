@@ -2,7 +2,7 @@
   <figure class="flex items-center">
     <!-- TODO fix types, cube returns string[] -->
     <brawler-team
-      :brawlers="row.dimensionsRaw.team.team as string[]"
+      :brawlers="row.dimensionsRaw.team.team as unknown as string[]"
       class="shrink-0 w-20"
     ></brawler-team>
     <figcaption

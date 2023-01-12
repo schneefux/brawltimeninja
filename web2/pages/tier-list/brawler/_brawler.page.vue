@@ -234,7 +234,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
+import { useAsync, useContex, useMeta, useRoute } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
@@ -263,9 +264,9 @@ export default defineComponent({
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
 
     useMeta(() => {
-      const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) as string
+      const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value })
       return {
-        title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }) as string,
+        title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

@@ -4,7 +4,7 @@ import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilte
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'
 import BButton from './ui/b-button.vue'
-import { useKlicker } from '../composables'
+import { useKlickerConfig } from '../composables/klicker'
 
 export default defineComponent({
   name: 'c-query',
@@ -20,7 +20,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { response, error, loading, update } = useCubeQuery(query, filter)
 
     return () => {

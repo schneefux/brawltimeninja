@@ -66,7 +66,7 @@ export default defineComponent({
       sortId: 'winRate',
       comparing: true,
       reference: {
-        name: props.prop == 'gadgets' ? i18n.t('brawler.no-gadget') as string : i18n.t('brawler.no-starpower') as string,
+        name: props.prop == 'gadgets' ? i18n.t('brawler.no-gadget') : i18n.t('brawler.no-starpower'),
         cubeId: props.prop == 'gadgets' ? 'gadget' : 'starpower',
         dimensionsIds: ['brawler'],
         metricsIds: ['winRate'],

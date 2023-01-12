@@ -69,7 +69,7 @@ export default defineComponent({
     ['update:modelValue'](value: ReportWidget) { return true },
   },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
     const moveable = ref<MoveableInterface>()
 
     const spec = computed<StaticWidgetSpec>(() => (

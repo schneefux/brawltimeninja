@@ -14,7 +14,7 @@ export const getMapName = (id: string|number|undefined, name: string|undefined) 
   }
 
   if (i18n.te(`map.${id}`)) {
-    return i18n.t(`map.${id}`) as string
+    return i18n.t(`map.${id}`)
   }
 
   // no translation available, fall back to English name from database

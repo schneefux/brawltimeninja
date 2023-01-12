@@ -1,6 +1,6 @@
 <template>
   <b-select
-    v-if="seasons != undefined"
+    v-if="seasons.length > 0"
     v-model="value"
     dark
     sm
@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch, computed } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAllSeasons } from '@/composables/dimension-values'
 
 export default defineComponent({
   props: {
@@ -39,15 +39,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
-
-    async function getSeasons(): Promise<{ id: string, name: string }[]> {
-      return await $klicker.queryAllSeasons(props.limit)
-    }
-
-    const seasons = useAsync(() => getSeasons(), 's-season-exact-seasons')
-
-    watch(() => props.limit, async () => seasons.value = await getSeasons())
+    const seasons = useAllSeasons(props.limit)
 
     const value = computed({
       get() {

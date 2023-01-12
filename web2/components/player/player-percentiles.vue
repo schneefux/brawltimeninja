@@ -109,9 +109,9 @@ export default defineComponent({
 
         p = Math.floor(p * base) / base
         if (p == 0.5) {
-          return i18n.t('rating.above-average') as string
+          return i18n.t('rating.above-average')
         }
-        return i18n.t('rating.percentile-of', { part: p * base, total: base }) as string
+        return i18n.t('rating.percentile-of', { part: p * base, total: base })
       }
 
       return achievements.map(a => ({

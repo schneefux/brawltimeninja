@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BButton from './b-button.vue'
-import { useKlicker } from '../../composables/klicker'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -47,7 +47,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const expand = () => emit('update:modelValue', props.modelValue + 1)
     const collapse = () => emit('update:modelValue', 0)
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
 
     return {
       expand,

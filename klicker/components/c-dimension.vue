@@ -51,7 +51,7 @@ import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
 
@@ -76,7 +76,7 @@ export default defineComponent({
     ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
   },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
 
     const compareMode = computed(() => props.modelValue.comparing)
 

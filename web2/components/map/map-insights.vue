@@ -84,15 +84,15 @@ export default defineComponent({
       }
 
       const mode = props.slices.mode[0] as string
-      const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string
+      const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) })
       const testName = getMapName(props.id, props.slices.map[0])
-      const referenceName = i18n.t('mode.' + mode) as string
+      const referenceName = i18n.t('mode.' + mode)
 
       templates.push({
         tab: 'brawlers',
         title,
         link: `/tier-list/mode/${camelToKebab(mode)}`,
-        linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
+        linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -120,7 +120,7 @@ export default defineComponent({
         tab: 'gadgets',
         title,
         link: `/tier-list/gadgets`,
-        linkText: i18n.t('action.open.tier-list.gadget') as string,
+        linkText: i18n.t('action.open.tier-list.gadget'),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -152,7 +152,7 @@ export default defineComponent({
         tab: 'starpowers',
         title,
         link: `/tier-list/starpowers`,
-        linkText: i18n.t('action.open.tier-list.starpower') as string,
+        linkText: i18n.t('action.open.tier-list.starpower'),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -184,7 +184,7 @@ export default defineComponent({
         tab: 'gears',
         title,
         link: `/tier-list/gears`,
-        linkText: i18n.t('action.open.tier-list.gear') as string,
+        linkText: i18n.t('action.open.tier-list.gear'),
         long: true,
         query: <CubeComparingQuery>{
           name: testName,

@@ -1,7 +1,7 @@
 import KlickerService from '../service'
 import config from './klicker.cubes'
 import en from './en.json'
-import { provide, shallowRef } from 'vue'
+import { provide, Ref, shallowRef } from 'vue'
 import { KlickerConfigInjectionKey } from '../composables/klicker'
 
 export function translate(key: string) {
@@ -28,7 +28,7 @@ export class KlickerServiceMock extends KlickerService {
 
 let $klicker = new KlickerServiceMock()
 
-export const useKlicker = () => ({ $klicker, translate })
+export const useKlickerConfig = () => ({ $klicker, translate })
 
 export function decorator(story, { parameters }) {
   let klicker = parameters?.$klicker ?? new KlickerServiceMock()
@@ -40,7 +40,7 @@ export function decorator(story, { parameters }) {
       provide(KlickerConfigInjectionKey, {
         klicker,
         translate,
-        useQuery: function<T, E>(key: string, handler: () => Promise<T>) {
+        useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
           const data = shallowRef<T|null>(null) // https://github.com/vuejs/core/issues/1324#issuecomment-859766527
           const error = shallowRef<E|null>(null)
           const loading = shallowRef(false)
@@ -68,6 +68,7 @@ export function decorator(story, { parameters }) {
           alert('Navigating to ' + path)
         },
         managerUrl: '',
+        linkComponent: 'a'
       })
     },
   }

@@ -157,7 +157,7 @@ export default defineComponent({
     ['update:modelValue'](value: CubeQuery) { return true },
   },
   setup(props, { emit, slots }) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const metaMetrics = $klicker.config[props.modelValue.cubeId].metaMetrics
     const query = computed({

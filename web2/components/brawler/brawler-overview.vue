@@ -50,7 +50,7 @@
       <brawler-attack-card
         v-if="scrapedData != undefined"
         :scraped-data="scrapedData"
-        :prop="prop"
+        :prop="prop as 'attack' | 'super'"
         :level="level"
       ></brawler-attack-card>
     </b-dashboard-cell>

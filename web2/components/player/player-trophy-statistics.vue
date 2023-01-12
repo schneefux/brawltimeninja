@@ -141,7 +141,7 @@ export default defineComponent({
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
       for (const key in ratingPercentiles) {
-        if (medTrophies <= ratingPercentiles[key as any][1]) {
+        if (medTrophies <= ratingPercentiles[key][1]) {
           return key
         }
       }

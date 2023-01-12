@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
 export default defineComponent({

@@ -35,7 +35,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import { useResizeObserver } from '@vueuse/core'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -47,7 +47,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, comparing, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const values = computed(() => switchResponse(response => response.data, response => response.data.flatMap(e => [{

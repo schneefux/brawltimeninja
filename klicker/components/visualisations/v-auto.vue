@@ -121,7 +121,7 @@ export default defineComponent({
       }
     }
 
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const specs = computed(() => {
       let allSpecs: StaticWidgetSpec[]

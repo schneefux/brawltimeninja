@@ -27,7 +27,7 @@ export interface PluginConfig {
 
 export const KlickerConfigInjectionKey = Symbol('klicker') as InjectionKey<PluginConfig>
 
-export const useKlicker = () => {
+export const useKlickerConfig = () => {
   const pluginConfig = inject(KlickerConfigInjectionKey)!
 
   const $klicker = pluginConfig.klicker
@@ -47,3 +47,7 @@ export const useKlicker = () => {
   }
 }
 
+export const useKlicker = () => {
+  const { $klicker } = useKlickerConfig()
+  return $klicker
+}

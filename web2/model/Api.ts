@@ -8,6 +8,9 @@ export interface StarPower {
 export interface Gadget extends StarPower {
 }
 
+export interface Gear extends StarPower {
+}
+
 export interface Brawler {
   name: string;
   trophies: number;
@@ -16,6 +19,7 @@ export interface Brawler {
   rank: number;
   starPowers: StarPower[];
   gadgets: Gadget[];
+  gears: Gear[];
 }
 
 export interface Battle {

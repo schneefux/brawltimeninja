@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { useKlicker } from '../../composables/klicker'
+import { useKlickerConfig } from '../../composables/klicker'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import BPaginator from './b-paginator.vue'
 
@@ -173,7 +173,7 @@ export default defineComponent({
       () => page.value = 0
     )
 
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
 
     return {
       translate,

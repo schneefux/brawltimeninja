@@ -23,19 +23,19 @@ export default defineComponent({
       return [ {
         id: 'profile',
         icon: faSearch,
-        name: i18n.t('nav.Profile') as string,
+        name: i18n.t('nav.Profile'),
         target: '/',
         prefix: '',
       }, {
         id: 'events',
         icon: faCalendarDay,
-        name: i18n.t('nav.Events') as string,
+        name: i18n.t('nav.Events'),
         target: '/tier-list/map',
         prefix: '/tier-list',
       }, {
         id: 'brawlers',
         icon: faMask,
-        name: i18n.t('nav.Brawlers') as string,
+        name: i18n.t('nav.Brawlers'),
         target: '/tier-list/brawler',
         prefix: '/tier-list/brawler',
       } ]

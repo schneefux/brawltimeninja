@@ -9,7 +9,7 @@
           v-for="(entry, index) in response.data.slice(page*pageSize, (page+1)*pageSize)"
           :key="entry.id"
           :title="dimensions.map(d => entry.dimensions[d.id]).join(', ')"
-          :elevation="(card && card.elevation || 1) + 1"
+          :elevation="(card && 'elevation' in card ? card.elevation ?? 1 : 1) + 1"
         >
           <template v-slot:preview>
             <span class="text-right text-lg text-text/75">#{{ index + page*pageSize + 1 }}</span>
@@ -67,7 +67,7 @@ import BPaginator from '../ui/b-paginator.vue'
 import BKvTable, { Row } from '../ui/b-kv-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -86,7 +86,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const page = ref(0)

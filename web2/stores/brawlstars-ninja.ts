@@ -6,9 +6,9 @@ import { Player } from '~/model/Api'
 import { TrpcInjectionKey } from '../plugins/trpc'
 
 interface StoredPlayer {
-    tag: string
-    name: string
-  }
+  tag: string
+  name: string
+}
 
 interface State {
   version: string|undefined

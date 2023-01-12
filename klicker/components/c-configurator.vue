@@ -73,7 +73,7 @@ import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType } from 'vue'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -122,7 +122,7 @@ export default defineComponent({
     ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
   },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
 
     const onInputCubeId = (c: string) => {
       const newQuery: CubeQuery = {

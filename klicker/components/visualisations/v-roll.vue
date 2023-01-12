@@ -70,7 +70,7 @@ import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useResizeObserver } from '@vueuse/core'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -87,7 +87,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const dimension = computed(() => dimensions.value[0])

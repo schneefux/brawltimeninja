@@ -24,16 +24,18 @@
       :cell-columns="2"
       :render-at-least="5"
       key-id="date"
+      class="mt-4"
       render-placeholder
     >
       <template v-slot:item="date">
         <b-card :title="date.date">
-          <template v-slot:content><media-img
-
-            :path="`/maps/competition-winners/${date.date}`"
-            :alt="date"
-            size="512"
-          ></media-img></template>
+          <template v-slot:content>
+            <media-img
+              :path="`/maps/competition-winners/${date.date}`"
+              :alt="date"
+              size="512"
+            ></media-img>
+          </template>
         </b-card>
       </template>
     </b-scrolling-list>

@@ -16,16 +16,14 @@
 </template>
 
 <script lang="ts">
-import { useAsync, useContext } from '@/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values';
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
-
-    const { $klicker } = useContext()
-    const events = useAsync(() => $klicker.queryActiveEvents([], {
+    const events = useActiveEvents([], {
       powerplay: ['0'],
-    }), 'home-active-events')
+    })
 
     return {
       events,

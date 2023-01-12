@@ -43,7 +43,6 @@ import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { ref, computed, defineComponent, onMounted, PropType } from 'vue'
-import { getCurrentInstance } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { useContext } from '~/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -68,7 +67,7 @@ export default defineComponent({
   setup(props) {
     const hourCounter = ref<HTMLElement>()
     const counterRefs = ref<Record<string, HTMLElement|null>>({})
-    const setCounterRef = (id: string|number, el: HTMLElement|null) => counterRefs.value[id] = el
+    const setCounterRef = (id: string|number, el: unknown|null) => counterRefs.value[id] = el as HTMLElement|null
     const { i18n } = useContext()
 
     const startCounter = () => {
