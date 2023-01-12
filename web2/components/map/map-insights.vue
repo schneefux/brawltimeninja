@@ -69,7 +69,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n, localePath } = useContext()
+    const { i18n } = useContext()
 
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
@@ -91,7 +91,7 @@ export default defineComponent({
       templates.push({
         tab: 'brawlers',
         title,
-        link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
+        link: `/tier-list/mode/${camelToKebab(mode)}`,
         linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
         query: <CubeComparingQuery>{
           name: testName,
@@ -119,7 +119,7 @@ export default defineComponent({
       templates.push({
         tab: 'gadgets',
         title,
-        link: localePath(`/tier-list/gadgets`),
+        link: `/tier-list/gadgets`,
         linkText: i18n.t('action.open.tier-list.gadget') as string,
         query: <CubeComparingQuery>{
           name: testName,
@@ -151,7 +151,7 @@ export default defineComponent({
       templates.push({
         tab: 'starpowers',
         title,
-        link: localePath(`/tier-list/starpowers`),
+        link: `/tier-list/starpowers`,
         linkText: i18n.t('action.open.tier-list.starpower') as string,
         query: <CubeComparingQuery>{
           name: testName,
@@ -183,7 +183,7 @@ export default defineComponent({
       templates.push({
         tab: 'gears',
         title,
-        link: localePath(`/tier-list/gears`),
+        link: `/tier-list/gears`,
         linkText: i18n.t('action.open.tier-list.gear') as string,
         long: true,
         query: <CubeComparingQuery>{

@@ -70,7 +70,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { $klicker, i18n, localePath } = useContext()
+    const { $klicker, i18n } = useContext()
     const brawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
     const modes = useAsync(() => $klicker.queryAllModes(), 'all-modes')
     const maps = useAsync(() => $klicker.queryAllEvents(), 'all-events')
@@ -82,110 +82,110 @@ export default defineComponent({
       return [{
         id: 'brawlers',
         name: i18n.t('nav.Brawlers') as string,
-        target: localePath(`/tier-list/brawler`),
+        target: `/tier-list/brawler`,
         children: (<Link[]> []).concat(
           mapViewTabs.map(tab => ({
             id: `brawlers#${tab}`,
             name: i18n.t('tab.' + tab) as string,
-            target: localePath(`/tier-list/brawler#${tab}`),
+            target: `/tier-list/brawler#${tab}`,
           })),
           (brawlers.value ?? []).map(b => ({
             id: b,
             name: capitalizeWords(b.toLowerCase()),
-            target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}`),
+            target: `/tier-list/brawler/${brawlerId({ name: b })}`,
             children: [{
               id: `${b}#overview`,
               name: i18n.t('brawler.overview') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#overview`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#overview`,
             }, {
               id: `${b}#accessory`,
               name: i18n.t('brawler.accessories') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#accessory`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#accessory`,
             }, {
               id: `${b}#synergy`,
               name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#synergy`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#synergy`,
             }, {
               id: `${b}#maps`,
               name: i18n.t('brawler.current-maps.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#maps`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#maps`,
             }, {
               id: `${b}#modes`,
               name: i18n.t('brawler.modes.title', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#modes`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#modes`,
             }, {
               id: `${b}#trends`,
               name: i18n.t('brawler.trends', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trends`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#trends`,
             }, {
               id: `${b}#trophies`,
               name: i18n.t('brawler.by-trophies', { brawler: capitalizeWords(b.toLowerCase()) }) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#trophies`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#trophies`,
             }, {
               id: `${b}#skins`,
               name: i18n.tc('skin', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#skins`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#skins`,
             }, {
               id: `${b}#pins`,
               name: i18n.tc('pin', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#pins`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#pins`,
             }, {
               id: `${b}#voicelines`,
               name: i18n.tc('voiceline', 2) as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#voicelines`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#voicelines`,
             }, {
               id: `${b}#balance`,
               name: i18n.t('balance-changes') as string,
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b })}#balance`),
+              target: `/tier-list/brawler/${brawlerId({ name: b })}#balance`,
             }],
           })),
         ),
       }, {
         id: 'events',
         name: i18n.t('nav.Events') as string,
-        target: localePath('/tier-list/map'),
+        target: '/tier-list/map',
         children: (<Link[]> []).concat(
           [{
             id: 'events-active',
             name: i18n.t('events.active.title') as string,
-            target: localePath(`/tier-list/map#active`),
+            target: `/tier-list/map#active`,
           }, {
             id: 'events-powerleague',
             name: i18n.t('events.powerleague.title') as string,
-            target: localePath(`/tier-list/map#powerleague`),
+            target: `/tier-list/map#powerleague`,
           }, {
             id: 'events-upcoming',
             name: i18n.t('events.upcoming.title') as string,
-            target: localePath(`/tier-list/map#upcoming`),
+            target: `/tier-list/map#upcoming`,
           }, {
             id: 'events-season',
             name: i18n.t('events.season.title') as string,
-            target: localePath(`/tier-list/map#season`),
+            target: `/tier-list/map#season`,
           }, {
             id: 'events-competition-winners',
             name: i18n.t('tier-list.competition-winners.title') as string,
-            target: localePath(`/tier-list/map#competition-winners`),
+            target: `/tier-list/map#competition-winners`,
           }],
           (modes.value ?? []).map(m => ({
             id: m,
             name: i18n.t('mode.' + m) as string,
-            target: localePath(`/tier-list/mode/${m}`),
+            target: `/tier-list/mode/${m}`,
             children: (<Link[]> []).concat(
               mapViewTabs.map(tab => ({
                 id: `${m}#${tab}`,
                 name: i18n.t('tab.' + tab) as string,
-                target: localePath(`/tier-list/mode/${camelToKebab(m)}/#${tab}`),
+                target: `/tier-list/mode/${camelToKebab(m)}/#${tab}`,
               })),
               (maps.value ?? [])
                 .filter(e => e.mode == m)
                 .map(e => ({
                   id: e.key,
                   name: getMapName(e.id, e.map)!,
-                  target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`),
+                  target: `/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`,
                   children: mapViewTabs.map(tab => ({
                     id: `${e.key}#${tab}`,
                     name: i18n.t('tab.' + tab),
-                    target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}#${tab}`),
+                    target: `/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}#${tab}`,
                   })),
                 })),
             ),
@@ -197,12 +197,12 @@ export default defineComponent({
         children: ['hours', 'trophies', 'victories', 'soloVictories', 'duoVictories'].map(metric => ({
           id: metric,
           name: i18n.t('metric.' + metric) as string,
-          target: localePath(`/leaderboard/${metric}`),
+          target: `/leaderboard/${metric}`,
         }))
       }, {
         id: 'guides',
         name: i18n.t('nav.Guides') as string,
-        target: localePath('/blog/guides'),
+        target: '/blog/guides',
         children: (toc.value ?? []).map(post => ({
           id: post.slug,
           name: post.title,
@@ -211,43 +211,43 @@ export default defineComponent({
       }, {
         id: 'starpowers',
         name: i18n.t('nav.Star Powers') as string,
-        target: localePath('/tier-list/starpowers'),
+        target: '/tier-list/starpowers',
       }, {
         id: 'gadgets',
         name: i18n.t('nav.Gadgets') as string,
-        target: localePath('/tier-list/gadgets'),
+        target: '/tier-list/gadgets',
       }, {
         id: 'gears',
         name: i18n.t('nav.Gears') as string,
-        target: localePath('/tier-list/gears'),
+        target: '/tier-list/gears',
       }, {
         id: 'dashboard',
         name: i18n.t('nav.Dashboard') as string,
-        target: localePath('/dashboard'),
+        target: '/dashboard',
       }, {
         id: 'teambuilder',
         name: i18n.t('nav.Team Builder') as string,
-        target: localePath('/team-builder'),
+        target: '/team-builder',
       }, {
         id: 'quiz',
         name: i18n.t('nav.Quiz') as string,
-        target: localePath('/quiz'),
+        target: '/quiz',
       }, {
         id: 'brawlerrecords',
         name: i18n.t('nav.Brawler Records') as string,
-        target: localePath('/brawler-records'),
+        target: '/brawler-records',
       }, {
         id: 'barchartrace',
         name: i18n.t('nav.Bar Chart Race') as string,
-        target: localePath('/bar-chart-race'),
+        target: '/bar-chart-race',
       }, {
         id: 'about',
         name: i18n.t('nav.About') as string,
-        target: localePath('/about'),
+        target: '/about',
       }, {
         id: 'status',
         name: i18n.t('nav.Status') as string,
-        target: localePath('/status'),
+        target: '/status',
       }]
     })
 
@@ -257,36 +257,36 @@ export default defineComponent({
         return [{
           id: `profile-${tagCandidate}`,
           name: `${i18n.t('nav.Profile') as string} #${tagCandidate}`,
-          target: localePath(`/profile/${tagCandidate}`),
+          target: `/profile/${tagCandidate}`,
           children: [{
             id: `profile-${tagCandidate}-time`,
             name: i18n.t('player.time-statistics') as string,
-            target: localePath(`/profile/${tagCandidate}#time`),
+            target: `/profile/${tagCandidate}#time`,
           }, {
             id: `profile-${tagCandidate}-trophy`,
             name: i18n.t('player.trophy-statistics') as string,
-            target: localePath(`/profile/${tagCandidate}#trophy`),
+            target: `/profile/${tagCandidate}#trophy`,
           }, {
             id: `profile-${tagCandidate}-records`,
             name: i18n.t('player.records.title') as string,
-            target: localePath(`/profile/${tagCandidate}#records`),
+            target: `/profile/${tagCandidate}#records`,
           }, {
             id: `profile-${tagCandidate}-battles`,
             name: i18n.t('battle-log') as string,
-            target: localePath(`/profile/${tagCandidate}#battles`),
+            target: `/profile/${tagCandidate}#battles`,
           }, {
             id: `profile-${tagCandidate}-modes`,
             name: i18n.tc('mode', 2) as string,
-            target: localePath(`/profile/${tagCandidate}#modes`),
+            target: `/profile/${tagCandidate}#modes`,
           }, {
             id: `profile-${tagCandidate}-brawlers`,
             name: i18n.tc('brawler', 2) as string,
-            target: localePath(`/profile/${tagCandidate}#brawlers`),
+            target: `/profile/${tagCandidate}#brawlers`,
           }]
         }, {
           id: `club-${tagCandidate}`,
           name: `${i18n.t('nav.Club') as string} #${tagCandidate}`,
-          target: localePath(`/club/${tagCandidate}`),
+          target: `/club/${tagCandidate}`,
         }]
       }
 

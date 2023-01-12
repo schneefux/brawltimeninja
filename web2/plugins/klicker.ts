@@ -44,5 +44,6 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
       }
     },
     navigate: navigate,
+    linkComponent: 'router-link',
   })
 }

@@ -2,10 +2,10 @@
   <b-card
     :title="$tc('best.' + kind, 1)"
     :elevation="elevation"
-    :link="localePath(`/tier-list/${kind}`)"
+    :link="`/tier-list/${kind}`"
   >
     <template v-slot:content><c-query
-      
+
       :query="query"
       :filter="filter"
     >

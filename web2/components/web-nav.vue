@@ -5,7 +5,7 @@
   >
     <template v-slot:logo>
       <router-link
-        :to="localePath('/')"
+        :to="'/'"
         class="font-semibold text-xl tracking-tight leading-tight"
       >Brawl Time Ninja</router-link>
 
@@ -37,17 +37,17 @@ export default defineComponent({
     BWebNav,
   },
   setup() {
-    const { localePath, i18n } = useContext()
+    const { i18n } = useContext()
 
     const links = computed(() => [ {
       name: i18n.t('nav.Profile Search'),
-      target: localePath('/'),
+      target: '/',
     }, {
       name: i18n.t('nav.Brawler Tier List'),
-      target: localePath('/tier-list/brawler'),
+      target: '/tier-list/brawler',
     }, {
       name: i18n.t('nav.Map Tier Lists'),
-      target: localePath('/tier-list/map'),
+      target: '/tier-list/map',
     } ])
 
     return {

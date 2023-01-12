@@ -3,18 +3,21 @@
     v-if="result == undefined"
     class="max-w-md"
   >
-    <template v-slot:content><div  class="relative mt-4">
-      <p class="text-center">{{ $t('oejts.cta-question') }}</p>
-      <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
-      <template v-slot:content><quiz-likert
-
-        :value="{}"
-        :start="0"
-        :end="1"
-        @input="onTrigger"
-      ></quiz-likert></template>
-      <img class="absolute top-[7px] right-0 w-10" src="~/assets/images/chaotic.png">
-    </div></template>
+    <template v-slot:content>
+      <div class="relative mt-4">
+        <p class="text-center">{{ $t('oejts.cta-question') }}</p>
+        <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
+        <template v-slot:content>
+          <quiz-likert
+            :value="{}"
+            :start="0"
+            :end="1"
+            @input="onTrigger"
+          ></quiz-likert>
+        </template>
+        <img class="absolute top-[7px] right-0 w-10" src="~/assets/images/chaotic.png">
+      </div>
+    </template>
   </b-card>
 
   <b-card
@@ -23,19 +26,21 @@
     :subtitle="$t('oejts.result.short', { brawler: resultName })"
     class="max-w-md"
   >
-    <template v-slot:preview><media-img
-
-      :path="`/brawlers/${result}/model`"
-      size="256"
-      clazz="h-24 md:h-16 my-2"
-    ></media-img></template>
-    <template v-slot:actions><b-button
-
-      class="mx-auto"
-      primary
-      md
-      @click="onRestart"
-    >{{ $t('action.restart') }}</b-button></template>
+    <template v-slot:preview>
+      <media-img
+        :path="`/brawlers/${result}/model`"
+        size="256"
+        clazz="h-24 md:h-16 my-2"
+      ></media-img>
+    </template>
+    <template v-slot:actions>
+      <b-button
+        class="mx-auto"
+        primary
+        md
+        @click="onRestart"
+      >{{ $t('action.restart') }}</b-button>
+    </template>
   </b-card>
 </template>
 

@@ -117,7 +117,7 @@
         <b-button
           v-for="player in playerLinks"
           :key="player.tag"
-          :to="localePath(player.link)"
+          :to="player.link"
           @click.native.passive="addLastPlayer(player)"
           xs
           primary
@@ -210,7 +210,7 @@ export default defineComponent({
   },
   head: {},
   setup() {
-    const { i18n, $config, $klicker, $sentry, localePath } = useContext()
+    const { i18n, $config, $klicker, $sentry } = useContext()
 
     const tag = ref<string|undefined>()
     const events = useAsync(() => $klicker.queryActiveEvents([], {
@@ -307,7 +307,7 @@ export default defineComponent({
 
       store.setUserTag(cleanedTag.value)
 
-      router.push(localePath(`/profile/${cleanedTag.value}`))
+      router.push(`/profile/${cleanedTag.value}`)
     }
 
     useMeta(() => {

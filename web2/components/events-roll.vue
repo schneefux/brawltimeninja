@@ -3,7 +3,7 @@
     <b-textbox
       v-if="events.length >= 20"
       v-model="nameFilter"
-      :placeholder="$tc('map', 1)"
+      :placeholder="$t('map', 1)"
       class="mt-8"
     ></b-textbox>
 

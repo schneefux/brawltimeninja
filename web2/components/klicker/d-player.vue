@@ -21,7 +21,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { idToTag } from '~/lib/util'
-import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   props: {
@@ -34,9 +33,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath } = useContext()
     const icon = computed(() => props.row.dimensionsRaw.player?.playerIcon != undefined ? `/avatars/${props.row.dimensionsRaw.player.playerIcon}` : undefined)
-    const link = computed(() => props.row.dimensionsRaw.player?.player != undefined ? localePath(`/profile/${idToTag(props.row.dimensionsRaw.player.player).substring(1)}`) : undefined)
+    const link = computed(() => props.row.dimensionsRaw.player?.player != undefined ? `/profile/${idToTag(props.row.dimensionsRaw.player.player).substring(1)}` : undefined)
 
     return {
       link,

@@ -6,7 +6,7 @@
     <template v-slot:actions>
       <div class="flex flex-wrap justify-end gap-2">
         <b-button
-          :to="localePath(`/team-builder`)"
+          :to="`/team-builder`"
           primary
           sm
         >
@@ -14,7 +14,7 @@
         </b-button>
 
         <b-button
-          :to="localePath(`/tier-list/brawler`)"
+          :to="`/tier-list/brawler`"
           primary
           sm
         >

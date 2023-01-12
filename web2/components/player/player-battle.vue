@@ -5,7 +5,7 @@
     :id="battle.event.id"
   >
     <template v-slot:infobar><div
-      
+
       class="flex justify-between"
     >
       <div>
@@ -25,7 +25,7 @@
     </div></template>
 
     <template v-slot:content><div
-      
+
       class="flex flex-wrap justify-center -mx-4 h-full items-center"
     >
       <div
@@ -41,7 +41,7 @@
           v-for="mate in team"
           :key="mate.tag"
           :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 400 ? 'nofollow' : ''"
-          :to="localePath(`/profile/${mate.tag}`)"
+          :to="`/profile/${mate.tag}`"
           :class="{
             'border-2 border-gray-300 ': mate.tag == playerTag,
             'mx-1 rounded-sm ': team.length != 2,

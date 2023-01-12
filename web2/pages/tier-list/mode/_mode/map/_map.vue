@@ -40,7 +40,7 @@
           :map="event.map"
           :id="event.id"
           class="relative"
-          @click="lightboxOpen = true"
+          @click.capture.prevent="lightboxOpen = true"
         >
           <font-awesome-icon
             :icon="faExpand"
@@ -65,12 +65,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, ref } from '@nuxtjs/composition-api'
+import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
 import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
+import { useAsync, useContext, useMeta, useRoute } from '@/composables/compat'
 
 interface Map {
   id: string

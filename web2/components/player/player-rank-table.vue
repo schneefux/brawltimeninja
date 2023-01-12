@@ -39,7 +39,7 @@
         </th>
         <td>
           <router-link
-            :to="localePath(`/profile/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`)"
+            :to="`/profile/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`"
             class="flex items-center"
           >
             <media-img

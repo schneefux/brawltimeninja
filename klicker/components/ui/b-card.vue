@@ -20,7 +20,7 @@
         'backdrop-blur': !noFilter,
       }"
       class="h-full flex flex-col rounded-2xl"
-      @click="onClick"
+      @click.capture="onClick"
     >
       <div
         v-if="'infobar' in $slots"
@@ -44,7 +44,7 @@
           'grid-cols-[1fr,auto]': !('icon' in $slots || icon != undefined),
         }]"
         class="shrink-0 grid items-center overflow-hidden"
-        @click.stop="onClickHeader"
+        @click="onClickHeader"
       >
         <slot
           name="icon"
@@ -80,7 +80,6 @@
                 v-else
                 :href="titleLink || link"
                 class="contents"
-                @click.stop="e => onClickLink() || navigate(titleLink || link!)"
               >{{ title }}</a>
             </template>
             <template v-else>
@@ -107,7 +106,6 @@
                 v-else
                 :href="subtitleLink"
                 class="contents"
-                @click.stop="e => onClickLink() || navigate(subtitleLink!)"
               >{{ subtitle }}</a>
             </template>
             <template v-else>
@@ -229,60 +227,29 @@ export default defineComponent({
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
     const { id: prefix } = useUniqueId()
 
-    const { navigate } = useKlicker()
+    const { navigate, linkComponent } = useKlicker()
 
-    /*
-     * click event priority:
-     *   1. @click header handler
-     *   2. @click handler
-     *   3. clicking on a link
-     *   4. default card link
-     */
-
-    const onClick = () => {
+    const onClick = (e: Event) => {
       if (attrs.onClick != undefined) {
+        e.preventDefault();
         (<any> attrs).onClick()
-        return true
       }
-
-      if (props.link != undefined) {
-        if (!props.link.startsWith('http')) {
-          navigate(props.link)
-        } else {
-          window.open(props.link, '_blank')
-        }
-
-        return true
-      }
-
-      return false
     }
 
-    const onClickLink = () => {
-      if (attrs.onClick != undefined) {
-        (<any> attrs).onClick()
-        return true
-      }
-
-      return false
-    }
-
-    const onClickHeader = () => {
+    const onClickHeader = (e: Event) => {
       if (attrs.onClickHeader != undefined) {
+        e.preventDefault();
         (<any>attrs).onClickHeader()
-        return true
       }
-
-      return onClick()
     }
 
     return {
       onClick,
-      onClickLink,
       onClickHeader,
       renderTitle,
       prefix,
       navigate,
+      linkComponent,
     }
   },
 })

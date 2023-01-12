@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
@@ -21,6 +23,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
+        envDir: root,
         server: { middlewareMode: true }
       })
     ).middlewares

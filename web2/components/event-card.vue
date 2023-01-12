@@ -68,7 +68,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config, $supportsWebp, localePath } = useContext()
+    const { $config, $supportsWebp } = useContext()
 
     const background = computed(() => {
       if (props.nobackground) {
@@ -80,8 +80,8 @@ export default defineComponent({
       return url
     })
 
-    const modeLink = computed(() => props.mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}`) : undefined)
-    const mapLink = computed(() => props.mode != undefined && props.map != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`) : undefined)
+    const modeLink = computed(() => props.mode != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}` : undefined)
+    const mapLink = computed(() => props.mode != undefined && props.map != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}` : undefined)
 
     const { id, map } = toRefs(props)
     const mapName = useMapName(id, map)

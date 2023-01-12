@@ -8,15 +8,13 @@ export const prefetchStaticAssets = { when: 'VIEWPORT' }
 export { render }
 export { onHydrationEnd }
 
-let app: ReturnType<typeof createApp>['app']
+let app: Awaited<ReturnType<typeof createApp>>['app']
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   if (!app) {
-    const params = createApp(pageContext)
+    const params = await createApp(pageContext)
     app = params.app
     const queryClient = params.queryClient
-    if (pageContext.pageProps != undefined) {
-      hydrate(queryClient, pageContext.pageProps['vueQueryState'])
-    }
+    hydrate(queryClient, pageContext.vueQueryState)
     app.mount('#app')
   } else {
     app.changePage(pageContext)

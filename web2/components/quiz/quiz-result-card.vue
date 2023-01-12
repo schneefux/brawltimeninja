@@ -72,7 +72,6 @@ import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
-import { useContext } from '~/composables/compat'
 import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 
 export interface QuizResult {
@@ -95,7 +94,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath } = useContext()
     const store = useBrawlstarsNinjaStore()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
@@ -116,7 +114,7 @@ export default defineComponent({
     onMounted(() => store.setPersonalityTestResult(mostSimilarBrawler.value?.name))
 
     const quizRootUrl = computed(() => (!import.meta.env.SSR ? window.location.origin : '')
-      + localePath('/quiz')
+      + '/quiz'
       + '?utm_source=share&utm_medium=image&utm_campaign=quiz')
     const sharepicEmbedUrl = computed(() => {
       const params = new URLSearchParams({

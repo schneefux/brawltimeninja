@@ -9,22 +9,22 @@ import DefaultLayout from '~/layouts/default.vue'
 import { createPinia } from 'pinia'
 import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
-import localeEn from '~/locales/en.json'
 import { injectGlobalProperties } from '@/composables/compat'
 import RouterLink from '~/components/router-link.vue'
 import ClientOnly from '~/components/client-only'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
+import { loadLocale, locales } from '@/locales'
+import localeEn from '@/locales/en.json'
 
 export { createApp }
 
-function createApp(pageContext: PageContext) {
+async function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
   const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),
-      pageProps: markRaw(pageContext.pageProps || {}),
       Layout: markRaw(pageContext.exports.Layout || DefaultLayout),
     }),
     created() {
@@ -34,7 +34,7 @@ function createApp(pageContext: PageContext) {
       return h(
         PageShell,
         {},
-        () => h(this.Layout, () => h(this.Page, this.pageProps)),
+        () => h(this.Layout, () => h(this.Page)),
       )
     },
   })
@@ -47,7 +47,6 @@ function createApp(pageContext: PageContext) {
     changePage: (pageContext: PageContext) => {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)
-      rootComponent.pageProps = markRaw(pageContext.pageProps || {})
       rootComponent.Layout = markRaw(pageContext.exports.Layout || DefaultLayout)
     }
   })
@@ -59,13 +58,16 @@ function createApp(pageContext: PageContext) {
   // Make `pageContext` accessible from any Vue component
   setPageContext(app, pageContextReactive)
 
-  app.use(KlickerPlugin, { cubeUrl: 'https://cube.brawltime.ninja', managerUrl: 'https://manager.brawltime.ninja' })
+  app.use(KlickerPlugin, {
+    cubeUrl: import.meta.env.VITE_CUBE_URL,
+    managerUrl: import.meta.env.VITE_MANAGER_URL,
+  })
 
   // TODO share cache between requests to the same URL?
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: Infinity,
+        staleTime: 1000 * 60 * 5, // 5 minutes
       },
     },
   })
@@ -87,12 +89,12 @@ function createApp(pageContext: PageContext) {
   }
   app.use(VueGtagPlugin, {
     config: {
-      id: 'G-8GGHZC6QR2',
+      id: import.meta.env.VITE_GA4_ID,
       params: gtagParams,
     },
     includes: [ {
       // old property
-      id: 'UA-137233906-1',
+      id: import.meta.env.VITE_UA_ID,
       params: gtagParams,
     } ],
     // toggled in layout.vue
@@ -100,12 +102,18 @@ function createApp(pageContext: PageContext) {
     //enabled: app.store!.state.adsAllowed == true,
   })
 
+  const locale = pageContext.locale
+  const messages = await loadLocale(import.meta.env.VITE_MEDIA_URL, locale.code)
+
   const i18n = createI18n({
     legacy: false,
-    // TODO add and load other locales
-    locale: 'en',
+    locale: locale.code,
     fallbackLocale: 'en',
-    messages: { en: localeEn },
+    availableLocales: locales.map(l => l.code),
+    messages: {
+      en: localeEn,
+      [locale.code]: messages,
+    },
   })
   app.use(i18n)
 
@@ -114,12 +122,15 @@ function createApp(pageContext: PageContext) {
   const head = createHead()
   head.push({
     titleTemplate: '%s - Brawl Time Ninja',
+    htmlAttrs: {
+      lang: locale.iso,
+    },
     bodyAttrs: {
       class: ['dark'],
     },
     script: [
       {
-        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6856963757796636',
+        src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_PUBID}`,
         async: true,
         crossorigin: 'anonymous',
       },
@@ -131,10 +142,20 @@ function createApp(pageContext: PageContext) {
     link: [
       { rel: 'icon', href: '/icons/favicon.ico', sizes: 'any' },
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
+      ...(locales.map(l => ({
+        rel: 'alternate',
+        href: l.code == 'en' ? '/' : `/${l.code}`,
+        hreflang: l.iso,
+      }))),
     ],
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width' },
+      { property: 'og:locale', content: locale.iso },
+      ...(locales.filter(l => l.code != locale.code).map(l => ({
+        property: 'og:locale:alternate',
+        content: l.iso,
+      }))),
     ],
   })
   app.use(head)

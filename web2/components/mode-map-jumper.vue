@@ -46,22 +46,21 @@ export default defineComponent({
     const mapName = useMapName(id, map)
 
     const router = useRouter()
-    const { localePath } = useContext()
     const jumpToModeMap = (slices: Partial<SliceValue>) => {
       const mode = (slices.mode ?? [])[0]
       const map = (slices.map ?? [])[0]
 
       if (mode == undefined) {
-        router.push(localePath('/tier-list/brawler'))
+        router.push('/tier-list/brawler')
         return
       }
 
       if (map == undefined) {
-        router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}`))
+        router.push(`/tier-list/mode/${camelToKebab(mode)}`)
         return
       }
 
-      router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
+      router.push(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`)
     }
 
     const { i18n } = useContext()

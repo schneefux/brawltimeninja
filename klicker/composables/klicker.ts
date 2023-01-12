@@ -21,6 +21,7 @@ export interface PluginConfig {
    */
   useQuery: <T, E>(key: Ref<string>, handler: () => Promise<T>) => AsyncQuery<T, E>
   navigate: (path: string) => void
+  linkComponent: string
   managerUrl: string
 }
 
@@ -33,6 +34,7 @@ export const useKlicker = () => {
   const translate = pluginConfig.translate
   const useQuery = pluginConfig.useQuery
   const navigate = pluginConfig.navigate
+  const linkComponent = pluginConfig.linkComponent
   const managerUrl = pluginConfig.managerUrl
 
   return {
@@ -40,6 +42,7 @@ export const useKlicker = () => {
     translate,
     useQuery,
     navigate,
+    linkComponent,
     managerUrl,
   }
 }

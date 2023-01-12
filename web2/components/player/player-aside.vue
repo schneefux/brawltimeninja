@@ -40,7 +40,7 @@
         </template>
 
         <template v-slot:club="{ row }">
-          <router-link :to="localePath(`/club/${row.club.tag}`)">
+          <router-link :to="`/club/${row.club.tag}`">
             <img
               src="~/assets/images/icon/club.png"
               alt="Club"
@@ -141,7 +141,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath, i18n } = useContext()
+    const { i18n } = useContext()
 
     const { $api } = useContext()
     const loading = ref(false)
@@ -229,7 +229,7 @@ export default defineComponent({
       return rows
     })
 
-    const playerUrl = computed(() => `${!import.meta.env.SSR ? window.location.origin : ''}${localePath('/player/' + props.player.tag)}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
+    const playerUrl = computed(() => `${!import.meta.env.SSR ? window.location.origin : ''}${'/player/' + props.player.tag}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
     const sharepicTriggered = () => event('click', {
       'event_category': 'profile',
       'event_label': 'share',

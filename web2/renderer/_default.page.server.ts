@@ -9,10 +9,10 @@ import { renderSSRHead } from '@unhead/ssr'
 export { passToClient }
 export { render }
 
-const passToClient = ['pageProps', 'documentProps']
+const passToClient = ['vueQueryState', 'documentProps', 'locale']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const { app, head, queryClient } = createApp(pageContext)
+  const { app, head, queryClient } = await createApp(pageContext)
 
   const stream = await renderToNodeStream(app)
   const waitUntilNotFetching = () => new Promise(resolve => {
@@ -47,9 +47,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     documentHtml,
     pageContext: {
       //enableEagerStreaming: true,
-      pageProps: {
-        vueQueryState,
-      },
+      vueQueryState,
     },
   }
 }

@@ -3,51 +3,54 @@
     :loading="leaderboard == null"
     :title="$t('best.players.long')"
   >
-    <template v-slot:content><b-scrolling-list
-      v-if="leaderboard != undefined && leaderboard.length > 0"
+    <template v-slot:content>
+      <b-scrolling-list
+        v-if="leaderboard != undefined && leaderboard.length > 0"
+        :items="leaderboard != undefined ? leaderboard : []"
+        :cell-columns="2"
+        :render-at-least="5"
+        key-id="tag"
+        render-placeholder
+      >
+        <template v-slot:item="player">
+          <b-card
+            :title="player.name"
+            :link="`/profile/${player.tag.replace('#', '')}`"
+            :icon="`/avatars/${player.icon}`"
+            :icon-alt="player.name"
+            :elevation="elevation"
+            class="whitespace-nowrap"
+            dense
+          >
+            <template v-slot:icon="data">
+              <media-img-icon v-bind="data"></media-img-icon>
+            </template>
 
-      :items="leaderboard != undefined ? leaderboard : []"
-      :cell-columns="2"
-      :render-at-least="5"
-      key-id="tag"
-      render-placeholder
-    >
-      <template v-slot:item="player">
-        <b-card
-          :title="player.name"
-          :link="localePath(`/profile/${player.tag.replace('#', '')}`)"
-          :icon="`/avatars/${player.icon}`"
-          :icon-alt="player.name"
-          :elevation="elevation"
-          class="whitespace-nowrap"
-          dense
-        >
-          <template v-slot:icon="data">
-            <media-img-icon v-bind="data"></media-img-icon>
-          </template>
+            <template v-slot:content>
+              <b-kv-table
+                :rows="[{
+                  title: $t('metric.trophies'),
+                  key: 'trophies',
+                }]"
+                :data="player"
+                id-key="tag"
+                class="mt-2"
+              ></b-kv-table>
+            </template>
+          </b-card>
+        </template>
+      </b-scrolling-list>
+    </template>
 
-          <template v-slot:content><b-kv-table
-
-            :rows="[{
-              title: $t('metric.trophies'),
-              key: 'trophies',
-            }]"
-            :data="player"
-            id-key="tag"
-            class="mt-2"
-          ></b-kv-table></template>
-        </b-card>
-      </template>
-    </b-scrolling-list></template>
-
-    <template v-slot:actions><b-button
-
-      :to="localePath(`/leaderboard/trophies`)"
-      primary
-      sm
-    >
-      {{ $t('action.open.leaderboard.metric', { metric: $t('metric.trophies') }) }}
-    </b-button></template>
+    <template v-slot:actions>
+      <b-button
+        :to="`/leaderboard/trophies`"
+        primary
+        sm
+      >
+        {{ $t('action.open.leaderboard.metric', { metric: $t('metric.trophies') }) }}
+      </b-button>
+    </template>
   </b-card>
 </template>
 

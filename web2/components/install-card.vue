@@ -17,19 +17,20 @@
       </p>
     </div></template>
 
-    <template v-slot:actions><b-button
-
-      class="mx-auto"
-      md
-      primary
-      @click="clickInstall"
-    >
-      <font-awesome-icon
-        :icon="faDownload"
-        class="mr-1"
-      ></font-awesome-icon>
-      {{ $t('action.install') }}
-    </b-button></template>
+    <template v-slot:actions>
+      <b-button
+        class="mx-auto"
+        md
+        primary
+        @click="clickInstall"
+      >
+        <font-awesome-icon
+          :icon="faDownload"
+          class="mr-1"
+        ></font-awesome-icon>
+        {{ $t('action.install') }}
+      </b-button>
+    </template>
   </b-card>
 </template>
 

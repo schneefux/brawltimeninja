@@ -1,7 +1,7 @@
 <template>
   <b-card
     :title="title"
-    :link="localePath(`/tier-list/brawler/${brawlerId}`)"
+    :link="`/tier-list/brawler/${brawlerId}`"
   >
     <template v-slot:content><div
 

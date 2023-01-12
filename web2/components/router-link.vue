@@ -1,21 +1,27 @@
 <template>
-  <a :href="to">
+  <a :href="href">
     <slot></slot>
   </a>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
+import { useRouter, Route } from '@/composables/compat'
 
 export default defineComponent({
   props: {
     to: {
-      type: String as PropType<string>,
+      type: [String, Object] as PropType<Route>,
       required: true,
     },
   },
-  setup() {
-    return {}
+  setup(props) {
+    const { routeToPath } = useRouter()
+    const href = computed(() => routeToPath(props.to))
+
+    return {
+      href,
+    }
   },
 })
 </script>

@@ -15,7 +15,6 @@
       aria-label="search"
       class="pl-8 h-6 w-full"
       @focus="$emit('update:modelValue', true)"
-      @focusout="$emit('update:modelValue', false)"
       @keyup.enter="$emit('enter')"
     ></b-textbox>
 
@@ -34,7 +33,7 @@ import { defineComponent, ref } from 'vue'
 import BTextbox from './b-textbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { onKeyStroke } from '@vueuse/core'
+import { onKeyStroke, onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
   components: {
@@ -63,7 +62,7 @@ export default defineComponent({
     ['enter']() { return true },
     ['update:modelValue'](value: Boolean) { return true },
   },
-  setup() {
+  setup(props, { emit }) {
     const filter = ref('')
 
     const search = ref<InstanceType<typeof BTextbox>>()
@@ -74,12 +73,18 @@ export default defineComponent({
 
     const reset = () => filter.value = ''
 
+    const container = ref<HTMLElement>()
+    onClickOutside(container, () => emit('update:modelValue', false), {
+      capture: true,
+    })
+
     return {
       search,
       filter,
       faSearch,
       faTimes,
       reset,
+      container,
     }
   },
 })

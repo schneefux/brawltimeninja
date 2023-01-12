@@ -59,7 +59,6 @@ import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { event, optIn } from 'vue-gtag'
-import { localePath } from '~/composables/locale-path'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -75,13 +74,13 @@ export default defineComponent({
 
     const links = computed(() => [ {
       name: i18n.t('nav.Leaderboards'),
-      target: localePath('/leaderboard/hours'),
+      target: '/leaderboard/hours',
     }, {
       name: i18n.t('nav.Guides'),
       target: '/blog/guides',
     }, {
       name: i18n.t('nav.Status'),
-      target: localePath('/status'),
+      target: '/status',
     }, {
       name: i18n.t('nav.Privacy'),
       target: '/about',
@@ -129,7 +128,7 @@ export default defineComponent({
         setIsTwa(isTwa)
 
         event('branch_dimension', {
-          'branch': import.meta.env.BRANCH || '',
+          'branch': import.meta.env.VITE_BRANCH || '',
           'non_interaction': true,
         })
         event('is_pwa_dimension', {

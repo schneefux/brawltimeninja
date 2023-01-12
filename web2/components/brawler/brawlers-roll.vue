@@ -20,20 +20,19 @@
     <template v-slot:item="brawler">
       <b-card
         :title="brawler.name"
-        :link="localePath(`/tier-list/brawler/${brawler.id}`)"
+        :link="`/tier-list/brawler/${brawler.id}`"
       >
-        <template v-slot:content><div
-
-          class="h-full flex flex-col items-center justify-between"
-        >
-          <media-img
-            :path="'/brawlers/' + brawler.id + '/model'"
-            :alt="brawler.name"
-            clazz="h-48 object-contain"
-            size="400"
-            loading="lazy"
-          ></media-img>
-        </div></template>
+        <template v-slot:content>
+          <div class="h-full flex flex-col items-center justify-between">
+            <media-img
+              :path="'/brawlers/' + brawler.id + '/model'"
+              :alt="brawler.name"
+              clazz="h-48 object-contain"
+              size="400"
+              loading="lazy"
+            ></media-img>
+          </div>
+        </template>
       </b-card>
     </template>
   </b-scrolling-list>

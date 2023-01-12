@@ -3,7 +3,6 @@
     tag="router-link"
     :screens="screens"
     :active-route="$route.path"
-    :ignore-route-prefix="localePath('/')"
   ></b-app-bottom-nav>
 </template>
 
@@ -19,25 +18,25 @@ export default defineComponent({
     BAppBottomNav,
   },
   setup() {
-    const { localePath, i18n } = useContext()
+    const { i18n } = useContext()
     const screens = computed<Screen[]>(() => {
       return [ {
         id: 'profile',
         icon: faSearch,
         name: i18n.t('nav.Profile') as string,
-        target: localePath('/'),
+        target: '/',
         prefix: '',
       }, {
         id: 'events',
         icon: faCalendarDay,
         name: i18n.t('nav.Events') as string,
-        target: localePath('/tier-list/map'),
+        target: '/tier-list/map',
         prefix: '/tier-list',
       }, {
         id: 'brawlers',
         icon: faMask,
         name: i18n.t('nav.Brawlers') as string,
-        target: localePath('/tier-list/brawler'),
+        target: '/tier-list/brawler',
         prefix: '/tier-list/brawler',
       } ]
   })
