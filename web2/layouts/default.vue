@@ -67,7 +67,7 @@ export default defineComponent({
     BCookieConsent,
   },
   head: {},
-  setup(props) {
+  setup() {
     const container = ref<HTMLElement>()
 
     const i18n = useI18n()

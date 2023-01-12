@@ -8,23 +8,22 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <template v-slot:content><div
+    <template v-slot:content>
+      <div class="h-full flex flex-col justify-between gap-y-4">
+        <p>
+          <q class="italic">{{ accessory.description }}</q>
+        </p>
 
-      class="h-full flex flex-col justify-between gap-y-4"
-    >
-      <template v-slot:content><p >
-        <q class="italic">{{ accessory.description }}</q>
-      </p></template>
-
-      <c-query :query="query">
-        <template v-slot="data">
-          <v-kv-table
-            v-bind="data"
-            class="mt-8 w-full"
-          ></v-kv-table>
-        </template>
-      </c-query>
-    </div></template>
+        <c-query :query="query">
+          <template v-slot="data">
+            <v-kv-table
+              v-bind="data"
+              class="mt-8 w-full"
+            ></v-kv-table>
+          </template>
+        </c-query>
+      </div>
+    </template>
   </b-card>
 </template>
 

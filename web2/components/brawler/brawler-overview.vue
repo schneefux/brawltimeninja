@@ -14,30 +14,30 @@
           <media-img-icon v-bind="data"></media-img-icon>
         </template>
 
-        <template v-slot:content><div
-
-          class="h-full flex flex-col justify-between gap-y-4"
-        >
-          <p>
-            <q class="italic">{{ scrapedData.description }}</q>
-          </p>
-          <b-kv-table
-            :rows="overviewKvRows"
-            :data="overviewKvData"
-          >
-            <template v-slot:level><b-select
-
-              v-model="level"
-              class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
+        <template v-slot:content>
+          <div class="h-full flex flex-col justify-between gap-y-4">
+            <p>
+              <q class="italic">{{ scrapedData.description }}</q>
+            </p>
+            <b-kv-table
+              :rows="overviewKvRows"
+              :data="overviewKvData"
             >
-              <option
-                v-for="i in 11"
-                :key="i"
-                :value="i"
-              >{{ i }}</option>
-            </b-select></template>
-          </b-kv-table>
-        </div></template>
+              <template v-slot:level>
+                <b-select
+                  v-model="level"
+                  class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
+                >
+                  <option
+                    v-for="i in 11"
+                    :key="i"
+                    :value="i"
+                  >{{ i }}</option>
+                </b-select>
+              </template>
+            </b-kv-table>
+          </div>
+        </template>
       </b-card>
     </b-dashboard-cell>
 

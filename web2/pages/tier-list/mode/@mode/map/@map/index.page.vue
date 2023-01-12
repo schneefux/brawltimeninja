@@ -26,27 +26,29 @@
         :id="event.id"
         :map="event.map"
         clazz="h-full object-contain"
-        class="contents"
         size=""
       ></map-img>
     </b-lightbox>
 
     <b-page-section>
       <b-split-dashboard>
-        <event-picture-card
+        <template
           v-if="showImage"
-          slot="aside"
-          :mode="event.mode"
-          :map="event.map"
-          :id="event.id"
-          class="relative"
-          @click.capture.prevent="lightboxOpen = true"
+          v-slot:aside
         >
-          <font-awesome-icon
-            :icon="faExpand"
-            class="absolute bottom-4 right-6"
-          ></font-awesome-icon>
-        </event-picture-card>
+          <event-picture-card
+            :mode="event.mode"
+            :map="event.map"
+            :id="event.id"
+            class="relative"
+            @click.capture.prevent="lightboxOpen = true"
+          >
+            <font-awesome-icon
+              :icon="faExpand"
+              class="absolute bottom-4 right-6"
+            ></font-awesome-icon>
+          </event-picture-card>
+        </template>
 
         <map-views
           :mode="event.mode"
@@ -72,6 +74,7 @@ import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useAsync, useContext, useMeta, useRoute } from '@/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 interface Map {
   id: string
@@ -81,6 +84,7 @@ interface Map {
 
 export default defineComponent({
   components: {
+    FontAwesomeIcon,
     BSplitDashboard,
     BLightbox,
     BCard,

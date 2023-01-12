@@ -50,13 +50,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineAsyncComponent, defineComponent } from "vue";
 import { BDashboardCell } from '@schneefux/klicker/components'
 import { MetaGridEntry } from "@schneefux/klicker/types";
 
 export default defineComponent({
   components: {
     BDashboardCell,
+    LazyMapTrendChart: defineAsyncComponent(() => import('~/components/map/map-trend-chart.vue'))
   },
   props: {
     brawlerName: {

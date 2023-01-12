@@ -14,7 +14,7 @@ import RouterLink from '~/components/router-link.vue'
 import ClientOnly from '~/components/client-only'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
-import { loadLocale, locales } from '@/locales'
+import { defaultLocale, loadLocale, locales } from '@/locales'
 import localeEn from '@/locales/en.json'
 
 export { createApp }
@@ -58,9 +58,26 @@ async function createApp(pageContext: PageContext) {
   // Make `pageContext` accessible from any Vue component
   setPageContext(app, pageContextReactive)
 
+  // TODO context is missing locale when rendering error page
+  const locale = pageContext.locale ?? defaultLocale
+  const messages = await loadLocale(import.meta.env.VITE_MEDIA_URL, locale.code)
+
+  const i18n = createI18n({
+    legacy: false,
+    locale: locale.code,
+    fallbackLocale: 'en',
+    availableLocales: locales.map(l => l.code),
+    messages: {
+      en: localeEn,
+      [locale.code]: messages,
+    },
+  })
+  app.use(i18n)
+
   app.use(KlickerPlugin, {
     cubeUrl: import.meta.env.VITE_CUBE_URL,
     managerUrl: import.meta.env.VITE_MANAGER_URL,
+    translate: i18n.global.t,
   })
 
   // TODO share cache between requests to the same URL?
@@ -101,21 +118,6 @@ async function createApp(pageContext: PageContext) {
     // TODO
     //enabled: app.store!.state.adsAllowed == true,
   })
-
-  const locale = pageContext.locale
-  const messages = await loadLocale(import.meta.env.VITE_MEDIA_URL, locale.code)
-
-  const i18n = createI18n({
-    legacy: false,
-    locale: locale.code,
-    fallbackLocale: 'en',
-    availableLocales: locales.map(l => l.code),
-    messages: {
-      en: localeEn,
-      [locale.code]: messages,
-    },
-  })
-  app.use(i18n)
 
   app.use(TRPCPlugin)
 

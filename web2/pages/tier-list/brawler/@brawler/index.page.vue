@@ -17,23 +17,22 @@
     ></ad>
 
     <b-split-dashboard>
-      <div
-        slot="aside"
-        class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8"
-      >
-        <brawler-aside
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-          class="!h-auto"
-        ></brawler-aside>
+      <template v-slot:aside>
+        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
+          <brawler-aside
+            :brawler-id="brawlerId"
+            :brawler-name="brawlerName"
+            class="!h-auto"
+          ></brawler-aside>
 
-        <b-scroll-spy
-          :sections="sections"
-          nav-class="top-14 lg:top-0"
-          toc-class="hidden lg:block"
-          class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-        ></b-scroll-spy>
-      </div>
+          <b-scroll-spy
+            :sections="sections"
+            nav-class="top-14 lg:top-0"
+            toc-class="hidden lg:block"
+            class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
+          ></b-scroll-spy>
+        </div>
+      </template>
 
       <b-page-section
         ref="overviewSection"
@@ -118,12 +117,13 @@
         }"
         lazy
       >
-        <p
-          slot="description"
-          class="mt-4 prose dark:prose-invert text-text/75"
-        >
-          {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
-        </p>
+        <template v-slot:description>
+          <p
+            class="mt-4 prose dark:prose-invert text-text/75"
+          >
+            {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
+          </p>
+        </template>
 
         <brawler-trends-card
           :brawler-name="brawlerName"
@@ -235,11 +235,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useAsync, useContex, useMeta, useRoute } from '~/composables/compat'
+import { useAsync, useContext, useMeta, useRoute } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
+import fetch from 'cross-fetch'
+import { ScrapedBrawler } from '@/model/Web'
 
 export default defineComponent({
   directives: {
@@ -252,7 +254,7 @@ export default defineComponent({
   },
   head: {},
   setup() {
-    const { i18n, $config, $http } = useContext()
+    const { i18n, $config } = useContext()
 
     const route = useRoute()
     const brawlerId = computed(() => {
@@ -276,7 +278,9 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
-    const scrapedData = useAsync(() => $http.$get(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`), `scraped-data-${brawlerId.value}`)
+    const scrapedData = useAsync<ScrapedBrawler>(() =>
+      fetch(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`)
+        .then(r => r.json()), `scraped-data-${brawlerId.value}`)
 
     const sectionRefs = {
       overviewSection: ref<InstanceType<typeof BPageSection>>(),
@@ -348,21 +352,5 @@ export default defineComponent({
     }
   },
   middleware: ['cached'],
-  async validate({ params, $klicker }) {
-    const brawlerName = capitalizeWords(params.brawler.replace(/__/g, '. ').replace(/_/g, ' '))
-
-    const brawler = await $klicker.query({
-      cubeId: 'map',
-      slices: {
-        brawler: [brawlerName.toUpperCase()],
-      },
-      dimensionsIds: [],
-      metricsIds: ['picks'],
-      sortId: 'picks',
-      limit: 1,
-    })
-
-    return brawler.data[0].metricsRaw.picks > 0
-  },
 })
 </script>

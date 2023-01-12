@@ -2,8 +2,7 @@ import { useKlicker } from "@schneefux/klicker/composables"
 import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd } from "@/lib/util"
 import { EventMetadata } from "@/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
-import { formatDate } from "@vueuse/shared"
-import { differenceInMinutes, parseISO, subWeeks } from "date-fns"
+import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { useContext, useAsync } from "./compat"
@@ -114,7 +113,7 @@ export function useAllSeasons(limitWeeks: number = 8) {
       const d = parseISO(e.dimensionsRaw.season.season)
       return {
         id: formatClickhouseDate(d),
-        name: formatDate(subWeeks(d, 2), 'PP') // seasons last 2 weeks
+        name: format(subWeeks(d, 2), 'PP') // seasons last 2 weeks
       }
     })
     .sort((e1, e2) => e1.id.localeCompare(e2.id))

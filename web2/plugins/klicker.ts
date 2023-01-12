@@ -13,7 +13,7 @@ import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
 
 export default { install }
 
-function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
+function install(app: App, options: { cubeUrl: string, managerUrl: string, translate: (key: string, args: any) => string }) {
   app.component('c-query', CQuery)
   app.component('b-shimmer', BShimmer)
   app.component('b-card', BCard)
@@ -31,7 +31,7 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string }) {
   app.provide(KlickerConfigInjectionKey, {
     klicker: service,
     managerUrl: options.managerUrl,
-    translate: (key: string) => key,
+    translate: options.translate,
     useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
       const query = useQuery<T, E>([key], handler)
       onServerPrefetch(query.suspense)

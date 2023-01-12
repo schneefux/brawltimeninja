@@ -10,13 +10,14 @@
     ></ad>
 
     <b-split-dashboard>
-      <b-scroll-spy
-        slot="aside"
-        :sections="sections"
-        nav-class="top-14 lg:top-0"
-        toc-class="hidden lg:block"
-        class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-      ></b-scroll-spy>
+      <template v-slot:aside>
+        <b-scroll-spy
+          :sections="sections"
+          nav-class="top-14 lg:top-0"
+          toc-class="hidden lg:block"
+          class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
+        ></b-scroll-spy>
+      </template>
 
       <b-page-section
         ref="activeSection"

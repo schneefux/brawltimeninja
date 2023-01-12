@@ -21,12 +21,11 @@
         once: true,
       }"
     >
-      <p
-        slot="description"
-        class="mt-4 prose dark:prose-invert"
-      >
-        {{ $t('tier-list.open-map') }}
-      </p>
+      <template v-slot:description>
+        <p class="mt-4 prose dark:prose-invert">
+          {{ $t('tier-list.open-map') }}
+        </p>
+      </template>
 
       <events-roll :events="events"></events-roll>
     </b-page-section>

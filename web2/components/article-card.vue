@@ -9,7 +9,7 @@
   >
     <template v-slot:infobar><div
       v-if="document.image"
-      
+
       :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${document.image}')`"
       class="h-48 bg-cover bg-center"
       itemprop="thumbnailUrl"
@@ -30,25 +30,26 @@
         >
       </b-lightbox>
     </div></template>
-    <template v-slot:actions><p
-      
+    <template
       v-if="document.author != undefined"
-      class="prose dark:prose-invert"
+      v-slot:actions
     >
-      This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
-        <a
-          v-if="document.attributionLink != undefined"
-          :href="document.attributionLink"
-          rel="nofollow"
-          class="underline"
-        >
-          ({{ document.attribution }})
-        </a>
-        <span v-else>
-          ({{ document.attribution }})
-        </span>
-      </template>.
-    </p></template>
+      <p class="prose dark:prose-invert">
+        This guide was written by {{ document.author }}<template v-if="document.attribution != undefined">
+          <a
+            v-if="document.attributionLink != undefined"
+            :href="document.attributionLink"
+            rel="nofollow"
+            class="underline"
+          >
+            ({{ document.attribution }})
+          </a>
+          <span v-else>
+            ({{ document.attribution }})
+          </span>
+        </template>.
+      </p>
+    </template>
   </b-card>
 </template>
 
