@@ -31,6 +31,7 @@ import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import MAuto from './m-auto.vue'
+import { useKlickerConfig } from '../../composables/klicker'
 
 /**
  * Visualisation that prominently displays one or multiple numbers
@@ -47,17 +48,18 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlickerConfig()
     const { $klicker, metrics, switchResponse } = useCubeResponseProps(props)
 
     const rows = computed(() => switchResponse(
       response => metrics.value.map(m => ({
         id: m.id,
-        title: $klicker.getName(m, 'short'),
+        title: $klicker.getName(translate, m, 'short'),
         metricId: m.id,
         entry: response.data[0],
       })), response => ([{
         id: metrics.value[0].id,
-        title: $klicker.getName(metrics.value[0], 'short'),
+        title: $klicker.getName(translate, metrics.value[0], 'short'),
         metricId: metrics.value[0].id,
         entry: response.data[0],
       }])

@@ -81,7 +81,7 @@ export default defineComponent({
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
             scale: dimension0.scale,
             sort: {
               field: metric0.id,
@@ -100,10 +100,10 @@ export default defineComponent({
           },
           tooltip: <any>[{ // TODO spread breaks types
             field: 'metrics.' + metric0.id,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
           },
           ...(withCI ? [{
             field: 'upper',

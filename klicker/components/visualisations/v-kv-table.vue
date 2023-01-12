@@ -75,16 +75,16 @@ export default defineComponent({
     const rows = computed<Row[]>(() =>
       switchResponse(
         response => metrics.value.map(m => ({
-          title: $klicker.getName(m),
+          title: $klicker.getName(translate, m),
           key: `metrics.${m.id}`,
           slot: `metrics.${m.id}`,
         })),
         response => metrics.value.flatMap(m => [{
-          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(m),
+          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(translate, m),
           key: `metrics.${m.id}`,
           slot: `metrics.${m.id}`,
         }, {
-          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(m),
+          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(translate, m),
           key: `test.reference.metrics.${m.id}`,
           slot: `test.reference.metrics.${m.id}`,
         }])

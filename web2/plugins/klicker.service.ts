@@ -26,21 +26,6 @@ class BrawltimeKlickerService extends KlickerService {
     super(cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
   }
 
-  /*
-  // override Klicker.$t
-  public $te(key: string) {
-    return this.context.i18n.t(key) != key
-  }
-
-  // override Klicker.$t
-  public $t(key: string, args?: any) {
-    if (this.$te(key)) {
-      return this.context.i18n.t(key, args)
-    }
-    return super.$t(key, args)
-  }
-  */
-
   // override Klicker.format
   public format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string {
     if (spec.type == 'nominal' && typeof value == 'string') {

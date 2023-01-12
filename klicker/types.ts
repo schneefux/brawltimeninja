@@ -1,4 +1,5 @@
 import { Filter } from "@cubejs-client/core"
+import { PluginConfig } from "./composables/klicker"
 import { Component } from "vue"
 
 export interface Config extends Record<string, Cube> {}
@@ -378,13 +379,9 @@ export interface IKlickerService {
   dimensionRenderers: DimensionRendererSpec[]
   metricRenderers: MetricRendererSpec[]
 
-  $t(key: string, args?: Record<string, string|number>): string
-
-  $te(key: string): boolean
-
   format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string
 
-  getName(m: Metric|Dimension, modifier?: string): string
+  getName(translate: PluginConfig['translate'], m: Metric|Dimension, modifier?: string): string
 
   /**
    * @param query Query specification

@@ -4,6 +4,7 @@ import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations"
 import defaultStaticWidgets from "./static-widgets"
+import { PluginConfig } from "./composables/klicker"
 
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 
@@ -58,16 +59,6 @@ export default class KlickerService implements IKlickerService {
     this.metricRenderers = metricRenderers
   }
 
-  // override
-  public $t(key: string, args?: any) {
-    return key
-  }
-
-  // override
-  public $te(key: string) {
-    return false
-  }
-
   // override & extend
   public format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string {
     if (Array.isArray(value)) {
@@ -96,15 +87,9 @@ export default class KlickerService implements IKlickerService {
     return value.toString()
   }
 
-  public getName(m: Metric|Dimension, modifier?: string): string {
+  public getName(translate: PluginConfig['translate'], m: Metric|Dimension, modifier?: string): string {
     const i18nKey = 'metric.' + m.id + (modifier != undefined ? '.' + modifier : '')
-
-    if (this.$te(i18nKey)) {
-      return this.$t(i18nKey) as string
-    }
-
-    // fall back to name
-    return m.name || m.id
+    return translate(i18nKey) ?? m.name ?? m.id
   }
 
   // TODO on startup, validate that materializations are a subset of their parent

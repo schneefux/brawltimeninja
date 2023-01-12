@@ -18,6 +18,7 @@ import { computed, defineComponent } from "vue"
 import { VisualisationProps } from "../../props"
 import { useCubeResponseProps } from "../../composables/response"
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlickerConfig } from "../../composables/klicker"
 
 export default defineComponent({
   components: {
@@ -27,9 +28,10 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlickerConfig()
     const { $klicker, metrics } = useCubeResponseProps(props)
 
-    const title = computed(() => 'About ' + $klicker.getName(metrics.value[0]))
+    const title = computed(() => 'About ' + $klicker.getName(translate, metrics.value[0]))
     const description = computed(() => metrics.value[0].description)
 
     return {

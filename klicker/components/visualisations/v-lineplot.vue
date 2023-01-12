@@ -66,14 +66,14 @@ export default defineComponent({
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
             scale: dimension0.scale,
           },
           y: {
             ...metric0.vega,
             field: 'metricsRaw.' + metric0.id,
             type: metric0.type,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
             axis: {
               format: metric0.d3formatter,
             },
@@ -91,10 +91,10 @@ export default defineComponent({
           // TODO spread breaks types
           tooltip: <any>[{
             field: 'metrics.' + metric0.id,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
           },
           ...(withCI ? [{
             field: 'upper',

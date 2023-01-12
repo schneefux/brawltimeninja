@@ -16,14 +16,6 @@ export class KlickerServiceMock extends KlickerService {
   constructor() {
     super('https://cube.brawltime.ninja', config, [], [], [], [], [])
   }
-
-  $t(key: string, args?: any) {
-    return translate(key)
-  }
-
-  $te(key: string)  {
-    return key in en
-  }
 }
 
 let $klicker = new KlickerServiceMock()

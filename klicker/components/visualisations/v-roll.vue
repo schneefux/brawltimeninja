@@ -91,7 +91,7 @@ export default defineComponent({
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const dimension = computed(() => dimensions.value[0])
-    const dimensionName = computed(() => $klicker.getName(dimension.value, 'short'))
+    const dimensionName = computed(() => $klicker.getName(translate, dimension.value, 'short'))
     const headings = computed(() =>
       switchResponse(
         response => response.data.map(e => ({
@@ -110,7 +110,7 @@ export default defineComponent({
         response => metrics.value.map((metric) => ({
           id: metric.id,
           metricId: metric.id,
-          title: $klicker.getName(metric, 'short'),
+          title: $klicker.getName(translate, metric, 'short'),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}`,
             entry: e,
@@ -119,7 +119,7 @@ export default defineComponent({
         response => metrics.value.flatMap(metric => [{
           id: metric.id,
           metricId: metric.id,
-          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(metric),
+          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(translate, metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}`,
             entry: e,
@@ -127,7 +127,7 @@ export default defineComponent({
         }, {
           id: `${metric.id}-reference`,
           metricId: metric.id,
-          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(metric),
+          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(translate, metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}-reference`,
             entry: e.test.reference,

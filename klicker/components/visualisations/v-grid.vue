@@ -96,7 +96,7 @@ export default defineComponent({
       let rows: Row[] = []
 
       metrics.value.forEach(m => rows.push({
-        title: $klicker.getName(m),
+        title: $klicker.getName(translate, m),
         key: `metrics.${m.id}`,
         slot: `metrics.${m.id}`,
       }))

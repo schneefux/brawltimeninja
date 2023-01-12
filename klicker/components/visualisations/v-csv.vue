@@ -38,8 +38,8 @@ export default defineComponent({
 
     const download = () => {
       const header = (<string[]>[]).concat(
-        dimensions.value.map(d => $klicker.getName(d)),
-        metrics.value.map(m => $klicker.getName(m)),
+        dimensions.value.map(d => $klicker.getName(translate, d)),
+        metrics.value.map(m => $klicker.getName(translate, m)),
       ).join(',')
       const body = props.response.data.map(e =>
         (<(string|number)[]>[]).concat(

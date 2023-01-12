@@ -90,7 +90,7 @@ export default defineComponent({
       const columns: Column[] = []
 
       columns.push({
-        title: dimensions.value.map(d => $klicker.getName(d)).join(', '),
+        title: dimensions.value.map(d => $klicker.getName(translate, d)).join(', '),
         keys: dimensions.value.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
@@ -98,7 +98,7 @@ export default defineComponent({
       })
       metrics.value.forEach(m => columns.push({
         // metrics are rendered 1:1
-        title: $klicker.getName(m),
+        title: $klicker.getName(translate, m),
         keys: [`metrics.${m.id}`],
         slot: `metrics.${m.id}`,
         shrink: true,

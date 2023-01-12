@@ -54,7 +54,7 @@ export default defineComponent({
     const { translate } = useKlickerConfig()
     const { $klicker, metrics } = useCubeResponseProps(props)
 
-    const metricName = computed(() => $klicker.getName(metrics.value[0]))
+    const metricName = computed(() => $klicker.getName(translate, metrics.value[0]))
     const testName = computed(() => metrics.value[0].statistics?.test?.name)
 
     return {
