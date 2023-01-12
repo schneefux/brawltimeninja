@@ -12,7 +12,7 @@ import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
 import { injectGlobalProperties } from '@/composables/compat'
 import RouterLink from '~/components/router-link.vue'
-import ClientOnly from '~/components/client-only'
+import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
 import { defaultLocale, loadLocale, locales } from '@/locales'
@@ -101,7 +101,7 @@ async function createApp(pageContext: PageContext) {
   app.use(pinia)
 
   const gtagParams = {
-    optimize_id: 'OPT-PWZ78LC',
+    optimize_id: import.meta.env.VITE_OPTIMIZE_ID,
     custom_map: {
       'dimension1': 'branch',
       'dimension2': 'ads_blocked',
@@ -111,6 +111,7 @@ async function createApp(pageContext: PageContext) {
     },
   }
   app.use(VueGtagPlugin, {
+    enabled: false, // defer until localstorage is loaded in layouts/default.vue
     config: {
       id: import.meta.env.VITE_GA4_ID,
       params: gtagParams,
@@ -120,9 +121,6 @@ async function createApp(pageContext: PageContext) {
       id: import.meta.env.VITE_UA_ID,
       params: gtagParams,
     } ],
-    // toggled in layout.vue
-    // TODO
-    //enabled: app.store!.state.adsAllowed == true,
   })
 
   app.use(TRPCPlugin)

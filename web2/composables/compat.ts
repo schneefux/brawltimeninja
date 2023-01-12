@@ -72,13 +72,13 @@ export function useSwitchToLocale() {
 export function injectGlobalProperties(app: App, pageContext: PageContext) {
   const $route = computed(() => ({
     path: pageContext.urlPathname,
-    fullPath: pageContext.urlPathname,
+    fullPath: pageContext.urlOriginal,
   }))
   //app.config.globalProperties.$route = $route as any
   // TODO is not reactive
   app.config.globalProperties.$route = {
     path: pageContext.urlPathname,
-    fullPath: pageContext.urlPathname,
+    fullPath: pageContext.urlOriginal,
   } as any
 }
 
@@ -86,7 +86,8 @@ export function useRoute() {
   const pageContext = usePageContext()!
 
   return computed(() => ({
-    fullPath: pageContext.urlPathname,
+    path: pageContext.urlPathname,
+    fullPath: pageContext.urlOriginal,
     query: pageContext.urlParsed.searchAll,
     params: pageContext.routeParams ?? {},
   }))

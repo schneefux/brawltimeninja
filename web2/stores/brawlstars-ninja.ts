@@ -148,8 +148,5 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
       ctx.store.$state.version = 10
     }
   },
-  hydrate(state, initialState) {
-
-  },
 })
 

@@ -2,7 +2,7 @@
   <b-app-bottom-nav
     tag="router-link"
     :screens="screens"
-    :active-route="$route.path"
+    :active-route="route.path"
   ></b-app-bottom-nav>
 </template>
 
@@ -11,7 +11,7 @@ import { defineComponent, computed } from 'vue'
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
 import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
 import { BAppBottomNav } from '@schneefux/klicker/components'
-import { useContext } from '@/composables/compat'
+import { useContext, useRoute } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -39,10 +39,13 @@ export default defineComponent({
         target: '/tier-list/brawler',
         prefix: '/tier-list/brawler',
       } ]
-  })
+    })
+
+    const route = useRoute()
 
     return {
       screens,
+      route,
     }
   },
 })

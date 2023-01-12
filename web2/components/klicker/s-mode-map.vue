@@ -13,7 +13,7 @@
       class="top-14 lg:top-20 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-5rem)] overscroll-contain"
     >
       <b-card
-        class="w-full"
+        class="w-full overflow-y-auto overscroll-contain"
         :elevation="0"
       >
         <template v-slot:content>

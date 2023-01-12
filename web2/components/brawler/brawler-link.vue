@@ -2,7 +2,6 @@
   <router-link
     :to="link"
     :title="title"
-    @click.native.stop
   >
     <figure class="inline-flex items-center">
       <span
@@ -53,7 +52,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import { useContext } from '@/composables/compat'
 
 export default defineComponent({
   props: {

@@ -1,6 +1,9 @@
 <template>
   <Teleport v-if="modelValue" to="body">
-    <div class="fixed z-50 inset-0 bg-background/75 overflow-y-auto overscroll-contain">
+    <div
+      class="fixed z-50 inset-0 bg-background/75 overflow-y-auto overscroll-contain"
+      v-bind="$attrs"
+    >
       <div
         class="h-full flex justify-center items-center pt-20 pb-8 px-4"
         @click.self="$emit('update:modelValue', false)"
@@ -27,6 +30,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
+  inheritAttrs: false,
   components: {
     FontAwesomeIcon,
   },

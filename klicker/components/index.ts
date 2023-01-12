@@ -59,3 +59,5 @@ export { default as CGrid } from './canvas/c-grid.vue'
 export { default as CCanvasRenderer } from './canvas/c-canvas-renderer.vue'
 export { default as CGridRenderer } from './canvas/c-grid-renderer.vue'
 export { default as CWidgetEditor } from './canvas/c-widget-editor.vue'
+
+export { default as ClientOnly } from './client-only'

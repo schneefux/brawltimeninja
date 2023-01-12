@@ -65,6 +65,8 @@ export default defineComponent({
       toggleDropdown,
     }
   },
-  emits: ['open'],
+  emits: {
+    ['open']() { return true },
+  },
 })
 </script>

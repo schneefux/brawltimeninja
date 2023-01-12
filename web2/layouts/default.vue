@@ -53,13 +53,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch, ref } from 'vue'
+import { computed, defineComponent, watch, ref, onMounted } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
-import { event, optIn } from 'vue-gtag'
+import { event, optIn, pageview } from 'vue-gtag'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -111,7 +112,7 @@ export default defineComponent({
       enableAds()
     }
 
-    const enableAds = () => {
+    const enableAds = async () => {
       if (adsAllowed.value && !import.meta.env.SSR) {
         // update consent preferences
         if ('adsbygoogle' in window) {
@@ -151,8 +152,7 @@ export default defineComponent({
       }
     }
 
-    // called after vuex-persist has loaded
-    watch(version, () => {
+    onMounted(() => {
       if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
         store.showConsentPopup()
       } else {
@@ -164,9 +164,14 @@ export default defineComponent({
       }
     })
 
-    // TODO the fix for https://github.com/vueuse/vueuse/issues/685
-    // and/or importing vueuse as peer dependency breaks this ref type
-    useMutationObserver(container as any, () => {
+    const route = useRoute()
+    watch(route, (to, from) => {
+      if (to.path != from?.path) {
+        pageview({ page_path: to.path })
+      }
+    }, { immediate: true })
+
+    useMutationObserver(container, () => {
       // workaround for AdSense overriding min-height: 0px
       // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
       // wtf Google
