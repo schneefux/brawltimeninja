@@ -82,7 +82,12 @@ job "brawltime-testing" {
         PORT = "${NOMAD_PORT_http}"
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
+        MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
+        GA4_ID = "G-8GGHZC6QR2"
+        UA_ID = "UA-137233906-1"
+        OPTIMIZE_ID = "OPT-PWZ78LC"
+        ADSENSE_PUBID = "ca-pub-6856963757796636"
         TRADUORA_URL = "https://translate.${var.domain}"
         TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
         TRADUORA_SECRET = "${var.web_traduora_secret}"
@@ -100,7 +105,7 @@ job "brawltime-testing" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-web:latest"
+        image = "ghcr.io/schneefux/brawltime-web2:latest"
         ports = ["http"]
         dns_servers = ["${attr.unique.network.ip-address}"]
 

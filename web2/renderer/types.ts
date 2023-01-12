@@ -2,6 +2,7 @@ export type { PageContextServer }
 export type { PageContextClient }
 export type { PageContext }
 export type { PageProps }
+export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
@@ -10,6 +11,16 @@ import type { ComponentPublicInstance } from 'vue'
 import type { Locale } from '../locales'
 
 type PageProps = Record<string, unknown>
+
+interface Config {
+  mediaUrl: string
+  cubeUrl: string
+  managerUrl: string
+  optimizeId: string
+  ga4Id: string
+  uaId: string
+  adsensePubid: string
+}
 
 type Page = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086
 
@@ -33,6 +44,7 @@ export type PageContextCustom = {
     hashOriginal: null | string
   }
   errorWhileRendering?: Error
+  config: Config
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

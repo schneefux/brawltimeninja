@@ -6,7 +6,6 @@ import { usePageContext } from '~/renderer/usePageContext'
 import { navigate } from "vite-plugin-ssr/client/router"
 import { BrawltimeKlickerService } from "@/plugins/klicker.service"
 import { TrpcInjectionKey } from "@/plugins/trpc"
-import { PageContext } from "@/renderer/types"
 import { useHead, ReactiveHead } from "@unhead/vue"
 import { locales, loadLocale } from "@/locales";
 import { extractLocale } from "@/locales/extractLocale";
@@ -26,16 +25,13 @@ export function useContext() {
   const $klicker = useKlicker()
   const $api = inject(TrpcInjectionKey)!
   const i18n = useI18n()
+  const pageContext = usePageContext()
 
   return {
     $klicker: $klicker as BrawltimeKlickerService,
     $api,
     $supportsWebp: false, // TODO
-    $config: {
-      mediaUrl: import.meta.env.VITE_MEDIA_URL,
-      managerUrl: import.meta.env.VITE_MANAGER_URL,
-      renderUrl: import.meta.env.VITE_RENDER_URL,
-    }, // TODO
+    $config: pageContext.config,
     $http: {} as any, // TODO
     i18n: {
       ...i18n,

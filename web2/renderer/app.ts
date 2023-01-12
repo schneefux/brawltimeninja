@@ -60,7 +60,7 @@ async function createApp(pageContext: PageContext) {
 
   // TODO context is missing locale when rendering error page
   const locale = pageContext.locale ?? defaultLocale
-  const messages = await loadLocale(import.meta.env.VITE_MEDIA_URL, locale.code)
+  const messages = await loadLocale(pageContext.config.mediaUrl, locale.code)
 
   const i18n = createI18n({
     legacy: false,
@@ -75,8 +75,8 @@ async function createApp(pageContext: PageContext) {
   app.use(i18n)
 
   app.use(KlickerPlugin, {
-    cubeUrl: import.meta.env.VITE_CUBE_URL,
-    managerUrl: import.meta.env.VITE_MANAGER_URL,
+    cubeUrl: pageContext.config.cubeUrl,
+    managerUrl: pageContext.config.managerUrl,
     translate: i18n.global.t,
   })
 
@@ -100,7 +100,7 @@ async function createApp(pageContext: PageContext) {
   app.use(pinia)
 
   const gtagParams = {
-    optimize_id: import.meta.env.VITE_OPTIMIZE_ID,
+    optimize_id: pageContext.config.optimizeId,
     custom_map: {
       'dimension1': 'branch',
       'dimension2': 'ads_blocked',
@@ -112,12 +112,12 @@ async function createApp(pageContext: PageContext) {
   app.use(VueGtagPlugin, {
     enabled: false, // defer until localstorage is loaded in layouts/default.vue
     config: {
-      id: import.meta.env.VITE_GA4_ID,
+      id: pageContext.config.ga4Id,
       params: gtagParams,
     },
     includes: [ {
       // old property
-      id: import.meta.env.VITE_UA_ID,
+      id: pageContext.config.uaId,
       params: gtagParams,
     } ],
   })
@@ -135,7 +135,7 @@ async function createApp(pageContext: PageContext) {
     },
     script: [
       {
-        src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_PUBID}`,
+        src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pageContext.config.adsensePubid}`,
         async: true,
         crossorigin: 'anonymous',
       },
