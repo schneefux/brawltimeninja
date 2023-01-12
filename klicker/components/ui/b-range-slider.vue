@@ -393,14 +393,14 @@ export default defineComponent({
     }
   },
   methods: {
-    setValue(val, noCb) {
+    setValue(val, noCb, speed) {
       if (isDiff(this.currentValue, val)) {
         const resetVal = this.limitValue(val)
         this.currentValue = resetVal.concat()
         this.computedFixedValue()
         this.syncValue(noCb)
       }
-      this.$nextTick(() => this.setPosition())
+      this.$nextTick(() => this.setPosition(speed))
     },
     setIndex(val) {
       if (isArray(val)) {
@@ -478,8 +478,8 @@ export default defineComponent({
       }
       isDrag || this.setPosition()
     },
-    setPosition() {
-      this.flag || this.setTransitionTime(this.speed)
+    setPosition(speed) {
+      this.flag || this.setTransitionTime(speed ?? this.speed)
       this.setTransform(this.position[0], this.currentSlider === 1)
       this.setTransform(this.position[1], this.currentSlider === 0)
       this.flag || this.setTransitionTime(0)
