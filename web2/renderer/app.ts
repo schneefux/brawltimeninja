@@ -7,6 +7,7 @@ import type { PageContext } from './types'
 import { setPageContext } from './usePageContext.js'
 import DefaultLayout from '~/layouts/default.vue'
 import { createPinia } from 'pinia'
+import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
 import { injectGlobalProperties } from '@/composables/compat'
@@ -92,6 +93,11 @@ async function createApp(pageContext: PageContext) {
 
   // ! not SSRed, no need so far
   const pinia = createPinia()
+  if (!import.meta.env.SSR) {
+    pinia.use(createPersistedState({
+      storage: localStorage,
+    }))
+  }
   app.use(pinia)
 
   const gtagParams = {

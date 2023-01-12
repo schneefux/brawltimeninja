@@ -140,5 +140,16 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
       this.userTag = tag
     },
   },
+  persist: {
+    key: 'brawlstars-ninja',
+    paths: ['version', 'lastPlayers', 'cookiesAllowed', 'adsAllowed', 'installBannerDismissed', 'personalityTestResult', 'userTag'],
+    afterRestore(ctx) {
+      // v10: migration to pinia-plugin-persistedstate
+      ctx.store.$state.version = 10
+    }
+  },
+  hydrate(state, initialState) {
+
+  },
 })
 

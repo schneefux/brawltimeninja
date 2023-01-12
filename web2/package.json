@@ -32,6 +32,7 @@
     "markdown-it": "^13.0.1",
     "mysql2": "^2.3.3",
     "pinia": "^2.0.28",
+    "pinia-plugin-persistedstate": "^3.0.2",
     "sampson": "^0.2.8",
     "sirv": "^2.0.2",
     "superjson": "^1.12.1",

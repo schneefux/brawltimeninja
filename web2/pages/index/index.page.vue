@@ -105,27 +105,50 @@
     </div>
 
     <div class="mt-2 mx-6 flex flex-wrap justify-center">
-      <div class="mt-2">
-        <template v-if="lastPlayers.length === 0">
-          {{ $t('index.recommended') }}
+      <client-only>
+        <template v-slot:placeholder>
+          <div class="mt-2">
+            {{ $t('index.recommended') }}
+          </div>
+          <div class="ml-2">
+            <b-button
+              v-for="player in featuredPlayers"
+              :key="player.tag"
+              :to="player.link"
+              class="ml-2 mt-1"
+              xs
+              primary
+              @click.passive="addLastPlayer(player)"
+            >
+              {{ player.name }}
+            </b-button>
+          </div>
         </template>
-        <template v-else-if="playerLinks.length > 0">
-          {{ $t('index.recents') }}
+
+        <template v-slot:default>
+          <div class="mt-2">
+            <template v-if="lastPlayers.length === 0">
+              {{ $t('index.recommended') }}
+            </template>
+            <template v-else-if="featuredPlayers.length > 0">
+              {{ $t('index.recents') }}
+            </template>
+          </div>
+          <div class="ml-2">
+            <b-button
+              v-for="player in (lastPlayers ?? featuredPlayers ?? [])"
+              :key="player.tag"
+              :to="player.link"
+              class="ml-2 mt-1"
+              xs
+              primary
+              @click.passive="addLastPlayer(player)"
+            >
+              {{ player.name }}
+            </b-button>
+          </div>
         </template>
-      </div>
-      <div class="ml-2">
-        <b-button
-          v-for="player in playerLinks"
-          :key="player.tag"
-          :to="player.link"
-          @click.native.passive="addLastPlayer(player)"
-          xs
-          primary
-          class="ml-2 mt-1"
-        >
-          {{ player.name }}
-        </b-button>
-      </div>
+      </client-only>
     </div>
 
     <ad
@@ -226,23 +249,23 @@ export default defineComponent({
         .replace(/O/g, '0')
     )
 
-    const playerLinks = computed(() => {
-      const players = lastPlayers.value.length == 0 ? featuredPlayers.value : lastPlayers.value
-      return players
-        .slice(0, 3)
-        .map(p => (<PlayerLink>{
-          tag: p.tag,
-          name: p.name,
-          link: `/profile/${p.tag.replace(/^#/, '')}`,
-        }))
+    const mapToPlayerLink = (p: { tag: string, name: string }) => ({
+      tag: p.tag,
+      name: p.name,
+      link: `/profile/${p.tag.replace(/^#/, '')}`,
     })
+
+    const lastPlayers = computed(() => store.lastPlayers
+      .slice(0, 3)
+      .map(mapToPlayerLink))
+
+    const featuredPlayers = computed(() => store.featuredPlayers
+      .slice(0, 3)
+      .map(mapToPlayerLink))
 
     const { makeVisibilityCallback } = useTrackScroll('home')
 
     const store = useBrawlstarsNinjaStore()
-    const player = computed(() => store.player)
-    const lastPlayers = computed(() => store.lastPlayers)
-    const featuredPlayers = computed(() => store.featuredPlayers)
 
     const helpDropdown = ref<HTMLElement>()
 
@@ -337,8 +360,8 @@ export default defineComponent({
 
     return {
       lastPlayers,
+      featuredPlayers,
       addLastPlayer,
-      playerLinks,
       helpDropdown,
       makeVisibilityCallback,
       search,
