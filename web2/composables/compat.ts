@@ -1,4 +1,4 @@
-import { App, computed, inject, onServerPrefetch, Ref } from "vue"
+import { computed, inject, onServerPrefetch, Ref, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
@@ -10,6 +10,7 @@ import { useHead, ReactiveHead } from "@unhead/vue"
 import { locales, loadLocale } from "@/locales";
 import { extractLocale } from "@/locales/extractLocale";
 import { MaybeRef } from "@vueuse/shared";
+import Cookies from 'js-cookie'
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -50,6 +51,10 @@ export function useSwitchToLocale() {
   const pageContext = usePageContext()
 
   const switchToLocale = async (code: string) => {
+    if (i18n.locale.value == code) {
+      return
+    }
+
     if (!i18n.availableLocales.includes(code)) {
       const messages = await loadLocale($config.mediaUrl, code)
       i18n.setLocaleMessage(code, messages)
@@ -63,6 +68,25 @@ export function useSwitchToLocale() {
   }
 
   return { locales, switchToLocale }
+}
+
+export function useLocaleCookieRedirect() {
+  const { switchToLocale, locales } = useSwitchToLocale()
+  const i18n = useI18n()
+  const route = useRoute()
+
+  const i18nCookieName = 'i18n_redirected'
+  if (route.value.fullPath == '/' && !import.meta.env.SSR) {
+    const userLanguage = navigator.languages[0] ?? navigator.language
+    const userLocaleCode = locales.find(l => userLanguage.startsWith(l.iso))?.code
+    const cookieLocaleCode = Cookies.get(i18nCookieName)
+    const localeCode = cookieLocaleCode ?? userLocaleCode ?? 'en'
+    if (locales.some(l => l.code == localeCode)) {
+      switchToLocale(localeCode!)
+    }
+  }
+
+  watch(i18n.locale, () => Cookies.set(i18nCookieName, i18n.locale.value))
 }
 
 export function useRoute() {

@@ -60,7 +60,7 @@ import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { event, optIn, pageview } from 'vue-gtag'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from '@/composables/compat'
+import { useRoute, useLocaleCookieRedirect } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -182,6 +182,7 @@ export default defineComponent({
     })
 
     useInstallPromptListeners()
+    useLocaleCookieRedirect()
 
     return {
       route,
