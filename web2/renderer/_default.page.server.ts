@@ -60,14 +60,14 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   const payload = await renderSSRHead(head)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html${payload.htmlAttrs}>
+    <html${dangerouslySkipEscape(payload.htmlAttrs)}>
       <head>
         ${dangerouslySkipEscape(payload.headTags)}
       </head>
-      <body${payload.bodyAttrs}>
-        ${payload.bodyTagsOpen}
-        <div id="app" class="dark">${stream}</div>
-        ${payload.bodyTags}
+      <body${dangerouslySkipEscape(payload.bodyAttrs)}>
+        ${dangerouslySkipEscape(payload.bodyTagsOpen)}
+        <div id="app">${stream}</div>
+        ${dangerouslySkipEscape(payload.bodyTags)}
       </body>
     </html>`
 
