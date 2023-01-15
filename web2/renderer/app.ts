@@ -124,6 +124,7 @@ async function createApp(pageContext: PageContext) {
 
   app.use(TRPCPlugin)
 
+  const themeColor = '#facc15' // yellow-400
   const head = createHead()
   head.push({
     titleTemplate: '%s - Brawl Time Ninja',
@@ -143,10 +144,16 @@ async function createApp(pageContext: PageContext) {
         innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
         async: false,
       },
+      // vite-plugin-pwa cannot modify the HTML, manually add SW and manifest
+      // https://github.com/brillout/vite-plugin-ssr/issues/295
+      { src: '/registerSW.js' },
     ],
     link: [
+      { rel: 'manifest', href: '/manifest.webmanifest' },
       { rel: 'icon', href: '/icons/favicon.ico', sizes: 'any' },
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
+      { rel: 'apple-touch-icon', href: '/icons/icon_x512.png', sizes: '512x512' },
+      { rel: 'shortcut-icon', href: '/icons/maskable_icon_x48.png' },
       ...(locales.map(l => ({
         rel: 'alternate',
         href: l.code == 'en' ? '/' : `/${l.code}`,
@@ -154,6 +161,7 @@ async function createApp(pageContext: PageContext) {
       }))),
     ],
     meta: [
+      { name: 'theme-color', content: themeColor },
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width' },
       { property: 'og:locale', content: locale.iso },
