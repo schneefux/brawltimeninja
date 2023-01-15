@@ -5,7 +5,7 @@
       v-for="(value, attr) in oejts"
       :key="attr"
     >
-      <span class="text-left">{{ oejtsMap[attr[0]] }}</span>
+      <span class="text-left">{{ oejtsMap[attr[0] as keyof typeof oejtsMap] }}</span>
       <div class="h-2 bg-gray-100 rounded relative">
         <div
           :style="{ 'width': Math.min(Math.abs(value)/2 * 50, 50) + '%' }"
@@ -15,7 +15,7 @@
           }]"
         ></div>
       </div>
-      <span class="text-right">{{ oejtsMap[attr[1]] }}</span>
+      <span class="text-right">{{ oejtsMap[attr[1] as keyof typeof oejtsMap] }}</span>
     </template>
     <span class="mt-1 col-span-3">{{ $t('oejts.result.oejts') }}</span>
   </div>

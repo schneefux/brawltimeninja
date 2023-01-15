@@ -26,6 +26,7 @@ function onBeforeRender(pageContext: PageContext) {
     mediaUrl: process.env.MEDIA_URL ?? '',
     cubeUrl: process.env.CUBE_URL ?? '',
     managerUrl: process.env.MANAGER_URL ?? '',
+    renderUrl: process.env.RENDER_URL ?? '',
     optimizeId: process.env.OPTIMIZE_ID ?? '',
     ga4Id: process.env.GA4_ID ?? '',
     uaId: process.env.UA_ID ?? '',

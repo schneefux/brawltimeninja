@@ -36,7 +36,7 @@
                 :id="`${prefix}-${prop}`"
                 :model-value="modelValue.props[prop]"
                 :is="propSpec.import || propSpec.component"
-                @update:modelValue="v => setWidgetProp(prop, v)"
+                @update:modelValue="(v: any) => setWidgetProp(prop, v)"
               ></component>
             </template>
           </div>

@@ -25,13 +25,12 @@
           </label>
 
           <b-radio
-            :model-value="withQuery"
+            v-model="withQuery"
             :id="`${prefix}-data`"
             value="true"
             name="withQuery"
             required
             primary
-            @update:modelValue="v => withQuery = v"
           ></b-radio>
           <label
             :for="`${prefix}-data`"

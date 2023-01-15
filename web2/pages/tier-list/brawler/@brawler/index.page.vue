@@ -298,47 +298,47 @@ export default defineComponent({
     const sections = computed(() => [{
       id: 'overview',
       title: i18n.t('brawler.overview'),
-      element: sectionRefs.overviewSection.value,
+      element: sectionRefs.overviewSection.value?.$el,
     }, {
       id: 'accessory',
       title: i18n.t('brawler.accessories'),
-      element: sectionRefs.accessorySection.value,
+      element: sectionRefs.accessorySection.value?.$el,
     }, {
       id: 'synergy',
       title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName.value }),
-      element: sectionRefs.synergySection.value,
+      element: sectionRefs.synergySection.value?.$el,
     }, {
       id: 'maps',
       title: i18n.t('brawler.current-maps.title', { brawler: brawlerName.value }),
-      element: sectionRefs.mapsSection.value,
+      element: sectionRefs.mapsSection.value?.$el,
     }, {
       id: 'modes',
       title: i18n.t('brawler.modes.title', { brawler: brawlerName.value }),
-      element: sectionRefs.modesSection.value,
+      element: sectionRefs.modesSection.value?.$el,
     }, {
       id: 'trends',
       title: i18n.t('brawler.trends', { brawler: brawlerName.value }),
-      element: sectionRefs.trendsSection.value,
+      element: sectionRefs.trendsSection.value?.$el,
     }, {
       id: 'trophies',
       title: i18n.t('brawler.by-trophies', { brawler: brawlerName.value }),
-      element: sectionRefs.trophiesSection.value,
+      element: sectionRefs.trophiesSection.value?.$el,
     }, {
       id: 'skins',
       title: i18n.t('skin', 2),
-      element: sectionRefs.skinsSection.value,
+      element: sectionRefs.skinsSection.value?.$el,
     }, {
       id: 'pins',
       title: i18n.t('pin', 2),
-      element: sectionRefs.pinsSection.value,
+      element: sectionRefs.pinsSection.value?.$el,
     }, {
       id: 'voicelines',
       title: i18n.t('voiceline', 2),
-      element: sectionRefs.voicelineSection.value,
+      element: sectionRefs.voicelineSection.value?.$el,
     }, {
       id: 'balance',
       title: i18n.t('balance-changes'),
-      element: sectionRefs.balanceChangesSection.value,
+      element: sectionRefs.balanceChangesSection.value?.$el,
     }])
 
     return {

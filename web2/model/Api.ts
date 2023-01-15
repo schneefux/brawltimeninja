@@ -9,6 +9,7 @@ export interface Gadget extends StarPower {
 }
 
 export interface Gear extends StarPower {
+  level: number
 }
 
 export interface Brawler {

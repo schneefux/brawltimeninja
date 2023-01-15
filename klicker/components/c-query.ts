@@ -39,7 +39,7 @@ export default defineComponent({
             h(BButton as any, {
               dark: true,
               xs: true,
-              onClick: (event) => {
+              onClick: (event: Event) => {
                 event.stopPropagation()
                 update()
               },

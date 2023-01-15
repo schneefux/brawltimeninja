@@ -53,6 +53,7 @@ export default class KlickerService implements IKlickerService {
   ) {
     // FIXME ???
     if (import.meta.env.PROD) {
+      // @ts-ignore
       this.cubejsApi = new CubejsApi('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
     } else {
       this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })

@@ -8,7 +8,7 @@
       <!-- same layout as b-tabs -->
       <li
         v-for="entry in previewItems"
-        :key="`${entry.from}-${entry.item[keyId as any]}`"
+        :key="`${entry.from}-${(entry.item as Record<string, string>)[keyId]}`"
         :class="{
           'border-primary-400 text-text': entry.from <= state.end && entry.to >= state.start,
           'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from <= state.end && entry.to >= state.start),
@@ -54,7 +54,7 @@
 
       <b-dashboard-cell
         v-for="entry in list"
-        :key="`${entry.index}-${entry.item[keyId]}`"
+        :key="`${entry.index}-${(entry.item as Record<string, string>)[keyId]}`"
         :ref="el => setItemRef(entry.index, el)"
         :columns="cellColumns"
         :rows="cellRows"

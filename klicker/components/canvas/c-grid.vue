@@ -37,7 +37,7 @@
             name="responsive"
             required
             primary
-            @update:modelValue="v => columns = columns || 12"
+            @update:modelValue="(v: boolean) => columns = columns || 12"
           ></b-radio>
           <label
             :for="`${prefix}-fixed`"

@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, h, computed } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { useCubeResponseProps } from '../../composables'
-import { ComparingMetaGridEntry, CubeComparingResponse, CubeResponse, MetaGridEntry } from '../../types'
+import { ComparingMetaGridEntry, CubeComparingResponse, CubeResponse, MetaGridEntry, MetricRendererSpec } from '../../types'
 
 /**
  * Metric renderer
@@ -46,10 +46,10 @@ export default defineComponent({
       return applicableRenderers.reduce((rr, r) => ({
         ...rr,
         [r.replacesMetricId]: r,
-      }), {})
+      }), {} as Record<string, MetricRendererSpec>)
     })
 
-    const metricRenderer = metricRenderers.value[props.metricId]?.import
+    const metricRenderer = metricRenderers.value[props.metricId as keyof typeof metricRenderers.value]?.import
     const text = props.row.metrics[props.metricId]
 
     return {

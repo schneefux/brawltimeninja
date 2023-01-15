@@ -16,6 +16,7 @@ interface Config {
   mediaUrl: string
   cubeUrl: string
   managerUrl: string
+  renderUrl: string
   optimizeId: string
   ga4Id: string
   uaId: string

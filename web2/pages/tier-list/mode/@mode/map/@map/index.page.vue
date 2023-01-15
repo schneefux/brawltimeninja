@@ -158,6 +158,7 @@ export default defineComponent({
     }
   },
   middleware: ['cached'],
+  /*
   async validate({ params, $klicker }) {
     const mode = kebabToCamel(params.mode)
     const map = deslugify(params.map)
@@ -178,5 +179,6 @@ export default defineComponent({
     })
     return events.data[0].metricsRaw.eventId != '0'
   },
+  */
 })
 </script>

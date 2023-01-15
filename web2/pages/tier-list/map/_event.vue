@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
 export default defineComponent({
+  /*
   async validate({ params, error, redirect, $klicker }) {
     const events = await $klicker.query({
       cubeId: 'map',
@@ -23,6 +24,7 @@ export default defineComponent({
     redirect(301, `/tier-list/mode/${camelToKebab(event.dimensionsRaw.mode.mode)}/map/${slugify(event.dimensionsRaw.map.map)}`)
     return true
   },
+  */
   middleware: ['cached'],
 })
 </script>

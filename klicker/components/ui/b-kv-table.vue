@@ -66,14 +66,14 @@ export default defineComponent({
   },
   setup(props) {
     const table = computed(() => props.rows.flatMap((r, index) => {
-      const value = r.key.split('.').reduce((a, b) => a[b], props.data)
+      const value = r.key.split('.').reduce((a, b) => a[b as keyof typeof a], props.data)
       if (value == undefined) {
         return []
       }
 
       return [{
         ...r,
-        key: `${props.idKey != undefined ? props.data[props.idKey as any] : index}-${r.key}`,
+        key: `${props.idKey != undefined ? props.data[props.idKey as keyof typeof props.data] : index}-${r.key}`,
         value,
       }]
     }))

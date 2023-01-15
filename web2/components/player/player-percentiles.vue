@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
 import { Player } from '~/model/Api'
+// @ts-ignore
 import ztable from 'ztable'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { useContext } from '~/composables/compat'

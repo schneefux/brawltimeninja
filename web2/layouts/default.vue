@@ -175,7 +175,7 @@ export default defineComponent({
       // workaround for AdSense overriding min-height: 0px
       // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
       // wtf Google
-      container.value!.style['min-height'] = ''
+      container.value!.style.minHeight = ''
     }, {
       attributes: true,
       attributeFilter: ['style'],
