@@ -138,7 +138,7 @@ export default defineComponent({
       const structuredData = (<ActiveEvent[]>[]).concat(current.value, upcoming.value)
         .map((event) => ({
           type: 'application/ld+json',
-          json: formatAsJsonLd({
+          innerHTML: formatAsJsonLd({
             id: event.id,
             map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
             mode: i18n.t('mode.' + event.mode),
