@@ -1,4 +1,4 @@
-import { computed, inject, onServerPrefetch, Ref, watch } from "vue"
+import { computed, inject, onMounted, onServerPrefetch, ref, Ref, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
@@ -147,4 +147,32 @@ export function useRouter() {
 export function useMeta(fun: () => ReactiveHead) {
   const meta = computed(fun)
   useHead(meta)
+}
+
+export function useRedirect() {
+  const pageContext = usePageContext()
+
+  return (status: number, url: string) => pageContext.redirectTo = { status, url }
+}
+
+export function useValidate(cb: (context: { params: Record<string, string> }) => Promise<boolean>) {
+  const pageContext = usePageContext()
+
+  onServerPrefetch(async () => {
+    pageContext.validated = true
+    const isValid = await cb({ params: pageContext.routeParams ?? {} })
+    if (!isValid) {
+      pageContext.redirectTo = { status: 404, url: '/404' }
+    }
+  })
+
+  onMounted(async () => {
+    // TODO should block navigation until validation is done
+    if (!pageContext.validated) {
+      const isValid = await cb({ params: pageContext.routeParams ?? {} })
+      if (!isValid) {
+        navigate('/404', { overwriteLastHistoryEntry: true })
+      }
+    }
+  })
 }

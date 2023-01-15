@@ -18,6 +18,7 @@ const passToClient = [
   'routeParams',
   'errorWhileRendering',
   'config',
+  'validated',
 ]
 
 function onBeforeRender(pageContext: PageContext) {

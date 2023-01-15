@@ -46,6 +46,8 @@ export type PageContextCustom = {
   }
   errorWhileRendering?: Error
   config: Config
+  redirectTo: { status: number, url: string }
+  validated: null | boolean
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

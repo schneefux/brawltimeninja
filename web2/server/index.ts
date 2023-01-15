@@ -5,6 +5,7 @@ import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
 import apiMiddleware from '../api/index.js'
 import { root } from './root.js'
+import { PageContext } from '@/renderer/types.js'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -36,9 +37,15 @@ async function startServer() {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
-    const pageContext = await renderPage(pageContextInit)
+    const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)
+    if (pageContext.redirectTo != undefined) {
+      res.redirect(pageContext.redirectTo.status, pageContext.redirectTo.url)
+      return
+    }
     const { httpResponse } = pageContext
-    if (!httpResponse) return next()
+    if (!httpResponse) {
+      return next()
+    }
     const { statusCode, contentType, earlyHints } = httpResponse
     if (res.writeEarlyHints) {
       const hints = earlyHints
