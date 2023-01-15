@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-    const { post } = useContent('/content/faq/' + route.value.params.faq)
+    const { post } = useContent('faq/' + route.value.params.faq)
 
     useMeta(() => {
       if (post.value == undefined) {

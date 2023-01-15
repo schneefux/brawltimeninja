@@ -103,6 +103,7 @@ declare module '@vue/runtime-core' {
     QuizResultSharepic: typeof import('./components/quiz/quiz-result-sharepic.vue')['default']
     RangeSliderSelect: typeof import('./components/range-slider-select.vue')['default']
     RouterLink: typeof import('./components/router-link.vue')['default']
+    RouterView: typeof import('vue-router')['RouterView']
     SAlly: typeof import('./components/klicker/s-ally.vue')['default']
     SBrawler: typeof import('./components/klicker/s-brawler.vue')['default']
     SCompetitionMaps: typeof import('./components/klicker/s-competition-maps.vue')['default']

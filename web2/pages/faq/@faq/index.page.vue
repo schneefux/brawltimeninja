@@ -1,31 +1,38 @@
 <template>
   <b-page class="flex justify-center">
     <article-card
-      v-if="post != null"
+      v-if="post != undefined"
+      :title="post.title"
       :document="post"
+      author="schneefux"
     ></article-card>
   </b-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
+import { useMeta, useRoute } from '@/composables/compat'
 import { useContent } from '~/composables/content'
+import ArticleCard from '~/components/article-card.vue'
 
 export default defineComponent({
   head: {},
+  components: {
+    ArticleCard,
+  },
+  middleware: ['cached'],
   nuxtI18n: {
     locales: ['en'],
   },
-  middleware: ['cached'],
   setup() {
     const route = useRoute()
-    const { post } = useContent('guides/' + route.value.params.post)
+    const { post } = useContent('faq/' + route.value.params.faq)
 
     useMeta(() => {
       if (post.value == undefined) {
         return {}
       }
-      const description = `Brawl Stars Guides written by ${post.value.author}. ${post.value.description}`
+      const description = `${post.value.question}`
       return {
         title: post.value.title,
         meta: [
@@ -34,7 +41,6 @@ export default defineComponent({
         ]
       }
     })
-
 
     return {
       post,

@@ -8,7 +8,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { useMeta, useRoute } from '@/composables/compat'
+import { defineComponent } from 'vue'
 import { useContent } from '~/composables/content'
 
 export default defineComponent({

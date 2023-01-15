@@ -49,9 +49,8 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
 import { BCard, BNavigator, BSearch } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
-import { brawlerId, camelToKebab, capitalizeWords, slugify, tagPattern } from '~/lib/util'
+import { brawlerId, camelToKebab, slugify, tagPattern } from '~/lib/util'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useContext, useRoute, useRouter } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -75,7 +74,7 @@ export default defineComponent({
     const brawlers = useAllBrawlers()
     const modes = useAllModes()
     const maps = useAllEvents()
-    const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
+    const toc = useAsync<{ default: TocEntry[] }>(() => import('~/assets/content/guides/toc.json'), 'toc-guides')
 
     const mapViewTabs = ['brawlers', 'starpowers', 'gadgets', 'gears', 'leaderboard']
 
@@ -204,7 +203,7 @@ export default defineComponent({
         id: 'guides',
         name: i18n.t('nav.Guides'),
         target: '/blog/guides',
-        children: (toc.value ?? []).map(post => ({
+        children: (toc.value ?? { default: [] }).default.map(post => ({
           id: post.slug,
           name: post.title,
           target: `/blog/guides/${post.slug}`,

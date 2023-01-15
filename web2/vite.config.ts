@@ -152,6 +152,7 @@ const config: UserConfig = {
     ssr(),
     visualizer(),
   ],
+  assetsInclude: ['assets/content/**/*.md'],
   optimizeDeps: {
     include: ['@schneefux/klicker'],
     exclude: [],
