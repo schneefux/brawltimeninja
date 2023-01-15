@@ -136,7 +136,7 @@
           </div>
           <div class="ml-2">
             <b-button
-              v-for="player in (lastPlayers ?? featuredPlayers ?? [])"
+              v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
               :key="player.tag"
               :to="player.link"
               class="ml-2 mt-1"
