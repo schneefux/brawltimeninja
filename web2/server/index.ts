@@ -46,7 +46,7 @@ async function startServer() {
     if (!httpResponse) {
       return next()
     }
-    const { statusCode, contentType, earlyHints } = httpResponse
+    const { statusCode, contentType, earlyHints, body } = httpResponse
     if (res.writeEarlyHints) {
       const hints = earlyHints
         .map((e) => e.earlyHintLink.replace('; crossorigin', '')) // FIXME crashes node
@@ -54,8 +54,7 @@ async function startServer() {
         link: hints,
       })
     }
-    res.status(statusCode).type(contentType)
-    httpResponse.pipe(res)
+    res.status(statusCode).type(contentType).send(body)
   })
 
   const port = process.env.PORT || 3000

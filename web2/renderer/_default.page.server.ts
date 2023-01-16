@@ -1,4 +1,4 @@
-import { renderToNodeStream } from '@vue/server-renderer'
+import { renderToString } from '@vue/server-renderer'
 import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import type { Config, PageContext } from './types'
@@ -44,8 +44,9 @@ function onBeforeRender(pageContext: PageContext) {
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { app, head, queryClient } = await createApp(pageContext)
 
-  const stream = renderToNodeStream(app)
+  const string = await renderToString(app) // use string - streaming interferes with data loading
   const payload = await renderSSRHead(head)
+  const vueQueryState = dehydrate(queryClient)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html${dangerouslySkipEscape(payload.htmlAttrs)}>
@@ -54,21 +55,16 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
       </head>
       <body${dangerouslySkipEscape(payload.bodyAttrs)}>
         ${dangerouslySkipEscape(payload.bodyTagsOpen)}
-        <div id="app">${stream}</div>
+        <div id="app">${dangerouslySkipEscape(string)}</div>
         ${dangerouslySkipEscape(payload.bodyTags)}
       </body>
     </html>`
 
-  const pageContextPromise = async () => {
-    const vueQueryState = dehydrate(queryClient)
-
-    return {
-      vueQueryState,
-    }
-  }
 
   return {
     documentHtml,
-    pageContext: pageContextPromise,
+    pageContext: {
+      vueQueryState,
+    },
   }
 }

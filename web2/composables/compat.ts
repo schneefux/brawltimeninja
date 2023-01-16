@@ -1,4 +1,4 @@
-import { computed, inject, onMounted, onServerPrefetch, ref, Ref, watch } from "vue"
+import { computed, inject, onMounted, onServerPrefetch, Ref, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'

@@ -14,7 +14,7 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
     app = params.app
     const queryClient = params.queryClient
     hydrate(queryClient, pageContext.vueQueryState)
-    app.mount('#app')
+    app.mount('#app', true)
   } else {
     app.changePage(pageContext)
   }
