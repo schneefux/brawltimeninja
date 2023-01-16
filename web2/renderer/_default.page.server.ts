@@ -44,21 +44,7 @@ function onBeforeRender(pageContext: PageContext) {
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { app, head, queryClient } = await createApp(pageContext)
 
-  const stream = await renderToNodeStream(app)
-  const waitUntilNotFetching = () => new Promise(resolve => {
-    const unsubscribe = queryClient.getQueryCache().subscribe(() => {
-      const countFetching = queryClient.isFetching()
-      if (countFetching == 0) {
-        unsubscribe()
-        resolve(undefined)
-      }
-    })
-  })
-  if (queryClient.isFetching() > 0) {
-    await waitUntilNotFetching()
-  }
-  const vueQueryState = dehydrate(queryClient)
-
+  const stream = renderToNodeStream(app)
   const payload = await renderSSRHead(head)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -73,11 +59,16 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
       </body>
     </html>`
 
+  const pageContextPromise = async () => {
+    const vueQueryState = dehydrate(queryClient)
+
+    return {
+      vueQueryState,
+    }
+  }
+
   return {
     documentHtml,
-    pageContext: {
-      //enableEagerStreaming: true,
-      vueQueryState,
-    },
+    pageContext: pageContextPromise,
   }
 }
