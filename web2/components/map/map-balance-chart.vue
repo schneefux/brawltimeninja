@@ -5,7 +5,6 @@
         <b-dashboard-cell
           :columns="8"
           :rows="4"
-          ssr-key="map-balance-chart-barplot"
           hide-empty
           lazy
         >
@@ -17,7 +16,6 @@
         <b-dashboard-cell
           :columns="3"
           :rows="2"
-          ssr-key="map-balance-chart-gini"
           hide-empty
           lazy
         >

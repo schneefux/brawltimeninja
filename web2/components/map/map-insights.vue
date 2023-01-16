@@ -5,7 +5,6 @@
       :key="t.title"
       :columns="4"
       :rows="2"
-      :ssr-key="`map-insights-${t.title}`"
       hide-empty
       lazy
     >

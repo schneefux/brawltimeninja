@@ -99,7 +99,6 @@
             <b-dashboard-cell
               :columns="5"
               :rows="4"
-              ssr-key="map-winrate-userate-chart"
               hide-empty
               lazy
             >
@@ -112,7 +111,6 @@
             <b-dashboard-cell
               :columns="6"
               :rows="4"
-              ssr-key="map-trend-chart"
               hide-empty
               lazy
             >
@@ -136,7 +134,6 @@
             <b-dashboard-cell
               :columns="4"
               :rows="5"
-              ssr-key="map-best-players-table"
               hide-empty
               lazy
             >
@@ -163,7 +160,6 @@
             <b-dashboard-cell
               :columns="4"
               :rows="5"
-              ssr-key="map-best-starpowers-table"
               hide-empty
               lazy
             >
@@ -211,7 +207,6 @@
             <b-dashboard-cell
               :columns="4"
               :rows="5"
-              ssr-key="map-best-gadgets-table"
               hide-empty
               lazy
             >
@@ -259,7 +254,6 @@
             <b-dashboard-cell
               :columns="5"
               :rows="2"
-              ssr-key="map-best-gears-table"
               hide-empty
               lazy
             >
