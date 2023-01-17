@@ -11,9 +11,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useCacheHeaders, useMeta, useRoute } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
 import { useContent } from '~/composables/content'
 import ArticleCard from '~/components/article-card.vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -21,7 +22,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-    const { post } = useContent('faq/' + route.value.params.faq)
+    const { post } = useContent('faq/' + route.params.faq)
 
     useCacheHeaders()
     useMeta(() => {

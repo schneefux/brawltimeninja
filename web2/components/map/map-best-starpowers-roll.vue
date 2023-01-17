@@ -2,17 +2,18 @@
   <b-card
     :title="$t('best.' + kind, 1)"
     :elevation="elevation"
-    :link="`/tier-list/${kind}`"
+    :link="localePath(`/tier-list/${kind}`)"
   >
-    <template v-slot:content><c-query
-
-      :query="query"
-      :filter="filter"
-    >
-      <template v-slot="data">
-        <v-roll v-bind="data"></v-roll>
-      </template>
-    </c-query></template>
+    <template v-slot:content>
+      <c-query
+        :query="query"
+        :filter="filter"
+      >
+        <template v-slot="data">
+          <v-roll v-bind="data"></v-roll>
+        </template>
+      </c-query>
+    </template>
   </b-card>
 </template>
 

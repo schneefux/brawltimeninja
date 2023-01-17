@@ -5,7 +5,7 @@
   >
     <template v-slot:logo>
       <router-link
-        :to="'/'"
+        :to="localePath('/')"
         class="font-semibold text-xl tracking-tight leading-tight"
       >Brawl Time Ninja</router-link>
 
@@ -30,7 +30,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { BWebNav } from '@schneefux/klicker/components'
-import { useContext } from '@/composables/compat'
+import { useContext, useLocalePath } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -38,16 +38,17 @@ export default defineComponent({
   },
   setup() {
     const { i18n } = useContext()
+    const localePath = useLocalePath()
 
     const links = computed(() => [ {
       name: i18n.t('nav.Profile Search'),
-      target: '/',
+      target: localePath('/'),
     }, {
       name: i18n.t('nav.Brawler Tier List'),
-      target: '/tier-list/brawler',
+      target: localePath('/tier-list/brawler'),
     }, {
       name: i18n.t('nav.Map Tier Lists'),
-      target: '/tier-list/map',
+      target: localePath('/tier-list/map'),
     } ])
 
     return {

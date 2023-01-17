@@ -14,8 +14,6 @@ const passToClient = [
   'pageProps',
   'vueQueryState',
   'documentProps',
-  'locale',
-  'routeParams',
   'errorWhileRendering',
   'config',
   'validated',
@@ -42,7 +40,10 @@ function onBeforeRender(pageContext: PageContext) {
 }
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const { app, head, queryClient } = await createApp(pageContext)
+  const { app, head, router, queryClient } = await createApp(pageContext)
+
+  router.push(pageContext.urlPathname)
+  await router.isReady()
 
   const string = await renderToString(app) // use string - streaming interferes with data loading
   const payload = await renderSSRHead(head)

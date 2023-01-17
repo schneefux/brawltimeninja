@@ -30,7 +30,7 @@
       <template v-slot:link>
         <router-link
           class="underline"
-          to="/about"
+          :to="localePath('/about')"
         >link</router-link>
       </template>
     </b-cookie-consent>
@@ -60,7 +60,8 @@ import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { event, optIn, pageview } from 'vue-gtag'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useLocaleCookieRedirect } from '@/composables/compat'
+import { useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -72,19 +73,20 @@ export default defineComponent({
     const container = ref<HTMLElement>()
 
     const i18n = useI18n()
+    const localePath = useLocalePath()
 
     const links = computed(() => [ {
       name: i18n.t('nav.Leaderboards'),
-      target: '/leaderboard/hours',
+      target: localePath('/leaderboard/hours'),
     }, {
       name: i18n.t('nav.Guides'),
-      target: '/blog/guides',
+      target: localePath('/blog/guides'),
     }, {
       name: i18n.t('nav.Status'),
-      target: '/status',
+      target: localePath('/status'),
     }, {
       name: i18n.t('nav.Privacy'),
-      target: '/about',
+      target: localePath('/about'),
     }])
 
     const store = useBrawlstarsNinjaStore()

@@ -3,6 +3,7 @@
     tag="router-link"
     :screens="screens"
     :active-route="route.path"
+    :ignore-route-prefix="localePath('/')"
   ></b-app-bottom-nav>
 </template>
 
@@ -11,7 +12,8 @@ import { defineComponent, computed } from 'vue'
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
 import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
 import { BAppBottomNav } from '@schneefux/klicker/components'
-import { useContext, useRoute } from '@/composables/compat'
+import { useContext, useLocalePath } from '@/composables/compat'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -19,24 +21,26 @@ export default defineComponent({
   },
   setup() {
     const { i18n } = useContext()
+    const localePath = useLocalePath()
+
     const screens = computed<Screen[]>(() => {
       return [ {
         id: 'profile',
         icon: faSearch,
         name: i18n.t('nav.Profile'),
-        target: '/',
+        target: localePath('/'),
         prefix: '',
       }, {
         id: 'events',
         icon: faCalendarDay,
         name: i18n.t('nav.Events'),
-        target: '/tier-list/map',
+        target: localePath('/tier-list/map'),
         prefix: '/tier-list',
       }, {
         id: 'brawlers',
         icon: faMask,
         name: i18n.t('nav.Brawlers'),
-        target: '/tier-list/brawler',
+        target: localePath('/tier-list/brawler'),
         prefix: '/tier-list/brawler',
       } ]
     })

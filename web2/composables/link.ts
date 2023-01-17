@@ -1,7 +1,19 @@
 import { computed, Ref } from 'vue'
-import { Config, CubeComparingQuery, CubeQuery } from '@schneefux/klicker/types'
+import { Config, CubeComparingQuery, CubeQuery, RouteQuery } from '@schneefux/klicker/types'
 import { useKlicker } from '@schneefux/klicker/composables/klicker'
-import { useRoute, useRouter } from '~/composables/compat'
+import { RouteLocation, useRoute, useRouter } from 'vue-router'
+
+function mapRouteQuery(route: RouteLocation): RouteQuery {
+  const query: RouteQuery['query'] = {}
+  for (const [key, value] of Object.entries(route.query)) {
+    const values = Array.isArray(value) ? value : [value]
+    const nonNullValues = values.filter((v): v is string => v != null)
+    if (nonNullValues.length > 0) {
+      query[key] = nonNullValues
+    }
+  }
+  return { query }
+}
 
 export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
   const $klicker = useKlicker()
@@ -10,7 +22,7 @@ export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
 
   return computed({
     get() {
-      return $klicker.convertLocationToQuery(config, defaultCubeId, route.value)
+      return $klicker.convertLocationToQuery(config, defaultCubeId, mapRouteQuery(route))
     },
     set(q: CubeQuery|CubeComparingQuery) {
       router.replace($klicker.convertQueryToLocation(q))
@@ -27,7 +39,7 @@ export const useSyncSlicesAndRoute = (defaults: Ref<CubeQuery|CubeComparingQuery
     get() {
       return {
         ...defaults.value,
-        slices: $klicker.convertLocationToSlices(route.value, defaults.value.slices)
+        slices: $klicker.convertLocationToSlices(mapRouteQuery(route), defaults.value.slices)
       }
     },
     set(q: CubeQuery|CubeComparingQuery) {

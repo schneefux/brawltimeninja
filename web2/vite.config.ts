@@ -6,6 +6,7 @@ import { UserConfig } from 'vite'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
+import Pages from 'vite-plugin-pages'
 
 const config: UserConfig = {
   plugins: [
@@ -14,6 +15,18 @@ const config: UserConfig = {
       dts: true,
     }),
     vue(),
+    Pages({
+      dirs: './pages',
+      importMode: 'async',
+      routeStyle: 'nuxt',
+      resolver: 'vue',
+      onRoutesGenerated(routes) {
+        return routes.map(r => ({
+          ...r,
+          path: r.path.substring(1), // remove leading slash to support usage as locale child route
+        }))
+      },
+    }),
     VitePWA({
       devOptions: {
         enabled: false,
@@ -114,7 +127,9 @@ const config: UserConfig = {
       },
       workbox: {
         // exclude HTML https://github.com/vite-pwa/vite-plugin-pwa/issues/120#issuecomment-1202579983
-        globPatterns: ['**/*.{js,css,svg,png,jpg,jpeg,webp,woff,woff2,ttf,otf,ico}'],
+        //globPatterns: ['**/*.{js,css,svg,png,jpg,jpeg,webp,woff,woff2,ttf,otf,ico}'],
+        //globIgnores: ['**/*.html'],
+        globIgnores: ['**/*'],
         navigateFallback: null,
         // FIXME depends on env variables being available at build time
         // - use *.brawltime.ninja as urlPattern instead
@@ -163,7 +178,7 @@ const config: UserConfig = {
     },
   },
   resolve: {
-    dedupe: ['vue'], // https://github.com/vitejs/vite/issues/7454#issuecomment-1079830994
+    dedupe: ['vue', 'vue3-lazy-hydration'], // https://github.com/vitejs/vite/issues/7454#issuecomment-1079830994
     alias: {
       '~': path.resolve(__dirname),
       '@': path.resolve(__dirname),

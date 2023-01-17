@@ -8,14 +8,15 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders, useMeta, useRoute } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
 import { defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
 import { useContent } from '~/composables/content'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const { post } = useContent('guides/' + route.value.params.post)
+    const { post } = useContent('guides/' + route.params.post)
 
     useCacheHeaders()
     useMeta(() => {

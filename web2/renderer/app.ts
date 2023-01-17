@@ -1,76 +1,44 @@
-import { defineComponent, markRaw, h, createSSRApp, reactive } from 'vue'
+import { createSSRApp, reactive } from 'vue'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import KlickerPlugin from '~/plugins/klicker'
 import TRPCPlugin from '~/plugins/trpc'
-import PageShell from './PageShell.vue'
 import type { PageContext } from './types'
 import { setPageContext } from './usePageContext.js'
-import DefaultLayout from '~/layouts/default.vue'
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin from 'vue-gtag'
 import { createI18n } from 'vue-i18n'
-import RouterLink from '~/components/router-link.vue'
 import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
-import { defaultLocale, loadLocale, locales } from '@/locales'
+import { defaultLocale, locales } from '@/locales'
 import localeEn from '@/locales/en.json'
+import { createRouter } from './router.js'
+import { localePath } from '@/composables/compat'
 
 export { createApp }
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    localePath: (path: string) => string
+  }
+}
 
 async function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
-  const PageWithWrapper = defineComponent({
-    data: () => ({
-      Page: markRaw(Page),
-      Layout: markRaw(pageContext.exports.Layout || DefaultLayout),
-    }),
-    created() {
-      rootComponent = this
-    },
-    render() {
-      return h(
-        PageShell,
-        {},
-        () => h(this.Layout, () => h(this.Page)),
-      )
-    },
-  })
-  let rootComponent: InstanceType<typeof PageWithWrapper>
+  const app = createSSRApp(Page)
 
-  const ssrApp = createSSRApp(PageWithWrapper)
-
-  // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
-  const app = Object.assign(ssrApp, {
-    changePage: (pageContext: PageContext) => {
-      Object.assign(pageContextReactive, pageContext)
-      rootComponent.Page = markRaw(pageContext.Page)
-      rootComponent.Layout = markRaw(pageContext.exports.Layout || DefaultLayout)
-    }
-  })
-
-  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
-  // We therefore use a reactive pageContext.
-  const pageContextReactive = reactive(pageContext)
-
-  // Make `pageContext` accessible from any Vue component
-  setPageContext(app, pageContextReactive)
-
-  // TODO context is missing locale when rendering error page
-  const locale = pageContext.locale ?? defaultLocale
-  const messages = await loadLocale(pageContext.config.mediaUrl, locale.code)
+  setPageContext(app, pageContext)
 
   const i18n = createI18n({
     legacy: false,
-    locale: locale.code,
-    fallbackLocale: 'en',
+    locale: defaultLocale.code, // set by router
+    fallbackLocale: defaultLocale.code,
     availableLocales: locales.map(l => l.code),
     messages: {
       en: localeEn,
-      [locale.code]: messages,
-    },
+    } as Record<string, Record<string, string>>,
   })
   app.use(i18n)
 
@@ -128,9 +96,6 @@ async function createApp(pageContext: PageContext) {
   const head = createHead()
   head.push({
     titleTemplate: '%s - Brawl Time Ninja',
-    htmlAttrs: {
-      lang: locale.iso,
-    },
     bodyAttrs: {
       class: ['dark'],
     },
@@ -164,22 +129,22 @@ async function createApp(pageContext: PageContext) {
       { name: 'theme-color', content: themeColor },
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width' },
-      { property: 'og:locale', content: locale.iso },
-      ...(locales.filter(l => l.code != locale.code).map(l => ({
-        property: 'og:locale:alternate',
-        content: l.iso,
-      }))),
     ],
   })
   app.use(head)
 
-  app.component('RouterLink', RouterLink)
   app.component('ClientOnly', ClientOnly)
   app.component('Adsense', Adsense)
+
+  const router = createRouter(i18n, pageContext.config.mediaUrl, head)
+  app.use(router)
+
+  app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 
   return {
     app,
     head,
+    router,
     queryClient,
   }
 }

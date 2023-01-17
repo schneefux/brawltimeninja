@@ -40,7 +40,7 @@
         </template>
 
         <template v-slot:club="{ row }">
-          <router-link :to="`/club/${row.club.tag}`">
+          <router-link :to="localePath(`/club/${row.club.tag}`)">
             <img
               src="~/assets/images/icon/club.png"
               alt="Club"

@@ -11,7 +11,7 @@
       >
         <b-card
           :title="post.title"
-          :link="`/blog/guides/${post.slug}`"
+          :link="localePath(`/blog/guides/${post.slug}`)"
           class="mx-4 my-4 w-full max-w-md"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"

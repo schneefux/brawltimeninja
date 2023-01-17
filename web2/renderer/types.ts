@@ -8,7 +8,6 @@ import { DehydratedState } from '@tanstack/vue-query'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { ComponentPublicInstance } from 'vue'
-import type { Locale } from '../locales'
 
 type PageProps = Record<string, unknown>
 
@@ -31,19 +30,7 @@ export type PageContextCustom = {
   exports: {
     Layout?: ComponentPublicInstance
   }
-  locale: Locale
   vueQueryState: DehydratedState
-  urlPathname: string
-  urlParsed: {
-    origin: null | string
-    pathname: string
-    pathnameOriginal: string
-    search: Record<string, string>
-    searchAll: Record<string, string[]>
-    searchOriginal: null | string
-    hash: string
-    hashOriginal: null | string
-  }
   errorWhileRendering?: Error
   config: Config
   redirectTo: { status: number, url: string }

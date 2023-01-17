@@ -50,6 +50,7 @@
 </template>
 
 <script lang="ts">
+import { useLocalePath } from '@/composables/compat'
 import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
@@ -87,11 +88,12 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const localePath = useLocalePath()
     const brawlerBrawlerId = computed(() => brawlerId({ name: props.brawler }))
     const brawlerBrawlerName = computed(() => capitalizeWords(props.brawler.toLowerCase()))
     const brawlerAllyId = computed(() => props.ally != undefined ? brawlerId({ name: props.ally }) : undefined)
     const brawlerAllyName = computed(() => props.ally != undefined ? capitalizeWords(props.ally.toLowerCase()) : undefined)
-    const link = computed(() => `/tier-list/brawler/${brawlerBrawlerId.value}`)
+    const link = computed(() => localePath(`/tier-list/brawler/${brawlerBrawlerId.value}`))
     const title = computed(() => props.starpowerName || props.gadgetName || capitalizeWords(props.brawler.toLowerCase()))
 
     return {

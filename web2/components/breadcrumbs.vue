@@ -13,7 +13,7 @@
     >
       {{ index > 0 ? '/' : '' }}
       <router-link
-        :to="l.path"
+        :to="localePath(l.path)"
         :itemid="l.path"
         itemtype="https://schema.org/WebPage"
         itemprop="item"

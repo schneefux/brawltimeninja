@@ -55,8 +55,9 @@ import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
-import { useRoute, useContext, useMeta, useCacheHeaders } from '~/composables/compat'
+import { useContext, useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   directives: {
@@ -73,7 +74,7 @@ export default defineComponent({
 
     const mode = computed(() => {
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return kebabToCamel(route.value.params.mode ?? '')
+      return kebabToCamel(route.params.mode as string ?? '')
     })
     const events = useActiveEvents([], {
       mode: [mode.value],

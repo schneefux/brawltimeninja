@@ -6,8 +6,7 @@ export const useContent = (path: string) => {
     const { error } = useContext()
     const post = useAsync(async () => {
       try {
-        const posts = import.meta.glob(`~/assets/content/**/*.md`, { as: 'raw' })
-        console.log(posts, path)
+        const posts = import.meta.glob(`~/assets/content/**/*.png`, { as: 'raw' })
         const data = await posts[`/assets/content/${path}.md`]()
         const md = new MarkdownIt({
           html: true,

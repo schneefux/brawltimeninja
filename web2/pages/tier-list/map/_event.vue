@@ -13,7 +13,7 @@ export default defineComponent({
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
-          id: [params.event],
+          id: [params.event as string],
           season: [],
         },
         dimensionsIds: ['mode', 'map'],

@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import { useLocalePath } from '@/composables/compat'
 import { computed, defineComponent } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
@@ -40,7 +41,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const mapPath = computed(() => `/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`)
+    const localePath = useLocalePath()
+    const mapPath = computed(() => localePath(`/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`))
 
     return {
       mapPath,

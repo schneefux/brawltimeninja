@@ -15,7 +15,7 @@
         <template v-slot:item="player">
           <b-card
             :title="player.name"
-            :link="`/profile/${player.tag.replace('#', '')}`"
+            :link="localePath(`/profile/${player.tag.replace('#', '')}`)"
             :icon="`/avatars/${player.icon}`"
             :icon-alt="player.name"
             :elevation="elevation"
@@ -44,7 +44,7 @@
 
     <template v-slot:actions>
       <b-button
-        :to="`/leaderboard/trophies`"
+        :to="localePath(`/leaderboard/trophies`)"
         primary
         sm
       >

@@ -235,12 +235,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useAsync, useCacheHeaders, useContext, useMeta, useRoute } from '~/composables/compat'
+import { useAsync, useCacheHeaders, useContext, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ScrapedBrawler } from '@/model/Web'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   directives: {
@@ -257,7 +258,7 @@ export default defineComponent({
     const route = useRoute()
     const brawlerId = computed(() => {
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.value.params.brawler ?? ''
+      return route.params.brawler as string ?? ''
     })
 
     // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)

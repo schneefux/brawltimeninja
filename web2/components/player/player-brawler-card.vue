@@ -1,90 +1,89 @@
 <template>
   <b-card
     :title="title"
-    :link="`/tier-list/brawler/${brawlerId}`"
+    :link="localePath(`/tier-list/brawler/${brawlerId}`)"
   >
-    <template v-slot:content><div
+    <template v-slot:content>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-x-8">
+          <media-img
+            :path="`/brawlers/${brawlerId}/avatar`"
+            :alt="brawler.name"
+            size="160"
+            clazz="w-20 h-20 rounded object-contain"
+          ></media-img>
 
-      class="flex flex-col"
-    >
-      <div class="flex items-center gap-x-8">
-        <media-img
-          :path="`/brawlers/${brawlerId}/avatar`"
-          :alt="brawler.name"
-          size="160"
-          clazz="w-20 h-20 rounded object-contain"
-        ></media-img>
-
-        <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
-          <media-img
-            v-for="starpower in brawler.starPowers"
-            :key="starpower.id"
-            :path="`/starpowers/${starpower.id}`"
-            :alt="capitalizeWords(starpower.name.toLowerCase())"
-            size="80"
-          ></media-img>
-          <media-img
-            v-for="gadget in brawler.gadgets"
-            :key="gadget.id"
-            :path="`/gadgets/${gadget.id}`"
-            :alt="capitalizeWords(gadget.name.toLowerCase())"
-            size="80"
-          ></media-img>
-          <media-img
-            v-for="gear in brawler.gears"
-            :key="gear.id"
-            :path="`/gears/${gear.name.toLowerCase()}_${gear.level}`"
-            :alt="capitalizeWords(gear.name.toLowerCase())"
-            size="80"
-          ></media-img>
+          <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
+            <media-img
+              v-for="starpower in brawler.starPowers"
+              :key="starpower.id"
+              :path="`/starpowers/${starpower.id}`"
+              :alt="capitalizeWords(starpower.name.toLowerCase())"
+              size="80"
+            ></media-img>
+            <media-img
+              v-for="gadget in brawler.gadgets"
+              :key="gadget.id"
+              :path="`/gadgets/${gadget.id}`"
+              :alt="capitalizeWords(gadget.name.toLowerCase())"
+              size="80"
+            ></media-img>
+            <media-img
+              v-for="gear in brawler.gears"
+              :key="gear.id"
+              :path="`/gears/${gear.name.toLowerCase()}_${gear.level}`"
+              :alt="capitalizeWords(gear.name.toLowerCase())"
+              size="80"
+            ></media-img>
+          </div>
         </div>
+
+        <history-graph
+          :brawler="brawler.name"
+          :player-tag="playerTag"
+          class="h-32 mt-6"
+        ></history-graph>
+
+        <b-kv-table
+          :rows="kvTableRows"
+          :data="kvTableData"
+          id-key="id"
+          class="mt-4"
+        >
+          <template v-slot:rank="{ value }">
+            <img
+              src="~/assets/images/icon/leaderboards_optimized.png"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:trophies="{ value }">
+            <img
+              src="~/assets/images/icon/trophy_optimized.png"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:power="{ value }">
+            <img
+              :src="value < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:wins="{ value }">
+            <span class="text-green-400">
+              {{ value }}
+            </span>
+          </template>
+          <template v-slot:losses="{ value }">
+            <span class="text-red-400">
+              {{ value }}
+            </span>
+          </template>
+        </b-kv-table>
       </div>
-
-      <history-graph
-        :brawler="brawler.name"
-        :player-tag="playerTag"
-        class="h-32 mt-6"
-      ></history-graph>
-
-      <b-kv-table
-        :rows="kvTableRows"
-        :data="kvTableData"
-        id-key="id"
-        class="mt-4"
-      >
-        <template v-slot:rank="{ value }">
-          <img
-            src="~/assets/images/icon/leaderboards_optimized.png"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:trophies="{ value }">
-          <img
-            src="~/assets/images/icon/trophy_optimized.png"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:power="{ value }">
-          <img
-            :src="value < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:wins="{ value }">
-          <span class="text-green-400">
-            {{ value }}
-          </span>
-        </template>
-        <template v-slot:losses="{ value }">
-          <span class="text-red-400">
-            {{ value }}
-          </span>
-        </template>
-      </b-kv-table>
-    </div></template>
+    </template>
   </b-card>
 </template>
 

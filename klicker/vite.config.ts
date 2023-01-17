@@ -18,11 +18,10 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['vue', '#imports'],
+      external: ['vue'],
       output: {
         globals: {
           'vue': 'Vue',
-          '#imports': 'Nuxt',
         },
       },
     },

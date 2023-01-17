@@ -21,7 +21,8 @@ import { computed, defineComponent, toRefs } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useMapName } from '~/composables/map'
 import { camelToKebab, slugify } from '~/lib/util'
-import { useContext, useRouter } from '@/composables/compat'
+import { useContext, useLocalePath } from '@/composables/compat'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   props: {
@@ -46,21 +47,22 @@ export default defineComponent({
     const mapName = useMapName(id, map)
 
     const router = useRouter()
+    const localePath = useLocalePath()
     const jumpToModeMap = (slices: Partial<SliceValue>) => {
       const mode = (slices.mode ?? [])[0]
       const map = (slices.map ?? [])[0]
 
       if (mode == undefined) {
-        router.push('/tier-list/brawler')
+        router.push(localePath('/tier-list/brawler'))
         return
       }
 
       if (map == undefined) {
-        router.push(`/tier-list/mode/${camelToKebab(mode)}`)
+        router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}`))
         return
       }
 
-      router.push(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`)
+      router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
     }
 
     const { i18n } = useContext()

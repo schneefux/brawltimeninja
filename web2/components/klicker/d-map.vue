@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts">
+import { useLocalePath } from '@/composables/compat'
 import { computed, defineComponent } from 'vue'
 import { camelToKebab } from '~/lib/util'
 
@@ -32,7 +33,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const to = computed(() => `/tier-list/mode/${camelToKebab(props.row.dimensionsRaw.map.mode || '')}/map/${props.row.dimensionsRaw.map.map}`)
+    const localePath = useLocalePath()
+    const to = computed(() => localePath(`/tier-list/mode/${camelToKebab(props.row.dimensionsRaw.map.mode || '')}/map/${props.row.dimensionsRaw.map.map}`))
 
     return {
       to,

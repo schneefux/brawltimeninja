@@ -3,7 +3,7 @@
     <router-link
       v-for="(brawler, index) in brawlers"
       :key="brawler + '-' + index"
-      :to="`/tier-list/brawler/${brawlerId({ name: brawler })}`"
+      :to="localePath(`/tier-list/brawler/${brawlerId({ name: brawler })}`)"
       :class="[height, width, {
         [snug]: index < brawlers.length - 1,
       }]"

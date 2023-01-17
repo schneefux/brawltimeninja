@@ -73,8 +73,9 @@ import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useAsync, useCacheHeaders, useContext, useMeta, useRoute, useValidate } from '@/composables/compat'
+import { useAsync, useCacheHeaders, useContext, useMeta, useValidate } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useRoute } from 'vue-router'
 
 interface Map {
   id: string
@@ -94,8 +95,8 @@ export default defineComponent({
     const { i18n, $config, $klicker } = useContext()
 
     useValidate(async ({ params }) => {
-      const mode = kebabToCamel(params.mode)
-      const map = deslugify(params.map)
+      const mode = kebabToCamel(params.mode as string)
+      const map = deslugify(params.map as string)
       if (map.startsWith('Competition')) {
         return true
       }
@@ -116,8 +117,8 @@ export default defineComponent({
 
     const route = useRoute()
     const event = useAsync(async () => {
-      const mode = kebabToCamel(route.value.params.mode)
-      const map = deslugify(route.value.params.map)
+      const mode = kebabToCamel(route.params.mode as string)
+      const map = deslugify(route.params.map as string)
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
@@ -136,7 +137,7 @@ export default defineComponent({
         map,
         mode,
       } as Map
-    }, `map-${route.value.params.mode}-${route.value.params.map}`)
+    }, `map-${route.params.mode}-${route.params.map}`)
 
     useCacheHeaders()
     useMeta(() => {

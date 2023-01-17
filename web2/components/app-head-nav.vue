@@ -1,6 +1,6 @@
 <template>
   <b-app-head-nav>
-    <router-link to="/">
+    <router-link :to="localePath('/')">
       <img
         :src="crownUrl"
         alt="Logo"
@@ -18,7 +18,7 @@
     ></install-button>
 
     <b-button
-      to="/about"
+      :to="localePath('/about')"
       :label="$t('nav.About')"
       class="w-6 text-center h-6"
       primary

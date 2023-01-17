@@ -20,7 +20,7 @@
     <template v-slot:item="brawler">
       <b-card
         :title="brawler.name"
-        :link="`/tier-list/brawler/${brawler.id}`"
+        :link="localePath(`/tier-list/brawler/${brawler.id}`)"
       >
         <template v-slot:content>
           <div class="h-full flex flex-col items-center justify-between">

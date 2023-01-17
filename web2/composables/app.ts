@@ -1,7 +1,8 @@
 import { computed, ref } from 'vue'
 import { event } from 'vue-gtag'
+import { useRouter } from 'vue-router'
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
-import { useRouter } from './compat'
+import { useLocalePath } from './compat'
 
 const isPwa = ref<boolean>()
 const isTwa = ref<boolean>()
@@ -35,6 +36,7 @@ function detectIOS() {
 
 export function useInstall(source: string) {
   const store = useBrawlstarsNinjaStore()
+  const localePath = useLocalePath()
 
   const installable = computed(() => {
     if (isApp.value) {
@@ -78,7 +80,7 @@ export function useInstall(source: string) {
         'event_category': 'app',
         'event_label': 'ios',
       })
-      router.push('/install/ios')
+      router.push(localePath('/install/ios'))
       return
     }
   }
