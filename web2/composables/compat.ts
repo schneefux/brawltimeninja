@@ -155,24 +155,49 @@ export function useRedirect() {
   return (status: number, url: string) => pageContext.redirectTo = { status, url }
 }
 
-export function useValidate(cb: (context: { params: Record<string, string> }) => Promise<boolean>) {
+interface ValidateContext {
+  params: Record<string, string>
+  redirect: (status: number, url: string) => void
+  error: (e: { statusCode: number, message: string }) => void
+}
+export function useValidate(cb: (context: ValidateContext) => Promise<boolean>) {
   const pageContext = usePageContext()
+
+  const redirect = (status: number, url: string) => {
+    if (import.meta.env.SSR) {
+      pageContext.redirectTo = { status, url }
+    } else {
+      navigate(url, { overwriteLastHistoryEntry: true })
+    }
+  }
+  const error = (e: { statusCode: number, message: string }) => redirect(e.statusCode, '/error')
+
+  const runValidate = async () => {
+    const context: ValidateContext = { params: pageContext.routeParams ?? {}, redirect, error }
+    const isValid = await cb(context)
+    if (!isValid) {
+      redirect(404, '/404')
+    }
+  }
 
   onServerPrefetch(async () => {
     pageContext.validated = true
-    const isValid = await cb({ params: pageContext.routeParams ?? {} })
-    if (!isValid) {
-      pageContext.redirectTo = { status: 404, url: '/404' }
-    }
+    await runValidate()
   })
 
   onMounted(async () => {
     // TODO should block navigation until validation is done
     if (!pageContext.validated) {
-      const isValid = await cb({ params: pageContext.routeParams ?? {} })
-      if (!isValid) {
-        navigate('/404', { overwriteLastHistoryEntry: true })
-      }
+      await runValidate()
     }
   })
+}
+
+function useHeaders(headers: Record<string, string>) {
+  const pageContext = usePageContext()
+  onServerPrefetch(() => pageContext.responseHeaders = Object.assign({}, pageContext.responseHeaders, headers))
+}
+
+export function useCacheHeaders() {
+  useHeaders({ 'Cache-Control': 'public, maxage=60' })
 }

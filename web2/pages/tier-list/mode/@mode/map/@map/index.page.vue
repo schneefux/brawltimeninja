@@ -73,7 +73,7 @@ import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useAsync, useContext, useMeta, useRoute, useValidate } from '@/composables/compat'
+import { useAsync, useCacheHeaders, useContext, useMeta, useRoute, useValidate } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 interface Map {
@@ -90,7 +90,6 @@ export default defineComponent({
     BCard,
     MapViews,
   },
-  head: {},
   setup() {
     const { i18n, $config, $klicker } = useContext()
 
@@ -139,6 +138,7 @@ export default defineComponent({
       } as Map
     }, `map-${route.value.params.mode}-${route.value.params.map}`)
 
+    useCacheHeaders()
     useMeta(() => {
       if (event.value == undefined) {
         return {}
@@ -178,8 +178,5 @@ export default defineComponent({
       lightboxOpen,
     }
   },
-  middleware: ['cached'],
-  /*
-  */
 })
 </script>

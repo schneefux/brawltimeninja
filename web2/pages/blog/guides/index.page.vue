@@ -58,13 +58,9 @@
 import { computed, defineComponent } from 'vue'
 import { format, parseISO } from 'date-fns'
 import { TocEntry } from '~/model/Web'
-import { useAsync } from '@/composables/compat'
+import { useAsync, useCacheHeaders } from '@/composables/compat'
 
 export default defineComponent({
-  nuxtI18n: {
-    locales: ['en'],
-  },
-  middleware: ['cached'],
   setup() {
     const toc = useAsync<{ default: TocEntry[] }>(() => import('~/assets/content/guides/toc.json'), 'toc-guides')
 
@@ -78,6 +74,8 @@ export default defineComponent({
         createdAt: format(parseISO(p.createdAt), 'PP'),
       }))
     })
+
+    useCacheHeaders()
 
     return {
       posts,

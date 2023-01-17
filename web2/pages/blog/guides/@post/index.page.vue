@@ -8,20 +8,16 @@
 </template>
 
 <script lang="ts">
-import { useMeta, useRoute } from '@/composables/compat'
+import { useCacheHeaders, useMeta, useRoute } from '@/composables/compat'
 import { defineComponent } from 'vue'
 import { useContent } from '~/composables/content'
 
 export default defineComponent({
-  head: {},
-  nuxtI18n: {
-    locales: ['en'],
-  },
-  middleware: ['cached'],
   setup() {
     const route = useRoute()
     const { post } = useContent('guides/' + route.value.params.post)
 
+    useCacheHeaders()
     useMeta(() => {
       if (post.value == undefined) {
         return {}
@@ -35,7 +31,6 @@ export default defineComponent({
         ]
       }
     })
-
 
     return {
       post,

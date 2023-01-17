@@ -6,14 +6,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useMeta, useContext } from '@/composables/compat'
+import { useMeta, useContext, useCacheHeaders } from '@/composables/compat'
 
 export default defineComponent({
-  middleware: ['cached'],
-  head: {},
   setup() {
     const { i18n } = useContext()
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('tier-list.gadget.meta.description')
       return {

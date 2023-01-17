@@ -42,6 +42,9 @@ async function startServer() {
       res.redirect(pageContext.redirectTo.status, pageContext.redirectTo.url)
       return
     }
+    if (pageContext.responseHeaders != undefined) {
+      res.set(pageContext.responseHeaders)
+    }
     const { httpResponse } = pageContext
     if (!httpResponse) {
       return next()

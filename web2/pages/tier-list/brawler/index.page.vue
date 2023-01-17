@@ -43,16 +43,16 @@
 import { defineComponent } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
-import { useContext, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useContext, useMeta } from '~/composables/compat'
 
 export default defineComponent({
   directives: {
     ObserveVisibility,
   },
-  head: {},
   setup() {
     const { i18n } = useContext()
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('brawlers.meta.description')
       return {
@@ -70,6 +70,5 @@ export default defineComponent({
       makeVisibilityCallback,
     }
   },
-  middleware: ['cached'],
 })
 </script>

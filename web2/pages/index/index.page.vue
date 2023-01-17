@@ -214,7 +214,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useContext, useRouter, useMeta } from '@/composables/compat'
+import { useContext, useRouter, useMeta, useCacheHeaders } from '@/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
 import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 import { event } from 'vue-gtag'
@@ -232,7 +232,6 @@ export default defineComponent({
   directives: {
     ObserveVisibility,
   },
-  head: {},
   setup() {
     const { i18n, $config, $sentry } = useContext()
 
@@ -334,6 +333,7 @@ export default defineComponent({
       router.push(`/profile/${cleanedTag.value}`)
     }
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('index.meta.description')
       const structuredData = (events.value || [])

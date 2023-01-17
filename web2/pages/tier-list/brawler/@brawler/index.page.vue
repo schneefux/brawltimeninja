@@ -235,7 +235,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useAsync, useContext, useMeta, useRoute } from '~/composables/compat'
+import { useAsync, useCacheHeaders, useContext, useMeta, useRoute } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
@@ -251,7 +251,6 @@ export default defineComponent({
     BSplitDashboard,
     BPageSection,
   },
-  head: {},
   setup() {
     const { i18n, $config } = useContext()
 
@@ -264,6 +263,7 @@ export default defineComponent({
     // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value })
       return {
@@ -350,6 +350,5 @@ export default defineComponent({
       ...sectionRefs,
     }
   },
-  middleware: ['cached'],
 })
 </script>

@@ -11,23 +11,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useMeta, useRoute } from '@/composables/compat'
+import { useCacheHeaders, useMeta, useRoute } from '@/composables/compat'
 import { useContent } from '~/composables/content'
 import ArticleCard from '~/components/article-card.vue'
 
 export default defineComponent({
-  head: {},
   components: {
     ArticleCard,
-  },
-  middleware: ['cached'],
-  nuxtI18n: {
-    locales: ['en'],
   },
   setup() {
     const route = useRoute()
     const { post } = useContent('faq/' + route.value.params.faq)
 
+    useCacheHeaders()
     useMeta(() => {
       if (post.value == undefined) {
         return {}

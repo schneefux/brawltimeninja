@@ -48,6 +48,7 @@ export type PageContextCustom = {
   config: Config
   redirectTo: { status: number, url: string }
   validated: null | boolean
+  responseHeaders: Record<string, string>
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

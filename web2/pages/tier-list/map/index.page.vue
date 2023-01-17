@@ -104,7 +104,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useContext, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useContext, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { ActiveEvent } from '@/model/Api'
@@ -122,7 +122,6 @@ export default defineComponent({
     BSplitDashboard,
     BScrollSpy,
   },
-  head: {},
   setup() {
     const { $config, i18n } = useContext()
     const { current, upcoming } = useCurrentAndUpcomingEvents()
@@ -133,6 +132,7 @@ export default defineComponent({
       powerplay: ['1'],
     })
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('tier-list.maps.meta.description')
       const structuredData = (<ActiveEvent[]>[]).concat(current.value, upcoming.value)
@@ -200,6 +200,5 @@ export default defineComponent({
       makeVisibilityCallback,
     }
   },
-  middleware: ['cached'],
 })
 </script>

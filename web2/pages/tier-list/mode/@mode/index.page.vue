@@ -55,7 +55,7 @@ import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
-import { useRoute, useContext, useMeta } from '~/composables/compat'
+import { useRoute, useContext, useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
 
 export default defineComponent({
@@ -66,8 +66,6 @@ export default defineComponent({
     BTextbox,
     BDashboardCell,
   },
-  head: {},
-  middleware: ['cached'],
   setup() {
     const { i18n } = useContext()
 
@@ -83,6 +81,7 @@ export default defineComponent({
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
+    useCacheHeaders()
     useMeta(() => {
       const description = i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) })
       return {

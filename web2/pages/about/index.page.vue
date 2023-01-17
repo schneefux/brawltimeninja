@@ -56,9 +56,9 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja';
+import { useCacheHeaders } from '@/composables/compat';
 
 export default defineComponent({
-  middleware: ['cached'],
   setup() {
     const domain = computed(() => {
       if (!import.meta.env.SSR) {
@@ -73,13 +73,12 @@ export default defineComponent({
       store.showConsentPopup()
     }
 
+    useCacheHeaders()
+
     return {
       domain,
       withdrawCookieConsent,
     }
-  },
-  nuxtI18n: {
-    locales: ['en'],
   },
 })
 </script>
