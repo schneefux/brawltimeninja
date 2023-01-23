@@ -67,29 +67,6 @@ async function createApp(pageContext: PageContext) {
   }
   app.use(pinia)
 
-  const gtagParams = {
-    optimize_id: pageContext.config.optimizeId,
-    custom_map: {
-      'dimension1': 'branch',
-      'dimension2': 'ads_blocked',
-      'dimension3': 'is_pwa',
-      'dimension4': 'is_twa',
-      'dimension5': 'test_group',
-    },
-  }
-  app.use(VueGtagPlugin, {
-    enabled: false, // defer until localstorage is loaded in layouts/default.vue
-    config: {
-      id: pageContext.config.ga4Id,
-      params: gtagParams,
-    },
-    includes: [ {
-      // old property
-      id: pageContext.config.uaId,
-      params: gtagParams,
-    } ],
-  })
-
   app.use(TRPCPlugin)
 
   const themeColor = '#facc15' // yellow-400
@@ -140,6 +117,29 @@ async function createApp(pageContext: PageContext) {
   app.use(router)
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
+
+  const gtagParams = {
+    optimize_id: pageContext.config.optimizeId,
+    custom_map: {
+      'dimension1': 'branch',
+      'dimension2': 'ads_blocked',
+      'dimension3': 'is_pwa',
+      'dimension4': 'is_twa',
+      'dimension5': 'test_group',
+    },
+  }
+  app.use(VueGtagPlugin, {
+    enabled: false, // defer until localstorage is loaded in layouts/default.vue
+    config: {
+      id: pageContext.config.ga4Id,
+      params: gtagParams,
+    },
+    includes: [ {
+      // old property
+      id: pageContext.config.uaId,
+      params: gtagParams,
+    } ],
+  }, router)
 
   return {
     app,

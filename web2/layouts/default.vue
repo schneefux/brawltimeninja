@@ -53,12 +53,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch, ref, onMounted } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
 import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
-import { event, optIn, pageview } from 'vue-gtag'
+import { event, optIn } from 'vue-gtag'
 import { useI18n } from 'vue-i18n'
 import { useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
@@ -90,7 +90,6 @@ export default defineComponent({
     }])
 
     const store = useBrawlstarsNinjaStore()
-    const version = computed(() => store.version)
     const adsAllowed = computed(() => store.adsAllowed)
     const cookiesAllowed = computed(() => store.cookiesAllowed)
     const consentPopupVisible = computed(() => store.consentPopupVisible)
@@ -167,11 +166,6 @@ export default defineComponent({
     })
 
     const route = useRoute()
-    watch(route, (to, from) => {
-      if (to.path != from?.path) {
-        pageview({ page_path: to.path })
-      }
-    }, { immediate: true })
 
     useMutationObserver(container, () => {
       // workaround for AdSense overriding min-height: 0px

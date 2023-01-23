@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { brawlerId, capitalizeWords } from '~/lib/util'
+import { brawlerId } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
 import { useAllBrawlers } from '@/composables/dimension-values'
 
