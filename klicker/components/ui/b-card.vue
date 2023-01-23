@@ -117,8 +117,9 @@
         <slot name="preview"></slot>
       </header>
 
-      <div
+      <component
         v-if="'content' in $slots"
+        :is="link == undefined ? 'div' : linkComponent ?? 'a'"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
           'px-6': !dense,
@@ -132,10 +133,12 @@
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
-        class="h-full text-text/75"
+        :href="link != undefined && linkComponent == undefined ? link : undefined"
+        :to="link != undefined && linkComponent != undefined ? link : undefined"
+        class="block h-full text-text/75"
       >
         <slot name="content"></slot>
-      </div>
+      </component>
 
       <footer
         v-if="'actions' in $slots"
@@ -151,7 +154,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref, ComponentPublicInstance } from 'vue'
 import { useUniqueId } from '../../composables/id'
 import { useKlickerConfig } from '../../composables/klicker'
 
@@ -218,10 +221,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    linkComponent: {
-      type: undefined,
-      required: false
-    },
   },
   setup(props, { slots, attrs }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
@@ -229,10 +228,15 @@ export default defineComponent({
 
     const { navigate, linkComponent } = useKlickerConfig()
 
+    const titleElement = ref<HTMLElement | ComponentPublicInstance>()
+    const subtitleElement = ref<HTMLElement | ComponentPublicInstance>()
+
     const onClick = (e: Event) => {
       if (attrs.onClick != undefined) {
+        console.log('onclick')
         e.preventDefault();
         (<any> attrs).onClick()
+        return
       }
     }
 
@@ -250,6 +254,8 @@ export default defineComponent({
       prefix,
       navigate,
       linkComponent,
+      titleElement,
+      subtitleElement,
     }
   },
 })
