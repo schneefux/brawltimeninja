@@ -41,7 +41,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $http, $config } = useContext()
+    const { $config } = useContext()
 
     const renderUrl = computed(() => {
       const url = new URL($config.renderUrl + props.embedUrl)
@@ -53,7 +53,7 @@ export default defineComponent({
       event.preventDefault()
 
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
-      const response = await $http.get(renderUrl.value)
+      const response = await fetch(renderUrl.value)
       const blob = await response.blob()
       const files = [new File([blob], props.filename, { type: blob.type })]
 

@@ -52,21 +52,21 @@
         >
           <template v-slot:rank="{ value }">
             <img
-              src="~/assets/images/icon/leaderboards_optimized.png"
+              :src="leaderboardsIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
           </template>
           <template v-slot:trophies="{ value }">
             <img
-              src="~/assets/images/icon/trophy_optimized.png"
+              :src="trophyIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
           </template>
           <template v-slot:power="{ value }">
             <img
-              :src="value < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
+              :src="value < 10 ? powerpointIcon : starpowerIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
@@ -95,6 +95,10 @@ import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useContext, useAsync } from '~/composables/compat'
+import leaderboardsIcon from '~/assets/images/icon/leaderboards_optimized.png'
+import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import powerpointIcon from '~/assets/images/icon/powerpoint_optimized.png'
+import starpowerIcon from '~/assets/images/icon/starpower_optimized.png'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -136,11 +140,11 @@ export default defineComponent({
           picks: response.data[0].metricsRaw.picks as number,
         }
       } else {
-        return undefined
+        return null
       }
     }
 
-    const data = useAsync(() => fetchData(), `player-brawler-${props.playerTag}-${props.brawler.name}`)
+    const data = useAsync(() => fetchData(), computed(() => `player-brawler-${props.playerTag}-${props.brawler.name}`))
 
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
@@ -196,6 +200,10 @@ export default defineComponent({
       capitalizeWords,
       kvTableRows,
       kvTableData,
+      leaderboardsIcon,
+      trophyIcon,
+      powerpointIcon,
+      starpowerIcon,
     }
   },
 })

@@ -54,7 +54,7 @@ export default defineComponent({
       })).data as MetaGridEntry[]
     }
 
-    const data = useAsync(() => fetch(), `brawler-modes-${props.brawlerName}`)
+    const data = useAsync(() => fetch(), computed(() => `brawler-modes-${props.brawlerName}`))
 
     const description = computed(() => {
       if (data.value == undefined) {

@@ -6,16 +6,20 @@
     <template v-slot:content>
       <div class="relative mt-4">
         <p class="text-center">{{ $t('oejts.cta-question') }}</p>
-        <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
-        <template v-slot:content>
-          <quiz-likert
-            :value="{}"
-            :start="0"
-            :end="1"
-            @input="onTrigger"
-          ></quiz-likert>
-        </template>
-        <img class="absolute top-[7px] right-0 w-10" src="~/assets/images/chaotic.png">
+        <img
+          :src="organizedImage"
+          class="absolute top-[10px] left-0 w-10"
+        >
+        <quiz-likert
+          :model-value="{}"
+          :start="0"
+          :end="1"
+          @input="onTrigger"
+        ></quiz-likert>
+        <img
+          :src="chaoticImage"
+          class="absolute top-[7px] right-0 w-10"
+        >
       </div>
     </template>
   </b-card>
@@ -50,6 +54,8 @@ import { brawlerId } from '~/lib/util'
 import { computed, defineComponent } from 'vue'
 import { event } from 'vue-gtag'
 import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import organizedImage from '~/assets/images/organized.png'
+import chaoticImage from '~/assets/images/chaotic.png'
 
 export default defineComponent({
   setup(props, { emit }) {
@@ -84,6 +90,8 @@ export default defineComponent({
       onTrigger,
       onRestart,
       oejtsScores,
+      organizedImage,
+      chaoticImage,
     }
   },
 })

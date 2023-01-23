@@ -1,7 +1,7 @@
-import { createSSRApp, reactive } from 'vue'
+import { createSSRApp, markRaw } from 'vue'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
-import KlickerPlugin from '~/plugins/klicker'
-import TRPCPlugin from '~/plugins/trpc'
+import KlickerPlugin, { createClient as createKlickerClient } from '~/plugins/klicker'
+import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
 import { setPageContext } from './usePageContext.js'
 import { createPinia } from 'pinia'
@@ -24,6 +24,13 @@ declare module '@vue/runtime-core' {
   }
 }
 
+declare module 'pinia' {
+  export interface PiniaCustomProperties<Id, S, G, A> {
+    api: ReturnType<typeof createTrpcClient>
+    klicker: ReturnType<typeof createKlickerClient>
+  }
+}
+
 async function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
@@ -42,11 +49,12 @@ async function createApp(pageContext: PageContext) {
   })
   app.use(i18n)
 
-  app.use(KlickerPlugin, {
+  const klickerOptions = {
     cubeUrl: pageContext.config.cubeUrl,
     managerUrl: pageContext.config.managerUrl,
     translate: i18n.global.t,
-  })
+  }
+  app.use(KlickerPlugin, klickerOptions)
 
   // TODO share cache between requests to the same URL?
   const queryClient = new QueryClient({
@@ -58,13 +66,16 @@ async function createApp(pageContext: PageContext) {
   })
   app.use(VueQueryPlugin, { queryClient })
 
-  // ! not SSRed, no need so far
   const pinia = createPinia()
   if (!import.meta.env.SSR) {
     pinia.use(createPersistedState({
       storage: localStorage,
     }))
   }
+  pinia.use(({ store }) => {
+    store.api = markRaw(createTrpcClient())
+    store.klicker = markRaw(createKlickerClient(klickerOptions))
+  })
   app.use(pinia)
 
   app.use(TRPCPlugin)
@@ -144,6 +155,7 @@ async function createApp(pageContext: PageContext) {
   return {
     app,
     head,
+    pinia,
     router,
     queryClient,
   }

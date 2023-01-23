@@ -11,8 +11,19 @@ import slicers from '@/lib/klicker.slicers.conf'
 import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
 
 export default { install }
+export { createClient }
 
-function install(app: App, options: { cubeUrl: string, managerUrl: string, translate: (key: string, args: any) => string }) {
+interface Options {
+  cubeUrl: string
+  managerUrl: string
+  translate: (key: string, args: any) => string
+}
+
+function createClient(options: Options) {
+  return new BrawltimeKlickerService(options.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
+}
+
+function install(app: App, options: Options) {
   app.component('c-query', CQuery)
   app.component('b-shimmer', BShimmer)
   app.component('b-card', BCard)
@@ -25,7 +36,7 @@ function install(app: App, options: { cubeUrl: string, managerUrl: string, trans
   app.component('b-page-section', BPageSection)
   app.component('b-scrolling-dashboard', BScrollingDashboard)
 
-  const service = new BrawltimeKlickerService(options.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
+  const service = createClient(options)
 
   app.provide(KlickerConfigInjectionKey, {
     klicker: service,

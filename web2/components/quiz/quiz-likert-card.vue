@@ -8,23 +8,26 @@
       :subtitle="$t('oejts.intro')"
       class="mt-2 max-w-lg"
     >
-      <template v-slot:content><div >
-        <transition name="slide-fade" mode="out-in">
-          <quiz-likert
-            :key="page"
-            v-model="oejtsAnswers"
-            :start="page * pageSize"
-            :end="(page + 1) * pageSize"
-          ></quiz-likert>
-        </transition>
-      </div></template>
+      <template v-slot:content>
+        <div>
+          <transition name="slide-fade" mode="out-in">
+            <quiz-likert
+              :key="page"
+              v-model="oejtsAnswers"
+              :start="page * pageSize"
+              :end="(page + 1) * pageSize"
+            ></quiz-likert>
+          </transition>
+        </div>
+      </template>
 
-      <template v-slot:actions><b-button
-        
-        type="submit"
-        primary
-        md
-      >{{ $t('action.next') }}</b-button></template>
+      <template v-slot:actions>
+        <b-button
+          type="submit"
+          primary
+          md
+        >{{ $t('action.next') }}</b-button>
+      </template>
     </b-card>
 </form>
 </template>
@@ -62,14 +65,14 @@ export default defineComponent({
       })
 
       if (page.value == pages.value) {
-        const result = Object.entries(oejtsAnswers.value).reduce((scores, [id, answer]) => ({
+        const result = Object.entries(oejtsAnswers.value).reduce((scores, [id, answer]) => id in oejtsScores ? ({
           ie: scores.ie + oejtsScores[id].ie * (answer - 2.5)/5,
           sn: scores.sn + oejtsScores[id].sn * (answer - 2.5)/5,
           ft: scores.ft + oejtsScores[id].ft * (answer - 2.5)/5,
           jp: scores.jp + oejtsScores[id].jp * (answer - 2.5)/5,
-        }), { ie: 0, sn: 0, ft: 0, jp: 0 } as OEJTSEntry)
+        }) : scores, { ie: 0, sn: 0, ft: 0, jp: 0 } as OEJTSEntry)
 
-        emit('input', result)
+        emit('update:modelValue', result)
       }
     }
 

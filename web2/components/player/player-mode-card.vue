@@ -1,40 +1,45 @@
 <template>
   <event-card :mode="mode">
-    <template v-slot:content><div >
-      <b-card
-        :elevation="0"
-        dense
-      >
-        <template v-slot:content><b-kv-table
+    <template v-slot:content>
+      <div>
+        <b-card
+          :elevation="0"
+          dense
+        >
+          <template v-slot:content>
+            <b-kv-table
+              :rows="kvTableRows"
+              :data="kvTableData"
+              id-key="tag"
+            ></b-kv-table>
+          </template>
+        </b-card>
 
-          :rows="kvTableRows"
-          :data="kvTableData"
-          id-key="tag"
-        ></b-kv-table></template>
-      </b-card>
-
-      <b-card
-        v-if="activeMap != undefined"
-        :title="$t('player.tips-for.map', { map: mapName })"
-        :elevation="0"
-        class="mt-2"
-        dense
-      >
-        <template v-slot:preview><map-img
-
-          :id="activeMap.id"
-          :map="activeMap.map"
-          clazz="h-10"
-        ></map-img></template>
-        <template v-slot:content><player-map-tip-roll
-
-          :map="activeMap.map"
-          :mode="mode"
-          :player-brawlers="playerBrawlers"
-          class="mx-auto"
-        ></player-map-tip-roll></template>
-      </b-card>
-    </div></template>
+        <b-card
+          v-if="activeMap != undefined"
+          :title="$t('player.tips-for.map', { map: mapName })"
+          :elevation="0"
+          class="mt-2"
+          dense
+        >
+          <template v-slot:preview>
+            <map-img
+              :id="activeMap.id"
+              :map="activeMap.map"
+              clazz="h-10"
+            ></map-img>
+          </template>
+          <template v-slot:content>
+            <player-map-tip-roll
+              :map="activeMap.map"
+              :mode="mode"
+              :player-brawlers="playerBrawlers"
+              class="mx-auto"
+            ></player-map-tip-roll>
+          </template>
+        </b-card>
+      </div>
+    </template>
   </event-card>
 </template>
 
@@ -99,7 +104,7 @@ export default defineComponent({
       return data.data[0]
     }
 
-    const data = useAsync(updateData, `player-${props.playerTag}-mode-${props.mode}`)
+    const data = useAsync(updateData, computed(() => `player-${props.playerTag}-mode-${props.mode}`))
 
     const activeMap = computed(() => {
       // TODO there might be a second one when Power Play or competition entry is online

@@ -10,7 +10,7 @@
         <quiz-likert-card
           v-if="result == undefined"
           :initial-answers="answers"
-          @input="onResult"
+          @update:modelValue="onResult"
         ></quiz-likert-card>
 
         <quiz-result-card

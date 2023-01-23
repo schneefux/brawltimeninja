@@ -5,6 +5,7 @@ import type { Config, PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
+import SuperJSON from 'superjson'
 
 export { onBeforeRender }
 export { passToClient }
@@ -13,6 +14,7 @@ export { render }
 const passToClient = [
   'pageProps',
   'vueQueryState',
+  'piniaState',
   'documentProps',
   'errorWhileRendering',
   'config',
@@ -40,7 +42,7 @@ function onBeforeRender(pageContext: PageContext) {
 }
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const { app, head, router, queryClient } = await createApp(pageContext)
+  const { app, head, pinia, router, queryClient } = await createApp(pageContext)
 
   router.push(pageContext.urlPathname)
   await router.isReady()
@@ -48,6 +50,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
   const string = await renderToString(app) // use string - streaming interferes with data loading
   const payload = await renderSSRHead(head)
   const vueQueryState = dehydrate(queryClient)
+  const piniaState = SuperJSON.stringify(pinia.state.value)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html${dangerouslySkipEscape(payload.htmlAttrs)}>
@@ -66,6 +69,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     documentHtml,
     pageContext: {
       vueQueryState,
+      piniaState,
     },
   }
 }

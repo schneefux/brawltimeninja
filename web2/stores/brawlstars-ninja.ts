@@ -1,9 +1,6 @@
-import { inject } from 'vue'
-import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { defineStore } from 'pinia'
 import { tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
-import { TrpcInjectionKey } from '../plugins/trpc'
 
 interface StoredPlayer {
   tag: string
@@ -63,12 +60,10 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
   }),
   actions: {
     async loadPlayer(tag: string) {
-      const api = inject(TrpcInjectionKey)!
-      const player = await api.player.byTag.query(tag)
+      const player = await this.api.player.byTag.query(tag)
       this.setPlayer(player)
 
-      const { klicker } = inject(KlickerConfigInjectionKey)!
-      const battleData = await klicker.query({
+      const battleData = await this.klicker.query({
         cubeId: 'battle',
         dimensionsIds: [],
         metricsIds: ['picks', 'winRate', 'trophyChange'],
@@ -85,7 +80,7 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
       }))
 
       if (battleData.data[0].metricsRaw.picks > 0) {
-        const totals = battleData.data[0].metricsRaw as any as PlayerTotals
+        const totals = battleData.data[0].metricsRaw as PlayerTotals
         this.setPlayerTotals(totals)
       } else {
         // calculate player totals from battle log
@@ -100,11 +95,10 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
           picks,
           trophyChange,
           winRate,
-        } as PlayerTotals
+        }
         this.setPlayerTotals(totals)
       }
     },
-
     addLastPlayer(player: StoredPlayer) {
       const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
 

@@ -5,11 +5,12 @@ import { defineComponent } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'
 
 export default defineComponent({
-  setup() {
+  async setup() {
     const $klicker = useKlicker()
 
     useCacheHeaders()
-    useValidate(async ({ params, error, redirect }) => {
+
+    await useValidate(async ({ params, error, redirect }) => {
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {

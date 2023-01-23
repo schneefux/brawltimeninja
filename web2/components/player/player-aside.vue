@@ -42,7 +42,7 @@
         <template v-slot:club="{ row }">
           <router-link :to="localePath(`/club/${row.club.tag}`)">
             <img
-              src="~/assets/images/icon/club.png"
+              :src="clubIcon"
               alt="Club"
               class="inline h-4 mr-1"
             >
@@ -52,7 +52,7 @@
 
         <template v-slot:trophies="{ value }">
           <img
-            src="~/assets/images/icon/trophy_optimized.png"
+            :src="trophyIcon"
             alt="Trophies"
             class="inline h-4 mr-1"
           >
@@ -61,7 +61,7 @@
 
         <template v-slot:victories="{ value }">
           <img
-            src="~/assets/images/icon/victories.png"
+            :src="victoryIcon"
             alt="3v3 Victories"
             class="inline h-4 mr-1"
           >
@@ -70,7 +70,7 @@
 
         <template v-slot:expLevel="{ value }">
           <img
-            src="~/assets/images/icon/level.png"
+            :src="levelIcon"
             alt="EXP Level"
             class="inline h-4 mr-1"
           >
@@ -103,22 +103,24 @@
       </b-kv-table>
     </div></template>
 
-    <template v-slot:actions><div  class="flex flex-wrap gap-2">
-      <b-button
-        v-if="canEnableTracking"
-        primary
-        sm
-        @click="enableTracking()"
-      >{{ $t('profile.tracking.enable') }}</b-button>
+    <template v-slot:actions>
+      <div class="flex flex-wrap gap-2">
+        <b-button
+          v-if="canEnableTracking"
+          primary
+          sm
+          @click="enableTracking()"
+        >{{ $t('profile.tracking.enable') }}</b-button>
 
-      <share-render-button
-        :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
-        :url="playerUrl"
-        primary
-        sm
-        @share="sharepicTriggered"
-      ></share-render-button>
-    </div></template>
+        <share-render-button
+          :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
+          :url="playerUrl"
+          primary
+          sm
+          @share="sharepicTriggered"
+        ></share-render-button>
+      </div>
+    </template>
   </b-card>
 </template>
 
@@ -129,6 +131,10 @@ import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
 import { event } from 'vue-gtag'
 import { useContext, useAsync } from '~/composables/compat'
+import clubIcon from '~/assets/images/icon/club.png'
+import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import victoryIcon from '~/assets/images/icon/victories.png'
+import levelIcon from '~/assets/images/icon/level.png'
 
 export default defineComponent({
   components: {
@@ -146,8 +152,15 @@ export default defineComponent({
     const { $api } = useContext()
     const loading = ref(false)
     const trackingStatus = useAsync(
-      () => $api.player.getTrackingStatus.query(props.player.tag.substring(1)).catch(() => 'inactive'),
-      `player-tracking-status-${props.player.tag.substring(1)}`)
+      async () => {
+        try {
+          return await $api.player.getTrackingStatus.query(props.player.tag.substring(1)) ?? null
+        } catch (e) {
+          return 'inactive'
+        }
+      },
+      computed(() => `player-tracking-status-${props.player.tag.substring(1)}`))
+
     const enableTracking = async () => {
       if (props.player == undefined) {
         return
@@ -249,6 +262,10 @@ export default defineComponent({
       sharepicTriggered,
       canEnableTracking,
       playerWithTrackingStatus,
+      clubIcon,
+      trophyIcon,
+      victoryIcon,
+      levelIcon,
     }
   },
 })

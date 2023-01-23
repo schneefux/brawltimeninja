@@ -91,10 +91,10 @@ export default defineComponent({
     BCard,
     MapViews,
   },
-  setup() {
+  async setup() {
     const { i18n, $config, $klicker } = useContext()
 
-    useValidate(async ({ params }) => {
+    await useValidate(async ({ params }) => {
       const mode = kebabToCamel(params.mode as string)
       const map = deslugify(params.map as string)
       if (map.startsWith('Competition')) {
@@ -112,6 +112,7 @@ export default defineComponent({
         sortId: 'eventId',
         limit: 1,
       })
+
       return events.data[0].metricsRaw.eventId != '0'
     })
 
@@ -137,7 +138,7 @@ export default defineComponent({
         map,
         mode,
       } as Map
-    }, `map-${route.params.mode}-${route.params.map}`)
+    }, computed(() => `map-${route.params.mode}-${route.params.map}`))
 
     useCacheHeaders()
     useMeta(() => {

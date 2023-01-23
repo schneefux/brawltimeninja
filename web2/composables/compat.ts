@@ -1,4 +1,4 @@
-import { computed, inject, onMounted, onServerPrefetch, Ref, watch } from "vue"
+import { computed, inject, onServerPrefetch, Ref, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useKlicker } from '@schneefux/klicker/composables'
 import { I18n, Locale, useI18n } from 'vue-i18n'
@@ -44,7 +44,6 @@ export function useContext() {
     $api,
     $supportsWebp: false, // TODO
     $config: pageContext.config,
-    $http: {} as any, // TODO
     i18n: {
       ...i18n,
       tc: i18n.t,
@@ -110,39 +109,36 @@ interface ValidateContext {
   redirect: (status: number, url: string) => void
   error: (e: { statusCode: number, message: string }) => void
 }
-export function useValidate(cb: (context: ValidateContext) => Promise<boolean>) {
+export async function useValidate(cb: (context: ValidateContext) => Promise<boolean>) {
   const pageContext = usePageContext()
+  if (pageContext.validated) {
+    return
+  }
+
+  pageContext.validated = true
+
   const router = useRouter()
   const route = useRoute()
 
-  const redirect = (status: number, url: string) => {
+  let redirectTarget: { status: number, url: string } | undefined = undefined
+
+  const error = (e: { statusCode: number, message: string }) => redirectTarget = { status: e.statusCode, url: '/error' }
+  const redirect = (status: number, url: string) => redirectTarget = { status, url }
+
+  const context: ValidateContext = { params: route.params, redirect, error }
+  const isValid = await cb(context)
+
+  if (!isValid) {
+    redirectTarget = redirectTarget ?? { status: 404, url: '/404' }
+  }
+
+  if (redirectTarget != undefined) {
     if (import.meta.env.SSR) {
-      pageContext.redirectTo = { status, url }
+      pageContext.redirectTo = redirectTarget
     } else {
-      router.replace(url)
+      router.replace(redirectTarget.url)
     }
   }
-  const error = (e: { statusCode: number, message: string }) => redirect(e.statusCode, '/error')
-
-  const runValidate = async () => {
-    const context: ValidateContext = { params: route.params, redirect, error }
-    const isValid = await cb(context)
-    if (!isValid) {
-      redirect(404, '/404')
-    }
-  }
-
-  onServerPrefetch(async () => {
-    pageContext.validated = true
-    await runValidate()
-  })
-
-  onMounted(async () => {
-    // TODO should block navigation until validation is done
-    if (!pageContext.validated) {
-      await runValidate()
-    }
-  })
 }
 
 function useHeaders(headers: Record<string, string>) {

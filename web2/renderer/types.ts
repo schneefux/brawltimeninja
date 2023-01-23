@@ -31,6 +31,7 @@ export type PageContextCustom = {
     Layout?: ComponentPublicInstance
   }
   vueQueryState: DehydratedState
+  piniaState: string
   errorWhileRendering?: Error
   config: Config
   redirectTo: { status: number, url: string }

@@ -6,10 +6,11 @@ import { App, InjectionKey } from 'vue'
 export const TrpcInjectionKey = Symbol('trpc') as InjectionKey<CreateTRPCProxyClient<AppRouter>>
 
 export default { install }
+export { createClient }
 
-function install(app: App) {
+function createClient() {
   const baseUrl = import.meta.env.SSR ? `http://${import.meta.env.HOST ?? 'localhost'}:${import.meta.env.PORT ?? 3000}` : ''
-  const client = createTRPCProxyClient<AppRouter>({
+  return createTRPCProxyClient<AppRouter>({
     transformer: superjson,
     links: [
       httpBatchLink({
@@ -25,6 +26,8 @@ function install(app: App) {
       }),
     ],
   })
+}
 
-  app.provide(TrpcInjectionKey, client)
+function install(app: App) {
+  app.provide(TrpcInjectionKey, createClient())
 }

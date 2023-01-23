@@ -9,18 +9,19 @@
     >
       <history-graph
         :player-tag="player.tag"
-        card
+        :card="{}"
       >
-        <template v-slot:empty><b-card >
-          <template v-slot:content><div
-
-            class="flex flex-col justify-center h-full"
-          >
-            <p class="italic text-center">
-              {{ $t('player.no-history') }}
-            </p>
-          </div></template>
-        </b-card></template>
+        <template v-slot:empty>
+          <b-card>
+            <template v-slot:content>
+              <div class="flex flex-col justify-center h-full">
+                <p class="italic text-center">
+                  {{ $t('player.no-history') }}
+                </p>
+              </div>
+            </template>
+          </b-card>
+        </template>
       </history-graph>
     </b-dashboard-cell>
 
