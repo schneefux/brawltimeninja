@@ -6,6 +6,8 @@
     <web-nav class="hidden lg:flex"></web-nav>
     <app-head-nav class="lg:hidden"></app-head-nav>
 
+    <loading-indicator></loading-indicator>
+
     <ad
       :ad-region="route.fullPath"
       ad-slot="6848221017"

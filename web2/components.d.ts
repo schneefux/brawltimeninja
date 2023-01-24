@@ -59,6 +59,7 @@ declare module '@vue/runtime-core' {
     InstallButton: typeof import('./components/install-button.vue')['default']
     InstallCard: typeof import('./components/install-card.vue')['default']
     Likert: typeof import('./components/quiz/likert.vue')['default']
+    LoadingIndicator: typeof import('./components/loading-indicator.vue')['default']
     LocaleSwitcher: typeof import('./components/locale-switcher.vue')['default']
     LoginButton: typeof import('./components/login-button.vue')['default']
     MapBalanceChart: typeof import('./components/map/map-balance-chart.vue')['default']

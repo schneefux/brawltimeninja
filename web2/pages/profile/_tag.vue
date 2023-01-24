@@ -219,6 +219,10 @@ export default defineComponent({
     const playerTotals = computed(() => store.playerTotals!)
 
     useMeta(() => {
+      if (player.value == undefined) {
+        return {}
+      }
+
       const description = i18n.t('player.meta.description', { name: player.value.name })
       const name = player.value.name
       const tag = route.params.tag
