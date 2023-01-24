@@ -86,8 +86,8 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
         // calculate player totals from battle log
         const picks = player.battles.length
         const trophyChanges = player.battles
-          .map((battle) => battle.trophyChange!)
-          .filter((trophyChange) => trophyChange != undefined)
+          .map((battle) => battle.trophyChange)
+          .filter((trophyChange): trophyChange is number => trophyChange != undefined)
         const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
         const winRate = player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length
 

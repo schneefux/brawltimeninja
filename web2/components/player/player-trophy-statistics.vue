@@ -54,7 +54,7 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals"
+        v-if="hasPlayerTotals && !isNaN(playerTotals!.trophyChange)"
         :title="$t('metric.averageTrophies')"
         :value="playerTotals!.trophyChange.toFixed(2)"
       ></b-bigstat>
