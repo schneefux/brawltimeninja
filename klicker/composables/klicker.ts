@@ -21,6 +21,11 @@ export interface PluginConfig {
    */
   useQuery: <T, E>(key: Ref<string>, handler: () => Promise<T>) => AsyncQuery<T, E>
   navigate: (path: string) => void
+  /**
+   * Requirements:
+   *  - It should support the "to" property
+   *  - It should have a default slot with a "navigate" function as property when the "custom" property is set
+   */
   linkComponent: string
   managerUrl: string
 }

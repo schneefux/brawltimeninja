@@ -1,6 +1,6 @@
 <template>
   <b-card
-    :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
+    :title="mode != undefined ? $t('mode.' + mode) : undefined"
     :link="mapLink || modeLink"
     :title-link="modeLink"
     :subtitle="mapName"
@@ -30,7 +30,8 @@
     <template v-if="'content' in $slots" v-slot:content>
       <slot name="content"></slot>
     </template>
-    <!-- TODO: causes hydration error
+
+    <!-- TODO: causes hydration error, see https://github.com/vuejs/core/issues/7095
     <template
       v-for="(_, slot) of $slots"
       v-slot:[slot]="slotProps"

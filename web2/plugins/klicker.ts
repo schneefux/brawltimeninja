@@ -4,11 +4,11 @@ import { App, Ref, onServerPrefetch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import config from '@/lib/klicker.cubes'
 import { BrawltimeKlickerService } from './klicker.service'
-import { navigate } from 'vite-plugin-ssr/client/router'
 import visualisations from '@/lib/klicker.visualisations.conf'
 import staticWidgets from '@/lib/klicker.widgets.conf'
 import slicers from '@/lib/klicker.slicers.conf'
 import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
+import { Router } from 'vue-router'
 
 export default { install }
 export { createClient }
@@ -17,6 +17,7 @@ interface Options {
   cubeUrl: string
   managerUrl: string
   translate: (key: string, args: any) => string
+  router: Router
 }
 
 function createClient(options: Options) {
@@ -55,7 +56,7 @@ function install(app: App, options: Options) {
         refresh: async () => { await query.refetch() },
       }
     },
-    navigate: navigate,
+    navigate: (to) => options.router.push(to),
     linkComponent: 'router-link',
   })
 }

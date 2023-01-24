@@ -93,31 +93,13 @@ export default defineComponent({
   },
   async setup() {
     const { i18n, $config, $klicker } = useContext()
+    const route = useRoute()
 
-    await useValidate(async ({ params }) => {
-      const mode = kebabToCamel(params.mode as string)
-      const map = deslugify(params.map as string)
-      if (map.startsWith('Competition')) {
-        return true
+    const event = useAsync(async () => {
+      if (route.params.mode == undefined || route.params.map == undefined) {
+        return null
       }
 
-      const events = await $klicker.query({
-        cubeId: 'map',
-        slices: {
-          mode: [mode],
-          map: [map],
-        },
-        dimensionsIds: [],
-        metricsIds: ['eventId'],
-        sortId: 'eventId',
-        limit: 1,
-      })
-
-      return events.data[0].metricsRaw.eventId != '0'
-    })
-
-    const route = useRoute()
-    const event = useAsync(async () => {
       const mode = kebabToCamel(route.params.mode as string)
       const map = deslugify(route.params.map as string)
       const events = await $klicker.query({
@@ -171,6 +153,28 @@ export default defineComponent({
     })
 
     const lightboxOpen = ref(false)
+
+    await useValidate(async ({ params }) => {
+      const mode = kebabToCamel(params.mode as string)
+      const map = deslugify(params.map as string)
+      if (map.startsWith('Competition')) {
+        return true
+      }
+
+      const events = await $klicker.query({
+        cubeId: 'map',
+        slices: {
+          mode: [mode],
+          map: [map],
+        },
+        dimensionsIds: [],
+        metricsIds: ['eventId'],
+        sortId: 'eventId',
+        limit: 1,
+      })
+
+      return events.data[0].metricsRaw.eventId != '0'
+    })
 
     return {
       event,

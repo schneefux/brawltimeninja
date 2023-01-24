@@ -9,7 +9,7 @@ import { useHead, ReactiveHead } from "@unhead/vue"
 import { locales, loadLocale } from "@/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -111,34 +111,43 @@ interface ValidateContext {
 }
 export async function useValidate(cb: (context: ValidateContext) => Promise<boolean>) {
   const pageContext = usePageContext()
-  if (pageContext.validated) {
-    return
-  }
-
-  pageContext.validated = true
-
   const router = useRouter()
   const route = useRoute()
 
-  let redirectTarget: { status: number, url: string } | undefined = undefined
+  async function runValidate(route: RouteLocationNormalized) {
+    if (pageContext.validated) {
+      return
+    }
 
-  const error = (e: { statusCode: number, message: string }) => redirectTarget = { status: e.statusCode, url: '/error' }
-  const redirect = (status: number, url: string) => redirectTarget = { status, url }
+    pageContext.validated = true
 
-  const context: ValidateContext = { params: route.params, redirect, error }
-  const isValid = await cb(context)
+    let redirectTarget: { status: number, url: string } | undefined = undefined
 
-  if (!isValid) {
-    redirectTarget = redirectTarget ?? { status: 404, url: '/404' }
-  }
+    const error = (e: { statusCode: number, message: string }) => redirectTarget = { status: e.statusCode, url: '/error' }
+    const redirect = (status: number, url: string) => redirectTarget = { status, url }
 
-  if (redirectTarget != undefined) {
-    if (import.meta.env.SSR) {
-      pageContext.redirectTo = redirectTarget
-    } else {
-      router.replace(redirectTarget.url)
+    const context: ValidateContext = { params: route.params, redirect, error }
+    const isValid = await cb(context)
+
+    if (!isValid) {
+      redirectTarget = redirectTarget ?? { status: 404, url: '/404' }
+    }
+
+    if (redirectTarget != undefined) {
+      if (import.meta.env.SSR) {
+        pageContext.redirectTo = redirectTarget
+      } else {
+        router.replace(redirectTarget.url)
+      }
     }
   }
+
+  onBeforeRouteUpdate(async (to) => {
+    pageContext.validated = false
+    await runValidate(to)
+  })
+
+  await runValidate(route)
 }
 
 function useHeaders(headers: Record<string, string>) {

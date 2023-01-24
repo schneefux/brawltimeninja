@@ -49,37 +49,6 @@ async function createApp(pageContext: PageContext) {
   })
   app.use(i18n)
 
-  const klickerOptions = {
-    cubeUrl: pageContext.config.cubeUrl,
-    managerUrl: pageContext.config.managerUrl,
-    translate: i18n.global.t,
-  }
-  app.use(KlickerPlugin, klickerOptions)
-
-  // TODO share cache between requests to the same URL?
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60 * 5, // 5 minutes
-      },
-    },
-  })
-  app.use(VueQueryPlugin, { queryClient })
-
-  const pinia = createPinia()
-  if (!import.meta.env.SSR) {
-    pinia.use(createPersistedState({
-      storage: localStorage,
-    }))
-  }
-  pinia.use(({ store }) => {
-    store.api = markRaw(createTrpcClient())
-    store.klicker = markRaw(createKlickerClient(klickerOptions))
-  })
-  app.use(pinia)
-
-  app.use(TRPCPlugin)
-
   const themeColor = '#facc15' // yellow-400
   const head = createHead()
   head.push({
@@ -121,11 +90,43 @@ async function createApp(pageContext: PageContext) {
   })
   app.use(head)
 
-  app.component('ClientOnly', ClientOnly)
-  app.component('Adsense', Adsense)
-
   const router = createRouter(i18n, pageContext.config.mediaUrl, head)
   app.use(router)
+
+  const klickerOptions = {
+    cubeUrl: pageContext.config.cubeUrl,
+    managerUrl: pageContext.config.managerUrl,
+    translate: i18n.global.t,
+    router,
+  }
+  app.use(KlickerPlugin, klickerOptions)
+
+  // TODO share cache between requests to the same URL?
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5, // 5 minutes
+      },
+    },
+  })
+  app.use(VueQueryPlugin, { queryClient })
+
+  const pinia = createPinia()
+  if (!import.meta.env.SSR) {
+    pinia.use(createPersistedState({
+      storage: localStorage,
+    }))
+  }
+  pinia.use(({ store }) => {
+    store.api = markRaw(createTrpcClient())
+    store.klicker = markRaw(createKlickerClient(klickerOptions))
+  })
+  app.use(pinia)
+
+  app.use(TRPCPlugin)
+
+  app.component('ClientOnly', ClientOnly)
+  app.component('Adsense', Adsense)
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 

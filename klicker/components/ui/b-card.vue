@@ -70,17 +70,11 @@
           >
             <template v-if="titleLink != undefined || link != undefined">
               <component
-                v-if="linkComponent != undefined"
                 :is="linkComponent"
                 :to="titleLink || link"
               >
                 {{ title }}
               </component>
-              <a
-                v-else
-                :href="titleLink || link"
-                class="contents"
-              >{{ title }}</a>
             </template>
             <template v-else>
               {{ title }}
@@ -96,17 +90,11 @@
           >
             <template v-if="subtitleLink != undefined">
               <component
-                v-if="linkComponent != undefined"
                 :is="linkComponent"
                 :to="subtitleLink"
               >
                 {{ subtitle }}
               </component>
-              <a
-                v-else
-                :href="subtitleLink"
-                class="contents"
-              >{{ subtitle }}</a>
             </template>
             <template v-else>
               {{ subtitle }}
@@ -117,9 +105,8 @@
         <slot name="preview"></slot>
       </header>
 
-      <component
+      <div
         v-if="'content' in $slots"
-        :is="link == undefined ? 'div' : linkComponent ?? 'a'"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
           'px-6': !dense,
@@ -133,12 +120,11 @@
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
-        :href="link != undefined && linkComponent == undefined ? link : undefined"
-        :to="link != undefined && linkComponent != undefined ? link : undefined"
         class="block h-full text-text/75"
+        @click.self="onClickContent"
       >
         <slot name="content"></slot>
-      </component>
+      </div>
 
       <footer
         v-if="'actions' in $slots"
@@ -233,9 +219,16 @@ export default defineComponent({
 
     const onClick = (e: Event) => {
       if (attrs.onClick != undefined) {
-        console.log('onclick')
         e.preventDefault();
         (<any> attrs).onClick()
+        return
+      }
+    }
+
+    const onClickContent = (e: Event) => {
+      if (props.link != undefined) {
+        e.preventDefault();
+        navigate(props.link)
         return
       }
     }
@@ -250,6 +243,7 @@ export default defineComponent({
     return {
       onClick,
       onClickHeader,
+      onClickContent,
       renderTitle,
       prefix,
       navigate,

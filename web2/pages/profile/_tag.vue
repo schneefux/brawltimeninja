@@ -215,48 +215,6 @@ export default defineComponent({
 
     const store = useBrawlstarsNinjaStore()
 
-    await useValidate(async ({ params, redirect, error }) => {
-      const tag = (params.tag as string).toUpperCase()
-      if (tag != params.tag) {
-        // fuck Bing for lowercasing all URLs
-        redirect(301, `/profile/${tag}`)
-        return false
-      }
-
-      if (!tagPattern.test(tag)) {
-        return false
-      }
-
-      if (store.player != undefined && store.player.tag == params.tag) {
-        return true
-      }
-
-      try {
-        await store.loadPlayer(params.tag)
-      } catch (err: any) {
-        if (err.response?.status == 404) {
-          return true
-        }
-
-        if (err instanceof TRPCClientError) {
-          if (err.data?.httpStatus == 404) {
-            error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
-            return true
-          }
-          if (err.data?.httpStatus >= 400) {
-            error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
-            return true
-          }
-        }
-
-        console.error(err)
-        $sentry.captureException(err)
-        error({ statusCode: 500, message: ' ' })
-      }
-
-      return true
-    })
-
     const player = computed(() => store.player!)
     const playerTotals = computed(() => store.playerTotals!)
 
@@ -320,6 +278,48 @@ export default defineComponent({
       title: i18n.t('player.records.title'),
       element: sectionRefs.recordsSection.value?.$el,
     }])
+
+    await useValidate(async ({ params, redirect, error }) => {
+      const tag = (params.tag as string).toUpperCase()
+      if (tag != params.tag) {
+        // fuck Bing for lowercasing all URLs
+        redirect(301, `/profile/${tag}`)
+        return false
+      }
+
+      if (!tagPattern.test(tag)) {
+        return false
+      }
+
+      if (store.player != undefined && store.player.tag == params.tag) {
+        return true
+      }
+
+      try {
+        await store.loadPlayer(params.tag)
+      } catch (err: any) {
+        if (err.response?.status == 404) {
+          return true
+        }
+
+        if (err instanceof TRPCClientError) {
+          if (err.data?.httpStatus == 404) {
+            error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
+            return true
+          }
+          if (err.data?.httpStatus >= 400) {
+            error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
+            return true
+          }
+        }
+
+        console.error(err)
+        $sentry.captureException(err)
+        error({ statusCode: 500, message: ' ' })
+      }
+
+      return true
+    })
 
     return {
       player,
