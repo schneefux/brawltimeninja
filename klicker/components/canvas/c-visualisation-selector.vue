@@ -61,6 +61,7 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { CubeComparingResponse, CubeResponse, GridWidget, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '../../types'
 import BCard from '../ui/b-card.vue'
 import BSelect from '../ui/b-select.vue'
+import BButton from '../ui/b-button.vue'
 import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
@@ -74,6 +75,7 @@ export default defineComponent({
   components: {
     BCard,
     BSelect,
+    BButton,
     BDashboardCell,
   },
   props: {

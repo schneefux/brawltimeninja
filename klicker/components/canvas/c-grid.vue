@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label
-        :for="`${prefix}-title`"
-      >
+      <label :for="`${prefix}-title`">
         Title
       </label>
       <b-textbox
@@ -75,8 +73,9 @@
       class="mt-4"
     >
       <c-widget-editor
-        v-model="widgetsKeyed[selectedWidgetId]"
+        :model-value="widgetsKeyed[selectedWidgetId]"
         :default-query="defaultQuery"
+        @update:modelValue="w => updateWidget(w as GridWidget)"
         @delete="deleteSelectedWidget"
       >
         <b-dashboard-cell
@@ -95,10 +94,11 @@
                   Columns
                 </label>
                 <b-number
-                  v-model="widgetsKeyed[selectedWidgetId].frame.columns"
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
                   :id="`${prefix}-width`"
                   min="1"
                   max="8"
+                  @update:modelValue="c => updateWidgetFrame(selectedWidgetId!, { columns: c })"
                 ></b-number>
 
                 <label
@@ -107,10 +107,11 @@
                   Rows
                 </label>
                 <b-number
-                  v-model="widgetsKeyed[selectedWidgetId].frame.rows"
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
                   :id="`${prefix}-rows`"
                   min="1"
                   max="8"
+                  @update:modelValue="r => updateWidgetFrame(selectedWidgetId!, { rows: r })"
                 ></b-number>
               </div>
             </template>
@@ -128,15 +129,16 @@
         'dashboard--fixed': columns != undefined,
         'dashboard--responsive': columns == undefined,
       }"
+      item-key="id"
       class="mt-16 w-full dashboard"
     >
-      <c-widget
-        v-for="w in widgets"
-        :key="w.id"
-        :widget="w"
-        for-grid
-        @click="selectedWidgetId = w.id"
-      ></c-widget>
+      <template v-slot:item="{ element }">
+        <c-widget
+          :widget="element"
+          for-grid
+          @click="selectedWidgetId = element.id"
+        ></c-widget>
+      </template>
     </draggable>
   </div>
 </template>
@@ -147,6 +149,9 @@ import CWidgetEditor from './c-widget-editor.vue'
 import CWidget from './c-widget.vue'
 import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
+import BCard from '../ui/b-card.vue'
+import BButton from '../ui/b-button.vue'
+import BRadio from '../ui/b-radio.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
@@ -160,6 +165,9 @@ export default defineComponent({
     BDashboardCell,
     BNumber,
     BTextbox,
+    BCard,
+    BButton,
+    BRadio,
     CWidget,
     CWidgetEditor,
     Draggable,
@@ -216,13 +224,30 @@ export default defineComponent({
           columns: 2,
         },
       }
-      widgetsKeyed.value[id] = newWidget
+      updateWidget(newWidget)
       selectedWidgetId.value = id
+    }
+
+    const updateWidget = (widget: GridWidget) => {
+      widgetsKeyed.value = {
+        ...widgetsKeyed.value,
+        [widget.id]: widget,
+      }
     }
 
     const deleteSelectedWidget = () => {
       widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
       selectedWidgetId.value = undefined
+    }
+
+    const updateWidgetFrame = (id: string, frame: Partial<GridWidget['frame']>) => {
+      updateWidget({
+        ...widgetsKeyed.value[id],
+        frame: {
+          ...widgetsKeyed.value[id].frame,
+          ...frame,
+        },
+      })
     }
 
     const title = computed({
@@ -249,6 +274,8 @@ export default defineComponent({
       title,
       prefix,
       columns,
+      updateWidget,
+      updateWidgetFrame,
       widgets,
       widgetsKeyed,
       addWidget,

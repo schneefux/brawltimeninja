@@ -47,7 +47,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log(VMdEditor)
     const html = computed(() => xss.process(VMdEditor.vMdParser.themeConfig.markdownParser.render(props.markdown)))
 
     return {

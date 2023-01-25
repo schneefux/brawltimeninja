@@ -13,7 +13,7 @@
           <b-radio
             v-model="withQuery"
             :id="`${prefix}-static`"
-            value="false"
+            :value="false"
             name="withQuery"
             required
             primary
@@ -27,7 +27,7 @@
           <b-radio
             v-model="withQuery"
             :id="`${prefix}-data`"
-            value="true"
+            :value="true"
             name="withQuery"
             required
             primary
@@ -46,7 +46,6 @@
           :configurator="{
             configureCube: true,
             configureMetrics: true,
-            configureMetricsOptions: [],
             configureMultipleMetrics: true,
             configureDimensions: true,
             configureCompareMode: true,
@@ -98,6 +97,8 @@ import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
 import BCard from '../ui/b-card.vue'
+import BRadio from '../ui/b-radio.vue'
+import BButton from '../ui/b-button.vue'
 import { useUniqueId } from '../../composables/id'
 
 /**
@@ -106,6 +107,8 @@ import { useUniqueId } from '../../composables/id'
 export default defineComponent({
   components: {
     BCard,
+    BRadio,
+    BButton,
     CDashboard,
     CVisualisationSelector,
   },
@@ -130,10 +133,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const withQuery = computed({
       get() {
-        return props.modelValue.query == undefined ? 'false' : 'true'
+        return props.modelValue.query != undefined
       },
-      set(withQuery: string) {
-        if (withQuery == 'true') {
+      set(withQuery: boolean) {
+        if (withQuery) {
           emit('update:modelValue', {
             ...props.modelValue,
             query: props.defaultQuery,

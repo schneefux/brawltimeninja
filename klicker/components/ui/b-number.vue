@@ -13,18 +13,18 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Number,
-      required: true
+      required: false
     },
   },
   emits: {
-    ['update:modelValue'](value: number) { return true },
+    ['update:modelValue'](value: number|undefined) { return true },
   },
   setup(props, { emit }) {
     const value = computed({
       get() {
         return props.modelValue
       },
-      set(v: number) {
+      set(v: number|undefined) {
         emit('update:modelValue', v)
       }
     })

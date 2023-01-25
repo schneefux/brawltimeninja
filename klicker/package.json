@@ -50,7 +50,7 @@
     "vue": "^3.2.45",
     "vue3-lazy-hydration": "^1.2.1",
     "vue3-moveable": "^0.17.1",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",

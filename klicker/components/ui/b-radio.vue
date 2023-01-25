@@ -8,7 +8,7 @@
     :checked="value == modelValue"
     :value="value"
     class="form-radio transition duration-100 ease-in-out focus:ring-0"
-    @input="(e) => $emit('update:modelValue', value as any)"
+    @input="onInput"
   >
 </template>
 
@@ -19,11 +19,11 @@ export default defineComponent({
   props: {
     modelValue: {
       type: undefined,
-      default: ''
+      default: '' as any
     },
     value: {
       type: undefined,
-      default: ''
+      default: '' as any
     },
     primary: {
       type: Boolean,
@@ -31,7 +31,16 @@ export default defineComponent({
     },
   },
   emits: {
-    ['update:modelValue'](value: undefined) { return true },
+    ['update:modelValue'](value: any) { return true },
+  },
+  setup(props, { emit }) {
+    const onInput = (e: Event) => {
+      emit('update:modelValue', props.value)
+    }
+
+    return {
+      onInput,
+    }
   },
 })
 </script>

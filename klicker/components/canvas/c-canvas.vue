@@ -50,8 +50,9 @@
       class="mt-8"
     >
       <c-widget-editor
-        v-model="widgets[selectedWidgetId]"
+        :model-value="widgets[selectedWidgetId]"
         :default-query="defaultQuery"
+        @update:modelValue="w => updateWidget(w as ReportWidget)"
         @delete="deleteSelectedWidget"
       ></c-widget-editor>
     </div>
@@ -87,10 +88,11 @@
         <c-moveable-widget
           v-for="(w, id) in widgets"
           :key="w.id"
-          v-model="widgets[id]"
+          :model-value="widgets[id]"
           :container="container!"
           :bounds="bounds"
           class="panzoom-exclude"
+          @update:modelValue="w => updateWidget(w as ReportWidget)"
           @click="selectedWidgetId = w.id"
         ></c-moveable-widget>
         <!--
@@ -109,6 +111,7 @@ import CMoveableWidget from './c-moveable-widget.vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
+import BButton from '../ui/b-button.vue'
 import { Report, ReportWidget, CubeQuery } from '../../types'
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
@@ -122,6 +125,7 @@ import { useUniqueId } from '../../composables/id'
 export default defineComponent({
   components: {
     FontAwesomeIcon,
+    BButton,
     BNumber,
     BTextbox,
     CWidgetEditor,
@@ -223,12 +227,15 @@ export default defineComponent({
           height: 0,
         },
       }
-      widgets.value[id] = newWidget
+      updateWidget(newWidget)
       selectedWidgetId.value = id
     }
 
+    const updateWidget = (widget: ReportWidget) => widgets.value = { ...widgets.value, [widget.id]: widget }
+
     const deleteSelectedWidget = () => {
-      delete widgets.value[selectedWidgetId.value!]
+      widgets.value = Object.fromEntries(Object.entries(widgets.value)
+        .filter(([id]) => id != selectedWidgetId.value))
       selectedWidgetId.value = undefined
     }
 
@@ -251,6 +258,7 @@ export default defineComponent({
       height,
       widgets,
       addWidget,
+      updateWidget,
       deleteSelectedWidget,
       selectedWidgetId,
       faSearchMinus,

@@ -1,16 +1,16 @@
 <template>
   <moveable
     ref="moveable"
+    :class-name="$attrs.class as string"
+    :target="target"
     :container="container"
     :bounds="bounds"
     :resizable="spec != undefined ? spec.resizable : false"
     :scalable="spec != undefined ? spec.scalable : false"
     :keep-ratio="spec != undefined ? spec.scalable : false"
-    :style="initialStyle"
-    class-name="panzoom-exclude"
-    snappable
-    draggable
-    rotatable
+    :snappable="true"
+    :draggable="true"
+    :rotatable="true"
     @drag-start="onDragStart"
     @drag="onDrag"
     @drag-end="onDragEnd"
@@ -25,26 +25,33 @@
     @resize-end="onResizeEnd"
     @render="onRender"
     @click="$emit('click')"
+  ></moveable>
+
+  <div
+    ref="target"
+    v-bind="$attrs"
+    :style="initialStyle"
   >
     <c-widget
       :widget="modelValue"
       class="pointer-events-none"
     ></c-widget>
-  </moveable>
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted, defineAsyncComponent } from "vue";
-import { ReportWidget, StaticWidgetSpec } from "../../types";
+import { computed, defineComponent, PropType, ref, watch, onMounted, defineAsyncComponent } from "vue";
+import { GridWidget, ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
 import { useKlicker } from '../../composables/klicker'
 
 /**
  * Wrap a <c-widget> inside a <moveable>.
- * The widget with an updated transformation frame is emitted lazyily when a user stops the movement.
+ * The widget with an updated transformation frame is emitted lazily when a user stops the movement.
  */
 export default defineComponent({
+  inheritAttrs: false,
   components: {
     CWidget,
     // does not support SSR
@@ -60,16 +67,17 @@ export default defineComponent({
       required: true
     },
     modelValue: {
-      type: Object as PropType<ReportWidget>,
+      type: Object as PropType<ReportWidget|GridWidget>,
       required: true
     },
   },
   emits: {
     ['click']() { return true },
-    ['update:modelValue'](value: ReportWidget) { return true },
+    ['update:modelValue'](value: ReportWidget|GridWidget) { return true },
   },
   setup(props, { emit }) {
     const $klicker = useKlicker()
+    const target = ref<HTMLElement>()
     const moveable = ref<MoveableInterface>()
 
     const spec = computed<StaticWidgetSpec>(() => (
@@ -83,13 +91,13 @@ export default defineComponent({
     watch(() => props.modelValue, (after, before) => {
       if (JSON.stringify(after) != JSON.stringify(before)) {
         frame = clone(props.modelValue.frame)
-        Object.assign((<any>moveable.value).$el.style, render(frame, spec.value))
-        nextTick(() => moveable.value!.updateRect())
+        handlers.onRender()
+        moveable.value?.updateRect()
       }
-    })
+    }, { flush: 'post' })
 
     const sync = () => {
-      const widget: ReportWidget = {
+      const widget: ReportWidget|GridWidget = {
         ...props.modelValue,
         frame: clone(frame),
       }
@@ -98,8 +106,6 @@ export default defineComponent({
 
     // Style DOM directly for better performance
     const initialStyle = render(frame, spec.value)
-    // workaround for slow component rendering
-    onMounted(() => setTimeout(() => moveable.value!.updateRect(), 1000))
 
     const handlers = {
       onDragStart(e: any) {
@@ -141,8 +147,10 @@ export default defineComponent({
       onResizeEnd(e: any) {
         sync()
       },
-      onRender(e: any) {
-        Object.assign(e.target.style, render(frame, spec.value))
+      onRender() {
+        if (target.value != undefined) {
+          Object.assign(target.value.style, render(frame, spec.value))
+        }
       },
     }
 
@@ -151,6 +159,7 @@ export default defineComponent({
 
     return {
       spec,
+      target,
       moveable,
       initialStyle,
       ...handlers,

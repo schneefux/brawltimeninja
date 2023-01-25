@@ -39,7 +39,11 @@ export default defineComponent({
         }, slots)
       } else {
         const nodes = slots['content'] != undefined ? slots['content']() : []
-        return h('div', nodes)
+        if (nodes.length > 1) {
+          // TODO remove this wrapper
+          return h('div', nodes)
+        }
+        return nodes[0]
       }
     }
   },
