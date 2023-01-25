@@ -68,7 +68,7 @@ import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export interface QuizResult {
   score: OEJTSEntry
@@ -90,7 +90,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useBrawlstarsNinjaStore()
+    const store = usePreferencesStore()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
       const scores = Object.entries(brawlerScores)

@@ -63,7 +63,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { isApp } from '~/composables/app'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export default defineComponent({
   props: {
@@ -93,7 +93,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useBrawlstarsNinjaStore()
+    const store = usePreferencesStore()
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
 

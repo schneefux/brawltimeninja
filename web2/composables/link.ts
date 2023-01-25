@@ -3,7 +3,7 @@ import { Config, CubeComparingQuery, CubeQuery, RouteQuery } from '@schneefux/kl
 import { useKlicker } from '@schneefux/klicker/composables/klicker'
 import { RouteLocation, useRoute, useRouter } from 'vue-router'
 
-function mapRouteQuery(route: RouteLocation): RouteQuery {
+export function mapRouteQuery(route: RouteLocation): RouteQuery {
   const query: RouteQuery['query'] = {}
   for (const [key, value] of Object.entries(route.query)) {
     const values = Array.isArray(value) ? value : [value]

@@ -1,9 +1,9 @@
 <template>
-  <!-- workaround for Vue 2 not allowing multiple root elements -->
   <div
     v-if="specs.length > 1"
     class="contents"
   >
+    <!-- workaround for Vue 2 not allowing multiple root elements -->
     <b-dashboard-cell
       v-for="spec in specs"
       :key="spec.name"

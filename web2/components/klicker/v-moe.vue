@@ -37,7 +37,7 @@ import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 
 export default defineComponent({
   components: {
@@ -47,7 +47,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const store = useBrawlstarsNinjaStore()
+    const store = useBrawlstarsStore()
 
     const moe = computed((): number => {
       // margin of error

@@ -18,6 +18,7 @@ import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
 import { VLineplot } from '@schneefux/klicker/components'
 import { computed, defineComponent } from 'vue'
+import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
   components: {
@@ -45,7 +46,7 @@ export default defineComponent({
 
     const playerId = computed(() => tagToId(props.playerTag))
 
-    const query = computed(() => ({
+    const query = computed<CubeQuery>(() => ({
       cubeId: 'brawler',
       dimensionsIds: ['day'],
       metricsIds: props.brawler != undefined ? ['trophies'] : ['playerTrophies'],

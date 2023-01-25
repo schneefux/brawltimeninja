@@ -216,12 +216,13 @@ import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
 import { useContext, useMeta, useCacheHeaders, useLocalePath } from '@/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { event } from 'vue-gtag'
 import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
 import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
+import { usePreferencesStore } from '@/stores/preferences'
 
 interface PlayerLink {
   name: string
@@ -260,13 +261,14 @@ export default defineComponent({
       .slice(0, 3)
       .map(mapToPlayerLink))
 
-    const featuredPlayers = computed(() => store.featuredPlayers
+    const brawlstarsStore = useBrawlstarsStore()
+    const featuredPlayers = computed(() => brawlstarsStore.featuredPlayers
       .slice(0, 3)
       .map(mapToPlayerLink))
 
     const { makeVisibilityCallback } = useTrackScroll('home')
 
-    const store = useBrawlstarsNinjaStore()
+    const store = usePreferencesStore()
 
     const helpDropdown = ref<HTMLElement>()
 
@@ -292,8 +294,8 @@ export default defineComponent({
 
       try {
         loading.value = true
-        await store.loadPlayer(cleanedTag.value)
-        store.addLastPlayer(store.player!)
+        await brawlstarsStore.loadPlayer(cleanedTag.value)
+        store.addLastPlayer(brawlstarsStore.player!)
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {

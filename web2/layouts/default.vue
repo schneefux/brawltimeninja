@@ -59,18 +59,17 @@ import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
-import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { event, optIn } from 'vue-gtag'
 import { useI18n } from 'vue-i18n'
 import { useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export default defineComponent({
   components: {
     BWebFooter,
     BCookieConsent,
   },
-  head: {},
   setup() {
     const container = ref<HTMLElement>()
 
@@ -91,25 +90,22 @@ export default defineComponent({
       target: localePath('/about'),
     }])
 
-    const store = useBrawlstarsNinjaStore()
+    const store = usePreferencesStore()
     const adsAllowed = computed(() => store.adsAllowed)
     const cookiesAllowed = computed(() => store.cookiesAllowed)
     const consentPopupVisible = computed(() => store.consentPopupVisible)
 
     const disableCookies = () => {
-      store.hideConsentPopup()
       store.setCookiesAllowed(false)
       store.setAdsAllowed(false)
       hideAds()
     }
     const enableCookies = () => {
-      store.hideConsentPopup()
       store.setCookiesAllowed(true)
       store.setAdsAllowed(false)
       hideAds()
     }
     const enableCookiesAndAds = () => {
-      store.hideConsentPopup()
       store.setCookiesAllowed(true)
       store.setAdsAllowed(true)
       enableAds()
@@ -156,9 +152,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
-        store.showConsentPopup()
-      } else {
+      if (cookiesAllowed.value && cookiesAllowed.value) {
         if (adsAllowed.value) {
           enableAds()
         } else {

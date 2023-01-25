@@ -105,10 +105,10 @@
 <script lang="ts">
 import { Player } from '@/model/Api'
 import { ratingPercentiles } from '~/lib/util'
-import { PlayerTotals } from '~/stores/brawlstars-ninja'
+import { PlayerTotals } from '@/stores/brawlstars'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, PropType } from 'vue'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 
 export default defineComponent({
   components: {
@@ -127,7 +127,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useBrawlstarsNinjaStore()
+    const store = useBrawlstarsStore()
 
     const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
     const trophiesGoal = computed(() => {

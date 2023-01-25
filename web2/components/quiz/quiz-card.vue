@@ -2,7 +2,7 @@
   <transition name="slide-fade" mode="out-in">
     <quiz-cta-card
       v-if="!triggered"
-      @input="onTrigger"
+      @update:modelValue="onTrigger"
     ></quiz-cta-card>
 
     <div v-else>

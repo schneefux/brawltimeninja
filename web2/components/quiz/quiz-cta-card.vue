@@ -14,7 +14,7 @@
           :model-value="{}"
           :start="0"
           :end="1"
-          @input="onTrigger"
+          @update:modelValue="onTrigger"
         ></quiz-likert>
         <img
           :src="chaoticImage"
@@ -53,13 +53,13 @@ import { oejtsScores } from '~/lib/oejts'
 import { brawlerId } from '~/lib/util'
 import { computed, defineComponent } from 'vue'
 import { event } from 'vue-gtag'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
 import organizedImage from '~/assets/images/organized.png'
 import chaoticImage from '~/assets/images/chaotic.png'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export default defineComponent({
   setup(props, { emit }) {
-    const store = useBrawlstarsNinjaStore()
+    const store = usePreferencesStore()
     const resultName = computed(() => store.personalityTestResult)
     const result = computed(() => {
       if (resultName.value == undefined) {
@@ -70,14 +70,14 @@ export default defineComponent({
     })
 
     const onTrigger = (m: Record<string, number>) => {
-      emit('input', m)
+      emit('update:modelValue', m)
       event('click', {
         'event_category': 'quiz',
         'event_label': 'start',
       })
     }
     const onRestart = () => {
-      emit('input', {})
+      emit('update:modelValue', {})
       event('click', {
         'event_category': 'quiz',
         'event_label': 'restart_cta',

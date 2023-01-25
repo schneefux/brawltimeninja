@@ -55,8 +55,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja';
 import { useCacheHeaders } from '@/composables/compat';
+import { usePreferencesStore } from '@/stores/preferences';
 
 export default defineComponent({
   setup() {
@@ -68,10 +68,8 @@ export default defineComponent({
       return ''
     })
 
-    const store = useBrawlstarsNinjaStore()
-    const withdrawCookieConsent = () => {
-      store.showConsentPopup()
-    }
+    const store = usePreferencesStore()
+    const withdrawCookieConsent = () => store.withdrawConsent()
 
     useCacheHeaders()
 

@@ -8,15 +8,7 @@ interface StoredPlayer {
 }
 
 interface State {
-  version: string|undefined
   featuredPlayers: StoredPlayer[]
-  lastPlayers: StoredPlayer[]
-  userTag: string|undefined
-  personalityTestResult: string|undefined
-  cookiesAllowed: boolean|undefined
-  adsAllowed: boolean|undefined
-  consentPopupVisible: boolean
-  installBannerDismissed: boolean
   totalBrawlers: number
   player: Player|undefined
   playerTotals: PlayerTotals|undefined
@@ -28,9 +20,8 @@ export interface PlayerTotals {
   trophyChange: number
 }
 
-export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
+export const useBrawlstarsStore = defineStore('brawlstars', {
   state: (): State => ({
-    version: undefined,
     featuredPlayers: [ {
         tag: 'V8LLPPC',
         name: 'xXcuzMePlisThXx',
@@ -47,13 +38,6 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
         tag: 'QRUQQLV0',
         name: 'CG |Nukleo',
       } ],
-    lastPlayers: [],
-    userTag: undefined, // personal tag (last searched)
-    personalityTestResult: undefined,
-    cookiesAllowed: undefined,
-    adsAllowed: undefined,
-    consentPopupVisible: false,
-    installBannerDismissed: false,
     totalBrawlers: 56,
     player: undefined,
     playerTotals: undefined,
@@ -99,48 +83,12 @@ export const useBrawlstarsNinjaStore = defineStore('brawlstars-ninja', {
         this.setPlayerTotals(totals)
       }
     },
-    addLastPlayer(player: StoredPlayer) {
-      const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
-
-      const lastPlayers = [clone(player), ...this.lastPlayers]
-        .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
-      this.lastPlayers = lastPlayers.slice(0, 4)
-    },
-    setAdsAllowed(adsAllowed: boolean) {
-      this.adsAllowed = adsAllowed
-    },
-    setCookiesAllowed(cookiesAllowed: boolean) {
-      this.cookiesAllowed = cookiesAllowed
-    },
-    showConsentPopup() {
-      this.consentPopupVisible = true
-    },
-    hideConsentPopup() {
-      this.consentPopupVisible = false
-    },
-    dismissInstallBanner() {
-      this.installBannerDismissed = true
-    },
-    setPersonalityTestResult(result: string) {
-      this.personalityTestResult = result
-    },
     setPlayer(player: Player) {
       this.player = player
     },
     setPlayerTotals(totals: PlayerTotals) {
       this.playerTotals = totals
     },
-    setUserTag(tag: string) {
-      this.userTag = tag
-    },
-  },
-  persist: {
-    key: 'brawlstars-ninja',
-    paths: ['version', 'lastPlayers', 'cookiesAllowed', 'adsAllowed', 'installBannerDismissed', 'personalityTestResult', 'userTag'],
-    afterRestore(ctx) {
-      // v10: migration to pinia-plugin-persistedstate
-      ctx.store.$state.version = 10
-    }
   },
 })
 

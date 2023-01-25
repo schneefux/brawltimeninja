@@ -1,10 +1,12 @@
 <template>
-  <Teleport to="body">
-    <div
-      class="fixed top-0 inset-x-0 pointer-events-none h-[2px] bg-secondary-500 z-50 transition-all duration-300"
-      :style="style"
-    ></div>
-  </Teleport>
+  <client-only>
+    <Teleport to="body">
+      <div
+        class="fixed top-0 inset-x-0 pointer-events-none h-[2px] bg-secondary-500 z-50 transition-all duration-300"
+        :style="style"
+      ></div>
+    </Teleport>
+  </client-only>
 </template>
 
 <script lang="ts">

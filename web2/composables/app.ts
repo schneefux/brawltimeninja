@@ -1,8 +1,8 @@
 import { computed, ref } from 'vue'
 import { event } from 'vue-gtag'
 import { useRouter } from 'vue-router'
-import { useBrawlstarsNinjaStore } from '~/stores/brawlstars-ninja'
 import { useLocalePath } from './compat'
+import { usePreferencesStore } from '@/stores/preferences'
 
 const isPwa = ref<boolean>()
 const isTwa = ref<boolean>()
@@ -35,7 +35,7 @@ function detectIOS() {
 }
 
 export function useInstall(source: string) {
-  const store = useBrawlstarsNinjaStore()
+  const store = usePreferencesStore()
   const localePath = useLocalePath()
 
   const installable = computed(() => {

@@ -191,14 +191,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useContext, useMeta, useValidate } from '~/composables/compat'
+import { useCacheHeaders, useContext, useMeta, useValidate } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { tagPattern } from '~/lib/util'
 import { TRPCClientError } from '@trpc/client'
 import { useRoute } from 'vue-router'
-import { useBrawlstarsNinjaStore } from '@/stores/brawlstars-ninja'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 
 export default defineComponent({
   directives: {
@@ -213,11 +213,12 @@ export default defineComponent({
 
     const route = useRoute()
 
-    const store = useBrawlstarsNinjaStore()
+    const store = useBrawlstarsStore()
 
     const player = computed(() => store.player!)
     const playerTotals = computed(() => store.playerTotals!)
 
+    useCacheHeaders()
     useMeta(() => {
       if (player.value == undefined) {
         return {}
@@ -334,6 +335,5 @@ export default defineComponent({
       ...sectionRefs,
     }
   },
-  middleware: ['cached'],
 })
 </script>
