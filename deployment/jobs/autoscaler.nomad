@@ -99,14 +99,12 @@ job "autoscaler" {
               # it will keep creating new ones
               evaluation_interval = "10m"
 
-              # TODO checks also takes database/ingress allocations into account
-              # TODO target-value assumes constant CPU/RAM per unit
               check "node-cpu" {
                 source = "nomad-apm"
                 query = "percentage-allocated_cpu"
 
                 strategy "target-value" {
-                  target = 80
+                  target = 50
                 }
               }
 
@@ -115,7 +113,7 @@ job "autoscaler" {
                 query = "percentage-allocated_memory"
 
                 strategy "target-value" {
-                  target = 75
+                  target = 50
                 }
               }
 
