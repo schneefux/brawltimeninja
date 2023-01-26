@@ -16,7 +16,7 @@ apt:
   sources:
     hashicorp:
       source: "deb [arch=amd64] https://apt.releases.hashicorp.com $RELEASE main"
-      keyid: E8A032E094D8EB4EA189D270DA418C88A3219F7B
+      keyid: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
 packages:
   - apt-transport-https
   - nomad
