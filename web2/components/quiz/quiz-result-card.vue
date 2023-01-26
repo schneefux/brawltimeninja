@@ -107,7 +107,7 @@ export default defineComponent({
         score: props.result,
       }
     })
-    onMounted(() => store.setPersonalityTestResult(mostSimilarBrawler.value?.name))
+    onMounted(() => store.personalityTestResult = mostSimilarBrawler.value?.name)
 
     const quizRootUrl = computed(() => (!import.meta.env.SSR ? window.location.origin : '')
       + '/quiz'

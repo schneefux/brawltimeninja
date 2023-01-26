@@ -1,9 +1,10 @@
 <template>
   <transition name="slide-fade" mode="out-in">
-    <quiz-cta-card
-      v-if="!triggered"
-      @update:modelValue="onTrigger"
-    ></quiz-cta-card>
+    <div v-if="!triggered">
+      <quiz-cta-card
+        @update:modelValue="onTrigger"
+      ></quiz-cta-card>
+    </div>
 
     <div v-else>
       <transition name="slide-fade" mode="out-in">

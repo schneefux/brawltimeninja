@@ -105,50 +105,27 @@
     </div>
 
     <div class="mt-2 mx-6 flex flex-wrap justify-center">
-      <client-only>
-        <template v-slot:placeholder>
-          <div class="mt-2">
-            {{ $t('index.recommended') }}
-          </div>
-          <div class="ml-2">
-            <b-button
-              v-for="player in featuredPlayers"
-              :key="player.tag"
-              :to="player.link"
-              class="ml-2 mt-1"
-              xs
-              primary
-              @click.passive="addLastPlayer(player)"
-            >
-              {{ player.name }}
-            </b-button>
-          </div>
+      <div class="mt-2">
+        <template v-if="lastPlayers.length === 0">
+          {{ $t('index.recommended') }}
         </template>
-
-        <template v-slot:default>
-          <div class="mt-2">
-            <template v-if="lastPlayers.length === 0">
-              {{ $t('index.recommended') }}
-            </template>
-            <template v-else-if="featuredPlayers.length > 0">
-              {{ $t('index.recents') }}
-            </template>
-          </div>
-          <div class="ml-2">
-            <b-button
-              v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
-              :key="player.tag"
-              :to="player.link"
-              class="ml-2 mt-1"
-              xs
-              primary
-              @click.passive="addLastPlayer(player)"
-            >
-              {{ player.name }}
-            </b-button>
-          </div>
+        <template v-else-if="featuredPlayers.length > 0">
+          {{ $t('index.recents') }}
         </template>
-      </client-only>
+      </div>
+      <div class="ml-2">
+        <b-button
+          v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
+          :key="player.tag"
+          :to="player.link"
+          class="ml-2 mt-1"
+          xs
+          primary
+          @click.passive="addLastPlayer(player)"
+        >
+          {{ player.name }}
+        </b-button>
+      </div>
     </div>
 
     <ad
@@ -257,7 +234,9 @@ export default defineComponent({
       link: localePath(`/profile/${p.tag.replace(/^#/, '')}`),
     })
 
-    const lastPlayers = computed(() => store.lastPlayers
+    const preferencesStore = usePreferencesStore()
+
+    const lastPlayers = computed(() => preferencesStore.lastPlayers
       .slice(0, 3)
       .map(mapToPlayerLink))
 
@@ -268,11 +247,9 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('home')
 
-    const store = usePreferencesStore()
-
     const helpDropdown = ref<HTMLElement>()
 
-    const addLastPlayer = (player: PlayerLink) => store.addLastPlayer(player)
+    const addLastPlayer = (player: PlayerLink) => preferencesStore.addLastPlayer(player)
 
     const router = useRouter()
     const loading = ref(false)
@@ -295,7 +272,7 @@ export default defineComponent({
       try {
         loading.value = true
         await brawlstarsStore.loadPlayer(cleanedTag.value)
-        store.addLastPlayer(brawlstarsStore.player!)
+        preferencesStore.addLastPlayer(brawlstarsStore.player!)
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
@@ -332,7 +309,7 @@ export default defineComponent({
         'event_label': 'success',
       })
 
-      store.setUserTag(cleanedTag.value)
+      preferencesStore.userTag = cleanedTag.value
 
       router.push(localePath(`/profile/${cleanedTag.value}`))
     }

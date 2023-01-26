@@ -23,19 +23,21 @@
 
     <slot></slot>
 
-    <b-cookie-consent
-      v-if="consentPopupVisible"
-      @enable-none="disableCookies"
-      @enable-cookies="enableCookies"
-      @enable-all="enableCookiesAndAds"
-    >
-      <template v-slot:link>
-        <router-link
-          class="underline"
-          :to="localePath('/about')"
-        >link</router-link>
-      </template>
-    </b-cookie-consent>
+    <client-only>
+      <b-cookie-consent
+        v-if="consentPopupVisible"
+        @enable-none="disableCookies"
+        @enable-cookies="enableCookies"
+        @enable-all="enableCookiesAndAds"
+      >
+        <template v-slot:link>
+          <router-link
+            class="underline"
+            :to="localePath('/about')"
+          >link</router-link>
+        </template>
+      </b-cookie-consent>
+    </client-only>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
     <b-web-footer
@@ -55,11 +57,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
-import { setIsPwa, setIsTwa, useInstallPromptListeners } from '~/composables/app'
-import { event, optIn } from 'vue-gtag'
+import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
 import { useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
@@ -91,75 +92,20 @@ export default defineComponent({
     }])
 
     const store = usePreferencesStore()
-    const adsAllowed = computed(() => store.adsAllowed)
-    const cookiesAllowed = computed(() => store.cookiesAllowed)
     const consentPopupVisible = computed(() => store.consentPopupVisible)
 
     const disableCookies = () => {
-      store.setCookiesAllowed(false)
-      store.setAdsAllowed(false)
-      hideAds()
+      store.cookiesAllowed = false
+      store.adsAllowed = false
     }
     const enableCookies = () => {
-      store.setCookiesAllowed(true)
-      store.setAdsAllowed(false)
-      hideAds()
+      store.cookiesAllowed = true
+      store.adsAllowed = false
     }
     const enableCookiesAndAds = () => {
-      store.setCookiesAllowed(true)
-      store.setAdsAllowed(true)
-      enableAds()
+      store.cookiesAllowed = true
+      store.adsAllowed = true
     }
-
-    const enableAds = async () => {
-      if (adsAllowed.value && !import.meta.env.SSR) {
-        // update consent preferences
-        if ('adsbygoogle' in window) {
-          (<any>window).adsbygoogle.pauseAdRequests = 0
-        }
-        optIn()
-
-        // track some meta data
-        // play store allows only 1 ad/page - TWA is detected via referrer
-        const isPwa = window.matchMedia('(display-mode: standalone)').matches
-        const isTwa = document.referrer.startsWith('android-app')
-
-        setIsPwa(isPwa)
-        setIsTwa(isTwa)
-
-        event('branch_dimension', {
-          'branch': import.meta.env.VITE_BRANCH || '',
-          'non_interaction': true,
-        })
-        event('is_pwa_dimension', {
-          'is_pwa': isPwa,
-          'non_interaction': true,
-        })
-        event('is_twa_dimension', {
-          'is_twa': isTwa,
-          'non_interaction': true,
-        })
-      }
-    }
-    const hideAds = () => {
-      if (!import.meta.env.SSR) {
-        (<any>window).adsbygoogle.pauseAdRequests = 1
-        const sheet = document.createElement('style')
-        sheet.type = 'text/css'
-        sheet.innerText = '.adswrapper { display: none; }'
-        document.head.appendChild(sheet)
-      }
-    }
-
-    onMounted(() => {
-      if (cookiesAllowed.value && cookiesAllowed.value) {
-        if (adsAllowed.value) {
-          enableAds()
-        } else {
-          hideAds()
-        }
-      }
-    })
 
     const route = useRoute()
 

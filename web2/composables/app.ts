@@ -90,7 +90,7 @@ export function useInstall(source: string) {
       'event_category': 'app',
       'event_label': `install_${source}`,
     })
-    store.dismissInstallBanner()
+    store.installBannerDismissed = true
     clearInstallPrompt()
   }
   const clickInstall = async () => {

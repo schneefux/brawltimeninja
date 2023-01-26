@@ -8,7 +8,7 @@ export default defineComponent({
     useValidate(async ({ redirect }) => {
       redirect(301, '/leaderboard/hours')
       return true
-    },
+    })
   },
 })
 </script>
