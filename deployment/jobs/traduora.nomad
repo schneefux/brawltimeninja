@@ -41,7 +41,7 @@ job "traduora" {
 
       env {
         NODE_ENV = "production"
-        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
         TR_PORT = "${NOMAD_PORT_http}"
         TR_DB_DATABASE = "traduora"
         TR_SIGNUPS_ENABLED = "false"
