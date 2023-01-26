@@ -68,7 +68,7 @@ export function useSwitchToLocale() {
 
     i18n.locale.value = code
 
-    const to = router.resolve({ params: { locale: code} })
+    const to = router.resolve({ params: { locale: code } })
     router.push(to)
   }
 
