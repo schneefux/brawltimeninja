@@ -1,4 +1,4 @@
-import { createSSRApp, markRaw } from 'vue'
+import { createSSRApp, markRaw, reactive } from 'vue'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import KlickerPlugin, { createClient as createKlickerClient } from '~/plugins/klicker'
 import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
@@ -31,7 +31,7 @@ declare module 'pinia' {
   }
 }
 
-async function createApp(pageContext: PageContext) {
+function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
   const app = createSSRApp(Page)
@@ -40,7 +40,7 @@ async function createApp(pageContext: PageContext) {
     app.config.performance = true
   }
 
-  setPageContext(app, pageContext)
+  setPageContext(app, reactive(pageContext))
 
   const i18n = createI18n({
     legacy: false,

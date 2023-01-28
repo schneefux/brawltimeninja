@@ -2,7 +2,7 @@
   <component :is="Layout">
     <router-view v-slot="{ Component }">
       <Suspense>
-        <component :is="Component" />
+        <component :is="Component"></component>
       </Suspense>
     </router-view>
   </component>

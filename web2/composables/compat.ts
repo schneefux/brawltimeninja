@@ -9,7 +9,7 @@ import { useHead, ReactiveHead } from "@unhead/vue"
 import { locales, loadLocale } from "@/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
-import { onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -98,18 +98,18 @@ export function useMeta(fun: () => ReactiveHead) {
   const meta = computed(fun)
   useHead(meta)
 }
-
-export function useRedirect() {
-  const pageContext = usePageContext()
-  return (status: number, url: string) => pageContext.redirectTo = { status, url }
+// see https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/node/runtime/renderPage/RenderErrorPage.ts
+function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}) {
+  const err = new Error('RenderErrorPage')
+  Object.assign(err, { pageContext, '__isRenderErrorPageException': true })
+  return err
 }
-
 interface ValidateContext {
   params: Record<string, string|string[]>
   redirect: (status: number, url: string) => void
   error: (e: { statusCode: number, message: string }) => void
 }
-export async function useValidate(cb: (context: ValidateContext) => Promise<boolean>) {
+export async function useValidate(cb: (context: ValidateContext) => Promise<boolean|undefined>) {
   const pageContext = usePageContext()
   const router = useRouter()
   const route = useRoute()
@@ -121,30 +121,50 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
 
     pageContext.validated = true
 
-    let redirectTarget: { status: number, url: string } | undefined = undefined
-
-    const error = (e: { statusCode: number, message: string }) => redirectTarget = { status: e.statusCode, url: '/error' }
-    const redirect = (status: number, url: string) => redirectTarget = { status, url }
+    const error = (e: { statusCode: number, message: string }) => {
+      if (import.meta.env.SSR) {
+        throw RenderErrorPage({
+          pageContext: {
+            statusCode: e.statusCode,
+            errorMessage: e.message,
+          },
+        })
+      } else {
+        router.replace({
+          name: 'error',
+          params: { pathMatch: route.path.substring(1).split('/') },
+          query: route.query,
+          hash: route.hash,
+        })
+      }
+    }
+    const redirect = (status: number, url: string) => {
+      if (import.meta.env.SSR) {
+        pageContext.statusCode = status
+        pageContext.redirectTo = url
+      } else {
+        router.replace(url)
+      }
+    }
 
     const context: ValidateContext = { params: route.params, redirect, error }
     const isValid = await cb(context)
 
-    if (!isValid) {
-      redirectTarget = redirectTarget ?? { status: 404, url: '/404' }
-    }
-
-    if (redirectTarget != undefined) {
-      if (import.meta.env.SSR) {
-        pageContext.redirectTo = redirectTarget
-      } else {
-        router.replace(redirectTarget.url)
-      }
+    if (isValid === false) {
+      error({ statusCode: 404, message: 'Not found' })
     }
   }
 
   onBeforeRouteUpdate(async (to) => {
     pageContext.validated = false
+    pageContext.statusCode = undefined
+    pageContext.redirectTo = undefined
     await runValidate(to)
+  })
+  onBeforeRouteLeave(() => {
+    pageContext.validated = false
+    pageContext.statusCode = undefined
+    pageContext.redirectTo = undefined
   })
 
   await runValidate(route)

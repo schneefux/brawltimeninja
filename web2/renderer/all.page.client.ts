@@ -8,7 +8,7 @@ export const prefetchStaticAssets = { when: 'HOVER' }
 export { render }
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
-  const params = await createApp(pageContext)
+  const params = createApp(pageContext)
   hydrate(params.queryClient, pageContext.vueQueryState)
   params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
   await params.router.isReady()

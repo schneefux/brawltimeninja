@@ -12,13 +12,13 @@ export { passToClient }
 export { render }
 
 const passToClient = [
-  'pageProps',
   'vueQueryState',
   'piniaState',
-  'documentProps',
   'errorWhileRendering',
   'config',
   'validated',
+  'statusCode',
+  'redirectTo',
 ]
 
 function onBeforeRender(pageContext: PageContext) {
@@ -42,12 +42,22 @@ function onBeforeRender(pageContext: PageContext) {
 }
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
-  const { app, head, pinia, router, queryClient } = await createApp(pageContext)
+  const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
+  let firstError: unknown = undefined
+  app.config.errorHandler = (err) => {
+    firstError = firstError ?? err
+    return false
+  }
   router.push(pageContext.urlPathname)
   await router.isReady()
 
-  const string = await renderToString(app) // use string - streaming interferes with data loading
+  let string = await renderToString(app)
+  if (firstError) {
+    //throw RenderErrorPage({ pageContext: {} })
+    throw firstError
+  }
+
   const payload = await renderSSRHead(head)
   const vueQueryState = dehydrate(queryClient)
   const piniaState = SuperJSON.stringify(pinia.state.value)
@@ -63,7 +73,6 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         ${dangerouslySkipEscape(payload.bodyTags)}
       </body>
     </html>`
-
 
   return {
     documentHtml,

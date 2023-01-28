@@ -34,8 +34,10 @@ export type PageContextCustom = {
   piniaState: string
   errorWhileRendering?: Error
   config: Config
-  redirectTo: { status: number, url: string }
   validated: null | boolean
+  statusCode?: number
+  redirectTo?: string
+  errorMessage?: string
   responseHeaders: Record<string, string>
 }
 

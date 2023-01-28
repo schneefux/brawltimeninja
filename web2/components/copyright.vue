@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      &#169; 2018 - 2022 Brawl Time Ninja
+      &#169; 2018 - 2023 Brawl Time Ninja
       ({{ releaseVersion }})
     </p>
     <p v-if="$i18n.locale != 'en'">

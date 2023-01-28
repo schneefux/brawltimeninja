@@ -1,5 +1,8 @@
 <template>
-  <b-page :title="$t('player.meta.title', { name: player.name })">
+  <b-page
+    v-if="player != undefined"
+    :title="$t('player.meta.title', { name: player.name })"
+  >
     <ad
       ad-slot="9429125351"
       first
@@ -291,7 +294,7 @@ export default defineComponent({
       if (tag != params.tag) {
         // fuck Bing for lowercasing all URLs
         redirect(301, `/profile/${tag}`)
-        return false
+        return
       }
 
       if (!tagPattern.test(tag)) {
@@ -306,17 +309,17 @@ export default defineComponent({
         await store.loadPlayer(params.tag)
       } catch (err: any) {
         if (err.response?.status == 404) {
-          return true
+          return
         }
 
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
             error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
-            return true
+            return
           }
           if (err.data?.httpStatus >= 400) {
             error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
-            return true
+            return
           }
         }
 

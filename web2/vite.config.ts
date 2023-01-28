@@ -20,12 +20,6 @@ const config: UserConfig = {
       importMode: 'async',
       routeStyle: 'nuxt',
       resolver: 'vue',
-      onRoutesGenerated(routes) {
-        return routes.map(r => ({
-          ...r,
-          path: r.path.substring(1), // remove leading slash to support usage as locale child route
-        }))
-      },
     }),
     VitePWA({
       devOptions: {
