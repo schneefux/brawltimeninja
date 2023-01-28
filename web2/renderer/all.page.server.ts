@@ -49,7 +49,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     firstError = firstError ?? err
     return false
   }
-  router.push(pageContext.urlPathname)
+  router.push(pageContext.urlOriginal)
   await router.isReady()
 
   let string = await renderToString(app)

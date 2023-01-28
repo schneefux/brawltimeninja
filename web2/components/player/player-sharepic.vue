@@ -4,7 +4,7 @@
   >
     <div class="w-full flex items-center">
       <img
-        :src="`${$config.mediaUrl}/avatars/${player.icon.id}.png?size=112`"
+        :src="`${mediaUrl}/avatars/${player.icon.id}.png?size=112`"
         class="w-14 mr-4"
       >
       <span class="text-4xl font-semibold relative text-yellow-400">
@@ -100,13 +100,13 @@
         >
           <div class="w-full h-full">
             <img
-              :src="`${$config.mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
+              :src="`${mediaUrl}/brawlers/${brawler.id}/model.png?size=96`"
               class="w-auto h-full mx-auto"
             >
           </div>
           <div class="w-full flex items-center">
             <img
-              src="~/assets/images/icon/trophy_optimized.png"
+              :src="trophyIcon"
               class="h-5 inline"
             >
             <span class="ml-1 text-xl font-bold">
@@ -124,10 +124,11 @@
 </template>
 
 <script lang="ts">
-import { Player } from '@/model/Brawlstars'
+import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { computed, defineComponent, PropType } from 'vue'
 import { useContext } from '@/composables/compat'
+import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 
 export default defineComponent({
   props: {
@@ -158,11 +159,13 @@ export default defineComponent({
       .sort((b1, b2) => b2.trophies - b1.trophies))
 
     const { $config } = useContext()
+    const mediaUrl = computed(() => $config.mediaUrl)
 
     return {
       hours,
       bestBrawlers,
-      $config,
+      mediaUrl,
+      trophyIcon,
     }
   },
 })

@@ -178,3 +178,11 @@ function useHeaders(headers: Record<string, string>) {
 export function useCacheHeaders() {
   useHeaders({ 'Cache-Control': 'public, maxage=60' })
 }
+
+export function useCspHeaders() {
+  const { $config } = useContext()
+  const allowedOrigins = [$config.mediaUrl, $config.cubeUrl]
+  useHeaders({
+    'Content-Security-Policy': `default-src 'self' 'unsafe-inline' 'unsafe-eval' ${allowedOrigins.join(' ')}`,
+  })
+}

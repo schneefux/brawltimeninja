@@ -57,6 +57,7 @@ export default defineComponent({
   },
 })
 </script>
+
 <route lang="json5">
 {
   path: '/:pathMatch(.*)*',

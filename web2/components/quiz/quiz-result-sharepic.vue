@@ -4,16 +4,15 @@
       <span class="mt-1 font-semibold">{{ result.name }}</span>
       <span class="whitespace-nowrap">{{ Math.round(result.similarity * 100) }}% match</span>
       <media-img
-        clazz="h-48 m-2"
         :path="`/brawlers/${result.id}/model`"
+        clazz="h-48 m-2"
       ></media-img>
     </div>
 
-    <template v-slot:content><oejts-table
-      
+    <oejts-table
       :oejts="result.score"
       class="w-80"
-    ></oejts-table></template>
+    ></oejts-table>
   </div>
 </template>
 
