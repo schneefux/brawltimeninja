@@ -213,7 +213,7 @@ export default defineComponent({
   },
   async setup() {
     const i18n = useI18n()
-    const { $config, $sentry } = useContext()
+    const { $config } = useContext()
 
     const route = useRoute()
 
@@ -288,7 +288,7 @@ export default defineComponent({
       element: sectionRefs.recordsSection.value?.$el,
     }])
 
-    await useLoadAndValidatePlayer(computed(() => route.params.tag as string), '/profile/')
+    await useLoadAndValidatePlayer('/profile/')
 
     return {
       player,

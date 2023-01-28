@@ -1,24 +1,23 @@
 import { tagPattern } from "@/lib/util"
 import { useBrawlstarsStore } from "@/stores/brawlstars"
 import { TRPCClientError } from "@trpc/client"
-import { Ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useContext, useValidate } from "./compat"
 
-export async function useLoadAndValidatePlayer(tag: Ref<string>, urlPrefix: string) {
+export async function useLoadAndValidatePlayer(urlPrefix: string) {
   const { $sentry } = useContext()
   const i18n = useI18n()
   const store = useBrawlstarsStore()
 
   return useValidate(async ({ params, redirect, error }) => {
-    const tagU = tag.value.toUpperCase()
-    if (tagU != tag.value) {
+    const tag = (params.tag as string).toUpperCase()
+    if (tag != params.tag) {
       // fuck Bing for lowercasing all URLs
-      redirect(301, urlPrefix + tagU)
+      redirect(301, urlPrefix + tag)
       return
     }
 
-    if (!tagPattern.test(tagU)) {
+    if (!tagPattern.test(tag)) {
       return false
     }
 
@@ -27,7 +26,7 @@ export async function useLoadAndValidatePlayer(tag: Ref<string>, urlPrefix: stri
     }
 
     try {
-      await store.loadPlayer(tagU)
+      await store.loadPlayer(tag)
     } catch (err: any) {
       if (err.response?.status == 404) {
         return

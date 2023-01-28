@@ -14,7 +14,6 @@ import { useCacheHeaders, useCspHeaders } from '@/composables/compat'
 import { useLoadAndValidatePlayer } from '@/composables/player'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { defineComponent, computed } from 'vue'
-import { useRoute } from 'vue-router'
 import { ratingPercentiles } from '~/lib/util'
 import PlayerSharepic from '@/components/player/player-sharepic.vue'
 
@@ -51,8 +50,7 @@ export default defineComponent({
       return '?'
     })
 
-    const route = useRoute()
-    await useLoadAndValidatePlayer(computed(() => route.params.tag as string), '/embed/profile/')
+    await useLoadAndValidatePlayer('/embed/profile/')
 
     return {
       player,
