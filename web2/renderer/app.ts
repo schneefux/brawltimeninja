@@ -52,7 +52,7 @@ async function createApp(pageContext: PageContext) {
   const themeColor = '#facc15' // yellow-400
   const head = createHead()
   head.push({
-    titleTemplate: '%s - Brawl Time Ninja',
+    titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {
       class: ['dark'],
     },

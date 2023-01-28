@@ -7,9 +7,11 @@
       :title="$t('draft-tool.subtitle')"
       class="mt-3"
     >
-      <p slot="content" class="prose dark:prose-invert">
-        {{ $t('draft-tool.description') }}
-      </p>
+      <template v-slot:content>
+        <p class="prose dark:prose-invert">
+          {{ $t('draft-tool.description') }}
+        </p>
+      </template>
     </b-card>
 
     <c-slicer
@@ -28,16 +30,15 @@
       class="mt-8"
     >
       <template v-slot="totals">
-        <b-dashboard
-          slot="brawlers"
-          responsive
-        >
+        <b-dashboard responsive>
           <b-dashboard-cell
             :rows="2"
             :columns="3"
           >
             <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
-              <p slot="content">{{ $t('brawler.disclaimer') }}</p>
+              <template v-slot:content>
+                <p>{{ $t('brawler.disclaimer') }}</p>
+              </template>
             </b-card>
           </b-dashboard-cell>
           <b-dashboard-cell

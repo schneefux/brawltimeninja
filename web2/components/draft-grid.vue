@@ -1,47 +1,49 @@
 <template>
   <div>
     <b-card :title="$t('draft-tool.selected-team')">
-      <template v-slot:content><div >
-        <p>
-          <template v-if="team.length == 0">
-            {{ $t('draft-tool.none-selected') }}
-          </template>
-          <template v-else-if="teamWinRate != undefined">
-            {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
-          </template>
-          <template v-if="notEnoughData">
-            <br>{{ $t('draft-tool.not-enough-data') }}
-          </template>
-        </p>
+      <template v-slot:content>
+        <div>
+          <p>
+            <template v-if="team.length == 0">
+              {{ $t('draft-tool.none-selected') }}
+            </template>
+            <template v-else-if="teamWinRate != undefined">
+              {{ $t('draft-tool.estimated.win-rate')}}: <span class="font-semibold">{{ teamWinRate }}</span>
+            </template>
+            <template v-if="notEnoughData">
+              <br>{{ $t('draft-tool.not-enough-data') }}
+            </template>
+          </p>
 
-        <div class="h-12 md:h-16 flex justify-center mx-2 my-3 space-x-2">
-          <button
-            v-for="brawler in team"
-            :key="brawler.id"
-            @click="removeFromTeam(brawler)"
-          >
-            <media-img
-              :path="`/brawlers/${brawler.id}/avatar`"
-              :alt="brawler.brawlerName"
-              size="160"
-              clazz="rounded-md w-12 md:w-16"
-            ></media-img>
-          </button>
+          <div class="h-12 md:h-16 flex justify-center mx-2 my-3 space-x-2">
+            <button
+              v-for="brawler in team"
+              :key="brawler.id"
+              @click="removeFromTeam(brawler)"
+            >
+              <media-img
+                :path="`/brawlers/${brawler.id}/avatar`"
+                :alt="brawler.brawlerName"
+                size="160"
+                clazz="rounded-md w-12 md:w-16"
+              ></media-img>
+            </button>
 
-          <b-button
-            v-show="team.length > 0"
-            class="mb-auto"
-            primary
-            round
-            xs
-            @click="clearTeam()"
-          >
-            <font-awesome-icon
-              :icon="faTimes"
-            ></font-awesome-icon>
-          </b-button>
+            <b-button
+              v-show="team.length > 0"
+              class="mb-auto"
+              primary
+              round
+              xs
+              @click="clearTeam()"
+            >
+              <font-awesome-icon
+                :icon="faTimes"
+              ></font-awesome-icon>
+            </b-button>
+          </div>
         </div>
-      </div></template>
+      </template>
     </b-card>
 
     <b-card
@@ -49,33 +51,35 @@
       :loading="loading > 0"
       class="mt-8"
     >
-      <template v-slot:content><div  class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
-        <button
-          v-for="brawler in allyData"
-          :key="brawler.id"
-          :class="['relative border-2 border-gray-800 shadow-md rounded-md', {
-            'opacity-50': !brawler.selectable,
-          }]"
-          @click="addToTeam(brawler)"
-        >
-          <media-img
-            :path="`/brawlers/${brawler.id}/avatar`"
-            :alt="brawler.brawlerName"
-            size="160"
-            clazz="rounded-sm"
-          ></media-img>
-          <span
-            v-if="brawler.selectable"
-            class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-80 leading-tight text-sm md:text-base rounded-br-sm"
-            :class="{
-              'text-red-400': brawler.normContributingWinRate < 0.33,
-              'text-green-400': brawler.normContributingWinRate >= 0.66,
-            }"
+      <template v-slot:content>
+        <div class="mt-1 mb-3 grid grid-cols-6 md:grid-cols-8 gap-2">
+          <button
+            v-for="brawler in allyData"
+            :key="brawler.id"
+            :class="['relative border-2 border-gray-800 shadow-md rounded-md', {
+              'opacity-50': !brawler.selectable,
+            }]"
+            @click="addToTeam(brawler)"
           >
-            {{ brawler.contributingWinRateFormatted }}
-          </span>
-        </button>
-      </div></template>
+            <media-img
+              :path="`/brawlers/${brawler.id}/avatar`"
+              :alt="brawler.brawlerName"
+              size="160"
+              clazz="rounded-sm"
+            ></media-img>
+            <span
+              v-if="brawler.selectable"
+              class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-80 leading-tight text-sm md:text-base rounded-br-sm"
+              :class="{
+                'text-red-400': brawler.normContributingWinRate < 0.33,
+                'text-green-400': brawler.normContributingWinRate >= 0.66,
+              }"
+            >
+              {{ brawler.contributingWinRateFormatted }}
+            </span>
+          </button>
+        </div>
+      </template>
     </b-card>
   </div>
 </template>
@@ -152,13 +156,10 @@ export default defineComponent({
       return data
     }
 
-    const brawlerData = useAsync(() => getBrawlerData(), 'draft-grid-brawler-data')
-    const synergyData = useAsync(() => getSynergyData(), 'draft-grid-synergy-data')
-
-    watch(() => props.query.slices, async () => {
-      brawlerData.value = await getBrawlerData()
-      synergyData.value = await getSynergyData()
-    })
+    const brawlerData = useAsync(getBrawlerData,
+      computed(() => `draft-grid-brawler-data-${JSON.stringify(props.query.slices)}`))
+    const synergyData = useAsync(getSynergyData,
+      computed(() => `draft-grid-synergy-data-${JSON.stringify(props.query.slices)}`))
 
     const winrateModel = computed(() => {
       if (synergyData.value == undefined) {
