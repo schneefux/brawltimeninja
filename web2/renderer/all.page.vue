@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, ComponentPublicInstance, computed } from 'vue'
+import { defineComponent, ComponentPublicInstance, computed } from 'vue'
 import '~/assets/css/tailwind.css'
 import '~/assets/css/transitions.css'
 import '~/assets/css/fonts.css'
@@ -19,15 +19,14 @@ if (import.meta.env.DEV) {
   import('~/assets/css/development.css')
 }
 
-const layouts = import.meta.glob<ComponentPublicInstance>('~/layouts/*.vue')
+const layouts = import.meta.glob<ComponentPublicInstance>('~/layouts/*.vue', { eager: true, import: 'default' })
 
 export default defineComponent({
   setup() {
     const route = useRoute()
     const Layout = computed(() => {
       const layout = route.meta.layout as string ?? 'default'
-      const promise = layouts[`/layouts/${layout}.vue`]
-      return defineAsyncComponent(promise)
+      return layouts[`/layouts/${layout}.vue`]
     })
 
     return {

@@ -46,7 +46,7 @@
           >
             <v-sample-size
               v-bind="totals"
-              card
+              :card="{}"
             ></v-sample-size>
           </b-dashboard-cell>
         </b-dashboard>

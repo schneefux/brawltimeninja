@@ -54,6 +54,10 @@ function createRouter(i18n: I18n<{}, {}, {}, Locale, false>, mediaUrl: string, h
         }
       }
 
+      if (to.path == from.path) {
+        return
+      }
+
       return { top: 0 }
     },
   })

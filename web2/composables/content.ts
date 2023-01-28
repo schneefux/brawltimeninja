@@ -1,7 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import yaml from 'js-yaml'
 import { useAsync, useContext } from './compat'
-import { computed } from 'vue'
 
 export const useContent = (path: string) => {
   const { error } = useContext()

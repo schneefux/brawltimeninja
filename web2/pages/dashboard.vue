@@ -16,13 +16,13 @@
         <b-dashboard-cell :columns="2">
           <v-sample-size
             v-bind="data"
-            card
+            :card="{}"
           ></v-sample-size>
         </b-dashboard-cell>
         <b-dashboard-cell :columns="2">
           <v-last-update
             v-bind="data"
-            card
+            :card="{}"
           ></v-last-update>
         </b-dashboard-cell>
       </template>
@@ -30,7 +30,7 @@
       <template v-slot:data="data">
         <v-auto
           v-bind="data"
-          card
+          :card="{}"
           for-grid
           all
         ></v-auto>
