@@ -56,20 +56,16 @@ export function useContext() {
 }
 
 export function useSwitchToLocale() {
+  const route = useRoute()
   const router = useRouter()
-  const { $config } = useContext()
   const i18n = useI18n()
 
-  const switchToLocale = async (code: string) => {
-    if (!i18n.availableLocales.includes(code)) {
-      const messages = await loadLocale($config.mediaUrl, code)
-      i18n.setLocaleMessage(code, messages)
-    }
-
-    i18n.locale.value = code
-
-    const to = router.resolve({ params: { locale: code } })
-    router.push(to)
+  const switchToLocale = (code: string) => {
+    const urlPaths = route.fullPath.split('/')
+    const firstPath = urlPaths[1]
+    const urlWithoutLocale = (firstPath == i18n.locale.value) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
+    const newPath = `${code == i18n.fallbackLocale.value ? '' : '/' + code}` + urlWithoutLocale
+    router.push(newPath)
   }
 
   return { locales, switchToLocale }

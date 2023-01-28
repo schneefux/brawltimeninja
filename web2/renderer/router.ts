@@ -4,7 +4,6 @@ import { I18n, Locale } from 'vue-i18n'
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // @ts-ignore
 import routes from '~pages'
-import ErrorPage from '../pages/error.vue'
 
 export { createRouter }
 
