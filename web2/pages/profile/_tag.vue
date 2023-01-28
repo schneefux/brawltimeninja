@@ -199,6 +199,7 @@ import { tagPattern } from '~/lib/util'
 import { TRPCClientError } from '@trpc/client'
 import { useRoute } from 'vue-router'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -209,7 +210,8 @@ export default defineComponent({
     BScrollSpy,
   },
   async setup() {
-    const { i18n, $config, $sentry } = useContext()
+    const i18n = useI18n()
+    const { $config, $sentry } = useContext()
 
     const route = useRoute()
 
@@ -264,7 +266,7 @@ export default defineComponent({
       element: sectionRefs.trophySection.value?.$el,
     }, {
       id: 'brawlers',
-      title: i18n.tc('brawler', 2),
+      title: i18n.t('brawler', 2),
       element: sectionRefs.brawlersSection.value?.$el,
     }, {
       id: 'quiz',
@@ -276,7 +278,7 @@ export default defineComponent({
       element: sectionRefs.battlesSection.value?.$el,
     }, {
       id: 'modes',
-      title: i18n.tc('mode', 2),
+      title: i18n.t('mode', 2),
       element: sectionRefs.modesSection.value?.$el,
     }, {
       id: 'records',

@@ -2,7 +2,7 @@
   <c-query :query="query">
     <template v-slot="data">
       <v-lineplot
-        v-bind="data"
+        v-bind="{ ...$attrs, ...data }"
         :card="card"
       ></v-lineplot>
     </template>
@@ -21,6 +21,7 @@ import { computed, defineComponent } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
+  inheritAttrs: false, // can render an empty node, then Vue would complain about leftover attributes
   components: {
     VLineplot,
   },

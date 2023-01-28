@@ -111,6 +111,7 @@ export interface ClubMember {
   name: string
   nameColor: string
   trophies: number
+  role: string
   icon: {
     id: number
   }

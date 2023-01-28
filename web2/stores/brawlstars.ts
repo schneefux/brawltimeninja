@@ -1,3 +1,4 @@
+import { Club } from '@/model/Brawlstars'
 import { defineStore } from 'pinia'
 import { tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
@@ -12,6 +13,7 @@ interface State {
   totalBrawlers: number
   player: Player|undefined
   playerTotals: PlayerTotals|undefined
+  club: Club|undefined
 }
 
 export interface PlayerTotals {
@@ -41,11 +43,11 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
     totalBrawlers: 56,
     player: undefined,
     playerTotals: undefined,
+    club: undefined,
   }),
   actions: {
     async loadPlayer(tag: string) {
-      const player = await this.api.player.byTag.query(tag)
-      this.setPlayer(player)
+      this.player = await this.api.player.byTag.query(tag)
 
       const battleData = await this.klicker.query({
         cubeId: 'battle',
@@ -64,30 +66,27 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
       }))
 
       if (battleData.data[0].metricsRaw.picks > 0) {
-        const totals = battleData.data[0].metricsRaw as PlayerTotals
-        this.setPlayerTotals(totals)
+        this.playerTotals = battleData.data[0].metricsRaw as PlayerTotals
       } else {
         // calculate player totals from battle log
-        const picks = player.battles.length
-        const trophyChanges = player.battles
+        const picks = this.player.battles.length
+        const trophyChanges = this.player.battles
           .map((battle) => battle.trophyChange)
           .filter((trophyChange): trophyChange is number => trophyChange != undefined)
-        const trophyChange = trophyChanges.length == 0 ? 0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
-        const winRate = player.battles.length == 0 ? 0 : player.battles.filter((battle) => battle.victory).length / player.battles.length
+        const trophyChange = trophyChanges.length == 0 ?
+          0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+        const winRate = this.player.battles.length == 0 ?
+          0 : this.player.battles.filter((battle) => battle.victory).length / this.player.battles.length
 
-        const totals = {
+        this.playerTotals = {
           picks,
           trophyChange,
           winRate,
         }
-        this.setPlayerTotals(totals)
       }
     },
-    setPlayer(player: Player) {
-      this.player = player
-    },
-    setPlayerTotals(totals: PlayerTotals) {
-      this.playerTotals = totals
+    async loadClub(tag: string) {
+      this.club = await this.api.club.byTag.query(tag)
     },
   },
 })

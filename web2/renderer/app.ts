@@ -36,6 +36,10 @@ async function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(Page)
 
+  if (import.meta.env.DEV) {
+    app.config.performance = true
+  }
+
   setPageContext(app, pageContext)
 
   const i18n = createI18n({
