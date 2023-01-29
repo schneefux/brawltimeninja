@@ -86,13 +86,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { computed, PropType, ref, watch } from 'vue'
+import { computed, PropType, ref } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { BCard } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import buildTeamWinratePredictor from '~/lib/klicker.ml'
-import { useKlicker } from '@/../klicker/composables'
+import { useKlicker } from '@schneefux/klicker/composables'
 import { useAsync } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 

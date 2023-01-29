@@ -18,7 +18,7 @@ import { formatClickhouseDate, getTodaySeasonEnd } from '@/lib/util'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { useRoute } from 'vue-router'
 import { useCacheHeaders } from '@/composables/compat'
-import { CubeQuery } from '@/../klicker/types'
+import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
   components: {
