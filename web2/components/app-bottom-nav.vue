@@ -12,15 +12,16 @@ import { defineComponent, computed } from 'vue'
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
 import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
 import { BAppBottomNav } from '@schneefux/klicker/components'
-import { useContext, useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
     BAppBottomNav,
   },
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const localePath = useLocalePath()
 
     const screens = computed<Screen[]>(() => {

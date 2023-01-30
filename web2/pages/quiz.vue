@@ -19,19 +19,20 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders, useContext, useMeta } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
 import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     useCacheHeaders()
     useMeta(() => {
-      const description = i18n.tc('oejts.meta.description')
+      const description = i18n.t('oejts.meta.description')
 
       return {
-        title: i18n.tc('oejts.meta.title'),
+        title: i18n.t('oejts.meta.title'),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },

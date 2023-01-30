@@ -5,7 +5,7 @@ import { SliceValue } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
-import { useContext, useAsync } from "./compat"
+import { useAsync, useApi } from "./compat"
 
 export function useAllEvents(slices: SliceValue = {}) {
   const $klicker = useKlicker()
@@ -47,7 +47,7 @@ export function useAllEvents(slices: SliceValue = {}) {
 
 export function useActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60) {
   const $klicker = useKlicker()
-  const { $api } = useContext()
+  const $api = useApi()
   const key = `active-events-${metricsIds.join('-')}-${JSON.stringify(slices)}-${maxage}`
 
   const events = useAsync(() => $klicker.query({

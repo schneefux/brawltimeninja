@@ -12,18 +12,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useCacheHeaders, useMeta } from '@/composables/compat'
-import { useContent } from '~/composables/content'
+import { usePost } from '~/composables/content'
 import ArticleCard from '~/components/article-card.vue'
-import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
     ArticleCard,
   },
-  setup() {
-    const route = useRoute()
-    const { post } = useContent('faq/' + route.params.faq)
-
+  async setup() {
     useCacheHeaders()
     useMeta(() => {
       if (post.value == undefined) {
@@ -38,6 +34,8 @@ export default defineComponent({
         ]
       }
     })
+
+    const post = await usePost('faq')
 
     return {
       post,

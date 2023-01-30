@@ -10,14 +10,10 @@
 <script lang="ts">
 import { useCacheHeaders, useMeta } from '@/composables/compat'
 import { defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
-import { useContent } from '~/composables/content'
+import { usePost } from '~/composables/content'
 
 export default defineComponent({
-  setup() {
-    const route = useRoute()
-    const { post } = useContent('guides/' + route.params.post)
-
+  async setup() {
     useCacheHeaders()
     useMeta(() => {
       if (post.value == undefined) {
@@ -32,6 +28,8 @@ export default defineComponent({
         ]
       }
     })
+
+    const post = await usePost('guides')
 
     return {
       post,

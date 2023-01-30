@@ -35,7 +35,7 @@ import { defineComponent, PropType, computed } from 'vue'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useDateFnLocale } from '~/composables/date-fns'
-import { useContext } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -61,7 +61,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const { locale } = useDateFnLocale()
 
     const mode = computed(() => props.slices.mode?.[0])

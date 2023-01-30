@@ -194,7 +194,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useCacheHeaders, useContext, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
@@ -213,7 +213,7 @@ export default defineComponent({
   },
   async setup() {
     const i18n = useI18n()
-    const { $config } = useContext()
+    const $config = useConfig()
 
     const route = useRoute()
 

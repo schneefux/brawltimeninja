@@ -30,7 +30,7 @@ import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } f
 import { VRoll, BShimmer, CQuery, BButton, BDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 import { getMapName } from '~/composables/map'
-import { useContext } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 interface Template {
   tab: string
@@ -68,7 +68,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)

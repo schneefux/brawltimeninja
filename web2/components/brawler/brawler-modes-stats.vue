@@ -27,7 +27,9 @@ import { defineComponent, computed } from 'vue'
 import { scaleInto } from '~/lib/util'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import { BScrollingList } from '@schneefux/klicker/components'
-import { useContext, useAsync } from '@/composables/compat'
+import { useAsync } from '@/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -40,7 +42,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
+    const $klicker = useKlicker()
+    const i18n = useI18n()
 
     async function fetch() {
       return (await $klicker.query({

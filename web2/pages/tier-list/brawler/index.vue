@@ -43,14 +43,15 @@
 import { defineComponent } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
-import { useCacheHeaders, useContext, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
     ObserveVisibility,
   },
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     useCacheHeaders()
     useMeta(() => {

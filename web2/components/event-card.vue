@@ -49,7 +49,8 @@
 import { camelToKebab, slugify } from '@/lib/util'
 import { defineComponent, computed, toRefs } from 'vue'
 import { useMapName } from '~/composables/map'
-import { useContext, useLocalePath } from '~/composables/compat'
+import { useConfig, useLocalePath } from '~/composables/compat'
+import { useSupportsWebp } from '@/composables/webp'
 
 export default defineComponent({
   props: {
@@ -69,8 +70,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config, $supportsWebp } = useContext()
+    const $config = useConfig()
     const localePath = useLocalePath()
+    const supportsWebp = useSupportsWebp()
 
     const background = computed(() => {
       if (props.nobackground) {
@@ -78,7 +80,7 @@ export default defineComponent({
       }
       const path = '/modes/' + camelToKebab(props.mode!) + '/background'
       const query = '?size=800'
-      const url = $config.mediaUrl + path + ($supportsWebp ? '.webp' : '.jpg') + query
+      const url = $config.mediaUrl + path + (supportsWebp.value ? '.webp' : '.jpg') + query
       return url
     })
 

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { useContext } from '@/composables/compat'
+import { useConfig } from '@/composables/compat'
 import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
@@ -41,7 +41,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $config } = useContext()
+    const $config = useConfig()
 
     const renderUrl = computed(() => {
       const url = new URL($config.renderUrl + props.embedUrl)

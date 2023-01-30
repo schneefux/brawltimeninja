@@ -57,7 +57,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { BScrollingList, BKvTable } from '@schneefux/klicker/components'
-import { useAsync, useContext } from '@/composables/compat'
+import { useApi, useAsync } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -75,7 +75,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $api } = useContext()
+    const $api = useApi()
 
     const leaderboard = useAsync(async () => {
       const data = await $api.rankings.playersByCountry.query({

@@ -130,11 +130,12 @@ import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
 import { event } from 'vue-gtag'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAsync, useApi } from '~/composables/compat'
 import clubIcon from '~/assets/images/icon/club.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -147,9 +148,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
-    const { $api } = useContext()
+    const $api = useApi()
     const loading = ref(false)
     const trackingStatus = useAsync(
       async () => {

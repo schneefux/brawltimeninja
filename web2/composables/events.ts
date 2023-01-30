@@ -2,10 +2,10 @@ import { unformatMode } from "@/lib/util"
 import { ActiveEvent } from "@/model/Api"
 import { EventMetadata } from "@/plugins/klicker.service"
 import { computed } from "vue"
-import { useAsync, useContext } from "./compat"
+import { useApi, useAsync } from "./compat"
 
 export function useCurrentAndUpcomingEvents() {
-  const { $api } = useContext()
+  const $api = useApi()
 
   const events = useAsync(() => $api.events.active.query().catch(() => ({ current: [], upcoming: [] })), 'events')
 

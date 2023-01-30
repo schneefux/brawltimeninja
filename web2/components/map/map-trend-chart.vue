@@ -16,7 +16,7 @@
 import { CQuery, VLineplot } from '@schneefux/klicker/components'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { computed, defineComponent, PropType, toRefs } from 'vue'
-import { useContext } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 import useTopNTitle from '~/composables/top-n-title'
 import { capitalizeWords, formatClickhouseDate, getSeasonEnd } from '~/lib/util'
 
@@ -60,7 +60,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const query = computed(() => {
       let comparingSlices: SliceValue|undefined = undefined

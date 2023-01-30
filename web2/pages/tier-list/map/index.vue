@@ -104,7 +104,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useCacheHeaders, useContext, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { ActiveEvent } from '@/model/Api'
@@ -112,6 +112,7 @@ import { useTrackScroll } from '~/composables/gtag'
 import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 import { useAllEvents } from '@/composables/dimension-values'
 import { useCurrentAndUpcomingEvents } from '@/composables/events'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -123,7 +124,8 @@ export default defineComponent({
     BScrollSpy,
   },
   setup() {
-    const { $config, i18n } = useContext()
+    const i18n = useI18n()
+    const $config = useConfig()
     const { current, upcoming } = useCurrentAndUpcomingEvents()
 
     const allEvents = useAllEvents()

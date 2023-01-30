@@ -34,8 +34,8 @@ import { defineComponent, PropType, computed } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
-import { useContext } from '~/composables/compat'
 import { useActiveEvents, useAllModes } from '@/composables/dimension-values'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -52,7 +52,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const events = useActiveEvents()
 
     const modesIds = useAllModes()

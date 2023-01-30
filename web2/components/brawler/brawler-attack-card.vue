@@ -22,9 +22,9 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
-import { useContext } from '@/composables/compat'
 import attackIconUrl from '~/assets/images/attack-icon.png'
 import superIconUrl from '~/assets/images/super-icon.png'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -46,7 +46,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const iconUrl = computed(() => props.prop == 'attack' ? attackIconUrl : superIconUrl)
 
     const scrapedDataProp = computed(() => props.scrapedData[props.prop])

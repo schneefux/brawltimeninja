@@ -1,12 +1,10 @@
-import { computed, inject, onServerPrefetch, Ref, watch } from "vue"
+import { computed, inject, onServerPrefetch, Ref, toRef, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
-import { useKlicker } from '@schneefux/klicker/composables'
 import { I18n, Locale, useI18n } from 'vue-i18n'
 import { usePageContext } from '~/renderer/usePageContext'
-import { BrawltimeKlickerService } from "@/plugins/klicker.service"
 import { TrpcInjectionKey } from "@/plugins/trpc"
 import { useHead, ReactiveHead } from "@unhead/vue"
-import { locales, loadLocale } from "@/locales";
+import { locales } from "@/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
@@ -21,6 +19,27 @@ export function useAsync<T>(fun: () => Promise<T>, key: MaybeRef<string>): Ref<T
   return data
 }
 
+export async function useBlockingAsync<T>(fun: (ctx: ValidateContext) => Promise<T|undefined>, key: string): Promise<Ref<T>> {
+  const r = ssrRef<T|undefined>(undefined, key)
+
+  await useValidate(async ctx => {
+    const result = await fun(ctx)
+    r.value = result
+    return r.value != undefined
+  })
+
+  return r as Ref<T>
+}
+
+export function ssrRef<T>(defaultValue: T|undefined, key: string) {
+  const pageContext = usePageContext()
+  const r = toRef(pageContext.refs, key) as Ref<T|undefined>
+  if (r.value == undefined) {
+    r.value = defaultValue
+  }
+  return r
+}
+
 export function localePath(path: string, i18n: I18n<{}, {}, {}, Locale, false>['global']) {
   if (i18n.locale.value == i18n.fallbackLocale.value) {
     return path
@@ -33,23 +52,14 @@ export function useLocalePath() {
   return (path: string) => localePath(path, i18n)
 }
 
-export function useContext() {
-  const $klicker = useKlicker()
+export function useApi() {
   const $api = inject(TrpcInjectionKey)!
-  const i18n = useI18n()
-  const pageContext = usePageContext()
+  return $api
+}
 
-  return {
-    $klicker: $klicker as BrawltimeKlickerService,
-    $api,
-    $supportsWebp: false, // TODO
-    $config: pageContext.config,
-    i18n: {
-      ...i18n,
-      tc: i18n.t,
-    },
-    error: (e: { statusCode: number, message: string }) => {}, // TODO
-  }
+export function useConfig() {
+  const pageContext = usePageContext()
+  return pageContext.config
 }
 
 export function useSwitchToLocale() {
@@ -173,7 +183,7 @@ export function useCacheHeaders() {
 }
 
 export function useCspHeaders() {
-  const { $config } = useContext()
+  const $config = useConfig()
   const allowedOrigins = [$config.mediaUrl, $config.cubeUrl]
   useHeaders({
     'Content-Security-Policy': `default-src 'self' 'unsafe-inline' 'unsafe-eval' ${allowedOrigins.join(' ')}`,

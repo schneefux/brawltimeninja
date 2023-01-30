@@ -31,6 +31,7 @@ export type PageContextCustom = {
   exports: {
     Layout?: ComponentPublicInstance
   }
+  refs: Record<string, unknown>
   vueQueryState: DehydratedState
   piniaState: string
   errorWhileRendering?: Error

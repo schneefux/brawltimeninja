@@ -1,9 +1,9 @@
 <template>
-  <b-page class="max-w-md">
-    <b-card
-      v-if="club != undefined"
-      :title="club.name"
-    >
+  <b-page
+    v-if="club != undefined"
+    class="max-w-md"
+  >
+    <b-card :title="club.name">
       <template v-slot:content>
         <blockquote class="mt-2 italic">
           {{ club.description }}
@@ -57,19 +57,17 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders, useContext, useMeta, useValidate } from '@/composables/compat'
+import { useApi, useBlockingAsync, useCacheHeaders, useMeta } from '@/composables/compat'
 import { capitalize, tagPattern } from '@/lib/util'
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { TRPCClientError } from '@trpc/client'
 import * as Sentry from '@sentry/vue'
 
 export default defineComponent({
   async setup() {
     const i18n = useI18n()
-    const store = useBrawlstarsStore()
-    const club = computed(() => store.club!)
+    const $api = useApi()
 
     useCacheHeaders()
 
@@ -84,47 +82,34 @@ export default defineComponent({
       }
     })
 
-    await useValidate(async ({ params, redirect, error }) => {
+    const club = await useBlockingAsync(async ({ params, redirect, error }) => {
       const tag = (params.tag as string).toUpperCase()
       if (tag != params.tag) {
         // fuck Bing for lowercasing all URLs
         redirect(301, `/club/${tag}`)
-        return false
+        return
       }
 
       if (!tagPattern.test(tag)) {
-        return false
-      }
-
-      if (store.player != undefined && store.player.tag == params.tag) {
-        return true
+        return
       }
 
       try {
-        await store.loadClub(params.tag)
+        return await $api.club.byTag.query(tag)
       } catch (err: any) {
-        if (err.response?.status == 404) {
-          return true
-        }
-
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
             error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
-            return true
           }
           if (err.data?.httpStatus >= 400) {
             error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
-            return true
           }
         }
 
-        console.error(err)
         Sentry.captureException(err)
-        error({ statusCode: 500, message: ' ' })
+        error({ statusCode: 500, message: '' })
       }
-
-      return true
-    })
+    }, 'club')
 
     return {
       club,

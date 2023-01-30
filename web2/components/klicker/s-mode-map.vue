@@ -76,8 +76,8 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
-import { useContext } from '~/composables/compat'
 import { useAllEvents } from '@/composables/dimension-values'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -95,7 +95,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const mode = computed(() => (props.modelValue.mode ?? [])[0])
     const map = computed(() => (props.modelValue.map ?? [])[0])

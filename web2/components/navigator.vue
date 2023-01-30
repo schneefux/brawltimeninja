@@ -52,10 +52,11 @@ import { getMapName } from '~/composables/map'
 import { brawlerId, camelToKebab, slugify, tagPattern } from '~/lib/util'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { TocEntry } from '~/model/Web'
-import { useAsync, useContext, useLocalePath } from '@/composables/compat'
+import { useAsync, useLocalePath } from '@/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useAllBrawlers, useAllEvents, useAllModes } from '@/composables/dimension-values'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -71,7 +72,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const localePath = useLocalePath()
     const brawlers = useAllBrawlers()
     const modes = useAllModes()

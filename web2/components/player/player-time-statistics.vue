@@ -44,8 +44,8 @@ import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { ref, computed, defineComponent, onMounted, PropType } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { useContext } from '~/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useI18n } from 'vue-i18n'
 
 interface FunStat {
   label: string
@@ -68,7 +68,7 @@ export default defineComponent({
     const hourCounter = ref<HTMLElement>()
     const counterRefs = ref<Record<string, HTMLElement|null>>({})
     const setCounterRef = (id: string|number, el: unknown|null) => counterRefs.value[id] = el as HTMLElement|null
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const startCounter = () => {
       const playerHours = Math.max(hours.value, 1)

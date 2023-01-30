@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts">
-import { useContext } from "@/composables/compat";
+import { useConfig } from "@/composables/compat";
 import { computed, defineComponent } from "vue";
 import googleLoginIcon from "~/assets/images/google_login.png";
 
 export default defineComponent({
   setup() {
-    const { $config } = useContext()
+    const $config = useConfig()
 
     const loginUrl = computed(() => $config.managerUrl + '/oauth/google')
 

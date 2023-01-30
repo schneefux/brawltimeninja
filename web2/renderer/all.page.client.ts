@@ -4,7 +4,6 @@ import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import { hydrate } from '@tanstack/vue-query'
 import SuperJSON from 'superjson'
 
-export const prefetchStaticAssets = { when: 'HOVER' }
 export { render }
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {

@@ -301,7 +301,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { useContext } from '~/composables/compat'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BDashboardCell, BTabs, BScrollingList, BDashboard } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
@@ -312,6 +311,7 @@ import { useSyncSlicesAndRoute } from '~/composables/link'
 import VLastUpdate from '~/components/klicker/v-last-update.vue'
 import VSampleSize from '~/components/klicker/v-sample-size.vue'
 import VMoe from '~/components/klicker/v-moe.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -363,7 +363,7 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = props.gaCategory != undefined ? useTrackScroll(props.gaCategory) : { makeVisibilityCallback: () => undefined }
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const tabs = [{
       slot: 'brawlers',
       title: i18n.t('tab.brawlers'),

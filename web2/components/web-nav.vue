@@ -30,14 +30,15 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { BWebNav } from '@schneefux/klicker/components'
-import { useContext, useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
     BWebNav,
   },
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const localePath = useLocalePath()
 
     const links = computed(() => [ {

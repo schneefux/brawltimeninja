@@ -37,7 +37,7 @@ import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
-import { useContext } from '~/composables/compat'
+import { useConfig } from '~/composables/compat'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
@@ -55,7 +55,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { $config } = useContext()
+    const $config = useConfig()
 
     const play = (voiceline: ScrapedBrawler['voicelines'][0]) => {
       const audio = new Audio($config.mediaUrl + voiceline.path)

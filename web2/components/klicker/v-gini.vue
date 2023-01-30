@@ -26,7 +26,7 @@ import { computed, defineComponent } from 'vue'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
-import { useContext } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -51,7 +51,7 @@ export default defineComponent({
       return absoluteDifference / (2 * Math.pow(props.response.data.length, 2) * arithmeticMean)
     })
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     // results from a hand-drawn sample of different maps and modes:
     // 25%ile 0.225
     // 50%ile 0.32

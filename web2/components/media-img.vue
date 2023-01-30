@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { useContext } from '~/composables/compat'
+import { useConfig } from "@/composables/compat";
 
 function genUrl(mediaUrl: string, format: string, props: any, factor: number = 1.0): string {
   let query = ''
@@ -61,7 +61,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config } = useContext()
+    const $config = useConfig()
     const webpSrc = computed(() => genUrl($config.mediaUrl, 'webp', props))
     const src = computed(() => genUrl($config.mediaUrl, props.animated ? 'gif' : (props.transparent ? 'png' : 'jpg'), props))
 

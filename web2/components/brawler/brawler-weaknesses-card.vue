@@ -21,7 +21,7 @@
 import { defineComponent } from 'vue'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
-import { useContext } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -35,7 +35,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const query: CubeComparingQuery = {
       name: i18n.t('metric.team'),

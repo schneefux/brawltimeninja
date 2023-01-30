@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts">
-import { useAsync, useCacheHeaders, useContext } from '@/composables/compat'
+import { useApi, useAsync, useCacheHeaders } from '@/composables/compat'
 import { defineComponent, computed } from 'vue'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext()
+    const $api = useApi()
 
     const leaderboard = useAsync(() => $api.rankings.playersByCountry.query({
       country: 'global',

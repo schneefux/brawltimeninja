@@ -1,4 +1,3 @@
-import { Club } from '@/model/Brawlstars'
 import { defineStore } from 'pinia'
 import { tagToId } from '~/lib/util'
 import { Player } from '~/model/Api'
@@ -13,7 +12,6 @@ interface State {
   totalBrawlers: number
   player: Player|undefined
   playerTotals: PlayerTotals|undefined
-  club: Club|undefined
 }
 
 export interface PlayerTotals {
@@ -43,7 +41,6 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
     totalBrawlers: 56,
     player: undefined,
     playerTotals: undefined,
-    club: undefined,
   }),
   actions: {
     async loadPlayer(tag: string) {
@@ -84,9 +81,6 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
           winRate,
         }
       }
-    },
-    async loadClub(tag: string) {
-      this.club = await this.api.club.byTag.query(tag)
     },
   },
 })

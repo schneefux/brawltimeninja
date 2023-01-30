@@ -127,7 +127,7 @@
 import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
 import { computed, defineComponent, PropType } from 'vue'
-import { useContext } from '@/composables/compat'
+import { useConfig } from '@/composables/compat'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 
 export default defineComponent({
@@ -158,7 +158,7 @@ export default defineComponent({
       }))
       .sort((b1, b2) => b2.trophies - b1.trophies))
 
-    const { $config } = useContext()
+    const $config = useConfig()
     const mediaUrl = computed(() => $config.mediaUrl)
 
     return {

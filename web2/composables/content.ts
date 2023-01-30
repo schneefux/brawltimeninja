@@ -1,13 +1,19 @@
 import MarkdownIt from 'markdown-it'
 import yaml from 'js-yaml'
-import { useAsync, useContext } from './compat'
+import { useBlockingAsync } from './compat'
 
-export const useContent = (path: string) => {
-  const { error } = useContext()
-  const post = useAsync(async () => {
+const posts = import.meta.glob(`~/assets/content/**/*.md`, { as: 'raw' })
+
+export async function usePost(folder: string) {
+  return await useBlockingAsync(async ({ params, error }) => {
+    const path = `/assets/content/${folder}/${params.post as string}.md`
+
+    if (!(path in posts)) {
+      return
+    }
+
     try {
-      const posts = import.meta.glob(`~/assets/content/**/*.png`, { as: 'raw' })
-      const data = await posts[`/assets/content/${path}.md`]()
+      const data = await posts[path]()
       const md = new MarkdownIt({
         html: true,
       })
@@ -19,14 +25,9 @@ export const useContent = (path: string) => {
         body: markdown,
         ...frontmatter,
         createdAt: frontmatter.createdAt.toISOString(),
-      } as Record<string, any>
+      }
     } catch (e) {
-      console.error(e)
-      error({ statusCode: 404, message: 'Post not found' })
+      error({ statusCode: 500, message: 'Could not load post' })
     }
-  }, `content-${path}`)
-
-  return {
-    post,
-  }
+  }, 'post')
 }

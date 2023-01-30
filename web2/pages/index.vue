@@ -191,7 +191,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useContext, useMeta, useCacheHeaders, useLocalePath } from '@/composables/compat'
+import { useMeta, useCacheHeaders, useLocalePath, useConfig } from '@/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { event } from 'vue-gtag'
@@ -201,6 +201,7 @@ import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
 import * as Sentry from '@sentry/vue'
+import { useI18n } from 'vue-i18n'
 
 interface PlayerLink {
   name: string
@@ -213,7 +214,8 @@ export default defineComponent({
     ObserveVisibility,
   },
   setup() {
-    const { i18n, $config } = useContext()
+    const i18n = useI18n()
+    const $config = useConfig()
     const localePath = useLocalePath()
 
     const tag = ref<string|undefined>()

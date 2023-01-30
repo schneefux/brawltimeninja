@@ -31,8 +31,8 @@ import { defineComponent, computed } from 'vue'
 import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { BScrollingList } from '@schneefux/klicker/components'
-import { useContext } from '~/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -46,7 +46,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const events = useActiveEvents(
       ['winRateAdj'], {

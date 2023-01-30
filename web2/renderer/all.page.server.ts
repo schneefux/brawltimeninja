@@ -19,6 +19,7 @@ const passToClient = [
   'validated',
   'statusCode',
   'redirectTo',
+  'refs',
 ]
 
 function onBeforeRender(pageContext: PageContext) {
@@ -38,6 +39,7 @@ function onBeforeRender(pageContext: PageContext) {
   return {
     pageContext: {
       config,
+      refs: {}, // for arbitrary data, see ssrRef()
     }
   }
 }
@@ -55,7 +57,6 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
   let string = await renderToString(app)
   if (firstError) {
-    //throw RenderErrorPage({ pageContext: {} })
     throw firstError
   }
 

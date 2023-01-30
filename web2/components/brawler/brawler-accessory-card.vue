@@ -31,7 +31,7 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedAccessory } from '~/model/Web'
 import { BCard, CQuery, VKvTable } from '@schneefux/klicker/components'
-import { useContext } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -52,7 +52,7 @@ export default defineComponent({
   setup(props) {
     const icon = computed(() => `/${props.prop.toLowerCase()}/${props.accessory.id}`)
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const query = computed(() => ({
       name: props.accessory.name,
       // materialized cubes are already filtered for <= 1 star powers owned

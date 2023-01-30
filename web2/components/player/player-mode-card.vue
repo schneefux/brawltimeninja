@@ -51,7 +51,9 @@ import { EventMetadata } from '~/plugins/klicker.service'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAsync } from '~/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 interface Stats {
   winRate: number
@@ -87,7 +89,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const $klicker = useKlicker()
 
     const updateData = async () => {
       const data = await $klicker.query({
@@ -148,7 +150,7 @@ export default defineComponent({
 
     const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const mapName = computed(() => {
       if (activeMap.value != undefined) {
         return getMapName(activeMap.value.id, activeMap.value.map)

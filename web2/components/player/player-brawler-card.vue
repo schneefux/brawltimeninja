@@ -94,11 +94,12 @@ import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouse, getSeason
 import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
 import { useKlicker } from '@schneefux/klicker/composables'
-import { useContext, useAsync } from '~/composables/compat'
+import { useAsync } from '~/composables/compat'
 import leaderboardsIcon from '~/assets/images/icon/leaderboards_optimized.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import powerpointIcon from '~/assets/images/icon/powerpoint_optimized.png'
 import starpowerIcon from '~/assets/images/icon/starpower_optimized.png'
+import { useI18n } from 'vue-i18n'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -149,7 +150,7 @@ export default defineComponent({
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const kvTableRows = computed(() => ([{
       title: i18n.t('metric.rank'),
       key: 'rank',

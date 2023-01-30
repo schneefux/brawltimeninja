@@ -21,7 +21,7 @@ import { Player } from '~/model/Api'
 // @ts-ignore
 import ztable from 'ztable'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
-import { useContext } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 interface Achievement {
   metric: string
@@ -40,7 +40,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const achievements = computed<Achievement[]>(() => {
       // 2020-08-08 highest trophies
