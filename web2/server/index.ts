@@ -6,10 +6,32 @@ import { renderPage } from 'vite-plugin-ssr'
 import apiMiddleware from '../api/index.js'
 import { root } from './root.js'
 import { PageContext } from '@/renderer/types.js'
+import * as Sentry from '@sentry/node'
+import {
+  Dedupe as DedupeIntegration,
+  CaptureConsole as CaptureConsoleIntegration,
+  ExtraErrorData as ExtraErrorDataIntegration,
+  RewriteFrames as RewriteFramesIntegration,
+} from '@sentry/integrations'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
 const app = express()
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  release: process.env.SENTRY_RELEASE,
+  integrations: [
+    new DedupeIntegration(),
+    new ExtraErrorDataIntegration(),
+    new RewriteFramesIntegration(),
+    new CaptureConsoleIntegration({
+      levels: ['error', 'assert'],
+    }),
+  ],
+  tracesSampleRate: 1.0,
+})
+app.use(Sentry.Handlers.requestHandler())
 
 app.use(compression())
 
@@ -57,6 +79,8 @@ app.get('*', async (req, res, next) => {
   }
   res.status(pageContext.statusCode ?? statusCode).type(contentType).send(body)
 })
+
+app.use(Sentry.Handlers.errorHandler())
 
 const port = process.env.PORT || 3000
 app.listen(port)

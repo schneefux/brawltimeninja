@@ -7,6 +7,7 @@ import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
 import Pages from 'vite-plugin-pages'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const config: UserConfig = {
   plugins: [
@@ -120,9 +121,7 @@ const config: UserConfig = {
         }],
       },
       workbox: {
-        // exclude HTML https://github.com/vite-pwa/vite-plugin-pwa/issues/120#issuecomment-1202579983
-        //globPatterns: ['**/*.{js,css,svg,png,jpg,jpeg,webp,woff,woff2,ttf,otf,ico}'],
-        //globIgnores: ['**/*.html'],
+        // disable precaching
         globIgnores: ['**/*'],
         navigateFallback: null,
         // FIXME depends on env variables being available at build time
@@ -159,6 +158,16 @@ const config: UserConfig = {
     }),
     UnheadVite(),
     ssr(),
+    process.env.GIT_REV != undefined ? sentryVitePlugin({
+      include: './dist',
+      release: `brawltimeninja@${process.env.GIT_REV}`,
+      setCommits: {
+        auto: false,
+        repo: 'schneefux/brawltimeninja',
+        commit: process.env.GIT_REV,
+      },
+      telemetry: false,
+    }) : undefined,
     visualizer(),
   ],
   assetsInclude: ['assets/content/**/*.md'],
@@ -167,6 +176,7 @@ const config: UserConfig = {
     exclude: [],
   },
   build: {
+    sourcemap: true, // for Sentry
     commonjsOptions: {
       include: [/@schneefux\/klicker/, /node_modules/],
     },

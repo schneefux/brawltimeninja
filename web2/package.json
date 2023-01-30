@@ -14,6 +14,8 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@jacksongross/vue-tweet-embed": "^3.0.1",
     "@schneefux/klicker": "link:../klicker",
+    "@sentry/integrations": "^7.34.0",
+    "@sentry/vue": "^7.34.0",
     "@swc/core": "^1.3.28",
     "@tanstack/vue-query": "^4.22.4",
     "@trpc/client": "^10.8.1",
@@ -59,6 +61,7 @@
   },
   "devDependencies": {
     "@originjs/vue-codemod": "^1.1.1",
+    "@sentry/vite-plugin": "^0.4.0",
     "@types/compression": "^1.7.2",
     "@types/express": "^4.17.16",
     "@types/jest": "^29.2.6",

@@ -32,6 +32,7 @@ function onBeforeRender(pageContext: PageContext) {
     ga4Id: process.env.GA4_ID ?? '',
     uaId: process.env.UA_ID ?? '',
     adsensePubid: process.env.ADSENSE_PUBID ?? '',
+    sentryDsn: process.env.SENTRY_DSN ?? '',
   }
 
   return {

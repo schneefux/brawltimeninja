@@ -15,6 +15,14 @@ import { defaultLocale, locales } from '@/locales'
 import localeEn from '@/locales/en.json'
 import { createRouter } from './router.js'
 import { localePath } from '@/composables/compat'
+import * as Sentry from '@sentry/vue'
+import {
+  HttpClient as HttpClientIntegration,
+  CaptureConsole as CaptureConsoleIntegration,
+  ExtraErrorData as ExtraErrorDataIntegration,
+  ReportingObserver as ReportingObserverIntegration,
+  RewriteFrames as RewriteFramesIntegration,
+} from '@sentry/integrations'
 
 export { createApp }
 
@@ -156,6 +164,22 @@ function createApp(pageContext: PageContext) {
       params: gtagParams,
     } ],
   }, router)
+
+  Sentry.init({
+    app,
+    dsn: pageContext.config.sentryDsn,
+    debug: import.meta.env.DEV,
+    autoSessionTracking: !import.meta.env.SSR,
+    integrations: [
+      new ExtraErrorDataIntegration(),
+      new ReportingObserverIntegration(),
+      new RewriteFramesIntegration(),
+      new CaptureConsoleIntegration({
+        levels: ['error', 'assert']
+      }),
+      new HttpClientIntegration(),
+    ],
+  })
 
   return {
     app,

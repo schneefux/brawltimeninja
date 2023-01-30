@@ -135,6 +135,7 @@ job "brawltime-web" {
         PORT = "${NOMAD_PORT_http}"
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
+        MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
         SENTRY_DSN = "${var.sentry_dsn}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"

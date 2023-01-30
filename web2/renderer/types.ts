@@ -20,6 +20,7 @@ interface Config {
   ga4Id: string
   uaId: string
   adsensePubid: string
+  sentryDsn: string
 }
 
 type Page = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086
