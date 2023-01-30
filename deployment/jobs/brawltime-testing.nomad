@@ -1,3 +1,4 @@
+variable "sentry_dsn" {}
 variable "web_traduora_client_id" {}
 variable "web_traduora_secret" {}
 variable "web_traduora_project_id" {}
@@ -84,6 +85,7 @@ job "brawltime-testing" {
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
+        SENTRY_DSN = "${var.sentry_dsn}"
         GA4_ID = "G-8GGHZC6QR2"
         UA_ID = "UA-137233906-1"
         OPTIMIZE_ID = "OPT-PWZ78LC"

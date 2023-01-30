@@ -200,6 +200,7 @@ import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
+import * as Sentry from '@sentry/vue'
 
 interface PlayerLink {
   name: string
@@ -212,7 +213,7 @@ export default defineComponent({
     ObserveVisibility,
   },
   setup() {
-    const { i18n, $config, $sentry } = useContext()
+    const { i18n, $config } = useContext()
     const localePath = useLocalePath()
 
     const tag = ref<string|undefined>()
@@ -294,7 +295,7 @@ export default defineComponent({
         }
 
         error.value = i18n.t('error.api-unavailable')
-        $sentry.captureException(err)
+        Sentry.captureException(err)
         event('search', {
           'event_category': 'player',
           'event_label': 'error_api',

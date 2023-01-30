@@ -49,9 +49,6 @@ export function useContext() {
       tc: i18n.t,
     },
     error: (e: { statusCode: number, message: string }) => {}, // TODO
-    $sentry: {
-      captureException: (e: any) => {}, // TODO
-    },
   }
 }
 

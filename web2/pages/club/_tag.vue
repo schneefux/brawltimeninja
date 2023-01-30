@@ -63,11 +63,11 @@ import { defineComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { TRPCClientError } from '@trpc/client'
+import * as Sentry from '@sentry/vue'
 
 export default defineComponent({
   async setup() {
     const i18n = useI18n()
-    const { $sentry } = useContext()
     const store = useBrawlstarsStore()
     const club = computed(() => store.club!)
 
@@ -119,7 +119,7 @@ export default defineComponent({
         }
 
         console.error(err)
-        $sentry.captureException(err)
+        Sentry.captureException(err)
         error({ statusCode: 500, message: ' ' })
       }
 
