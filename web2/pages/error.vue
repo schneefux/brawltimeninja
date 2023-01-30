@@ -1,6 +1,6 @@
 <template>
   <main class="flex flex-col justify-center items-center container text-center py-4 px-2">
-    <h1 class="text-3xl">
+    <h1 class="mt-8 text-3xl">
       Oops!
     </h1>
     <h2 v-if="notFound" class="text-2xl">
@@ -19,7 +19,7 @@
     <client-only>
       <p v-if="error != undefined" class="mt-8 text-left text-sm">
         <span>Error details:</span>
-        <pre v-if="error != undefined">{{ error }}</pre>
+        <pre class="max-w-xl whitespace-normal">{{ error }}</pre>
       </p>
     </client-only>
   </main>
