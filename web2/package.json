@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch server --watch renderer -e ts -x ts-node ./server/index.ts",
+    "dev": "nodemon --watch server --watch renderer -e ts -x node --inspect --loader ts-node/esm ./server/index.ts",
     "typecheck": "vue-tsc --noEmit",
     "build": "vite build",
     "start": "cross-env NODE_ENV=production ts-node --swc ./server/index.ts"
