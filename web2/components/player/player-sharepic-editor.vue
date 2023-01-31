@@ -181,7 +181,7 @@ export default defineComponent({
     const backgrounds = computed(() => Object.entries(backgroundIds)
       .map(([id, p]) => ({
         id,
-        path: `${mediaUrl.value}/backgrounds/${p}`,
+        path: `${mediaUrl.value}/backgrounds/${p}?size=300`,
       }))
     )
 
