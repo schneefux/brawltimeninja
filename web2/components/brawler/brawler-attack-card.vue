@@ -22,8 +22,8 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
-import attackIconUrl from '~/assets/images/attack-icon.png'
-import superIconUrl from '~/assets/images/super-icon.png'
+import attackIconUrl from '~/assets/images/icon/attack-icon.png'
+import superIconUrl from '~/assets/images/icon/super-icon.png'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

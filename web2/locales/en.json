@@ -581,5 +581,8 @@
     "profile.tracking.status.active": "Active",
     "profile.tracking.status.inactive": "Inactive",
     "profile.tracking.status.expired": "Expired",
-    "profile.tracking.enable": "Start Tracking"
+    "profile.tracking.enable": "Start Tracking",
+    "action.edit": "Edit",
+    "action.download": "Download",
+    "player.sharepic.title": "Profile Image"
 }

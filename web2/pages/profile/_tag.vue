@@ -102,6 +102,21 @@
       </b-page-section>
 
       <b-page-section
+        ref="sharepicSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('sharepic'),
+          once: true,
+        }"
+        :title="$t('player.sharepic.title')"
+        lazy
+      >
+        <player-sharepic-editor
+          :player="player"
+          @interact="trackInteraction('sharepic')"
+        ></player-sharepic-editor>
+      </b-page-section>
+
+      <b-page-section
         ref="quizSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('quiz'),
@@ -194,14 +209,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
-import { useRoute } from 'vue-router'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { useI18n } from 'vue-i18n'
-import { useLoadAndValidatePlayer } from '@/composables/player'
+import { useLoadAndValidatePlayer, usePlayerRender } from '@/composables/player'
 
 export default defineComponent({
   directives: {
@@ -213,14 +227,15 @@ export default defineComponent({
   },
   async setup() {
     const i18n = useI18n()
-    const $config = useConfig()
-
-    const route = useRoute()
 
     const store = useBrawlstarsStore()
 
     const player = computed(() => store.player!)
     const playerTotals = computed(() => store.playerTotals!)
+
+    const { playerRenderUrl } = usePlayerRender(player)
+
+    const origin = useSelfOrigin()
 
     useCacheHeaders()
     useMeta(() => {
@@ -230,16 +245,14 @@ export default defineComponent({
 
       const description = i18n.t('player.meta.description', { name: player.value.name })
       const name = player.value.name
-      const tag = route.params.tag
       return {
         title: i18n.t('player.meta.title', { name }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           { hid: 'og:description', property: 'og:description', content: description },
-          { hid: 'og:image', property: 'og:image', content: $config.renderUrl + `/embed/profile/${tag}` },
+          { hid: 'og:image', property: 'og:image', content: origin + playerRenderUrl.value },
           { hid: 'og:image:alt', property: 'og:image:alt', content: `${name} Brawl Stars Profile share image` },
           { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
-          // 2x the .sharepic size
           { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
           { hid: 'og:image:height', property: 'og:image:height', content: '630' },
         ]
@@ -251,6 +264,7 @@ export default defineComponent({
     const sectionRefs = {
       timeSection: ref<InstanceType<typeof BPageSection>>(),
       trophySection: ref<InstanceType<typeof BPageSection>>(),
+      sharepicSection: ref<InstanceType<typeof BPageSection>>(),
       quizSection: ref<InstanceType<typeof BPageSection>>(),
       recordsSection: ref<InstanceType<typeof BPageSection>>(),
       battlesSection: ref<InstanceType<typeof BPageSection>>(),
@@ -270,6 +284,10 @@ export default defineComponent({
       id: 'brawlers',
       title: i18n.t('brawler', 2),
       element: sectionRefs.brawlersSection.value?.$el,
+    }, {
+      id: 'sharepic',
+      title: i18n.t('player.sharepic.title'),
+      element: sectionRefs.sharepicSection.value?.$el,
     }, {
       id: 'quiz',
       title: i18n.t('player.quiz.title'),

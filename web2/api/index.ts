@@ -6,6 +6,8 @@ import { createContext } from './context.js'
 import { rankingsRouter } from './routes/rankings.js'
 import { eventsRouter } from './routes/events.js'
 import { router } from './trpc.js'
+import renderRouter from './routes/render.js'
+import etag from 'etag'
 
 const appRouter = router({
   player: playerRouter,
@@ -27,11 +29,29 @@ app.post('/cron', async (req, res) => {
   res.json({ profileUpdater })
 })
 
+app.use('/render', renderRouter)
+
 app.use(
   '/',
   createExpressMiddleware({
     router: appRouter,
     createContext,
+    responseMeta({ data, ctx, paths, type, errors }) {
+      const allPublic =
+        paths && paths.every((path) => !path.startsWith('user.'));
+      const allOk = errors.length == 0;
+      const isQuery = type == 'query';
+
+      if (ctx?.res && allPublic && allOk && isQuery) {
+        return {
+          headers: {
+            etag: etag(JSON.stringify(data)),
+            'cache-control': ctx.res.getHeader('cache-control') ?? 'public, max-age=0, stale-if-error=86400',
+          },
+        };
+      }
+      return {};
+    },
   })
 )
 

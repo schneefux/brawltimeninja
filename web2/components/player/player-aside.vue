@@ -3,125 +3,116 @@
     :title="player.name"
     :loading="loading"
   >
-    <template v-slot:content><div
+    <template v-slot:content>
+      <div class="flex flex-col items-center">
+        <media-img
+          :path="`/avatars/${player.icon.id}`"
+          :alt="player.name"
+          size="200"
+          clazz="w-32 h-32"
+        ></media-img>
 
-      class="flex flex-col items-center"
-    >
-      <media-img
-        :path="`/avatars/${player.icon.id}`"
-        :alt="player.name"
-        size="200"
-        clazz="w-32 h-32"
-      ></media-img>
+        <b-kv-table
+          :rows="rows"
+          :data="playerWithTrackingStatus"
+          id-key="tag"
+          class="mt-8 w-full"
+        >
+          <template v-slot:name="{ row }">
+            <span
+              :style="{
+                color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
+              }"
+              class="font-semibold"
+            >{{ row.name }}</span>
+          </template>
 
-      <b-kv-table
-        :rows="rows"
-        :data="playerWithTrackingStatus"
-        id-key="tag"
-        class="mt-8 w-full"
-      >
-        <template v-slot:name="{ row }">
-          <span
-            :style="{
-              color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
-            }"
-            class="font-semibold"
-          >{{ row.name }}</span>
-        </template>
+          <template v-slot:tag="{ value }">
+            <span>{{ value }}</span>
+            <span
+              v-if="value == 'V8LLPPC'"
+              class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
+            >
+              DEV
+            </span>
+          </template>
 
-        <template v-slot:tag="{ value }">
-          <span>{{ value }}</span>
-          <span
-            v-if="value == 'V8LLPPC'"
-            class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
-          >
-            DEV
-          </span>
-        </template>
+          <template v-slot:club="{ row }">
+            <router-link
+              :to="localePath(`/club/${row.club.tag.substring(1)}`)"
+              @click.stop
+            >
+              <img
+                :src="clubIcon"
+                alt="Club"
+                class="inline h-4 mr-1"
+              >
+              <span class="underline">{{ row.club.name }}</span>
+            </router-link>
+          </template>
 
-        <template v-slot:club="{ row }">
-          <router-link
-            :to="localePath(`/club/${row.club.tag}`)"
-            @click.stop
-          >
+          <template v-slot:trophies="{ value }">
             <img
-              :src="clubIcon"
-              alt="Club"
+              :src="trophyIcon"
+              alt="Trophies"
               class="inline h-4 mr-1"
             >
-            <span class="underline">{{ row.club.name }}</span>
-          </router-link>
-        </template>
+            {{ value }}
+          </template>
 
-        <template v-slot:trophies="{ value }">
-          <img
-            :src="trophyIcon"
-            alt="Trophies"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:victories="{ value }">
+            <img
+              :src="victoryIcon"
+              alt="3v3 Victories"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
 
-        <template v-slot:victories="{ value }">
-          <img
-            :src="victoryIcon"
-            alt="3v3 Victories"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:expLevel="{ value }">
+            <img
+              :src="levelIcon"
+              alt="EXP Level"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
 
-        <template v-slot:expLevel="{ value }">
-          <img
-            :src="levelIcon"
-            alt="EXP Level"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:soloVictories="{ value }">
+            <media-img
+              path="/modes/solo-showdown/icon"
+              alt="Solo Victories"
+              size="160"
+              clazz="inline h-4 mr-1"
+            ></media-img>
+            {{ value }}
+          </template>
 
-        <template v-slot:soloVictories="{ value }">
-          <media-img
-            path="/modes/solo-showdown/icon"
-            alt="Solo Victories"
-            size="160"
-            clazz="inline h-4 mr-1"
-          ></media-img>
-          {{ value }}
-        </template>
+          <template v-slot:duoVictories="{ value }">
+            <media-img
+              path="/modes/duo-showdown/icon"
+              alt="Duo Victories"
+              size="160"
+              clazz="inline h-4 mr-1"
+            ></media-img>
+            {{ value }}
+          </template>
 
-        <template v-slot:duoVictories="{ value }">
-          <media-img
-            path="/modes/duo-showdown/icon"
-            alt="Duo Victories"
-            size="160"
-            clazz="inline h-4 mr-1"
-          ></media-img>
-          {{ value }}
-        </template>
-
-        <template v-slot:tracking="{ value }">
-          {{ $t('profile.tracking.status.' + value) }}
-        </template>
-      </b-kv-table>
-    </div></template>
+          <template v-slot:tracking="{ value }">
+            {{ $t('profile.tracking.status.' + value) }}
+          </template>
+        </b-kv-table>
+      </div>
+    </template>
 
     <template v-slot:actions>
       <div class="flex flex-wrap gap-2">
         <b-button
-          v-if="canEnableTracking"
+          v-if="canEnableTracking || true"
           primary
           sm
           @click="enableTracking()"
         >{{ $t('profile.tracking.enable') }}</b-button>
-
-        <share-render-button
-          :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
-          :url="playerUrl"
-          primary
-          sm
-          @share="sharepicTriggered"
-        ></share-render-button>
       </div>
     </template>
   </b-card>
@@ -132,7 +123,6 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
-import { event } from 'vue-gtag'
 import { useAsync, useApi } from '~/composables/compat'
 import clubIcon from '~/assets/images/icon/club.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
@@ -246,12 +236,6 @@ export default defineComponent({
       return rows
     })
 
-    const playerUrl = computed(() => `${!import.meta.env.SSR ? window.location.origin : ''}${'/player/' + props.player.tag}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
-    const sharepicTriggered = () => event('click', {
-      'event_category': 'profile',
-      'event_label': 'share',
-    })
-
     const playerWithTrackingStatus = computed(() => ({
       ...props.player,
       tracking: trackingStatus.value,
@@ -259,11 +243,9 @@ export default defineComponent({
 
     return {
       rows,
-      playerUrl,
       loading,
       enableTracking,
       trackingStatus,
-      sharepicTriggered,
       canEnableTracking,
       playerWithTrackingStatus,
       clubIcon,

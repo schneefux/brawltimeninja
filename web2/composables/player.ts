@@ -1,8 +1,10 @@
 import { tagPattern } from "@/lib/util"
+import { Player } from "@/model/Api"
 import { useBrawlstarsStore } from "@/stores/brawlstars"
 import { TRPCClientError } from "@trpc/client"
 import { useI18n } from "vue-i18n"
 import { useSentry, useValidate } from "./compat"
+import { computed, Ref } from 'vue'
 
 export async function useLoadAndValidatePlayer(urlPrefix: string) {
   const i18n = useI18n()
@@ -50,4 +52,18 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
 
     return true
   })
+}
+
+export function usePlayerRender(player: Ref<Player>) {
+  const bestBrawlerId = computed(() =>
+    Object.entries(player.value.brawlers)
+      .sort(([id1, b1], [id2, b2]) => b2.trophies - b1.trophies)[0][0]
+  )
+
+  const playerRenderUrl = computed(() => `/api/render/profile/${player.value.tag.substring(1)}/${bestBrawlerId.value}`)
+
+  return {
+    bestBrawlerId,
+    playerRenderUrl,
+  }
 }

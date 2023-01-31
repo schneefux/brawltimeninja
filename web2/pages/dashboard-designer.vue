@@ -54,6 +54,7 @@ import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
 import { useRoute } from "vue-router"
+import { useSelfOrigin } from "@/composables/compat"
 
 export default defineComponent({
   components: {
@@ -83,13 +84,8 @@ export default defineComponent({
         return ''
       }
     })
-    const viewerUrl = computed<string>(() => {
-      if (!import.meta.env.SSR) {
-        return window.location.origin + '/embed/dashboard?id=' + grid.value.id
-      } else {
-        return ''
-      }
-    })
+    const origin = useSelfOrigin()
+    const viewerUrl = computed<string>(() => origin + '/embed/dashboard?id=' + grid.value.id)
 
     const defaultQuery: CubeQuery = {
       cubeId: 'battle',

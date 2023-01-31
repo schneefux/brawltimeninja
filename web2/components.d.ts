@@ -94,6 +94,8 @@ declare module '@vue/runtime-core' {
     PlayerPercentiles: typeof import('./components/player/player-percentiles.vue')['default']
     PlayerRankTable: typeof import('./components/player/player-rank-table.vue')['default']
     PlayerSharepic: typeof import('./components/player/player-sharepic.vue')['default']
+    PlayerSharepicButton: typeof import('./components/player/player-sharepic-button.vue')['default']
+    PlayerSharepicEditor: typeof import('./components/player/player-sharepic-editor.vue')['default']
     PlayerTimeStatistics: typeof import('./components/player/player-time-statistics.vue')['default']
     PlayerTrophyStatistics: typeof import('./components/player/player-trophy-statistics.vue')['default']
     QuizCard: typeof import('./components/quiz/quiz-card.vue')['default']

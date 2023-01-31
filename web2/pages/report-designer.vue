@@ -63,6 +63,7 @@ import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
 import { useRoute } from "vue-router"
+import { useSelfOrigin } from "@/composables/compat"
 
 export default defineComponent({
   components: {
@@ -100,9 +101,10 @@ export default defineComponent({
         return ''
       }
     })
+    const origin = useSelfOrigin()
     const viewerUrl = computed<string>(() => {
-      if (!import.meta.env.SSR && embedUrl.value != undefined) {
-        return window.location.origin + embedUrl.value
+      if (embedUrl.value != undefined) {
+        return origin + embedUrl.value
       } else {
         return ''
       }

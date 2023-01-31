@@ -75,18 +75,20 @@ export default class BrawlstarsService {
     return response.items
   }
 
-  public async getPlayerStatistics(tag: string, store: boolean) {
-    const battleLog = await request<BattleLog>(
+  public async getPlayerStatistics(tag: string, store: boolean, skipBattlelog = false) {
+    const battleLogDummy: BattleLog = {
+      items: [],
+      paging: [],
+    }
+
+    const battleLog = skipBattlelog ? battleLogDummy : await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
       getApiUrl(tag),
       'fetch_player_battles',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
       1000,
-    ).catch(() => <BattleLog>({
-      items: [],
-      paging: [],
-    }));
+    ).catch(() => battleLogDummy);
 
     // fetch player after battle log to prevent race condition
     // where a brawler is used in battle log,
@@ -99,13 +101,6 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenOfficial },
       1000,
     );
-
-    // official API: with hash, unofficial API: no hash
-    // brawltime assumes no hash
-    player.tag = player.tag.replace(/^#/, '');
-    if (player.club?.tag != undefined) {
-      player.club.tag = player.club.tag.replace(/^#/, '');
-    }
 
     battleLog.items.forEach(b => {
       b.battle.teams?.forEach(t => {
@@ -127,8 +122,8 @@ export default class BrawlstarsService {
 
       b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
         if ('brawler' in p) {
-        // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
-        p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
+          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+          p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
         }
         if ('brawlers' in p) {
           // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
@@ -231,7 +226,7 @@ export default class BrawlstarsService {
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
-    if (store) {
+    if (store && battleLog.items.length > 0) {
       console.log('store battles for ' + tag)
       // do not await - process in background and resolve early
       this.clicker.store({ player, battleLog })

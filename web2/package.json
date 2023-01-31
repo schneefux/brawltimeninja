@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch server --watch renderer -e ts -x node --inspect --loader ts-node/esm ./server/index.ts",
+    "dev": "nodemon --watch server --watch renderer --watch api -e ts -x node --inspect --loader ts-node/esm ./server/index.ts",
     "typecheck": "vue-tsc --noEmit",
     "build": "vite build",
     "start": "cross-env NODE_ENV=production ts-node --swc ./server/index.ts"
@@ -13,6 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@jacksongross/vue-tweet-embed": "^3.0.1",
+    "@resvg/resvg-js": "^2.2.0",
     "@schneefux/klicker": "link:../klicker",
     "@sentry/integrations": "^7.34.0",
     "@sentry/vue": "^7.34.0",
@@ -32,7 +33,9 @@
     "cookie": "^0.5.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
+    "etag": "^1.8.1",
     "express": "^4.18.2",
+    "handlebars": "^4.7.7",
     "hot-shots": "^9.3.0",
     "isbot": "^3.6.5",
     "js-cookie": "^3.0.1",
@@ -45,6 +48,7 @@
     "rollup-plugin-visualizer": "^5.9.0",
     "sampson": "^0.2.8",
     "sirv": "^2.0.2",
+    "string-similarity": "^4.0.4",
     "superjson": "^1.12.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4",
@@ -63,6 +67,7 @@
     "@originjs/vue-codemod": "^1.1.1",
     "@sentry/vite-plugin": "^0.4.0",
     "@types/compression": "^1.7.2",
+    "@types/etag": "^1.8.1",
     "@types/express": "^4.17.16",
     "@types/jest": "^29.2.6",
     "@types/markdown-it": "^12.2.3",
