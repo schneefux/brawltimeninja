@@ -133,6 +133,7 @@ job "brawltime-media" {
         PORT = "${NOMAD_PORT_http}"
         ASSET_DIR = "/assets/"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
       }
 
       config {

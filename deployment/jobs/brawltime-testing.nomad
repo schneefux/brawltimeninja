@@ -95,6 +95,7 @@ job "brawltime-testing" {
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
       }
 
       template {
@@ -119,8 +120,8 @@ job "brawltime-testing" {
 
       resources {
         cpu = 128
-        memory = 196
-        memory_max = 512
+        memory = 512
+        memory_max = 1536
       }
     }
   }

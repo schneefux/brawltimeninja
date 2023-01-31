@@ -147,6 +147,7 @@ job "brawltime-web" {
         MYSQL_PASSWORD = "brawltime"
         TRACKING_EXPIRE_AFTER_DAYS = "14"
         TRACKING_REFRESH_MINUTES = "1440"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
       }
 
       template {

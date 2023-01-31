@@ -97,6 +97,7 @@ job "brawltime-manager" {
       env {
         NODE_CONFIG_DIR = "/secrets/config"
         NODE_CONIFG_ENV = "production"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
       }
 
       template {

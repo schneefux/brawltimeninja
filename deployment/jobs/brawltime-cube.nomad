@@ -108,6 +108,7 @@ job "brawltime-cube" {
         CUBEJS_DB_HOST = "clickhouse.service.consul"
         CUBEJS_REDIS_URL = "redis://redis.service.consul"
         CUBEJS_CUBESTORE_HOST = "cubestore.service.consul"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
       }
 
       config {
