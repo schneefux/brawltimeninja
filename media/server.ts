@@ -33,37 +33,38 @@ app.use(async (ctx, next) => {
   const requestPath = ctx.path
 
   const originalFullFilePath = decodeURIComponent(ctx.path)
-  const originalFilePath = resolvePath(assetDir, originalFullFilePath.substr(path.parse(originalFullFilePath).root.length))
+  let filePath = resolvePath(assetDir, originalFullFilePath.substring(path.parse(originalFullFilePath).root.length))
 
-  // images: try png first
-  const pngFilePath = originalFilePath.replace(/\.(webp|jpg)$/g, '.png')
-  let filePath = pngFilePath
+  if (filePath.endsWith('.webp') || filePath.endsWith('.jpg')) {
+    // images: prefer png if available
+    const pngFilePath = filePath.replace(/\.(webp|jpg)$/g, '.png')
+    try {
+      await fsStat(filePath)
+      filePath = pngFilePath
+    } catch (err: any) { }
+  }
 
   let stats
   try {
     stats = await fsStat(filePath)
   } catch (err: any) {
-    try {
-      filePath = originalFilePath
-      stats = await fsStat(filePath)
-    } catch (err: any) {
-      const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
-      if (notfound.includes(err.code)) {
-        if (pngFilePath.endsWith('.png')) {
-          ctx.type = 'image/png'
-          ctx.body = placeholder
-        } else {
-          ctx.throw(404, 'no such file or directory')
-        }
-        return
+    const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
+    if (notfound.includes(err.code)) {
+      if (filePath.endsWith('.png')) {
+        ctx.type = 'image/png'
+        ctx.body = placeholder
+      } else {
+        ctx.throw(404, 'no such file or directory')
       }
-      err.status = 500
-      throw err
-    }
-    if (stats.isDirectory()) {
-      ctx.throw(404, 'is a directory')
       return
     }
+    err.status = 500
+    throw err
+  }
+
+  if (stats.isDirectory()) {
+    ctx.throw(404, 'is a directory')
+    return
   }
 
   const ext = path.extname(path.basename(requestPath))
