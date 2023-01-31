@@ -2,6 +2,7 @@
   <router-link
     :to="link"
     :title="title"
+    @click.stop
   >
     <figure class="inline-flex items-center">
       <span

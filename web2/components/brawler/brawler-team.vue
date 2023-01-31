@@ -7,7 +7,7 @@
       :class="[height, width, {
         [snug]: index < brawlers.length - 1,
       }]"
-      @click.native.stop
+      @click.stop
     >
       <media-img
         :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"

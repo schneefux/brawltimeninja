@@ -2,6 +2,7 @@
   <router-link
     :to="to"
     class="flex items-center"
+    @click.stop
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">
       <map-img

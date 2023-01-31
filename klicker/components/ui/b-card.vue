@@ -16,11 +16,12 @@
         'shadow-lg': elevation == 3,
         'shadow-xl': elevation == 4,
         'relative loading': loading,
-        'cursor-pointer': link != undefined,
+        'cursor-pointer': $attrs.onClick != undefined || link != undefined,
         'backdrop-blur': !noFilter,
       }"
       class="h-full flex flex-col rounded-2xl"
-      @click.capture="onClick"
+      @click="onClick"
+      @click.capture="onClickCaptured"
     >
       <div
         v-if="'infobar' in $slots"
@@ -42,6 +43,7 @@
           'rounded-t-2xl': !('infobar' in $slots),
           'grid-cols-[auto,1fr,auto]': 'icon' in $slots || icon != undefined,
           'grid-cols-[1fr,auto]': !('icon' in $slots || icon != undefined),
+          'cursor-pointer': $attrs.onClickHeader != undefined,
         }]"
         class="shrink-0 grid items-center overflow-hidden"
         @click="onClickHeader"
@@ -61,7 +63,6 @@
 
         <div v-if="title != undefined">
           <h1
-            v-if="title != undefined"
             :id="`${prefix}-title`"
             :class="{
               'text-lg leading-snug': !dense,
@@ -121,7 +122,6 @@
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
         class="block h-full text-text/75"
-        @click.self="onClickContent"
       >
         <slot name="content"></slot>
       </div>
@@ -140,7 +140,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, ComponentPublicInstance } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
 import { useKlickerConfig } from '../../composables/klicker'
 
@@ -214,20 +214,17 @@ export default defineComponent({
 
     const { navigate, linkComponent } = useKlickerConfig()
 
-    const titleElement = ref<HTMLElement | ComponentPublicInstance>()
-    const subtitleElement = ref<HTMLElement | ComponentPublicInstance>()
-
-    const onClick = (e: Event) => {
+    const onClickCaptured = (e: Event) => {
       if (attrs.onClick != undefined) {
-        e.preventDefault();
+        e.stopPropagation();
         (<any> attrs).onClick()
         return
       }
     }
 
-    const onClickContent = (e: Event) => {
+    const onClick = (e: Event) => {
       if (props.link != undefined) {
-        e.preventDefault();
+        e.stopPropagation()
         navigate(props.link)
         return
       }
@@ -235,21 +232,20 @@ export default defineComponent({
 
     const onClickHeader = (e: Event) => {
       if (attrs.onClickHeader != undefined) {
-        e.preventDefault();
+        e.stopPropagation();
         (<any>attrs).onClickHeader()
+        return
       }
     }
 
     return {
       onClick,
       onClickHeader,
-      onClickContent,
+      onClickCaptured,
       renderTitle,
       prefix,
       navigate,
       linkComponent,
-      titleElement,
-      subtitleElement,
     }
   },
 })

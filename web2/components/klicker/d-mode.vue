@@ -2,6 +2,7 @@
   <router-link
     :to="to"
     class="flex items-center"
+    @click.stop
   >
     <div class="mr-2 w-24 sm:w-23 md:w-40">
       <media-img

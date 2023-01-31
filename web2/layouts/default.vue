@@ -32,8 +32,8 @@
       >
         <template v-slot:link>
           <router-link
-            class="underline"
             :to="localePath('/about')"
+            class="underline"
           >link</router-link>
         </template>
       </b-cookie-consent>

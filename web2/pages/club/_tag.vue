@@ -33,6 +33,7 @@
                 <router-link
                   :to="localePath(`/profile/${member.tag}`)"
                   :title="member.name"
+                  @click.stop
                 >
                   <media-img
                     :path="`/avatars/${member.icon.id}`"

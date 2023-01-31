@@ -24,6 +24,7 @@
               <router-link
                 :to="to"
                 class="underline col-start-2"
+                @click.stop
               >{{ title }}</router-link>
             </template>
           </b-navigator>

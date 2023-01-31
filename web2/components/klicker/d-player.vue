@@ -3,7 +3,7 @@
     :is="link != undefined ? 'router-link' : 'div'"
     :to="link"
     class="flex items-center"
-    @click.native.stop
+    @click.stop
   >
     <media-img
       v-if="icon != undefined"

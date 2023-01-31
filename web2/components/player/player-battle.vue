@@ -44,6 +44,7 @@
               'mx-1 rounded-sm ': team.length != 2,
             }"
             class="w-14 h-16 bg-background/75 p-px relative overflow-hidden text-xs flex flex-col gap-y-px"
+            @click.stop
           >
             <span
               v-if="mate.brawlerTrophies != undefined"
