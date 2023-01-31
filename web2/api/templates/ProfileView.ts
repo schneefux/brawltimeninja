@@ -1,5 +1,6 @@
 import Handlebars from "handlebars";
 import fs from "fs/promises";
+import url from "url";
 import path from "path";
 import { fetch } from "undici";
 import { Player } from "@/model/Api";
@@ -44,7 +45,8 @@ export default class ProfileView {
 
     const res = await fetch(u);
     const buffer = Buffer.from(await res.arrayBuffer());
-    const data = "data:image/png;base64," + buffer.toString("base64");
+    const filetype = path.extname(url.parse(u).pathname!) == '.png' ? 'png' : 'jpeg';
+    const data = `data:image/${filetype};base64,${buffer.toString("base64")}`;
     this.cache.set(u, data);
     return data;
   }

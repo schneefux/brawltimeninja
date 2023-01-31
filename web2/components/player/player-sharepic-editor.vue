@@ -178,10 +178,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const $config = useConfig()
     const mediaUrl = computed(() => $config.mediaUrl)
-    const backgrounds = computed(() => Object.entries(backgroundIds)
-      .map(([id, p]) => ({
-        id,
-        path: `${mediaUrl.value}/backgrounds/${p}?size=300`,
+    const backgrounds = computed(() => backgroundIds
+      .map((filename) => ({
+        id: filename,
+        path: `${mediaUrl.value}/backgrounds/${filename}?size=300`,
       }))
     )
 
