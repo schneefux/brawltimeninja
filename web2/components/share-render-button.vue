@@ -3,7 +3,7 @@
     :href="renderUrl"
     target="_blank"
     tag="a"
-    @click.once.stop="share($event)"
+    @click.once.prevent="share($event)"
   >{{ buttonText || $t('action.share') }}</b-button>
 </template>
 

@@ -102,7 +102,7 @@
         <share-render-button
           :render-url="picUrl"
           primary
-          sm
+          md
           @share="onShare"
         ></share-render-button>
       </div>
