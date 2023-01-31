@@ -9,7 +9,7 @@ import staticWidgets from '@/lib/klicker.widgets.conf'
 import slicers from '@/lib/klicker.slicers.conf'
 import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
 import { Router } from 'vue-router'
-import * as Sentry from '@sentry/vue'
+import { useSentry } from '@/composables/compat'
 
 export default { install }
 export { createClient }
@@ -45,10 +45,11 @@ function install(app: App, options: Options) {
     managerUrl: options.managerUrl,
     translate: options.translate,
     useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
+      const sentry = useSentry()
       const query = useQuery<T, E>([key], handler, {
         keepPreviousData: true,
         onError(err) {
-          Sentry.captureException(err)
+          sentry.captureException(err)
         },
       })
       onServerPrefetch(query.suspense)

@@ -189,3 +189,8 @@ export function useCspHeaders() {
     'Content-Security-Policy': `default-src 'self' 'unsafe-inline' 'unsafe-eval' ${allowedOrigins.join(' ')}`,
   })
 }
+
+export function useSentry() {
+  const pageContext = usePageContext()
+  return pageContext.sentry
+}

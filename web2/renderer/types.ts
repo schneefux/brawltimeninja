@@ -6,6 +6,7 @@ export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import { Request } from 'express'
+import * as SentryTypes from '@sentry/core'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { ComponentPublicInstance } from 'vue'
@@ -35,6 +36,7 @@ export type PageContextCustom = {
   refs: Record<string, unknown>
   vueQueryState: DehydratedState
   piniaState: string
+  sentry: typeof SentryTypes,
   errorWhileRendering?: Error
   config: Config
   validated: null | boolean

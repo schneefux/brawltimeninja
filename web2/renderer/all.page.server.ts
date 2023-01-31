@@ -6,6 +6,7 @@ import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
+import * as Sentry from '@sentry/vue'
 
 export { onBeforeRender }
 export { passToClient }
@@ -36,9 +37,12 @@ function onBeforeRender(pageContext: PageContext) {
     sentryDsn: process.env.SENTRY_DSN ?? '',
   }
 
+  const sentry = Sentry
+
   return {
     pageContext: {
       config,
+      sentry,
       refs: {}, // for arbitrary data, see ssrRef()
     }
   }

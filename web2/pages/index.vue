@@ -191,7 +191,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useMeta, useCacheHeaders, useLocalePath, useConfig } from '@/composables/compat'
+import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '@/composables/compat'
 import { useActiveEvents } from '@/composables/dimension-values'
 import { useBrawlstarsStore } from '@/stores/brawlstars'
 import { event } from 'vue-gtag'
@@ -200,7 +200,6 @@ import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
-import * as Sentry from '@sentry/vue'
 import { useI18n } from 'vue-i18n'
 
 interface PlayerLink {
@@ -217,6 +216,7 @@ export default defineComponent({
     const i18n = useI18n()
     const $config = useConfig()
     const localePath = useLocalePath()
+    const sentry = useSentry()
 
     const tag = ref<string|undefined>()
     const events = useActiveEvents([], {
@@ -297,7 +297,7 @@ export default defineComponent({
         }
 
         error.value = i18n.t('error.api-unavailable')
-        Sentry.captureException(err)
+        sentry.captureException(err)
         event('search', {
           'event_category': 'player',
           'event_label': 'error_api',

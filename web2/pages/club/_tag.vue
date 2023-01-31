@@ -57,17 +57,17 @@
 </template>
 
 <script lang="ts">
-import { useApi, useBlockingAsync, useCacheHeaders, useMeta } from '@/composables/compat'
+import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '@/composables/compat'
 import { capitalize, tagPattern } from '@/lib/util'
 import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TRPCClientError } from '@trpc/client'
-import * as Sentry from '@sentry/vue'
 
 export default defineComponent({
   async setup() {
     const i18n = useI18n()
     const $api = useApi()
+    const sentry = useSentry()
 
     useCacheHeaders()
 
@@ -106,7 +106,7 @@ export default defineComponent({
           }
         }
 
-        Sentry.captureException(err)
+        sentry.captureException(err)
         error({ statusCode: 500, message: '' })
       }
     }, 'club')
