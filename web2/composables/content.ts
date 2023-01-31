@@ -5,7 +5,7 @@ import { useBlockingAsync } from './compat'
 const posts = import.meta.glob(`~/assets/content/**/*.md`, { as: 'raw' })
 
 export async function usePost(folder: string) {
-  return await useBlockingAsync(async ({ params, error }) => {
+  return await useBlockingAsync<Record<string, any>>(async ({ params, error }) => {
     const path = `/assets/content/${folder}/${params.post as string}.md`
 
     if (!(path in posts)) {
