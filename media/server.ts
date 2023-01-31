@@ -39,7 +39,7 @@ app.use(async (ctx, next) => {
     // images: prefer png if available
     const pngFilePath = filePath.replace(/\.(webp|jpg)$/g, '.png')
     try {
-      await fsStat(filePath)
+      await fsStat(pngFilePath)
       filePath = pngFilePath
     } catch (err: any) { }
   }
