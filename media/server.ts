@@ -32,30 +32,38 @@ app.use(async (ctx, next) => {
   // adapted from koa-send and koa-static
   const requestPath = ctx.path
 
-  // images: always use png
-  const fullFilePath = decodeURIComponent(ctx.path.replace(/\.(webp|jpg)/g, '.png'))
-  const filePath = resolvePath(assetDir, fullFilePath.substr(path.parse(fullFilePath).root.length))
+  const originalFullFilePath = decodeURIComponent(ctx.path)
+  const originalFilePath = resolvePath(assetDir, originalFullFilePath.substr(path.parse(originalFullFilePath).root.length))
+
+  // images: try png first
+  const pngFilePath = originalFilePath.replace(/\.(webp|jpg)$/g, '.png')
+  let filePath = pngFilePath
 
   let stats
   try {
     stats = await fsStat(filePath)
   } catch (err: any) {
-    const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
-    if (notfound.includes(err.code)) {
-      if (filePath.endsWith('.png')) {
-        ctx.type = 'image/png'
-        ctx.body = placeholder
-      } else {
-        ctx.throw(404, 'no such file or directory')
+    try {
+      filePath = originalFilePath
+      stats = await fsStat(filePath)
+    } catch (err: any) {
+      const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
+      if (notfound.includes(err.code)) {
+        if (pngFilePath.endsWith('.png')) {
+          ctx.type = 'image/png'
+          ctx.body = placeholder
+        } else {
+          ctx.throw(404, 'no such file or directory')
+        }
+        return
       }
+      err.status = 500
+      throw err
+    }
+    if (stats.isDirectory()) {
+      ctx.throw(404, 'is a directory')
       return
     }
-    err.status = 500
-    throw err
-  }
-  if (stats.isDirectory()) {
-    ctx.throw(404, 'is a directory')
-    return
   }
 
   const ext = path.extname(path.basename(requestPath))
