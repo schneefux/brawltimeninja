@@ -117,7 +117,8 @@ function createApp(pageContext: PageContext) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 1000 * 60 * 5, // reuse data without firing a new request if it is less than 5 minutes old
+        cacheTime: !import.meta.env.SSR ? undefined : 1000 * 60 * 1, // remove data from cache if unused for 1 minute
       },
     },
   })
@@ -130,12 +131,12 @@ function createApp(pageContext: PageContext) {
     }))
   }
   pinia.use(({ store }) => {
-    store.api = markRaw(createTrpcClient())
+    store.api = markRaw(createTrpcClient(pageContext))
     store.klicker = markRaw(createKlickerClient(klickerOptions))
   })
   app.use(pinia)
 
-  app.use(TRPCPlugin)
+  app.use(TRPCPlugin, { pageContext })
 
   app.component('ClientOnly', ClientOnly)
   app.component('Adsense', Adsense)

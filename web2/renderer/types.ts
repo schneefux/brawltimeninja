@@ -5,6 +5,7 @@ export type { PageProps }
 export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
+import { Request } from 'express'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { ComponentPublicInstance } from 'vue'
@@ -41,6 +42,11 @@ export type PageContextCustom = {
   redirectTo?: string
   errorMessage?: string
   responseHeaders: Record<string, string>
+  server: {
+    host: string
+    port: number
+    request: Request
+  }
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

@@ -15,6 +15,8 @@ import {
 } from '@sentry/integrations'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const host = process.env.HOST || 'localhost'
+const port = process.env.PORT || 3000
 
 const app = express()
 Sentry.init({
@@ -55,7 +57,12 @@ app.use('/api', apiMiddleware)
 
 app.get('*', async (req, res, next) => {
   const pageContextInit = {
-    urlOriginal: req.originalUrl
+    urlOriginal: req.originalUrl,
+    server: {
+      request: req,
+      host,
+      port,
+    },
   }
   const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)
   if (pageContext.responseHeaders != undefined) {
@@ -82,6 +89,5 @@ app.get('*', async (req, res, next) => {
 
 app.use(Sentry.Handlers.errorHandler())
 
-const port = process.env.PORT || 3000
 app.listen(port)
 console.log(`Server running at http://localhost:${port}`)
