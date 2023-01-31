@@ -189,6 +189,11 @@ const config: UserConfig = {
       'sampson': path.resolve('node_modules/sampson/dist/lib.es6.js'),
     },
   },
+  define: {
+    // expose without VITE_ prefix
+    BRANCH: process.env.BRANCH,
+    GIT_REV: process.env.GIT_REV,
+  },
 }
 
 export default config
