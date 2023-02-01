@@ -47,7 +47,7 @@ export type PageContextCustom = {
   server: {
     host: string
     port: number
-    request: Request
+    requestHeaders: Record<string, string>
   }
 }
 

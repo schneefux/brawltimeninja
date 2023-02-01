@@ -198,8 +198,8 @@ export function useSentry() {
 export function useSelfOrigin() {
   if (import.meta.env.SSR) {
     const pageContext = usePageContext()
-    const req = pageContext.server.request
-    return `https://${req.headers['host']}`
+    const host = pageContext.server.requestHeaders['host']
+    return `https://${host}`
   }
   return window.location.origin
 }

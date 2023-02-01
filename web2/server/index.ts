@@ -63,9 +63,9 @@ app.get('*', async (req, res, next) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl,
     server: {
-      request: req,
       host,
       port,
+      requestHeaders: req.headers,
     },
   }
   const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)

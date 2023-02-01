@@ -116,6 +116,15 @@ function createApp(pageContext: PageContext) {
   })
   app.use(VueQueryPlugin, { queryClient })
 
+  const trpcOptions = {
+    serverOptions: import.meta.env.SSR ? {
+      host: pageContext.server.host,
+      port: pageContext.server.port,
+      requestHeaders: pageContext.server.requestHeaders,
+    } : undefined,
+  }
+  app.use(TRPCPlugin, trpcOptions)
+
   const pinia = createPinia()
   if (!import.meta.env.SSR) {
     pinia.use(createPersistedState({
@@ -123,12 +132,10 @@ function createApp(pageContext: PageContext) {
     }))
   }
   pinia.use(({ store }) => {
-    store.api = markRaw(createTrpcClient(pageContext))
+    store.api = markRaw(createTrpcClient(trpcOptions.serverOptions))
     store.klicker = markRaw(createKlickerClient(klickerOptions))
   })
   app.use(pinia)
-
-  app.use(TRPCPlugin, { pageContext })
 
   app.component('ClientOnly', ClientOnly)
   app.component('Adsense', Adsense)
