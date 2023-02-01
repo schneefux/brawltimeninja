@@ -1,6 +1,6 @@
 variable "hcloud_token" {}
 
-job "plugin-hcloud-csi" {
+job "hcloud-csi-node" {
   datacenters = ["dc1"]
   type = "system"
 
@@ -9,24 +9,25 @@ job "plugin-hcloud-csi" {
       driver = "docker"
 
       config {
-        image = "hetznercloud/hcloud-csi-driver:1.6.0"
+        image = "hetznercloud/hcloud-csi-driver:2.1.1"
+        command = "bin/hcloud-csi-driver-node"
         privileged = true
       }
 
       env {
         CSI_ENDPOINT = "unix:///csi/csi.sock"
-        HCLOUD_TOKEN = var.hcloud_token
+        ENABLE_METRICS = true
       }
 
       csi_plugin {
         id = "csi.hetzner.cloud"
-        type = "monolith"
+        type = "node"
         mount_dir = "/csi"
       }
 
       resources {
-        cpu = 10
-        memory = 50
+        cpu = 16
+        memory = 64
       }
     }
   }

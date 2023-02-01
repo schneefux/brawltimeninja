@@ -7,6 +7,8 @@ job "clickhouse" {
   }
 
   group "clickhouse" {
+    stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
+
     network {
       port "http" {
         static = 8123
@@ -58,7 +60,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:22.10-alpine"
+        image = "clickhouse/clickhouse-server:23.1-alpine"
         network_mode = "host"
 
         volumes = [

@@ -7,6 +7,8 @@ job "mariadb" {
   }
 
   group "mariadb" {
+    stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
+
     network {
       port "db" {
         static = 3306

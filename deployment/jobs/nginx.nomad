@@ -10,6 +10,8 @@ job "nginx" {
   # problem: port 80 can't be used twice
 
   group "nginx" {
+    stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
+
     volume "certs" {
       type = "host"
       source = "certs"
@@ -67,7 +69,7 @@ job "nginx" {
       }
 
       config {
-        image = "nginx:1.21-alpine"
+        image = "nginx:1.23-alpine"
         network_mode = "host"
 
         ulimit {
@@ -101,6 +103,11 @@ job "nginx" {
         destination = "local/nginx.conf"
         change_mode = "signal"
         change_signal = "SIGHUP"
+        # wait for the consul cluster to be consistent
+        wait {
+          min = "10s"
+          max = "5m"
+        }
       }
 
       resources {
