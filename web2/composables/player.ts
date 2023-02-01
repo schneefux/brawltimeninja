@@ -54,13 +54,14 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
   })
 }
 
-export function usePlayerRender(player: Ref<Player>) {
+export function usePlayerRender(player: Ref<Player>, selectedBrawlerId?: Ref<string|undefined>, selectedBackground?: Ref<string>) {
   const bestBrawlerId = computed(() =>
     Object.entries(player.value.brawlers)
       .sort(([id1, b1], [id2, b2]) => b2.trophies - b1.trophies)[0][0]
   )
 
-  const playerRenderUrl = computed(() => `/api/render/profile/${player.value.tag.substring(1)}/${bestBrawlerId.value}`)
+  const playerRenderUrl = computed(
+    () => `/api/render/profile/${player.value.tag.substring(1)}/${selectedBrawlerId?.value ?? bestBrawlerId.value}.png?background=${selectedBackground?.value ?? 'BlueSkull_Default.jpg'}`)
 
   return {
     bestBrawlerId,

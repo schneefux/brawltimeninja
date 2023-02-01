@@ -22,7 +22,7 @@ const profileView = new ProfileView();
 const brawlStarsApiService = new BrawlstarsService();
 
 router.get(
-  "/profile/:tag/:brawler",
+  "/profile/:tag/:brawler.png",
   asyncWrapper(async (req, res) => {
     const player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
     if (!(req.params.brawler in player.brawlers)) {

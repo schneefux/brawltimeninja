@@ -1,7 +1,7 @@
 <template>
   <b-card
     :loading="loading"
-    class="max-w-lg"
+    class="max-w-md"
   >
     <template v-slot:content>
       <div
@@ -46,6 +46,7 @@
               <img
                 :src="path"
                 class="h-28 w-full object-cover rounded-2xl"
+                loading="lazy"
                 @click="selectedBackground = id"
               />
               <font-awesome-icon
@@ -67,10 +68,25 @@
         </b-scrolling-list>
       </div>
 
-      <div>
+      <div
+        class="w-full relative"
+        @click="lightboxOpen = true"
+      >
+        <b-lightbox v-model="lightboxOpen">
+          <img
+            :src="playerRenderUrl"
+            class="mt-2 rounded-2xl"
+            width="1200"
+            height="630"
+            loading="lazy"
+            @load="loading = false"
+            @error="onError"
+          >
+        </b-lightbox>
+
         <span v-if="error != ''">{{ error }}</span>
         <img
-          :src="picUrl"
+          :src="playerRenderUrl"
           class="mt-2 rounded-2xl"
           width="1200"
           height="630"
@@ -78,6 +94,17 @@
           @load="loading = false"
           @error="onError"
         >
+
+        <b-button
+          v-if="error == ''"
+          class="absolute bottom-2 right-2"
+          dark
+          sm
+        >
+          <font-awesome-icon
+            :icon="faExpand"
+          ></font-awesome-icon>
+        </b-button>
       </div>
     </template>
 
@@ -88,11 +115,11 @@
           dark
           md
           @click="onClickEdit"
-        >{{ $t('action.edit') }}</b-button>
+        >{{ $t('action.customize') }}</b-button>
 
         <b-button
           tag="a"
-          :href="picUrl"
+          :href="playerRenderUrl"
           dark
           md
           download
@@ -100,7 +127,7 @@
         >{{ $t('action.download') }}</b-button>
 
         <share-render-button
-          :render-url="picUrl"
+          :render-url="playerRenderUrl"
           primary
           md
           @share="onShare"
@@ -116,10 +143,10 @@ import { event } from 'vue-gtag'
 import { computed, defineComponent, PropType, ref, watchEffect, watch, toRef } from 'vue'
 import { useConfig, useSelfOrigin } from '@/composables/compat'
 import { capitalizeWords } from '@/lib/util'
-import { BCard, BSelect, BButton, BScrollingList } from '@schneefux/klicker/components'
+import { BCard, BSelect, BButton, BScrollingList, BLightbox } from '@schneefux/klicker/components'
 import { usePlayerRender } from '@/composables/player'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useUniqueId } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 
@@ -166,6 +193,7 @@ export default defineComponent({
     BCard,
     BSelect,
     BButton,
+    BLightbox,
     BScrollingList,
     FontAwesomeIcon,
   },
@@ -185,9 +213,9 @@ export default defineComponent({
       }))
     )
 
-    const { bestBrawlerId } = usePlayerRender(toRef(props, 'player'))
     const selectedBackground = ref(backgroundIds[0])
     const selectedBrawlerId = ref<string>()
+    const { bestBrawlerId, playerRenderUrl } = usePlayerRender(toRef(props, 'player'), selectedBrawlerId, selectedBackground)
 
     watchEffect(() => {
       if (selectedBrawlerId.value == undefined) {
@@ -220,13 +248,12 @@ export default defineComponent({
     }
 
     const i18n = useI18n()
-    const picUrl = computed(() => `/api/render/profile/${props.player.tag.substring(1)}/${selectedBrawlerId.value}?background=${selectedBackground.value}`)
     const error = ref('')
     const loading = ref(false)
     const onError = () => {
       error.value = i18n.t('error.misc')
     }
-    watch(picUrl, () => {
+    watch(playerRenderUrl, () => {
       error.value = ''
       loading.value = true
     })
@@ -239,11 +266,13 @@ export default defineComponent({
     const { id: prefix } = useUniqueId()
 
     const editing = ref(false)
+    const lightboxOpen = ref(false)
 
     return {
+      lightboxOpen,
       onClickEdit,
       editing,
-      picUrl,
+      playerRenderUrl,
       error,
       loading,
       onError,
@@ -256,6 +285,7 @@ export default defineComponent({
       backgrounds,
       brawlers,
       faCheck,
+      faExpand,
       prefix,
     }
   },
