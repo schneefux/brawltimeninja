@@ -8,6 +8,9 @@ const transform = 'transform'
 const transitionDuration = 'transitionDuration'
 const transitionEnd = 'transitionEnd'
 
+const EVENT_TOUCH_START = 'touchstart'
+const EVENT_TOUCH_MOVE = 'touchmove'
+const EVENT_TOUCH_END = 'touchend'
 const EVENT_TOUCH_CANCEL = 'touchcancel'
 
 const EVENT_MOUSE_DOWN = 'mousedown'
@@ -647,13 +650,18 @@ export default defineComponent({
       this.dot0StartFn = (e) => this._start(e, 0)
       this.dot1StartFn = (e) => this._start(e, 1)
 
+      addEvent(this.$refs.process, EVENT_TOUCH_START, this.processStartFn)
       addEvent(this.$refs.process, EVENT_MOUSE_DOWN, this.processStartFn)
       addEvent(this.$refs.dot0, EVENT_MOUSE_DOWN, this.dot0StartFn)
+      addEvent(this.$refs.dot0, EVENT_TOUCH_START, this.dot0StartFn)
       addEvent(this.$refs.dot1, EVENT_MOUSE_DOWN, this.dot1StartFn)
+      addEvent(this.$refs.dot1, EVENT_TOUCH_START, this.dot1StartFn)
 
       addEvent(document, EVENT_MOUSE_MOVE, this._move)
       addEvent(document, EVENT_MOUSE_UP, this._end)
       addEvent(document, EVENT_MOUSE_LEAVE, this._end)
+      addEvent(document, EVENT_TOUCH_MOVE, this._move)
+      addEvent(document, EVENT_TOUCH_END, this._end)
       addEvent(document, EVENT_TOUCH_CANCEL, this._end)
 
       addEvent(window, EVENT_RESIZE, this.refresh)
