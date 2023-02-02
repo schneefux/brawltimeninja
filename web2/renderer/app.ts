@@ -71,7 +71,9 @@ function createApp(pageContext: PageContext) {
       },
       // vite-plugin-pwa cannot modify the HTML, manually add SW and manifest
       // https://github.com/brillout/vite-plugin-ssr/issues/295
-      { src: '/registerSW.js' },
+      {
+        innerHTML: `if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js', { scope: '/' }) }) }`,
+      },
     ],
     link: [
       { rel: 'manifest', href: '/manifest.webmanifest' },

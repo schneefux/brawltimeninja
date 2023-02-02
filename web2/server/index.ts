@@ -43,7 +43,11 @@ app.use(compression())
 
 if (isProduction) {
   const sirv = (await import('sirv')).default
-  app.use(sirv(`${root}/dist/client`))
+  app.use(sirv(`${root}/dist/client`, {
+    maxAge: 31536000, // 1 year
+    etag: true,
+    immutable: true,
+  }))
 } else {
   const vite = await import('vite')
   const viteDevMiddleware = (
