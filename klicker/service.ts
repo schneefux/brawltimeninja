@@ -46,7 +46,7 @@ class HttpTransport implements ITransport<ResultSet> {
     this.fetch = fetch
   }
 
-  request(method, { baseRequestId, ...params }) {
+  request(method: string, { baseRequestId, ...params }: Record<string, string>) {
     let spanCounter = 1;
     const searchParams = new URLSearchParams(
       params && Object.keys(params)
@@ -57,7 +57,7 @@ class HttpTransport implements ITransport<ResultSet> {
     let url = `${this.apiUrl}/${method}${searchParams.toString().length ? `?${searchParams}` : ''}`;
 
     const requestMethod = (url.length < 2000 ? 'GET' : 'POST');
-    const headers = {}
+    const headers: Record<string, string> = {}
     if (requestMethod === 'POST') {
       url = `${this.apiUrl}/${method}`;
       headers['Content-Type'] = 'application/json';
@@ -76,7 +76,7 @@ class HttpTransport implements ITransport<ResultSet> {
 
     return {
       /* eslint no-unsafe-finally: off */
-      async subscribe(callback) {
+      async subscribe(callback: any) {
         let result = {
           error: 'network Error' // add default error message
         };
