@@ -4,10 +4,11 @@ import { createMemoryHistory, createRouter as _createRouter, createWebHistory, R
 // @ts-ignore
 import routes from '~pages'
 import { AppI18n } from './app'
+import { Config } from './types'
 
 export { createRouter }
 
-function createRouter(i18n: AppI18n, mediaUrl: string, head: VueHeadClient<MergeHead>) {
+function createRouter(i18n: AppI18n, head: VueHeadClient<MergeHead>, config: Config) {
   const updateLocale = async (locale: typeof locales[0]) => {
     head.push({
       htmlAttrs: {
@@ -15,7 +16,7 @@ function createRouter(i18n: AppI18n, mediaUrl: string, head: VueHeadClient<Merge
       },
       meta: [
         { property: 'og:locale', content: locale.iso },
-        ...(locales.filter(l => l.code != locale.code).map(l => ({
+        ...(locales.filter(l => l.show && l.code != locale.code).map(l => ({
           property: 'og:locale:alternate',
           content: l.iso,
         }))),
@@ -24,12 +25,12 @@ function createRouter(i18n: AppI18n, mediaUrl: string, head: VueHeadClient<Merge
 
     const fallbackLocaleCode = i18n.fallbackLocale.value as string
     if (!i18n.availableLocales.includes(fallbackLocaleCode)) {
-      const messages = await loadLocale(mediaUrl, fallbackLocaleCode)
+      const messages = await loadLocale(fallbackLocaleCode, config)
       i18n.setLocaleMessage(fallbackLocaleCode, messages)
     }
 
     if (!i18n.availableLocales.includes(locale.code)) {
-      const messages = await loadLocale(mediaUrl, locale.code)
+      const messages = await loadLocale(locale.code, config)
       i18n.setLocaleMessage(locale.code, messages)
     }
 

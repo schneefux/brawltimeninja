@@ -7,6 +7,7 @@ import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
 import * as Sentry from '@sentry/vue'
+import { getTraduoraToken, TraduoraToken } from '@/locales'
 
 export { onBeforeRender }
 export { passToClient }
@@ -23,8 +24,27 @@ const passToClient = [
   'refs',
 ]
 
-function onBeforeRender(pageContext: PageContext) {
+let cachedTraduoraToken: TraduoraToken | undefined = undefined
+async function onBeforeRender(pageContext: PageContext) {
   // during runtime, inject env variables from server
+  let traduora: Config['traduora'] | undefined = undefined
+  if (process.env.TRADUORA_URL != undefined) {
+    const url = process.env.TRADUORA_URL
+    const projectId = process.env.TRADUORA_PROJECT_ID ?? ''
+
+    if (cachedTraduoraToken == undefined || cachedTraduoraToken?.expirationDate <= new Date()) {
+      const clientId = process.env.TRADUORA_CLIENT_ID ?? ''
+      const secret = process.env.TRADUORA_SECRET ?? ''
+      cachedTraduoraToken = await getTraduoraToken({ url, clientId, secret })
+    }
+
+    traduora = {
+      url,
+      projectId,
+      token: cachedTraduoraToken.token,
+    }
+  }
+
   const config: Config = {
     mediaUrl: process.env.MEDIA_URL ?? '',
     cubeUrl: process.env.CUBE_URL ?? '',
@@ -35,6 +55,7 @@ function onBeforeRender(pageContext: PageContext) {
     uaId: process.env.UA_ID ?? '',
     adsensePubid: process.env.ADSENSE_PUBID ?? '',
     sentryDsn: process.env.SENTRY_DSN ?? '',
+    traduora,
   }
 
   const sentry = Sentry

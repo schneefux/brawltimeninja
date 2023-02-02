@@ -79,7 +79,7 @@ function createApp(pageContext: PageContext) {
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/icons/icon_x512.png', sizes: '512x512' },
       { rel: 'shortcut-icon', href: '/icons/maskable_icon_x48.png' },
-      ...(locales.map(l => ({
+      ...(locales.filter(l => l.show).map(l => ({
         rel: 'alternate',
         href: l.code == 'en' ? '/' : `/${l.code}`,
         hreflang: l.iso,
@@ -93,7 +93,7 @@ function createApp(pageContext: PageContext) {
   })
   app.use(head)
 
-  const router = createRouter(i18n.global, pageContext.config.mediaUrl, head)
+  const router = createRouter(i18n.global, head, pageContext.config)
   app.use(router)
 
   const klickerOptions = {

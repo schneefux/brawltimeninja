@@ -76,7 +76,12 @@ export function useSwitchToLocale() {
     router.push(newPath)
   }
 
-  return { locales, switchToLocale }
+  const filteredLocales = locales.filter(l => l.show)
+
+  return {
+    locales: filteredLocales,
+    switchToLocale,
+  }
 }
 
 export function useLocaleCookieRedirect() {

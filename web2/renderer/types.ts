@@ -5,7 +5,6 @@ export type { PageProps }
 export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
-import { Request } from 'express'
 import * as SentryTypes from '@sentry/core'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
@@ -23,6 +22,11 @@ interface Config {
   uaId: string
   adsensePubid: string
   sentryDsn: string
+  traduora?: {
+    url: string
+    projectId: string
+    token: string
+  }
 }
 
 type Page = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086
