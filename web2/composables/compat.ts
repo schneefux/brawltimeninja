@@ -1,6 +1,6 @@
 import { computed, inject, onServerPrefetch, Ref, toRef, watch } from "vue"
 import { useQuery } from "@tanstack/vue-query";
-import { I18n, Locale, useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/renderer/usePageContext'
 import { TrpcInjectionKey } from "@/plugins/trpc"
 import { useHead, ReactiveHead } from "@unhead/vue"
@@ -8,6 +8,7 @@ import { locales } from "@/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
+import { AppI18n } from "@/renderer/app";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -40,7 +41,7 @@ export function ssrRef<T>(defaultValue: T|undefined, key: string) {
   return r
 }
 
-export function localePath(path: string, i18n: I18n<{}, {}, {}, Locale, false>['global']) {
+export function localePath(path: string, i18n: AppI18n) {
   if (i18n.locale.value == i18n.fallbackLocale.value) {
     return path
   }

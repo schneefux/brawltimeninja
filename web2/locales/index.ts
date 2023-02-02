@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch'
-
 export interface Locale {
   code: string
   iso: string // 2 letter ISO code, equal to or prefix of navigator.language

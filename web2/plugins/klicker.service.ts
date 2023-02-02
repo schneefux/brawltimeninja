@@ -23,7 +23,16 @@ class BrawltimeKlickerService extends KlickerService {
       slicers: SlicerSpec[],
       dimensionRenderers: DimensionRendererSpec[],
       metricRenderers: MetricRendererSpec[]) {
-    super(cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
+    super(
+      cubeUrl,
+      config,
+      visualisations,
+      staticWidgets,
+      slicers,
+      dimensionRenderers,
+      metricRenderers,
+      import.meta.env.SSR ? fetch : window.fetch.bind(window), // fetch requires window as `this`
+    )
   }
 
   // override Klicker.format

@@ -7,16 +7,17 @@ import { setPageContext } from './usePageContext.js'
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin from 'vue-gtag'
-import { createI18n } from 'vue-i18n'
+import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
 import { defaultLocale, locales } from '@/locales'
-import localeEn from '@/locales/en.json'
 import { createRouter } from './router.js'
 import { localePath } from '@/composables/compat'
 
 export { createApp }
+
+export type AppI18n = I18n<{}, {}, {}, string, false>['global']
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -47,9 +48,7 @@ function createApp(pageContext: PageContext) {
     locale: defaultLocale.code, // set by router
     fallbackLocale: defaultLocale.code,
     availableLocales: locales.map(l => l.code),
-    messages: {
-      en: localeEn,
-    } as Record<string, Record<string, string>>,
+    messages: {} as Record<string, Record<string, string>>,
   })
   app.use(i18n)
 
@@ -94,7 +93,7 @@ function createApp(pageContext: PageContext) {
   })
   app.use(head)
 
-  const router = createRouter(i18n, pageContext.config.mediaUrl, head)
+  const router = createRouter(i18n.global, pageContext.config.mediaUrl, head)
   app.use(router)
 
   const klickerOptions = {

@@ -2,7 +2,7 @@ import Handlebars from "handlebars";
 import fs from "fs/promises";
 import url from "url";
 import path from "path";
-import { fetch } from "undici";
+import { fetch } from 'undici' // skip global fetch because this service uses its own cache
 import { Player } from "@/model/Api";
 import { root } from "../../server/root.js";
 
