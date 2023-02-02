@@ -84,16 +84,12 @@ export default defineComponent({
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
     useCacheHeaders()
-    useMeta(() => {
-      const description = i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) })
-      return {
-        title: i18n.t('tier-list.mode.meta.title', { mode: i18n.t('mode.' + mode.value) }),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('tier-list.mode.meta.title', { mode: i18n.t('mode.' + mode.value) }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) }) },
+      ]
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('mode_meta')
 

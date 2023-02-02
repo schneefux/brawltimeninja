@@ -73,13 +73,13 @@ export default defineComponent({
     useCacheHeaders()
 
     useMeta(() => {
-      const description = club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : ''
       return {
         title: club.value != undefined ? i18n.t('club.meta.title', { club: club.value.name }) : '',
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', name: 'og:description', content: description },
-        ],
+        meta: [ {
+          hid: 'description',
+          name: 'description',
+          content: club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : '',
+        } ],
       }
     })
 

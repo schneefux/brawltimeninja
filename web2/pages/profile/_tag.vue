@@ -243,13 +243,11 @@ export default defineComponent({
         return {}
       }
 
-      const description = i18n.t('player.meta.description', { name: player.value.name })
       const name = player.value.name
       return {
         title: i18n.t('player.meta.title', { name }),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: i18n.t('player.meta.description', { name: player.value.name }) },
           { hid: 'og:image', property: 'og:image', content: origin + playerRenderUrl.value },
           { hid: 'og:image:alt', property: 'og:image:alt', content: `${name} Brawl Stars Profile share image` },
           { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },

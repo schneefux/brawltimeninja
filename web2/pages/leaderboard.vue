@@ -50,16 +50,12 @@ export default defineComponent({
     })
 
     useCacheHeaders()
-    useMeta(() => {
-      const description = i18n.t('leaderboard.meta.description', { metric: i18n.t('metric.' + metric.value) })
-      return {
-        title: i18n.t('leaderboard.meta.title', { metric: i18n.t('metric.' + metric.value) }),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('leaderboard.meta.title', { metric: i18n.t('metric.' + metric.value) }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('leaderboard.meta.description', { metric: i18n.t('metric.' + metric.value) }) },
+      ]
+    }))
 
     const metrics = [
       'hours',

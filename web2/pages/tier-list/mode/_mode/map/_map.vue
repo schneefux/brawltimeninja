@@ -142,7 +142,6 @@ export default defineComponent({
         }),
         meta: [
           { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
         ]
       }

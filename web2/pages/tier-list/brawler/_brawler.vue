@@ -267,16 +267,12 @@ export default defineComponent({
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
 
     useCacheHeaders()
-    useMeta(() => {
-      const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value })
-      return {
-        title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) },
+      ]
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 

@@ -11,6 +11,7 @@ import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
+import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '@/locales'
 import { createRouter } from './router.js'
 import { localePath } from '@/composables/compat'
@@ -53,7 +54,11 @@ function createApp(pageContext: PageContext) {
   app.use(i18n)
 
   const themeColor = '#facc15' // yellow-400
-  const head = createHead()
+  const head = createHead({
+    plugins: [
+      InferSeoMetaPlugin(),
+    ],
+  })
   head.push({
     titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {

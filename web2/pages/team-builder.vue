@@ -98,17 +98,12 @@ export default defineComponent({
     useCacheHeaders()
 
     const i18n = useI18n()
-    useMeta(() => {
-      const description = i18n.t('draft-tool.meta.description')
-
-      return {
-        title: i18n.t('draft-tool.meta.title'),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('draft-tool.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('draft-tool.meta.description') },
+      ]
+    }))
 
     return {
       query,

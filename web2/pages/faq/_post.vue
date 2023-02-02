@@ -25,12 +25,10 @@ export default defineComponent({
       if (post.value == undefined) {
         return {}
       }
-      const description = `${post.value.question}`
       return {
         title: post.value.title,
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: post.value.question },
         ]
       }
     })

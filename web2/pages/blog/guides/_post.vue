@@ -19,12 +19,10 @@ export default defineComponent({
       if (post.value == undefined) {
         return {}
       }
-      const description = `Brawl Stars Guides written by ${post.value.author}. ${post.value.description}`
       return {
         title: post.value.title,
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: `Brawl Stars Guides written by ${post.value.author}. ${post.value.description}` },
         ]
       }
     })

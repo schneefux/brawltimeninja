@@ -77,16 +77,12 @@ export default defineComponent({
     const i18n = useI18n()
 
     useCacheHeaders()
-    useMeta(() => {
-      const description = i18n.t('brawler-records.meta.description')
-      return {
-        title: i18n.t('brawler-records.meta.title'),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('brawler-records.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('brawler-records.meta.description') },
+      ]
+    }))
 
     return {
       query,

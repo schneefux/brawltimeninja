@@ -136,7 +136,6 @@ export default defineComponent({
 
     useCacheHeaders()
     useMeta(() => {
-      const description = i18n.t('tier-list.maps.meta.description')
       const structuredData = (<ActiveEvent[]>[]).concat(current.value, upcoming.value)
         .map((event) => ({
           type: 'application/ld+json',
@@ -152,8 +151,7 @@ export default defineComponent({
       return {
         title: i18n.t('tier-list.maps.meta.title'),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: i18n.t('tier-list.maps.meta.description') },
         ],
         script: structuredData,
       }

@@ -319,7 +319,6 @@ export default defineComponent({
 
     useCacheHeaders()
     useMeta(() => {
-      const description = i18n.t('index.meta.description')
       const structuredData = (events.value || [])
         .map((event) => ({
           type: 'application/ld+json',
@@ -335,8 +334,7 @@ export default defineComponent({
       return {
         title: i18n.t('index.meta.title'),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: i18n.t('index.meta.description') },
         ],
         script: structuredData,
       }
