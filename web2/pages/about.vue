@@ -20,6 +20,8 @@
       >this button</b-button>.
     </p>
 
+    <playwire-privacy></playwire-privacy>
+
     <h1>Privacy Policy</h1>
 
     <p>If you choose to use our Service, then you agree to the collection and use of information in relation with this policy. The Personal Information that we collect are used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy.</p>
@@ -55,7 +57,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useCacheHeaders } from '@/composables/compat';
+import { useCacheHeaders, useMeta } from '@/composables/compat';
 import { usePreferencesStore } from '@/stores/preferences';
 
 export default defineComponent({
@@ -72,6 +74,9 @@ export default defineComponent({
     const withdrawCookieConsent = () => store.withdrawConsent()
 
     useCacheHeaders()
+    useMeta(() => ({
+      title: 'Privacy',
+    }))
 
     return {
       domain,
