@@ -1,7 +1,9 @@
 import { Config } from "@/renderer/types"
 
+export type LocaleCode = 'en' | 'de' | 'es' | 'ua' | 'it' | 'ru'
+
 export interface Locale {
-  code: string
+  code: LocaleCode
   iso: string // 2 letter ISO code, equal to or prefix of navigator.language
   file: string
   emoji: string

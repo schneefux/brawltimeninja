@@ -58,9 +58,9 @@ export default defineComponent({
       if (props.end == undefined) {
         return ''
       }
-      return formatDistanceToNow(parseISO(props.end), {
+      return formatDistanceToNow(parseISO(props.end), locale.value != undefined ? {
         locale: locale.value,
-      })
+      } : undefined)
     })
 
     const slices = computed(() => ({
