@@ -124,7 +124,7 @@ export default defineComponent({
 
     useInstallPromptListeners()
     useLocaleCookieRedirect()
-    if (config.playwireRampPublisherId == undefined) {
+    if (config.playwireRampPublisherId == '') {
       useAdsense(config.adsensePubid)
     } else {
       usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId)
