@@ -158,13 +158,13 @@ const config: UserConfig = {
     }),
     UnheadVite(),
     ssr(),
-    process.env.GIT_REV != undefined ? sentryVitePlugin({
+    process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
       include: './dist',
-      release: `brawltimeninja@${process.env.GIT_REV}`,
+      release: `brawltimeninja@${process.env.VITE_GIT_REV}`,
       setCommits: {
         auto: false,
         repo: 'schneefux/brawltimeninja',
-        commit: process.env.GIT_REV,
+        commit: process.env.VITE_GIT_REV,
       },
       telemetry: false,
     }) : undefined,
@@ -188,11 +188,6 @@ const config: UserConfig = {
       '@': path.resolve(__dirname),
       'sampson': path.resolve('node_modules/sampson/dist/lib.es6.js'),
     },
-  },
-  define: {
-    // expose without VITE_ prefix
-    BRANCH: process.env.BRANCH,
-    GIT_REV: process.env.GIT_REV,
   },
 }
 

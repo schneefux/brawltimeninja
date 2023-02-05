@@ -101,7 +101,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
       setIsTwa(isTwa)
 
       event('branch_dimension', {
-        'branch': import.meta.env.BRANCH || '',
+        'branch': import.meta.env.VITE_BRANCH || '',
         'non_interaction': true,
       })
       event('is_pwa_dimension', {
