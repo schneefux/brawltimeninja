@@ -252,12 +252,13 @@
         <template v-slot:gears>
           <b-dashboard responsive>
             <b-dashboard-cell
-              :columns="5"
-              :rows="2"
+              :columns="4"
+              :rows="5"
               hide-empty
               lazy
             >
-              <map-best-accessory-roll
+              <map-best-accessory-table
+                key="gears-table"
                 v-observe-visibility="{
                   callback: makeVisibilityCallback('gears'),
                   once: true,
@@ -265,7 +266,7 @@
                 :id="id"
                 :slices="slices"
                 kind="gears"
-              ></map-best-accessory-roll>
+              ></map-best-accessory-table>
             </b-dashboard-cell>
 
             <map-insights
