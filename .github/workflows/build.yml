@@ -23,10 +23,10 @@ jobs:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
       service: manager
-  build-web-2:
+  build-web:
     uses: schneefux/brawltimeninja/.github/workflows/build-service.yml@master
     with:
-      service: web2
+      service: web
     needs: build-klicker
     secrets:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
