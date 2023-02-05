@@ -14,7 +14,7 @@ const localeImportMap: Record<LocaleCode, any> = {
 export const useDateFnLocale = () => {
   const i18n = useI18n()
   const locale = ref()
-  onMounted(async () => locale.value = (await localeImportMap[i18n.locale.value as LocaleCode]()).default ?? null)
+  onMounted(async () => locale.value = (await localeImportMap[i18n.locale.value as LocaleCode]())?.default)
 
   return {
     locale,

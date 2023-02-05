@@ -19,7 +19,7 @@
             />
           </span>
         </div>
-        <span>{{ relativeTime }}</span>
+        <span><client-only>{{ relativeTime }}</client-only></span>
       </div>
     </template>
 

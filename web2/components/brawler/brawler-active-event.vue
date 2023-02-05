@@ -9,7 +9,9 @@
       v-slot:infobar
     >
       <p class="text-right">
-        {{ $t('time.ends-in', { time: timeTillEnd }) }}
+        <client-only>
+          {{ $t('time.ends-in', { time: timeTillEnd }) }}
+        </client-only>
       </p>
     </template>
 
@@ -58,9 +60,9 @@ export default defineComponent({
       if (props.end == undefined) {
         return ''
       }
-      return formatDistanceToNow(parseISO(props.end), locale.value != undefined ? {
+      return formatDistanceToNow(parseISO(props.end), {
         locale: locale.value,
-      } : undefined)
+      })
     })
 
     const slices = computed(() => ({

@@ -13,7 +13,9 @@
           {{ $t('power-play') }}
         </span>
         <span v-else-if="endDate != undefined">
-          {{ endDateString }}
+          <client-only>
+            {{ endDateString }}
+          </client-only>
         </span>
         <span v-else-if="startDate != undefined">
           {{ startDateString }}
