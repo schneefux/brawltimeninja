@@ -7,10 +7,12 @@ import ClickerService from './ClickerService.js'
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
-const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 
+/*
+// cn API is unavailable
+const apiOfficialCnUrl = process.env.BRAWLSTARS_CN_URL || 'https://api.brawlstars.cn/v1/';
 function getApiUrl(tag: string) {
   const playerId = tag
     .replace('#', '')
@@ -24,6 +26,7 @@ function getApiUrl(tag: string) {
   // 0 - 23
   return apiOfficialUrl
 }
+*/
 
 export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
@@ -83,7 +86,7 @@ export default class BrawlstarsService {
 
     const battleLog = skipBattlelog ? battleLogDummy : await request<BattleLog>(
       'players/%23' + tag + '/battlelog',
-      getApiUrl(tag),
+      apiOfficialUrl,
       'fetch_player_battles',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
@@ -95,7 +98,7 @@ export default class BrawlstarsService {
     // but not available in player.brawlers yet
     const player = await request<BrawlstarsPlayer>(
       'players/%23' + tag,
-      getApiUrl(tag),
+      apiOfficialUrl,
       'fetch_player',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
@@ -246,7 +249,7 @@ export default class BrawlstarsService {
   public async getClubStatistics(tag: string) {
     const club = await request<Club>(
       'clubs/%23' + tag,
-      getApiUrl(tag),
+      apiOfficialUrl,
       'fetch_club',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
