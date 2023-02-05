@@ -13,7 +13,8 @@
         'w-full': fullWidth,
         'h-full': fullHeight,
       }"
-    ></b-shimmer>
+    >
+    </b-shimmer>
 
     <button
       v-if="showDownload"
@@ -32,7 +33,7 @@ import embed, { Result, VisualizationSpec } from 'vega-embed'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, ComponentPublicInstance } from 'vue'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
@@ -70,10 +71,12 @@ export default defineComponent({
     onMounted(() => refresh())
     onUnmounted(() => cleanup())
 
-    const graph = ref<ComponentPublicInstance>()
+    // be careful about https://github.com/vuejs/core/issues/7207#issuecomment-1326599127
+    // only works because the <b-shimmer> wrapper is empty
+    const graph = ref<InstanceType<typeof BShimmer>>()
 
     const refresh = async () => {
-      if (graph.value == undefined || container.value == undefined) {
+      if (graph.value?.$el == undefined || container.value == undefined) {
         return
       }
 
@@ -134,9 +137,11 @@ export default defineComponent({
         },
       } as object
 
-      const spec = Object.assign(<VisualizationSpec>{}, props.spec, defaults)
+      // vega tries to modify the spec, create a deep copy
+      const userSpec = JSON.parse(JSON.stringify(props.spec))
+      const spec = Object.assign(<VisualizationSpec>{}, userSpec, defaults)
 
-      result.value = await embed(graph.value.$el as HTMLElement, spec, {
+      result.value = await embed(graph.value.$el, spec, {
         actions: false,
         // canvas: better performance
         // svg: easily zoomable and support for CSS variable colors

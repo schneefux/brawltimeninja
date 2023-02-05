@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { useKlicker } from '../../composables/klicker'
+import { useKlickerConfig } from '../../composables/klicker'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import BPaginator from './b-paginator.vue'
 
@@ -151,10 +151,10 @@ export default defineComponent({
       const offset = page.value * (props.pageSize || 0)
       const pageRows = props.pageSize == undefined ? props.rows : props.rows.slice(offset, (page.value+1)*props.pageSize)
       return pageRows.map((r, index) => ({
-        key: r[props.idKey],
+        key: r[props.idKey as keyof typeof r],
         index: offset + index,
         row: r,
-        fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b], r)).join(', ')),
+        fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b as keyof typeof a], r)).join(', ')),
       }))
     })
 
@@ -173,7 +173,7 @@ export default defineComponent({
       () => page.value = 0
     )
 
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
 
     return {
       translate,

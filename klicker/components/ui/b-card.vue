@@ -16,14 +16,15 @@
         'shadow-lg': elevation == 3,
         'shadow-xl': elevation == 4,
         'relative loading': loading,
-        'cursor-pointer': link != undefined,
+        'cursor-pointer': $attrs.onClick != undefined || link != undefined,
         'backdrop-blur': !noFilter,
       }"
       class="h-full flex flex-col rounded-2xl"
       @click="onClick"
+      @click.capture="onClickCaptured"
     >
       <div
-        v-if="'infobar' in $scopedSlots"
+        v-if="'infobar' in $slots"
         class="rounded-t-2xl w-full py-1 text-sm px-6"
       >
         <slot name="infobar"></slot>
@@ -33,22 +34,23 @@
         v-if="renderTitle"
         :class="[color, textColor, {
           'px-6 gap-x-3': !dense,
-          'pb-4': !dense && ('content' in $scopedSlots) && !('infobar' in $scopedSlots),
-          'pb-2': !dense && ('content' in $scopedSlots) && ('infobar' in $scopedSlots),
-          'pb-6': !dense && !('content' in $scopedSlots),
-          'pt-6': !dense && !('infobar' in $scopedSlots),
-          'pt-2': !dense && 'infobar' in $scopedSlots,
+          'pb-4': !dense && ('content' in $slots) && !('infobar' in $slots),
+          'pb-2': !dense && ('content' in $slots) && ('infobar' in $slots),
+          'pb-6': !dense && !('content' in $slots),
+          'pt-6': !dense && !('infobar' in $slots),
+          'pt-2': !dense && 'infobar' in $slots,
           'px-3 gap-x-2 pt-2': dense,
-          'rounded-t-2xl': !('infobar' in $scopedSlots),
-          'grid-cols-[auto,1fr,auto]': 'icon' in $scopedSlots || icon != undefined,
-          'grid-cols-[1fr,auto]': !('icon' in $scopedSlots || icon != undefined),
+          'rounded-t-2xl': !('infobar' in $slots),
+          'grid-cols-[auto,1fr,auto]': 'icon' in $slots || icon != undefined,
+          'grid-cols-[1fr,auto]': !('icon' in $slots || icon != undefined),
+          'cursor-pointer': $attrs.onClickHeader != undefined,
         }]"
         class="shrink-0 grid items-center overflow-hidden"
-        @click.stop="onClickHeader"
+        @click="onClickHeader"
       >
         <slot
           name="icon"
-          v-if="icon != undefined || 'icon' in $scopedSlots"
+          v-if="icon != undefined || 'icon' in $slots"
           :icon="icon"
           :icon-alt="iconAlt"
         >
@@ -61,7 +63,6 @@
 
         <div v-if="title != undefined">
           <h1
-            v-if="title != undefined"
             :id="`${prefix}-title`"
             :class="{
               'text-lg leading-snug': !dense,
@@ -70,24 +71,11 @@
           >
             <template v-if="titleLink != undefined || link != undefined">
               <component
-                v-if="linkComponent != undefined"
                 :is="linkComponent"
                 :to="titleLink || link"
               >
                 {{ title }}
               </component>
-              <router-link
-                v-else
-                v-slot="{ href, navigate }"
-                :to="titleLink || link"
-                class="contents"
-                custom
-              >
-                <a
-                  :href="href"
-                  @click.stop="e => onClickLink() || navigate(e)"
-                >{{ title }}</a>
-              </router-link>
             </template>
             <template v-else>
               {{ title }}
@@ -103,24 +91,11 @@
           >
             <template v-if="subtitleLink != undefined">
               <component
-                v-if="linkComponent != undefined"
                 :is="linkComponent"
                 :to="subtitleLink"
               >
-                {{ title }}
+                {{ subtitle }}
               </component>
-              <router-link
-                v-else
-                v-slot="{ href, navigate }"
-                :to="subtitleLink"
-                class="contents"
-                custom
-              >
-                <a
-                  :href="href"
-                  @click.stop="e => onClickLink() || navigate(e)"
-                >{{ subtitle }}</a>
-              </router-link>
             </template>
             <template v-else>
               {{ subtitle }}
@@ -132,27 +107,27 @@
       </header>
 
       <div
-        v-if="'content' in $scopedSlots"
+        v-if="'content' in $slots"
         :class="[{
           'bg-cover bg-center bg-filter relative z-10': background != undefined,
           'px-6': !dense,
           'pt-4': background == undefined && !dense && !renderTitle,
-          'pb-4': background == undefined && !dense && !('actions' in $scopedSlots),
+          'pb-4': background == undefined && !dense && !('actions' in $slots),
           'py-2': background != undefined && !dense,
           'px-3 py-1': dense,
           'rounded-t-2xl bg-filter-rounded-t-2xl': !renderTitle,
-          'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $scopedSlots),
+          'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $slots),
         }]"
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
         }"
-        class="h-full text-text/75"
+        class="block h-full text-text/75"
       >
         <slot name="content"></slot>
       </div>
 
       <footer
-        v-if="'actions' in $scopedSlots"
+        v-if="'actions' in $slots"
         :class="['rounded-b-2xl text-text flex justify-end mt-auto', {
           'px-6 gap-x-3 pt-4 pb-6': !dense,
           'px-3 gap-x-2 py-1': dense,
@@ -165,9 +140,9 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, computed } from 'vue'
 import { useUniqueId } from '../../composables/id'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   props: {
@@ -184,7 +159,7 @@ export default defineComponent({
       required: false
     },
     titleLink: {
-      type: [String, Function],
+      type: String,
       required: false
     },
     subtitle: {
@@ -232,80 +207,45 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    linkComponent: {
-      type: undefined,
-      required: false
-    },
   },
-  setup(props, { slots, listeners }) {
+  setup(props, { slots, attrs }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
     const { id: prefix } = useUniqueId()
 
-    const router = useRouter()
+    const { navigate, linkComponent } = useKlickerConfig()
 
-    /*
-     * click event priority:
-     *   1. @click header handler
-     *   2. @click handler
-     *   3. clicking on a link
-     *   4. default card link
-     */
-
-    const triggerClick = () => {
-      if (Array.isArray(listeners.click)) {
-        (<Function[]> listeners.click).forEach((listener) => listener())
-      } else {
-        listeners.click()
+    const onClickCaptured = (e: Event) => {
+      if (attrs.onClick != undefined) {
+        e.stopPropagation();
+        (<any> attrs).onClick()
+        return
       }
     }
 
-    const onClick = () => {
-      if (listeners.click != undefined) {
-        triggerClick()
-        return true
-      }
-
+    const onClick = (e: Event) => {
       if (props.link != undefined) {
-        if (!props.link.startsWith('http')) {
-          router.push(props.link)
-        } else {
-          window.open(props.link, '_blank')
-        }
-
-        return true
+        e.stopPropagation()
+        navigate(props.link)
+        return
       }
-
-      return false
     }
 
-    const onClickLink = () => {
-      if (listeners.click != undefined) {
-        triggerClick()
-        return true
+    const onClickHeader = (e: Event) => {
+      if (attrs.onClickHeader != undefined) {
+        e.stopPropagation();
+        (<any>attrs).onClickHeader()
+        return
       }
-
-      return false
-    }
-
-    const onClickHeader = () => {
-      if (listeners.clickHeader != undefined) {
-        if (Array.isArray(listeners.clickHeader)) {
-          (<Function[]> listeners.clickHeader).forEach((listener) => listener())
-        } else {
-          listeners.clickHeader()
-        }
-        return true
-      }
-
-      return onClick()
     }
 
     return {
       onClick,
-      onClickLink,
       onClickHeader,
+      onClickCaptured,
       renderTitle,
       prefix,
+      navigate,
+      linkComponent,
     }
   },
 })

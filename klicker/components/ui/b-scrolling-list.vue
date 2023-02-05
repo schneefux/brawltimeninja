@@ -1,14 +1,14 @@
 <template>
   <div>
     <ul
-      v-if="'preview' in $scopedSlots"
+      v-if="'preview' in $slots"
       ref="preview"
       class="flex overflow-x-auto hide-scrollbar"
     >
       <!-- same layout as b-tabs -->
       <li
         v-for="entry in previewItems"
-        :key="`${entry.from}-${entry.item[keyId]}`"
+        :key="`${entry.from}-${(entry.item as Record<string, string>)[keyId]}`"
         :class="{
           'border-primary-400 text-text': entry.from <= state.end && entry.to >= state.start,
           'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from <= state.end && entry.to >= state.start),
@@ -26,7 +26,7 @@
     <b-scrolling-dashboard
       ref="container"
       :disable-scroll-snap="!scrollSnap"
-      :class="{ 'mt-4': 'preview' in $scopedSlots }"
+      :class="{ 'mt-4': 'preview' in $slots }"
       @scroll="onScroll"
       @rerender="onRerender"
     >
@@ -54,8 +54,8 @@
 
       <b-dashboard-cell
         v-for="entry in list"
-        :key="`${entry.index}-${entry.item[keyId]}`"
-        :ref="`item-${entry.index}`"
+        :key="`${entry.index}-${(entry.item as Record<string, string>)[keyId]}`"
+        :ref="el => setItemRef(entry.index, el)"
         :columns="cellColumns"
         :rows="cellRows"
         :style="{
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, nextTick, getCurrentInstance } from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'vue'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
@@ -148,8 +148,10 @@ export default defineComponent({
       required: false
     },
   },
+  emits: ['scroll'],
   setup(props, { emit }) {
-    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
+    const itemRefs = ref<Record<string, InstanceType<typeof BDashboardCell>|null>>({})
+    const setItemRef = (id: number, el: unknown|null) => itemRefs.value[id] = el as InstanceType<typeof BDashboardCell>|null
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
     const preview = ref<HTMLElement>()
 
@@ -192,10 +194,10 @@ export default defineComponent({
       let pxPerItem = props.cellColumns * pxColumnWidth + (props.cellColumns - 1) * pxGap
       let columnsPerItem = props.cellColumns
 
-      const firstItem = Object.entries(refs)
-        .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
+      const firstItem = Object.values(itemRefs.value)
+        .find(v => v != undefined)
       if (firstItem != undefined) {
-        const firstItemElement = firstItem[1]![0].$el as HTMLElement
+        const firstItemElement = firstItem.$el
 
         // items may stretch their columns so prefer the actual width over the default values
         pxPerItem = firstItemElement.getBoundingClientRect().width
@@ -332,6 +334,7 @@ export default defineComponent({
       scrollSnap,
       previewItems,
       columnsPerItem,
+      setItemRef,
     }
   },
 })

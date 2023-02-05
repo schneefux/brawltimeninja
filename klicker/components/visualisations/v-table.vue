@@ -3,51 +3,51 @@
     v-bind="$props"
     component="v-table"
   >
-    <div
-      slot="content"
-      class="h-full relative"
-    >
-      <b-table
-        :columns="columns"
-        :rows="rows"
-        :page-size="pageSize"
-        :no-paginator="card == undefined"
-        id-key="id"
-        class="h-full w-full overflow-auto"
-        ranked
-      >
-        <template
-          v-for="m in metrics"
-          v-slot:[`metrics.${m.id}`]="{ row }"
+    <template v-slot:content>
+      <div class="h-full relative">
+        <b-table
+          :columns="columns"
+          :rows="rows"
+          :page-size="pageSize"
+          :no-paginator="card == undefined"
+          id-key="id"
+          class="h-full w-full overflow-auto"
+          ranked
         >
-          <m-auto
+          <template
+            v-for="m in metrics"
+            v-slot:[`metrics.${m.id}`]="{ row }"
             :key="m.id"
-            :response="response"
-            :metric-id="m.id"
-            :row="row"
-          ></m-auto>
-        </template>
+          >
+            <m-auto
+              :response="response"
+              :metric-id="m.id"
+              :row="row"
+            ></m-auto>
+          </template>
 
-        <template v-slot:dimensions="{ row }">
-          <d-auto
-            :response="response"
-            :row="row"
-            captioned
-          ></d-auto>
-        </template>
-      </b-table>
-    </div>
+          <template v-slot:dimensions="{ row }">
+            <d-auto
+              :response="response"
+              :row="row"
+              captioned
+            ></d-auto>
+          </template>
+        </b-table>
+      </div>
+    </template>
 
-    <router-link
-      slot="preview"
-      v-if="linkWithParams != undefined"
-      :to="linkWithParams"
-      class="opacity-75"
-    >
-      <font-awesome-icon
-        :icon="faExternalLinkAlt"
-      ></font-awesome-icon>
-    </router-link>
+    <template v-slot:preview>
+      <router-link
+        v-if="linkWithParams != undefined"
+        :to="linkWithParams"
+        class="opacity-75"
+      >
+        <font-awesome-icon
+          :icon="faExternalLinkAlt"
+        ></font-awesome-icon>
+      </router-link>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -56,13 +56,12 @@ import { VisualisationProps } from '../../props'
 import BTable, { Column } from '../ui/b-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
-import { Location } from 'vue-router'
 import { computed, defineComponent } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -84,14 +83,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const columns = computed<Column[]>(() => {
       const columns: Column[] = []
 
       columns.push({
-        title: dimensions.value.map(d => $klicker.getName(d)).join(', '),
+        title: dimensions.value.map(d => $klicker.getName(translate, d)).join(', '),
         keys: dimensions.value.map(d => `dimensions.${d.id}`),
         // dimensions are rendered n:m
         slot: 'dimensions',
@@ -99,7 +98,7 @@ export default defineComponent({
       })
       metrics.value.forEach(m => columns.push({
         // metrics are rendered 1:1
-        title: $klicker.getName(m),
+        title: $klicker.getName(translate, m),
         keys: [`metrics.${m.id}`],
         slot: `metrics.${m.id}`,
         shrink: true,
@@ -121,7 +120,7 @@ export default defineComponent({
 
     const rows = computed(() => props.response.data)
 
-    const linkWithParams = computed<Location|undefined>(() => {
+    const linkWithParams = computed(() => {
       if (props.card != undefined && props.linkPath != undefined) {
         return {
           path: props.linkPath,

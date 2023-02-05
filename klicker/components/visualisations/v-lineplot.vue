@@ -3,13 +3,14 @@
     v-bind="$props"
     component="v-lineplot"
   >
-    <b-vega
-      slot="content"
-      :spec="spec"
-      :show-download="card != undefined"
-      full-width
-      full-height
-    ></b-vega>
+    <template v-slot:content>
+      <b-vega
+        :spec="spec"
+        :show-download="card != undefined"
+        full-width
+        full-height
+      ></b-vega>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -20,7 +21,7 @@ import { VisualisationProps } from '../../props'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -31,7 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics, switchResponse, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {
@@ -65,14 +66,14 @@ export default defineComponent({
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
             scale: dimension0.scale,
           },
           y: {
             ...metric0.vega,
             field: 'metricsRaw.' + metric0.id,
             type: metric0.type,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
             axis: {
               format: metric0.d3formatter,
             },
@@ -90,10 +91,10 @@ export default defineComponent({
           // TODO spread breaks types
           tooltip: <any>[{
             field: 'metrics.' + metric0.id,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
           },
           ...(withCI ? [{
             field: 'upper',

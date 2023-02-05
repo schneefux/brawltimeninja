@@ -43,7 +43,7 @@ import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxt
 import { Player, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
 import { EventMetadata } from '~/plugins/klicker'
-import { winRateMetric } from '~/lib/klicker.conf'
+import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 

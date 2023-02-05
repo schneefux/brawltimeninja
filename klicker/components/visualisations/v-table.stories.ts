@@ -1,10 +1,10 @@
 import CQuery from '../c-query'
 import VTable from './v-table.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery } from '../../types'
 import { BrawlerRendererParameters, WinRateRendererParameters } from '../../fixtures/renderers'
 
-export default {
+const meta: Meta<VTable> = {
   component: VTable,
   title: 'Visualisations/Table',
   args: {
@@ -12,92 +12,117 @@ export default {
       title: 'Storybook Demo',
     },
   },
-} as Meta
+}
+export default meta
 
-const query = JSON.stringify(<CubeQuery>{
+type Story = StoryObj<VTable>
+
+const query = JSON.stringify({
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-})
+} satisfies CubeQuery)
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }"></v-table>
-    </template>
-  </c-query>
-  `,
-})
-
-export const DimensionRenderer: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }"></v-table>
-    </template>
-  </c-query>
-  `,
-})
-DimensionRenderer.parameters = {
-  ...BrawlerRendererParameters,
+export const Default: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
 }
 
-const queryMultipleDimensions = JSON.stringify(<CubeQuery>{
+export const DimensionRenderer: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
+  parameters: {
+    ...BrawlerRendererParameters,
+  },
+}
+
+const queryMultipleDimensions = JSON.stringify({
   cubeId: 'map',
   dimensionsIds: ['brawler', 'mode'],
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-})
+} satisfies CubeQuery)
 
-export const MultipleDimensionOneRenderer: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${queryMultipleDimensions}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }"></v-table>
-    </template>
-  </c-query>
-  `,
-  ...BrawlerRendererHooks,
-})
-
-export const MetricRenderer: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }"></v-table>
-    </template>
-  </c-query>
-  `,
-})
-MetricRenderer.parameters = {
-  ...WinRateRendererParameters,
+export const MultipleDimensionOneRenderer: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${queryMultipleDimensions}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
+  parameters: {
+    ...BrawlerRendererParameters,
+  },
 }
 
-export const NoCard: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }" :card="undefined"></v-table>
-    </template>
-  </c-query>
-  `,
-})
+export const MetricRenderer: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
+  parameters: {
+    ...WinRateRendererParameters,
+  },
+}
 
-const comparingQuery = JSON.stringify(<CubeComparingQuery>{
+export const NoWrapper: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }" :card="undefined"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
+}
+
+const comparingQuery = JSON.stringify({
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -115,16 +140,20 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     },
     sortId: 'winRate',
   },
-})
+} satisfies CubeComparingQuery)
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTable },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${comparingQuery}'>
-    <template v-slot="data">
-      <v-table v-bind="{ ...data, ...$props }"></v-table>
-    </template>
-  </c-query>
-  `,
-})
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CQuery, VTable },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${comparingQuery}'>
+      <template v-slot="data">
+        <v-table v-bind="{ ...data, ...args }"></v-table>
+      </template>
+    </c-query>
+    `,
+  }),
+};

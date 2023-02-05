@@ -1,38 +1,49 @@
 import BSelect from './b-select.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BSelect> = {
   component: BSelect,
   title: 'UI/Select',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BSelect },
-  props: Object.keys(argTypes),
-  template: `
-    <b-select v-bind="$props">
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
-      <option value="3">Option 3</option>
-    </b-select>
-  `,
-})
-Default.args = {
-  value: '1',
+type Story = StoryObj<BSelect>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BSelect },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-select v-bind="args">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+      </b-select>
+    `,
+  }),
+  args: {
+    modelValue: '1',
+  },
 }
 
-export const Multiple: Story = (args, { argTypes }) => ({
-  components: { BSelect },
-  props: Object.keys(argTypes),
-  template: `
-    <b-select v-bind="$props">
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
-      <option value="3">Option 3</option>
-    </b-select>
-  `,
-})
-Multiple.args = {
-  value: '1',
-  multiple: true,
+export const Multiple: Story = {
+  render: (args) => ({
+    components: { BSelect },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-select v-bind="args">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+      </b-select>
+    `,
+  }),
+  args: {
+    modelValue: '1',
+    multiple: true,
+  },
 }

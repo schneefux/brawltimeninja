@@ -1,9 +1,9 @@
 import CQuery from '../c-query'
 import VHeatmap from './v-heatmap.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeQuery } from '../../types'
 
-export default {
+const meta: Meta<VHeatmap> = {
   component: VHeatmap,
   title: 'Visualisations/Heatmap',
   args: {
@@ -11,36 +11,47 @@ export default {
       title: 'Storybook Demo',
     },
   },
-} as Meta
+}
+export default meta
 
-const query = JSON.stringify(<CubeQuery>{
+type Story = StoryObj<VHeatmap>
+
+const query = JSON.stringify({
   cubeId: 'map',
   dimensionsIds: ['brawler', 'mode'],
   metricsIds: ['winRate'],
   slices: {},
   sortId: 'winRate',
-})
+} satisfies CubeQuery)
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CQuery, VHeatmap },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-heatmap style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }"></v-heatmap>
-    </template>
-  </c-query>
-  `,
-})
+export const Default: Story = {
+  render: (args) => ({
+    components: { CQuery, VHeatmap },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-heatmap style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }"></v-heatmap>
+      </template>
+    </c-query>
+    `,
+  }),
+}
 
-export const NoCard: Story = (args, { argTypes }) => ({
-  components: { CQuery, VHeatmap },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${query}'>
-    <template v-slot="data">
-      <v-heatmap style="width: 600px; height: 400px;" v-bind="{ ...data, ...$props }" :card="undefined"></v-heatmap>
-    </template>
-  </c-query>
-  `,
-})
+export const NoWrapper: Story = {
+  render: (args) => ({
+    components: { CQuery, VHeatmap },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${query}'>
+      <template v-slot="data">
+        <v-heatmap style="width: 600px; height: 400px;" v-bind="{ ...data, ...args }" :card="undefined"></v-heatmap>
+      </template>
+    </c-query>
+    `,
+  }),
+}

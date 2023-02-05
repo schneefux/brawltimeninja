@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
@@ -30,8 +30,9 @@ export default defineComponent({
       default: false
     },
   },
+  emits: ['done'],
   setup(props, { emit }) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const loading = ref(false)
 
     const trigger = () => loading.value = true

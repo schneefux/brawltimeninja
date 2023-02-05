@@ -1,7 +1,6 @@
-import { Ref, ref, watch } from 'vue'
-import { useAsync, useContext } from '@nuxtjs/composition-api' // uses vue-ssr's onServerPrefetch
-import { useKlicker } from './klicker'
-import { CubeQuery, CubeResponse, CubeComparingQuery, CubeComparingResponse, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
+import { computed, Ref } from 'vue'
+import { useKlickerConfig } from './klicker'
+import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilter } from '../types'
 
 function hash(query: CubeQuery|CubeComparingQuery): string {
   const hashCode = (s: string) => {
@@ -21,43 +20,31 @@ function hash(query: CubeQuery|CubeComparingQuery): string {
   return hashCode(JSON.stringify(query)).toString()
 }
 
+/**
+ * Run a query
+ */
 export const useCubeQuery = (query: Ref<CubeComparingQuery|CubeQuery>, filter?: Ref<CubeComparingQueryFilter|CubeQueryFilter|undefined>) => {
-  const { $klicker } = useKlicker()
-  const { $sentry } = useContext() as any
+  const { $klicker, useQuery } = useKlickerConfig()
 
-  const loading = ref(false)
-  const error = ref<string|undefined>()
-
-  async function fetch(): Promise<undefined|CubeResponse|CubeComparingResponse> {
-    error.value = undefined
-    loading.value = true
-    try {
-      if (!query.value.comparing) {
-        return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
-      } else {
-        return await $klicker.comparingQuery(<CubeComparingQuery>query.value, <CubeComparingQueryFilter>filter?.value)
-      }
-    } catch (err) {
-      console.error(err)
-      if ($sentry != undefined) {
-        (<any> $sentry).captureException(err)
-      }
-      error.value = err as string
-      return undefined
-    } finally {
-      loading.value = false
+  async function fetch() {
+    if (!query.value.comparing) {
+      return await $klicker.query(query.value, <CubeQueryFilter>filter?.value)
+    } else {
+      return await $klicker.comparingQuery(<CubeComparingQuery>query.value, <CubeComparingQueryFilter>filter?.value)
     }
   }
 
-  const response = useAsync(() => fetch(), `c-query-${hash(query.value)}`)
-  const update = async () => response.value = await fetch()
-  watch(query, update)
+  const key = computed(() => `klicker-query-${hash(query.value)}`)
+  const asyncResponse = useQuery(key, fetch)
+  const error = computed(() => asyncResponse.error.value)
+  const response = computed(() => asyncResponse.data.value)
+  const loading = computed(() => asyncResponse.loading.value)
 
   return {
     $klicker,
     error,
     response,
     loading,
-    update,
+    update: () => asyncResponse.refresh(),
   }
 }

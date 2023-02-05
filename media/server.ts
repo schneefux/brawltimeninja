@@ -32,9 +32,17 @@ app.use(async (ctx, next) => {
   // adapted from koa-send and koa-static
   const requestPath = ctx.path
 
-  // images: always use png
-  const fullFilePath = decodeURIComponent(ctx.path.replace(/\.(webp|jpg)/g, '.png'))
-  const filePath = resolvePath(assetDir, fullFilePath.substr(path.parse(fullFilePath).root.length))
+  const originalFullFilePath = decodeURIComponent(ctx.path)
+  let filePath = resolvePath(assetDir, originalFullFilePath.substring(path.parse(originalFullFilePath).root.length))
+
+  if (filePath.endsWith('.webp') || filePath.endsWith('.jpg')) {
+    // images: prefer png if available
+    const pngFilePath = filePath.replace(/\.(webp|jpg)$/g, '.png')
+    try {
+      await fsStat(pngFilePath)
+      filePath = pngFilePath
+    } catch (err: any) { }
+  }
 
   let stats
   try {
@@ -53,6 +61,7 @@ app.use(async (ctx, next) => {
     err.status = 500
     throw err
   }
+
   if (stats.isDirectory()) {
     ctx.throw(404, 'is a directory')
     return

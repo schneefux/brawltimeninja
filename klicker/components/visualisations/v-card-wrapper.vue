@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, resolveComponent, Component } from 'vue'
 import { StaticProps } from '../../props'
 import BCard from '../ui/b-card.vue'
 import BBigstat from '../ui/b-bigstat.vue'
@@ -32,20 +32,15 @@ export default defineComponent({
     // TODO add 'open in dashboard' button
     return () => {
       if (props.card != undefined && props.card !== false) {
-        return h(props.wrapper, {
-          props: {
-            ...props.card as any,
-            loading: props.loading,
-          },
-          scopedSlots: slots,
-        })
+        const wrapperComponent = resolveComponent(props.wrapper) as Component
+        return h(wrapperComponent, {
+          ...props.card,
+          loading: props.loading,
+        }, slots)
       } else {
-        const nodes = slots['content'] != undefined ? slots['content']() : undefined
-        if (nodes == undefined) {
-          return h()
-        }
+        const nodes = slots['content'] != undefined ? slots['content']() : []
         if (nodes.length > 1) {
-          // workaround because Vue does not allow returning multiple nodes from root
+          // TODO remove this wrapper
           return h('div', nodes)
         }
         return nodes[0]

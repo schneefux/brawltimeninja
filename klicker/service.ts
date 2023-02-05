@@ -1,51 +1,102 @@
-import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, KlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec } from "./types"
-import cubejs, { CubejsApi, Filter, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery } from "./types"
+import cubejs, { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations"
 import defaultStaticWidgets from "./static-widgets"
-import { Route, Location } from "vue-router"
+import { PluginConfig } from "./composables/klicker"
 
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 
-// workaround for https://github.com/vuejs/vue-router/issues/2725
-// FIXME remove when upgrading to vue-router 3
-function safeEncode(arr: (string|number|boolean|undefined)[]) {
-  return arr
-    .filter(s => s != undefined)
-    .map(s => typeof s == 'string' ? s.replace(/%/g, '%23') : s!.toString())
+function safeEncode(s: string) {
+  return s.replace(/%/g, '%23')
 }
-function safeDecode(arr: (string|null|undefined)[]) {
-  return arr?.map(s => s?.replace(/%23/g, '%'))
+function safeDecode(s: string) {
+  return s.replace(/%23/g, '%')
 }
 
-function parseQueryParams(query: Record<string, string | (string | null)[] | null | undefined>, prefix: string): object {
+function parseQueryParams(query: RouteQuery['query'], prefix: string): SliceValue {
   return Object.fromEntries(
     Object.entries(query)
       .filter(([key, value]) => key.startsWith(prefix + '[') && key.endsWith(']'))
-      .map(([key, value]) => [key.substring((prefix + '[').length, key.length - ']'.length), safeDecode(Array.isArray(value) ? value : [value])])
+      .map(([key, values]) => [key.substring((prefix + '[').length, key.length - ']'.length), values.map(v => safeDecode(v))])
   )
 }
 
-function generateQueryParams(o: Record<string, (string|number|undefined)[]>, prefix: string): Record<string, string[]> {
+function generateQueryParams(o: SliceValue, prefix: string): RouteQuery['query'] {
   return Object.fromEntries(
     Object.entries(o)
-      .filter(([key, value]) => value != undefined)
-      .map(([key, value]) => [prefix + '[' + key + ']', safeEncode(value)])
+      .map(([key, value]) => {
+        const values = value.filter((v): v is string => v != undefined)
+        return [prefix + '[' + key + ']', values.map(v => safeEncode(v!))]
+      })
   )
 }
 
 class CubeDoesNotMatchQueryError extends Error {}
 
-export default class Klicker implements KlickerService {
+// adapted from https://github.com/cube-js/cube.js/blob/bd489cd7981dd94766f28ae4621fe993252d63c1/packages/cubejs-client-core/src/HttpTransport.js
+// removes dependency on cross-env, leave it up to the user
+class HttpTransport implements ITransport<ResultSet> {
+  apiUrl: string
+  fetch: any
+
+  constructor(apiUrl: string, fetch: any) {
+    this.apiUrl = apiUrl
+    this.fetch = fetch
+  }
+
+  request(method: string, { baseRequestId, ...params }: Record<string, string>) {
+    let spanCounter = 1;
+    const searchParams = new URLSearchParams(
+      params && Object.keys(params)
+        .map(k => ({ [k]: typeof params[k] === 'object' ? JSON.stringify(params[k]) : params[k] }))
+        .reduce((a, b) => ({ ...a, ...b }), {})
+    );
+
+    let url = `${this.apiUrl}/${method}${searchParams.toString().length ? `?${searchParams}` : ''}`;
+
+    const requestMethod = (url.length < 2000 ? 'GET' : 'POST');
+    const headers: Record<string, string> = {}
+    if (requestMethod === 'POST') {
+      url = `${this.apiUrl}/${method}`;
+      headers['Content-Type'] = 'application/json';
+    }
+
+    // Currently, all methods make GET requests. If a method makes a request with a body payload,
+    // remember to add {'Content-Type': 'application/json'} to the header.
+    const runRequest = () => this.fetch(url, {
+      method: requestMethod,
+      headers: {
+        'x-request-id': baseRequestId && `${baseRequestId}-span-${spanCounter++}`,
+        ...headers
+      },
+      body: requestMethod === 'POST' ? JSON.stringify(params) : null
+    });
+
+    return {
+      /* eslint no-unsafe-finally: off */
+      async subscribe(callback: any) {
+        let result = {
+          error: 'network Error' // add default error message
+        };
+        try {
+          result = await runRequest();
+        } finally {
+          return callback(result, () => this.subscribe(callback));
+        }
+      }
+    };
+  }
+}
+
+export default class KlickerService implements IKlickerService {
   private cubejsApi: CubejsApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
   public slicers: SlicerSpec[] = []
   public dimensionRenderers: DimensionRendererSpec[] = []
   public metricRenderers: MetricRendererSpec[] = []
-
-  private runningQueries = new Map<string, Promise<ResultSet>>()
 
   constructor(cubeUrl: string,
       public config: Config,
@@ -54,23 +105,27 @@ export default class Klicker implements KlickerService {
       slicers: SlicerSpec[],
       dimensionRenderers: DimensionRendererSpec[],
       metricRenderers: MetricRendererSpec[],
+      fetchImplementation: any,
   ) {
-    this.cubejsApi = cubejs('', { apiUrl: cubeUrl + '/cubejs-api/v1' })
+    const apiUrl = cubeUrl + '/cubejs-api/v1'
+    // FIXME ???
+    if (import.meta.env.PROD) {
+      // @ts-ignore
+      this.cubejsApi = new CubejsApi('', {
+        apiUrl,
+        transport: new HttpTransport(apiUrl, fetchImplementation),
+      })
+    } else {
+      this.cubejsApi = cubejs('', {
+        apiUrl,
+        transport: new HttpTransport(apiUrl, fetchImplementation),
+      })
+    }
     this.visualisations = defaultVisualisations.concat(visualisations)
     this.staticWidgets = defaultStaticWidgets.concat(staticWidgets)
     this.slicers = slicers
     this.dimensionRenderers = dimensionRenderers
     this.metricRenderers = metricRenderers
-  }
-
-  // override
-  public $t(key: string, args?: any) {
-    return key
-  }
-
-  // override
-  public $te(key: string) {
-    return false
   }
 
   // override & extend
@@ -101,15 +156,9 @@ export default class Klicker implements KlickerService {
     return value.toString()
   }
 
-  public getName(m: Metric|Dimension, modifier?: string): string {
+  public getName(translate: PluginConfig['translate'], m: Metric|Dimension, modifier?: string): string {
     const i18nKey = 'metric.' + m.id + (modifier != undefined ? '.' + modifier : '')
-
-    if (this.$te(i18nKey)) {
-      return this.$t(i18nKey) as string
-    }
-
-    // fall back to name
-    return m.name || m.id
+    return translate(i18nKey) ?? m.name ?? m.id
   }
 
   // TODO on startup, validate that materializations are a subset of their parent
@@ -186,7 +235,7 @@ export default class Klicker implements KlickerService {
     }
     const desiredConfig = this.validateCube(query, this.config[query.cubeId])
 
-    if (process.env.NODE_ENV == 'development') {
+    if (import.meta.env.KLICKER_DEBUG != undefined) {
       let bestConfig: CubeQueryConfiguration|undefined
       let minCubeCardinality = Infinity
       let matchedCubeIsAtRootLevel = true
@@ -279,23 +328,9 @@ export default class Klicker implements KlickerService {
 
   /**
    * Send a query to cube.js
-   *
-   * If there are multiple concurrent identical queries,
-   * return the same response for all of them.
    */
   private async load(query: Query) {
-    const queryKey = JSON.stringify(query)
-    let request = this.runningQueries.get(queryKey)
-    if (request == undefined) {
-      request = this.cubejsApi.load(query)
-      this.runningQueries.set(queryKey, request)
-    }
-
-    try {
-      return await request
-    } finally {
-      this.runningQueries.delete(queryKey)
-    }
+    return await this.cubejsApi.load(query)
   }
 
   /**
@@ -535,12 +570,12 @@ export default class Klicker implements KlickerService {
       // slices are swapped for compatibility with old dashboard links
       const slices = q.slices ? generateQueryParams(q.slices, 'compareFilter') : {}
       const testSlices = q.slices ? generateQueryParams(q.reference.slices, 'filter') : {}
-      return <Location>{
+      return {
         query: {
           ...slices,
           ...testSlices,
-          compare: 'true',
-          cube: q.cubeId,
+          compare: ['true'],
+          cube: [q.cubeId],
           compareDimension: q.dimensionsIds,
           dimension: q.reference.dimensionsIds,
           metric: q.metricsIds,
@@ -549,23 +584,23 @@ export default class Klicker implements KlickerService {
     } else {
       const q = query as CubeQuery
       const slices = q.slices ? generateQueryParams(q.slices, 'filter') : {}
-      return <Location>{
+      return {
         query: {
           ...slices,
-          compare: undefined,
-          cube: q.cubeId,
+          compare: [],
+          cube: [q.cubeId],
           dimension: q.dimensionsIds,
           metric: q.metricsIds,
-          sort: q.sortId,
+          sort: [q.sortId],
         },
       }
     }
   }
 
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: Route): CubeQuery|CubeComparingQuery {
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteQuery): CubeQuery|CubeComparingQuery {
     const query = route.query || {}
 
-    const cubeId = query.cube as string || defaultCubeId
+    const cubeId = (query.cube ?? [])[0] || defaultCubeId
     let slices = parseQueryParams(query, 'filter') as SliceValue
     slices = Object.assign({}, config[cubeId].defaultSliceValues, slices)
 
@@ -591,7 +626,7 @@ export default class Klicker implements KlickerService {
       metricsIds = [metricsIds]
     }
 
-    const sortId = query.sort as string || metricsIds[0]
+    const sortId = (query.sort ?? [])[0] || metricsIds[0]
     const limit = typeof query.limit == 'string' ? parseInt(query.limit) : undefined
 
     if (comparing) {
@@ -623,7 +658,7 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location {
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): RouteQuery {
     const slicesDiff = Object.fromEntries(
       Object.entries(slices)
         .filter(([key, value]) => JSON.stringify(defaults[key]) != JSON.stringify(value)))
@@ -633,7 +668,7 @@ export default class Klicker implements KlickerService {
     }
   }
 
-  convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue {
+  convertLocationToSlices(route: RouteQuery, defaults: SliceValue): SliceValue {
     const slices = parseQueryParams(route.query, 'filter') as SliceValue
 
     return {

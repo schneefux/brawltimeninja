@@ -1,14 +1,17 @@
 import CQuery from '../c-query'
 import VTestInfo from './v-test-info.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery } from '../../types'
 
-export default {
+const meta: Meta<VTestInfo> = {
   component: VTestInfo,
   title: 'Visualisations/Test Info',
-} as Meta
+}
+export default meta
 
-const comparingQuery = JSON.stringify(<CubeComparingQuery>{
+type Story = StoryObj<VTestInfo>
+
+const comparingQuery = JSON.stringify({
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -26,16 +29,20 @@ const comparingQuery = JSON.stringify(<CubeComparingQuery>{
     },
     sortId: 'winRate',
   },
-})
+} satisfies CubeComparingQuery)
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CQuery, VTestInfo },
-  props: Object.keys(argTypes),
-  template: `
-  <c-query :query='${comparingQuery}'>
-    <template v-slot="data">
-      <v-test-info v-bind="{ ...data, ...$props }"></v-test-info>
-    </template>
-  </c-query>
-  `,
-})
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CQuery, VTestInfo },
+    setup() {
+      return { args }
+    },
+    template: `
+    <c-query :query='${comparingQuery}'>
+      <template v-slot="data">
+        <v-test-info v-bind="{ ...data, ...args }"></v-test-info>
+      </template>
+    </c-query>
+    `,
+  }),
+}

@@ -1,75 +1,86 @@
 import BKvTable from './b-kv-table.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BKvTable> = {
   component: BKvTable,
   title: 'UI/Key-Value Table',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BKvTable },
-  props: Object.keys(argTypes),
-  template: `
-    <div style="width: 16rem;">
-      <b-kv-table v-bind="$props">
-      </b-kv-table>
-    </div>
-  `,
-})
-Default.args = {
-  rows: [{
-    title: 'Win Rate',
-    key: 'stats.winRate',
-  }, {
-    title: 'Star Rate',
-    key: 'stats.starRate',
-  }, {
-    title: 'Description',
-    key: 'description',
-  }],
-  idKey: 'id',
-  data: {
-    id: 1,
-    foobar: 123,
-    stats: {
-      winRate: '53.90%',
-      starRate: '11.70%',
-      blub: 'asdf',
+type Story = StoryObj<BKvTable>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BKvTable },
+    setup() {
+      return { args }
     },
-    description: 'This is a very long, overflowing text',
+    template: `
+      <div style="width: 16rem;">
+        <b-kv-table v-bind="args">
+        </b-kv-table>
+      </div>
+    `,
+  }),
+  args: {
+    rows: [{
+      title: 'Win Rate',
+      key: 'stats.winRate',
+    }, {
+      title: 'Star Rate',
+      key: 'stats.starRate',
+    }, {
+      title: 'Description',
+      key: 'description',
+    }],
+    idKey: 'id',
+    data: {
+      id: 1,
+      foobar: 123,
+      stats: {
+        winRate: '53.90%',
+        starRate: '11.70%',
+        blub: 'asdf',
+      },
+      description: 'This is a very long, overflowing text',
+    },
   },
 }
 
-export const Slot: Story = (args, { argTypes }) => ({
-  components: { BKvTable },
-  props: Object.keys(argTypes),
-  template: `
-    <div style="width: 10rem;">
-      <b-kv-table v-bind="$props">
-        <template v-slot:myslot="{ row }">
-          <b>"{{ row.stats.winRate }}"</b>
-        </template>
-      </b-kv-table>
-    </div>
-  `,
-})
-Slot.args = {
-  rows: [{
-    title: 'Win Rate',
-    key: 'stats.winRate',
-    slot: 'myslot',
-  }, {
-    title: 'Star Rate',
-    key: 'stats.starRate',
-  }],
-  idKey: 'id',
-  data: {
-    id: 1,
-    foobar: 123,
-    stats: {
-      winRate: '53.90%',
-      starRate: '11.70%',
-      blub: 'asdf',
+export const Slot: Story = {
+  render: (args) => ({
+    components: { BKvTable },
+    setup() {
+      return { args }
+    },
+    template: `
+      <div style="width: 10rem;">
+        <b-kv-table v-bind="args">
+          <template v-slot:myslot="{ row }">
+            <b>"{{ row.stats.winRate }}"</b>
+          </template>
+        </b-kv-table>
+      </div>
+    `,
+  }),
+  args: {
+    rows: [{
+      title: 'Win Rate',
+      key: 'stats.winRate',
+      slot: 'myslot',
+    }, {
+      title: 'Star Rate',
+      key: 'stats.starRate',
+    }],
+    idKey: 'id',
+    data: {
+      id: 1,
+      foobar: 123,
+      stats: {
+        winRate: '53.90%',
+        starRate: '11.70%',
+        blub: 'asdf',
+      },
     },
   },
 }

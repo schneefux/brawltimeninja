@@ -1,16 +1,16 @@
 <template>
   <moveable
     ref="moveable"
+    :class-name="$attrs.class as string"
+    :target="target"
     :container="container"
     :bounds="bounds"
     :resizable="spec != undefined ? spec.resizable : false"
     :scalable="spec != undefined ? spec.scalable : false"
     :keep-ratio="spec != undefined ? spec.scalable : false"
-    :style="initialStyle"
-    class-name="panzoom-exclude"
-    snappable
-    draggable
-    rotatable
+    :snappable="true"
+    :draggable="true"
+    :rotatable="true"
     @drag-start="onDragStart"
     @drag="onDrag"
     @drag-end="onDragEnd"
@@ -25,30 +25,37 @@
     @resize-end="onResizeEnd"
     @render="onRender"
     @click="$emit('click')"
+  ></moveable>
+
+  <div
+    ref="target"
+    v-bind="$attrs"
+    :style="initialStyle"
   >
     <c-widget
-      :widget="value"
+      :widget="modelValue"
       class="pointer-events-none"
     ></c-widget>
-  </moveable>
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch, nextTick, onMounted } from "vue";
-import { ReportWidget, StaticWidgetSpec } from "../../types";
+import { computed, defineComponent, PropType, ref, watch, onMounted, defineAsyncComponent } from "vue";
+import { GridWidget, ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
 import { useKlicker } from '../../composables/klicker'
 
 /**
  * Wrap a <c-widget> inside a <moveable>.
- * The widget with an updated transformation frame is emitted lazyily when a user stops the movement.
+ * The widget with an updated transformation frame is emitted lazily when a user stops the movement.
  */
 export default defineComponent({
+  inheritAttrs: false,
   components: {
     CWidget,
     // does not support SSR
-    Moveable: () => import('vue-moveable'),
+    Moveable: defineAsyncComponent(() => import('vue3-moveable')),
   },
   props: {
     container: {
@@ -59,86 +66,91 @@ export default defineComponent({
       type: Object,
       required: true
     },
-    value: {
-      type: Object as PropType<ReportWidget>,
+    modelValue: {
+      type: Object as PropType<ReportWidget|GridWidget>,
       required: true
     },
   },
+  emits: {
+    ['click']() { return true },
+    ['update:modelValue'](value: ReportWidget|GridWidget) { return true },
+  },
   setup(props, { emit }) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
+    const target = ref<HTMLElement>()
     const moveable = ref<MoveableInterface>()
 
     const spec = computed<StaticWidgetSpec>(() => (
-      $klicker.visualisations.find(v => v.component == props.value.component) ??
-      $klicker.staticWidgets.find(v => v.component == props.value.component)
+      $klicker.visualisations.find(v => v.component == props.modelValue.component) ??
+      $klicker.staticWidgets.find(v => v.component == props.modelValue.component)
     )!)
 
     // Keep a local copy of the frame and lazy-sync it on *end to prevent event spam
     const clone = (o: any) => JSON.parse(JSON.stringify(o))
-    let frame: ReportWidget['frame'] = clone(props.value.frame)
-    watch(() => props.value, (after, before) => {
+    let frame: ReportWidget['frame'] = clone(props.modelValue.frame)
+    watch(() => props.modelValue, (after, before) => {
       if (JSON.stringify(after) != JSON.stringify(before)) {
-        frame = clone(props.value.frame)
-        Object.assign((<any>moveable.value).$el.style, render(frame, spec.value))
-        nextTick(() => moveable.value!.updateRect())
+        frame = clone(props.modelValue.frame)
+        handlers.onRender()
+        moveable.value?.updateRect()
       }
-    })
+    }, { flush: 'post' })
 
     const sync = () => {
-      const widget: ReportWidget = {
-        ...props.value,
+      const widget: ReportWidget|GridWidget = {
+        ...props.modelValue,
         frame: clone(frame),
       }
-      emit('input', widget)
+      emit('update:modelValue', widget)
     }
 
     // Style DOM directly for better performance
     const initialStyle = render(frame, spec.value)
-    // workaround for slow component rendering
-    onMounted(() => setTimeout(() => moveable.value!.updateRect(), 1000))
 
     const handlers = {
-      onDragStart(e) {
+      onDragStart(e: any) {
         e.set(frame.translate)
       },
-      onDrag(e) {
+      onDrag(e: any) {
         frame.translate = e.beforeTranslate
       },
-      onDragEnd(e) {
+      onDragEnd(e: any) {
         sync()
       },
-      onRotateStart(e) {
+      onRotateStart(e: any) {
         e.set(frame.rotate)
       },
-      onRotate(e) {
+      onRotate(e: any) {
         frame.rotate = e.beforeRotate
       },
-      onRotateEnd(e) {
+      onRotateEnd(e: any) {
         sync()
       },
-      onScaleStart(e) {
+      onScaleStart(e: any) {
         e.set(frame.scale)
       },
-      onScale(e) {
+      onScale(e: any) {
         frame.scale = e.scale
       },
-      onScaleEnd(e) {
+      onScaleEnd(e: any) {
         sync()
       },
-      onResizeStart(e) {
+      onResizeStart(e: any) {
       },
-      onResize(e) {
+      onResize(e: any) {
         const beforeTranslate = e.drag.beforeTranslate
         frame.translate = beforeTranslate
 
         frame.width = e.width
         frame.height = e.height
       },
-      onResizeEnd(e) {
+      onResizeEnd(e: any) {
         sync()
       },
-      onRender(e) {
-        Object.assign(e.target.style, render(frame, spec.value))
+      onRender() {
+        if (target.value != undefined) {
+          Object.assign(target.value.style, render(frame, spec.value))
+        }
       },
     }
 
@@ -147,6 +159,7 @@ export default defineComponent({
 
     return {
       spec,
+      target,
       moveable,
       initialStyle,
       ...handlers,

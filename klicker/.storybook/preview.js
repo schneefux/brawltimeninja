@@ -2,6 +2,11 @@ import '../components/index.css'
 import '../fixtures/layout.css'
 import './theme.css'
 import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { decorator as klickerConfigDecorator } from '../fixtures/klicker.service';
+
+// FIXME remove after upgrading jest https://github.com/storybookjs/storybook/issues/15391#issuecomment-873472669
+import * as jest from "jest-mock";
+window.jest = jest;
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -21,3 +26,5 @@ export const parameters = {
     }]
   }
 }
+
+export const decorators = [klickerConfigDecorator]

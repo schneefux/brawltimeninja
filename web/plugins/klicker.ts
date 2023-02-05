@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import config from '~/lib/klicker.conf'
+import cubes from '~/lib/klicker.cubes'
 import { Context } from "@nuxt/types"
 import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec, DimensionRendererSpec, MetricRendererSpec } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
-import { CurrentAndUpcomingEvents } from "~/model/Api"
 import { formatClickhouseDate, formatMode, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, idToTag } from "~/lib/util"
-import Klicker from '@schneefux/klicker/service'
+import KlickerService from '@schneefux/klicker/service'
 import { CQuery } from '@schneefux/klicker/components'
 import visualisations from '~/lib/klicker.visualisations.conf'
 import slicers from '~/lib/klicker.slicers.conf'
@@ -48,7 +47,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-class CustomKlicker extends Klicker {
+class CustomKlicker extends KlickerService {
   constructor(cubeUrl: string,
       config: Config,
       visualisations: VisualisationSpec[],
@@ -262,7 +261,7 @@ export default defineNuxtPlugin((context, inject) => {
   Vue.component('b-page-section', BPageSection)
   Vue.component('b-scrolling-dashboard', BScrollingDashboard)
 
-  const service = new CustomKlicker(context.$config.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers, context)
+  const service = new CustomKlicker(context.$config.cubeUrl, cubes, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers, context)
 
   // onGlobalSetup(() => {
   // })

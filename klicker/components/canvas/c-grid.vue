@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label
-        :for="`${prefix}-title`"
-      >
+      <label :for="`${prefix}-title`">
         Title
       </label>
       <b-textbox
@@ -20,7 +18,7 @@
             name="responsive"
             required
             primary
-            @input="v => columns = undefined"
+            @update:modelValue="() => columns = undefined"
           ></b-radio>
           <label
             :for="`${prefix}-responsive`"
@@ -37,7 +35,7 @@
             name="responsive"
             required
             primary
-            @input="v => columns = columns || 12"
+            @update:modelValue="(v: boolean) => columns = columns || 12"
           ></b-radio>
           <label
             :for="`${prefix}-fixed`"
@@ -75,9 +73,9 @@
       class="mt-4"
     >
       <c-widget-editor
-        :value="widgetsKeyed[selectedWidgetId]"
+        :model-value="widgetsKeyed[selectedWidgetId]"
         :default-query="defaultQuery"
-        @input="updateWidget"
+        @update:modelValue="w => updateWidget(w as GridWidget)"
         @delete="deleteSelectedWidget"
       >
         <b-dashboard-cell
@@ -88,36 +86,35 @@
             :elevation="2"
             title="Configure Widget Dimensions"
           >
-            <div
-              slot="content"
-              class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center"
-            >
-              <label
-                :for="`${prefix}-columns`"
-              >
-                Columns
-              </label>
-              <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.columns"
-                :id="`${prefix}-width`"
-                min="1"
-                max="8"
-                @input="c => updateWidgetFrame(selectedWidgetId, { columns: parseInt(c) })"
-              ></b-number>
+            <template v-slot:content>
+              <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
+                <label
+                  :for="`${prefix}-columns`"
+                >
+                  Columns
+                </label>
+                <b-number
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
+                  :id="`${prefix}-width`"
+                  min="1"
+                  max="8"
+                  @update:modelValue="c => updateWidgetFrame(selectedWidgetId!, { columns: c })"
+                ></b-number>
 
-              <label
-                :for="`${prefix}-rows`"
-              >
-                Rows
-              </label>
-              <b-number
-                :value="widgetsKeyed[selectedWidgetId].frame.rows"
-                :id="`${prefix}-rows`"
-                min="1"
-                max="8"
-                @input="r => updateWidgetFrame(selectedWidgetId, { rows: parseInt(r) })"
-              ></b-number>
-            </div>
+                <label
+                  :for="`${prefix}-rows`"
+                >
+                  Rows
+                </label>
+                <b-number
+                  :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
+                  :id="`${prefix}-rows`"
+                  min="1"
+                  max="8"
+                  @update:modelValue="r => updateWidgetFrame(selectedWidgetId!, { rows: r })"
+                ></b-number>
+              </div>
+            </template>
           </b-card>
         </b-dashboard-cell>
       </c-widget-editor>
@@ -132,15 +129,16 @@
         'dashboard--fixed': columns != undefined,
         'dashboard--responsive': columns == undefined,
       }"
+      item-key="id"
       class="mt-16 w-full dashboard"
     >
-      <c-widget
-        v-for="w in widgets"
-        :key="w.id"
-        :widget="w"
-        for-grid
-        @click.native="selectedWidgetId = w.id"
-      ></c-widget>
+      <template v-slot:item="{ element }">
+        <c-widget
+          :widget="element"
+          for-grid
+          @click="selectedWidgetId = element.id"
+        ></c-widget>
+      </template>
     </draggable>
   </div>
 </template>
@@ -151,6 +149,9 @@ import CWidgetEditor from './c-widget-editor.vue'
 import CWidget from './c-widget.vue'
 import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
+import BCard from '../ui/b-card.vue'
+import BButton from '../ui/b-button.vue'
+import BRadio from '../ui/b-radio.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
@@ -164,12 +165,15 @@ export default defineComponent({
     BDashboardCell,
     BNumber,
     BTextbox,
+    BCard,
+    BButton,
+    BRadio,
     CWidget,
     CWidgetEditor,
     Draggable,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Grid>,
       required: true
     },
@@ -178,16 +182,20 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: Grid) { return true },
+    ['delete']() { return true },
+  },
   setup(props, { emit }) {
     const selectedWidgetId = ref<string>()
 
     const widgets = computed({
       get() {
-        return props.value.widgets
+        return props.modelValue.widgets
       },
       set(widgets: GridWidget[]) {
-        emit('input', {
-          ...props.value,
+        emit('update:modelValue', {
+          ...props.modelValue,
           widgets,
         })
       }
@@ -195,10 +203,10 @@ export default defineComponent({
 
     const widgetsKeyed = computed({
       get(): Record<string, GridWidget> {
-        return Object.fromEntries(props.value.widgets.map(w => [w.id, w]))
+        return Object.fromEntries(props.modelValue.widgets.map(w => [w.id, w]))
       },
       set(widgets: Record<string, GridWidget>) {
-        emit('input', { ...props.value, widgets: Object.values(widgets) })
+        emit('update:modelValue', { ...props.modelValue, widgets: Object.values(widgets) })
       }
     })
 
@@ -220,43 +228,43 @@ export default defineComponent({
       selectedWidgetId.value = id
     }
 
-    const updateWidget = (widget: GridWidget) => widgetsKeyed.value = {
-      ...widgetsKeyed.value,
-      [widget.id]: widget,
+    const updateWidget = (widget: GridWidget) => {
+      widgetsKeyed.value = {
+        ...widgetsKeyed.value,
+        [widget.id]: widget,
+      }
     }
+
     const deleteSelectedWidget = () => {
       widgets.value = widgets.value.filter((widget) => widget.id != selectedWidgetId.value)
       selectedWidgetId.value = undefined
     }
 
-    const updateWidgetFrame = (widgetId: string, framePartial: Partial<GridWidget['frame']>) => {
-      widgetsKeyed.value = {
-        ...widgetsKeyed.value,
-        [widgetId]: {
-          ...widgetsKeyed.value[widgetId],
-          frame: {
-            ...widgetsKeyed.value[widgetId].frame,
-            ...framePartial,
-          },
+    const updateWidgetFrame = (id: string, frame: Partial<GridWidget['frame']>) => {
+      updateWidget({
+        ...widgetsKeyed.value[id],
+        frame: {
+          ...widgetsKeyed.value[id].frame,
+          ...frame,
         },
-      }
+      })
     }
 
     const title = computed({
       get() {
-        return props.value.title
+        return props.modelValue.title
       },
       set(title: string) {
-        emit('input', { ...props.value, title })
+        emit('update:modelValue', { ...props.modelValue, title })
       }
     })
 
     const columns = computed({
       get() {
-        return props.value.columns
+        return props.modelValue.columns
       },
       set(columns: number|undefined) {
-        emit('input', { ...props.value, columns })
+        emit('update:modelValue', { ...props.modelValue, columns })
       }
     })
 
@@ -266,11 +274,11 @@ export default defineComponent({
       title,
       prefix,
       columns,
+      updateWidget,
+      updateWidgetFrame,
       widgets,
       widgetsKeyed,
       addWidget,
-      updateWidget,
-      updateWidgetFrame,
       deleteSelectedWidget,
       selectedWidgetId,
     }

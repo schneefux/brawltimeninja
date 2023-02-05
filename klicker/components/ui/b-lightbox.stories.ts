@@ -1,45 +1,48 @@
 import BLightbox from './b-lightbox.vue'
 import BButton from './b-button.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { userEvent, within } from '@storybook/testing-library'
 import { expect } from '@storybook/jest'
 import { getCanvasElementFixed } from '../../fix'
+import { ref } from 'vue'
 
-export default {
+const meta: Meta<BLightbox> = {
   component: BLightbox,
   title: 'UI/Lightbox',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BLightbox, BButton },
-  props: Object.keys(argTypes),
-  template: `
-    <div>
-      <b-button primary md @click="triggered = true">Open Lightbox</b-button>
-      <b-lightbox v-model="triggered">
-        Content goes here
-      </b-lightbox>
-    </div>
-  `,
-  data() {
-    return {
-      triggered: false,
-    }
+type Story = StoryObj<BLightbox>
+
+export const Default: Story = {
+  render: () => ({
+    components: { BLightbox, BButton },
+    setup() {
+      const triggered = ref(false)
+      return { triggered }
+    },
+    template: `
+      <div>
+        <b-button primary md @click="triggered = true">Open Lightbox</b-button>
+        <b-lightbox v-model="triggered">
+          Content goes here
+        </b-lightbox>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    canvasElement = getCanvasElementFixed(canvasElement)
+    const canvas = within(canvasElement)
+    const body = within(document.body)
+
+    const button = await canvas.findByRole('button')
+    await userEvent.click(button)
+    const content = await body.findByText(/Content goes here/)
+    expect(content).toBeVisible()
+    const close = await body.findByLabelText('close')
+    expect(close).toBeVisible()
+    await userEvent.click(close)
+    expect(close).not.toBeVisible()
+    expect(content).not.toBeVisible()
   },
-})
-Default.args = {}
-Default.play = async ({ canvasElement }) => {
-  canvasElement = getCanvasElementFixed(canvasElement)
-  const canvas = within(canvasElement)
-  const body = within(document.body)
-
-  const button = await canvas.findByRole('button')
-  await userEvent.click(button)
-  const content = await body.findByText(/Content goes here/)
-  expect(content).toBeVisible()
-  const close = await body.findByLabelText('close')
-  expect(close).toBeVisible()
-  await userEvent.click(close)
-  expect(close).not.toBeVisible()
-  expect(content).not.toBeVisible()
 }

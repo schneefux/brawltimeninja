@@ -4,7 +4,7 @@
     class="w-full flex justify-end space-x-2"
   >
     <b-button
-      v-if="value > 0"
+      v-if="modelValue > 0"
       primary
       sm
       @click="collapse"
@@ -12,7 +12,7 @@
       {{ translate('action.collapse') }}
     </b-button>
     <b-button
-      v-if="value < Math.ceil(pages) - 1"
+      v-if="modelValue < Math.ceil(pages) - 1"
       primary
       sm
       @click="expand"
@@ -25,14 +25,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BButton from './b-button.vue'
-import { useKlicker } from '../../composables/klicker'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
     BButton,
   },
   props: {
-    value: {
+    modelValue: {
       type: Number,
       required: true
     },
@@ -41,10 +41,13 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: Number) { return true },
+  },
   setup(props, { emit }) {
-    const expand = () => emit('input', props.value + 1)
-    const collapse = () => emit('input', 0)
-    const { translate } = useKlicker()
+    const expand = () => emit('update:modelValue', props.modelValue + 1)
+    const collapse = () => emit('update:modelValue', 0)
+    const { translate } = useKlickerConfig()
 
     return {
       expand,

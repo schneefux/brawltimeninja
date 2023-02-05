@@ -1,16 +1,23 @@
 import BCookieConsent from './b-cookie-consent.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BCookieConsent> = {
   component: BCookieConsent,
   title: 'UI/Cookie Consent',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BCookieConsent },
-  props: Object.keys(argTypes),
-  template: `
-    <b-cookie-consent v-bind="$props"></b-cookie-consent>
-  `,
-})
-Default.args = {}
+type Story = StoryObj<BCookieConsent>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BCookieConsent },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-cookie-consent v-bind="args"></b-cookie-consent>
+    `,
+  }),
+  args: {},
+}

@@ -42,7 +42,7 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   props: {
-    value: {
+    modelValue: {
       type: Number,
       required: true
     },
@@ -51,13 +51,16 @@ export default defineComponent({
       required: true
     },
   },
+  emits: {
+    ['update:modelValue'](value: Number) { return true },
+  },
   setup(props, { emit }) {
     const page = computed({
       get(): number {
-        return props.value
+        return props.modelValue
       },
       set(p: number) {
-        emit('input', p)
+        emit('update:modelValue', p)
       }
     })
 

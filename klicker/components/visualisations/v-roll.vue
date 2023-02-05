@@ -3,60 +3,61 @@
     v-bind="$props"
     component="v-roll"
   >
-    <div
-      slot="content"
-      ref="wrapper"
-      class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
-    >
-      <table class="h-full w-full border-separate border-spacing-0">
-        <tbody>
-          <tr>
-            <th
-              scope="row"
-              ref="heading"
-              class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
-            >{{ dimensionName }}</th>
-            <d-auto
-              v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
-              :key="title.id"
-              :ref="`item-${title.id}`"
-              :response="response"
-              :row="title.entry"
-              tag="td"
-              class="text-center pt-2 pb-1 pl-3"
-            ></d-auto>
-          </tr>
-
-          <tr
-            v-for="row in body"
-            :key="row.id"
-          >
-            <th
-              scope="row"
-              class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
-            >{{ row.title }}</th>
-            <td
-              v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
-              :key="column.id"
-              class="text-center pt-1 pl-3 text-text"
-            >
-              <m-auto
+    <template v-slot:content>
+      <div
+        ref="wrapper"
+        class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
+      >
+        <table class="h-full w-full border-separate border-spacing-0">
+          <tbody>
+            <tr>
+              <th
+                scope="row"
+                ref="heading"
+                class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
+              >{{ dimensionName }}</th>
+              <d-auto
+                v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
+                :key="title.id"
+                :ref="el => setItemRef(title.id, el)"
                 :response="response"
-                :row="column.entry"
-                :metric-id="row.metricId"
-              ></m-auto>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                :row="title.entry"
+                tag="td"
+                class="text-center pt-2 pb-1 pl-3"
+              ></d-auto>
+            </tr>
 
-      <b-paginator
-        v-if="pageSize != undefined && headings.length > pageSize"
-        v-model="page"
-        :pages="Math.ceil(headings.length / pageSize)"
-        class="pt-4 mt-auto mx-auto"
-      ></b-paginator>
-    </div>
+            <tr
+              v-for="row in body"
+              :key="row.id"
+            >
+              <th
+                scope="row"
+                class="font-normal text-sm text-left pt-1 pr-3 border-r border-gray-600 whitespace-nowrap text-text/75"
+              >{{ row.title }}</th>
+              <td
+                v-for="column in row.columns.slice(page * pageSize, (page + 1) * pageSize)"
+                :key="column.id"
+                class="text-center pt-1 pl-3 text-text"
+              >
+                <m-auto
+                  :response="response"
+                  :row="column.entry"
+                  :metric-id="row.metricId"
+                ></m-auto>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <b-paginator
+          v-if="pageSize != undefined && headings.length > pageSize"
+          v-model="page"
+          :pages="Math.ceil(headings.length / pageSize)"
+          class="pt-4 mt-auto mx-auto"
+        ></b-paginator>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -69,7 +70,7 @@ import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useResizeObserver } from '@vueuse/core'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -86,13 +87,11 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
-
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const dimension = computed(() => dimensions.value[0])
-    const dimensionName = computed(() => $klicker.getName(dimension.value, 'short'))
+    const dimensionName = computed(() => $klicker.getName(translate, dimension.value, 'short'))
     const headings = computed(() =>
       switchResponse(
         response => response.data.map(e => ({
@@ -111,7 +110,7 @@ export default defineComponent({
         response => metrics.value.map((metric) => ({
           id: metric.id,
           metricId: metric.id,
-          title: $klicker.getName(metric, 'short'),
+          title: $klicker.getName(translate, metric, 'short'),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}`,
             entry: e,
@@ -120,7 +119,7 @@ export default defineComponent({
         response => metrics.value.flatMap(metric => [{
           id: metric.id,
           metricId: metric.id,
-          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(metric),
+          title: (response.query.name ?? translate('comparison.dataset.test')) + ' ' + $klicker.getName(translate, metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}`,
             entry: e,
@@ -128,7 +127,7 @@ export default defineComponent({
         }, {
           id: `${metric.id}-reference`,
           metricId: metric.id,
-          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(metric),
+          title: (response.query.reference.name ?? translate('comparison.dataset.reference')) + ' ' + $klicker.getName(translate, metric),
           columns: response.data.map(e => ({
             id: `${metric.id}-${e.id}-reference`,
             entry: e.test.reference,
@@ -139,6 +138,8 @@ export default defineComponent({
 
     const wrapper = ref<HTMLElement>()
     const heading = ref<HTMLElement>()
+    const itemRefs = ref<Record<string, InstanceType<typeof DAuto>|null>>({})
+    const setItemRef = (id: string, el: unknown|null) => itemRefs.value[id] = el as InstanceType<typeof DAuto>|null
     const page = ref(0)
     const pageSize = ref(headings.value.length)
 
@@ -147,14 +148,14 @@ export default defineComponent({
         return pageSize.value
       }
 
-      const firstItem = Object.entries(refs)
-        .find(([name, r]) => name.startsWith('item-') && (r as any).length == 1)
+      const firstItem = Object.values(itemRefs.value)
+        .find(v => v != undefined)
 
       if (firstItem == undefined) {
         return pageSize.value
       }
 
-      const firstItemElement = firstItem[1]![0].$el as HTMLElement
+      const firstItemElement = firstItem.$el
       const pxPerItem = firstItemElement.getBoundingClientRect().width
 
       const pxForHeader = heading.value.getBoundingClientRect().width
@@ -209,6 +210,7 @@ export default defineComponent({
       headings,
       body,
       dimensionName,
+      setItemRef,
     }
   },
 })

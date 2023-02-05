@@ -3,13 +3,14 @@
     v-bind="$props"
     component="v-heatmap"
   >
-    <b-vega
-      slot="content"
-      :spec="spec"
-      :show-download="card != undefined"
-      full-width
-      full-height
-    ></b-vega>
+    <template v-slot:content>
+      <b-vega
+        :spec="spec"
+        :show-download="card != undefined"
+        full-width
+        full-height
+      ></b-vega>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -20,7 +21,7 @@ import { computed, defineComponent } from 'vue'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -31,7 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { dimensions, metrics, comparing } = useCubeResponseProps(props)
 
     const spec = computed((): VisualizationSpec => {

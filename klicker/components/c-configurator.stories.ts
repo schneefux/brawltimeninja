@@ -1,13 +1,16 @@
 import CConfigurator from './c-configurator.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery } from '../types'
 
-export default {
+const meta: Meta<CConfigurator> = {
   component: CConfigurator,
   title: 'Editor/Query Configurator',
-} as Meta
+}
+export default meta
 
-const query = <CubeQuery>{
+type Story = StoryObj<CConfigurator>
+
+const query: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -16,23 +19,27 @@ const query = <CubeQuery>{
   limit: 5,
 }
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CConfigurator },
-  props: Object.keys(argTypes),
-  template: `
-    <c-configurator v-bind="$props"></c-configurator>
-  `,
-})
-Default.args = {
-  value: query,
-  configureCube: true,
-  configureMetrics: true,
-  configureMultipleMetrics: true,
-  configureDimensions: true,
-  configureCompareMode: true,
+export const Default: Story = {
+  render: (args) => ({
+    components: { CConfigurator },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-configurator v-bind="args"></c-configurator>
+    `,
+  }),
+  args: {
+    modelValue: query,
+    configureCube: true,
+    configureMetrics: true,
+    configureMultipleMetrics: true,
+    configureDimensions: true,
+    configureCompareMode: true,
+  },
 }
 
-const comparingQuery = <CubeComparingQuery>{
+const comparingQuery: CubeComparingQuery = {
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -52,18 +59,22 @@ const comparingQuery = <CubeComparingQuery>{
   },
 }
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CConfigurator },
-  props: Object.keys(argTypes),
-  template: `
-    <c-configurator v-bind="$props"></c-configurator>
-  `,
-})
-Comparing.args = {
-  value: comparingQuery,
-  configureCube: true,
-  configureMetrics: true,
-  configureMultipleMetrics: true,
-  configureDimensions: true,
-  configureCompareMode: true,
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CConfigurator },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-configurator v-bind="args"></c-configurator>
+    `,
+  }),
+  args: {
+    modelValue: comparingQuery,
+    configureCube: true,
+    configureMetrics: true,
+    configureMultipleMetrics: true,
+    configureDimensions: true,
+    configureCompareMode: true,
+  },
 }

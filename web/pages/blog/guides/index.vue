@@ -9,6 +9,7 @@
         :key="post.title"
         class="contents"
       >
+        <!--
         <client-only>
           <in-feed-adsense
             v-if="index == 3"
@@ -18,6 +19,7 @@
             class="w-full"
           ></in-feed-adsense>
         </client-only>
+        -->
 
         <b-card
           :title="post.title"

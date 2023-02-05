@@ -19,7 +19,7 @@ export default defineComponent({
   middleware: ['cached'],
   setup() {
     const route = useRoute()
-    const { post } = useContent('/content/guides/' + route.value.params.post)
+    const { post } = useContent('guides/' + route.value.params.post)
 
     useMeta(() => {
       if (post.value == undefined) {

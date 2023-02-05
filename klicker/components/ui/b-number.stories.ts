@@ -1,18 +1,25 @@
 import BNumber from './b-number.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BNumber> = {
   component: BNumber,
   title: 'UI/Number Input',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BNumber },
-  props: Object.keys(argTypes),
-  template: `
-    <b-number v-bind="$props"></b-number>
-  `,
-})
-Default.args = {
-  value: 123,
+type Story = StoryObj<BNumber>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BNumber },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-number v-bind="args"></b-number>
+    `,
+  }),
+  args: {
+    value: 123,
+  },
 }

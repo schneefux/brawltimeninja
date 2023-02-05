@@ -3,14 +3,14 @@ import { ref, onMounted } from 'vue'
 import { feathers } from '@feathersjs/feathers'
 import rest from '@feathersjs/rest-client'
 import auth from '@feathersjs/authentication-client'
-import { useContext } from '@nuxtjs/composition-api'
+import { useKlickerConfig } from './klicker'
 
 export default function useFeathers() {
-  const { $managerUrl }: any = useContext()
+  const { managerUrl } = useKlickerConfig()
 
   const client = feathers() as any // TODO
 
-  client.configure(rest($managerUrl as string).fetch(fetch))
+  client.configure(rest(managerUrl).fetch(fetch))
   client.configure(auth())
 
   const isLoggedIn = ref(false)

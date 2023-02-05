@@ -35,16 +35,11 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    ssrKey: {
-      type: String,
-      required: false,
-    },
   },
   setup(props) {
     const cell = ref<HTMLElement|null>()
     const visible = ref(!props.lazy)
-
-    if (!visible.value && !process.server) {
+    if (!visible.value && !import.meta.env.SSR) {
       const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
         if (isIntersecting) {
           visible.value = isIntersecting
@@ -53,7 +48,6 @@ export default defineComponent({
       }, {
         rootMargin: `50% 50% 50% 50%`,
       })
-
       if (!isSupported) {
         visible.value = true
       }

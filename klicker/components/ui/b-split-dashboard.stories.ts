@@ -1,21 +1,30 @@
 import BSplitDashboard from './b-split-dashboard.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BSplitDashboard> = {
   component: BSplitDashboard,
   title: 'UI/Split Dashboard',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BSplitDashboard },
-  props: Object.keys(argTypes),
-  template: `
-    <b-split-dashboard
-      v-bind="$props"
-    >
-      <p slot="aside">Sticky on the left side</p>
-      <div style="height: 200vh;">Main content</div>
-    </b-split-dashboard>
-  `,
-})
-Default.args = {}
+type Story = StoryObj<BSplitDashboard>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BSplitDashboard },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-split-dashboard
+        v-bind="args"
+      >
+        <template v-slot:aside>
+          <p>Sticky on the left side</p>
+        </template>
+        <div style="height: 200vh;">Main content</div>
+      </b-split-dashboard>
+    `,
+  }),
+  args: {},
+}

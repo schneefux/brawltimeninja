@@ -1,22 +1,31 @@
 import BShimmer from './b-shimmer.vue'
 import BCard from './b-card.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BShimmer> = {
   component: BShimmer,
   title: 'UI/Shimmer',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BCard, BShimmer },
-  props: Object.keys(argTypes),
-  template: `
-    <b-card title="Storybook Demo" sm>
-      <b-shimmer slot="content" v-bind="$props"></b-shimmer>
-    </b-card>
-  `,
-})
-Default.args = {
-  heightPx: 100,
-  loading: true,
+type Story = StoryObj<BShimmer>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BCard, BShimmer },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-card title="Storybook Demo" sm>
+        <template v-slot:content>
+          <b-shimmer v-bind="args"></b-shimmer>
+        </template>
+      </b-card>
+    `,
+  }),
+  args: {
+    heightPx: 100,
+    loading: true,
+  },
 }

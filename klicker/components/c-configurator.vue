@@ -3,64 +3,63 @@
     v-bind="card"
     :title="translate('configurator.title')"
   >
-    <div
-      slot="content"
-      class="flex flex-wrap items-center"
-    >
-      <div class="grid grid-cols-[auto,auto] gap-6 items-center">
-        <h1
-          v-if="configureCube"
-          class="inline"
-        >
-          {{ translate('configurator.source') }}
-        </h1>
-
-        <div v-if="configureCube">
-          <b-select
-            :value="value.cubeId"
-            sm
-            @input="onInputCubeId"
+    <template v-slot:content>
+      <div class="flex flex-wrap items-center">
+        <div class="grid grid-cols-[auto,auto] gap-6 items-center">
+          <h1
+            v-if="configureCube"
+            class="inline"
           >
-            <option
-              v-for="c in cubes"
-              :key="c.id"
-              :value="c.id"
+            {{ translate('configurator.source') }}
+          </h1>
+
+          <div v-if="configureCube">
+            <b-select
+              :model-value="modelValue.cubeId"
+              sm
+              @update:modelValue="onInputCubeId"
             >
-              {{ c.name }}
-            </option>
-          </b-select>
+              <option
+                v-for="c in cubes"
+                :key="c.id"
+                :value="c.id"
+              >
+                {{ c.name }}
+              </option>
+            </b-select>
+          </div>
+
+          <c-metric
+            v-if="configureMetrics"
+            :options="configureMetricsOptions"
+            :model-value="modelValue"
+            :multiple="configureMultipleMetrics && !compareMode"
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-metric>
+
+          <c-dimension
+            v-if="configureDimensions"
+            :model-value="modelValue"
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-dimension>
+
+          <c-dimension
+            v-if="configureDimensions && compareMode"
+            :model-value="modelValue"
+            comparing
+            @update:modelValue="s => $emit('update:modelValue', s)"
+          ></c-dimension>
+
+          <label
+            v-if="configureCompareMode && canCompare"
+            class="col-span-2 flex items-center"
+          >
+            <b-checkbox v-model="compareMode"></b-checkbox>
+            <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
+          </label>
         </div>
-
-        <c-metric
-          v-if="configureMetrics"
-          :options="configureMetricsOptions"
-          :value="value"
-          :multiple="configureMultipleMetrics && !compareMode"
-          @input="s => $emit('input', s)"
-        ></c-metric>
-
-        <c-dimension
-          v-if="configureDimensions"
-          :value="value"
-          @input="s => $emit('input', s)"
-        ></c-dimension>
-
-        <c-dimension
-          v-if="configureDimensions && compareMode"
-          :value="value"
-          comparing
-          @input="s => $emit('input', s)"
-        ></c-dimension>
-
-        <label
-          v-if="configureCompareMode && canCompare"
-          class="col-span-2 flex items-center"
-        >
-          <b-checkbox v-model="compareMode"></b-checkbox>
-          <span class="ml-2">{{ translate('configurator.comparison-mode') }}</span>
-        </label>
       </div>
-    </div>
+    </template>
   </b-card>
 </template>
 
@@ -74,7 +73,7 @@ import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType } from 'vue'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -86,7 +85,7 @@ export default defineComponent({
     BCard,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
@@ -119,8 +118,11 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
+  },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
 
     const onInputCubeId = (c: string) => {
       const newQuery: CubeQuery = {
@@ -130,18 +132,18 @@ export default defineComponent({
         metricsIds: $klicker.config[c].defaultMetricIds,
         sortId: $klicker.config[c].defaultMetricIds[0],
       }
-      emit('input', newQuery)
+      emit('update:modelValue', newQuery)
     }
 
     const compareMode = computed({
       get(): boolean {
-        return props.value.comparing ? true : false
+        return props.modelValue.comparing ? true : false
       },
       set(wantComparing: boolean) {
-        const isComparing = props.value.comparing ? true : false
+        const isComparing = props.modelValue.comparing ? true : false
 
         if (!isComparing && wantComparing) {
-          const current = props.value as CubeQuery
+          const current = props.modelValue as CubeQuery
           const newQuery: CubeQuery = {
             cubeId: current.cubeId,
             slices: current.slices,
@@ -149,21 +151,21 @@ export default defineComponent({
             metricsIds: [current.metricsIds[0]],
             sortId: current.metricsIds[0],
           }
-          emit('input', <CubeComparingQuery>{
+          emit('update:modelValue', {
             ...newQuery,
             reference: newQuery,
             comparing: true,
           })
         }
         if (isComparing && !wantComparing) {
-          const current = props.value as CubeComparingQuery
+          const current = props.modelValue as CubeComparingQuery
           const newQuery: CubeQuery = {
             ...current,
             sortId: current.metricsIds[0],
           }
           delete (<any>newQuery).reference
           delete (<any>newQuery).comparing
-          emit('input', newQuery)
+          emit('update:modelValue', newQuery)
         }
       }
     })
@@ -171,12 +173,12 @@ export default defineComponent({
     const cubes = computed<Cube[]>(() => Object.values($klicker.config))
 
     const canCompare = computed(() => {
-      if (props.value.comparing) {
+      if (props.modelValue.comparing) {
         return true
       }
 
-      const metrics = $klicker.config[props.value.cubeId].metrics
-      const query = props.value as CubeQuery
+      const metrics = $klicker.config[props.modelValue.cubeId].metrics
+      const query = props.modelValue as CubeQuery
       const selectedMetrics = metrics.filter(m => query.metricsIds.includes(m.id))
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })

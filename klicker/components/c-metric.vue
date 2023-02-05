@@ -8,15 +8,15 @@
       <b-select
         v-for="index in (showAllMetrics ? 1 : numMetrics)"
         :key="index"
-        :value="showAllMetrics ? '' : value.metricsIds[index - 1]"
-        @input="v => onInputMetricsIds(index - 1, v)"
+        :model-value="showAllMetrics ? '' : modelValue.metricsIds[index - 1]"
+        @update:modelValue="v => onInputMetricsIds(index - 1, v)"
       >
         <option
           v-if="multiple && index == 1 && metrics.length > 1 && metrics.length < maxMetrics"
           value=""
         >{{ translate('option.all') }}</option>
         <option
-          v-for="m in (showAllMetrics ? metrics : metrics.filter(m => m.id == value.metricsIds[index - 1] || !value.metricsIds.includes(m.id)))"
+          v-for="m in (showAllMetrics ? metrics : metrics.filter(m => m.id == modelValue.metricsIds[index - 1] || !modelValue.metricsIds.includes(m.id)))"
           :key="m.id"
           :value="m.id"
         >
@@ -65,9 +65,11 @@
         :elevation="0"
         class="w-full max-w-md"
       >
-        <p slot="content" class="my-2">
-          {{ description }}
-        </p>
+        <template v-slot:content>
+          <p class="my-2">
+            {{ description }}
+          </p>
+        </template>
       </b-card>
     </b-lightbox>
   </div>
@@ -78,19 +80,21 @@ import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'
+import BCard from './ui/b-card.vue'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
     BSelect,
     BLightbox,
+    BCard,
   },
   inheritAttrs: false,
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
@@ -107,25 +111,28 @@ export default defineComponent({
       default: undefined,
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
+  },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
-    const numMetrics = ref(props.value.metricsIds.length)
+    const { $klicker, translate } = useKlickerConfig()
+    const numMetrics = ref(props.modelValue.metricsIds.length)
 
-    const metrics = computed(() => $klicker.config[props.value.cubeId].metrics
+    const metrics = computed(() => $klicker.config[props.modelValue.cubeId].metrics
         .filter(m => props.options == undefined || props.options.includes(m.id)))
-    const showAllMetrics = computed(() => props.value.metricsIds.length == metrics.value.length && metrics.value.length > 1)
+    const showAllMetrics = computed(() => props.modelValue.metricsIds.length == metrics.value.length && metrics.value.length > 1)
     const description = computed(() => {
       if (numMetrics.value != 1) {
         return ''
       }
-      return metrics.value.find(m => m.id == props.value.metricsIds[0])?.description ?? ''
+      return metrics.value.find(m => m.id == props.modelValue.metricsIds[0])?.description ?? ''
     })
 
     const onInputMetricsIds = (index: number, m: string) => {
       let metricsIds: string[] = []
       if (m != '') {
         if (!showAllMetrics.value) {
-          metricsIds = props.value.metricsIds.slice()
+          metricsIds = props.modelValue.metricsIds.slice()
         }
         // else: drop every metric and keep only the new input
         metricsIds[index] = m
@@ -134,9 +141,9 @@ export default defineComponent({
       }
 
       const sortId = metricsIds[0]
-      if (props.value.comparing) {
-        const query = props.value as CubeComparingQuery
-        emit('input', <CubeComparingQuery>{
+      if (props.modelValue.comparing) {
+        const query = props.modelValue as CubeComparingQuery
+        emit('update:modelValue', {
           ...query,
           metricsIds,
           sortId,
@@ -147,8 +154,8 @@ export default defineComponent({
           },
         })
       } else {
-        const query = props.value as CubeQuery
-        emit('input', <CubeQuery>{
+        const query = props.modelValue as CubeQuery
+        emit('update:modelValue', {
           ...query,
           metricsIds,
           sortId,
@@ -159,11 +166,11 @@ export default defineComponent({
     }
 
     const onMetricRemove = () => {
-      const metricsIds = props.value.metricsIds.slice()
+      const metricsIds = props.modelValue.metricsIds.slice()
       metricsIds.pop()
 
-      emit('input', <CubeQuery>{
-        ...props.value,
+      emit('update:modelValue', <CubeQuery>{
+        ...props.modelValue,
         metricsIds,
       })
       numMetrics.value--

@@ -3,25 +3,26 @@
     v-bind="$props"
     component="v-barplot"
   >
-    <div
-      slot="content"
-      ref="wrapper"
-      class="h-full w-full flex flex-col"
-    >
-      <b-vega
-        :spec="spec"
-        :show-download="card != undefined"
-        full-width
-        full-height
-      ></b-vega>
+    <template v-slot:content>
+      <div
+        ref="wrapper"
+        class="h-full w-full flex flex-col"
+      >
+        <b-vega
+          :spec="spec"
+          :show-download="card != undefined"
+          full-width
+          full-height
+        ></b-vega>
 
-      <b-paginator
-        v-if="pageSize != undefined && values.length > pageSize"
-        v-model="page"
-        :pages="Math.ceil(values.length / pageSize)"
-        class="pt-4 mt-auto mx-auto"
-      ></b-paginator>
-    </div>
+        <b-paginator
+          v-if="pageSize != undefined && values.length > pageSize"
+          v-model="page"
+          :pages="Math.ceil(values.length / pageSize)"
+          class="pt-4 mt-auto mx-auto"
+        ></b-paginator>
+      </div>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -34,7 +35,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import { useResizeObserver } from '@vueuse/core'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -46,7 +47,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, comparing, dimensions, metrics, switchResponse } = useCubeResponseProps(props)
 
     const values = computed(() => switchResponse(response => response.data, response => response.data.flatMap(e => [{
@@ -80,7 +81,7 @@ export default defineComponent({
           x: {
             field: 'dimensions.' + dimension0.id,
             type: dimension0.type,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
             scale: dimension0.scale,
             sort: {
               field: metric0.id,
@@ -99,10 +100,10 @@ export default defineComponent({
           },
           tooltip: <any>[{ // TODO spread breaks types
             field: 'metrics.' + metric0.id,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
           }, {
             field: 'dimensions.' + dimension0.id,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
           },
           ...(withCI ? [{
             field: 'upper',

@@ -9,9 +9,9 @@
         :props="widget.props"
         :component="widget.component"
         :ztyle="style"
-        :rows="forGrid ? widget.frame.rows : undefined"
-        :columns="forGrid ? widget.frame.columns : undefined"
-        :card="forGrid ? true : undefined"
+        :rows="forGrid ? (widget as GridWidget).frame.rows : undefined"
+        :columns="forGrid ? (widget as GridWidget).frame.columns : undefined"
+        :card="forGrid ? {} : undefined"
       ></v-auto>
     </template>
   </c-query>
@@ -20,11 +20,11 @@
     :props="widget.props"
     :component="widget.component"
     :ztyle="style"
-    :rows="forGrid ? widget.frame.rows : undefined"
-    :columns="forGrid ? widget.frame.columns : undefined"
+    :rows="forGrid ? (widget as GridWidget).frame.rows : undefined"
+    :columns="forGrid ? (widget as GridWidget).frame.columns : undefined"
     :loading="false"
     :response="undefined"
-    :card="forGrid ? true : undefined"
+    :card="forGrid ? {} : undefined"
   ></v-auto>
 </template>
 
@@ -109,8 +109,9 @@ export default defineComponent({
       default: false
     },
   },
+  emits: [],
   setup(props) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
     const spec = computed(() => (
       $klicker.visualisations.find(v => v.component == props.widget.component) ??
       $klicker.staticWidgets.find(w => w.component == props.widget.component)

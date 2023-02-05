@@ -1,8 +1,8 @@
+import { defineAsyncComponent } from "vue"
 import { DimensionRendererSpec, MetricRendererSpec } from "../types"
-import Vue from "vue"
-import { MockedKlicker } from "./klicker.shim"
+import { KlickerServiceMock } from "./klicker.service"
 
-const BrawlerImage = Vue.component('brawler-image', {
+const BrawlerImage = {
   props: ['row', 'captioned'],
   template: `
     <div>
@@ -13,12 +13,12 @@ const BrawlerImage = Vue.component('brawler-image', {
       <span v-if="captioned">{{ row.dimensions.brawler }}</span>
     </div>
   `,
-})
+}
 
 const brawlerRenderer: DimensionRendererSpec = {
   name: 'Brawler',
   component: 'brawler-image',
-  import: () => Promise.resolve(BrawlerImage),
+  import: defineAsyncComponent(() => Promise.resolve(BrawlerImage)),
   applicable() {
     return true
   },
@@ -26,12 +26,12 @@ const brawlerRenderer: DimensionRendererSpec = {
 }
 
 export const BrawlerRendererParameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
-    slicers: [brawlerRenderer],
+  $klicker: Object.assign(new KlickerServiceMock(), {
+    dimensionRenderers: [brawlerRenderer],
   }),
 }
 
-const WinRateColors = Vue.component('win-rate', {
+const WinRateColors = {
   props: ['row', 'captioned'],
   template: `
     <span
@@ -40,12 +40,12 @@ const WinRateColors = Vue.component('win-rate', {
       }"
     >{{ row.metrics.winRate }}</span>
   `,
-})
+}
 
 const winRateRenderer: MetricRendererSpec = {
   name: 'Win Rate',
   component: 'win-rate',
-  import: () => Promise.resolve(WinRateColors),
+  import: defineAsyncComponent(() => Promise.resolve(WinRateColors)),
   applicable() {
     return true
   },
@@ -53,7 +53,7 @@ const winRateRenderer: MetricRendererSpec = {
 }
 
 export const WinRateRendererParameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
+  $klicker: Object.assign(new KlickerServiceMock(), {
     metricRenderers: [winRateRenderer],
   }),
 }

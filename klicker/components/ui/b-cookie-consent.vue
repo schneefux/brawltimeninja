@@ -75,7 +75,7 @@ t<template>
 </template>
 
 <script lang="ts">
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 import { defineComponent, ref } from 'vue'
 import BButton from './b-button.vue'
 
@@ -83,8 +83,9 @@ export default defineComponent({
   components: {
     BButton,
   },
+  emits: ['enable-all', 'enable-cookies', 'enable-none'],
   setup() {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const showCookieOptions = ref(false)
 
     return {

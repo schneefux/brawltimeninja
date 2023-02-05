@@ -1,18 +1,25 @@
 import BTextbox from './b-textbox.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BTextbox> = {
   component: BTextbox,
   title: 'UI/Textbox',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BTextbox },
-  props: Object.keys(argTypes),
-  template: `
-    <b-textbox v-bind="$props"></b-textbox>
-  `,
-})
-Default.args = {
-  value: 'Enter some text here',
+type Story = StoryObj<BTextbox>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BTextbox },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-textbox v-bind="args"></b-textbox>
+    `,
+  }),
+  args: {
+    modelValue: 'Enter some text here',
+  },
 }

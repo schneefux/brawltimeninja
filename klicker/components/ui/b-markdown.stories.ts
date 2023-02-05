@@ -1,23 +1,30 @@
 import BMarkdown from './b-markdown.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BMarkdown> = {
   component: BMarkdown,
   title: 'UI/Markdown Input',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BMarkdown },
-  props: Object.keys(argTypes),
-  template: `
-    <b-markdown v-bind="$props"></b-markdown>
+type Story = StoryObj<BMarkdown>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BMarkdown },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-markdown v-bind="args"></b-markdown>
+    `,
+  }),
+  args: {
+    modelValue:
+  `
+  # Hello world!
+
+  This is a *markdown editor demo*.
   `,
-})
-Default.args = {
-  value:
-`
-# Hello world!
-
-This is a *markdown editor demo*.
-`,
+  },
 }

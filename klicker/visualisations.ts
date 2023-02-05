@@ -1,9 +1,10 @@
+import { defineAsyncComponent } from "vue"
 import { MetaGridEntry, VisualisationSpec } from "./types"
 
 const defaultVisualisations: VisualisationSpec[] = [{
   name: 'Bar Chart',
   component: 'v-barplot',
-  import: () => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-barplot.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-barplot.vue')),
   applicable(dimensions, metrics, size) {
     return dimensions.length == 1 &&
       ['ordinal', 'nominal'].includes(dimensions[0].type) &&
@@ -19,7 +20,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Tier List',
   component: 'v-tier-list',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-tier-list.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-tier-list.vue')),
   applicable(dimensions, metrics, size) {
     return dimensions.length == 1 && metrics.length == 1 && size > 5 && size < 100
   },
@@ -30,7 +31,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Test Info',
   component: 'v-test-info',
-  import: () => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-test-info.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-test-info.vue')),
   applicable(dimensions, metrics, size, comparing) {
     return comparing && metrics[0].statistics?.test != undefined
   },
@@ -41,7 +42,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Table',
   component: 'v-table',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-table.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-table.vue')),
   applicable(dimensions, metrics, size, comparing) {
     return size > 0 && (comparing || metrics.length < 5)
   },
@@ -53,7 +54,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
     pageSize: {
       name: 'Page Size',
       component: 'b-input',
-      import: () => import(/* webpackChunkName: "v-grid" */ './components/ui/b-number.vue'),
+      import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/ui/b-number.vue')),
       props: {
         dark: true,
         min: 1,
@@ -64,7 +65,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Scatter Chart',
   component: 'v-scatterplot',
-  import: () => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-scatterplot.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-scatterplot.vue')),
   applicable(dimensions, metrics, size) {
     return dimensions.length == 1 && metrics.length == 2 && size > 1 && size < 1000
   },
@@ -76,7 +77,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Horizontal Cards',
   component: 'v-roll',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-roll.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-roll.vue')),
   applicable(dimensions, metrics, size) {
     return dimensions.length == 1 && metrics.length > 0 && size > 0 && size < 10
   },
@@ -87,7 +88,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Big Numbers',
   component: 'v-bigstats',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-bigstats.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-bigstats.vue')),
   applicable(dimensions, metrics, size) {
     return size == 1 && metrics.length > 0 && metrics.length < 5
   },
@@ -98,7 +99,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Key-Value Table',
   component: 'v-kv-table',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-kv-table.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-kv-table.vue')),
   applicable(dimensions, metrics, size) {
     return size == 1 && metrics.length > 0 && metrics.length < 5
   },
@@ -109,7 +110,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Pivot Table CSV Download Button',
   component: 'v-pivot-csv',
-  import: () => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-pivot-csv.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-pivot-csv.vue')),
   applicable(dimensions, metrics, size) {
     return size > 0 && dimensions.filter(d => d.type == 'temporal').length == 1
         && dimensions.filter(m => m.type == 'nominal').length == 1
@@ -122,7 +123,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Line Plot',
   component: 'v-lineplot',
-  import: () => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-lineplot.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-lineplot.vue')),
   applicable(dimensions, metrics, size) {
     return dimensions.length == 1 &&
       ['temporal', 'ordinal'].includes(dimensions[0].type) &&
@@ -136,7 +137,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Metric Info',
   component: 'v-info',
-  import: () => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-info.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-info.vue')),
   applicable(dimensions, metrics) {
     return metrics.length == 1
   },
@@ -147,7 +148,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Heatmap',
   component: 'v-heatmap',
-  import: () => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-heatmap.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-charts" */ './components/visualisations/v-heatmap.vue')),
   applicable(dimensions, metrics, size, comparing, data) {
     if (comparing) {
       return false
@@ -170,7 +171,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'Grid',
   component: 'v-grid',
-  import: () => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-grid.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-grid" */ './components/visualisations/v-grid.vue')),
   applicable(dimensions, metrics) {
     return metrics.length > 1
   },
@@ -181,7 +182,7 @@ const defaultVisualisations: VisualisationSpec[] = [{
 }, {
   name: 'CSV Download Button',
   component: 'v-csv',
-  import: () => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-csv.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "v-simple" */ './components/visualisations/v-csv.vue')),
   applicable(dimensions, metrics, size) {
     return size > 0
   },

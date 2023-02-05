@@ -1,0 +1,15 @@
+/* purgecss start ignore */
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-enter {
+  transform: translateX(2rem);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(-2rem);
+  opacity: 0;
+}
+/* purgecss end ignore */

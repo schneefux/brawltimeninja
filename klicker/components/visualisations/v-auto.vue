@@ -1,9 +1,9 @@
 <template>
-  <!-- workaround for Vue 2 not allowing multiple root elements -->
   <div
     v-if="specs.length > 1"
     class="contents"
   >
+    <!-- workaround for Vue 2 not allowing multiple root elements -->
     <b-dashboard-cell
       v-for="spec in specs"
       :key="spec.name"
@@ -121,7 +121,7 @@ export default defineComponent({
       }
     }
 
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const specs = computed(() => {
       let allSpecs: StaticWidgetSpec[]

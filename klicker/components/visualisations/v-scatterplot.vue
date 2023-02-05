@@ -3,13 +3,14 @@
     v-bind="$props"
     component="v-scatterplot"
   >
-    <b-vega
-      slot="content"
-      :spec="spec"
-      :show-download="card != undefined"
-      full-width
-      full-height
-    ></b-vega>
+    <template v-slot:content>
+      <b-vega
+        :spec="spec"
+        :show-download="card != undefined"
+        full-width
+        full-height
+      ></b-vega>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -20,6 +21,7 @@ import BVega from '../ui/b-vega.vue'
 import { computed, defineComponent } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -30,6 +32,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const spec = computed<VisualizationSpec>(() => {
@@ -46,7 +49,7 @@ export default defineComponent({
             ...metric0.vega,
             field: 'metricsRaw.' + metric0.id,
             type: metric0.type,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
             axis: {
               format: metric0.d3formatter,
             },
@@ -55,20 +58,20 @@ export default defineComponent({
             ...metric1.vega,
             field: 'metricsRaw.' + metric1.id,
             type: metric1.type,
-            title: $klicker.getName(metric1),
+            title: $klicker.getName(translate, metric1),
             axis: {
               format: metric1.d3formatter,
             },
           },
           tooltip: [{
             field: 'metrics.' + metric0.id,
-            title: $klicker.getName(metric0),
+            title: $klicker.getName(translate, metric0),
           }, {
             field: 'metrics.' + metric1.id,
-            title: $klicker.getName(metric1),
+            title: $klicker.getName(translate, metric1),
           }, {
             field: 'dimensions.' + dimension0.id,
-            title: $klicker.getName(dimension0),
+            title: $klicker.getName(translate, dimension0),
           }],
         },
         layer: [{
@@ -89,7 +92,7 @@ export default defineComponent({
             text: {
               field: 'dimensions.' + dimension0.id,
               type: dimension0.type,
-              title: $klicker.getName(dimension0),
+              title: $klicker.getName(translate, dimension0),
             },
           },
         }],

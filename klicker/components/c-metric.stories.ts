@@ -1,13 +1,16 @@
 import CMetric from './c-metric.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeQuery } from '../types'
 
-export default {
+const meta: Meta<CMetric> = {
   component: CMetric,
   title: 'Editor/Metric Configurator',
-} as Meta
+}
+export default meta
 
-const query = <CubeQuery>{
+type Story = StoryObj<CMetric>
+
+const query: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -18,25 +21,33 @@ const query = <CubeQuery>{
   limit: 5,
 }
 
-export const Single: Story = (args, { argTypes }) => ({
-  components: { CMetric },
-  props: Object.keys(argTypes),
-  template: `
-    <c-metric v-bind="$props"></c-metric>
-  `,
-})
-Single.args = {
-  value: query,
+export const Single: Story = {
+  render: (args) => ({
+    components: { CMetric },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-metric v-bind="args"></c-metric>
+    `,
+  }),
+  args: {
+    modelValue: query,
+  },
 }
 
-export const Multiple: Story = (args, { argTypes }) => ({
-  components: { CMetric },
-  props: Object.keys(argTypes),
-  template: `
-    <c-metric v-bind="$props"></c-metric>
-  `,
-})
-Multiple.args = {
-  value: query,
-  multiple: true,
+export const Multiple: Story = {
+  render: (args) => ({
+    components: { CMetric },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-metric v-bind="args"></c-metric>
+    `,
+  }),
+  args: {
+    modelValue: query,
+    multiple: true,
+  },
 }

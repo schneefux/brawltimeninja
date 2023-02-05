@@ -1,9 +1,10 @@
+import { defineAsyncComponent } from "vue"
 import { StaticWidgetSpec } from "./types"
 
 const defaultStaticWidgets: StaticWidgetSpec[] = [{
   name: 'Markdown',
   component: 'v-markdown',
-  import: () => import(/* webpackChunkName: "markdown" */ './components/visualisations/v-markdown.vue'),
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "markdown" */ './components/visualisations/v-markdown.vue')),
   initialDimensions: {
     rows: 4,
     columns: 4,
@@ -12,7 +13,7 @@ const defaultStaticWidgets: StaticWidgetSpec[] = [{
     markdown: {
       name: 'Markdown',
       component: 'b-markdown',
-      import: () => import(/* webpackChunkName: "markdown" */ './components/ui/b-markdown.vue'),
+      import: defineAsyncComponent(() => import(/* webpackChunkName: "markdown" */ './components/ui/b-markdown.vue')),
       props: {
       },
     },

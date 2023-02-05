@@ -1,23 +1,34 @@
 import CError from './c-error.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<CError> = {
   component: CError,
   title: 'Editor/Query Error',
-} as Meta
+}
+export default meta
 
-const Template: Story = (args, { argTypes }) => ({
-  components: { CError },
-  props: Object.keys(argTypes),
-  template: `<c-error v-bind="$props"></c-error>`,
-})
+type Story = StoryObj<CError>
 
-export const WithMessage: Story = Template.bind({})
-WithMessage.args = {
-  error: 'Connection failed',
+const Template: Story = {
+  render: (args) => ({
+    components: { CError },
+    setup() {
+      return { args }
+    },
+    template: `<c-error v-bind="args"></c-error>`,
+  }),
 }
 
-export const NoMessage: Story = Template.bind({})
-NoMessage.args = {
-  error: new Error(),
+export const WithMessage: Story = {
+  ...Template,
+  args: {
+    error: 'Connection failed',
+  },
+}
+
+export const NoMessage: Story = {
+  ...Template,
+  args: {
+    error: new Error(),
+  },
 }

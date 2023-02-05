@@ -1,4 +1,4 @@
-FROM node:16 AS builder
+FROM node:19 AS builder
 WORKDIR /app
 COPY ./package.json ./yarn.lock .
 RUN yarn install --frozen-lockfile

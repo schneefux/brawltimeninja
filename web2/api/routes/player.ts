@@ -1,0 +1,67 @@
+import { TRPCError } from '@trpc/server'
+import { StatsD } from 'hot-shots'
+import { tagWithoutHashType } from '../schema/types.js'
+import BrawlstarsService from '../services/BrawlstarsService.js'
+import ProfileUpdaterService from '../services/ProfileUpdaterService.js'
+import Knex from 'knex'
+import knexfile from '../knexfile.js'
+import { publicProcedure, router } from '../trpc.js'
+
+const environment = process.env.NODE_ENV || 'development'
+const knex = Knex(knexfile[environment])
+
+const brawlstarsService = new BrawlstarsService()
+const profileUpdaterService = new ProfileUpdaterService(async (tag) => {
+  const player = await brawlstarsService.getPlayerStatistics(tag, true)
+  if (player.battles.length == 0) {
+    return undefined
+  }
+  return player.battles[0].timestamp
+}, knex)
+
+export async function updateAllProfiles() {
+  return await profileUpdaterService.updateAll()
+}
+
+const stats = new StatsD({ prefix: 'brawltime.api.' })
+
+export const playerRouter = router({
+  byTag: publicProcedure
+    .input(tagWithoutHashType)
+    .query(async ({ input, ctx }) => {
+      if (ctx.isBot) {
+        stats.increment('player.bot')
+      } else {
+        stats.increment('player.human')
+      }
+
+      const player = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
+      if (!ctx.isBot && player.battles.length > 0) {
+        // organic pageview: update confirmation status
+        try {
+          await profileUpdaterService.updateProfileTrackingStatus(input, player.battles[0].timestamp)
+        } catch (err) {
+          console.error('Error updating profile tracking status', err)
+        }
+      }
+      ctx.res.set('Cache-Control', 'public, max-age=180')
+      return player
+    }),
+  getTrackingStatus: publicProcedure
+    .input(tagWithoutHashType)
+    .query(async ({ input }) => {
+      return await profileUpdaterService.getProfileTrackingStatus(input)
+    }),
+  trackTag: publicProcedure
+    .input(tagWithoutHashType)
+    .mutation(async ({ input }) => {
+      const stats = await brawlstarsService.getPlayerStatistics(input, true)
+      if (stats.battles.length == 0) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Player did not play any battles recently'
+        })
+      }
+      return await profileUpdaterService.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
+    }),
+})

@@ -97,6 +97,7 @@ job "brawltime-render" {
         PORT = "${NOMAD_PORT_http}"
         WEB_URL = "https://${var.domain}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 
       // TODO set up seccomp profile

@@ -1,13 +1,13 @@
 import { ServerMiddleware } from '@nuxt/types'
 import express from 'express'
 
-import config from '../lib/klicker.conf'
+import cubes from '../lib/klicker.cubes'
 
 const app = express()
 
 app.get('/schema', (req, res, next) => {
   const schema: string[] = []
-  Object.values(config).forEach((c) => schema.push(
+  Object.values(cubes).forEach((c) => schema.push(
 `
 /* generated on ${new Date().toISOString()} */
 

@@ -8,7 +8,7 @@
     :checked="value == modelValue"
     :value="value"
     class="form-radio transition duration-100 ease-in-out focus:ring-0"
-    @input="$listeners.input && $listeners.input($event.target.value)"
+    @input="onInput"
   >
 </template>
 
@@ -16,22 +16,31 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  model: {
-    prop: 'modelValue',
-  },
   props: {
     modelValue: {
       type: undefined,
-      default: ''
+      default: '' as any
     },
     value: {
       type: undefined,
-      default: ''
+      default: '' as any
     },
     primary: {
       type: Boolean,
       required: false
     },
+  },
+  emits: {
+    ['update:modelValue'](value: any) { return true },
+  },
+  setup(props, { emit }) {
+    const onInput = (e: Event) => {
+      emit('update:modelValue', props.value)
+    }
+
+    return {
+      onInput,
+    }
   },
 })
 </script>

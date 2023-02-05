@@ -7,7 +7,7 @@
       <ul :class="tocClass">
         <li
           v-for="section in validSections"
-          :ref="`${section.id}-link`"
+          :ref="el => setLinkRef(section.id, el)"
           :key="section.title"
           :class="{
             'border-primary-400': visibleSections[section.id],
@@ -84,12 +84,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed, getCurrentInstance } from 'vue'
+import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed } from 'vue'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {
   id: string
-  element: undefined|HTMLElement|Vue
+  element: undefined|HTMLElement
   title: string
 }
 
@@ -109,13 +109,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
     const dropdownOpen = ref(false)
     const rootContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
     const visibleSections = ref<Record<string, boolean>>({})
     const activeSectionTitle = ref<string>()
     const activeSectionId = ref<string>()
+    const linkRefs = ref<Record<string, HTMLElement|null>>({})
+    const setLinkRef = (id: string, el: unknown|null) => linkRefs.value[id] = el as HTMLElement|null
 
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const lgAndLarger = breakpoints.greater('lg')
@@ -123,11 +124,8 @@ export default defineComponent({
     const validSections = computed(() => props.sections.filter(s => s.element != undefined))
 
     const scrollTocLinkIntoView = (id: string) => {
-      if (!(`${id}-link` in refs)) {
-        return
-      }
+      const linkElement = linkRefs.value[id]
 
-      const linkElement = refs[`${id}-link`]![0] as HTMLElement
       if (linkElement == undefined) {
         return
       }
@@ -261,6 +259,7 @@ export default defineComponent({
       visibleSections,
       validSections,
       rootContainer,
+      setLinkRef,
     }
   },
 })

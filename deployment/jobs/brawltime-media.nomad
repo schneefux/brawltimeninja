@@ -46,6 +46,8 @@ job "brawltime-media" {
   */
 
   group "media" {
+    stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
+
     count = 1
 
     /*
@@ -133,6 +135,7 @@ job "brawltime-media" {
         PORT = "${NOMAD_PORT_http}"
         ASSET_DIR = "/assets/"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 
       config {

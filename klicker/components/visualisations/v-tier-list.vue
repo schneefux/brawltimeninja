@@ -3,29 +3,31 @@
     v-bind="$props"
     component="v-tier-list"
   >
-    <ul slot="content">
-      <li
-        v-for="(entries, tier) in tiers"
-        :key="tier"
-        class="my-4 flex"
-      >
-        <div class="w-6 mr-3 flex justify-center items-center">
-          <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
-        </div>
-        <ul class="w-full flex flex-wrap justify-start items-center">
-          <li
-            v-for="entry in entries"
-            :key="entry.id"
-            class="my-px"
-          >
-            <d-auto
-              :response="response"
-              :row="entry"
-            ></d-auto>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <template v-slot:content>
+      <ul>
+        <li
+          v-for="(entries, tier) in tiers"
+          :key="tier"
+          class="my-4 flex"
+        >
+          <div class="w-6 mr-3 flex justify-center items-center">
+            <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
+          </div>
+          <ul class="w-full flex flex-wrap justify-start items-center">
+            <li
+              v-for="entry in entries"
+              :key="entry.id"
+              class="my-px"
+            >
+              <d-auto
+                :response="response"
+                :row="entry"
+              ></d-auto>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </template>
   </v-card-wrapper>
 </template>
 

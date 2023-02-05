@@ -12,14 +12,14 @@
       >
         <li
           v-for="tab in tabs"
-          :ref="`${tab.slot}-header`"
+          :ref="el => setHeaderRef(tab.slot, el)"
           :key="tab.slot"
         >
           <!-- same layout as b-scrolling-list preview -->
           <a
             role="tab"
             :id="`${prefix}-button-${tab.slot}`"
-            :href="`#${tab.slot}`"
+            :href="`#${prefix}-tab-${tab.slot}`"
             :class="{
               'border-primary-400 text-text': tabVisibility[tab.slot],
               'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !tabVisibility[tab.slot],
@@ -40,7 +40,7 @@
       <div
         v-for="tab in tabs"
         :key="tab.slot"
-        :ref="`${tab.slot}-tab`"
+        :ref="el => setTabRef(tab.slot, el)"
         :class="{
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, getCurrentInstance } from 'vue'
+import { defineComponent, onMounted, PropType, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { useUniqueId } from '../../composables/id'
 
@@ -79,7 +79,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const refs = getCurrentInstance()!.proxy.$refs // TODO refactor for Vue 2.7+
+    const headerRefs = ref<Record<string, HTMLElement|null>>({})
+    const setHeaderRef = (id: string, el: unknown|null) => headerRefs.value[id] = el as HTMLElement|null
+    const tabRefs = ref<Record<string, HTMLElement|null>>({})
+    const setTabRef = (id: string, el: unknown|null) => tabRefs.value[id] = el as HTMLElement|null
     const tabContainer = ref<HTMLElement>()
     const navContainer = ref<HTMLElement>()
     const headerContainer = ref<HTMLElement>()
@@ -97,11 +100,11 @@ export default defineComponent({
     }
 
     const scrollTabHeaderIntoView = (id: string) => {
-      if (!(`${id}-header` in refs)) {
+      const headerElement = headerRefs.value[id]
+      if (headerElement == undefined) {
         return
       }
 
-      const headerElement = refs[`${id}-header`]![0] as HTMLElement
       const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
       const center = tabContainer.value!.getBoundingClientRect().width / 2
       if (Math.abs(offset) > center / 2) {
@@ -116,11 +119,11 @@ export default defineComponent({
     }
 
     const scrollToTab = (tab: Tab) => {
-      if (!(`${tab.slot}-tab` in refs)) {
+      const tabElement = tabRefs.value[tab.slot]
+      if (tabElement == undefined) {
         return
       }
 
-      const tabElement = refs[`${tab.slot}-tab`]![0] as HTMLElement
       const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
       const left = tabContainer.value!.scrollLeft + offset
       // smooth if it's next to the current tab
@@ -154,7 +157,7 @@ export default defineComponent({
 
     onMounted(() => {
       for (const tab of props.tabs) {
-        const tabElement = refs[`${tab.slot}-tab`]![0] as HTMLElement
+        const tabElement = tabRefs.value[tab.slot]
 
         useIntersectionObserver(tabElement, ([{ isIntersecting }]) => {
           tabVisibility.value = {
@@ -198,6 +201,8 @@ export default defineComponent({
       tabVisibility,
       prefix,
       scrollSnap,
+      setHeaderRef,
+      setTabRef,
     }
   },
 })

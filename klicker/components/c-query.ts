@@ -4,7 +4,7 @@ import { CubeQuery, CubeComparingQuery, CubeQueryFilter, CubeComparingQueryFilte
 import { useCubeQuery } from '../composables/query'
 import BShimmer from './ui/b-shimmer.vue'
 import BButton from './ui/b-button.vue'
-import { useKlicker } from '../composables'
+import { useKlickerConfig } from '../composables/klicker'
 
 export default defineComponent({
   name: 'c-query',
@@ -20,7 +20,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const { query, filter } = toRefs(props)
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { response, error, loading, update } = useCubeQuery(query, filter)
 
     return () => {
@@ -34,18 +34,14 @@ export default defineComponent({
         } else {
           nodes = [h('div', {
             class: 'h-full w-full flex flex-col justify-center items-center space-y-2 space-x-2',
-          }, [
-            h('span', {}, [translate('query.error')]),
+          }, () => [
+            h('span', [translate('query.error')]),
             h(BButton as any, {
-              props: {
-                dark: true,
-                xs: true,
-              },
-              on: {
-                click: (event) => {
-                  event.stopPropagation()
-                  update()
-                },
+              dark: true,
+              xs: true,
+              onClick: (event: Event) => {
+                event.stopPropagation()
+                update()
               },
             }, [translate('action.retry')]),
           ])]
@@ -71,7 +67,7 @@ export default defineComponent({
             nodes = slots.placeholder!({})
           } else {
             nodes = [h(BShimmer as any, {
-              props: { loading: true },
+              loading: true,
               class: 'h-full',
             })]
           }

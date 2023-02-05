@@ -1,30 +1,39 @@
 import BWebFooter, { Link } from './b-web-footer.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BWebFooter> = {
   component: BWebFooter,
   title: 'UI/Web Footer',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BWebFooter },
-  props: Object.keys(argTypes),
-  template: `
-    <b-web-footer v-bind="$props">
-      <i slot="below">slot below</i>
-    </b-web-footer>
-  `,
-})
-Default.args = {
-  tag: 'span',
-  links: <Link[]> [ {
-    name: 'Search',
-    target: '/',
-  }, {
-    name: 'Profile',
-    target: '/user',
-  }, {
-    name: 'Print',
-    target: '/print',
-  } ],
+type Story = StoryObj<BWebFooter>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BWebFooter },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-web-footer v-bind="args">
+        <template v-slot:below>
+          <i>slot below</i>
+        </template>
+      </b-web-footer>
+    `,
+  }),
+  args: {
+    tag: 'span',
+    links: [ {
+      name: 'Search',
+      target: '/',
+    }, {
+      name: 'Profile',
+      target: '/user',
+    }, {
+      name: 'Print',
+      target: '/print',
+    } ] as Link[],
+  },
 }

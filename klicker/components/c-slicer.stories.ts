@@ -1,16 +1,19 @@
+import { defineAsyncComponent } from 'vue'
 import CSlicer from './c-slicer.vue'
 import BSelect from './ui/b-select.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 import { CubeComparingQuery, CubeQuery, SlicerSpec } from '../types'
-import { MockedKlicker } from '../fixtures/klicker.shim'
-import Vue from 'vue'
+import { KlickerServiceMock } from '../fixtures/klicker.service'
 
-export default {
+const meta: Meta<CSlicer> = {
   component: CSlicer,
   title: 'Editor/Filter Configurator',
-} as Meta
+}
+export default meta
 
-const query = <CubeQuery>{
+type Story = StoryObj<CSlicer>
+
+const query: CubeQuery = {
   cubeId: 'map',
   dimensionsIds: ['brawler'],
   metricsIds: ['winRate'],
@@ -24,18 +27,18 @@ const query = <CubeQuery>{
 const slicer: SlicerSpec = {
   name: 'Brawler',
   component: 'brawler-select',
-  import: () => Promise.resolve(BrawlerSelect),
+  import: defineAsyncComponent(() => Promise.resolve(BrawlerSelect)),
   applicable() {
     return true
   },
 }
 
-const BrawlerSelect = Vue.component('brawler-select', {
+const BrawlerSelect = {
   components: { BSelect },
-  props: ['value', 'onInput'],
+  props: ['modelValue', 'onInput'],
   template: `
     <b-select
-      :value="value.brawler"
+      :value="modelValue.brawler"
       sm
       @input="v => onInput({ brawler: v == '' ? [] : [v] })"
     >
@@ -44,25 +47,29 @@ const BrawlerSelect = Vue.component('brawler-select', {
       <option value="2">And another Brawler</option>
     </b-select>
   `,
-});
+}
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { CSlicer },
-  props: Object.keys(argTypes),
-  template: `
-    <c-slicer v-bind="$props"></c-slicer>
-  `,
-})
-Default.parameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
-    slicers: [slicer],
+export const Default: Story = {
+  render: (args) => ({
+    components: { CSlicer },
+    setup() {
+      return { args }
+    },
+    template: `
+      <c-slicer v-bind="args"></c-slicer>
+    `,
   }),
-}
-Default.args = {
-  value: query,
+  parameters: {
+    $klicker: Object.assign(new KlickerServiceMock(), {
+      slicers: [slicer],
+    }),
+  },
+  args: {
+    modelValue: query,
+  },
 }
 
-const comparingQuery = <CubeComparingQuery>{
+const comparingQuery: CubeComparingQuery = {
   cubeId: 'map',
   name: 'Test Dataset',
   dimensionsIds: ['brawler'],
@@ -82,21 +89,25 @@ const comparingQuery = <CubeComparingQuery>{
   },
 }
 
-export const Comparing: Story = (args, { argTypes }) => ({
-  components: { CSlicer },
-  props: Object.keys(argTypes),
-  template: `
-    <div>
-      <c-slicer v-bind="$props"></c-slicer>
-      <c-slicer v-bind="$props" comparing></c-slicer>
-    </div>
-  `,
-})
-Comparing.parameters = {
-  $klicker: Object.assign(new MockedKlicker(), {
-    slicers: [slicer],
+export const Comparing: Story = {
+  render: (args) => ({
+    components: { CSlicer },
+    setup() {
+      return { args }
+    },
+    template: `
+      <div>
+        <c-slicer v-bind="args"></c-slicer>
+        <c-slicer v-bind="args" comparing></c-slicer>
+      </div>
+    `,
   }),
-}
-Comparing.args = {
-  value: comparingQuery,
+  parameters: {
+    $klicker: Object.assign(new KlickerServiceMock(), {
+      slicers: [slicer],
+    }),
+  },
+  args: {
+    modelValue: comparingQuery,
+  },
 }

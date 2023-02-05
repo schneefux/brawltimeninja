@@ -91,6 +91,10 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['scroll'](value: ScrollEvent) { return true },
+    ['rerender'](value: ScrollEvent) { return true },
+  },
   setup(props, { emit }) {
     const wrapper = ref<HTMLElement|null>()
 
@@ -106,15 +110,26 @@ export default defineComponent({
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
     const onUpdate = (cause: 'scroll'|'rerender') => {
-      emit(cause, <ScrollEvent>{
-        x: scroll.x.value,
-        arrivedLeft: scroll.arrivedState.left,
-        arrivedRight: scroll.arrivedState.right,
-      })
+      requestAnimationFrame(() => {
+        if (cause == 'scroll') {
+          emit(cause, {
+            x: scroll.x.value,
+            arrivedLeft: scroll.arrivedState.left,
+            arrivedRight: scroll.arrivedState.right,
+          })
+        }
+        if (cause == 'rerender') {
+          emit(cause, {
+            x: scroll.x.value,
+            arrivedLeft: scroll.arrivedState.left,
+            arrivedRight: scroll.arrivedState.right,
+          })
+        }
 
-      const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
-      arrivedLeft.value = scroll.arrivedState.left || !scrollable
-      arrivedRight.value = scroll.arrivedState.right || !scrollable
+        const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
+        arrivedLeft.value = scroll.arrivedState.left || !scrollable
+        arrivedRight.value = scroll.arrivedState.right || !scrollable
+      })
     }
 
     const scroll = useScroll(wrapper, {
@@ -126,7 +141,7 @@ export default defineComponent({
     })
 
     onMounted(() => onUpdate('rerender'))
-    useResizeObserver(wrapper, () => window.requestAnimationFrame(() => onUpdate('rerender')))
+    useResizeObserver(wrapper, () => onUpdate('rerender'))
     useMutationObserver(wrapper, () => onUpdate('rerender'), {
       childList: true,
     })

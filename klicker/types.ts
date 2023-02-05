@@ -1,5 +1,6 @@
 import { Filter } from "@cubejs-client/core"
-import { Location, Route } from "vue-router"
+import { PluginConfig } from "./composables/klicker"
+import { Component } from "vue"
 
 export interface Config extends Record<string, Cube> {}
 
@@ -164,7 +165,7 @@ export interface VisualisationProp {
   /**
    * Component import (optional, for non-global components)
    */
-  import?: () => Promise<any>
+  import?: Component
   /**
    * HTML attributes or props to apply to the validator
    */
@@ -174,7 +175,7 @@ export interface VisualisationProp {
 export interface WidgetSpec {
   name: string
   component: string
-  import: () => Promise<any>
+  import: Component
 }
 
 export interface StaticWidgetSpec extends WidgetSpec {
@@ -366,7 +367,11 @@ export interface User {
   grids: Grid[]
 }
 
-export interface KlickerService {
+export interface RouteQuery {
+  query: Record<string, string[]>
+}
+
+export interface IKlickerService {
   config: Config
   visualisations: VisualisationSpec[]
   staticWidgets: StaticWidgetSpec[]
@@ -374,13 +379,9 @@ export interface KlickerService {
   dimensionRenderers: DimensionRendererSpec[]
   metricRenderers: MetricRendererSpec[]
 
-  $t(key: string, args?: Record<string, string|number>): string
-
-  $te(key: string): boolean
-
   format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string
 
-  getName(m: Metric|Dimension, modifier?: string): string
+  getName(translate: PluginConfig['translate'], m: Metric|Dimension, modifier?: string): string
 
   /**
    * @param query Query specification
@@ -394,11 +395,11 @@ export interface KlickerService {
    */
   comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse>
 
-  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): Location
-  convertLocationToQuery(config: Config, defaultCubeId: string, route: Route): CubeQuery|CubeComparingQuery
+  convertQueryToLocation(query: CubeQuery|CubeComparingQuery): RouteQuery
+  convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteQuery): CubeQuery|CubeComparingQuery
 
-  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): Location
-  convertLocationToSlices(route: Route, defaults: SliceValue): SliceValue
+  convertSlicesToLocation(slices: SliceValue, defaults: SliceValue): RouteQuery
+  convertLocationToSlices(route: RouteQuery, defaults: SliceValue): SliceValue
 
   /**
    * Return the full query configuration for the cube

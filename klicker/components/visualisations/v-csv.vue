@@ -4,14 +4,15 @@
     :card="card && { ...card, title: translate('dashboard.export-data') }"
     component="v-csv"
   >
-    <b-button
-      slot="actions"
-      primary
-      sm
-      @click="download()"
-    >
-      {{ translate('action.export-csv') }}
-    </b-button>
+    <template v-slot:actions>
+      <b-button
+        primary
+        sm
+        @click="download()"
+      >
+        {{ translate('action.export-csv') }}
+      </b-button>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -21,7 +22,7 @@ import { VisualisationProps } from '../../props'
 import BButton from '../ui/b-button.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -32,13 +33,13 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { $klicker, dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {
       const header = (<string[]>[]).concat(
-        dimensions.value.map(d => $klicker.getName(d)),
-        metrics.value.map(m => $klicker.getName(m)),
+        dimensions.value.map(d => $klicker.getName(translate, d)),
+        metrics.value.map(m => $klicker.getName(translate, m)),
       ).join(',')
       const body = props.response.data.map(e =>
         (<(string|number)[]>[]).concat(

@@ -10,37 +10,39 @@
     no-filter
     @clickHeader="toggleFilters"
   >
-    <button
-      slot="preview"
-      :selected="showFilters"
-      :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
-      :aria-controls="`${prefix}-filters`"
-      class="md:hidden w-10"
-      @click.stop="toggleFilters"
-    >
-      <font-awesome-icon
-        :icon="showFilters ? faChevronUp : faChevronDown"
-      ></font-awesome-icon>
-    </button>
+    <template v-slot:preview>
+      <button
+        :selected="showFilters"
+        :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
+        :aria-controls="`${prefix}-filters`"
+        class="md:hidden w-10"
+        @click.stop="toggleFilters"
+      >
+        <font-awesome-icon
+          :icon="showFilters ? faChevronUp : faChevronDown"
+        ></font-awesome-icon>
+      </button>
+    </template>
 
-    <div
-      :class="{
-        'hidden md:flex': !showFilters,
-        'flex': showFilters,
-      }"
-      :id="`${prefix}-filters`"
-      :aria-expanded="showFilters"
-      slot="content"
-      class="flex-col md:flex-row flex-wrap gap-4"
-    >
-      <component
-        v-for="spec in specs"
-        :key="spec.name"
-        :is="spec.import"
-        :value="slices"
-        :on-input="onInput"
-      ></component>
-    </div>
+    <template v-slot:content>
+      <div
+        :class="{
+          'hidden md:flex': !showFilters,
+          'flex': showFilters,
+        }"
+        :id="`${prefix}-filters`"
+        :aria-expanded="showFilters"
+        class="flex-col md:flex-row flex-wrap gap-4"
+      >
+        <component
+          v-for="spec in specs"
+          :key="spec.name"
+          :is="spec.import"
+          :model-value="slices"
+          :on-input="onInput"
+        ></component>
+      </div>
+    </template>
   </b-card>
 </template>
 
@@ -50,8 +52,8 @@ import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
-import { useCubeConfig } from '../composables/config'
-import { useKlicker } from '../composables/klicker'
+import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
+import { useKlickerConfig } from '../composables/klicker'
 import { useUniqueId } from '../composables/id'
 
 export default defineComponent({
@@ -60,7 +62,7 @@ export default defineComponent({
     BCard,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
@@ -88,21 +90,24 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
+  },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
     const showFilters = ref(false)
 
-    const compareMode = computed(() => props.value.comparing)
+    const compareMode = computed(() => props.modelValue.comparing)
 
     const slices = computed(() => {
       if (!compareMode.value) {
-        return props.value.slices
+        return props.modelValue.slices
       }
 
       if (props.comparing || props.both) {
-        return props.value.slices
+        return props.modelValue.slices
       } else {
-        return (<CubeComparingQuery>props.value).reference.slices
+        return (<CubeComparingQuery>props.modelValue).reference.slices
       }
     })
 
@@ -110,18 +115,18 @@ export default defineComponent({
     // so the handler is passed down instead
     const onInput = (s: Partial<SliceValue>) => {
       if (!compareMode.value) {
-        emit('input', <CubeQuery>{
-          ...props.value,
+        emit('update:modelValue', <CubeQuery>{
+          ...props.modelValue,
           slices: {
-            ...props.value.slices,
+            ...props.modelValue.slices,
             ...s,
           },
         })
       } else {
-        const query = <CubeComparingQuery> props.value
+        const query = <CubeComparingQuery> props.modelValue
 
         if (props.both) {
-          emit('input', <CubeComparingQuery>{
+          emit('update:modelValue', <CubeComparingQuery>{
             ...query,
             slices: {
               ...query.slices,
@@ -137,7 +142,7 @@ export default defineComponent({
           })
         } else {
           if (props.comparing) {
-            emit('input', <CubeComparingQuery>{
+            emit('update:modelValue', <CubeComparingQuery>{
               ...query,
               slices: {
                 ...query.slices,
@@ -145,7 +150,7 @@ export default defineComponent({
               },
             })
           } else {
-            emit('input', <CubeComparingQuery>{
+            emit('update:modelValue', <CubeComparingQuery>{
               ...query,
               reference: {
                 ...query.reference,
@@ -174,13 +179,13 @@ export default defineComponent({
 
     const cubeId = computed(() => {
       if (compareMode.value) {
-        return props.comparing || props.both ? (<CubeComparingQuery> props.value).cubeId : (<CubeComparingQuery> props.value).reference.cubeId
+        return props.comparing || props.both ? (<CubeComparingQuery> props.modelValue).cubeId : (<CubeComparingQuery> props.modelValue).reference.cubeId
       } else {
-        return (<CubeQuery> props.value).cubeId
+        return (<CubeQuery> props.modelValue).cubeId
       }
     })
 
-    const { checkSlicerApplicable } = useCubeConfig(cubeId)
+    const { checkSlicerApplicable } = useCheckSlicerApplicable(cubeId)
     const specs = computed(() => {
       let applicableSpecs: SlicerSpec[] = []
 

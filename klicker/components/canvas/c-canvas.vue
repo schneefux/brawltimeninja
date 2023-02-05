@@ -50,9 +50,9 @@
       class="mt-8"
     >
       <c-widget-editor
-        :value="widgets[selectedWidgetId]"
+        :model-value="widgets[selectedWidgetId]"
         :default-query="defaultQuery"
-        @input="updateWidget"
+        @update:modelValue="w => updateWidget(w as ReportWidget)"
         @delete="deleteSelectedWidget"
       ></c-widget-editor>
     </div>
@@ -83,16 +83,16 @@
       <div
         :style="{ width: width + 'px', height: height + 'px' }"
         ref="container"
-        class="relative bg-background"
+        class="relative bg-background border border-gray-400"
       >
         <c-moveable-widget
           v-for="(w, id) in widgets"
           :key="w.id"
-          :value="widgets[id]"
-          :container="container"
+          :model-value="widgets[id]"
+          :container="container!"
           :bounds="bounds"
           class="panzoom-exclude"
-          @input="updateWidget"
+          @update:modelValue="w => updateWidget(w as ReportWidget)"
           @click="selectedWidgetId = w.id"
         ></c-moveable-widget>
         <!--
@@ -111,6 +111,7 @@ import CMoveableWidget from './c-moveable-widget.vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import BNumber from '../ui/b-number.vue'
 import BTextbox from '../ui/b-textbox.vue'
+import BButton from '../ui/b-button.vue'
 import { Report, ReportWidget, CubeQuery } from '../../types'
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
@@ -124,13 +125,14 @@ import { useUniqueId } from '../../composables/id'
 export default defineComponent({
   components: {
     FontAwesomeIcon,
+    BButton,
     BNumber,
     BTextbox,
     CWidgetEditor,
     CMoveableWidget,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<Report>,
       required: true
     },
@@ -138,6 +140,9 @@ export default defineComponent({
       type: Object as PropType<CubeQuery>,
       required: true
     },
+  },
+  emits: {
+    ['update:modelValue'](value: Report) { return true },
   },
   setup(props, { emit }) {
     const container = ref<HTMLElement>()
@@ -149,13 +154,13 @@ export default defineComponent({
       const rect = containerParent.value!.getBoundingClientRect()
       const width = rect.width - 2*4 // border
       const height = rect.height - 2*4 // border
-      const zoom = Math.min(width / props.value.width, height / props.value.height)
+      const zoom = Math.min(width / props.modelValue.width, height / props.modelValue.height)
       panzoomInstance.value = Panzoom(container.value!, {
         canvas: true,
         cursor: undefined,
         excludeClass: 'panzoom-exclude',
-        startX: -props.value.width / 2 / zoom + width / 2 / zoom,
-        startY: -props.value.height / 2 / zoom + height / 2 / zoom,
+        startX: -props.modelValue.width / 2 / zoom + width / 2 / zoom,
+        startY: -props.modelValue.height / 2 / zoom + height / 2 / zoom,
         startScale: zoom,
       })
       containerParent.value!.addEventListener('wheel', panzoomInstance.value.zoomWithWheel)
@@ -171,37 +176,37 @@ export default defineComponent({
 
     const widgets = computed({
       get(): Record<string, ReportWidget> {
-        return Object.fromEntries(props.value.widgets.map(w => [w.id, w]))
+        return Object.fromEntries(props.modelValue.widgets.map(w => [w.id, w]))
       },
       set(widgets: Record<string, ReportWidget>) {
-        emit('input', { ...props.value, widgets: Object.values(widgets) })
+        emit('update:modelValue', { ...props.modelValue, widgets: Object.values(widgets) })
       }
     })
 
     const title = computed({
       get() {
-        return props.value.title
+        return props.modelValue.title
       },
       set(title: string) {
-        emit('input', { ...props.value, title })
+        emit('update:modelValue', { ...props.modelValue, title })
       }
     })
 
     const width = computed({
       get() {
-        return props.value.width
+        return props.modelValue.width
       },
       set(width: number) {
-        emit('input', { ...props.value, width })
+        emit('update:modelValue', { ...props.modelValue, width })
       }
     })
 
     const height = computed({
       get() {
-        return props.value.height
+        return props.modelValue.height
       },
       set(height: number) {
-        emit('input', { ...props.value, height })
+        emit('update:modelValue', { ...props.modelValue, height })
       }
     })
 
@@ -227,17 +232,18 @@ export default defineComponent({
     }
 
     const updateWidget = (widget: ReportWidget) => widgets.value = { ...widgets.value, [widget.id]: widget }
-    const deleteSelectedWidget = (widgetId: string) => {
+
+    const deleteSelectedWidget = () => {
       widgets.value = Object.fromEntries(Object.entries(widgets.value)
-        .filter(([id, widget]) => id != selectedWidgetId.value))
+        .filter(([id]) => id != selectedWidgetId.value))
       selectedWidgetId.value = undefined
     }
 
     const bounds = computed(() => ({
       left: 0,
       top: 0,
-      right: props.value.width,
-      bottom: props.value.height,
+      right: props.modelValue.width,
+      bottom: props.modelValue.height,
     }))
 
     const { id: prefix } = useUniqueId()

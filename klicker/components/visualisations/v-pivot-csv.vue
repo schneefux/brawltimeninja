@@ -4,14 +4,15 @@
     :card="card && { ...card, title: translate('dashboard.export-data') }"
     component="v-pivot-csv"
   >
-    <b-button
-      slot="actions"
-      primary
-      sm
-      @click="download()"
-    >
-      {{ translate('action.export-bar-chart-race-csv') }}
-    </b-button>
+    <template v-slot:actions>
+      <b-button
+        primary
+        sm
+        @click="download()"
+      >
+        {{ translate('action.export-bar-chart-race-csv') }}
+      </b-button>
+    </template>
   </v-card-wrapper>
 </template>
 
@@ -21,7 +22,7 @@ import { VisualisationProps } from '../../props'
 import BButton from '../ui/b-button.vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
-import { useKlicker } from '../../composables'
+import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
@@ -32,7 +33,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const { translate } = useKlicker()
+    const { translate } = useKlickerConfig()
     const { dimensions, metrics } = useCubeResponseProps(props)
 
     const download = () => {

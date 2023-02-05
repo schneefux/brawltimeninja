@@ -1,16 +1,23 @@
 import BAppHeadNav from './b-app-head-nav.vue'
-import { Meta, Story } from '@storybook/vue'
+import { Meta, StoryObj } from '@storybook/vue3'
 
-export default {
+const meta: Meta<BAppHeadNav> = {
   component: BAppHeadNav,
   title: 'UI/App Head Navigation',
-} as Meta
+}
+export default meta
 
-export const Default: Story = (args, { argTypes }) => ({
-  components: { BAppHeadNav },
-  props: Object.keys(argTypes),
-  template: `
-    <b-app-head-nav v-bind="$props">Header content goes here</b-app-head-nav>
-  `,
-})
-Default.args = {}
+type Story = StoryObj<BAppHeadNav>
+
+export const Default: Story = {
+  render: (args) => ({
+    components: { BAppHeadNav },
+    setup() {
+      return { args }
+    },
+    template: `
+      <b-app-head-nav v-bind="args">Header content goes here</b-app-head-nav>
+    `,
+  }),
+  args: {},
+}

@@ -8,9 +8,9 @@
       <b-select
         v-for="index in numDimensions"
         :key="index"
-        :value="value.dimensionsIds[index - 1]"
+        :model-value="modelValue.dimensionsIds[index - 1]"
         :disabled="!editable"
-        @input="v => onInputDimensionsIds(index - 1, v)"
+        @update:modelValue="v => onInputDimensionsIds(index - 1, v)"
       >
         <option
           v-for="d in validDimensions(index)"
@@ -51,7 +51,7 @@ import { CubeComparingQuery, CubeQuery } from '../types'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
-import { useKlicker } from '../composables/klicker'
+import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
 
@@ -62,7 +62,7 @@ export default defineComponent({
     BButton,
   },
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<CubeQuery|CubeComparingQuery>,
       required: true
     },
@@ -72,20 +72,23 @@ export default defineComponent({
       default: false
     },
   },
+  emits: {
+    ['update:modelValue'](value: CubeQuery|CubeComparingQuery) { return true },
+  },
   setup(props, { emit }) {
-    const { $klicker, translate } = useKlicker()
+    const { $klicker, translate } = useKlickerConfig()
 
-    const compareMode = computed(() => props.value.comparing)
+    const compareMode = computed(() => props.modelValue.comparing)
 
     const selectedDimensions = computed(() => {
       if (!compareMode.value) {
-        return props.value.dimensionsIds
+        return props.modelValue.dimensionsIds
       }
 
       if (props.comparing) {
-        return props.value.dimensionsIds
+        return props.modelValue.dimensionsIds
       } else {
-        return (<CubeComparingQuery>props.value).reference.dimensionsIds
+        return (<CubeComparingQuery>props.modelValue).reference.dimensionsIds
       }
     })
 
@@ -95,12 +98,12 @@ export default defineComponent({
 
     function emitDimensionsIds(dimensionsIds: string[]) {
       if (!compareMode.value) {
-        emit('input', <CubeQuery>{
-          ...props.value,
+        emit('update:modelValue', <CubeQuery>{
+          ...props.modelValue,
           dimensionsIds,
         })
       } else {
-        const query = <CubeComparingQuery> props.value
+        const query = <CubeComparingQuery> props.modelValue
 
         const newQuery = {
           ...query,
@@ -112,7 +115,7 @@ export default defineComponent({
         }
 
         if (JSON.stringify(newQuery) != JSON.stringify(query)) {
-          emit('input', <CubeComparingQuery>newQuery)
+          emit('update:modelValue', <CubeComparingQuery>newQuery)
         }
       }
     }
@@ -128,9 +131,9 @@ export default defineComponent({
 
       if (compareMode.value && !props.comparing) {
         const dimensionsIds = selectedDimensions.value.slice()
-        dimensionsIds.push(props.value.dimensionsIds[numDimensions.value-1])
-        const query = <CubeComparingQuery> props.value
-        emit('input', <CubeComparingQuery>{
+        dimensionsIds.push(props.modelValue.dimensionsIds[numDimensions.value-1])
+        const query = <CubeComparingQuery> props.modelValue
+        emit('update:modelValue', <CubeComparingQuery>{
           ...query,
           reference: {
             ...query.reference,
@@ -146,7 +149,7 @@ export default defineComponent({
       emitDimensionsIds(dimensionsIds)
     }
 
-    const dimensions = computed(() => $klicker.config[props.value.cubeId].dimensions)
+    const dimensions = computed(() => $klicker.config[props.modelValue.cubeId].dimensions)
     const title = computed(() => compareMode.value ? (props.comparing ? translate('comparison.group.test') : translate('comparison.group.reference')) : translate('group.by'))
 
     const validDimensions = computed(() =>
@@ -156,7 +159,7 @@ export default defineComponent({
       if (editable.value) {
         return Math.min(dimensions.value.length, selectedDimensions.value.length + 1)
       } else {
-        return props.value.dimensionsIds.length
+        return props.modelValue.dimensionsIds.length
       }
     })
     const editable = computed(() => !compareMode.value || props.comparing)
