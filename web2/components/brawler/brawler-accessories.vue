@@ -29,6 +29,16 @@
 
     <b-dashboard-cell
       :rows="2"
+      :columns="4"
+    >
+      <brawler-accessory-roll
+        :brawler-name="brawlerName"
+        kind="gears"
+      ></brawler-accessory-roll>
+    </b-dashboard-cell>
+
+    <b-dashboard-cell
+      :rows="2"
       :columns="3"
     >
       <b-card :title="$t('info')">
@@ -54,6 +64,10 @@ export default defineComponent({
     BCard,
   },
   props: {
+    brawlerName: {
+      type: String,
+      required: true
+    },
     scrapedData: {
       type: Object as PropType<ScrapedBrawler>,
       required: false

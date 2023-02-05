@@ -58,6 +58,7 @@
         lazy
       >
         <brawler-accessories
+          :brawler-name="brawlerName"
           :scraped-data="scrapedData"
         ></brawler-accessories>
       </b-page-section>

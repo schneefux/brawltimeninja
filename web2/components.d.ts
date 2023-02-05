@@ -17,6 +17,7 @@ declare module '@vue/runtime-core' {
     ArticleCard: typeof import('./components/article-card.vue')['default']
     BrawlerAccessories: typeof import('./components/brawler/brawler-accessories.vue')['default']
     BrawlerAccessoryCard: typeof import('./components/brawler/brawler-accessory-card.vue')['default']
+    BrawlerAccessoryRoll: typeof import('./components/brawler/brawler-accessory-roll.vue')['default']
     BrawlerActiveEvent: typeof import('./components/brawler/brawler-active-event.vue')['default']
     BrawlerActiveEvents: typeof import('./components/brawler/brawler-active-events.vue')['default']
     BrawlerAside: typeof import('./components/brawler/brawler-aside.vue')['default']

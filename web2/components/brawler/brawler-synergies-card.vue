@@ -3,9 +3,11 @@
     :query="query"
     :filter="filter"
   >
-    <template v-slot:empty><p  class="text-center">
-      {{ $t('state.no-data') }}
-    </p></template>
+    <template v-slot:empty>
+      <p class="text-center">
+        {{ $t('state.no-data') }}
+      </p>
+    </template>
     <template v-slot="data">
       <v-roll
         v-bind="data"

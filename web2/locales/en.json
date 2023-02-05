@@ -584,5 +584,7 @@
     "profile.tracking.enable": "Start Tracking",
     "action.customize": "Customize",
     "action.download": "Download",
-    "player.sharepic.title": "Profile Image"
+    "player.sharepic.title": "Profile Image",
+    "metric.gear.short": "Gear",
+    "metric.gear": "Gear"
 }

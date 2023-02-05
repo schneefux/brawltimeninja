@@ -71,7 +71,7 @@ export default defineComponent({
         metricsIds: ['winRate'],
         slices: {
           ...props.slices,
-          [keys[props.kind] + 'IdEq']: ['0'],
+          [props.kind + 'Length']: ['0'],
         },
         sortId: 'difference',
       },

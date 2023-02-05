@@ -102,7 +102,7 @@ export default defineComponent({
     }
 
     const singular = computed(() => keys[props.kind])
-    const plural = props.kind
+    const plural = computed(() => props.kind)
 
     const query = ref<CubeComparingQuery>({
       cubeId: 'battle',
@@ -120,8 +120,7 @@ export default defineComponent({
         metricsIds: ['winRate'],
         slices: {
           season: [formatClickhouseDate(getMonthSeasonEnd())],
-          [singular.value + 'IdEq']: ['0'],
-          // TODO slice for number of gadgets/gears/starpowers = 0
+          [plural.value + 'Length']: ['0'], // exclude where no accessory identified
         },
         sortId: 'winRate',
       },
