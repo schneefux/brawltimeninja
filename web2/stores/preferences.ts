@@ -75,7 +75,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
   })
 
   function hideAds() {
-    if (!import.meta.env.SSR) {
+    if (!import.meta.env.SSR && 'adsbygoogle' in window) {
       (<any>window).adsbygoogle.pauseAdRequests = 1
       const sheet = document.createElement('style')
       sheet.type = 'text/css'
