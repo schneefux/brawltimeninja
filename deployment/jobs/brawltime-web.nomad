@@ -147,7 +147,11 @@ job "brawltime-web" {
         MYSQL_PASSWORD = "brawltime"
         TRACKING_EXPIRE_AFTER_DAYS = "14"
         TRACKING_REFRESH_MINUTES = "1440"
-        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
+        GA4_ID = "G-8GGHZC6QR2"
+        UA_ID = "UA-137233906-1"
+        OPTIMIZE_ID = "OPT-PWZ78LC"
+        ADSENSE_PUBID = "ca-pub-6856963757796636"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 
       template {
