@@ -13,7 +13,7 @@ export const getMapName = (id: string|number|undefined, name: string|undefined) 
     return name
   }
 
-  if (i18n.te(`map.${id}`)) {
+  if (i18n.t(`map.${id}`) != `map.${id}`) {
     return i18n.t(`map.${id}`)
   }
 
