@@ -66,7 +66,7 @@ export default class ProfileView {
         image: await this.readRemote(`${mediaUrl}/brawlers/${brawlerId}/avatar.png?size=160`),
         title: player.name,
         subtitle: player.tag,
-        color: player.nameColor.replace("0x", "#"),
+        color: (player.nameColor || '0x00000000').replace("0x", "#"),
       },
       ...(player.club?.tag != undefined
         ? [
