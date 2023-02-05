@@ -39,10 +39,13 @@ import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { defineComponent } from 'vue'
 import { useInstall } from '~/composables/app'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { BCard, BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
+    BButton,
+    BCard,
   },
   setup() {
     const { installable, clickInstall, dismissInstall, installDismissed } = useInstall('banner')
