@@ -65,15 +65,6 @@ function createApp(pageContext: PageContext) {
       class: ['dark'],
     },
     script: [
-      {
-        src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pageContext.config.adsensePubid}`,
-        async: true,
-        crossorigin: 'anonymous',
-      },
-      {
-        innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
-        async: false,
-      },
       // vite-plugin-pwa cannot modify the HTML, manually add SW and manifest
       // https://github.com/brillout/vite-plugin-ssr/issues/295
       {

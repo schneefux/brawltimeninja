@@ -62,9 +62,11 @@ import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
-import { useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
+import { useConfig, useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
+import { usePlaywireRamp } from '@/composables/playwire-ramp'
+import { useAdsense } from '@/composables/adsense'
 
 export default defineComponent({
   components: {
@@ -74,6 +76,7 @@ export default defineComponent({
   setup() {
     const container = ref<HTMLElement>()
 
+    const config = useConfig()
     const i18n = useI18n()
     const localePath = useLocalePath()
 
@@ -121,6 +124,11 @@ export default defineComponent({
 
     useInstallPromptListeners()
     useLocaleCookieRedirect()
+    if (config.playwireRampPublisherId == undefined) {
+      useAdsense(config.adsensePubid)
+    } else {
+      usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId)
+    }
 
     return {
       route,

@@ -54,6 +54,9 @@ async function onBeforeRender(pageContext: PageContext) {
     ga4Id: process.env.GA4_ID ?? '',
     uaId: process.env.UA_ID ?? '',
     adsensePubid: process.env.ADSENSE_PUBID ?? '',
+    playwireRampPublisherId: process.env.PLAYWIRE_RAMP_PUBLISHER_ID ?? '',
+    playwireRampSiteId: process.env.PLAYWIRE_RAMP_SITE_ID ?? '',
+    playwireRampGa4Id: process.env.PLAYWIRE_RAMP_GA4_ID ?? '',
     sentryDsn: process.env.SENTRY_DSN ?? '',
     traduora,
   }

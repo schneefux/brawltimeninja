@@ -98,6 +98,7 @@ declare module '@vue/runtime-core' {
     PlayerTimeStatistics: typeof import('./components/player/player-time-statistics.vue')['default']
     PlayerTrophyStatistics: typeof import('./components/player/player-trophy-statistics.vue')['default']
     PlaywirePrivacy: typeof import('./components/playwire-privacy.vue')['default']
+    PlaywireRamp: typeof import('./components/playwire-ramp.vue')['default']
     QuizCard: typeof import('./components/quiz/quiz-card.vue')['default']
     QuizCtaCard: typeof import('./components/quiz/quiz-cta-card.vue')['default']
     QuizLikert: typeof import('./components/quiz/quiz-likert.vue')['default']

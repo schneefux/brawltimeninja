@@ -95,7 +95,10 @@ job "brawltime-testing" {
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
         CLICKHOUSE_HOST = "clickhouse.service.consul"
-        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}"
+        PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
+        PLAYWIRE_RAMP_SITE_ID = "74021"
+        PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 
       template {

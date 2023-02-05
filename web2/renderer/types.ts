@@ -22,6 +22,9 @@ interface Config {
   uaId: string
   adsensePubid: string
   sentryDsn: string
+  playwireRampPublisherId: string
+  playwireRampSiteId: string
+  playwireRampGa4Id: string
   traduora?: {
     url: string
     projectId: string
