@@ -108,7 +108,7 @@
     <template v-slot:actions>
       <div class="flex flex-wrap gap-2">
         <b-button
-          v-if="canEnableTracking || true"
+          v-if="canEnableTracking"
           primary
           sm
           @click="enableTracking()"
